@@ -1,0 +1,10 @@
+.DS_Store
+.Gemfile
+/.bundle
+/.rvmrc
+/coverage
+/doc
+/pkg
+/tags
+/Gemfile.lock
+clacks*.gem
