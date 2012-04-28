@@ -25,11 +25,11 @@ describe SamlIdp::Controller do
     auth_url = auth_request.create(saml_config)
     params[:SAMLRequest] = CGI.unescape(auth_url.split("=").last)
     validate_saml_request
-    saml_response = create_SAMLResponse("foo@example.com", "https://idp.com/saml/idp", "https://idp.com")
+    saml_response = encode_SAMLResponse("foo@example.com")
 
     response = Onelogin::Saml::Response.new(saml_response)
     response.name_id.should == "foo@example.com"
-    response.issuer.should == "https://idp.com"
+    response.issuer.should == "http://example.com"
     response.settings = saml_config
     response.is_valid?.should be_true
   end
@@ -39,7 +39,7 @@ describe SamlIdp::Controller do
     def saml_settings(saml_acs_url)
       settings = Onelogin::Saml::Settings.new
       settings.assertion_consumer_service_url = saml_acs_url
-      settings.issuer = "http://example.com"
+      settings.issuer = "http://example.com/issuer"
       settings.idp_sso_target_url = "http://idp.com/saml/idp"
       settings.idp_cert_fingerprint = SamlIdp::Default::FINGERPRINT
       settings.name_identifier_format = SamlIdp::Default::NAME_ID_FORMAT
