@@ -72,7 +72,7 @@ The fingerprint to use, if you use the default X.509 certificate of this gem, is
 Service Providers
 -----------------
 
-To act as a Service Provider which generates SAML Requests use the excellent [ruby-saml](https://github.com/onelogin/ruby-saml) gem.
+To act as a Service Provider which generates SAML Requests and can react to SAML Responses use the excellent [ruby-saml](https://github.com/onelogin/ruby-saml) gem.
 
 
 Author

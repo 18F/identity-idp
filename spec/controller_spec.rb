@@ -18,20 +18,50 @@ describe SamlIdp::Controller do
     saml_acs_url.should == requested_saml_acs_url
   end
 
-  it "should create a SAML Response" do
-    requested_saml_acs_url = "https://foo.example.com/saml/consume"
-    saml_config = saml_settings(requested_saml_acs_url)
-    auth_request = Onelogin::Saml::Authrequest.new
-    auth_url = auth_request.create(saml_config)
-    params[:SAMLRequest] = CGI.unescape(auth_url.split("=").last)
-    validate_saml_request
-    saml_response = encode_SAMLResponse("foo@example.com")
+  context "SAML Responses" do
+    before(:each) do
+      requested_saml_acs_url = "https://foo.example.com/saml/consume"
+      @saml_config = saml_settings(requested_saml_acs_url)
+      auth_request = Onelogin::Saml::Authrequest.new
+      auth_url = auth_request.create(@saml_config)
+      params[:SAMLRequest] = CGI.unescape(auth_url.split("=").last)
+      validate_saml_request
+    end
 
-    response = Onelogin::Saml::Response.new(saml_response)
-    response.name_id.should == "foo@example.com"
-    response.issuer.should == "http://example.com"
-    response.settings = saml_config
-    response.is_valid?.should be_true
+    it "should create a SAML Response" do
+      saml_response = encode_SAMLResponse("foo@example.com")
+      response = Onelogin::Saml::Response.new(saml_response)
+      response.name_id.should == "foo@example.com"
+      response.issuer.should == "http://example.com"
+      response.settings = @saml_config
+      response.is_valid?.should be_true
+    end
+
+    [:sha1, :sha256].each do |algorithm_name|
+      it "should create a SAML Response using the #{algorithm_name} algorithm" do
+        self.algorithm = algorithm_name
+        saml_response = encode_SAMLResponse("foo@example.com")
+        response = Onelogin::Saml::Response.new(saml_response)
+        response.name_id.should == "foo@example.com"
+        response.issuer.should == "http://example.com"
+        response.settings = @saml_config
+        response.is_valid?.should be_true
+      end
+    end
+
+    [:sha384, :sha512].each do |algorithm_name|
+      it "should create a SAML Response using the #{algorithm_name} algorithm" do
+        pending "release of ruby-saml v0.5.4" do
+          self.algorithm = algorithm_name
+          saml_response = encode_SAMLResponse("foo@example.com")
+          response = Onelogin::Saml::Response.new(saml_response)
+          response.name_id.should == "foo@example.com"
+          response.issuer.should == "http://example.com"
+          response.settings = @saml_config
+          response.is_valid?.should be_true
+        end
+      end
+    end
   end
 
   private
