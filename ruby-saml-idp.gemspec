@@ -1,6 +1,6 @@
 # -*- encoding: utf-8 -*-
 $:.push File.expand_path("../lib", __FILE__)
-require "saml-idp/version"
+require "saml_idp/version"
 
 Gem::Specification.new do |s|
   s.name = %q{ruby-saml-idp}
@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   # s.add_development_dependency "rcov"
   s.add_development_dependency "rspec"
   s.add_development_dependency "ruby-saml"
-  s.add_development_dependency "actionpack"
+  s.add_development_dependency("rails", "~> 3.2")
+  s.add_development_dependency("capybara")
 end
 
