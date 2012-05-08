@@ -53,8 +53,8 @@ module SamlIdp
         @saml_request = zstream.inflate(Base64.decode64(saml_request))
         zstream.finish
         zstream.close
-        @saml_request_id = @saml_request[/ID='(.+?)'/, 1]
-        @saml_acs_url = @saml_request[/AssertionConsumerServiceURL='(.+?)'/, 1]
+        @saml_request_id = @saml_request[/ID=['"](.+?)['"]/, 1]
+        @saml_acs_url = @saml_request[/AssertionConsumerServiceURL=['"](.+?)['"]/, 1]
       end
 
       def encode_SAMLResponse(nameID, opts = {})
