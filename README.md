@@ -57,6 +57,23 @@ class SamlIdpController < SamlIdp::IdpController
 end
 ```
 
+The most minimal example controller would look like:
+
+``` ruby
+require "uuid"
+
+class SamlIdpController < SamlIdp::IdpController
+
+  def idp_authenticate(email, password)
+    true
+  end
+
+  def idp_make_saml_response(user)
+    encode_SAMLResponse("you@example.com")
+  end
+
+end
+```
 
 Keys and Secrets
 ----------------
