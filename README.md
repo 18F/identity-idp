@@ -60,8 +60,6 @@ end
 The most minimal example controller would look like:
 
 ``` ruby
-require "uuid"
-
 class SamlIdpController < SamlIdp::IdpController
 
   def idp_authenticate(email, password)
