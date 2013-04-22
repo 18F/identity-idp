@@ -30,7 +30,7 @@ describe SamlIdp::Controller do
       response.is_valid?.should be_true
     end
 
-    [:sha1, :sha256].each do |algorithm_name|
+    [:sha1, :sha256, :sha384, :sha512].each do |algorithm_name|
       it "should create a SAML Response using the #{algorithm_name} algorithm" do
         self.algorithm = algorithm_name
         saml_response = encode_SAMLResponse("foo@example.com")
@@ -39,20 +39,6 @@ describe SamlIdp::Controller do
         response.issuer.should == "http://example.com"
         response.settings = saml_settings
         response.is_valid?.should be_true
-      end
-    end
-
-    [:sha384, :sha512].each do |algorithm_name|
-      it "should create a SAML Response using the #{algorithm_name} algorithm" do
-        pending "release of ruby-saml v0.5.4" do
-          self.algorithm = algorithm_name
-          saml_response = encode_SAMLResponse("foo@example.com")
-          response = Onelogin::Saml::Response.new(saml_response)
-          response.name_id.should == "foo@example.com"
-          response.issuer.should == "http://example.com"
-          response.settings = saml_settings
-          response.is_valid?.should be_true
-        end
       end
     end
   end
