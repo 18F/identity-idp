@@ -39,6 +39,12 @@ describe SamlIdp::Controller do
         response.name_id.should == "foo@example.com"
         response.issuer.should == "http://example.com"
         response.settings = saml_settings
+        raise response.document.to_s
+      response.send(:validate_structure).should be_true
+      response.send(:validate_response_state).should be_true
+      response.send(:validate_conditions).should be_true
+      response.send(:document).validate(resonse.send(:get_fingerprint), true).should be_true
+      response.send(:success?).should be_true
         response.is_valid?.should be_true
       end
     end
