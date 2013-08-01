@@ -23,6 +23,7 @@ describe SamlIdp::Controller do
 
     it "should create a SAML Response" do
       saml_response = encode_SAMLResponse("foo@example.com")
+      saml_response.should == ""
       response = Onelogin::Saml::Response.new(saml_response)
       response.name_id.should == "foo@example.com"
       response.issuer.should == "http://example.com"
