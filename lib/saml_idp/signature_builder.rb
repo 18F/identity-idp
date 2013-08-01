@@ -8,11 +8,7 @@ module SamlIdp
     end
 
     def raw
-      build
-    end
-
-    def build
-      @build ||= builder.tag! "ds:Signature", "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#" do |signature|
+      @raw ||= builder.tag! "ds:Signature", "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#" do |signature|
         signature << signed_info
         signature.tag! "ds:SignatureValue", signature_value
         signature.KeyInfo xmlns: "http://www.w3.org/2000/09/xmldsig#" do |key_info|
@@ -22,7 +18,6 @@ module SamlIdp
         end
       end
     end
-    private :build
 
     def x509_certificate
       SamlIdp.config.x509_certificate
