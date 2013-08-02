@@ -18,6 +18,7 @@ Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 RSpec.configure do |config|
   config.mock_with :rspec
   config.include SamlRequestMacros
+  config.order = "random"
 end
 
 Capybara.default_host = "https://app.example.com"
