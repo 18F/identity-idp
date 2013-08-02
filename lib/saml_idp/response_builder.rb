@@ -29,7 +29,8 @@ module SamlIdp
     private :encode
 
     def build
-      @build ||= builder.tag! "samlp:Response",
+      builder = Builder::XmlMarkup.new
+      builder.tag! "samlp:Response",
         ID: response_id_string,
         Version: "2.0",
         IssueInstant: now_iso,
@@ -55,10 +56,5 @@ module SamlIdp
       Time.now.utc.iso8601
     end
     private :now_iso
-
-    def builder
-      @builder ||= Builder::XmlMarkup.new
-    end
-    private :builder
   end
 end
