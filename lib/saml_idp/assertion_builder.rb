@@ -44,6 +44,7 @@ module SamlIdp
     private :algorithm
 
     def fresh
+      builder = Builder::XmlMarkup.new
       builder.Assertion xmlns: "urn:oasis:names:tc:SAML:2.0:assertion",
         ID: reference_string,
         IssueInstant: now_iso,
@@ -111,10 +112,5 @@ module SamlIdp
       yield.iso8601
     end
     private :iso
-
-    def builder
-      @builder ||= Builder::XmlMarkup.new
-    end
-    private :builder
   end
 end
