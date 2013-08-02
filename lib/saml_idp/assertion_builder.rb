@@ -21,7 +21,7 @@ module SamlIdp
     end
 
     def digest
-      @digest ||= encode
+      Base64.encode64(algorithm.digest(raw)).gsub(/\n/, '')
     end
 
     def raw
@@ -31,11 +31,6 @@ module SamlIdp
     def rebuild
       fresh
     end
-
-    def encode
-      Base64.encode64(algorithm.digest(raw)).gsub(/\n/, '')
-    end
-    private :encode
 
     def algorithm
       algorithm_check = raw_algorithm || SamlIdp.config.algorithm
