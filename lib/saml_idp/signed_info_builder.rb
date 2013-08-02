@@ -53,28 +53,17 @@ module SamlIdp
     end
     private :reference_string
 
-    def builder
-      @builder ||= Builder::XmlMarkup.new
-    end
-    private :builder
-
     def algorithm_name
       algorithm.to_s.split('::').last.downcase
     end
     private :algorithm_name
 
-
     def algorithm
       algorithm_check = raw_algorithm || SamlIdp.config.algorithm
       return algorithm_check if algorithm_check.respond_to?(:digest)
-      case algorithm_check
-      when :sha256
-        OpenSSL::Digest::SHA256
-      when :sha384
-        OpenSSL::Digest::SHA384
-      when :sha512
-        OpenSSL::Digest::SHA512
-      else
+      begin
+        OpenSSL::Digest.const_get(algorithm_check.to_s.upcase)
+      rescue NameError
         OpenSSL::Digest::SHA1
       end
     end
