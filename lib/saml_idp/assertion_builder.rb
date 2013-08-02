@@ -54,7 +54,7 @@ module SamlIdp
           assertion.Subject do |subject|
             subject.NameID name_id, Format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
             subject.SubjectConfirmation Method: "urn:oasis:names:tc:SAML:2.0:cm:bearer" do |confirmation|
-              confirmation.SubjectConfirmationData InResponseTo: saml_request_id,
+              confirmation.SubjectConfirmationData "", InResponseTo: saml_request_id,
                 NotOnOrAfter: not_on_or_after_subject,
                 Recipient: saml_acs_url
             end
@@ -69,7 +69,7 @@ module SamlIdp
               attr.AttributeValue name_id
             end
           end
-          assertion.AuthnStatment AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
+          assertion.AuthnStatement AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
             statement.AuthnContext do |context|
               context.AuthnContextClassRef "urn:federation:authentication:windows"
             end
