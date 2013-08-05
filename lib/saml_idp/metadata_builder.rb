@@ -25,6 +25,9 @@ module SamlIdp
         ID: reference_string,
         entityID: "https://idp.example.org/SAML2" do |entity|
           sign entity
+          build_organization entity
+          build_contact entity
+
           entity.IDPSSODescriptor protocolSupportEnumeration: protocol_enumeration do |descriptor|
             build_key_descriptor descriptor
             build_name_id_formats descriptor
@@ -43,8 +46,6 @@ module SamlIdp
             build_name_id_formats authority_descriptor
             build_attribute authority_descriptor
           end
-          build_organization entity
-          build_contact entity
         end
     end
     alias_method :rebuild, :fresh
