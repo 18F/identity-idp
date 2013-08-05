@@ -1,6 +1,7 @@
 require 'builder'
 module SamlIdp
   class SignedInfoBuilder
+    include Algorithmable
     attr_accessor :reference_id
     attr_accessor :digest_value
     attr_accessor :raw_algorithm
@@ -52,21 +53,5 @@ module SamlIdp
       "#_#{reference_id}"
     end
     private :reference_string
-
-    def algorithm_name
-      algorithm.to_s.split('::').last.downcase
-    end
-    private :algorithm_name
-
-    def algorithm
-      algorithm_check = raw_algorithm || SamlIdp.config.algorithm
-      return algorithm_check if algorithm_check.respond_to?(:digest)
-      begin
-        OpenSSL::Digest.const_get(algorithm_check.to_s.upcase)
-      rescue NameError
-        OpenSSL::Digest::SHA1
-      end
-    end
-    private :algorithm
   end
 end
