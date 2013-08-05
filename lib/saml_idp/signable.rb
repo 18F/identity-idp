@@ -17,6 +17,10 @@ module SamlIdp
       }.send(self.class.rebuild_method)
     end
 
+    def sign(el)
+      el << signature if signature
+    end
+
     def build_signature
       SignatureBuilder.new(signed_info_builder).raw
     end

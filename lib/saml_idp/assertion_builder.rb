@@ -24,10 +24,6 @@ module SamlIdp
       self.raw_algorithm = raw_algorithm
     end
 
-    def digest
-      Base64.encode64(algorithm.digest(raw)).gsub(/\n/, '')
-    end
-
     def raw
       @raw ||= fresh
     end
@@ -43,7 +39,7 @@ module SamlIdp
         IssueInstant: now_iso,
         Version: "2.0" do |assertion|
           assertion.Issuer issuer_uri
-          assertion << signature if signature
+          sign assertion
           assertion.Subject do |subject|
             subject.NameID name_id, Format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
             subject.SubjectConfirmation Method: "urn:oasis:names:tc:SAML:2.0:cm:bearer" do |confirmation|
