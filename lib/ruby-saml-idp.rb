@@ -5,6 +5,7 @@ module SamlIdp
   require 'saml_idp/configurator'
   require 'saml_idp/controller'
   require 'saml_idp/default'
+  require 'saml_idp/metadata_builder'
   require 'saml_idp/version'
   require 'saml_idp/engine' if defined?(::Rails) && Rails::VERSION::MAJOR > 2
 
@@ -16,5 +17,7 @@ module SamlIdp
     @config ||= SamlIdp::Configurator.new
   end
 
+  def self.metadata
+    @metadata ||= MetadataBuilder.new(config).raw
+  end
 end
-
