@@ -2,6 +2,7 @@
 module SamlIdp
   require 'active_support/all'
   require 'saml_idp/saml_response'
+  require 'saml_idp/xml_security'
   require 'saml_idp/configurator'
   require 'saml_idp/controller'
   require 'saml_idp/default'
