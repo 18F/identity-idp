@@ -1,4 +1,5 @@
-require 'delegate'
+require 'saml_idp/name_id_formatter'
+require 'saml_idp/attribute_decorator'
 require 'saml_idp/algorithmable'
 require 'saml_idp/signable'
 module SamlIdp
@@ -147,59 +148,6 @@ module SamlIdp
         configurator.public_send delegatable
       end
       private delegatable
-    end
-
-    class NameIdFormatter
-      attr_accessor :list
-      def initialize(list)
-        self.list = list
-      end
-
-      def samlize
-        if split?
-          one_one.map { |el| "urn:oasis:names:tc:SAML:1.1:nameid-format:#{el.to_s.camelize(:lower)}" } +
-            two_zero.map { |el| "urn:oasis:names:tc:SAML:2.0:nameid-format:#{el.to_s.camelize(:lower)}" }
-        else
-          list.map { |el| "urn:oasis:names:tc:SAML:2.0:nameid-format:#{el.to_s.camelize(:lower)}" }
-        end
-      end
-
-      def split?
-        list.is_a?(Hash)
-      end
-
-      def one_one
-        Array(list["1.1"])
-      end
-
-      def two_zero
-        Array(list["2.0"])
-      end
-    end
-
-    class AttributeDecorator < SimpleDelegator
-      alias_method :source, :__getobj__
-
-      def initialize(*)
-        super
-        __setobj__((source || {}).with_indifferent_access)
-      end
-
-      def name
-        source[:name]
-      end
-
-      def friendly_name
-        soruce[:friendly_name]
-      end
-
-      def name_format
-        source[:name_format] || "urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
-      end
-
-      def values
-        source[:values]
-      end
     end
   end
 end
