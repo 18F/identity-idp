@@ -11,7 +11,7 @@ require 'capybara/rspec'
 require 'capybara/rails'
 
 require 'ruby-saml'
-require 'ruby-saml-idp'
+require 'saml_idp'
 
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
