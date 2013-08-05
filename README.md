@@ -1,8 +1,8 @@
 # Ruby SAML Identity Provider (IdP)
 
-[![Build Status](https://secure.travis-ci.org/lawrencepit/ruby-saml-idp.png)](http://travis-ci.org/lawrencepit/ruby-saml-idp?branch=master) 
-[![Code Climate](https://codeclimate.com/badge.png)](https://codeclimate.com/github/lawrencepit/ruby-saml-idp)
-[![Gem Version](https://fury-badge.herokuapp.com/rb/ruby-saml-idp.png)](http://badge.fury.io/rb/ruby-saml-idp)
+Forked from https://github.com/lawrencepit/ruby-saml-idp
+
+__Warning__: Under Active Development. This Readme may be out of date.
 
 The ruby SAML Identity Provider library is for implementing the server side of SAML authentication. It allows your application to act as an IdP (Identity Provider) using the [SAML v2.0](http://en.wikipedia.org/wiki/Security_Assertion_Markup_Language) protocol. It provides a means for managing authentication requests and confirmation responses for SPs (Service Providers).
 
@@ -14,7 +14,7 @@ Installation and Usage
 
 Add this to your Gemfile:
 
-    gem 'ruby-saml-idp'
+    gem 'saml_idp'
 
 ### Not using rails?
 
