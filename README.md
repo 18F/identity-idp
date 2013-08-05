@@ -9,14 +9,13 @@ The ruby SAML Identity Provider library is for implementing the server side of S
 Setting up a "real" IdP is such an undertaking I didn't care for such an achievement. I wanted something very simple that just works without having to install extra components and setup extra infrastructure. In it's current form it's basic. This is because currently I use it for manual and end-to-end testing purposes of the Service Provider side only. It is reversed engineered from real-world SAML Responses sent by ADFS systems.
 
 
-Installation and Usage
-----------------------
+# Installation and Usage
 
 Add this to your Gemfile:
 
     gem 'saml_idp'
 
-### Not using rails?
+## Not using rails?
 
 Include `SamlIdp::Controller` and see the examples that use rails. It should be straightforward for you.
 
@@ -24,7 +23,7 @@ Basically you call `decode_SAMLRequest(params[:SAMLRequest])` on an incoming req
 
 Once a user has successfully authenticated on your system send the Service Provider a SAMLReponse by posting to `saml_acs_url` the parameter `SAMLResponse` with the return value from a call to `encode_SAMLResponse(user_email)`.
 
-### Using rails?
+## Using rails?
 
 Add to your `routes.rb` file, for example:
 
@@ -76,8 +75,7 @@ class SamlIdpController < SamlIdp::IdpController
 end
 ```
 
-Keys and Secrets
-----------------
+# Keys and Secrets
 
 To generate the SAML Response it uses a default X.509 certificate and secret key... which isn't so secret. You can find them in `SamlIdp::Default`. The X.509 certificate is valid until year 2032. Obviously you shouldn't use these if you intend to use this in production environments. In that case, within the controller set the properties `x509_certificate` and `secret_key` using a `prepend_before_filter` callback within the current request context or set them globally via the `SamlIdp.config.x509_certificate` and `SamlIdp.config.secret_key` properties.
 
@@ -88,19 +86,16 @@ The fingerprint to use, if you use the default X.509 certificate of this gem, is
 ```
 
 
-Service Providers
------------------
+# Service Providers
 
 To act as a Service Provider which generates SAML Requests and can react to SAML Responses use the excellent [ruby-saml](https://github.com/onelogin/ruby-saml) gem.
 
 
-Author
-----------
+# Author
 
-Lawrence Pit, lawrence.pit@gmail.com, [lawrencepit.com](http://lawrencepit.com), [@lawrencepit](http://twitter.com/lawrencepit)
+Jon Phenow, jon.phenow@sportngin.com
 
 
-Copyright
------------
+# Copyright
 
-Copyright (c) 2012 Lawrence Pit. See MIT-LICENSE for details.
+Copyright (c) 2012 Sport Ngin. See MIT-LICENSE for details.
