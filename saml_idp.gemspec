@@ -3,12 +3,12 @@ $:.push File.expand_path("../lib", __FILE__)
 require "saml_idp/version"
 
 Gem::Specification.new do |s|
-  s.name = %q{ruby-saml-idp}
+  s.name = %q{saml_idp}
   s.version = SamlIdp::VERSION
   s.platform = Gem::Platform::RUBY
-  s.authors = ["Lawrence Pit"]
-  s.email = %q{lawrence.pit@gmail.com}
-  s.homepage = %q{http://github.com/lawrencepit/ruby-saml-idp}
+  s.authors = ["Jon Phenow"]
+  s.email = %q{jon.phenow@sportngin.com}
+  s.homepage = %q{http://github.com/sportngin/saml_idp}
   s.summary = %q{SAML Indentity Provider in ruby}
   s.description = %q{SAML IdP (Identity Provider) library in ruby}
   s.date = Time.now.utc.strftime("%Y-%m-%d")
