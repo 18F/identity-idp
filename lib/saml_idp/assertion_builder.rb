@@ -12,7 +12,6 @@ module SamlIdp
     attr_accessor :saml_request_id
     attr_accessor :saml_acs_url
     attr_accessor :raw_algorithm
-    attr_accessor :signature
 
     def initialize(reference_id, issuer_uri, name_id, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
       self.reference_id = reference_id
@@ -22,14 +21,6 @@ module SamlIdp
       self.saml_request_id = saml_request_id
       self.saml_acs_url = saml_acs_url
       self.raw_algorithm = raw_algorithm
-    end
-
-    def raw
-      @raw ||= fresh
-    end
-
-    def rebuild
-      fresh
     end
 
     def fresh
@@ -65,6 +56,8 @@ module SamlIdp
           end
         end
     end
+    alias_method :rebuild, :fresh
+    alias_method :raw, :fresh
     private :fresh
 
     def reference_string

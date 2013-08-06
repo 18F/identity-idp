@@ -12,10 +12,6 @@ module SamlIdp
       self.configurator = configurator
     end
 
-    def raw
-      @raw ||= fresh
-    end
-
     def fresh
       builder = Builder::XmlMarkup.new
       builder.instruct!
@@ -49,6 +45,7 @@ module SamlIdp
         end
     end
     alias_method :rebuild, :fresh
+    alias_method :raw, :fresh
 
     def build_key_descriptor(el)
       el.KeyDescriptor use: "signing" do |key_descriptor|
@@ -142,7 +139,6 @@ module SamlIdp
       organization_url
       attribute_service_location
       single_service_post_location
-      reference_id_generator
       technical_contact
     ].each do |delegatable|
       define_method(delegatable) do

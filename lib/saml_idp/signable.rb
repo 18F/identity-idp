@@ -8,23 +8,65 @@ module SamlIdp
   module Signable
     def self.included(base)
       base.extend ClassMethods
-      base.send :attr_accessor, :signature
+      base.send :attr_accessor, :reference_id
     end
 
     def signed
-      dup.tap { |dupd|
-        dupd.signature = build_signature
-      }.send(self.class.rebuild_method)
+      generated_reference_id do
+        with_signature do
+          send(self.class.rebuild_method)
+        end
+      end
     end
 
     def sign(el)
-      el << signature if signature
+      el << signature if sign?
     end
 
-    def build_signature
+    def generated_reference_id
+      if reference_id
+        fin = yield reference_id if block_given?
+      else
+        self.reference_id = ref = reference_id_generator.call
+        fin = yield reference_id if block_given?
+        self.reference_id = nil
+      end
+      block_given? ? fin : ref
+    end
+    private :generated_reference_id
+
+    def reference_id_generator
+      SamlIdp.config.reference_id_generator
+    end
+    private :reference_id_generator
+
+    def with_signature
+      original = @sign
+      @sign = true
+      yield.tap do
+        @sign = original
+      end
+    end
+    private :with_signature
+
+    def without_signature
+      original = @sign
+      @sign = false
+      yield.tap do
+        @sign = original
+      end
+    end
+    private :without_signature
+
+    def sign?
+      !!@sign
+    end
+    private :sign?
+
+    def signature
       SignatureBuilder.new(signed_info_builder).raw
     end
-    private :build_signature
+    private :signature
 
     def signed_info_builder
       SignedInfoBuilder.new(get_reference_id, get_digest, get_algorithm)
@@ -37,7 +79,9 @@ module SamlIdp
     private :get_reference_id
 
     def get_digest
-      send(self.class.digest_method)
+      without_signature do
+        send(self.class.digest_method)
+      end
     end
     private :get_digest
 
