@@ -8,7 +8,8 @@ module SamlIdp
     end
 
     def raw
-      @raw ||= builder.tag! "ds:Signature", "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#" do |signature|
+      builder = Builder::XmlMarkup.new
+      builder.tag! "ds:Signature", "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#" do |signature|
         signature << signed_info
         signature.tag! "ds:SignatureValue", signature_value
         signature.KeyInfo xmlns: "http://www.w3.org/2000/09/xmldsig#" do |key_info|
@@ -33,10 +34,5 @@ module SamlIdp
       signed_info_builder.signed
     end
     private :signature_value
-
-    def builder
-      @builder ||= Builder::XmlMarkup.new
-    end
-    private :builder
   end
 end
