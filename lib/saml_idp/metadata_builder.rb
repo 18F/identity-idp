@@ -126,6 +126,12 @@ module SamlIdp
     def name_id_formats
       @name_id_formats ||= NameIdFormatter.new(configurator.name_id_formats).samlize
     end
+    private :name_id_formats
+
+    def raw_algorithm
+      configurator.algorithm
+    end
+    private :raw_algorithm
 
     %w[
       x509_certificate
