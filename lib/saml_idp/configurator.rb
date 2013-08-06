@@ -13,7 +13,7 @@ module SamlIdp
     attr_accessor :name_id_formats
     attr_accessor :attributes
 
-    def initialize(config_file = nil)
+    def initialize
       self.x509_certificate = Default::X509_CERTIFICATE
       self.secret_key = Default::SECRET_KEY
       self.algorithm = :sha1
