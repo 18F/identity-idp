@@ -99,11 +99,6 @@ module SamlIdp
     end
     private :build_contact
 
-    def reference_id
-      @reference_id ||= reference_id_generator.call
-    end
-    private :reference_id
-
     def reference_string
       "_#{reference_id}"
     end
