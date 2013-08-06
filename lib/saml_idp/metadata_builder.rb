@@ -8,7 +8,7 @@ module SamlIdp
     include Signable
     attr_accessor :configurator
 
-    def initialize(configurator)
+    def initialize(configurator = SamlIdp.config)
       self.configurator = configurator
     end
 
