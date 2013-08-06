@@ -91,11 +91,11 @@ module SamlIdp
 
     def build_contact(el)
       el.ContactPerson contactType: "technical" do |contact|
-        contact.Company technical_contact.company
-        contact.GivenName technical_contact.given_name
-        contact.SurName technical_contact.sur_name
-        contact.TelephoneNumber technical_contact.telephone
-        contact.EmailAddress technical_contact.mail_to_string
+        contact.Company technical_contact.company if technical_contact.company.present?
+        contact.GivenName technical_contact.given_name if technical_contact.given_name.present?
+        contact.SurName technical_contact.sur_name if technical_contact.sur_name.present?
+        contact.TelephoneNumber technical_contact.telephone if technical_contact.telephone.present?
+        contact.EmailAddress technical_contact.mail_to_string if technical_contact.mail_to_string.present?
       end
     end
     private :build_contact
