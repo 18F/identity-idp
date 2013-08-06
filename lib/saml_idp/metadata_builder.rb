@@ -14,34 +14,36 @@ module SamlIdp
 
     def fresh
       builder = Builder::XmlMarkup.new
-      builder.EntityDescriptor ID: reference_string,
-        "xmlns:saml" => "urn:oasis:names:tc:SAML:2.0:assertion",
-        "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#",
-        entityID: entity_id,
-        xmlns: "urn:oasis:names:tc:SAML:2.0:metadata" do |entity|
-          sign entity
-          build_organization entity
-          build_contact entity
+      generated_reference_id do
+        builder.EntityDescriptor ID: reference_string,
+          "xmlns:saml" => "urn:oasis:names:tc:SAML:2.0:assertion",
+          "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#",
+          entityID: entity_id,
+          xmlns: "urn:oasis:names:tc:SAML:2.0:metadata" do |entity|
+            sign entity
+            build_organization entity
+            build_contact entity
 
-          entity.IDPSSODescriptor protocolSupportEnumeration: protocol_enumeration do |descriptor|
-            build_key_descriptor descriptor
-            build_name_id_formats descriptor
-            descriptor.SingleSignOnService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-              Location: single_service_post_location
-            build_attribute descriptor
-          end
+            entity.IDPSSODescriptor protocolSupportEnumeration: protocol_enumeration do |descriptor|
+              build_key_descriptor descriptor
+              build_name_id_formats descriptor
+              descriptor.SingleSignOnService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+                Location: single_service_post_location
+              build_attribute descriptor
+            end
 
-          entity.AttributeAuthorityDescriptor ID: reference_string,
-            protocolSupportEnumeration: protocol_enumeration do |authority_descriptor|
-            build_key_descriptor authority_descriptor
-            build_organization authority_descriptor
-            build_contact authority_descriptor
-            authority_descriptor.AttributeService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
-              Location: attribute_service_location
-            build_name_id_formats authority_descriptor
-            build_attribute authority_descriptor
+            entity.AttributeAuthorityDescriptor ID: reference_string,
+              protocolSupportEnumeration: protocol_enumeration do |authority_descriptor|
+              build_key_descriptor authority_descriptor
+              build_organization authority_descriptor
+              build_contact authority_descriptor
+              authority_descriptor.AttributeService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+                Location: attribute_service_location
+              build_name_id_formats authority_descriptor
+              build_attribute authority_descriptor
+            end
           end
-        end
+      end
     end
     alias_method :rebuild, :fresh
     alias_method :raw, :fresh
