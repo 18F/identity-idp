@@ -18,7 +18,7 @@ module SamlIdp
       self.secret_key = Default::SECRET_KEY
       self.algorithm = :sha1
       self.reference_id_generator = ->() { UUID.generate }
-      self.attributes = []
+      self.attributes = {}
     end
 
     def technical_contact
