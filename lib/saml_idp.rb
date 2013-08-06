@@ -10,12 +10,12 @@ module SamlIdp
   require 'saml_idp/version'
   require 'saml_idp/engine' if defined?(::Rails) && Rails::VERSION::MAJOR > 2
 
-  def self.config=(config)
-    @config = config
-  end
-
   def self.config
     @config ||= SamlIdp::Configurator.new
+  end
+
+  def self.configure
+    yield config
   end
 
   def self.metadata
