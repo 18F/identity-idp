@@ -95,8 +95,21 @@ module SamlIdp
     end
     private :get_raw
 
+    def noko_raw
+      Nokogiri::XML::Document.parse(get_raw)
+    end
+    private :noko_raw
+
     def digest
-      Base64.encode64(algorithm.digest(get_raw)).gsub(/\n/, '')
+      # Make it check for inclusive at some point (https://github.com/onelogin/ruby-saml/blob/master/lib/xml_security.rb#L159)
+      inclusive_namespaces = []
+      # Also make customizable
+      canon_algorithm = Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0
+      canon_hashed_element = noko_raw.canonicalize(canon_algorithm, inclusive_namespaces)
+      digest_algorithm = get_algorithm
+
+      hash                          = digest_algorithm.digest(canon_hashed_element)
+      Base64.encode64(hash).gsub(/\n/, '')
     end
     private :digest
 
