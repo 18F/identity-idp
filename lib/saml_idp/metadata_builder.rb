@@ -19,7 +19,7 @@ module SamlIdp
         "xmlns:saml" => "urn:oasis:names:tc:SAML:2.0:assertion",
         "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#",
         ID: reference_string,
-        entityID: "https://idp.example.org/SAML2" do |entity|
+        entityID: entity_id do |entity|
           sign entity
           build_organization entity
           build_contact entity
@@ -110,7 +110,7 @@ module SamlIdp
     private :reference_string
 
     def entity_id
-      config.base_saml_location
+      configurator.base_saml_location
     end
     private :entity_id
 
