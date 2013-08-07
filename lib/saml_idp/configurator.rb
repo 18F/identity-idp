@@ -12,12 +12,14 @@ module SamlIdp
     attr_accessor :single_service_post_location
     attr_accessor :name_id_formats
     attr_accessor :attributes
+    attr_accessor :service_provider_finder
 
     def initialize
       self.x509_certificate = Default::X509_CERTIFICATE
       self.secret_key = Default::SECRET_KEY
       self.algorithm = :sha1
       self.reference_id_generator = ->() { UUID.generate }
+      self.service_provider_finder = ->(_) { Default::SERVICE_PROVIDER }
       self.attributes = {}
     end
 
