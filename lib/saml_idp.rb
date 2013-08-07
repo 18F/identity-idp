@@ -22,3 +22,15 @@ module SamlIdp
     @metadata ||= MetadataBuilder.new(config)
   end
 end
+
+# TODO Needs extraction out
+module Saml
+  module XML
+    module Namespaces
+      METADATA = "urn:oasis:names:tc:SAML:2.0:metadata"
+      ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion"
+      SIGNATURE = "http://www.w3.org/2000/09/xmldsig#"
+      PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol"
+    end
+  end
+end
