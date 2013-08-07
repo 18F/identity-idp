@@ -79,6 +79,10 @@ module SamlIdp
       Saml::XML::Namespaces::ASSERTION
     end
 
+    def signature_namespace
+      Saml::XML::Namespaces::SIGNATURE
+    end
+
     def issuer
       xpath("//saml:Issuer", saml: assertion).first.try :content
     end
