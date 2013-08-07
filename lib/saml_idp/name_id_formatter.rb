@@ -2,7 +2,7 @@ module SamlIdp
   class NameIdFormatter
     attr_accessor :list
     def initialize(list)
-      self.list = list
+      self.list = Array(list)
     end
 
     def samlize
