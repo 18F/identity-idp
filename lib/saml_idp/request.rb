@@ -32,7 +32,15 @@ module SamlIdp
     end
 
     def valid_signature?
-      signed_document.validate fingerprint, true
+      if should_validate_signature?
+        signed_document.validate(fingerprint, true)
+      else
+        true
+      end
+    end
+
+    def should_validate_signature?
+      !!xpath("//ds:Signature", ds: signature_namespace).first
     end
 
     def signed_document
@@ -51,12 +59,16 @@ module SamlIdp
       end
     end
 
+    def service_provider?
+      !!service_provider
+    end
+
     def service_provider
       @service_provider ||= service_provider_finder[issuer] # TODO Wrap
     end
 
     def service_provider_finder
-      config.service_provider_finder.call(issuer)
+      config.service_provider_finder
     end
 
     def samlp

@@ -19,6 +19,7 @@ module SamlIdp
 
     def validate_saml_request(raw_saml_request = params[:SAMLRequest])
       decode_SAMLRequest(raw_saml_request)
+      render nothing: true, status: :forbidden unless valid_service_provider?
     end
 
     def decode_SAMLRequest(raw_saml_request)
@@ -40,6 +41,11 @@ module SamlIdp
         saml_acs_url,
         algorithm
       ).build
+    end
+
+    def valid_service_provider?
+      saml_request.service_provider? &&
+        saml_request.valid_signature?
     end
 
     def saml_request_id
