@@ -4,9 +4,7 @@ module SamlIdp
     include SamlIdp::Controller
 
     unloadable
-
     protect_from_forgery
-
     before_filter :validate_saml_request
 
     def new
@@ -27,15 +25,14 @@ module SamlIdp
       render :template => "saml_idp/idp/new"
     end
 
-    protected
+    def idp_authenticate(email, password)
+      raise NotImplementedError
+    end
+    protected :idp_authenticate
 
-      def idp_authenticate(email, password)
-        raise "Not implemented"
-      end
-
-      def idp_make_saml_response(person)
-        raise "Not implemented"
-      end
-
+    def idp_make_saml_response(person)
+      raise NotImplementedError
+    end
+    protected :idp_make_saml_response
   end
 end
