@@ -1,3 +1,4 @@
+require 'saml_idp/xml_security'
 module SamlIdp
   class Request
     def self.from_deflated_request(raw)
@@ -6,19 +7,16 @@ module SamlIdp
         zstream.finish
         zstream.close
       end
-      from_string(inflated)
+      new(inflated)
     end
 
-    def self.from_string(raw)
-      new Hash.from_xml(raw)
-    rescue REXML::ParseException
-      new
-    end
+    attr_accessor :raw_xml
 
-    attr_accessor :hash_xml
+    delegate :config, to: :SamlIdp
+    delegate :xpath, to: :document
 
-    def initialize(hash_xml = {})
-      self.hash_xml = hash_xml
+    def initialize(raw_xml = "")
+      self.raw_xml = raw_xml
     end
 
     def request_id
@@ -30,7 +28,47 @@ module SamlIdp
     end
 
     def authn_request
-      hash_xml.fetch("AuthnRequest") { {} }
+      xpath("//samlp:AuthnRequest", samlp: samlp).first
+    end
+
+    def valid_signature?
+      signed_document.validate fingerprint, true
+    end
+
+    def signed_document
+      @signed_document ||= XMLSecurity::SignedDocument.new(raw_xml)
+    end
+
+    def document
+      @document ||= Nokogiri::XML::Document.parse(raw_xml)
+    end
+
+    def fingerprint
+      if service_provider.respond_to?(:fingerprint)
+        service_provider.fingerprint
+      elsif service_provider.respond_to?(:[])
+        service_provider[:fingerprint] || service_provider["fingerprint"]
+      end
+    end
+
+    def service_provider
+      @service_provider ||= service_provider_finder[issuer] # TODO Wrap
+    end
+
+    def service_provider_finder
+      config.service_provider_finder.call(issuer)
+    end
+
+    def samlp
+      Saml::XML::Namespaces::PROTOCOL
+    end
+
+    def assertion
+      Saml::XML::Namespaces::ASSERTION
+    end
+
+    def issuer
+      xpath("//saml:Issuer", saml: assertion).first.try :content
     end
   end
 end
