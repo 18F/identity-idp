@@ -27,7 +27,10 @@ module SamlIdp
     end
 
     def refresh_metadata
-      Nokogiri::XML::Document.parse request_metadata
+    end
+
+    def fresh_metadata_document
+      Saml::XML::Document.parse request_metadata
     end
 
     def request_metadata
