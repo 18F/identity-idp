@@ -1,4 +1,5 @@
 require 'saml_idp/xml_security'
+require 'saml_idp/service_provider'
 module SamlIdp
   class Request
     def self.from_deflated_request(raw)
@@ -32,43 +33,23 @@ module SamlIdp
     end
 
     def valid_signature?
-      if should_validate_signature?
-        signed_document.validate(fingerprint, true)
-      else
-        true
-      end
-    end
-
-    def should_validate_signature?
-      !!xpath("//ds:Signature", ds: signature_namespace).first
-    end
-
-    def signed_document
-      @signed_document ||= XMLSecurity::SignedDocument.new(raw_xml)
+      service_provider.valid_signature? document
     end
 
     def document
-      @document ||= Nokogiri::XML::Document.parse(raw_xml)
-    end
-
-    def fingerprint
-      if service_provider.respond_to?(:fingerprint)
-        service_provider.fingerprint
-      elsif service_provider.respond_to?(:[])
-        service_provider[:fingerprint] || service_provider["fingerprint"]
-      end
+      @document ||= Saml::XML::Document.parse(raw_xml)
     end
 
     def service_provider?
-      !!service_provider
+      service_provider.valid?
     end
 
     def service_provider
-      @service_provider ||= service_provider_finder[issuer] # TODO Wrap
+      @service_provider ||= ServiceProvider.new(service_provider_finder[issuer])
     end
 
     def service_provider_finder
-      config.service_provider_finder
+      config.service_provider.finder
     end
 
     def samlp
