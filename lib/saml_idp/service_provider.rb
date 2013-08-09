@@ -23,14 +23,20 @@ module SamlIdp
     end
 
     def refresh_metadata
-      fresh = fresh_metadata_document
-      if valid_signature?(fresh)
+      fresh = fresh_incoming_metadata
+      if valid_signature?(fresh.document)
+        metadata_persister[fresh]
       end
     end
 
-    def fresh_metadata_document
-      Saml::XML::Document.parse request_metadata
+    def metadata_perisister
+      config.service_provider.metadata_persister
     end
+
+    def fresh_incoming_metadata
+      IncomingMetadata.new request_metadata
+    end
+    private :fresh_incoming_metadata
 
     def request_metadata
       HTTParty.get(metadata_url).body
