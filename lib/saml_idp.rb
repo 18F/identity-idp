@@ -31,6 +31,9 @@ module Saml
       ASSERTION = "urn:oasis:names:tc:SAML:2.0:assertion"
       SIGNATURE = "http://www.w3.org/2000/09/xmldsig#"
       PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol"
+      module NameFormats
+        URI = "urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+      end
     end
 
     class Document < Nokogiri::XML::Document
