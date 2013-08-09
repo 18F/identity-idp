@@ -45,7 +45,6 @@ module SamlIdp
           end
       end
     end
-    alias_method :rebuild, :fresh
     alias_method :raw, :fresh
 
     def build_key_descriptor(el)

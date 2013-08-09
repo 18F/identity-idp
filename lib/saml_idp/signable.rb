@@ -3,7 +3,8 @@
 #   * raw
 #   * digest
 #   * algorithm
-#   * rebuild
+require 'saml_idp/signed_info_builder'
+require 'saml_idp/signature_builder'
 module SamlIdp
   module Signable
     def self.included(base)
@@ -14,7 +15,7 @@ module SamlIdp
     def signed
       generated_reference_id do
         with_signature do
-          send(self.class.rebuild_method)
+          send(self.class.raw_method)
         end
       end
     end
@@ -121,7 +122,6 @@ module SamlIdp
           instance_variable_get("@#{name}") || default
         end
       end
-      module_method :rebuild
       module_method :raw
       module_method :digest
       module_method :algorithm
