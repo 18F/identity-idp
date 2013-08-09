@@ -27,6 +27,9 @@ module SamlIdp
     end
 
     def refresh_metadata
+      fresh = fresh_metadata_document
+      if valid_signature?(fresh)
+      end
     end
 
     def fresh_metadata_document
