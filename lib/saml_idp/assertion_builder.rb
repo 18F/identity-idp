@@ -56,7 +56,6 @@ module SamlIdp
           end
         end
     end
-    alias_method :rebuild, :fresh
     alias_method :raw, :fresh
     private :fresh
 

@@ -1,7 +1,5 @@
 require 'saml_idp/assertion_builder'
-require 'saml_idp/signed_info_builder'
 require 'saml_idp/response_builder'
-require 'saml_idp/signature_builder'
 module SamlIdp
   class SamlResponse
     attr_accessor :assertion_with_signature

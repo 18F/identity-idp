@@ -13,15 +13,15 @@ module SamlIdp
     end
 
     def friendly_name
-      soruce[:friendly_name]
+      source[:friendly_name]
     end
 
     def name_format
-      source[:name_format] || "urn:oasis:names:tc:SAML:2.0:attrname-format:uri"
+      source[:name_format] || Saml::XML::Namespaces::NameFormats::URI
     end
 
     def values
-      source[:values]
+      Array(source[:values])
     end
   end
 end

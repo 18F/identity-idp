@@ -4,6 +4,9 @@ require 'spec_helper'
 describe SamlIdp::Controller do
   include SamlIdp::Controller
 
+  def render(*)
+  end
+
   def params
     @params ||= {}
   end

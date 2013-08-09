@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
      "MIT-LICENSE",
      "README.md",
      "Gemfile",
-     "ruby-saml-idp.gemspec"
+     "saml_idp.gemspec"
   ]
   s.test_files = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency('activesupport')
   s.add_dependency('uuid')
   s.add_dependency('builder')
+  s.add_dependency('httparty')
 
   s.add_development_dependency "rake"
   # s.add_development_dependency "rcov"
@@ -32,5 +33,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency "ruby-saml"
   s.add_development_dependency("rails", "~> 3.2")
   s.add_development_dependency("capybara")
+  s.add_development_dependency("timecop")
 end
 

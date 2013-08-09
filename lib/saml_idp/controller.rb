@@ -1,24 +1,29 @@
 # encoding: utf-8
+require 'openssl'
+require 'base64'
+require 'time'
+require 'uuid'
+require 'saml_idp/request'
 module SamlIdp
   module Controller
-    require 'openssl'
-    require 'base64'
-    require 'time'
-    require 'uuid'
+    extend ActiveSupport::Concern
+
+    included do
+      helper_method :saml_acs_url if respond_to? :helper_method
+    end
 
     attr_accessor :algorithm
-    attr_accessor :saml_acs_url, :saml_request_id, :saml_request
+    attr_accessor :saml_request
 
     protected
 
-    def validate_saml_request(saml_request = params[:SAMLRequest])
-      decode_SAMLRequest(saml_request)
+    def validate_saml_request(raw_saml_request = params[:SAMLRequest])
+      decode_SAMLRequest(raw_saml_request)
+      render nothing: true, status: :forbidden unless valid_service_provider?
     end
 
-    def decode_SAMLRequest(saml_request)
-      self.saml_request = inflate_request saml_request
-      self.saml_request_id = authn_request_hash["ID"]
-      self.saml_acs_url = authn_request_hash["AssertionConsumerServiceURL"]
+    def decode_SAMLRequest(raw_saml_request)
+      self.saml_request = Request.from_deflated_request(raw_saml_request)
     end
 
     def encode_SAMLResponse(name_id, opts = {})
@@ -38,26 +43,17 @@ module SamlIdp
       ).build
     end
 
-    def inflate_request(raw_request)
-      zstream  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
-      zstream.inflate(Base64.decode64(raw_request)).tap do
-        zstream.finish
-        zstream.close
-      end
+    def valid_service_provider?
+      saml_request.service_provider? &&
+        saml_request.valid_signature?
     end
 
-    def authn_request_hash
-      saml_request_hash.fetch("AuthnRequest") { {} }
+    def saml_request_id
+      saml_request.request_id
     end
 
-    def saml_request_hash
-      if saml_request
-        @saml_request_hash ||= Hash.from_xml(saml_request)
-      else
-        {}
-      end
-    rescue REXML::ParseException
-      nil
+    def saml_acs_url
+      saml_request.acs_url
     end
 
     def get_saml_response_id

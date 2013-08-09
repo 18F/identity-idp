@@ -16,10 +16,10 @@ module SamlIdp
       builder = Builder::XmlMarkup.new
       generated_reference_id do
         builder.EntityDescriptor ID: reference_string,
-          "xmlns:saml" => "urn:oasis:names:tc:SAML:2.0:assertion",
-          "xmlns:ds" => "http://www.w3.org/2000/09/xmldsig#",
-          entityID: entity_id,
-          xmlns: "urn:oasis:names:tc:SAML:2.0:metadata" do |entity|
+          xmlns: Saml::XML::Namespaces::METADATA,
+          "xmlns:saml" => Saml::XML::Namespaces::ASSERTION,
+          "xmlns:ds" => Saml::XML::Namespaces::SIGNATURE,
+          entityID: entity_id do |entity|
             sign entity
             build_organization entity
             build_contact entity
@@ -45,12 +45,11 @@ module SamlIdp
           end
       end
     end
-    alias_method :rebuild, :fresh
     alias_method :raw, :fresh
 
     def build_key_descriptor(el)
       el.KeyDescriptor use: "signing" do |key_descriptor|
-        key_descriptor.KeyInfo xmlns: "http://www.w3.org/2000/09/xmldsig#" do |key_info|
+        key_descriptor.KeyInfo xmlns: Saml::XML::Namespaces::SIGNATURE do |key_info|
           key_info.X509Data do |x509|
             x509.X509Certificate x509_certificate
           end
