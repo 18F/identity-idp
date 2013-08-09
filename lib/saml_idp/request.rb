@@ -14,7 +14,9 @@ module SamlIdp
     attr_accessor :raw_xml
 
     delegate :config, to: :SamlIdp
+    private :config
     delegate :xpath, to: :document
+    private :xpath
 
     def initialize(raw_xml = "")
       self.raw_xml = raw_xml
@@ -28,16 +30,8 @@ module SamlIdp
       authn_request["AssertionConsumerServiceURL"]
     end
 
-    def authn_request
-      xpath("//samlp:AuthnRequest", samlp: samlp).first
-    end
-
     def valid_signature?
       service_provider.valid_signature? document
-    end
-
-    def document
-      @document ||= Saml::XML::Document.parse(raw_xml)
     end
 
     def service_provider?
@@ -48,24 +42,38 @@ module SamlIdp
       @service_provider ||= ServiceProvider.new(service_provider_finder[issuer])
     end
 
-    def service_provider_finder
-      config.service_provider.finder
+    def issuer
+      xpath("//saml:Issuer", saml: assertion).first.try :content
     end
+
+    def document
+      @document ||= Saml::XML::Document.parse(raw_xml)
+    end
+    private :document
+
+    def authn_request
+      xpath("//samlp:AuthnRequest", samlp: samlp).first
+    end
+    private :authn_request
 
     def samlp
       Saml::XML::Namespaces::PROTOCOL
     end
+    private :samlp
 
     def assertion
       Saml::XML::Namespaces::ASSERTION
     end
+    private :assertion
 
     def signature_namespace
       Saml::XML::Namespaces::SIGNATURE
     end
+    private :signature_namespace
 
-    def issuer
-      xpath("//saml:Issuer", saml: assertion).first.try :content
+    def service_provider_finder
+      config.service_provider.finder
     end
+    private :service_provider_finder
   end
 end
