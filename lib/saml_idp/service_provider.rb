@@ -21,23 +21,29 @@ module SamlIdp
     end
 
     def should_validate_signature?
-      current_metadata.sign_assertions?
+      current_metadata.respond_to?(:sign_assertions?) && current_metadata.sign_assertions?
     end
 
     def refresh_metadata
       fresh = fresh_incoming_metadata
       if valid_signature?(fresh.document)
-        metadata_persister[identifier, fresh].tap do
-          @current_metadata = nil
-        end
+        metadata_persister[identifier, fresh]
+        @current_metadata = nil
+        fresh
       end
     end
 
     def current_metadata
-      @current_metadata ||= begin
-                              PersistedMetadata.new(metadata_getter[identifier, self])
-                            end
+      @current_metadata ||= get_current_or_build
     end
+
+    def get_current_or_build
+      persisted = metadata_getter[identifier, self]
+      if persisted.is_a? Hash
+        PersistedMetadata.new(persisted)
+      end
+    end
+    private :get_current_or_build
 
     def metadata_getter
       config.service_provider.persisted_metadata_getter
@@ -55,7 +61,7 @@ module SamlIdp
     private :fresh_incoming_metadata
 
     def request_metadata
-      HTTParty.get(metadata_url).body
+      metadata_url.present? ? HTTParty.get(metadata_url).body : ""
     end
     private :request_metadata
   end
