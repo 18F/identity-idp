@@ -4,6 +4,7 @@ require 'saml_idp/incoming_metadata'
 module SamlIdp
   class ServiceProvider
     include Attributeable
+    attribute :identifier
     attribute :fingerprint
     attribute :metadata_url
 
