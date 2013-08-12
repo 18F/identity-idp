@@ -34,7 +34,7 @@ module SamlIdp
           assertion.Issuer issuer_uri
           sign assertion
           assertion.Subject do |subject|
-            subject.NameID name_id, Format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+            subject.NameID name_id, Format: name_id_format[:name]
             subject.SubjectConfirmation Method: Saml::XML::Namespaces::Methods::BEARER do |confirmation|
               confirmation.SubjectConfirmationData "", InResponseTo: saml_request_id,
                 NotOnOrAfter: not_on_or_after_subject,
@@ -49,10 +49,10 @@ module SamlIdp
           assertion.AttributeStatement do |attr_statement|
             config.attributes.each do |friendly_name, attrs|
               attrs = (attrs || {}).with_indifferent_access
-              attr_statement.Attribute Name: attrs[:name],
+              attr_statement.Attribute Name: attrs[:name] || friendly_name,
                 NameFormat: attrs[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI,
-                FriendlyName: friendly_name do |attr|
-                  values = get_values_for attrs.merge({ friendly_name: friendly_name })
+                FriendlyName: friendly_name.to_s do |attr|
+                  values = get_values_for friendly_name, attrs[:getter]
                   values.each do |val|
                     attr.AttributeValue val.to_s
                   end
@@ -69,18 +69,18 @@ module SamlIdp
     alias_method :raw, :fresh
     private :fresh
 
-    def get_values_for(attrs)
+    def get_values_for(friendly_name, getter)
       result = nil
-      if attrs[:getter].present?
-        if attrs[:getter].respond_to?(:call)
-          result = attrs[:getter].call(principal)
+      if getter.present?
+        if getter.respond_to?(:call)
+          result = getter.call(principal)
         else
-          message = attrs[:getter].to_s.underscore
-          result = principal.respond_to?(message) ? principal.public_send(message) : []
+          message = getter.to_s.underscore
+          result = principal.public_send(message) if principal.respond_to?(message)
         end
-      elsif attrs[:getter].nil?
-        message = attrs[:friendly_name].to_s.underscore
-        result = principal.respond_to?(message) ? principal.public_send(message) : []
+      elsif getter.nil?
+        message = friendly_name.to_s.underscore
+        result = principal.public_send(message) if principal.respond_to?(message)
       end
       Array(result)
     end
@@ -92,7 +92,7 @@ module SamlIdp
     private :name_id
 
     def name_id_getter
-      getter = config.name_id.getter
+      getter = name_id_format[:getter]
       if getter.respond_to? :call
         getter
       else
@@ -100,6 +100,11 @@ module SamlIdp
       end
     end
     private :name_id_getter
+
+    def name_id_format
+      @name_id_format ||= NameIdFormatter.new(config.name_id.formats).chosen
+    end
+    private :name_id_format
 
     def reference_string
       "_#{reference_id}"
