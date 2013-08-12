@@ -10,7 +10,7 @@ module SamlIdp
     it { should respond_to :reference_id_generator }
     it { should respond_to :attribute_service_location }
     it { should respond_to :single_service_post_location }
-    it { should respond_to :name_id_formats }
+    it { should respond_to :name_id }
     it { should respond_to :attributes }
     it { should respond_to :service_provider }
 

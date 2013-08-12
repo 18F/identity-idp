@@ -26,7 +26,7 @@ module SamlIdp
       self.saml_request = Request.from_deflated_request(raw_saml_request)
     end
 
-    def encode_SAMLResponse(name_id, opts = {})
+    def encode_SAMLResponse(principal, opts = {})
       response_id, reference_id = get_saml_response_id, get_saml_reference_id
       audience_uri = opts[:audience_uri] || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
       issuer_uri = opts[:issuer_uri] || (defined?(request) && request.url) || "http://example.com"
@@ -35,7 +35,7 @@ module SamlIdp
         reference_id,
         response_id,
         issuer_uri,
-        name_id,
+        principal,
         audience_uri,
         saml_request_id,
         saml_acs_url,

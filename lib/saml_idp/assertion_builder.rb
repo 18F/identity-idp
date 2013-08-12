@@ -7,7 +7,7 @@ module SamlIdp
     include Signable
     attr_accessor :reference_id
     attr_accessor :issuer_uri
-    attr_accessor :name_id
+    attr_accessor :principal
     attr_accessor :audience_uri
     attr_accessor :saml_request_id
     attr_accessor :saml_acs_url
@@ -15,10 +15,10 @@ module SamlIdp
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, name_id, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
-      self.name_id = name_id
+      self.principal = principal
       self.audience_uri = audience_uri
       self.saml_request_id = saml_request_id
       self.saml_acs_url = saml_acs_url
@@ -60,6 +60,38 @@ module SamlIdp
     end
     alias_method :raw, :fresh
     private :fresh
+
+    def get_values_for(attrs)
+      result = nil
+      if attrs[:getter].present?
+        if attrs[:getter].respond_to?(:call)
+          result = attrs[:getter].call(principal)
+        else
+          message = attrs[:getter].to_s.underscore
+          result = principal.respond_to?(message) ? principal.public_send(message) : []
+        end
+      elsif attrs[:getter].nil?
+        message = attrs[:friendly_name].to_s.underscore
+        result = principal.respond_to?(message) ? principal.public_send(message) : []
+      end
+      Array(result)
+    end
+    private :get_values_for
+
+    def name_id
+      name_id_getter.call principal
+    end
+    private :name_id
+
+    def name_id_getter
+      getter = config.name_id.getter
+      if getter.respond_to? :call
+        getter
+      else
+        ->(principal) { principal.public_send getter.to_s }
+      end
+    end
+    private :name_id_getter
 
     def reference_string
       "_#{reference_id}"

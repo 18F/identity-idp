@@ -110,12 +110,12 @@ module SamlIdp
     private :entity_id
 
     def protocol_enumeration
-      "urn:oasis:names:tc:SAML:2.0:protocol"
+      Saml::XML::Namespaces::PROTOCOL
     end
     private :protocol_enumeration
 
     def attributes
-      @attributes ||= configurator.attributes.inject([]) do |(key,opts), list|
+      @attributes ||= configurator.attributes.inject([]) do |list, (key, opts)|
         opts[:friendly_name] = key
         list << AttributeDecorator.new(opts)
         list
@@ -124,7 +124,7 @@ module SamlIdp
     private :attributes
 
     def name_id_formats
-      @name_id_formats ||= NameIdFormatter.new(configurator.name_id_formats).samlize
+      @name_id_formats ||= NameIdFormatter.new(configurator.name_id.formats).samlize
     end
     private :name_id_formats
 

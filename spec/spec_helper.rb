@@ -21,6 +21,19 @@ RSpec.configure do |config|
 
   config.include SamlRequestMacros
   config.include SecurityHelpers
+
+  config.before do
+    SamlIdp.configure do |c|
+      c.attributes = {
+        emailAddress: {
+          name: "email-address",
+          getter: ->(p) { "foo@example.com" }
+        }
+      }
+
+      c.name_id.getter = ->(principal) { "foo@example.com" }
+    end
+  end
 end
 
 Capybara.default_host = "https://app.example.com"
