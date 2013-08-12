@@ -16,6 +16,16 @@ module SamlIdp
       @document ||= Saml::XML::Document.parse raw
     end
 
+    def sign_assertions
+      doc = xpath(
+        "//md:SPSSODescriptor",
+        ds: signature_namespace,
+        md: metadata_namespace
+      ).first
+      doc ? !!doc["WantAssertionsSigned"] : false
+    end
+    hashable :sign_assertions
+
     def display_name
       role_descriptor_document.present? ? role_descriptor_document["ServiceDisplayName"] : ""
     end
