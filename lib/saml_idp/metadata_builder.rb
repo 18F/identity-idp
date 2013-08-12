@@ -133,8 +133,15 @@ module SamlIdp
     end
     private :raw_algorithm
 
+    def x509_certificate
+      SamlIdp.config.x509_certificate
+      .to_s
+      .gsub(/-----BEGIN CERTIFICATE-----/,"")
+      .gsub(/-----END CERTIFICATE-----/,"")
+      .gsub(/\n/, "")
+    end
+
     %w[
-      x509_certificate
       support_email
       organization_name
       organization_url
