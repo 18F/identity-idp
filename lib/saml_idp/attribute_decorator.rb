@@ -17,7 +17,7 @@ module SamlIdp
     end
 
     def name_format
-      source[:name_format] || Saml::XML::Namespaces::NameFormats::URI
+      source[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI
     end
 
     def values

@@ -13,6 +13,8 @@ module SamlIdp
     attr_accessor :saml_acs_url
     attr_accessor :raw_algorithm
 
+    delegate :config, to: :SamlIdp
+
     def initialize(reference_id, issuer_uri, name_id, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
@@ -25,15 +27,15 @@ module SamlIdp
 
     def fresh
       builder = Builder::XmlMarkup.new
-      builder.Assertion xmlns: "urn:oasis:names:tc:SAML:2.0:assertion",
+      builder.Assertion xmlns: Saml::XML::Namespaces::ASSERTION,
         ID: reference_string,
         IssueInstant: now_iso,
         Version: "2.0" do |assertion|
           assertion.Issuer issuer_uri
           sign assertion
           assertion.Subject do |subject|
-            subject.NameID name_id, Format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-            subject.SubjectConfirmation Method: "urn:oasis:names:tc:SAML:2.0:cm:bearer" do |confirmation|
+            subject.NameID name_id, Format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+            subject.SubjectConfirmation Method: Saml::XML::Namespaces::Methods::BEARER do |confirmation|
               confirmation.SubjectConfirmationData "", InResponseTo: saml_request_id,
                 NotOnOrAfter: not_on_or_after_subject,
                 Recipient: saml_acs_url
@@ -51,7 +53,7 @@ module SamlIdp
           end
           assertion.AuthnStatement AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
             statement.AuthnContext do |context|
-              context.AuthnContextClassRef "urn:federation:authentication:windows"
+              context.AuthnContextClassRef Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
             end
           end
         end
