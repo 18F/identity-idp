@@ -7,16 +7,18 @@ module SamlIdp
     include Signable
     attr_accessor :reference_id
     attr_accessor :issuer_uri
-    attr_accessor :name_id
+    attr_accessor :principal
     attr_accessor :audience_uri
     attr_accessor :saml_request_id
     attr_accessor :saml_acs_url
     attr_accessor :raw_algorithm
 
-    def initialize(reference_id, issuer_uri, name_id, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
+    delegate :config, to: :SamlIdp
+
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
-      self.name_id = name_id
+      self.principal = principal
       self.audience_uri = audience_uri
       self.saml_request_id = saml_request_id
       self.saml_acs_url = saml_acs_url
@@ -25,15 +27,15 @@ module SamlIdp
 
     def fresh
       builder = Builder::XmlMarkup.new
-      builder.Assertion xmlns: "urn:oasis:names:tc:SAML:2.0:assertion",
+      builder.Assertion xmlns: Saml::XML::Namespaces::ASSERTION,
         ID: reference_string,
         IssueInstant: now_iso,
         Version: "2.0" do |assertion|
           assertion.Issuer issuer_uri
           sign assertion
           assertion.Subject do |subject|
-            subject.NameID name_id, Format: "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress"
-            subject.SubjectConfirmation Method: "urn:oasis:names:tc:SAML:2.0:cm:bearer" do |confirmation|
+            subject.NameID name_id, Format: name_id_format[:name]
+            subject.SubjectConfirmation Method: Saml::XML::Namespaces::Methods::BEARER do |confirmation|
               confirmation.SubjectConfirmationData "", InResponseTo: saml_request_id,
                 NotOnOrAfter: not_on_or_after_subject,
                 Recipient: saml_acs_url
@@ -45,19 +47,64 @@ module SamlIdp
             end
           end
           assertion.AttributeStatement do |attr_statement|
-            attr_statement.Attribute Name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress" do |attr|
-              attr.AttributeValue name_id
+            config.attributes.each do |friendly_name, attrs|
+              attrs = (attrs || {}).with_indifferent_access
+              attr_statement.Attribute Name: attrs[:name] || friendly_name,
+                NameFormat: attrs[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI,
+                FriendlyName: friendly_name.to_s do |attr|
+                  values = get_values_for friendly_name, attrs[:getter]
+                  values.each do |val|
+                    attr.AttributeValue val.to_s
+                  end
+              end
             end
           end
           assertion.AuthnStatement AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
             statement.AuthnContext do |context|
-              context.AuthnContextClassRef "urn:federation:authentication:windows"
+              context.AuthnContextClassRef Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
             end
           end
         end
     end
     alias_method :raw, :fresh
     private :fresh
+
+    def get_values_for(friendly_name, getter)
+      result = nil
+      if getter.present?
+        if getter.respond_to?(:call)
+          result = getter.call(principal)
+        else
+          message = getter.to_s.underscore
+          result = principal.public_send(message) if principal.respond_to?(message)
+        end
+      elsif getter.nil?
+        message = friendly_name.to_s.underscore
+        result = principal.public_send(message) if principal.respond_to?(message)
+      end
+      Array(result)
+    end
+    private :get_values_for
+
+    def name_id
+      name_id_getter.call principal
+    end
+    private :name_id
+
+    def name_id_getter
+      getter = name_id_format[:getter]
+      if getter.respond_to? :call
+        getter
+      else
+        ->(principal) { principal.public_send getter.to_s }
+      end
+    end
+    private :name_id_getter
+
+    def name_id_format
+      @name_id_format ||= NameIdFormatter.new(config.name_id.formats).chosen
+    end
+    private :name_id_format
 
     def reference_string
       "_#{reference_id}"

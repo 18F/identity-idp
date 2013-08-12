@@ -11,7 +11,6 @@ module SamlIdp
     attr_accessor :reference_id_generator
     attr_accessor :attribute_service_location
     attr_accessor :single_service_post_location
-    attr_accessor :name_id_formats
     attr_accessor :attributes
     attr_accessor :service_provider
 
@@ -22,8 +21,15 @@ module SamlIdp
       self.reference_id_generator = ->() { UUID.generate }
       self.service_provider = OpenStruct.new
       self.service_provider.finder = ->(_) { Default::SERVICE_PROVIDER }
-      self.service_provider.metadata_persister = ->(settings) {  }
+      self.service_provider.metadata_persister = ->(id, settings) {  }
+      self.service_provider.persisted_metadata_getter = ->(id, service_provider) {  }
       self.attributes = {}
+    end
+
+    # formats
+    # getter
+    def name_id
+      @name_id ||= OpenStruct.new
     end
 
     def technical_contact

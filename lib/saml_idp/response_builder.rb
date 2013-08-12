@@ -35,12 +35,12 @@ module SamlIdp
         Version: "2.0",
         IssueInstant: now_iso,
         Destination: saml_acs_url,
-        Consent: "urn:oasis:names:tc:SAML:2.0:consent:unspecified",
+        Consent: Saml::XML::Namespaces::Consents::UNSPECIFIED,
         InResponseTo: saml_request_id,
-        "xmlns:samlp" => "urn:oasis:names:tc:SAML:2.0:protocol" do |response|
-          response.Issuer issuer_uri, xmlns: "urn:oasis:names:tc:SAML:2.0:assertion"
+        "xmlns:samlp" => Saml::XML::Namespaces::PROTOCOL do |response|
+          response.Issuer issuer_uri, xmlns: Saml::XML::Namespaces::ASSERTION
           response.tag! "samlp:Status" do |status|
-            status.tag! "samlp:StatusCode", Value: "urn:oasis:names:tc:SAML:2.0:status:Success"
+            status.tag! "samlp:StatusCode", Value: Saml::XML::Namespaces::Statuses::SUCCESS
           end
           response << assertion_and_signature
         end

@@ -26,21 +26,25 @@ module SamlIdp
       self.saml_request = Request.from_deflated_request(raw_saml_request)
     end
 
-    def encode_SAMLResponse(name_id, opts = {})
+    def encode_SAMLResponse(principal, opts = {})
       response_id, reference_id = get_saml_response_id, get_saml_reference_id
       audience_uri = opts[:audience_uri] || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
-      issuer_uri = opts[:issuer_uri] || (defined?(request) && request.url) || "http://example.com"
+      opt_issuer_uri = opts[:issuer_uri] || issuer_uri
 
       SamlResponse.new(
         reference_id,
         response_id,
         issuer_uri,
-        name_id,
+        principal,
         audience_uri,
         saml_request_id,
         saml_acs_url,
         algorithm
       ).build
+    end
+
+    def issuer_uri
+      issuer_uri = (defined?(request) && request.url.to_s.split("?").first) || "http://example.com"
     end
 
     def valid_service_provider?

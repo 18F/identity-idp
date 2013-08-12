@@ -13,7 +13,7 @@ module SamlIdp
 
     its(:name) { should be_nil }
     its(:friendly_name) { should be_nil }
-    its(:name_format) { should == Saml::XML::Namespaces::NameFormats::URI }
+    its(:name_format) { should == Saml::XML::Namespaces::Formats::Attr::URI }
     its(:values) { should == [] }
 
     describe "with values set" do
