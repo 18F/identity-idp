@@ -124,7 +124,7 @@ module SamlIdp
     private :attributes
 
     def name_id_formats
-      @name_id_formats ||= NameIdFormatter.new(configurator.name_id.formats).samlize
+      @name_id_formats ||= NameIdFormatter.new(configurator.name_id.formats).all
     end
     private :name_id_formats
 

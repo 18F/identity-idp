@@ -31,7 +31,11 @@ RSpec.configure do |config|
         }
       }
 
-      c.name_id.getter = ->(principal) { "foo@example.com" }
+      c.name_id.formats = {
+        "1.1" => {
+          email_address: ->(p) { "foo@example.com" }
+        }
+      }
     end
   end
 end
