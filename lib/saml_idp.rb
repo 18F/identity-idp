@@ -32,6 +32,14 @@ module Saml
       SIGNATURE = "http://www.w3.org/2000/09/xmldsig#"
       PROTOCOL = "urn:oasis:names:tc:SAML:2.0:protocol"
 
+      module Statuses
+        SUCCESS = "urn:oasis:names:tc:SAML:2.0:status:Success"
+      end
+
+      module Consents
+        UNSPECIFIED = "urn:oasis:names:tc:SAML:2.0:consent:unspecified"
+      end
+
       module AuthnContext
         module ClassRef
           PASSWORD = "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
