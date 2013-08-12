@@ -47,8 +47,16 @@ module SamlIdp
             end
           end
           assertion.AttributeStatement do |attr_statement|
-            attr_statement.Attribute Name: "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress" do |attr|
-              attr.AttributeValue name_id
+            config.attributes.each do |friendly_name, attrs|
+              attrs = (attrs || {}).with_indifferent_access
+              attr_statement.Attribute Name: attrs[:name],
+                NameFormat: attrs[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI,
+                FriendlyName: friendly_name do |attr|
+                  values = get_values_for attrs.merge({ friendly_name: friendly_name })
+                  values.each do |val|
+                    attr.AttributeValue val.to_s
+                  end
+              end
             end
           end
           assertion.AuthnStatement AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
