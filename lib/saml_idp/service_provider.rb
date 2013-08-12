@@ -1,6 +1,7 @@
 require 'httparty'
 require 'saml_idp/attributeable'
 require 'saml_idp/incoming_metadata'
+require 'saml_idp/persisted_metadata'
 module SamlIdp
   class ServiceProvider
     include Attributeable
@@ -20,19 +21,33 @@ module SamlIdp
     end
 
     def should_validate_signature?
-      false
+      current_metadata.sign_assertions?
     end
 
     def refresh_metadata
       fresh = fresh_incoming_metadata
       if valid_signature?(fresh.document)
-        metadata_persister[fresh]
+        metadata_persister[identifier, fresh].tap do
+          @current_metadata = nil
+        end
       end
     end
 
-    def metadata_perisister
+    def current_metadata
+      @current_metadata ||= begin
+                              PersistedMetadata.new(metadata_getter[identifier, self])
+                            end
+    end
+
+    def metadata_getter
+      config.service_provider.persisted_metadata_getter
+    end
+    private :metadata_getter
+
+    def metadata_persister
       config.service_provider.metadata_persister
     end
+    private :metadata_persister
 
     def fresh_incoming_metadata
       IncomingMetadata.new request_metadata
