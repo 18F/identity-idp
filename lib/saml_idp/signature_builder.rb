@@ -22,6 +22,10 @@ module SamlIdp
 
     def x509_certificate
       SamlIdp.config.x509_certificate
+      .to_s
+      .gsub(/-----BEGIN CERTIFICATE-----/,"")
+      .gsub(/-----END CERTIFICATE-----/,"")
+      .gsub(/\n/, "")
     end
     private :x509_certificate
 
