@@ -12,6 +12,7 @@ require 'capybara/rails'
 
 require 'ruby-saml'
 require 'saml_idp'
+require 'timecop'
 
 Dir[File.dirname(__FILE__) + "/support/**/*.rb"].each {|f| require f}
 
