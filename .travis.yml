@@ -1,12 +1,9 @@
 rvm:
   - 1.9.3
   - 2.0.0
-branches:
-  only:
-    - master
 notifications:
   email:
     recipients:
-       - lawrence.pit@gmail.com
+       - jon.phenow@sportngin.com
     on_success: change
     on_failure: always
