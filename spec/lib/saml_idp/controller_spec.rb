@@ -27,7 +27,7 @@ describe SamlIdp::Controller do
     let(:principal) { double email_address: "foo@example.com" }
 
     it "should create a SAML Response" do
-      saml_response = encode_SAMLResponse(principal)
+      saml_response = encode_response(principal)
       response = Onelogin::Saml::Response.new(saml_response)
       response.name_id.should == "foo@example.com"
       response.issuer.should == "http://example.com"
@@ -38,7 +38,7 @@ describe SamlIdp::Controller do
     [:sha1, :sha256, :sha384, :sha512].each do |algorithm_name|
       it "should create a SAML Response using the #{algorithm_name} algorithm" do
         self.algorithm = algorithm_name
-        saml_response = encode_SAMLResponse(principal)
+        saml_response = encode_response(principal)
         response = Onelogin::Saml::Response.new(saml_response)
         response.name_id.should == "foo@example.com"
         response.issuer.should == "http://example.com"

@@ -18,15 +18,15 @@ module SamlIdp
     protected
 
     def validate_saml_request(raw_saml_request = params[:SAMLRequest])
-      decode_SAMLRequest(raw_saml_request)
+      decode_request(raw_saml_request)
       render nothing: true, status: :forbidden unless valid_service_provider?
     end
 
-    def decode_SAMLRequest(raw_saml_request)
+    def decode_request(raw_saml_request)
       self.saml_request = Request.from_deflated_request(raw_saml_request)
     end
 
-    def encode_SAMLResponse(principal, opts = {})
+    def encode_response(principal, opts = {})
       response_id, reference_id = get_saml_response_id, get_saml_reference_id
       audience_uri = opts[:audience_uri] || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
       opt_issuer_uri = opts[:issuer_uri] || issuer_uri
