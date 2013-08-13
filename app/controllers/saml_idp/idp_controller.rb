@@ -5,10 +5,14 @@ module SamlIdp
 
     unloadable
     protect_from_forgery
-    before_filter :validate_saml_request
+    before_filter :validate_saml_request, only: [:new, :create]
 
     def new
-      render :template => "saml_idp/idp/new"
+      render template: "saml_idp/idp/new"
+    end
+
+    def show
+      render xml: SamlIdp.metadata.signed
     end
 
     def create
