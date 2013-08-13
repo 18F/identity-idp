@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{SAML IdP (Identity Provider) library in ruby}
   s.date = Time.now.utc.strftime("%Y-%m-%d")
   s.files = Dir.glob("app/**/*") + Dir.glob("lib/**/*") + [
-     "MIT-LICENSE",
+     "LICENSE",
      "README.md",
      "Gemfile",
      "saml_idp.gemspec"
