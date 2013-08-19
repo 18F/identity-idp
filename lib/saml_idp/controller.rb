@@ -44,7 +44,7 @@ module SamlIdp
     end
 
     def issuer_uri
-      issuer_uri = (defined?(request) && request.url.to_s.split("?").first) || "http://example.com"
+      (defined?(request) && request.url.to_s.split("?").first) || "http://example.com"
     end
 
     def valid_service_provider?
