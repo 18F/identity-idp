@@ -30,7 +30,7 @@ module SamlIdp
               build_attribute descriptor
             end
 
-            entity.AttributeAuthorityDescriptor ID: reference_string,
+            entity.AttributeAuthorityDescriptor ID: reference_id_generator.call,
               protocolSupportEnumeration: protocol_enumeration do |authority_descriptor|
               build_key_descriptor authority_descriptor
               build_organization authority_descriptor
