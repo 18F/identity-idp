@@ -21,8 +21,6 @@ module SamlIdp
           "xmlns:ds" => Saml::XML::Namespaces::SIGNATURE,
           entityID: entity_id do |entity|
             sign entity
-            build_organization entity
-            build_contact entity
 
             entity.IDPSSODescriptor protocolSupportEnumeration: protocol_enumeration do |descriptor|
               build_key_descriptor descriptor
@@ -42,6 +40,9 @@ module SamlIdp
               build_name_id_formats authority_descriptor
               build_attribute authority_descriptor
             end
+
+            build_organization entity
+            build_contact entity
           end
       end
     end
