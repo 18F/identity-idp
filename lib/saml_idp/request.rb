@@ -32,7 +32,7 @@ module SamlIdp
     end
 
     def acs_url
-      authn_request["AssertionConsumerServiceURL"]
+      authn_request["AssertionConsumerServiceURL"].to_s
     end
 
     def valid_signature?
