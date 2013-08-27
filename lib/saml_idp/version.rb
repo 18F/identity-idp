@@ -1,4 +1,4 @@
 # encoding: utf-8
 module SamlIdp
-  VERSION = '0.0.6'
+  VERSION = '0.0.7'
 end
