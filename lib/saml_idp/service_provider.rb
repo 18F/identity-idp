@@ -9,6 +9,7 @@ module SamlIdp
     attribute :fingerprint
     attribute :metadata_url
     attribute :validate_signature
+    attribute :acs_url
 
     delegate :config, to: :SamlIdp
 
