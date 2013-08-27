@@ -3,17 +3,19 @@ require 'saml_idp/service_provider'
 module SamlIdp
   class Request
     def self.from_deflated_request(raw)
-      zstream  = Zlib::Inflate.new(-Zlib::MAX_WBITS)
-      decoded = Base64.decode64(raw.to_s)
-      begin
-        inflated = zstream.inflate(decoded).tap do
-          zstream.finish
-          zstream.close
+      if raw
+        decoded = Base64.decode64(raw)
+        zstream = Zlib::Inflate.new(-Zlib::MAX_WBITS)
+        begin
+          inflated = zstream.inflate(decoded).tap do
+            zstream.finish
+            zstream.close
+          end
+        rescue Zlib::DataError # not compressed
+          inflated = decoded
         end
-      rescue Zlib::BufError, Zlib::DataError # not compressed
-        inflated = decoded
-      ensure
-        zstream.close
+      else
+        inflated = ""
       end
       new(inflated)
     end
