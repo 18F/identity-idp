@@ -8,6 +8,7 @@ module SamlIdp
     attribute :identifier
     attribute :fingerprint
     attribute :metadata_url
+    attribute :validate_signature
 
     delegate :config, to: :SamlIdp
 
@@ -21,7 +22,8 @@ module SamlIdp
     end
 
     def should_validate_signature?
-      current_metadata.respond_to?(:sign_assertions?) && current_metadata.sign_assertions?
+      attributes[:validate_signature] ||
+        current_metadata.respond_to?(:sign_assertions?) && current_metadata.sign_assertions?
     end
 
     def refresh_metadata
