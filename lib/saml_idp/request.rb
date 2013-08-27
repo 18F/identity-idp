@@ -39,6 +39,12 @@ module SamlIdp
       authn_request["AssertionConsumerServiceURL"].to_s
     end
 
+    def valid?
+      service_provider? &&
+        valid_signature? &&
+        acs_url.present?
+    end
+
     def valid_signature?
       service_provider.valid_signature? document
     end

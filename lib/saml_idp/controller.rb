@@ -19,7 +19,7 @@ module SamlIdp
 
     def validate_saml_request(raw_saml_request = params[:SAMLRequest])
       decode_request(raw_saml_request)
-      render nothing: true, status: :forbidden unless valid_service_provider?
+      render nothing: true, status: :forbidden unless valid_saml_request?
     end
 
     def decode_request(raw_saml_request)
@@ -47,9 +47,8 @@ module SamlIdp
       (defined?(request) && request.url.to_s.split("?").first) || "http://example.com"
     end
 
-    def valid_service_provider?
-      saml_request.service_provider? &&
-        saml_request.valid_signature?
+    def valid_saml_request?
+      saml_request.valid?
     end
 
     def saml_request_id
