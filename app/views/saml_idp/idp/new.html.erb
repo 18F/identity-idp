@@ -4,6 +4,7 @@
 
 <%= form_tag do %>
   <%= hidden_field_tag("SAMLRequest", params[:SAMLRequest]) %>
+  <%= hidden_field_tag("RelayState", params[:RelayState]) %>
 
   <p>
     <%= label_tag :email %>
