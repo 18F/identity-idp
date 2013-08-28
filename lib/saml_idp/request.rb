@@ -59,7 +59,8 @@ module SamlIdp
     end
 
     def issuer
-      xpath("//saml:Issuer", saml: assertion).first.try :content
+      @content ||= xpath("//saml:Issuer", saml: assertion).first.try(:content)
+      @content if @content.present?
     end
 
     def document

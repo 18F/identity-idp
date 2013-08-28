@@ -28,7 +28,7 @@ module SamlIdp
 
     def encode_response(principal, opts = {})
       response_id, reference_id = get_saml_response_id, get_saml_reference_id
-      audience_uri = opts[:audience_uri] || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
+      audience_uri = opts[:audience_uri] || saml_request.issuer || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
       opt_issuer_uri = opts[:issuer_uri] || issuer_uri
 
       SamlResponse.new(
