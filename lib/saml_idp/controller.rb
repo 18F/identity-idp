@@ -44,7 +44,9 @@ module SamlIdp
     end
 
     def issuer_uri
-      (defined?(request) && request.url.to_s.split("?").first) || "http://example.com"
+      (SamlIdp.config.base_saml_location.present? && SamlIdp.config.base_saml_location) ||
+        (defined?(request) && request.url.to_s.split("?").first) ||
+        "http://example.com"
     end
 
     def valid_saml_request?
