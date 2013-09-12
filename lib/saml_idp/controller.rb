@@ -34,7 +34,7 @@ module SamlIdp
       SamlResponse.new(
         reference_id,
         response_id,
-        issuer_uri,
+        opt_issuer_uri,
         principal,
         audience_uri,
         saml_request_id,
