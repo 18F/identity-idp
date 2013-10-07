@@ -69,8 +69,13 @@ module SamlIdp
     end
     private :secret_key
 
+    def password
+      SamlIdp.config.password
+    end
+    private :password
+
     def encoded
-      key = OpenSSL::PKey::RSA.new(secret_key)
+      key = OpenSSL::PKey::RSA.new(secret_key, password)
       Base64.encode64(key.sign(algorithm.new, raw))
     end
     private :encoded
