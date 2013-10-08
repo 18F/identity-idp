@@ -75,6 +75,7 @@ KEY DATA
 -----END RSA PRIVATE KEY-----
 CERT
 
+  # config.password = "secret_key_password"
   # config.algorithm = :sha256
   # config.organization_name = "Your Organization"
   # config.organization_url = "http://example.com"
