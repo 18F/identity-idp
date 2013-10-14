@@ -25,7 +25,7 @@ module SamlIdp
             entity.IDPSSODescriptor protocolSupportEnumeration: protocol_enumeration do |descriptor|
               build_key_descriptor descriptor
               build_name_id_formats descriptor
-              descriptor.SingleSignOnService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+              descriptor.SingleSignOnService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
                 Location: single_service_post_location
               build_attribute descriptor
             end
@@ -34,7 +34,7 @@ module SamlIdp
               build_key_descriptor authority_descriptor
               build_organization authority_descriptor
               build_contact authority_descriptor
-              authority_descriptor.AttributeService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST",
+              authority_descriptor.AttributeService Binding: "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect",
                 Location: attribute_service_location
               build_name_id_formats authority_descriptor
               build_attribute authority_descriptor
