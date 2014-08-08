@@ -69,6 +69,9 @@ module SamlIdp
       ].map(&:to_s).join(".*")
     end
 
-    its(:signed) { should match all_regex }
+    it "has a valid signed" do
+      subject.signed.should match all_regex
+    end
+
   end
 end

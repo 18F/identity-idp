@@ -7,7 +7,7 @@ module SamlIdp
     let(:base64cert) { document.elements["//ds:X509Certificate"].text }
 
     it "it run validate without throwing NS related exceptions" do
-      document.validate_doc(base64cert, true).should be_false
+      document.validate_doc(base64cert, true).should be_falsey
     end
 
     it "it run validate with throwing NS related exceptions" do
@@ -57,22 +57,22 @@ module SamlIdp
   describe "Algorithms" do
     it "validate using SHA1" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha1, false))
-      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_true
+      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_truthy
     end
 
     it "validate using SHA256" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha256, false))
-      document.validate("28:74:9B:E8:1F:E8:10:9C:A8:7C:A9:C3:E3:C5:01:6C:92:1C:B4:BA").should be_true
+      document.validate("28:74:9B:E8:1F:E8:10:9C:A8:7C:A9:C3:E3:C5:01:6C:92:1C:B4:BA").should be_truthy
     end
 
     it "validate using SHA384" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha384, false))
-      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_true
+      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_truthy
     end
 
     it "validate using SHA512" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha512, false))
-      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_true
+      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_truthy
     end
   end
 
@@ -106,17 +106,17 @@ module SamlIdp
     end
 
     describe "StarfieldTMS" do
-      let(:response) { Onelogin::Saml::Response.new(fixture(:starfield_response)) }
+      let(:response) { ::OneLogin::RubySaml::Response.new(fixture(:starfield_response)) }
 
       before do
-        response.settings = Onelogin::Saml::Settings.new(
+        response.settings = ::OneLogin::RubySaml::Settings.new(
           :idp_cert_fingerprint => "8D:BA:53:8E:A3:B6:F9:F1:69:6C:BB:D9:D8:BD:41:B3:AC:4F:9D:4D"
         )
       end
 
       it "be able to validate a good response" do
         Timecop.freeze Time.parse('2012-11-28 17:55:00 UTC') do
-          response.validate!.should be_true
+          response.validate!.should be_truthy
         end
       end
 
