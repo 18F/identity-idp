@@ -11,10 +11,21 @@ module SamlIdp
     let(:name_format) { nil }
     let(:values) { nil }
 
-    its(:name) { should be_nil }
-    its(:friendly_name) { should be_nil }
-    its(:name_format) { should == Saml::XML::Namespaces::Formats::Attr::URI }
-    its(:values) { should == [] }
+    it "has a valid name" do
+      subject.name.should be_nil
+    end
+
+    it "has a valid friendly_name" do
+      subject.friendly_name.should be_nil
+    end
+
+    it "has a valid name_format" do
+      subject.name_format.should == Saml::XML::Namespaces::Formats::Attr::URI
+    end
+
+    it "has a valid values" do
+      subject.values.should == []
+    end
 
     describe "with values set" do
       let(:name) { "test" }
@@ -22,10 +33,22 @@ module SamlIdp
       let(:name_format) { "some format" }
       let(:values) { :val }
 
-      its(:name) { should == name }
-      its(:friendly_name) { should == friendly_name }
-      its(:name_format) { should == name_format }
-      its(:values) { should == [values] }
+      it "has a valid name" do
+        subject.name.should == name
+      end
+
+      it "has a valid friendly_name" do
+        subject.friendly_name.should == friendly_name
+      end
+
+      it "has a valid name_format" do
+        subject.name_format.should == name_format
+      end
+
+      it "has a valid values" do
+        subject.values.should == [values]
+      end
+
     end
   end
 end
