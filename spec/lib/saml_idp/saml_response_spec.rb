@@ -22,6 +22,8 @@ module SamlIdp
                                  )
     }
 
-    its(:build) { should be_present }
+    it "has a valid build" do
+      subject.build.should be_present
+    end
   end
 end

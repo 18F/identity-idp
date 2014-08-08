@@ -48,7 +48,6 @@ module SamlIdp
       it "has a valid values" do
         subject.values.should == [values]
       end
-
     end
   end
 end

@@ -14,10 +14,22 @@ module SamlIdp
     it { should respond_to :attributes }
     it { should respond_to :service_provider }
 
-    its(:x509_certificate) { should == Default::X509_CERTIFICATE }
-    its(:secret_key) { should == Default::SECRET_KEY }
-    its(:algorithm) { should == :sha1 }
-    its(:reference_id_generator) { should respond_to :call }
+    it "has a valid x509_certificate" do
+      subject.x509_certificate.should == Default::X509_CERTIFICATE
+    end
+
+    it "has a valid secret_key" do
+      subject.secret_key.should == Default::SECRET_KEY
+    end
+
+    it "has a valid algorithm" do
+      subject.algorithm.should == :sha1
+    end
+
+    it "has a valid reference_id_generator" do
+      subject.reference_id_generator.should respond_to :call
+    end
+
 
     it "can call service provider finder" do
       subject.service_provider.finder.should respond_to :call
