@@ -9,6 +9,7 @@ module SamlIdp
     attr_accessor :organization_name
     attr_accessor :organization_url
     attr_accessor :base_saml_location
+    attr_accessor :entity_id
     attr_accessor :reference_id_generator
     attr_accessor :attribute_service_location
     attr_accessor :single_service_post_location
