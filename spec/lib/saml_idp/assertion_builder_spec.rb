@@ -8,6 +8,9 @@ module SamlIdp
     let(:saml_request_id) { "123" }
     let(:saml_acs_url) { "http://saml.acs.url" }
     let(:algorithm) { :sha256 }
+    let(:authn_context_classref) {
+      Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
+    }
     subject { described_class.new(
       reference_id,
       issuer_uri,
@@ -15,7 +18,8 @@ module SamlIdp
       audience_uri,
       saml_request_id,
       saml_acs_url,
-      algorithm
+      algorithm,
+      authn_context_classref
     ) }
 
     it "builds a legit raw XML file" do
