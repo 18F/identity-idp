@@ -12,10 +12,11 @@ module SamlIdp
     attr_accessor :saml_request_id
     attr_accessor :saml_acs_url
     attr_accessor :raw_algorithm
+    attr_accessor :expiry
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, expiry=60*60)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
       self.principal = principal
@@ -23,6 +24,7 @@ module SamlIdp
       self.saml_request_id = saml_request_id
       self.saml_acs_url = saml_acs_url
       self.raw_algorithm = raw_algorithm
+      self.expiry = expiry
     end
 
     def fresh
@@ -127,7 +129,7 @@ module SamlIdp
     private :not_before
 
     def not_on_or_after_condition
-      iso { now + 60 * 60 }
+      iso { now + expiry }
     end
     private :not_on_or_after_condition
 

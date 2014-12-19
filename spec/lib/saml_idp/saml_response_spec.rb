@@ -11,6 +11,7 @@ module SamlIdp
     let(:algorithm) { :sha1 }
     let(:secret_key) { Default::SECRET_KEY }
     let(:x509_certificate) { Default::X509_CERTIFICATE }
+    let(:expiry) { 3 * 60 * 60 }
     subject { described_class.new(reference_id,
                                   response_id,
                                   issuer_uri,
@@ -18,7 +19,8 @@ module SamlIdp
                                   audience_uri,
                                   saml_request_id,
                                   saml_acs_url,
-                                  algorithm
+                                  algorithm,
+                                  expiry
                                  )
     }
 
