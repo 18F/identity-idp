@@ -11,6 +11,10 @@ module SamlIdp
     let(:algorithm) { :sha1 }
     let(:secret_key) { Default::SECRET_KEY }
     let(:x509_certificate) { Default::X509_CERTIFICATE }
+    let(:xauthn) { Default::X509_CERTIFICATE }
+    let(:authn_context_classref) {
+      Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
+    }
     let(:expiry) { 3 * 60 * 60 }
     subject { described_class.new(reference_id,
                                   response_id,
@@ -20,6 +24,7 @@ module SamlIdp
                                   saml_request_id,
                                   saml_acs_url,
                                   algorithm,
+                                  authn_context_classref,
                                   expiry
                                  )
     }

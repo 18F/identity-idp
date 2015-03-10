@@ -13,6 +13,7 @@ module SamlIdp
     attr_accessor :algorithm
     attr_accessor :secret_key
     attr_accessor :x509_certificate
+    attr_accessor :authn_context_classref
     attr_accessor :expiry
 
     def initialize(reference_id,
@@ -23,6 +24,7 @@ module SamlIdp
           saml_request_id,
           saml_acs_url,
           algorithm,
+          authn_context_classref,
           expiry=60*60
           )
       self.reference_id = reference_id
@@ -35,6 +37,7 @@ module SamlIdp
       self.algorithm = algorithm
       self.secret_key = secret_key
       self.x509_certificate = x509_certificate
+      self.authn_context_classref = authn_context_classref
       self.expiry = expiry
     end
 
@@ -60,6 +63,7 @@ module SamlIdp
         saml_request_id,
         saml_acs_url,
         algorithm,
+        authn_context_classref,
         expiry
     end
     private :assertion_builder

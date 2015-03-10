@@ -8,6 +8,9 @@ module SamlIdp
     let(:saml_request_id) { "123" }
     let(:saml_acs_url) { "http://saml.acs.url" }
     let(:algorithm) { :sha256 }
+    let(:authn_context_classref) {
+      Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
+    }
     let(:expiry) { 3*60*60 }
     subject { described_class.new(
       reference_id,
@@ -17,6 +20,7 @@ module SamlIdp
       saml_request_id,
       saml_acs_url,
       algorithm,
+      authn_context_classref,
       expiry
     ) }
 
