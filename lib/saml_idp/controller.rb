@@ -26,6 +26,10 @@ module SamlIdp
       self.saml_request = Request.from_deflated_request(raw_saml_request)
     end
 
+    def authn_context_classref
+      Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
+    end
+
     def encode_response(principal, opts = {})
       response_id, reference_id = get_saml_response_id, get_saml_reference_id
       audience_uri = opts[:audience_uri] || saml_request.issuer || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
@@ -39,7 +43,8 @@ module SamlIdp
         audience_uri,
         saml_request_id,
         saml_acs_url,
-        algorithm
+        algorithm,
+        authn_context_classref
       ).build
     end
 

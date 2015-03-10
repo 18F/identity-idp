@@ -12,10 +12,11 @@ module SamlIdp
     attr_accessor :saml_request_id
     attr_accessor :saml_acs_url
     attr_accessor :raw_algorithm
+    attr_accessor :authn_context_classref
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm)
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
       self.principal = principal
@@ -23,6 +24,7 @@ module SamlIdp
       self.saml_request_id = saml_request_id
       self.saml_acs_url = saml_acs_url
       self.raw_algorithm = raw_algorithm
+      self.authn_context_classref = authn_context_classref
     end
 
     def fresh
@@ -61,7 +63,7 @@ module SamlIdp
           end
           assertion.AuthnStatement AuthnInstant: now_iso, SessionIndex: reference_string do |statement|
             statement.AuthnContext do |context|
-              context.AuthnContextClassRef Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
+              context.AuthnContextClassRef authn_context_classref
             end
           end
         end
