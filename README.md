@@ -86,7 +86,7 @@ CERT
 
   # Principal is passed in when you `encode_response`
   #
-  # config.name_id_formats # =>
+  # config.name_id.formats # =>
   #   {                         # All 2.0
   #     email_address: -> (principal) { principal.email_address },
   #     transient: -> (principal) { principal.id },
