@@ -154,8 +154,11 @@ CERT
   config.service_provider.persisted_metadata_getter = ->(identifier, service_provider){
     fname = identifier.to_s.gsub(/\/|:/,"_")
     `mkdir -p #{Rails.root.join("cache/saml/metadata")}`
-    File.open Rails.root.join("cache/saml/metadata/#{fname}"), "rb" do |f|
-      Marshal.load f
+    full_filename = Rails.root.join("cache/saml/metadata/#{fname}")
+    if File.file?(full_filename)
+      File.open full_filename, "rb" do |f|
+        Marshal.load f
+      end
     end
   }
 
