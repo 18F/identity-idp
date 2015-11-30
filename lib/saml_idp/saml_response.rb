@@ -48,7 +48,7 @@ module SamlIdp
     def signed_assertion
       assertion_builder.signed
     end
-    private
+    private :signed_assertion
 
     def response_builder
       ResponseBuilder.new(response_id, issuer_uri, saml_acs_url, saml_request_id, signed_assertion)
