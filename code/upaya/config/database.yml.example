@@ -1,0 +1,25 @@
+mysql: &mysql
+  adapter: mysql2
+  username: root
+  database: save_ferris_<%= Rails.env %>
+
+postgresql: &postgresql
+  adapter: postgresql
+  username: postgres
+  encoding: unicode
+  database: save_ferris_<%= Rails.env %>
+
+defaults: &defaults
+  pool: 5
+  timeout: 5000
+  host: localhost
+  <<: *<%= ENV['DB'] || "mysql" %>
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults

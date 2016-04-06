@@ -1,0 +1,38 @@
+en:
+  simple_form:
+    "yes": 'Yes'
+    "no": 'No'
+    required:
+      text: 'This field is required'
+      mark: '*'
+      # You can uncomment the line below if you need to overwrite the whole required html.
+      # When using html, text and mark won't be used.
+      # html: '<abbr title="required">*</abbr>'
+    error_notification:
+      default_message: "Please review the problems below:"
+
+    labels:
+      user:
+        account_type: "Select an account type:"
+
+    options:
+      user:
+        account_type:
+          # TODO move this markup into template(s)
+          self: |
+            <p class="disclaimer-basic">
+              <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+             <b>I am a Customer</b>.</p>
+              <p class="light">
+                  I am submitting an application, petition, or request for <b>myself</b> or <b>a family member</b>.
+                            </p>
+          representative: |
+            <p class="disclaimer-basic">
+              <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
+              <b>I am a Legal Representative</b>.</p>
+              <p class="light">
+                I am an attorney eligible to practice law in the United States.
+              </p>
+              <p class="light">
+                I am a representative of a qualified organization that is recognized by the Board of Immigration Appeals (BIA).
+              </p>
