@@ -38,5 +38,39 @@ Rails.application.configure do
   config.active_support.deprecation = :stderr
 
   # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  config.action_view.raise_on_missing_translations = true
+
+  # Tell Action Mailer not to deliver emails to the real world.
+  # The :test delivery method accumulates sent emails in the
+  # ActionMailer::Base.deliveries array.
+  config.action_mailer.delivery_method = :test
+  config.action_mailer.default_url_options = { host: Figaro.env.domain_name }
+  config.action_mailer.default_options = { from: 'upaya@18f.gov' }
+
+  # Debug mode disables concatenation and preprocessing of assets.
+  # This option may cause significant delays in view rendering with a large
+  # number of complex assets.
+  config.assets.debug = true
+
+  # Asset digests allow you to set far-future HTTP expiration dates on all assets,
+  # yet still be able to expire them through the digest params.
+  config.assets.digest = true
+
+  # For testing session variables in Capybara specs
+  config.middleware.use RackSessionAccess::Middleware
+
+  config.lograge.enabled = true
+  config.lograge.custom_options = ->(event) { event.payload }
+
+  # Bullet gem config
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.bullet_logger = true
+    Bullet.raise = true
+  end
+
+  # Randomize the order test cases are executed.
+  config.active_support.test_order = :random
+
+  config.active_job.queue_adapter = :test
 end

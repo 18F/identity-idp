@@ -1,0 +1,32 @@
+- title t('upaya.titles.users.show', user: @user.email)
+
+h3 = t('upaya.headings.users.show')
+
+table.table.table-hover
+  tr
+    td Email
+    td= @user.email
+  tr
+    td Unconfirmed Email?
+    td= @user.unconfirmed_email
+  tr
+    td Mobile
+    td= @user.mobile
+  tr
+    td Role
+    td= @user.role
+  tr
+    td Confirmed?
+    td= @user.confirmed?
+  tr
+    td 2FA Enabled?
+    td= @user.two_factor_enabled?
+  tr
+    td Has Security Answers?
+    td= @user.security_questions_enabled?
+  tr
+    td Created at
+    td= @user.created_at.strftime('%b %d, %Y')
+  tr
+    td UUID
+    td= @user.uuid

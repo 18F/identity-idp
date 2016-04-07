@@ -1,0 +1,13 @@
+- title t('upaya.titles.security_questions.new')
+.panel.panel-default.panel-ferris-wide
+  .panel-body
+    h2= t('devise.security_questions.header_text')
+    hr
+
+    p.disclaimer-text = t('devise.security_questions.description')
+
+    = required_form_field(resource, as: resource_name, wrapper: :vertical_form, html: { autocomplete: 'off', class: 'form-horizontal security-questions' }, url: users_questions_path) do |f|
+      = render 'devise/security_questions/form', f: f
+
+      .form-actions
+        = f.button :submit, 'Submit', class: 'upaya-button-secondary-blue'

@@ -1,0 +1,22 @@
+- title t('upaya.titles.confirmations.new')
+
+.panel.panel-default.panel-ferris
+  .panel-body
+    h2= t('upaya.headings.confirmations.new')
+    hr
+    p.required.disclaimer-basic
+      abbr= '* ' + t('upaya.forms.required_field')
+
+    = simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { autocomplete: 'off', class: 'form-horizontal single-column-form', method: :post, role: 'form' }) do |f|
+      = f.error_notification
+      = f.full_error :confirmation_token
+
+      .form-inputs
+        = f.input :email, required: true, input_html: { class: 'gets-focus form-group' }
+
+      .form-actions
+        = f.button :submit, t('upaya.forms.buttons.resend_confirmation'), class: 'upaya-button-secondary-blue'
+
+    br clear='both'
+    = render 'devise/shared/links'
+

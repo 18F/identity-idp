@@ -1,0 +1,9 @@
+$(document).on('page:change', function () {
+  $('#start_quiz_form').on('submit',  function () {
+    $('.bottom-section').append('<div class="generating" tabindex="-1"><h4><%= I18n.t('idp.headings.generating') %></h4>' +
+      '<p><%= I18n.t('idp.body.generating') %></p></div>');
+    $('#start_quiz').addClass('spinner');
+    $('#start_quiz').attr('disabled', true);
+    $('.generating').focus();
+  });
+});

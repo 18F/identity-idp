@@ -55,7 +55,7 @@ group :development do
   gem 'aws-sdk', '~> 2.0'
   gem 'better_errors'
   gem 'derailed'
-  gem 'binding_of_caller', platforms: [:mri_21]
+  gem 'binding_of_caller', platforms: [:mri_23]
   gem 'guard-rspec', require: false
   gem 'quiet_assets'
   gem 'rack-mini-profiler'

@@ -1,0 +1,376 @@
+@import "main/variables";
+
+.login-panel {
+  @extend .panel-body;
+  border-top: 1px solid $lightgray_80;
+
+  .login-panel-text {
+      color: $black;
+      font-family: ProximaNovaSemibold, Arial;
+      padding-left: 0px;
+      padding-top: 10px;
+      padding-bottom: 20px;
+  }
+
+  .control-label {
+    color: $black;
+  }
+}
+
+p, .panel-default {
+  font-family: ProximaNovaRegular, Arial;
+  font-size: 14px;
+  height: auto;
+  line-height: 18px;
+  color: $black;
+
+  li {
+    margin-bottom: 15px;
+  }
+}
+.uscis-login-button {
+  @extend .uscis-link-button;
+  background: $secondary_blue;
+  color: #fff;
+  font-family: $proxima_bold;
+
+  .cf-icon {
+    margin-left: 15px;
+  }
+}
+
+.disclaimer-title {
+  font-family: $proxima_bold, Arial;
+  font-size: 18px;
+  height: auto;
+  line-height: 20px;
+  color: $black;
+
+  position: relative;
+  text-align: left;
+  margin: auto;
+  padding-top: 45px;
+  padding-bottom: 10px;
+}
+
+.disclaimer-header {
+  font-family: $proxima_bold, Arial;
+  font-size: 16px;
+  height: auto;
+  line-height: 18px;
+  color: $black;
+
+  position: relative;
+  text-align: left;
+  margin: auto;
+  padding-top: 5px;
+}
+
+.disclaimer-basic {
+  font-family: ProximaNovaRegular, Arial;
+  font-size: 14px;
+  height: auto;
+  line-height: 18px;
+  color: $black;
+
+  position: relative;
+  text-align: left;
+  margin: auto;
+  padding-top: 5px;
+  padding-bottom: 10px;
+
+  &.required {
+    color: $requiredField;
+  }
+}
+
+.panel-ferris {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 10px 65px;
+  @include media($tablet-and-down) {
+    padding: 10px 25px;
+  }
+  @include media($mobile-small) {
+    padding: 10px 10px;
+  }
+  font-family: ProximaNovaRegular, Arial;
+  height: auto;
+  color: $black;
+  h2, h3{
+    text-align: center;
+  }
+
+  .horizontal-form {
+    .form-control {
+
+      border-radius: 4px;
+      @include media($desktop) {
+        @include span-columns(8);
+      }
+      @include media($tablet-and-down) {
+        @include span-columns(12);
+      }
+      margin-bottom: 15px;
+    }
+    .control-label {
+      @include media($desktop) {
+        @include span-columns(3);
+      }
+      @include media($tablet-and-down) {
+        @include span-columns(12);
+      }
+      vertical-align: middle;
+    }
+  }
+
+  .disclaimer-text {
+    @extend .disclaimer-basic;
+
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+
+  .checkbox label {
+    padding-left: 0px;
+  }
+
+}
+
+.panel-sp {
+  padding: 10px 20px;
+}
+
+.top-label {
+  label {
+    float: none;
+    display: block;
+    margin-bottom: 10px;
+  }
+}
+
+.bottom-part {
+  background-color: $white;
+  width: 100%;
+}
+
+.smallprint {
+  p {
+    font-family: $proxima_regular;
+  }
+  max-width: 600px;
+  padding: 30px;
+  li {
+    margin-bottom: 15px;
+  }
+}
+
+.smallprint-row {
+  margin-top: 45px;
+}
+
+.align-cb {
+  margin-left: 20px;
+  margin-bottom: 15px;
+}
+
+.tooltip-inner {
+  padding: 7px 10px;
+  min-width: 200px;
+}
+.required abbr {
+  color: $requiredField;
+}
+
+.leftalign {
+  float: left;
+}
+.rightalign {
+  float: right;
+}
+
+.fixed-form {
+  legend {
+    border-bottom: none;
+  }
+
+  label {
+    padding-left: 5px;
+    font-weight: normal;
+  }
+}
+
+.flat-checkbox {
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    background-color: #ffffff;
+    border: 2px solid $lightgray_80;
+    box-shadow: none;
+    padding: 7px;
+    border-radius: 0;
+    display: inline-block;
+    position: relative;
+    top: 3px;
+    margin-right: 4px;
+    &:checked {
+      background-image: image_url('checkmark.png');
+      background-repeat: no-repeat;
+      background-size: 14px;
+    }
+  }
+}
+
+.warning-box {
+  border: 1px solid red;
+  background-color: #ffd5d1;
+  margin: 20px 0px;
+  padding: 10px;
+  font-size: large;
+}
+
+form.simple_form {
+  button.btn:focus, input[type="submit"]:focus {
+    background: $accessibility-blue;
+    outline: 5px auto -webkit-focus-ring-color !important;
+    outline-offset: -2px;
+    text-decoration: none;
+  }
+}
+
+input[type='submit']:focus {
+  background: $accessibility-blue;
+  outline: 5px auto -webkit-focus-ring-color !important;
+  outline-offset: -2px;
+}
+
+.user-account-type {
+  margin-left: 40px;
+}
+
+.legal-notice {
+  h4 {
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+  padding: 15px 25px;
+}
+
+/* override flash messages for 508 compliance */
+div.alert-danger {
+  color: #9a2727;
+  background-color: #ffffff;
+}
+
+p.alert-danger {
+    color: #9a2727;
+    background-color: #ffffff;
+}
+
+div.alert-success {
+  color: #458600;
+  background-color: #ffffff;
+  border: 1px solid #458600;
+}
+
+button.close {
+  opacity: 1;
+  color: $secondary_blue;
+  text-decoration: underline;
+}
+
+.pagination > li > a {
+  color: $accessibility-blue;
+}
+
+a.show-link {
+  margin-left: 12px;
+}
+
+div.form-actions{
+  .btn:focus {
+    outline: 1px dotted #3a3a3a !important;
+    outline-offset: 3px;
+  }
+}
+
+.pagination > li.active > a, .pagination > li.active > p {
+  color: #ffffff;
+  background-color: $accessibility-blue;
+  &:focus, &:hover {
+    background-color: $accessibility-blue;
+  }
+}
+
+.sec-question-field {
+  .control-label {
+    text-align: left;
+  }
+  fieldset {
+    margin-top: 20px;
+  }
+}
+
+legend.otp-big-legend  {
+  margin-top: 20px;
+  margin-bottom: 0;
+  border-bottom: 0 none;
+}
+
+p.light {
+  font-family: ProximaNovaLight, Arial;
+  color: $darkgray;
+}
+
+p.dark {
+  font-family: ProximaNovaSemibold, Arial;
+}
+
+.center-section {
+  margin: 20px auto;
+  display: block;
+  text-align: center;
+}
+
+.cancel-link {
+  color: $red;
+  background:none !important;
+  border:none;
+  padding:0 !important;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.error-description {
+  color: #a94442;
+}
+
+.form-group {
+  input[type="submit"] {
+    margin-top: 20px;
+  }
+}
+
+.feedback {
+  color: #d40303;
+  background: #ffd;
+  padding: 6px 10px;
+}
+
+input:active, input:focus {
+  background: #ffd;
+}
+
+.upaya-button-secondary-blue {
+  &:disabled, &:disabled:hover {
+    background-color: $lightgray_10 !important;
+    color: $darkgray !important;
+  }
+}
+
+#page_back, #submit_answer {
+  &:disabled {
+    background-color: $lightgray_10 !important;
+    color: $darkgray !important;
+  }
+}

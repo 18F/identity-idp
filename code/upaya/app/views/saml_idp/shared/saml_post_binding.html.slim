@@ -1,0 +1,27 @@
+doctype html
+html
+  head
+    meta charset='utf-8'
+    meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'
+    == stylesheet_link_tag 'application', :media => 'all'
+    == javascript_include_tag 'application'
+    == csrf_meta_tags
+  body
+    = render partial: 'style_guide/icam_header'
+    .container(tabindex="-1" )
+      .site-content-wrapper#start-of-content(tabindex="-1" )
+        .panel.panel-default.panel-ferris
+          .panel-body
+            h2= 'Submit to continue'
+            hr
+            p
+              'JavaScript seems to be turned off in your browser. Normally this
+              'step happens automatically, but because you have JavaScript turned
+              'off, please click the submit button to continue signing in or
+              'signing out.
+
+            form action=action_url method='POST' id='saml-post-binding' class='single-column-form'
+              = hidden_field_tag(type, message)
+              - if params.has_key?(:RelayState)
+                = hidden_field_tag("RelayState", params[:RelayState])
+              = submit_tag 'Submit', class: 'upaya-button-secondary-blue'

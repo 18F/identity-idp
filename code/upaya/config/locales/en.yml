@@ -1,5 +1,5 @@
 en:
-  elis:
+  upaya:
     alerts:
       caution: Caution!
       app_settings_caution: >
@@ -44,18 +44,13 @@ en:
         need: >
           You need to create a new account if you want to:
         need_list_html: |
-            <li>File an application, petition, or request online</li>
-            <li>Access information about your case and you received either a <span class='strong'>Case Passcode</span>
-              from your attorney or accredited representative or
-              an <span class='strong'>Account Acceptance Notice</span> from Upaya</li>
+            <li></li>
+            <li></li>
         advantage: >
           Advantages of a Upaya online account:
         advantage_list_html: >
-          <li>File an application, petition, or request with Upaya</li>
-          <li>Check your case status</li>
-          <li>Pay the Upaya Immigrant Fee</li>
-          <li>Check your Upaya Immigrant Fee payment status</li>
-          <li>Change your U.S. mailing address</li>
+          <li></li>
+          <li></li>
     notices:
       app_setting_created: AppSetting was successfully created.
       app_setting_updated: AppSetting was successfully updated.
@@ -111,7 +106,7 @@ en:
         index: Manage Users
         show: User - %{user}
       visitors:
-        index: Welcome to US Citizenship and Immigration Services
+        index: Welcome to Upaya
 
     headings:
       admin:

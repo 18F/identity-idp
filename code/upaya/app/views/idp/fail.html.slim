@@ -1,0 +1,14 @@
+- title t('idp.titles.fail')
+
+.panel.panel-default.panel-ferris-wide
+  .panel-body
+    h2.quiz-header= t('idp.headings.questions')
+    hr.quiz-bar
+    h3.quiz-header= t('idp.headings.sorry')
+    .quiz-description
+      p= t('idp.body.fail_html')
+      = render 'idp/shared/documents'
+    .wrapper.bottom-center.bottom-section
+      = link_to t('idp.labels.again'), idp_question_url, class: 'upaya-button-secondary-blue big-button'
+    .wrapper.bottom-center
+      = link_to t('idp.links.exit_quiz_now'), { action: :decline_quiz, controller: :idp }, method: :post, class: 'cancel-link'

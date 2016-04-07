@@ -1,0 +1,21 @@
+- title t('upaya.titles.select_two_factor')
+
+.panel.panel-default.panel-ferris
+  .panel-body
+    h2= t('devise.two_factor_authentication.select_two_factor')
+    hr
+    = simple_form_for(resource, as: :user, wrapper: :vertical_form, html: { autocomplete: 'off', class: 'form-horizontal single-column-form', role: 'form' }, url: users_otp_path) do |f|
+      = f.error_notification
+
+      fieldset
+        legend.disclaimer-text= t('devise.two_factor_authentication.otp_setup')
+
+        .form-actions.align-cb
+          = second_factor_checkboxes_for(f, '2fa_setup')
+        .toggle-mobile
+          .mobile-num
+            p.disclaimer-text= t('devise.two_factor_authentication.otp_sms_disclaimer')
+
+            = f.input :mobile, required: false, label: 'Mobile Number'
+      .form-actions
+          = f.button :submit, 'Submit', id: 'main-submit', class: 'upaya-button-secondary-blue'

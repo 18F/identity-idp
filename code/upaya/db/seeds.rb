@@ -1,4 +1,3 @@
-require "#{Rails.root}/db/data/faq_importer"
 require "#{Rails.root}/lib/security_question_populator"
 include SecurityQuestionPopulator
 

@@ -1,0 +1,18 @@
+html
+  head
+    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
+  body
+
+    p You have requested a secure one-time password to log into your Upaya Account.
+
+    p= "Please enter this secure one-time password: #{@code} "
+
+    p
+      'If you are not attempting to log into Upaya, please contact the Customer Contact Center by filling out the web form at
+      = link_to 'https://upaya.18f.gov/contact', 'https://upaya.18f.gov/contact'
+      |  for assistance.
+
+    p Please be aware that this update might require your immediate attention.
+
+    p
+      strong PLEASE DO NOT REPLY TO THIS MESSAGE

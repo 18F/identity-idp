@@ -1,0 +1,24 @@
+- title t('upaya.titles.registrations.edit')
+
+.tab-content.panel.panel-default.panel-ferris-wide
+  .tab-pane.active.panel-body
+      h2= 'Edit User'
+
+      = simple_form_for(resource, as: :user, url: user_registration_path, html: { autocomplete: 'off', class: 'form-horizontal single-column-form', method: :put, role: 'form' }) do |f|
+        = f.error_notification
+        = render 'devise/registrations/form', f: f
+
+        hr
+
+        .form-group
+          = f.input :current_password, required: true, input_html: { 'aria-describedby' => 'password_additional_info' }
+
+        p id='password_additional_info' class='help-block'
+          =t('upaya.forms.registration.need_password')
+
+        = link_to 'Update Password Reset Questions', users_questions_path
+
+        .form-actions
+          = f.button :submit, 'Update', class: 'upaya-button-secondary-blue'
+
+      br clear="both"

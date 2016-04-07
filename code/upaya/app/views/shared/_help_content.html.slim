@@ -1,0 +1,4 @@
+.help-image-column
+  =image_tag(get_help_image_uri(@quiz_page), id: 'help-image', alt: '')
+.help-text-column
+  p= @quiz_page['helpMessage']

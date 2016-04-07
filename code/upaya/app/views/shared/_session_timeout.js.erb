@@ -1,0 +1,26 @@
+function PeriodicalQuery() {
+  $.ajax({
+    url: '/active',
+    success: function(data) {
+      if(new Date(data.timeout).getTime() < (new Date().getTime() + <%= warning %> * 1000)){
+        setTimeout(PeriodicalQuery, (<%= frequency %> * 1000));
+        if ($('#session_timeout_warning').length == 0 ) {
+          $('#session_warning_container').append("<%= j render('modals/session_timeout_warning') %>");
+          $(".continue_session").click(function (e) {
+            e.preventDefault();
+            window.location.reload();
+          });
+          $('#session_timeout_warning').modal('show');
+          Upaya.manageModalFocus();
+        }
+      } else {
+        $('#session_timeout_warning').modal('hide');
+      }
+      if(data.live == false){
+        window.location.href = '/timeout';
+      }
+    }
+  });
+  setTimeout(PeriodicalQuery, (<%= frequency %> * 1000));
+}
+setTimeout(PeriodicalQuery, (<%= start %> * 1000));

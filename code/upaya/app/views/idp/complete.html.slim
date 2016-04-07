@@ -1,0 +1,12 @@
+- title t('idp.titles.complete')
+
+.panel.panel-default.panel-ferris-wide
+  .panel-body
+    h2.quiz-header= t('idp.headings.questions')
+    hr.quiz-bar
+    h3.quiz-header= t('idp.headings.thanks')
+    .quiz-description
+      p= t('idp.body.complete')
+    .wrapper.bottom-center.bottom-section
+      = link_to t('idp.labels.continue'), destination_url,
+                class: 'upaya-button-secondary-blue big-button', title: 'Continue to Upaya'

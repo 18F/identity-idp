@@ -1,0 +1,13 @@
+.modal.fade#praModal tabindex="-1" role="dialog" aria-hidden="true"
+  .modal-dialog
+    .modal-content
+      .modal-header
+
+        h4.modal-title#praModalTitle Paperwork Reduction Act Burden Disclosure Notice
+
+      .modal-body
+        = render 'shared/pra_text'
+
+      .modal-footer
+        button.btn.btn-default type="button" data-dismiss="modal" Close
+        div#fake tabindex='0'

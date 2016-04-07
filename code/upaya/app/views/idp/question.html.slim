@@ -1,0 +1,32 @@
+- title t('idp.titles.question')
+
+.panel.panel-default.panel-ferris-wide
+  .panel-body
+    h2.quiz-header= t('idp.headings.questions')
+    hr.quiz-bar
+    =form_tag({controller: 'idp', action: 'answer'}, method: 'post', class: 'vertical-form answer-form')
+      =hidden_field_tag('question_id', @quiz_page['questionId'])
+      fieldset
+        -if @quiz_page.fetch('helpMessage', nil)
+          legend.title-box-help
+            h3.quiz-header
+              =@quiz_page['text']
+          .help
+            button.icon-button#help-button value='show help' type='button'
+              span.cf-icon.cf-icon-help-round
+              .help-label#help-label = raw(t('idp.labels.where_find') + t('idp.labels.where_find_hidden'))
+        -else
+          legend
+            h3.quiz-header
+              =@quiz_page['text']
+        br clear="both"
+        .row.slide-panel#help-content
+          = render 'shared/help_content' if @quiz_page.fetch('helpMessage', nil)
+        -@quiz_page['answers'].each do |ans|
+          .answer-row
+            =radio_button_tag( 'answer', ans['key'], false, id: "answer_#{ans['key']}", checked: (ans['text'] == @preselected_answer))
+            label(for="answer_#{ans['key']}") =ans['text']
+      .wrapper.button-row.bottom-center
+        .center
+          = button_tag(raw(t('idp.labels.next')), type: 'submit', title: t('idp.accessibility.next'),
+                       value: 'next', class: 'upaya-button-secondary-blue big-button', id: 'submit_answer')

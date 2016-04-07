@@ -1,0 +1,42 @@
+doctype html
+html lang="#{I18n.locale}"
+
+  head
+    meta charset='utf-8'
+    meta name='description' content="#{content_for?(:description) ? yield(:description) : 'Upaya'}"
+    meta http-equiv='X-UA-Compatible' content='IE=edge'
+    meta name='msapplication-config' content='none'
+    meta[name='viewport' content='width=device-width, initial-scale=1.0']
+
+    title
+      = content_for?(:title) ? 'Upaya - ' + yield(:title) : 'Upaya'
+
+    == stylesheet_link_tag 'application', :media => 'all', 'data-turbolinks-track' => true
+    == javascript_include_tag 'application', 'data-turbolinks-track' => true
+    == csrf_meta_tags
+    link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
+    link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
+
+    <!--[if lt IE 10]>
+      = stylesheet_link_tag 'ie9.css', :media => 'all', 'data-turbolinks-track' => true
+    <!--[elseif lt IE 9]>
+      <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
+      = stylesheet_link_tag 'ie8.css', :media => 'all', 'data-turbolinks-track' => true
+      <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
+    <![endif]-->
+
+  body class="#{Rails.env}-env"
+    = render 'layouts/performance_testing_mode'
+    = render partial: 'style_guide/icam_header'
+    - if signed_in? and current_user.admin?
+      == render 'dashboard/admin/navigation'
+    .container(tabindex="-1" )
+      .site-content-wrapper#start-of-content(tabindex="-1" )
+        == render 'layouts/messages'
+        == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')
+        == yield
+
+    - if Rails.env.development?
+      == render 'layouts/debug'
+  - if current_user
+    = auto_session_timeout_js

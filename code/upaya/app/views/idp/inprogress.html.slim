@@ -1,0 +1,15 @@
+- title t('idp.titles.inprogress')
+
+.panel.panel-default.panel-ferris-wide
+  .panel-body
+    h2.quiz-header= t('idp.headings.questions')
+    hr.quiz-bar
+    h3.quiz-header= t('idp.headings.inprogress')
+    .quiz-description
+      p= t('idp.body.inprogress')
+    .wrapper.bottom-center.bottom-section
+      = link_to t('idp.labels.retry_quiz'), idp_question_url, id: 'retry_quiz',
+                class: 'upaya-button-secondary-blue big-button'
+    .wrapper.bottom-center
+      = link_to t('idp.links.no_thanks'), { action: :decline_quiz, controller: :idp },
+                method: :post, class: 'cancel-link', title: t('idp.accessibility.no_thanks')

@@ -37,5 +37,28 @@ Rails.application.configure do
   config.assets.raise_runtime_errors = true
 
   # Raises error for missing translations
-  # config.action_view.raise_on_missing_translations = true
+  config.action_view.raise_on_missing_translations = true
+
+  # ActionMailer Config
+  config.action_mailer.default_url_options = {
+    host: 'localhost:3000',
+    protocol: 'http'
+  }
+
+  config.action_mailer.delivery_method = ENV['USER'] == 'vagrant' ? :letter_opener_web : :letter_opener
+  config.action_mailer.raise_delivery_errors = true
+  # Send email in development mode?
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.default_options = { from: 'upaya@18f.gov' }
+
+  config.lograge.enabled = true
+  config.lograge.custom_options = lambda { |event| event.payload }
+
+  # Bullet gem config
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.alert = true
+    Bullet.bullet_logger = true
+    Bullet.rails_logger = true
+  end
 end
