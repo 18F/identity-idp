@@ -1,0 +1,76 @@
+# Additional translations at https://github.com/plataformatec/devise/wiki/I18n
+
+en:
+  devise:
+    confirmations:
+      confirmed: "Your email address has been successfully confirmed."
+      send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
+      send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
+    failure:
+      already_authenticated: "You are already signed in."
+      inactive: "Your account is not activated yet."
+      invalid: "Invalid email or password."
+      locked: "Your account is locked."
+      last_attempt: "You have one more attempt before your account is locked."
+      not_found_in_database: "Invalid email or password."
+      timeout: "Your session expired. Please sign in again to continue."
+      unauthenticated: "You need to sign in or sign up before continuing."
+      unconfirmed: "You have to confirm your email address before continuing."
+    mailer:
+      confirmation_instructions:
+        subject: "Email confirmation instructions"
+      reset_password_instructions:
+        subject: 'Password reset instructions'
+      password_updated:
+        subject: 'Password change notification'
+      account_locked:
+        subject: 'Your USCIS account has been locked'
+    omniauth_callbacks:
+      failure: "Could not authenticate you from %{kind} due to: %{reason}."
+      success: "Successfully authenticated from %{kind} account."
+    passwords:
+      no_token: "You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided."
+      send_instructions: "You will receive an email with instructions on how to reset your password in a few minutes."
+      send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
+      updated: "Your password has been changed successfully. You are now signed in."
+      updated_not_active: >
+        Your password has been changed successfully.
+        Please sign in with your new password.
+      choose_new_password: "Choose a new password."
+      token_expired: 'You have taken too long to reset your password. Please try again.'
+      invalid_token: 'The reset password token is invalid. Please try again.'
+    registrations:
+      destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
+      signed_up: "Welcome! You have signed up successfully."
+      signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."
+      signed_up_but_locked: "You have signed up successfully. However, we could not sign you in because your account is locked."
+      signed_up_but_unconfirmed: "A USCIS Account confirmation email has been sent to %{email}. Please follow the instructions in the email to confirm your USCIS Account request. If you do not receive the confirmation email within the next 10 minutes, please return to this page and request your confirmation instructions again."
+      email_update_needs_confirmation: >
+        You updated your account successfully, but we need to verify your new
+        email address. Please check your email and follow the confirm link to
+        confirm your new email address.
+      mobile_update_needs_confirmation: >
+        Your request to update your phone number was processed successfully,
+        but we need to verify your new number first. Please follow the
+        instructions below. If you do not confirm your new number, we will
+        keep using your old phone number.
+      updated: "Your account has been updated successfully."
+      enabled_twofactor: "Successfully enabled two-factor authentication."
+    sessions:
+      signed_in: 'Welcome'
+      signed_out: "Signed out successfully."
+      already_signed_out: "Signed out successfully."
+  errors:
+    messages:
+      already_confirmed: "was already confirmed, please try signing in"
+      confirmation_period_expired: >
+        You have taken longer than %{period} to confirm your email.
+        Please click "Resend confirmation instructions."
+      expired: "has expired, please request a new one"
+      not_found: "not found"
+      not_locked: "was not locked"
+      not_saved:
+        one: "1 error prohibited this %{resource} from being saved:"
+        other: "%{count} errors prohibited this %{resource} from being saved:"
+      requires_mobile: "requires you to enter your mobile number."
+      max_security_questions_attempts: Sorry, you have exceeded the maximum number of attempts to reset your password.

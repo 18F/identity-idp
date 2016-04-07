@@ -1,0 +1,271 @@
+en:
+  elis:
+    alerts:
+      caution: Caution!
+      app_settings_caution: >
+        These settings affect the functionality of the application.
+        Take caution in updating any of the following settings.
+    errors:
+      not_authorized: 'You are not authorized to perform this action.'
+      cannot_change_account_type: 'You cannot change account type after creating an account.'
+      no_account_type: 'Please choose an account type to continue.'
+      duplicate_questions: 'Please select five unique password reset questions.'
+      invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
+      must_setup_security_questions: 'You must setup your security questions to continue.'
+      cannot_reset_user_account: >
+        You cannot reset the account for the user with email "%{email}" because
+        they have not set up their security questions yet. Please walk them
+        through the process of resetting their password via the website's
+        "Forgot your password?" link. Then, ask them to sign in and set up
+        their security questions.
+    forms:
+      buttons:
+        continue_browsing: Continue Browsing
+        resend_confirmation: Resend confirmation instructions
+        new_account: Create a new account
+        no_accounts: Not accepting new accounts
+      required_field: Indicates a required field.
+      registration:
+        email_field: Your email address is used to log in to your Upaya Account. All Upaya email communications will be sent to this address.
+        mobile_field: 'If you wish to have your secure one-time password sent to your mobile phone, enter the number here.'
+        email_html: >
+          By signing up, I agree to the <a href="#consent">______ Consent</a>
+          and <a href="#privacy">Upaya Privacy Act Statement</a>.
+        contact_info: Contact information
+        already_have_account_html: Already have an account?
+        need_password: we need your current password to confirm your changes
+      two_factor:
+        code: Secure one-time password
+        make_selection: Please choose at least one delivery method.
+      confirmation:
+        show_hdr: Create a Password
+        show_instructions: Your password must be at least 8 characters in length and contain at least one upper case letter, at least one lower case letter, at least one number, and at least one special character.
+      session:
+        need: >
+          You need to create a new account if you want to:
+        need_list_html: |
+            <li>File an application, petition, or request online</li>
+            <li>Access information about your case and you received either a <span class='strong'>Case Passcode</span>
+              from your attorney or accredited representative or
+              an <span class='strong'>Account Acceptance Notice</span> from Upaya</li>
+        advantage: >
+          Advantages of a Upaya online account:
+        advantage_list_html: >
+          <li>File an application, petition, or request with Upaya</li>
+          <li>Check your case status</li>
+          <li>Pay the Upaya Immigrant Fee</li>
+          <li>Check your Upaya Immigrant Fee payment status</li>
+          <li>Change your U.S. mailing address</li>
+    notices:
+      app_setting_created: AppSetting was successfully created.
+      app_setting_updated: AppSetting was successfully updated.
+      account_created: >
+        You have successfully created your account. Upaya password policy
+        requires you to change your password at least once every 365 days.
+        Your current password will expire on %{date}.
+      password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
+      secret_questions_created: 'You have successfully created your secret questions.'
+      user_email_changed_by_admin: >
+        The customer needs to confirm their email (%{email}) before it can be
+        changed. Please ask the customer to follow the instructions in the
+        email that was just sent to her or him.
+    session_timedout: "For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again."
+    session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
+    titles:
+      app_settings:
+        edit: Editing %{app_setting}
+        index: Application Settings
+        new: New App Setting
+        show: Viewing %{app_setting}
+      confirmations:
+        new: Resend confirmation instructions for your Upaya Account
+        show: Create a Password for your Upaya Account
+      dashboard: Your Upaya Account
+      enter_2fa_code: Enter the secure one-time password to log in to your Upaya Account
+      account_locked: Account Locked
+      enter_auth_code: Enter the authenticaton code for your Upaya Account
+      faqs:
+        edit: Editing FAQ
+        index: Frequently Asked Questions
+        new: Create a new FAQ
+        show: Viewing FAQ
+      passwords:
+        change: Change your password for your Upaya Account
+        forgot: Reset your password for your Upaya Account
+        update: Update your password for your Upaya Account
+      registrations:
+        account: Choose an account type
+        edit: Edit your Upaya Account
+        new: Sign up for a Upaya Account
+        confirm_type: Confirm that you are a representative
+      security_questions:
+        confirm: Verify Your Identity
+        new: Provide Password Reset Answers
+      select_two_factor: One-time Password Preference
+      sign_in: Sign in to your Upaya Account
+      tech_support:
+        index: Tech Support
+        show: Tech Support
+      users:
+        edit: Editing User - %{user}
+        index: Manage Users
+        show: User - %{user}
+      visitors:
+        index: Welcome to US Citizenship and Immigration Services
+
+    headings:
+      admin:
+        index: Admin Interface
+      app_settings:
+        edit: Editing %{app_setting}
+        index: Application Settings
+        new: New App Setting
+      confirmations:
+        new: Resend confirmation instructions
+        show: "Instructions: Enter your password"
+      dashboard:
+        index: My Services
+      faqs:
+        edit: Editing FAQ
+        index: Frequently Asked Questions
+        new: New FAQ
+      log_in: Sign In
+      log_out: Sign Out
+      passwords:
+        change: Change your password
+        forgot: Forgot your password?
+        update: Update your password
+      registrations:
+        account: Account Type
+        edit: My Profile
+        new: Sign Up
+      search: Search for a user
+      session_timeout_warning: Session Timeout
+      tech_support:
+        index: Tech Support
+        show: Tech Support
+      users:
+        edit: Edit User
+        index: Users
+        show: User Details
+      visitors:
+        index: Upaya
+        new_account: Create a new account
+
+    mailer:
+      password_expires_soon:
+        subject: Password Expiration Notice
+
+  activerecord:
+    attributes:
+      user:
+        account_types:
+          label: "Choose an account type"
+          default: "-- Select One --"
+    errors:
+      models:
+        app_setting:
+          attributes:
+            value:
+              cannot_disable_2fa_in_prod: 'Two-factor Authentication cannot be disabled in production'
+              invalid: "Value must be '1' or '0'"
+        user:
+          attributes:
+            current_password:
+              invalid: "Your password must match your current password."
+            password_confirmation:
+              confirmation: "does not match password"
+            mobile:
+              improbable_phone: "Mobile number is invalid. Please make sure you enter a 10-digit phone number."
+            second_factors:
+              blank: 'Please choose at least one Two-Factor Authentication method'
+  valid_email:
+    validations:
+        email:
+          invalid: 'Please enter a valid email in the format of user@domain.com'
+  idp:
+    errors:
+      account_type: Only the applicant can verify their identity
+      service_unavailable: >
+        We are having trouble connecting to the Upaya identity verification service.
+        Please try again.
+    titles:
+      welcome: Verify your identity
+      question: Identity Quiz
+      fail: Identity verification unsuccessful
+      hardfail: We cannot verify your identity
+      complete: Identity verification complete
+      inprogress: Identity Quiz Incomplete
+      resume_quiz: Resume Identity Quiz
+    headings:
+      questions: Identity Quiz
+      index: We need to confirm your identity.
+      sorry: Sorry, we could not confirm your identity.
+      thanks: Thanks for confirming your identity.
+      inprogress: Continue your identity quiz?
+      resume_quiz: Resume your identity quiz?
+      generating: Generating Quiz
+    body:
+      index_intro_html: >
+        <p>To protect your information, we need to confirm that you are who you say you are.
+        Only you, the immigrant receiving a Green Card,
+        are allowed to create a Upaya online account.</p>
+        <p>Attorneys, accredited representatives, preparers, interpreters, or notaries cannot create a
+        Upaya online account for you. If you are not the immigrant who will receive the Green Card,
+        please click <span class='strong'>Cancel</span> to exit this screen.</p>
+      index_info_html: >
+        Once you click <span class='strong'>Get Started</span>,
+        we will ask you a series of questions to confirm your identity.
+        You may find it helpful to refer to the following documents before you begin:
+      fail_html: >
+        You may take this quiz again.</p><p>
+        Before you take the quiz, you may find it helpful to refer to the following documents:
+      documents:
+        - Your passport(s)
+        - A copy of your visa application(s)
+        - Your Immigrant Data Summary Sheet
+      time_limit: You will have 60 minutes to complete the quiz.
+      hardfail_html: >
+        Until we can verify your identity, you cannot use a Upaya online account to change your U.S.
+        mailing address or view your case history.  However, you can still track the status of your
+        Green Card through <a href="https://egov.upaya.gov/casestatus/landing.do">Case Status Online</a>.
+        You will need your Upaya Receipt Number to get the status of your case. The receipt number
+        will begin with the letters "IOE." You can also change your address with Upaya by visiting
+        the <a href="https://egov.upaya.gov/coa/displayCOAInitForm.do">Change of Address</a>
+        website.
+      hardfail_kicker_html: >
+        Please contact the <a href="https://egov.upaya.gov/cris/contactus">Customer Contact Center</a>
+        by filling out the online help form if you need further assistance.
+      inprogress: >
+        It appears you have not successfully completed an identity quiz.
+        Do you want to continue confirming your identity?
+      generating: This can take up to a minute. We will start your quiz when it is ready.
+      resume_quiz: >
+        We were not able to retrieve your question. Would you like to try again?
+      complete: >
+        You can now access your Upaya online account to get status updates, update your online
+        account profile, and change your U.S. mailing address.
+    misc:
+      index_kicker: Are you ready to start?
+      no_more_questions: Not enough questions could be generated for the quiz.
+      timeout_alert: You have exceeded the 60 minutes allowed for the quiz.
+      too_many_times: You have attempted the quiz too many times
+    labels:
+      start: Get started!
+      next: "Next <span class='cf-icon cf-icon-right'></span>"
+      again: Take the Identity Verification Quiz again
+      continue: Continue
+      retry_quiz: Retry Quiz
+      hide_finder: "Hide document"
+      hide_finder_hidden: " <span class='sr-only'>sample displayed below</span>"
+      where_find: "Where do I find this?"
+      where_find_hidden: "<span class='sr-only'>– Display document sample below</span>"
+      resume_quiz: Resume Quiz
+    links:
+      no_thanks: Cancel
+      exit_quiz_now: Exit
+      home: Go back
+    accessibility:
+      next: Next question
+      start: Get started with the identity quiz
+      no_thanks: Cancel quiz
