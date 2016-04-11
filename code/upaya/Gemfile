@@ -31,11 +31,12 @@ gem 'sass-rails', '~> 5.0'
 gem 'secure_headers', '~> 3.0.0'
 gem 'simple_form', github: 'amoose/simple_form', branch: 'feature/aria-invalid'
 gem 'slim-rails'
-gem 'style_guide', git: 'git@github.com:18F/myuscis-style-guide.git', branch: 'no-usps'
+# gem 'style_guide', git: 'git@github.com:18F/myuscis-style-guide.git', branch: 'no-usps'
 gem 'turbolinks'
 gem 'twilio-ruby'
 gem 'two_factor_authentication', git: 'https://github.com/Houdini/two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
+gem 'us_web_design_standards'
 gem 'whenever', require: false
 gem 'activerecord-session_store' # TODO[astone] added gem due to CookieOverflow
 
