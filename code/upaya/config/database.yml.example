@@ -1,19 +1,15 @@
-mysql: &mysql
-  adapter: mysql2
-  username: root
-  database: save_ferris_<%= Rails.env %>
-
 postgresql: &postgresql
   adapter: postgresql
-  username: postgres
-  encoding: unicode
-  database: save_ferris_<%= Rails.env %>
+  encoding: utf8
+  database: upaya_<%= Rails.env %>
+  port: 5432
 
 defaults: &defaults
   pool: 5
   timeout: 5000
   host: localhost
-  <<: *<%= ENV['DB'] || "mysql" %>
+
+  <<: *postgresql
 
 development:
   <<: *defaults

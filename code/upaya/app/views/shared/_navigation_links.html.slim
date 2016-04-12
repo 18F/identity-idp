@@ -1,0 +1,11 @@
+- if signed_in?
+  - if current_user.admin?
+    = render 'dashboard/admin/navigation'
+  - else
+    li
+      = link_to t('upaya.links.sign_out'), destroy_user_session_path, method: 'delete'
+- else
+  li
+    = link_to t('upaya.links.sign_in'), new_user_session_path
+  li
+    = link_to t('upaya.links.sign_up'), new_user_registration_path

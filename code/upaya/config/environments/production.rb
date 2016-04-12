@@ -77,7 +77,7 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
-    # Keys must be symbolized - https://github.com/18F/save-ferris/issues/1188
+  # Keys must be symbolized per ActionMailer documentation
   config.action_mailer.smtp_settings = Rails.application.secrets.smtp_settings.symbolize_keys
 
   # ActionMailer Config

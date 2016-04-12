@@ -1,9 +1,11 @@
 Rails.application.routes.draw do
+  match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
+
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
   devise_for :users, skip: [:sessions], controllers: {
     confirmations: 'users/confirmations',
-    #omniauth_callbacks: 'users/omniauth_callbacks',
+    omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/passwords',
     registrations: 'users/registrations'
   }
@@ -11,6 +13,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
+    delete 'sign_out' => 'users/sessions#destroy', as: :destroy_user_session
 
     get 'elis' => 'users/sessions#new'
     get 'active'  => 'users/sessions#active'
@@ -35,7 +38,7 @@ Rails.application.routes.draw do
   end
 
   resources :users
-  
+
   get '/users/:id/reset_password' => 'users#reset_password', as: :user_reset_password
 
   if Rails.env.development? || Figaro.env.pt_mode == 'on'

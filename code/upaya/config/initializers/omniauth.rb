@@ -1,12 +1,8 @@
-# OmniAuth is used to authenticate against Internal ICAM
-# and the test SAML IDP within Ferris for authenticating CIS
-# employees
 require 'feature_management'
 require 'omniauth'
 
 DEFAULT_OPTIONS = {
   issuer: "https://#{Figaro.env.domain_name}/users/auth/saml",
-  idp_sso_target_url: Figaro.env.internal_icam_url,
   single_signon_service_binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
   idp_cert: Rails.application.secrets.saml_idp_cert,
   name_identifier_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
@@ -43,7 +39,7 @@ if Rails.env == 'development'
   )
 end
 
-if FeatureManagement.allow_ent_icam_auth?
+if FeatureManagement.allow_enterprise_auth?
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :saml, options
   end

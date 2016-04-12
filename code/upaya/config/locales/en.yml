@@ -51,6 +51,11 @@ en:
         advantage_list_html: >
           <li></li>
           <li></li>
+
+    links:
+      sign_out: 'Sign Out'
+      sign_in: 'Sign In'
+      sign_up: 'Sign Up'
     notices:
       app_setting_created: AppSetting was successfully created.
       app_setting_updated: AppSetting was successfully updated.

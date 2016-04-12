@@ -13,7 +13,7 @@ module Git
     if attribute == 'REVISION'
       `git rev-parse --short HEAD`.chomp
     elsif attribute == 'VERSION'
-      `git describe --tags $(git rev-list --tags --max-count=1)`.chomp
+      `git describe --tags $(git rev-list --tags --max-count=1 origin..HEAD)`.chomp
     end
   end
 

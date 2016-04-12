@@ -27,9 +27,8 @@ html lang="#{I18n.locale}"
 
   body class="#{Rails.env}-env"
     = render 'layouts/performance_testing_mode'
-    = render partial: 'style_guide/icam_header'
-    - if signed_in? and current_user.admin?
-      == render 'dashboard/admin/navigation'
+    = render 'shared/navigation_links'
+
     .container(tabindex="-1" )
       .site-content-wrapper#start-of-content(tabindex="-1" )
         == render 'layouts/messages'

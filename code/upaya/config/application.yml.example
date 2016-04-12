@@ -9,13 +9,11 @@
 # Figaro requires all values to be explicit strings.
 
 development:
-  allow_ent_icam_auth: 'no'
+  allow_enterprise_auth: 'no'
   allow_privileged: 'yes'
   domain_name: 'xxx.xxx'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
-  elis_url: ''
   idv_url: 'http://38.101.184.27:8080/idpaas'
-  internal_icam_url: 'https://ferris-mock-idp.ngrok.com'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'
   pt_mode: 'on'
@@ -30,13 +28,12 @@ development:
   twilio_test_auth_token: 'xxx'
 
 production:
-  allow_ent_icam_auth: 'yes'
+  allow_enterprise_auth: 'yes'
   allow_privileged: 'no'
   domain_name: 'xxx.xxx'
   sp_url: 'https://upaya-sp.18f.gov/'
   fips_enabled: 'false'
   idv_url: 'http://upaya-idv.18f.gov/'
-  internal_icam_url: 'https://ferris-mock-idp.ngrok.com'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'
   proxy_addr: '123.456.789'
@@ -51,13 +48,12 @@ production:
   twilio_test_auth_token: 'xxx'
 
 test:
-  allow_ent_icam_auth: 'yes'
+  allow_enterprise_auth: 'yes'
   allow_privileged: 'no'
   domain_name: 'example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
   sp_url: ''
   idv_url: 'http://upaya-idv.18f.gov/'
-  internal_icam_url: 'https://ferris-mock-idp.ngrok.com'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'
   pt_mode: 'off'

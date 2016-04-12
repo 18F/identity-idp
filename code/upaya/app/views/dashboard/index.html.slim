@@ -1,4 +1,4 @@
-- title t('elis.titles.dashboard')
+- title t('upaya.titles.dashboard')
 
 p = link_to 'myUSCIS profile page', edit_user_registration_path, role: 'menuitem'
 
@@ -10,9 +10,9 @@ div.dashboard
   table.table.table-hover
     tbody
       tr
-        td CIS-UUID:
+        td UUID:
         td
-          strong= current_user.cis_uuid
+          strong= current_user.uuid
       tr
         td Role:
         td

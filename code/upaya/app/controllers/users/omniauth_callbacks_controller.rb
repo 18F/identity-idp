@@ -13,7 +13,7 @@ module Users
 
       return render_401 if @auth.blank?
       sign_in_and_redirect @auth.user
-      set_flash_message(:notice, :success, kind: 'Enterprise ICAM') if is_navigational_format?
+      set_flash_message(:notice, :success, kind: 'Enterprise') if is_navigational_format?
     end
 
     private

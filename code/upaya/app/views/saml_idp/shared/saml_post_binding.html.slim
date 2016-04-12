@@ -7,10 +7,9 @@ html
     == javascript_include_tag 'application'
     == csrf_meta_tags
   body
-    = render partial: 'style_guide/icam_header'
     .container(tabindex="-1" )
       .site-content-wrapper#start-of-content(tabindex="-1" )
-        .panel.panel-default.panel-ferris
+        .panel.panel-default
           .panel-body
             h2= 'Submit to continue'
             hr

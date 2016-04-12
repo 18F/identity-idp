@@ -6,6 +6,6 @@
       .modal-body
         p = t('upaya.session_timeout_warning', time_left_in_session: time_left_in_session, continue_text: t('upaya.forms.buttons.continue_browsing'))
       .modal-footer
-        button.btn.btn-default.continue_session.uscis-button-blue[type='button' data-dismiss='modal']
+        button.btn.btn-default.continue_session[type='button' data-dismiss='modal']
           = t('upaya.forms.buttons.continue_browsing')
         div#fake tabindex='0'

@@ -1,0 +1,8 @@
+en:
+  devise:
+    security_questions:
+      description: Set five security questions. You must remember the answers to these questions if you ever need to reset your password.
+      header_text: Provide Password Reset Answers
+      confirm: Please answer your personal Password Reset Questions to verify your identity.
+      errors:
+        wrong_answers: Sorry, your answers do not match.

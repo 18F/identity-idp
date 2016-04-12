@@ -71,7 +71,7 @@ class User < ActiveRecord::Base
   end
 
   def need_two_factor_authentication?(request)
-    two_factor_enabled? && !ent_icam_authenticated?(request)
+    two_factor_enabled? && !enterprise_authenticated?(request)
   end
 
   def two_factor_enabled?
@@ -219,9 +219,9 @@ class User < ActiveRecord::Base
       format: :international, normalize: :US, spaces: ' ') if mobile
   end
 
-  def ent_icam_authenticated?(request)
-    # true if user authenticated with Enterprise ICAM
-    # by checking cis UUID from SAML auth data in the request
+  def enterprise_authenticated?(request)
+    # true if user authenticated with Enterprise
+    # by checking UUID from SAML auth data in the request
     return false unless request.env.key?('omniauth.auth')
     request.env['omniauth.auth'].extra.raw_info['UUID'] == uuid
   end

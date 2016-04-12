@@ -16,7 +16,7 @@ class Authorization < ActiveRecord::Base
   end
 
   def self.find_from_hash(auth_hash)
-    auth = find_by_provider_and_uid(auth_hash.provider, auth_hash.extra.raw_info['cisUUID'])
+    auth = find_by_provider_and_uid(auth_hash.provider, auth_hash.extra.raw_info['UUID'])
     auth.update_authorized_at if auth
     auth
   end
@@ -46,8 +46,7 @@ class Authorization < ActiveRecord::Base
   end
 
   def update_user_uuid
-    # Update UUID to match ENT ICAM
-    # https://github.com/18F/save-ferris/issues/608#issuecomment-74936464
+    # Update UUID to match Enterprise login
     user.update!(uuid: uid)
   end
 
