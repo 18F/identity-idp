@@ -47,6 +47,7 @@ code/upaya/spec/tmp
 code/upaya/test
 code/upaya/tmp/*
 code/upaya/vendor/bundle
+code/upaya/node_modules
 
 # This is a hack to keep the files that are added to the repo and to prevent git from worrying about
 # new (transient) files that may be created in those dirs.
