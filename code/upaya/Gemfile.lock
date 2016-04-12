@@ -44,20 +44,6 @@ GIT
       net-ssh (>= 2.7, < 4.0)
 
 GIT
-  remote: git@github.com:18F/myuscis-style-guide.git
-  revision: 437325f156c4ae7e3f7a7d0128832e6392a89e72
-  branch: no-usps
-  specs:
-    style_guide (2.1.61)
-      autoprefixer-rails (>= 5.1)
-      block_helpers (~> 0.3)
-      carmen-rails (~> 1.0)
-      font-awesome-sass (~> 4.3.0)
-      httparty
-      rails (>= 4.1.9)
-      sass-rails (>= 3.2)
-
-GIT
   remote: https://github.com/Houdini/two_factor_authentication
   revision: 675f651929b7a09bb59169bf4206a10895c2b9d9
   specs:
@@ -163,8 +149,6 @@ GEM
       rack (>= 0.9.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    block_helpers (0.3.3)
-      activesupport (>= 2.0)
     brakeman (3.2.1)
       erubis (~> 2.6)
       haml (>= 3.0, < 5.0)
@@ -215,11 +199,6 @@ GEM
     capybara-screenshot (1.0.12)
       capybara (>= 1.0, < 3)
       launchy
-    carmen (1.0.2)
-      activesupport (>= 3.0.0)
-    carmen-rails (1.0.1)
-      carmen (~> 1.0.0)
-      rails
     celluloid (0.16.0)
       timers (~> 4.0.0)
     celluloid-io (0.16.2)
@@ -468,8 +447,6 @@ GEM
     fog-xml (0.1.2)
       fog-core
       nokogiri (~> 1.5, >= 1.5.11)
-    font-awesome-sass (4.3.2.1)
-      sass (~> 3.2)
     formatador (0.2.5)
     get_process_mem (0.2.0)
     globalid (0.3.6)
@@ -845,6 +822,9 @@ GEM
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.0.3)
     uniform_notifier (1.9.0)
+    us_web_design_standards (0.0.2)
+      railties
+      sass (~> 3.4)
     useragent (0.16.7)
     uuid (2.3.8)
       macaddr (~> 1.0)
@@ -951,13 +931,13 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   spring-watcher-listen
-  style_guide!
   thin
   timecop
   turbolinks
   twilio-ruby
   two_factor_authentication!
   uglifier (>= 1.3.0)
+  us_web_design_standards
   valid_email
   webmock
   whenever
