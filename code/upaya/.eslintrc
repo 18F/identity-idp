@@ -1,0 +1,69 @@
+{
+  // All rules should be disabled or they should produce errors. No warnings.
+  'extends': 'airbnb',
+  'parser': 'babel-eslint',
+  'env': {
+    'browser': true,
+    'commonjs': true,
+    'es6': true,
+    'mocha': true
+  },
+  'plugins': [
+    'react'
+  ],
+  'globals': {
+    '$': true,
+    '__DEV__': true,
+    'assert': true,
+    'chai': true,
+    'sinon': true,
+    'expect': true,
+    'fixture': true
+  },
+  'rules': {
+    // Override airbnb style.
+    'arrow-body-style': 0,  // Leave bracing to code reviewer discretion.
+    'camelcase': [2, {'properties': 'always'}],
+    'comma-dangle': 0,  // Dangling commas are wonderful. It's JSON that's stupid.
+    'func-names': 2,
+    'max-len': 0, // TODO(awong): Enforce after a reindent.
+    'no-console': 2,
+    'no-negated-condition': 0,  // Sometimes negated conditions are easier to understand.
+    'no-unused-expressions': 0, // TODO(awong): Breaks chai expect() statements.
+    'no-unused-vars': [2, {'args': 'after-used', 'argsIgnorePattern': '^_', 'vars': 'local'}],
+    'prefer-rest-params': 0,  // TODO(awong): Enable.
+    'quote-props': [2, 'as-needed', { 'keywords': true }],
+    'require-jsdoc': 0,  // TODO(awong): Enable.
+    'space-unary-ops': 2,
+
+    // Disabled rules with rationale.
+    'react/no-multi-comp': 0,      // Leave organization to code reviewer discretion. 
+    'react/prefer-stateless-function': 0, // Leave statelessness to code reviewer discretion.
+
+    'react/jsx-closing-bracket-location': [2, 'after-props'],
+    'react/jsx-curly-spacing': 2,
+    'react/jsx-equals-spacing': 2,
+    'react/jsx-indent': [2, 2],
+    'react/jsx-key': 2,
+    'react/jsx-no-bind': [0, {'ignoreRefs': true}],  // TODO: Enable after fixing.
+    'react/jsx-pascal-case': 2,
+    'react/sort-prop-types': [0, {'callbacksLast': true, 'requiredFirst': true}],  // TODO(awong): Too hard to turn on.
+    'react/jsx-sort-props': [0, {'callbacksLast': true, 'shorthandFirst': true}],  // TODO(awong): Too hard to turn on.
+    'react/jsx-handler-names': 2,
+    'react/jsx-indent-props': [2, 4],
+    'react/jsx-no-duplicate-props': 2,
+    'react/no-danger': 2,
+    'react/no-deprecated': 2,
+    'react/no-direct-mutation-state': 2,
+    'react/no-string-refs': 0,       // TODO(awong): Enable.
+    'react/prop-types': 0,           // TODO(awong): Enable.
+    'react/jsx-space-before-closing': [2, 'never']
+  },
+  'parserOptions': {
+    'ecmaVersion': 6,
+    'sourceType': 'module',
+    'ecmaFeatures': {
+      'jsx': true
+    }
+  }
+}

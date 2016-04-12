@@ -5,8 +5,10 @@ module.exports = {
 
   output: {
     filename: 'bundle.js',
-    path: __dirname + '/public/js'
+    path: __dirname + '/public/build'
   },
+
+  devtool: '#cheap-module-eval-source-map',
 
   module: {
     loaders: [
@@ -23,13 +25,5 @@ module.exports = {
 
   resolve: {
     extensions: ['', '.js', '.jsx']
-  },
-
-  plugins: [
-    new webpack.DefinePlugin({
-      'process.env': {
-        'NODE_ENV': "'production'"
-      }
-    })
-  ]
+  }
 };
