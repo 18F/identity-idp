@@ -31,9 +31,9 @@
     'no-negated-condition': 0,  // Sometimes negated conditions are easier to understand.
     'no-unused-expressions': 0, // TODO(awong): Breaks chai expect() statements.
     'no-unused-vars': [2, {'args': 'after-used', 'argsIgnorePattern': '^_', 'vars': 'local'}],
-    'prefer-rest-params': 0,  // TODO(awong): Enable.
+    'prefer-rest-params': 0,  // TODO: Enable?
     'quote-props': [2, 'as-needed', { 'keywords': true }],
-    'require-jsdoc': 0,  // TODO(awong): Enable.
+    'require-jsdoc': 0,  // TODO: Enable?
     'space-unary-ops': 2,
 
     // Disabled rules with rationale.
@@ -45,18 +45,18 @@
     'react/jsx-equals-spacing': 2,
     'react/jsx-indent': [2, 2],
     'react/jsx-key': 2,
-    'react/jsx-no-bind': [0, {'ignoreRefs': true}],  // TODO: Enable after fixing.
+    'react/jsx-no-bind': [2, {'ignoreRefs': true}],
     'react/jsx-pascal-case': 2,
-    'react/sort-prop-types': [0, {'callbacksLast': true, 'requiredFirst': true}],  // TODO(awong): Too hard to turn on.
-    'react/jsx-sort-props': [0, {'callbacksLast': true, 'shorthandFirst': true}],  // TODO(awong): Too hard to turn on.
+    'react/sort-prop-types': [2, {'callbacksLast': true, 'requiredFirst': true}],
+    'react/jsx-sort-props': [2, {'callbacksLast': true, 'shorthandFirst': true}],
     'react/jsx-handler-names': 2,
     'react/jsx-indent-props': [2, 4],
     'react/jsx-no-duplicate-props': 2,
     'react/no-danger': 2,
     'react/no-deprecated': 2,
     'react/no-direct-mutation-state': 2,
-    'react/no-string-refs': 0,       // TODO(awong): Enable.
-    'react/prop-types': 0,           // TODO(awong): Enable.
+    'react/no-string-refs': 2,
+    'react/prop-types': 2,
     'react/jsx-space-before-closing': [2, 'never']
   },
   'parserOptions': {
