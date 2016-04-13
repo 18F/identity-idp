@@ -6,7 +6,8 @@ module Devise
         item_wrapper_tag: :div, item_wrapper_class: 'flat-checkbox',
         checked: checked_state(f, form_location)
       ) do |b|
-        b.label(for: id_for_2fa_checkbox(b)) { b.check_box(id: id_for_2fa_checkbox(b)) + b.text }
+        id = id_for_2fa_checkbox(b)
+        b.check_box(id: id) + b.label(for: id) { b.text }
       end
     end
 
