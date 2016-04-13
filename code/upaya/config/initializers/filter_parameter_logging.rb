@@ -2,6 +2,6 @@
 
 # Configure sensitive parameters which will be filtered from the log file.
 Rails.application.config.filter_parameters += [
-  :password, :security_answers_attributes, :mobile, :second_factor_ids]
+  :code, :mobile, :password, :second_factor_ids, :security_answers_attributes]
 # Configure redirect URLs to be filtered based on a matching string.
 Rails.application.config.filter_redirect << 'token'
