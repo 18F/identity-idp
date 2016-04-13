@@ -7,7 +7,9 @@ module SamlResponseHelper
     end
 
     def xml_response
-      Base64.decode64(Capybara.current_session.find("//input[@id='#{input_id}']").value)
+      Base64.decode64(Capybara.current_session.find(
+          "//input[@id='#{input_id}']", visible: false
+        ).value)
     end
 
     def input_id

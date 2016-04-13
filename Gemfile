@@ -26,7 +26,7 @@ gem 'rack-attack'
 gem 'responders', '~> 2.0'
 gem 'rotp', '~> 2.1.1'
 gem 'ruby-saml', github: 'amoose/ruby-saml'
-# gem 'nokogiri-xmlsec-me-harder', '~> 0.9.1', require: 'xmlsec'
+gem 'nokogiri-xmlsec-me-harder', '~> 0.9.1', require: 'xmlsec'
 gem 'saml_idp', github: '18F/saml_idp'
 gem 'sass-rails', '~> 5.0'
 gem 'secure_headers', '~> 3.0.0'
@@ -64,6 +64,7 @@ group :development do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen'
+  gem 'sqlite3' # TODO(astone) remove
 end
 
 group :development, :test do

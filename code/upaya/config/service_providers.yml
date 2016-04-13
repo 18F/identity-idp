@@ -1,0 +1,42 @@
+test:
+  valid_hosts:
+    'http://localhost:3000':
+        acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+        sp_initiated_login_url: 'http://localhost:3000/test/saml'
+
+    'https://rp1.serviceprovider.com/auth/saml/metadata':
+      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+
+    'https://rp2.serviceprovider.com/auth/saml/metadata':
+      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+      sp_initiated_login_url: 'http://public-prod-elis2.uscis.dhs.gov/efile/saml/login'
+
+
+development:
+  valid_hosts:
+    'http://localhost:3000':
+      metadata_url: 'http://localhost:3000/test/saml/metadata'
+      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_logoutresponse'
+      sp_initiated_login_url: 'http://localhost:3000/test/saml'
+      cert: 'saml_client_cert'
+      block_encryption: 'aes256-cbc'
+
+production:
+  valid_hosts:
+    'https://save-ferris.18f.gov':
+      metadata_url: 'https://save-ferris.18f.gov/metadata'
+      acs_url: 'https://save-ferris.18f.gov/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'https://save-ferris.18f.gov/test/saml/decode_logoutresponse'
+      sp_initiated_login_url: 'https://save-ferris.18f.gov/test/saml'
+      cert: 'saml_client_cert'
+      block_encryption: 'aes256-cbc'
+
+superb.legit.domain.gov:
+  valid_hosts:
+    'urn:govheroku:serviceprovider':
+      acs_url: 'https://vets.gov/users/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
+      cert: 'vetsgov_sp_cert'
