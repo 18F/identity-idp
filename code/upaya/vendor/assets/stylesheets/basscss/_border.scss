@@ -1,0 +1,51 @@
+
+// Converted Variables
+
+$border-width: 1px !default;
+$border-radius: 3px !default;
+
+// Custom Media Query Variables
+
+
+/* Basscss Border */
+
+.border {
+  border-style: solid;
+  border-width: $border-width;
+}
+
+.border-top {
+  border-top-style: solid;
+  border-top-width: $border-width;
+}
+
+.border-right {
+  border-right-style: solid;
+  border-right-width: $border-width;
+}
+
+.border-bottom {
+  border-bottom-style: solid;
+  border-bottom-width: $border-width;
+}
+
+.border-left {
+  border-left-style: solid;
+  border-left-width: $border-width;
+}
+
+.border-none { border: 0 }
+
+.rounded { border-radius: $border-radius }
+
+.circle  { border-radius: 50% }
+
+.rounded-top    { border-radius: $border-radius $border-radius 0 0 }
+
+.rounded-right  { border-radius: 0 $border-radius $border-radius 0 }
+
+.rounded-bottom { border-radius: 0 0 $border-radius $border-radius }
+
+.rounded-left   { border-radius: $border-radius 0 0 $border-radius }
+
+.not-rounded { border-radius: 0 }

@@ -1,0 +1,166 @@
+
+// Converted Variables
+
+$aqua: #7fdbff !default;
+$blue: #0074d9 !default;
+$navy: #001f3f !default;
+$teal: #39cccc !default;
+$green: #2ecc40 !default;
+$olive: #3d9970 !default;
+$lime: #01ff70 !default;
+$yellow: #ffdc00 !default;
+$orange: #ff851b !default;
+$red: #ff4136 !default;
+$fuchsia: #f012be !default;
+$purple: #b10dc9 !default;
+$maroon: #85144b !default;
+$white: #fff !default;
+$silver: #ddd !default;
+$gray: #aaa !default;
+$black: #111 !default;
+$hljs-comment: $silver !default;
+$hljs-keyword: white !default;
+$hljs-number: $lime !default;
+$hljs-string: $red !default;
+$hljs-title: $red !default;
+$hljs-type: $aqua !default;
+$hljs-tag: $aqua !default;
+$hljs-attribute: $lime !default;
+$hljs-regexp: $lime !default;
+$hljs-symbol: $fuchsia !default;
+$hljs-built-in: $aqua !default;
+$hljs-preprocessor: $silver !default;
+$hljs-deletion: $fuchsia !default;
+$hljs-addition: $lime !default;
+$hljs-change: $aqua !default;
+$hljs-chunk: $gray !default;
+
+// Custom Media Query Variables
+
+
+/* Basscss Highlight */
+
+/*
+
+   COLOR VARIABLES
+
+   - Cool
+   - Warm
+   - Gray Scale
+
+*/
+
+.highlight-dark .hljs {
+  color: white;
+  -webkit-text-size-adjust: none;
+}
+
+.highlight-dark .hljs-comment,
+.highlight-dark .diff .hljs-header,
+.highlight-dark .hljs-javadoc {
+  color: $hljs-comment;
+  font-style: italic;
+}
+
+.highlight-dark .hljs-keyword,
+.highlight-dark .css .rule .hljs-keyword,
+.highlight-dark .hljs-winutils,
+.highlight-dark .nginx .hljs-title,
+.highlight-dark .hljs-subst,
+.highlight-dark .hljs-request,
+.highlight-dark .hljs-status {
+  color: $hljs-keyword;
+  font-weight: bold;
+}
+
+.highlight-dark .hljs-number,
+.highlight-dark .hljs-hexcolor,
+.highlight-dark .ruby .hljs-constant {
+  color: $hljs-number;
+}
+
+.highlight-dark .hljs-string,
+.highlight-dark .hljs-tag .hljs-value,
+.highlight-dark .hljs-phpdoc,
+.highlight-dark .hljs-dartdoc,
+.highlight-dark .tex .hljs-formula {
+  color: $hljs-string;
+}
+
+.hljs-title,
+.hljs-id,
+.scss .hljs-preprocessor {
+  color: $hljs-title;
+  font-weight: bold;
+}
+
+.highlight-dark .hljs-list .hljs-keyword,
+.highlight-dark .hljs-subst {
+  font-weight: normal;
+}
+
+.highlight-dark .hljs-class .hljs-title,
+.highlight-dark .hljs-type,
+.highlight-dark .vhdl .hljs-literal,
+.highlight-dark .tex .hljs-command {
+  color: $hljs-type;
+  font-weight: bold;
+}
+
+.highlight-dark .hljs-tag,
+.highlight-dark .hljs-tag .hljs-title,
+.highlight-dark .hljs-rules .hljs-property,
+.highlight-dark .django .hljs-tag .hljs-keyword {
+  color: $hljs-tag;
+  font-weight: normal;
+}
+
+.highlight-dark .hljs-attribute,
+.highlight-dark .hljs-variable,
+.highlight-dark .lisp .hljs-body {
+  color: $hljs-attribute;
+}
+
+.highlight-dark .hljs-regexp {
+  color: $hljs-regexp;
+}
+
+.highlight-dark .hljs-symbol,
+.highlight-dark .ruby .hljs-symbol .hljs-string,
+.highlight-dark .lisp .hljs-keyword,
+.highlight-dark .clojure .hljs-keyword,
+.highlight-dark .scheme .hljs-keyword,
+.highlight-dark .tex .hljs-special,
+.highlight-dark .hljs-prompt {
+  color: $hljs-symbol;
+}
+
+.highlight-dark .hljs-built_in {
+  color: $hljs-built-in;
+}
+
+.highlight-dark .hljs-preprocessor,
+.highlight-dark .hljs-pragma,
+.highlight-dark .hljs-pi,
+.highlight-dark .hljs-doctype,
+.highlight-dark .hljs-shebang,
+.highlight-dark .hljs-cdata {
+  color: $hljs-preprocessor;
+  font-weight: bold;
+}
+
+.highlight-dark .hljs-deletion {
+  background: $hljs-deletion;
+}
+
+.highlight-dark .hljs-addition {
+  background: $hljs-addition;
+}
+
+.highlight-dark .diff .hljs-change {
+  background: $hljs-change;
+}
+
+.highlight-dark .hljs-chunk {
+  color: $hljs-chunk;
+}

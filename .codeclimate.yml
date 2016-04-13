@@ -1,12 +1,12 @@
 engines:
   brakeman:
-    enabled: true
+    enabled: false
   bundler-audit:
-    enabled: true
+    enabled: false
   coffeelint:
     enabled: true
   csslint:
-    enabled: true
+    enabled: false
   duplication:
     enabled: true
     config:
@@ -21,7 +21,7 @@ engines:
   rubocop:
     enabled: true
   scss-lint:
-    enabled: true
+    enabled: false
 
 ratings:
   paths:
@@ -31,6 +31,6 @@ ratings:
   - '**.go'
 
 exclude_paths:
-- spec/**/*
-- '**/vendor/**/*'
-- 'code/upaya/db/migrate/20160405212342_add_initial_schema.rb'
+- code/upaya/spec/**/*
+- 'code/upaya/vendor/assets/stylesheets/uswds.css'
+- 'code/upaya/db/migrate/20160405212342_initial_schema.rb'

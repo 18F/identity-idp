@@ -28,7 +28,7 @@ feature 'User edit' do
 
     visit edit_user_registration_path
     fill_in 'Mobile', with: ''
-    check 'Mobile'
+    find('#user_second_factor_ids_mobile').trigger('click')
     click_button 'Update'
 
     expect(page).to have_content 'Please fill in all required fields'
