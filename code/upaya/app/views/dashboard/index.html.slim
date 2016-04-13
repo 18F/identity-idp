@@ -1,0 +1,27 @@
+- title t('upaya.titles.dashboard')
+
+p = link_to 'myUSCIS profile page', edit_user_registration_path, role: 'menuitem'
+
+div.dashboard
+  p align="center" You are logged in.
+  br
+  br
+
+  table.table.table-hover
+    tbody
+      tr
+        td UUID:
+        td
+          strong= current_user.uuid
+      tr
+        td Role:
+        td
+          strong= current_user.role.titleize
+      tr
+        td 2FA Method:
+        td
+          strong= current_user.second_factors.collect{|f| f.name.titleize }.join(', ')
+      tr
+        td 2FA Enabled?
+        td
+          strong= current_user.two_factor_enabled?.to_s.titleize

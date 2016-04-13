@@ -1,0 +1,16 @@
+$(document).on('page:change', function () {
+  var slideTime = 300;
+
+  $('#help-button').click(function () {
+    if ($('#help-content').hasClass('open')) {
+      $('#help-content').removeClass('open');
+      $('#help-content').slideUp(slideTime);
+      $('#help-label').html("<%= raw(I18n.t('idp.labels.where_find') + I18n.t('idp.labels.where_find_hidden')) %>");
+    } else {
+      $('#help-content').addClass('open');
+      $('#help-content').slideDown(slideTime);
+      $('#help-label').html("<%= raw(I18n.t('idp.labels.hide_finder') + I18n.t('idp.labels.hide_finder_hidden')) %>");
+      $('#help-content').removeClass('slide-panel');
+    }
+  });
+});

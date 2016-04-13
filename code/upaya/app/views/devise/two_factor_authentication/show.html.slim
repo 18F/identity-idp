@@ -1,0 +1,21 @@
+- title t('upaya.titles.enter_2fa_code')
+
+.panel.panel-default
+  .panel-body
+    h2= t('devise.two_factor_authentication.header_text')
+    hr
+    p.disclaimer-text
+      'A one-time password has been sent to #{two_factor_preference}. Please enter the code that you received.
+      'If you do not receive the code in #{otp_drift_time_in_minutes} minutes, please #{link_to 'request a new one-time password', users_otp_new_path, data: { 'no-turbolink' => true }}.
+
+    - if current_user.unconfirmed_mobile.present? && !current_user.two_factor_enabled?
+      p If you are setting up a new phone number, try #{link_to 'entering it again', users_otp_path, data: { 'no-turbolink' => true }, title: 'Try entering your phone number again'}.
+
+    = form_tag([:user, :two_factor_authentication], wrapper: :vertical_form, class: 'form-vertical single-column-form', method: :put, role: 'form' ) do
+      p.required.disclaimer-basic
+        abbr= '* ' + t('upaya.forms.required_field')
+
+      .form-group.form-group-lg
+          = label_tag 'code', raw('<abbr title="required">*</abbr> ') + t('upaya.forms.two_factor.code'), class: 'control-label required'
+          = text_field_tag :code, '', { class: 'form-control gets-focus', required: true }
+          = submit_tag 'Submit', class: 'upaya-button-secondary-blue'

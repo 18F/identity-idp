@@ -1,0 +1,11 @@
+p.required
+  abbr= '* ' + t('upaya.forms.required_field')
+
+.row
+  .col-md-12
+    - @answers.each do |answer|
+      div.sec-question-field
+        = f.simple_fields_for :security_answers, answer, wrapper: :vertical_form do |answer_form|
+          fieldset
+            = answer_form.input :text, class: 'required', label: answer.question, required: true, input_html: { value: '' }
+            hr

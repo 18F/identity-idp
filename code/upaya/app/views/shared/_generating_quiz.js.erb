@@ -1,0 +1,11 @@
+if(typeof(jQuery) != 'undefined') {
+  $(function () {
+    $('#start_quiz_form').on('submit',  function (event) {
+      $('.bottom-section').append('<div class="generating" tabindex="-1"><h4><%= t('idp.headings.generating') %></h4>' +
+        '<p><%= t('idp.body.generating') %></p></div>');
+      $('#start_quiz').addClass('spinner');
+      $('#start_quiz').attr('disabled', true);
+      $('.generating').focus();
+    });
+  });
+}

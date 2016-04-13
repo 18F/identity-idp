@@ -76,4 +76,25 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+
+  # Keys must be symbolized per ActionMailer documentation
+  config.action_mailer.smtp_settings = Rails.application.secrets.smtp_settings.symbolize_keys
+
+  # ActionMailer Config
+  config.action_mailer.default_url_options = {
+    host: Figaro.env.domain_name,
+    protocol: 'https'
+  }
+  config.action_mailer.delivery_method = Figaro.env.pt_mode == 'on' ? :letter_opener_web : :smtp
+  config.action_mailer.perform_deliveries = true
+  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.default_options = { from: 'upaya@18f.gov' }
+
+  # turn off IP spoofing protection since the network configuration in the production environment
+  # creates false positive results.
+  config.action_dispatch.ip_spoofing_check = false
+
+  # Enable Lograge in production for succinct logging
+  config.lograge.enabled = true
+  config.lograge.custom_options = lambda { |event| event.payload }
 end

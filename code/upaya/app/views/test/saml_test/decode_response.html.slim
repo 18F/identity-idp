@@ -1,0 +1,27 @@
+div class='container'
+  div class='row'
+    h3 Decoded SAML Response
+    p 
+      | Visit the profile page to demo the SP iniated email change + redirect: 
+      = link_to 'Upaya profile page', edit_user_registration_path, role: 'menuitem'
+    table border='2' width='80%'
+      tbody
+      tr
+        td IsValid
+        td = is_valid
+      tr
+        td Issuer
+        td = response.issuer
+      tr
+        td Document
+        td
+          a target='_blank' href="data:text/xml;charset=utf-8;base64,#{Base64.encode64(response.document.to_s)}"
+            Open XML in New Window.
+      tr
+        td Encrypted Document
+        - if response.encrypted
+          td
+            a target='_blank' href="data:text/xml;charset=utf-8;base64,#{params[:SAMLResponse]}"
+              Open Raw XML in New Window
+        - else
+          td Document not encrypted

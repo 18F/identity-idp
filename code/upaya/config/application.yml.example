@@ -1,0 +1,66 @@
+# This file is used by the Figaro gem: https://github.com/laserlemon/figaro
+
+# Be sure to restart your server when you modify this file.
+
+# Make sure the secrets in this file are kept private
+# if you're sharing your code publicly.
+
+# Make sure any new entries you add are enclosed in single quotes.
+# Figaro requires all values to be explicit strings.
+
+development:
+  allow_enterprise_auth: 'no'
+  allow_privileged: 'yes'
+  domain_name: 'xxx.xxx'
+  ducksboard_uid: '8VEQre2c8b62mQV0sa'
+  idv_url: 'http://38.101.184.27:8080/idpaas'
+  log_all_active_job_arguments: 'false'
+  newrelic_license_key: 'xxx'
+  pt_mode: 'on'
+  saml_passphrase: 'secret'
+  security_answer_encryption_key: '5b9b7cbe2f1df9182c85438b408244660161ba31fa4e8d1bd98ed04833738d78522b9bc97832d5655b3d8c2366948e1467d6cacf6f59b6d3852642bbde1318f8'
+
+  # Configure Twilio Test Account keys for Performance Testing to avoid
+  # spamming real phone numbers.
+  # https://www.twilio.com/user/account/settings
+  # https://www.twilio.com/user/account/developer-tools/test-credentials
+  twilio_test_account_sid: 'xxx'
+  twilio_test_auth_token: 'xxx'
+
+production:
+  allow_enterprise_auth: 'yes'
+  allow_privileged: 'no'
+  domain_name: 'xxx.xxx'
+  sp_url: 'https://upaya-sp.18f.gov/'
+  fips_enabled: 'false'
+  idv_url: 'http://upaya-idv.18f.gov/'
+  log_all_active_job_arguments: 'false'
+  newrelic_license_key: 'xxx'
+  proxy_addr: '123.456.789'
+  proxy_port: '80'
+  pt_mode: 'off'
+  saml_passphrase: 'secret'
+  security_answer_encryption_key: 'rake secret'
+  twilio_account_sid: 'sid'
+  twilio_auth_token: 'token'
+  twilio_number: '8888888888'
+  twilio_test_account_sid: 'xxx'
+  twilio_test_auth_token: 'xxx'
+
+test:
+  allow_enterprise_auth: 'yes'
+  allow_privileged: 'no'
+  domain_name: 'example.com'
+  ducksboard_uid: '8VEQre2c8b62mQV0sa'
+  sp_url: ''
+  idv_url: 'http://upaya-idv.18f.gov/'
+  log_all_active_job_arguments: 'false'
+  newrelic_license_key: 'xxx'
+  pt_mode: 'off'
+  saml_passphrase: 'secret'
+  security_answer_encryption_key: '5b9b7cbe2f1df9182c85438b408244660161ba31fa4e8d1bd98ed04833738d78522b9bc97832d5655b3d8c2366948e1467d6cacf6f59b6d3852642bbde1318f8'
+  twilio_account_sid: 'sid'
+  twilio_auth_token: 'token'
+  twilio_number: '8888888888'
+  twilio_test_account_sid: test_sid
+  twilio_test_auth_token: test_token

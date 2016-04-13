@@ -1,0 +1,11 @@
+#session_timeout_warning.modal.fade tabindex='-1' role='dialog' aria-hidden='true'
+  .modal-dialog
+    .modal-content
+      .modal-header
+        h4.modal-title = t('upaya.headings.session_timeout_warning')
+      .modal-body
+        p = t('upaya.session_timeout_warning', time_left_in_session: time_left_in_session, continue_text: t('upaya.forms.buttons.continue_browsing'))
+      .modal-footer
+        button.btn.btn-default.continue_session[type='button' data-dismiss='modal']
+          = t('upaya.forms.buttons.continue_browsing')
+        div#fake tabindex='0'

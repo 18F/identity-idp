@@ -1,0 +1,21 @@
+- title t('upaya.titles.registrations.confirm_type')
+
+.tab-content.panel.panel-default
+  .tab-pane.active.panel-body
+    h2 = t('upaya.titles.registrations.confirm_type')
+    hr
+    h5 A representative must be:
+    p.dark An attorney
+    p.light A person who is eligible to practice law in, and a member in good standing of, the bar of the highest courts of a U.S. state, possession, territory, commonwealth, or the District of Columbia.
+    p.dark An accredited representative
+    p.light A person who is a representative of a qualified nonprofit religious, charitable, social service, or similar organization established in the United States, and is recognized by the Board of Immigration Appeals, in accordance with 8 CFR 292.2.
+    .center-section
+      = button_to 'I am a representative',
+              set_type_path(user: { account_type: 'representative' }, confirm: true),
+              method: :patch,
+              class: 'upaya-button-secondary-blue center-section'
+    .center-section
+      = button_to 'I am not a representative',
+                set_type_path(user: { account_type: 'self' }, confirm: true),
+                method: :patch,
+                class: 'center-section cancel-link'

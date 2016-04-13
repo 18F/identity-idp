@@ -1,0 +1,20 @@
+hr
+p.required.disclaimer-basic
+  abbr= '* ' + t('upaya.forms.required_field')
+
+= simple_form_for(resource, as: resource_name, wrapper: :vertical_form,  url: session_path(resource_name), html: { autocomplete: 'off', class: 'form-vertical single-column-form', role: 'form' }) do |f|
+  = f.input :email, required: true, input_html: { class: 'form-group gets-focus' }
+  = f.input :password, required: true, input_html: { class: 'form-group' }
+  = f.input :remember_me, label: false, input_html: { class: 'form-group checkbox inline'}, inline_label: 'Yes, remember me',  as: :boolean if devise_mapping.rememberable?
+
+  = f.button :submit, t('upaya.headings.log_in'), class: 'upaya-button-secondary-blue'
+
+= render 'devise/shared/links'
+/.leftalign
+/  p.disclaimer-basic
+/    = link_to t('upaya.headings.passwords.forgot'), new_password_path(resource_name)
+/
+/.rightalign
+/  p.disclaimer-basic
+/    'Don't have an account?
+/    = link_to t('upaya.headings.registrations.new'), new_registration_path(resource_name)
