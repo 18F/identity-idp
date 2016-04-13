@@ -14,6 +14,8 @@
 //= require jquery_ujs
 //= require jquery-ui
 //= require turbolinks
+//= require_tree ../../../vendor/assets/javascripts
+//= require components.js
 //= require_tree .
 var Upaya = {
   name: 'Upaya',
