@@ -1,24 +1,16 @@
 - title t('upaya.titles.passwords.change')
 
-.row
-  .col-md-8.col-md-offset-2
-    .panel.panel-default
-      .panel-body
-        h2 = t('upaya.headings.passwords.change')
-        p.required
-          abbr= '* ' + t('upaya.forms.required_field')
-        = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { autocomplete: 'off', class: 'form-horizontal single-column-form', method: :put, role: 'form' }) do |f|
-          = f.error_notification
 
-          = f.input :reset_password_token, as: :hidden
-          = f.full_error :reset_password_token
+h2 = t('upaya.headings.passwords.change')
+p
+  abbr= '* ' + t('upaya.forms.required_field')
 
-          .form-inputs
-            = f.input :password, label: 'New password', required: true, autofocus: true
-            = f.input :password_confirmation, label: 'Confirm your new password', required: true
+= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { autocomplete: 'off', class: '', method: :put, role: 'form' }) do |f|
+  = f.error_notification
+  = f.input :reset_password_token, as: :hidden
+  = f.full_error :reset_password_token
+  = f.input :password, label: 'New password', required: true, autofocus: true
+  = f.input :password_confirmation, label: 'Confirm your new password', required: true
+  = f.button :submit, 'Change my password', class: 'upaya-button-secondary-blue'
 
-          .form-actions
-            = f.button :submit, 'Change my password', class: 'upaya-button-secondary-blue'
-
-        br clear="both"
-        = render 'devise/shared/links'
+= render 'devise/shared/links'

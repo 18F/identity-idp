@@ -26,6 +26,8 @@ html lang="#{I18n.locale}"
     <![endif]-->
 
   body class="#{Rails.env}-env"
+    - if Rails.env.development?
+      == render 'layouts/debug'
     = render 'layouts/performance_testing_mode'
     = render 'shared/navigation_links'
 
@@ -35,7 +37,5 @@ html lang="#{I18n.locale}"
         == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')
         == yield
 
-    - if Rails.env.development?
-      == render 'layouts/debug'
   - if current_user
     = auto_session_timeout_js
