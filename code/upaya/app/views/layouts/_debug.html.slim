@@ -1,7 +1,5 @@
-.wrapper
-  .gitbox
-    .git
-      | r
-      = link_to(Git::REVISION, 'https://github.com/18F/identity/commit/' + Git::REVISION)
-      |&nbsp;|&nbsp;v
-      = link_to(Git::VERSION, 'https://github.com/18F/identity/releases/tag/' + Git::VERSION)
+.bg-silver.center
+  | r
+  = link_to(Git::REVISION, 'https://github.com/18F/identity/commit/' + Git::REVISION)
+  |&nbsp;&middot;&nbsp;v
+  = link_to(Git::VERSION, 'https://github.com/18F/identity/releases/tag/' + Git::VERSION)

@@ -1,25 +1,18 @@
 - title t('upaya.titles.visitors.index')
 
-.row
-  .panel.panel-default.same-height-panel
-    .panel-body
-      h2= t('upaya.headings.log_in')
 
-      = render 'devise/sessions/form'
+h2 = t('upaya.headings.log_in')
+= render 'devise/sessions/form'
 
-  .panel.panel-default.same-height-panel
-    .panel-body
-      h2= t('upaya.headings.visitors.new_account')
-      hr
-      p.disclaimer-basic= t('upaya.forms.session.need')
-      ul.not-menu =t('upaya.forms.session.need_list_html')
-      h5 =t('upaya.forms.session.advantage')
-      ul.not-menu =t('upaya.forms.session.advantage_list_html')
+h2 = t('upaya.headings.visitors.new_account')
+/ p = t('upaya.forms.session.need')
+/ ul = t('upaya.forms.session.need_list_html')
+/ h5 = t('upaya.forms.session.advantage')
+/ ul = t('upaya.forms.session.advantage_list_html')
 
-      - if  AppSetting.registrations_enabled?
-        = link_to t('upaya.forms.buttons.new_account'),  new_user_registration_path, class: 'upaya-button-secondary-blue'
-      - else
-        = button_to t('upaya.forms.buttons.no_accounts'), nil, class: "upaya-button-secondary-blue disabled", tabindex: -1, disabled: true
-br clear="both"
-.row
-  = render 'shared/upaya_legal_notice'
+- if  AppSetting.registrations_enabled?
+  = link_to t('upaya.forms.buttons.new_account'),  new_user_registration_path, class: 'usa-button'
+- else
+  = button_to t('upaya.forms.buttons.no_accounts'), nil, class: "usa-button", tabindex: -1, disabled: true
+
+= render 'shared/upaya_legal_notice'

@@ -1,0 +1,174 @@
+
+// Converted Variables
+
+$space-1: .5rem !default;
+$space-2: 1rem !default;
+$space-3: 2rem !default;
+$space-4: 4rem !default;
+
+// Custom Media Query Variables
+
+$breakpoint-sm: '(min-width: 40em)' !default;
+$breakpoint-md: '(min-width: 52em)' !default;
+$breakpoint-lg: '(min-width: 64em)' !default;
+
+/* Basscss Responsive Margin */
+
+@media #{$breakpoint-sm} {
+
+  .sm-m0  { margin:        0 }
+  .sm-mt0 { margin-top:    0 }
+  .sm-mr0 { margin-right:  0 }
+  .sm-mb0 { margin-bottom: 0 }
+  .sm-ml0 { margin-left:   0 }
+  .sm-mx0 { margin-left:   0; margin-right:  0 }
+  .sm-my0 { margin-top:    0; margin-bottom: 0 }
+
+  .sm-m1  { margin:        $space-1 }
+  .sm-mt1 { margin-top:    $space-1 }
+  .sm-mr1 { margin-right:  $space-1 }
+  .sm-mb1 { margin-bottom: $space-1 }
+  .sm-ml1 { margin-left:   $space-1 }
+  .sm-mx1 { margin-left:   $space-1; margin-right:  $space-1 }
+  .sm-my1 { margin-top:    $space-1; margin-bottom: $space-1 }
+
+  .sm-m2  { margin:        $space-2 }
+  .sm-mt2 { margin-top:    $space-2 }
+  .sm-mr2 { margin-right:  $space-2 }
+  .sm-mb2 { margin-bottom: $space-2 }
+  .sm-ml2 { margin-left:   $space-2 }
+  .sm-mx2 { margin-left:   $space-2; margin-right:  $space-2 }
+  .sm-my2 { margin-top:    $space-2; margin-bottom: $space-2 }
+
+  .sm-m3  { margin:        $space-3 }
+  .sm-mt3 { margin-top:    $space-3 }
+  .sm-mr3 { margin-right:  $space-3 }
+  .sm-mb3 { margin-bottom: $space-3 }
+  .sm-ml3 { margin-left:   $space-3 }
+  .sm-mx3 { margin-left:   $space-3; margin-right:  $space-3 }
+  .sm-my3 { margin-top:    $space-3; margin-bottom: $space-3 }
+
+  .sm-m4  { margin:        $space-4 }
+  .sm-mt4 { margin-top:    $space-4 }
+  .sm-mr4 { margin-right:  $space-4 }
+  .sm-mb4 { margin-bottom: $space-4 }
+  .sm-ml4 { margin-left:   $space-4 }
+  .sm-mx4 { margin-left:   $space-4; margin-right:  $space-4 }
+  .sm-my4 { margin-top:    $space-4; margin-bottom: $space-4 }
+
+  .sm-mxn1 { margin-left: -$space-1; margin-right: -$space-1 }
+  .sm-mxn2 { margin-left: -$space-2; margin-right: -$space-2 }
+  .sm-mxn3 { margin-left: -$space-3; margin-right: -$space-3 }
+  .sm-mxn4 { margin-left: -$space-4; margin-right: -$space-4 }
+
+  .sm-ml-auto { margin-left:  auto }
+  .sm-mr-auto { margin-right: auto }
+  .sm-mx-auto { margin-left:  auto; margin-right: auto }
+
+}
+
+@media #{$breakpoint-md} {
+
+  .md-m0  { margin:        0 }
+  .md-mt0 { margin-top:    0 }
+  .md-mr0 { margin-right:  0 }
+  .md-mb0 { margin-bottom: 0 }
+  .md-ml0 { margin-left:   0 }
+  .md-mx0 { margin-left:   0; margin-right:  0 }
+  .md-my0 { margin-top:    0; margin-bottom: 0 }
+
+  .md-m1  { margin:        $space-1 }
+  .md-mt1 { margin-top:    $space-1 }
+  .md-mr1 { margin-right:  $space-1 }
+  .md-mb1 { margin-bottom: $space-1 }
+  .md-ml1 { margin-left:   $space-1 }
+  .md-mx1 { margin-left:   $space-1; margin-right:  $space-1 }
+  .md-my1 { margin-top:    $space-1; margin-bottom: $space-1 }
+
+  .md-m2  { margin:        $space-2 }
+  .md-mt2 { margin-top:    $space-2 }
+  .md-mr2 { margin-right:  $space-2 }
+  .md-mb2 { margin-bottom: $space-2 }
+  .md-ml2 { margin-left:   $space-2 }
+  .md-mx2 { margin-left:   $space-2; margin-right:  $space-2 }
+  .md-my2 { margin-top:    $space-2; margin-bottom: $space-2 }
+
+  .md-m3  { margin:        $space-3 }
+  .md-mt3 { margin-top:    $space-3 }
+  .md-mr3 { margin-right:  $space-3 }
+  .md-mb3 { margin-bottom: $space-3 }
+  .md-ml3 { margin-left:   $space-3 }
+  .md-mx3 { margin-left:   $space-3; margin-right:  $space-3 }
+  .md-my3 { margin-top:    $space-3; margin-bottom: $space-3 }
+
+  .md-m4  { margin:        $space-4 }
+  .md-mt4 { margin-top:    $space-4 }
+  .md-mr4 { margin-right:  $space-4 }
+  .md-mb4 { margin-bottom: $space-4 }
+  .md-ml4 { margin-left:   $space-4 }
+  .md-mx4 { margin-left:   $space-4; margin-right:  $space-4 }
+  .md-my4 { margin-top:    $space-4; margin-bottom: $space-4 }
+
+  .md-mxn1 { margin-left: -$space-1; margin-right: -$space-1; }
+  .md-mxn2 { margin-left: -$space-2; margin-right: -$space-2; }
+  .md-mxn3 { margin-left: -$space-3; margin-right: -$space-3; }
+  .md-mxn4 { margin-left: -$space-4; margin-right: -$space-4; }
+
+  .md-ml-auto { margin-left:  auto }
+  .md-mr-auto { margin-right: auto }
+  .md-mx-auto { margin-left: auto; margin-right: auto; }
+
+}
+
+@media #{$breakpoint-lg} {
+
+  .lg-m0  { margin:        0 }
+  .lg-mt0 { margin-top:    0 }
+  .lg-mr0 { margin-right:  0 }
+  .lg-mb0 { margin-bottom: 0 }
+  .lg-ml0 { margin-left:   0 }
+  .lg-mx0 { margin-left:   0; margin-right:  0 }
+  .lg-my0 { margin-top:    0; margin-bottom: 0 }
+
+  .lg-m1  { margin:        $space-1 }
+  .lg-mt1 { margin-top:    $space-1 }
+  .lg-mr1 { margin-right:  $space-1 }
+  .lg-mb1 { margin-bottom: $space-1 }
+  .lg-ml1 { margin-left:   $space-1 }
+  .lg-mx1 { margin-left:   $space-1; margin-right:  $space-1 }
+  .lg-my1 { margin-top:    $space-1; margin-bottom: $space-1 }
+
+  .lg-m2  { margin:        $space-2 }
+  .lg-mt2 { margin-top:    $space-2 }
+  .lg-mr2 { margin-right:  $space-2 }
+  .lg-mb2 { margin-bottom: $space-2 }
+  .lg-ml2 { margin-left:   $space-2 }
+  .lg-mx2 { margin-left:   $space-2; margin-right:  $space-2 }
+  .lg-my2 { margin-top:    $space-2; margin-bottom: $space-2 }
+
+  .lg-m3  { margin:        $space-3 }
+  .lg-mt3 { margin-top:    $space-3 }
+  .lg-mr3 { margin-right:  $space-3 }
+  .lg-mb3 { margin-bottom: $space-3 }
+  .lg-ml3 { margin-left:   $space-3 }
+  .lg-mx3 { margin-left:   $space-3; margin-right:  $space-3 }
+  .lg-my3 { margin-top:    $space-3; margin-bottom: $space-3 }
+
+  .lg-m4  { margin:        $space-4 }
+  .lg-mt4 { margin-top:    $space-4 }
+  .lg-mr4 { margin-right:  $space-4 }
+  .lg-mb4 { margin-bottom: $space-4 }
+  .lg-ml4 { margin-left:   $space-4 }
+  .lg-mx4 { margin-left:   $space-4; margin-right:  $space-4 }
+  .lg-my4 { margin-top:    $space-4; margin-bottom: $space-4 }
+
+  .lg-mxn1 { margin-left: -$space-1; margin-right: -$space-1; }
+  .lg-mxn2 { margin-left: -$space-2; margin-right: -$space-2; }
+  .lg-mxn3 { margin-left: -$space-3; margin-right: -$space-3; }
+  .lg-mxn4 { margin-left: -$space-4; margin-right: -$space-4; }
+
+  .lg-ml-auto { margin-left:  auto }
+  .lg-mr-auto { margin-right: auto }
+  .lg-mx-auto { margin-left: auto; margin-right: auto; }
+
+}

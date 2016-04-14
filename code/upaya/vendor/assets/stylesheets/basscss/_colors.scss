@@ -1,0 +1,73 @@
+
+// Converted Variables
+
+$aqua: #7fdbff !default;
+$blue: #0074d9 !default;
+$navy: #001f3f !default;
+$teal: #39cccc !default;
+$green: #2ecc40 !default;
+$olive: #3d9970 !default;
+$lime: #01ff70 !default;
+$yellow: #ffdc00 !default;
+$orange: #ff851b !default;
+$red: #ff4136 !default;
+$fuchsia: #f012be !default;
+$purple: #b10dc9 !default;
+$maroon: #85144b !default;
+$white: #fff !default;
+$silver: #ddd !default;
+$gray: #aaa !default;
+$black: #111 !default;
+
+// Custom Media Query Variables
+
+
+/* Basscss Colors */
+
+/*
+
+   COLOR VARIABLES
+
+   - Cool
+   - Warm
+   - Gray Scale
+
+*/
+
+.black  { color: $black }
+
+.gray   { color: $gray }
+
+.silver { color: $silver }
+
+.white  { color: $white }
+
+.aqua  { color: $aqua }
+
+.blue  { color: $blue }
+
+.navy  { color: $navy }
+
+.teal  { color: $teal }
+
+.green { color: $green }
+
+.olive { color: $olive }
+
+.lime  { color: $lime }
+
+.yellow  { color: $yellow }
+
+.orange  { color: $orange }
+
+.red     { color: $red }
+
+.fuchsia { color: $fuchsia }
+
+.purple  { color: $purple }
+
+.maroon  { color: $maroon }
+
+.color-inherit { color: inherit }
+
+.muted { opacity: .5 }

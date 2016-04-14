@@ -29,8 +29,8 @@ html lang="#{I18n.locale}"
     = render 'layouts/performance_testing_mode'
     = render 'shared/navigation_links'
 
-    .container(tabindex="-1" )
-      .site-content-wrapper#start-of-content(tabindex="-1" )
+    .container.px2(tabindex="-1" )
+      #start-of-content(tabindex="-1" )
         == render 'layouts/messages'
         == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')
         == yield
