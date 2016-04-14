@@ -13,7 +13,7 @@ development:
   allow_privileged: 'yes'
   domain_name: 'xxx.xxx'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
-  idv_url: 'http://38.101.184.27:8080/idpaas'
+  idv_url: 'http://upaya-idv.18f.gov/'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'
   pt_mode: 'on'

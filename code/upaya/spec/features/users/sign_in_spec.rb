@@ -49,12 +49,10 @@ feature 'Sign in' do
     expect(page).to have_content I18n.t 'devise.failure.invalid'
   end
 
-  # TODO: hack to disallow :tech or :admin role from logging in via l/p
-  #       related to #608
   scenario 'user cannot sign in if admin role' do
     user = create(:user, :signed_up, :admin)
     sign_in_user(user)
-    expect(page).to have_content 'Unauthorized'
+    expect(page).to have_content 'You are not authorized'
     click_link('Sign In', match: :first)
     expect(current_path).to eq('/')
   end
@@ -62,7 +60,7 @@ feature 'Sign in' do
   scenario 'user cannot sign in if tech role' do
     user = create(:user, :signed_up, :tech_support)
     sign_in_user(user)
-    expect(page).to have_content 'Unauthorized'
+    expect(page).to have_content 'You are not authorized'
     click_link('Sign In', match: :first)
     expect(current_path).to eq('/')
   end

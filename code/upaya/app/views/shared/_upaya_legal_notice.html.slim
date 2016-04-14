@@ -4,9 +4,6 @@ div
   = link_to 'Paperwork Reduction Act Reporting Burden', 'terms#pra',  data: { toggle: "modal", target: "#praModal" }, class: 'modalpop'
 div
   = link_to 'Accessibility Policy', "#{user_signed_in? && user.role != 'user' ?  'http://upaya.18f.gov/pages/accessibility.aspx' : 'http://upaya.18f.gov/accessibility'}",  target: '_blank'
-h4 Department of Homeland Security Consent
-= render 'shared/dhs_text'
 
 == render 'modals/privacy_statement'
 == render 'modals/pra_statement'
-/== render 'modals/terms_of_use'
