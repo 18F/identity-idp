@@ -4,5 +4,5 @@ MAINTAINER Eric Maland <eric.maland@gsa.gov>
 
 ADD . /upaya
 WORKDIR /upaya
-RUN bundler install
+RUN bundler install --without deploy
 
