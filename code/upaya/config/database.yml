@@ -1,0 +1,30 @@
+postgresql: &postgresql
+  adapter: postgresql
+  encoding: utf8
+  database: upaya_<%= Rails.env %>
+  port: 5432
+
+defaults: &defaults
+  pool: 5
+  timeout: 5000
+  host: localhost
+
+  <<: *postgresql
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
+
+docker: &docker
+  adapter: postgresql
+  encoding: utf8
+  database: upaya_<%= Rails.env %>
+  port: 5432
+  user: postgres
+  hostname: <%= ENV['POSTGRES_PORT_5432_TCP_ADDR'] %>
+  password: <%= ENV['POSTGRES_ENV_POSTGRES_PASSWORD'] %>
