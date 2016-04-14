@@ -42,9 +42,6 @@ module Upaya
     # is a multiple of 60 seconds.
     config.session_check_frequency         = 60
 
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
-
     # config.active_job.queue_adapter = :resque
 
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
