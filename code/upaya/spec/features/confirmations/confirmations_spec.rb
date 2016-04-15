@@ -12,13 +12,13 @@ feature 'Confirmations', devise: true do
       expect(page).to have_content("Confirmation token can't be blank")
     end
 
-    scenario 'user cannot access users/confirmations?confirmation_token=''' do
+    scenario 'user cannot submit an empty single-quoted string as a token' do
       visit "#{user_confirmation_path}?confirmation_token=''"
 
       expect(page).to have_content('Confirmation token is invalid')
     end
 
-    scenario 'user cannot access users/confirmations?confirmation_token=""' do
+    scenario 'user cannot submit an empty double-quoted string as a token' do
       visit "#{user_confirmation_path}?confirmation_token=%22%22"
 
       expect(page).to have_content('Confirmation token is invalid')

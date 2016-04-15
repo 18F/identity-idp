@@ -22,7 +22,7 @@ DEFAULT_OPTIONS = {
     digest_method: 'http://www.w3.org/2000/09/xmldsig#sha1',
     signature_method: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
   }
-}
+}.freeze
 options = DEFAULT_OPTIONS
 
 if Rails.env == 'development'

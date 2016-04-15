@@ -109,7 +109,7 @@ feature 'Password Expiration', devise: true do
       fill_in 'Confirm your new password', with: 'Val!dPassw0rd'
       click_button 'Change my password'
       click_link(t('upaya.headings.log_out'), match: :first)
-      @user.reload.update(password_changed_at: Time.now - 570_000.minutes)
+      @user.reload.update(password_changed_at: Time.current - 570_000.minutes)
       signin(@user.email, 'Val!dPassw0rd')
       fill_in 'Current password', with: 'Val!dPassw0rd'
       fill_in 'New password', with: old_password

@@ -2,7 +2,7 @@ require 'omniauth_spec_helper'
 
 module Features
   module SessionHelper
-    VALID_PASSWORD = 'Val!dPassw0rd'
+    VALID_PASSWORD = 'Val!dPassw0rd'.freeze
 
     def sign_up_with(email)
       visit new_user_registration_path
@@ -78,10 +78,10 @@ module Features
     end
 
     def confirm_last_user
-      @raw_confirmation_token, _ = Devise.token_generator.generate(User, :confirmation_token)
+      @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
-        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.now.utc)
+        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current)
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
     end
 
@@ -120,7 +120,6 @@ module Features
       )
     end
 
-    # rubocop:disable Metrics/AbcSize
     def saml_authenticate_user(email, groups)
       OmniAuth.config.mock_auth[:saml] = nil
       OmniAuthSpecHelper.valid_saml_login_setup(email, SecureRandom.uuid, groups)
@@ -132,6 +131,5 @@ module Features
 
       User.find_by_email(email)
     end
-    # rubocop:enable Metrics/AbcSize
   end
 end

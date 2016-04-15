@@ -18,7 +18,7 @@ module Git
   end
 
   def self.git_repo?
-    `git branch 2> /dev/null`.length > 0
+    !`git branch 2> /dev/null`.empty?
   end
 end
 

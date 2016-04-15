@@ -52,7 +52,7 @@ Rails.application.configure do
   config.action_mailer.default_options = { from: 'upaya@18f.gov' }
 
   config.lograge.enabled = true
-  config.lograge.custom_options = lambda { |event| event.payload }
+  config.lograge.custom_options = ->(event) { event.payload }
 
   # Bullet gem config
   config.after_initialize do

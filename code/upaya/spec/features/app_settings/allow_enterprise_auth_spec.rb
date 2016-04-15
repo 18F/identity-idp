@@ -4,26 +4,26 @@ feature 'allow Enterprise Auth' do
     before do
       OmniAuth.config.test_mode = true
       OmniAuth.config.add_mock(
-          :saml,
-          provider: 'saml',
-          uid: '123',
-          info: {
-            email: 'rogue_saml_response@18f.gov',
-            uuid: '123',
-            first_name: 'first name',
-            last_name: 'last name',
+        :saml,
+        provider: 'saml',
+        uid: '123',
+        info: {
+          email: 'rogue_saml_response@18f.gov',
+          uuid: '123',
+          first_name: 'first name',
+          last_name: 'last name',
+          groups: OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
+        },
+        extra: {
+          raw_info: {
+            emailAddress: 'rogue_saml_response@18f.gov',
+            UUID: '123',
+            sn: 'first name',
+            givenName: 'last name',
             groups: OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
-          },
-          extra: {
-            raw_info: {
-              emailAddress: 'rogue_saml_response@18f.gov',
-              UUID: '123',
-              sn: 'first name',
-              givenName: 'last name',
-              groups: OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
-            }
           }
-        )
+        }
+      )
       allow(FeatureManagement).to receive(:allow_enterprise_auth?).and_return(false)
       visit '/users/auth/saml/callback'
     end
@@ -37,26 +37,26 @@ feature 'allow Enterprise Auth' do
     before do
       OmniAuth.config.test_mode = true
       OmniAuth.config.add_mock(
-          :saml,
-          provider: 'saml',
-          uid: '123',
-          info: {
-            email: 'expected_saml_response@18f.gov',
-            uuid: '124',
-            first_name: 'first name',
-            last_name: 'last name',
+        :saml,
+        provider: 'saml',
+        uid: '123',
+        info: {
+          email: 'expected_saml_response@18f.gov',
+          uuid: '124',
+          first_name: 'first name',
+          last_name: 'last name',
+          groups: OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
+        },
+        extra: {
+          raw_info: {
+            emailAddress: 'expected_saml_response@18f.gov',
+            UUID: '124',
+            sn: 'first name',
+            givenName: 'last name',
             groups: OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
-          },
-          extra: {
-            raw_info: {
-              emailAddress: 'expected_saml_response@18f.gov',
-              UUID: '124',
-              sn: 'first name',
-              givenName: 'last name',
-              groups: OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
-            }
           }
-        )
+        }
+      )
       allow(FeatureManagement).to receive(:allow_enterprise_auth?).and_return(true)
       visit '/users/auth/saml/callback'
     end

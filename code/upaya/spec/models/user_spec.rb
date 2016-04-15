@@ -100,7 +100,7 @@ describe User do
       '5555555555',
       '+385915125486',
       '555-555-1212'
-    ]
+    ].freeze
     INVALID_NUMBERS = [
       '212',
       '1212',
@@ -109,7 +109,7 @@ describe User do
       '555555121',
       '70322255556',
       '+invalid'
-    ]
+    ].freeze
 
     it 'accepts a valid mobile' do
       user = create(:user)
@@ -179,7 +179,7 @@ describe User do
 
   context '.password_strength' do
     it 'requires a digit' do
-      NO_NUM_PASSWORD = 'abcdABCD!@#$'
+      NO_NUM_PASSWORD = 'abcdABCD!@#$'.freeze
 
       # Verify failure on create.
       # TODO: JJG restore check for error message
@@ -214,7 +214,7 @@ describe User do
     end
 
     it 'requires a capital letter' do
-      NO_CAP_PASSWORD = 'abcd1234!@#$'
+      NO_CAP_PASSWORD = 'abcd1234!@#$'.freeze
 
       # Verify failure on create.
       # TODO: JJG restore check for error message
@@ -249,7 +249,7 @@ describe User do
     end
 
     it 'requires a lowercase letter' do
-      NO_LOWER_PASSWORD = 'ABCD1234!@#$'
+      NO_LOWER_PASSWORD = 'ABCD1234!@#$'.freeze
 
       # Verify failure on create.
       # TODO: JJG restore check for error message
@@ -284,7 +284,7 @@ describe User do
 
     it 'requires a special character' do
       # Verify failure.
-      NO_SPECIAL_PASSWORD = 'ABCD1234abcd'
+      NO_SPECIAL_PASSWORD = 'ABCD1234abcd'.freeze
 
       # Verify failure on create.
       expect do
@@ -386,7 +386,10 @@ describe User do
 
     it 'is invalid when duplicate security questions are chosen after account creation' do
       user = create(:user, :signed_up)
-      answer = { text: 'foo', security_question_id: user.security_answers.pluck(:security_question_id).first }
+      answer = {
+        text: 'foo',
+        security_question_id: user.security_answers.pluck(:security_question_id).first
+      }
       user.update(security_answers_attributes: [answer, answer])
 
       expect(user.errors['security_answers.security_question_id'].first).
@@ -525,14 +528,14 @@ describe User do
   context '#confirmation_period_expired?' do
     it 'returns false when within confirm_within value' do
       user = create(:user, confirmed_at: nil)
-      user.confirmation_sent_at = Time.now.utc - User.confirm_within + 1.minute
+      user.confirmation_sent_at = Time.current - User.confirm_within + 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_falsey
     end
 
     it 'returns true when beyond confirm_within value' do
       user = create(:user, confirmed_at: nil)
-      user.confirmation_sent_at = Time.now.utc - User.confirm_within - 1.minute
+      user.confirmation_sent_at = Time.current - User.confirm_within - 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_truthy
     end
@@ -635,27 +638,25 @@ describe User do
 
       user.check_security_question_answers(provided_answers)
 
-      expect(user.errors.to_a).to eq([
-        'Answer 2 does not match.'
-      ])
+      expect(user.errors.to_a).to eq(['Answer 2 does not match.'])
     end
 
     context 'exclude old passwords' do
       # A note about password re-use (adelevie):
       # config/initializers/devise.rb currently has deny_old_passwords set to 8
-      # devise_security_extensions, which implements all this, counts the 8 in the archive
-      # plus the most recent password. Effectively, this means that the last nine passwords cannot be used.
-      # See https://github.com/phatworx/devise_security_extension/blob/1f35d9630e6cb5ae6208bf9f4a3f4c2bf1efad97/lib/devise_security_extension/models/password_archivable.rb#L28-L37
+      # devise_security_extensions, which implements all this, counts the 8 in
+      # the archive plus the most recent password. Effectively, this means that
+      # the last nine passwords cannot be used.
 
       let(:old_password)  { 'VeryUnique567&@' }
       let(:new_password)  { 't3hNewestLeaf$' }
       let(:eight_passwords) do
-        8.times.map do |i|
+        Array.new(8) do |i|
           "#{old_password}-#{i}"
         end
       end
       let(:nine_passwords) do
-        9.times.map do |i|
+        Array.new(9) do |i|
           "#{old_password}-#{i}"
         end
       end
@@ -721,7 +722,7 @@ describe User do
 
       expect(user.confirm_2fa!).to be_truthy
 
-      expect(user.second_factor_confirmed_at).to be_within(1.second).of Time.now
+      expect(user.second_factor_confirmed_at).to be_within(1.second).of Time.current
     end
   end
 
@@ -738,7 +739,7 @@ describe User do
   context 'when identities are present' do
     let(:user) { create(:user, :signed_up) }
     let(:active_identity) do
-      Identity.create(service_provider: 'entity_id', last_authenticated_at: Time.now - 1.hour)
+      Identity.create(service_provider: 'entity_id', last_authenticated_at: Time.current - 1.hour)
     end
     let(:inactive_identity) do
       Identity.create(service_provider: 'entity_id', last_authenticated_at: nil)
@@ -759,11 +760,11 @@ describe User do
     before do
       user.identities << Identity.create(
         service_provider: 'first',
-        last_authenticated_at: Time.now - 1.hour
+        last_authenticated_at: Time.current - 1.hour
       )
       user.identities << Identity.create(
         service_provider: 'last',
-        last_authenticated_at: Time.now
+        last_authenticated_at: Time.current
       )
     end
 
@@ -815,9 +816,9 @@ describe User do
         )
         user.identities.create(
           service_provider: 'last',
-          last_authenticated_at: Time.zone.now,
+          last_authenticated_at: Time.current,
           quiz_started: true,
-          updated_at: Time.zone.now
+          updated_at: Time.current
         )
 
         expect(user.last_quizzed_identity.service_provider).to eq('last')
@@ -836,7 +837,7 @@ describe User do
           service_provider: 'last',
           last_authenticated_at: nil,
           quiz_started: true,
-          updated_at: Time.zone.now
+          updated_at: Time.current
         )
 
         expect(user.last_quizzed_identity.service_provider).to eq('last')
@@ -853,9 +854,9 @@ describe User do
         )
         user.identities.create(
           service_provider: 'last',
-          last_authenticated_at: Time.zone.now,
+          last_authenticated_at: Time.current,
           quiz_started: false,
-          updated_at: Time.zone.now
+          updated_at: Time.current
         )
 
         expect(user.last_quizzed_identity).to be_nil

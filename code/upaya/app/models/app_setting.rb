@@ -12,7 +12,7 @@ class AppSetting < ActiveRecord::Base
   end
 
   def self.registrations_disabled?
-    !self.registrations_enabled?
+    !registrations_enabled?
   end
 
   def boolean?

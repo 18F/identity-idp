@@ -1,6 +1,13 @@
 describe SecurityAnswer do
   let(:user) { create(:user) }
-  let(:security_answer) { create(:security_answer, user_id: user.id, security_question_id: SecurityQuestion.pluck(:id).first) }
+  let(:security_answer) do
+    create(
+      :security_answer,
+      user_id: user.id,
+      security_question_id: SecurityQuestion.pluck(:id).first
+    )
+  end
+
   subject { security_answer }
 
   it { is_expected.to belong_to(:security_question) }

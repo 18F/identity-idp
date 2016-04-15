@@ -3,7 +3,6 @@
 #   I want to see a list of users
 #   So I can see who has registered
 feature 'User index page', devise: true do
-
   # Scenario: Admin User listed on index page
   #   Given I am signed in
   #   When I visit the user index page

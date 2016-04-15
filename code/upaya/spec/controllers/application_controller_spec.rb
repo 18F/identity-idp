@@ -2,7 +2,7 @@ describe ApplicationController do
   describe 'handling InvalidAuthenticityToken exceptions' do
     controller do
       def index
-        raise ActionController::InvalidAuthenticityToken
+        fail ActionController::InvalidAuthenticityToken
       end
     end
 
@@ -34,11 +34,11 @@ describe ApplicationController do
     let(:payload) { {} }
 
     it 'adds time, user_agent and ip to the lograge output' do
-      Timecop.freeze(Time.zone.now) do
+      Timecop.freeze(Time.current) do
         subject.append_info_to_payload(payload)
 
         expect(payload.keys).to eq [:time, :user_agent, :ip]
-        expect(payload.values).to eq [Time.zone.now, request.user_agent, request.remote_ip]
+        expect(payload.values).to eq [Time.current, request.user_agent, request.remote_ip]
       end
     end
   end

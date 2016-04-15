@@ -1,6 +1,6 @@
 class TwilioService
   # https://www.twilio.com/docs/api/rest/test-credentials#test-incoming-phone-numbers-parameters-PhoneNumber
-  TWILIO_TEST_NUMBER = '+15005550006'
+  TWILIO_TEST_NUMBER = '+15005550006'.freeze
 
   def initialize
     return twilio_test_client if FeatureManagement.pt_mode?

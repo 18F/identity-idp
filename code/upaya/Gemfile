@@ -41,10 +41,10 @@ gem 'activerecord-session_store', '1.0.0.pre'
 
 group :deploy do
   gem 'berkshelf'
-  gem 'capistrano'#, '~> 3.4'
-  gem 'capistrano-rails'#, '~> 1.1', require: false
-  gem 'capistrano-rbenv'#, '~> 2.0', require: false
-  gem 'capistrano-resque'#, '~> 0.2.1', require: false
+  gem 'capistrano' # , '~> 3.4'
+  gem 'capistrano-rails' # , '~> 1.1', require: false
+  gem 'capistrano-rbenv' # , '~> 2.0', require: false
+  gem 'capistrano-resque' # , '~> 0.2.1', require: false
   gem 'chef', '~> 12.0.1'
   gem 'knife-ec2'
   gem 'knife-solo', github: 'matschaffer/knife-solo', submodules: true

@@ -103,7 +103,10 @@ describe 'Rails.logger', type: :feature do
     end
 
     it 'logs the events' do
-      expect(Rails.logger).to receive(:info).with("[#{user.uuid}] [Authenticated Security Answers for Password Reset]")
+      expect(Rails.logger).
+        to receive(:info).
+        with("[#{user.uuid}] [Authenticated Security Answers for Password Reset]")
+
       click_button 'Submit'
 
       fill_in 'New password', with: 'NewVal!dPassw0rd'

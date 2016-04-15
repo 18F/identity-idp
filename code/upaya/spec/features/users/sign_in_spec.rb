@@ -113,7 +113,7 @@ feature 'Sign in' do
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do
-    user = sign_in_and_2fa_user
+    sign_in_and_2fa_user
     visit edit_user_registration_path
     expect(current_path).to eq edit_user_registration_path
 

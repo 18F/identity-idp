@@ -106,7 +106,7 @@ class User < ActiveRecord::Base
   end
 
   def send_reset_confirmation
-    update(reset_requested_at: Time.now.utc, confirmed_at: nil)
+    update(reset_requested_at: Time.current, confirmed_at: nil)
     send_confirmation_instructions
   end
 
@@ -121,7 +121,7 @@ class User < ActiveRecord::Base
 
   def otp_time_lockout?
     return false if second_factor_locked_at.nil?
-    (Time.now - second_factor_locked_at) < Devise.allowed_otp_drift_seconds
+    (Time.current - second_factor_locked_at) < Devise.allowed_otp_drift_seconds
   end
 
   def lock_access!(opts = {})
@@ -139,7 +139,7 @@ class User < ActiveRecord::Base
 
   def confirm_2fa!
     self.second_factors = [SecondFactor.find_by_name('Email')]
-    self.second_factor_confirmed_at = Time.now
+    self.second_factor_confirmed_at = Time.current
     save!
   end
 
@@ -171,7 +171,7 @@ class User < ActiveRecord::Base
     )
 
     if authenticated == true
-      identity_opts[:last_authenticated_at] = Time.now
+      identity_opts[:last_authenticated_at] = Time.current
       identity_opts[:session_uuid] = "_#{SecureRandom.uuid}"
     end
 
@@ -226,6 +226,9 @@ class User < ActiveRecord::Base
     request.env['omniauth.auth'].extra.raw_info['UUID'] == uuid
   end
 
+  # rubocop:disable Style/ZeroLengthPredicate
+  # We need to disable this cop here because using .empty? results in an N+1
+  # query according to Bullet.
   def require_at_least_one_second_factor
     # This validation is for user updates after they have confirmed 2FA.
     # The validation during 2FA setup is handled by the
@@ -235,6 +238,7 @@ class User < ActiveRecord::Base
     message = I18n.t('activerecord.errors.models.user.attributes.second_factors.blank')
     errors.add(:second_factors, message)
   end
+  # rubocop:enable Style/ZeroLengthPredicate
 
   def needs_mobile_validation?
     return true if mobile_two_factor_enabled?

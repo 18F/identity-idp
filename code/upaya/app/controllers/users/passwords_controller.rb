@@ -17,20 +17,19 @@ module Users
       resource = resource_class.find_by_email(resource_params[:email])
 
       if resource
-
         authorize resource, :recover_password?
 
-        if resource.confirmed_at.nil?
-          # If the account has not been confirmed, password reset should resend
-          # the confirmation email instructions
-          self.resource = resource_class.send_confirmation_instructions(
-            resource_params)
-        else
-          # only send_reset_password_instructions if resource is matched above.
-          # this disallows other roles from using the password recovery form.
-          self.resource = resource_class.send_reset_password_instructions(
-            resource_params)
-        end
+        self.resource = if resource.confirmed_at.nil?
+                          # If the account has not been confirmed, password reset should resend
+                          # the confirmation email instructions
+                          resource_class.send_confirmation_instructions(
+                            resource_params)
+                        else
+                          # only send_reset_password_instructions if resource is matched above.
+                          # this disallows other roles from using the password recovery form.
+                          resource_class.send_reset_password_instructions(
+                            resource_params)
+                        end
       end
 
       flash[:success] = t('upaya.notices.password_reset')

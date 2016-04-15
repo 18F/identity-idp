@@ -3,8 +3,8 @@
 #   I want to sign up
 #   So I can visit protected areas of the site
 
-VALID_PASSWORD = 'Val!dPassw0rd'
-INVALID_PASSWORD = 'asdf'
+VALID_PASSWORD = 'Val!dPassw0rd'.freeze
+INVALID_PASSWORD = 'asdf'.freeze
 
 feature 'Sign Up', devise: true do
   context 'new user visits sign up page' do
@@ -35,7 +35,9 @@ feature 'Sign Up', devise: true do
   #   Then I see a successful sign up message
   scenario 'visitor can sign up with valid email address and password' do
     sign_up_with('test@example.com')
-    expect(page).to have_content I18n.t 'devise.registrations.signed_up_but_unconfirmed', email: 'test@example.com'
+    expect(page).to have_content(
+      t('devise.registrations.signed_up_but_unconfirmed', email: 'test@example.com')
+    )
   end
 
   # Scenario: Visitor can sign up and confirm with valid email address and password
@@ -178,7 +180,7 @@ feature 'Sign Up', devise: true do
     end
   end
 
-  context 'visitor can sign up and confirm a valid mobile for OTP when both email and mobile options are set', email: true do
+  context 'visitor can confirm mobile 2FA device when email is also selected', email: true do
     before do
       sign_up_with_and_set_password_for('test@example.com')
       check 'Mobile'
@@ -189,7 +191,8 @@ feature 'Sign Up', devise: true do
 
     it 'does not send the OTP via email so the mobile OTP option can be confirmed' do
       expect(last_email.subject).to eq t('devise.mailer.confirmation_instructions.subject')
-      expect(last_email.body).to match('To finish creating your Upaya Account, you must confirm your email address')
+      expect(last_email.body).
+        to match('To finish creating your Upaya Account, you must confirm your email address')
     end
 
     it 'informs the user that the OTP code is only sent to the mobile' do
@@ -366,7 +369,9 @@ feature 'Sign Up', devise: true do
     user = create(:user, email: 'existing_user@example.com')
     sign_up_with('existing_user@example.com')
 
-    expect(page).to have_content I18n.t('devise.registrations.signed_up_but_unconfirmed', email: user.email)
+    expect(page).to have_content(
+      t('devise.registrations.signed_up_but_unconfirmed', email: user.email)
+    )
     expect(last_email.body).to have_content 'This email address is already in use.'
     expect(last_email.body).
       to include 'at <a href="https://upaya.18f.gov/contact">'
@@ -381,7 +386,7 @@ feature 'Sign Up', devise: true do
     allow(Devise).to receive(:confirm_within).and_return(24.hours)
     sign_up_with('test@example.com')
     confirm_last_user
-    User.last.update(confirmation_sent_at: Time.now - 2.days)
+    User.last.update(confirmation_sent_at: Time.current - 2.days)
     visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
     expect(current_path).to eq user_confirmation_path
@@ -398,7 +403,7 @@ feature 'Sign Up', devise: true do
     raw_confirmation_token = Devise.token_generator.generate(User, :confirmation_token)
 
     User.last.update(
-      confirmation_token: raw_confirmation_token, confirmation_sent_at: Time.now.utc)
+      confirmation_token: raw_confirmation_token, confirmation_sent_at: Time.current)
     visit '/users/confirmation?confirmation_token=invalid_token'
 
     expect(page).to have_content 'Confirmation token is invalid'
@@ -408,7 +413,7 @@ feature 'Sign Up', devise: true do
   describe 'Setting account type' do
     def success_notice
       t('upaya.notices.account_created',
-        date: (Time.now + 1.year).strftime('%B %d, %Y'))
+        date: (Time.current + 1.year).strftime('%B %d, %Y'))
     end
 
     scenario 'visitor signs up and sets account type to self' do

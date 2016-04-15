@@ -8,7 +8,9 @@ module DevisePermittedParameters
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:account_update) << [:current_password, :email, :mobile, :password, :password_confirmation, :second_factor_confirmed_at, second_factor_ids: []]
+    devise_parameter_sanitizer.for(:account_update) <<
+      [:current_password, :email, :mobile, :password, :password_confirmation,
+       :second_factor_confirmed_at, second_factor_ids: []]
   end
 end
 
