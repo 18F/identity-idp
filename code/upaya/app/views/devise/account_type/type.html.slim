@@ -1,9 +1,11 @@
 - title t('upaya.titles.registrations.edit')
 
-
-h2 Account Type
-= simple_form_for(current_user, wrapper: :vertical_form, as: :user, url: set_type_path, html: { autocomplete: 'off', class: '', method: :patch, role: 'form' }) do |f|
-  = f.error_notification
-  -# Check the simple_form.en.yml for this content
-  = f.input :account_type, as: :radio_buttons, collection: User.account_types.keys.map(&:to_sym), label_method: lambda { |item| account_type_label(item) }
-  = f.button :submit, 'Submit', class: 'usa-button'
+.clearfix.mxn2
+  .sm-col-8.px2.mx-auto
+    .mb3.p3.bg-white
+      h2.mt2 Account Type
+      = simple_form_for(current_user, wrapper: :vertical_form, as: :user, url: set_type_path, html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
+        = f.error_notification
+        -# Check the simple_form.en.yml for this content
+        = f.input :account_type, as: :radio_buttons, collection: User.account_types.keys.map(&:to_sym), label_method: lambda { |item| account_type_label(item) }
+        = f.button :submit, 'Submit', class: 'usa-button'

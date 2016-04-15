@@ -1,7 +1,6 @@
-p.required.disclaimer-basic
+p
   abbr= '* ' + t('upaya.forms.required_field')
-
-= simple_form_for(resource, as: resource_name, wrapper: :vertical_form,  url: session_path(resource_name), html: { autocomplete: 'off', class: 'form-vertical single-column-form', role: 'form' }) do |f|
+= simple_form_for(resource, as: resource_name, wrapper: :vertical_form,  url: session_path(resource_name), html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true, input_html: { class: 'form-group gets-focus' }
   = f.input :password, required: true, input_html: { class: 'form-group' }
   = f.input :remember_me, label: false, input_html: { class: 'form-group checkbox inline'}, inline_label: 'Yes, remember me',  as: :boolean if devise_mapping.rememberable?

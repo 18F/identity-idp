@@ -1,17 +1,13 @@
-h3= t('upaya.forms.registration.contact_info')
-
-p.required
+h3 = t('upaya.forms.registration.contact_info')
+p
   abbr= '* ' + t('upaya.forms.required_field')
-
 = f.input :email, required: true, autofocus: true, input_html: { 'data-tooltip' => true, :title => t('upaya.forms.registration.email_field') }
 = f.input :mobile, required: false, input_html: { 'data-tooltip' => true, :title => t('upaya.forms.registration.mobile_field') }
 h3 Password
 = f.input :password, required: false
 = f.input :password_confirmation, required: false
-
-legend
-  h3 One-time Password Delivery Options
-  p Contact me by:
+h3 One-time Password Delivery Options
+p Contact me by:
 .tmoffset
   = f.error :second_factors
   = second_factor_checkboxes_for(f)
