@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
 
+  get 'terms' => 'terms#index'
+
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
   devise_for :users, skip: [:sessions], controllers: {
@@ -15,7 +17,6 @@ Rails.application.routes.draw do
     post '/' => 'users/sessions#create', as: :user_session
     delete 'sign_out' => 'users/sessions#destroy', as: :destroy_user_session
 
-    get 'elis' => 'users/sessions#new'
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 
