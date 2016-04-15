@@ -9,11 +9,9 @@ module ControllerHelper
     sign_in FactoryGirl.create(:user, :signed_up)
   end
 
-  # rubocop:disable Style/PredicateName
   def has_before_filters(*names)
     expect(controller).to have_filters(:before, *names)
   end
-  # rubocop:enable Style/PredicateName
 
   def sign_in_as_tech_user
     @request.env['devise.mapping'] = Devise.mappings[:user]

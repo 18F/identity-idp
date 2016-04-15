@@ -5,6 +5,8 @@ AllCops:
   Exclude:
     - 'db/schema.rb'
     - 'bin/**/*'
+    - 'config/initializers/devise.rb'
+    - 'db/migrate/20160405212342_initial_schema.rb'
   UseCache: false
 
 Lint/AssignmentInCondition:
@@ -290,3 +292,6 @@ Style/WhenThen:
   Description: Use when x then ... for one-line cases.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#one-line-cases
   Enabled: false
+Style/ZeroLengthPredicate:
+  Description: 'Use #empty? when testing for objects of length 0.'
+  Enabled: true

@@ -43,7 +43,7 @@ module Devise
     def success
       redirect_to dashboard_index_path,
                   notice: t('upaya.notices.account_created',
-                            date: (Time.now + 1.year).strftime('%B %d, %Y'))
+                            date: (Time.current + 1.year).strftime('%B %d, %Y'))
     end
 
     def confirm_needs_account_type

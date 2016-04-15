@@ -21,7 +21,7 @@ describe SpRedirect do
         user_id: user_id,
         service_provider: 'sp.example.com',
         authn_context: 'foo',
-        last_authenticated_at: Time.now
+        last_authenticated_at: Time.current
       )
       allow_any_instance_of(ServiceProvider).
         to receive(:sp_initiated_login_url).and_return('sp.example.com')

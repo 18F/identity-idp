@@ -19,7 +19,7 @@ feature 'Sign out', devise: true do
     user = sign_in_user
     user.update(unconfirmed_mobile: '555-555-5555')
 
-    Timecop.freeze(Time.now + 1200) do
+    Timecop.freeze(Time.current + 1200) do
       visit edit_user_registration_path
       expect(user.reload.unconfirmed_mobile).to be_nil
     end

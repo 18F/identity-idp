@@ -80,12 +80,15 @@ describe TwilioService, sms: true do
   describe '#send_sms' do
     it 'uses the same account for every call in a single instance' do
       expect(Rails.application.secrets).to receive(:twilio_accounts).
-        and_return([
-          {
-            'sid' => 'sid1',
-            'auth_token' => 'token1',
-            'number' => '1111111111'
-          }])
+        and_return(
+          [
+            {
+              'sid' => 'sid1',
+              'auth_token' => 'token1',
+              'number' => '1111111111'
+            }
+          ]
+        )
       expect(Twilio::REST::Client).to receive(:new).with('sid1', 'token1').and_call_original
 
       twilio = TwilioService.new

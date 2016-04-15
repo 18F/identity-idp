@@ -1,4 +1,4 @@
-class TechSupportPolicy < Struct.new(:user, :tech_support)
+TechSupportPolicy = Struct.new(:user, :tech_support) do
   def index?
     user.admin? || user.tech?
   end

@@ -6,11 +6,11 @@ class Authorization < ActiveRecord::Base
   before_save :perform_post_authorization_hooks
 
   def self.from_omniauth(auth_hash, existing_user = nil)
-    if find_from_hash(auth_hash).present?
-      auth = find_from_hash(auth_hash)
-    else
-      auth = create_from_hash(auth_hash, existing_user)
-    end
+    auth = if find_from_hash(auth_hash).present?
+             find_from_hash(auth_hash)
+           else
+             create_from_hash(auth_hash, existing_user)
+           end
     auth.update_user_role(auth_hash) if auth
     auth
   end
@@ -28,19 +28,19 @@ class Authorization < ActiveRecord::Base
       user: user,
       uid: auth_hash.extra.raw_info['UUID'],
       provider: auth_hash.provider,
-      authorized_at: Time.zone.now
+      authorized_at: Time.current
     )
   end
 
   def update_authorized_at
-    update(authorized_at: Time.zone.now)
+    update(authorized_at: Time.current)
   end
 
   def self.find_or_create_user(auth_hash)
     # Look up existing users based on email only.
     user ||= User.find_or_create_by(email: auth_hash.extra.raw_info['emailAddress']) do |u|
       u.confirm_2fa!
-      u.update!(account_type: :self, confirmed_at: Time.zone.now)
+      u.update!(account_type: :self, confirmed_at: Time.current)
     end
     user
   end

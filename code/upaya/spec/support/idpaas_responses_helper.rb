@@ -59,30 +59,34 @@ module IdpaasResponsesHelper
   end
 
   def response_without_help
-    { 'question':
-      { 'questionId': 'unique_id',
-        'text': 'What is the ZIP code of the address where you plan to live in the U.S.?',
-        'answers': [{ 'key': 1, 'text': '21005' },
-                    { 'key': 2, 'text': '21045' },
-                    { 'key': 3, 'text': '21917' },
-                    { 'key': 4, 'text': '21802' },
-                    { 'key': 5, 'text': 'NONE OF THE ABOVE' }]
+    { question:
+      { questionId: 'unique_id',
+        text: 'What is the ZIP code of the address where you plan to live in the U.S.?',
+        answers: [
+          { key: 1, text: '21005' },
+          { key: 2, text: '21045' },
+          { key: 3, text: '21917' },
+          { key: 4, text: '21802' },
+          { key: 5, text: 'NONE OF THE ABOVE' }
+        ]
       }
     }.to_json
   end
 
   def response_without_help_with_nulls
-    { 'question':
-        { 'questionId': 'unique_id',
-          'text': 'What is the ZIP code of the address where you plan to live in the U.S.?',
-          'answers': [{ 'key': 1, 'text': '21005' },
-                      { 'key': 2, 'text': '21045' },
-                      { 'key': 3, 'text': '21917' },
-                      { 'key': 4, 'text': '21802' },
-                      { 'key': 5, 'text': 'NONE OF THE ABOVE' }],
-          'helpMessage': nil,
-          'helpUuid': nil,
-          'helpImageUrl':nil
+    { question:
+        { questionId: 'unique_id',
+          text: 'What is the ZIP code of the address where you plan to live in the U.S.?',
+          answers: [
+            { key: 1, text: '21005' },
+            { key: 2, text: '21045' },
+            { key: 3, text: '21917' },
+            { key: 4, text: '21802' },
+            { key: 5, text: 'NONE OF THE ABOVE' }
+          ],
+          helpMessage: nil,
+          helpUuid: nil,
+          helpImageUrl: nil
         }
     }.to_json
   end

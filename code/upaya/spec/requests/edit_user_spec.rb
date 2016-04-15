@@ -15,7 +15,7 @@ describe 'user edits their account', email: true do
 
     patch_via_redirect(
       user_two_factor_authentication_path,
-      'code' => @user.otp_code,
+      'code' => @user.otp_code
     )
   end
 

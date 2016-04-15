@@ -35,7 +35,8 @@ Rails.application.configure do
   # yet still be able to expire them through the digest params.
   config.assets.digest = true
 
-  # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
+  # `config.assets.precompile` and `config.assets.version` have moved to
+  # config/initializers/assets.rb
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = 'X-Sendfile' # for Apache
@@ -96,5 +97,5 @@ Rails.application.configure do
 
   # Enable Lograge in production for succinct logging
   config.lograge.enabled = true
-  config.lograge.custom_options = lambda { |event| event.payload }
+  config.lograge.custom_options = ->(event) { event.payload }
 end

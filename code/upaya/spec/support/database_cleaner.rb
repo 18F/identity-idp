@@ -10,12 +10,12 @@ RSpec.configure do |config|
 
   config.before(:each, js: true) do
     DatabaseCleaner.strategy = :truncation,
-                               { except: %w[app_settings second_factors security_questions] }
+                               { except: %w(app_settings second_factors security_questions) }
   end
 
   config.before(:each, truncate: true) do
     DatabaseCleaner.strategy = :truncation,
-                               { except: %w[app_settings second_factors security_questions] }
+                               { except: %w(app_settings second_factors security_questions) }
   end
 
   config.before(:each) do

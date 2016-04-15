@@ -270,12 +270,12 @@ Devise.setup do |config|
   config.expire_password_after = 1.year
 
   # Need 1 char of A-Z, a-z and 0-9
-  config.password_regex = %r{
+  config.password_regex = /
     (?=.*\d)
     (?=.*[a-z])
     (?=.*[A-Z])
     (?=.*[#{Regexp.escape(Upaya::Constants::PASSWORD_SPECIAL_CHARS)}])
-  }x
+  /x
 
   # How many passwords to keep in archive
   config.password_archiving_count = 8

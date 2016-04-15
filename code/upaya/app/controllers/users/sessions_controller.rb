@@ -17,7 +17,7 @@ module Users
     end
 
     def active
-      response.headers['Etag'] = ''  # clear etags to prevent caching
+      response.headers['Etag'] = '' # clear etags to prevent caching
       render json: { live: current_user.present?, timeout: session[:session_expires_at] }
     end
 
