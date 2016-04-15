@@ -9,12 +9,9 @@ h3 Password
 = f.input :password, required: false
 = f.input :password_confirmation, required: false
 
-legend.otp-big-legend
-  h3.bbtm One-time Password Delivery Options
-  p.otp-legend Contact me by:
+legend
+  h3 One-time Password Delivery Options
+  p Contact me by:
 .tmoffset
-  .form-group
-    = f.error :second_factors
-    = second_factor_checkboxes_for(f)
-
-br clear="both"
+  = f.error :second_factors
+  = second_factor_checkboxes_for(f)

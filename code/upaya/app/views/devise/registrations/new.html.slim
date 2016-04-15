@@ -1,21 +1,18 @@
 - title t('upaya.titles.registrations.new')
 
-.panel.panel-default
-  .panel-body
-    h2 = t('upaya.headings.registrations.new')
-    hr
-    = simple_form_for(resource, as: :user, wrapper: :vertical_form, class: 'vertical_form single-column-form', html: { autocomplete: 'off', class: 'top-label', role: 'form' }, url: user_registration_path) do |f|
-      = f.error_notification
 
-      p.required.disclaimer-basic
-        abbr= '* ' + t('upaya.forms.required_field')
-      .neat-row
-        = f.input :email, required: true, autofocus: true, input_html: { 'aria-describedby' => 'email_description' }
-      p.disclaimer-basic = t('upaya.forms.registration.email_field')
-      p.disclaimer-basic = t('upaya.forms.registration.email_html')
-      = f.button :submit, 'Sign Up', class: 'upaya-button-secondary-blue'
-      p.disclaimer-text
-        = t('upaya.forms.registration.already_have_account_html')
-        '
-        = link_to 'Log in', new_user_session_path
+h2 = t('upaya.headings.registrations.new')
+= simple_form_for(resource, as: :user, wrapper: :vertical_form, html: { autocomplete: 'off', class: 'top-label', role: 'form' }, url: user_registration_path) do |f|
+  = f.error_notification
+  p
+    abbr= '* ' + t('upaya.forms.required_field')
+  = f.input :email, required: true, autofocus: true, input_html: { 'aria-describedby' => 'email_description' }
+  p = t('upaya.forms.registration.email_field')
+  p = t('upaya.forms.registration.email_html')
+  = f.button :submit, 'Sign Up', class: 'usa-button'
+  p
+    = t('upaya.forms.registration.already_have_account_html')
+    '
+    = link_to 'Log in', new_user_session_path
+
 == render 'terms/smallprint'

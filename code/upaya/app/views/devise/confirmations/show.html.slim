@@ -1,23 +1,15 @@
 - title t('upaya.titles.confirmations.show')
 
-.panel.panel-default
-  .panel-body
-    h2= t('upaya.forms.confirmation.show_hdr')
-    hr
-    p.disclaimer-text = t('upaya.forms.confirmation.show_instructions')
 
-    = simple_form_for(resource, as: resource_name, url: confirm_path,  wrapper: :vertical_form, html: { class: 'vertical_form single-column-form', role: 'form', autocomplete: 'off' }) do |f|
-      = f.error_notification
-      p.required.disclaimer-basic
-        abbr= '* ' + t('upaya.forms.required_field')
+h2 = t('upaya.forms.confirmation.show_hdr')
+p = t('upaya.forms.confirmation.show_instructions')
 
-      fieldset
-        .form-inputs
-          = f.input :password, required: true, input_html: { class: 'form-control', autofocus: true }
-          = f.input :password_confirmation, required: true, input_html: { class: 'form-control' }
-          = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
-
-      br clear="both"
-
-      .form-actions
-        = f.button :submit, 'Submit', class: 'upaya-button-secondary-blue'
+= simple_form_for(resource, as: resource_name, url: confirm_path,  wrapper: :vertical_form, html: { role: 'form', autocomplete: 'off' }) do |f|
+  = f.error_notification
+  p
+    abbr= '* ' + t('upaya.forms.required_field')
+  fieldset
+    = f.input :password, required: true, input_html: { class: 'form-control', autofocus: true }
+    = f.input :password_confirmation, required: true, input_html: { class: 'form-control' }
+    = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
+  = f.button :submit, 'Submit', class: 'usa-button'

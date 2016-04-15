@@ -1,5 +1,6 @@
-.bg-silver.center
-  | r
-  = link_to(Git::REVISION, 'https://github.com/18F/identity/commit/' + Git::REVISION)
-  |&nbsp;&middot;&nbsp;v
-  = link_to(Git::VERSION, 'https://github.com/18F/identity/releases/tag/' + Git::VERSION)
+.bg-lime.center
+  | GitHub: 
+  = link_to('r' + Git::REVISION, 'https://github.com/18F/identity/commit/' + Git::REVISION)
+  - if Git::VERSION != ''
+      |&nbsp;&middot;&nbsp;
+      = link_to('v' + Git::VERSION, 'https://github.com/18F/identity/releases/tag/' + Git::VERSION)

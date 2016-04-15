@@ -1,14 +1,10 @@
-.smallprint-row
-    .panel.panel-default.panel-sp
-      .smallprint
-        a#consent tabindex="-1"
-        hr
-        a#privacy tabindex="-1"
-        h5
-          'Upaya Privacy Act Statement
-        = render 'shared/privacy_text'
-        hr
-        a#pra tabindex="-1"
-        h5
-          'Paperwork Reduction Act Burden Disclosure Notice
-        = render 'shared/pra_text'
+div
+  a#consent tabindex="-1"
+  a#privacy tabindex="-1"
+  h5
+    'Upaya Privacy Act Statement
+  = render 'shared/privacy_text'
+  a#pra tabindex="-1"
+  h5
+    'Paperwork Reduction Act Burden Disclosure Notice
+  = render 'shared/pra_text'
