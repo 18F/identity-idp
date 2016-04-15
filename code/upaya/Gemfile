@@ -51,7 +51,7 @@ group :deploy do
   gem 'knife-solo_data_bag'
 end
 
-group :development do
+group :development, :docker do
   gem 'aws-sdk', '~> 2.0'
   gem 'better_errors'
   gem 'derailed'
@@ -65,7 +65,7 @@ group :development do
   gem 'spring-watcher-listen'
 end
 
-group :development, :test do
+group :development, :test, :docker do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
