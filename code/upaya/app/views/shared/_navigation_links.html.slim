@@ -3,10 +3,10 @@
     = render 'dashboard/admin/navigation'
   - else
     .py2.bg-white
-      .container.px2
+      .px2.right-align
         = link_to t('upaya.links.sign_out'), destroy_user_session_path, method: 'delete', class: 'usa-button'
 - else
   .py2.bg-white
-    .container.px2
+    .px2.right-align
       = link_to t('upaya.links.sign_in'), new_user_session_path, class: 'usa-button'
       = link_to t('upaya.links.sign_up'), new_user_registration_path, class: 'usa-button'

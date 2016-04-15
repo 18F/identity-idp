@@ -1,8 +1,6 @@
 - title t('upaya.titles.enter_auth_code')
 
-
 h2 = t('devise.two_factor_authentication.enter_auth_code')
-
 = form_tag([resource_name, :two_factor_authentication], method: :put, role: 'form') do
   = text_field_tag :code
   = submit_tag 'Submit', class: 'usa-button'
