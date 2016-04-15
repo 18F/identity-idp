@@ -1,3 +1,5 @@
+require 'omniauth_authorizer'
+
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     skip_before_action :verify_authenticity_token
@@ -5,15 +7,10 @@ module Users
     def saml
       authorize :omniauth_callback, :saml?
 
-      begin
-        @auth = Authorization.from_omniauth(auth_hash, current_user)
-      rescue ActiveRecord::RecordInvalid
-        logger.info $ERROR_INFO.message
+      OmniauthAuthorizer.new(auth_hash, session).perform do |user, action|
+        @user = user
+        send(action)
       end
-
-      return render_401 if @auth.blank?
-      sign_in_and_redirect @auth.user
-      set_flash_message(:notice, :success, kind: 'Enterprise') if is_navigational_format?
     end
 
     private
@@ -22,9 +19,14 @@ module Users
       request.env['omniauth.auth']
     end
 
-    def pundit_user
-      groups = auth_hash.extra.raw_info.multi('groups') || auth_hash.extra.raw_info['groups']
-      UserContext.new(current_user, groups)
+    def process_valid_authorization
+      sign_in_and_redirect @user
+      set_flash_message(:notice, :success)
+    end
+
+    def process_invalid_authorization
+      set_flash_message(:alert, :failure, reason: 'Invalid email')
+      redirect_to root_url
     end
   end
 end

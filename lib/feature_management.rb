@@ -3,7 +3,7 @@ class FeatureManagement
     Figaro.env.pt_mode == 'on'
   end
 
-  def self.allow_enterprise_auth?
-    Figaro.env.allow_enterprise_auth == 'yes' || Rails.env.test?
+  def self.allow_third_party_auth?
+    Figaro.env.allow_third_party_auth == 'yes'
   end
 end

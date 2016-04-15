@@ -2,6 +2,7 @@ require 'feature_management'
 require 'omniauth'
 
 DEFAULT_OPTIONS = {
+  idp_sso_target_url: Figaro.env.idp_sso_target_url,
   issuer: "https://#{Figaro.env.domain_name}/users/auth/saml",
   single_signon_service_binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
   idp_cert: Rails.application.secrets.saml_idp_cert,
@@ -19,8 +20,8 @@ DEFAULT_OPTIONS = {
   security: {
     authn_requests_signed: true,
     embed_sign: true,
-    digest_method: 'http://www.w3.org/2000/09/xmldsig#sha1',
-    signature_method: 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
+    digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
+    signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
   }
 }.freeze
 options = DEFAULT_OPTIONS
@@ -29,17 +30,11 @@ if Rails.env == 'development'
   options = DEFAULT_OPTIONS.merge(
     issuer: "http://#{Figaro.env.domain_name}/users/auth/saml",
     assertion_consumer_service_url: "http://#{Figaro.env.domain_name}/users/auth/saml/callback",
-    allowed_clock_drift: 1.hour,
-    security: {
-      authn_requests_signed: true,
-      embed_sign: true,
-      digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
-      signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
-    }
+    allowed_clock_drift: 5.minutes
   )
 end
 
-if FeatureManagement.allow_enterprise_auth?
+if FeatureManagement.allow_third_party_auth?
   Rails.application.config.middleware.use OmniAuth::Builder do
     provider :saml, options
   end

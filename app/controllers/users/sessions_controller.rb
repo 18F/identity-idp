@@ -2,7 +2,6 @@ module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
 
-    before_action :halt_privileged, only: :create
     prepend_before_action :skip_timeout, only: [:active]
     skip_before_action :session_expires_at, only: [:active]
 
@@ -27,21 +26,6 @@ module Users
         session_timeout: distance_of_time_in_words(Devise.timeout_in)
       )
       redirect_to root_url
-    end
-
-    private
-
-    def halt_privileged
-      return if Figaro.env.allow_privileged == 'yes'
-
-      user = User.find_by_email(params[:user][:email])
-      do_not_pass_go if user && user.privileged? &&
-                        user.valid_password?(params[:user][:password])
-    end
-
-    def do_not_pass_go
-      flash[:error] = 'You are not authorized'
-      redirect_to root_url and return
     end
   end
 end

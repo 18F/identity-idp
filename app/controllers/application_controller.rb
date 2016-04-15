@@ -69,23 +69,23 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_two_factor_setup
-    return unless current_user
-    return if current_user.two_factor_enabled?
+    user_decorator = UserDecorator.new(current_user)
+    return if user_decorator.may_bypass_two_factor_setup?(session)
+
     flash[:notice] = t('devise.two_factor_authentication.otp_setup')
     redirect_to users_otp_url
   end
 
   def confirm_two_factor_authenticated
     return if is_fully_authenticated?
+
     flash[:error] = t('devise.errors.messages.user_not_authenticated')
     redirect_to user_two_factor_authentication_url
   end
 
   def confirm_security_questions_setup
-    return if current_user.blank?
-    return if current_user.admin?
-    return if current_user.tech?
-    return if current_user.security_questions_enabled?
+    return unless UserDecorator.new(current_user).needs_security_questions?(session)
+
     flash[:error] = I18n.t('upaya.errors.must_setup_security_questions')
     redirect_to users_questions_url
   end

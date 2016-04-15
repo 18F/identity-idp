@@ -42,4 +42,94 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#confirm_two_factor_setup' do
+    controller do
+      before_filter :confirm_two_factor_setup
+
+      def index
+        render text: 'Hello'
+      end
+    end
+
+    context 'when the user may bypass 2FA setup' do
+      it 'returns nil' do
+        sign_in_as_user
+
+        user_decorator = instance_double(UserDecorator)
+
+        allow(UserDecorator).to receive(:new).with(subject.current_user).
+          and_return(user_decorator)
+        allow(user_decorator).to receive(:may_bypass_two_factor_setup?).
+          and_return(true)
+
+        get :index
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+
+    context 'when the user may not bypass 2FA setup' do
+      it 'redirects to users_otp_url with a flash message' do
+        sign_in_as_user
+
+        user_decorator = instance_double(UserDecorator)
+
+        allow(UserDecorator).to receive(:new).with(subject.current_user).
+          and_return(user_decorator)
+        allow(user_decorator).to receive(:may_bypass_two_factor_setup?).
+          and_return(false)
+
+        get :index
+
+        expect(response).to redirect_to users_otp_url
+        expect(flash[:notice]).to eq t('devise.two_factor_authentication.otp_setup')
+      end
+    end
+  end
+
+  describe '#confirm_security_questions_setup' do
+    controller do
+      before_filter :confirm_security_questions_setup
+
+      def index
+        render text: 'Hello'
+      end
+    end
+
+    context 'when the user may bypass security questions setup' do
+      it 'returns nil' do
+        sign_in_as_user
+
+        user_decorator = instance_double(UserDecorator)
+
+        allow(UserDecorator).to receive(:new).with(subject.current_user).
+          and_return(user_decorator)
+        allow(user_decorator).to receive(:needs_security_questions?).
+          and_return(false)
+
+        get :index
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+
+    context 'when the user may not bypass security questions setup' do
+      it 'redirects to users_otp_url with a flash message' do
+        sign_in_as_user
+
+        user_decorator = instance_double(UserDecorator)
+
+        allow(UserDecorator).to receive(:new).with(subject.current_user).
+          and_return(user_decorator)
+        allow(user_decorator).to receive(:needs_security_questions?).
+          and_return(true)
+
+        get :index
+
+        expect(response).to redirect_to users_questions_url
+        expect(flash[:error]).to eq t('upaya.errors.must_setup_security_questions')
+      end
+    end
+  end
 end

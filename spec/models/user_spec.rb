@@ -398,42 +398,20 @@ describe User do
   end
 
   context '#need_two_factor_authentication?' do
-    let(:request) { ActionController::TestRequest.new }
+    it 'is true when two_factor_enabled' do
+      user = build_stubbed(:user)
 
-    it 'is true when second factor is enabled and confirmed' do
-      user = create(:user, :tfa_confirmed)
+      allow(user).to receive(:two_factor_enabled?).and_return true
 
-      expect(user.need_two_factor_authentication?(request)).to be_truthy
+      expect(user.need_two_factor_authentication?(nil)).to be_truthy
     end
 
-    it 'is false when signed up and authenticating with Enterprise' do
-      user = create(:user, :signed_up)
-      allow(user).to receive(:enterprise_authenticated?).with(request).and_return(true)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
+    it 'is false when not two_factor_enabled' do
+      user = build_stubbed(:user)
 
-    it 'is false when 2fa is enabled and authenticating with Enterprise' do
-      user = create(:user, :tfa_confirmed)
-      allow(user).to receive(:enterprise_authenticated?).with(request).and_return(true)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
+      allow(user).to receive(:two_factor_enabled?).and_return false
 
-    it 'is true when 2fa is enabled and not authenticating with Enterprise' do
-      user = create(:user, :tfa_confirmed)
-      allow(user).to receive(:enterprise_authenticated?).with(request).and_return(false)
-      expect(user.need_two_factor_authentication?(request)).to be_truthy
-    end
-
-    it 'is false when 2fa is not enabled and authenticating with Enterprise' do
-      user = create(:user)
-      allow(user).to receive(:enterprise_authenticated?).with(request).and_return(true)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
-
-    it 'is false when 2fa is not enabled and not authenticating with Enterprise' do
-      user = create(:user)
-      allow(user).to receive(:enterprise_authenticated?).with(request).and_return(false)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
+      expect(user.need_two_factor_authentication?(nil)).to be_falsey
     end
   end
 
@@ -705,24 +683,6 @@ describe User do
         expect(user.errors.any?).to be_falsey
         expect(user).to be_valid
       end
-    end
-  end
-
-  context '#confirm_2fa!' do
-    it 'sets second factor to email' do
-      user = create(:user)
-      user.confirm_2fa!
-      user.reload
-
-      expect(user.second_factors.pluck(:name)).to include('Email')
-    end
-
-    it 'sets second_factor_confirmed_at' do
-      user = create(:user)
-
-      expect(user.confirm_2fa!).to be_truthy
-
-      expect(user.second_factor_confirmed_at).to be_within(1.second).of Time.current
     end
   end
 
