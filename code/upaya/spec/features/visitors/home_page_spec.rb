@@ -28,35 +28,6 @@ feature 'Home page' do
     end
   end
 
-  context 'small print' do
-    before(:each) { visit root_path }
-
-    xit 'links to Privacy Act Statement' do
-      click_link 'Privacy Act Statement'
-      expect(page).to have_content('The information and associated')
-      expect(page).to have_link 'www.upaya.gov/privacy', href: 'https://www.upaya.gov/privacy'
-      expect(current_path).to eq terms_path
-    end
-
-    xit 'links to Paperwork Reduction Act Reporting Burden' do
-      click_link 'Paperwork Reduction Act Reporting Burden'
-      expect(page).to have_content 'An agency may not conduct'
-      expect(current_path).to eq terms_path
-    end
-
-    it 'links to Accessibility Policy' do
-      expect(page).
-        to have_link('Accessibility Policy', href: 'http://upaya.18f.gov/accessibility')
-    end
-
-    it 'links to Terms of Use' do
-      skip 'waiting for OMB approval'
-      click_link 'Terms of Use'
-      expect(page).to have_content('Rules of Behavior')
-      expect(current_path).to eq terms_path
-    end
-  end
-
   describe 'navigation links' do
     it 'links to root for Sign In link' do
       visit root_path
