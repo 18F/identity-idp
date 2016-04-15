@@ -1,8 +1,10 @@
 - title t('upaya.titles.security_questions.new')
 
-
-h2= t('devise.security_questions.header_text')
-p = t('devise.security_questions.description')
-= required_form_field(resource, as: resource_name, wrapper: :vertical_form, html: { autocomplete: 'off', class: 'form-horizontal security-questions' }, url: users_questions_path) do |f|
-  = render 'devise/security_questions/form', f: f
-  = f.button :submit, 'Submit', class: 'usa-button'
+.clearfix.mxn2
+  .sm-col-8.px2.mx-auto
+    .mb3.p3.bg-white
+      h2.mt2 = t('devise.security_questions.header_text')
+      p = t('devise.security_questions.description')
+      = required_form_field(resource, as: resource_name, wrapper: :vertical_form, html: { autocomplete: 'off' }, url: users_questions_path) do |f|
+        = render 'devise/security_questions/form', f: f
+        = f.button :submit, 'Submit', class: 'usa-button'
