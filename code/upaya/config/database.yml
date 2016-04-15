@@ -24,7 +24,7 @@ docker: &docker
   adapter: postgresql
   encoding: utf8
   database: upaya_<%= Rails.env %>
-  port: 5432
+  port: <%= ENV['POSTGRES_PORT_5432_TCP_PORT'] %>
   user: postgres
-  hostname: <%= ENV['POSTGRES_PORT_5432_TCP_ADDR'] %>
+  host: <%= ENV['POSTGRES_PORT_5432_TCP_ADDR'] %>
   password: <%= ENV['POSTGRES_ENV_POSTGRES_PASSWORD'] %>
