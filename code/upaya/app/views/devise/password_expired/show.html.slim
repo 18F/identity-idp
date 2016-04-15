@@ -1,12 +1,14 @@
 - title t('upaya.titles.passwords.update')
 
-
-h2= t('upaya.headings.passwords.update')
-= simple_form_for(resource, as: resource_name, url: [resource_name, :password_expired], html: { autocomplete: 'off', class: 'form-horizontal', method: :put, role: 'form' }) do |f|
-  = f.error_notification
-  p
-    abbr= '* ' + t('upaya.forms.required_field')
-  = f.input :current_password, required: true, autofocus: true
-  = f.input :password, label: 'New password', required: true
-  = f.input :password_confirmation, label: 'Confirm your new password', required: true
-  = f.button :submit, 'Change my password'
+.clearfix.mxn2
+  .sm-col-8.px2.mx-auto
+    .mb3.p3.bg-white
+      h2.mt2 = t('upaya.headings.passwords.update')
+      = simple_form_for(resource, as: resource_name, url: [resource_name, :password_expired], html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+        = f.error_notification
+        p
+          abbr= '* ' + t('upaya.forms.required_field')
+        = f.input :current_password, required: true, autofocus: true
+        = f.input :password, label: 'New password', required: true
+        = f.input :password_confirmation, label: 'Confirm your new password', required: true
+        = f.button :submit, 'Change my password'
