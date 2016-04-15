@@ -42,8 +42,6 @@ module Upaya
     # is a multiple of 60 seconds.
     config.session_check_frequency         = 60
 
-    # config.active_job.queue_adapter = :resque
-
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
   end
 end

@@ -1,4 +1,4 @@
-upaya
+Upaya
 =====
 
 The recognition of Identity is an often misunderstood concept in our Democracy.
@@ -8,16 +8,18 @@ The recognition of Identity is an often misunderstood concept in our Democracy.
 
 - Ruby 2.3.0 (try [rbenv](https://github.com/rbenv/rbenv) or
   [rvm](https://rvm.io/))
-- Bundler (`gem install bundler`)
-- postgresql (`brew install postgresql` or `apt-get install postgresql`)
+- Postgresql (`brew install postgresql` or `apt-get install postgresql`)
+- Redis 2.8+
 
 ### Mac
 
-- [Vagrant](https://www.vagrantup.com/downloads.html)
-- [Virtualbox](https://www.virtualbox.org/wiki/Downloads) or [VMware Fusion](https://www.vmware.com/products/fusion)
+The easiest way to install the dependencies on a Mac is to run the
+[Laptop](https://github.com/18F/laptop) script. Then, make sure Postgres
+and Redis are running:
 
-Or, try the [Laptop](https://github.com/18F/laptop) script for setting up a
-slick development environment.
+```
+brew services start redis postgres
+```
 
 ### Getting Started
 
@@ -28,7 +30,7 @@ Run the following command to set up the environment:
 This basically runs bundler to install the required gems and sets up the
 database.  If that is successful you can run the app server with:
 
-    $ bin/rails server
+    $ foreman start
 
 ### Running Tests
 
@@ -54,7 +56,7 @@ more information.
 
 **Notice:** This project is still in alpha.
 
-### Why 'upaya'?
+### Why 'Upaya'?
 
 "skill in means" https://en.wikipedia.org/wiki/Upaya
 

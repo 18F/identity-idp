@@ -14,6 +14,9 @@ Dir.chdir APP_ROOT do
 
   puts "== Installing dependencies =="
   run "gem install bundler --conservative"
+
+  run 'gem install foreman && gem update foreman'
+
   run "bundle check || bundle install"
 
   puts "\n== Copying sample files =="
