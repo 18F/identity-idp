@@ -1,0 +1,28 @@
+---
+env:
+  RAILS_ENV: development
+  RACK_ENV: development
+  MAX_THREADS: 1
+  WEB_CONCURRENCY: 2
+  BUNDLE_WITHOUT: production
+buildpack:
+  # This buildpack-multi needs atleast a .buildpack file with other buildpacks in it
+  https://github.com/ddollar/heroku-buildpack-multi.git
+
+applications:
+-  name: icammz
+   path: .
+   memory: 512M
+   instances: 1
+   host: icammz
+   domain: 18f.gov
+   stack: cflinuxfs2
+   services:
+    - icam-psql
+    - icam-redis
+
+
+#Reference
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#precompile
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-prod-server.html
+#   https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server

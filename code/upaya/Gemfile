@@ -2,7 +2,6 @@ source 'https://rubygems.org'
 ruby '2.3.0'
 
 gem 'rails', '~> 4.2.6'
-
 gem 'attr_encrypted'
 gem 'autoprefixer-rails', '~> 5.2'
 gem 'coffee-rails', '~> 4.1.0'
@@ -49,6 +48,7 @@ group :deploy do
   gem 'knife-ec2'
   gem 'knife-solo', github: 'matschaffer/knife-solo', submodules: true
   gem 'knife-solo_data_bag'
+  gem 'puma'
 end
 
 group :development do
