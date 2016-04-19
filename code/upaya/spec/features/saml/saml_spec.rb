@@ -55,12 +55,6 @@ feature 'saml api', devise: true, sms: true do
           to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
       end
 
-      it 'contains a digest method nodeset with SHA256 algorithm' do
-        expect(xmldoc.digest_method_nodeset.length).to eq(1)
-        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
-          to eq('http://www.w3.org/2001/04/xmlenc#sha256')
-      end
-
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
         click_button 'Submit'
         expect(page.current_url).
