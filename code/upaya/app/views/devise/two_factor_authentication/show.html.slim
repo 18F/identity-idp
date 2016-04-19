@@ -11,10 +11,9 @@
       - if current_user.unconfirmed_mobile.present? && !current_user.two_factor_enabled?
         p If you are setting up a new phone number, try #{link_to 'entering it again', users_otp_path, data: { 'no-turbolink' => true }, title: 'Try entering your phone number again'}.
 
-      = form_tag([:user, :two_factor_authentication], wrapper: :vertical_form, method: :put, role: 'form' ) do
+      = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
         p
           abbr= '* ' + t('upaya.forms.required_field')
-
         = label_tag 'code', raw('<abbr title="required">*</abbr> ') + t('upaya.forms.two_factor.code')
-        = text_field_tag :code, '', { class: 'gets-focus', required: true }
+        = text_field_tag :code, '', required: true, class: 'gets-focus'
         = submit_tag 'Submit', class: 'usa-button'

@@ -4,7 +4,7 @@
   .sm-col-8.px2.mx-auto
     .mb3.p3.bg-white
       h2.mt2 = t('devise.two_factor_authentication.select_two_factor')
-      = simple_form_for(resource, as: :user, wrapper: :vertical_form, html: { autocomplete: 'off', role: 'form' }, url: users_otp_path) do |f|
+      = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: users_otp_path) do |f|
         = f.error_notification
         p = t('devise.two_factor_authentication.otp_setup')
         = second_factor_checkboxes_for(f, '2fa_setup')
@@ -12,4 +12,4 @@
           .mobile-num
             p = t('devise.two_factor_authentication.otp_sms_disclaimer')
             = f.input :mobile, required: false, label: 'Mobile Number'
-        = f.button :submit, 'Submit', id: 'main-submit', class: 'usa-button'
+        = f.button :submit, 'Submit'

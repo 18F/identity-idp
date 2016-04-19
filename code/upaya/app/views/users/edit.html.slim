@@ -1,20 +1,14 @@
 - title t('upaya.titles.users.edit', user: @user.email)
 
 h3 = t('upaya.headings.users.edit')
-
-= required_form_field(@user, html: { class: 'form-horizontal', role: 'form', autocomplete: 'off' }) do |f|
+= required_form_field(@user, html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.error_notification
-
   = f.input :email, required: true, autofocus: true
   = f.input :mobile, required: false, readonly: true
   = f.input :role, collection: User.roles.keys.map { |role| [role.titleize, role] }
-
   fieldset
     legend
       h3 Two-Factor Authentication
     = f.error :second_factors
     = second_factor_checkboxes_for(f)
-
-  br
-  .form-actions
-    = f.button :submit, 'Update', class: 'upaya-button-secondary-blue'
+  = f.button :submit, 'Update', class: 'usa-button'
