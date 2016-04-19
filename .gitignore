@@ -29,29 +29,29 @@ rerun.txt
 Vagrantfile
 
 # folders
-code/upaya/config/application.yml
-code/upaya/config/aws.yml
-code/upaya/config/database.yml
-code/upaya/config/newrelic.yml
-code/upaya/config/saml.key.enc
-code/upaya/config/secrets.yml
-code/upaya/coverage
-code/upaya/db/*.sqlite3
-code/upaya/doc/search_stats.csv
-code/upaya/fixtures
-code/upaya/kitchen/cookbooks
-code/upaya/log/*
-code/upaya/private_certs/*
-code/upaya/public/system
-code/upaya/spec/tmp
-code/upaya/test
-code/upaya/tmp/*
-code/upaya/vendor/bundle
-code/upaya/node_modules
+/config/application.yml
+/config/aws.yml
+/config/database.yml
+/config/newrelic.yml
+/config/saml.key.enc
+/config/secrets.yml
+/coverage
+/db/*.sqlite3
+/doc/search_stats.csv
+/fixtures
+/kitchen/cookbooks
+/log/*
+/private_certs/*
+/public/system
+/spec/tmp
+/test
+/tmp/*
+/vendor/bundle
+/node_modules
 
 # This is a hack to keep the files that are added to the repo and to prevent git from worrying about
 # new (transient) files that may be created in those dirs.
-code/upaya/config/deploy/*.rb
-code/upaya/kitchen/nodes/*.json
-code/upaya/kitchen/data_bags/config/*.yml
-code/upaya/kitchen/data_bags/config/databag_secrets.json
+/config/deploy/*.rb
+/kitchen/nodes/*.json
+/kitchen/data_bags/config/*.yml
+/kitchen/data_bags/config/databag_secrets.json

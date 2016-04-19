@@ -1,5 +1,4 @@
 before_script:
-- cd code/upaya
 - cp config/database.yml.example config/database.yml
 - cp config/saml.key.enc.example config/saml.key.enc
 - cp config/secrets.yml.example config/secrets.yml
@@ -18,4 +17,3 @@ rvm:
 sudo: false
 script:
 - bundle exec rspec --require rails_helper
-gemfile: code/upaya/Gemfile
