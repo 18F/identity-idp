@@ -1,7 +1,7 @@
 require 'service_provider'
 
 SamlIdp.configure do |config|
-  protocol = Rails.env.production? ? 'https://' : 'http://'
+  protocol = Rails.env.development? ? 'http://' : 'https://'
   api_base = protocol + Figaro.env.domain_name + '/api'
 
   config.x509_certificate = Rails.application.secrets.saml_cert
