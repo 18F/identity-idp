@@ -10,5 +10,5 @@
         = f.error_notification
         = f.full_error :confirmation_token
         = f.input :email, required: true, input_html: { class: 'gets-focus' }
-        = f.button :submit, t('upaya.forms.buttons.resend_confirmation'), class: 'usa-button'
+        = f.button :submit, t('upaya.forms.buttons.resend_confirmation')
       = render 'devise/shared/links'

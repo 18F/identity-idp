@@ -3,6 +3,6 @@ p
 
 - @answers.each do |answer|
   div
-    = f.simple_fields_for :security_answers, answer, wrapper: :vertical_form do |answer_form|
+    = f.simple_fields_for :security_answers, answer do |answer_form|
       fieldset
-        = answer_form.input :text, class: 'required', label: answer.question, required: true, input_html: { value: '' }
+        = answer_form.input :text, label: answer.question, required: true, input_html: { value: '' }

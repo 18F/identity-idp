@@ -1,4 +1,4 @@
 - resource.security_answers.each_with_index do |answer, index|
   = f.simple_fields_for :security_answers, answer do |answers_form|
     = answers_form.input :security_question_id, collection: security_questions_collection_for(answer), prompt: 'Select a question', selected: (answer.security_question_id || index + 1), label: "Question ##{index + 1}"
-    = answers_form.input :text, class: 'required', label: "Question ##{index + 1} Response"
+    = answers_form.input :text, label: "Question ##{index + 1} Response"

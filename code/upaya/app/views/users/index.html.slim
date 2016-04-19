@@ -1,14 +1,13 @@
 - title t('upaya.titles.users.index')
-.row
-  .col-md-12
-    h2 = t('upaya.headings.admin.index')
-    = render 'shared/user_search'
 
-    h3 = t('upaya.headings.users.index')
-    .column
-      table.table
-        tbody
-          - @users.each do |user|
-            tr.user
-              = render user
+h2 = t('upaya.headings.admin.index')
+= render 'shared/user_search'
+
+h3 = t('upaya.headings.users.index')
+table.table
+  tbody
+    - @users.each do |user|
+      tr.user
+        = render user
+
 = paginate @users

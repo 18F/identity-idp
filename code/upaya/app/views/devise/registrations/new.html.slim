@@ -5,14 +5,14 @@
   .sm-col-8.px2.mx-auto
     .mb3.p3.bg-white
       h2.mt2 = t('upaya.headings.registrations.new')
-      = simple_form_for(resource, as: :user, wrapper: :vertical_form, html: { autocomplete: 'off', class: 'top-label', role: 'form' }, url: user_registration_path) do |f|
+      = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: user_registration_path) do |f|
         = f.error_notification
         p
           abbr= '* ' + t('upaya.forms.required_field')
         = f.input :email, required: true, autofocus: true, input_html: { 'aria-describedby' => 'email_description' }
         p = t('upaya.forms.registration.email_field')
         p = t('upaya.forms.registration.email_html')
-        = f.button :submit, 'Sign Up', class: 'usa-button'
+        = f.button :submit, 'Sign Up'
         p
           = t('upaya.forms.registration.already_have_account_html')
           '

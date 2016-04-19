@@ -6,11 +6,11 @@
       h2.mt2 = t('upaya.forms.confirmation.show_hdr')
       p = t('upaya.forms.confirmation.show_instructions')
 
-      = simple_form_for(resource, as: resource_name, url: confirm_path,  wrapper: :vertical_form, html: { role: 'form', autocomplete: 'off' }) do |f|
+      = simple_form_for(resource, as: resource_name, url: confirm_path,  html: { role: 'form', autocomplete: 'off' }) do |f|
         = f.error_notification
         p
           abbr= '* ' + t('upaya.forms.required_field')
-        = f.input :password, required: true, input_html: { class: 'form-control', autofocus: true }
-        = f.input :password_confirmation, required: true, input_html: { class: 'form-control' }
+        = f.input :password, required: true, input_html: { autofocus: true }
+        = f.input :password_confirmation, required: true
         = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
-        = f.button :submit, 'Submit', class: 'usa-button'
+        = f.button :submit, 'Submit'

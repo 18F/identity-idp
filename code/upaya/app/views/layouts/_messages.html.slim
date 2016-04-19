@@ -1,9 +1,6 @@
 .mb3
   - flash.each do |name, msg|
     - if msg.is_a?(String)
-      div class="p2 alert alert-#{name.to_s.match(/notice|success/) ? 'success' : 'danger'}"
-       - if name.to_s.match(/notice|success/)
-         = content_tag :div, msg, id: "flash_#{name}", tabindex: "-1"
-       - else
-         = content_tag :div, msg, id: "flash_#{name}", tabindex: "0", autofocus: true
+      - good_msg = name.to_s.match(/notice|success/)
+      = content_tag :div, msg, class: "p2 alert alert-#{good_msg ? 'success' : 'danger'}", id: "flash_#{name}", tabindex: "#{good_msg ? -1 : 0}"
   #session_warning_container

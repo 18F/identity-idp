@@ -19,8 +19,8 @@ html
               'off, please click the submit button to continue signing in or
               'signing out.
 
-            form action=action_url method='POST' id='saml-post-binding' class='single-column-form'
+            form action=action_url method='POST' id='saml-post-binding'
               = hidden_field_tag(type, message)
               - if params.has_key?(:RelayState)
                 = hidden_field_tag("RelayState", params[:RelayState])
-              = submit_tag 'Submit', class: 'upaya-button-secondary-blue'
+              = submit_tag 'Submit', class: 'usa-button'
