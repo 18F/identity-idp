@@ -12,6 +12,7 @@ SimpleForm.setup do |config|
     b.optional :readonly
     b.use :label
     b.use :input
+    b.use :error, wrap_with: { tag: 'span', class: 'error-description' }
   end
 
   config.default_wrapper = :vertical_form
