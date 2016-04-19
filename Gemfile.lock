@@ -293,7 +293,7 @@ GEM
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
-    jmespath (1.2.3)
+    jmespath (1.2.4)
       json_pure (>= 1.8.1)
     jquery-rails (4.1.1)
       rails-dom-testing (>= 1, < 3)
