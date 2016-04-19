@@ -7,11 +7,12 @@ test:
     'https://rp1.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+      sp_initiated_login_url: 'https://rp1.serviceprovider.com/auth/saml/login'
 
     'https://rp2.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
-      sp_initiated_login_url: 'http://public-prod-elis2.uscis.dhs.gov/efile/saml/login'
+      sp_initiated_login_url: 'https://rp2.serviceprovider.com/auth/saml/login'
 
 
 development:
@@ -26,11 +27,11 @@ development:
 
 production:
   valid_hosts:
-    'https://save-ferris.18f.gov':
-      metadata_url: 'https://save-ferris.18f.gov/metadata'
-      acs_url: 'https://save-ferris.18f.gov/test/saml/decode_assertion'
-      assertion_consumer_logout_service_url: 'https://save-ferris.18f.gov/test/saml/decode_logoutresponse'
-      sp_initiated_login_url: 'https://save-ferris.18f.gov/test/saml'
+    'https://upaya-dev.18f.gov':
+      metadata_url: 'https://upaya-dev.18f.gov/api/saml/metadata'
+      acs_url: 'https://upaya-dev.18f.gov/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'https://upaya-dev.18f.gov/test/saml/decode_logoutresponse'
+      sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
       cert: 'saml_client_cert'
       block_encryption: 'aes256-cbc'
 
