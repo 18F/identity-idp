@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module SamlIdpLogoutConcern
   extend ActiveSupport::Concern
 
@@ -149,3 +150,4 @@ module SamlIdpLogoutConcern
       signature_opts)
   end
 end
+# rubocop:enable Metrics/ModuleLength

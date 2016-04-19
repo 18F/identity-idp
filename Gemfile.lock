@@ -684,7 +684,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   spring-watcher-listen
-  sqlite3
   thin
   timecop
   turbolinks

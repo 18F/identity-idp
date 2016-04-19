@@ -1,5 +1,5 @@
 module SecurityQuestionPopulator
-  def populate_security_questions
+  def self.populate_security_questions
     questions = Rails.application.secrets.security_questions
 
     questions.each do |question|

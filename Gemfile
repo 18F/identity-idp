@@ -64,7 +64,6 @@ group :development do
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen'
-  gem 'sqlite3' # TODO(astone) remove
 end
 
 group :development, :test do
