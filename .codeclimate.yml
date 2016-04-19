@@ -31,6 +31,6 @@ ratings:
   - '**.go'
 
 exclude_paths:
-- code/upaya/spec/**/*
-- 'code/upaya/vendor/assets/stylesheets/uswds.css'
-- 'code/upaya/db/migrate/20160405212342_initial_schema.rb'
+- spec/**/*
+- 'vendor/assets/stylesheets/uswds.css'
+- 'db/migrate/20160405212342_initial_schema.rb'
