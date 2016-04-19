@@ -137,11 +137,6 @@ class User < ActiveRecord::Base
     update(second_factor_ids: second_factor_ids_without_mobile_id)
   end
 
-  # identifies which users are permitted to auth via l/p
-  def privileged?
-    admin? || tech?
-  end
-
   def identity_verified?
     ial == 'IA3'
   end
