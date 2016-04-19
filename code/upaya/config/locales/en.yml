@@ -53,9 +53,9 @@ en:
           <li></li>
 
     links:
-      sign_out: 'Sign Out'
-      sign_in: 'Sign In'
-      sign_up: 'Sign Up'
+      sign_out: 'Sign out'
+      sign_in: 'Log in'
+      sign_up: 'Sign up'
     notices:
       app_setting_created: AppSetting was successfully created.
       app_setting_updated: AppSetting was successfully updated.
@@ -129,16 +129,16 @@ en:
         edit: Editing FAQ
         index: Frequently Asked Questions
         new: New FAQ
-      log_in: Sign In
-      log_out: Sign Out
+      log_in: Log in
+      log_out: Sign out
       passwords:
         change: Change your password
-        forgot: Forgot your password?
+        forgot: Forgot password?
         update: Update your password
       registrations:
         account: Account Type
         edit: My Profile
-        new: Sign Up
+        new: Sign up
       search: Search for a user
       session_timeout_warning: Session Timeout
       tech_support:

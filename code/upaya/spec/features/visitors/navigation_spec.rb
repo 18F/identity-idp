@@ -9,6 +9,6 @@ feature 'Navigation links', devise: true do
   #   Then I see "home," "sign in," and "sign up"
   scenario 'view navigation links' do
     visit root_path
-    expect(page).to have_content 'Sign In'
+    expect(page).to have_content 'Log in'
   end
 end

@@ -9,12 +9,12 @@ feature 'Password Recovery' do
     click_button 'Change my password'
     fill_in 'Email', with: 'email@example.com'
     fill_in 'Password', with: 'NewVal!dPassw0rd'
-    click_button 'Sign In'
+    click_button 'Log in'
   end
 
   before(:each) do
     visit root_path
-    click_link 'Forgot your password?'
+    click_link t('upaya.headings.passwords.forgot')
   end
 
   # Scenario: User can request a password reset link be sent to them
@@ -66,7 +66,7 @@ feature 'Password Recovery' do
       click_first_link_in_email
       reset_email
       visit root_path
-      click_link 'Forgot your password?'
+      click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
       click_button 'Send me reset password instructions'
       open_last_email
@@ -118,7 +118,7 @@ feature 'Password Recovery' do
       click_button 'Submit'
       click_link(t('upaya.headings.log_out'), match: :first)
       visit root_path
-      click_link 'Forgot your password?'
+      click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
       click_button 'Send me reset password instructions'
       open_last_email
@@ -155,7 +155,7 @@ feature 'Password Recovery' do
       click_button 'Submit'
       click_link(t('upaya.headings.log_out'), match: :first)
       visit root_path
-      click_link 'Forgot your password?'
+      click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
       click_button 'Send me reset password instructions'
       visit edit_user_password_path(reset_password_token: 'invalid_token')
@@ -191,7 +191,7 @@ feature 'Password Recovery' do
       click_button 'Submit'
       click_link(t('upaya.headings.log_out'), match: :first)
       visit root_path
-      click_link 'Forgot your password?'
+      click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
       click_button 'Send me reset password instructions'
       open_last_email
@@ -372,7 +372,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
 
     visit root_path
-    click_link 'Forgot your password?'
+    click_link t('upaya.headings.passwords.forgot')
     fill_in 'Email', with: user.email
     click_button 'Send me reset password instructions'
 
@@ -399,7 +399,7 @@ feature 'Password Recovery' do
       end
     end
 
-    click_link 'Forgot your password?'
+    click_link t('upaya.headings.passwords.forgot')
     fill_in 'Email', with: user.email
     click_button 'Send me reset password instructions'
 
@@ -475,7 +475,7 @@ feature 'Password Recovery' do
     user.update(confirmed_at: nil)
 
     visit root_path
-    click_link 'Forgot your password?'
+    click_link t('upaya.headings.passwords.forgot')
     fill_in 'Email', with: user.email
     click_button 'Send me reset password instructions'
 

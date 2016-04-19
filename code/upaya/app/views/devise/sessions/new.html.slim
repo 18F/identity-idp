@@ -1,16 +1,9 @@
 - title t('upaya.titles.visitors.index')
 
 .clearfix.mxn2
-  .sm-col.sm-col-6.px2
-    .mb3.p3.bg-white
-      h2.mt2 = t('upaya.headings.log_in')
+  .sm-col-7.px2.mx-auto
+    .panel
+      .center
+        h2.mt2.mb0 = t('upaya.headings.log_in')
+        div or #{link_to 'create an account', new_user_registration_path}
       = render 'devise/sessions/form'
-  .sm-col.sm-col-6.px2
-    .mb3.p3.bg-white
-      h2.mt2 = t('upaya.headings.visitors.new_account')
-      - if AppSetting.registrations_enabled?
-        = link_to t('upaya.forms.buttons.new_account'), new_user_registration_path, class: 'usa-button'
-      - else
-        = button_to t('upaya.forms.buttons.no_accounts'), nil, class: "usa-button", tabindex: -1, disabled: true
-
-= render 'shared/upaya_legal_notice'

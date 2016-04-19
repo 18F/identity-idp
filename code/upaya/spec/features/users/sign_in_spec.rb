@@ -53,7 +53,7 @@ feature 'Sign in' do
     user = create(:user, :signed_up, :admin)
     sign_in_user(user)
     expect(page).to have_content 'You are not authorized'
-    click_link('Sign In', match: :first)
+    click_link('Log in', match: :first)
     expect(current_path).to eq('/')
   end
 
@@ -61,7 +61,7 @@ feature 'Sign in' do
     user = create(:user, :signed_up, :tech_support)
     sign_in_user(user)
     expect(page).to have_content 'You are not authorized'
-    click_link('Sign In', match: :first)
+    click_link('Log in', match: :first)
     expect(current_path).to eq('/')
   end
 
@@ -189,7 +189,7 @@ feature 'Sign in' do
 
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
-      click_button 'Sign In'
+      click_button 'Log in'
 
       expect(page).to_not have_content t('upaya.errors.invalid_authenticity_token')
       expect(current_path).to eq users_otp_path

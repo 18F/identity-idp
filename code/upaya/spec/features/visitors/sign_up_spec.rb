@@ -18,9 +18,9 @@ feature 'Sign Up', devise: true do
       expect(page).to have_content t('upaya.headings.registrations.new')
     end
 
-    it 'explains what the email address will be used for' do
-      expect(page).to have_content t('upaya.forms.registration.email_field')
-    end
+    # it 'explains what the email address will be used for' do
+    #   expect(page).to have_content t('upaya.forms.registration.email_field')
+    # end
 
     it 'links to Terms of Use' do
       skip 'waiting for OMB approval'

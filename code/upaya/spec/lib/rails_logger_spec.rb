@@ -67,7 +67,7 @@ describe 'Rails.logger', type: :feature do
         visit new_user_session_path
         fill_in 'Email', with: user.email
         fill_in 'Password', with: 'i haz no idear'
-        click_button 'Sign In'
+        click_button 'Log in'
       end
       visit new_user_session_path
       fill_in 'Email', with: user.email
@@ -78,7 +78,7 @@ describe 'Rails.logger', type: :feature do
       expect(Rails.logger).to receive(:info).with('[Authentication Attempt]')
       expect(Rails.logger).to receive(:info).with("[#{user.uuid}] [Authentication Failed]")
       expect(Rails.logger).to receive(:info).with("[#{user.uuid}] [Account Locked]")
-      click_button 'Sign In'
+      click_button 'Log in'
     end
   end
 

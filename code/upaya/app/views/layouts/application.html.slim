@@ -30,8 +30,9 @@ html lang="#{I18n.locale}"
       == render 'layouts/debug'
     = render 'layouts/performance_testing_mode'
     = render 'shared/navigation_links'
+    = render 'shared/branding'
 
-    .container.px2.py3
+    .container.px2
       #start-of-content
         == render 'layouts/messages'
         == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')

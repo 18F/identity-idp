@@ -1,6 +1,7 @@
-.mb3
-  - flash.each do |name, msg|
-    - if msg.is_a?(String)
-      - good_msg = name.to_s.match(/notice|success/)
-      = content_tag :div, msg, class: "p2 alert alert-#{good_msg ? 'success' : 'danger'}", id: "flash_#{name}", tabindex: "#{good_msg ? -1 : 0}"
-  #session_warning_container
+- unless flash.empty?
+  .mb3
+    - flash.each do |name, msg|
+      - if msg.is_a?(String)
+        - good_msg = name.to_s.match(/notice|success/)
+        = content_tag :div, msg, class: "p2 alert alert-#{good_msg ? 'success' : 'danger'}", id: "flash_#{name}", tabindex: "#{good_msg ? -1 : 0}"
+    #session_warning_container
