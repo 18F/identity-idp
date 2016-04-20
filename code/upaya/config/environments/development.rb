@@ -54,6 +54,8 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.custom_options = ->(event) { event.payload }
 
+  config.assets.initialize_on_precompile = false
+
   # Bullet gem config
   config.after_initialize do
     Bullet.enable = true

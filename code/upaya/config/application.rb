@@ -45,7 +45,6 @@ module Upaya
     # config.active_job.queue_adapter = :resque
 
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
-
-
+    
   end
 end

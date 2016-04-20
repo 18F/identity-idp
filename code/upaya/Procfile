@@ -1,5 +1,0 @@
-web: bundle exec rake db:migrate
-web: bundle exec rake assets:precompile
-web: bundle exec puma -C config/puma.rb
-#INLINE method to startup puma web: bundle exec puma -t 5:5 -p ${PORT:-3000} -e ${RACK_ENV:-development}
-resque: env TERM_CHILD=1 bundle exec rake resque:work
