@@ -2,12 +2,7 @@ require 'saml_idp_constants'
 require 'saml_idp/logout_request_builder'
 
 module Test
-  # SamlTestController is a simple smoketest for the SAML functionality in ICAM.
-  #
-  # It produces a SAML AuthNRequest to the ICAM saml auth endpoint and expects
-  # a valid assertion to be generated using the test certificate.
   class SamlTestController < ApplicationController
-    # Disable CSRF on API endpoints for POST binding.
     skip_before_action :verify_authenticity_token, only: [:decode_response, :decode_slo_request]
 
     def start
