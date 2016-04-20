@@ -1,0 +1,12 @@
+.panel {
+  padding: 2rem;
+  margin-bottom: 2rem;
+  background-color: #fff;
+  border: 1px solid #ccc;
+}
+
+@media #{$breakpoint-sm} {
+  .panel {
+    padding: 4rem;
+  }
+}

@@ -7,7 +7,7 @@ module Features
     def sign_up_with(email)
       visit new_user_registration_path
       fill_in 'Email', with: email
-      click_button 'Sign Up'
+      click_button 'Sign up'
     end
 
     def signin(email, password)
@@ -15,7 +15,7 @@ module Features
       fill_in 'Email', with: email
       fill_in 'Password', with: password
       # select 'Applicant, Petitioner, or  Requester'
-      click_button 'Sign In'
+      click_button 'Log in'
     end
 
     def sign_up_with_and_set_password_for(email = nil, reset_session = false)

@@ -19,9 +19,9 @@ describe 'devise/registrations/new.html.slim' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
-  it 'renders smallprint template' do
-    render
+  # it 'renders smallprint template' do
+  #   render
 
-    expect(view).to render_template('terms/_smallprint')
-  end
+  #   expect(view).to render_template('terms/_smallprint')
+  # end
 end

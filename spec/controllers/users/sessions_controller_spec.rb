@@ -9,12 +9,6 @@ describe Users::SessionsController, devise: true do
 
       expect(response.body).to include('<form autocomplete="off"')
     end
-
-    it 'renders the Upaya legal notice template' do
-      get :new
-
-      expect(response).to render_template('shared/_upaya_legal_notice')
-    end
   end
 
   describe 'GET /active' do

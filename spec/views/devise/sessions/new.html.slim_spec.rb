@@ -19,59 +19,10 @@ describe 'devise/sessions/new.html.slim' do
       to have_selector('h2', t('upaya.headings.visitors.new_account'))
   end
 
-  it 'links to the privacy act statement' do
-    render
-
-    expect(rendered).
-      to have_link(
-        'Privacy Act Statement', href: 'terms#privacy')
-  end
-
-  it 'links to the Paperwork Reduction Act Reporting Burden' do
-    render
-
-    expect(rendered).
-      to have_link(
-        'Paperwork Reduction Act Reporting Burden', href: 'terms#pra')
-  end
-
-  it 'links to Accessibility Policy' do
-    render
-
-    expect(rendered).
-      to have_link(
-        'Accessibility Policy', href: 'http://upaya.18f.gov/accessibility')
-  end
-
   it 'includes a link to create a new account' do
     render
 
     expect(rendered).
-      to have_link(
-        t('upaya.forms.buttons.new_account'), href: new_user_registration_path)
-  end
-
-  it 'renders the modals/_privacy_statement partial' do
-    render
-
-    expect(view).to render_template('modals/_privacy_statement')
-  end
-
-  it 'renders the modals/_pra_statement partial' do
-    render
-
-    expect(view).to render_template('modals/_pra_statement')
-  end
-
-  it 'renders the shared/_privacy_text partial' do
-    render
-
-    expect(view).to render_template('shared/_privacy_text')
-  end
-
-  it 'renders the shared/_pra_text partial' do
-    render
-
-    expect(view).to render_template('shared/_pra_text')
+      to have_link('create an account', href: new_user_registration_path)
   end
 end

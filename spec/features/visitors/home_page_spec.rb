@@ -10,12 +10,10 @@ feature 'Home page' do
   scenario 'visit the home page' do
     visit root_path
     expect(page).to have_content I18n.t 'upaya.headings.log_in'
-    expect(page).to have_content I18n.t 'upaya.headings.visitors.new_account'
   end
 
   scenario 'visit the dashboard' do
     visit dashboard_index_path
-
     expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
   end
 
@@ -25,13 +23,6 @@ feature 'Home page' do
       expect(page).to have_content 'Skip to main content'
       click_link 'Skip to main content'
       expect(current_path).to eq(root_path)
-    end
-  end
-
-  describe 'navigation links' do
-    it 'links to root for Sign In link' do
-      visit root_path
-      expect(page).to have_link('Sign In', href: '/')
     end
   end
 end

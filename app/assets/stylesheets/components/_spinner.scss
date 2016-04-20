@@ -1,9 +1,13 @@
 @keyframes spinner {
-  to {transform: rotate(360deg);}
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @-webkit-keyframes spinner {
-  to {-webkit-transform: rotate(360deg);}
+  to {
+    -webkit-transform: rotate(360deg);
+  }
 }
 
 .spinner {
@@ -20,9 +24,8 @@
   width: 24px;
 }
 
-$light-gray:  rgba(0, 0, 0, .3);
+$light-gray: rgba(0, 0, 0, .3);
 $dark-gray: rgba(0, 0, 0, .6);
-
 .spinner:not(:required):after {
   -webkit-animation: spinner .6s linear infinite;
   animation: spinner .6s linear infinite;
