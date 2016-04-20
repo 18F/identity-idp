@@ -70,8 +70,12 @@ class User < ActiveRecord::Base
     self.role ||= :user
   end
 
-  def need_two_factor_authentication?(_request)
-    two_factor_enabled?
+  def need_two_factor_authentication?(request)
+    two_factor_enabled? && !third_party_authenticated?(request)
+  end
+
+  def third_party_authenticated?(request)
+    request.env.key?('omniauth.auth') ? true : false
   end
 
   def two_factor_enabled?
