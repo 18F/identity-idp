@@ -103,8 +103,41 @@ module Test
     private
 
     def saml_settings
-      return SamlAuthHelper.sp1_saml_settings.dup if params[:sp] == 'elis'
-      SamlAuthHelper.sp2_saml_settings.dup
+      settings = OneLogin::RubySaml::Settings.new
+
+      # SP settings
+      settings.assertion_consumer_service_url = 'http://localhost:3000/test/saml/decode_assertion'
+      settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
+      settings.certificate = Rails.application.secrets.saml_cert
+      settings.private_key = private_key
+      settings.authn_context = Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
+
+      # SP + IdP Settings
+      settings.issuer = 'https://upaya-dev.ngrok.io'
+      settings.security[:logout_requests_signed] = true
+      settings.security[:embed_sign] = true
+      settings.security[:digest_method] = 'http://www.w3.org/2001/04/xmlenc#sha256'
+      settings.security[:signature_method] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
+      settings.name_identifier_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
+      settings.double_quote_xml_attribute_values = true
+      # IdP setting
+      settings.idp_sso_target_url = 'https://upaya-dev.ngrok.io/api/saml/auth'
+      settings.idp_slo_target_url = 'https://upaya-dev.ngrok.io/api/saml/logout'
+      settings.idp_cert_fingerprint = fingerprint
+
+      settings
+    end
+
+    def private_key
+      OpenSSL::PKey::RSA.new(
+        File.read(Rails.root + 'config/saml.key.enc'),
+        Rails.application.secrets.saml_passphrase
+      ).to_pem
+    end
+
+    def fingerprint
+      'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:' \
+      'A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
     end
   end
 end

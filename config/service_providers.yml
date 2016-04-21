@@ -1,8 +1,8 @@
 test:
   valid_hosts:
     'http://localhost:3000':
-        acs_url: 'http://localhost:3000/test/saml/decode_assertion'
-        sp_initiated_login_url: 'http://localhost:3000/test/saml'
+      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      sp_initiated_login_url: 'http://localhost:3000/test/saml'
 
     'https://rp1.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
@@ -22,8 +22,12 @@ development:
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_logoutresponse'
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
-      cert: 'saml_client_cert'
-      block_encryption: 'aes256-cbc'
+
+    'https://upaya-dev.ngrok.io':
+      acs_url: 'https://upaya-dev.ngrok.io/test/saml/decode_assertion'
+      sp_initiated_login_url: 'https://upaya-dev.ngrok.io/test/saml'
+      assertion_consumer_logout_service_url: 'https://upaya-dev.ngrok.io/test/saml/decode_slo_request'
+
 
 production:
   valid_hosts:

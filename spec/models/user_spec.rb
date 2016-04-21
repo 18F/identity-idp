@@ -1,5 +1,4 @@
-require 'rails_helper'
-require 'upaya_constants'
+require 'saml_idp_constants'
 
 MAX_GOOD_PASSWORD = '!1aZ' * 32
 
@@ -300,7 +299,7 @@ describe User do
 
       # Verify success.
       i = 1
-      Upaya::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
+      Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
         password = "#{NO_SPECIAL_PASSWORD}#{special}"
         user = create(:user,
                       email: "#{i}.#{prototype_user.email}",
@@ -311,7 +310,7 @@ describe User do
       end
 
       # Verifying password updating enforces complexity requirements.
-      Upaya::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
+      Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
         prototype_user.password = NO_SPECIAL_PASSWORD
         prototype_user.password_confirmation = NO_SPECIAL_PASSWORD
         expect(prototype_user.valid?).to be_falsey

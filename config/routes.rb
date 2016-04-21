@@ -19,7 +19,6 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
-    # delete 'sign_out' => 'users/sessions#destroy', as: :destroy_user_session
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'

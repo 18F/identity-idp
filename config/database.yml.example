@@ -4,12 +4,6 @@ postgresql: &postgresql
   database: upaya_<%= Rails.env %>
   port: 5432
 
-sqlite: &sqlite
-  adapter: sqlite3
-  database: db/development.sqlite3
-  pool: 5
-  timeout: 5000
-
 defaults: &defaults
   pool: 5
   timeout: 5000
@@ -18,7 +12,7 @@ defaults: &defaults
   <<: *postgresql
 
 development:
-  <<: *<%= ENV['DB'] || "sqlite" %>
+  <<: *defaults
 
 test:
   <<: *defaults

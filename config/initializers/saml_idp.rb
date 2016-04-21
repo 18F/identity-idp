@@ -33,7 +33,7 @@ SamlIdp.configure do |config|
 
   # Attributes
   config.attributes = {
-    UUID: {
+    uuid: {
       getter: :uuid,
       name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
       name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT

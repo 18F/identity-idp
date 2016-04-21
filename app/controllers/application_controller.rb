@@ -85,7 +85,7 @@ class ApplicationController < ActionController::Base
 
   def confirm_security_questions_setup
     return unless UserDecorator.new(current_user).needs_security_questions?(session)
-
+    flash.keep(:notice)
     flash[:error] = I18n.t('upaya.errors.must_setup_security_questions')
     redirect_to users_questions_url
   end

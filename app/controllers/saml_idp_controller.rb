@@ -7,28 +7,17 @@ class SamlIdpController < ApplicationController
   include SamlIdp::Controller
   include SamlIdpLogoutConcern
 
-  # Disable CSRF protection because this is an API.
   skip_before_action :verify_authenticity_token
 
-  # Metadata does not require login protection. Logout also must not require
-  # a fully logged in user otherwise service providers end up forcing a login
-  # before they can perform a logout. Trust for logout comes from the signature
-  # and is given to any service provider.
   before_action :disable_caching
   before_action :validate_saml_request, only: :auth
-  # IdP SLO endpoint does not receive SAML requests when SP returns
-  # SAML response during SLO flow.
   before_action :validate_saml_logout_param, only: :logout
-  # before_action :route_sign_up, only: :register
   before_action :store_sp_data, only: :auth
-  # before_action :assure_sign_out_before_idv, only: :auth
   before_action :authenticate_user!, except: [:metadata, :logout]
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
   before_action :confirm_security_questions_setup, except: [:metadata, :logout]
   before_action :confirm_account_type_setup, except: [:metadata, :logout]
-  # before_action :check_ial_token, only: :auth
 
-  # Takes a SAMLAuthnRequest and produces an assertion for the ServiceProvider.
   def auth
     unless valid_authn_contexts.include?(requested_authn_context)
       process_invalid_authn_context
@@ -38,7 +27,6 @@ class SamlIdpController < ApplicationController
     render_template_for(saml_response, saml_response_url, 'SAMLResponse')
   end
 
-  # Produces the XML Metadata for this SAML endpoint.
   def metadata
     render inline: SamlIdp.metadata.build.to_xml, content_type: 'text/xml'
   end
@@ -153,10 +141,6 @@ class SamlIdpController < ApplicationController
   def ial_token
     relay_state_params['token'] || relay_state_params['ial_token']
   end
-
-  # def route_sign_up
-  #   session[:route_to_registration] = true if saml_request.valid?
-  # end
 
   def validate_saml_logout_param
     prepare_saml_logout_response if params[:SAMLResponse].present?
