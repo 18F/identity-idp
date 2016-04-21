@@ -1,11 +1,10 @@
 - title t('upaya.titles.passwords.forgot')
 
 .clearfix.mxn2
-  .sm-col-8.px2.mx-auto
-    .mb3.p3.bg-white
-      h2.mt2 = t('upaya.headings.passwords.forgot')
-      p
-        abbr= '* ' + t('upaya.forms.required_field')
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = t('upaya.headings.passwords.forgot')
       = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
         = f.error_notification
         = f.input :email, required: true, autofocus: true

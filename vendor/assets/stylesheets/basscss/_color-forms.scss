@@ -1,0 +1,64 @@
+
+// Converted Variables
+
+$field-focus-color: $blue !default;
+$field-success-color: $green !default;
+$field-warning-color: $yellow !default;
+$field-error-color: $red !default;
+
+// Custom Media Query Variables
+
+
+/* Basscss Color Forms */
+
+.field {
+  border-style: solid;
+  border-width: $border-width;
+  border-color: $border-color;
+  border-radius: $border-radius;
+}
+
+.field:focus,
+.field.is-focused {
+  outline: none;
+  border-color: $field-focus-color;
+  box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
+}
+
+.field:disabled,
+.field.is-disabled {
+  background-color: $darken-2;
+  opacity: .5;
+}
+
+.field:read-only:not(select),
+.field.is-read-only {
+  background-color: $darken-2;
+}
+
+.field.is-success {
+  border-color: $field-success-color;
+}
+
+.field.is-success:focus,
+.field.is-success.is-focused {
+  box-shadow: 0 0 0 2px rgba($field-success-color, .5);
+}
+
+.field.is-warning {
+  border-color: $field-warning-color;
+}
+
+.field.is-warning:focus,
+.field.is-warning.is-focused {
+  box-shadow: 0 0 0 2px rgba($field-warning-color, .5);
+}
+
+.field.is-error {
+  border-color: $field-error-color;
+}
+
+.field.is-error:focus,
+.field.is-error.is-focused {
+  box-shadow: 0 0 0 2px rgba($field-error-color, .5);
+}

@@ -1,9 +1,9 @@
 - title t('upaya.titles.visitors.index')
 
 .clearfix.mxn2
-  .sm-col-7.px2.mx-auto
+  .sm-col-6.px2.mx-auto
     .panel
-      .center
-        h2.mt2.mb0 = t('upaya.headings.log_in')
+      .panel-heading
+        h2.m0 = t('upaya.headings.log_in')
         div or #{link_to 'create an account', new_user_registration_path}
       = render 'devise/sessions/form'

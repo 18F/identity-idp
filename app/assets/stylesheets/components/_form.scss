@@ -1,0 +1,19 @@
+.field-label {
+  display: block;
+  margin-top: 1rem;
+}
+
+form button[type="submit"],
+form input[type="submit"] {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+}
+
+@media #{$breakpoint-sm} {
+  form button[type="submit"],
+  form input[type="submit"] {
+    width: auto;
+  }
+}

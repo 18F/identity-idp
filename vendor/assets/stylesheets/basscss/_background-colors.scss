@@ -1,38 +1,11 @@
 
 // Converted Variables
 
-$aqua: #7fdbff !default;
-$blue: #0074d9 !default;
-$navy: #001f3f !default;
-$teal: #39cccc !default;
-$green: #2ecc40 !default;
-$olive: #3d9970 !default;
-$lime: #01ff70 !default;
-$yellow: #ffdc00 !default;
-$orange: #ff851b !default;
-$red: #ff4136 !default;
-$fuchsia: #f012be !default;
-$purple: #b10dc9 !default;
-$maroon: #85144b !default;
-$white: #fff !default;
-$silver: #ddd !default;
-$gray: #aaa !default;
-$black: #111 !default;
 
 // Custom Media Query Variables
 
 
 /* Basscss Background Colors */
-
-/*
-
-   COLOR VARIABLES
-
-   - Cool
-   - Warm
-   - Gray Scale
-
-*/
 
 .bg-black  { background-color: $black }
 
@@ -67,3 +40,19 @@ $black: #111 !default;
 .bg-purple  { background-color: $purple }
 
 .bg-maroon  { background-color: $maroon }
+
+.bg-darken-1 { background-color: $darken-1 }
+
+.bg-darken-2 { background-color: $darken-2 }
+
+.bg-darken-3 { background-color: $darken-3 }
+
+.bg-darken-4 { background-color: $darken-4 }
+
+.bg-lighten-1 { background-color: $lighten-1 }
+
+.bg-lighten-2 { background-color: $lighten-2 }
+
+.bg-lighten-3 { background-color: $lighten-3 }
+
+.bg-lighten-4 { background-color: $lighten-4 }

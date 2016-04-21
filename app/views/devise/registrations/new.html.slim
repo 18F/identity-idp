@@ -2,9 +2,10 @@
 
 
 .clearfix.mxn2
-  .sm-col-7.px2.mx-auto
+  .sm-col-6.px2.mx-auto
     .panel
-      h2.mt2 = t('upaya.headings.registrations.new')
+      .panel-heading
+        h2.m0 = t('upaya.headings.registrations.new')
       = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: user_registration_path) do |f|
         = f.error_notification
         = f.input :email, required: true, autofocus: true, input_html: { 'aria-describedby' => 'email_description' }

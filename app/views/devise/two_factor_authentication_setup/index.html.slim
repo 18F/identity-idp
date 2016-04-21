@@ -1,9 +1,10 @@
 - title t('upaya.titles.select_two_factor')
 
 .clearfix.mxn2
-  .sm-col-8.px2.mx-auto
-    .mb3.p3.bg-white
-      h2.mt2 = t('devise.two_factor_authentication.select_two_factor')
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = t('devise.two_factor_authentication.select_two_factor')
       = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: users_otp_path) do |f|
         = f.error_notification
         p = t('devise.two_factor_authentication.otp_setup')

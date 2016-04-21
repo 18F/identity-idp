@@ -1,0 +1,64 @@
+
+// Converted Variables
+
+$form-field-font-family: inherit !default;
+$form-field-font-size: 1rem !default;
+$form-field-height: 2.25rem !default;
+$form-field-padding-y: .5rem !default;
+$form-field-padding-x: .5rem !default;
+
+// Custom Media Query Variables
+
+
+/* Basscss Base Forms */
+
+/* @import 'basscss-defaults'; */
+
+input,
+select,
+textarea,
+fieldset {
+  font-family: $form-field-font-family;
+  font-size: $form-field-font-size;
+  box-sizing: border-box;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+label {
+  vertical-align: middle;
+}
+
+input[type=text],
+input[type=date],
+input[type=datetime],
+input[type=datetime-local],
+input[type=email],
+input[type=month],
+input[type=number],
+input[type=password],
+input[type=search],
+input[type=tel],
+input[type=time],
+input[type=url],
+input[type=week] {
+  height: $form-field-height;
+  padding: $form-field-padding-y $form-field-padding-x;
+  vertical-align: middle;
+  -webkit-appearance: none;
+}
+
+select {
+  line-height: 1.75;
+  padding: $form-field-padding-y $form-field-padding-x;
+}
+
+select:not([multiple]) {
+  height: $form-field-height;
+  vertical-align: middle;
+}
+
+textarea {
+  line-height: 1.75;
+  padding: $form-field-padding-y $form-field-padding-x;
+}

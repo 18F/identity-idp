@@ -1,9 +1,10 @@
 - title t('upaya.titles.enter_2fa_code')
 
 .clearfix.mxn2
-  .sm-col-8.px2.mx-auto
-    .mb3.p3.bg-white
-      h2.mt2 = t('devise.two_factor_authentication.header_text')
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = t('devise.two_factor_authentication.header_text')
       p
         'A one-time password has been sent to #{two_factor_preference}. Please enter the code that you received.
         'If you do not receive the code in #{otp_drift_time_in_minutes} minutes, please #{link_to 'request a new one-time password', users_otp_new_path, data: { 'no-turbolink' => true }}.

@@ -1,9 +1,6 @@
 
 // Converted Variables
 
-$border-width: 1px !default;
-$border-radius: 3px !default;
-$border-color: rgba(0,0,0,.125) !default;
 
 // Custom Media Query Variables
 
@@ -19,25 +16,25 @@ $border-color: rgba(0,0,0,.125) !default;
 .border-top {
   border-top-style: solid;
   border-top-width: $border-width;
-  border-color: $border-color;
+  border-top-color: $border-color;
 }
 
 .border-right {
   border-right-style: solid;
   border-right-width: $border-width;
-  border-color: $border-color;
+  border-right-color: $border-color;
 }
 
 .border-bottom {
   border-bottom-style: solid;
   border-bottom-width: $border-width;
-  border-color: $border-color;
+  border-bottom-color: $border-color;
 }
 
 .border-left {
   border-left-style: solid;
   border-left-width: $border-width;
-  border-color: $border-color;
+  border-left-color: $border-color;
 }
 
 .border-none { border: 0 }

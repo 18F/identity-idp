@@ -2,11 +2,18 @@
   padding: 2rem;
   margin-bottom: 2rem;
   background-color: #fff;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
+}
+
+.panel-heading {
+  padding: 1rem 0;
+  margin-bottom: 3rem;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
 }
 
 @media #{$breakpoint-sm} {
   .panel {
-    padding: 4rem;
+    padding: 3rem;
   }
 }
