@@ -1,0 +1,3 @@
+exclude:
+  - 'vendor/assets/stylesheets/basscss/*.scss'
+  - 'vendor/assets/stylesheets/uswds.css'

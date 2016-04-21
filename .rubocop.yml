@@ -7,7 +7,7 @@ AllCops:
     - 'bin/**/*'
     - 'config/initializers/devise.rb'
     - 'db/migrate/20160405212342_initial_schema.rb'
-  UseCache: false
+  UseCache: true
 
 Lint/AssignmentInCondition:
   Description: Don't use assignment in conditions.
