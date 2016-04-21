@@ -1,14 +1,14 @@
 .panel {
-  padding: 2rem;
+  background-color: $white;
+  border: 1px solid $gray-light;
   margin-bottom: 2rem;
-  background-color: #fff;
-  border: 1px solid #ddd;
+  padding: 2rem;
 }
 
 .panel-heading {
-  padding: 1rem 0;
+  border-bottom: 1px solid $gray-light;
   margin-bottom: 3rem;
-  border-bottom: 1px solid #ddd;
+  padding: 1rem 0;
   text-align: center;
 }
 
