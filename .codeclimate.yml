@@ -1,12 +1,12 @@
 engines:
   brakeman:
-    enabled: false
+    enabled: true
   bundler-audit:
-    enabled: false
+    enabled: true
   coffeelint:
     enabled: true
   csslint:
-    enabled: false
+    enabled: true
   duplication:
     enabled: true
     config:
@@ -21,7 +21,7 @@ engines:
   rubocop:
     enabled: true
   scss-lint:
-    enabled: false
+    enabled: true
 
 ratings:
   paths:
@@ -29,8 +29,3 @@ ratings:
   - lib/**
   - '**.rb'
   - '**.go'
-
-exclude_paths:
-- spec/**/*
-- 'vendor/assets/stylesheets/uswds.css'
-- 'db/migrate/20160405212342_initial_schema.rb'
