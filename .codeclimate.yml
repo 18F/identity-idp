@@ -14,10 +14,15 @@ engines:
       - ruby
         # mass_threshold: 30
       - javascript
+    exclude_paths:
+    - 'spec/**/*'
+    - 'db/schema.rb'
   eslint:
     enabled: true
   fixme:
     enabled: true
+    exclude_paths:
+    - 'public/build/bundle.js'
   rubocop:
     enabled: true
   scss-lint:
