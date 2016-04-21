@@ -1,0 +1,19 @@
+
+// Converted Variables
+
+
+// Custom Media Query Variables
+
+
+/* Basscss Color Tables */
+
+.table-light th,
+.table-light td {
+  border-bottom-width: $border-width;
+  border-bottom-style: solid;
+  border-bottom-color: $border-color;
+}
+
+.table-light tr:last-child td {
+  border-bottom: 0;
+}

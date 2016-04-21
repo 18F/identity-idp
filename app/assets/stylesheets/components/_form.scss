@@ -1,0 +1,17 @@
+.field-label {
+  display: block;
+  margin-top: 1rem;
+}
+
+[type="submit"] {
+  margin-bottom: 2rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  width: 100%;
+}
+
+@media #{$breakpoint-sm} {
+  [type="submit"] {
+    width: auto;
+  }
+}

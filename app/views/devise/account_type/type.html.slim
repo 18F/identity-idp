@@ -1,9 +1,10 @@
 - title t('upaya.titles.registrations.edit')
 
 .clearfix.mxn2
-  .sm-col-8.px2.mx-auto
-    .mb3.p3.bg-white
-      h2.mt2 Account Type
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 Account Type
       = simple_form_for(current_user, as: :user, url: set_type_path, html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
         = f.error_notification
         -# Check the simple_form.en.yml for this content

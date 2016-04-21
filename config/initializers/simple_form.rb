@@ -1,9 +1,10 @@
 SimpleForm.setup do |config|
-  config.button_class = 'usa-button'
+  config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
-  config.input_class = 'field'
+  config.input_class = 'block col-12 field'
+  config.error_notification_tag = :div
 
-  config.wrappers :vertical_form, tag: 'div', error_class: 'has-error' do |b|
+  config.wrappers :vertical_form, tag: 'div', class: 'mb2', error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength
@@ -12,7 +13,7 @@ SimpleForm.setup do |config|
     b.optional :readonly
     b.use :label
     b.use :input
-    b.use :error, wrap_with: { tag: 'span', class: 'error-description' }
+    b.use :error, wrap_with: { tag: 'div', class: 'error-description' }
   end
 
   config.default_wrapper = :vertical_form

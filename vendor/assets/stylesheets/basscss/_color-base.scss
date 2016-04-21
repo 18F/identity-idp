@@ -1,0 +1,44 @@
+
+// Converted Variables
+
+$body-color: $black !default;
+$body-background-color: $white !default;
+$link-color: $blue !default;
+$link-text-decoration: none !default;
+$link-hover-text-decoration: underline !default;
+$pre-background-color: transparent !default;
+$pre-border-radius: $border-radius !default;
+$rule-border-style: solid !default;
+$rule-border-width: $border-width !default;
+$rule-border-color: $border-color !default;
+
+// Custom Media Query Variables
+
+
+/* Basscss Color Base */
+
+body {
+  color: $body-color;
+  background-color: $body-background-color;
+}
+
+a {
+  color: $link-color;
+  text-decoration: $link-text-decoration;
+}
+
+a:hover {
+  text-decoration: $link-hover-text-decoration;
+}
+
+pre, code {
+  background-color: $pre-background-color;
+  border-radius: $pre-border-radius;
+}
+
+hr {
+  border: 0;
+  border-bottom-style: $rule-border-style;
+  border-bottom-width: $rule-border-width;
+  border-bottom-color: $rule-border-color;
+}

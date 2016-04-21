@@ -1,14 +1,14 @@
 - title t('upaya.titles.confirmations.new')
 
 .clearfix.mxn2
-  .sm-col-8.px2.mx-auto
-    .mb3.p3.bg-white
-      h2.mt2 = t('upaya.headings.confirmations.new')
-      p
-        abbr= '* ' + t('upaya.forms.required_field')
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = t('upaya.headings.confirmations.new')
       = simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
-        = f.error_notification
-        = f.full_error :confirmation_token
+        .mb2
+          = f.error_notification
+          = f.full_error :confirmation_token
         = f.input :email, required: true, input_html: { class: 'gets-focus' }
         = f.button :submit, t('upaya.forms.buttons.resend_confirmation')
       = render 'devise/shared/links'
