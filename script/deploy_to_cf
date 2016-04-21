@@ -1,0 +1,22 @@
+#!/bin/sh
+
+set -e
+set -x
+
+USAGE="$0: appname"
+if [ $# -lt 1 ]; then
+  echo "Error: appname is required.\n$USAGE" >&2
+  exit 1
+fi
+
+if ! hash autopilot 2>/dev/null; then
+  echo "You need to install autopilot CF plugin: https://github.com/concourse/autopilot"
+  exit 1
+fi
+
+APPNAME=$1
+
+cf create-app-manifest $APPNAME
+cf zero-downtime-push $APPNAME -f ${APPNAME}_manifest.yml
+cf create-app-manifest ${APPNAME}-worker
+cf zero-downtime-push ${APPNAME}-worker -f ${APPNAME}-worker_manifest.yml

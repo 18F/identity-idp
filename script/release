@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+set -x
+
+
+TAG=$(date -u +"%Y-%m-%dT%H%M%S")
+
+git tag $TAG
+./script/deploy logon
+git push origin $TAG

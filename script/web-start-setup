@@ -1,0 +1,12 @@
+#!/bin/sh
+
+set -e
+set -x
+
+bin/rake db:setup
+bundle exec puma --config config/puma.rb
+
+#TEMP
+bundle exec sidekiq -q sms -q mailers --config config/sidekiq.yml
+
+bundle exec rspec --require rails_helper
