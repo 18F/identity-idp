@@ -1,5 +1,5 @@
 #!/bin/sh
-
+# this is to be used with CI tools
 set -e
 set -x
 
@@ -16,6 +16,8 @@ fi
 
 APPNAME=$1
 
+# https://docs.cloud.gov/apps/continuous-deployment/
+# Integrate plugin into CI tools instructions https://github.com/concourse/autopilot
 cf create-app-manifest $APPNAME
 cf zero-downtime-push $APPNAME -f ${APPNAME}_manifest.yml
 cf create-app-manifest ${APPNAME}-worker

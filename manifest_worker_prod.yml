@@ -1,9 +1,9 @@
 inherit: manifest_base_dev.yml
 applications:
--  name: login-worker-dev
+-  name: production
    memory: 256M
    instances: 1
-   domain: 18f.gov
+   domain: login.gov
    path: .
    command: script/worker-start
    no-route: true

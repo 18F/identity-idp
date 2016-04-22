@@ -3,5 +3,5 @@
 set -e
 set -x
 
-#bundle exec sidekiq -C config/sidekiq.yml
+# Worker sessions will be creaated with this container
 bundle exec sidekiq -q sms -q mailers --config config/sidekiq.yml

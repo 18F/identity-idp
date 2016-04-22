@@ -43,5 +43,10 @@ module Upaya
     config.session_check_frequency         = 60
 
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
+
+    if Rails.env.production?
+      config.assets.initialize_on_precompile = true
+      
+    end
   end
 end

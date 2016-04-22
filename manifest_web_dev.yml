@@ -2,15 +2,14 @@
 inherit: manifest_base_dev.yml
 
 applications:
--  name: logon-dev
-   host: logon-dev
+-  name: login-dev
+   host: login-dev
    path: .
    memory: 512M
    instances: 1
    domain: 18f.gov
    stack: cflinuxfs2
    command: script/web-start-migrate
-
 
 #Reference
 #   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#precompile
