@@ -42,9 +42,5 @@ Rails.application.routes.draw do
 
   get '/users/:id/reset_password' => 'users#reset_password', as: :user_reset_password
 
-  if Rails.env.development? || Figaro.env.pt_mode == 'on'
-    mount LetterOpenerWeb::Engine, at: '/letter_opener'
-  end
-
   root to: 'users/sessions#new'
 end

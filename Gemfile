@@ -14,7 +14,6 @@ gem 'jbuilder', '~> 2.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
 gem 'kaminari-bootstrap', '~> 3.0.1'
-gem 'letter_opener_web'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'omniauth-saml', github: 'amoose/omniauth-saml', branch: 'feature/internal_idp'
@@ -72,6 +71,7 @@ group :development, :test do
   gem 'brakeman'
   gem 'bullet'
   gem 'dawnscanner', require: false
+  gem 'mailcatcher', '0.6.3'
 end
 
 group :test do

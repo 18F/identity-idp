@@ -45,7 +45,7 @@ Rails.application.configure do
     protocol: 'http'
   }
 
-  config.action_mailer.delivery_method = ENV['USER'] == 'vagrant' ? :letter_opener_web : :letter_opener
+  config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.raise_delivery_errors = true
   # Send email in development mode?
   config.action_mailer.perform_deliveries = true
