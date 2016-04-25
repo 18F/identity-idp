@@ -44,9 +44,10 @@ module Upaya
 
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
 
-    if Rails.env.production?
+    # Added this because when deploying to CF, need it to !precompile assests
+    if (Rails.env.production? || ENV["VCAP_APPLICATION"] != nil)
       config.assets.initialize_on_precompile = true
-      
+
     end
   end
 end
