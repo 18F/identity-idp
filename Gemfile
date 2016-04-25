@@ -39,7 +39,6 @@ gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'activerecord-session_store', '1.0.0.pre'
 gem 'puma'
-gem 'rails_12factor'
 
 group :deploy do
   gem 'berkshelf'
