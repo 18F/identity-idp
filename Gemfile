@@ -20,6 +20,7 @@ gem 'newrelic_rpm'
 gem 'omniauth-saml', github: 'amoose/omniauth-saml', branch: 'feature/internal_idp'
 gem 'phony_rails'
 gem 'pg'
+gem 'puma'
 gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
@@ -38,7 +39,6 @@ gem 'two_factor_authentication', git: 'https://github.com/Houdini/two_factor_aut
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'activerecord-session_store', '1.0.0.pre'
-gem 'puma'
 
 group :deploy do
   gem 'berkshelf'
