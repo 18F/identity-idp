@@ -1,3 +1,7 @@
 exclude:
   - 'vendor/assets/stylesheets/basscss/*.scss'
   - 'vendor/assets/stylesheets/uswds.css'
+
+linters:
+  ColorVariable:
+    enabled: false

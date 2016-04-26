@@ -5,7 +5,4 @@ $(document).on('page:change', function () {
     });
     return true;
   });
-
-  $('label.radio_buttons').wrap('<legend></legend>');
-  $('.form-group.user_account_type').wrap('<fieldset></fieldset>');
 });

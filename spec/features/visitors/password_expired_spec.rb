@@ -8,7 +8,7 @@ feature 'Password Expiration', devise: true do
       user = create(:user, :signed_up)
       sign_in_user(user)
 
-      expect(page).to have_content 'Enter your one-time password'
+      expect(page).to have_content 'Enter your one-time passcode'
     end
 
     it 'redirects to root when password_expired is visited directly' do
@@ -33,7 +33,7 @@ feature 'Password Expiration', devise: true do
 
     it 'prompts user to update their password' do
       expect(page).to have_content 'Your password is expired'
-      expect(page).to_not have_content 'Enter your one-time password'
+      expect(page).to_not have_content 'Enter your one-time passcode'
     end
 
     context 'when password update is valid' do

@@ -200,9 +200,9 @@ feature 'Sign Up', devise: true do
 
       expect(page).
         to have_content(
-          "A one-time password has been sent to #{user.unconfirmed_mobile}. " \
+          "A one-time passcode has been sent to #{user.unconfirmed_mobile}. " \
           'Please enter the code that you received. ' \
-          'If you do not receive the code in 10 minutes, please request a new one-time password.'
+          'If you do not receive the code in 10 minutes, please request a new passcode.'
         )
     end
 

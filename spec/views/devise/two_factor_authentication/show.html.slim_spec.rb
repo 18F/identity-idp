@@ -6,7 +6,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
 
       render
 
-      expect(rendered).to have_content 'A one-time password has been sent to 5005550006.'
+      expect(rendered).to have_content 'A one-time passcode has been sent to 5005550006.'
     end
   end
 
@@ -17,7 +17,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
 
       render
 
-      expect(rendered).to have_content 'A one-time password has been sent to 5005550006.'
+      expect(rendered).to have_content 'A one-time passcode has been sent to 5005550006.'
     end
   end
 
@@ -33,7 +33,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
       render
 
       expect(rendered).
-        to have_content 'A one-time password has been sent to foo@bar.com and +1 (500) 555-0006.'
+        to have_content 'A one-time passcode has been sent to foo@bar.com and +1 (500) 555-0006.'
     end
   end
 
@@ -44,7 +44,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
 
       render
 
-      expect(rendered).to have_content 'A one-time password has been sent to foo@bar.com.'
+      expect(rendered).to have_content 'A one-time passcode has been sent to foo@bar.com.'
     end
   end
 
@@ -54,7 +54,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
 
       render
 
-      expect(rendered).to have_content 'A one-time password has been sent to +1 (500) 555-0006.'
+      expect(rendered).to have_content 'A one-time passcode has been sent to +1 (500) 555-0006.'
     end
   end
 end
