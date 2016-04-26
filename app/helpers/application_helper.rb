@@ -4,7 +4,7 @@ module ApplicationHelper
   end
 
   def required_form_field(*args, &block)
-    content_tag(:p, "* #{t('upaya.forms.required_field')}", class: 'disclaimer-basic required') +
+    content_tag(:p, "* #{t('upaya.forms.required_field')}", class: 'italic') +
       simple_form_for(*args, &block)
   end
 end

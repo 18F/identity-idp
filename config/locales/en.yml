@@ -33,7 +33,7 @@ en:
           and <a href="#privacy">Upaya Privacy Act Statement</a>.
         contact_info: Contact information
         already_have_account_html: Already have an account?
-        need_password: we need your current password to confirm your changes
+        need_password: We need your current password to confirm your changes.
       two_factor:
         code: Secure one-time password
         make_selection: Please choose at least one delivery method.

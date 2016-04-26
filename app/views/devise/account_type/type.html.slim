@@ -5,8 +5,12 @@
     .panel
       .panel-heading
         h2.m0 Account Type
+      h3 Select an account type:
       = simple_form_for(current_user, as: :user, url: set_type_path, html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
         = f.error_notification
-        -# Check the simple_form.en.yml for this content
-        = f.input :account_type, as: :radio_buttons, collection: User.account_types.keys.map(&:to_sym), label_method: lambda { |item| account_type_label(item) }
+        = f.input :account_type, :as => :radio_buttons,
+            label: false,
+            collection: User.account_types.keys.map(&:to_sym),
+            label_method: lambda { |item| account_type_label(item) },
+            item_wrapper_class: 'block mb2'
         = f.button :submit, 'Submit'

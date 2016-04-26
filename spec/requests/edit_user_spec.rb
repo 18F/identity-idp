@@ -107,7 +107,7 @@ describe 'user edits their account', email: true do
     it 'does not allow the login OTP to be used for confirmation' do
       patch_via_redirect(user_two_factor_authentication_path, 'code' => @old_otp_code)
 
-      expect(response.body).to match(/Secure one-time password is invalid./)
+      expect(response.body).to match(/Secure one-time passcode is invalid./)
       expect(@user.reload.mobile).to_not eq '+1 (555) 555-5555'
     end
 
@@ -154,7 +154,10 @@ describe 'user edits their account', email: true do
 
     it 'lets user know they need to confirm their new mobile', sms: true do
       expect(response.body).
-        to include("A one-time password has been sent to #{user.reload.unconfirmed_mobile}.")
+        to include(
+          'A one-time passcode has been sent to ' \
+          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+        )
       expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
       expect(user.reload.mobile).to be_nil
       expect(SmsSenderExistingMobileJob).to have_been_enqueued.with(global_id(user_with_mobile))
@@ -178,7 +181,10 @@ describe 'user edits their account', email: true do
 
     it 'lets user know they need to confirm both their new mobile and email', sms: true do
       expect(response.body).
-        to include("A one-time password has been sent to #{user.reload.unconfirmed_mobile}.")
+        to include(
+          'A one-time passcode has been sent to ' \
+          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+        )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to be_nil
       expect(SmsSenderExistingMobileJob).to have_been_enqueued.with(global_id(user_with_mobile))
@@ -203,7 +209,10 @@ describe 'user edits their account', email: true do
 
     it 'lets user know they need to confirm both their new mobile and email', sms: true do
       expect(response.body).
-        to include("A one-time password has been sent to #{user.reload.unconfirmed_mobile}.")
+        to include(
+          'A one-time passcode has been sent to ' \
+          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+        )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to be_nil
       expect(SmsSenderExistingMobileJob).to have_been_enqueued.with(global_id(user_with_mobile))
@@ -228,7 +237,10 @@ describe 'user edits their account', email: true do
 
     it 'lets user know they need to confirm both their new mobile and email', sms: true do
       expect(response.body).
-        to include("A one-time password has been sent to #{user.reload.unconfirmed_mobile}.")
+        to include(
+          'A one-time passcode has been sent to ' \
+          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+        )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to be_nil
       expect(SmsSenderExistingMobileJob).to_not have_been_enqueued.with(global_id(user_with_mobile))

@@ -1,10 +1,6 @@
 - title t('upaya.titles.dashboard')
 
-
-p = link_to 'Upaya profile page', edit_user_registration_path, role: 'menuitem'
-p You are logged in.
-
-table.bg-white
+table.table-light.border.bg-white.mb3
   tbody
     tr
       td UUID:
@@ -22,3 +18,5 @@ table.bg-white
       td 2FA Enabled?
       td
         strong= current_user.two_factor_enabled?.to_s.titleize
+
+div = link_to 'Upaya profile page', edit_user_registration_path, role: 'menuitem', class: 'btn btn-primary'

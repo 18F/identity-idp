@@ -37,7 +37,7 @@ $h6: .75rem !default;
 $space-1: .5rem !default;
 $space-2: 1rem !default;
 $space-3: 2rem !default;
-$space-4: 4rem !default;
+$space-4: 3rem !default;
 
 $form-field-font-size: 1rem !default;
 $form-field-height: 2.25rem !default;
@@ -69,6 +69,9 @@ $border-color: #ddd !default;
 $table-header-font-weight: $bold-font-weight !default;
 $table-cell-padding-x: $space-2 !default;
 $table-cell-padding-y: .25rem !default;
+$table-border-color: $border-color !default;
+$table-bg-accent: #f9f9f9 !default;
+$table-bg-hover: #f5f5f5 !default;
 
 $width-1: 24rem !default;
 $width-2: 32rem !default;
@@ -80,5 +83,7 @@ $breakpoint-md: '(min-width: 52em)' !default;
 $breakpoint-lg: '(min-width: 64em)' !default;
 $breakpoint-sm-md: '(min-width: 40em) and (max-width: 52em)' !default;
 $breakpoint-md-lg: '(min-width: 52em) and (max-width: 64em)' !default;
+
+$screen-xs: 480px !default;
 
 $container-width: 960px !default;
