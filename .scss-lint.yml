@@ -1,6 +1,6 @@
 exclude:
-  - 'vendor/assets/stylesheets/basscss/*.scss'
-  - 'vendor/assets/stylesheets/uswds.css'
+  - 'vendor/assets/stylesheets/**'
+  - 'node_modules/**'
 
 linters:
   ColorVariable:

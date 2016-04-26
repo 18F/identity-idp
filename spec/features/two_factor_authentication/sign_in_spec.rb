@@ -391,7 +391,7 @@ feature 'Two Factor Authentication', devise: true do
 
       expect(current_path).to eq('/users/otp')
       expect(page).to have_content I18n.t('devise.two_factor_authentication.otp_setup')
-      expect(page).to have_css('#flash_notice')
+      expect(page).to have_css('.alert')
     end
 
     scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do
