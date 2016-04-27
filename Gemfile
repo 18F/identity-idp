@@ -84,7 +84,6 @@ group :test do
   gem 'poltergeist'
   gem 'rack_session_access'
   gem 'rack-test'
-  gem 'rspec-activejob'
   gem 'shoulda-matchers', '~> 2.8', require: false
   gem 'sms-spec', git: 'https://github.com/monfresh/sms-spec.git', require: 'sms_spec'
   gem 'timecop'

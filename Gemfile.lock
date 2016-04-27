@@ -470,9 +470,6 @@ GEM
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
       rspec-mocks (~> 3.4.0)
-    rspec-activejob (0.6.1)
-      activejob (>= 4.2)
-      rspec-mocks
     rspec-core (3.4.4)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
@@ -667,7 +664,6 @@ DEPENDENCIES
   rails_layout
   responders (~> 2.0)
   rotp (~> 3.0)
-  rspec-activejob
   rspec-rails (~> 3.3)
   rubocop
   ruby-saml!

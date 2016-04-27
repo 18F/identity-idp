@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwilioService, sms: true do
+describe TwilioService do
   describe 'proxy configuration' do
     it 'ignores the proxy configuration if not set' do
       expect(Figaro.env).to receive(:proxy_addr).and_return(nil)
@@ -24,7 +24,7 @@ describe TwilioService, sms: true do
     end
   end
 
-  describe 'test client', sms: true do
+  describe 'test client' do
     let(:user) { build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq') }
 
     it 'uses the test client when pt_mode is true' do
@@ -50,28 +50,28 @@ describe TwilioService, sms: true do
       TwilioService.new
     end
 
-    it 'sends an OTP from the test number when pt_mode is true' do
+    it 'sends an OTP from the test number when pt_mode is true', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
       SmsSenderOtpJob.perform_now(user)
 
       expect(messages.first.from).to eq '+15005550006'
     end
 
-    it 'sends an OTP from the real number when pt_mode is false' do
+    it 'sends an OTP from the real number when pt_mode is false', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(false)
       SmsSenderOtpJob.perform_now(user)
 
       expect(messages.first.from).to eq '+19999999999'
     end
 
-    it 'sends number change SMS from test # when pt_mode is true' do
+    it 'sends number change SMS from test # when pt_mode is true', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
       SmsSenderNumberChangeJob.perform_now(user)
 
       expect(messages.first.from).to eq '+15005550006'
     end
 
-    it 'sends number change SMS from real # when pt_mode is false' do
+    it 'sends number change SMS from real # when pt_mode is false', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(false)
       SmsSenderNumberChangeJob.perform_now(user)
 
@@ -80,7 +80,7 @@ describe TwilioService, sms: true do
   end
 
   describe '#send_sms' do
-    it 'uses the same account for every call in a single instance' do
+    it 'uses the same account for every call in a single instance', sms: true do
       expect(Rails.application.secrets).to receive(:twilio_accounts).
         and_return(
           [
@@ -109,7 +109,7 @@ describe TwilioService, sms: true do
       end
     end
 
-    it 'uses a different Twilio account for different instances' do
+    it 'uses a different Twilio account for different instances', sms: true do
       expect(Rails.application.secrets).to receive(:twilio_accounts).
         and_return(
           [{

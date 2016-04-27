@@ -157,9 +157,7 @@ describe Users::RegistrationsController, devise: true do
 
       expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
 
-      expect(SmsSenderOtpJob).to have_been_enqueued.with(global_id(user))
-
-      expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
+      expect(enqueued_jobs.size).to eq 1
     end
   end
 
@@ -209,7 +207,7 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  context 'user updates existing mobile number', sms: true do
+  context 'user updates existing mobile number' do
     before do
       user_with_mobile.mobile_confirm
       sign_in(user_with_mobile)
@@ -221,10 +219,14 @@ describe Users::RegistrationsController, devise: true do
       let(:test_user) { user_with_mobile }
     end
 
-    it 'updated unconfirmed_mobile and sends an OTP to the unconfirmed number' do
+    it 'updates unconfirmed_mobile' do
       expect(user_with_mobile.reload.unconfirmed_mobile).to eq '+1 (555) 555-5555'
+    end
 
-      expect(SmsSenderOtpJob).to have_been_enqueued.with(global_id(user_with_mobile))
+    it 'calls send_two_factor_authentication_code on current_user' do
+      expect(subject.current_user).to receive(:send_two_factor_authentication_code)
+
+      patch :update, id: subject.current_user, user: attrs_for_new_mobile
     end
 
     it 'allows the user to abandon confirmation' do
@@ -295,7 +297,7 @@ describe Users::RegistrationsController, devise: true do
   #   Given I am signed in and editing my profile
   #   When I remove my mobile number
   #   Then I see a success message and my number is removed
-  context 'user removes mobile number while mobile is not a 2FA method', sms: true do
+  context 'user removes mobile number while mobile is not a 2FA method' do
     before do
       sign_in(user_with_mobile)
       reset_job_queues
@@ -304,13 +306,12 @@ describe Users::RegistrationsController, devise: true do
 
     it_behaves_like 'updating_profile'
 
-    it 'sets user mobile to nil and does not send any SMS' do
+    it 'sets user mobile to nil' do
       expect(user_with_mobile.reload.mobile).to be_nil
+    end
 
-      expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
-
-      expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user))
-      expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user_with_mobile))
+    it 'does not send any SMS' do
+      expect(enqueued_jobs.size).to eq 0
     end
   end
 
@@ -361,6 +362,12 @@ describe Users::RegistrationsController, devise: true do
     end
 
     it_behaves_like 'adding_mobile'
+
+    it 'calls send_two_factor_authentication_code on current_user' do
+      expect(subject.current_user).to receive(:send_two_factor_authentication_code)
+
+      put :update, id: user, user: attrs_with_both_2fa
+    end
   end
 
   # Scenario: User attempts to disable all 2FA methods
@@ -511,10 +518,10 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  context 'user updates profile with invalid email and existing mobile', sms: true do
+  context 'user updates profile with invalid email and existing mobile' do
     render_views
 
-    it 'displays error about invalid email' do
+    it 'displays error about invalid email and does not send any SMS', sms: true do
       sign_in(user)
       put(
         :update,
@@ -524,9 +531,9 @@ describe Users::RegistrationsController, devise: true do
 
       expect(response.body).to have_content('Please enter a valid email')
       expect(response.body).to_not have_content('has already been taken')
-      expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
-      expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user))
-      expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user_with_mobile))
+
+      expect(enqueued_jobs).to eq []
+      expect(performed_jobs).to eq []
     end
   end
 

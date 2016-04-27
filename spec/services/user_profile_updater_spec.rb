@@ -18,19 +18,20 @@ describe UserProfileUpdater do
     end
 
     context 'when mobile is already taken' do
-      it 'sends an SMS to the existing user', sms: true do
+      it 'sends an SMS to the existing user' do
         user = create(:user)
         existing_user = create(:user, mobile: '222-555-1212')
         user.update(mobile: existing_user.mobile)
 
-        UserProfileUpdater.new(user).send_notifications
+        expect(SmsSenderExistingMobileJob).to receive(:perform_later).
+          with(existing_user)
 
-        expect(SmsSenderExistingMobileJob).to have_been_enqueued.with(global_id(existing_user))
+        UserProfileUpdater.new(user).send_notifications
       end
     end
 
     context 'when both email and mobile are already taken' do
-      it 'sends an email and SMS to the existing user', sms: true do
+      it 'sends an email and SMS to the existing user' do
         user = create(:user)
         existing_user = create(:user, email: 'existing@example.com', mobile: '222-555-1212')
         user.update(email: existing_user.email, mobile: existing_user.mobile)
@@ -40,9 +41,10 @@ describe UserProfileUpdater do
           and_return(mailer)
         expect(mailer).to receive(:deliver_later)
 
-        UserProfileUpdater.new(user).send_notifications
+        expect(SmsSenderExistingMobileJob).to receive(:perform_later).
+          with(existing_user)
 
-        expect(SmsSenderExistingMobileJob).to have_been_enqueued.with(global_id(existing_user))
+        UserProfileUpdater.new(user).send_notifications
       end
     end
   end

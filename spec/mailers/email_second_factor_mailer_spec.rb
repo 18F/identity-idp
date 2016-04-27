@@ -16,5 +16,10 @@ describe EmailSecondFactorMailer do
     it 'uses a default from address' do
       expect(mail.from).to eq ['upaya@18f.gov']
     end
+
+    it 'includes a link to customer service in the email' do
+      expect(mail.body).
+        to include 'at <a href="https://upaya.18f.gov/contact">'
+    end
   end
 end
