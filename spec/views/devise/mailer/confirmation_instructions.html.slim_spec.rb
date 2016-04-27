@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe 'devise/mailer/confirmation_instructions.html.slim' do
   it 'mentions how long the user has to confirm' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 include Features::MailerHelper
 include Features::LocalizationHelper
 include Features::ActiveJobHelper

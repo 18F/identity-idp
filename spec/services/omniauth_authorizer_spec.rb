@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe OmniauthAuthorizer do
   let(:authorizer) { OmniauthAuthorizer.new(auth_hash, session) }
 

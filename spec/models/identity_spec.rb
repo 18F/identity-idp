@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe Identity do
   let(:user) { create(:user, :signed_up) }
   let(:identity) do

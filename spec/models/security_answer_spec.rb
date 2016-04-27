@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe SecurityAnswer do
   let(:user) { create(:user) }
   let(:security_answer) do

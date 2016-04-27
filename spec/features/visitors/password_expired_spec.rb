@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature: Password Expiration
 #   As a user
 #   I want to update my password when it expires after 1 year

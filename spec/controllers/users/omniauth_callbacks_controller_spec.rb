@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe Users::OmniauthCallbacksController, devise: true do
   render_views
 

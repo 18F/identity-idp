@@ -1,3 +1,4 @@
+require 'rails_helper'
 require 'upaya_constants'
 
 MAX_GOOD_PASSWORD = '!1aZ' * 32

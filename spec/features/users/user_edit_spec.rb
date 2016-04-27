@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature: User edit
 #   As a user
 #   I want to edit my user profile

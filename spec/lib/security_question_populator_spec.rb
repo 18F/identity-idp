@@ -1,3 +1,4 @@
+require 'rails_helper'
 require 'security_question_populator'
 
 describe SecurityQuestionPopulator do

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature: Password Recovery
 #   As a user
 #   I want to recover my password

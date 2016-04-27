@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 feature 'RegistrationsEnabled', devise: true do
   # describe 'When registrations are disabled' do
   #   scenario 'user cannot create an account' do

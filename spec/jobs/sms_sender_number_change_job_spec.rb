@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe SmsSenderNumberChangeJob, sms: true do
   let(:user) { build_stubbed(:user, :with_mobile, otp_secret_key: 'lzmh6ekrnc5i6aaq') }
 

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature: Sign up
 #   As a visitor
 #   I want to sign up

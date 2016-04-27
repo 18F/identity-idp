@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature: Edit security questions
 #   As a user
 #   I want to edit my security questions

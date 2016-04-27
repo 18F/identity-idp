@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 feature 'Confirmations', devise: true do
   describe 'When the user is not logged in and confirmation_token is falsey/empty' do
     scenario 'user cannot access users/confirmations' do

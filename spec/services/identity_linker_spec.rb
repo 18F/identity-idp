@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe IdentityLinker do
   describe '#set_active_identity' do
     it 'calls User#set_active_identity' do

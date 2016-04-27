@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature: User index page
 #   As a user
 #   I want to see a list of users

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe ApplicationController do
   describe 'handling InvalidAuthenticityToken exceptions' do
     controller do

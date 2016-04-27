@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe DashboardController do
   describe '#index' do
     let(:user) { create(:user, :signed_up) }

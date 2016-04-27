@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe EmailSecondFactor do
   describe '.transmit' do
     let(:user) { build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq') }

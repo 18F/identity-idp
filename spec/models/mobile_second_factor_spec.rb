@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 include Features::ActiveJobHelper
 
 describe MobileSecondFactor, sms: true do

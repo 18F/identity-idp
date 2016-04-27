@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe UserMailer, type: :mailer do
   let(:user) { build_stubbed(:user) }
 

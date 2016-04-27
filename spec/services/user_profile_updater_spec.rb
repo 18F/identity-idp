@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe UserProfileUpdater do
   describe '#send_notifications' do
     context 'when email is already taken' do

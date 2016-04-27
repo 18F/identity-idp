@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 include ActionView::Helpers::DateHelper
 
 describe Users::SessionsController, devise: true do

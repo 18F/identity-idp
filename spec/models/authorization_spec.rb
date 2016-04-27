@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe Authorization do
   subject { build(:authorization) }
 

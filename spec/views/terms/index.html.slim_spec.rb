@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe 'terms/index.html.slim' do
   it 'renders the smallprint template' do
     render

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe Devise::SecurityQuestionsController, devise: true do
   describe 'POST :check' do
     it 'checks their answers' do
