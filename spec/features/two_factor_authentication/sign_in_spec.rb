@@ -308,7 +308,7 @@ feature 'Two Factor Authentication', devise: true do
 
         it 'lets the user know an OTP was sent to their mobile' do
           expect(page).
-            to have_content "A one-time password has been sent to #{@user.mobile}."
+            to have_content "A one-time passcode has been sent to #{@user.mobile}."
         end
 
         it 'includes localized header text' do
@@ -317,7 +317,7 @@ feature 'Two Factor Authentication', devise: true do
         end
 
         it 'does not send an OTP via email' do
-          expect(last_email).to_not have_content('one-time password')
+          expect(last_email).to_not have_content('one-time passcode')
         end
 
         it 'sends an OTP via SMS to the confirmed number' do
@@ -336,7 +336,7 @@ feature 'Two Factor Authentication', devise: true do
 
         # With 2fa, you are signed in but blocked on an otp challenge.
         expect(page).to have_content I18n.t 'devise.sessions.signed_in'
-        expect(page).to have_content 'A one-time password has been sent'
+        expect(page).to have_content 'A one-time passcode has been sent'
 
         # Reach straight to the model to re-retrieve the OTP for testing
         # access checks of this feature. Lets us exclude testing the
@@ -367,7 +367,7 @@ feature 'Two Factor Authentication', devise: true do
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_user(user)
-      click_link 'request a new one-time password'
+      click_link 'request a new passcode'
 
       expect(page).to have_content I18n.t('devise.two_factor_authentication.user.new_otp_sent')
     end
@@ -391,7 +391,7 @@ feature 'Two Factor Authentication', devise: true do
 
       expect(current_path).to eq('/users/otp')
       expect(page).to have_content I18n.t('devise.two_factor_authentication.otp_setup')
-      expect(page).to have_css('#flash_notice')
+      expect(page).to have_css('.alert')
     end
 
     scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do

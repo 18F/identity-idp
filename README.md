@@ -53,6 +53,15 @@ more information.
       and the spec suite will run via `rake spec`. For more information about
       developing in a VM, see our [Wiki entry](#).
 
+##### :construction: cloud foundry environment coming soon! :construction:
+
+- Clone the root repository `git clone git@github.com:18F/identity.git`
+- change directory `cd identity-idp`
+- First time deployment
+  - cf push -f manifest_web_dev
+  - cf push -f manifest_worker_dev
+
+
 ## More Information
 
 **Notice:** This project is still in alpha.

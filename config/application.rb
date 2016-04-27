@@ -44,10 +44,9 @@ module Upaya
 
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
 
-    # Added this because when deploying to CF, need it to !precompile assets
-    if (Rails.env.production? || ENV["VCAP_APPLICATION"] != nil)
-      config.assets.initialize_on_precompile = true
 
-    end
+    # Configure Browserify to use babelify to compile ES6
+    config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
+
   end
 end

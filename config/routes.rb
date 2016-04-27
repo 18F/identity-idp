@@ -1,4 +1,10 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  authenticate :user, ->(u) { u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
 
   get 'terms' => 'terms#index'
@@ -41,10 +47,6 @@ Rails.application.routes.draw do
   resources :users
 
   get '/users/:id/reset_password' => 'users#reset_password', as: :user_reset_password
-
-  if Rails.env.development? || Figaro.env.pt_mode == 'on'
-    mount LetterOpenerWeb::Engine, at: '/letter_opener'
-  end
 
   root to: 'users/sessions#new'
 end

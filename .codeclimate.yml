@@ -16,6 +16,7 @@ engines:
       - javascript
     exclude_paths:
     - 'spec/**/*'
+    - 'node_modules/**/*'
     - 'db/schema.rb'
   eslint:
     enabled: true
