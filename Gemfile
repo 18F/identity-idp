@@ -5,6 +5,7 @@ gem 'rails', '~> 4.2.6'
 
 gem 'attr_encrypted'
 gem 'autoprefixer-rails', '~> 5.2'
+gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise'
 gem 'devise_security_extension'

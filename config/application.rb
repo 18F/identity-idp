@@ -43,5 +43,8 @@ module Upaya
     config.session_check_frequency         = 60
 
     # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
+
+    # Configure Browserify to use babelify to compile ES6
+    config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
   end
 end

@@ -15,6 +15,7 @@ These dependencies are not required when using docker.
   [rvm](https://rvm.io/))
 - Postgresql (`brew install postgresql` or `apt-get install postgresql`)
 - Redis 2.8+
+- Node.js v4.4.x
 
 ### Mac
 

@@ -161,7 +161,7 @@ feature 'Sign in' do
       visit root_path
       sleep 2
 
-      expect(page).to_not have_css('#flash_notice')
+      expect(page).to_not have_css('.alert')
     end
 
     it 'does not render modals/session_timeout_warning' do
