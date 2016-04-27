@@ -33,16 +33,17 @@ Run the following command to set up the environment:
     $ bin/setup
 
 This basically runs Bundler to install the required gems and sets up the
-database.  If that is successful you can run the app server with:
+database. If that is successful, you can run the app server with:
 
     $ foreman start
 
 ### Getting Started (docker)
 
 Install [Docker Compose](https://docs.docker.com/compose/install/)
-  * On non-linux systems this will involve installing [Docker
+  * On non-Linux systems this will involve installing [Docker
     Toolbox](https://www.docker.com/products/docker-toolbox) and
-    starting a Docker Machine VM.
+    starting a Docker Machine VM by launching the `Docker Quickstart Terminal`
+    app.
 
 Copy the sample configuration files:
 
@@ -61,10 +62,14 @@ Setup the database:
     $ docker-compose run --rm web rake db:setup RAILS_ENV=development
     $ docker-compose run --rm web rake db:setup RAILS_ENV=test
 
-Once the docker images are up and running the app should be accessible
-at `http://localhost:3000/`.  Email messages will be visible in mail catcher
-at `http://localhost:1080/`.  On non-linux platforms `localhost` will need
-to be replaced with the IP address of your Docker Machine VM.
+Once the docker images are up and running, the app should be accessible
+at `http://localhost:3000/`. Email messages will be visible in MailCatcher
+at `http://localhost:1080/`. On non-Linux platforms, `localhost` will need
+to be replaced with the IP address of your Docker Machine VM, which is
+`192.168.99.100` by default. When you launch the `Docker Quickstart Terminal`
+app on a Mac, it will tell you which machine and IP are in use:
+
+![docker](http://cl.ly/1Q0Q1H1i3J3c/download/Screen%20Shot%202016-04-27%20at%202.03.32%20PM.png)
 
 More useful docker-compose commands:
 
@@ -92,7 +97,7 @@ We currently run `dev` and `qa` environments at https://upaya-idp-dev.18f.gov an
 cap <env/stage> deploy
 ```
 
-You will need to provide a copy of your SSH public key and you may need to provide your IP address if you are not in a GSA building or on the GSA VPN. Post a message in the slack channel if you need help.
+You will need to provide a copy of your SSH public key and you may need to provide your IP address if you are not in a GSA building or on the GSA VPN. Post a message in the Slack channel if you need help.
 
 ## More Information
 
