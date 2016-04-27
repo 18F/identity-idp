@@ -60,6 +60,15 @@ Database Cleaner to ignore those static tables.
 Fixes #123
 ```
 
+Note that we use [Overcommit] to enforce some of the commit message rules.
+If this is your first time contributing to this repo, you will need to
+sign your Overcommit configuration by running `overcommit --sign` before
+being able to run `git commit`. See the [Security] section in the Overcommit
+README for more details.
+
+[Overcommit]: https://github.com/brigade/overcommit
+[Security]: https://github.com/brigade/overcommit#security
+
 ### Additional notes on pull requests and code reviews
 
 - Prioritize code reviews above your other work
