@@ -1,0 +1,34 @@
+version: '2'
+services:
+  worker:
+    build: .
+    command: "bundle exec sidekiq -q sms -q mailers"
+    environment:
+      REDIS_URL: "redis://redis"
+      DATABASE_URL: "postgres://postgres@db"
+      SMTP_HOST: "mailcatcher"
+    depends_on:
+      - db
+      - redis
+      - mailcatcher
+  web:
+    build: .
+    volumes:
+      - .:/upaya
+    ports:
+      - "3000:3000"
+    environment:
+      REDIS_URL: "redis://redis"
+      DATABASE_URL: "postgres://postgres@db"
+    depends_on:
+      - db
+      - redis
+      - worker
+  db:
+    image: postgres
+  redis:
+    image: redis
+  mailcatcher:
+    image: yappabe/mailcatcher
+    ports:
+      - 1080:1080

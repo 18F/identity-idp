@@ -1,0 +1,7 @@
+Dockerfile
+tmp
+log
+node_modules
+db/*.sqlite3
+*.md
+.git*
