@@ -34,16 +34,6 @@ GIT
       activemodel (~> 4.0)
 
 GIT
-  remote: git://github.com/matschaffer/knife-solo.git
-  revision: 3b3fa546f24fcee291ef73315e0e9729894f6500
-  submodules: true
-  specs:
-    knife-solo (0.5.2)
-      chef (>= 10.20)
-      erubis (~> 2.7.0)
-      net-ssh (>= 2.7, < 4.0)
-
-GIT
   remote: https://github.com/Houdini/two_factor_authentication
   revision: 675f651929b7a09bb59169bf4206a10895c2b9d9
   specs:
@@ -64,7 +54,6 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
-    CFPropertyList (2.3.2)
     actionmailer (4.2.6)
       actionpack (= 4.2.6)
       actionview (= 4.2.6)
@@ -106,6 +95,8 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
+    airbrussh (1.0.1)
+      sshkit (>= 1.6.1, != 1.7.0)
     arel (6.0.3)
     ast (2.2.0)
     attr_encrypted (3.0.1)
@@ -113,17 +104,17 @@ GEM
     autoprefixer-rails (5.2.1.3)
       execjs
       json
-    aws-sdk (2.2.31)
-      aws-sdk-resources (= 2.2.31)
-    aws-sdk-core (2.2.31)
+    aws-sdk (2.2.37)
+      aws-sdk-resources (= 2.2.37)
+    aws-sdk-core (2.2.37)
       jmespath (~> 1.0)
-    aws-sdk-resources (2.2.31)
-      aws-sdk-core (= 2.2.31)
+    aws-sdk-resources (2.2.37)
+      aws-sdk-core (= 2.2.37)
     bcrypt (3.1.11)
     bcrypt-ruby (3.1.5)
       bcrypt (>= 3.1.3)
-    benchmark-ips (2.5.0)
-    berkshelf (4.3.1)
+    benchmark-ips (2.6.1)
+    berkshelf (4.3.2)
       addressable (~> 2.3, >= 2.3.4)
       berkshelf-api-client (~> 2.0, >= 2.0.2)
       buff-config (~> 1.0)
@@ -175,25 +166,27 @@ GEM
     bullet (5.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
-    byebug (8.2.2)
-    capistrano (3.4.0)
+    byebug (8.2.4)
+    capistrano (3.5.0)
+      airbrussh (>= 1.0.0)
+      capistrano-harrow
       i18n
       rake (>= 10.0.0)
-      sshkit (~> 1.3)
+      sshkit (>= 1.9.0)
     capistrano-bundler (1.1.4)
       capistrano (~> 3.1)
       sshkit (~> 1.2)
+    capistrano-harrow (0.3.2)
     capistrano-rails (1.1.6)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
     capistrano-rbenv (2.0.4)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
-    capistrano-resque (0.2.2)
+    capistrano-sidekiq (0.5.4)
       capistrano
-      resque
-      resque-scheduler
-    capybara (2.6.2)
+      sidekiq (>= 3.4)
+    capybara (2.7.0)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -208,31 +201,10 @@ GEM
     celluloid-io (0.16.2)
       celluloid (>= 0.16.0)
       nio4r (>= 1.1.0)
-    chef (12.0.3)
-      chef-zero (~> 3.2)
-      diff-lcs (~> 1.2, >= 1.2.4)
-      erubis (~> 2.7)
-      ffi-yajl (~> 1.2)
-      highline (~> 1.6, >= 1.6.9)
-      mixlib-authentication (~> 1.3)
-      mixlib-cli (~> 1.4)
-      mixlib-config (~> 2.0)
-      mixlib-log (~> 1.3)
-      mixlib-shellout (>= 2.0.0.rc.0, < 3.0)
-      net-ssh (~> 2.6)
-      net-ssh-multi (~> 1.1)
-      ohai (~> 8.0)
-      plist (~> 3.1.0)
-      pry (~> 0.9)
-    chef-config (12.8.1)
+    chef-config (12.9.38)
+      fuzzyurl (~> 0.8.0)
       mixlib-config (~> 2.0)
       mixlib-shellout (~> 2.0)
-    chef-zero (3.2.1)
-      ffi-yajl (~> 1.1)
-      hashie (~> 2.0)
-      mixlib-log (~> 1.3)
-      rack
-      uuidtools (~> 2.1)
     chronic (0.10.2)
     cleanroom (1.0.0)
     cliver (0.3.2)
@@ -264,7 +236,7 @@ GEM
       dm-validations (~> 1.2.0)
     data_objects (0.10.17)
       addressable (~> 2.1)
-    database_cleaner (1.5.1)
+    database_cleaner (1.5.3)
     dawnscanner (1.6.2)
       cvss
       data_mapper
@@ -288,7 +260,7 @@ GEM
       rack (>= 1)
       rake (> 10, < 12)
       thor (~> 0.19)
-    devise (3.5.6)
+    devise (3.5.8)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
@@ -346,12 +318,11 @@ GEM
     encryptor (3.0.0)
     erubis (2.7.0)
     eventmachine (1.0.9.1)
-    excon (0.49.0)
     execjs (2.6.0)
-    factory_girl (4.5.0)
+    factory_girl (4.7.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.6.0)
-      factory_girl (~> 4.5.0)
+    factory_girl_rails (4.7.0)
+      factory_girl (~> 4.7.0)
       railties (>= 3.0.0)
     faker (1.6.3)
       i18n (~> 0.5)
@@ -359,105 +330,13 @@ GEM
       multipart-post (>= 1.2, < 3)
     fastercsv (1.5.5)
     ffi (1.9.10)
-    ffi-yajl (1.4.0)
-      ffi (~> 1.5)
-      libyajl2 (~> 1.2)
     figaro (1.1.1)
       thor (~> 0.14)
-    fission (0.5.0)
-      CFPropertyList (~> 2.2)
-    fog (1.29.0)
-      fog-atmos
-      fog-aws (~> 0.0)
-      fog-brightbox (~> 0.4)
-      fog-core (~> 1.27, >= 1.27.4)
-      fog-ecloud
-      fog-json
-      fog-local
-      fog-powerdns (>= 0.1.1)
-      fog-profitbricks
-      fog-radosgw (>= 0.0.2)
-      fog-riakcs
-      fog-sakuracloud (>= 0.0.4)
-      fog-serverlove
-      fog-softlayer
-      fog-storm_on_demand
-      fog-terremark
-      fog-vmfusion
-      fog-voxel
-      fog-xml (~> 0.1.1)
-      ipaddress (~> 0.5)
-      nokogiri (~> 1.5, >= 1.5.11)
-    fog-atmos (0.1.0)
-      fog-core
-      fog-xml
-    fog-aws (0.9.2)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
-      fog-xml (~> 0.1)
-      ipaddress (~> 0.8)
-    fog-brightbox (0.10.1)
-      fog-core (~> 1.22)
-      fog-json
-      inflecto (~> 0.0.2)
-    fog-core (1.37.0)
-      builder
-      excon (~> 0.45)
-      formatador (~> 0.2)
-    fog-ecloud (0.3.0)
-      fog-core
-      fog-xml
-    fog-json (1.0.2)
-      fog-core (~> 1.0)
-      multi_json (~> 1.10)
-    fog-local (0.3.0)
-      fog-core (~> 1.27)
-    fog-powerdns (0.1.1)
-      fog-core (~> 1.27)
-      fog-json (~> 1.0)
-      fog-xml (~> 0.1)
-    fog-profitbricks (0.0.5)
-      fog-core
-      fog-xml
-      nokogiri
-    fog-radosgw (0.0.5)
-      fog-core (>= 1.21.0)
-      fog-json
-      fog-xml (>= 0.0.1)
-    fog-riakcs (0.1.0)
-      fog-core
-      fog-json
-      fog-xml
-    fog-sakuracloud (1.7.5)
-      fog-core
-      fog-json
-    fog-serverlove (0.1.2)
-      fog-core
-      fog-json
-    fog-softlayer (1.1.0)
-      fog-core
-      fog-json
-    fog-storm_on_demand (0.1.1)
-      fog-core
-      fog-json
-    fog-terremark (0.1.0)
-      fog-core
-      fog-xml
-    fog-vmfusion (0.1.0)
-      fission
-      fog-core
-    fog-voxel (0.1.0)
-      fog-core
-      fog-xml
-    fog-xml (0.1.2)
-      fog-core
-      nokogiri (~> 1.5, >= 1.5.11)
     formatador (0.2.5)
+    fuzzyurl (0.8.0)
     get_process_mem (0.2.0)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
-    gssapi (1.2.0)
-      ffi (>= 1.0.1)
     guard (2.13.0)
       formatador (>= 0.2.4)
       listen (>= 2.7, <= 4.0)
@@ -472,12 +351,10 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
-    gyoku (1.3.1)
-      builder (>= 2.1.2)
     haml (4.0.7)
       tilt
     hashdiff (0.3.0)
-    hashie (2.1.2)
+    hashie (3.4.3)
     heapy (0.1.2)
     highline (1.7.8)
     hitimes (1.2.3)
@@ -485,14 +362,12 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    httpclient (2.7.1)
+    httpclient (2.7.2)
     i18n (0.7.0)
-    inflecto (0.0.2)
-    ipaddress (0.8.3)
     jbuilder (2.4.1)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
-    jmespath (1.2.3)
+    jmespath (1.2.4)
       json_pure (>= 1.8.1)
     jquery-rails (4.1.1)
       rails-dom-testing (>= 1, < 3)
@@ -510,23 +385,12 @@ GEM
     kaminari-bootstrap (3.0.1)
       kaminari (>= 0.13.0)
       rails
-    knife-ec2 (0.12.0)
-      fog (~> 1.29.0)
-      knife-windows (~> 1.0)
-    knife-solo_data_bag (1.1.0)
-    knife-windows (1.4.0)
-      winrm (~> 1.7)
     launchy (2.4.3)
       addressable (~> 2.3)
-    libyajl2 (1.2.0)
-    listen (3.0.6)
+    listen (3.1.1)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9.7)
-    little-plugger (1.1.4)
     logger-colors (1.0.0)
-    logging (2.1.0)
-      little-plugger (~> 1.1)
-      multi_json (~> 1.10)
     lograge (0.3.6)
       actionpack (>= 3)
       activesupport (>= 3)
@@ -548,7 +412,9 @@ GEM
       thin (~> 1.5.0)
     memory_profiler (0.9.6)
     method_source (0.8.2)
-    mime-types (2.99.1)
+    mime-types (3.0)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2016.0221)
     mini_portile2 (2.0.0)
     minitar (0.5.4)
     minitest (5.8.4)
@@ -557,58 +423,37 @@ GEM
       rspec-core (~> 3.2)
       rspec-expectations (~> 3.2)
       rspec-mocks (~> 3.2)
-    mixlib-cli (1.5.0)
     mixlib-config (2.2.1)
     mixlib-log (1.6.0)
     mixlib-shellout (2.2.6)
     molinillo (0.4.4)
-    mono_logger (1.1.0)
-    multi_json (1.11.2)
+    multi_json (1.11.3)
     multi_xml (0.5.5)
     multipart-post (2.0.0)
     nenv (0.3.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
-    net-ssh (2.9.4)
-    net-ssh-gateway (1.2.0)
-      net-ssh (>= 2.6.5)
-    net-ssh-multi (1.2.1)
-      net-ssh (>= 2.6.5)
-      net-ssh-gateway (>= 1.2.0)
-    newrelic_rpm (3.15.1.316)
+    net-ssh (3.1.1)
+    newrelic_rpm (3.15.2.317)
     nio4r (1.2.1)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
-    nori (2.6.0)
     notiffany (0.0.8)
       nenv (~> 0.1)
       shellany (~> 0.0)
     octokit (4.3.0)
       sawyer (~> 0.7.0, >= 0.5.3)
-    ohai (8.4.0)
-      ffi (~> 1.9)
-      ffi-yajl (>= 1.1, < 3.0)
-      ipaddress
-      mime-types (~> 2.0)
-      mixlib-cli
-      mixlib-config (~> 2.0)
-      mixlib-log
-      mixlib-shellout (~> 2.0)
-      rake (~> 10.1)
-      systemu (~> 2.6.4)
-      wmi-lite (~> 1.0)
     omniauth (1.3.1)
       hashie (>= 1.2, < 4)
       rack (>= 1.0, < 3)
     orm_adapter (0.5.0)
-    parser (2.3.0.7)
+    parser (2.3.1.0)
       ast (~> 2.2)
     pg (0.18.4)
-    phony (2.15.20)
+    phony (2.15.21)
     phony_rails (0.13.1)
       activesupport (>= 3.0)
       phony (~> 2.12)
-    plist (3.1.0)
     poltergeist (1.9.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -665,27 +510,14 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rainbow (2.1.0)
-    rake (10.5.0)
+    rake (11.1.2)
     randexp (0.1.7)
     rb-fsevent (0.9.7)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
-    redis (3.2.2)
-    redis-namespace (1.5.2)
-      redis (~> 3.0, >= 3.0.4)
+    redis (3.3.0)
     responders (2.1.2)
       railties (>= 4.2.0, < 5.1)
-    resque (1.26.0)
-      mono_logger (~> 1.0)
-      multi_json (~> 1.0)
-      redis-namespace (~> 1.3)
-      sinatra (>= 0.9.2)
-      vegas (~> 0.1.2)
-    resque-scheduler (4.1.0)
-      mono_logger (~> 1.0)
-      redis (~> 3.0)
-      resque (~> 1.25)
-      rufus-scheduler (~> 3.0)
     retryable (2.0.3)
     ridley (4.5.0)
       addressable
@@ -705,7 +537,7 @@ GEM
       retryable (~> 2.0)
       semverse (~> 1.1)
       varia_model (~> 0.4.0)
-    rotp (2.1.1)
+    rotp (2.1.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -736,14 +568,12 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
-    ruby-progressbar (1.7.5)
+    ruby-progressbar (1.8.0)
     ruby2ruby (2.3.0)
       ruby_parser (~> 3.1)
       sexp_processor (~> 4.0)
     ruby_parser (3.8.1)
       sexp_processor (~> 4.1)
-    rubyntlm (0.6.0)
-    rufus-scheduler (3.2.0)
     safe_yaml (1.0.4)
     sass (3.4.22)
     sass-rails (5.0.4)
@@ -791,13 +621,13 @@ GEM
     solve (2.0.3)
       molinillo (~> 0.4.2)
       semverse (~> 1.1)
-    spring (1.6.4)
+    spring (1.7.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     spring-watcher-listen (2.0.0)
       listen (>= 2.7, < 4.0)
       spring (~> 1.2)
-    sprockets (3.5.2)
+    sprockets (3.6.0)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.0.4)
@@ -805,7 +635,7 @@ GEM
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
     sqlite3 (1.3.11)
-    sshkit (1.9.0)
+    sshkit (1.10.0)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     stringex (1.5.1)
@@ -846,11 +676,9 @@ GEM
     varia_model (0.4.1)
       buff-extensions (~> 1.0)
       hashie (>= 2.0.2, < 4.0.0)
-    vegas (0.1.11)
-      rack (>= 1.0.0)
     warden (1.2.6)
       rack (>= 1.0)
-    webmock (1.24.2)
+    webmock (2.0.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
@@ -859,15 +687,6 @@ GEM
     websocket-extensions (0.1.2)
     whenever (0.9.4)
       chronic (>= 0.6.3)
-    winrm (1.7.3)
-      builder (>= 2.1.2)
-      gssapi (~> 1.2)
-      gyoku (~> 1.0)
-      httpclient (~> 2.2, >= 2.2.0.2)
-      logging (>= 1.6.1, < 3.0)
-      nori (~> 2.0)
-      rubyntlm (~> 0.6.0)
-    wmi-lite (1.0.0)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -888,9 +707,8 @@ DEPENDENCIES
   capistrano
   capistrano-rails
   capistrano-rbenv
-  capistrano-resque
+  capistrano-sidekiq
   capybara-screenshot
-  chef (~> 12.0.1)
   codeclimate-test-reporter
   coffee-rails (~> 4.1.0)
   database_cleaner
@@ -908,15 +726,12 @@ DEPENDENCIES
   jquery-rails
   jquery-ui-rails
   kaminari-bootstrap (~> 3.0.1)
-  knife-ec2
-  knife-solo!
-  knife-solo_data_bag
   lograge
   mailcatcher (= 0.6.3)
   newrelic_rpm
   omniauth-saml!
   pg
-  phony_rails
+  phony_rails (~> 0.13.1)
   poltergeist
   pry-byebug
   pundit
@@ -928,6 +743,7 @@ DEPENDENCIES
   rails (~> 4.2.6)
   rails_layout
   responders (~> 2.0)
+  rotp (~> 2.1.1)
   rspec-activejob
   rspec-rails (~> 3.3)
   rubocop

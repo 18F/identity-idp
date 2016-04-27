@@ -1,4 +1,10 @@
+require 'sidekiq/web'
+
 Rails.application.routes.draw do
+  authenticate :user, ->(u) { u.admin? } do
+    mount Sidekiq::Web => '/sidekiq'
+  end
+
   match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
 
   get 'terms' => 'terms#index'

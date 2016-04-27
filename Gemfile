@@ -18,12 +18,13 @@ gem 'kaminari-bootstrap', '~> 3.0.1'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'omniauth-saml', github: 'amoose/omniauth-saml', branch: 'feature/internal_idp'
-gem 'phony_rails'
+gem 'phony_rails', '~> 0.13.1'
 gem 'pg'
 gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
 gem 'responders', '~> 2.0'
+gem 'rotp', '~> 2.1.1'
 gem 'ruby-saml', github: 'amoose/ruby-saml'
 # gem 'nokogiri-xmlsec-me-harder', '~> 0.9.1', require: 'xmlsec'
 gem 'saml_idp', github: '18F/saml_idp'
@@ -31,6 +32,7 @@ gem 'sass-rails', '~> 5.0'
 gem 'secure_headers', '~> 3.0.0'
 gem 'sidekiq'
 gem 'simple_form', github: 'amoose/simple_form', branch: 'feature/aria-invalid'
+gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'turbolinks'
 gem 'twilio-ruby'
@@ -44,11 +46,7 @@ group :deploy do
   gem 'capistrano' # , '~> 3.4'
   gem 'capistrano-rails' # , '~> 1.1', require: false
   gem 'capistrano-rbenv' # , '~> 2.0', require: false
-  gem 'capistrano-resque' # , '~> 0.2.1', require: false
-  gem 'chef', '~> 12.0.1'
-  gem 'knife-ec2'
-  gem 'knife-solo', github: 'matschaffer/knife-solo', submodules: true
-  gem 'knife-solo_data_bag'
+  gem 'capistrano-sidekiq'
 end
 
 group :development do
@@ -88,7 +86,6 @@ group :test do
   gem 'rspec-activejob'
   gem 'rubocop'
   gem 'shoulda-matchers', '~> 2.8', require: false
-  gem 'sinatra', require: false
   gem 'sms-spec', git: 'https://github.com/monfresh/sms-spec.git', require: 'sms_spec'
   gem 'timecop'
   gem 'webmock'

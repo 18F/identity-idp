@@ -84,6 +84,16 @@ To run all the tests:
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
+### Deploying
+
+We currently run `dev` and `qa` environments at https://upaya-idp-dev.18f.gov and https://upaya-idp-qa.18f.gov. Core developers can deploy to those hosts with [Capistrano](http://capistranorb.com) using the following command:
+
+```
+cap <env/stage> deploy
+```
+
+You will need to provide a copy of your SSH public key and you may need to provide your IP address if you are not in a GSA building or on the GSA VPN. Post a message in the slack channel if you need help.
+
 ## More Information
 
 **Notice:** This project is still in alpha.
