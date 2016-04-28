@@ -25,18 +25,22 @@ html lang="#{I18n.locale}"
       <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
     <![endif]-->
 
-  body class="#{Rails.env}-env"
-    - if Rails.env.development?
-      == render 'layouts/debug'
-    = render 'layouts/performance_testing_mode'
-    = render 'shared/navigation_links'
-    = render 'layouts/messages'
-    = render 'shared/branding'
+  body class="#{Rails.env}-env site"
+    .site-wrap
+      = render 'layouts/performance_testing_mode'
+      = render 'shared/usa_disclaimer'
+      = render 'shared/navigation_links'
+      = render 'layouts/messages'
+      = render 'shared/branding'
 
-    .container.px2
-      #start-of-content
-        == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')
-        == yield
+      .container.px2
+        #start-of-content
+          == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')
+          == yield
+
+    .footer
+      - if Rails.env.development?
+        == render 'layouts/debug'
 
   - if current_user
     = auto_session_timeout_js
