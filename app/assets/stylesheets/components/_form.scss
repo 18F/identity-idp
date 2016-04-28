@@ -1,10 +1,5 @@
-.field-label {
-  display: block;
-  margin-top: 1rem;
-}
-
 [type="submit"] {
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   padding-left: 2rem;
   padding-right: 2rem;
   width: 100%;
@@ -14,4 +9,10 @@
   [type="submit"] {
     width: auto;
   }
+}
+
+.radio label,
+.checkbox label {
+  margin-left: .5rem;
+  vertical-align: baseline;
 }

@@ -20,9 +20,8 @@ en:
         account_type:
           # TODO move this markup into template(s)
           self: |
-            <p>I am a Customer</p>
-            <p>I am submitting an application, petition, or request for <b>myself</b> or <b>a family member</b>.</p>
+            <span>I am a Customer</span><br>
+            I am submitting an application, petition, or request for <b>myself</b> or <b>a family member</b>.
           representative: |
-            <p>I am a Legal Representative</b>.</p>
-            <p>I am an attorney eligible to practice law in the United States.</p>
-            <p>I am a representative of a qualified organization that is recognized by the Board of Immigration Appeals (BIA).</p>
+            <span>I am a Legal Representative</span><br>
+            I am an attorney eligible to practice law in the United States. I am a representative of a qualified organization that is recognized by the Board of Immigration Appeals (BIA).

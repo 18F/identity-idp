@@ -3,10 +3,11 @@ module Devise
     def second_factor_checkboxes_for(f, form_location = '')
       f.collection_check_boxes(
         :second_factor_ids, SecondFactor.all, :id, :name,
-        item_wrapper_tag: :div, checked: checked_state(f, form_location)
+        item_wrapper_tag: :div, item_wrapper_class: 'checkbox',
+        checked: checked_state(f, form_location)
       ) do |b|
         id = id_for_2fa_checkbox(b)
-        b.label(for: id) { b.check_box(id: id) + b.text }
+        b.check_box(id: id) + b.label(for: id) { b.text }
       end
     end
 

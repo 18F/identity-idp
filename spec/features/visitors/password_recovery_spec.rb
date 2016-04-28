@@ -80,7 +80,7 @@ feature 'Password Recovery' do
 
   # Scenario: User that has only confirmed their email can reset their password
   #   Given I have not created my password yet
-  #   And I click the Didn't receive confirmation link and enter my email
+  #   And I go to new user confirmation page and enter my email
   #   When I click the link in the confirmation email
   #   Then I can set a new password
   context 'user with email confirmation resends confirmation', email: true do
@@ -89,8 +89,7 @@ feature 'Password Recovery' do
       open_last_email
       click_first_link_in_email
       reset_email
-      visit root_path
-      click_link "Didn't receive confirmation instructions?"
+      visit new_user_confirmation_path
       fill_in 'Email', with: 'email@example.com'
       click_button 'Resend confirmation instructions'
       open_last_email

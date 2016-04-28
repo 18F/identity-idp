@@ -8,7 +8,7 @@
       h3 Select an account type:
       = simple_form_for(current_user, as: :user, url: set_type_path, html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
         = f.error_notification
-        = f.input :account_type, :as => :radio_buttons,
+        = f.input :account_type, :as => :radio_buttons, :wrapper => :base,
             label: false,
             collection: User.account_types.keys.map(&:to_sym),
             label_method: lambda { |item| account_type_label(item) },

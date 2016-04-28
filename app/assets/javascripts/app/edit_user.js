@@ -6,7 +6,7 @@ function ready() {
   const $checkbox = $('#user_second_factor_ids_mobile');
 
   $input.on('keyup', () => {
-    if (this.value !== '') {
+    if ($input.val() !== '') {
       $checkbox.prop('checked', 'checked');
     } else {
       $checkbox.prop('checked', '');
