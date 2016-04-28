@@ -1,1 +1,2 @@
---exclude-list=vendor/assets/stylesheets/uswds.css,./node_modules
+--exclude-list=./vendor/assets/stylesheets,./node_modules
+
