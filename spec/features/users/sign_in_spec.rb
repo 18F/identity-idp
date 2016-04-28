@@ -49,22 +49,6 @@ feature 'Sign in' do
     expect(page).to have_content I18n.t 'devise.failure.invalid'
   end
 
-  scenario 'user cannot sign in if admin role' do
-    user = create(:user, :signed_up, :admin)
-    sign_in_user(user)
-    expect(page).to have_content 'You are not authorized'
-    click_link('Log in', match: :first)
-    expect(current_path).to eq('/')
-  end
-
-  scenario 'user cannot sign in if tech role' do
-    user = create(:user, :signed_up, :tech_support)
-    sign_in_user(user)
-    expect(page).to have_content 'You are not authorized'
-    click_link('Log in', match: :first)
-    expect(current_path).to eq('/')
-  end
-
   # Scenario: User is locked out from logging in after 3 failed attampts
   #   Given I exist as a user
   #   And I am not signed in

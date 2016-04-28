@@ -104,32 +104,14 @@ module Features
       click_link('Reset Password/Account')
     end
 
-    # Admin users can only authentiate via SAML (Enterprise)
     def sign_in_and_2fa_admin
-      saml_authenticate_user(
-        Faker::Internet.email,
-        OmniauthCallbackPolicy::AUTHORIZED_ADMIN_SAML_GROUP
-      )
+      user = create(:user, :signed_up, :admin)
+      sign_in_and_2fa_user(user)
     end
 
-    # Tech users can only authentiate via SAML (Enterprise)
     def sign_in_tech_support
-      saml_authenticate_user(
-        Faker::Internet.email,
-        OmniauthCallbackPolicy::AUTHORIZED_TECH_SUPPORT_SAML_GROUP
-      )
-    end
-
-    def saml_authenticate_user(email, groups)
-      OmniAuth.config.mock_auth[:saml] = nil
-      OmniAuthSpecHelper.valid_saml_login_setup(email, SecureRandom.uuid, groups)
-
-      visit '/users/auth/saml/callback'
-
-      Rails.application.env_config['devise.mapping'] = Devise.mappings[:user]
-      Rails.application.env_config['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
-
-      User.find_by_email(email)
+      user = create(:user, :signed_up, :tech_support)
+      sign_in_and_2fa_user(user)
     end
   end
 end

@@ -9,10 +9,10 @@
 # Figaro requires all values to be explicit strings.
 
 development:
-  allow_enterprise_auth: 'no'
-  allow_privileged: 'yes'
+  allow_third_party_auth: 'yes'
   domain_name: 'xxx.xxx'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
+  idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
   idv_url: 'http://upaya-idv.18f.gov/'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'
@@ -28,11 +28,11 @@ development:
   twilio_test_auth_token: 'xxx'
 
 production:
-  allow_enterprise_auth: 'yes'
-  allow_privileged: 'no'
+  allow_third_party_auth: 'yes'
   domain_name: 'xxx.xxx'
   sp_url: 'https://upaya-sp.18f.gov/'
   fips_enabled: 'false'
+  idp_sso_target_url: 'xxx.xxx/saml/auth'
   idv_url: 'http://upaya-idv.18f.gov/'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'
@@ -48,11 +48,11 @@ production:
   twilio_test_auth_token: 'xxx'
 
 test:
-  allow_enterprise_auth: 'yes'
-  allow_privileged: 'no'
+  allow_third_party_auth: 'yes'
   domain_name: 'example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
   sp_url: ''
+  idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
   idv_url: 'http://upaya-idv.18f.gov/'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'

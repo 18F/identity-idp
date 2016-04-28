@@ -70,8 +70,8 @@ class User < ActiveRecord::Base
     self.role ||= :user
   end
 
-  def need_two_factor_authentication?(request)
-    two_factor_enabled? && !enterprise_authenticated?(request)
+  def need_two_factor_authentication?(_request)
+    two_factor_enabled?
   end
 
   def two_factor_enabled?
@@ -135,21 +135,6 @@ class User < ActiveRecord::Base
 
   def remove_second_factor_mobile_id
     update(second_factor_ids: second_factor_ids_without_mobile_id)
-  end
-
-  def confirm_2fa!
-    self.second_factors = [SecondFactor.find_by_name('Email')]
-    self.second_factor_confirmed_at = Time.current
-    save!
-  end
-
-  def groups
-    case account_type
-    when 'self'
-      'PUBLIC-SG-UPAYA-Applicant'
-    when 'representative'
-      'PUBLIC-SG-UPAYA-Rep'
-    end
   end
 
   # identifies which users are permitted to auth via l/p
@@ -217,13 +202,6 @@ class User < ActiveRecord::Base
   def format_phone
     self.mobile = mobile.phony_formatted(
       format: :international, normalize: :US, spaces: ' ') if mobile
-  end
-
-  def enterprise_authenticated?(request)
-    # true if user authenticated with Enterprise
-    # by checking UUID from SAML auth data in the request
-    return false unless request.env.key?('omniauth.auth')
-    request.env['omniauth.auth'].extra.raw_info['UUID'] == uuid
   end
 
   # rubocop:disable Style/ZeroLengthPredicate

@@ -36,4 +36,22 @@ UserDecorator = Struct.new(:user) do
   def mobile_change_requested?
     user.unconfirmed_mobile.present? && user.mobile.present?
   end
+
+  def may_bypass_two_factor_setup?(session = {})
+    omniauthed?(session) || user.two_factor_enabled?
+  end
+
+  def needs_security_questions?(session = {})
+    return false if omniauthed?(session)
+
+    user.role == 'user' && !user.security_questions_enabled?
+  end
+
+  private
+
+  def omniauthed?(session)
+    return false if session[:omniauthed] != true
+
+    session.delete(:omniauthed)
+  end
 end
