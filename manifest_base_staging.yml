@@ -9,6 +9,6 @@ services:
   - login-psql-dev
   - login-redis-dev
 buildpack:
-   https://github.com/cloudfoundry/ruby-buildpack.git
+  https://github.com/ddollar/heroku-buildpack-multi.git
 
 # https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html

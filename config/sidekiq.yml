@@ -8,3 +8,5 @@
 :timeout: 8
 :queues:
   - [default, 5]
+  - sms
+  - mailer

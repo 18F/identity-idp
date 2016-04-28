@@ -57,10 +57,9 @@ more information.
 
 - Clone the root repository `git clone git@github.com:18F/identity.git`
 - change directory `cd identity-idp`
-- First time deployment
-  - cf push -f manifest_web_dev
-  - cf push -f manifest_worker_dev
-
+- Deployment to cf
+  - cf push -f manifest_web_staging
+  - cf push -f manifest_worker_staging
 
 ## More Information
 

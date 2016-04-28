@@ -1,5 +1,5 @@
 ---
-inherit: manifest_base_dev.yml
+inherit: manifest_base_staging.yml
 
 applications:
 -  name: login-dev
