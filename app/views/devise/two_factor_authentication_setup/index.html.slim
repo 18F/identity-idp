@@ -14,3 +14,6 @@
         = f.input :mobile, as: :tel, autofocus: true, label: 'Mobile Number', required: true
         = f.button :submit, 'Submit'
         p = t('devise.two_factor_authentication.otp_sms_disclaimer')
+        .toggle-totp
+          p = t('devise.two_factor_authentication.totp_info')
+          = image_tag @qrcode

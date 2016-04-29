@@ -10,12 +10,18 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def new
     current_user.send_new_otp
     set_flash_message :success, 'new_otp_sent'
-    redirect_to user_two_factor_authentication_path
+    redirect_to user_two_factor_authentication_path(method: 'sms')
   end
 
   def show
     if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
       redirect_to dashboard_index_url
+      return
+    end
+
+    if current_user.totp_enabled? && params[:method] != 'sms'
+      render :show_totp
+      return
     end
 
     @phone_number = UserDecorator.new(current_user).two_factor_phone_number

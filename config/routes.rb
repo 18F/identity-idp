@@ -26,6 +26,8 @@ Rails.application.routes.draw do
 
     patch '/confirm' => 'users/confirmations#confirm'
 
+    get '/users/totp' => 'users/totp_setup#index'
+    patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
     get '/users/otp' => 'devise/two_factor_authentication_setup#index'
     patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
     get '/users/otp/new' => 'devise/two_factor_authentication#new'

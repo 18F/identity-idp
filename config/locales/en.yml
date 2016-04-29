@@ -6,6 +6,7 @@ en:
         These settings affect the functionality of the application.
         Take caution in updating any of the following settings.
     errors:
+      invalid_totp: 'Incorrect/Invalid OTP code.'
       not_authorized: 'You are not authorized to perform this action.'
       invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
 
@@ -26,6 +27,9 @@ en:
       two_factor:
         code: Secure one-time password
         make_selection: Please choose at least one delivery method.
+      totp_setup:
+        header_text: Setup Authenticator App
+        code: App-generated code
       confirmation:
         show_hdr: Create a Password
         show_instructions: Your password must be at least 8 characters in length and contain at least one upper case letter, at least one lower case letter, at least one number, and at least one special character.
