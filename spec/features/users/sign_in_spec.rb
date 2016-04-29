@@ -87,14 +87,14 @@ feature 'Sign in' do
 
     it 'keeps user locked out even with valid password during lockout period' do
       signin(@user.email, '1Validpass!')
-      expect(page).to have_no_content 'Welcome!'
+      expect(current_path).to eq root_path
     end
 
-    xit 'allows the user back in after lockout period' do
+    it 'allows the user back in after lockout period' do
       @user.update(locked_at: Time.zone.now - (Devise.unlock_in + 1))
       signin(@user.email, '1Validpass!')
 
-      expect(page).to have_content 'Welcome'
+      expect(current_path).to eq users_otp_path
     end
   end
 

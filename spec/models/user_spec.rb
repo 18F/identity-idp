@@ -895,4 +895,20 @@ describe User do
       expect(user2).to be_invalid
     end
   end
+
+  describe 'OTP length' do
+    it 'uses Devise setting when set' do
+      allow(Devise).to receive(:otp_length).and_return(10)
+      user = build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq')
+
+      expect(user.otp_code.length).to eq 10
+    end
+
+    it 'defaults to 6 when Devise setting is not set' do
+      allow(Devise).to receive(:otp_length).and_return(nil)
+      user = build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq')
+
+      expect(user.otp_code.length).to eq 6
+    end
+  end
 end

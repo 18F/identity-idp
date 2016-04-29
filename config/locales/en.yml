@@ -22,15 +22,13 @@ en:
       buttons:
         continue_browsing: Continue Browsing
         resend_confirmation: Resend confirmation instructions
-        new_account: Create a new account
         no_accounts: Not accepting new accounts
       required_field: Indicates a required field.
       registration:
-        email_field: Your email address is used to log in to your Upaya Account. All Upaya email communications will be sent to this address.
+        email_field: >
+          Your email address is used to log in to your Upaya Account.
+          All Upaya email communications will be sent to this address.
         mobile_field: 'If you wish to have your secure one-time password sent to your mobile phone, enter the number here.'
-        email_html: >
-          By signing up, I agree to the <a href="#consent">______ Consent</a>
-          and <a href="#privacy">Upaya Privacy Act Statement</a>.
         contact_info: Contact information
         already_have_account_html: Already have an account?
         need_password: We need your current password to confirm your changes.
@@ -53,6 +51,7 @@ en:
           <li></li>
 
     links:
+      create_new_account: create an account
       sign_out: 'Sign out'
       sign_in: 'Log in'
       sign_up: 'Sign up'

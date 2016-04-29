@@ -9,11 +9,10 @@ feature 'Sign out', devise: true do
   #   Given I am signed in
   #   When I sign out
   #   Then I see a signed out message
-  xscenario 'user signs out successfully' do
+  scenario 'user signs out successfully' do
     sign_in_user
-
-    expect(page).to have_content I18n.t 'devise.sessions.signed_in'
     click_link(t('upaya.headings.log_out'), match: :first)
+
     expect(page).to have_content I18n.t 'devise.sessions.signed_out'
   end
 

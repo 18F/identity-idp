@@ -1,6 +1,5 @@
 - title t('upaya.titles.registrations.new')
 
-
 .clearfix.mxn2
   .sm-col-6.px2.mx-auto
     .panel
@@ -9,12 +8,8 @@
       = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: user_registration_path) do |f|
         = f.error_notification
         = f.input :email, required: true, autofocus: true, input_html: { 'aria-describedby' => 'email_description' }
-        / p = t('upaya.forms.registration.email_field')
-        / p = t('upaya.forms.registration.email_html')
         = f.button :submit, 'Sign up'
         div
           = t('upaya.forms.registration.already_have_account_html')
           '
           = link_to 'Log in', new_user_session_path
-    / .mb3.p3.bg-white
-    /   == render 'terms/smallprint'
