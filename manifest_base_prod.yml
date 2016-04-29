@@ -1,0 +1,14 @@
+---
+env:
+  RAILS_ENV: production
+  RACK_ENV: production
+  MAX_THREADS: 1
+  WEB_CONCURRENCY: 2
+  BUNDLE_WITHOUT: development, test
+services:
+  - login-psql
+  - login-redis
+buildpack:
+   https://github.com/cloudfoundry/ruby-buildpack.git
+
+# https://docs.cloudfoundry.org/devguide/deploy-apps/manifest.html

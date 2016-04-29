@@ -468,6 +468,7 @@ GEM
       byebug (~> 8.0)
       pry (~> 0.10)
     ptools (1.3.3)
+    puma (3.4.0)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     quiet_assets (1.1.0)
@@ -734,6 +735,7 @@ DEPENDENCIES
   phony_rails (~> 0.13.1)
   poltergeist
   pry-byebug
+  puma
   pundit
   quiet_assets
   rack-attack

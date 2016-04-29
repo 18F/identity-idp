@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+set -x
+
+bin/rake db:setup
+bundle exec puma --config config/puma.rb
+
+# rpec
+bundle exec rspec --require rails_helper

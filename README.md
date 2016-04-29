@@ -94,6 +94,14 @@ cap <env/stage> deploy
 
 You will need to provide a copy of your SSH public key and you may need to provide your IP address if you are not in a GSA building or on the GSA VPN. Post a message in the slack channel if you need help.
 
+##### :construction: cloud foundry environment coming soon! :construction:
+
+- Clone the root repository `git clone git@github.com:18F/identity.git`
+- change directory `cd identity-idp`
+- Deployment to cf
+  - cf push -f manifest_web_staging
+  - cf push -f manifest_worker_staging
+
 ## More Information
 
 **Notice:** This project is still in alpha.

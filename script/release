@@ -1,0 +1,14 @@
+#!/bin/sh
+
+set -e
+set -x
+
+# Generate a tag based on current date and assign it to HEAD
+TAG=$(date -u +"%Y-%m-%dT%H%M%S")
+
+# Assign this tag to current HEAD
+git tag $TAG
+
+# Envoke the cloudfoundry deployment script
+./script/deploy_to_cf login
+git push origin $TAG

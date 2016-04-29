@@ -1,0 +1,18 @@
+---
+inherit: manifest_base_staging.yml
+
+applications:
+-  name: login-dev
+   host: login-dev
+   path: .
+   memory: 512M
+   instances: 1
+   domain: 18f.gov
+   stack: cflinuxfs2
+   command: script/web-start-migrate
+
+#Reference
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#precompile
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#BUNDLE-WITHOUT
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-prod-server.html
+#   https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server

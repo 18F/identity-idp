@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+set -x
+
+# Worker sessions will be creaated with this container
+bundle exec sidekiq --config config/sidekiq.yml

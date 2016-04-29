@@ -1,0 +1,15 @@
+inherit: manifest_base_dev.yml
+applications:
+-  name: production
+   memory: 256M
+   instances: 1
+   domain: login.gov
+   path: .
+   command: script/worker-start
+   no-route: true
+
+#Reference
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#precompile
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-tips.html#BUNDLE-WITHOUT
+#   https://docs.cloudfoundry.org/buildpacks/ruby/ruby-prod-server.html
+#   https://devcenter.heroku.com/articles/deploying-rails-applications-with-the-puma-web-server
