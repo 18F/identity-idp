@@ -10,3 +10,9 @@ h1.heading = 'Update information'
   p.italic = t('upaya.forms.registration.need_password')
   = f.input(:current_password, required: true)
   = f.button :submit, 'Update'
+
+h1.heading = 'Authenticator App'
+- if @update_user_profile_form.totp_enabled
+  = button_to 'Disable', disable_totp_url, method: :delete, class: 'btn btn-primary'
+- else
+  = button_to 'Enable', users_totp_url, method: :get, class: 'btn btn-primary'

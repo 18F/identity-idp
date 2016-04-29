@@ -44,7 +44,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
     end
 
-    context 'when the user if not fully signed in' do
+    context 'when the user is not fully signed in' do
       before do
         sign_in_before_2fa
       end
@@ -114,6 +114,53 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
     end
 
+    context 'when the user is TOTP enabled' do
+      before do
+        sign_in_before_2fa
+        @secret = subject.current_user.generate_totp_secret
+        subject.current_user.otp_secret_key = @secret
+      end
+
+      context 'when the user enters a valid TOTP' do
+        before do
+          patch :update, code: generate_totp_code(@secret)
+        end
+
+        it 'redirects to the dashboard' do
+          expect(response).to redirect_to dashboard_index_path
+        end
+      end
+
+      context 'when the user enters an invalid TOTP' do
+        before do
+          patch :update, code: 'abc'
+        end
+
+        it 'increments second_factor_attempts_count' do
+          expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+        end
+
+        it 're-renders the OTP entry screen' do
+          expect(response).to render_template(:show)
+        end
+
+        it 'displays flash error message' do
+          expect(flash[:error]).to eq t('devise.two_factor_authentication.attempt_failed')
+        end
+      end
+
+      context 'user requests a direct OTP via SMS and enters the direct OTP' do
+        before do
+          get :new, sms: true
+          patch :update, code: subject.current_user.direct_otp
+        end
+
+        it 'redirects to the dashboard' do
+          expect(response).to redirect_to dashboard_index_path
+        end
+      end
+    end
+
     context 'when the user lockout period expires' do
       before do
         sign_in_before_2fa
@@ -124,7 +171,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         )
       end
 
-      describe 'when user submits a bad code' do
+      describe 'when user submits an invalid OTP' do
         before do
           patch :update, code: '12345'
         end
@@ -138,7 +185,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         end
       end
 
-      describe 'when user submits a correct code' do
+      describe 'when user submits a valid OTP' do
         before do
           patch :update, code: subject.current_user.direct_otp
         end
@@ -156,11 +203,32 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
   describe '#show' do
     context 'when resource is not fully authenticated yet' do
-      it 'renders the :show view' do
+      before do
         sign_in_before_2fa
+      end
+
+      it 'renders the :show view' do
         get :show
         expect(response).to_not be_redirect
         expect(response).to render_template(:show)
+      end
+
+      context 'when user is TOTP enabled' do
+        before do
+          allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
+        end
+
+        it 'renders the :show_totp view' do
+          get :show
+          expect(response).to_not be_redirect
+          expect(response).to render_template(:show_totp)
+        end
+
+        it 'renders the :show view if method=sms' do
+          get :show, method: 'sms'
+          expect(response).to_not be_redirect
+          expect(response).to render_template(:show)
+        end
       end
     end
 
@@ -183,7 +251,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     it 'redirects to :show' do
       get :new
 
-      expect(response).to redirect_to(action: :show)
+      expect(response).to redirect_to(action: :show, method: 'sms')
     end
 
     it 'sends a new OTP' do
