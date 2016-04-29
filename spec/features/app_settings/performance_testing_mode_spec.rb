@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 # Feature Management: pt_mode?
 # when true: any OTP can be entered
 # when false: only randomly-generated OTP can be entered

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe SessionTimeoutWarningHelper do
   describe '#time_left_in_session' do
     it 'describes time left based on when the timeout warning appears' do

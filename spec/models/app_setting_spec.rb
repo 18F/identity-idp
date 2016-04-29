@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe AppSetting do
   subject { build(:app_setting) }
 

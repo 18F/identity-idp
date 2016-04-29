@@ -1,3 +1,4 @@
+require 'rails_helper'
 
 describe 'Rails.logger', type: :feature do
   context 'when attempting to authenticate' do

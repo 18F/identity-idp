@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe UserPolicy do
   subject { UserPolicy.new(current_user, user) }
 

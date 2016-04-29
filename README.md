@@ -79,7 +79,7 @@ more information.
 
 To run all the tests:
 
-    $ bundle exec rspec --require rails_helper
+    $ bundle exec rspec
 
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.

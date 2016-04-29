@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 include Features::MailerHelper
 
 describe 'user edits their account', email: true do

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 include SessionTimeoutWarningHelper
 include ActionView::Helpers::DateHelper
 

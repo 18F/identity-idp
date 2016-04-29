@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe UserOtpSender do
   describe '#send_otp' do
     context 'when user only has email 2FA and is not two_factor_enabled' do

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe EmailNotifier do
   describe '#send_password_changed_email' do
     let(:mailer) { instance_double(ActionMailer::MessageDelivery) }

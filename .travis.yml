@@ -21,4 +21,4 @@ rvm:
 - ruby-2.3.0
 sudo: false
 script:
-- bundle exec rspec --require rails_helper
+- bundle exec rspec

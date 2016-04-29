@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe UserDecorator do
   describe '#lockout_time_remaining' do
     it 'returns the difference in seconds between otp drift and second_factor_locked_at' do

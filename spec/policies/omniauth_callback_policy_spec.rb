@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe OmniauthCallbackPolicy do
   subject { OmniauthCallbackPolicy.new(current_user, :omniauth_callback) }
 

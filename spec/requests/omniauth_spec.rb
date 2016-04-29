@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 require 'omniauth_spec_helper'
 
 describe "GET '/users/auth/saml/callback'" do

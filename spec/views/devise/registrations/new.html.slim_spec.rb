@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe 'devise/registrations/new.html.slim' do
   before { allow(view).to receive(:resource).and_return(build_stubbed(:user)) }
 

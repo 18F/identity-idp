@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe SpRedirect do
   before do
     class FakeController < ApplicationController

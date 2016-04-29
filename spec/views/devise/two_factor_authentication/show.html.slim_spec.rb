@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe 'devise/two_factor_authentication/show.html.slim' do
   context 'user has unconfirmed_mobile and is two_factor_enabled' do
     it 'only mentions mobile' do

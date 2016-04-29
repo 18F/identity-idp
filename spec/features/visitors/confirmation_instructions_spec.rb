@@ -1,3 +1,4 @@
+require 'rails_helper'
 require 'email_spec'
 
 # Feature: Confirmation Instructions

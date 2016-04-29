@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe SecurityQuestion do
   it { is_expected.to have_many(:security_answers) }
   it { is_expected.to validate_presence_of(:question) }

@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe TwilioService, sms: true do
   describe 'proxy configuration' do
     it 'ignores the proxy configuration if not set' do

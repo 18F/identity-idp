@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe SecondFactor, type: :model do
   it 'has a corresponding model for each entry' do
     SecondFactor.all.each do |factor|

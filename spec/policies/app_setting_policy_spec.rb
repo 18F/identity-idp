@@ -1,3 +1,5 @@
+require 'rails_helper'
+
 describe AppSettingPolicy do
   subject { AppSettingPolicy }
 
