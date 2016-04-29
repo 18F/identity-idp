@@ -31,5 +31,15 @@ namespace :deploy do
     end
   end
 
+  desc 'Install npm packages required for asset compilation with browserify'
+  task :browserify do
+    on roles(:app), in: :sequence do
+      within release_path do
+        execute :npm, 'install'
+      end
+    end
+  end
+
+  before 'assets:precompile', :browserify
   after :publishing, :restart
 end
