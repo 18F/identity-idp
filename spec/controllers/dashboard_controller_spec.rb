@@ -52,4 +52,18 @@ describe DashboardController do
       expect(response).to redirect_to 'http://test.host/test/saml'
     end
   end
+
+  describe 'before_actions' do
+    it 'includes before_actions from AccountStateChecker' do
+      expect(subject).to have_filters(
+        :before,
+        :authenticate_user!,
+        :confirm_two_factor_setup,
+        :confirm_two_factor_authenticated,
+        :confirm_security_questions_setup,
+        :confirm_account_type_setup,
+        :confirm_idv_status
+      )
+    end
+  end
 end

@@ -5,7 +5,10 @@
     .panel
       .panel-heading
         h2.m0 = t('upaya.headings.log_in')
-        div or #{link_to 'create an account', new_user_registration_path}
+        div
+          = 'or '
+          = link_to t('upaya.links.create_new_account'), \
+              new_user_registration_path
       = render 'devise/sessions/form'
       h2.m0.py3.text-over-line
         span or use your

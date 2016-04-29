@@ -7,8 +7,6 @@ Rails.application.routes.draw do
 
   match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
 
-  get 'terms' => 'terms#index'
-
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
   devise_for :users, skip: [:sessions], controllers: {
