@@ -49,6 +49,16 @@ UserDecorator = Struct.new(:user) do
     user.identities.pluck(:ial).uniq == [1]
   end
 
+  def qrcode(otp_secret_key)
+    options = {
+      issuer: Rails.application.class.parent_name,
+      otp_secret_key: otp_secret_key
+    }
+    url = user.provisioning_uri(nil, options)
+    qrcode = RQRCode::QRCode.new(url)
+    qrcode.as_png(size: 166).to_data_url
+  end
+
   private
 
   def omniauthed?(session)
