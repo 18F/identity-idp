@@ -55,9 +55,12 @@ group :development do
   gem 'derailed'
   gem 'binding_of_caller'
   gem 'guard-rspec', require: false
+  gem 'overcommit'
   gem 'quiet_assets'
   gem 'rack-mini-profiler'
   gem 'rails_layout'
+  gem 'rubocop'
+  gem 'slim_lint'
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen'
@@ -67,9 +70,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
-  gem 'brakeman'
   gem 'bullet'
-  gem 'dawnscanner', require: false
   gem 'mailcatcher', '0.6.3'
 end
 
@@ -84,7 +85,6 @@ group :test do
   gem 'rack_session_access'
   gem 'rack-test'
   gem 'rspec-activejob'
-  gem 'rubocop'
   gem 'shoulda-matchers', '~> 2.8', require: false
   gem 'sms-spec', git: 'https://github.com/monfresh/sms-spec.git', require: 'sms_spec'
   gem 'timecop'
