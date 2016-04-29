@@ -16,7 +16,10 @@
     'expect': true,
     'fixture': true
   },
-  'rules': {},
+  'rules': {
+    'func-names': 0,
+    'space-before-function-paren': 0
+  },
   'parserOptions': {
     'ecmaVersion': 6,
     'sourceType': 'module',

@@ -3,6 +3,10 @@
 //    letting these items shrink to smaller than their content's default
 //    minimum size. See http://bit.ly/1Mn35US for details.
 // 3. Use `%` instead of `vh` since `vh` is buggy in older mobile Safari.
+html {
+  height: 100%;
+}
+
 .site {
   display: flex;
   flex-direction: column;

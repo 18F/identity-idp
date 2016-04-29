@@ -1,5 +1,11 @@
 html {
-  height: 100%;
+  font-size: 14px;
+}
+
+@media #{$breakpoint-lg} {
+  html {
+    font-size: 16px;
+  }
 }
 
 .container {
