@@ -465,7 +465,7 @@ GEM
       retryable (~> 2.0)
       semverse (~> 1.1)
       varia_model (~> 0.4.0)
-    rotp (3.0.0)
+    rotp (3.0.1)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -666,7 +666,7 @@ DEPENDENCIES
   rails (~> 4.2.6)
   rails_layout
   responders (~> 2.0)
-  rotp (~> 2.1.1)
+  rotp (~> 3.0)
   rspec-activejob
   rspec-rails (~> 3.3)
   rubocop
@@ -695,4 +695,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.11.2
+   1.12.0
