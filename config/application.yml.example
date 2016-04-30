@@ -10,12 +10,7 @@
 
 development:
   allow_third_party_auth: 'yes'
-<<<<<<< HEAD
-  domain_name: 'xxx.xxx'
-=======
-  allow_privileged: 'yes'
   domain_name: 'localhost:3000'
->>>>>>> a8b9e50... Adds mock DSlogon options to config
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
   idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
   idv_url: 'http://upaya-idv.18f.gov/'
@@ -69,5 +64,5 @@ test:
   twilio_account_sid: 'sid'
   twilio_auth_token: 'token'
   twilio_number: '8888888888'
-  twilio_test_account_sid: test_sid
-  twilio_test_auth_token: test_token
+  twilio_test_account_sid: 'test_sid'
+  twilio_test_auth_token: 'test_token'
