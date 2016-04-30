@@ -43,11 +43,17 @@ feature 'saml api', devise: true, sms: true do
         expect(xmldoc.signature_nodeset.length).to eq(1)
       end
 
-      # Verify 2 transform algorithms:
-      #   http://www.w3.org/2000/09/xmldsig#enveloped-signature
-      #   http://www.w3.org/2001/10/xml-exc-c14n#
-      # Verify canonicalization algorithm.
-      # TODO(awong): Implement.
+      it 'applies xmldsig enveloped signature correctly' do
+        skip
+        # Verify
+        #   http://www.w3.org/2000/09/xmldsig#enveloped-signature
+      end
+
+      it 'applies canonicalization method correctly' do
+        skip
+        # Verify
+        #   http://www.w3.org/2001/10/xml-exc-c14n#
+      end
 
       it 'contains a signature method nodeset with SHA256 algorithm' do
         expect(xmldoc.signature_method_nodeset.length).to eq(1)

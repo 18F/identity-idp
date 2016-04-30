@@ -1,6 +1,7 @@
 require 'saml_idp_constants'
 require 'saml_idp/logout_request_builder'
 
+# rubocop:disable ClassLength
 module Test
   class SamlTestController < ApplicationController
     skip_before_action :verify_authenticity_token, only: [:decode_response, :decode_slo_request]
@@ -102,6 +103,7 @@ module Test
 
     private
 
+    # rubocop:disable AbcSize, MethodLength
     def saml_settings
       settings = OneLogin::RubySaml::Settings.new
 
@@ -127,6 +129,7 @@ module Test
 
       settings
     end
+    # rubocop:enable AbcSize, MethodLength
 
     def private_key
       OpenSSL::PKey::RSA.new(
@@ -141,3 +144,4 @@ module Test
     end
   end
 end
+# rubocop:enable ClassLength
