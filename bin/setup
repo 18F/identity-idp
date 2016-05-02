@@ -31,6 +31,7 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Preparing database =="
   run "bin/rake db:setup"
+  run 'bin/rake db:setup RAILS_ENV=test'
 
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"
