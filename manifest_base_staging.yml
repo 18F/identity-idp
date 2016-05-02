@@ -4,7 +4,16 @@ env:
   RACK_ENV: development
   MAX_THREADS: 1
   WEB_CONCURRENCY: 2
-  BUNDLE_WITHOUT: production
+  BUNDLE_WITHOUT: deploy
+  NPM_CONFIG_LOGLEVEL: info
+  NPM_CONFIG_PRODUCTION: false
+  NODE_ENV: development
+  NODE_MODULES_CACHE: true
+  #BUILD_DIR: /home/vcap/app
+  #CACHE_DIR: /home/vcap/app
+  #PATH: /home/vcap/app/bin:/home/vcap/app/node_modules/.bin:/bin:/usr/bin:$NODE_HOME
+  #PATH: /home/vcap/app/.heroku/node/bin:/bin:/usr/bin:/home/vcap/app/bin:/home/vcap/app/node_modules/.bin/
+  #/home/vcap/app/.heroku/node
 services:
   - login-psql-dev
   - login-redis-dev
