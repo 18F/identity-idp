@@ -42,9 +42,5 @@ Rails.application.routes.draw do
     get '/users/type/confirm' => 'devise/account_type#confirm_type'
   end
 
-  resources :users
-
-  get '/users/:id/reset_password' => 'users#reset_password', as: :user_reset_password
-
   root to: 'users/sessions#new'
 end
