@@ -2,69 +2,47 @@
 [![Code Climate](https://codeclimate.com/github/18F/identity-idp/badges/gpa.svg)](https://codeclimate.com/github/18F/identity-idp)
 [![Test Coverage](https://codeclimate.com/github/18F/identity-idp/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-idp/coverage)
 
-Identity-IdP (Upaya)
-====================
+# Identity-IdP (Upaya)
+A proof-of-concept Identity Management System
 
-The recognition of Identity is an often misunderstood concept in our Democracy.
+#### Dependencies
 
-### Dependencies
+- Ruby 2.3.0
+- [Postgresql](http://www.postgresql.org/download/)
+- [Redis 2.8+](http://redis.io/)
+- [Node.js v4.4.x](https://nodejs.org)
+- libxmlsec1
 
-These dependencies are not required when using docker.
+### Getting Started with Docker
 
-- Ruby 2.3.0 (try [rbenv](https://github.com/rbenv/rbenv) or
-  [rvm](https://rvm.io/))
-- Postgresql (`brew install postgresql` or `apt-get install postgresql`)
-- Redis 2.8+
-- Node.js v4.4.x
-
-### Mac
-
-The easiest way to install the dependencies on a Mac is to run the
-[Laptop](https://github.com/18F/laptop) script.
-
-### Getting Started (local)
-
-Make sure Postgres and Redis are running.  For example, on OS X:
-
-    $ brew services start redis postgres
-
-Run the following command to set up the environment:
-
-    $ bin/setup
-
-This basically runs Bundler to install the required gems and sets up the
-database.  If that is successful you can run the app server with:
-
-    $ foreman start
-
-### Getting Started (docker)
-
-Install [Docker Compose](https://docs.docker.com/compose/install/)
+We have a pre-built development environment made with [Docker Compose](https://docs.docker.com/compose/install/).
   * On non-linux systems this will involve installing [Docker
-    Toolbox >= 1.10](https://www.docker.com/products/docker-toolbox) and
+    Toolbox (v1.10+)](https://www.docker.com/products/docker-toolbox) and
     starting a Docker Machine VM.
 
-Copy the sample configuration files:
+1. Copy the sample configuration files:
 
     $ bin/setup --docker
 
-Build/download the container images:
+1. Build/download the container images:
 
     $ docker-compose build
 
-Start the app:
+1. Start the app:
 
     $ docker-compose up -d
 
-Setup the database:
+1. Setup the database(s):
 
     $ docker-compose run --rm web rake db:setup RAILS_ENV=development
+
     $ docker-compose run --rm web rake db:setup RAILS_ENV=test
 
-Once the docker images are up and running the app should be accessible
+Once the docker images are up and running the app will be accessible
 at `http://localhost:3000/`.  Email messages will be visible in mail catcher
-at `http://localhost:1080/`.  On non-linux platforms `localhost` will need
-to be replaced with the IP address of your Docker Machine VM.
+at `http://localhost:1080/`.
+  * On non-linux platforms `localhost` will need to be replaced with the
+    IP address of your Docker Machine VM.
 
 More useful docker-compose commands:
 
@@ -74,6 +52,23 @@ More useful docker-compose commands:
 
 See the Docker Compose [docs](https://docs.docker.com/compose/install/) for
 more information.
+
+### Getting Started Locally
+
+1. Make sure Postgres and Redis are running.  For example, on OS X:
+
+    $ brew services start redis postgres
+
+1. Run the following command to set up the environment:
+
+    $ bin/setup
+
+This command copies sample configuration files, installs required gems
+and sets up the database.
+
+1. Run the app server with:
+
+    $ foreman start
 
 ### Running Tests
 

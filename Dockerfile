@@ -22,7 +22,11 @@ RUN npm install
 
 COPY Gemfile /upaya
 COPY Gemfile.lock /upaya
+
+RUN gem install rubygems-update
+RUN update_rubygems
 RUN gem install bundler
+
 RUN bundler install --without deployment deploy
 
 COPY . /upaya
