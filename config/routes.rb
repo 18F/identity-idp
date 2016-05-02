@@ -41,7 +41,6 @@ Rails.application.routes.draw do
     get '/users/type/confirm' => 'devise/account_type#confirm_type'
   end
 
-
   match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
