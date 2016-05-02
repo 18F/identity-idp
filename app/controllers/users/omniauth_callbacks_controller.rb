@@ -1,5 +1,3 @@
-require 'omniauth_authorizer'
-
 module Users
   class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     skip_before_action :verify_authenticity_token
