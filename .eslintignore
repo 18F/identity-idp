@@ -1,6 +1,3 @@
 node_modules
 app/assets/javascripts/old
-<<<<<<< HEAD
 public/build/bundle.js
-=======
->>>>>>> master
