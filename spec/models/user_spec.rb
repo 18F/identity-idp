@@ -366,37 +366,6 @@ describe User do
     end
   end
 
-  context 'requires unique security questions' do
-    it 'is valid when all security questions are unique' do
-      user = create(:user)
-      answer_1 = { text: 'foo', security_question_id: SecurityQuestion.pluck(:id).first }
-      answer_2 = { text: 'foo', security_question_id: SecurityQuestion.pluck(:id).second }
-      user.update(security_answers_attributes: [answer_1, answer_2])
-
-      expect(user).to be_valid
-    end
-
-    it 'raises error when duplicate security questions are chosen during account creation' do
-      user = create(:user)
-      answer = { text: 'foo', security_question_id: SecurityQuestion.pluck(:id).first }
-
-      expect { user.update(security_answers_attributes: [answer, answer]) }.
-        to raise_error ActiveRecord::RecordNotUnique
-    end
-
-    it 'is invalid when duplicate security questions are chosen after account creation' do
-      user = create(:user, :signed_up)
-      answer = {
-        text: 'foo',
-        security_question_id: user.security_answers.pluck(:security_question_id).first
-      }
-      user.update(security_answers_attributes: [answer, answer])
-
-      expect(user.errors['security_answers.security_question_id'].first).
-        to eq 'has already been taken'
-    end
-  end
-
   context '#need_two_factor_authentication?' do
     let(:request) { ActionController::TestRequest.new }
 
@@ -529,170 +498,69 @@ describe User do
     end
   end
 
-  context '#check_security_question_answers' do
-    before do
-      Bullet.enable = false
-    end
+  context 'exclude old passwords' do
+    # A note about password re-use (adelevie):
+    # config/initializers/devise.rb currently has deny_old_passwords set to 8
+    # devise_security_extensions, which implements all this, counts the 8 in
+    # the archive plus the most recent password. Effectively, this means that
+    # the last nine passwords cannot be used.
 
-    after do
-      Bullet.enable = true
-    end
-
-    it 'produces no errors if security questions are correct' do
-      user = create(
-        :user,
-        :security_questions_enabled,
-        :tfa_confirmed
-      )
-
-      user.security_answers[1].update(text: 'my kitty cat')
-      user.security_answers[3].update(text: 'atlantis')
-      user.security_answers[4].update(text: 'monster truck')
-
-      provided_answers = [
-        {
-          id: user.security_answers[1].id,
-          text: 'my kitty cat'
-        },
-        {
-          id: user.security_answers[3].id,
-          text: 'atlantis'
-        },
-        {
-          id: user.security_answers[4].id,
-          text: 'monster truck'
-        }
-      ]
-
-      user.check_security_question_answers(provided_answers)
-      expect(user.errors.to_a).to eq([])
-    end
-
-    it 'ignores the order of the answers' do
-      user = create(
-        :user,
-        :security_questions_enabled,
-        :tfa_confirmed
-      )
-
-      user.security_answers[1].update(text: 'my kitty cat')
-      user.security_answers[3].update(text: 'atlantis')
-      user.security_answers[4].update(text: 'monster truck')
-
-      provided_answers = [
-        {
-          id: user.security_answers[4].id,
-          text: 'monster truck'
-        },
-        {
-          id: user.security_answers[1].id,
-          text: 'my kitty cat'
-        },
-        {
-          id: user.security_answers[3].id,
-          text: 'atlantis'
-        }
-      ]
-
-      user.check_security_question_answers(provided_answers)
-      expect(user.errors.to_a).to eq([])
-    end
-
-    it 'produces errors if security questions are incorrect' do
-      user = create(
-        :user,
-        :security_questions_enabled,
-        :tfa_confirmed
-      )
-
-      user.security_answers[0].update(text: 'my kitty cat')
-      user.security_answers[1].update(text: 'atlantis')
-      user.security_answers[4].update(text: 'monster truck')
-
-      provided_answers = [
-        {
-          id: user.security_answers[0].id,
-          text: 'My Kitty Cat'
-        },
-        {
-          id: user.security_answers[1].id,
-          text: 'I have no clue'
-        },
-        {
-          id: user.security_answers[4].id,
-          text: 'MONSTER truck'
-        }
-      ]
-
-      user.check_security_question_answers(provided_answers)
-
-      expect(user.errors.to_a).to eq(['Answer 2 does not match.'])
-    end
-
-    context 'exclude old passwords' do
-      # A note about password re-use (adelevie):
-      # config/initializers/devise.rb currently has deny_old_passwords set to 8
-      # devise_security_extensions, which implements all this, counts the 8 in
-      # the archive plus the most recent password. Effectively, this means that
-      # the last nine passwords cannot be used.
-
-      let(:old_password)  { 'VeryUnique567&@' }
-      let(:new_password)  { 't3hNewestLeaf$' }
-      let(:eight_passwords) do
-        Array.new(8) do |i|
-          "#{old_password}-#{i}"
-        end
+    let(:old_password)  { 'VeryUnique567&@' }
+    let(:new_password)  { 't3hNewestLeaf$' }
+    let(:eight_passwords) do
+      Array.new(8) do |i|
+        "#{old_password}-#{i}"
       end
-      let(:nine_passwords) do
-        Array.new(9) do |i|
-          "#{old_password}-#{i}"
-        end
+    end
+    let(:nine_passwords) do
+      Array.new(9) do |i|
+        "#{old_password}-#{i}"
       end
+    end
 
-      let(:user) { create(:user, password: old_password, password_confirmation: old_password) }
+    let(:user) { create(:user, password: old_password, password_confirmation: old_password) }
 
-      it 'produces errors if an old password is reused' do
-        user.password = new_password
-        user.password_confirmation = new_password
+    it 'produces errors if an old password is reused' do
+      user.password = new_password
+      user.password_confirmation = new_password
+      user.save
+
+      user.password = old_password
+      user.password_confirmation = old_password
+      user.save
+
+      expect(user.errors.any?).to be_truthy
+      expect(user).to be_invalid
+    end
+
+    it 'produces an error if a password was used within 8 changes ago' do
+      eight_passwords.each do |password|
+        user.password = password
+        user.password_confirmation = password
         user.save
-
-        user.password = old_password
-        user.password_confirmation = old_password
-        user.save
-
-        expect(user.errors.any?).to be_truthy
-        expect(user).to be_invalid
       end
 
-      it 'produces an error if a password was used within 8 changes ago' do
-        eight_passwords.each do |password|
-          user.password = password
-          user.password_confirmation = password
-          user.save
-        end
+      user.password = old_password
+      user.password_confirmation = old_password
+      user.save
 
-        user.password = old_password
-        user.password_confirmation = old_password
+      expect(user.errors.any?).to be_truthy
+      expect(user).to be_invalid
+    end
+
+    it 'does not produce an error if a password is used more than 9 changes ago' do
+      nine_passwords.each do |password|
+        user.password = password
+        user.password_confirmation = password
         user.save
-
-        expect(user.errors.any?).to be_truthy
-        expect(user).to be_invalid
       end
 
-      it 'does not produce an error if a password is used more than 9 changes ago' do
-        nine_passwords.each do |password|
-          user.password = password
-          user.password_confirmation = password
-          user.save
-        end
+      user.password = old_password
+      user.password_confirmation = old_password
+      user.save
 
-        user.password = old_password
-        user.password_confirmation = old_password
-        user.save
-
-        expect(user.errors.any?).to be_falsey
-        expect(user).to be_valid
-      end
+      expect(user.errors.any?).to be_falsey
+      expect(user).to be_valid
     end
   end
 
@@ -758,12 +626,6 @@ describe User do
       user.reset_account
 
       expect(user.reload.reset_requested_at).to be_nil
-    end
-
-    it 'removes security answers' do
-      user.reset_account
-
-      expect(user.reload.security_answers.count).to eq 0
     end
 
     it 'does not reset 2FA' do

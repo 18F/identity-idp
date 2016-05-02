@@ -83,7 +83,7 @@ describe 'Rails.logger', type: :feature do
     end
   end
 
-  context 'when a user resets password via security questions' do
+  context 'when a user resets password' do
     let(:user) { create(:user, :signed_up) }
 
     before do
@@ -97,19 +97,9 @@ describe 'Rails.logger', type: :feature do
       user.update(reset_password_token: db_confirmation_token)
 
       visit edit_user_password_path(reset_password_token: raw_reset_token)
-
-      Devise::SecurityQuestionsController::NUM_SECURITY_QUESTIONS_TO_CONFIRM.times do |n|
-        fill_in "user[security_answers_attributes][#{n}][text]", with: 'My answer'
-      end
     end
 
     it 'logs the events' do
-      expect(Rails.logger).
-        to receive(:info).
-        with("[#{user.uuid}] [Authenticated Security Answers for Password Reset]")
-
-      click_button 'Submit'
-
       fill_in 'New password', with: 'NewVal!dPassw0rd'
       fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
 

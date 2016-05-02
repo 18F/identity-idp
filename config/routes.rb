@@ -30,11 +30,6 @@ Rails.application.routes.draw do
     get '/users/otp' => 'devise/two_factor_authentication_setup#index'
     patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
     get '/users/otp/new' => 'devise/two_factor_authentication#new'
-
-    get '/users/questions' => 'devise/security_questions#new'
-    get '/users/questions/confirm' => 'devise/security_questions#confirm'
-    post '/users/questions/confirm' => 'devise/security_questions#check'
-    match '/users/questions' => 'devise/security_questions#update', via: [:patch, :post]
   end
 
   match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]

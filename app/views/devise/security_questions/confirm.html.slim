@@ -1,7 +1,0 @@
-- title t('upaya.titles.security_questions.confirm')
-
-h3 = t('devise.security_questions.confirm')
-= simple_form_for(resource, as: resource_name, method: 'POST', html: { autocomplete: 'off' }, url: users_questions_confirm_path) do |f|
-  = f.input :reset_password_token, value: @reset_password_token, as: :hidden
-  = render 'devise/security_questions/confirm_form', f: f
-  = f.button :submit, 'Submit'

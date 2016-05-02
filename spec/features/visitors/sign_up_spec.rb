@@ -99,11 +99,9 @@ feature 'Sign Up', devise: true do
       fill_in 'Secure one-time password', with: otp[1]
       click_button 'Submit'
 
-      expect(page).to have_content I18n.t('devise.two_factor_authentication.success')
+      expect(current_path).to eq dashboard_index_path
       expect(User.find_by_email('test@example.com').second_factor_confirmed_at).to be_present
-      # This is temporarily commented out until the pull requests that remove
-      # account type and security questions are merged.
-      # expect(page).to have_content(success_notice)
+      expect(page).to have_content(success_notice)
     end
 
     it 'does not include a link to enter a number again' do

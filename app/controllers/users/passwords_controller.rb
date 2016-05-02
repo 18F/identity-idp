@@ -3,7 +3,6 @@ module Users
     include ValidEmailParameter
 
     before_action :confirm_valid_token, only: [:edit]
-    before_action :check_if_security_questions_required, only: [:edit]
 
     rescue_from Pundit::NotAuthorizedError do |_exception|
       # We are utilizing Pundit's policy for verifying which user can
@@ -64,12 +63,6 @@ module Users
         end
 
       redirect_to new_user_password_path
-    end
-
-    def check_if_security_questions_required
-      return unless token_user.security_questions_enabled?
-      redirect_to users_questions_confirm_path(
-        reset_password_token: params[:reset_password_token])
     end
 
     def handle_successful_password_reset_for(resource)

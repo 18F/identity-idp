@@ -78,28 +78,6 @@ ActiveRecord::Schema.define(version: 20160503183440) do
 
   add_index "second_factors_users", ["user_id", "second_factor_id"], name: "index_second_factors_users_on_user_id_and_second_factor_id", unique: true, using: :btree
 
-  create_table "security_answers", force: :cascade do |t|
-    t.integer  "question_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "encrypted_text",       limit: 255
-    t.string   "encrypted_text_iv",    limit: 255
-    t.string   "encrypted_text_salt",  limit: 255
-    t.integer  "security_question_id"
-  end
-
-  add_index "security_answers", ["question_id", "user_id"], name: "index_security_answers_on_question_id_and_user_id", unique: true, using: :btree
-  add_index "security_answers", ["security_question_id", "user_id"], name: "index_security_answers_on_security_question_id_and_user_id", unique: true, using: :btree
-  add_index "security_answers", ["security_question_id"], name: "index_security_answers_on_security_question_id", using: :btree
-  add_index "security_answers", ["user_id"], name: "index_security_answers_on_user_id", using: :btree
-
-  create_table "security_questions", force: :cascade do |t|
-    t.text    "question",                 null: false
-    t.boolean "active",    default: true, null: false
-    t.integer "old_index", default: 0
-  end
-
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255, null: false
     t.text     "data"
@@ -111,44 +89,42 @@ ActiveRecord::Schema.define(version: 20160503183440) do
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                            limit: 255, default: "",    null: false
-    t.string   "encrypted_password",               limit: 255, default: ""
-    t.string   "reset_password_token",             limit: 255
+    t.string   "email",                         limit: 255, default: "",    null: false
+    t.string   "encrypted_password",            limit: 255, default: ""
+    t.string   "reset_password_token",          limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                                default: 0,     null: false
+    t.integer  "sign_in_count",                             default: 0,     null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",               limit: 255
-    t.string   "last_sign_in_ip",                  limit: 255
+    t.string   "current_sign_in_ip",            limit: 255
+    t.string   "last_sign_in_ip",               limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "confirmation_token",               limit: 255
+    t.string   "confirmation_token",            limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email",                limit: 255
+    t.string   "unconfirmed_email",             limit: 255
     t.integer  "role"
-    t.string   "otp_secret_key",                   limit: 255
-    t.integer  "second_factor_attempts_count",                 default: 0
-    t.string   "mobile",                           limit: 255
-    t.string   "uuid",                             limit: 255,                 null: false
+    t.string   "otp_secret_key",                limit: 255
+    t.integer  "second_factor_attempts_count",              default: 0
+    t.string   "mobile",                        limit: 255
+    t.string   "uuid",                          limit: 255,                 null: false
     t.datetime "password_changed_at"
     t.datetime "second_factor_confirmed_at"
-    t.integer  "security_question_attempts_count",             default: 0
-    t.datetime "security_questions_answered_at"
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
-    t.integer  "failed_attempts",                              default: 0
-    t.string   "unlock_token",                     limit: 255
+    t.integer  "failed_attempts",                           default: 0
+    t.string   "unlock_token",                  limit: 255
     t.datetime "mobile_confirmed_at"
-    t.string   "unconfirmed_mobile",               limit: 255
-    t.integer  "ial",                                          default: 0,     null: false
-    t.string   "ial_token",                        limit: 255
-    t.boolean  "idp_hard_fail",                                default: false
-    t.string   "encrypted_otp_secret_key",         limit: 255
-    t.string   "encrypted_otp_secret_key_iv",      limit: 255
-    t.string   "encrypted_otp_secret_key_salt",    limit: 255
+    t.string   "unconfirmed_mobile",            limit: 255
+    t.integer  "ial",                                       default: 0,     null: false
+    t.string   "ial_token",                     limit: 255
+    t.boolean  "idp_hard_fail",                             default: false
+    t.string   "encrypted_otp_secret_key",      limit: 255
+    t.string   "encrypted_otp_secret_key_iv",   limit: 255
+    t.string   "encrypted_otp_secret_key_salt", limit: 255
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

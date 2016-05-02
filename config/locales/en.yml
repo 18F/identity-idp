@@ -7,15 +7,8 @@ en:
         Take caution in updating any of the following settings.
     errors:
       not_authorized: 'You are not authorized to perform this action.'
-      duplicate_questions: 'Please select five unique password reset questions.'
       invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
-      must_setup_security_questions: 'You must setup your security questions to continue.'
-      cannot_reset_user_account: >
-        You cannot reset the account for the user with email "%{email}" because
-        they have not set up their security questions yet. Please walk them
-        through the process of resetting their password via the website's
-        "Forgot your password?" link. Then, ask them to sign in and set up
-        their security questions.
+
     forms:
       buttons:
         continue_browsing: Continue Browsing
@@ -61,7 +54,6 @@ en:
         requires you to change your password at least once every 365 days.
         Your current password will expire on %{date}.
       password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
-      secret_questions_created: 'You have successfully created your secret questions.'
       user_email_changed_by_admin: >
         The customer needs to confirm their email (%{email}) before it can be
         changed. Please ask the customer to follow the instructions in the
@@ -91,13 +83,8 @@ en:
         forgot: Reset your password for your Upaya Account
         update: Update your password for your Upaya Account
       registrations:
-        account: Choose an account type
         edit: Edit your Upaya Account
         new: Sign up for a Upaya Account
-        confirm_type: Confirm that you are a representative
-      security_questions:
-        confirm: Verify Your Identity
-        new: Provide Password Reset Answers
       select_two_factor: One-time Password Preference
       sign_in: Sign in to your Upaya Account
       tech_support:
@@ -133,7 +120,6 @@ en:
         forgot: Forgot password?
         update: Update your password
       registrations:
-        account: Account Type
         edit: My Profile
         new: Sign up
       search: Search for a user

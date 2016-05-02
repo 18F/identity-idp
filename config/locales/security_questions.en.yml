@@ -1,5 +1,0 @@
-en:
-  devise:
-    security_questions:
-      user:
-        invalid_token: Invalid password reset token. Please try again.

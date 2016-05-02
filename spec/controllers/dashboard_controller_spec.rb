@@ -60,7 +60,6 @@ describe DashboardController do
         :authenticate_user!,
         :confirm_two_factor_setup,
         :confirm_two_factor_authenticated,
-        :confirm_security_questions_setup,
         :confirm_idv_status
       )
     end

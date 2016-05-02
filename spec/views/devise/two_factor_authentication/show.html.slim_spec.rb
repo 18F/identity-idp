@@ -12,17 +12,6 @@ describe 'devise/two_factor_authentication/show.html.slim' do
     end
   end
 
-  context 'user has 2 second factors but no security questions yet' do
-    it 'only mentions mobile' do
-      allow(view).to receive(:current_user).
-        and_return(create(:user, :both_tfa_confirmed, unconfirmed_mobile: '5005550006'))
-
-      render
-
-      expect(rendered).to have_content 'A one-time passcode has been sent to 5005550006.'
-    end
-  end
-
   context 'user has 2 second factors but no unconfirmed email' do
     it 'mentions both email and mobile' do
       allow(view).to receive(:current_user).

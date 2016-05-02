@@ -37,12 +37,6 @@ UserDecorator = Struct.new(:user) do
     omniauthed?(session) || user.two_factor_enabled?
   end
 
-  def needs_security_questions?(session = {})
-    return false if omniauthed?(session)
-
-    user.role == 'user' && !user.security_questions_enabled?
-  end
-
   private
 
   def omniauthed?(session)

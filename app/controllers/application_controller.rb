@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+  rescue_from Pundit::NotAuthorizedError, with: :render_401
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :invalid_auth_token
 
@@ -42,17 +42,6 @@ class ApplicationController < ActionController::Base
     stored_location_for(resource) || dashboard_index_path
   end
 
-  def user_not_authorized(exception)
-    user = exception.record
-    if exception.query == :tech_reset_password? && !user.security_questions_enabled?
-      flash[:error] = t('upaya.errors.cannot_reset_user_account', email: user.email)
-      redirect_to request.referer || root_url
-      return
-    else
-      render_401
-    end
-  end
-
   def render_401
     render file: 'public/401.html', status: 401
   end
@@ -81,12 +70,5 @@ class ApplicationController < ActionController::Base
 
     flash[:error] = t('devise.errors.messages.user_not_authenticated')
     redirect_to user_two_factor_authentication_url
-  end
-
-  def confirm_security_questions_setup
-    return unless UserDecorator.new(current_user).needs_security_questions?(session)
-    flash.keep(:notice)
-    flash[:error] = I18n.t('upaya.errors.must_setup_security_questions')
-    redirect_to users_questions_url
   end
 end

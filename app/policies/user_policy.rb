@@ -32,7 +32,7 @@ class UserPolicy
   end
 
   def tech_reset_password?
-    return false if @user.admin? || @user.tech? || !@user.security_questions_enabled?
+    return false if @user.admin? || @user.tech?
     @current_user.tech? || @current_user.admin?
   end
 

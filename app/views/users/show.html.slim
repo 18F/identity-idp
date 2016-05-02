@@ -22,9 +22,6 @@ table.table
     td 2FA Enabled?
     td= @user.two_factor_enabled?
   tr
-    td Has Security Answers?
-    td= @user.security_questions_enabled?
-  tr
     td Created at
     td= @user.created_at.strftime('%b %d, %Y')
   tr

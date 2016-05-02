@@ -1,5 +1,4 @@
 require 'saml_idp_constants'
-require "#{Rails.root}/lib/devise/security_questions"
 
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
@@ -302,10 +301,7 @@ Devise.setup do |config|
   # config.expire_after = 90.days
 
   # ==> Two Factor Authentication
-
   config.allowed_otp_drift_seconds = 600
   config.max_login_attempts = 3 # max OTP login attemps, not devise strategies (e.g. pw auth)
   config.otp_length = 8
-  # ==> Security Questions
-  config.max_security_questions_attempts = 3
 end

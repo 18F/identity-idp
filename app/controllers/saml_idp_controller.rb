@@ -15,8 +15,6 @@ class SamlIdpController < ApplicationController
   before_action :store_sp_data, only: :auth
   before_action :authenticate_user!, except: [:metadata, :logout]
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
-  before_action :confirm_security_questions_setup, except: [:metadata, :logout]
-  before_action :confirm_account_type_setup, except: [:metadata, :logout]
 
   def auth
     unless valid_authn_contexts.include?(requested_authn_context)

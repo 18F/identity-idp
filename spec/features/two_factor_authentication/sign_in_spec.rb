@@ -195,15 +195,6 @@ feature 'Two Factor Authentication', devise: true do
         expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
       end
 
-      it 'displays success message when user enters valid OTP' do
-        fill_in 'code', with: @user.otp_code
-        click_button 'Submit'
-
-        expect(page).
-          to have_content t('devise.two_factor_authentication.success')
-        expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
-      end
-
       it 'displays error message when user enters invalid OTP' do
         fill_in 'code', with: @user.otp_code + 'invalidate_me'
         click_button 'Submit'

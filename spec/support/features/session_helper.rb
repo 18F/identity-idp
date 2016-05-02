@@ -36,8 +36,6 @@ module Features
       click_button 'Submit'
       fill_in 'code', with: user.otp_code
       click_button 'Submit'
-      fill_in_security_answers
-      click_button 'Submit'
       user
     end
 
