@@ -51,7 +51,6 @@ describe IdentityLinker do
         linker.update_user_and_identity_if_ial_token
 
         expect(user.ial_token).to eq 'foo'
-        expect(user.account_type).to eq 'self'
         expect(identity.quiz_started).to eq true
       end
     end

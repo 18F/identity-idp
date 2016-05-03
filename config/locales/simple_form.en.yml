@@ -10,18 +10,3 @@ en:
       # html: '<abbr title="required">*</abbr>'
     error_notification:
       default_message: "Please review the problems below:"
-
-    labels:
-      user:
-        account_type: "Select an account type:"
-
-    options:
-      user:
-        account_type:
-          # TODO move this markup into template(s)
-          self: |
-            <span>I am a Customer</span><br>
-            I am submitting an application, petition, or request for <b>myself</b> or <b>a family member</b>.
-          representative: |
-            <span>I am a Legal Representative</span><br>
-            I am an attorney eligible to practice law in the United States. I am a representative of a qualified organization that is recognized by the Board of Immigration Appeals (BIA).

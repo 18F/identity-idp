@@ -480,30 +480,6 @@ describe User do
     end
   end
 
-  context '#account_type' do
-    it 'not required' do
-      user = create(:user, account_type: nil)
-      user.save
-      expect(user.errors.size).to eq(0)
-    end
-  end
-
-  describe '#account_type=' do
-    before do
-      @user = User.new(email: 'user@example.com')
-    end
-
-    it "doesn't allow it to be updated after it's set" do
-      @user.account_type = 'self'
-      expect(@user.account_type).to eq('self')
-      expect(@user.errors[:account_type]).to be_empty
-
-      @user.account_type = 'representative'
-      expect(@user.account_type).to eq('self')
-      expect(@user.errors[:account_type]).to_not be_empty
-    end
-  end
-
   context '#confirmation_period_expired?' do
     it 'returns false when within confirm_within value' do
       user = create(:user, confirmed_at: nil)
@@ -826,17 +802,9 @@ describe User do
   end
 
   describe '#needs_idv?' do
-    context 'when user is a representative' do
+    context 'when user does not have an ial_token' do
       it 'returns false' do
-        user = build_stubbed(:user, account_type: 'representative')
-
-        expect(user.needs_idv?).to eq false
-      end
-    end
-
-    context 'when user is not a rep but does not have an ial_token' do
-      it 'returns false' do
-        user = build_stubbed(:user, account_type: 'self')
+        user = build_stubbed(:user)
 
         expect(user.needs_idv?).to eq false
       end
@@ -844,7 +812,7 @@ describe User do
 
     context 'when user has an ial_token but has hard failed' do
       it 'returns false' do
-        user = build_stubbed(:user, ial_token: 'foo', idp_hard_fail: true, account_type: 'self')
+        user = build_stubbed(:user, ial_token: 'foo', idp_hard_fail: true)
 
         expect(user.needs_idv?).to eq false
       end
@@ -852,7 +820,7 @@ describe User do
 
     context 'when user has an ial_token but has passed' do
       it 'returns false' do
-        user = build_stubbed(:user, ial_token: 'foo', ial: 'IA3', account_type: 'self')
+        user = build_stubbed(:user, ial_token: 'foo', ial: 'IA3')
 
         expect(user.needs_idv?).to eq false
       end
@@ -860,7 +828,7 @@ describe User do
 
     context 'when user has an ial_token and has neither passed nor hard failed' do
       it 'returns false' do
-        user = build_stubbed(:user, ial_token: 'foo', account_type: 'self')
+        user = build_stubbed(:user, ial_token: 'foo')
 
         expect(user.needs_idv?).to eq true
       end

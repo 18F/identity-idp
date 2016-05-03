@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160405212342) do
+ActiveRecord::Schema.define(version: 20160503183440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -141,7 +141,6 @@ ActiveRecord::Schema.define(version: 20160405212342) do
     t.datetime "locked_at"
     t.integer  "failed_attempts",                              default: 0
     t.string   "unlock_token",                     limit: 255
-    t.integer  "account_type"
     t.datetime "mobile_confirmed_at"
     t.string   "unconfirmed_mobile",               limit: 255
     t.integer  "ial",                                          default: 0,     null: false
@@ -152,7 +151,6 @@ ActiveRecord::Schema.define(version: 20160405212342) do
     t.string   "encrypted_otp_secret_key_salt",    limit: 255
   end
 
-  add_index "users", ["account_type"], name: "index_users_on_account_type", using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true, using: :btree

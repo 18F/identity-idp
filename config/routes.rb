@@ -36,10 +36,6 @@ Rails.application.routes.draw do
     get '/users/questions/confirm' => 'devise/security_questions#confirm'
     post '/users/questions/confirm' => 'devise/security_questions#check'
     match '/users/questions' => 'devise/security_questions#update', via: [:patch, :post]
-
-    get '/users/type' => 'devise/account_type#type'
-    patch '/users/type' => 'devise/account_type#set_type', as: 'set_type'
-    get '/users/type/confirm' => 'devise/account_type#confirm_type'
   end
 
   root to: 'users/sessions#new'

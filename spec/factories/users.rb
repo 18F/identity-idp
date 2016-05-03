@@ -52,14 +52,7 @@ FactoryGirl.define do
       end
     end
 
-    trait :all_but_account_type do
-      account_type nil
-      tfa_confirmed
-      security_questions_enabled
-    end
-
     trait :signed_up do
-      account_type :self
       tfa_confirmed
       security_questions_enabled
     end

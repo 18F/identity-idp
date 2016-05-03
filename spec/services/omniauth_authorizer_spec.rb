@@ -77,14 +77,13 @@ describe OmniauthAuthorizer do
           it 'creates a new User' do
             expect { authorizer.perform }.to change { User.count }
             expect(auth.user.email).to eq('email@example.com')
-            expect(auth.user.account_type).to eq('self')
             expect(auth.user.confirmed_at).to be_present
             expect(auth.user.role).to eq 'user'
           end
         end
 
         context 'user matching auth_hash email exists' do
-          let!(:user) { create(:user, email: 'email@example.com', account_type: 'self') }
+          let!(:user) { create(:user, email: 'email@example.com') }
 
           it 'does not create a new User' do
             expect { authorizer.perform }.to_not change { User.count }
@@ -94,7 +93,6 @@ describe OmniauthAuthorizer do
             authorizer.perform
 
             expect(auth.user.email).to eq('email@example.com')
-            expect(auth.user.account_type).to eq('self')
             expect(auth.user.confirmed_at).to be_present
           end
 

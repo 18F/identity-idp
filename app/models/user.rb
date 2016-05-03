@@ -16,7 +16,6 @@ class User < ActiveRecord::Base
          :secure_validatable, :timeoutable, :trackable, :two_factor_authenticatable,
          :omniauthable, omniauth_providers: [:saml]
 
-  enum account_type: [:self, :representative]
   enum ial: [:IA1, :IA2, :IA3, :IA4]
   enum role: { user: 0, tech: 1, admin: 2 }
 
@@ -55,15 +54,6 @@ class User < ActiveRecord::Base
   # of this method checks whether it has been included
   def self.devise_validation_enabled?
     true
-  end
-
-  # Make #account_type immutable once it's been set
-  def account_type=(type)
-    if account_type
-      errors.add(:account_type, "cannot change after it's been set")
-    else
-      super
-    end
   end
 
   def set_default_role
@@ -189,7 +179,7 @@ class User < ActiveRecord::Base
   end
 
   def needs_idv?
-    self? && ial_token.present? && !(identity_verified? || idp_hard_fail?)
+    ial_token.present? && !(identity_verified? || idp_hard_fail?)
   end
 
   # To send emails asynchronously via ActiveJob.

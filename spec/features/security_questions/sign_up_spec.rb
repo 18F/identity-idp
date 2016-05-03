@@ -5,7 +5,7 @@ require 'rails_helper'
 #   I want to sign up
 #   So I can visit protected areas of the site
 feature 'Sign Up' do
-  let!(:user) { create(:user, :tfa_confirmed, account_type: :self) }
+  let!(:user) { create(:user, :tfa_confirmed) }
 
   background do
     sign_in_user(user)

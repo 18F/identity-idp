@@ -61,7 +61,6 @@ describe DashboardController do
         :confirm_two_factor_setup,
         :confirm_two_factor_authenticated,
         :confirm_security_questions_setup,
-        :confirm_account_type_setup,
         :confirm_idv_status
       )
     end
