@@ -12,7 +12,7 @@ describe 'devise/registrations/new.html.slim' do
   it 'has a localized h2' do
     render
 
-    expect(rendered).to have_selector('h2', t('upaya.headings.registrations.new'))
+    expect(rendered).to have_selector('h2', text: t('upaya.headings.registrations.new'))
   end
 
   it 'sets form autocomplete to off' do
