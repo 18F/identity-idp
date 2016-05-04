@@ -7,7 +7,9 @@ module SamlResponseHelper
     end
 
     def xml_response
-      Base64.decode64(Capybara.current_session.find("//input[@id='#{input_id}']").value)
+      Base64.decode64(Capybara.current_session.find(
+        "//input[@id='#{input_id}']", visible: false
+      ).value)
     end
 
     def input_id
@@ -64,6 +66,13 @@ module SamlResponseHelper
         samlp: Saml::XML::Namespaces::PROTOCOL,
         saml: Saml::XML::Namespaces::ASSERTION
       ).first
+    end
+
+    def logout_asserted_session_index
+      response_doc.xpath('//samlp:LogoutRequest/samlp:SessionIndex',
+                         samlp: Saml::XML::Namespaces::PROTOCOL,
+                         saml: Saml::XML::Namespaces::ASSERTION
+                        )[0].content
     end
 
     def issuer_nodeset
@@ -153,11 +162,10 @@ module SamlResponseHelper
     end
 
     def asserted_session_index
-      response_doc.xpath(
-        '//samlp:LogoutRequest/samlp:SessionIndex',
-        samlp: Saml::XML::Namespaces::PROTOCOL,
-        saml: Saml::XML::Namespaces::ASSERTION
-      )[0].content
+      response_doc.xpath('//samlp:LogoutRequest/samlp:SessionIndex',
+                         samlp: Saml::XML::Namespaces::PROTOCOL,
+                         saml: Saml::XML::Namespaces::ASSERTION
+                        )[0].content
     end
   end
 end

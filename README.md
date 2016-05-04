@@ -41,7 +41,7 @@ database.  If that is successful you can run the app server with:
 
 Install [Docker Compose](https://docs.docker.com/compose/install/)
   * On non-linux systems this will involve installing [Docker
-    Toolbox](https://www.docker.com/products/docker-toolbox) and
+    Toolbox >= 1.10](https://www.docker.com/products/docker-toolbox) and
     starting a Docker Machine VM.
 
 Copy the sample configuration files:

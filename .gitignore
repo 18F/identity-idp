@@ -18,6 +18,7 @@
 .DS_store
 .rspec
 .ruby-gemset
+.ruby-version
 .vagrant
 .capistrano
 

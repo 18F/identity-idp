@@ -70,8 +70,12 @@ class User < ActiveRecord::Base
     self.role ||= :user
   end
 
-  def need_two_factor_authentication?(_request)
-    two_factor_enabled?
+  def need_two_factor_authentication?(request)
+    two_factor_enabled? && !third_party_authenticated?(request)
+  end
+
+  def third_party_authenticated?(request)
+    request.env.key?('omniauth.auth') ? true : false
   end
 
   def two_factor_enabled?
@@ -135,11 +139,6 @@ class User < ActiveRecord::Base
 
   def remove_second_factor_mobile_id
     update(second_factor_ids: second_factor_ids_without_mobile_id)
-  end
-
-  # identifies which users are permitted to auth via l/p
-  def privileged?
-    admin? || tech?
   end
 
   def identity_verified?

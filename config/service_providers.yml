@@ -1,0 +1,40 @@
+test:
+  valid_hosts:
+    'http://localhost:3000':
+      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+      sp_initiated_login_url: 'http://localhost:3000/test/saml'
+      cert: 'sample_cert'
+
+    'https://rp1.serviceprovider.com/auth/saml/metadata':
+      acs_url: 'http://example.com/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+      sp_initiated_login_url: 'https://example.com/auth/saml/login'
+      cert: 'sample_cert'
+
+development:
+  valid_hosts:
+    'https://rp1.serviceprovider.com/auth/saml/metadata':
+      metadata_url: 'http://localhost:3000/test/saml/metadata'
+      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+      sp_initiated_login_url: 'http://localhost:3000/test/saml'
+      cert: 'sample_cert'
+      fingerprint: 'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
+
+production:
+  valid_hosts:
+    'https://upaya-dev.18f.gov':
+      metadata_url: 'https://upaya-dev.18f.gov/api/saml/metadata'
+      acs_url: 'https://upaya-dev.18f.gov/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'https://upaya-dev.18f.gov/test/saml/decode_logoutresponse'
+      sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
+      cert: 'saml_client_cert'
+      block_encryption: 'aes256-cbc'
+
+superb.legit.domain.gov:
+  valid_hosts:
+    'urn:govheroku:serviceprovider':
+      acs_url: 'https://vets.gov/users/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
+      cert: 'vetsgov_sp_cert'

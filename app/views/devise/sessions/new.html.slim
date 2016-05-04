@@ -12,4 +12,5 @@
       = render 'devise/sessions/form'
       h2.m0.py3.text-over-line
         span or use your
-      button.btn.btn-block.btn-primary.bg-navy.mb1 DS Logon
+      = button_to 'DS Logon', user_omniauth_authorize_path(:saml), title: 'DS Logon',
+        class: 'btn btn-block btn-primary bg-navy mb1', method: :get

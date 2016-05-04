@@ -19,7 +19,6 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
-    delete 'sign_out' => 'users/sessions#destroy', as: :destroy_user_session
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
@@ -40,6 +39,26 @@ Rails.application.routes.draw do
     get '/users/type' => 'devise/account_type#type'
     patch '/users/type' => 'devise/account_type#set_type', as: 'set_type'
     get '/users/type/confirm' => 'devise/account_type#confirm_type'
+  end
+
+  match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
+  get '/api/saml/metadata' => 'saml_idp#metadata'
+  match '/api/saml/logout' => 'saml_idp#logout',
+        via: [:get, :post, :delete],
+        as: :destroy_user_session
+
+  unless Figaro.env.domain_name.include?('superb.legit.domain.gov')
+    namespace :test do
+      # Assertion granting test start + return.
+      get '/saml' => 'saml_test#start'
+      get '/saml/decode_assertion' => 'saml_test#start'
+      post '/saml/decode_assertion' => 'saml_test#decode_response'
+
+      # Logout test start + return.
+      get '/saml/logout' => 'saml_test#logout'
+      post '/saml/decode_logoutresponse' => 'saml_test#decode_response'
+      post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
+    end
   end
 
   root to: 'users/sessions#new'

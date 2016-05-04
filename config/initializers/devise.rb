@@ -1,4 +1,4 @@
-require 'upaya_constants'
+require 'saml_idp_constants'
 require "#{Rails.root}/lib/devise/security_questions"
 
 # Use this hook to configure devise mailer, warden hooks and so forth.
@@ -274,7 +274,7 @@ Devise.setup do |config|
     (?=.*\d)
     (?=.*[a-z])
     (?=.*[A-Z])
-    (?=.*[#{Regexp.escape(Upaya::Constants::PASSWORD_SPECIAL_CHARS)}])
+    (?=.*[#{Regexp.escape(Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS)}])
   /x
 
   # How many passwords to keep in archive

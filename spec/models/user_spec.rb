@@ -1,5 +1,4 @@
-require 'rails_helper'
-require 'upaya_constants'
+require 'saml_idp_constants'
 
 MAX_GOOD_PASSWORD = '!1aZ' * 32
 
@@ -300,7 +299,7 @@ describe User do
 
       # Verify success.
       i = 1
-      Upaya::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
+      Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
         password = "#{NO_SPECIAL_PASSWORD}#{special}"
         user = create(:user,
                       email: "#{i}.#{prototype_user.email}",
@@ -311,7 +310,7 @@ describe User do
       end
 
       # Verifying password updating enforces complexity requirements.
-      Upaya::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
+      Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
         prototype_user.password = NO_SPECIAL_PASSWORD
         prototype_user.password_confirmation = NO_SPECIAL_PASSWORD
         expect(prototype_user.valid?).to be_falsey
@@ -399,9 +398,12 @@ describe User do
   end
 
   context '#need_two_factor_authentication?' do
+    let(:request) { ActionController::TestRequest.new }
+
     it 'is true when two_factor_enabled' do
       user = build_stubbed(:user)
 
+      allow(user).to receive(:third_party_authenticated?).and_return(false)
       allow(user).to receive(:two_factor_enabled?).and_return true
 
       expect(user.need_two_factor_authentication?(nil)).to be_truthy
@@ -410,9 +412,40 @@ describe User do
     it 'is false when not two_factor_enabled' do
       user = build_stubbed(:user)
 
+      allow(user).to receive(:third_party_authenticated?).and_return(false)
       allow(user).to receive(:two_factor_enabled?).and_return false
 
       expect(user.need_two_factor_authentication?(nil)).to be_falsey
+    end
+
+    it 'is false when signed up and authenticating with third party' do
+      user = create(:user, :signed_up)
+      allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
+      expect(user.need_two_factor_authentication?(request)).to be_falsey
+    end
+
+    it 'is false when 2fa is enabled and authenticating with third party' do
+      user = create(:user, :tfa_confirmed)
+      allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
+      expect(user.need_two_factor_authentication?(request)).to be_falsey
+    end
+
+    it 'is true when 2fa is enabled and not authenticating with third party' do
+      user = create(:user, :tfa_confirmed)
+      allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
+      expect(user.need_two_factor_authentication?(request)).to be_truthy
+    end
+
+    it 'is false when 2fa is not enabled and authenticating with third party' do
+      user = create(:user)
+      allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
+      expect(user.need_two_factor_authentication?(request)).to be_falsey
+    end
+
+    it 'is false when 2fa is not enabled and not authenticating with third party' do
+      user = create(:user)
+      allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
+      expect(user.need_two_factor_authentication?(request)).to be_falsey
     end
   end
 

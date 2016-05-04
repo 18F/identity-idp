@@ -79,11 +79,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def redirect_valid_resource
-    if resource.security_questions_enabled?
-      redirect_to after_sign_in_path_for(resource)
-    else
-      redirect_to users_questions_path
-    end
+    redirect_to after_sign_in_path_for(resource)
   end
 
   def handle_invalid_otp

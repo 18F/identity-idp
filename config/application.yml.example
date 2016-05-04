@@ -10,7 +10,7 @@
 
 development:
   allow_third_party_auth: 'yes'
-  domain_name: 'xxx.xxx'
+  domain_name: 'localhost:3000'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
   idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
   idv_url: 'http://upaya-idv.18f.gov/'
@@ -19,7 +19,7 @@ development:
   pt_mode: 'on'
   saml_passphrase: 'secret'
   security_answer_encryption_key: '5b9b7cbe2f1df9182c85438b408244660161ba31fa4e8d1bd98ed04833738d78522b9bc97832d5655b3d8c2366948e1467d6cacf6f59b6d3852642bbde1318f8'
-
+  idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
   # Configure Twilio Test Account keys for Performance Testing to avoid
   # spamming real phone numbers.
   # https://www.twilio.com/user/account/settings
@@ -41,6 +41,7 @@ production:
   pt_mode: 'off'
   saml_passphrase: 'secret'
   security_answer_encryption_key: 'rake secret'
+  idp_sso_target_url: 'xxx.xxx/saml/auth'
   twilio_account_sid: 'sid'
   twilio_auth_token: 'token'
   twilio_number: '8888888888'
@@ -59,8 +60,9 @@ test:
   pt_mode: 'off'
   saml_passphrase: 'secret'
   security_answer_encryption_key: '5b9b7cbe2f1df9182c85438b408244660161ba31fa4e8d1bd98ed04833738d78522b9bc97832d5655b3d8c2366948e1467d6cacf6f59b6d3852642bbde1318f8'
+  idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
   twilio_account_sid: 'sid'
   twilio_auth_token: 'token'
   twilio_number: '8888888888'
-  twilio_test_account_sid: test_sid
-  twilio_test_auth_token: test_token
+  twilio_test_account_sid: 'test_sid'
+  twilio_test_auth_token: 'test_token'
