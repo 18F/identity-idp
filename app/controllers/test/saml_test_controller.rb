@@ -53,7 +53,7 @@ module Test
       )
       response.settings = test_saml_settings
 
-      # TODO(awong): Ruby-saml only understands validation of Assertions. If it's
+      # Ruby-saml only understands validation of Assertions. If it's
       # a LogoutRequest, just validate the signature.
       doc = Saml::XML::Document.parse(response.document.to_s)
       if doc.at_xpath('/samlp:Response', samlp: Saml::XML::Namespaces::PROTOCOL)

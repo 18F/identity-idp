@@ -216,55 +216,46 @@ feature 'Password Recovery' do
   #   Given I do not remember my password as a user
   #   When I complete the form with invalid email addresses
   #   Then I receive a useful error
-  context 'user submits email address with invalid format' do
+  scenario 'user submits email address with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
       'Buy Medz 0nl!ne http://pharma342.onlinestore.com'
     ]
+    allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
-    it 'validates email field' do
-      allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
-
-      invalid_addresses.each do |email|
-        fill_in 'Email', with: email
-        click_button 'Send me reset password instructions'
-
-        expect(page).to have_content t('valid_email.validations.email.invalid')
-      end
-    end
-  end
-
-  context 'user submits email address with invalid domain name' do
-    invalid_addresses = [
-      'foo@bar.com',
-      'foo@example.com'
-    ]
-    it 'validates email field' do
-      allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
-
-      invalid_addresses.each do |email|
-        fill_in 'Email', with: email
-        click_button 'Send me reset password instructions'
-
-        expect(page).to have_content t('valid_email.validations.email.invalid')
-      end
-    end
-  end
-
-  context 'user submits blank email address' do
-    it 'validates email field' do
+    invalid_addresses.each do |email|
+      fill_in 'Email', with: email
       click_button 'Send me reset password instructions'
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
   end
 
-  context 'user submits blank email address and has JS turned on' do
-    it 'validates required fields with JS', js: true do
+  scenario 'user submits email address with invalid domain name' do
+    invalid_addresses = [
+      'foo@bar.com',
+      'foo@example.com'
+    ]
+    allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
+
+    invalid_addresses.each do |email|
+      fill_in 'Email', with: email
       click_button 'Send me reset password instructions'
 
-      expect(page).to have_content 'Please fill in all required fields'
+      expect(page).to have_content t('valid_email.validations.email.invalid')
     end
+  end
+
+  scenario 'user submits blank email address' do
+    click_button 'Send me reset password instructions'
+
+    expect(page).to have_content t('valid_email.validations.email.invalid')
+  end
+
+  scenario 'user submits blank email address and has JS turned on', js: true do
+    click_button 'Send me reset password instructions'
+
+    expect(page).to have_content 'Please fill in all required fields'
   end
 
   # Scenario: User is unable to determine if someone else's account exists

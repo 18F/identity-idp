@@ -162,7 +162,7 @@ module SamlAuthHelper
 
   private
 
-  def send_get_request(options)
+  def send_get_request(_options)
     saml_get_auth
   end
 
@@ -192,4 +192,3 @@ module SamlAuthHelper
     skip 'Broken on OSX. Use pre-built VM to test.'
   end
 end
-
