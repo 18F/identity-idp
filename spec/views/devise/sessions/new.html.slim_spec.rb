@@ -16,15 +16,14 @@ describe 'devise/sessions/new.html.slim' do
   it 'has a localized h2 headings' do
     render
 
-    expect(rendered).to have_selector('h2', t('upaya.headings.log_in'))
-    expect(rendered).
-      to have_selector('h2', t('upaya.headings.visitors.new_account'))
+    expect(rendered).to have_selector('h2', text: t('upaya.headings.log_in'))
   end
 
   it 'includes a link to create a new account' do
     render
 
     expect(rendered).
-      to have_link('create an account', href: new_user_registration_path)
+      to have_link(
+        t('upaya.links.create_new_account'), href: new_user_registration_path)
   end
 end
