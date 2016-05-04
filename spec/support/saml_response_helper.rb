@@ -68,6 +68,13 @@ module SamlResponseHelper
       ).first
     end
 
+    def logout_asserted_session_index
+      response_doc.xpath('//samlp:LogoutRequest/samlp:SessionIndex',
+        samlp: Saml::XML::Namespaces::PROTOCOL,
+        saml: Saml::XML::Namespaces::ASSERTION
+      )[0].content
+    end
+
     def issuer_nodeset
       send(@assertion_type).xpath('./saml:Issuer', saml: Saml::XML::Namespaces::ASSERTION)
     end

@@ -14,6 +14,7 @@ module SamlAuthHelper
 
     # SP + IdP Settings
     settings.issuer = 'http://test.host'
+    settings.security[:authn_requests_signed] = true
     settings.security[:logout_requests_signed] = true
     settings.security[:embed_sign] = true
     settings.security[:digest_method] = 'http://www.w3.org/2001/04/xmlenc#sha256'
@@ -135,10 +136,6 @@ module SamlAuthHelper
     auth_request.create(missing_auth_context_saml_settings)
   end
 
-  def authn_request_with_ial(settings, token = '112de950-e818-4eb7-b525-0a1c5222091b')
-    authn_request(settings, RelayState: relay_state_json(token))
-  end
-
   # generate a SAML Authn request
   def authn_request(settings = saml_settings, params = {})
     OneLogin::RubySaml::Authrequest.new.create(
@@ -166,11 +163,7 @@ module SamlAuthHelper
   private
 
   def send_get_request(options)
-    if options[:ial_token]
-      saml_get_auth_with_token
-    else
-      saml_get_auth
-    end
+    saml_get_auth
   end
 
   def saml_get_auth
@@ -191,15 +184,6 @@ module SamlAuthHelper
     )
   end
 
-  def saml_get_auth_with_token
-    # GET redirect binding Authn Request
-    get(:auth, SAMLRequest: URI.decode(saml_request), RelayState: relay_state_json)
-  end
-
-  def relay_state_json(token = '112de950-e818-4eb7-b525-0a1c5222091b')
-    { token: token }.to_json
-  end
-
   def authenticate_user(user = create(:user, :signed_up))
     sign_in_user(user)
     fill_in 'code', with: user.otp_code
@@ -208,3 +192,4 @@ module SamlAuthHelper
     skip 'Broken on OSX. Use pre-built VM to test.'
   end
 end
+

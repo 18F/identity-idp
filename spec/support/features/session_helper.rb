@@ -14,7 +14,6 @@ module Features
       visit new_user_session_path
       fill_in 'Email', with: email
       fill_in 'Password', with: password
-      # select 'Applicant, Petitioner, or  Requester'
       click_button 'Log in'
     end
 
@@ -83,35 +82,6 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current)
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
-    end
-
-    def visit_manage_users
-      @admin = sign_in_and_2fa_admin
-      visit dashboard_index_path
-      click_link 'Manage Users'
-    end
-
-    def search_for_user(email)
-      sign_in_tech_support
-      fill_in('email', with: email)
-      click_button('user_search')
-    end
-
-    def reset_user(email)
-      sign_in_tech_support
-      fill_in('email', with: email)
-      click_button('user_search')
-      click_link('Reset Password/Account')
-    end
-
-    def sign_in_and_2fa_admin
-      user = create(:user, :signed_up, :admin)
-      sign_in_and_2fa_user(user)
-    end
-
-    def sign_in_tech_support
-      user = create(:user, :signed_up, :tech_support)
-      sign_in_and_2fa_user(user)
     end
   end
 end
