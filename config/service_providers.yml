@@ -2,32 +2,25 @@ test:
   valid_hosts:
     'http://localhost:3000':
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
+      cert: 'sample_cert'
 
     'https://rp1.serviceprovider.com/auth/saml/metadata':
-      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
-      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
-      sp_initiated_login_url: 'https://rp1.serviceprovider.com/auth/saml/login'
-
-    'https://rp2.serviceprovider.com/auth/saml/metadata':
-      acs_url: 'http://localhost:3000/test/saml/decode_assertion'
-      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
-      sp_initiated_login_url: 'https://rp2.serviceprovider.com/auth/saml/login'
-
+      acs_url: 'http://example.com/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+      sp_initiated_login_url: 'https://example.com/auth/saml/login'
+      cert: 'sample_cert'
 
 development:
   valid_hosts:
-    'http://localhost:3000':
+    'https://rp1.serviceprovider.com/auth/saml/metadata':
       metadata_url: 'http://localhost:3000/test/saml/metadata'
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
-      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_logoutresponse'
+      assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
-
-    'https://upaya-dev.ngrok.io':
-      acs_url: 'https://upaya-dev.ngrok.io/test/saml/decode_assertion'
-      sp_initiated_login_url: 'https://upaya-dev.ngrok.io/test/saml'
-      assertion_consumer_logout_service_url: 'https://upaya-dev.ngrok.io/test/saml/decode_slo_request'
-
+      cert: 'sample_cert'
+      fingerprint: 'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
 
 production:
   valid_hosts:
