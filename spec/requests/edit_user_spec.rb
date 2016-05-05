@@ -25,8 +25,7 @@ describe 'user edits their account', email: true do
   let(:attrs_with_new_email) do
     {
       email: new_email,
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      current_password: '!1aZ' * 32
     }
   end
 
@@ -34,8 +33,7 @@ describe 'user edits their account', email: true do
     {
       email: @user.email,
       mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: SecondFactor.pluck(:id)
+      current_password: '!1aZ' * 32
     }
   end
 
@@ -43,8 +41,7 @@ describe 'user edits their account', email: true do
     {
       email: @user.email,
       mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      current_password: '!1aZ' * 32
     }
   end
 
@@ -85,6 +82,7 @@ describe 'user edits their account', email: true do
   context 'user changes mobile' do
     before do
       sign_in_as_a_valid_user(user_with_mobile)
+      @old_mobile = user_with_mobile.mobile
       @old_otp_code = @user.otp_code
       patch_via_redirect '/users', id: @user, user: attrs_for_new_mobile
     end
@@ -93,17 +91,6 @@ describe 'user edits their account', email: true do
       delete_via_redirect destroy_user_session_path
 
       expect(@user.reload.unconfirmed_mobile).to_not be_present
-    end
-
-    it 'does not disable mobile 2FA after log out if user has mobile' do
-      delete_via_redirect destroy_user_session_path
-      post_via_redirect(
-        new_user_session_path,
-        'user[email]' => @user.email,
-        'user[password]' => @user.password
-      )
-
-      expect(@user.reload.second_factors.pluck(:name)).to include('Mobile')
     end
 
     it 'does not allow the login OTP to be used for confirmation' do
@@ -115,7 +102,7 @@ describe 'user edits their account', email: true do
 
     it 'sends SMS to old number, then changes current number once confirmed' do
       expect(SmsSenderNumberChangeJob).to receive(:perform_later).with(@user)
-      expect(@user.reload.mobile).to eq '+1 (500) 555-0006'
+      expect(@user.reload.mobile).to eq @old_mobile
 
       patch_via_redirect(user_two_factor_authentication_path, 'code' => @user.reload.otp_code)
 
@@ -145,6 +132,7 @@ describe 'user edits their account', email: true do
   context 'user changes mobile to an existing mobile' do
     it 'lets user know they need to confirm their new mobile' do
       sign_in_as_a_valid_user(user)
+      old_mobile = user.mobile
       patch_via_redirect(
         '/users',
         id: @user,
@@ -159,7 +147,8 @@ describe 'user edits their account', email: true do
           "<strong>#{user.reload.unconfirmed_mobile}</strong>."
         )
       expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
-      expect(user.reload.mobile).to be_nil
+
+      expect(user.reload.mobile).to eq old_mobile
     end
 
     it 'calls SmsSenderExistingMobileJob but not SmsSenderOtpJob' do
@@ -182,6 +171,7 @@ describe 'user edits their account', email: true do
   context 'user changes both email and mobile to existing email and mobile' do
     it 'lets user know they need to confirm both their new mobile and email' do
       sign_in_as_a_valid_user(user)
+      old_mobile = user.mobile
       patch_via_redirect(
         '/users',
         id: @user,
@@ -197,7 +187,7 @@ describe 'user edits their account', email: true do
           "<strong>#{user.reload.unconfirmed_mobile}</strong>."
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
-      expect(user.reload.mobile).to be_nil
+      expect(user.reload.mobile).to eq old_mobile
       expect(last_email.subject).to eq 'Email Confirmation Notification'
     end
 
@@ -224,10 +214,7 @@ describe 'user edits their account', email: true do
       patch_via_redirect(
         '/users',
         id: @user,
-        user: attrs_with_new_email.merge!(
-          mobile: user_with_mobile.mobile,
-          second_factor_ids: SecondFactor.pluck(:id)
-        )
+        user: attrs_with_new_email.merge!(mobile: user_with_mobile.mobile)
       )
     end
 
@@ -238,7 +225,6 @@ describe 'user edits their account', email: true do
           "<strong>#{user.reload.unconfirmed_mobile}</strong>."
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
-      expect(user.reload.mobile).to be_nil
       expect(last_email.subject).to eq 'Email confirmation instructions'
     end
 
@@ -254,10 +240,7 @@ describe 'user edits their account', email: true do
       patch_via_redirect(
         '/users',
         id: @user,
-        user: attrs_with_new_email.merge!(
-          mobile: user_with_mobile.mobile,
-          second_factor_ids: SecondFactor.pluck(:id)
-        )
+        user: attrs_with_new_email.merge!(mobile: user_with_mobile.mobile)
       )
     end
   end
@@ -265,6 +248,7 @@ describe 'user edits their account', email: true do
   context 'user changes email to existing email and mobile to nonexistent mobile' do
     it 'lets user know they need to confirm both their new mobile and email' do
       sign_in_as_a_valid_user(user)
+      old_mobile = user.mobile
       patch_via_redirect(
         '/users',
         user: attrs_for_new_mobile.merge!(
@@ -278,7 +262,7 @@ describe 'user edits their account', email: true do
           "<strong>#{user.reload.unconfirmed_mobile}</strong>."
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
-      expect(user.reload.mobile).to be_nil
+      expect(user.reload.mobile).to eq old_mobile
       expect(last_email.subject).to eq 'Email Confirmation Notification'
     end
 

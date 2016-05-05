@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Devise::TwoFactorAuthenticationController, devise: true do
   describe 'update' do
-    let(:user) { create(:user, :tfa_confirmed) }
+    let(:user) { create(:user, :signed_up) }
 
     context 'when user only has email 2FA' do
       it 'does not perform SmsSenderNumberChangeJob' do
