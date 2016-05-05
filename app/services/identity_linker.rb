@@ -13,7 +13,7 @@ IdentityLinker = Struct.new(:user, :authenticated, :sp_data) do
   private
 
   def update_user
-    user.update(ial_token: sp_data[:ial_token], account_type: :self)
+    user.update(ial_token: sp_data[:ial_token])
   end
 
   def update_active_identity

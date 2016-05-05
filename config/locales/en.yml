@@ -7,8 +7,6 @@ en:
         Take caution in updating any of the following settings.
     errors:
       not_authorized: 'You are not authorized to perform this action.'
-      cannot_change_account_type: 'You cannot change account type after creating an account.'
-      no_account_type: 'Please choose an account type to continue.'
       duplicate_questions: 'Please select five unique password reset questions.'
       invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
       must_setup_security_questions: 'You must setup your security questions to continue.'
@@ -156,11 +154,6 @@ en:
         subject: Password Expiration Notice
 
   activerecord:
-    attributes:
-      user:
-        account_types:
-          label: "Choose an account type"
-          default: "-- Select One --"
     errors:
       models:
         app_setting:
@@ -184,7 +177,6 @@ en:
           invalid: 'Please enter a valid email in the format of user@domain.com'
   idp:
     errors:
-      account_type: Only the applicant can verify their identity
       service_unavailable: >
         We are having trouble connecting to the Upaya identity verification service.
         Please try again.

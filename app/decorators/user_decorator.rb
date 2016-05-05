@@ -29,10 +29,6 @@ UserDecorator = Struct.new(:user) do
     end
   end
 
-  def needs_account_type?
-    user.account_type.nil? && user.ial_token.nil?
-  end
-
   def mobile_change_requested?
     user.unconfirmed_mobile.present? && user.mobile.present?
   end

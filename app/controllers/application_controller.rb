@@ -89,11 +89,4 @@ class ApplicationController < ActionController::Base
     flash[:error] = I18n.t('upaya.errors.must_setup_security_questions')
     redirect_to users_questions_url
   end
-
-  def confirm_account_type_setup
-    return unless UserDecorator.new(current_user).needs_account_type?
-
-    flash[:error] = I18n.t('upaya.errors.no_account_type')
-    redirect_to users_type_url
-  end
 end

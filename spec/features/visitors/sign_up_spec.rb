@@ -9,28 +9,6 @@ VALID_PASSWORD = 'Val!dPassw0rd'.freeze
 INVALID_PASSWORD = 'asdf'.freeze
 
 feature 'Sign Up', devise: true do
-  context 'new user visits sign up page' do
-    before { visit new_user_registration_url }
-
-    it 'has a localized title' do
-      expect(page).to have_title t('upaya.titles.registrations.new')
-    end
-
-    it 'has a localized heading' do
-      expect(page).to have_content t('upaya.headings.registrations.new')
-    end
-
-    # it 'explains what the email address will be used for' do
-    #   expect(page).to have_content t('upaya.forms.registration.email_field')
-    # end
-
-    it 'links to Terms of Use' do
-      skip 'waiting for OMB approval'
-      click_link 'Terms of Use'
-      expect(page).to have_content('Prohibitions')
-    end
-  end
-
   # Scenario: Visitor can sign up with valid email address and password
   #   Given I am not signed in
   #   When I sign up with a valid email address and password
@@ -97,6 +75,11 @@ feature 'Sign Up', devise: true do
   #   When I sign up, confirm email, and setup 2FA
   #   Then I see the dashboard
   context 'visitor can sign up and confirm a valid email for OTP', email: true do
+    def success_notice
+      t('upaya.notices.account_created',
+        date: (Time.current + 1.year).strftime('%B %d, %Y'))
+    end
+
     before do
       sign_up_with_and_set_password_for('test@example.com')
       check 'Email'
@@ -118,6 +101,9 @@ feature 'Sign Up', devise: true do
 
       expect(page).to have_content I18n.t('devise.two_factor_authentication.success')
       expect(User.find_by_email('test@example.com').second_factor_confirmed_at).to be_present
+      # This is temporarily commented out until the pull requests that remove
+      # account type and security questions are merged.
+      # expect(page).to have_content(success_notice)
     end
 
     it 'does not include a link to enter a number again' do
@@ -410,95 +396,5 @@ feature 'Sign Up', devise: true do
 
     expect(page).to have_content 'Confirmation token is invalid'
     expect(current_path).to eq user_confirmation_path
-  end
-
-  describe 'Setting account type' do
-    def success_notice
-      t('upaya.notices.account_created',
-        date: (Time.current + 1.year).strftime('%B %d, %Y'))
-    end
-
-    scenario 'visitor signs up and sets account type to self' do
-      user = create(:user, :all_but_account_type)
-      sign_in_and_2fa_user(user)
-
-      expect(page.current_url).to eq users_type_url
-
-      choose 'user_account_type_self'
-      click_button 'Submit'
-
-      expect(page.current_url).to eq dashboard_index_url
-    end
-
-    scenario 'visitor signs up and sets account type to representative' do
-      user = create(:user, :all_but_account_type)
-      sign_in_and_2fa_user(user)
-
-      expect(current_path).to eq('/users/type')
-
-      choose 'user_account_type_representative'
-      click_button 'Submit'
-
-      expect(current_path).to eq('/users/type/confirm')
-
-      click_button 'I am a representative'
-
-      expect(page).to have_content(success_notice)
-      expect(current_path).to eq('/dashboard')
-      user.reload
-      expect(user.account_type).to eq('representative')
-    end
-
-    scenario 'visitor signs up and sets account type to self on confirm page' do
-      user = create(:user, :all_but_account_type)
-      sign_in_and_2fa_user(user)
-
-      choose 'user_account_type_representative'
-      click_button 'Submit'
-      click_button 'I am not a representative'
-
-      expect(page).to have_content(success_notice)
-      expect(current_path).to eq('/dashboard')
-      user.reload
-      expect(user.account_type).to eq('self')
-    end
-
-    scenario 'visitor signs up and does not want to choose account type, must' do
-      user = create(:user, :all_but_account_type)
-      sign_in_and_2fa_user(user)
-
-      expect(page.current_url).to eq users_type_url
-
-      click_button 'Submit'
-
-      expect(page.current_url).to eq users_type_url
-      expect(page).to have_content t('upaya.errors.no_account_type')
-    end
-
-    scenario 'visitor sets account type and tries to set it again' do
-      user = create(:user, :all_but_account_type)
-      sign_in_and_2fa_user(user)
-
-      choose 'user_account_type_self'
-      click_button 'Submit'
-
-      visit users_type_path
-
-      expect(page.current_url).to eq dashboard_index_url
-      expect(page).to have_content t('upaya.errors.cannot_change_account_type')
-    end
-
-    scenario 'visitor sets account type and tries to confirm it again' do
-      user = create(:user, :all_but_account_type)
-      sign_in_and_2fa_user(user)
-
-      choose 'user_account_type_self'
-      click_button 'Submit'
-
-      visit users_type_confirm_path
-
-      expect(page.current_url).to eq dashboard_index_url
-      expect(page).to have_content t('upaya.errors.cannot_change_account_type')
-    end
   end
 end
