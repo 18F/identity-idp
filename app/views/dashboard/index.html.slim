@@ -11,10 +11,6 @@ table.table-light.border.bg-white.mb3
       td
         strong= current_user.role.titleize
     tr
-      td 2FA Method:
-      td
-        strong= current_user.second_factors.collect{|f| f.name.titleize }.join(', ')
-    tr
       td 2FA Enabled?
       td
         strong= current_user.two_factor_enabled?.to_s.titleize

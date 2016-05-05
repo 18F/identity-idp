@@ -2,7 +2,6 @@ en:
   devise:
     errors:
       messages:
-        select_two_factor: You must select a two factor authenticaton preference.
         user_not_authenticated: Access denied. Please confirm your one-time passcode to continue.
 
     two_factor_authentication:
@@ -16,7 +15,7 @@ en:
         Please try again in %{time_remaining}.
       otp_setup: 'Every time you log in, you will be given a one-time passcode. How would you prefer to receive one-time passcodes?'
       otp_sms_disclaimer: If you select to receive text messaging notification to a U.S. mobile phone number listed in your account and accept these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply.
-      please_confirm: Your two-factor authentication method has been set. Please confirm that it works.
+      please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.
       select_two_factor: One-time Passcode Preferences
       user:
         new_otp_sent: A new one-time passcode has been sent.

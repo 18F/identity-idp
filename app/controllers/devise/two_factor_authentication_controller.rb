@@ -45,7 +45,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_valid_otp
-    warden.session(resource_name)['need_two_factor_authentication'] = false
+    warden.session(resource_name)[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
 
     sign_in resource_name, resource, bypass: true
     set_flash_message :notice, :success
@@ -70,10 +70,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def update_authenticated_resource
-    resource.update(
-      second_factor_confirmed_at: Time.zone.now,
-      second_factor_attempts_count: 0
-    )
+    resource.update(second_factor_attempts_count: 0)
     resource.mobile_confirm
   end
 

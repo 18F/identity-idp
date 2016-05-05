@@ -1,6 +1,5 @@
 module Devise
   class TwoFactorAuthenticationSetupController < DeviseController
-    include OtpSelectionValidator
     include ScopeAuthenticator
 
     before_action :authenticate_scope!
@@ -12,12 +11,7 @@ module Devise
 
     # PATCH /users/otp
     def set
-      if valid_otp_delivery_selections?
-        process_valid_selections
-      else
-        flash[:error] = t('upaya.forms.two_factor.make_selection')
-        render :index, resource: resource
-      end
+      process_valid_selections
     end
 
     private
@@ -31,8 +25,13 @@ module Devise
       end
     end
 
+    def otp_params
+      params.require(:user).permit(:mobile)
+    end
+
     def process_valid_selections
-      if resource.update_attributes(otp_params)
+      resource.require_mobile_validation
+      if resource.update(otp_params)
         update_metrics
 
         resource.send_two_factor_authentication_code

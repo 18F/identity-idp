@@ -155,8 +155,6 @@ en:
               confirmation: "does not match password"
             mobile:
               improbable_phone: "Mobile number is invalid. Please make sure you enter a 10-digit phone number."
-            second_factors:
-              blank: 'Please choose at least one Two-Factor Authentication method'
   valid_email:
     validations:
         email:

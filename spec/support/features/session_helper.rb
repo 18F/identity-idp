@@ -31,8 +31,7 @@ module Features
 
     def sign_up_and_2fa(email = nil, reset_session = false)
       user = sign_up_with_and_set_password_for(email, reset_session)
-      check 'Email'
-      uncheck 'Mobile'
+      full_in 'mobile', with: '555-555-5555'
       click_button 'Submit'
       fill_in 'code', with: user.otp_code
       click_button 'Submit'
@@ -50,28 +49,13 @@ module Features
       visit dashboard_index_path
     end
 
-    def sign_in_and_2fa_user(user = create_user([SecondFactor.find_by_name('Email')]))
+    def sign_in_and_2fa_user(user = create_user('555-555-5556'))
       sign_in_with_warden(user)
-
       user
     end
 
-    def create_user(tfa)
-      create(:user, :signed_up, second_factors: tfa)
-    end
-
-    def second_factor_type(type)
-      return [email_2fa] if type == 'email'
-      return [mobile_2fa] if type == 'mobile'
-      return [email_2fa, mobile_2fa] if type == 'all'
-    end
-
-    def email_2fa
-      SecondFactor.find_by_name('Email')
-    end
-
-    def mobile_2fa
-      SecondFactor.find_by_name('Mobile')
+    def create_user(mobile = '')
+      create(:user, :signed_up, mobile: mobile)
     end
 
     def confirm_last_user

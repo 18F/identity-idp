@@ -63,21 +63,6 @@ ActiveRecord::Schema.define(version: 20160503183440) do
 
   add_index "old_passwords", ["password_archivable_type", "password_archivable_id"], name: "index_password_archivable", using: :btree
 
-  create_table "second_factors", force: :cascade do |t|
-    t.string   "name",       limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "second_factors", ["name"], name: "index_second_factors_on_name", unique: true, using: :btree
-
-  create_table "second_factors_users", id: false, force: :cascade do |t|
-    t.integer "user_id",          null: false
-    t.integer "second_factor_id", null: false
-  end
-
-  add_index "second_factors_users", ["user_id", "second_factor_id"], name: "index_second_factors_users_on_user_id_and_second_factor_id", unique: true, using: :btree
-
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255, null: false
     t.text     "data"
@@ -111,7 +96,6 @@ ActiveRecord::Schema.define(version: 20160503183440) do
     t.string   "mobile",                        limit: 255
     t.string   "uuid",                          limit: 255,                 null: false
     t.datetime "password_changed_at"
-    t.datetime "second_factor_confirmed_at"
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
