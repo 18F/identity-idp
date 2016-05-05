@@ -75,11 +75,6 @@ feature 'Sign Up', devise: true do
   #   When I sign up, confirm email, and setup 2FA
   #   Then I see the dashboard
   context 'visitor can sign up and confirm a valid email for OTP', email: true do
-    def success_notice
-      t('upaya.notices.account_created',
-        date: (Time.current + 1.year).strftime('%B %d, %Y'))
-    end
-
     before do
       sign_up_with_and_set_password_for('test@example.com')
       check 'Email'
@@ -101,7 +96,7 @@ feature 'Sign Up', devise: true do
 
       expect(current_path).to eq dashboard_index_path
       expect(User.find_by_email('test@example.com').second_factor_confirmed_at).to be_present
-      expect(page).to have_content(success_notice)
+      expect(page).to have_content(successful_account_creation_notice)
     end
 
     it 'does not include a link to enter a number again' do

@@ -81,5 +81,10 @@ module Features
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current)
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
     end
+
+    def successful_account_creation_notice
+      t('upaya.notices.account_created',
+        date: (Time.current + 1.year).strftime('%B %d, %Y'))
+    end
   end
 end

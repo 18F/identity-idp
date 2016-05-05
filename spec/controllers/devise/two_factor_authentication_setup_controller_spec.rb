@@ -13,7 +13,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
   describe 'PATCH set' do
     context 'when mobile number already exists' do
-      it 'prompts to confirm the number', sms: true do
+      it 'prompts to confirm the number' do
         user_with_mobile = create(:user, :with_mobile)
         user = create(:user)
 
@@ -26,9 +26,45 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         expect(response).to redirect_to(user_two_factor_authentication_path)
         expect(flash[:success]).to eq t('devise.two_factor_authentication.please_confirm')
-        expect(SmsSenderExistingMobileJob).to have_been_enqueued.with(global_id(user_with_mobile))
-        expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user_with_mobile))
-        expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user))
+      end
+
+      it 'calls UserProfileUpdater#send_notifications' do
+        user_with_mobile = create(:user, :with_mobile)
+        user = create(:user)
+
+        flash = instance_double(ActionDispatch::Flash::FlashHash)
+        allow(subject).to receive(:flash).and_return(flash)
+
+        sign_in(user)
+
+        updater = instance_double(UserProfileUpdater)
+        allow(UserProfileUpdater).to receive(:new).with(user, flash).
+          and_return(updater)
+
+        expect(updater).to receive(:attribute_already_taken?).and_return(true)
+        expect(updater).to receive(:send_notifications)
+
+        expect(flash).to receive(:[]=).
+          with(:success, t('devise.two_factor_authentication.please_confirm'))
+
+        patch(
+          :set,
+          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+        )
+      end
+
+      it 'does not call User#send_two_factor_authentication_code' do
+        user_with_mobile = create(:user, :with_mobile)
+        user = create(:user)
+
+        sign_in(user)
+
+        expect(subject.current_user).to_not receive(:send_two_factor_authentication_code)
+
+        patch(
+          :set,
+          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+        )
       end
     end
   end

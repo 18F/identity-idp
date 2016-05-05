@@ -2,9 +2,8 @@ SmsSpec.driver = :'twilio-ruby'
 
 RSpec.configure do |config|
   config.include SmsSpec::Helpers, sms: true
-  config.include(RSpec::ActiveJob, sms: true)
 
-  config.after(:each, sms: true) do
+  config.before(:each, sms: true) do
     clear_messages
     ActiveJob::Base.queue_adapter.enqueued_jobs = []
     ActiveJob::Base.queue_adapter.performed_jobs = []
@@ -16,6 +15,14 @@ module Features
     def reset_job_queues
       ActiveJob::Base.queue_adapter.enqueued_jobs = []
       ActiveJob::Base.queue_adapter.performed_jobs = []
+    end
+
+    def enqueued_jobs
+      ActiveJob::Base.queue_adapter.enqueued_jobs
+    end
+
+    def performed_jobs
+      ActiveJob::Base.queue_adapter.performed_jobs
     end
   end
 end
