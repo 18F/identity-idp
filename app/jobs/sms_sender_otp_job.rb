@@ -16,9 +16,7 @@ class SmsSenderOtpJob < ActiveJob::Base
   end
 
   def target_number_for(user)
-    return user.mobile unless user.pending_mobile_reconfirmation?
-
-    user.unconfirmed_mobile
+    UserDecorator.new(user).two_factor_phone_number
   end
 
   def otp_message(code)

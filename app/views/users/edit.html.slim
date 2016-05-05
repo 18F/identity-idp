@@ -6,9 +6,4 @@ h3 = t('upaya.headings.users.edit')
   = f.input :email, required: true, autofocus: true
   = f.input :mobile, required: false, readonly: true
   = f.input :role, collection: User.roles.keys.map { |role| [role.titleize, role] }
-  fieldset
-    legend
-      h3 Two-Factor Authentication
-    = f.error :second_factors
-    = second_factor_checkboxes_for(f)
   = f.button :submit, 'Update', class: 'usa-button'

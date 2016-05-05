@@ -14,7 +14,6 @@ feature 'User edit' do
 
     visit edit_user_registration_path
     fill_in 'Email', with: ''
-    check 'Email'
     fill_in 'Current password', with: user.password
     click_button 'Update'
 
@@ -30,7 +29,6 @@ feature 'User edit' do
 
     visit edit_user_registration_path
     fill_in 'Mobile', with: ''
-    find('#user_second_factor_ids_mobile').trigger('click')
     click_button 'Update'
 
     expect(page).to have_content 'Please fill in all required fields'

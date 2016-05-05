@@ -37,6 +37,11 @@ UserDecorator = Struct.new(:user) do
     omniauthed?(session) || user.two_factor_enabled?
   end
 
+  def two_factor_phone_number
+    return user.unconfirmed_mobile if user.unconfirmed_mobile.present?
+    user.mobile
+  end
+
   private
 
   def omniauthed?(session)
