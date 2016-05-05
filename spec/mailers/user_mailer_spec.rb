@@ -72,20 +72,4 @@ describe UserMailer, type: :mailer do
       expect(mail.body).to have_content('This email address is already in use.')
     end
   end
-
-  describe 'security_questions_attempts_exceeded' do
-    let(:mail) { UserMailer.security_questions_attempts_exceeded(user) }
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('devise.mailer.account_locked.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.body).to have_content('reached the maximum number of unsuccessful attempts')
-    end
-  end
 end

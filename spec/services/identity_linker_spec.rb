@@ -37,7 +37,7 @@ describe IdentityLinker do
     end
 
     context 'when ial token is present' do
-      it "updates user's ial_token and account type, and identity's quiz_started to true" do
+      it "updates user's ial_token and identity's quiz_started to true" do
         user = build(:user)
         sp_data = {
           provider: 'test.host',

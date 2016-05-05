@@ -18,6 +18,5 @@ en:
       otp_sms_disclaimer: If you select to receive text messaging notification to a U.S. mobile phone number listed in your account and accept these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply.
       please_confirm: Your two-factor authentication method has been set. Please confirm that it works.
       select_two_factor: One-time Passcode Preferences
-      success: Two factor authentication successful.
       user:
         new_otp_sent: A new one-time passcode has been sent.

@@ -1,5 +1,0 @@
-- @answers.each do |answer|
-  div
-    = f.simple_fields_for :security_answers, answer do |answer_form|
-      fieldset
-        = answer_form.input :text, label: answer.question, required: true, input_html: { value: '' }

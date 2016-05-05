@@ -73,4 +73,3 @@ en:
         one: "1 error prohibited this %{resource} from being saved:"
         other: "%{count} errors prohibited this %{resource} from being saved:"
       requires_mobile: "requires you to enter your mobile number."
-      max_security_questions_attempts: Sorry, you have exceeded the maximum number of attempts to reset your password.

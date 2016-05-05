@@ -6,22 +6,4 @@ module FormHelper
       f.input :value
     end
   end
-
-  def security_questions_collection_for(answer)
-    return active_questions if answer.id.nil?
-
-    if !SecurityQuestion.find(answer.security_question_id).active?
-      active_questions.push([answer.question, answer.security_question_id])
-    else
-      active_questions
-    end
-  end
-
-  def active_questions
-    SecurityQuestion.where(active: true).pluck(:question, :id)
-  end
-
-  def list_answers(answer_array)
-    # 6b17798... initial checkin for IDPaaS ui
-  end
 end

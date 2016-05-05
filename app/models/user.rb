@@ -3,8 +3,6 @@ class User < ActiveRecord::Base
   include PhoneConfirmable
   include AuditEvents
 
-  NUM_SECURITY_QUESTIONS = 5
-
   before_validation :format_phone
 
   attr_accessor :force_password_validation
@@ -40,14 +38,9 @@ class User < ActiveRecord::Base
 
   validates :ial_token, uniqueness: true, allow_nil: true
 
-  # TODO: validate number of security_attributes
-
-  has_many :security_answers, dependent: :destroy
   has_and_belongs_to_many :second_factors
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
-
-  accepts_nested_attributes_for :security_answers, limit: NUM_SECURITY_QUESTIONS
 
   # work around bug in devise_security_extension:
   # the README says to not use :validatable, but then the original implementation
@@ -91,14 +84,6 @@ class User < ActiveRecord::Base
     confirmation_sent_at && confirmation_sent_at.utc <= self.class.confirm_within.ago
   end
 
-  def security_questions_enabled?
-    security_answers.size == NUM_SECURITY_QUESTIONS
-  end
-
-  def reset_security_questions
-    security_answers.delete_all
-  end
-
   def send_reset_confirmation
     update(reset_requested_at: Time.current, confirmed_at: nil)
     send_confirmation_instructions
@@ -106,7 +91,6 @@ class User < ActiveRecord::Base
 
   def reset_account
     update(reset_requested_at: nil)
-    reset_security_questions
   end
 
   def second_factor_locked?

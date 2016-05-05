@@ -72,14 +72,17 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def update_authenticated_resource
     resource.update(
       second_factor_confirmed_at: Time.zone.now,
-      second_factor_attempts_count: 0,
-      security_question_attempts_count: 0
+      second_factor_attempts_count: 0
     )
     resource.mobile_confirm
   end
 
   def redirect_valid_resource
-    redirect_to after_sign_in_path_for(resource)
+    redirect_to(
+      after_sign_in_path_for(resource),
+      notice: t('upaya.notices.account_created',
+                date: (Time.current + 1.year).strftime('%B %d, %Y'))
+    )
   end
 
   def handle_invalid_otp

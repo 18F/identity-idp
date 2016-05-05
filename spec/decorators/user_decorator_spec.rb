@@ -117,44 +117,4 @@ describe UserDecorator do
       expect(user_decorator.may_bypass_two_factor_setup?).to eq true
     end
   end
-
-  describe '#needs_security_questions?' do
-    it 'returns false when the user is omniauthed' do
-      user = instance_double(User)
-      user_decorator = UserDecorator.new(user)
-      session = { omniauthed: true }
-
-      expect(user_decorator.needs_security_questions?(session)).to eq false
-    end
-
-    it 'returns false when the user is an admin' do
-      user = build_stubbed(:user, :admin)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.needs_security_questions?).to eq false
-    end
-
-    it 'returns false when the user is a tech' do
-      user = build_stubbed(:user, :tech_support)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.needs_security_questions?).to eq false
-    end
-
-    it 'returns true when the user is not security_questions_enabled' do
-      user = build_stubbed(:user, role: 'user')
-      allow(user).to receive(:security_questions_enabled?).and_return(false)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.needs_security_questions?).to eq true
-    end
-
-    it 'returns false when the user is security_questions_enabled' do
-      user = build_stubbed(:user, role: 'user')
-      allow(user).to receive(:security_questions_enabled?).and_return(true)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.needs_security_questions?).to eq false
-    end
-  end
 end

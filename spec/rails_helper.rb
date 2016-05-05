@@ -29,26 +29,15 @@ RSpec.configure do |config|
   config.include AbstractController::Translation
   config.include Features::LocalizationHelper, type: :feature
   config.include Features::MailerHelper, type: :feature
-  config.include Features::SecurityQuestionsHelper, type: :feature
   config.include Features::SessionHelper, type: :feature
 
   config.before(:suite) do
     Rails.application.load_seed
     Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
-    security_question_factories.each { |f| FactoryGirl.create(f.name) }
   end
 
   config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
     Rack::Attack.cache.store.clear
   end
-
-  config.after(:all, questions: true) do
-    SecurityQuestion.find_each(&:destroy)
-    security_question_factories.each { |f| FactoryGirl.create(f.name) }
-  end
-end
-
-def security_question_factories
-  FactoryGirl.factories.select { |f| f.build_class == SecurityQuestion }
 end

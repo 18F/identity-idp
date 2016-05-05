@@ -15,7 +15,7 @@ module Devise
     end
 
     def both_options_at_sign_up
-      current_user.second_factors.size > 1 && !current_user.security_questions_enabled?
+      current_user.second_factors.size > 1 && current_user.second_factor_confirmed_at.nil?
     end
   end
 end

@@ -95,13 +95,6 @@ describe UserPolicy do
     it { is_expected.to_not permit_action(:tech_reset_password) }
   end
 
-  context 'when tech tries to reset a user that does not have security questions' do
-    let(:current_user) { build_stubbed :user, :tech_support }
-    let(:user) { build_stubbed :user, :tfa_confirmed }
-
-    it { is_expected.to_not permit_action(:tech_reset_password) }
-  end
-
   context 'recover password for a normal user' do
     let(:current_user) { nil }
     let(:user) { create :user }
