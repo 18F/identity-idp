@@ -5,8 +5,7 @@
     .panel
       .panel-heading
         h2.m0 = 'Edit User Details'
-      = simple_form_for(resource,
-          as: :user,
+      = simple_form_for(@update_user_profile_form,
           url: user_registration_path,
           html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
         = f.error_notification

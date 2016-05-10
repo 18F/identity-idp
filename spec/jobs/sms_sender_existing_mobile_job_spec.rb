@@ -5,7 +5,7 @@ describe SmsSenderExistingMobileJob, sms: true do
 
   describe '.perform' do
     it 'sends existing mobile message to user.mobile' do
-      SmsSenderExistingMobileJob.perform_now(user)
+      SmsSenderExistingMobileJob.perform_now(user.mobile)
 
       expect(messages.size).to eq(1)
       msg = messages.first

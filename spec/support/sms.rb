@@ -4,7 +4,7 @@ RSpec.configure do |config|
   config.include SmsSpec::Helpers, sms: true
   config.include(RSpec::ActiveJob, sms: true)
 
-  config.after(:each, sms: true) do
+  config.before(:each, sms: true) do
     clear_messages
     ActiveJob::Base.queue_adapter.enqueued_jobs = []
     ActiveJob::Base.queue_adapter.performed_jobs = []

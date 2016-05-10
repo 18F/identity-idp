@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 describe 'devise/registrations/edit.html.slim' do
-  before { allow(view).to receive(:resource).and_return(build_stubbed(:user)) }
+  before do
+    @update_user_profile_form = UpdateUserProfileForm.new(build_stubbed(:user))
+  end
 
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('upaya.titles.registrations.edit'))

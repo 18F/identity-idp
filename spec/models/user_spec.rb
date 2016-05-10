@@ -71,70 +71,6 @@ describe User do
     end
   end
 
-  context '#mobile' do
-    VALID_NUMBERS = [
-      '1 555 234 5650',
-      '555 555 5555',
-      '(555)555-5555',
-      '+1 (555) 555-5555',
-      '5555555555',
-      '555-555-1212'
-    ].freeze
-    INVALID_NUMBERS = [
-      '212',
-      '1212',
-      '+1 212 5557',
-      '+385915125486',
-      '55555512122',
-      '555555121',
-      '70322255556',
-      '+invalid'
-    ].freeze
-
-    it 'accepts a valid mobile' do
-      user = create(:user)
-
-      VALID_NUMBERS.each do |num|
-        user.reload
-        user.mobile = num
-        user.save
-        expect(user.errors.any?).to be_falsey, user.errors.messages.inspect
-      end
-    end
-
-    it 'rejects invalid mobile numbers' do
-      user = create(:user)
-
-      INVALID_NUMBERS.each do |num|
-        user.reload
-        user.mobile = num
-        user.save
-        expect(user.errors[:mobile].size).to eq 1
-      end
-    end
-
-    it 'formats the phone before saving it to the DB' do
-      user = create(:user)
-      user.update!(mobile: '555-555-1212')
-
-      expect(user.reload.unconfirmed_mobile).to eq '+1 (555) 555-1212'
-    end
-
-    it 'raises RecordInvalid when mobile is nil and user is mobile 2FA enabled' do
-      user = create(:user, :with_mobile)
-
-      # the before validation phone formatting converts 'nodigits' to nil
-      expect { user.update!(mobile: 'nodigits') }.
-        to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'does not validate mobile presence when user is not mobile 2FA enabled' do
-      user = create(:user)
-
-      expect { user.update!(mobile: nil) }.not_to raise_error
-    end
-  end
-
   context '.password_strength' do
     it 'requires a digit' do
       NO_NUM_PASSWORD = 'abcdABCD!@#$'.freeze
@@ -352,13 +288,13 @@ describe User do
     end
 
     it 'is false when 2fa is enabled and authenticating with third party' do
-      user = create(:user, :tfa_confirmed)
+      user = create(:user, :signed_up)
       allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
       expect(user.need_two_factor_authentication?(request)).to be_falsey
     end
 
     it 'is true when 2fa is enabled and not authenticating with third party' do
-      user = create(:user, :tfa_confirmed)
+      user = create(:user, :signed_up)
       allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
       expect(user.need_two_factor_authentication?(request)).to be_truthy
     end
@@ -691,15 +627,6 @@ describe User do
       user = build(:user)
 
       expect(user).to validate_uniqueness_of(:ial_token).allow_nil
-    end
-  end
-
-  describe 'mobile validation' do
-    it 'validates uniqueness of mobile' do
-      create(:user, mobile: '222-555-1212')
-      user2 = build_stubbed(:user, mobile: '222-555-1212')
-
-      expect(user2).to be_invalid
     end
   end
 

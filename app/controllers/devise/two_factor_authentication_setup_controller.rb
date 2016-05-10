@@ -7,11 +7,18 @@ module Devise
 
     # GET /users/otp
     def index
+      @two_factor_setup_form = TwoFactorSetupForm.new(resource)
     end
 
     # PATCH /users/otp
     def set
-      process_valid_selections
+      @two_factor_setup_form = TwoFactorSetupForm.new(resource)
+
+      if @two_factor_setup_form.submit(params[:two_factor_setup_form])
+        process_valid_form
+      else
+        process_invalid_form
+      end
     end
 
     private
@@ -25,30 +32,21 @@ module Devise
       end
     end
 
-    def otp_params
-      params.require(:user).permit(:mobile)
-    end
+    def process_valid_form
+      update_metrics
 
-    def process_valid_selections
-      resource.require_mobile_validation
-      if resource.update(otp_params)
-        update_metrics
+      resource.send_two_factor_authentication_code
 
-        resource.send_two_factor_authentication_code
-
-        flash[:success] = t('devise.two_factor_authentication.please_confirm')
-        respond_with resource, location: user_two_factor_authentication_path
-      else
-        process_invalid_user
-      end
+      flash[:success] = t('devise.two_factor_authentication.please_confirm')
+      respond_with resource, location: user_two_factor_authentication_path
     end
 
     def update_metrics
       ::NewRelic::Agent.increment_metric('Custom/User/OtpDeliverySetup')
     end
 
-    def process_invalid_user
-      updater = UserProfileUpdater.new(resource, flash)
+    def process_invalid_form
+      updater = UserProfileUpdater.new(@two_factor_setup_form)
 
       if updater.attribute_already_taken?
         updater.send_notifications
@@ -56,7 +54,7 @@ module Devise
         flash[:success] = t('devise.two_factor_authentication.please_confirm')
         redirect_to user_two_factor_authentication_path
       else
-        render :index, resource: resource
+        render :index
       end
     end
   end

@@ -295,5 +295,3 @@ Style/WhenThen:
 Style/ZeroLengthPredicate:
   Description: 'Use #empty? when testing for objects of length 0.'
   Enabled: true
-Style/NumericLiterals:
-  Enabled: false

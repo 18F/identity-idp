@@ -66,7 +66,9 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def send_number_change_sms_if_needed
     user_decorator = UserDecorator.new(resource)
 
-    SmsSenderNumberChangeJob.perform_later(resource) if user_decorator.mobile_change_requested?
+    if user_decorator.mobile_change_requested?
+      SmsSenderNumberChangeJob.perform_later(resource.mobile)
+    end
   end
 
   def update_authenticated_resource

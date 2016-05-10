@@ -153,12 +153,10 @@ en:
               invalid: "Your password must match your current password."
             password_confirmation:
               confirmation: "does not match password"
-            mobile:
-              improbable_phone: "Mobile number is invalid. Please make sure you enter a 10-digit phone number."
   valid_email:
     validations:
-        email:
-          invalid: 'Please enter a valid email in the format of user@domain.com'
+      email:
+        invalid: 'Please enter a valid email in the format of user@domain.com'
   idp:
     errors:
       service_unavailable: >
@@ -244,3 +242,7 @@ en:
       next: Next question
       start: Get started with the identity quiz
       no_thanks: Cancel quiz
+  errors:
+    messages:
+      improbable_phone: 'Mobile number is invalid. Please make sure you enter a 10-digit phone number.'
+      taken: 'has already been taken'

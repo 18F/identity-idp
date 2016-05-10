@@ -1,10 +1,6 @@
 FactoryGirl.define do
   Faker::Config.locale = 'en-US'
 
-  sequence :mobile do |n|
-    (999_000_0000 + n).to_s
-  end
-
   factory :user do
     confirmed_at Time.current
     email { Faker::Internet.safe_email }
@@ -12,8 +8,7 @@ FactoryGirl.define do
     password_confirmation '!1aZ' * 32 # Maximum length password.
 
     trait :with_mobile do
-      mobile
-      mobile_confirmed_at Time.new
+      mobile '+1 (202) 555-1212'
     end
 
     trait :admin do
@@ -24,12 +19,8 @@ FactoryGirl.define do
       role :tech
     end
 
-    trait :tfa_confirmed do
-      with_mobile
-    end
-
     trait :signed_up do
-      tfa_confirmed
+      with_mobile
     end
   end
 end

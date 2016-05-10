@@ -49,9 +49,9 @@ describe 'Rails.logger', type: :feature do
       user_password = 'ValidPassw0rd!'
       visit edit_user_registration_path
 
-      fill_in 'user[current_password]', with: user.password
-      fill_in 'user[password]', with: user_password
-      fill_in 'user[password_confirmation]', with: user_password
+      fill_in 'update_user_profile_form_current_password', with: user.password
+      fill_in 'update_user_profile_form_password', with: user_password
+      fill_in 'update_user_profile_form_password_confirmation', with: user_password
     end
 
     it 'logs [Password Changed]' do

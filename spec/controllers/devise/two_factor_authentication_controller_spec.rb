@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Devise::TwoFactorAuthenticationController, devise: true do
   describe 'update' do
-    let(:user) { create(:user, :tfa_confirmed) }
+    let(:user) { create(:user, :signed_up) }
 
     context 'when resource is no longer OTP locked out' do
       before do

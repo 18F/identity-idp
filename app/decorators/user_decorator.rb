@@ -37,6 +37,14 @@ UserDecorator = Struct.new(:user) do
     omniauthed?(session) || user.two_factor_enabled?
   end
 
+  def mobile_already_taken?
+    user.errors.include?(:mobile) && user.errors[:mobile] == [I18n.t('errors.messages.taken')]
+  end
+
+  def email_already_taken?
+    user.errors.include?(:email) && user.errors[:email].uniq == [I18n.t('errors.messages.taken')]
+  end
+
   private
 
   def omniauthed?(session)

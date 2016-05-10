@@ -5,7 +5,9 @@
     .panel
       .panel-heading
         h2.m0 = t('devise.two_factor_authentication.select_two_factor')
-      = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: users_otp_path) do |f|
+      = simple_form_for(@two_factor_setup_form,
+          html: { autocomplete: 'off', role: 'form' },
+          url: users_otp_path, method: :patch) do |f|
         = f.error_notification
         p = t('devise.two_factor_authentication.otp_setup')
         .mb2

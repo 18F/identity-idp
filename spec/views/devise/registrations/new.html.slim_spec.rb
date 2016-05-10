@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 describe 'devise/registrations/new.html.slim' do
-  before { allow(view).to receive(:resource).and_return(build_stubbed(:user)) }
+  before do
+    @register_user_email_form = RegisterUserEmailForm.new
+  end
 
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('upaya.titles.registrations.new'))

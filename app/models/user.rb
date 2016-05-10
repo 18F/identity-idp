@@ -3,8 +3,6 @@ class User < ActiveRecord::Base
   include PhoneConfirmable
   include AuditEvents
 
-  before_validation :format_phone
-
   attr_accessor :force_password_validation
 
   after_validation :set_default_role, if: :new_record?
@@ -20,19 +18,6 @@ class User < ActiveRecord::Base
   has_one_time_password
 
   # validates :uuid, presence: true
-  validates :email,
-            email: {
-              mx: true,
-              ban_disposable_email: true
-            }
-
-  validates :mobile, uniqueness: true, allow_nil: true
-
-  validates_plausible_phone :mobile,
-                            country_code: 'US',
-                            presence: true,
-                            if: :needs_mobile_validation?,
-                            message: :improbable_phone
 
   validates :ial_token, uniqueness: true, allow_nil: true
 
@@ -59,7 +44,7 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_enabled?
-    mobile_confirmed_at.present?
+    mobile.present?
   end
 
   def send_two_factor_authentication_code
@@ -162,22 +147,5 @@ class User < ActiveRecord::Base
   # To send emails asynchronously via ActiveJob.
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
-  end
-
-  def require_mobile_validation
-    @force_mobile_validation = true
-  end
-
-  private
-
-  def format_phone
-    self.mobile = mobile.phony_formatted(
-      format: :international, normalize: :US, spaces: ' ') if mobile
-    self.unconfirmed_mobile = unconfirmed_mobile.phony_formatted(
-      format: :international, normalize: :US, spaces: ' ') if unconfirmed_mobile
-  end
-
-  def needs_mobile_validation?
-    mobile.present? || mobile_confirmed_at.present? || @force_mobile_validation
   end
 end

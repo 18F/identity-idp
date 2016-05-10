@@ -51,22 +51,6 @@ feature 'Two Factor Authentication', devise: true do
         expect(page).to have_content invalid_mobile_message
       end
 
-      scenario 'user enters an invalid number with plus sign and no digits' do
-        sign_in_user
-        fill_in 'Mobile', with: '+invalid'
-        click_button 'Submit'
-
-        expect(page).to have_content invalid_mobile_message
-      end
-
-      scenario 'user enters an invalid number with digits' do
-        sign_in_user
-        fill_in 'Mobile', with: '55555512122'
-        click_button 'Submit'
-
-        expect(page).to have_content invalid_mobile_message
-      end
-
       scenario 'user enters a valid number' do
         user = sign_in_user
         fill_in 'Mobile', with: '555-555-1212'
@@ -90,7 +74,7 @@ feature 'Two Factor Authentication', devise: true do
       context 'user is prompted for otp via mobile only', sms: true do
         before do
           reset_job_queues
-          @user = create(:user, :signed_up, :with_mobile)
+          @user = create(:user, :signed_up)
           reset_email
           signin(@user.email, @user.password)
         end
@@ -203,18 +187,6 @@ feature 'Two Factor Authentication', devise: true do
       visit edit_user_registration_path
 
       expect(page).to have_content I18n.t('devise.errors.messages.user_not_authenticated')
-    end
-
-    scenario 'user disables 2FA method' do
-      user = sign_in_and_2fa_user
-
-      user.update(mobile: nil, mobile_confirmed_at: nil)
-
-      visit dashboard_index_path
-
-      expect(current_path).to eq('/users/otp')
-      expect(page).to have_content I18n.t('devise.two_factor_authentication.otp_setup')
-      expect(page).to have_css('.alert')
     end
 
     scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do

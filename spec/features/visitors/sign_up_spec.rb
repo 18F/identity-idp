@@ -53,11 +53,6 @@ feature 'Sign Up', devise: true do
     click_button 'Submit'
   end
 
-  scenario 'form should have autocomplete turned off' do
-    sign_up_with_and_set_password_for('test@example.com')
-    expect(find('#edit_user')[:autocomplete]).to eq 'off'
-  end
-
   context 'visitor can sign up and confirm a valid mobile for OTP' do
     before do
       sign_up_with_and_set_password_for('test@example.com')
@@ -86,20 +81,6 @@ feature 'Sign Up', devise: true do
       expect(current_path).to eq users_otp_path
     end
 
-    it 'disables 2FA after Sign Out if user has no mobile' do
-      user = User.find_by_email('test@example.com')
-      click_link(t('upaya.headings.log_out'), match: :first)
-      expect(!user.reload.two_factor_enabled?)
-    end
-  end
-
-  context 'visitor can confirm mobile 2FA device', email: true do
-    before do
-      sign_up_with_and_set_password_for('test@example.com')
-      fill_in 'Mobile', with: '555-555-5555'
-      click_button 'Submit'
-    end
-
     it 'informs the user that the OTP code is sent to the mobile' do
       user = User.find_by_email('test@example.com')
 
@@ -109,26 +90,6 @@ feature 'Sign Up', devise: true do
           'Please enter the code that you received. ' \
           'If you do not receive the code in 10 minutes, please request a new passcode.'
         )
-    end
-
-    it 'provides user with link to type in a new number so they are not locked out' do
-      click_link 'entering it again'
-      expect(current_path).to eq users_otp_path
-    end
-
-    # JJG - I think we should go as far as making sure the user enters
-    # a new number and that the OTP is sent to the new number.
-    it 'allows user to enter new number if they Sign Out before confirming' do
-      click_link(t('upaya.headings.log_out'), match: :first)
-      user = User.find_by_email('test@example.com')
-      signin(user.email, VALID_PASSWORD)
-      expect(current_path).to eq users_otp_path
-    end
-
-    it 'disables 2FA after Sign Out if user has no mobile' do
-      user = User.find_by_email('test@example.com')
-      click_link(t('upaya.headings.log_out'), match: :first)
-      expect(!user.reload.two_factor_enabled?)
     end
   end
 
@@ -263,7 +224,7 @@ feature 'Sign Up', devise: true do
   scenario 'visitor cannot sign up with empty email address' do
     sign_up_with('')
 
-    expect(page).to have_content "can't be blank"
+    expect(page).to have_content t('valid_email.validations.email.invalid')
   end
 
   # Scenario: Visitor is not aware of an email existing in the system

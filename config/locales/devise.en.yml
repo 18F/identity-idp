@@ -54,6 +54,11 @@ en:
         but we need to verify your new number first. Please follow the
         instructions below. If you do not confirm your new number, we will
         keep using your old phone number.
+      email_and_mobile_need_confirmation: >
+        Your request to update your account was processed successfully,
+        but we need to verify both your new number and new email. Please follow
+        the instructions below to verify your new number, then check your
+        email and click the confirmation link to confirm your new email address.
       updated: "Your account has been updated successfully."
       enabled_twofactor: "Successfully enabled two-factor authentication."
     sessions:
