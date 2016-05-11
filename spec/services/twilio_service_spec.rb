@@ -151,18 +151,6 @@ describe TwilioService do
   end
 
   describe '.random_account' do
-    context 'twilio_accounts setting is missing' do
-      it 'falls back to using deprecated Twilio settings' do
-        allow(Rails.application.secrets).to receive(:twilio_accounts).and_return(nil)
-
-        expect(TwilioService.random_account).to eq(
-          'sid' => 'sid',
-          'auth_token' => 'token',
-          'number' => '8888888888'
-        )
-      end
-    end
-
     context 'twilio_accounts has multiple entries' do
       it 'randomly samples one of the accounts' do
         expect(Rails.application.secrets.twilio_accounts).to receive(:sample)

@@ -32,9 +32,6 @@ production:
   proxy_port: '80'
   pt_mode: 'off'
   saml_passphrase: 'secret'
-  twilio_account_sid: 'sid'
-  twilio_auth_token: 'token'
-  twilio_number: '8888888888'
 
 test:
   allow_third_party_auth: 'yes'
@@ -47,6 +44,3 @@ test:
   newrelic_license_key: 'xxx'
   pt_mode: 'off'
   saml_passphrase: 'secret'
-  twilio_account_sid: 'sid'
-  twilio_auth_token: 'token'
-  twilio_number: '8888888888'
