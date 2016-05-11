@@ -4,13 +4,13 @@
   - else
     .clearfix.px2.py1.bg-white
       .left
-        span.caps.bold login.gov
+        = link_to 'login.gov', new_user_session_path, class: 'bold navy'
       .right
         = link_to t('upaya.links.sign_out'), destroy_user_session_path, method: 'delete'
 - else
   .clearfix.px2.py1.bg-white
     .left
-      span.bold.navy login.gov
+      = link_to 'login.gov', new_user_session_path, class: 'bold navy'
     .right
       = link_to t('upaya.links.sign_in'), new_user_session_path
       '&nbsp;&middot;&nbsp;
