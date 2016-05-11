@@ -1,0 +1,21 @@
+schema_version: "1.0.0"
+name: Login.gov # Name of the project
+metadata:
+  description: central logon application
+  maintainers:
+    - jrahaghi@omb.eop.gov
+components: # A list of paths to components written in the opencontrol format for more information view: https://github.com/opencontrol/schemas
+  - ./docs/security/CM_Policy
+  - ./docs/security/AC_Policy
+  - ./docs/security/SC_Policy
+  - ./docs/security/IA_Policy
+  - ./docs/security/CA_Policy
+  - ./docs/security/RA_Policy
+  - ./docs/security/SA_Policy
+  - ./docs/security/SI_Policy
+  - ./docs/security/AU_Policy
+  - ./docs/security/PL_Policy
+dependencies:
+  systems:
+    - url: github.com/18F/cg-compliance
+      revision: master
