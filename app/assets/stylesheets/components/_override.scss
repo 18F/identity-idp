@@ -1,0 +1,5 @@
+// normalize.css adds a text underline by default
+// scss-lint:disable QualifyingElement
+abbr[title] {
+  text-decoration: none;
+}

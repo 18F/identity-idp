@@ -84,6 +84,6 @@ $breakpoint-lg: '(min-width: 64em)' !default;
 $breakpoint-sm-md: '(min-width: 40em) and (max-width: 52em)' !default;
 $breakpoint-md-lg: '(min-width: 52em) and (max-width: 64em)' !default;
 
-$screen-xs: 480px !default;
+$breakpoint-max-sm: '(max-width: 40em)' !default;
 
 $container-width: 960px !default;
