@@ -13,15 +13,15 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
   describe 'PATCH set' do
     context 'when mobile number already exists' do
-      it 'prompts to confirm the number' do
-        user_with_mobile = create(:user, :with_mobile)
-        user = create(:user)
+      let(:user) { create(:user) }
+      let(:second_user) { create(:user, :signed_up) }
 
+      it 'prompts to confirm the number' do
         sign_in(user)
 
         patch(
           :set,
-          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+          two_factor_setup_form: { mobile: second_user.mobile }
         )
 
         expect(response).to redirect_to(user_two_factor_authentication_path)
@@ -29,41 +29,33 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
       end
 
       it 'calls UserProfileUpdater#send_notifications' do
-        user_with_mobile = create(:user, :with_mobile)
-        user = create(:user)
-
-        flash = instance_double(ActionDispatch::Flash::FlashHash)
-        allow(subject).to receive(:flash).and_return(flash)
-
         sign_in(user)
 
+        form = instance_double(TwoFactorSetupForm)
+        allow(TwoFactorSetupForm).to receive(:new).with(user).and_return(form)
+        expect(form).to receive(:submit).with(mobile: second_user.mobile)
+
         updater = instance_double(UserProfileUpdater)
-        allow(UserProfileUpdater).to receive(:new).with(user, flash).
+        allow(UserProfileUpdater).to receive(:new).with(form).
           and_return(updater)
 
         expect(updater).to receive(:attribute_already_taken?).and_return(true)
         expect(updater).to receive(:send_notifications)
 
-        expect(flash).to receive(:[]=).
-          with(:success, t('devise.two_factor_authentication.please_confirm'))
-
         patch(
           :set,
-          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+          two_factor_setup_form: { mobile: second_user.mobile }
         )
       end
 
       it 'does not call User#send_two_factor_authentication_code' do
-        user_with_mobile = create(:user, :with_mobile)
-        user = create(:user)
-
         sign_in(user)
 
         expect(subject.current_user).to_not receive(:send_two_factor_authentication_code)
 
         patch(
           :set,
-          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+          two_factor_setup_form: { mobile: second_user.mobile }
         )
       end
     end

@@ -6,27 +6,17 @@ include Features::ActiveJobHelper
 
 describe Users::RegistrationsController, devise: true do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
-  let(:user_with_mobile) do
-    create(:user, :signed_up, :with_mobile, email: 'mobile@example.com')
+  let(:second_user) do
+    create(:user, :signed_up, email: 'mobile@example.com', mobile: '+1 (202) 555-1213')
   end
   let(:new_email) { 'new_email@example.com' }
   let!(:old_encrypted_password) { user.encrypted_password }
 
-  let(:attrs_with_both_2fa) do
+  let(:attrs_with_already_taken_mobile) do
     {
       email: user.email,
-      mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: SecondFactor.pluck(:id)
-    }
-  end
-
-  let(:attrs_with_no_2fa) do
-    {
-      email: user.email,
-      mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: []
+      mobile: second_user.mobile,
+      current_password: '!1aZ' * 32
     }
   end
 
@@ -34,115 +24,75 @@ describe Users::RegistrationsController, devise: true do
     {
       email: new_email,
       mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: SecondFactor.pluck(:id)
+      current_password: '!1aZ' * 32
     }
   end
 
   let(:attrs_for_new_mobile) do
     {
-      email: user_with_mobile.email,
+      email: second_user.email,
       mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: SecondFactor.pluck(:id)
+      current_password: '!1aZ' * 32
     }
   end
 
   let(:attrs_with_blank_mobile) do
     {
-      email: user_with_mobile.email,
+      email: second_user.email,
       mobile: '',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: SecondFactor.pluck(:id)
+      current_password: '!1aZ' * 32
     }
   end
 
-  let(:attrs_with_new_email_2fa) do
+  let(:attrs_with_mobile) do
     {
-      email: user_with_mobile.email,
-      mobile: user_with_mobile.mobile,
-      current_password: '!1aZ' * 32,
-      second_factor_ids: SecondFactor.pluck(:id)
-    }
-  end
-
-  let(:attrs_with_blank_mobile_and_email_2fa) do
-    {
-      email: user_with_mobile.email,
-      mobile: '',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
-    }
-  end
-
-  let(:attrs_with_mobile_and_email_2fa) do
-    {
-      email: user_with_mobile.email,
-      mobile: user_with_mobile.mobile,
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
-    }
-  end
-
-  let(:attrs_with_mobile_and_mobile_2fa) do
-    {
-      email: user_with_mobile.email,
-      mobile: user_with_mobile.mobile,
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Mobile').id]
-    }
-  end
-
-  let(:attrs_with_email_2fa) do
-    {
-      email: user.email,
-      mobile: '555-555-5555',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      email: second_user.email,
+      mobile: second_user.mobile,
+      current_password: '!1aZ' * 32
     }
   end
 
   let(:attrs_with_new_email) do
     {
       email: new_email,
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      mobile: user.mobile,
+      current_password: '!1aZ' * 32
     }
   end
 
   let(:attrs_without_current_password) do
     {
-      email: new_email,
-      current_password: '',
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      email: user.email,
+      mobile: second_user.mobile,
+      current_password: ''
     }
   end
 
   let(:attrs_with_blank_email) do
     {
       email: '',
-      current_password: '!1aZ' * 32,
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      mobile: user.mobile,
+      current_password: '!1aZ' * 32
     }
   end
 
   let(:attrs_with_new_valid_password) do
     {
       email: user.email,
+      mobile: user.mobile,
       current_password: '!1aZ' * 32,
       password: '@Aaaaaa1',
-      password_confirmation: '@Aaaaaa1',
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      password_confirmation: '@Aaaaaa1'
     }
   end
 
   let(:attrs_with_new_invalid_password) do
     {
       email: user.email,
+      mobile: user.mobile,
       current_password: '!1aZ' * 32,
       password: '123',
-      password_confirmation: '123',
-      second_factor_ids: [SecondFactor.find_by_name('Email').id]
+      password_confirmation: '123'
     }
   end
 
@@ -152,8 +102,6 @@ describe Users::RegistrationsController, devise: true do
         to eq t('devise.registrations.mobile_update_needs_confirmation')
 
       expect(response).to redirect_to user_two_factor_authentication_path
-
-      expect(user.reload.second_factors.pluck(:name).sort).to eq %w(Email Mobile)
 
       expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
 
@@ -195,38 +143,36 @@ describe Users::RegistrationsController, devise: true do
     before { sign_in(user) }
 
     it 'sends an OTP to unconfirmed mobile after update' do
-      expect(MobileSecondFactor).to receive(:transmit).with(user)
+      expect(SmsSenderOtpJob).to receive(:perform_later).with(user)
 
-      put :update, id: subject.current_user, user: attrs_with_both_2fa
-    end
-
-    it 'sends an OTP to new number even if mobile 2FA option is not checked' do
-      expect(MobileSecondFactor).to receive(:transmit).with(user)
-
-      put :update, id: subject.current_user, user: attrs_with_email_2fa
+      put(
+        :update,
+        id: subject.current_user,
+        update_user_profile_form: attrs_with_new_email_and_mobile
+      )
     end
   end
 
   context 'user updates existing mobile number' do
     before do
-      user_with_mobile.mobile_confirm
-      sign_in(user_with_mobile)
+      second_user.mobile_confirm
+      sign_in(second_user)
       reset_job_queues
-      patch :update, id: subject.current_user, user: attrs_for_new_mobile
+      patch :update, id: subject.current_user, update_user_profile_form: attrs_for_new_mobile
     end
 
     it_behaves_like 'updating_mobile' do
-      let(:test_user) { user_with_mobile }
+      let(:test_user) { second_user }
     end
 
     it 'updates unconfirmed_mobile' do
-      expect(user_with_mobile.reload.unconfirmed_mobile).to eq '+1 (555) 555-5555'
+      expect(second_user.reload.unconfirmed_mobile).to eq '+1 (555) 555-5555'
     end
 
     it 'calls send_two_factor_authentication_code on current_user' do
       expect(subject.current_user).to receive(:send_two_factor_authentication_code)
 
-      patch :update, id: subject.current_user, user: attrs_for_new_mobile
+      patch :update, id: subject.current_user, update_user_profile_form: attrs_for_new_mobile
     end
 
     it 'allows the user to abandon confirmation' do
@@ -236,24 +182,13 @@ describe Users::RegistrationsController, devise: true do
     end
 
     it 'deletes the unconfirmed number once it has been confirmed' do
-      user_with_mobile.reload.mobile_confirm
+      second_user.reload.mobile_confirm
 
-      expect(user_with_mobile.reload.unconfirmed_mobile).to be_nil
+      expect(second_user.reload.unconfirmed_mobile).to be_nil
     end
   end
 
-  context 'user adds a new mobile number but not mobile 2FA' do
-    before do
-      sign_in(user)
-      put :update, id: user, user: attrs_with_email_2fa
-    end
-
-    it_behaves_like 'updating_mobile' do
-      let(:test_user) { user }
-    end
-  end
-
-  # Scenario: User updates both email and number and has both 2FA options
+  # Scenario: User updates both email and number
   #   Given I am signed in and editing my profile
   #   When I update both my mobile and email
   #   Then I am asked to confirm both my email and mobile
@@ -262,7 +197,7 @@ describe Users::RegistrationsController, devise: true do
     before do
       sign_in(user)
       reset_email
-      put :update, id: user, user: attrs_with_new_email_and_mobile
+      put :update, update_user_profile_form: attrs_with_new_email_and_mobile
     end
 
     it_behaves_like 'updating_both_email_and_mobile' do
@@ -276,42 +211,19 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  # Scenario: User deletes phone number when mobile is a 2FA method
+  # Scenario: User deletes phone number
   #   Given I am signed in and editing my profile
-  #   When I remove my mobile number and check mobile 2fa
+  #   When I try to remove my mobile number
   #   Then I see an invalid number message
-  context 'user removes mobile number while mobile is a 2FA method' do
+  context 'user attempts to remove mobile number' do
     render_views
 
     it 'displays error message and does not remove mobile' do
-      sign_in(user_with_mobile)
-      put :update, id: user, user: attrs_with_blank_mobile
+      sign_in(second_user)
+      put :update, update_user_profile_form: attrs_with_blank_mobile
 
       expect(response.body).to have_content invalid_mobile_message
-      expect(user_with_mobile.reload.mobile).to be_present
-      expect(user.reload.second_factors.pluck(:name)).to eq %w(Email)
-    end
-  end
-
-  # Scenario: User deletes phone number when mobile is not a 2FA method
-  #   Given I am signed in and editing my profile
-  #   When I remove my mobile number
-  #   Then I see a success message and my number is removed
-  context 'user removes mobile number while mobile is not a 2FA method' do
-    before do
-      sign_in(user_with_mobile)
-      reset_job_queues
-      put :update, id: user, user: attrs_with_blank_mobile_and_email_2fa
-    end
-
-    it_behaves_like 'updating_profile'
-
-    it 'sets user mobile to nil' do
-      expect(user_with_mobile.reload.mobile).to be_nil
-    end
-
-    it 'does not send any SMS' do
-      expect(enqueued_jobs.size).to eq 0
+      expect(second_user.reload.mobile).to be_present
     end
   end
 
@@ -324,108 +236,17 @@ describe Users::RegistrationsController, devise: true do
 
     it 'displays an error message and does not delete the email' do
       sign_in(user)
-      put :update, id: user, user: attrs_with_blank_email
+      put :update, update_user_profile_form: attrs_with_blank_email
 
-      expect(response.body).to have_content "can't be blank"
+      expect(response.body).to have_content invalid_email_message
       expect(user.reload.email).to be_present
-    end
-  end
-
-  # Scenario: User adds 2FA via email
-  #   Given I am signed in
-  #   When I add the Email 2FA method
-  #   Then I see 'account has been updated' message
-  #   And I don't receive an email
-  context 'user adds Email as additional second factor method' do
-    before do
-      sign_in(user_with_mobile)
-      reset_email
-      put :update, id: user, user: attrs_with_new_email_2fa
-    end
-
-    it_behaves_like 'updating_profile'
-
-    it 'adds email to the user second factors without sending email to user' do
-      expect(user_with_mobile.reload.second_factors.pluck(:name).sort).to eq %w(Email Mobile)
-      expect(last_email).to be_nil
-    end
-  end
-
-  # Scenario: User adds 2FA via mobile
-  #   Given I am signed in
-  #   When I add the Mobile 2FA method
-  #   Then I am prompted to confirm my number
-  context 'user adds Mobile as additional second factor method' do
-    before do
-      sign_in(user)
-      put :update, id: user, user: attrs_with_both_2fa
-    end
-
-    it_behaves_like 'adding_mobile'
-
-    it 'calls send_two_factor_authentication_code on current_user' do
-      expect(subject.current_user).to receive(:send_two_factor_authentication_code)
-
-      put :update, id: user, user: attrs_with_both_2fa
-    end
-  end
-
-  # Scenario: User attempts to disable all 2FA methods
-  #   Given I am signed in
-  #   When I disable all 2FA methods
-  #   Then I am forced to choose at least one option
-  context 'user unchecks all second factor methods' do
-    render_views
-
-    it 'displays an error message' do
-      sign_in(user)
-      put :update, id: user, user: attrs_with_no_2fa
-
-      expect(response.body).
-        to have_content t('activerecord.errors.models.user.attributes.second_factors.blank')
-    end
-  end
-
-  # Scenario: User has both 2FA methods and disables Mobile
-  #   Given I am signed in
-  #   When I disable Mobile without removing my number
-  #   Then my Mobile 2FA is removed but my phone number remains
-  context 'user unchecks mobile second factor method' do
-    before do
-      sign_in(user_with_mobile)
-      put :update, id: user_with_mobile, user: attrs_with_mobile_and_email_2fa
-    end
-
-    it_behaves_like 'updating_profile'
-
-    it 'removes mobile 2FA but leaves mobile' do
-      expect(user_with_mobile.reload.second_factors.pluck(:name)).to eq %w(Email)
-      expect(user_with_mobile.reload.mobile).to eq '+1 (500) 555-0006'
-    end
-  end
-
-  # Scenario: User has both 2FA methods and disables Email
-  #   Given I am signed in
-  #   When I disable Email
-  #   Then my Email 2FA is removed but my email remains
-  context 'user unchecks email second factor method' do
-    before do
-      sign_in(user_with_mobile)
-      put :update, id: user_with_mobile, user: attrs_with_mobile_and_mobile_2fa
-    end
-
-    it_behaves_like 'updating_profile'
-
-    it 'removes email 2FA but leaves email' do
-      expect(user_with_mobile.reload.second_factors.pluck(:name)).to eq %w(Mobile)
-      expect(user_with_mobile.reload.email).to eq 'mobile@example.com'
     end
   end
 
   context 'user changes email' do
     before do
       sign_in(user)
-      put :update, id: user, user: attrs_with_new_email
+      put :update, update_user_profile_form: attrs_with_new_email
     end
 
     it 'lets user know they need to confirm their new email' do
@@ -436,10 +257,10 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  context 'user changes email to an existing email address' do
+  context "user changes email to another user's email address" do
     it 'lets user know they need to confirm their new email' do
       sign_in(user)
-      put :update, id: user, user: attrs_with_new_email.merge(email: user_with_mobile.email)
+      put :update, update_user_profile_form: attrs_with_new_email.merge(email: second_user.email)
 
       expect(response).to redirect_to edit_user_registration_url
       expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
@@ -452,7 +273,7 @@ describe Users::RegistrationsController, devise: true do
   context 'user changes password', email: true do
     before do
       sign_in(user)
-      put :update, id: user, user: attrs_with_new_valid_password
+      put :update, update_user_profile_form: attrs_with_new_valid_password
     end
 
     it_behaves_like 'updating_profile'
@@ -472,7 +293,7 @@ describe Users::RegistrationsController, devise: true do
         expect(notifier).to receive(:send_password_changed_email)
 
         sign_in(user)
-        put :update, id: user, user: attrs_with_new_valid_password
+        put :update, update_user_profile_form: attrs_with_new_valid_password
       end
     end
   end
@@ -482,14 +303,14 @@ describe Users::RegistrationsController, devise: true do
 
     it 'displays invalid password error' do
       sign_in(user)
-      put :update, id: user, user: attrs_with_new_invalid_password
+      put :update, update_user_profile_form: attrs_with_new_invalid_password
 
       expect(response.body).to have_content('too short')
       expect(user.reload.encrypted_password).to eq old_encrypted_password
     end
   end
 
-  context 'user updates profile with existing mobile but without current password' do
+  context "user updates profile with another user's mobile but without current password" do
     render_views
 
     it 'displays error about blank current password but not about mobile' do
@@ -497,7 +318,7 @@ describe Users::RegistrationsController, devise: true do
       put(
         :update,
         id: user,
-        user: attrs_without_current_password.merge(mobile: user_with_mobile.mobile)
+        update_user_profile_form: attrs_without_current_password.merge(mobile: second_user.mobile)
       )
 
       expect(response.body).to have_content("can't be blank")
@@ -508,17 +329,18 @@ describe Users::RegistrationsController, devise: true do
 
   context 'user signs up with existing email' do
     it 'sends an email to the existing user' do
-      existing_user = create(:user, email: 'existing@example.com')
+      existing_user = create(:user, :signed_up)
 
       mailer = instance_double(ActionMailer::MessageDelivery)
-      expect(UserMailer).to receive(:signup_with_your_email).with(existing_user).and_return(mailer)
+      expect(UserMailer).to receive(:signup_with_your_email).
+        with(existing_user.email).and_return(mailer)
       expect(mailer).to receive(:deliver_later)
 
-      put :create, user: { email: 'existing@example.com' }
+      put :create, user: { email: existing_user.email }
     end
   end
 
-  context 'user updates profile with invalid email and existing mobile' do
+  context "user updates profile with invalid email and another user's mobile", sms: true do
     render_views
 
     it 'displays error about invalid email and does not send any SMS', sms: true do
@@ -526,18 +348,17 @@ describe Users::RegistrationsController, devise: true do
       put(
         :update,
         id: user,
-        user: attrs_with_both_2fa.merge!(email: 'foo', mobile: user_with_mobile.mobile)
+        update_user_profile_form: attrs_with_already_taken_mobile.merge!(email: 'foo')
       )
 
       expect(response.body).to have_content('Please enter a valid email')
       expect(response.body).to_not have_content('has already been taken')
-
       expect(enqueued_jobs).to eq []
       expect(performed_jobs).to eq []
     end
   end
 
-  context 'user updates profile with invalid mobile and existing email' do
+  context "user updates profile with invalid mobile and another user's email" do
     render_views
 
     it 'displays error about invalid email', email: true do
@@ -545,7 +366,8 @@ describe Users::RegistrationsController, devise: true do
       put(
         :update,
         id: user,
-        user: attrs_with_both_2fa.merge!(email: user_with_mobile.email, mobile: '703')
+        update_user_profile_form: attrs_with_already_taken_mobile.merge!(
+          email: second_user.email, mobile: '703')
       )
 
       expect(flash).to be_empty

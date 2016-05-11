@@ -184,9 +184,8 @@ feature 'Password Recovery' do
       fill_in 'user[password]', with: 'ValidPassw0rd!'
       fill_in 'user[password_confirmation]', with: 'ValidPassw0rd!'
       click_button 'Submit'
-      uncheck 'Mobile'
+      fill_in 'Mobile', with: '5555555555'
       click_button 'Submit'
-      reset_email
       fill_in 'code', with: User.last.otp_code
       click_button 'Submit'
       click_link(t('upaya.headings.log_out'), match: :first)

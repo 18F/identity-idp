@@ -6,11 +6,11 @@
       .panel-heading
         h2.m0 = t('devise.two_factor_authentication.header_text')
       p
-        'A one-time passcode has been sent to <strong>#{two_factor_preference}</strong>. Please enter the code that you received.
+        'A one-time passcode has been sent to <strong>#{current_user.two_factor_phone_number}</strong>. Please enter the code that you received.
         'If you do not receive the code in #{otp_drift_time_in_minutes} minutes, please #{link_to 'request a new passcode', users_otp_new_path, data: { 'no-turbolink' => true }}.
 
-      - if current_user.unconfirmed_mobile.present? && !current_user.two_factor_enabled?
-        p If you are setting up a new phone number, try #{link_to 'entering it again', users_otp_path, data: { 'no-turbolink' => true }, title: 'Try entering your phone number again'}.
+      - if current_user.using_unconfirmed_mobile?
+        p If you entered the wrong number, try #{link_to 'entering it again', users_otp_path, data: { 'no-turbolink' => true }, title: 'Try entering your phone number again'}.
 
       = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
         .mb2

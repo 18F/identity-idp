@@ -5,10 +5,10 @@ class UserMailer < ActionMailer::Base
     mail(to: old_email, subject: 'Email change notification')
   end
 
-  def signup_with_your_email(user)
+  def signup_with_your_email(email)
     @root_url = root_url
     @new_user_password_url = new_user_password_url
-    mail(to: user.email, subject: 'Email Confirmation Notification')
+    mail(to: email, subject: 'Email Confirmation Notification')
   end
 
   def password_changed(user)

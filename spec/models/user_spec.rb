@@ -9,26 +9,6 @@ describe User do
     end.to change(ActionMailer::Base.deliveries, :count).by(1)
   end
 
-  context 'it has_and_belongs_to_many second factors' do
-    let(:user) do
-      u = create(:user, email: 'user@example.com')
-      u.second_factors << SecondFactor.find_or_create_by(name: 'Email')
-      u.second_factors << SecondFactor.find_or_create_by(name: 'Mobile')
-      u
-    end
-
-    it 'responds to :second_factors' do
-      expect(user).to(respond_to(:second_factors))
-    end
-
-    it 'has a :second_factors array that contains objects only of type SecondFactor' do
-      expect(user.second_factors.first).to(be_a(SecondFactor))
-      expect(user.second_factors.second).to(be_a(SecondFactor))
-    end
-
-    skip 'indicates if 2fa is enabled'
-  end
-
   context '.create' do
     it 'accepts a valid email' do
       user = create(:user)
@@ -88,92 +68,6 @@ describe User do
         expect(user.generate_uuid).
           to match(/[a-f0-9]{8}-[a-f0-9]{4}-4[a-f0-9]{3}-[89aAbB][a-f0-9]{3}-[a-f0-9]{12}/)
       end
-    end
-  end
-
-  context '#mobile' do
-    VALID_NUMBERS = [
-      '1 555 234 5650',
-      '555 555 5555',
-      '(555)555-5555',
-      '+1 (555) 555-5555',
-      '5555555555',
-      '+385915125486',
-      '555-555-1212'
-    ].freeze
-    INVALID_NUMBERS = [
-      '212',
-      '1212',
-      '+1 212 5557',
-      '55555512122',
-      '555555121',
-      '70322255556',
-      '+invalid'
-    ].freeze
-
-    it 'accepts a valid mobile' do
-      user = create(:user)
-
-      VALID_NUMBERS.each do |num|
-        user.reload
-        user.mobile = num
-        user.save
-        expect(user.errors.any?).to be_falsey
-      end
-    end
-
-    it 'does not validate mobile when user is not two_factor_enabled' do
-      user = create(:user)
-
-      INVALID_NUMBERS.each do |num|
-        user.reload
-        user.mobile = num
-        user.save
-        expect(user.errors[:mobile]).to be_empty
-      end
-    end
-
-    it 'validates mobile when mobile is present and user has email 2FA' do
-      user = create(:user, :tfa_confirmed)
-
-      INVALID_NUMBERS.each do |num|
-        user.reload
-        user.mobile = num
-        user.save
-        expect(user.errors[:mobile].size).to eq 1
-      end
-    end
-
-    it 'raises an error for invalid number when user has mobile 2FA' do
-      user = create(:user, :with_mobile)
-
-      INVALID_NUMBERS.each do |num|
-        user.reload
-        user.mobile = num
-        user.save
-        expect(user.errors[:mobile].size).to eq 1
-      end
-    end
-
-    it 'formats the phone before saving it to the DB' do
-      user = create(:user)
-      user.update!(mobile: '555-555-1212')
-
-      expect(user.reload.unconfirmed_mobile).to eq '+1 (555) 555-1212'
-    end
-
-    it 'raises RecordInvalid when mobile is nil and user is mobile 2FA enabled' do
-      user = create(:user, :with_mobile)
-
-      # the before validation phone formatting converts 'nodigits' to nil
-      expect { user.update!(mobile: 'nodigits') }.
-        to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'does not validate mobile presence when user is not mobile 2FA enabled' do
-      user = create(:user)
-
-      expect { user.update!(mobile: nil) }.not_to raise_error
     end
   end
 
@@ -347,19 +241,19 @@ describe User do
   end
 
   context '#two_factor_enabled?' do
-    it 'is true when user has at least one confirmed 2FA' do
-      user = create(:user, :tfa_confirmed)
+    it 'is true when user has a confirmed mobile' do
+      user = create(:user, :with_mobile)
 
       expect(user.two_factor_enabled?).to eq true
     end
 
-    it 'is false when user has an unconfirmed 2FA' do
-      user = create(:user, :with_mobile)
+    it 'is false when user has an unconfirmed mobile' do
+      user = create(:user, unconfirmed_mobile: '123456789')
 
       expect(user.two_factor_enabled?).to eq false
     end
 
-    it 'is false when user does not have any 2FA' do
+    it 'is false when user does not have a mobile' do
       user = create(:user)
 
       expect(user.two_factor_enabled?).to eq false
@@ -394,13 +288,13 @@ describe User do
     end
 
     it 'is false when 2fa is enabled and authenticating with third party' do
-      user = create(:user, :tfa_confirmed)
+      user = create(:user, :signed_up)
       allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
       expect(user.need_two_factor_authentication?(request)).to be_falsey
     end
 
     it 'is true when 2fa is enabled and not authenticating with third party' do
-      user = create(:user, :tfa_confirmed)
+      user = create(:user, :signed_up)
       allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
       expect(user.need_two_factor_authentication?(request)).to be_truthy
     end
@@ -415,14 +309,6 @@ describe User do
       user = create(:user)
       allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
       expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
-  end
-
-  context '#mobile_two_factor_enabled?' do
-    it 'is true when mobile second factor is enabled' do
-      user = create(:user, :with_mobile)
-
-      expect(user.mobile_two_factor_enabled?).to be_truthy
     end
   end
 
@@ -627,12 +513,6 @@ describe User do
 
       expect(user.reload.reset_requested_at).to be_nil
     end
-
-    it 'does not reset 2FA' do
-      user.reset_account
-
-      expect(user.reload.second_factors.size).to eq 1
-    end
   end
 
   describe '#last_quizzed identity' do
@@ -747,15 +627,6 @@ describe User do
       user = build(:user)
 
       expect(user).to validate_uniqueness_of(:ial_token).allow_nil
-    end
-  end
-
-  describe 'mobile validation' do
-    it 'validates uniqueness of mobile' do
-      create(:user, mobile: '222-555-1212')
-      user2 = build_stubbed(:user, mobile: '222-555-1212')
-
-      expect(user2).to be_invalid
     end
   end
 
