@@ -5,7 +5,6 @@ require 'rspec/rails'
 require 'email_spec'
 require 'factory_girl'
 require 'shoulda/matchers'
-require 'rspec/active_job'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.

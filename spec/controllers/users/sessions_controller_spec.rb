@@ -85,4 +85,26 @@ describe Users::SessionsController, devise: true do
       expect(response).to redirect_to(root_url)
     end
   end
+
+  describe 'POST /' do
+    it 'calls User#send_two_factor_authentication_code' do
+      create(:user, :signed_up, email: 'user@example.com')
+
+      expect_any_instance_of(User).to receive(:send_two_factor_authentication_code)
+
+      post :create, user: { email: 'user@example.com', password: '!1aZ' * 32 }
+    end
+
+    it 'calls UserOtpSender#reset_otp_state' do
+      user = create(:user, :signed_up, email: 'user@example.com')
+
+      otp_sender = instance_double(UserOtpSender)
+      allow(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
+
+      expect(otp_sender).to receive(:reset_otp_state)
+      expect(otp_sender).to receive(:send_otp)
+
+      post :create, user: { email: 'user@example.com', password: '!1aZ' * 32 }
+    end
+  end
 end

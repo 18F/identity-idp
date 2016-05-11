@@ -60,13 +60,15 @@ feature 'Sign Up', devise: true do
       click_button 'Submit'
     end
 
-    it 'updates mobile_confirmed_at' do
+    it 'updates mobile_confirmed_at and redirects to dashboard when user enters valid OTP' do
       user = User.find_by_email('test@example.com')
 
       fill_in 'Secure one-time password', with: user.reload.otp_code
       click_button 'Submit'
 
       expect(user.reload.mobile_confirmed_at).to be_present
+      expect(current_path).to eq dashboard_index_path
+      expect(page).to have_content(successful_account_creation_notice)
     end
 
     it 'provides user with link to type in a new number so they are not locked out' do
@@ -90,6 +92,17 @@ feature 'Sign Up', devise: true do
           'Please enter the code that you received. ' \
           'If you do not receive the code in 10 minutes, please request a new passcode.'
         )
+    end
+
+    it 'disables OTP lockout during account creation' do
+      Devise.max_login_attempts.times do
+        fill_in 'Secure one-time password', with: '12345678'
+        click_button 'Submit'
+      end
+
+      expect(page).to_not have_content t('upaya.titles.account_locked')
+      visit user_two_factor_authentication_path
+      expect(current_path).to eq user_two_factor_authentication_path
     end
   end
 
@@ -206,19 +219,6 @@ feature 'Sign Up', devise: true do
     sign_up_with('')
 
     expect(page).to have_content('Please fill in all required fields')
-  end
-
-  scenario 'visitor cannot sign up with email with invalid domain name' do
-    invalid_addresses = [
-      'foo@bar.com',
-      'foo@example.com'
-    ]
-    allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
-
-    invalid_addresses.each do |email|
-      sign_up_with(email)
-      expect(page).to have_content t('valid_email.validations.email.invalid')
-    end
   end
 
   scenario 'visitor cannot sign up with empty email address' do

@@ -29,15 +29,6 @@ module Features
       user
     end
 
-    def sign_up_and_2fa(email = nil, reset_session = false)
-      user = sign_up_with_and_set_password_for(email, reset_session)
-      full_in 'mobile', with: '555-555-5555'
-      click_button 'Submit'
-      fill_in 'code', with: user.otp_code
-      click_button 'Submit'
-      user
-    end
-
     def sign_in_user(user = create(:user))
       signin(user.email, user.password)
       user
@@ -64,6 +55,11 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current)
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
+    end
+
+    def successful_account_creation_notice
+      t('upaya.notices.account_created',
+        date: (Time.current + 1.year).strftime('%B %d, %Y'))
     end
   end
 end

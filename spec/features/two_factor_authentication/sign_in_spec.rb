@@ -92,48 +92,39 @@ feature 'Two Factor Authentication', devise: true do
           expect(last_email).to_not have_content('one-time password')
         end
 
-        it 'sends an OTP via SMS' do
-          expect(SmsSenderOtpJob).to have_been_enqueued
+        it 'does not allow user to access OTP setup page after entering valid OTP' do
+          fill_in 'code', with: @user.otp_code
+          click_button 'Submit'
+          visit users_otp_path
+
+          expect(current_path).to eq dashboard_index_path
+        end
+
+        it 'does not allow user to access OTP prompt page after entering valid OTP' do
+          fill_in 'code', with: @user.otp_code
+          click_button 'Submit'
+          visit user_two_factor_authentication_path
+
+          expect(current_path).to eq dashboard_index_path
+        end
+
+        it 'does not allow user to bypass entering OTP' do
+          visit edit_user_registration_path
+
+          expect(current_path).to eq user_two_factor_authentication_path
+          expect(page).to have_content t('devise.errors.messages.user_not_authenticated')
+        end
+
+        it 'displays an error message if the code field is empty', js: true do
+          fill_in 'code', with: ''
+          click_button 'Submit'
+
+          expect(page).to have_content('Please fill in all required fields')
         end
       end
+    end
 
-      # Scenario: User closes browser before confirming new number
-      #   Given I exist as a user
-      #   And I closed my browser before confirming my new number
-      #   When I sign in
-      #   Then I don't receive an OTP at my unconfirmed number
-      context 'user closes browser before confirming new number', sms: true do
-        before do
-          reset_job_queues
-          @user = create(:user, :signed_up, :with_mobile)
-          @user.update(unconfirmed_mobile: '555-555-5555')
-          reset_email
-          signin(@user.email, @user.password)
-        end
-
-        it 'deletes the unconfirmed mobile after the user signs in' do
-          expect(@user.reload.unconfirmed_mobile).to be_nil
-        end
-
-        it 'lets the user know an OTP was sent to their mobile' do
-          expect(page).
-            to have_content "A one-time passcode has been sent to #{@user.mobile}."
-        end
-
-        it 'includes localized header text' do
-          expect(page).
-            to have_content t('devise.two_factor_authentication.header_text')
-        end
-
-        it 'does not send an OTP via email' do
-          expect(last_email).to_not have_content('one-time passcode')
-        end
-
-        it 'sends an OTP via SMS to the confirmed number' do
-          expect(SmsSenderOtpJob).to have_been_enqueued.with(global_id(@user))
-        end
-      end
-
+    describe 'Using Mobile' do
       # Scenario: User with mobile 2fa can fully sign in with otp
       #   Given I exist as a user
       #   And I am not signed in and have mobile 2fa enabled
@@ -179,14 +170,6 @@ feature 'Two Factor Authentication', devise: true do
       click_link 'request a new passcode'
 
       expect(page).to have_content I18n.t('devise.two_factor_authentication.user.new_otp_sent')
-    end
-
-    scenario 'user attempts to circumnavigate OTP setup' do
-      user = create(:user, :signed_up)
-      sign_in_user(user)
-      visit edit_user_registration_path
-
-      expect(page).to have_content I18n.t('devise.errors.messages.user_not_authenticated')
     end
 
     scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do

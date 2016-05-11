@@ -23,5 +23,14 @@ describe 'devise/two_factor_authentication/show.html.slim' do
       expect(rendered).
         to have_content "A one-time passcode has been sent to #{user.mobile}"
     end
+
+    it 'prompts the user to enter an OTP' do
+      allow(view).to receive(:current_user).and_return(create(:user, :signed_up))
+
+      render
+
+      expect(rendered).
+        to have_content t('devise.two_factor_authentication.header_text')
+    end
   end
 end

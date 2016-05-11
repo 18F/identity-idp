@@ -105,9 +105,7 @@ describe Users::RegistrationsController, devise: true do
 
       expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
 
-      expect(SmsSenderOtpJob).to have_been_enqueued.with(global_id(user))
-
-      expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
+      expect(enqueued_jobs.size).to eq 1
     end
   end
 
@@ -155,7 +153,7 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  context 'user updates existing mobile number', sms: true do
+  context 'user updates existing mobile number' do
     before do
       second_user.mobile_confirm
       sign_in(second_user)
@@ -167,10 +165,14 @@ describe Users::RegistrationsController, devise: true do
       let(:test_user) { second_user }
     end
 
-    it 'updated unconfirmed_mobile and sends an OTP to the unconfirmed number' do
+    it 'updates unconfirmed_mobile' do
       expect(second_user.reload.unconfirmed_mobile).to eq '+1 (555) 555-5555'
+    end
 
-      expect(SmsSenderOtpJob).to have_been_enqueued.with(global_id(second_user))
+    it 'calls send_two_factor_authentication_code on current_user' do
+      expect(subject.current_user).to receive(:send_two_factor_authentication_code)
+
+      patch :update, id: subject.current_user, update_user_profile_form: attrs_for_new_mobile
     end
 
     it 'allows the user to abandon confirmation' do
@@ -341,7 +343,7 @@ describe Users::RegistrationsController, devise: true do
   context "user updates profile with invalid email and another user's mobile", sms: true do
     render_views
 
-    it 'displays error about invalid email' do
+    it 'displays error about invalid email and does not send any SMS', sms: true do
       sign_in(user)
       put(
         :update,
@@ -351,9 +353,8 @@ describe Users::RegistrationsController, devise: true do
 
       expect(response.body).to have_content('Please enter a valid email')
       expect(response.body).to_not have_content('has already been taken')
-      expect(SmsSenderNumberChangeJob).to_not have_been_enqueued
-      expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(user))
-      expect(SmsSenderOtpJob).to_not have_been_enqueued.with(global_id(second_user))
+      expect(enqueued_jobs).to eq []
+      expect(performed_jobs).to eq []
     end
   end
 
