@@ -41,7 +41,7 @@ Rails.application.configure do
 
   # ActionMailer Config
   config.action_mailer.default_url_options = {
-    host: 'localhost',
+    host: Figaro.env.domain_name,
     protocol: 'http'
   }
 
