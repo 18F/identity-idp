@@ -2,18 +2,14 @@ source 'https://rubygems.org'
 
 gem 'rails', '~> 4.2.6'
 
-gem 'attr_encrypted'
-gem 'autoprefixer-rails', '~> 5.2'
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise'
 gem 'devise_security_extension'
 gem 'dotiw'
 gem 'figaro'
-gem 'jbuilder', '~> 2.0'
 gem 'jquery-rails'
 gem 'jquery-ui-rails'
-gem 'kaminari-bootstrap', '~> 3.0.1'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'omniauth-saml', github: 'amoose/omniauth-saml', branch: 'feature/internal_idp'
@@ -22,8 +18,6 @@ gem 'pg'
 gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
-gem 'responders', '~> 2.0'
-gem 'rotp', '~> 3.0'
 gem 'ruby-saml', github: 'amoose/ruby-saml'
 gem 'nokogiri-xmlsec-me-harder', '~> 0.9.1', require: 'xmlsec'
 gem 'saml_idp', github: '18F/saml_idp'
@@ -41,7 +35,6 @@ gem 'whenever', require: false
 gem 'activerecord-session_store', '1.0.0.pre'
 
 group :deploy do
-  gem 'berkshelf'
   gem 'capistrano' # , '~> 3.4'
   gem 'capistrano-rails' # , '~> 1.1', require: false
   gem 'capistrano-rbenv' # , '~> 2.0', require: false
@@ -49,7 +42,6 @@ group :deploy do
 end
 
 group :development do
-  gem 'aws-sdk', '~> 2.0'
   gem 'better_errors'
   gem 'derailed'
   gem 'binding_of_caller'
