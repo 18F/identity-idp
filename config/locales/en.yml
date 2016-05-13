@@ -151,6 +151,8 @@ en:
           attributes:
             current_password:
               invalid: "Your password must match your current password."
+            email:
+              invalid: 'Please enter a valid email in the format of user@domain.com'
             password_confirmation:
               confirmation: "does not match password"
             mobile:

@@ -182,9 +182,6 @@ GEM
       responders
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
-    devise_security_extension (0.10.0)
-      devise (>= 3.0.0, < 4.0)
-      railties (>= 3.2.6, < 5.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
     dotiw (3.1.1)
@@ -517,7 +514,6 @@ DEPENDENCIES
   database_cleaner
   derailed
   devise
-  devise_security_extension
   dotiw
   email_spec
   factory_girl_rails
