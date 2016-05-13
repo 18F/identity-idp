@@ -24,37 +24,39 @@ describe TwilioService do
     end
   end
 
-  describe 'test client' do
+  describe 'performance testing mode' do
     let(:user) { build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq') }
 
-    it 'uses the test client when pt_mode is true' do
+    it 'uses NullTwilioClient when pt_mode is on' do
       expect(FeatureManagement).to receive(:pt_mode?).and_return(true)
-      expect(Twilio::REST::Client).to receive(:new).with('test_sid', 'test_token')
+      expect(NullTwilioClient).to receive(:new)
+      expect(Twilio::REST::Client).to_not receive(:new)
 
       TwilioService.new
     end
 
-    it 'uses the test client when pt_mode is true and proxy is set' do
+    it 'uses NullTwilioClient when pt_mode is true and proxy is set' do
       expect(FeatureManagement).to receive(:pt_mode?).and_return(true)
       allow(Figaro.env).to receive(:proxy_addr).and_return('123.456.789')
 
-      expect(Twilio::REST::Client).to receive(:new).with('test_sid', 'test_token')
+      expect(NullTwilioClient).to receive(:new)
+      expect(Twilio::REST::Client).to_not receive(:new)
 
       TwilioService.new
     end
 
-    it 'does not use the test client when pt_mode is false' do
+    it 'uses a real Twilio client when pt_mode is false' do
       expect(FeatureManagement).to receive(:pt_mode?).and_return(false)
       expect(Twilio::REST::Client).to receive(:new).with('sid', 'token')
 
       TwilioService.new
     end
 
-    it 'sends an OTP from the test number when pt_mode is true', sms: true do
+    it 'does not send any OTP when pt_mode is true', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
       SmsSenderOtpJob.perform_now(user)
 
-      expect(messages.first.from).to eq '+15005550006'
+      expect(messages.size).to eq 0
     end
 
     it 'sends an OTP from the real number when pt_mode is false', sms: true do
@@ -64,11 +66,11 @@ describe TwilioService do
       expect(messages.first.from).to eq '+19999999999'
     end
 
-    it 'sends number change SMS from test # when pt_mode is true', sms: true do
+    it 'does not send a number change SMS when pt_mode is true', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
       SmsSenderNumberChangeJob.perform_now(user)
 
-      expect(messages.first.from).to eq '+15005550006'
+      expect(messages.size).to eq 0
     end
 
     it 'sends number change SMS from real # when pt_mode is false', sms: true do

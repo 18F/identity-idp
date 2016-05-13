@@ -18,12 +18,6 @@ development:
   newrelic_license_key: 'xxx'
   pt_mode: 'on'
   saml_passphrase: 'secret'
-  # Configure Twilio Test Account keys for Performance Testing to avoid
-  # spamming real phone numbers.
-  # https://www.twilio.com/user/account/settings
-  # https://www.twilio.com/user/account/developer-tools/test-credentials
-  twilio_test_account_sid: 'xxx'
-  twilio_test_auth_token: 'xxx'
 
 production:
   allow_third_party_auth: 'yes'
@@ -41,8 +35,6 @@ production:
   twilio_account_sid: 'sid'
   twilio_auth_token: 'token'
   twilio_number: '8888888888'
-  twilio_test_account_sid: 'xxx'
-  twilio_test_auth_token: 'xxx'
 
 test:
   allow_third_party_auth: 'yes'
@@ -58,5 +50,3 @@ test:
   twilio_account_sid: 'sid'
   twilio_auth_token: 'token'
   twilio_number: '8888888888'
-  twilio_test_account_sid: 'test_sid'
-  twilio_test_auth_token: 'test_token'
