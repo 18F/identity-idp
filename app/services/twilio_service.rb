@@ -46,17 +46,8 @@ class TwilioService
     "+1#{account['number']}"
   end
 
-  def self.singular_account
-    Rails.logger.warn('Please set up the `twilio_accounts` entry in config/secrets.yml')
-    {
-      'sid' => Figaro.env.twilio_account_sid,
-      'auth_token' => Figaro.env.twilio_auth_token,
-      'number' => Figaro.env.twilio_number
-    }
-  end
-
   def self.accounts
-    Rails.application.secrets.twilio_accounts || [singular_account]
+    Rails.application.secrets.twilio_accounts
   end
 
   def self.random_account
