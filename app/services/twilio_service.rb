@@ -1,9 +1,6 @@
 class TwilioService
-  # https://www.twilio.com/docs/api/rest/test-credentials#test-incoming-phone-numbers-parameters-PhoneNumber
-  TWILIO_TEST_NUMBER = '+15005550006'.freeze
-
   def initialize
-    return twilio_test_client if FeatureManagement.pt_mode?
+    return null_twilio_client if FeatureManagement.pt_mode?
     return twilio_proxy_client if proxy_addr.present?
     twilio_client
   end
@@ -20,19 +17,16 @@ class TwilioService
     @account ||= self.class.random_account
   end
 
+  def null_twilio_client
+    @client ||= NullTwilioClient.new
+  end
+
   def twilio_proxy_client
     @client ||= Twilio::REST::Client.new(
       account['sid'],
       account['auth_token'],
       proxy_addr: proxy_addr,
       proxy_port: proxy_port
-    )
-  end
-
-  def twilio_test_client
-    @client ||= Twilio::REST::Client.new(
-      Figaro.env.twilio_test_account_sid,
-      Figaro.env.twilio_test_auth_token
     )
   end
 
@@ -49,7 +43,6 @@ class TwilioService
   end
 
   def from_number
-    return TWILIO_TEST_NUMBER if FeatureManagement.pt_mode?
     "+1#{account['number']}"
   end
 

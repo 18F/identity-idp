@@ -14,9 +14,7 @@ Dir.chdir APP_ROOT do
 
   puts "== Copying sample files =="
   %w(database.yml saml.key.enc secrets.yml application.yml).each do |file|
-    unless File.exist?("config/#{file}")
-      run "cp config/#{file}.example config/#{file}"
-    end
+    run "cp config/#{file}.example config/#{file}"
   end
 
   if ARGV.shift == "--docker" then
