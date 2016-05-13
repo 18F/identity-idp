@@ -262,44 +262,6 @@ Devise.setup do |config|
   # so you need to do it manually. For the users scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 
-  # ==> Security Extension
-  # Configure security extension for devise
-
-  # Should the password expire (e.g 3.months)
-  config.expire_password_after = 1.year
-
-  # Need 1 char of A-Z, a-z and 0-9
-  config.password_regex = /
-    (?=.*\d)
-    (?=.*[a-z])
-    (?=.*[A-Z])
-    (?=.*[#{Regexp.escape(Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS)}])
-  /x
-
-  # How many passwords to keep in archive
-  config.password_archiving_count = 8
-
-  # Deny old password (true, false, count)
-  config.deny_old_passwords = 8
-
-  # captcha integration for recover form
-  # config.captcha_for_recover = true
-
-  # captcha integration for sign up form
-  # config.captcha_for_sign_up = true
-
-  # captcha integration for sign in form
-  # config.captcha_for_sign_in = true
-
-  # captcha integration for unlock form
-  # config.captcha_for_unlock = true
-
-  # captcha integration for confirmation form
-  # config.captcha_for_confirmation = true
-
-  # Time period for account expiry from last_activity_at
-  # config.expire_after = 90.days
-
   # ==> Two Factor Authentication
   config.allowed_otp_drift_seconds = 600
   config.max_login_attempts = 3 # max OTP login attemps, not devise strategies (e.g. pw auth)

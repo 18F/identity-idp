@@ -9,10 +9,9 @@ class User < ActiveRecord::Base
 
   after_validation :set_default_role, if: :new_record?
 
-  devise :confirmable, :database_authenticatable, :lockable,
-         :password_expirable, :password_archivable, :recoverable, :registerable,
-         :secure_validatable, :timeoutable, :trackable, :two_factor_authenticatable,
-         :omniauthable, omniauth_providers: [:saml]
+  devise :confirmable, :database_authenticatable, :lockable, :recoverable,
+         :registerable, :timeoutable, :trackable, :two_factor_authenticatable,
+         :validatable, :omniauthable, omniauth_providers: [:saml]
 
   enum ial: [:IA1, :IA2, :IA3, :IA4]
   enum role: { user: 0, tech: 1, admin: 2 }
@@ -38,16 +37,17 @@ class User < ActiveRecord::Base
 
   validates :ial_token, uniqueness: true, allow_nil: true
 
+  validates :password,
+            format: {
+              with: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])
+                     (?=.*[#{Regexp.escape(Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS)}])/x,
+              message: :password_format
+            },
+            if: :password_required?
+
   has_and_belongs_to_many :second_factors
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
-
-  # work around bug in devise_security_extension:
-  # the README says to not use :validatable, but then the original implementation
-  # of this method checks whether it has been included
-  def self.devise_validation_enabled?
-    true
-  end
 
   def set_default_role
     self.role ||= :user
@@ -73,10 +73,10 @@ class User < ActiveRecord::Base
     UserOtpSender.new(self).send_otp
   end
 
-  # Methods for devise to allow email-only signup
+  # We need to override this Devise method to allow email-only signup.
+  # Once we merge the PR that uses Form Objects, we'll be able to remove
+  # this method and the code that uses the force_password_validation flag.
   def password_required?
-    # workaround for devise_security_extension,
-    # where :secure_validatable isn't compatible with :confirmable
     force_password_validation || !password.nil? || !password_confirmation.nil?
   end
 

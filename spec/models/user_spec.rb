@@ -427,15 +427,6 @@ describe User do
   end
 
   context '#password' do
-    it 'errors if password is same as current password' do
-      user = create(:user)
-      user.password = MAX_GOOD_PASSWORD
-      user.save
-
-      expect(user.errors.first).
-        to eq([:password, I18n.t('errors.messages.equal_to_current_password')])
-    end
-
     it 'errors if password is blank' do
       user = create(:user)
       user.password = ''
@@ -495,72 +486,6 @@ describe User do
       user.confirmation_sent_at = Time.current - User.confirm_within - 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_truthy
-    end
-  end
-
-  context 'exclude old passwords' do
-    # A note about password re-use (adelevie):
-    # config/initializers/devise.rb currently has deny_old_passwords set to 8
-    # devise_security_extensions, which implements all this, counts the 8 in
-    # the archive plus the most recent password. Effectively, this means that
-    # the last nine passwords cannot be used.
-
-    let(:old_password)  { 'VeryUnique567&@' }
-    let(:new_password)  { 't3hNewestLeaf$' }
-    let(:eight_passwords) do
-      Array.new(8) do |i|
-        "#{old_password}-#{i}"
-      end
-    end
-    let(:nine_passwords) do
-      Array.new(9) do |i|
-        "#{old_password}-#{i}"
-      end
-    end
-
-    let(:user) { create(:user, password: old_password, password_confirmation: old_password) }
-
-    it 'produces errors if an old password is reused' do
-      user.password = new_password
-      user.password_confirmation = new_password
-      user.save
-
-      user.password = old_password
-      user.password_confirmation = old_password
-      user.save
-
-      expect(user.errors.any?).to be_truthy
-      expect(user).to be_invalid
-    end
-
-    it 'produces an error if a password was used within 8 changes ago' do
-      eight_passwords.each do |password|
-        user.password = password
-        user.password_confirmation = password
-        user.save
-      end
-
-      user.password = old_password
-      user.password_confirmation = old_password
-      user.save
-
-      expect(user.errors.any?).to be_truthy
-      expect(user).to be_invalid
-    end
-
-    it 'does not produce an error if a password is used more than 9 changes ago' do
-      nine_passwords.each do |password|
-        user.password = password
-        user.password_confirmation = password
-        user.save
-      end
-
-      user.password = old_password
-      user.password_confirmation = old_password
-      user.save
-
-      expect(user.errors.any?).to be_falsey
-      expect(user).to be_valid
     end
   end
 

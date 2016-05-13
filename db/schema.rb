@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160503183440) do
+ActiveRecord::Schema.define(version: 20160513144944) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,16 +52,6 @@ ActiveRecord::Schema.define(version: 20160503183440) do
   add_index "identities", ["service_provider", "authn_context"], name: "index_identities_on_service_provider_and_authn_context", using: :btree
   add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
-
-  create_table "old_passwords", force: :cascade do |t|
-    t.string   "encrypted_password",       limit: 255, null: false
-    t.string   "password_salt",            limit: 255
-    t.string   "password_archivable_type", limit: 255, null: false
-    t.integer  "password_archivable_id",               null: false
-    t.datetime "created_at"
-  end
-
-  add_index "old_passwords", ["password_archivable_type", "password_archivable_id"], name: "index_password_archivable", using: :btree
 
   create_table "second_factors", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -110,7 +100,6 @@ ActiveRecord::Schema.define(version: 20160503183440) do
     t.integer  "second_factor_attempts_count",              default: 0
     t.string   "mobile",                        limit: 255
     t.string   "uuid",                          limit: 255,                 null: false
-    t.datetime "password_changed_at"
     t.datetime "second_factor_confirmed_at"
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
@@ -133,7 +122,6 @@ ActiveRecord::Schema.define(version: 20160503183440) do
   add_index "users", ["ial_token"], name: "index_users_on_ial_token", unique: true, using: :btree
   add_index "users", ["mobile"], name: "index_users_on_mobile", using: :btree
   add_index "users", ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true, using: :btree
-  add_index "users", ["password_changed_at"], name: "index_users_on_password_changed_at", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unconfirmed_email"], name: "index_users_on_unconfirmed_email", using: :btree
   add_index "users", ["unconfirmed_mobile"], name: "index_users_on_unconfirmed_mobile", using: :btree
