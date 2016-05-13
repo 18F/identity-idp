@@ -15,21 +15,17 @@ module Devise
     end
 
     def scope_url
-      opts  = {}
+      opts = {}
+
+      opts[:script_name] = nil
 
       route = route(scope, session[:route_to_registration])
 
       opts[:format] = request_format unless skip_format?
 
-      config = Rails.application.config
-
-      if config.respond_to?(:relative_url_root) && config.relative_url_root.present?
-        opts[:script_name] = config.relative_url_root
-      end
-
       context = send(Devise.available_router_name)
 
-      context.send(route, opts) if context.respond_to?(route)
+      context.send(route, opts)
     end
   end
 end
