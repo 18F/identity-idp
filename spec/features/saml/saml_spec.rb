@@ -18,6 +18,46 @@ feature 'saml api', devise: true, sms: true do
       end
     end
 
+    context 'user has not set up 2FA yet and signs in' do
+      let(:user) { create(:user) }
+
+      before { visit authnrequest_get }
+
+      it 'prompts the user to set up 2FA' do
+        sign_in_user(user)
+
+        expect(current_path).to eq users_otp_path
+      end
+
+      it 'prompts the user to enter OTP after setting up 2FA' do
+        sign_in_user(user)
+
+        fill_in 'Mobile', with: '202-555-1212'
+        click_button 'Submit'
+
+        expect(current_path).to eq user_two_factor_authentication_path
+      end
+    end
+
+    context 'first time registration' do
+      before { visit authnrequest_get }
+
+      it 'prompts user to set up 2FA after confirming email and setting password' do
+        sign_up_with_and_set_password_for('user@example.com')
+
+        expect(current_path).to eq users_otp_path
+      end
+
+      it 'prompts the user to enter OTP after setting up 2FA' do
+        sign_up_with_and_set_password_for('user@example.com')
+
+        fill_in 'Mobile', with: '202-555-1212'
+        click_button 'Submit'
+
+        expect(current_path).to eq user_two_factor_authentication_path
+      end
+    end
+
     context 'user can get a well-formed signed Assertion' do
       before do
         visit authnrequest_get
