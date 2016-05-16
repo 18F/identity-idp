@@ -26,6 +26,7 @@ development:
       metadata_url: 'http://localhost:3000/users/auth/saml/metadata'
       acs_url: 'http://localhost:3000/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'http://localhost:3000/users/auth/saml/logout'
+      sp_initiated_login_url: 'http://localhost:3000/users/auth/saml'
       cert: 'identity_dashboard_cert'
 
 production:
