@@ -28,7 +28,7 @@ Dir.chdir APP_ROOT do
   run "npm install"
 
   puts "\n== Preparing database =="
-  run "bin/rake db:setup"
+  run "bin/rake db:setup RAILS_ENV=development"
   run 'bin/rake db:setup RAILS_ENV=test'
 
   puts "\n== Removing old logs and tempfiles =="
