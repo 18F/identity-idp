@@ -17,5 +17,5 @@ p
   .mb2
     = label_tag 'code', raw('<abbr title="required">*</abbr> ') + t('upaya.forms.two_factor.code')
     = hidden_field_tag('method', 'sms')
-    = number_field_tag :code, '', autofocus: true, class: 'block col-12 field mfa', required: true
+    = number_field_tag :code, '', value: @code_value, autofocus: true, class: 'block col-12 field mfa', required: true
   = submit_tag 'Submit', class: 'btn btn-primary'
