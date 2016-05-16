@@ -30,6 +30,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   private
 
   def authenticate_scope!
+    send(:"authenticate_#{resource_name}!", force: true)
     self.resource = send(:"current_#{resource_name}")
   end
 

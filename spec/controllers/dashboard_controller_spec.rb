@@ -57,8 +57,6 @@ describe DashboardController do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_filters(
         :before,
-        :authenticate_user!,
-        :confirm_two_factor_setup,
         :confirm_two_factor_authenticated,
         :confirm_idv_status
       )

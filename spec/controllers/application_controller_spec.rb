@@ -45,16 +45,24 @@ describe ApplicationController do
     end
   end
 
-  describe '#confirm_two_factor_setup' do
+  describe '#confirm_two_factor_authenticated' do
     controller do
-      before_filter :confirm_two_factor_setup
+      before_filter :confirm_two_factor_authenticated
 
       def index
         render text: 'Hello'
       end
     end
 
-    context 'when the user may bypass 2FA setup' do
+    context 'when the user is not signed in' do
+      it 'redirects to sign in page' do
+        get :index
+
+        expect(response).to redirect_to root_url
+      end
+    end
+
+    context 'when the user may bypass 2FA' do
       it 'returns nil' do
         sign_in_as_user
 
@@ -62,7 +70,7 @@ describe ApplicationController do
 
         allow(UserDecorator).to receive(:new).with(subject.current_user).
           and_return(user_decorator)
-        allow(user_decorator).to receive(:may_bypass_two_factor_setup?).
+        allow(user_decorator).to receive(:may_bypass_2fa?).
           and_return(true)
 
         get :index
@@ -71,21 +79,57 @@ describe ApplicationController do
       end
     end
 
-    context 'when the user may not bypass 2FA setup' do
-      it 'redirects to users_otp_url with a flash message' do
+    context 'when the user may not bypass 2FA and is already two-factor authenticated' do
+      it 'returns nil' do
         sign_in_as_user
 
         user_decorator = instance_double(UserDecorator)
 
         allow(UserDecorator).to receive(:new).with(subject.current_user).
           and_return(user_decorator)
-        allow(user_decorator).to receive(:may_bypass_two_factor_setup?).
+        allow(user_decorator).to receive(:may_bypass_2fa?).
+          and_return(false)
+
+        get :index
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+
+    context 'when the user may not bypass 2FA and is not 2FA-enabled' do
+      it 'redirects to users_otp_url with a flash message' do
+        user = create(:user)
+        sign_in user
+
+        user_decorator = instance_double(UserDecorator)
+
+        allow(UserDecorator).to receive(:new).with(subject.current_user).
+          and_return(user_decorator)
+        allow(user_decorator).to receive(:may_bypass_2fa?).
           and_return(false)
 
         get :index
 
         expect(response).to redirect_to users_otp_url
-        expect(flash[:notice]).to eq t('devise.two_factor_authentication.otp_setup')
+        expect(flash[:notice]).
+          to eq t('devise.two_factor_authentication.otp_setup')
+      end
+    end
+
+    context 'when the user may not bypass 2FA and is 2FA-enabled' do
+      it 'prompts user to enter their OTP' do
+        sign_in_before_2fa
+
+        user_decorator = instance_double(UserDecorator)
+
+        allow(UserDecorator).to receive(:new).with(subject.current_user).
+          and_return(user_decorator)
+        allow(user_decorator).to receive(:may_bypass_2fa?).
+          and_return(false)
+
+        get :index
+
+        expect(response).to redirect_to user_two_factor_authentication_url
       end
     end
   end

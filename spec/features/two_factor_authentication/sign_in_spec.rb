@@ -266,13 +266,12 @@ feature 'Two Factor Authentication', devise: true do
       expect(page).to have_content I18n.t('devise.two_factor_authentication.user.new_otp_sent')
     end
 
-    scenario 'user attempts to circumnavigate OTP setup' do
-      second_factor = SecondFactor.find_by_name 'Email'
-      user = create(:user, :signed_up, second_factor_ids: second_factor.id)
+    scenario 'user attempts to bypass 2FA' do
+      user = create(:user, :signed_up)
       sign_in_user(user)
       visit edit_user_registration_path
 
-      expect(page).to have_content I18n.t('devise.errors.messages.user_not_authenticated')
+      expect(current_path).to eq user_two_factor_authentication_path
     end
 
     scenario 'user disables 2FA method' do

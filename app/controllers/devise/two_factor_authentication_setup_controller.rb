@@ -26,7 +26,6 @@ module Devise
       if user_fully_authenticated?
         redirect_to(request.referrer || root_url)
       elsif resource.two_factor_enabled?
-        flash[:error] = t('devise.errors.messages.user_not_authenticated')
         redirect_to user_two_factor_authentication_path
       end
     end
