@@ -96,7 +96,7 @@ feature 'Sign Up', devise: true do
 
       expect(current_path).to eq dashboard_index_path
       expect(User.find_by_email('test@example.com').second_factor_confirmed_at).to be_present
-      expect(page).to have_content(successful_account_creation_notice)
+      expect(page).to have_content(t('upaya.notices.account_created'))
     end
 
     it 'does not include a link to enter a number again' do

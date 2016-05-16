@@ -50,9 +50,7 @@ en:
       app_setting_created: AppSetting was successfully created.
       app_setting_updated: AppSetting was successfully updated.
       account_created: >
-        You have successfully created your account. Upaya password policy
-        requires you to change your password at least once every 365 days.
-        Your current password will expire on %{date}.
+        You have successfully created your account.
       password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
       user_email_changed_by_admin: >
         The customer needs to confirm their email (%{email}) before it can be
