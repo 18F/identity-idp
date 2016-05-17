@@ -25,7 +25,7 @@ development:
       metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
-      cert: 'fake_cert'
+      cert: 'demo_sp'
 
     'https://dashboard.login.gov':
       metadata_url: 'http://localhost:3001/users/auth/saml/metadata'
@@ -47,12 +47,12 @@ production:
       metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
-      cert: 'fake_cert'
+      cert: 'demo_sp'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev':
       metadata_url: 'https://identity-rp-dev.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-rp-dev.apps.cloud.gov/consume'
       sp_initiated_login_url: 'https://identity-rp-dev.apps.cloud.gov/test/saml'
-      cert: 'fake_cert'
+      cert: 'demo_sp'
 
 superb.legit.domain.gov:
   valid_hosts:
