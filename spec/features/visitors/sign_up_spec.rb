@@ -53,63 +53,37 @@ feature 'Sign Up', devise: true do
     click_button 'Submit'
   end
 
-  # Scenario: Visitor is given option to receive OTP via both email & mobile
-  #   Given I am not signed in
-  #   When I sign up with a valid email address and password and click my confirmation link
-  #   Then I am prompted to choose a method for receiving one-time passwords (OTPs)
-  #   And I see that both mobile and email are selected by default
-  scenario 'visitor sees both email and mobile checked by default' do
-    sign_up_with_and_set_password_for('test@example.com')
-
-    expect(find('#user_second_factor_ids_email')).to be_checked
-    expect(find('#user_second_factor_ids_mobile')).to be_checked
-  end
-
   scenario 'form should have autocomplete turned off' do
     sign_up_with_and_set_password_for('test@example.com')
     expect(find('#edit_user')[:autocomplete]).to eq 'off'
   end
 
-  # Scenario: Visitor can sign up, confirm email, and setup 2FA
-  #   Given I am not signed in
-  #   When I sign up, confirm email, and setup 2FA
-  #   Then I see the dashboard
-  context 'visitor can sign up and confirm a valid email for OTP', email: true do
+  context 'visitor can sign up and confirm a valid mobile for OTP' do
     before do
       sign_up_with_and_set_password_for('test@example.com')
-      check 'Email'
-      uncheck 'Mobile'
+      fill_in 'Mobile', with: '555-555-5555'
       click_button 'Submit'
+      @user = User.find_by_email('test@example.com')
     end
 
-    it 'sends an email with an OTP' do
-      open_email('test@example.com')
-
-      expect(last_email.body).to have_content 'Please enter this secure one-time password:'
-    end
-
-    it 'allows the user to sign in with the emailed OTP' do
-      otp = last_email.body.match(/secure one-time password: (\w*)/)
-
-      fill_in 'Secure one-time password', with: otp[1]
+    it 'updates mobile_confirmed_at after confirmation' do
+      fill_in 'Secure one-time password', with: @user.otp_code
       click_button 'Submit'
 
-      expect(current_path).to eq dashboard_index_path
-      expect(User.find_by_email('test@example.com').second_factor_confirmed_at).to be_present
+      expect(@user.reload.mobile_confirmed_at).to be_present
       expect(page).to have_content(t('upaya.notices.account_created'))
     end
 
-    it 'does not include a link to enter a number again' do
-      expect(page).to_not have_link 'entering it again'
+    it 'does not enable 2FA until confirmation is received' do
+      expect(!@user.two_factor_enabled?)
+      fill_in 'Secure one-time password', with: '12345678'
+      click_button 'Submit'
+      expect(@user.reload.two_factor_enabled?)
     end
 
-    it 'does not update mobile_confirmed_at' do
-      otp = last_email.body.match(/secure one-time password: (\w*)/)
-
-      fill_in 'Secure one-time password', with: otp[1]
-      click_button 'Submit'
-
-      expect(User.find_by_email('test@example.com').mobile_confirmed_at).to be_nil
+    it 'provides user with link to type in a phone number so they are not locked out' do
+      click_link 'entering it again'
+      expect(current_path).to eq users_otp_path
     end
 
     it 'disables OTP lockout during account creation' do
@@ -122,89 +96,22 @@ feature 'Sign Up', devise: true do
       visit user_two_factor_authentication_path
       expect(current_path).to eq user_two_factor_authentication_path
     end
-  end
 
-  context 'visitor can sign up and confirm a valid mobile for OTP' do
-    before do
-      sign_up_with_and_set_password_for('test@example.com')
-      check 'Mobile'
-      fill_in 'Mobile', with: '555-555-5555'
-      click_button 'Submit'
-    end
-
-    it 'updates mobile_confirmed_at and second_factor_confirmed_at' do
-      user = User.find_by_email('test@example.com')
-
-      fill_in 'Secure one-time password', with: user.reload.otp_code
-      click_button 'Submit'
-
-      expect(user.reload.mobile_confirmed_at).to be_present
-      expect(user.reload.second_factor_confirmed_at).to be_present
-    end
-
-    it 'provides user with link to type in a new number so they are not locked out' do
-      click_link 'entering it again'
-      expect(current_path).to eq users_otp_path
-    end
-
-    it 'allows user to enter new number if they Sign Out before confirming' do
-      click_link(t('upaya.headings.log_out'), match: :first)
-      user = User.find_by_email('test@example.com')
-      signin(user.email, VALID_PASSWORD)
-      expect(current_path).to eq users_otp_path
-    end
-
-    it 'disables mobile 2FA after Sign Out if user has no mobile' do
-      user = User.find_by_email('test@example.com')
-      click_link(t('upaya.headings.log_out'), match: :first)
-      expect(user.reload.second_factors.pluck(:name)).to_not include('Mobile')
-    end
-  end
-
-  context 'visitor can confirm mobile 2FA device when email is also selected', email: true do
-    before do
-      sign_up_with_and_set_password_for('test@example.com')
-      check 'Mobile'
-      fill_in 'Mobile', with: '555-555-5555'
-      check 'Email'
-      click_button 'Submit'
-    end
-
-    it 'does not send the OTP via email so the mobile OTP option can be confirmed' do
-      expect(last_email.subject).to eq t('devise.mailer.confirmation_instructions.subject')
-      expect(last_email.body).
-        to match('To finish creating your Upaya Account, you must confirm your email address')
-    end
-
-    it 'informs the user that the OTP code is only sent to the mobile' do
-      user = User.find_by_email('test@example.com')
-
+    it 'informs the user that the OTP code is sent to the mobile' do
       expect(page).
         to have_content(
-          "A one-time passcode has been sent to #{user.unconfirmed_mobile}. " \
+          "A one-time passcode has been sent to #{@user.unconfirmed_mobile}. " \
           'Please enter the code that you received. ' \
           'If you do not receive the code in 10 minutes, please request a new passcode.'
         )
-    end
-
-    it 'provides user with link to type in a new number so they are not locked out' do
-      click_link 'entering it again'
-      expect(current_path).to eq users_otp_path
     end
 
     # JJG - I think we should go as far as making sure the user enters
     # a new number and that the OTP is sent to the new number.
     it 'allows user to enter new number if they Sign Out before confirming' do
       click_link(t('upaya.headings.log_out'), match: :first)
-      user = User.find_by_email('test@example.com')
-      signin(user.email, VALID_PASSWORD)
+      signin(@user.reload.email, VALID_PASSWORD)
       expect(current_path).to eq users_otp_path
-    end
-
-    it 'disables mobile 2FA after Sign Out if user has no mobile' do
-      user = User.find_by_email('test@example.com')
-      click_link(t('upaya.headings.log_out'), match: :first)
-      expect(user.reload.second_factors.pluck(:name)).to_not include('Mobile')
     end
   end
 

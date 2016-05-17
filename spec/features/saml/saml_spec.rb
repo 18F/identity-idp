@@ -1,8 +1,10 @@
+require 'rails_helper'
+
 include SamlAuthHelper
 include SamlResponseHelper
 
 feature 'saml api', devise: true, sms: true do
-  let(:user) { create(:user, :signed_up, :with_mobile) }
+  let(:user) { create(:user, :signed_up) }
 
   context 'Unencrypted SAML Assertions' do
     context 'before fully signing in' do
@@ -134,7 +136,7 @@ feature 'saml api', devise: true, sms: true do
       end
 
       it 'retains the formatting of the mobile number' do
-        expect(xmldoc.mobile_number.children.children.to_s).to eq('+1 (500) 555-0006')
+        expect(xmldoc.mobile_number.children.children.to_s).to eq(user.mobile)
       end
     end
   end

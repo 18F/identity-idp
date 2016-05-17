@@ -6,8 +6,4 @@
   h4 Password
   = f.input :password, required: false
   = f.input :password_confirmation, required: false
-h4 One-time Password Delivery Options
-div Contact me by:
 .py2
-  = f.error :second_factors
-  = second_factor_checkboxes_for(f)
