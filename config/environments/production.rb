@@ -79,7 +79,7 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   # Keys must be symbolized per ActionMailer documentation
-  config.action_mailer.smtp_settings = Rails.application.secrets.smtp_settings.symbolize_keys
+  config.action_mailer.smtp_settings = JSON.parse(Figaro.env.smtp_settings).symbolize_keys
 
   # ActionMailer Config
   config.action_mailer.default_url_options = {

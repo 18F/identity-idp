@@ -11,7 +11,6 @@ describe SmsSenderOtpJob, sms: true do
         expect(messages.size).to eq(1)
         msg = messages.first
         expect(msg.number).to eq(user.mobile)
-        expect(msg.from).to eq('+19999999999')
         expect(msg.body).to include('secure one-time password')
         expect(msg.body).to include(user.otp_code)
       end
@@ -30,7 +29,6 @@ describe SmsSenderOtpJob, sms: true do
         expect(messages.size).to eq(1)
         msg = messages.first
         expect(msg.number).to eq('7035551212')
-        expect(msg.from).to eq('+19999999999')
         expect(msg.body).to include('secure one-time password')
         expect(msg.body).to include(user.otp_code)
       end
@@ -48,7 +46,6 @@ describe SmsSenderOtpJob, sms: true do
         expect(messages.size).to eq(1)
         msg = messages.first
         expect(msg.number).to eq('7035551212')
-        expect(msg.from).to eq('+19999999999')
         expect(msg.body).to include('secure one-time password')
         expect(msg.body).to include(user.otp_code)
       end

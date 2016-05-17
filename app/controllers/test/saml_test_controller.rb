@@ -12,7 +12,7 @@ module Test
       request = OneLogin::RubySaml::Authrequest.new
       redirect_to(request.create(test_saml_settings,
                                  {},
-                                 key: Rails.application.secrets.saml_client_private_key,
+                                 key: saml_test_key,
                                  algorithm: :sha256))
     end
 
@@ -21,7 +21,7 @@ module Test
       # Create LogoutRequest.
       signature_opts = {
         cert: File.read("#{Rails.root}/certs/saml_client_cert.crt"),
-        key: Rails.application.secrets.saml_client_private_key,
+        key: saml_test_key,
         signature_alg: 'rsa-sha256',
         digest_alg: 'sha256'
       }
@@ -60,7 +60,7 @@ module Test
         is_valid = response.is_valid?
       elsif doc.at_xpath('/samlp:LogoutResponse', samlp: Saml::XML::Namespaces::PROTOCOL)
         begin
-          is_valid = doc.valid_signature?(Rails.application.secrets.saml_cert)
+          is_valid = doc.valid_signature?(saml_cert)
         rescue
           is_valid = false
         end
@@ -78,7 +78,7 @@ module Test
         logout_request = OneLogin::RubySaml::SloLogoutrequest.new(params[:SAMLRequest])
 
         doc = Saml::XML::Document.parse(logout_request.document.to_s)
-        is_valid = doc.valid_signature?(Rails.application.secrets.saml_cert)
+        is_valid = doc.valid_signature?(saml_cert)
 
         if is_valid
           logger.info "IdP initiated Logout for #{logout_request.name_id}"

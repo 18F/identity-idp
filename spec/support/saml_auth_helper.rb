@@ -8,7 +8,7 @@ module SamlAuthHelper
     # SP settings
     settings.assertion_consumer_service_url = 'http://localhost:3000/test/saml/decode_assertion'
     settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
-    settings.certificate = Rails.application.secrets.saml_cert
+    settings.certificate = saml_cert
     settings.private_key = private_key
     settings.authn_context = Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
 
@@ -30,15 +30,19 @@ module SamlAuthHelper
   end
 
   def private_key
-    OpenSSL::PKey::RSA.new(
-      File.read(Rails.root + 'config/saml.key.enc'),
-      Rails.application.secrets.saml_passphrase
+    @private_key ||= OpenSSL::PKey::RSA.new(
+      File.read(Rails.root + 'keys/saml.key.enc'),
+      Figaro.env.saml_passphrase
     ).to_pem
   end
 
   def fingerprint
     'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:' \
     'A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
+  end
+
+  def saml_cert
+    @saml_cert ||= File.read("#{Rails.root}/certs/saml_cert.crt")
   end
 
   # generates a SAML response and returns a parsed Nokogiri XML document
@@ -150,8 +154,8 @@ module SamlAuthHelper
     authn_request.split('SAMLRequest=').last
   end
 
-  def key
-    @key ||= Rails.application.secrets.saml_client_private_key
+  def saml_test_key
+    @saml_test_key ||= File.read("#{Rails.root}/keys/saml_test.key.enc")
   end
 
   def create_new_account(options = { reset_session: false })
@@ -170,7 +174,7 @@ module SamlAuthHelper
     # GET redirect binding Authn Request
     get(:auth, SAMLRequest: URI.decode(saml_request))
     # decrypt xml using XMLSecMeHarder (via Nokogiri)
-    decrypted_doc = Nokogiri::XML(saml_response).decrypt!(key: key).to_s
+    decrypted_doc = Nokogiri::XML(saml_response).decrypt!(key: saml_test_key).to_s
     # parse decrypted XML to clean blanks
     Nokogiri::XML(decrypted_doc, &:noblanks)
   end
