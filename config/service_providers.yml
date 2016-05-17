@@ -21,6 +21,11 @@ development:
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
       cert: 'sample_cert'
       fingerprint: 'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
+      metadata_url: 'http://localhost:4567/saml/metadata'
+      acs_url: 'http://localhost:4567/consume'
+      sp_initiated_login_url: 'http://localhost:4567/test/saml'
+      cert: 'fake_cert'
 
     'https://dashboard.login.gov':
       metadata_url: 'http://localhost:3001/users/auth/saml/metadata'
@@ -38,6 +43,16 @@ production:
       sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
       cert: 'saml_client_cert'
       block_encryption: 'aes256-cbc'
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
+      metadata_url: 'http://localhost:4567/saml/metadata'
+      acs_url: 'http://localhost:4567/consume'
+      sp_initiated_login_url: 'http://localhost:4567/test/saml'
+      cert: 'fake_cert'
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev':
+      metadata_url: 'https://identity-rp-dev.apps.cloud.gov/saml/metadata'
+      acs_url: 'https://identity-rp-dev.apps.cloud.gov/consume'
+      sp_initiated_login_url: 'https://identity-rp-dev.apps.cloud.gov/test/saml'
+      cert: 'fake_cert'
 
 superb.legit.domain.gov:
   valid_hosts:
