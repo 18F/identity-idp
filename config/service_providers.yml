@@ -22,6 +22,13 @@ development:
       cert: 'sample_cert'
       fingerprint: 'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
 
+    'https://dashboard.login.gov':
+      metadata_url: 'http://localhost:3001/users/auth/saml/metadata'
+      acs_url: 'http://localhost:3001/users/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
+      sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
+      cert: 'identity_dashboard_cert'
+
 production:
   valid_hosts:
     'https://upaya-dev.18f.gov':
