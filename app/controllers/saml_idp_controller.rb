@@ -13,8 +13,6 @@ class SamlIdpController < ApplicationController
   before_action :validate_saml_request, only: :auth
   before_action :validate_saml_logout_param, only: :logout
   before_action :store_sp_data, only: :auth
-  before_action :authenticate_user!, except: [:metadata, :logout]
-  before_action :confirm_two_factor_setup, only: :auth
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
 
   def auth

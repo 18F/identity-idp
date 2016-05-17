@@ -1,6 +1,5 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
-    before_action :confirm_two_factor_setup, only: [:edit, :update]
     before_action :confirm_two_factor_authenticated, only: [:edit, :update]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 

@@ -57,18 +57,24 @@ class ApplicationController < ActionController::Base
     user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
   end
 
-  def confirm_two_factor_setup
-    user_decorator = UserDecorator.new(current_user)
-    return if user_decorator.may_bypass_two_factor_setup?(session)
+  def confirm_two_factor_authenticated
+    authenticate_user!
 
+    user_decorator = UserDecorator.new(current_user)
+
+    return if user_decorator.may_bypass_2fa?(session) || user_fully_authenticated?
+
+    return prompt_to_set_up_2fa unless current_user.two_factor_enabled?
+
+    prompt_to_enter_otp
+  end
+
+  def prompt_to_set_up_2fa
     flash[:notice] = t('devise.two_factor_authentication.otp_setup')
     redirect_to users_otp_url
   end
 
-  def confirm_two_factor_authenticated
-    return if is_fully_authenticated?
-
-    flash[:error] = t('devise.errors.messages.user_not_authenticated')
+  def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
   end
 end

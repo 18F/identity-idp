@@ -80,41 +80,22 @@ describe UserDecorator do
     end
   end
 
-  describe '#may_bypass_two_factor_setup?' do
-    it 'returns true when the user is omniauthed and two_factor_enabled' do
+  describe '#may_bypass_2fa?' do
+    it 'returns true when the user is omniauthed' do
       user = instance_double(User)
       allow(user).to receive(:two_factor_enabled?).and_return(true)
 
       user_decorator = UserDecorator.new(user)
       session = { omniauthed: true }
 
-      expect(user_decorator.may_bypass_two_factor_setup?(session)).to eq true
+      expect(user_decorator.may_bypass_2fa?(session)).to eq true
     end
 
-    it 'returns true when the user is omniauthed and not two_factor_enabled' do
+    it 'returns false when the user is not omniauthed' do
       user = instance_double(User)
-      allow(user).to receive(:two_factor_enabled?).and_return(false)
-
-      user_decorator = UserDecorator.new(user)
-      session = { omniauthed: true }
-
-      expect(user_decorator.may_bypass_two_factor_setup?(session)).to eq true
-    end
-
-    it 'returns false when the user is neither omniauthed nor two_factor_enabled' do
-      user = instance_double(User)
-      allow(user).to receive(:two_factor_enabled?).and_return(false)
       user_decorator = UserDecorator.new(user)
 
-      expect(user_decorator.may_bypass_two_factor_setup?).to eq false
-    end
-
-    it 'returns true when the user is not omniauthed but is two_factor_enabled' do
-      user = instance_double(User)
-      allow(user).to receive(:two_factor_enabled?).and_return(true)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.may_bypass_two_factor_setup?).to eq true
+      expect(user_decorator.may_bypass_2fa?).to eq false
     end
   end
 end

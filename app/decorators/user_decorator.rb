@@ -33,8 +33,8 @@ UserDecorator = Struct.new(:user) do
     user.unconfirmed_mobile.present? && user.mobile.present?
   end
 
-  def may_bypass_two_factor_setup?(session = {})
-    omniauthed?(session) || user.two_factor_enabled?
+  def may_bypass_2fa?(session = {})
+    omniauthed?(session)
   end
 
   private
