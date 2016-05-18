@@ -146,6 +146,7 @@ module SamlIdp
       organization_url
       attribute_service_location
       single_service_post_location
+      single_logout_service_post_location
       technical_contact
     ].each do |delegatable|
       define_method(delegatable) do
