@@ -33,8 +33,6 @@ class User < ActiveRecord::Base
                             if: :needs_mobile_validation?,
                             message: :improbable_phone
 
-  validate :require_at_least_one_second_factor
-
   validates :ial_token, uniqueness: true, allow_nil: true
 
   validates :password,
@@ -45,7 +43,6 @@ class User < ActiveRecord::Base
             },
             if: :password_required?
 
-  has_and_belongs_to_many :second_factors
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
 
@@ -62,11 +59,7 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_enabled?
-    second_factors.pluck(:name).present? && !second_factor_confirmed_at.nil?
-  end
-
-  def mobile_two_factor_enabled?
-    second_factors.pluck(:name).include?('Mobile')
+    mobile_confirmed_at.present?
   end
 
   def send_two_factor_authentication_code
@@ -105,14 +98,6 @@ class User < ActiveRecord::Base
   def lock_access!(opts = {})
     super
     send_devise_notification(:unlock_instructions, nil, subject: 'Upaya Account Locked')
-  end
-
-  def second_factor_ids_without_mobile_id
-    second_factor_ids.delete_if { |id| id == SecondFactor.mobile_id }
-  end
-
-  def remove_second_factor_mobile_id
-    update(second_factor_ids: second_factor_ids_without_mobile_id)
   end
 
   def identity_verified?
@@ -170,29 +155,20 @@ class User < ActiveRecord::Base
     devise_mailer.send(notification, self, *args).deliver_later
   end
 
+  def require_mobile_validation
+    @force_mobile_validation = true
+  end
+
   private
 
   def format_phone
     self.mobile = mobile.phony_formatted(
       format: :international, normalize: :US, spaces: ' ') if mobile
+    self.unconfirmed_mobile = unconfirmed_mobile.phony_formatted(
+      format: :international, normalize: :US, spaces: ' ') if unconfirmed_mobile
   end
-
-  # rubocop:disable Style/ZeroLengthPredicate
-  # We need to disable this cop here because using .empty? results in an N+1
-  # query according to Bullet.
-  def require_at_least_one_second_factor
-    # This validation is for user updates after they have confirmed 2FA.
-    # The validation during 2FA setup is handled by the
-    # otp_selection_validator controller concern.
-    return if !confirmed? || second_factor_confirmed_at.blank?
-    return if second_factors.size > 0
-    message = I18n.t('activerecord.errors.models.user.attributes.second_factors.blank')
-    errors.add(:second_factors, message)
-  end
-  # rubocop:enable Style/ZeroLengthPredicate
 
   def needs_mobile_validation?
-    return true if mobile_two_factor_enabled?
-    mobile.present? && two_factor_enabled?
+    mobile.present? || mobile_confirmed_at.present? || @force_mobile_validation
   end
 end

@@ -83,7 +83,7 @@ en:
       registrations:
         edit: Edit your Upaya Account
         new: Sign up for a Upaya Account
-      select_two_factor: One-time Password Preference
+      two_factor_setup: Two-factor Authentication Setup
       sign_in: Sign in to your Upaya Account
       tech_support:
         index: Tech Support
@@ -155,8 +155,6 @@ en:
               confirmation: "does not match password"
             mobile:
               improbable_phone: "Mobile number is invalid. Please make sure you enter a 10-digit phone number."
-            second_factors:
-              blank: 'Please choose at least one Two-Factor Authentication method'
   valid_email:
     validations:
         email:

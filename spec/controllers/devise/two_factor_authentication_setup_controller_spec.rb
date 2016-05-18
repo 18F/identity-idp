@@ -21,7 +21,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         patch(
           :set,
-          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+          user: { mobile: user_with_mobile.mobile }
         )
 
         expect(response).to redirect_to(user_two_factor_authentication_path)
@@ -49,7 +49,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         patch(
           :set,
-          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+          user: { mobile: user_with_mobile.mobile }
         )
       end
 
@@ -63,7 +63,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         patch(
           :set,
-          user: { mobile: user_with_mobile.mobile, second_factor_ids: [SecondFactor.mobile_id] }
+          user: { mobile: user_with_mobile.mobile }
         )
       end
     end
