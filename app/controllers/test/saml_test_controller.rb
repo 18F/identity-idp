@@ -10,10 +10,7 @@ module Test
 
     def start
       request = OneLogin::RubySaml::Authrequest.new
-      redirect_to(request.create(test_saml_settings,
-                                 {},
-                                 key: saml_test_key,
-                                 algorithm: :sha256))
+      redirect_to(request.create(test_saml_settings, {}))
     end
 
     # rubocop:disable AbcSize, MethodLength

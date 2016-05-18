@@ -17,14 +17,6 @@ GIT
       omniauth (~> 1.2)
 
 GIT
-  remote: git://github.com/amoose/ruby-saml.git
-  revision: f2bfac4cbbffba46beb6ad277927edfb46b40084
-  specs:
-    ruby-saml (0.9)
-      nokogiri (>= 1.5.0)
-      uuid (~> 2.3)
-
-GIT
   remote: https://github.com/Houdini/two_factor_authentication
   revision: 675f651929b7a09bb59169bf4206a10895c2b9d9
   specs:
@@ -382,6 +374,8 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.0)
+    ruby-saml (1.2.0)
+      nokogiri (>= 1.5.10)
     safe_yaml (1.0.4)
     sass (3.4.22)
     sass-rails (5.0.4)
@@ -536,7 +530,7 @@ DEPENDENCIES
   rails_layout
   rspec-rails (~> 3.3)
   rubocop
-  ruby-saml!
+  ruby-saml
   saml_idp!
   sass-rails (~> 5.0)
   secure_headers (~> 3.0.0)
@@ -561,4 +555,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.12.2
+   1.12.3
