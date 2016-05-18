@@ -57,9 +57,9 @@ en:
       updated: "Your account has been updated successfully."
       enabled_twofactor: "Successfully enabled two-factor authentication."
     sessions:
-      signed_in: 'Welcome'
-      signed_out: "Signed out successfully."
-      already_signed_out: "Signed out successfully."
+      signed_in: 'Welcome back!'
+      signed_out: "You are now signed out."
+      already_signed_out: "You are now signed out."
   errors:
     messages:
       already_confirmed: "was already confirmed, please try signing in"
