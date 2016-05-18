@@ -146,6 +146,16 @@ feature 'saml api', devise: true, sms: true do
       expect(current_path).to eq(users_otp_path)
       expect(page).to have_content(I18n.t('devise.two_factor_authentication.otp_setup'))
     end
+
+    it 'adds acs_urls for current Rails env to CSP form_action' do
+      visit '/test/saml'
+      authenticate_user(user)
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to include(
+          'form-action \'self\' localhost:3000/test/saml/decode_assertion ' \
+          'example.com/test/saml/decode_assertion;')
+    end
   end
 
   context 'visiting /api/saml/logout' do

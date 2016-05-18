@@ -33,3 +33,12 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
+
+SecureHeaders::Configuration.override(:saml) do |config|
+  providers = YAML.load_file("#{Rails.root}/config/service_providers.yml")
+  providers = providers.fetch(Rails.env, {})
+  providers.symbolize_keys!
+  whitelisted_urls = providers[:valid_hosts].values.map { |k, _| k['acs_url'] }
+
+  whitelisted_urls.each { |url| config.csp[:form_action] << url }
+end

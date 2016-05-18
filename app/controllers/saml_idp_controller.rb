@@ -18,6 +18,8 @@ class SamlIdpController < ApplicationController
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
 
   def auth
+    use_secure_headers_override(:saml)
+
     unless valid_authn_contexts.include?(requested_authn_context)
       process_invalid_authn_context
       return
