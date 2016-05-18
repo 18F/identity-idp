@@ -4,7 +4,7 @@ gem 'rails', '~> 4.2.6'
 
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
-gem 'devise'
+gem 'devise', '~> 3.5.0'
 gem 'dotiw'
 gem 'figaro'
 gem 'jquery-rails'
@@ -28,7 +28,7 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'turbolinks'
 gem 'twilio-ruby'
-gem 'two_factor_authentication', git: 'https://github.com/Houdini/two_factor_authentication'
+gem 'two_factor_authentication', path: '../two_factor_authentication/'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'activerecord-session_store', '1.0.0.pre'

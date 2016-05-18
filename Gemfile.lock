@@ -34,22 +34,21 @@ GIT
       activemodel (~> 4.0)
 
 GIT
-  remote: https://github.com/Houdini/two_factor_authentication
-  revision: 675f651929b7a09bb59169bf4206a10895c2b9d9
-  specs:
-    two_factor_authentication (1.1.5)
-      devise
-      encryptor
-      rails (>= 3.1.1)
-      randexp
-      rotp
-
-GIT
   remote: https://github.com/monfresh/sms-spec.git
   revision: 786238c1924c055d16a4963abb329c9b985ce104
   specs:
     sms-spec (0.2.0)
       rspec (~> 3.1)
+
+PATH
+  remote: ../two_factor_authentication/
+  specs:
+    two_factor_authentication (1.1.6)
+      devise
+      encryptor
+      rails (>= 3.1.1)
+      randexp
+      rotp
 
 GEM
   remote: https://rubygems.org/
@@ -513,7 +512,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   database_cleaner
   derailed
-  devise
+  devise (~> 3.5.0)
   dotiw
   email_spec
   factory_girl_rails
@@ -567,4 +566,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.12.2
+   1.12.3
