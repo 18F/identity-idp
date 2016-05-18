@@ -25,15 +25,6 @@ GIT
       uuid (~> 2.3)
 
 GIT
-  remote: git://github.com/amoose/simple_form.git
-  revision: 7f70e35f772e0e806407592af260bda48f5f08ea
-  branch: feature/aria-invalid
-  specs:
-    simple_form (3.1.0.rc2)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
-
-GIT
   remote: https://github.com/Houdini/two_factor_authentication
   revision: 675f651929b7a09bb59169bf4206a10895c2b9d9
   specs:
@@ -270,7 +261,7 @@ GEM
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0221)
     mini_portile2 (2.0.0)
-    minitest (5.8.4)
+    minitest (5.9.0)
     multi_json (1.11.3)
     multi_xml (0.5.5)
     nenv (0.3.0)
@@ -408,6 +399,9 @@ GEM
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.2, >= 3.2.1)
+    simple_form (3.2.1)
+      actionpack (> 4, < 5.1)
+      activemodel (> 4, < 5.1)
     simplecov (0.11.2)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -548,7 +542,7 @@ DEPENDENCIES
   secure_headers (~> 3.0.0)
   shoulda-matchers (~> 2.8)
   sidekiq
-  simple_form!
+  simple_form
   sinatra
   slim-rails
   slim_lint
