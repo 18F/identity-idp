@@ -3,7 +3,6 @@ en:
     errors:
       messages:
         select_two_factor: You must select a two factor authenticaton preference.
-        user_not_authenticated: Access denied. Please confirm your one-time passcode to continue.
 
     two_factor_authentication:
       attempt_failed: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
