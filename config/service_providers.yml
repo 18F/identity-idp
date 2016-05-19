@@ -26,7 +26,11 @@ development:
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
       cert: 'demo_sp'
-
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
+      metadata_url: 'http://localhost:3003/saml/metadata'
+      acs_url: 'http://localhost:3003/consume'
+      sp_initiated_login_url: 'http://localhost:3003/test/saml'
+      cert: 'demo_sp'
     'https://dashboard.login.gov':
       metadata_url: 'http://localhost:3001/users/auth/saml/metadata'
       acs_url: 'http://localhost:3001/users/auth/saml/callback'
