@@ -1,0 +1,31 @@
+class PasswordForm
+  include ActiveModel::Model
+  include FormPasswordValidator
+
+  attr_accessor :password, :reset_password_token
+
+  def initialize(user)
+    @user = user
+    self.reset_password_token = @user.reset_password_token
+  end
+
+  def submit(params)
+    self.password = params[:password]
+    self.password_confirmation = params[:password_confirmation]
+
+    if valid? && user_valid?
+      @user.password = params[:password]
+    else
+      false
+    end
+  end
+
+  private
+
+  # This is needed because @user.valid? only checks for validation errors,
+  # but in this case the error would be with the reset_password_token,
+  # which is added by Devise via errors.add
+  def user_valid?
+    @user.errors.empty?
+  end
+end

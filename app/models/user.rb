@@ -3,35 +3,16 @@ class User < ActiveRecord::Base
   include PhoneConfirmable
   include AuditEvents
 
-  before_validation :format_phone
-
-  attr_accessor :force_password_validation
-
   after_validation :set_default_role, if: :new_record?
 
   devise :confirmable, :database_authenticatable, :lockable, :recoverable,
          :registerable, :timeoutable, :trackable, :two_factor_authenticatable,
-         :validatable, :omniauthable, omniauth_providers: [:saml]
+         :omniauthable, omniauth_providers: [:saml]
 
   enum ial: [:IA1, :IA2, :IA3, :IA4]
   enum role: { user: 0, tech: 1, admin: 2 }
 
   has_one_time_password
-
-  # validates :uuid, presence: true
-  validates :email,
-            email: {
-              mx: true,
-              ban_disposable_email: true
-            }
-
-  validates :mobile, uniqueness: true, allow_nil: true
-
-  validates_plausible_phone :mobile,
-                            country_code: 'US',
-                            presence: true,
-                            if: :needs_mobile_validation?,
-                            message: :improbable_phone
 
   validates :ial_token, uniqueness: true, allow_nil: true
 
@@ -58,13 +39,6 @@ class User < ActiveRecord::Base
     UserOtpSender.new(self).send_otp
   end
 
-  # We need to override this Devise method to allow email-only signup.
-  # Once we merge the PR that uses Form Objects, we'll be able to remove
-  # this method and the code that uses the force_password_validation flag.
-  def password_required?
-    force_password_validation || !password.nil? || !password_confirmation.nil?
-  end
-
   def confirmation_period_expired?
     confirmation_sent_at && confirmation_sent_at.utc <= self.class.confirm_within.ago
   end
@@ -72,10 +46,6 @@ class User < ActiveRecord::Base
   def send_reset_confirmation
     update(reset_requested_at: Time.current, confirmed_at: nil)
     send_confirmation_instructions
-  end
-
-  def reset_account
-    update(reset_requested_at: nil)
   end
 
   def second_factor_locked?
@@ -145,22 +115,5 @@ class User < ActiveRecord::Base
   # To send emails asynchronously via ActiveJob.
   def send_devise_notification(notification, *args)
     devise_mailer.send(notification, self, *args).deliver_later
-  end
-
-  def require_mobile_validation
-    @force_mobile_validation = true
-  end
-
-  private
-
-  def format_phone
-    self.mobile = mobile.phony_formatted(
-      format: :international, normalize: :US, spaces: ' ') if mobile
-    self.unconfirmed_mobile = unconfirmed_mobile.phony_formatted(
-      format: :international, normalize: :US, spaces: ' ') if unconfirmed_mobile
-  end
-
-  def needs_mobile_validation?
-    mobile.present? || mobile_confirmed_at.present? || @force_mobile_validation
   end
 end

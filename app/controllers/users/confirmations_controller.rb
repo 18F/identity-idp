@@ -5,10 +5,7 @@ module Users
     # PATCH /confirm
     def confirm
       with_unconfirmed_confirmable do
-        @confirmable.force_password_validation = true
-        @confirmable.assign_attributes(permitted_params)
-
-        if @confirmable.valid?
+        if @password_form.submit(permitted_params)
           do_confirm
         else
           process_user_with_password_errors
@@ -39,6 +36,8 @@ module Users
         @confirmable = User.confirm_by_token(params[:confirmation_token])
       end
 
+      @password_form = PasswordForm.new(@confirmable)
+
       yield
     end
 
@@ -49,7 +48,7 @@ module Users
 
     def do_confirm
       @confirmable.confirm
-      @confirmable.reset_account if @confirmable.reset_account
+      @confirmable.update(reset_requested_at: nil)
       ::NewRelic::Agent.increment_metric('Custom/User/Confirmed')
       sign_in_and_redirect(resource_name, @confirmable)
     end
@@ -93,7 +92,8 @@ module Users
     private
 
     def permitted_params
-      params.require(resource_name).permit(:confirmation_token, :password, :password_confirmation)
+      params.require(:password_form).
+        permit(:confirmation_token, :password, :password_confirmation)
     end
   end
 end

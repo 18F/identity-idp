@@ -9,11 +9,11 @@ VALID_PASSWORD = 'Val!dPassw0rd'.freeze
 INVALID_PASSWORD = 'asdf'.freeze
 
 feature 'Sign Up', devise: true do
-  # Scenario: Visitor can sign up with valid email address and password
+  # Scenario: Visitor can sign up with valid email address
   #   Given I am not signed in
-  #   When I sign up with a valid email address and password
-  #   Then I see a successful sign up message
-  scenario 'visitor can sign up with valid email address and password' do
+  #   When I sign up with a valid email address
+  #   Then I see a message that I need to confirm my email address
+  scenario 'visitor can sign up with valid email address' do
     sign_up_with('test@example.com')
     expect(page).to have_content(
       t('devise.registrations.signed_up_but_unconfirmed', email: 'test@example.com')
@@ -33,29 +33,19 @@ feature 'Sign Up', devise: true do
     expect(page).to have_title t('upaya.titles.confirmations.show')
     expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
 
-    fill_in 'user[password]', with: VALID_PASSWORD
-    fill_in 'user[password_confirmation]', with: VALID_PASSWORD
+    fill_in 'password_form_password', with: VALID_PASSWORD
+    fill_in 'Password confirmation', with: VALID_PASSWORD
     click_button 'Submit'
 
     expect(page).to have_content I18n.t('devise.two_factor_authentication.otp_setup')
   end
 
-  scenario 'user#reset_account is called after password confirmation' do
-    sign_up_with('test@example.com')
-
-    confirm_last_user
-
-    fill_in 'user[password]', with: VALID_PASSWORD
-    fill_in 'user[password_confirmation]', with: VALID_PASSWORD
-
-    expect_any_instance_of(User).to receive(:reset_account)
-
-    click_button 'Submit'
-  end
-
-  scenario 'form should have autocomplete turned off' do
+  scenario 'it sets reset_requested_at to nil after password confirmation' do
     sign_up_with_and_set_password_for('test@example.com')
-    expect(find('#edit_user')[:autocomplete]).to eq 'off'
+
+    user = User.find_by_email('test@example.com')
+
+    expect(user.reset_requested_at).to be_nil
   end
 
   context 'visitor can sign up and confirm a valid mobile for OTP' do
@@ -66,19 +56,20 @@ feature 'Sign Up', devise: true do
       @user = User.find_by_email('test@example.com')
     end
 
-    it 'updates mobile_confirmed_at after confirmation' do
+    it 'updates mobile_confirmed_at and redirects to dashboard after confirmation' do
       fill_in 'Secure one-time password', with: @user.otp_code
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
       expect(page).to have_content(t('upaya.notices.account_created'))
+      expect(current_path).to eq dashboard_index_path
     end
 
-    it 'does not enable 2FA until confirmation is received' do
-      expect(!@user.two_factor_enabled?)
+    it 'does not enable 2FA until correct OTP is entered' do
       fill_in 'Secure one-time password', with: '12345678'
       click_button 'Submit'
-      expect(@user.reload.two_factor_enabled?)
+
+      expect(@user.reload.two_factor_enabled?).to be false
     end
 
     it 'provides user with link to type in a phone number so they are not locked out' do
@@ -115,44 +106,69 @@ feature 'Sign Up', devise: true do
     end
   end
 
+  context "visitor tries to sign up with another user's mobile for OTP" do
+    before do
+      @existing_user = create(:user, :signed_up)
+      sign_up_with_and_set_password_for('test@example.com')
+      fill_in 'Mobile', with: @existing_user.mobile
+      click_button 'Submit'
+      @user = User.find_by_email('test@example.com')
+    end
+
+    it 'pretends the mobile is valid and prompts to confirm the number' do
+      expect(current_path).to eq user_two_factor_authentication_path
+      expect(page).
+        to have_content("A one-time passcode has been sent to #{@existing_user.mobile}.")
+    end
+
+    it 'does not confirm the new number with an invalid OTP' do
+      fill_in 'Secure one-time password', with: 'foobar'
+      click_button 'Submit'
+
+      expect(@user.reload.mobile_confirmed_at).to be_nil
+      expect(page).to have_content t('devise.two_factor_authentication.attempt_failed')
+      expect(current_path).to eq user_two_factor_authentication_path
+    end
+  end
+
   scenario 'visitor is redirected back to password form when passwords do not match' do
     sign_up_with('test@example.com')
     confirm_last_user
-    fill_in 'user[password]', with: VALID_PASSWORD
-    fill_in 'user[password_confirmation]', with: 'gobilily-gook'
+    fill_in 'password_form_password', with: VALID_PASSWORD
+    fill_in 'Password confirmation', with: 'gobilily-gook'
     click_button 'Submit'
 
-    expect(page).to have_content 'does not match password'
+    expect(page).to have_content "doesn't match Password"
     expect(current_url).to eq confirm_url
   end
 
   scenario 'visitor is redirected back to password form when password is blank' do
     sign_up_with('test@example.com')
     confirm_last_user
-    fill_in 'user[password]', with: ''
-    fill_in 'user[password_confirmation]', with: 'gobilily-gook'
+    fill_in 'password_form_password', with: ''
+    fill_in 'Password confirmation', with: 'gobilily-gook'
     click_button 'Submit'
 
-    expect(page).to have_content 'does not match password'
+    expect(page).to have_content "doesn't match Password"
     expect(current_url).to eq confirm_url
   end
 
   scenario 'visitor is redirected back to password form when password_confirmation is blank' do
     sign_up_with('test@example.com')
     confirm_last_user
-    fill_in 'user[password]', with: VALID_PASSWORD
-    fill_in 'user[password_confirmation]', with: ''
+    fill_in 'password_form_password', with: VALID_PASSWORD
+    fill_in 'password_form_password_confirmation', with: ''
     click_button 'Submit'
 
-    expect(page).to have_content 'does not match password'
+    expect(page).to have_content "doesn't match Password"
     expect(current_url).to eq confirm_url
   end
 
   scenario 'visitor is redirected back to password form when both password fields are blank' do
     sign_up_with('test@example.com')
     confirm_last_user
-    fill_in 'user[password]', with: ''
-    fill_in 'user[password_confirmation]', with: ''
+    fill_in 'password_form_password', with: ''
+    fill_in 'Password confirmation', with: ''
     click_button 'Submit'
 
     expect(page).to have_content "can't be blank"
@@ -166,24 +182,24 @@ feature 'Sign Up', devise: true do
     end
 
     it 'shows error message when password_confirmation is blank' do
-      fill_in 'user[password]', with: VALID_PASSWORD
-      fill_in 'user[password_confirmation]', with: ''
+      fill_in 'password_form_password', with: VALID_PASSWORD
+      fill_in 'Password confirmation', with: ''
       click_button 'Submit'
 
       expect(page).to have_content 'Please fill in all required fields'
     end
 
     it 'shows error message when both password fields are blank' do
-      fill_in 'user[password]', with: ''
-      fill_in 'user[password_confirmation]', with: ''
+      fill_in 'password_form_password', with: ''
+      fill_in 'Password confirmation', with: ''
       click_button 'Submit'
 
       expect(page).to have_content 'Please fill in all required fields'
     end
 
     it 'shows error message when password is blank' do
-      fill_in 'user[password]', with: ''
-      fill_in 'user[password_confirmation]', with: 'gobilily-gook'
+      fill_in 'password_form_password', with: ''
+      fill_in 'Password confirmation', with: 'gobilily-gook'
       click_button 'Submit'
 
       expect(page).to have_content 'Please fill in all required fields'
@@ -193,8 +209,8 @@ feature 'Sign Up', devise: true do
   scenario 'visitor is redirected back to password form when password is invalid' do
     sign_up_with('test@example.com')
     confirm_last_user
-    fill_in 'user[password]', with: 'Q!2e'
-    fill_in 'user[password_confirmation]', with: 'Q!2e'
+    fill_in 'password_form_password', with: 'Q!2e'
+    fill_in 'Password confirmation', with: 'Q!2e'
     click_button 'Submit'
 
     expect(page).to have_content('characters')
@@ -202,13 +218,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'visitor confirms more than once' do
-    sign_up_with('test@example.com')
-
-    confirm_last_user
-
-    fill_in 'user[password]', with: VALID_PASSWORD
-    fill_in 'user[password_confirmation]', with: VALID_PASSWORD
-    click_button 'Submit'
+    sign_up_with_and_set_password_for('test@example.com')
 
     visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
@@ -246,7 +256,7 @@ feature 'Sign Up', devise: true do
   scenario 'visitor cannot sign up with empty email address' do
     sign_up_with('')
 
-    expect(page).to have_content "can't be blank"
+    expect(page).to have_content(invalid_email_message)
   end
 
   # Scenario: Visitor is not aware of an email existing in the system
