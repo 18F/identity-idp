@@ -10,6 +10,7 @@ module SamlIdp
     attribute :metadata_url
     attribute :validate_signature
     attribute :acs_url
+    attribute :assertion_consumer_logout_service_url
 
     delegate :config, to: :SamlIdp
 
