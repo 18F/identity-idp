@@ -72,12 +72,12 @@ module Test
     # rubocop:disable AbcSize, MethodLength
     def decode_slo_request
       if params[:SAMLRequest]
-        logout_request = OneLogin::RubySaml::SloLogoutrequest.new(params[:SAMLRequest])
+        logout_request = OneLogin::RubySaml::SloLogoutrequest.new(
+          params[:SAMLRequest],
+          settings: test_saml_settings
+        )
 
-        doc = Saml::XML::Document.parse(logout_request.document.to_s)
-        is_valid = doc.valid_signature?(saml_cert)
-
-        if is_valid
+        if logout_request.is_valid?
           logger.info "IdP initiated Logout for #{logout_request.name_id}"
           # Generate a response to the IdP.
           logout_request_id = logout_request.id
@@ -90,7 +90,7 @@ module Test
           )
           redirect_to saml_response and return
         else
-          response = doc.errors.to_s
+          response = logout_request.errors.to_s
           render template: 'test/saml_test/decode_response.html.slim',
                  locals: { is_valid: is_valid, response: response }
         end

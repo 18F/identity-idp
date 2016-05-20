@@ -1,4 +1,6 @@
 # rubocop:disable Metrics/ModuleLength
+require 'saml_idp/logout_request_builder'
+require 'saml_idp/logout_response_builder'
 module SamlIdpLogoutConcern
   extend ActiveSupport::Concern
 
@@ -60,7 +62,7 @@ module SamlIdpLogoutConcern
       message: slo_request_builder(
         slo_identity.sp_metadata,
         resource.uuid,
-        slo_identity.session_uuid).build.to_xml,
+        slo_identity.session_uuid).signed,
       action_url: slo_identity.sp_metadata[:assertion_consumer_logout_service_url],
       message_type: 'SAMLRequest'
     }
@@ -102,7 +104,7 @@ module SamlIdpLogoutConcern
     resource.first_identity.deactivate! if resource.active_identities.present?
 
     {
-      message: logout_response_builder.build.to_xml,
+      message: logout_response_builder.signed,
       action_url: saml_request.response_url,
       message_type: 'SAMLResponse',
       action: 'sign out'
@@ -110,13 +112,8 @@ module SamlIdpLogoutConcern
   end
 
   def name_id_user
-    name_id = get_name_id(saml_request.logout_request)
+    name_id = saml_request.name_id
     User.find_by(uuid: name_id)
-  end
-
-  def get_name_id(saml_request)
-    saml_request.xpath('//saml:NameID',
-                       saml: Saml::XML::Namespaces::ASSERTION).first.try(:content)
   end
 
   def asserted_identity
@@ -135,7 +132,6 @@ module SamlIdpLogoutConcern
       SamlIdp.config.base_saml_location,
       sp_data[:assertion_consumer_logout_service_url],
       name_id,
-      SamlIdp.config.base_saml_location,
       session_index,
       signature_opts
     )

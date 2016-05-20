@@ -1,20 +1,22 @@
 GIT
-  remote: git://github.com/18F/saml_idp.git
-  revision: afe6e7967fc4db89052c6ee171b5b1c365c1465f
-  specs:
-    saml_idp (0.1.1)
-      activesupport
-      httparty
-      nokogiri
-      uuid
-
-GIT
   remote: git://github.com/amoose/omniauth-saml.git
   revision: 06c019e451db4eb769bf40fcba2b092091fe7d4a
   branch: feature/internal_idp
   specs:
     omniauth-saml (1.3.0)
       omniauth (~> 1.2)
+
+GIT
+  remote: git://github.com/pkarman/saml_idp.git
+  revision: 8ce163745790dbfc3c52cb715cdc82618ab7ec28
+  branch: logout-request-builder
+  specs:
+    saml_idp (0.3.0)
+      activesupport
+      builder
+      httparty
+      nokogiri
+      uuid
 
 GIT
   remote: https://github.com/Houdini/two_factor_authentication
