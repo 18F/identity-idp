@@ -24,7 +24,7 @@ module SamlIdp
     end
 
     def encode
-      Base64.encode64(raw)
+      Base64.strict_encode64(raw)
     end
     private :encode
 
