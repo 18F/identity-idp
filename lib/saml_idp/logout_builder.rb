@@ -13,7 +13,7 @@ module SamlIdp
     end
 
     def reference_id
-      signature_opts[:reference_id] || UUID.generate
+      UUID.generate
     end
 
     def digest

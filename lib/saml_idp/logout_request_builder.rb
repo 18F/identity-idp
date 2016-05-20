@@ -6,15 +6,15 @@ module SamlIdp
     attr_accessor :saml_slo_url
     attr_accessor :name_id
     attr_accessor :session_index
-    attr_accessor :signature_opts
+    attr_accessor :algorithm
 
-    def initialize(response_id, issuer_uri, saml_slo_url, name_id, session_index, signature_opts)
+    def initialize(response_id, issuer_uri, saml_slo_url, name_id, session_index, algorithm)
       self.response_id = response_id
       self.issuer_uri = issuer_uri
       self.saml_slo_url = saml_slo_url
       self.name_id = name_id
       self.session_index = session_index
-      self.signature_opts = signature_opts
+      self.algorithm = algorithm
     end
 
     def build
