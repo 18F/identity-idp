@@ -1,9 +1,5 @@
 en:
   devise:
-    errors:
-      messages:
-        select_two_factor: You must select a two factor authenticaton preference.
-
     two_factor_authentication:
       attempt_failed: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
       contact_administrator: Please contact your system administrator.
