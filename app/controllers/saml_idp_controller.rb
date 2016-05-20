@@ -5,6 +5,7 @@ require 'uuid'
 # rubocop:disable ClassLength
 class SamlIdpController < ApplicationController
   include SamlIdp::Controller
+  include SamlIdp::Algorithmable
   include SamlIdpLogoutConcern
 
   skip_before_action :verify_authenticity_token
@@ -14,6 +15,20 @@ class SamlIdpController < ApplicationController
   before_action :validate_saml_logout_param, only: :logout
   before_action :store_sp_data, only: :auth
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
+
+  helper_method :saml_response_url
+
+  def raw_algorithm
+    SamlIdp.config.algorithm
+  end
+
+  def signature_opts
+    algorithm
+  end
+
+  def saml_response_url
+    saml_request.response_url
+  end
 
   def auth
     unless valid_authn_contexts.include?(requested_authn_context)
@@ -93,10 +108,14 @@ class SamlIdpController < ApplicationController
   end
 
   def authn_context_node
-    saml_request.document.xpath(
+    saml_request_document.xpath(
       '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
       samlp: Saml::XML::Namespaces::PROTOCOL,
       saml: Saml::XML::Namespaces::ASSERTION)
+  end
+
+  def saml_request_document
+    @_saml_xml_document ||= Saml::XML::Document.parse(saml_request.raw_xml)
   end
 
   def requested_authn_context
@@ -153,7 +172,7 @@ class SamlIdpController < ApplicationController
     return if session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
-    session[:logout_response] = logout_response_builder.build.to_xml
+    session[:logout_response] = logout_response_builder.signed
     session[:logout_response_url] = saml_response_url
   end
 

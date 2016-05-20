@@ -9,6 +9,7 @@ SamlIdp.configure do |config|
     File.read(Rails.root + 'config/saml.key.enc'),
     Figaro.env.saml_passphrase).to_pem
 
+  config.algorithm = :sha256
   # config.signature_alg = 'rsa-sha256'
   # config.digest_alg = 'sha256'
 
