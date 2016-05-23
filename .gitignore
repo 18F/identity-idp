@@ -35,6 +35,7 @@ Vagrantfile
 /config/database.yml
 /config/newrelic.yml
 /config/saml.key.enc
+/keys/saml.key.enc
 /config/secrets.yml
 /coverage
 /db/*.sqlite3

@@ -9,9 +9,8 @@ before_install:
   - npm install
 before_script:
   - cp config/database.yml.example config/database.yml
-  - cp config/saml.key.enc.example config/saml.key.enc
-  - cp config/secrets.yml.example config/secrets.yml
   - cp config/application.yml.example config/application.yml
+  - cp keys/saml.key.enc.example keys/saml.key.enc
   - bin/rake db:setup --trace
   - bin/rake assets:precompile
 bundler_args: "--deployment --jobs=3 --retry=3 --without deploy development doc"
