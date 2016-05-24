@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git://github.com/pkarman/saml_idp.git
-  revision: 8ce163745790dbfc3c52cb715cdc82618ab7ec28
+  revision: 61407a6500123a3140936f4b75a32bdf9eecda18
   branch: logout-request-builder
   specs:
     saml_idp (0.3.0)

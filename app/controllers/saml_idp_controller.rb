@@ -109,22 +109,17 @@ class SamlIdpController < ApplicationController
     render nothing: true, status: :bad_request
   end
 
-  def authn_context_node
-    saml_request_document.xpath(
-      '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
-      samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION)
-  end
-
   def saml_request_document
     @_saml_xml_document ||= Saml::XML::Document.parse(saml_request.raw_xml)
   end
 
   def requested_authn_context
-    return authn_context_node[0].content if authn_context_node.length == 1
-
-    logger.info 'authn_context is missing'
-    nil
+    if saml_request.requested_authn_context
+      saml_request.requested_authn_context
+    else
+      logger.info 'authn_context is missing'
+      nil
+    end
   end
 
   def logout_response_builder
