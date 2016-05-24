@@ -23,7 +23,7 @@ gem 'saml_idp', github: '18F/saml_idp'
 gem 'sass-rails', '~> 5.0'
 gem 'secure_headers', '~> 3.0.0'
 gem 'sidekiq'
-gem 'simple_form', github: 'amoose/simple_form', branch: 'feature/aria-invalid'
+gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'turbolinks'
