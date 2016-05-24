@@ -9,12 +9,9 @@ class User < ActiveRecord::Base
          :registerable, :timeoutable, :trackable, :two_factor_authenticatable,
          :omniauthable, omniauth_providers: [:saml]
 
-  enum ial: [:IA1, :IA2, :IA3, :IA4]
   enum role: { user: 0, tech: 1, admin: 2 }
 
   has_one_time_password
-
-  validates :ial_token, uniqueness: true, allow_nil: true
 
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
@@ -62,27 +59,6 @@ class User < ActiveRecord::Base
     send_devise_notification(:unlock_instructions, nil, subject: 'Upaya Account Locked')
   end
 
-  def identity_verified?
-    ial == 'IA3'
-  end
-
-  def set_active_identity(entity_id, authn_context = nil, authenticated = nil)
-    session_index = (active_identities.size || 0) + 1
-    identity_opts = { authn_context: authn_context, session_index: session_index }
-
-    identity = Identity.find_or_create_by(
-      service_provider: entity_id,
-      user_id: id
-    )
-
-    if authenticated == true
-      identity_opts[:last_authenticated_at] = Time.current
-      identity_opts[:session_uuid] = "_#{SecureRandom.uuid}"
-    end
-
-    identity if identity.update(identity_opts)
-  end
-
   def first_identity
     active_identities[0] unless active_identities.empty?
   end
@@ -106,10 +82,6 @@ class User < ActiveRecord::Base
 
   def multiple_identities?
     active_identities.size > 1
-  end
-
-  def needs_idv?
-    ial_token.present? && !(identity_verified? || idp_hard_fail?)
   end
 
   # To send emails asynchronously via ActiveJob.

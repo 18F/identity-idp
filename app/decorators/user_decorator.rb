@@ -45,6 +45,10 @@ UserDecorator = Struct.new(:user) do
     user.mobile
   end
 
+  def identity_not_verified?
+    user.identities.pluck(:ial).uniq == [1]
+  end
+
   private
 
   def omniauthed?(session)

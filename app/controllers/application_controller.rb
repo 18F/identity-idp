@@ -25,21 +25,8 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def link_identity_from_session_data(resource = current_user, authenticated = true)
-    linker = IdentityLinker.new(resource, authenticated, sp_data)
-
-    linker.set_active_identity
-    linker.update_user_and_identity_if_ial_token
-
-    session.delete(:sp_data)
-  end
-
-  def sp_data
-    session.fetch(:sp_data, {})
-  end
-
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || dashboard_index_path
+    stored_location_for(resource) || session[:saml_request_url] || dashboard_index_path
   end
 
   def render_401

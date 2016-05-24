@@ -7,7 +7,7 @@ describe UserFlashUpdater do
   describe '#set_flash_message' do
     context 'when there are no attribute changes that need confirmation' do
       it 'returns a plain updated notice' do
-        user.update(ial_token: 'foo')
+        user.update(sign_in_count: 2)
 
         flash = {}
         updated_flash = { notice: t('devise.registrations.updated') }

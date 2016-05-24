@@ -53,5 +53,14 @@ module Features
       )
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
     end
+
+    def sign_up_and_2fa(email = nil, reset_session = false)
+      user = sign_up_with_and_set_password_for(email, reset_session)
+      fill_in 'Mobile', with: '202-555-1212'
+      click_button 'Submit'
+      fill_in 'code', with: user.reload.otp_code
+      click_button 'Submit'
+      user
+    end
   end
 end

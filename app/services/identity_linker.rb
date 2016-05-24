@@ -1,28 +1,31 @@
-IdentityLinker = Struct.new(:user, :authenticated, :sp_data) do
-  def set_active_identity
-    active_identity
-  end
+IdentityLinker = Struct.new(:user, :provider, :authn_context) do
+  attr_reader :identity
 
-  def update_user_and_identity_if_ial_token
-    return if sp_data[:ial_token].blank?
+  def link_identity
+    find_or_create_identity
 
-    update_user
-    update_active_identity
+    identity.update(identity_attributes)
   end
 
   private
 
-  def update_user
-    user.update(ial_token: sp_data[:ial_token])
-  end
-
-  def update_active_identity
-    active_identity.update(quiz_started: true) if user.reload.ial_token
-  end
-
-  def active_identity
-    @active_identity ||= user.set_active_identity(
-      sp_data[:provider], sp_data[:authn_context], authenticated
+  def find_or_create_identity
+    @identity = Identity.find_or_create_by(
+      service_provider: provider,
+      user_id: user.id
     )
+  end
+
+  def identity_attributes
+    {
+      authn_context: authn_context,
+      session_index: session_index,
+      last_authenticated_at: Time.current,
+      session_uuid: "_#{SecureRandom.uuid}"
+    }
+  end
+
+  def session_index
+    user.active_identities.size + 1
   end
 end

@@ -14,10 +14,6 @@ module Users
       if @register_user_email_form.submit(params[:user])
         process_successful_creation
 
-        user = User.find_by_email(@register_user_email_form.user.email)
-
-        link_identity_from_session_data(user, true) if sp_data[:provider]
-
         ::NewRelic::Agent.increment_metric('Custom/User/Created')
       else
         render :new

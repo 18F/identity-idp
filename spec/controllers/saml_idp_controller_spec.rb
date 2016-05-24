@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe SamlIdpController do
   include SamlResponseHelper
+  include SamlAuthHelper
 
   render_views
 
@@ -79,6 +80,57 @@ describe SamlIdpController do
 
     it 'disables caching' do
       expect(response.headers['Pragma']).to eq 'no-cache'
+    end
+  end
+
+  describe 'GET /api/saml/auth' do
+    context 'with LOA3 but the identity is already verified' do
+      it 'does not redirect the user to the IdV URL' do
+        user = create(:user, :signed_up)
+        generate_saml_response(user, loa3_saml_settings)
+
+        user.last_identity.update(ial: 2)
+
+        generate_saml_response(user, loa3_saml_settings)
+
+        expect(response).to_not be_redirect
+      end
+    end
+
+    context 'with LOA3 and the identity is not already verified' do
+      it 'redirects to IdV URL for LOA3 proofer' do
+        user = create(:user, :signed_up)
+        generate_saml_response(user, loa3_saml_settings)
+
+        expect(response).to redirect_to 'https://loa3.example.com'
+      end
+    end
+
+    context 'with LOA1' do
+      it 'does not redirect the user to the IdV URL' do
+        user = create(:user, :signed_up)
+        generate_saml_response(user, saml_settings)
+
+        expect(response).to_not be_redirect
+      end
+    end
+
+    context 'authn_context is invalid' do
+      it 'renders nothing with a 400 error' do
+        saml_get_auth(invalid_authn_context_settings)
+
+        expect(response.status).to eq(400)
+        expect(response.body).to be_empty
+      end
+    end
+
+    context 'authn_context is missing' do
+      it 'renders nothing with a 400 error' do
+        saml_get_auth(missing_authn_context_saml_settings)
+
+        expect(response.status).to eq(400)
+        expect(response.body).to be_empty
+      end
     end
   end
 end
