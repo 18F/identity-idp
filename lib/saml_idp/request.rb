@@ -126,7 +126,11 @@ module SamlIdp
     end
 
     def name_id
-      @name_id ||= xpath("//saml:NameID", saml: Saml::XML::Namespaces::ASSERTION).first.try(:content)
+      @name_id ||= xpath("//saml:NameID", saml: assertion).first.try(:content)
+    end
+
+    def session_index
+      @_session_index ||= xpath("//samlp:SessionIndex", samlp: samlp).first.try(:content)
     end
 
     def document
