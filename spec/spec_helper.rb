@@ -1,6 +1,9 @@
 if ENV['TRAVIS']
   require 'codeclimate-test-reporter'
   CodeClimate::TestReporter.start
+elsif ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start 'rails'
 end
 
 ENV['RAILS_ENV'] ||= 'test'
