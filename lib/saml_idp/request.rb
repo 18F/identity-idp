@@ -47,6 +47,14 @@ module SamlIdp
       end
     end
 
+    def requested_authn_context
+      if authn_request? && authn_context_node
+        authn_context_node.content
+      else
+        nil
+      end
+    end
+
     def acs_url
       service_provider.acs_url ||
         authn_request["AssertionConsumerServiceURL"].to_s
@@ -125,6 +133,13 @@ module SamlIdp
       @document ||= Saml::XML::Document.parse(raw_xml)
     end
     private :document
+
+    def authn_context_node
+      xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
+        samlp: samlp,
+        saml: assertion).first
+    end
+    private :authn_context_node
 
     def authn_request
       xpath("//samlp:AuthnRequest", samlp: samlp).first
