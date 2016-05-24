@@ -62,6 +62,9 @@ module SamlIdpLogoutConcern
 
   def generate_slo_request(resource)
     slo_identity = fetch_identity_for_slo(resource)
+    # The SP has not implemented SLO; do not generate a request!
+    return nil if
+      slo_identity.sp_metadata[:assertion_consumer_logout_service_url].nil?
     {
       message: slo_request_builder(
         slo_identity.sp_metadata,

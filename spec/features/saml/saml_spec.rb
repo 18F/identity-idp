@@ -450,6 +450,25 @@ feature 'saml api', devise: true, sms: true do
         expect(page.get_rack_session.keys & removed_keys).to eq []
       end
     end
+
+    context 'without SLO implemented at SP' do
+      let(:logout_user) { create(:user, :signed_up) }
+
+      before do
+        visit sp1_authnrequest
+        authenticate_user(logout_user)
+      end
+
+      it 'completes logout at IdP' do
+        allow_any_instance_of(ServiceProvider).to receive(:metadata).and_return(
+          service_provider: 'https://rp1.serviceprovider.com/auth/saml/metadata'
+        )
+
+        visit destroy_user_session_url
+
+        expect(current_path).to eq('/')
+      end
+    end
   end
 
   context 'visiting /api/saml/auth' do
