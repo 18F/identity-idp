@@ -7,15 +7,6 @@ GIT
       omniauth (~> 1.2)
 
 GIT
-  remote: git://github.com/amoose/simple_form.git
-  revision: 7f70e35f772e0e806407592af260bda48f5f08ea
-  branch: feature/aria-invalid
-  specs:
-    simple_form (3.1.0.rc2)
-      actionpack (~> 4.0)
-      activemodel (~> 4.0)
-
-GIT
   remote: git://github.com/pkarman/saml_idp.git
   revision: 61407a6500123a3140936f4b75a32bdf9eecda18
   branch: logout-request-builder
@@ -404,6 +395,9 @@ GEM
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       redis (~> 3.2, >= 3.2.1)
+    simple_form (3.2.1)
+      actionpack (> 4, < 5.1)
+      activemodel (> 4, < 5.1)
     simplecov (0.11.2)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -544,7 +538,7 @@ DEPENDENCIES
   secure_headers (~> 3.0.0)
   shoulda-matchers (~> 2.8)
   sidekiq
-  simple_form!
+  simple_form
   sinatra
   slim-rails
   slim_lint

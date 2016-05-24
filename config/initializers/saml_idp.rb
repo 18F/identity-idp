@@ -4,9 +4,9 @@ SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
   api_base = protocol + Figaro.env.domain_name + '/api'
 
-  config.x509_certificate = Rails.application.secrets.saml_cert
+  config.x509_certificate = File.read("#{Rails.root}/certs/saml_cert.crt")
   config.secret_key = OpenSSL::PKey::RSA.new(
-    File.read(Rails.root + 'config/saml.key.enc'),
+    File.read(Rails.root + 'keys/saml.key.enc'),
     Figaro.env.saml_passphrase).to_pem
 
   config.algorithm = :sha256

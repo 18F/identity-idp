@@ -9,8 +9,7 @@ set :deploy_via, :remote_cache
 set :keep_releases, 5
 set :linked_files, %w(config/application.yml
                       config/database.yml
-                      config/secrets.yml
-                      config/saml.key.enc)
+                      keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
 set :rails_env, :production
 set :rbenv_ruby, '2.3.0'

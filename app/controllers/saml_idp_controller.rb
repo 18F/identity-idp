@@ -31,6 +31,8 @@ class SamlIdpController < ApplicationController
   end
 
   def auth
+    use_secure_headers_override(:saml)
+
     unless valid_authn_contexts.include?(requested_authn_context)
       process_invalid_authn_context
       return

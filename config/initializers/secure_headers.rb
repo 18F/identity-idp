@@ -33,3 +33,18 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
+
+SecureHeaders::Configuration.override(:saml) do |config|
+  providers = YAML.load_file("#{Rails.root}/config/service_providers.yml")
+  providers = providers.fetch(Rails.env, {})
+  providers.symbolize_keys!
+
+  provider_attributes = providers[:valid_hosts].values
+
+  acs_urls = provider_attributes.map { |hash| hash['acs_url'] }
+  acls_urls = provider_attributes.map { |hash| hash['assertion_consumer_logout_service_url'] }
+
+  whitelisted_urls = (acs_urls + acls_urls)
+
+  whitelisted_urls.each { |url| config.csp[:form_action] << url }
+end

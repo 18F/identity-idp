@@ -33,6 +33,19 @@ PreCommit:
     include: '**/*.slim'
 
 CommitMsg:
+  ALL:
+    on_warn: 'fail'
+
+  MessageFormat:
+    enabled: true
+    description: 'Check commit message matches expected pattern'
+    pattern: '\*\*Why\*\*:'
+    expected_pattern_message: >
+      Body of commit message must include a reason for the change.
+      See our contribution guidelines:
+      https://github.com/18F/identity-idp/blob/master/CONTRIBUTING.md#commit-message-style-guide
+    sample_message: '**Why**: To eliminate unnecessary database calls.'
+
   TextWidth:
     enabled: true
     description: 'Check text width'
