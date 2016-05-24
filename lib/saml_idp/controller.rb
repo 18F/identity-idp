@@ -4,6 +4,7 @@ require 'base64'
 require 'time'
 require 'uuid'
 require 'saml_idp/request'
+require 'saml_idp/logout_response_builder'
 module SamlIdp
   module Controller
     extend ActiveSupport::Concern
@@ -45,18 +46,18 @@ module SamlIdp
         audience_uri,
         saml_request_id,
         saml_acs_url,
-        algorithm,
+        (opts[:algorithm] || algorithm || default_algorithm),
         my_authn_context_classref
       ).build
     end
 
     def encode_logout_response(principal, opts = {})
       SamlIdp::LogoutResponseBuilder.new(
-        response_id,
-        opt_issuer_uri,
-        saml_response_url,
+        get_saml_response_id,
+        (opts[:issuer_uri] || issuer_uri),
+        saml_logout_url,
         saml_request_id,
-        algorithm
+        (opts[:algorithm] || algorithm || default_algorithm)
       ).signed
     end
 
@@ -64,7 +65,7 @@ module SamlIdp
       if saml_request.authn_request?
         encode_authn_response(principal, opts)
       elsif saml_request.logout_request?
-        encode_logout_response(principal, opts = {})
+        encode_logout_response(principal, opts)
       else
         raise "Unknown request: #{saml_request}"
       end
@@ -88,12 +89,20 @@ module SamlIdp
       saml_request.acs_url
     end
 
+    def saml_logout_url
+      saml_request.logout_url
+    end
+
     def get_saml_response_id
       UUID.generate
     end
 
     def get_saml_reference_id
       UUID.generate
+    end
+
+    def default_algorithm
+      OpenSSL::Digest::SHA256
     end
   end
 end

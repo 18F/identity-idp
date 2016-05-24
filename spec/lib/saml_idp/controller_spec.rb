@@ -35,6 +35,16 @@ describe SamlIdp::Controller do
       response.is_valid?.should be_truthy
     end
 
+    it "should create a SAML Logout Response" do
+      params[:SAMLRequest] = make_saml_logout_request
+      validate_saml_request
+      expect(saml_request.logout_request?).to eq true
+      saml_response = encode_response(principal)
+      response = OneLogin::RubySaml::Logoutresponse.new(saml_response, saml_settings)
+      response.validate.should == true
+      response.issuer.should == "http://example.com"
+    end
+
     [:sha1, :sha256, :sha384, :sha512].each do |algorithm_name|
       it "should create a SAML Response using the #{algorithm_name} algorithm" do
         self.algorithm = algorithm_name

@@ -4,10 +4,6 @@ module SamlIdp
     include Signable
 
     # this is an abstract base class.
-    def signature_opts
-      raise "#{self.class} must implement signature_opts method"
-    end
-
     def build
       raise "#{self.class} must implement build method"
     end
@@ -18,10 +14,6 @@ module SamlIdp
 
     def digest
       algorithm.hexdigest raw
-    end
-
-    def algorithm
-      signature_opts[:algorithm] || OpenSSL::Digest::SHA256
     end
 
     def encoded
