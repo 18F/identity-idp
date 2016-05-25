@@ -42,9 +42,8 @@ SecureHeaders::Configuration.override(:saml) do |config|
   provider_attributes = providers[:valid_hosts].values
 
   acs_urls = provider_attributes.map { |hash| hash['acs_url'] }
-  acls_urls = provider_attributes.map { |hash| hash['assertion_consumer_logout_service_url'] }
 
-  whitelisted_urls = (acs_urls + acls_urls)
+  whitelisted_domains = acs_urls.map { |url| url.split('//')[1].split('/')[0] }
 
-  whitelisted_urls.each { |url| config.csp[:form_action] << url }
+  whitelisted_domains.each { |domain| config.csp[:form_action] << domain }
 end
