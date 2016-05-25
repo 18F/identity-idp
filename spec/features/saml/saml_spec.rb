@@ -152,9 +152,8 @@ feature 'saml api', devise: true, sms: true do
     it 'adds acs_url domain names for current Rails env to CSP form_action' do
       visit '/test/saml'
       authenticate_user(user)
-
       expect(page.response_headers['Content-Security-Policy']).
-        to include('form-action \'self\' localhost:3000 example.com')
+        to include("form-action \'self\' #{ServiceProvider.domain_endpoints.join(' ')}")
     end
   end
 
@@ -192,7 +191,7 @@ feature 'saml api', devise: true, sms: true do
 
       it 'adds acs_url domain names for current Rails env to CSP form_action' do
         expect(page.response_headers['Content-Security-Policy']).
-          to include('form-action \'self\' localhost:3000 example.com')
+          to include("form-action \'self\' #{ServiceProvider.domain_endpoints.join(' ')}")
       end
     end
 

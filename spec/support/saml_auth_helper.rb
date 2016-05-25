@@ -189,7 +189,9 @@ module SamlAuthHelper
   end
 
   def authenticate_user(user = create(:user, :signed_up))
-    sign_in_user(user)
+    fill_in 'Email', with: user.email
+    fill_in 'Password', with: user.password
+    click_button 'Log in'
     fill_in 'code', with: user.otp_code
     click_button 'Submit'
   rescue XMLSec::SigningError
