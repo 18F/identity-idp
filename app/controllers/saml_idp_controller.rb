@@ -23,7 +23,7 @@ class SamlIdpController < ApplicationController
       return
     end
 
-    render_template_for(saml_response, saml_response_url, 'SAMLResponse')
+    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
   def metadata
@@ -94,27 +94,13 @@ class SamlIdpController < ApplicationController
     render nothing: true, status: :bad_request
   end
 
-  def authn_context_node
-    saml_request.document.xpath(
-      '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
-      samlp: Saml::XML::Namespaces::PROTOCOL,
-      saml: Saml::XML::Namespaces::ASSERTION)
-  end
-
   def requested_authn_context
-    return authn_context_node[0].content if authn_context_node.length == 1
-
-    logger.info 'authn_context is missing'
-    nil
-  end
-
-  def logout_response_builder
-    SamlIdp::LogoutResponseBuilder.new(
-      get_saml_response_id,
-      issuer_uri,
-      saml_response_url,
-      saml_request.request_id,
-      signature_opts)
+    if saml_request.requested_authn_context
+      saml_request.requested_authn_context
+    else
+      logger.info 'authn_context is missing'
+      nil
+    end
   end
 
   def check_ial_token
@@ -155,8 +141,8 @@ class SamlIdpController < ApplicationController
     return if session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
-    session[:logout_response] = logout_response_builder.build.to_xml
-    session[:logout_response_url] = saml_response_url
+    session[:logout_response] = logout_response_builder.signed
+    session[:logout_response_url] = saml_request.response_url
   end
 
   def saml_response

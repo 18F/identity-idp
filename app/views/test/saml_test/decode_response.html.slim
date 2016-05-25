@@ -11,7 +11,7 @@ div class='container'
         td = is_valid
       tr
         td Issuer
-        td = response.issuer
+        td = response.issuers.first
       tr
         td Document
         td
@@ -19,7 +19,7 @@ div class='container'
             Open XML in New Window.
       tr
         td Encrypted Document
-        - if response.encrypted
+        - if response.decrypted_document.present?
           td
             a target='_blank' href="data:text/xml;charset=utf-8;base64,#{params[:SAMLResponse]}"
               Open Raw XML in New Window

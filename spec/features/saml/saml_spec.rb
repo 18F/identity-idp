@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-include SamlAuthHelper
-include SamlResponseHelper
-
 feature 'saml api', devise: true, sms: true do
+  include SamlAuthHelper
+  include SamlResponseHelper
+
   let(:user) { create(:user, :signed_up) }
 
   context 'Unencrypted SAML Assertions' do
@@ -66,7 +66,7 @@ feature 'saml api', devise: true, sms: true do
         authenticate_user(user)
       end
 
-      let(:xmldoc) { XmlDoc.new('feature', 'response_assertion') }
+      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
 
       it 'renders saml_post_binding template with XML response' do
         expect(page.find('#SAMLResponse', visible: false)).to be_truthy
@@ -166,8 +166,8 @@ feature 'saml api', devise: true, sms: true do
   context 'visiting /api/saml/logout' do
     context 'when logged in to single SP with IdP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
-      let(:xmldoc) { XmlDoc.new('feature', 'request_assertion') }
-      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
+      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'request_assertion') }
+      let(:response_xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
 
       before do
         visit sp1_authnrequest
@@ -198,7 +198,7 @@ feature 'saml api', devise: true, sms: true do
 
     context 'when logged in to a single SP with SP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
-      let(:xmldoc) { XmlDoc.new('feature', 'logout_assertion') }
+      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'logout_assertion') }
 
       before do
         visit sp1_authnrequest
