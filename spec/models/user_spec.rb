@@ -136,149 +136,6 @@ describe User do
   end
 
   context '.password_strength' do
-    it 'requires a digit' do
-      NO_NUM_PASSWORD = 'abcdABCD!@#$'.freeze
-
-      # Verify failure on create.
-      # TODO: JJG restore check for error message
-      expect do
-        create(:user,
-               password: NO_NUM_PASSWORD,
-               password_confirmation: NO_NUM_PASSWORD)
-      end.
-        to raise_error(ActiveRecord::RecordInvalid)
-
-      prototype_user = create(:user)
-
-      # Verify success.
-      (0..9).each do |digit|
-        password = "#{NO_NUM_PASSWORD}#{digit}"
-        user = create(:user,
-                      email: "#{digit}.#{prototype_user.email}",
-                      password: password,
-                      password_confirmation: password)
-        expect(user.errors.any?).to be_falsey
-      end
-
-      # Verifying password updating enforces complexity requirements.
-      (0..9).each do |digit|
-        prototype_user.password = NO_NUM_PASSWORD
-        prototype_user.password_confirmation = NO_NUM_PASSWORD
-        expect(prototype_user.valid?).to be_falsey
-        prototype_user.password = "#{NO_NUM_PASSWORD}#{digit}"
-        prototype_user.password_confirmation = "#{NO_NUM_PASSWORD}#{digit}"
-        expect(prototype_user.valid?).to be_truthy
-      end
-    end
-
-    it 'requires a capital letter' do
-      NO_CAP_PASSWORD = 'abcd1234!@#$'.freeze
-
-      # Verify failure on create.
-      # TODO: JJG restore check for error message
-      expect do
-        create(:user,
-               password: NO_CAP_PASSWORD,
-               password_confirmation: NO_CAP_PASSWORD)
-      end.
-        to raise_error(ActiveRecord::RecordInvalid)
-
-      prototype_user = create(:user)
-
-      # Verify success.
-      ('A'..'Z').each do |capital|
-        password = "#{NO_CAP_PASSWORD}#{capital}"
-        user = create(:user,
-                      email: "#{capital}.#{prototype_user.email}",
-                      password: password,
-                      password_confirmation: password)
-        expect(user.errors.any?).to be_falsey
-      end
-
-      # Verifying password updating enforces complexity requirements.
-      ('A'..'Z').each do |capital|
-        prototype_user.password = NO_CAP_PASSWORD
-        prototype_user.password_confirmation = NO_CAP_PASSWORD
-        expect(prototype_user.valid?).to be_falsey
-        prototype_user.password = "#{NO_CAP_PASSWORD}#{capital}"
-        prototype_user.password_confirmation = "#{NO_CAP_PASSWORD}#{capital}"
-        expect(prototype_user.valid?).to be_truthy
-      end
-    end
-
-    it 'requires a lowercase letter' do
-      NO_LOWER_PASSWORD = 'ABCD1234!@#$'.freeze
-
-      # Verify failure on create.
-      # TODO: JJG restore check for error message
-      expect do
-        create(:user,
-               password: NO_LOWER_PASSWORD,
-               password_confirmation: NO_LOWER_PASSWORD)
-      end.to raise_error(ActiveRecord::RecordInvalid)
-
-      prototype_user = create(:user)
-
-      # Verify success.
-      ('a'..'z').each do |lower|
-        password = "#{NO_LOWER_PASSWORD}#{lower}"
-        user = create(:user,
-                      email: "#{lower}.#{prototype_user.email}",
-                      password: password,
-                      password_confirmation: password)
-        expect(user.errors.any?).to be_falsey
-      end
-
-      # Verifying password updating enforces complexity requirements.
-      ('a'..'z').each do |lower|
-        prototype_user.password = NO_LOWER_PASSWORD
-        prototype_user.password_confirmation = NO_LOWER_PASSWORD
-        expect(prototype_user.valid?).to be_falsey
-        prototype_user.password = "#{NO_LOWER_PASSWORD}#{lower}"
-        prototype_user.password_confirmation = "#{NO_LOWER_PASSWORD}#{lower}"
-        expect(prototype_user.valid?).to be_truthy
-      end
-    end
-
-    it 'requires a special character' do
-      # Verify failure.
-      NO_SPECIAL_PASSWORD = 'ABCD1234abcd'.freeze
-
-      # Verify failure on create.
-      expect do
-        create(:user,
-               password: NO_SPECIAL_PASSWORD,
-               password_confirmation: NO_SPECIAL_PASSWORD)
-      end.
-        to raise_error(ActiveRecord::RecordInvalid
-                      )
-
-      prototype_user = create(:user)
-
-      # Verify success.
-      i = 1
-      Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
-        password = "#{NO_SPECIAL_PASSWORD}#{special}"
-        user = create(:user,
-                      email: "#{i}.#{prototype_user.email}",
-                      password: password,
-                      password_confirmation: password)
-        expect(user.errors.any?).to be_falsey
-        i += 1
-      end
-
-      # Verifying password updating enforces complexity requirements.
-      Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS.each_char do |special|
-        prototype_user.password = NO_SPECIAL_PASSWORD
-        prototype_user.password_confirmation = NO_SPECIAL_PASSWORD
-        expect(prototype_user.valid?).to be_falsey
-        prototype_user.password = "#{NO_SPECIAL_PASSWORD}#{special}"
-        prototype_user.password_confirmation = "#{NO_SPECIAL_PASSWORD}#{special}"
-        expect(prototype_user.valid?).to be_truthy
-        i += 1
-      end
-    end
-
     it 'must be more than 8 characters' do
       prototype_user = create(:user)
       expect do
@@ -301,6 +158,13 @@ describe User do
       end.
         to raise_error(ActiveRecord::RecordInvalid,
                        /Validation failed: Password is too long \(maximum is 128 characters\)/)
+    end
+
+    it 'works with spaces' do
+      pw = 'this has a few spaces'
+      user = build_stubbed(:user, password: pw, password_confirmation: pw)
+
+      expect(user).to be_valid
     end
   end
 
