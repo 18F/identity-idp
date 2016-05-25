@@ -117,16 +117,15 @@ module SamlIdp
     end
 
     def service_provider
-      @service_provider ||= ServiceProvider.new((service_provider_finder[issuer] || {}).merge(identifier: issuer))
+      @_service_provider ||= ServiceProvider.new((service_provider_finder[issuer] || {}).merge(identifier: issuer))
     end
 
     def issuer
-      @content ||= xpath("//saml:Issuer", saml: assertion).first.try(:content)
-      @content if @content.present?
+      @_issuer ||= xpath("//saml:Issuer", saml: assertion).first.try(:content)
     end
 
     def name_id
-      @name_id ||= xpath("//saml:NameID", saml: assertion).first.try(:content)
+      @_name_id ||= xpath("//saml:NameID", saml: assertion).first.try(:content)
     end
 
     def session_index
@@ -134,24 +133,24 @@ module SamlIdp
     end
 
     def document
-      @document ||= Saml::XML::Document.parse(raw_xml)
+      @_document ||= Saml::XML::Document.parse(raw_xml)
     end
     private :document
 
     def authn_context_node
-      xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
+      @_authn_context_node ||= xpath("//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef",
         samlp: samlp,
         saml: assertion).first
     end
     private :authn_context_node
 
     def authn_request
-      xpath("//samlp:AuthnRequest", samlp: samlp).first
+      @_authn_request ||= xpath("//samlp:AuthnRequest", samlp: samlp).first
     end
     private :authn_request
 
     def logout_request
-      xpath("//samlp:LogoutRequest", samlp: samlp).first
+      @_logout_request ||= xpath("//samlp:LogoutRequest", samlp: samlp).first
     end
     private :logout_request
 
