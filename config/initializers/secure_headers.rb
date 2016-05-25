@@ -35,15 +35,5 @@ SecureHeaders::Configuration.default do |config|
 end
 
 SecureHeaders::Configuration.override(:saml) do |config|
-  providers = YAML.load_file("#{Rails.root}/config/service_providers.yml")
-  providers = providers.fetch(Rails.env, {})
-  providers.symbolize_keys!
-
-  provider_attributes = providers[:valid_hosts].values
-
-  acs_urls = provider_attributes.map { |hash| hash['acs_url'] }
-
-  whitelisted_domains = acs_urls.map { |url| url.split('//')[1].split('/')[0] }
-
-  whitelisted_domains.each { |domain| config.csp[:form_action] << domain }
+  ServiceProvider.domain_endpoints.each { |domain| config.csp[:form_action] << domain }
 end
