@@ -5,7 +5,6 @@ require 'uuid'
 # rubocop:disable ClassLength
 class SamlIdpController < ApplicationController
   include SamlIdp::Controller
-  include SamlIdp::Algorithmable
   include SamlIdpLogoutConcern
 
   skip_before_action :verify_authenticity_token
@@ -16,20 +15,6 @@ class SamlIdpController < ApplicationController
   before_action :store_sp_data, only: :auth
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
 
-  helper_method :saml_response_url
-
-  def raw_algorithm
-    SamlIdp.config.algorithm
-  end
-
-  def signature_opts
-    algorithm
-  end
-
-  def saml_response_url
-    saml_request.response_url
-  end
-
   def auth
     use_secure_headers_override(:saml)
 
@@ -38,7 +23,7 @@ class SamlIdpController < ApplicationController
       return
     end
 
-    render_template_for(saml_response, saml_response_url, 'SAMLResponse')
+    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
   def metadata
@@ -109,10 +94,6 @@ class SamlIdpController < ApplicationController
     render nothing: true, status: :bad_request
   end
 
-  def saml_request_document
-    @_saml_xml_document ||= Saml::XML::Document.parse(saml_request.raw_xml)
-  end
-
   def requested_authn_context
     if saml_request.requested_authn_context
       saml_request.requested_authn_context
@@ -120,15 +101,6 @@ class SamlIdpController < ApplicationController
       logger.info 'authn_context is missing'
       nil
     end
-  end
-
-  def logout_response_builder
-    SamlIdp::LogoutResponseBuilder.new(
-      get_saml_response_id,
-      issuer_uri,
-      saml_response_url,
-      saml_request.request_id,
-      signature_opts)
   end
 
   def check_ial_token
@@ -170,7 +142,7 @@ class SamlIdpController < ApplicationController
     # store originating SP's logout response in the user session
     # for final step in SLO
     session[:logout_response] = logout_response_builder.signed
-    session[:logout_response_url] = saml_response_url
+    session[:logout_response_url] = saml_request.response_url
   end
 
   def saml_response

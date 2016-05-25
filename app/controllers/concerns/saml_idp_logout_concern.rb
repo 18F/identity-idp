@@ -133,7 +133,7 @@ module SamlIdpLogoutConcern
       sp_data[:assertion_consumer_logout_service_url],
       name_id,
       session_index,
-      signature_opts
+      SamlIdp.config.algorithm
     )
   end
 
@@ -143,7 +143,8 @@ module SamlIdpLogoutConcern
       SamlIdp.config.base_saml_location,
       saml_request.response_url,
       saml_request.request_id,
-      signature_opts)
+      SamlIdp.config.algorithm
+    )
   end
 end
 # rubocop:enable Metrics/ModuleLength
