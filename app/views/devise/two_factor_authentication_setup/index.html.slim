@@ -8,8 +8,6 @@
       = simple_form_for(resource, as: :user, html: { autocomplete: 'off', role: 'form' }, url: users_otp_path) do |f|
         = f.error_notification
         p = t('devise.two_factor_authentication.otp_setup')
-        .mb2
-        .mobile-num
-          = f.input :mobile, required: true, label: 'Mobile Number'
+        = f.input :mobile, label: 'Mobile Number', required: true, autofocus: true
         = f.button :submit, 'Submit'
         p = t('devise.two_factor_authentication.otp_sms_disclaimer')
