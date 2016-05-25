@@ -1,4 +1,19 @@
 class ServiceProvider
+  def self.domain_endpoints
+    providers = YAML.load_file("#{Rails.root}/config/service_providers.yml")
+    providers = providers.fetch(Rails.env, {})
+    providers.symbolize_keys!
+
+    provider_attributes = providers[:valid_hosts].values
+
+    acs_urls = provider_attributes.map { |hash| hash['acs_url'] }
+
+    whitelisted_domains = acs_urls.map do |url|
+      host = URI.parse(url).host.downcase
+    end
+    whitelisted_domains.uniq
+  end
+
   def initialize(host)
     @host = host
   end
