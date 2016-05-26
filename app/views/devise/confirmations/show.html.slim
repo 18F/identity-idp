@@ -6,13 +6,7 @@
       .panel-heading
         h2.m0 = t('upaya.forms.confirmation.show_hdr')
       .mb2.p2.alert-info
-        h4.mt0.mb1 Your password must:
-        ul.m0
-          li be at least 8 characters in length
-          li contain at least one upper case letter
-          li contain at least one lower case letter
-          li contain at least one number
-          li contain at least one special character
+        .h4 Your password must be at least 8 characters.
       = simple_form_for(resource, as: resource_name, url: confirm_path,  html: { role: 'form', autocomplete: 'off' }) do |f|
         = f.error_notification
         = f.input :password, required: true, input_html: { autofocus: true }

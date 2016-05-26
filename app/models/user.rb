@@ -35,14 +35,6 @@ class User < ActiveRecord::Base
 
   validates :ial_token, uniqueness: true, allow_nil: true
 
-  validates :password,
-            format: {
-              with: /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])
-                     (?=.*[#{Regexp.escape(Saml::Idp::Constants::PASSWORD_SPECIAL_CHARS)}])/x,
-              message: :password_format
-            },
-            if: :password_required?
-
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
 
