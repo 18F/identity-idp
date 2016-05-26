@@ -149,17 +149,12 @@ feature 'saml api', devise: true, sms: true do
       expect(page).to have_content(I18n.t('devise.two_factor_authentication.otp_setup'))
     end
 
-    it 'adds unique ACS and ACLS URLs for current Rails env to CSP form_action' do
-      # ACS = acs_url, ACLS = assertion_consumer_logout_service_url
+    it 'adds acs_url domain names for current Rails env to CSP form_action' do
       visit '/test/saml'
       authenticate_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
-        to include(
-          'form-action \'self\' localhost:3000/test/saml/decode_assertion ' \
-          'example.com/test/saml/decode_assertion ' \
-          'localhost:3000/test/saml/decode_slo_request ' \
-          'example.com/test/saml/decode_slo_request;')
+        to include('form-action \'self\' localhost:3000 example.com')
     end
   end
 
@@ -193,6 +188,11 @@ feature 'saml api', devise: true, sms: true do
       it 'generates logout request with Issuer' do
         expect(xmldoc.issuer_nodeset.length).to eq(1)
         expect(xmldoc.issuer_nodeset[0].content).to eq "https://#{Figaro.env.domain_name}/api/saml"
+      end
+
+      it 'adds acs_url domain names for current Rails env to CSP form_action' do
+        expect(page.response_headers['Content-Security-Policy']).
+          to include('form-action \'self\' localhost:3000 example.com')
       end
     end
 

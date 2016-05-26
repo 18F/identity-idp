@@ -14,10 +14,9 @@ class SamlIdpController < ApplicationController
   before_action :validate_saml_logout_param, only: :logout
   before_action :store_sp_data, only: :auth
   before_action :confirm_two_factor_authenticated, except: [:metadata, :logout]
+  before_action :apply_secure_headers_override, only: [:auth, :logout]
 
   def auth
-    use_secure_headers_override(:saml)
-
     unless valid_authn_contexts.include?(requested_authn_context)
       process_invalid_authn_context
       return
@@ -185,6 +184,10 @@ class SamlIdpController < ApplicationController
       requested_authn_context,
       true
     )
+  end
+
+  def apply_secure_headers_override
+    use_secure_headers_override(:saml)
   end
 end
 # rubocop:enable ClassLength
