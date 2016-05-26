@@ -119,7 +119,7 @@ feature 'Sign in' do
         and_return(Devise.timeout_in)
     end
 
-    xscenario 'user sees warning before session times out' do
+    scenario 'user sees warning before session times out' do
       def warning_content
         t('upaya.session_timeout_warning',
           time_left_in_session: time_left_in_session,
@@ -129,9 +129,9 @@ feature 'Sign in' do
       sign_in_and_2fa_user
       visit root_path
 
-      expect(page).to have_css('#session_timeout_warning', text: warning_content)
+      expect(page).to have_css('#session-timeout-msg', text: warning_content)
 
-      find_button('Continue Browsing').trigger('click')
+      find_link('Continue Browsing').trigger('click')
 
       expect(current_path).to eq dashboard_index_path
     end
@@ -150,10 +150,10 @@ feature 'Sign in' do
       expect(page).to_not have_css('.alert')
     end
 
-    it 'does not render modals/session_timeout_warning' do
+    it 'does not render session_timeout/warning partial' do
       visit root_path
 
-      expect(page).to_not have_css('#session_timeout_warning', visible: false)
+      expect(page).to_not have_css('#session-timeout-msg', visible: false)
     end
   end
 
@@ -179,6 +179,25 @@ feature 'Sign in' do
 
       expect(page).to_not have_content t('upaya.errors.invalid_authenticity_token')
       expect(current_path).to eq users_otp_path
+    end
+  end
+
+  context 'signed in, session times out, sign back in', js: true do
+    it 'prompts to enter OTP' do
+      allow(Rails.application.config).to receive(:session_check_frequency).and_return(0.01)
+      allow(Rails.application.config).to receive(:session_check_delay).and_return(0.01)
+      allow(Devise).to receive(:timeout_in).and_return(1.second)
+
+      user = sign_in_and_2fa_user
+      Timecop.travel(1.minute)
+      visit '/'
+
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button 'Log in'
+
+      expect(current_path).to eq user_two_factor_authentication_path
+      Timecop.return
     end
   end
 

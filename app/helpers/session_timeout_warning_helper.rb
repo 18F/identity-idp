@@ -13,7 +13,7 @@ module SessionTimeoutWarningHelper
 
   def auto_session_timeout_js
     nonced_javascript_tag do
-      render partial: 'shared/session_timeout',
+      render partial: 'session_timeout/ping',
              formats: [:js],
              locals: {
                warning: warning,
