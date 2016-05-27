@@ -57,6 +57,11 @@ production:
       acs_url: 'https://identity-rp-dev.apps.cloud.gov/consume'
       sp_initiated_login_url: 'https://identity-rp-dev.apps.cloud.gov/test/saml'
       cert: 'demo_sp'
+    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo':
+      metadata_url: 'https://identity-rp-demo.apps.cloud.gov/saml/metadata'
+      acs_url: 'https://identity-rp-demo.apps.cloud.gov/consume'
+      sp_initiated_login_url: 'https://identity-rp-demo.apps.cloud.gov/test/saml'
+      cert: 'demo_sp'
 
 superb.legit.domain.gov:
   valid_hosts:
