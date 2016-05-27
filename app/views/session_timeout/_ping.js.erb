@@ -1,0 +1,33 @@
+function ping() {
+  var request = new XMLHttpRequest();
+  request.open('GET', '/active', true);
+  request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+
+  request.onload = function() {
+    if (request.status >= 200 && request.status < 400) {
+      success(JSON.parse(request.responseText));
+    }
+  };
+
+  request.send();
+  setTimeout(ping, (<%= frequency %> * 1000));
+}
+
+
+function success(data) {
+  var el = document.getElementById('session-timeout-msg'),
+      cntnr = document.getElementById('session-timeout-cntnr');
+
+  var time_timeout = new Date(data.timeout).getTime(),
+      time_cutoff = new Date().getTime() + <%= warning %> * 1000,
+      show_warning = time_timeout < time_cutoff;
+
+  var warning_info = "<%= j render('session_timeout/warning') %>";
+
+  if (show_warning & !el) cntnr.insertAdjacentHTML('afterbegin', warning_info);
+  if (!show_warning & el) el.remove();
+  if (data.live == false) window.location.href = '/timeout';
+}
+
+
+setTimeout(ping, (<%= start %> * 1000));
