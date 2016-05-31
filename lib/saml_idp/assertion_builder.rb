@@ -1,6 +1,7 @@
 require 'builder'
 require 'saml_idp/algorithmable'
 require 'saml_idp/signable'
+require 'xmlenc'
 module SamlIdp
   class AssertionBuilder
     include Algorithmable
@@ -14,10 +15,12 @@ module SamlIdp
     attr_accessor :raw_algorithm
     attr_accessor :authn_context_classref
     attr_accessor :expiry
+    attr_accessor :encryption_opts
+    attr_accessor :encryption_key
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, expiry=60*60)
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, expiry=60*60, encryption_opts=nil)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
       self.principal = principal
@@ -27,6 +30,7 @@ module SamlIdp
       self.raw_algorithm = raw_algorithm
       self.authn_context_classref = authn_context_classref
       self.expiry = expiry
+      self.encryption_opts = encryption_opts
     end
 
     def fresh
@@ -72,6 +76,53 @@ module SamlIdp
     end
     alias_method :raw, :fresh
     private :fresh
+
+    def build_encrypted
+      plain_assertion = raw
+      encryption_template = Nokogiri::XML::Document.parse(build_encryption_template).root
+      encrypted_data = Xmlenc::EncryptedData.new(encryption_template)
+      @encryption_key = encrypted_data.encrypt(plain_assertion)
+      encrypted_assertion = Builder::XmlMarkup.new
+      encrypted_assertion.EncryptedAssertion xmlns: Saml::XML::Namespaces::ASSERTION do |enc_assert|
+        enc_assert << encrypted_data.node.to_s
+      end
+    end
+
+    def build_encryption_template
+      unless encryption_opts
+        raise "Must set encryption_opts to build encrypted assertion"
+      end
+      block_encryption_ns = "http://www.w3.org/2001/04/xmlenc##{encryption_opts[:block_encryption]}"
+      key_transport_ns = "http://www.w3.org/2001/04/xmlenc##{encryption_opts[:key_transport]}"
+      xml = Builder::XmlMarkup.new
+      xml.EncryptedData Id: 'ED', Type: 'http://www.w3.org/2001/04/xmlenc#Element',
+        xmlns: 'http://www.w3.org/2001/04/xmlenc#' do |enc_data|
+        enc_data.EncryptionMethod Algorithm: block_encryption_ns
+        enc_data.tag! 'ds:KeyInfo', 'xmlns:ds' => 'http://www.w3.org/2000/09/xmldsig#' do |key_info|
+          key_info.EncryptedKey Id: 'EK', xmlns: 'http://www.w3.org/2001/04/xmlenc#' do |enc_key|
+            enc_key.EncryptionMethod Algorithm: key_transport_ns do |cert_wrapper|
+              cert_wrapper.tag! 'ds:KeyInfo', 'xmlns:ds' => 'http://www.w3.org/2000/09/xmldsig#' do |key_info2|
+                key_info2.tag! 'ds:KeyName'
+                key_info2.tag! 'ds:X509Data' do |x509_data|
+                  x509_data.tag! 'ds:X509Certificate' do |x509_cert|
+                    x509_cert << encryption_opts[:cert]
+                  end
+                end
+              end
+              enc_key.CipherData do |cipher_data|
+                cipher_data.CipherValue
+              end
+              enc_key.ReferenceList do |ref_list|
+                ref_list.DataReference URI: 'ED'
+              end
+            end
+          end
+        end
+        enc_data.CipherData do |cipher_data|
+          cipher_data.CipherValue
+        end
+      end
+    end
 
     def get_values_for(friendly_name, getter)
       result = nil
