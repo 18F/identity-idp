@@ -40,6 +40,7 @@ end
 
 group :development do
   gem 'better_errors'
+  gem 'bummr'
   gem 'derailed'
   gem 'binding_of_caller'
   gem 'guard-rspec', require: false

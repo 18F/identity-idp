@@ -99,6 +99,9 @@ GEM
     bullet (5.0.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
+    bummr (0.0.2)
+      colorize
+      thor
     byebug (8.2.5)
     capistrano (3.5.0)
       airbrussh (>= 1.0.0)
@@ -143,6 +146,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.10.0)
+    colorize (0.7.7)
     concurrent-ruby (1.0.2)
     connection_pool (2.2.0)
     crack (0.4.3)
@@ -488,6 +492,7 @@ DEPENDENCIES
   binding_of_caller
   browserify-rails
   bullet
+  bummr
   capistrano
   capistrano-rails
   capistrano-rbenv
