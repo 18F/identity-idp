@@ -96,9 +96,9 @@ GEM
       railties (>= 4.0.0, < 5.1)
       sprockets (>= 3.5.2)
     builder (3.2.2)
-    bullet (5.0.0)
+    bullet (5.1.0)
       activesupport (>= 3.0.0)
-      uniform_notifier (~> 1.9.0)
+      uniform_notifier (~> 1.10.0)
     bummr (0.0.2)
       colorize
       thor
@@ -462,7 +462,7 @@ GEM
     uglifier (3.0.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.0.3)
-    uniform_notifier (1.9.0)
+    uniform_notifier (1.10.0)
     useragent (0.16.7)
     uuid (2.3.8)
       macaddr (~> 1.0)
