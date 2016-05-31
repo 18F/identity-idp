@@ -502,7 +502,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   database_cleaner
   derailed
-  devise
+  devise (~> 3.5)
   dotiw
   email_spec
   factory_girl_rails
