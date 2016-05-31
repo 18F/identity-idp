@@ -129,7 +129,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-screenshot (1.0.12)
+    capybara-screenshot (1.0.13)
       capybara (>= 1.0, < 3)
       launchy
     childprocess (0.5.9)
