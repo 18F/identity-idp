@@ -60,7 +60,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
   gem 'bullet'
-  gem 'mailcatcher', '0.6.3'
+  gem 'mailcatcher'
 end
 
 group :test do
