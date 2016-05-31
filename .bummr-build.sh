@@ -1,2 +1,2 @@
 #!/bin/sh
-bundle exec rspec
+bundle exec rspec --fail-fast

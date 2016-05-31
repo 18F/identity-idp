@@ -4,7 +4,7 @@ gem 'rails', '~> 4.2.6'
 
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
-gem 'devise'
+gem 'devise', '~> 3.5'
 gem 'dotiw'
 gem 'figaro'
 gem 'lograge'
