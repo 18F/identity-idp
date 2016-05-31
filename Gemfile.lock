@@ -419,7 +419,7 @@ GEM
       activesupport (>= 3.1, < 5.0)
       railties (>= 3.1, < 5.0)
       slim (~> 3.0)
-    slim_lint (0.7.2)
+    slim_lint (0.8.0)
       rake (>= 10, < 12)
       rubocop (>= 0.36.0)
       slim (~> 3.0)
