@@ -281,7 +281,7 @@ GEM
       ast (~> 2.2)
     pg (0.18.4)
     phony (2.15.21)
-    phony_rails (0.13.1)
+    phony_rails (0.14.1)
       activesupport (>= 3.0)
       phony (~> 2.12)
     poltergeist (1.9.0)
@@ -519,7 +519,7 @@ DEPENDENCIES
   omniauth-saml!
   overcommit
   pg
-  phony_rails (~> 0.13.1)
+  phony_rails
   poltergeist
   pry-byebug
   pundit
