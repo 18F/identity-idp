@@ -41,6 +41,7 @@ defaults in a Production environment. Post any issues you to github.
   s.add_dependency('builder')
   s.add_dependency('httparty')
   s.add_dependency('nokogiri')
+  s.add_dependency('xmlenc')
 
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
