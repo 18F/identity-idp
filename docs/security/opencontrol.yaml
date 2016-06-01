@@ -5,17 +5,20 @@ metadata:
   maintainers:
     - jrahaghi@omb.eop.gov
 components: # A list of paths to components written in the opencontrol format for more information view: https://github.com/opencontrol/schemas
-  - ./docs/security/CM_Policy
-  - ./docs/security/AC_Policy
-  - ./docs/security/SC_Policy
-  - ./docs/security/IA_Policy
-  - ./docs/security/CA_Policy
-  - ./docs/security/RA_Policy
-  - ./docs/security/SA_Policy
-  - ./docs/security/SI_Policy
-  - ./docs/security/AU_Policy
-  - ./docs/security/PL_Policy
+  - ./CM_Policy
+  - ./AC_Policy
+  - ./SC_Policy
+  - ./IA_Policy
+  - ./CA_Policy
 dependencies:
   systems:
-    - url: github.com/18F/cg-compliance
+    - url: https://github.com/opencontrol/cf-compliance
+      revision: master
+    - url: https://github.com/opencontrol/aws-compliance
+      revision: master
+  standards:
+    - url: https://github.com/opencontrol/NIST-800-53-Standards
+      revision: master
+  certifications:
+    - url: https://github.com/opencontrol/FedRAMP-Certifications
       revision: master

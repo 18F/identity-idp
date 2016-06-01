@@ -40,6 +40,8 @@ Vagrantfile
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
+/docs/security/exports
+/docs/security/opencontrols
 /fixtures
 /kitchen/cookbooks
 /log/*
