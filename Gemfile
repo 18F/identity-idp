@@ -10,7 +10,7 @@ gem 'figaro'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'omniauth-saml', github: 'amoose/omniauth-saml', branch: 'feature/internal_idp'
-gem 'phony_rails', '~> 0.13.1'
+gem 'phony_rails'
 gem 'pg'
 gem 'pundit'
 gem 'valid_email'
@@ -19,7 +19,7 @@ gem 'ruby-saml'
 gem 'nokogiri-xmlsec-me-harder', '~> 0.9.1', require: 'xmlsec'
 gem 'saml_idp', git: 'https://github.com/pkarman/saml_idp', branch: 'logout-request-builder'
 gem 'sass-rails', '~> 5.0'
-gem 'secure_headers', '~> 3.0.0'
+gem 'secure_headers', '~> 3.0'
 gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
@@ -60,7 +60,7 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
   gem 'bullet'
-  gem 'mailcatcher', '0.6.3'
+  gem 'mailcatcher'
 end
 
 group :test do
