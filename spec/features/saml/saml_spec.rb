@@ -212,8 +212,6 @@ feature 'saml api', devise: true, sms: true do
       end
 
       it 'signs out the user from IdP' do
-        expect(user.current_sign_in_at).to be_nil
-
         visit edit_user_registration_path
 
         expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
