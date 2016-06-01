@@ -50,12 +50,14 @@ module SamlIdp
         expiry,
         encryption_opts
       )
-      encrypted_xml = builder.build_encrypted
+      encrypted_xml = builder.encrypt
       encrypted_xml.should_not match(audience_uri)
+
       encrypted_doc = Nokogiri::XML::Document.parse(encrypted_xml)
       encrypted_data = Xmlenc::EncryptedData.new(encrypted_doc.at_xpath('//xenc:EncryptedData', Xmlenc::NAMESPACES))
       decrypted_assertion = encrypted_data.decrypt(builder.encryption_key)
       decrypted_assertion.should == subject.raw
+      decrypted_assertion.should match(audience_uri)
     end
   end
 end

@@ -15,6 +15,7 @@ module SamlIdp
     attr_accessor :x509_certificate
     attr_accessor :authn_context_classref
     attr_accessor :expiry
+    attr_accessor :encryption_opts
 
     def initialize(reference_id,
           response_id,
@@ -25,7 +26,8 @@ module SamlIdp
           saml_acs_url,
           algorithm,
           authn_context_classref,
-          expiry=60*60
+          expiry=60*60,
+          encryption_opts=nil
           )
       self.reference_id = reference_id
       self.response_id = response_id
@@ -39,6 +41,7 @@ module SamlIdp
       self.x509_certificate = x509_certificate
       self.authn_context_classref = authn_context_classref
       self.expiry = expiry
+      self.encryption_opts = encryption_opts
     end
 
     def build
@@ -46,7 +49,11 @@ module SamlIdp
     end
 
     def signed_assertion
-      assertion_builder.signed
+      if encryption_opts
+        assertion_builder.encrypt(sign: true)
+      else
+        assertion_builder.signed
+      end
     end
     private :signed_assertion
 
@@ -64,7 +71,8 @@ module SamlIdp
         saml_acs_url,
         algorithm,
         authn_context_classref,
-        expiry
+        expiry,
+        encryption_opts
     end
     private :assertion_builder
   end
