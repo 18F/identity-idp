@@ -133,7 +133,7 @@ module SamlIdp
               key_info2.tag! 'ds:KeyName'
               key_info2.tag! 'ds:X509Data' do |x509_data|
                 x509_data.tag! 'ds:X509Certificate' do |x509_cert|
-                  x509_cert << encryption_opts[:cert]
+                  x509_cert << cert.to_s.gsub(/-+(BEGIN|END) CERTIFICATE-+/, '')
                 end
               end
             end
