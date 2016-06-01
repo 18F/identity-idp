@@ -25,6 +25,13 @@ describe SamlIdp::Controller do
     end
 
     let(:principal) { double email_address: "foo@example.com" }
+    let (:encryption_opts) do
+      {
+        cert: SamlIdp::Default::X509_CERTIFICATE,
+        block_encryption: 'aes256-cbc',
+        key_transport: 'rsa-oaep-mgf1p',
+      }
+    end
 
     it "should create a SAML Response" do
       saml_response = encode_response(principal)
@@ -53,6 +60,19 @@ describe SamlIdp::Controller do
         response.name_id.should == "foo@example.com"
         response.issuers.first.should == "http://example.com"
         response.settings = saml_settings
+        response.is_valid?.should be_truthy
+      end
+
+      it "should encrypt SAML Response assertion" do
+        self.algorithm = algorithm_name
+        saml_response = encode_response(principal, encryption: encryption_opts)
+        resp_settings = saml_settings
+        resp_settings.private_key = SamlIdp::Default::SECRET_KEY
+        response = OneLogin::RubySaml::Response.new(saml_response, settings: resp_settings)
+        response.document.to_s.should_not match("foo@example.com")
+        response.decrypted_document.to_s.should match("foo@example.com")
+        response.name_id.should == "foo@example.com"
+        response.issuers.first.should == "http://example.com"
         response.is_valid?.should be_truthy
       end
     end
