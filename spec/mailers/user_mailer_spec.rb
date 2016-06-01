@@ -11,7 +11,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq('Email change notification')
+      expect(mail.subject).to eq t('upaya.mailer.email_change_notice.subject')
     end
 
     it 'renders the body' do
@@ -65,7 +65,7 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq 'Email Confirmation Notification'
+      expect(mail.subject).to eq t('upaya.mailer.email_reuse_notice.subject')
     end
 
     it 'renders the body' do

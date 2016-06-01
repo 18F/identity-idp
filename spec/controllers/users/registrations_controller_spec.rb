@@ -281,7 +281,7 @@ describe Users::RegistrationsController, devise: true do
       expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
       expect(response).to render_template('user_mailer/signup_with_your_email')
       expect(user.reload.email).to eq 'old_email@example.com'
-      expect(last_email.subject).to eq 'Email Confirmation Notification'
+      expect(last_email.subject).to eq t('upaya.mailer.email_reuse_notice.subject')
     end
   end
 
