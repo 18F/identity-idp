@@ -30,13 +30,15 @@ module Test
         UUID.generate,       # name_id
         'bogus_fuzzy_lambs', # name_qualifier
         UUID.generate,       # session_index
-        signature_opts)
+        signature_opts
+      )
 
       render template: 'saml_idp/shared/saml_post_binding.html.slim',
              locals: {
                action_url: '/api/saml/logout',
                message: Base64.encode64(logout_request_builder.build.to_xml),
-               type: :SAMLRequest },
+               type: :SAMLRequest
+             },
              layout: false
     end
     # rubocop:enable AbcSize, MethodLength

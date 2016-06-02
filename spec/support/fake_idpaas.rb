@@ -30,7 +30,9 @@ class FakeIdpaas < Sinatra::Base
         ],
         helpMessage: 'This is the help message',
         helpImageUrl: 'http://localhost:8080/idpaas/help-image/'\
-          '22619919-2adb-5825-1cf4-06e1d4a9e11b.jpg' } }.to_json
+          '22619919-2adb-5825-1cf4-06e1d4a9e11b.jpg'
+      }
+    }.to_json
   end
 
   get '/idpaas/user/:user_uuid/' do

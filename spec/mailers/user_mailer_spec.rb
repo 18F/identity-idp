@@ -18,7 +18,8 @@ describe UserMailer, type: :mailer do
       expect(mail.body).
         to have_content(
           'You have asked Upaya to change the email address currently associated with your ' \
-          'Upaya Account')
+          'Upaya Account'
+        )
     end
   end
 
@@ -37,7 +38,8 @@ describe UserMailer, type: :mailer do
       expect(mail.body).
         to have_content(
           'You have asked Upaya to change the password currently associated with your ' \
-          'Upaya Account')
+          'Upaya Account'
+        )
     end
   end
 

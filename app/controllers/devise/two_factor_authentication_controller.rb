@@ -1,6 +1,8 @@
 require 'feature_management'
 
+# rubocop:disable Style/ClassAndModuleChildren
 class Devise::TwoFactorAuthenticationController < DeviseController
+  # rubocop:enable Style/ClassAndModuleChildren
   prepend_before_action :authenticate_scope!
   before_action :verify_user_is_not_second_factor_locked
   before_action :handle_two_factor_authentication

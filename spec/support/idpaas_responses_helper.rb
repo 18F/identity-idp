@@ -68,9 +68,7 @@ module IdpaasResponsesHelper
           { key: 3, text: '21917' },
           { key: 4, text: '21802' },
           { key: 5, text: 'NONE OF THE ABOVE' }
-        ]
-      }
-    }.to_json
+        ] } }.to_json
   end
 
   def response_without_help_with_nulls
@@ -86,9 +84,7 @@ module IdpaasResponsesHelper
           ],
           helpMessage: nil,
           helpUuid: nil,
-          helpImageUrl: nil
-        }
-    }.to_json
+          helpImageUrl: nil } }.to_json
   end
 
   # Responses below return HTTP 404 status code

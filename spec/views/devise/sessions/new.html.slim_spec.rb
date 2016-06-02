@@ -24,6 +24,7 @@ describe 'devise/sessions/new.html.slim' do
 
     expect(rendered).
       to have_link(
-        t('upaya.links.create_new_account'), href: new_user_registration_path)
+        t('upaya.links.create_new_account'), href: new_user_registration_path
+      )
   end
 end

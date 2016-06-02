@@ -71,8 +71,7 @@ module SamlResponseHelper
     def logout_asserted_session_index
       response_doc.xpath('//samlp:LogoutRequest/samlp:SessionIndex',
                          samlp: Saml::XML::Namespaces::PROTOCOL,
-                         saml: Saml::XML::Namespaces::ASSERTION
-                        )[0].content
+                         saml: Saml::XML::Namespaces::ASSERTION)[0].content
     end
 
     def issuer_nodeset
@@ -164,8 +163,7 @@ module SamlResponseHelper
     def asserted_session_index
       response_doc.xpath('//samlp:LogoutRequest/samlp:SessionIndex',
                          samlp: Saml::XML::Namespaces::PROTOCOL,
-                         saml: Saml::XML::Namespaces::ASSERTION
-                        )[0].content
+                         saml: Saml::XML::Namespaces::ASSERTION)[0].content
     end
   end
 end

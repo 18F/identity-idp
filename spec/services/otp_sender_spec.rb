@@ -17,7 +17,8 @@ describe UserOtpSender do
     context 'when user is two_factor_enabled and has an unconfirmed_mobile' do
       it 'generates a new OTP and only sends OTP to unconfirmed_mobile' do
         user = build_stubbed(
-          :user, unconfirmed_mobile: '5005550006', otp_secret_key: 'lzmh6ekrnc5i6aaq')
+          :user, unconfirmed_mobile: '5005550006', otp_secret_key: 'lzmh6ekrnc5i6aaq'
+        )
 
         allow(user).to receive(:two_factor_enabled?).and_return(true)
 

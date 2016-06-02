@@ -62,7 +62,8 @@ module SamlIdpLogoutConcern
       message: slo_request_builder(
         slo_identity.sp_metadata,
         resource.uuid,
-        slo_identity.session_uuid).signed,
+        slo_identity.session_uuid
+      ).signed,
       action_url: slo_identity.sp_metadata[:assertion_consumer_logout_service_url],
       message_type: 'SAMLRequest'
     }

@@ -184,7 +184,8 @@ module SamlAuthHelper
       OneLogin::RubySaml::Response.new(
         Nokogiri::HTML(response.body).at_css('#SAMLResponse')['value'],
         private_key: key,
-        private_key_password: '').response
+        private_key_password: ''
+      ).response
     )
   end
 

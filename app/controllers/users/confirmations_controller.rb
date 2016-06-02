@@ -30,7 +30,8 @@ module Users
 
     def with_unconfirmed_confirmable
       @confirmable = User.find_or_initialize_with_error_by(
-        :confirmation_token, params[:confirmation_token])
+        :confirmation_token, params[:confirmation_token]
+      )
 
       if @confirmable.confirmed?
         @confirmable = User.confirm_by_token(params[:confirmation_token])

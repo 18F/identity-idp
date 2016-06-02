@@ -7,7 +7,8 @@ UserDecorator = Struct.new(:user) do
 
   def lockout_time_remaining_in_words
     distance_of_time_in_words(
-      Time.zone.now, Time.zone.now + lockout_time_remaining, true, highest_measures: 2)
+      Time.zone.now, Time.zone.now + lockout_time_remaining, true, highest_measures: 2
+    )
   end
 
   def confirmation_period_expired_error
@@ -16,7 +17,8 @@ UserDecorator = Struct.new(:user) do
 
   def confirmation_period
     distance_of_time_in_words(
-      Time.zone.now, Time.zone.now + Devise.confirm_within, true, accumulate_on: :hours)
+      Time.zone.now, Time.zone.now + Devise.confirm_within, true, accumulate_on: :hours
+    )
   end
 
   def first_sentence_for_confirmation_email
