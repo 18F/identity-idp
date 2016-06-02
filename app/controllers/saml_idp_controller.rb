@@ -26,7 +26,7 @@ class SamlIdpController < ApplicationController
   end
 
   def metadata
-    render inline: SamlIdp.metadata.build.to_xml, content_type: 'text/xml'
+    render inline: SamlIdp.metadata.signed, content_type: 'text/xml'
   end
 
   def logout
