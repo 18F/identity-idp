@@ -17,5 +17,5 @@
       = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
         .mb2
           = label_tag 'code', raw('<abbr title="required">*</abbr> ') + t('upaya.forms.two_factor.code')
-          = text_field_tag :code, '', required: true, autofocus: true, class: 'block col-12 field'
+          = number_field_tag :code, '', autofocus: true, class: 'block col-12 field mfa', required: true
         = submit_tag 'Submit', class: 'btn btn-primary'

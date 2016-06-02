@@ -4,6 +4,6 @@ h3 = t('upaya.headings.users.edit')
 = required_form_field(@user, html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.error_notification
   = f.input :email, required: true, autofocus: true
-  = f.input :mobile, required: false, readonly: true
+  = f.input :mobile, as: :tel, readonly: true, required: false
   = f.input :role, collection: User.roles.keys.map { |role| [role.titleize, role] }
   = f.button :submit, 'Update', class: 'usa-button'
