@@ -35,15 +35,27 @@ module Users
       respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
     end
 
+    def edit
+      resource = User.new
+      resource.reset_password_token = params[:reset_password_token]
+      @password_form = PasswordForm.new(resource)
+    end
+
     # PUT /resource/password
     def update
-      self.resource = resource_class.reset_password_by_token(resource_params)
+      self.resource = User.reset_password_by_token(form_params)
 
-      return handle_successful_password_reset_for(resource) if resource.errors.empty?
+      @password_form = PasswordForm.new(resource)
 
-      return handle_expired_reset_password_token unless resource.reset_password_period_valid?
+      if @password_form.submit(user_params)
+        handle_successful_password_reset_for(resource)
+      else
+        if resource.errors[:reset_password_token].present?
+          return handle_expired_reset_password_token
+        end
 
-      handle_failed_password_reset_for(resource)
+        render :edit
+      end
     end
 
     protected
@@ -66,11 +78,9 @@ module Users
     end
 
     def handle_successful_password_reset_for(resource)
-      resource.unlock_access! if unlockable?(resource)
-
       set_flash_message(:notice, :updated_not_active) if is_flashing_format?
 
-      respond_with resource, location: after_resetting_password_path_for(resource)
+      redirect_to new_user_session_path
 
       EmailNotifier.new(resource).send_password_changed_email
     end
@@ -81,9 +91,13 @@ module Users
       redirect_to new_user_password_path
     end
 
-    def handle_failed_password_reset_for(resource)
-      set_minimum_password_length
-      respond_with resource
+    def user_params
+      params.require(:password_form).
+        permit(:password, :password_confirmation, :reset_password_token)
+    end
+
+    def form_params
+      params.fetch(:password_form, {})
     end
   end
 end

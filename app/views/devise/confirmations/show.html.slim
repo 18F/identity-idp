@@ -7,7 +7,10 @@
         h2.m0 = t('upaya.forms.confirmation.show_hdr')
       .mb2.p2.alert-info
         .h4 Your password must be at least 8 characters.
-      = simple_form_for(resource, as: resource_name, url: confirm_path,  html: { role: 'form', autocomplete: 'off' }) do |f|
+      = simple_form_for(@password_form,
+          url: confirm_path,
+          method: :patch,
+          html: { role: 'form', autocomplete: 'off' }) do |f|
         = f.error_notification
         = f.input :password, required: true, input_html: { autofocus: true }
         = f.input :password_confirmation, required: true

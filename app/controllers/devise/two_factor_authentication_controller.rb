@@ -15,7 +15,8 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
       redirect_to dashboard_index_url
     end
-    @user_decorator = UserDecorator.new(current_user)
+
+    @phone_number = UserDecorator.new(current_user).two_factor_phone_number
   end
 
   def update
@@ -67,7 +68,9 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def send_number_change_sms_if_needed
     user_decorator = UserDecorator.new(resource)
 
-    SmsSenderNumberChangeJob.perform_later(resource) if user_decorator.mobile_change_requested?
+    if user_decorator.mobile_change_requested?
+      SmsSenderNumberChangeJob.perform_later(resource.mobile)
+    end
   end
 
   def update_authenticated_resource

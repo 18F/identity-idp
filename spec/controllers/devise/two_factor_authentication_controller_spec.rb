@@ -4,7 +4,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
   describe 'update' do
     let(:user) { create(:user, :signed_up) }
 
-    context 'when user only has email 2FA' do
+    context 'when user has not changed their number' do
       it 'does not perform SmsSenderNumberChangeJob' do
         sign_in user
         user.send_two_factor_authentication_code

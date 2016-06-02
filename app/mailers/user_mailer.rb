@@ -5,10 +5,10 @@ class UserMailer < ActionMailer::Base
     mail(to: old_email, subject: t('upaya.mailer.email_change_notice.subject'))
   end
 
-  def signup_with_your_email(user)
+  def signup_with_your_email(email)
     @root_url = root_url
     @new_user_password_url = new_user_password_url
-    mail(to: user.email, subject: t('upaya.mailer.email_reuse_notice.subject'))
+    mail(to: email, subject: t('upaya.mailer.email_reuse_notice.subject'))
   end
 
   def password_changed(user)

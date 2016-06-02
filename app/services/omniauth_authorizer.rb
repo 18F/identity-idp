@@ -5,7 +5,8 @@ OmniauthAuthorizer = Struct.new(:auth_hash, :session) do
     find_or_create_auth
 
     unless auth.valid?
-      return yield auth.user, :process_invalid_authorization if block_given?
+      yield auth.user, :process_invalid_authorization if block_given?
+      return
     end
 
     update_auth

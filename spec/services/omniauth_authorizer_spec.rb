@@ -102,5 +102,35 @@ describe OmniauthAuthorizer do
         end
       end
     end
+
+    context 'when the authorization sends an invalid email' do
+      let(:auth_hash) do
+        OmniAuth::AuthHash.new(
+          provider: 'saml',
+          extra: {
+            raw_info: {
+              email: 'email@foo',
+              uuid: '1234'
+            }
+          }
+        )
+      end
+
+      it 'does not create a new User' do
+        expect { authorizer.perform }.to_not change { User.count }
+      end
+
+      it 'does not update the session' do
+        authorizer.perform
+
+        expect(session[:omniauthed]).to be_nil
+      end
+
+      it 'does not update the authorization authorized_at timestamp' do
+        authorizer.perform
+
+        expect(authorizer.auth.authorized_at).to be_nil
+      end
+    end
   end
 end

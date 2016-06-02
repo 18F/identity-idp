@@ -58,7 +58,7 @@ describe UserMailer, type: :mailer do
   end
 
   describe 'signup_with_your_email' do
-    let(:mail) { UserMailer.signup_with_your_email(user) }
+    let(:mail) { UserMailer.signup_with_your_email(user.email) }
 
     it 'sends to the current email' do
       expect(mail.to).to eq [user.email]

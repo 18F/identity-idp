@@ -5,7 +5,11 @@
     .panel
       .panel-heading
         h2.m0 = t('upaya.headings.passwords.change')
-      = simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+      = simple_form_for(@password_form,
+          url: password_path(resource_name),
+          html: { autocomplete: 'off',
+          method: :put,
+          role: 'form' }) do |f|
         = f.error_notification
         = f.input :reset_password_token, as: :hidden
         = f.full_error :reset_password_token

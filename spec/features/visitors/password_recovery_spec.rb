@@ -10,7 +10,7 @@ feature 'Password Recovery' do
     fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
     click_button 'Change my password'
     fill_in 'Email', with: 'email@example.com'
-    fill_in 'Password', with: 'NewVal!dPassw0rd'
+    fill_in 'user_password', with: 'NewVal!dPassw0rd'
     click_button 'Log in'
   end
 
@@ -110,13 +110,7 @@ feature 'Password Recovery' do
   #   Then I can set a new password
   context 'user with password confirmation resets password', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_first_link_in_email
-      reset_email
-      fill_in 'user[password]', with: 'ValidPassw0rd!'
-      fill_in 'user[password_confirmation]', with: 'ValidPassw0rd!'
-      click_button 'Submit'
+      sign_up_with_and_set_password_for('email@example.com')
       click_link(t('upaya.headings.log_out'), match: :first)
       visit root_path
       click_link t('upaya.headings.passwords.forgot')
@@ -147,13 +141,7 @@ feature 'Password Recovery' do
 
   context 'user with invalid token cannot reset password', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_first_link_in_email
-      reset_email
-      fill_in 'user[password]', with: 'ValidPassw0rd!'
-      fill_in 'user[password_confirmation]', with: 'ValidPassw0rd!'
-      click_button 'Submit'
+      sign_up_with_and_set_password_for('email@example.com')
       click_link(t('upaya.headings.log_out'), match: :first)
       visit root_path
       click_link t('upaya.headings.passwords.forgot')
@@ -177,13 +165,7 @@ feature 'Password Recovery' do
   #   Then I can set a new password
   context 'user with 2FA confirmation resets password', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_first_link_in_email
-      reset_email
-      fill_in 'user[password]', with: 'ValidPassw0rd!'
-      fill_in 'user[password_confirmation]', with: 'ValidPassw0rd!'
-      click_button 'Submit'
+      sign_up_with_and_set_password_for('email@example.com')
       fill_in 'Mobile', with: '5555555555'
       click_button 'Submit'
       fill_in 'code', with: User.last.otp_code

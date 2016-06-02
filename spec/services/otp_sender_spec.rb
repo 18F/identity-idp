@@ -32,7 +32,7 @@ describe UserOtpSender do
 
   describe '#reset_otp_state' do
     context 'when the user has a confirmed mobile and unconfirmed_mobile' do
-      it 'sets unconfirmed_mobile to nil and keeps mobile 2FA' do
+      it 'sets unconfirmed_mobile to nil' do
         user = create(:user, :with_mobile, unconfirmed_mobile: '5005550006')
 
         UserOtpSender.new(user).reset_otp_state
