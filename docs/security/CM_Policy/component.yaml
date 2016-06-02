@@ -1,0 +1,17 @@
+documentation_complete: false
+name: Configuration Management Policy for Login.gov
+satisfies:
+- control_key: CM-4
+  covered_by: []
+  implementation_status: none
+  narrative: 'Login.gov engineers have reviewed all necessary security controls, conducted impact
+analyses, and implemented all necessary controls.'
+  standard_key: NIST-800-53
+- control_key: CM-9
+  covered_by: []
+  implementation_status: none
+  narrative: 'Login.gov will utilize Cloud.gov for deployment, github for source control, encryption
+to protect sensitive configuration data, aws s-3 bucket encryption'
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: Login.gov

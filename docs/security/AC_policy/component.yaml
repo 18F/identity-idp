@@ -1,0 +1,29 @@
+documentation_complete: false
+name: Access Control Policies for Login.gov
+satisfies:
+- control_key: AC-7
+  covered_by: []
+  implementation_status: none
+  narrative: 'Login.gov will throttle users after 3 unsuccessful attempts for 30 minutes.'
+  standard_key: NIST-800-53
+- control_key: AC-8
+  covered_by: []
+  implementation_status: none
+  narrative: 'Login.gov does not require organizational system notifications for citizen users.'
+  standard_key: NIST-800-53
+- control_key: AC-12
+  covered_by: []
+  implementation_status: none
+  narrative: 'Login.gov provides a logout capability for user-initiated communications sessions whenever
+authentication is used to gain access to a U.S. Government web services. User initiated logout will take effect for relying
+party and login.gov when initiated by the user. User session termination will occur after 20 minutes of idle time or
+if the browser is closed.'
+  standard_key: NIST-800-53
+- control_key: AC-22
+  covered_by: []
+  implementation_status: none
+  narrative: 'Login.gov does not have a distinct "content" team. Each code or content pull request is treated the same.
+The control is a commit/Pull Request review.'
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: Login.gov

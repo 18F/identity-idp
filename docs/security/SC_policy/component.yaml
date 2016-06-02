@@ -1,0 +1,20 @@
+documentation_complete: false
+name: System and Communications Protection Policy for Login.gov
+satisfies:
+- control_key: SC-12
+  covered_by: []
+  implementation_status: none
+  narrative: 'The organization establishes and manages cryptographic keys for
+required cryptography employed within the information system in accordance with
+[Assignment: organization-defined requirements for key generation, distribution,
+storage, access, and destruction].'
+  standard_key: NIST-800-53
+- control_key: SC-17
+  covered_by: []
+  implementation_status: none
+  narrative: "The organization issues public key certificates under GSA FICAM certificate policy
+or obtains public key certificates from Let's Encrypt Authority X3 Certification Authority,
+a government approved service provider."
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: Login.gov

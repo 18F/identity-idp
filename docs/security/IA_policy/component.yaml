@@ -1,0 +1,15 @@
+documentation_complete: false
+name: Identification and Authentication (Non-Organizational Users) Policy for Login.gov
+satisfies:
+- control_key: IA-8
+  covered_by: []
+  implementation_status: none
+  narrative:  'Login.gov allows consumers to access user entitled resources with a combination of identity
+proofing and authentication. Identity proofing is done during account creation or recovery at IAA2 and periodically
+over time due to inactivity. It will use government approved (TSF) 3rd party identity verification services,
+where Login.gov system will interaction with said service for Identity verification and proceed with authentication
+services between the consumer and Service Provider. Authentication will be done using email address, password plus
+a 2nd Factor tools such as cellular phone service based SMS OTP or other emerging authenticators.'
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: Login.gov

@@ -1,0 +1,53 @@
+prepared_by:
+  organization: GSA OCISO and Valiant Solutions
+  street_address: 1800 F St, NW
+  suite: 4400 Infill
+  city: Washington
+  state: DC
+  zip: 20405
+prepared_for:
+  organization:
+  street_address:
+  suite:
+  city:
+  state:
+  zip:
+information_system:
+  unique_id: cloud.gov
+  name: Cloud Foundy Platform as a Service
+  abbreviation: cloud.gov
+  security_categorization: moderate
+  security_objects_categorization:
+    confidentiality: low
+    integrity: moderate
+    availability: low
+  e_authentication:
+    internet_auth: false
+    browser_usage: false
+    internet_usage: true
+  owner:
+    name: Noah Kunin
+    title: 18F Infrastructure Director
+    organization: 18F/GSA
+    phone_number: 202-577-7167
+    email: noah.kunin [at] gsa.gov
+    street_address: 1800 F Street, NW
+    city: Washington
+    state: DC
+    zip: 20405
+  authorizing_official:
+    name: Aaron Snow
+    title: Authorizing Official
+    organization: 18F/GSA
+    email: aaron.snow [at] gsa.gov
+    street_address: 1800 F Street, NW
+    city: Washington
+    state: DC
+    zip: 20405
+  operation_status: operational
+  system_type: PaaS
+  deployment_model: Public
+  leveraged_authorizations:
+    - system_name:
+      owner: Amazon Web Services (AWS)
+      date_granted: 2013-13-05
