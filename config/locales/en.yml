@@ -242,4 +242,3 @@ en:
   errors:
     messages:
       improbable_phone: 'Mobile number is invalid. Please make sure you enter a 10-digit phone number.'
-      taken: 'has already been taken'
