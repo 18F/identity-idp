@@ -4,7 +4,7 @@ gem 'rails', '~> 4.2.6'
 
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
-gem 'devise', '~> 3.5'
+gem 'devise', '~> 4.1'
 gem 'dotiw'
 gem 'figaro'
 gem 'lograge'
@@ -75,6 +75,7 @@ group :test do
   gem 'rack-test'
   gem 'shoulda-matchers', '~> 2.8', require: false
   gem 'sms-spec', git: 'https://github.com/monfresh/sms-spec.git', require: 'sms_spec'
+  gem 'test_after_commit'
   gem 'timecop'
   gem 'webmock'
 end
