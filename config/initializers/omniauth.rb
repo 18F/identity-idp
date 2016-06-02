@@ -8,7 +8,7 @@ DEFAULT_OPTIONS = {
   idp_cert: File.read("#{Rails.root}/certs/saml_idp_cert.crt"),
   name_identifier_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
   allowed_clock_drift: 60.seconds,
-  certificate: File.read("#{Rails.root}/certs/saml_cert.crt"),
+  certificate: File.read("#{Rails.root}/certs/saml_idp.crt"),
   private_key: OpenSSL::PKey::RSA.new(
     File.read(Rails.root + 'keys/saml.key.enc'),
     Figaro.env.saml_passphrase
