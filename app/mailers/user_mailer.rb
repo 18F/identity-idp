@@ -2,13 +2,13 @@ class UserMailer < ActionMailer::Base
   default from: 'upaya@18f.gov'
 
   def email_changed(old_email)
-    mail(to: old_email, subject: 'Email change notification')
+    mail(to: old_email, subject: t('upaya.mailer.email_change_notice.subject'))
   end
 
   def signup_with_your_email(user)
     @root_url = root_url
     @new_user_password_url = new_user_password_url
-    mail(to: user.email, subject: 'Email Confirmation Notification')
+    mail(to: user.email, subject: t('upaya.mailer.email_reuse_notice.subject'))
   end
 
   def password_changed(user)

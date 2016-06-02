@@ -135,7 +135,11 @@ en:
 
     mailer:
       password_expires_soon:
-        subject: Password Expiration Notice
+        subject: Password expiration notice
+      email_reuse_notice:
+        subject: Email confirmation notification
+      email_change_notice:
+        subject: Email change notification
 
   activerecord:
     errors:

@@ -49,7 +49,7 @@ describe 'user edits their account', email: true do
     it 'displays a notice informing the user their email has been confirmed when user confirms' do
       get_via_redirect links_in_email(last_email).first
 
-      expect(flash[:notice]).to eq t 'devise.confirmations.confirmed'
+      expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
       expect(response).to render_template('user_mailer/email_changed')
     end
 
@@ -66,7 +66,7 @@ describe 'user edits their account', email: true do
       delete_via_redirect destroy_user_session_path
       get_via_redirect links_in_email(last_email).first
 
-      expect(flash[:notice]).to eq t 'devise.confirmations.confirmed'
+      expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
     end
   end
 
@@ -188,7 +188,7 @@ describe 'user edits their account', email: true do
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq old_mobile
-      expect(last_email.subject).to eq 'Email Confirmation Notification'
+      expect(last_email.subject).to eq t('upaya.mailer.email_reuse_notice.subject')
     end
 
     it 'calls SmsSenderExistingMobileJob but not SmsSenderOtpJob' do
@@ -263,7 +263,7 @@ describe 'user edits their account', email: true do
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq old_mobile
-      expect(last_email.subject).to eq 'Email Confirmation Notification'
+      expect(last_email.subject).to eq t('upaya.mailer.email_reuse_notice.subject')
     end
 
     it 'calls SmsSenderOtpJob but not SmsSenderExistingMobileJob' do
