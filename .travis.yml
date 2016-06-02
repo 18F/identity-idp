@@ -10,6 +10,7 @@ before_install:
 before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml
+  - cp certs/saml_idp.crt.example certs/saml_idp.crt
   - cp keys/saml.key.enc.example keys/saml.key.enc
   - bin/rake db:setup --trace
   - bin/rake assets:precompile

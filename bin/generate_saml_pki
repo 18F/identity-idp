@@ -1,3 +1,3 @@
 #!/bin/sh
 openssl req -x509 -newkey rsa:2048 -keyout keys/saml.key.enc.example \
-  -out certs/saml_idp.crt -days 365 -config config/openssl.conf
+  -out certs/saml_idp.crt.example -days 365 -config config/openssl.conf

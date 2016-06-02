@@ -17,8 +17,9 @@ Dir.chdir APP_ROOT do
     run "cp config/#{file}.example config/#{file}"
   end
 
-  puts "== Copying sample keys =="
+  puts "== Copying sample certs and keys =="
   run "cp keys/saml.key.enc.example keys/saml.key.enc"
+  run "cp certs/saml_idp.crt.example certs/saml_idp.crt"
 
   if ARGV.shift == "--docker" then
     exit
