@@ -12,5 +12,8 @@
       = render 'devise/sessions/form'
       h2.m0.py3.text-over-line
         span or use your
-      = button_to 'Existing Credential', user_omniauth_authorize_path(:saml), title: 'Existing Credential',
-        class: 'btn btn-primary col-12 bg-navy mb1', method: :get
+      = button_to 'Existing Credential',
+                  user_saml_omniauth_authorize_path,
+                  title: 'Existing Credential',
+                  class: 'btn btn-primary col-12 bg-navy mb1',
+                  method: :get
