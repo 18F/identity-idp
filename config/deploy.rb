@@ -12,7 +12,7 @@ set :linked_files, %w(config/application.yml
                       keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
 set :rails_env, :production
-set :rbenv_ruby, '2.3.0'
+set :rbenv_ruby, '2.3.1'
 set :rbenv_type, :user # or :system, depends on your rbenv setup
 set :repo_url, 'https://github.com/18F/identity-idp.git'
 set :sidekiq_queue, [:mailers, :sms]
