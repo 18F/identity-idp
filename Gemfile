@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
@@ -17,7 +18,7 @@ gem 'valid_email'
 gem 'rack-attack'
 gem 'ruby-saml'
 gem 'nokogiri-xmlsec-me-harder', '~> 0.9.1', require: 'xmlsec'
-gem 'saml_idp', git: 'https://github.com/pkarman/saml_idp', branch: 'logout-request-builder'
+gem 'saml_idp', github: 'pkarman/saml_idp', branch: 'logout-request-builder'
 gem 'sass-rails', '~> 5.0'
 gem 'secure_headers', '~> 3.0'
 gem 'sidekiq'
@@ -26,7 +27,7 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'turbolinks'
 gem 'twilio-ruby'
-gem 'two_factor_authentication', git: 'https://github.com/Houdini/two_factor_authentication'
+gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'activerecord-session_store', '1.0.0.pre'
@@ -40,15 +41,16 @@ end
 
 group :development do
   gem 'better_errors'
-  gem 'bummr'
+  gem 'brakeman', require: false
+  gem 'bummr', require: false
   gem 'derailed'
   gem 'binding_of_caller'
   gem 'guard-rspec', require: false
-  gem 'overcommit'
+  gem 'overcommit', require: false
   gem 'quiet_assets'
   gem 'rack-mini-profiler'
   gem 'rails_layout'
-  gem 'rubocop'
+  gem 'rubocop', require: false
   gem 'slim_lint'
   gem 'spring'
   gem 'spring-commands-rspec'
@@ -60,12 +62,12 @@ group :development, :test do
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
   gem 'bullet'
-  gem 'mailcatcher'
+  gem 'mailcatcher', require: false
 end
 
 group :test do
   gem 'capybara-screenshot'
-  gem 'codeclimate-test-reporter', require: nil
+  gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_girl_rails'
@@ -74,7 +76,7 @@ group :test do
   gem 'rack_session_access'
   gem 'rack-test'
   gem 'shoulda-matchers', '~> 2.8', require: false
-  gem 'sms-spec', git: 'https://github.com/monfresh/sms-spec.git', require: 'sms_spec'
+  gem 'sms-spec', github: 'monfresh/sms-spec', require: 'sms_spec'
   gem 'test_after_commit'
   gem 'timecop'
   gem 'webmock'
