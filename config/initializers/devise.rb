@@ -266,4 +266,5 @@ Devise.setup do |config|
   config.allowed_otp_drift_seconds = 600
   config.max_login_attempts = 3 # max OTP login attemps, not devise strategies (e.g. pw auth)
   config.otp_length = 8
+  config.direct_otp_length = 8
 end

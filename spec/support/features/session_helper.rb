@@ -57,7 +57,7 @@ module Features
       user = sign_up_with_and_set_password_for(email, reset_session)
       fill_in 'Mobile', with: '202-555-1212'
       click_button 'Submit'
-      fill_in 'code', with: user.reload.otp_code
+      fill_in 'code', with: user.reload.direct_otp
       click_button 'Submit'
       user
     end

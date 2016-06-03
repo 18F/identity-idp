@@ -16,7 +16,7 @@ feature 'User profile page', devise: true do
     expect(page).
       to have_content t('devise.two_factor_authentication.header_text')
 
-    fill_in 'code', with: user.otp_code
+    fill_in 'code', with: user.direct_otp
     click_button 'Submit'
 
     visit user_path(user)

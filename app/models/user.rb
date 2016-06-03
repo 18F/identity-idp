@@ -32,7 +32,7 @@ class User < ActiveRecord::Base
     mobile_confirmed_at.present?
   end
 
-  def send_two_factor_authentication_code
+  def send_two_factor_authentication_code(_code)
     UserOtpSender.new(self).send_otp
   end
 

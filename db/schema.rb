@@ -97,6 +97,8 @@ ActiveRecord::Schema.define(version: 20160524231157) do
     t.string   "encrypted_otp_secret_key",      limit: 255
     t.string   "encrypted_otp_secret_key_iv",   limit: 255
     t.string   "encrypted_otp_secret_key_salt", limit: 255
+    t.string   "direct_otp"
+    t.datetime "direct_otp_sent_at"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

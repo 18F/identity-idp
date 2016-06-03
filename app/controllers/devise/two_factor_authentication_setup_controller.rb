@@ -34,7 +34,7 @@ module Devise
     def process_valid_form
       update_metrics
 
-      resource.send_two_factor_authentication_code
+      resource.send_new_otp
 
       flash[:success] = t('devise.two_factor_authentication.please_confirm')
       redirect_to user_two_factor_authentication_path

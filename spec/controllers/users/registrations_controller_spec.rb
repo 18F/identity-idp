@@ -175,7 +175,7 @@ describe Users::RegistrationsController, devise: true do
       )
 
       expect(SmsSenderOtpJob).to have_received(:perform_later).
-        with(user.reload.otp_code, '+1 (555) 555-5555')
+        with(user.reload.direct_otp, '+1 (555) 555-5555')
     end
   end
 

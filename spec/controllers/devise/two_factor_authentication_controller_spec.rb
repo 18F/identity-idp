@@ -7,19 +7,19 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     context 'when user has not changed their number' do
       it 'does not perform SmsSenderNumberChangeJob' do
         sign_in user
-        user.send_two_factor_authentication_code
+        user.send_new_otp
 
         expect(SmsSenderNumberChangeJob).
           to_not receive(:perform_later).with(user)
 
-        patch :update, code: user.otp_code
+        patch :update, code: user.direct_otp
       end
     end
 
     context 'when resource is no longer OTP locked out' do
       before do
         sign_in user
-        user.send_two_factor_authentication_code
+        user.send_new_otp
         user.update(
           second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1).seconds
         )
@@ -33,7 +33,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'resets second_factor_locked_at when user submits correct code' do
-        patch :update, code: user.otp_code
+        patch :update, code: user.direct_otp
 
         expect(user.reload.second_factor_locked_at).to be_nil
       end

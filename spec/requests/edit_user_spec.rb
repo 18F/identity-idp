@@ -16,10 +16,12 @@ describe 'user edits their account', email: true do
       'user[password]' => @user.password
     )
 
-    patch_via_redirect(
-      user_two_factor_authentication_path,
-      'code' => @user.otp_code
-    )
+    if @user.reload.direct_otp
+      patch_via_redirect(
+        user_two_factor_authentication_path,
+        'code' => @user.direct_otp
+      )
+    end
   end
 
   let(:new_email) { 'new_email@example.com' }
@@ -78,7 +80,7 @@ describe 'user edits their account', email: true do
   context 'user changes mobile' do
     before do
       sign_in_as_a_valid_user(user_with_mobile)
-      @old_otp_code = @user.otp_code
+      @old_otp_code = @user.direct_otp
       patch_via_redirect '/users', update_user_profile_form: attrs_for_new_mobile
     end
 
@@ -99,8 +101,7 @@ describe 'user edits their account', email: true do
       expect(SmsSenderNumberChangeJob).to receive(:perform_later).with(@user.mobile)
       expect(@user.reload.mobile).to eq '+1 (202) 555-1213'
 
-      patch_via_redirect(user_two_factor_authentication_path, 'code' => @user.reload.otp_code)
-
+      patch_via_redirect(user_two_factor_authentication_path, 'code' => @user.reload.direct_otp)
       expect(@user.reload.mobile).to eq '+1 (555) 555-5555'
     end
 
@@ -255,7 +256,7 @@ describe 'user edits their account', email: true do
         )
       )
       expect(SmsSenderOtpJob).to have_received(:perform_later).
-        with(user.reload.otp_code, '+1 (555) 555-5555')
+        with(user.reload.direct_otp, '+1 (555) 555-5555')
     end
   end
 end

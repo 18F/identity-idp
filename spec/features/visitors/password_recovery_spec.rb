@@ -166,7 +166,7 @@ feature 'Password Recovery' do
       sign_up_with_and_set_password_for('email@example.com')
       fill_in 'Mobile', with: '5555555555'
       click_button 'Submit'
-      fill_in 'code', with: User.last.otp_code
+      fill_in 'code', with: User.last.direct_otp
       click_button 'Submit'
       click_link(t('upaya.headings.log_out'), match: :first)
       visit root_path
@@ -183,7 +183,7 @@ feature 'Password Recovery' do
 
     it 'redirects user to dashboard after signing back in' do
       reset_password_and_sign_back_in
-      fill_in 'code', with: User.last.otp_code
+      fill_in 'code', with: User.last.direct_otp
       click_button 'Submit'
 
       expect(current_path).to eq dashboard_index_path

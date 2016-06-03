@@ -9,7 +9,7 @@ feature 'User edit' do
     user = create(:user, :signed_up)
 
     sign_in_user(user)
-    fill_in 'code', with: user.otp_code
+    fill_in 'code', with: user.reload.direct_otp
     click_button 'Submit'
 
     visit edit_user_registration_path
@@ -24,7 +24,7 @@ feature 'User edit' do
     user = create(:user, :signed_up)
 
     sign_in_user(user)
-    fill_in 'code', with: user.otp_code
+    fill_in 'code', with: user.reload.direct_otp
     click_button 'Submit'
 
     visit edit_user_registration_path
