@@ -33,9 +33,6 @@ PreCommit:
     include: '**/*.slim'
 
 CommitMsg:
-  ALL:
-    on_warn: 'fail'
-
   MessageFormat:
     enabled: true
     description: 'Check commit message matches expected pattern'
