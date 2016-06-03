@@ -206,6 +206,34 @@ feature 'Sign Up', devise: true do
     end
   end
 
+  scenario 'password strength indicator hidden when JS is off' do
+    sign_up_with('test@example.com')
+    confirm_last_user
+
+    expect(page).to have_css('#pw-strength-cntnr.hide')
+  end
+
+  context 'password strength indicator when JS is on', js: true do
+    before do
+      User.create!(email: 'test@example.com')
+      confirm_last_user
+    end
+
+    it 'is visible on page (not have "hide" class)' do
+      expect(page).to_not have_css('#pw-strength-cntnr.hide')
+    end
+
+    it 'updates as password changes' do
+      expect(page).to have_content 'Password strength'
+
+      fill_in 'password_form_password', with: 'password'
+      expect(page).to have_content 'Very weak'
+
+      fill_in 'password_form_password', with: 'this is a great sentence'
+      expect(page).to have_content 'Great'
+    end
+  end
+
   scenario 'visitor is redirected back to password form when password is invalid' do
     sign_up_with('test@example.com')
     confirm_last_user
