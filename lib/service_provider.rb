@@ -34,7 +34,7 @@ class ServiceProvider
   def cert
     return if host_attributes['cert'].blank?
 
-    cert_dir = "#{Rails.root}/certs/"
+    cert_dir = "#{Rails.root}/certs/sp/"
 
     @cert ||= File.read("#{cert_dir}#{host_attributes['cert']}.crt")
   end
@@ -78,8 +78,7 @@ class ServiceProvider
   end
 
   def test_fingerprint
-    'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:A2:A7:58:5F:C0:74:8A:4A:03' \
-    ':D9:0F:77:A5:89:7F:F9:68'
+    '40:80:8E:52:EF:80:F9:2E:69:71:49:E0:58:AF:95:F8:98:CE:FD:9A:54:D0:DC:24:16:BD:60:7C:8F:98:91:FA'
   end
 
   def config
