@@ -99,6 +99,10 @@ To run all the tests:
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
+Run security scanner
+
+    $ bundle exec brakeman
+
 ### Deploying
 
 We currently run `dev` and `qa` environments at https://upaya-idp-dev.18f.gov
