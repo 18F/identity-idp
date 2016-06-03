@@ -409,7 +409,8 @@ describe Users::RegistrationsController, devise: true do
       put(
         :update,
         update_user_profile_form: attrs_with_already_taken_mobile.merge!(
-          email: second_user.email, mobile: '703')
+          email: second_user.email, mobile: '703'
+        )
       )
 
       expect(flash).to be_empty

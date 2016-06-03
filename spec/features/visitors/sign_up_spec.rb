@@ -289,7 +289,8 @@ feature 'Sign Up', devise: true do
 
     expect(current_path).to eq user_confirmation_path
     expect(page).to have_content t(
-      'errors.messages.confirmation_period_expired', period: '24 hours')
+      'errors.messages.confirmation_period_expired', period: '24 hours'
+    )
   end
 
   # Scenario: Visitor signs up but confirms with an invalid token
@@ -301,7 +302,8 @@ feature 'Sign Up', devise: true do
     raw_confirmation_token = Devise.token_generator.generate(User, :confirmation_token)
 
     User.last.update(
-      confirmation_token: raw_confirmation_token, confirmation_sent_at: Time.current)
+      confirmation_token: raw_confirmation_token, confirmation_sent_at: Time.current
+    )
     visit '/users/confirmation?confirmation_token=invalid_token'
 
     expect(page).to have_content 'Confirmation token is invalid'

@@ -22,7 +22,8 @@ describe SmsSenderOtpJob, sms: true do
           :user,
           :with_mobile,
           otp_secret_key: 'lzmh6ekrnc5i6aaq',
-          unconfirmed_mobile: '7035551212')
+          unconfirmed_mobile: '7035551212'
+        )
 
         SmsSenderOtpJob.perform_now(user)
 
@@ -39,7 +40,8 @@ describe SmsSenderOtpJob, sms: true do
         user = build_stubbed(
           :user,
           otp_secret_key: 'lzmh6ekrnc5i6aaq',
-          unconfirmed_mobile: '7035551212')
+          unconfirmed_mobile: '7035551212'
+        )
 
         SmsSenderOtpJob.perform_now(user)
 

@@ -11,7 +11,8 @@ DEFAULT_OPTIONS = {
   certificate: File.read("#{Rails.root}/certs/saml_cert.crt"),
   private_key: OpenSSL::PKey::RSA.new(
     File.read(Rails.root + 'keys/saml.key.enc'),
-    Figaro.env.saml_passphrase).to_pem,
+    Figaro.env.saml_passphrase
+  ).to_pem,
   assertion_consumer_service_url: "https://#{Figaro.env.domain_name}/users/auth/saml/callback",
   assertion_consumer_service_binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
   authn_context: 'http://idmanagement.gov/ns/assurance/loa/2',

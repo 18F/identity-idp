@@ -21,7 +21,8 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         sign_in user
         user.send_two_factor_authentication_code
         user.update(
-          second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1).seconds)
+          second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1).seconds
+        )
         user.update(second_factor_attempts_count: 3)
       end
 

@@ -49,7 +49,8 @@ module Features
       @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
-        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current)
+        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current
+      )
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
     end
   end

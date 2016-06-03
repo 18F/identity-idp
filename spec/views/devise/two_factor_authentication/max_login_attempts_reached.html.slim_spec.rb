@@ -11,7 +11,8 @@ describe 'devise/two_factor_authentication/max_login_attempts_reached.html.slim'
 
       expect(rendered).to include(
         t('devise.two_factor_authentication.max_login_attempts_reached',
-          time_remaining: '10 minutes'))
+          time_remaining: '10 minutes')
+      )
     end
   end
 end

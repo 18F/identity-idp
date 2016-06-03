@@ -7,7 +7,8 @@ SamlIdp.configure do |config|
   config.x509_certificate = File.read("#{Rails.root}/certs/saml_cert.crt")
   config.secret_key = OpenSSL::PKey::RSA.new(
     File.read(Rails.root + 'keys/saml.key.enc'),
-    Figaro.env.saml_passphrase).to_pem
+    Figaro.env.saml_passphrase
+  ).to_pem
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'

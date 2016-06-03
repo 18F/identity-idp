@@ -9,7 +9,8 @@ module Users
       # recover passwords. However, we always want to return success.
       flash[:success] = t('upaya.notices.password_reset')
       redirect_to after_sending_reset_password_instructions_path_for(
-        resource_name)
+        resource_name
+      )
     end
 
     def create
@@ -22,12 +23,14 @@ module Users
                           # If the account has not been confirmed, password reset should resend
                           # the confirmation email instructions
                           resource_class.send_confirmation_instructions(
-                            resource_params)
+                            resource_params
+                          )
                         else
                           # only send_reset_password_instructions if resource is matched above.
                           # this disallows other roles from using the password recovery form.
                           resource_class.send_reset_password_instructions(
-                            resource_params)
+                            resource_params
+                          )
                         end
       end
 

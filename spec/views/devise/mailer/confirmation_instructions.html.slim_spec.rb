@@ -15,7 +15,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     render
 
     expect(rendered).to have_link(
-      'https://upaya.18f.gov/contact', href: 'https://upaya.18f.gov/contact')
+      'https://upaya.18f.gov/contact', href: 'https://upaya.18f.gov/contact'
+    )
   end
 
   it 'includes a link to confirmation' do
@@ -25,7 +26,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
     expect(rendered).to have_link(
       'http://test.host/users/confirmation?confirmation_token=foo',
-      href: 'http://test.host/users/confirmation?confirmation_token=foo')
+      href: 'http://test.host/users/confirmation?confirmation_token=foo'
+    )
   end
 
   it 'includes a request to not reply to this messsage' do
