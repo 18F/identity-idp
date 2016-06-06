@@ -22,11 +22,7 @@ describe SamlIdpController do
 
   describe '/api/saml/metadata' do
     before do
-      begin
-        get :metadata
-      rescue XMLSec::SigningError
-        skip 'Broken on OSX. Use Vagrant to test.'
-      end
+      get :metadata
     end
 
     let(:org_name) { '18F' }

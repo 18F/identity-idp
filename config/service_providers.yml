@@ -5,12 +5,14 @@ test:
       assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
       cert: 'saml_cert'
+      block_encryption: 'none'
 
     'https://rp1.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://example.com/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
       sp_initiated_login_url: 'https://example.com/auth/saml/login'
       cert: 'saml_cert'
+      block_encryption: 'aes256-cbc'
 
 development:
   valid_hosts:
@@ -37,6 +39,7 @@ development:
       assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
       cert: 'identity_dashboard_cert'
+      block_encryption: 'aes256-cbc'
 
 production:
   valid_hosts:

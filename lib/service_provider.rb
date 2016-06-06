@@ -1,4 +1,7 @@
 class ServiceProvider
+  # currently acceptable encryption values are 'none' and 'aes256-cbc'
+  DEFAULT_ENCRYPTION = 'none'.freeze
+
   def initialize(host)
     @host = host
   end
@@ -36,12 +39,25 @@ class ServiceProvider
     @cert ||= File.read("#{cert_dir}#{host_attributes['cert']}.crt")
   end
 
+  def encrypt_responses?
+    block_encryption != 'none'
+  end
+
   def block_encryption
-    host_attributes['block_encryption']
+    host_attributes['block_encryption'] || DEFAULT_ENCRYPTION
   end
 
   def key_transport
     'rsa-oaep-mgf1p'
+  end
+
+  def encryption_opts
+    return nil unless encrypt_responses?
+    {
+      cert: OpenSSL::X509::Certificate.new(cert),
+      block_encryption: block_encryption,
+      key_transport: key_transport
+    }
   end
 
   def fingerprint

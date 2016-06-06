@@ -1,9 +1,17 @@
+require_relative 'saml_auth_helper'
 module SamlResponseHelper
   class XmlDoc
+    include SamlAuthHelper
+
     def initialize(test_type, assertion_type, response = nil)
       @test_type = test_type
       @assertion_type = assertion_type
       @response = response
+    end
+
+    def original_encrypted?
+      response_doc # trigger detection
+      @original_encrypted
     end
 
     def xml_response
@@ -18,10 +26,27 @@ module SamlResponseHelper
       'SAMLResponse'
     end
 
-    def response_doc
-      return Nokogiri::XML(xml_response) if @test_type == 'feature'
+    def raw_xml_response
+      if @test_type == 'feature'
+        xml_response
+      else
+        @response.body
+      end
+    end
 
-      Nokogiri::XML(@response.body)
+    def response_doc
+      if raw_xml_response =~ /EncryptedData/
+        @original_encrypted = true
+        Nokogiri::XML(
+          OneLogin::RubySaml::Response.new(
+            raw_xml_response,
+            settings: sp1_saml_settings
+          ).decrypted_document.to_s
+        )
+      else
+        @original_encrypted = false
+        Nokogiri::XML(raw_xml_response)
+      end
     end
 
     def response_assertion_nodeset

@@ -6,7 +6,7 @@ feature 'saml api', devise: true, sms: true do
 
   let(:user) { create(:user, :signed_up) }
 
-  context 'Unencrypted SAML Assertions' do
+  context 'SAML Assertions' do
     context 'before fully signing in' do
       before { visit authnrequest_get }
 
@@ -60,6 +60,19 @@ feature 'saml api', devise: true, sms: true do
       end
     end
 
+    context 'service provider does not explicitly disable encryption' do
+      before do
+        visit sp1_authnrequest
+        authenticate_user(user)
+      end
+
+      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
+
+      it 'is encrypted' do
+        expect(xmldoc.original_encrypted?).to eq true
+      end
+    end
+
     context 'user can get a well-formed signed Assertion' do
       before do
         visit authnrequest_get
@@ -74,6 +87,10 @@ feature 'saml api', devise: true, sms: true do
 
       it 'contains an assertion nodeset' do
         expect(xmldoc.response_assertion_nodeset.length).to eq(1)
+      end
+
+      it 'respects service provider explicitly disabling encryption' do
+        expect(xmldoc.original_encrypted?).to eq false
       end
 
       it 'populates issuer with the idp name' do
