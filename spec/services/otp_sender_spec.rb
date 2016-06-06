@@ -2,29 +2,28 @@ require 'rails_helper'
 
 describe UserOtpSender do
   describe '#send_otp' do
-    context 'when user is two_factor_enabled and does not have unconfirmed_mobile' do
+    context 'when user does not have unconfirmed_mobile' do
       it 'sends OTP to mobile' do
-        user = build_stubbed(:user)
+        user = build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq')
 
-        allow(user).to receive(:two_factor_enabled?).and_return(true)
-
-        expect(SmsSenderOtpJob).to receive(:perform_later).with(user)
+        expect(SmsSenderOtpJob).to receive(:perform_later).with(user.otp_code, user.mobile)
 
         UserOtpSender.new(user).send_otp
       end
     end
 
-    context 'when user is two_factor_enabled and has an unconfirmed_mobile' do
-      it 'generates a new OTP and only sends OTP to unconfirmed_mobile' do
+    context 'when user has an unconfirmed_mobile' do
+      it 'generates a new otp_secret_key and sends OTP to unconfirmed_mobile' do
         user = build_stubbed(
           :user, unconfirmed_mobile: '5005550006', otp_secret_key: 'lzmh6ekrnc5i6aaq'
         )
 
-        allow(user).to receive(:two_factor_enabled?).and_return(true)
-
-        expect(SmsSenderOtpJob).to receive(:perform_later).with(user)
+        allow(SmsSenderOtpJob).to receive(:perform_later)
 
         UserOtpSender.new(user).send_otp
+
+        expect(SmsSenderOtpJob).to have_received(:perform_later).
+          with(user.otp_code, user.unconfirmed_mobile)
 
         expect(user.otp_secret_key).to_not eq 'lzmh6ekrnc5i6aaq'
       end

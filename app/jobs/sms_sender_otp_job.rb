@@ -1,22 +1,17 @@
 class SmsSenderOtpJob < ActiveJob::Base
   queue_as :sms
 
-  def perform(user)
-    twilio_service = TwilioService.new
-    send(:otp, twilio_service, user)
+  def perform(code, mobile)
+    send_otp(TwilioService.new, code, mobile)
   end
 
   private
 
-  def otp(twilio_service, user)
+  def send_otp(twilio_service, code, mobile)
     twilio_service.send_sms(
-      to: target_number_for(user),
-      body: otp_message(user.otp_code)
+      to: mobile,
+      body: otp_message(code)
     )
-  end
-
-  def target_number_for(user)
-    UserDecorator.new(user).two_factor_phone_number
   end
 
   def otp_message(code)

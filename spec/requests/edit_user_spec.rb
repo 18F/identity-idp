@@ -244,7 +244,7 @@ describe 'user edits their account', email: true do
     it 'calls SmsSenderOtpJob but not SmsSenderExistingMobileJob' do
       sign_in_as_a_valid_user(user)
 
-      expect(SmsSenderOtpJob).to receive(:perform_later).with(user)
+      allow(SmsSenderOtpJob).to receive(:perform_later)
       expect(SmsSenderExistingMobileJob).
         to_not receive(:perform_later).with(user_with_mobile.mobile)
 
@@ -254,6 +254,8 @@ describe 'user edits their account', email: true do
           email: user_with_mobile.email
         )
       )
+      expect(SmsSenderOtpJob).to have_received(:perform_later).
+        with(user.reload.otp_code, '+1 (555) 555-5555')
     end
   end
 end
