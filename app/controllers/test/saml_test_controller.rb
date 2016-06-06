@@ -46,11 +46,9 @@ module Test
     # rubocop:disable AbcSize, MethodLength
     def decode_response
       response = OneLogin::RubySaml::Response.new(
-        Base64.decode64(params[:SAMLResponse]),
-        private_key: test_saml_settings.private_key,
-        private_key_password: ''
+        params[:SAMLResponse],
+        settings: test_saml_settings
       )
-      response.settings = test_saml_settings
 
       # Ruby-saml only understands validation of Assertions. If it's
       # a LogoutRequest, just validate the signature.

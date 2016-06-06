@@ -12,7 +12,6 @@ A proof-of-concept Identity Management System
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v4.4.x](https://nodejs.org)
-- libxmlsec1
 
 ### Getting Started with Docker
 
@@ -68,10 +67,7 @@ more information.
 1. Make sure you have a working development environment with all the
 [dependencies](#dependencies) installed. On a Mac, the easiest way
 to set up a development environment is by running our [Laptop]
-script. The script will install all of this project's dependencies,
-except for `libxmlsec1`, which you can install with Homebrew:
-
-        $ brew install libxmlsec1
+script. The script will install all of this project's dependencies.
 
 1. Make sure Postgres and Redis are running. For example, on OS X:
 

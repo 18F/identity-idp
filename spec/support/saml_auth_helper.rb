@@ -123,12 +123,7 @@ module SamlAuthHelper
   def generate_saml_response(user, settings = saml_settings)
     # user needs to be signed in in order to generate an assertion
     sign_in(user)
-
-    begin
-      saml_get_auth(settings)
-    rescue XMLSec::SigningError
-      skip 'Broken on OSX. Use Docker to test.'
-    end
+    saml_get_auth(settings)
   end
 
   def saml_get_auth(settings)
@@ -151,7 +146,5 @@ module SamlAuthHelper
     sign_in_user(user)
     fill_in 'code', with: user.otp_code
     click_button 'Submit'
-  rescue XMLSec::SigningError
-    skip 'Broken on OSX. Use pre-built VM to test.'
   end
 end
