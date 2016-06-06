@@ -14,6 +14,9 @@ A proof-of-concept Identity Management System
 - [Node.js v4.4.x](https://nodejs.org)
 - libxmlsec1
 
+Testing dependecies:
+ - [PhantomJS](http://phantomjs.org)
+
 ### Getting Started with Docker
 
 We have a pre-built development environment made with [Docker Compose].
@@ -92,12 +95,16 @@ except for `libxmlsec1`, which you can install with Homebrew:
 
 ### Running Tests
 
+Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running tests. Install with the following:
+
+    $ brew install phantomjs
+
 To run all the tests:
 
     $ bundle exec rspec
 
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
-more information.
+more information. 
 
 Run security scanner
 
