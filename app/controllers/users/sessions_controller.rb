@@ -12,7 +12,6 @@ module Users
     def create
       logger.info '[Authentication Attempt]'
       super
-      session[:forced_idv_sign_out] = current_user.ial_token
     end
 
     def active

@@ -263,40 +263,6 @@ describe User do
     end
   end
 
-  describe '#needs_idv?' do
-    context 'when user does not have an ial_token' do
-      it 'returns false' do
-        user = build_stubbed(:user)
-
-        expect(user.needs_idv?).to eq false
-      end
-    end
-
-    context 'when user has an ial_token but has hard failed' do
-      it 'returns false' do
-        user = build_stubbed(:user, ial_token: 'foo', idp_hard_fail: true)
-
-        expect(user.needs_idv?).to eq false
-      end
-    end
-
-    context 'when user has an ial_token but has passed' do
-      it 'returns false' do
-        user = build_stubbed(:user, ial_token: 'foo', ial: 'IA3')
-
-        expect(user.needs_idv?).to eq false
-      end
-    end
-
-    context 'when user has an ial_token and has neither passed nor hard failed' do
-      it 'returns false' do
-        user = build_stubbed(:user, ial_token: 'foo')
-
-        expect(user.needs_idv?).to eq true
-      end
-    end
-  end
-
   describe '#send_two_factor_authentication_code' do
     it 'calls UserOtpSender#send_otp' do
       user = build_stubbed(:user)
@@ -306,14 +272,6 @@ describe User do
       expect(otp_sender).to receive(:send_otp)
 
       user.send_two_factor_authentication_code
-    end
-  end
-
-  describe 'ial_token uniqueness' do
-    it 'enforces uniqueness of ial_token but allows nil value' do
-      user = build(:user)
-
-      expect(user).to validate_uniqueness_of(:ial_token).allow_nil
     end
   end
 

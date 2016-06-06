@@ -4,6 +4,10 @@ require 'saml_idp/logout_response_builder'
 module SamlIdpLogoutConcern
   extend ActiveSupport::Concern
 
+  included do
+    before_action :validate_saml_logout_param, only: :logout
+  end
+
   def saml_logout_message
     return handle_saml_logout_response if successful_saml_response?
     return nil if failed_saml_response?
@@ -122,7 +126,7 @@ module SamlIdpLogoutConcern
   end
 
   def clean_up_session
-    [:sp_data, :logout_response, :logout_response_url].each do |key|
+    [:logout_response, :logout_response_url].each do |key|
       session.delete(key) if session[key]
     end
   end
@@ -146,6 +150,34 @@ module SamlIdpLogoutConcern
       saml_request.request_id,
       SamlIdp.config.algorithm
     )
+  end
+
+  def validate_saml_logout_param
+    prepare_saml_logout_response if params[:SAMLResponse].present?
+    prepare_saml_logout_request if params[:SAMLRequest].present?
+  end
+
+  def prepare_saml_logout_response
+    @saml_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse])
+  end
+
+  def prepare_saml_logout_request
+    validate_saml_request
+    return if session[:logout_response]
+    # store originating SP's logout response in the user session
+    # for final step in SLO
+    session[:logout_response] = logout_response_builder.signed
+    session[:logout_response_url] = saml_request.response_url
+  end
+
+  def finish_slo_at_idp
+    sign_out_with_flash
+    redirect_to after_sign_out_path_for(:user)
+  end
+
+  def sign_out_with_flash
+    sign_out current_user if user_signed_in?
+    flash[:success] = I18n.t('devise.sessions.signed_out')
   end
 end
 # rubocop:enable Metrics/ModuleLength

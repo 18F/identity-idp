@@ -125,16 +125,6 @@ feature 'saml api', devise: true, sms: true do
         expect(page.response_headers['Pragma']).to eq 'no-cache'
       end
 
-      it 'stores provider and authn_context in session' do
-        session_hash =
-          {
-            provider: saml_spec_settings.issuer,
-            authn_context: saml_settings.authn_context
-          }
-
-        expect(page.get_rack_session_key('sp_data')).to eq(session_hash)
-      end
-
       it 'retains the formatting of the mobile number' do
         expect(xmldoc.mobile_number.children.children.to_s).to eq(user.mobile)
       end
@@ -264,6 +254,20 @@ feature 'saml api', devise: true, sms: true do
         visit destroy_user_session_url
         expect(page.current_path).to eq('/')
         Timecop.return
+      end
+    end
+  end
+
+  context 'visiting /api/saml/auth' do
+    context 'with LOA2 authn_context' do
+      it 'redirects to IdV URL for LOA2 proofer after user creates their account and signs in' do
+        visit loa2_authnrequest
+
+        visit new_user_registration_path
+
+        sign_up_and_2fa
+
+        expect(current_url).to eq 'https://loa2.example.com/'
       end
     end
   end
