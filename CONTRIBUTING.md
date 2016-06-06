@@ -77,6 +77,44 @@ README for more details.
 - Once a pull request is good to go, the code reviewer is the one who merges
 it, then deletes the branch.
 
+## Front end architecture
+### CSS
+- The front end will use the Web Design Standard's components, imported through ruby, adding extra functionality that's missing.
+- Atomic CSS methodolgy will be used for layout, modifier classes.
+  - If a group of atomic classes is used more then once in a repeated pattern, separate it into it's own component
+  - Design atomtic classes to ensure that HTML classes don't have to be changed in more then one place with a design change.
+- Will update CSS libraries (such as the WDS) on a bi-monthly basis or more immediately if a feature is added that's needed.
+- Will use `js-`* prefixed classes for JavaScript hooks.
+- Will use `test-`* prefixed classes for testing hooks, mainly integration testing.
+- Uses the [18f linting config](https://raw.githubusercontent.com/18F/frontend/18f-pages-staging/.scss-lint.yml) for scss linting.
+- Use `scss-lint` which runs on the latest PR commits.
+- CodeClimate will notify on a PR on Github if there are any linting infractions.
+- The root font size should always be set to 100% by default and 1.4% when on mobile.
+- Always default to semantic HTML.
+
+### JavaScript
+- The site should work without JavaScript because there is no need for complex user interactions that would use JS.
+- The site should not require jQuery.
+- Should use the AirBnB linter configuration for JavaScript.
+- CodeClimate will notify on a PR on Github if there are any linting infractions.
+- All front end dependencies should be expressed in `package.json`.
+- Many of the dependencies for the app are in the `Gemfile` since it is a Rails app.
+- Front end dependencies will be upgraded when a vurlnability is found.
+- Just one JavaScript file will be bundled up and sent to the client
+
+#### Testing
+- Integration tests should always be running.
+- Whenever new functionality is added, or when features are changed. If there isn’t already test coverage, then a test should be written.
+- Attempt to keep everything unit tested, especially data related code. If you don’t want to do unit tests for DOM related coded, it’s fine to cover it with functional/integration tests
+- Attempt to have your functional testing framework be robust and able to run tests consistently. Attempt to remove any random failure possibilities. If you can do this successfully, a new functional test should be written for every new feature.
+- If you’re having problems with you functional testing framework being consistent (random failures, fragile tests that always break) consider not adding new tests and disabling broken tests after ~10 minutes of attempting to fix them to ensure the team can move quickly and without too much frustration.
+
+### Devices
+- Dependending on current analytics, a browser will be supported unless less then 1% of users are on said browser.
+- The site should work on any device size, but very large screens will not be a primary focus.
+- Accessibility HTML code sniffer should be run before any PRs that could change accessibility.
+
+
 ## Public domain
 
 This project is in the public domain within the United States, and
