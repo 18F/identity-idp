@@ -95,9 +95,7 @@ except for `libxmlsec1`, which you can install with Homebrew:
 
 ### Running Tests
 
-Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running tests. Install with the following:
-
-    $ brew install phantomjs
+Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running tests. On OS X, PhantomJS can be installed with Homebrew via: `brew install phantomjs`. For other platforms, refer to the [PhantomJS download page](http://phantomjs.org/download.html).
 
 To run all the tests:
 
