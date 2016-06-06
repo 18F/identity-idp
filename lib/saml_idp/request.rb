@@ -40,10 +40,14 @@ module SamlIdp
     end
 
     def request_id
+      request["ID"]
+    end
+
+    def request
       if authn_request?
-        authn_request["ID"]
+        authn_request
       elsif logout_request?
-        logout_request["ID"]
+        logout_request
       end
     end
 
@@ -72,7 +76,7 @@ module SamlIdp
       end
     end
 
-    def logger(msg)
+    def log(msg)
       if Rails && Rails.logger
         Rails.logger.info msg
       else
@@ -81,25 +85,23 @@ module SamlIdp
     end
 
     def valid?
-      # TODO: This should validate against the schema.
-
       unless service_provider?
-        logger "Unable to find service provider for issuer #{issuer}"
+        log "Unable to find service provider for issuer #{issuer}"
         return false
       end
 
       unless (authn_request? ^ logout_request?)
-        logger "One and only one of authnrequest and logout request is required. authnrequest: #{authn_request?} logout_request: #{logout_request?} "
+        log "One and only one of authnrequest and logout request is required. authnrequest: #{authn_request?} logout_request: #{logout_request?} "
         return false
       end
 
       unless valid_signature?
-        logger "Signature is invalid in #{raw_xml}"
+        log "Signature is invalid in #{raw_xml}"
         return false
       end
 
       if response_url.nil?
-        logger "Unable to find response url for #{issuer}: #{raw_xml}"
+        log "Unable to find response url for #{issuer}: #{raw_xml}"
         return false
       end
 

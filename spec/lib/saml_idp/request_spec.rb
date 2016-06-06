@@ -37,6 +37,10 @@ module SamlIdp
         subject.authn_request?.should == true
       end
 
+      it "fetches internal request" do
+        subject.request['ID'].should == subject.request_id
+      end
+
       it "has a valid authn context" do
         subject.requested_authn_context.should == "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
       end
@@ -66,6 +70,10 @@ module SamlIdp
 
       it "should have a valid issuer" do
         subject.issuer.should == 'http://example.com'
+      end
+
+      it "fetches internal request" do
+        subject.request['ID'].should == subject.request_id
       end
 
       it "should return logout_url for response_url" do
