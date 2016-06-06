@@ -3,13 +3,13 @@ html lang="#{I18n.locale}"
 
   head
     meta charset='utf-8'
-    meta name='description' content="#{content_for?(:description) ? yield(:description) : 'Upaya'}"
+    meta name='description' content="#{content_for?(:description) ? yield(:description) : 'login.gov'}"
     meta http-equiv='X-UA-Compatible' content='IE=edge'
     meta name='msapplication-config' content='none'
     meta[name='viewport' content='width=device-width, initial-scale=1.0']
 
     title
-      = content_for?(:title) ? 'Upaya - ' + yield(:title) : 'Upaya'
+      = content_for?(:title) ? 'login.gov - ' + yield(:title) : 'login.gov'
 
     == stylesheet_link_tag 'application', :media => 'all', 'data-turbolinks-track' => true
     == javascript_include_tag 'application', 'data-turbolinks-track' => true
