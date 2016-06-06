@@ -7,3 +7,4 @@ notifications:
        - jon.phenow@sportngin.com
     on_success: change
     on_failure: always
+sudo: false

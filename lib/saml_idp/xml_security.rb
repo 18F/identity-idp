@@ -52,13 +52,26 @@ module SamlIdp
         cert         = OpenSSL::X509::Certificate.new(cert_text)
 
         # check cert matches registered idp cert
-        fingerprint = Digest::SHA1.hexdigest(cert.to_der)
+        fingerprint = fingerprint_cert(cert)
+        sha1_fingerprint = fingerprint_cert_sha1(cert)
+        plain_idp_cert_fingerprint = idp_cert_fingerprint.gsub(/[^a-zA-Z0-9]/,"").downcase
 
-        if fingerprint != idp_cert_fingerprint.gsub(/[^a-zA-Z0-9]/,"").downcase
+        if fingerprint != plain_idp_cert_fingerprint && sha1_fingerprint != plain_idp_cert_fingerprint
           return soft ? false : (raise ValidationError.new("Fingerprint mismatch"))
         end
 
         validate_doc(base64_cert, soft)
+      end
+
+      def fingerprint_cert(cert)
+        # pick algorithm based on the doc's digest algorithm
+        ref_elem = REXML::XPath.first(self, "//ds:Reference", {"ds"=>DSIG})
+        digest_algorithm = algorithm(REXML::XPath.first(ref_elem, "//ds:DigestMethod"))
+        digest_algorithm.hexdigest(cert.to_der)
+      end
+
+      def fingerprint_cert_sha1(cert)
+        OpenSSL::Digest::SHA1.hexdigest(cert.to_der)
       end
 
       def validate_doc(base64_cert, soft = true)

@@ -71,11 +71,11 @@ module Saml
 
       def valid_signature?(fingerprint)
         signed? &&
-          signed_document.validate_document(fingerprint, :soft)
+          signed_document.validate(fingerprint, :soft)
       end
 
       def signed_document
-        XMLSecurity::SignedDocument.new(to_xml)
+        SamlIdp::XMLSecurity::SignedDocument.new(to_xml)
       end
 
       def signature_namespace

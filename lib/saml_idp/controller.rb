@@ -4,6 +4,7 @@ require 'base64'
 require 'time'
 require 'uuid'
 require 'saml_idp/request'
+require 'saml_idp/logout_response_builder'
 module SamlIdp
   module Controller
     extend ActiveSupport::Concern
@@ -30,10 +31,12 @@ module SamlIdp
       Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
     end
 
-    def encode_response(principal, opts = {})
-      response_id, reference_id = get_saml_response_id, get_saml_reference_id
+    def encode_authn_response(principal, opts = {})
+      response_id = get_saml_response_id
+      reference_id = opts[:reference_id] || get_saml_reference_id
       audience_uri = opts[:audience_uri] || saml_request.issuer || saml_acs_url[/^(.*?\/\/.*?\/)/, 1]
       opt_issuer_uri = opts[:issuer_uri] || issuer_uri
+      my_authn_context_classref = opts[:authn_context_classref] || authn_context_classref
 
       SamlResponse.new(
         reference_id,
@@ -43,9 +46,29 @@ module SamlIdp
         audience_uri,
         saml_request_id,
         saml_acs_url,
-        algorithm,
-        authn_context_classref
+        (opts[:algorithm] || algorithm || default_algorithm),
+        my_authn_context_classref
       ).build
+    end
+
+    def encode_logout_response(principal, opts = {})
+      SamlIdp::LogoutResponseBuilder.new(
+        get_saml_response_id,
+        (opts[:issuer_uri] || issuer_uri),
+        saml_logout_url,
+        saml_request_id,
+        (opts[:algorithm] || algorithm || default_algorithm)
+      ).signed
+    end
+
+    def encode_response(principal, opts = {})
+      if saml_request.authn_request?
+        encode_authn_response(principal, opts)
+      elsif saml_request.logout_request?
+        encode_logout_response(principal, opts)
+      else
+        raise "Unknown request: #{saml_request}"
+      end
     end
 
     def issuer_uri
@@ -66,12 +89,20 @@ module SamlIdp
       saml_request.acs_url
     end
 
+    def saml_logout_url
+      saml_request.logout_url
+    end
+
     def get_saml_response_id
       UUID.generate
     end
 
     def get_saml_reference_id
       UUID.generate
+    end
+
+    def default_algorithm
+      OpenSSL::Digest::SHA256
     end
   end
 end

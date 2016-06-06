@@ -45,7 +45,7 @@ defaults in a Production environment. Post any issues you to github.
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "rspec", "~> 2.5"
-  s.add_development_dependency "ruby-saml", "~> 0.8"
+  s.add_development_dependency "ruby-saml", "~> 1.2"
   s.add_development_dependency("rails", "~> 3.2")
   s.add_development_dependency("capybara")
   s.add_development_dependency("timecop")

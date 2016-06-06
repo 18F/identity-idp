@@ -110,7 +110,7 @@ module SamlIdp
       digest_algorithm = get_algorithm
 
       hash                          = digest_algorithm.digest(canon_hashed_element)
-      Base64.encode64(hash).gsub(/\n/, '')
+      Base64.strict_encode64(hash).gsub(/\n/, '')
     end
     private :digest
 
