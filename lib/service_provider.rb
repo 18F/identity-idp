@@ -1,3 +1,5 @@
+require 'fingerprinter'
+
 class ServiceProvider
   # currently acceptable encryption values are 'none' and 'aes256-cbc'
   DEFAULT_ENCRYPTION = 'none'.freeze
@@ -61,7 +63,7 @@ class ServiceProvider
   end
 
   def fingerprint
-    @fingerprint ||= fingerprint_cert(cert)
+    @fingerprint ||= ::Fingerprinter.fingerprint_cert(cert)
   end
 
   def double_quote_xml_attribute_values
@@ -69,12 +71,6 @@ class ServiceProvider
   end
 
   private
-
-  def fingerprint_cert(cert_pem)
-    return nil unless cert_pem
-    cert = OpenSSL::X509::Certificate.new(cert_pem)
-    OpenSSL::Digest::SHA256.new(cert.to_der).hexdigest
-  end
 
   def config
     @config ||= YAML.load_file("#{Rails.root}/config/service_providers.yml")
