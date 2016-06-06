@@ -61,7 +61,6 @@ class ServiceProvider
   end
 
   def fingerprint
-    return test_fingerprint if Rails.env.test?
     @fingerprint ||= fingerprint_cert(cert)
   end
 
@@ -75,10 +74,6 @@ class ServiceProvider
     return nil unless cert_pem
     cert = OpenSSL::X509::Certificate.new(cert_pem)
     OpenSSL::Digest::SHA256.new(cert.to_der).hexdigest
-  end
-
-  def test_fingerprint
-    '40:80:8E:52:EF:80:F9:2E:69:71:49:E0:58:AF:95:F8:98:CE:FD:9A:54:D0:DC:24:16:BD:60:7C:8F:98:91:FA'
   end
 
   def config
