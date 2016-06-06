@@ -50,7 +50,7 @@ module SamlIdp
 
     def signed_assertion
       if encryption_opts
-        assertion_builder.encrypt(sign: true)
+        encrypted_assertion_builder.encrypt(sign: true)
       else
         assertion_builder.signed
       end
@@ -71,9 +71,23 @@ module SamlIdp
         saml_acs_url,
         algorithm,
         authn_context_classref,
+        expiry
+    end
+    private :assertion_builder
+
+    def encrypted_assertion_builder
+      require 'saml_idp/encrypted_assertion_builder'
+      @encrypted_assertion_builder ||= EncryptedAssertionBuilder.new reference_id,
+        issuer_uri,
+        principal,
+        audience_uri,
+        saml_request_id,
+        saml_acs_url,
+        algorithm,
+        authn_context_classref,
         expiry,
         encryption_opts
     end
-    private :assertion_builder
+    private :encrypted_assertion_builder
   end
 end

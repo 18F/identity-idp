@@ -41,7 +41,6 @@ defaults in a Production environment. Post any issues you to github.
   s.add_dependency('builder')
   s.add_dependency('httparty')
   s.add_dependency('nokogiri')
-  s.add_dependency('xmlenc', '>= 0.6.4')
 
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
@@ -50,5 +49,6 @@ defaults in a Production environment. Post any issues you to github.
   s.add_development_dependency("rails", "~> 3.2")
   s.add_development_dependency("capybara")
   s.add_development_dependency("timecop")
+  s.add_development_dependency("xmlenc", ">= 0.6.4")
 end
 
