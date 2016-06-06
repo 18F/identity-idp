@@ -45,6 +45,12 @@ module SamlIdp
         subject.requested_authn_context.should == "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
       end
 
+      it "does not permit empty issuer" do
+        raw_req = raw_authn_request.gsub('localhost:3000', '')
+        authn_request = described_class.new raw_req
+        authn_request.issuer.should_not == ''
+        authn_request.issuer.should == nil
+      end
     end
 
     describe "logout request" do

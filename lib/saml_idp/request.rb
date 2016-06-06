@@ -124,6 +124,7 @@ module SamlIdp
 
     def issuer
       @_issuer ||= xpath("//saml:Issuer", saml: assertion).first.try(:content)
+      @_issuer if @_issuer.present?
     end
 
     def name_id
