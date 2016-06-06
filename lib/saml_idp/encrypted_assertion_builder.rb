@@ -1,6 +1,4 @@
-require 'builder'
-require 'saml_idp/algorithmable'
-require 'saml_idp/signable'
+require 'saml_idp/assertion_builder'
 require 'xmlenc'
 module SamlIdp
   class EncryptedAssertionBuilder < AssertionBuilder
