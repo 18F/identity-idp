@@ -14,7 +14,7 @@ A proof-of-concept Identity Management System
 - [Node.js v4.4.x](https://nodejs.org)
 - libxmlsec1
 
-Testing dependecies:
+Testing dependencies:
  - [PhantomJS](http://phantomjs.org)
 
 ### Getting Started with Docker
