@@ -26,7 +26,7 @@ GIT
 
 GIT
   remote: https://github.com/pkarman/saml_idp
-  revision: 325c010cc71449783f03d166aa6e1b452041c561
+  revision: 69c3b1f2f9c130ba97a7a839185b5de005735efa
   branch: xmlenc
   specs:
     saml_idp (0.3.0)
@@ -566,4 +566,4 @@ DEPENDENCIES
   whenever
 
 BUNDLED WITH
-   1.12.4
+   1.12.5
