@@ -104,7 +104,7 @@ To run all the tests:
     $ bundle exec rspec
 
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
-more information. 
+more information.
 
 Run security scanner
 
