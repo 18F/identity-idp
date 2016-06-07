@@ -13,6 +13,9 @@ A proof-of-concept Identity Management System
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v4.4.x](https://nodejs.org)
 
+Testing dependencies:
+ - [PhantomJS](http://phantomjs.org)
+
 ### Getting Started with Docker
 
 We have a pre-built development environment made with [Docker Compose].
@@ -87,6 +90,8 @@ script. The script will install all of this project's dependencies.
 [Laptop]: https://github.com/18F/laptop
 
 ### Running Tests
+
+Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running tests. On OS X, PhantomJS can be installed with Homebrew via: `brew install phantomjs`. For other platforms, refer to the [PhantomJS download page](http://phantomjs.org/download.html).
 
 To run all the tests:
 
