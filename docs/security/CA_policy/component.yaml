@@ -6,8 +6,7 @@ satisfies:
   implementation_status: none
   narrative: 'Login.gov information system estabishes connections to other external information
     systems through SAML and REST APIs to resolve identityies during online proofing process, to
-    comminucating 2FA messages via SMS or email services,
-    and sending SAML assertions to agency partners'
+    comminucating 2FA messages via SMS or email services, and sending SAML assertions to agency partners'
   standard_key: NIST-800-53
 schema_version: 2.0
 system: Login.gov
