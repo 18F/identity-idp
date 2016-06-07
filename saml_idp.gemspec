@@ -34,6 +34,11 @@ If you just need to see the certificate `bundle open saml_idp` and go to
 
 Similarly, please see the README about certificates - you should avoid using the
 defaults in a Production environment. Post any issues you to github.
+
+** New in Version 0.3.0 **
+
+Encrypted Assertions require the xmlenc gem. See the example in the Controller
+section of the README.
   INST
 
   s.add_dependency('activesupport')
