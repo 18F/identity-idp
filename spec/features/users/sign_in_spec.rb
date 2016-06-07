@@ -59,7 +59,7 @@ feature 'Sign in' do
   context 'user fails login 3 times' do
     before do
       password = '1Validpass!'
-      @user = create(:user, password: password, password_confirmation: password)
+      @user = create(:user, password: password)
       signin(@user.email, 'invalidpass')
       signin(@user.email, 'invalidpass')
       signin(@user.email, 'invalidpass')

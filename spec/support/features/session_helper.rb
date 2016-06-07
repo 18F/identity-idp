@@ -24,7 +24,6 @@ module Features
       Capybara.reset_session! if reset_session
       confirm_last_user
       fill_in 'password_form_password', with: VALID_PASSWORD
-      fill_in 'password_form_password_confirmation', with: VALID_PASSWORD
       click_button 'Submit'
       user
     end

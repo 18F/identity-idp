@@ -96,7 +96,7 @@ module Users
 
     def user_params
       params.require(:password_form).
-        permit(:password, :password_confirmation, :reset_password_token)
+        permit(:password, :reset_password_token)
     end
 
     def form_params

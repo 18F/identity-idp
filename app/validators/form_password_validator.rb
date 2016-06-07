@@ -24,6 +24,6 @@ module FormPasswordValidator
   end
 
   def user_updating_password?
-    password.present? || password_confirmation.present?
+    password.present?
   end
 end

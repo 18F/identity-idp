@@ -49,7 +49,6 @@ class UpdateUserProfileForm
     self.email = params[:email]
     self.current_password = params[:current_password]
     self.password = params[:password]
-    self.password_confirmation = params[:password_confirmation]
   end
 
   def attribute_taken?

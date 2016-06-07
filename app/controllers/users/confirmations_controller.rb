@@ -94,7 +94,7 @@ module Users
 
     def permitted_params
       params.require(:password_form).
-        permit(:confirmation_token, :password, :password_confirmation)
+        permit(:confirmation_token, :password)
     end
   end
 end

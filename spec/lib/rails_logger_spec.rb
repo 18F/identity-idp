@@ -30,7 +30,6 @@ describe 'Rails.logger', type: :feature do
       confirm_last_user
 
       fill_in 'password_form_password', with: 'ValidPassw0rd!'
-      fill_in 'password_form_password_confirmation', with: 'ValidPassw0rd!'
     end
 
     it 'logs [Password Created]' do
@@ -51,7 +50,6 @@ describe 'Rails.logger', type: :feature do
 
       fill_in 'update_user_profile_form_current_password', with: user.password
       fill_in 'update_user_profile_form_password', with: user_password
-      fill_in 'update_user_profile_form_password_confirmation', with: user_password
     end
 
     it 'logs [Password Changed]' do
@@ -101,7 +99,6 @@ describe 'Rails.logger', type: :feature do
 
     it 'logs the events' do
       fill_in 'New password', with: 'NewVal!dPassw0rd'
-      fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
 
       expect(Rails.logger).to receive(:info).with("[#{user.uuid}] [Password Changed]")
       click_button 'Change my password'

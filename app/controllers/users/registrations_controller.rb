@@ -79,7 +79,7 @@ module Users
 
     def user_params
       params.require(:update_user_profile_form).
-        permit(:mobile, :email, :password, :password_confirmation, :current_password)
+        permit(:mobile, :email, :password, :current_password)
     end
   end
 end

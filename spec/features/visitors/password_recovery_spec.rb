@@ -7,7 +7,6 @@ require 'rails_helper'
 feature 'Password Recovery' do
   def reset_password_and_sign_back_in
     fill_in 'New password', with: 'NewVal!dPassw0rd'
-    fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
     click_button 'Change my password'
     fill_in 'Email', with: 'email@example.com'
     fill_in 'user_password', with: 'NewVal!dPassw0rd'
@@ -126,7 +125,6 @@ feature 'Password Recovery' do
 
     it 'keeps user signed out after they successfully reset their password' do
       fill_in 'New password', with: 'NewVal!dPassw0rd'
-      fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
       click_button 'Change my password'
 
       expect(current_path).to eq new_user_session_path
@@ -273,7 +271,6 @@ feature 'Password Recovery' do
     context 'when password form values are valid' do
       it 'changes the password, sends an email about the change, and does not sign the user in' do
         fill_in 'New password', with: 'NewVal!dPassw0rd'
-        fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
         click_button 'Change my password'
 
         expect(page).to have_content(I18n.t('devise.passwords.updated_not_active'))
@@ -350,7 +347,6 @@ feature 'Password Recovery' do
     Timecop.travel(Devise.reset_password_within + 1.minute)
 
     fill_in 'New password', with: 'NewVal!dPassw0rd'
-    fill_in 'Confirm your new password', with: 'NewVal!dPassw0rd'
     click_button 'Change my password'
 
     expect(page).to have_content t('devise.passwords.token_expired')

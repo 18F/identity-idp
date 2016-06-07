@@ -5,7 +5,6 @@ FactoryGirl.define do
     confirmed_at Time.current
     email { Faker::Internet.safe_email }
     password '!1aZ' * 32 # Maximum length password.
-    password_confirmation '!1aZ' * 32 # Maximum length password.
 
     trait :with_mobile do
       mobile '+1 (202) 555-1212'

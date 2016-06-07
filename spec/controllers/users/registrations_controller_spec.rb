@@ -17,8 +17,7 @@ describe Users::RegistrationsController, devise: true do
       email: user.email,
       mobile: second_user.mobile,
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -27,8 +26,7 @@ describe Users::RegistrationsController, devise: true do
       email: new_email,
       mobile: '555-555-5555',
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -37,8 +35,7 @@ describe Users::RegistrationsController, devise: true do
       email: second_user.email,
       mobile: '555-555-5555',
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -47,8 +44,7 @@ describe Users::RegistrationsController, devise: true do
       email: second_user.email,
       mobile: '',
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -57,8 +53,7 @@ describe Users::RegistrationsController, devise: true do
       email: second_user.email,
       mobile: second_user.mobile,
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -67,8 +62,7 @@ describe Users::RegistrationsController, devise: true do
       email: new_email,
       mobile: user.mobile,
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -77,8 +71,7 @@ describe Users::RegistrationsController, devise: true do
       email: user.email,
       mobile: second_user.mobile,
       current_password: '',
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -87,8 +80,7 @@ describe Users::RegistrationsController, devise: true do
       email: user.email,
       mobile: user.mobile,
       current_password: 'foo',
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -97,8 +89,7 @@ describe Users::RegistrationsController, devise: true do
       email: '',
       mobile: user.mobile,
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -107,8 +98,7 @@ describe Users::RegistrationsController, devise: true do
       email: user.email,
       mobile: user.mobile,
       current_password: '!1aZ' * 32,
-      password: '@Aaaaaa1',
-      password_confirmation: '@Aaaaaa1'
+      password: '@Aaaaaa1'
     }
   end
 
@@ -117,18 +107,7 @@ describe Users::RegistrationsController, devise: true do
       email: user.email,
       mobile: user.mobile,
       current_password: '!1aZ' * 32,
-      password: '123',
-      password_confirmation: '123'
-    }
-  end
-
-  let(:attrs_with_invalid_password_confirmation) do
-    {
-      email: user.email,
-      mobile: user.mobile,
-      current_password: '!1aZ' * 32,
-      password: '@Aaaaaa1',
-      password_confirmation: '@Aaaaaa11'
+      password: '123'
     }
   end
 
@@ -137,8 +116,7 @@ describe Users::RegistrationsController, devise: true do
       email: user.email,
       mobile: user.mobile,
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: '@Aaaaaa11'
+      password: ''
     }
   end
 
@@ -420,27 +398,15 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  context 'invalid password confirmation' do
-    render_views
-
-    it 'displays invalid password confirmation error' do
-      sign_in(user)
-      put :update, update_user_profile_form: attrs_with_invalid_password_confirmation
-
-      expect(response.body).to have_content("doesn't match Password")
-      expect(user.reload.encrypted_password).to eq old_encrypted_password
-    end
-  end
-
   context 'blank new password' do
     render_views
 
-    it 'displays invalid password confirmation error' do
+    it 'does not change password' do
       sign_in(user)
       put :update, update_user_profile_form: attrs_with_blank_new_password
 
-      expect(response.body).to have_content("can't be blank")
       expect(user.reload.encrypted_password).to eq old_encrypted_password
+      expect(response).to redirect_to edit_user_registration_url
     end
   end
 
