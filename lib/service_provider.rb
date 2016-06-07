@@ -1,3 +1,5 @@
+require 'fingerprinter'
+
 class ServiceProvider
   # currently acceptable encryption values are 'none' and 'aes256-cbc'
   DEFAULT_ENCRYPTION = 'none'.freeze
@@ -34,7 +36,7 @@ class ServiceProvider
   def cert
     return if host_attributes['cert'].blank?
 
-    cert_dir = "#{Rails.root}/certs/"
+    cert_dir = "#{Rails.root}/certs/sp/"
 
     @cert ||= File.read("#{cert_dir}#{host_attributes['cert']}.crt")
   end
@@ -61,8 +63,7 @@ class ServiceProvider
   end
 
   def fingerprint
-    return test_fingerprint if Rails.env.test?
-    @fingerprint ||= fingerprint_cert(cert)
+    @fingerprint ||= ::Fingerprinter.fingerprint_cert(cert)
   end
 
   def double_quote_xml_attribute_values
@@ -70,17 +71,6 @@ class ServiceProvider
   end
 
   private
-
-  def fingerprint_cert(cert_pem)
-    return nil unless cert_pem
-    cert = OpenSSL::X509::Certificate.new(cert_pem)
-    OpenSSL::Digest::SHA256.new(cert.to_der).hexdigest
-  end
-
-  def test_fingerprint
-    'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:A2:A7:58:5F:C0:74:8A:4A:03' \
-    ':D9:0F:77:A5:89:7F:F9:68'
-  end
 
   def config
     @config ||= YAML.load_file("#{Rails.root}/config/service_providers.yml")

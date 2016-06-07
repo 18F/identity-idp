@@ -5,10 +5,11 @@ DEFAULT_OPTIONS = {
   idp_sso_target_url: Figaro.env.idp_sso_target_url,
   issuer: "https://#{Figaro.env.domain_name}/users/auth/saml",
   single_signon_service_binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
-  idp_cert: File.read("#{Rails.root}/certs/saml_idp_cert.crt"),
+  ## apparently doens't matter for tests
+  idp_cert: File.read("#{Rails.root}/certs/saml.crt"),
   name_identifier_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
   allowed_clock_drift: 60.seconds,
-  certificate: File.read("#{Rails.root}/certs/saml_cert.crt"),
+  certificate: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
   private_key: OpenSSL::PKey::RSA.new(
     File.read(Rails.root + 'keys/saml.key.enc'),
     Figaro.env.saml_passphrase

@@ -30,6 +30,7 @@ rerun.txt
 Vagrantfile
 
 # folders
+/certs/saml.crt
 /config/application.yml
 /config/aws.yml
 /config/database.yml

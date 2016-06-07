@@ -8,8 +8,8 @@ module SamlAuthHelper
     # SP settings
     settings.assertion_consumer_service_url = 'http://localhost:3000/test/saml/decode_assertion'
     settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
-    settings.certificate = saml_cert
-    settings.private_key = private_key
+    settings.certificate = saml_test_sp_cert
+    settings.private_key = saml_test_sp_key
     settings.authn_context = Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
 
     # SP + IdP Settings
@@ -24,25 +24,19 @@ module SamlAuthHelper
     # IdP setting
     settings.idp_sso_target_url = 'http://www.example.com/api/saml/auth'
     settings.idp_slo_target_url = 'http://www.example.com/api/saml/logout'
-    settings.idp_cert_fingerprint = fingerprint
+    settings.idp_cert_fingerprint = ::Fingerprinter.fingerprint_cert(saml_test_sp_cert)
 
     settings
   end
 
-  def private_key
+  def saml_test_sp_key
     @private_key ||= OpenSSL::PKey::RSA.new(
-      File.read(Rails.root + 'keys/saml.key.enc'),
-      Figaro.env.saml_passphrase
+      File.read(Rails.root + 'keys/saml_test_sp.key')
     ).to_pem
   end
 
-  def fingerprint
-    'F9:A3:9B:2F:8F:1C:E2:79:27:69:EB:32:ED:2A:D5:' \
-    'A2:A7:58:5F:C0:74:8A:4A:03:D9:0F:77:A5:89:7F:F9:68'
-  end
-
-  def saml_cert
-    @saml_cert ||= File.read("#{Rails.root}/certs/saml_cert.crt")
+  def saml_test_sp_cert
+    @saml_test_sp_cert ||= File.read("#{Rails.root}/certs/sp/saml_test_sp.crt")
   end
 
   def auth_request
@@ -116,7 +110,7 @@ module SamlAuthHelper
   end
 
   def saml_test_key
-    @saml_test_key ||= File.read("#{Rails.root}/keys/saml_test.key.enc")
+    @saml_test_key ||= File.read("#{Rails.root}/keys/saml_test_sp.key")
   end
 
   # generates a SAML response and returns a parsed Nokogiri XML document
