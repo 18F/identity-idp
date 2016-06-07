@@ -11,7 +11,7 @@ module SamlIdp
             zstream.finish
             zstream.close
           end
-        rescue Zlib::DataError # not compressed
+        rescue Zlib::BufError, Zlib::DataError # not compressed
           inflated = decoded
         end
       else
