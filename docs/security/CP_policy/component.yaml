@@ -6,7 +6,8 @@ references:
   type: URL
 satisfies:
 - control_key: CP-1
-  covered_by: []
+  covered_by:
+  - verification_key: POLICY_DOC
   implementation_status: none
   narrative: 18F Policy
   standard_key: NIST-800-53
@@ -18,6 +19,6 @@ verifications:
   key: Policy_Update_Test
   last_run: 2016-04-07 13:25:17.622244
   name: 18F Policies Update
-  path: BDD/policies.feature
+  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
   test_passed: false
   type: TEST

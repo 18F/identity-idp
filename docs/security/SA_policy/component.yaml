@@ -1,0 +1,58 @@
+documentation_complete: false
+name: System and Services Acquisition Policy for 18F
+satisfies:
+- control_key: SA-22 (1)
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: "18F will replace information system components when support for the\
+    \ components is no longer available from the developer, vendor, or manufacturer;\
+    \ and will provide justification and documents approval for the continued use\
+    \ of unsupported system components required to satisfy mission/business needs.\n\
+    Cloud Foundry Platform as a Service system replacement:\nA system & software inventory\
+    \ is run nightly, and the DevOps team reviews the inventory weekly to ensure that\
+    \ all software inventoried is accurate and currently supported.  This process\
+    \ includes:\nVerify that the software license support expiration date is not within\
+    \ six months. 18F uses the open source version of Cloud Foundry which uses the\
+    \ open source Apache 2.0 license.\nEnsure that the software version is still supported.\
+    \  Refer to the vendor's support website to verify that support does not have\
+    \ an \u201CEnd of Life\u201D date of less than six months.\nSince 18F is using\
+    \ the open source version of Cloud Foundry, an additional task will be issued\
+    \ to upgrade Cloud Foundry suite to the latest versions. DevOps will review the\
+    \ GitHub cloudfoundry/cf-release repository for implementation of the updated\
+    \ version.\n"
+  standard_key: NIST-800-53
+- control_key: SA-1
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: 18F Policy
+  standard_key: NIST-800-53
+- control_key: SA-11 (1)
+  covered_by:
+  - verification_key: DEPLOYMENT_TESTING
+  narrative: 'The Cloud Foundry community uses Code Climate on platform components
+    such as Bosh and Cloud Controller. The results of the scans are publicly available
+    and can be run by 18F at any time.
+
+    '
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: 18F
+verifications:
+- key: DEPLOYMENT_TESTING
+  name: Cloud Foundry Code Analysis
+  path: https://runtime.ci.cf-app.com/pipelines/cf-release?groups=cf-release
+  type: URL
+- key: POLICY_DOC
+  name: policy document
+  path: https://github.com/18f/compliance-docs/blob/master/SA-Policy.md
+  type: url
+- description: "GIVEN the github link - <policy> THEN the policy has been updated\
+    \ within the last 180 days \n"
+  key: Policy_Update_Test
+  last_run: 2016-04-07 13:25:17.730678
+  name: 18F Policies Update
+  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
+  test_passed: false
+  type: TEST

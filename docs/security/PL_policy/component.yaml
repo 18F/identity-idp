@@ -1,0 +1,48 @@
+documentation_complete: false
+name: Security Planning Policy for 18F
+satisfies:
+- control_key: PL-8
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: "#### a  \n18F has developed the system security plan (SSP) for an Identity\
+    \ Platform Service containing the information security architecture for the information\
+    \ system that:\nDescribes the overall philosophy, requirements, and approach to\
+    \ be taken with regard to protecting the confidentiality, integrity, and availability\
+    \ of organizational information\nDescribes how the information security architecture\
+    \ is integrated into and supports the enterprise architecture\nDescribes any information\
+    \ security assumptions about, and dependencies on, external services\n  \n####\
+    \ b  \n18F Reviews and updates the information security architecture within the\
+    \ System Security plans and the 18F GitHub repository on an annual basis or when\
+    \ a significant change takes place to reflect updates in the enterprise architecture.\n\
+    Due to the dynamic and elastic nature of cloud computing,  18F monitors real-time\
+    \ updates of its information security architecture using its infrastructure management\
+    \  and visual security consoles.\n  \n#### c  \n18F ensures that planned information\
+    \ security architecture changes are reflected in the security plan and organizational\
+    \ procurements/acquisitions.\n18F follows the risk management framework (RMF)\
+    \ which includes conducting annual risk assessments for its information systems\
+    \ and infrastructure. Any changes are then updated in systems security plans,\
+    \ plan of actions and milestones POA&Ms, security assessment reports (SAR)\n \
+    \ \n"
+  standard_key: NIST-800-53
+- control_key: PL-1
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: 18F Policy
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: 18F
+verifications:
+- key: POLICY_DOC
+  name: policy document
+  path: https://github.com/18f/compliance-docs/blob/master/PL-Policy.md
+  type: url
+- description: "GIVEN the github link - <policy> THEN the policy has been updated\
+    \ within the last 180 days \n"
+  key: Policy_Update_Test
+  last_run: 2016-04-07 13:25:17.693033
+  name: 18F Policies Update
+  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
+  test_passed: false
+  type: TEST
