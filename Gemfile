@@ -17,7 +17,7 @@ gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
 gem 'ruby-saml'
-gem 'saml_idp', git: 'https://github.com/pkarman/saml_idp', branch: 'xmlenc'
+gem 'saml_idp', '~> 0.3.1'
 gem 'sass-rails', '~> 5.0'
 gem 'secure_headers', '~> 3.0'
 gem 'sidekiq'
@@ -29,6 +29,7 @@ gem 'twilio-ruby'
 gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
+gem 'xmlenc', '~> 0.6.4'
 gem 'activerecord-session_store', '1.0.0.pre'
 
 group :deploy do
