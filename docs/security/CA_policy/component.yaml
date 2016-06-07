@@ -3,6 +3,7 @@ name: System Interconnection Policy for Login.gov
 satisfies:
 - control_key: CA-3 (5)
   covered_by:
+  - verification_key: POLICY_DOC
   implementation_status: none
   narrative: 'Login.gov information system estabishes connections to other external information
     systems through SAML and REST APIs to resolve identityies during online proofing process, to
@@ -10,3 +11,16 @@ satisfies:
   standard_key: NIST-800-53
 schema_version: 2.0
 system: Login.gov
+verifications:
+- key: POLICY_DOC
+  name: Policy Document
+  path: https://github.com/18F/compliance-docs/blob/master/CA-Policy.md
+  type: URL
+- description: "GIVEN the github link - <policy> THEN the policy has been updated\
+    \ within the last 180 days \n"
+  key: Policy_Update_Test
+  last_run: 2016-04-07 13:25:17.527067
+  name: 18F Policies Update
+  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
+  test_passed: false
+  type: TEST

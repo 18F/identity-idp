@@ -1,7 +1,18 @@
 documentation_complete: false
 name: Access Control Policies for Login.gov
 satisfies:
-- control_key: AC-7
+- control_key: AC-5
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: "#### a  \n18F implements Identity and Access Management (IAM) Policies\
+    \ roles and individual user accounts for separation of duties.\n  \n#### b  \n\
+    18F documents separation of duties of AWS and Cloud Foundry users.  All AWS IAM\
+    \ users, groups and roles can be viewed within the AWS console. IAM users reports\
+    \ are generated to show all separation of duties. Cloud Checkr also generates\
+    \ an a report of all IAM users within 18F AWS environment.\n  \n"
+  standard_key: NIST-800-53
+  - control_key: AC-7
   covered_by: []
   implementation_status: none
   narrative: 'Login.gov will throttle users after 3 unsuccessful attempts for 30 minutes.'
@@ -20,10 +31,24 @@ party and login.gov when initiated by the user. User session termination will oc
 if the browser is closed.'
   standard_key: NIST-800-53
 - control_key: AC-22
-  covered_by: []
+  covered_by:
+  - verification_key: POLICY_DOC
   implementation_status: none
   narrative: 'Login.gov does not have a distinct "content" team. Each code or content pull request is treated the same.
 The control is a commit/Pull Request review.'
   standard_key: NIST-800-53
 schema_version: 2.0
 system: Login.gov
+verifications:
+- key: POLICY_DOC
+  name: Policy Document
+  path: https://github.com/18F/compliance-docs/blob/master/AC-Policy.md
+  type: URL
+- description: "GIVEN the github link - <policy> THEN the policy has been updated\
+    \ within the last 180 days \n"
+  key: Policy_Update_Test
+  last_run: 2016-04-07 13:25:17.375257
+  name: 18F Policies Update
+  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
+  test_passed: false
+  type: TEST

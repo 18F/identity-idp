@@ -1,0 +1,74 @@
+documentation_complete: false
+name: System and Information Integrity Policy for 18F
+satisfies:
+- control_key: SI-1
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: 18F Policy
+  standard_key: NIST-800-53
+- control_key: SI-4
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: "#### a  \nThe 18F DevOps and SecOps teams monitors the Cloud.Gov information\
+    \ system to detect potential attacks and intrusions from internal and external\
+    \ sources in accordance with the 18F System Information and Integrity Policy section\
+    \ 3 - Information System monitoring, the FedRAMP Incident communication procedures\
+    \ and GSA CIO-IT Security-08-39 section \u201CSystem Monitoring / Audit Record\
+    \ Review \u201C for GSA specifc infomation systems\n  \n#### b  \n18F identifies\
+    \ un-authorized access to the Cloud.Gov information system using   automated monitoring\
+    \ tools within its virutal proviate cloud for monitoringing, log management and\
+    \ event analysis. 18F monitors for attacks and indicators of potential attacks,\
+    \  unauthorized local, network, and remote connections.\n  \n#### c  \nThe infrastructure\
+    \ that hosts Cloud.Gov provides monitoring and intrusion detcetion of unsual activity\
+    \ at  the phyical and network layers. 18F is responsible for monitoring everything\
+    \ related to its virtual infrastructure and has deployed monitoring  and intrusion\
+    \ dectction tools within its virtual private cloud to log and dectect malicious\
+    \ activities to its information systems including Cloud.Gov.\n  \n#### d  \n18F\
+    \ ensures intrusion and monitoring tools are protected  from unauthorized access\
+    \ by only granting access to certian members from the DevOps and SecOps team.\
+    \ All monitoring and intrusion information data is protected by limiting accounts\
+    \ to authorized privileged users only and is maintained in secured repositories\
+    \ for review by those members.\n  \n#### e  \nInformation system monitoring will\
+    \ be heightened based on advisories from Pivitol, US-CERT Advisories, commercial\
+    \ security communities, and other sources.\n  \n#### f  \nInformation system monitoring\
+    \ will be conducted in accordance and compliance with 18F security policies and\
+    \ all applicable laws, Executive Orders, directives, and regulations.\n  \n####\
+    \ g  \n18F provides monitoring of all information system components in the event\
+    \ of an event or incident, information will be provided as it is available.  Scheduled\
+    \ reports will be provided for events such as after-hours administrative logins,\
+    \ users being added to privileged groups, persistent malware detections, etc.\
+    \ to designated members of the DevOps teams and SecOps teams as needed\n  \n"
+  standard_key: NIST-800-53
+- control_key: SI-2
+  covered_by:
+  - verification_key: POLICY_DOC
+  implementation_status: none
+  narrative: "#### a  \n18F identifies all system flaws related to Login.gov, reports\
+    \ system flaws to information system owners, Authorizing officials, DevOps and\
+    \ SecOp  and corrects information system flaws that affect Login.gov\n With DevOps\
+    \ manages software vulnerability using releases management processes. The DevOps\
+    \ process is used to identify issues and continuoysly deliver updated code, while new\
+    \ AWS AMI are created with patches for the latest security fixes to address\
+    \ any underlying operating system issues. New Login.gov releases are located\
+    \ at https://github.com/18F/identity-idp.\n18F implemenets the release\
+    \ of Login.gov promptly with newly tested releases with \
+    \ security relevant patches, for effectiveness and potential\
+    \ side effects on information systems before installation.\n  \n"
+  standard_key: NIST-800-53
+schema_version: 2.0
+system: 18F
+verifications:
+- key: POLICY_DOC
+  name: policy document
+  path: https://github.com/18f/compliance-docs/blob/master/SI-Policy.md
+  type: url
+- description: "GIVEN the github link - <policy> THEN the policy has been updated\
+    \ within the last 180 days \n"
+  key: Policy_Update_Test
+  last_run: 2016-04-07 13:25:17.764795
+  name: 18F Policies Update
+  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
+  test_passed: false
+  type: TEST
