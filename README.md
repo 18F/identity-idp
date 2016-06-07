@@ -204,7 +204,7 @@ excellent [ruby-saml](https://github.com/onelogin/ruby-saml) gem.
 
 
 # Author
-Jon Phenow, jon.phenow@sportngin.com
+Jon Phenow, me@jphenow.com
 
 Lawrence Pit, lawrence.pit@gmail.com, lawrencepit.com, @lawrencepit
 
