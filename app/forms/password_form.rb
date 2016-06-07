@@ -11,7 +11,6 @@ class PasswordForm
 
   def submit(params)
     self.password = params[:password]
-    self.password_confirmation = params[:password_confirmation]
 
     if valid? && user_valid?
       @user.password = params[:password]

@@ -59,7 +59,7 @@ describe PasswordForm do
 
         password = 'valid password'
 
-        expect(form.submit(password: password, password_confirmation: password)).
+        expect(form.submit(password: password)).
           to eq false
       end
     end
@@ -72,7 +72,7 @@ describe PasswordForm do
 
         password = 'invalid'
 
-        expect(form.submit(password: password, password_confirmation: password)).
+        expect(form.submit(password: password)).
           to eq false
       end
     end
@@ -85,7 +85,7 @@ describe PasswordForm do
 
         password = 'valid password'
 
-        form.submit(password: password, password_confirmation: password)
+        form.submit(password: password)
 
         expect(user.password).to eq password
       end

@@ -34,7 +34,6 @@ feature 'Sign Up', devise: true do
     expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: VALID_PASSWORD
-    fill_in 'Password confirmation', with: VALID_PASSWORD
     click_button 'Submit'
 
     expect(page).to have_content I18n.t('devise.two_factor_authentication.otp_setup')
@@ -131,75 +130,24 @@ feature 'Sign Up', devise: true do
     end
   end
 
-  scenario 'visitor is redirected back to password form when passwords do not match' do
-    sign_up_with('test@example.com')
-    confirm_last_user
-    fill_in 'password_form_password', with: VALID_PASSWORD
-    fill_in 'Password confirmation', with: 'gobilily-gook'
-    click_button 'Submit'
-
-    expect(page).to have_content "doesn't match Password"
-    expect(current_url).to eq confirm_url
-  end
-
   scenario 'visitor is redirected back to password form when password is blank' do
     sign_up_with('test@example.com')
     confirm_last_user
     fill_in 'password_form_password', with: ''
-    fill_in 'Password confirmation', with: 'gobilily-gook'
-    click_button 'Submit'
-
-    expect(page).to have_content "doesn't match Password"
-    expect(current_url).to eq confirm_url
-  end
-
-  scenario 'visitor is redirected back to password form when password_confirmation is blank' do
-    sign_up_with('test@example.com')
-    confirm_last_user
-    fill_in 'password_form_password', with: VALID_PASSWORD
-    fill_in 'password_form_password_confirmation', with: ''
-    click_button 'Submit'
-
-    expect(page).to have_content "doesn't match Password"
-    expect(current_url).to eq confirm_url
-  end
-
-  scenario 'visitor is redirected back to password form when both password fields are blank' do
-    sign_up_with('test@example.com')
-    confirm_last_user
-    fill_in 'password_form_password', with: ''
-    fill_in 'Password confirmation', with: ''
     click_button 'Submit'
 
     expect(page).to have_content "can't be blank"
     expect(current_url).to eq confirm_url
   end
 
-  context 'password and/or password_confirmation fields are blank when JS is on', js: true do
+  context 'password field is blank when JS is on', js: true do
     before do
       User.create!(email: 'test@example.com')
       confirm_last_user
     end
 
-    it 'shows error message when password_confirmation is blank' do
-      fill_in 'password_form_password', with: VALID_PASSWORD
-      fill_in 'Password confirmation', with: ''
-      click_button 'Submit'
-
-      expect(page).to have_content 'Please fill in all required fields'
-    end
-
-    it 'shows error message when both password fields are blank' do
-      fill_in 'password_form_password', with: ''
-      fill_in 'Password confirmation', with: ''
-      click_button 'Submit'
-
-      expect(page).to have_content 'Please fill in all required fields'
-    end
-
     it 'shows error message when password is blank' do
       fill_in 'password_form_password', with: ''
-      fill_in 'Password confirmation', with: 'gobilily-gook'
       click_button 'Submit'
 
       expect(page).to have_content 'Please fill in all required fields'
@@ -238,7 +186,6 @@ feature 'Sign Up', devise: true do
     sign_up_with('test@example.com')
     confirm_last_user
     fill_in 'password_form_password', with: 'Q!2e'
-    fill_in 'Password confirmation', with: 'Q!2e'
     click_button 'Submit'
 
     expect(page).to have_content('characters')

@@ -28,8 +28,7 @@ describe 'user edits their account', email: true do
       email: new_email,
       mobile: user.mobile,
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 
@@ -38,8 +37,7 @@ describe 'user edits their account', email: true do
       email: @user.email,
       mobile: '555-555-5555',
       current_password: '!1aZ' * 32,
-      password: '',
-      password_confirmation: ''
+      password: ''
     }
   end
 

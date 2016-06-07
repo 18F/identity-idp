@@ -17,7 +17,7 @@ describe EmailNotifier do
     context 'when the password has changed' do
       it 'sends an email notifiying the user of the password change' do
         user = create(:user, :signed_up)
-        user.update!(password: 'newValidPass!!00', password_confirmation: 'newValidPass!!00')
+        user.update!(password: 'newValidPass!!00')
 
         expect(UserMailer).to receive(:password_changed).with(user).and_return(mailer)
         expect(mailer).to receive(:deliver_later)
