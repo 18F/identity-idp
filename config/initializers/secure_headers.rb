@@ -22,6 +22,13 @@ SecureHeaders::Configuration.default do |config|
     style_src: %w('self'),
     base_uri: %w('self')
   }
+  config.cookies = {
+    secure: true, # mark all cookies as "Secure"
+    httponly: true, # mark all cookies as "HttpOnly"
+    samesite: {
+      strict: true # mark all cookies as SameSite=Strict
+    }
+  }
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,
