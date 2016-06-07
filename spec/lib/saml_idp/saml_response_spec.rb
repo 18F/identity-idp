@@ -16,6 +16,27 @@ module SamlIdp
       Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
     }
     let(:expiry) { 3 * 60 * 60 }
+    let (:encryption_opts) do
+      {
+        cert: Default::X509_CERTIFICATE,
+        block_encryption: 'aes256-cbc',
+        key_transport: 'rsa-oaep-mgf1p',
+      }
+    end
+    let(:subject_encrypted) { described_class.new(reference_id,
+                                  response_id,
+                                  issuer_uri,
+                                  name_id,
+                                  audience_uri,
+                                  saml_request_id,
+                                  saml_acs_url,
+                                  algorithm,
+                                  authn_context_classref,
+                                  expiry,
+                                  encryption_opts
+                                 )
+    }
+
     subject { described_class.new(reference_id,
                                   response_id,
                                   issuer_uri,
@@ -31,6 +52,17 @@ module SamlIdp
 
     it "has a valid build" do
       subject.build.should be_present
+    end
+
+    it "builds encrypted" do
+      subject_encrypted.build.should_not match(audience_uri)
+      encoded_xml = subject_encrypted.build
+      resp_settings = saml_settings(saml_acs_url)
+      resp_settings.private_key = Default::SECRET_KEY
+      resp_settings.issuer = audience_uri
+      saml_resp = OneLogin::RubySaml::Response.new(encoded_xml, settings: resp_settings)
+      saml_resp.soft = false
+      saml_resp.is_valid?.should == true
     end
   end
 end

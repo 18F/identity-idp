@@ -36,12 +36,15 @@ Add to your `routes.rb` file, for example:
 get '/saml/auth' => 'saml_idp#new'
 get '/saml/metadata' => 'saml_idp#show'
 post '/saml/auth' => 'saml_idp#create'
+match '/saml/logout' => 'saml_idp#logout', via: [:get, :post, :delete]
 ```
 
 Create a controller that looks like this, customize to your own situation:
 
 ``` ruby
-class SamlIdpController < SamlIdp::IdpController
+class SamlIdpController
+  include SamlIdp::IdpController
+
   def idp_authenticate(email, password) # not using params intentionally
     user = User.by_email(email).first
     user && user.valid_password?(password) ? user : nil
@@ -49,9 +52,20 @@ class SamlIdpController < SamlIdp::IdpController
   private :idp_authenticate
 
   def idp_make_saml_response(found_user) # not using params intentionally
-    encode_response found_user
+    # NOTE encryption is optional
+    encode_response found_user, encryption: {
+      cert: saml_request.service_provider.cert,
+      block_encryption: 'aes256-cbc',
+      key_transport: 'rsa-oaep-mgf1p'
+    }
   end
   private :idp_make_saml_response
+
+  def idp_logout
+    user = User.by_email(saml_request.name_id)
+    user.logout
+  end
+  private :idp_logout
 end
 ```
 

@@ -14,10 +14,11 @@ module SamlIdp
     attr_accessor :raw_algorithm
     attr_accessor :authn_context_classref
     attr_accessor :expiry
+    attr_accessor :encryption_opts
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, expiry=60*60)
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, expiry=60*60, encryption_opts=nil)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
       self.principal = principal
@@ -27,6 +28,7 @@ module SamlIdp
       self.raw_algorithm = raw_algorithm
       self.authn_context_classref = authn_context_classref
       self.expiry = expiry
+      self.encryption_opts = encryption_opts
     end
 
     def fresh
@@ -72,6 +74,14 @@ module SamlIdp
     end
     alias_method :raw, :fresh
     private :fresh
+
+    def encrypt(opts = {})
+      raise "Must set encryption_opts to encrypt" unless encryption_opts
+      raw_xml = opts[:sign] ? signed : raw
+      require 'saml_idp/encryptor'
+      encryptor = Encryptor.new encryption_opts
+      encryptor.encrypt(raw_xml)
+    end
 
     def get_values_for(friendly_name, getter)
       result = nil
