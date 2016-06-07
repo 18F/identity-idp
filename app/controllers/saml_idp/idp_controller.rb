@@ -29,6 +29,17 @@ module SamlIdp
       render :template => "saml_idp/idp/new"
     end
 
+    def logout
+      idp_logout
+      @saml_response = idp_make_saml_response(nil)
+      render :template => "saml_idp/idp/saml_post", :layout => false
+    end
+
+    def idp_logout
+      raise NotImplementedError
+    end
+    private :idp_logout
+
     def idp_authenticate(email, password)
       raise NotImplementedError
     end
