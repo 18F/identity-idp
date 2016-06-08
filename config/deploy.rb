@@ -7,7 +7,8 @@ set :branch, ENV['branch'] || ENV['BRANCH'] || ask(:branch, `git branch`.match(/
 set :bundle_without, 'deploy development doc test'
 set :deploy_via, :remote_cache
 set :keep_releases, 5
-set :linked_files, %w(config/application.yml
+set :linked_files, %w(certs/saml.crt
+                      config/application.yml
                       config/database.yml
                       keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
