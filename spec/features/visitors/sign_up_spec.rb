@@ -182,6 +182,16 @@ feature 'Sign Up', devise: true do
     end
   end
 
+  scenario 'password visibility toggle when JS is on', js: true do
+    sign_up_with('test@example.com')
+    confirm_last_user
+
+    expect(page).to have_css('#pw-toggle')
+
+    click_button 'Show'
+    expect(page).to have_content 'Hide'
+  end
+
   scenario 'visitor is redirected back to password form when password is invalid' do
     sign_up_with('test@example.com')
     confirm_last_user
