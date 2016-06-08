@@ -122,7 +122,7 @@ module SamlIdpLogoutConcern
   end
 
   def asserted_identity
-    Identity.find_by(session_uuid: @saml_response.in_response_to)
+    Identity.find_by(session_uuid: @saml_response.in_response_to.gsub(/^_/, ''))
   end
 
   def clean_up_session
@@ -137,7 +137,6 @@ module SamlIdpLogoutConcern
       SamlIdp.config.base_saml_location,
       sp_data[:assertion_consumer_logout_service_url],
       name_id,
-      session_index,
       SamlIdp.config.algorithm
     )
   end
@@ -172,7 +171,7 @@ module SamlIdpLogoutConcern
 
   def finish_slo_at_idp
     sign_out_with_flash
-    redirect_to after_sign_out_path_for(:user)
+    redirect_to root_url
   end
 
   def sign_out_with_flash

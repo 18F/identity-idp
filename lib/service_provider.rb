@@ -9,7 +9,7 @@ class ServiceProvider
   end
 
   def metadata
-    ignored_methods = [:fingerprint_cert, :metadata, :invalid?, :test_fingerprint]
+    ignored_methods = [:metadata, :encrypt_responses?, :encryption_opts]
     metadata_methods = self.class.instance_methods(false) - ignored_methods
 
     @metadata ||= metadata_methods.inject({}) do |hash, method|
@@ -39,10 +39,6 @@ class ServiceProvider
     cert_dir = "#{Rails.root}/certs/sp/"
 
     @cert ||= File.read("#{cert_dir}#{host_attributes['cert']}.crt")
-  end
-
-  def encrypt_responses?
-    block_encryption != 'none'
   end
 
   def block_encryption
@@ -86,5 +82,9 @@ class ServiceProvider
 
   def host_attributes
     config[:valid_hosts].fetch(@host, {})
+  end
+
+  def encrypt_responses?
+    block_encryption != 'none'
   end
 end

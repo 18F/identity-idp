@@ -22,11 +22,15 @@ module SamlAuthHelper
     settings.name_identifier_format = 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
     settings.double_quote_xml_attribute_values = true
     # IdP setting
-    settings.idp_sso_target_url = 'http://www.example.com/api/saml/auth'
-    settings.idp_slo_target_url = 'http://www.example.com/api/saml/logout'
-    settings.idp_cert_fingerprint = ::Fingerprinter.fingerprint_cert(saml_test_sp_cert)
+    settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth"
+    settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout"
+    settings.idp_cert_fingerprint = fingerprint
 
     settings
+  end
+
+  def fingerprint
+    @fingerprint ||= Fingerprinter.fingerprint_cert(saml_test_sp_cert)
   end
 
   def saml_test_sp_key

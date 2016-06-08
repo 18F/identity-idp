@@ -13,37 +13,7 @@ module Test
       redirect_to(request.create(test_saml_settings, {}))
     end
 
-    # rubocop:disable AbcSize, MethodLength
-    def logout
-      # Create LogoutRequest.
-      signature_opts = {
-        cert: File.read("#{Rails.root}/certs/saml_client_cert.crt"),
-        key: saml_test_key,
-        signature_alg: 'rsa-sha256',
-        digest_alg: 'sha256'
-      }
-
-      logout_request_builder = SamlIdp::LogoutRequestBuilder.new(
-        "_#{UUID.generate}", # response_id
-        test_saml_settings.issuer,
-        test_saml_settings.idp_slo_target_url,
-        UUID.generate,       # name_id
-        'bogus_fuzzy_lambs', # name_qualifier
-        UUID.generate,       # session_index
-        signature_opts
-      )
-
-      render template: 'saml_idp/shared/saml_post_binding.html.slim',
-             locals: {
-               action_url: '/api/saml/logout',
-               message: Base64.encode64(logout_request_builder.build.to_xml),
-               type: :SAMLRequest
-             },
-             layout: false
-    end
-    # rubocop:enable AbcSize, MethodLength
-
-    # rubocop:disable AbcSize, MethodLength
+    # rubocop:disable MethodLength
     def decode_response
       response = OneLogin::RubySaml::Response.new(
         params[:SAMLResponse],
@@ -66,16 +36,13 @@ module Test
       render template: 'test/saml_test/decode_response.html.slim',
              locals: { is_valid: is_valid, response: response }
     end
-    # rubocop:enable AbcSize, MethodLength
+    # rubocop:enable MethodLength
 
     # Method to handle IdP initiated logouts
     # rubocop:disable AbcSize, MethodLength
     def decode_slo_request
       if params[:SAMLRequest]
-        logout_request = OneLogin::RubySaml::SloLogoutrequest.new(
-          params[:SAMLRequest],
-          settings: test_saml_settings
-        )
+        logout_request = OneLogin::RubySaml::SloLogoutrequest.new(params[:SAMLRequest])
 
         if logout_request.is_valid?
           logger.info "IdP initiated Logout for #{logout_request.name_id}"
@@ -92,7 +59,7 @@ module Test
         else
           response = logout_request.errors.to_s
           render template: 'test/saml_test/decode_response.html.slim',
-                 locals: { is_valid: is_valid, response: response }
+                 locals: { is_valid: false, response: response }
         end
       elsif params[:SAMLResponse]
         decode_response
@@ -103,10 +70,7 @@ module Test
     private
 
     def test_saml_settings
-      settings = sp1_saml_settings
-      settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth"
-      settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout"
-      settings
+      sp1_saml_settings
     end
   end
 end

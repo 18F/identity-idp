@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'saml api', devise: true, sms: true do
-  include SamlAuthHelper
-  include SamlResponseHelper
+include SamlAuthHelper
+include SamlResponseHelper
 
+feature 'saml api', devise: true, sms: true do
   let(:user) { create(:user, :signed_up) }
 
   context 'SAML Assertions' do
@@ -118,6 +118,12 @@ feature 'saml api', devise: true, sms: true do
         expect(xmldoc.signature_method_nodeset.length).to eq(1)
         expect(xmldoc.signature_method_nodeset[0].attr('Algorithm')).
           to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
+      end
+
+      it 'contains a digest method nodeset with SHA256 algorithm' do
+        expect(xmldoc.digest_method_nodeset.length).to eq(1)
+        expect(xmldoc.digest_method_nodeset[0].attr('Algorithm')).
+          to eq('http://www.w3.org/2001/04/xmlenc#sha256')
       end
 
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
@@ -271,6 +277,177 @@ feature 'saml api', devise: true, sms: true do
         visit destroy_user_session_url
         expect(page.current_path).to eq('/')
         Timecop.return
+      end
+    end
+
+    context 'when logged in to multiple SPs with IdP-initiated logout' do
+      let(:logout_user) { create(:user, :signed_up) }
+      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+
+      before do
+        visit sp1_authnrequest
+        authenticate_user(logout_user)
+        @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
+
+        click_button 'Submit'
+
+        visit sp2_authnrequest
+        @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
+        click_button 'Submit'
+      end
+
+      it 'deactivates each authenticated Identity and logs the user out' do
+        visit destroy_user_session_url
+
+        click_button 'Submit' # logout request for first SP
+        click_button 'Submit' # logout request for second SP
+
+        logout_user.identities.each do |ident|
+          expect(ident.last_authenticated_at).to be_nil
+        end
+
+        expect(logout_user.active_identities).to be_empty
+
+        visit edit_user_registration_path
+        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+      end
+
+      it 'references the correct SessionIndexes' do
+        visit destroy_user_session_url
+
+        expect(request_xmldoc.asserted_session_index).to eq(@sp2_asserted_session_index)
+        click_button 'Submit'
+
+        expect(request_xmldoc.asserted_session_index).to eq(@sp1_asserted_session_index)
+        click_button 'Submit'
+        visit edit_user_registration_path
+        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+      end
+    end
+
+    context 'with multiple SP sessions and SP-initiated logout' do
+      let(:user) { create(:user, :signed_up) }
+      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+
+      before do
+        visit sp1_authnrequest # sp1
+        authenticate_user(user)
+        @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
+        click_button 'Submit'
+
+        visit sp2_authnrequest # sp2
+        @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
+        click_button 'Submit'
+
+        request = OneLogin::RubySaml::Logoutrequest.new
+        settings = sp2_saml_settings # sp2
+        settings.name_identifier_value = user.uuid
+        visit request.create(settings)
+      end
+
+      it 'deactivates each Identity, asserts correct SessionIndex, and ends session at IdP' do
+        expect(user.active_identities.size).to eq(2)
+
+        expect(current_path).to eq('/api/saml/logout')
+
+        expect(request_xmldoc.asserted_session_index).
+          to eq(@sp1_asserted_session_index)
+
+        click_button 'Submit' # LogoutRequest for first SP
+
+        # SP1 logs user out and responds with success
+        # User session is terminated at IdP and success
+        # is returned to SP2 (originating requestor)
+        expect(response_xmldoc.logout_status_assertion).
+          to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
+
+        click_button 'Submit' # LogoutResponse for originating SP
+
+        sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+
+        expect(current_url).to eq(sp2.assertion_consumer_logout_service_url)
+        expect(user.active_identities.size).to eq(0)
+
+        visit edit_user_registration_path
+        expect(current_url).to eq root_url
+      end
+    end
+
+    context 'with multiple SP sessions and SP-initiated logout; non-chronological' do
+      let(:user) { create(:user, :signed_up) }
+      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+
+      before do
+        visit sp1_authnrequest # sp1
+        authenticate_user(user)
+        @sp1_session_index = response_xmldoc.response_session_index_assertion
+        click_button 'Submit'
+
+        visit sp2_authnrequest # sp2
+        @sp2_session_index = response_xmldoc.response_session_index_assertion
+        click_button 'Submit'
+
+        request = OneLogin::RubySaml::Logoutrequest.new
+        settings = sp1_saml_settings
+        settings.name_identifier_value = user.uuid
+        visit request.create(settings) # sp1
+      end
+
+      it 'terminates sessions in order of authentication' do
+        expect(request_xmldoc.asserted_session_index).to eq(@sp2_session_index)
+        click_button 'Submit' # LogoutRequest for first SP: sp2
+
+        expect(response_xmldoc.logout_status_assertion).
+          to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
+        click_button 'Submit' # LogoutResponse for originating SP: sp1
+
+        visit edit_user_registration_path
+        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+
+        expect(user.active_identities.size).to eq(0)
+      end
+    end
+
+    context 'with alternate multiple SP sessions and SP-initiated logout; non-chronological' do
+      let(:user) { create(:user, :signed_up) }
+      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+
+      before do
+        visit sp2_authnrequest # sp2
+        authenticate_user(user)
+        @sp2_session_index = response_xmldoc.response_session_index_assertion
+        click_button 'Submit'
+
+        visit sp1_authnrequest # sp1
+        @sp1_session_index = response_xmldoc.response_session_index_assertion
+        click_button 'Submit'
+
+        request = OneLogin::RubySaml::Logoutrequest.new
+        settings = sp2_saml_settings
+        settings.name_identifier_value = user.uuid
+        visit request.create(settings) # sp2
+      end
+
+      it 'terminates sessions in order of authentication' do
+        expect(request_xmldoc.asserted_session_index).to eq(@sp1_session_index)
+        click_button 'Submit' # LogoutRequest for most recent SP: sp1
+
+        expect(response_xmldoc.logout_status_assertion).
+          to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
+        click_button 'Submit' # LogoutResponse for originating SP: sp2
+
+        visit edit_user_registration_path
+        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+
+        expect(user.active_identities.size).to eq(0)
+
+        removed_keys = %w(logout_response logout_response_url)
+
+        expect(page.get_rack_session.keys & removed_keys).to eq []
       end
     end
   end

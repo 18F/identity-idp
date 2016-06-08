@@ -14,6 +14,17 @@ test:
       block_encryption: 'aes256-cbc'
       cert: 'saml_test_sp'
 
+    'https://rp2.serviceprovider.com/auth/saml/metadata':
+      acs_url: 'http://example.com/test/saml/decode_assertion'
+      assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+      block_encryption: 'aes256-cbc'
+      cert: 'saml_test_sp'
+
+    'http://test.host':
+      acs_url: 'http://test.host/test/saml/decode_assertion'
+      metadata_url: 'http://test.host/test/saml/metadata'
+      sp_initiated_login_url: 'http://test.host/test/saml'
+
 development:
   valid_hosts:
     'https://rp1.serviceprovider.com/auth/saml/metadata':
@@ -71,4 +82,4 @@ superb.legit.domain.gov:
     'urn:govheroku:serviceprovider':
       acs_url: 'https://vets.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
-      cert: 'vetsgov_sp_cert'
+      cert: 'saml_test_sp'

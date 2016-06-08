@@ -68,7 +68,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       authn_context_classref: requested_authn_context,
-      reference_id: active_identity.session_uuid.gsub(/^_/, ''),
+      reference_id: active_identity.session_uuid,
       encryption: current_service_provider.encryption_opts
     )
   end
