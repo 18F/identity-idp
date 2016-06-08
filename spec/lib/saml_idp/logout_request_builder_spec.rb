@@ -15,7 +15,6 @@ module SamlIdp
     let(:issuer_uri) { 'http://example.com' }
     let(:saml_slo_url) { 'http://localhost:3000/saml/logout' }
     let(:name_id) { 'some_name_id' }
-    let(:session_index) { 'abc123index' }
     let(:algorithm) { OpenSSL::Digest::SHA256 }
 
     subject do
@@ -24,7 +23,6 @@ module SamlIdp
         issuer_uri,
         saml_slo_url,
         name_id,
-        session_index,
         algorithm
       )
     end

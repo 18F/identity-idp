@@ -5,15 +5,13 @@ module SamlIdp
     attr_accessor :issuer_uri
     attr_accessor :saml_slo_url
     attr_accessor :name_id
-    attr_accessor :session_index
     attr_accessor :algorithm
 
-    def initialize(response_id, issuer_uri, saml_slo_url, name_id, session_index, algorithm)
+    def initialize(response_id, issuer_uri, saml_slo_url, name_id, algorithm)
       self.response_id = response_id
       self.issuer_uri = issuer_uri
       self.saml_slo_url = saml_slo_url
       self.name_id = name_id
-      self.session_index = session_index
       self.algorithm = algorithm
     end
 
@@ -28,7 +26,7 @@ module SamlIdp
           sign request
           request.NameID name_id, xmlns: Saml::XML::Namespaces::ASSERTION,
             Format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
-          request.SessionIndex session_index
+          request.SessionIndex response_id_string
         end
     end
     private :build

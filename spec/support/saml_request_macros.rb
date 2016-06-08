@@ -14,7 +14,6 @@ module SamlRequestMacros
       'http://example.com',
       requested_saml_logout_url,
       'some_name_id',
-      'abc123index',
       OpenSSL::Digest::SHA256
     )
     request_builder.encoded
