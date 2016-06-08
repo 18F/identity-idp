@@ -76,6 +76,9 @@ en:
         index: Frequently Asked Questions
         new: Create a new FAQ
         show: Viewing FAQ
+      idv:
+        p1: 'Page 1'
+        p2: 'Page 2'
       passwords:
         change: Change your password for your Upaya Account
         forgot: Reset your password for your Upaya Account
