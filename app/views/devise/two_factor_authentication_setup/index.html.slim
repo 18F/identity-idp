@@ -11,6 +11,6 @@
           url: users_otp_path) do |f|
         = f.error_notification
         p = t('devise.two_factor_authentication.otp_setup')
-        = f.input :mobile, label: 'Mobile Number', required: true, autofocus: true
+        = f.input :mobile, as: :tel, autofocus: true, label: 'Mobile Number', required: true
         = f.button :submit, 'Submit'
         p = t('devise.two_factor_authentication.otp_sms_disclaimer')
