@@ -167,12 +167,15 @@ describe Users::RegistrationsController, devise: true do
     before { sign_in(user) }
 
     it 'sends an OTP to unconfirmed mobile after update' do
-      expect(SmsSenderOtpJob).to receive(:perform_later).with(user)
+      allow(SmsSenderOtpJob).to receive(:perform_later)
 
       put(
         :update,
         update_user_profile_form: attrs_with_new_email_and_mobile
       )
+
+      expect(SmsSenderOtpJob).to have_received(:perform_later).
+        with(user.reload.otp_code, '+1 (555) 555-5555')
     end
   end
 

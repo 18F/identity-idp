@@ -8,7 +8,7 @@ class UserOtpSender
 
     generate_new_otp if @user.unconfirmed_mobile.present?
 
-    SmsSenderOtpJob.perform_later(@user)
+    SmsSenderOtpJob.perform_later(@user.otp_code, target_number)
   end
 
   # This method is executed by the two_factor_authentication gem upon login
@@ -18,6 +18,10 @@ class UserOtpSender
   end
 
   private
+
+  def target_number
+    UserDecorator.new(@user).two_factor_phone_number
+  end
 
   def generate_new_otp
     @user.update_columns(otp_secret_key: ROTP::Base32.random_base32)

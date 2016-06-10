@@ -25,8 +25,6 @@ describe TwilioService do
   end
 
   describe 'performance testing mode' do
-    let(:user) { build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq') }
-
     it 'uses NullTwilioClient when pt_mode is on' do
       expect(FeatureManagement).to receive(:pt_mode?).and_return(true)
       expect(NullTwilioClient).to receive(:new)
@@ -54,28 +52,28 @@ describe TwilioService do
 
     it 'does not send any OTP when pt_mode is true', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
-      SmsSenderOtpJob.perform_now(user)
+      SmsSenderOtpJob.perform_now('1234', '555-5555')
 
       expect(messages.size).to eq 0
     end
 
     it 'sends an OTP when pt_mode is false', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(false)
-      SmsSenderOtpJob.perform_now(user)
+      SmsSenderOtpJob.perform_now('1234', '555-5555')
 
       expect(messages.size).to eq 1
     end
 
     it 'does not send a number change SMS when pt_mode is true', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
-      SmsSenderNumberChangeJob.perform_now(user)
+      SmsSenderNumberChangeJob.perform_now('555-5555')
 
       expect(messages.size).to eq 0
     end
 
     it 'sends number change SMS when pt_mode is false', sms: true do
       expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(false)
-      SmsSenderNumberChangeJob.perform_now(user)
+      SmsSenderNumberChangeJob.perform_now('555-5555')
 
       expect(messages.size).to eq 1
     end

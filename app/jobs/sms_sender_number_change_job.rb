@@ -2,8 +2,7 @@ class SmsSenderNumberChangeJob < ActiveJob::Base
   queue_as :sms
 
   def perform(mobile)
-    twilio_service = TwilioService.new
-    send(:number_change, twilio_service, mobile)
+    number_change(TwilioService.new, mobile)
   end
 
   private
