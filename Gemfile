@@ -63,6 +63,7 @@ group :development, :test do
   gem 'thin'
   gem 'bullet'
   gem 'mailcatcher', require: false
+  gem 'proofer', github: '18F/identity-proofer-gem'
 end
 
 group :test do
