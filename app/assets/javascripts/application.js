@@ -1,2 +1,4 @@
 //= require turbolinks
-//= require app/utils
+
+import 'app/utils';
+import 'app/pw-toggle';
