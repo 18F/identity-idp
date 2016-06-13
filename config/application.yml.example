@@ -30,7 +30,7 @@ production:
   pt_mode: 'off'
   saml_passphrase: 'trust-but-verify'
   secret_key_base: 'rake secret'
-  smtp_settings: '{"address":"smtp.gmail.com", "port":587, "authentication":"plain", "enable_starttls_auto":true, "user_name":"user@gmail.com","password":"xxx"}'
+  smtp_settings: '{"address":"smtp.mandrillapp.com", "port":587, "authentication":"login", "enable_starttls_auto":true, "user_name":"user@gmail.com","password":"xxx"}'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
 
 test:
