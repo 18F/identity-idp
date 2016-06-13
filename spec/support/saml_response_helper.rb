@@ -191,4 +191,38 @@ module SamlResponseHelper
                          saml: Saml::XML::Namespaces::ASSERTION)[0].content
     end
   end
+
+  def decrypted_saml_response
+    @decrypted_saml_response ||= Saml::XML::Document.parse(saml_response.document.to_s)
+  end
+
+  def saml_response
+    OneLogin::RubySaml::Response.new(
+      Nokogiri::HTML(response.body).at_css('#SAMLResponse')['value'],
+      settings: saml_settings
+    )
+  end
+
+  def issuer
+    decrypted_saml_response.at(
+      '//response:Response/ds:Issuer',
+      ds: Saml::XML::Namespaces::ASSERTION,
+      response: Saml::XML::Namespaces::PROTOCOL
+    )
+  end
+
+  def status
+    decrypted_saml_response.at('//ds:Status', ds: Saml::XML::Namespaces::PROTOCOL)
+  end
+
+  def status_code
+    decrypted_saml_response.at('//ds:StatusCode', ds: Saml::XML::Namespaces::PROTOCOL)
+  end
+
+  def transform(algorithm)
+    decrypted_saml_response.at(
+      "//ds:Transform[@Algorithm='#{algorithm}']",
+      ds: Saml::XML::Namespaces::SIGNATURE
+    )
+  end
 end

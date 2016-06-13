@@ -21,7 +21,7 @@ IdentityLinker = Struct.new(:user, :provider, :authn_context) do
       authn_context: authn_context,
       session_index: session_index,
       last_authenticated_at: Time.current,
-      session_uuid: "_#{SecureRandom.uuid}"
+      session_uuid: SecureRandom.uuid
     }
   end
 

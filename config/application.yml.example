@@ -35,7 +35,7 @@ production:
 
 test:
   allow_third_party_auth: 'yes'
-  domain_name: ''
+  domain_name: 'www.example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
   sp_url: ''
   idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'

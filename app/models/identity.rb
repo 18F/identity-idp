@@ -1,5 +1,4 @@
 class Identity < ActiveRecord::Base
-  include NonNullSessionUuid
   belongs_to :user
   validates :service_provider, presence: true
 

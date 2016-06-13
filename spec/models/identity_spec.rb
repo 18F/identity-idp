@@ -14,10 +14,6 @@ describe Identity do
 
   it { is_expected.to validate_presence_of(:service_provider) }
 
-  it 'has a session uuid' do
-    expect(subject.session_uuid).to_not be_nil
-  end
-
   describe '.deactivate!' do
     let(:active_identity) { create(:identity, :active) }
 
