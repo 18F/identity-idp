@@ -36,7 +36,6 @@ module Devise
 
       resource.send_two_factor_authentication_code
 
-      flash[:success] = t('devise.two_factor_authentication.please_confirm')
       redirect_to user_two_factor_authentication_path
     end
 
@@ -47,8 +46,6 @@ module Devise
     def process_invalid_form
       if @two_factor_setup_form.mobile_taken?
         SmsSenderExistingMobileJob.perform_later(@two_factor_setup_form.mobile)
-
-        flash[:success] = t('devise.two_factor_authentication.please_confirm')
 
         redirect_to user_two_factor_authentication_path
       else

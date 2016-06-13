@@ -1,9 +1,4 @@
 .mb3
-  h4 = t('upaya.forms.registration.contact_info')
-  = f.input :email, autofocus: true, input_html: { 'data-tooltip' => true, title: t('upaya.forms.registration.email_field') }, required: true
-  = f.input :mobile, as: :tel, input_html: { 'data-tooltip' => true, title: t('upaya.forms.registration.mobile_field') }, required: false
-
-.mb3
-  h4 Password
-  = f.input :password, required: false
-.py2
+  = f.input :email, autofocus: true, required: true
+  = f.input :mobile, as: :tel, required: false
+  = f.input :password, label: 'New password', required: false

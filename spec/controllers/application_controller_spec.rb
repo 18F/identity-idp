@@ -111,8 +111,6 @@ describe ApplicationController do
         get :index
 
         expect(response).to redirect_to users_otp_url
-        expect(flash[:notice]).
-          to eq t('devise.two_factor_authentication.otp_setup')
       end
     end
 
