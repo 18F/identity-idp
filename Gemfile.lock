@@ -1,4 +1,11 @@
 GIT
+  remote: https://github.com/18F/identity-proofer-gem.git
+  revision: 7caf284d0cbcda991d6241b2775b424082784f71
+  specs:
+    proofer (1.0.0)
+      dotenv
+
+GIT
   remote: https://github.com/Houdini/two_factor_authentication.git
   revision: 675f651929b7a09bb59169bf4206a10895c2b9d9
   specs:
@@ -161,6 +168,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.2.5)
     docile (1.1.5)
+    dotenv (2.1.1)
     dotiw (3.1.1)
       actionpack (>= 3)
       i18n
@@ -524,6 +532,7 @@ DEPENDENCIES
   pg
   phony_rails
   poltergeist
+  proofer!
   pry-byebug
   pundit
   quiet_assets
