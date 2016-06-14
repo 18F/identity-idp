@@ -1,8 +1,6 @@
 FROM rails:4.2.6
 
 RUN echo "deb http://us.archive.ubuntu.com/ubuntu precise main universe" | tee -a /etc/apt/sources.list
-RUN apt-get update
-RUN apt-get install -y libxmlsec1-dev
 
 # For browserify we need node
 # TOOD(sbc): Create a separate production container without this.
