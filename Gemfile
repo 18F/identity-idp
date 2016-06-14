@@ -31,6 +31,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'xmlenc', '~> 0.6.4'
 gem 'activerecord-session_store', '1.0.0.pre'
+gem 'rqrcode'
 
 group :deploy do
   gem 'capistrano' # , '~> 3.4'
