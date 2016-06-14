@@ -25,7 +25,6 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
         )
 
         expect(response).to redirect_to(user_two_factor_authentication_path)
-        expect(flash[:success]).to eq t('devise.two_factor_authentication.please_confirm')
         expect(user.reload.mobile).to be_nil
         expect(user.reload.unconfirmed_mobile).to eq second_user.mobile
       end

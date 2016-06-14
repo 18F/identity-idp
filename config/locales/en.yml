@@ -22,7 +22,7 @@ en:
         mobile_field: 'If you wish to have your secure one-time password sent to your mobile phone, enter the number here.'
         contact_info: Contact information
         already_have_account_html: Already have an account?
-        need_password: We need your current password to confirm your changes.
+        need_password: Please verify your current password to confirm changes.
       two_factor:
         code: Secure one-time password
         make_selection: Please choose at least one delivery method.

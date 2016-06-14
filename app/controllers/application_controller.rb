@@ -57,7 +57,6 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_set_up_2fa
-    flash[:notice] = t('devise.two_factor_authentication.otp_setup')
     redirect_to users_otp_url
   end
 

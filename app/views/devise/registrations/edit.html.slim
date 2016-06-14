@@ -4,15 +4,13 @@
   .sm-col-6.px2.mx-auto
     .panel
       .panel-heading
-        h2.m0 = 'Edit User Details'
+        h2.m0 = 'Update information'
       = simple_form_for(@update_user_profile_form,
           url: user_registration_path,
           html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
         = f.error_notification
         = render 'devise/registrations/form', f: f
-        = f.input(:current_password,
-            required: true,
-            input_html: { 'aria-describedby' => 'password_additional_info' })
-        p id='password_additional_info'
+        .mb2.p2.h5.alert-info
           =t('upaya.forms.registration.need_password')
+        = f.input(:current_password, required: true)
         = f.button :submit, 'Update'
