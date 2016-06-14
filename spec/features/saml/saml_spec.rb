@@ -457,6 +457,7 @@ feature 'saml api', devise: true, sms: true do
       before do
         visit sp1_authnrequest
         authenticate_user(logout_user)
+        click_button 'Submit'
       end
 
       it 'completes logout at IdP' do

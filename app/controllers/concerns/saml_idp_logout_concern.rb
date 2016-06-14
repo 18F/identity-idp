@@ -10,13 +10,22 @@ module SamlIdpLogoutConcern
 
   def saml_logout_message
     return handle_saml_logout_response if successful_saml_response?
-    return nil if failed_saml_response?
+    return nil if finish_logout_at_idp?
     return handle_saml_logout_request(name_id_user) if valid_saml_request?
 
-    generate_slo_request(current_user) if user_signed_in_and_has_identity?
+    generate_slo_request(current_user)
   end
 
   private
+
+  def finish_logout_at_idp?
+    !user_signed_in_and_has_identity? || failed_saml_response? || slo_not_implemented_at_sp?
+  end
+
+  def slo_not_implemented_at_sp?
+    slo_identity = fetch_identity_for_slo(current_user)
+    slo_identity.sp_metadata[:assertion_consumer_logout_service_url].nil?
+  end
 
   def successful_saml_response?
     @saml_response.present? && @saml_response.success?
@@ -62,9 +71,6 @@ module SamlIdpLogoutConcern
 
   def generate_slo_request(resource)
     slo_identity = fetch_identity_for_slo(resource)
-    # The SP has not implemented SLO; do not generate a request!
-    return nil if
-      slo_identity.sp_metadata[:assertion_consumer_logout_service_url].nil?
     {
       message: slo_request_builder(
         slo_identity.sp_metadata,
