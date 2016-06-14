@@ -4,7 +4,6 @@ module SpRedirect
   def redirect_to_sp
     return if redirect_url.blank?
     redirect_to(redirect_url)
-    session[:declined_quiz] = false
   end
 
   def redirect_url
