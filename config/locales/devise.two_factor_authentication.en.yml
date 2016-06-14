@@ -3,7 +3,6 @@ en:
     two_factor_authentication:
       attempt_failed: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
       contact_administrator: Please contact your system administrator.
-      enter_auth_code: Enter your one-time passcode
       header_text: Enter your one-time passcode
       max_login_attempts_reached: >
         Your account is temporarily locked because you have entered the one-time passcode

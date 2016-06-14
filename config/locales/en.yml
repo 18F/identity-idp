@@ -70,7 +70,6 @@ en:
       dashboard: Your Upaya Account
       enter_2fa_code: Enter the secure one-time password to log in to your Upaya Account
       account_locked: Account Locked
-      enter_auth_code: Enter the authenticaton code for your Upaya Account
       faqs:
         edit: Editing FAQ
         index: Frequently Asked Questions
