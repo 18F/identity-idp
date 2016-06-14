@@ -8,7 +8,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   before_action :handle_two_factor_authentication
 
   def new
-    current_user.send_two_factor_authentication_code
+    current_user.send_new_otp
     set_flash_message :success, 'new_otp_sent'
     redirect_to user_two_factor_authentication_path
   end

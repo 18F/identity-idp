@@ -56,7 +56,7 @@ feature 'Sign Up', devise: true do
     end
 
     it 'updates mobile_confirmed_at and redirects to dashboard after confirmation' do
-      fill_in 'Secure one-time password', with: @user.otp_code
+      fill_in 'Secure one-time password', with: @user.direct_otp
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present

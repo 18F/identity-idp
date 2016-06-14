@@ -1,3 +1,4 @@
+require 'rails_helper'
 require 'saml_idp_constants'
 
 MAX_GOOD_PASSWORD = '!1aZ' * 32
@@ -271,23 +272,32 @@ describe User do
       expect(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
       expect(otp_sender).to receive(:send_otp)
 
-      user.send_two_factor_authentication_code
+      user.send_two_factor_authentication_code(123)
     end
   end
 
   describe 'OTP length' do
     it 'uses Devise setting when set' do
-      allow(Devise).to receive(:otp_length).and_return(10)
-      user = build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq')
+      allow(Devise).to receive(:direct_otp_length).and_return(10)
+      user = build(:user)
+      user.send_new_otp
 
-      expect(user.otp_code.length).to eq 10
+      expect(user.direct_otp.length).to eq 10
     end
 
     it 'defaults to 6 when Devise setting is not set' do
-      allow(Devise).to receive(:otp_length).and_return(nil)
-      user = build_stubbed(:user, otp_secret_key: 'lzmh6ekrnc5i6aaq')
+      allow(Devise).to receive(:direct_otp_length).and_return(nil)
+      user = build(:user)
+      user.send_new_otp
 
-      expect(user.otp_code.length).to eq 6
+      expect(user.direct_otp.length).to eq 6
+    end
+
+    it 'is set to 8' do
+      user = build(:user)
+      user.send_new_otp
+
+      expect(user.direct_otp.length).to eq 8
     end
   end
 end

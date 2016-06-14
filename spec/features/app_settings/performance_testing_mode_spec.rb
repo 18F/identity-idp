@@ -21,7 +21,7 @@ feature 'Performance Testing Mode', devise: true do
 
     scenario 'allows user to enter their unique OTP during login' do
       sign_in_user(user)
-      fill_in 'code', with: user.otp_code
+      fill_in 'code', with: user.reload.direct_otp
       click_button 'Submit'
       expect(current_path).to eq dashboard_index_path
     end

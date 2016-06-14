@@ -56,7 +56,7 @@ module Users
     end
 
     def process_redirection(resource)
-      resource.send_two_factor_authentication_code unless @update_user_profile_form.mobile_taken?
+      resource.send_new_otp unless @update_user_profile_form.mobile_taken?
 
       redirect_to user_two_factor_authentication_path
     end

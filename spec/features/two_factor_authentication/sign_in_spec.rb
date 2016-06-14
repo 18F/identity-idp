@@ -89,7 +89,7 @@ feature 'Two Factor Authentication', devise: true do
         end
 
         it 'does not allow user to access OTP setup page after entering valid OTP' do
-          fill_in 'code', with: @user.otp_code
+          fill_in 'code', with: @user.reload.direct_otp
           click_button 'Submit'
           visit users_otp_path
 
@@ -97,7 +97,7 @@ feature 'Two Factor Authentication', devise: true do
         end
 
         it 'does not allow user to access OTP prompt page after entering valid OTP' do
-          fill_in 'code', with: @user.otp_code
+          fill_in 'code', with: @user.reload.direct_otp
           click_button 'Submit'
           visit user_two_factor_authentication_path
 
@@ -132,18 +132,19 @@ feature 'Two Factor Authentication', devise: true do
         # With 2fa, you are signed in but blocked on an otp challenge.
         expect(page).to have_content I18n.t 'devise.sessions.signed_in'
         expect(page).to have_content 'A one-time passcode has been sent'
+        user.reload
 
         # Reach straight to the model to re-retrieve the OTP for testing
         # access checks of this feature. Lets us exclude testing the
         # sending logic.
-        fill_in 'code', with: user.otp_code + 'invalidate_me'
+        fill_in 'code', with: 'invalid_otp'
         click_button 'Submit'
         expect(page).to have_content I18n.t('devise.two_factor_authentication.attempt_failed')
         expect(page).to have_content I18n.t('devise.two_factor_authentication.header_text')
         user.reload
         expect(user.second_factor_attempts_count).to equal(1)
 
-        fill_in 'code', with: user.otp_code
+        fill_in 'code', with: user.direct_otp
         click_button 'Submit'
         user.reload
 
