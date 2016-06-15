@@ -159,11 +159,20 @@ en:
     validations:
       email:
         invalid: 'Please enter a valid email in the format of user@domain.com'
-  idp:
+  idv:
     errors:
       service_unavailable: >
-        We are having trouble connecting to the Upaya identity verification service.
-        Please try again.
+        We are having trouble connecting to the identity verification service. Please try again.
+    form:
+      first_name: First name
+      last_name: Last name
+      ssn: Social Security Number
+      dob: Date of birth
+      address1: Street address
+      address2: Street address (cont.)
+      city: City
+      state: State/Province
+      zipcode: ZIP code
     titles:
       welcome: Verify your identity
       question: Identity Quiz

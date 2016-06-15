@@ -13,6 +13,7 @@ gem 'newrelic_rpm'
 gem 'omniauth-saml', github: 'amoose/omniauth-saml', branch: 'feature/internal_idp'
 gem 'phony_rails'
 gem 'pg'
+gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
 gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
@@ -63,7 +64,6 @@ group :development, :test do
   gem 'thin'
   gem 'bullet'
   gem 'mailcatcher', require: false
-  gem 'proofer', github: '18F/identity-proofer-gem'
 end
 
 group :test do
