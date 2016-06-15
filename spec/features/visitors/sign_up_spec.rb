@@ -90,7 +90,7 @@ feature 'Sign Up', devise: true do
     it 'informs the user that the OTP code is sent to the mobile' do
       expect(page).
         to have_content(
-          "A one-time passcode has been sent to #{@user.unconfirmed_mobile}. " \
+          'A one-time passcode has been sent to ***-***-5555. ' \
           'Please enter the code that you received. ' \
           'If you do not receive the code in 10 minutes, please request a new passcode.'
         )
@@ -117,7 +117,7 @@ feature 'Sign Up', devise: true do
     it 'pretends the mobile is valid and prompts to confirm the number' do
       expect(current_path).to eq user_two_factor_authentication_path
       expect(page).
-        to have_content("A one-time passcode has been sent to #{@existing_user.mobile}.")
+        to have_content('A one-time passcode has been sent to ***-***-1212.')
     end
 
     it 'does not confirm the new number with an invalid OTP' do

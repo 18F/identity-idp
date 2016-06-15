@@ -18,7 +18,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
       redirect_to dashboard_index_url
     end
 
-    @phone_number = UserDecorator.new(current_user).two_factor_phone_number
+    @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
   end
 
   def update
