@@ -130,7 +130,7 @@ feature 'Two Factor Authentication', devise: true do
         signin(user.email, user.password)
 
         # With 2fa, you are signed in but blocked on an otp challenge.
-        expect(page).to have_content I18n.t 'devise.sessions.signed_in'
+        expect(page).to have_content t('devise.sessions.signed_in')
         expect(page).to have_content 'A one-time passcode has been sent'
         user.reload
 
@@ -139,8 +139,8 @@ feature 'Two Factor Authentication', devise: true do
         # sending logic.
         fill_in 'code', with: 'invalid_otp'
         click_button 'Submit'
-        expect(page).to have_content I18n.t('devise.two_factor_authentication.attempt_failed')
-        expect(page).to have_content I18n.t('devise.two_factor_authentication.header_text')
+        expect(page).to have_content t('devise.two_factor_authentication.attempt_failed')
+        expect(page).to have_content t('devise.two_factor_authentication.header_text')
         user.reload
         expect(user.second_factor_attempts_count).to equal(1)
 
@@ -165,7 +165,7 @@ feature 'Two Factor Authentication', devise: true do
       sign_in_user(user)
       click_link 'request a new passcode'
 
-      expect(page).to have_content I18n.t('devise.two_factor_authentication.user.new_otp_sent')
+      expect(page).to have_content t('devise.two_factor_authentication.user.new_otp_sent')
     end
 
     scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do
@@ -183,7 +183,7 @@ feature 'Two Factor Authentication', devise: true do
 
       signin(user.email, user.password)
 
-      expect(page).to have_content I18n.t('devise.two_factor_authentication.header_text')
+      expect(page).to have_content t('devise.two_factor_authentication.header_text')
     end
 
     context 'user signs in while locked out' do

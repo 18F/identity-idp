@@ -243,7 +243,7 @@ feature 'Password Recovery' do
   scenario 'user is unable to determine if account exists' do
     fill_in 'Email', with: 'no_account_exists@gmail.com'
     click_button 'Send me reset password instructions'
-    expect(page).to have_content(I18n.t('devise.passwords.send_instructions'))
+    expect(page).to have_content(t('devise.passwords.send_instructions'))
   end
 
   # Scenario: User can reset their password
@@ -273,7 +273,7 @@ feature 'Password Recovery' do
         fill_in 'New password', with: 'NewVal!dPassw0rd'
         click_button 'Change my password'
 
-        expect(page).to have_content(I18n.t('devise.passwords.updated_not_active'))
+        expect(page).to have_content(t('devise.passwords.updated_not_active'))
 
         expect(last_email.subject).to eq 'Password change notification'
 

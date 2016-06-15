@@ -14,7 +14,7 @@ feature 'Sign in' do
   #   Then I see an invalid credentials message
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
-    expect(page).to have_content I18n.t 'devise.failure.not_found_in_database'
+    expect(page).to have_content t('devise.failure.not_found_in_database')
   end
 
   # Scenario: User cannot sign in with wrong email
@@ -25,7 +25,7 @@ feature 'Sign in' do
   scenario 'user cannot sign in with wrong email' do
     user = create(:user)
     signin('invalid@email.com', user.password)
-    expect(page).to have_content I18n.t 'devise.failure.not_found_in_database'
+    expect(page).to have_content t('devise.failure.not_found_in_database')
   end
 
   scenario 'user cannot sign in with empty email', js: true do
@@ -48,7 +48,7 @@ feature 'Sign in' do
   scenario 'user cannot sign in with wrong password' do
     user = create(:user)
     signin(user.email, 'invalidpass')
-    expect(page).to have_content I18n.t 'devise.failure.invalid'
+    expect(page).to have_content t('devise.failure.invalid')
   end
 
   # Scenario: User is locked out from logging in after 3 failed attampts
@@ -82,7 +82,7 @@ feature 'Sign in' do
 
     it 'treats failed attempt as invalid password during lockout period' do
       signin(@user.email, 'invalidpass')
-      expect(page).to have_content I18n.t 'devise.failure.invalid'
+      expect(page).to have_content t('devise.failure.invalid')
     end
 
     it 'keeps user locked out even with valid password during lockout period' do

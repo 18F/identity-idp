@@ -176,7 +176,7 @@ module SamlIdpLogoutConcern
 
   def sign_out_with_flash
     sign_out current_user if user_signed_in?
-    flash[:success] = I18n.t('devise.sessions.signed_out')
+    flash[:success] = t('devise.sessions.signed_out')
   end
 end
 # rubocop:enable Metrics/ModuleLength

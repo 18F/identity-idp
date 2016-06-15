@@ -13,7 +13,7 @@ feature 'Sign out', devise: true do
     sign_in_user
     click_link(t('upaya.headings.log_out'), match: :first)
 
-    expect(page).to have_content I18n.t 'devise.sessions.signed_out'
+    expect(page).to have_content t('devise.sessions.signed_out')
   end
 
   scenario 'user session times out before mobile has been confirmed' do

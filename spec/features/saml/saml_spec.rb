@@ -11,12 +11,12 @@ feature 'saml api', devise: true, sms: true do
       before { visit authnrequest_get }
 
       it 'prompts the user to sign in' do
-        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+        expect(page).to have_content t('devise.failure.unauthenticated')
       end
 
       it 'prompts the user to enter OTP' do
         sign_in_user(user)
-        expect(page).to have_content I18n.t('devise.two_factor_authentication.header_text')
+        expect(page).to have_content t('devise.two_factor_authentication.header_text')
       end
     end
 
@@ -159,7 +159,7 @@ feature 'saml api', devise: true, sms: true do
       visit '/test/saml'
       sign_in_user
       expect(current_path).to eq(users_otp_path)
-      expect(page).to have_content(I18n.t('devise.two_factor_authentication.otp_setup'))
+      expect(page).to have_content(t('devise.two_factor_authentication.otp_setup'))
     end
 
     it 'adds acs_url domain names for current Rails env to CSP form_action' do
@@ -227,7 +227,7 @@ feature 'saml api', devise: true, sms: true do
       it 'signs out the user from IdP' do
         visit edit_user_registration_path
 
-        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+        expect(page).to have_content t('devise.failure.unauthenticated')
       end
 
       it 'contains an issuer nodeset' do
@@ -310,7 +310,7 @@ feature 'saml api', devise: true, sms: true do
         expect(logout_user.active_identities).to be_empty
 
         visit edit_user_registration_path
-        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+        expect(page).to have_content t('devise.failure.unauthenticated')
       end
 
       it 'references the correct SessionIndexes' do
@@ -322,7 +322,7 @@ feature 'saml api', devise: true, sms: true do
         expect(request_xmldoc.asserted_session_index).to eq(@sp1_asserted_session_index)
         click_button 'Submit'
         visit edit_user_registration_path
-        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+        expect(page).to have_content t('devise.failure.unauthenticated')
       end
     end
 
@@ -405,7 +405,7 @@ feature 'saml api', devise: true, sms: true do
         click_button 'Submit' # LogoutResponse for originating SP: sp1
 
         visit edit_user_registration_path
-        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+        expect(page).to have_content t('devise.failure.unauthenticated')
 
         expect(user.active_identities.size).to eq(0)
       end
@@ -441,7 +441,7 @@ feature 'saml api', devise: true, sms: true do
         click_button 'Submit' # LogoutResponse for originating SP: sp2
 
         visit edit_user_registration_path
-        expect(page).to have_content I18n.t 'devise.failure.unauthenticated'
+        expect(page).to have_content t('devise.failure.unauthenticated')
 
         expect(user.active_identities.size).to eq(0)
 
