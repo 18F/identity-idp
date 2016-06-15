@@ -20,7 +20,7 @@ module Users
     end
 
     def timeout
-      flash[:notice] = I18n.t(
+      flash[:notice] = t(
         'upaya.session_timedout',
         session_timeout: distance_of_time_in_words(Devise.timeout_in)
       )

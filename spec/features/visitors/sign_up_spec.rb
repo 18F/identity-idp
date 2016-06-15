@@ -36,7 +36,7 @@ feature 'Sign Up', devise: true do
     fill_in 'password_form_password', with: VALID_PASSWORD
     click_button 'Submit'
 
-    expect(page).to have_content I18n.t('devise.two_factor_authentication.otp_setup')
+    expect(page).to have_content t('devise.two_factor_authentication.otp_setup')
   end
 
   scenario 'it sets reset_requested_at to nil after password confirmation' do

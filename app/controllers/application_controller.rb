@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
 
   def invalid_auth_token
     logger.info 'Rescuing InvalidAuthenticityToken'
-    flash[:error] = I18n.t('upaya.errors.invalid_authenticity_token')
+    flash[:error] = t('upaya.errors.invalid_authenticity_token')
     sign_out current_user
     redirect_to root_url
   end
