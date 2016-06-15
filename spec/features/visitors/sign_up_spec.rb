@@ -180,6 +180,18 @@ feature 'Sign Up', devise: true do
       fill_in 'password_form_password', with: 'this is a great sentence'
       expect(page).to have_content 'Great'
     end
+
+    it 'has visible tooltip on hover' do
+      expect(page).to have_selector('.tooltip-content', visible: false)
+      find('.tooltip-trigger').hover
+      expect(page).to have_selector('.tooltip-content', visible: true)
+    end
+
+    it 'has dynamic tooltip text' do
+      fill_in 'password_form_password', with: 'password'
+      find('.tooltip-trigger').hover
+      expect(page).to have_content 'This is a top-10 common password'
+    end
   end
 
   scenario 'password visibility toggle when JS is on', js: true do
