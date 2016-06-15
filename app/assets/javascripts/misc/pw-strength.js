@@ -5,22 +5,47 @@ import zxcvbn from 'zxcvbn';
 // we map those scores to:
 // 1. a CSS class to the pw strength module
 // 2. text describing the score
-const scale = {
-  0: ['pw-very-weak', 'Very weak'],
-  1: ['pw-weak', 'Weak'],
-  2: ['pw-so-so', 'So-so'],
-  3: ['pw-good', 'Good'],
-  4: ['pw-great', 'Great'],
-};
+function getStrength(z) {
+  const scale = {
+    0: ['pw-very-weak', 'Very weak'],
+    1: ['pw-weak', 'Weak'],
+    2: ['pw-so-so', 'So-so'],
+    3: ['pw-good', 'Good'],
+    4: ['pw-great', 'Great'],
+  };
 
-// fallback result if pw field is empty or zxcvbn lookup fails
-const fallback = ['pw-na', 'Password strength'];
+  // fallback if zxcvbn lookup fails / field is empty
+  const fallback = ['pw-na', 'Password strength'];
+
+  return z && z.password.length ? scale[z.score] : fallback;
+}
+
+
+function getFeedback(z) {
+  const goodMsg = 'This is a strong password';
+  const fallback = 'Please choose a strong, secure password';
+
+  if (!z) return fallback;
+  if (z.score > 2) return goodMsg;
+
+  const { warning, suggestions } = z.feedback;
+  if (!warning && !suggestions.length) return fallback;
+
+  let msg = warning ? `<div class='mb1 h5 bold'>${warning}</div>` : '';
+  msg += suggestions.length ? `
+    <div class='bold'>Suggestions:</div>
+    ${suggestions.map(function(s) { return s; }).join('<br>')}
+  ` : '';
+
+  return msg;
+}
 
 
 function analyzePw() {
   const input = document.getElementById('password_form_password');
   const pwCntnr = document.getElementById('pw-strength-cntnr');
-  const pwTxt = document.getElementById('pw-feedback');
+  const pwStrength = document.getElementById('pw-strength-txt');
+  const pwFeedback = document.getElementById('pw-strength-feedback');
 
   // the pw strength module is hidden by default ("hide" CSS class)
   // (so that javascript disabled browsers won't see it)
@@ -28,12 +53,14 @@ function analyzePw() {
   pwCntnr.className = '';
 
   input.addEventListener('keyup', function(e) {
-    const val = e.target.value;
-    const z = zxcvbn(val);
-    const result = val.length && z ? scale[z.score] : fallback;
+    const z = zxcvbn(e.target.value);
 
-    pwCntnr.className = result[0];
-    pwTxt.innerHTML = result[1];
+    const [cls, strength] = getStrength(z);
+    const feedback = getFeedback(z);
+
+    pwCntnr.className = cls;
+    pwStrength.innerHTML = strength;
+    pwFeedback.innerHTML = feedback;
   });
 }
 
