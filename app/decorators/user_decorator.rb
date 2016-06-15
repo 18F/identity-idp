@@ -64,6 +64,6 @@ UserDecorator = Struct.new(:user) do
   end
 
   def masked_number(number)
-    "***-***-#{number[13..16]}"
+    "***-***-#{number[-4..-1]}"
   end
 end
