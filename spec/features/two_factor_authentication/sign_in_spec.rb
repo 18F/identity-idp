@@ -96,14 +96,6 @@ feature 'Two Factor Authentication', devise: true do
           expect(current_path).to eq dashboard_index_path
         end
 
-        it 'does not allow user to access OTP prompt page after entering valid OTP' do
-          fill_in 'code', with: @user.reload.direct_otp
-          click_button 'Submit'
-          visit user_two_factor_authentication_path
-
-          expect(current_path).to eq dashboard_index_path
-        end
-
         it 'does not allow user to bypass entering OTP' do
           visit edit_user_registration_path
 
