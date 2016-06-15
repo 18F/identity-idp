@@ -46,7 +46,7 @@ en:
         index: Manage Users
         show: User - %{user}
       visitors:
-        index: Welcome to Upaya
+        index: Welcome to %{app_name}
 
     headings:
       admin:

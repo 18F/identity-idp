@@ -35,7 +35,7 @@ feature 'Password Recovery' do
 
     it 'includes a link to customer service in the email' do
       expect(last_email.body).
-        to include 'at <a href="https://upaya.18f.gov/contact">'
+        to include "at <a href=\"#{Figaro.env.support_url}\">"
     end
 
     it 'displays a localized notice' do

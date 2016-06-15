@@ -264,7 +264,7 @@ feature 'Sign Up', devise: true do
     )
     expect(last_email.body).to have_content 'This email address is already in use.'
     expect(last_email.body).
-      to include 'at <a href="https://upaya.18f.gov/contact">'
+      to include "at <a href=\"#{Figaro.env.support_url}\">"
   end
 
   # Scenario: Visitor signs up but confirms with an expired token

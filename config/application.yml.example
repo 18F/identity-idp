@@ -8,6 +8,8 @@
 # Make sure any new entries you add are enclosed in single quotes.
 # Figaro requires all values to be explicit strings.
 
+support_url: 'https://upaya.18f.gov/contact'
+
 development:
   allow_third_party_auth: 'yes'
   domain_name: 'localhost:3000'

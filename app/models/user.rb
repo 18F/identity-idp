@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
 
   def lock_access!(opts = {})
     super
-    send_devise_notification(:unlock_instructions, nil, subject: 'Upaya Account Locked')
+    send_devise_notification(:unlock_instructions, nil, subject: "#{APP_NAME} Account Locked")
   end
 
   def first_identity
