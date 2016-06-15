@@ -5,12 +5,12 @@
     .panel
       .panel-heading
         h2.m0 = 'Verify identity'
-      .mb1.h6.caps ="Question #{(session[:question_number] + 1)}"
-      =form_tag({ controller: 'idv/answer', action: 'create' }, method: 'post')
-        =hidden_field_tag('question_key', quest.key)
+      .mb1.h6.caps = "Question #{@question_sequence}"
+      =form_tag(idv_questions_path, method: 'post')
+        =hidden_field_tag('question_key', @question.key)
         h3.mt2.mb2
-          =quest.display
-        -quest.choices.each do |choice|
+          = @question.display
+        - @question.choices.each do |choice|
           label.radio.block.mb1
             = radio_button_tag('answer',
                     choice.key, false, id: "choice_#{ choice.key }")
