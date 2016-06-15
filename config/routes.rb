@@ -53,8 +53,8 @@ Rails.application.routes.draw do
 
   get '/idv'  => 'idv#index'
   get '/idv/question'  => 'idv#question'
-  post '/idv/register_user'  => 'idv#register_user'
-  post '/idv/answer' => 'idv#answer'
+  post '/idv/register-user'  => 'idv/user_registration#create'
+  post '/idv/answer' => 'idv/answer#create'
 
   root to: 'users/sessions#new'
 end

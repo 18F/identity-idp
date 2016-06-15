@@ -1,11 +1,11 @@
-- title t('upaya.titles.idv.p1')
+- title t('upaya.titles.idv.index')
 
 .clearfix.mxn2
   .sm-col-7.px2.mx-auto
     .panel
       .panel-heading
         h2.m0 = 'Basic information'
-      =form_tag({ controller: 'idv', action: 'register_user' }, method: 'post')
+      =form_tag({ controller: 'idv/user_registration', action: 'create' }, method: 'post')
         .clearfix.mxn1.mb2
           .sm-col.sm-col-6.px1
             label First name
@@ -18,23 +18,20 @@
             =date_field_tag 'dob', nil, class: 'block col-12 mb2 field'
           .sm-col.sm-col-12.px1
             label Social security number
-            input type="number" class="block col-12 mb2 field"
+            =number_field_tag 'ssn', nil, class: "block col-12 mb2 field"
           .sm-col.sm-col-12.px1
             label Address
-            input type="text" class="block col-12 mb2 field"
+            =text_field_tag 'address1', nil, class: "block col-12 mb2 field"
           .sm-col.sm-col-12.px1
             label Address (optional)
-            input type="text" class="block col-12 mb2 field"
+            =text_field_tag 'address2', nil, class: "block col-12 mb2 field"
           .sm-col.sm-col-6.px1
             label City
-            input type="text" class="block col-12 mb2 field"
+            =text_field_tag 'city', nil, class: "block col-12 mb2 field"
           .sm-col.sm-col-3.px1
             label State
-            select class="block col-12 mb2 field"
-              option AK
-              option AZ
-              option AR
+            =text_field_tag 'state', nil, class: "block col-12 mb2 field"
           .sm-col.sm-col-3.px1
             label Zip
-            input type="number" class="block col-12 mb2 field"
+            =number_field_tag 'zipcode', nil, class: "block col-12 mb2 field"
         button type="submit" class="btn btn-primary" = 'Submit'
