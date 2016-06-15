@@ -45,6 +45,12 @@ UserDecorator = Struct.new(:user) do
     user.mobile
   end
 
+  def masked_two_factor_phone_number
+    return masked_number(user.unconfirmed_mobile) if user.unconfirmed_mobile.present?
+
+    masked_number(user.mobile)
+  end
+
   def identity_not_verified?
     user.identities.pluck(:ial).uniq == [1]
   end
@@ -55,5 +61,9 @@ UserDecorator = Struct.new(:user) do
     return false if session[:omniauthed] != true
 
     session.delete(:omniauthed)
+  end
+
+  def masked_number(number)
+    "***-***-#{number[13..16]}"
   end
 end

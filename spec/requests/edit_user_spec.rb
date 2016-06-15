@@ -124,8 +124,7 @@ describe 'user edits their account', email: true do
 
       expect(response.body).
         to include(
-          'A one-time passcode has been sent to ' \
-          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+          'A one-time passcode has been sent to <strong>***-***-1213</strong>.'
         )
       expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
 
@@ -161,8 +160,7 @@ describe 'user edits their account', email: true do
 
       expect(response.body).
         to include(
-          'A one-time passcode has been sent to ' \
-          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+          'A one-time passcode has been sent to <strong>***-***-1213</strong>.'
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq '+1 (202) 555-1212'
@@ -199,8 +197,7 @@ describe 'user edits their account', email: true do
     it 'lets user know they need to confirm both their new mobile and email' do
       expect(response.body).
         to include(
-          'A one-time passcode has been sent to ' \
-          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+          'A one-time passcode has been sent to <strong>***-***-1213</strong>.'
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(last_email.subject).to eq 'Email confirmation instructions'
@@ -233,8 +230,7 @@ describe 'user edits their account', email: true do
 
       expect(response.body).
         to include(
-          'A one-time passcode has been sent to ' \
-          "<strong>#{user.reload.unconfirmed_mobile}</strong>."
+          'A one-time passcode has been sent to <strong>***-***-5555</strong>.'
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq '+1 (202) 555-1212'
