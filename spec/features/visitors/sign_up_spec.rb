@@ -172,7 +172,7 @@ feature 'Sign Up', devise: true do
     end
 
     it 'updates as password changes' do
-      expect(page).to have_content 'Password strength'
+      expect(page).to have_content '...'
 
       fill_in 'password_form_password', with: 'password'
       expect(page).to have_content 'Very weak'
@@ -181,15 +181,10 @@ feature 'Sign Up', devise: true do
       expect(page).to have_content 'Great'
     end
 
-    it 'has visible tooltip on hover' do
-      expect(page).to have_selector('.tooltip-content', visible: false)
-      find('.tooltip-trigger').hover
-      expect(page).to have_selector('.tooltip-content', visible: true)
-    end
+    it 'has dynamic password strength feedback' do
+      expect(page).to have_content '...'
 
-    it 'has dynamic tooltip text' do
       fill_in 'password_form_password', with: 'password'
-      find('.tooltip-trigger').hover
       expect(page).to have_content 'This is a top-10 common password'
     end
   end
