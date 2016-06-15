@@ -11,33 +11,23 @@ function getStrength(z) {
     1: ['pw-weak', 'Weak'],
     2: ['pw-so-so', 'So-so'],
     3: ['pw-good', 'Good'],
-    4: ['pw-great', 'Great'],
+    4: ['pw-great', 'Great!'],
   };
 
   // fallback if zxcvbn lookup fails / field is empty
-  const fallback = ['pw-na', 'Password strength'];
+  const fallback = ['pw-na', '...'];
 
   return z && z.password.length ? scale[z.score] : fallback;
 }
 
 
 function getFeedback(z) {
-  const goodMsg = 'This is a strong password';
-  const fallback = 'Please choose a strong, secure password';
-
-  if (!z) return fallback;
-  if (z.score > 2) return goodMsg;
+  if (!z || z.score > 2) return '';
 
   const { warning, suggestions } = z.feedback;
-  if (!warning && !suggestions.length) return fallback;
+  if (!warning && !suggestions.length) return '';
 
-  let msg = warning ? `<div class='mb1 h5 bold'>${warning}</div>` : '';
-  msg += suggestions.length ? `
-    <div class='bold'>Suggestions:</div>
-    ${suggestions.map(function(s) { return s; }).join('<br>')}
-  ` : '';
-
-  return msg;
+  return warning || `${suggestions.map(function(s) { return s; }).join('; ')}`;
 }
 
 
