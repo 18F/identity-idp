@@ -1,0 +1,37 @@
+- title t('upaya.titles.idv.index')
+
+.clearfix.mxn2
+  .sm-col-7.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = 'Basic information'
+      =form_tag(idv_sessions_path, method: 'post')
+        .clearfix.mxn1.mb2
+          .sm-col.sm-col-6.px1
+            label = t('idv.form.first_name')
+            =text_field_tag 'first_name', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-6.px1
+            label = t('idv.form.last_name')
+            =text_field_tag 'last_name', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-12.px1
+            label = t('idv.form.dob')
+            =date_field_tag 'dob', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-12.px1
+            label = t('idv.form.ssn')
+            =number_field_tag 'ssn', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-12.px1
+            label = t('idv.form.address1')
+            =text_field_tag 'address1', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-12.px1
+            label = t('idv.form.address2')
+            =text_field_tag 'address2', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-6.px1
+            label = t('idv.form.city')
+            =text_field_tag 'city', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-3.px1
+            label = t('idv.form.state')
+            =text_field_tag 'state', nil, class: 'block col-12 mb2 field'
+          .sm-col.sm-col-3.px1
+            label = t('idv.form.zipcode')
+            =number_field_tag 'zipcode', nil, class: 'block col-12 mb2 field'
+        button type='submit' class='btn btn-primary' = 'Submit'

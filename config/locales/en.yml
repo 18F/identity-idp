@@ -96,6 +96,60 @@ en:
     validations:
       email:
         invalid: 'Please enter a valid email in the format of user@domain.com'
+  idv:
+    errors:
+      service_unavailable: >
+        We are having trouble connecting to the identity verification service. Please try again.
+    form:
+      first_name: First name
+      last_name: Last name
+      ssn: Social Security Number
+      dob: Date of birth
+      address1: Street address
+      address2: Street address (cont.)
+      city: City
+      state: State/Province
+      zipcode: ZIP code
+    titles:
+      welcome: Verify your identity
+      question: Identity Quiz
+      fail: Identity verification unsuccessful
+      hardfail: We cannot verify your identity
+      complete: Identity verification complete
+      inprogress: Identity Quiz Incomplete
+      resume_quiz: Resume Identity Quiz
+    headings:
+      questions: Identity Quiz
+      index: We need to confirm your identity.
+      sorry: Sorry, we could not confirm your identity.
+      thanks: Thanks for confirming your identity.
+      inprogress: Continue your identity quiz?
+      resume_quiz: Resume your identity quiz?
+      generating: Generating Quiz
+    misc:
+      index_kicker: Are you ready to start?
+      no_more_questions: Not enough questions could be generated for the quiz.
+      timeout_alert: You have exceeded the 60 minutes allowed for the quiz.
+      too_many_times: You have attempted the quiz too many times
+    labels:
+      start: Get started!
+      next: "Next <span class='cf-icon cf-icon-right'></span>"
+      again: Take the Identity Verification Quiz again
+      continue: Continue
+      retry_quiz: Retry Quiz
+      hide_finder: "Hide document"
+      hide_finder_hidden: " <span class='sr-only'>sample displayed below</span>"
+      where_find: "Where do I find this?"
+      where_find_hidden: "<span class='sr-only'>– Display document sample below</span>"
+      resume_quiz: Resume Quiz
+    links:
+      no_thanks: Cancel
+      exit_quiz_now: Exit
+      home: Go back
+    accessibility:
+      next: Next question
+      start: Get started with the identity quiz
+      no_thanks: Cancel quiz
   errors:
     messages:
       improbable_phone: 'Mobile number is invalid. Please make sure you enter a 10-digit phone number.'

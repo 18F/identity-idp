@@ -51,10 +51,12 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/idv'  => 'idv#index'
-  get '/idv/question'  => 'idv#question'
-  post '/idv/register-user'  => 'idv/user_registration#create'
-  post '/idv/answer' => 'idv/answer#create'
+  namespace :idv do
+    # base redirects to next active question, which will detect if there is active session
+    get '/', to: redirect('/idv/question')
+
+    resources :questions, :sessions
+  end
 
   root to: 'users/sessions#new'
 end
