@@ -77,8 +77,10 @@ en:
         new: Create a new FAQ
         show: Viewing FAQ
       idv:
-        p1: 'Page 1'
-        p2: 'Page 2'
+        index: Enter your information
+        question: Question
+        success: Success
+        fail: Failure
       passwords:
         change: Change your password for your Upaya Account
         forgot: Reset your password for your Upaya Account

@@ -1,12 +1,12 @@
-- title t('upaya.titles.idv.p2')
+- title t('upaya.titles.idv.question')
 
 .clearfix.mxn2
   .sm-col-7.px2.mx-auto
     .panel
       .panel-heading
         h2.m0 = 'Verify identity'
-      .mb1.h6.caps Question 1
-      =form_tag({ controller: 'idv', action: 'answer' }, method: 'post')
+      .mb1.h6.caps ="Question #{(session[:question_number] + 1)}"
+      =form_tag({ controller: 'idv/answer', action: 'create' }, method: 'post')
         =hidden_field_tag('question_key', quest.key)
         h3.mt2.mb2
           =quest.display
@@ -15,21 +15,5 @@
             = radio_button_tag('answer',
                     choice.key, false, id: "choice_#{ choice.key }")
             = choice.display
-        /label.radio.block.mb1
-        /  input name="radio" type="radio"
-        /  'Panda bear
-        /label.radio.block.mb1
-        /  input name="radio" type="radio"
-        /  'Polar bear
-        /label.radio.block.mb1
-        /  input name="radio" type="radio"
-        /  'Grizzly bear
-        /label.radio.block.mb1
-        /  input name="radio" type="radio"
-        /  'There are actually two schools of thought
-        /label.radio.block.mb1
-        /  input name="radio" type="radio"
-        /  'This is a multi-line answer. Look how this text
-        /  'remains separated from the radio button on the left :)
         .mt3
           button type="submit" class="btn btn-primary" = 'Submit'

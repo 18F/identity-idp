@@ -1,4 +1,4 @@
-- title t('upaya.titles.idv.p2')
+- title t('upaya.titles.idv.question')
 
 .clearfix.mxn2
   .sm-col-7.px2.mx-auto
@@ -6,7 +6,7 @@
       .panel-heading
         h2.m0 = 'Verify identity'
       .mb1.h6.caps Question 1
-      =form_tag({ controller: 'idv', action: 'answer' }, method: 'post')
+      =form_tag({ controller: 'idv/answer', action: 'create' }, method: 'post')
         =hidden_field_tag('question_key', quest.key)
         =hidden_field_tag('text_question', true)
         h3.mt2.mb2
