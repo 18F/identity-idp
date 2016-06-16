@@ -95,8 +95,8 @@ feature 'Sign Up', devise: true do
       expect(page).
         to have_content(
           'A one-time passcode has been sent to ***-***-5555. ' \
-          'Please enter the code that you received. ' \
-          'If you do not receive the code in 10 minutes, please request a new passcode.'
+          'Please enter the code that you received. Each code is valid for 5 minutes. ' \
+          'If you do not receive a code within this time, please request a new one.'
         )
     end
 

@@ -1,11 +1,13 @@
 - title t('upaya.titles.enter_2fa_code')
 
-
 h1.heading = t('devise.two_factor_authentication.header_text')
 p
   'A one-time passcode has been sent to <strong>#{@phone_number}</strong>.
   'Please enter the code that you received.
-  'If you do not receive the code in #{otp_drift_time_in_minutes} minutes, please #{link_to 'request a new passcode', users_otp_new_path, data: { 'no-turbolink' => true }}.
+p
+  'Each code is valid for #{otp_valid_for_in_words}.
+  'If you do not receive a code within this time, please
+  '#{link_to 'request a new one', users_otp_new_path, data: { 'no-turbolink' => true }}.
 
 - if current_user.unconfirmed_mobile.present? && !current_user.two_factor_enabled?
 

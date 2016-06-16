@@ -263,8 +263,9 @@ Devise.setup do |config|
   # config.omniauth_path_prefix = '/my_engine/users/auth'
 
   # ==> Two Factor Authentication
-  config.allowed_otp_drift_seconds = 600
+  config.allowed_otp_drift_seconds = 30
   config.max_login_attempts = 3 # max OTP login attemps, not devise strategies (e.g. pw auth)
   config.otp_length = 6
   config.direct_otp_length = 6
+  config.direct_otp_valid_for = 5.minutes
 end

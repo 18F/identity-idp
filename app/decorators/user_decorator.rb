@@ -2,7 +2,7 @@ include ActionView::Helpers::DateHelper
 
 UserDecorator = Struct.new(:user) do
   def lockout_time_remaining
-    (Devise.allowed_otp_drift_seconds - (Time.zone.now - user.second_factor_locked_at)).to_i
+    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def lockout_time_remaining_in_words
