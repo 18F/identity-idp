@@ -1,51 +1,97 @@
 require 'rails_helper'
 
 describe Devise::TwoFactorAuthenticationController, devise: true do
-  describe 'update' do
-    let(:user) { create(:user, :signed_up) }
+  describe '#update' do
+    context 'when resource is fully authenticated' do
+      it 'redirects to the dashboard' do
+        sign_in create(:user, :signed_up)
+        patch :update, code: '1234'
+
+        expect(response).to redirect_to dashboard_index_path
+      end
+    end
+
+    context 'when the user enters an invalid OTP' do
+      before do
+        sign_in_before_2fa
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+        expect(subject.current_user).to receive(:authenticate_otp).and_return(false)
+        patch :update, code: '12345'
+      end
+
+      it 'increments second_factor_attempts_count' do
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+      end
+
+      it 're-renders the OTP entry screen' do
+        expect(response).to render_template(:show)
+      end
+
+      it 're-renders the OTP entry screen' do
+        expect(flash[:error]).to eq t('devise.two_factor_authentication.attempt_failed')
+      end
+    end
+
+    context 'when the user enters an valid OTP' do
+      before do
+        sign_in_before_2fa
+        subject.current_user.send_new_otp
+        expect(subject.current_user).to receive(:authenticate_otp).and_return(true)
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+      end
+
+      it 'redirects to the dashboard' do
+        patch :update, code: subject.current_user.reload.direct_otp
+
+        expect(response).to redirect_to dashboard_index_path
+      end
+
+      it 'resets the second_factor_attempts_count' do
+        subject.current_user.update(second_factor_attempts_count: 1)
+        patch :update, code: subject.current_user.reload.direct_otp
+
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+      end
+    end
 
     context 'when user has not changed their number' do
       it 'does not perform SmsSenderNumberChangeJob' do
+        user = create(:user, :signed_up)
         sign_in user
         user.send_new_otp
 
-        expect(SmsSenderNumberChangeJob).
-          to_not receive(:perform_later).with(user)
+        expect(SmsSenderNumberChangeJob).to_not receive(:perform_later).with(user)
 
         patch :update, code: user.direct_otp
       end
     end
 
-    context 'when resource is no longer OTP locked out' do
+    context 'when the user lockout period expires' do
       before do
-        sign_in user
-        user.send_new_otp
-        user.update(
-          second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1).seconds
+        sign_in_before_2fa
+        subject.current_user.send_new_otp
+        subject.current_user.update(
+          second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1).seconds,
+          second_factor_attempts_count: 3
         )
-        user.update(second_factor_attempts_count: 3)
-      end
-
-      it 'resets attempts count when user submits bad code' do
         patch :update, code: '12345'
-
-        expect(user.reload.second_factor_attempts_count).to eq 1
       end
 
-      it 'resets second_factor_locked_at when user submits correct code' do
-        patch :update, code: user.direct_otp
+      it 'resets attempt count' do
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+      end
 
-        expect(user.reload.second_factor_locked_at).to be_nil
+      it 'resets second_factor_locked_at' do
+        expect(subject.current_user.reload.second_factor_locked_at).to be_nil
       end
     end
   end
 
-  describe 'show' do
+  describe '#show' do
     context 'when resource is not fully authenticated yet' do
-      it 'renders the show view' do
+      it 'renders the :show view' do
         sign_in_before_2fa
         get :show
-
         expect(response).to_not be_redirect
         expect(response).to render_template(:show)
       end
@@ -68,6 +114,42 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         get :show
 
         expect(response).to render_template(:show)
+      end
+    end
+  end
+
+  describe '#new' do
+    let(:user) { create(:user, :signed_up) }
+
+    context 'when not yet fully authenticated' do
+      before do
+        sign_in_before_2fa
+      end
+
+      it 'redirects to :show' do
+        get :new
+
+        expect(response).to redirect_to(action: :show)
+      end
+
+      it 'sends a new OTP' do
+        old_otp = subject.current_user.direct_otp
+        allow(SmsSenderOtpJob).to receive(:perform_later)
+        get :new
+
+        expect(SmsSenderOtpJob).to have_received(:perform_later).
+          with(subject.current_user.direct_otp, user.mobile)
+        expect(subject.current_user.direct_otp).not_to eq(old_otp)
+        expect(subject.current_user.direct_otp).not_to be_nil
+      end
+    end
+
+    context 'when resource is fully authenticated' do
+      it 'redirects to the dashboard' do
+        sign_in user
+        get :new
+
+        expect(response).to redirect_to dashboard_index_path
       end
     end
   end
