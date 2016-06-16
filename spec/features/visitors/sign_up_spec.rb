@@ -22,21 +22,25 @@ feature 'Sign Up', devise: true do
 
   # Scenario: Visitor can sign up and confirm with valid email address and password
   #   Given I am not signed in
-  #   When I sign up with a valid email address and password and click my confirmation link
-  #   Then I see a successful confirmation message
+  #   When I sign up with a valid email address and click my confirmation link
+  #   Then I see a message letting me know I need to set a password to finish creating my account
+  #   And when I set a valid password
+  #   Then I am prompted to set up 2FA without any flash messages
   scenario 'visitor can sign up and confirm a valid email' do
     sign_up_with('test@example.com')
 
     confirm_last_user
 
-    expect(page).to have_content t('devise.confirmations.confirmed')
+    expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
     expect(page).to have_title t('upaya.titles.confirmations.show')
     expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: VALID_PASSWORD
     click_button 'Submit'
 
-    expect(page).to have_content t('devise.two_factor_authentication.otp_setup')
+    expect(current_url).to eq users_otp_url
+    expect(page).to_not have_content t('devise.confirmations.confirmed')
+    expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
   end
 
   scenario 'it sets reset_requested_at to nil after password confirmation' do
@@ -209,12 +213,14 @@ feature 'Sign Up', devise: true do
     expect(current_url).to eq confirm_url
   end
 
-  scenario 'visitor confirms more than once' do
-    sign_up_with_and_set_password_for('test@example.com')
+  context 'confirmed user is signed in and tries to confirm again' do
+    it 'redirects the user to the dashboard' do
+      sign_up_and_2fa('test@example.com')
 
-    visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
+      visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-    expect(page).to have_content t('errors.messages.already_confirmed')
+      expect(current_url).to eq dashboard_index_url
+    end
   end
 
   # Scenario: Visitor cannot sign up with invalid email address
@@ -300,5 +306,44 @@ feature 'Sign Up', devise: true do
 
     expect(page).to have_content 'Confirmation token is invalid'
     expect(current_path).to eq user_confirmation_path
+  end
+
+  # Scenario: Visitor can be informed that they've already confirmed
+  #   Given I've confirmed my email and created a password, but forgot that I did
+  #   When I ask for confirmation instructions
+  #   Then I receive an email letting me know I've already confirmed
+  context 'confirmed user asks for confirmation instructions', email: true do
+    it 'sends an email to the user letting them they have already confirmed' do
+      sign_up_with_and_set_password_for('test@example.com')
+
+      visit destroy_user_session_url
+
+      click_link "Didn't receive confirmation instructions?"
+      fill_in 'Email', with: 'test@example.com'
+      click_button 'Resend confirmation instructions'
+
+      expect(last_email.body).to match(/already been confirmed/)
+      expect(last_email.subject).
+        to eq t('upaya.mailer.already_confirmed.subject', app_name: APP_NAME)
+    end
+  end
+
+  # Scenario: Confirmed visitor confirms again while signed out
+  #   Given I've confirmed my email, created a password, and signed out
+  #   When I click the confirmation link in the email again
+  #   Then I see a message that I've already confirmed
+  #   And I am redirected to the sign in page
+  context 'confirmed user clicks confirmation link while again signed out' do
+    it 'redirects to sign in page with message that user is already confirmed' do
+      sign_up_with_and_set_password_for('test@example.com')
+
+      visit destroy_user_session_url
+
+      visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
+
+      expect(page).
+        to have_content t('devise.confirmations.already_confirmed', action: 'Please sign in.')
+      expect(current_url).to eq new_user_session_url
+    end
   end
 end

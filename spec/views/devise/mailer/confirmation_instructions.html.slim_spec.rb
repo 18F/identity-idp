@@ -52,7 +52,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     render
 
     expect(rendered).
-      to have_content "To finish creating your #{APP_NAME} Account, you must confirm your email"
+      to have_content "To continue creating your #{APP_NAME} Account"
   end
 
   it 'mentions resetting the account when account has been reset by tech support' do
