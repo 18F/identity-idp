@@ -169,7 +169,7 @@ feature 'Sign in' do
 
     it 'successfully signs in the user' do
       user = sign_in_user
-      click_link(t('upaya.headings.log_out'), match: :first)
+      click_link(t('upaya.links.sign_out'))
 
       Timecop.travel(Devise.timeout_in + 1.minute)
 

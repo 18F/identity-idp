@@ -110,7 +110,7 @@ feature 'Password Recovery' do
   context 'user with password confirmation resets password', email: true do
     before do
       sign_up_with_and_set_password_for('email@example.com')
-      click_link(t('upaya.headings.log_out'), match: :first)
+      click_link(t('upaya.links.sign_out'))
       visit root_path
       click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
@@ -140,7 +140,7 @@ feature 'Password Recovery' do
   context 'user with invalid token cannot reset password', email: true do
     before do
       sign_up_with_and_set_password_for('email@example.com')
-      click_link(t('upaya.headings.log_out'), match: :first)
+      click_link(t('upaya.links.sign_out'))
       visit root_path
       click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
@@ -168,7 +168,7 @@ feature 'Password Recovery' do
       click_button 'Submit'
       fill_in 'code', with: User.last.direct_otp
       click_button 'Submit'
-      click_link(t('upaya.headings.log_out'), match: :first)
+      click_link(t('upaya.links.sign_out'))
       visit root_path
       click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'

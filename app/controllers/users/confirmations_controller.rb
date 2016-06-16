@@ -71,7 +71,7 @@ module Users
         flash[:error] = UserDecorator.new(resource).confirmation_period_expired_error
         render :new
       else
-        set_flash_message :notice, :confirmed
+        flash[:notice] = t('devise.confirmations.confirmed')
         render :show
       end
     end
@@ -85,7 +85,7 @@ module Users
     end
 
     def process_confirmed_user
-      set_flash_message :notice, :confirmed
+      flash[:notice] = t('devise.confirmations.confirmed')
       redirect_to after_confirmation_path_for(resource_name, resource)
       EmailNotifier.new(@confirmable).send_email_changed_email
     end

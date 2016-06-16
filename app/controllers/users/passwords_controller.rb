@@ -81,7 +81,7 @@ module Users
     end
 
     def handle_successful_password_reset_for(resource)
-      set_flash_message(:notice, :updated_not_active) if is_flashing_format?
+      flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
 
       redirect_to new_user_session_path
 
@@ -89,7 +89,7 @@ module Users
     end
 
     def handle_expired_reset_password_token
-      set_flash_message(:error, :token_expired) if is_flashing_format?
+      flash[:error] = t('devise.passwords.token_expired') if is_flashing_format?
 
       redirect_to new_user_password_path
     end

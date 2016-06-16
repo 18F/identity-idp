@@ -1,10 +1,5 @@
 en:
   upaya:
-    alerts:
-      caution: Caution!
-      app_settings_caution: >
-        These settings affect the functionality of the application.
-        Take caution in updating any of the following settings.
     errors:
       not_authorized: 'You are not authorized to perform this action.'
       invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
@@ -13,33 +8,14 @@ en:
       buttons:
         continue_browsing: Continue Browsing
         resend_confirmation: Resend confirmation instructions
-        no_accounts: Not accepting new accounts
       required_field: Indicates a required field.
       registration:
-        email_field: >
-          Your email address is used to log in to your Upaya Account.
-          All Upaya email communications will be sent to this address.
-        mobile_field: 'If you wish to have your secure one-time password sent to your mobile phone, enter the number here.'
-        contact_info: Contact information
         already_have_account_html: Already have an account?
         need_password: Please verify your current password to confirm changes.
       two_factor:
         code: Secure one-time password
-        make_selection: Please choose at least one delivery method.
       confirmation:
         show_hdr: Create a Password
-        show_instructions: Your password must be at least 8 characters in length and contain at least one upper case letter, at least one lower case letter, at least one number, and at least one special character.
-      session:
-        need: >
-          You need to create a new account if you want to:
-        need_list_html: |
-            <li></li>
-            <li></li>
-        advantage: >
-          Advantages of a Upaya online account:
-        advantage_list_html: >
-          <li></li>
-          <li></li>
 
     links:
       create_new_account: create an account
@@ -47,34 +23,18 @@ en:
       sign_in: 'Log in'
       sign_up: 'Sign up'
     notices:
-      app_setting_created: AppSetting was successfully created.
-      app_setting_updated: AppSetting was successfully updated.
       account_created: >
         You have successfully created your account.
       password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
-      user_email_changed_by_admin: >
-        The customer needs to confirm their email (%{email}) before it can be
-        changed. Please ask the customer to follow the instructions in the
-        email that was just sent to her or him.
     session_timedout: "For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again."
     session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
     titles:
-      app_settings:
-        edit: Editing %{app_setting}
-        index: Application Settings
-        new: New App Setting
-        show: Viewing %{app_setting}
       confirmations:
         new: Resend confirmation instructions for your Upaya Account
         show: Create a Password for your Upaya Account
       dashboard: Your Upaya Account
       enter_2fa_code: Enter the secure one-time password to log in to your Upaya Account
       account_locked: Account Locked
-      faqs:
-        edit: Editing FAQ
-        index: Frequently Asked Questions
-        new: Create a new FAQ
-        show: Viewing FAQ
       passwords:
         change: Change your password for your Upaya Account
         forgot: Reset your password for your Upaya Account
@@ -83,10 +43,6 @@ en:
         edit: Edit your Upaya Account
         new: Sign up for a Upaya Account
       two_factor_setup: Two-factor Authentication Setup
-      sign_in: Sign in to your Upaya Account
-      tech_support:
-        index: Tech Support
-        show: Tech Support
       users:
         edit: Editing User - %{user}
         index: Manage Users
@@ -97,40 +53,21 @@ en:
     headings:
       admin:
         index: Admin Interface
-      app_settings:
-        edit: Editing %{app_setting}
-        index: Application Settings
-        new: New App Setting
       confirmations:
         new: Resend confirmation instructions
-        show: "Instructions: Enter your password"
-      dashboard:
-        index: My Services
-      faqs:
-        edit: Editing FAQ
-        index: Frequently Asked Questions
-        new: New FAQ
       log_in: Log in
-      log_out: Sign out
       passwords:
         change: Change your password
         forgot: Forgot password?
         update: Update your password
       registrations:
-        edit: My Profile
         new: Sign up
       search: Search for a user
       session_timeout_warning: Session Timeout
-      tech_support:
-        index: Tech Support
-        show: Tech Support
       users:
         edit: Edit User
         index: Users
         show: User Details
-      visitors:
-        index: Upaya
-        new_account: Create a new account
 
     mailer:
       password_expires_soon:

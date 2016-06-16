@@ -99,7 +99,7 @@ feature 'Sign Up', devise: true do
     # JJG - I think we should go as far as making sure the user enters
     # a new number and that the OTP is sent to the new number.
     it 'allows user to enter new number if they Sign Out before confirming' do
-      click_link(t('upaya.headings.log_out'), match: :first)
+      click_link(t('upaya.links.sign_out'))
       signin(@user.reload.email, VALID_PASSWORD)
       expect(current_path).to eq users_otp_path
     end

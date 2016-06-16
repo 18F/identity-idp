@@ -63,9 +63,8 @@ module Users
 
     def process_successful_creation
       if is_flashing_format?
-        set_flash_message(
-          :notice,
-          :signed_up_but_unconfirmed,
+        flash[:notice] = t(
+          'devise.registrations.signed_up_but_unconfirmed',
           email: @register_user_email_form.user.email
         )
       end

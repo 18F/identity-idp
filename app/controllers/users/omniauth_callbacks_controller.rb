@@ -19,11 +19,11 @@ module Users
 
     def process_valid_authorization
       sign_in_and_redirect @user
-      set_flash_message(:notice, :success)
+      flash[:notice] = t('devise.omniauth_callbacks.success')
     end
 
     def process_invalid_authorization
-      set_flash_message(:alert, :failure, reason: 'Invalid email')
+      flash[:alert] = t('devise.omniauth_callbacks.failure', reason: 'Invalid email')
       redirect_to root_url
     end
   end
