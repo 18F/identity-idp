@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
 
   def otp_time_lockout?
     return false if second_factor_locked_at.nil?
-    (Time.current - second_factor_locked_at) < Devise.allowed_otp_drift_seconds
+    (Time.current - second_factor_locked_at) < Devise.direct_otp_valid_for
   end
 
   def lock_access!(opts = {})

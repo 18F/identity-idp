@@ -155,9 +155,8 @@ feature 'Two Factor Authentication', devise: true do
     scenario 'user is displayed the time remaining until their otp expires' do
       my_user = create(:user, :signed_up)
       sign_in_user(my_user)
-      otp_drift_minutes = Devise.allowed_otp_drift_seconds / 60
 
-      expect(page).to have_content "#{otp_drift_minutes} minutes"
+      expect(page).to have_content distance_of_time_in_words(Devise.direct_otp_valid_for)
     end
 
     scenario 'user can resend one-time password (OTP)' do
@@ -168,7 +167,7 @@ feature 'Two Factor Authentication', devise: true do
       expect(page).to have_content t('devise.two_factor_authentication.user.new_otp_sent')
     end
 
-    scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do
+    scenario 'user enters OTP incorrectly 3 times and is locked out for otp validitiy period' do
       user = create(:user, :signed_up)
       signin(user.email, user.password)
       3.times do
@@ -178,8 +177,8 @@ feature 'Two Factor Authentication', devise: true do
 
       expect(page).to have_content t('upaya.titles.account_locked')
 
-      # let 10 minutes (otp drift time) magically pass
-      user.update(second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1))
+      # let 10 minutes (otp validity period) magically pass
+      user.update(second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second))
 
       signin(user.email, user.password)
 

@@ -8,7 +8,7 @@
       p
         'A one-time passcode has been sent to <strong>#{@phone_number}</strong>.
         'Please enter the code that you received.
-        'If you do not receive the code in #{otp_drift_time_in_minutes} minutes, please #{link_to 'request a new passcode', users_otp_new_path, data: { 'no-turbolink' => true }}.
+        'If you do not receive the code in #{otp_valid_for_in_words}, please #{link_to 'request a new passcode', users_otp_new_path, data: { 'no-turbolink' => true }}.
 
       - if current_user.unconfirmed_mobile.present? && !current_user.two_factor_enabled?
 

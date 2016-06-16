@@ -78,9 +78,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         sign_in_before_2fa
         subject.current_user.send_new_otp
         subject.current_user.update(
-          second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1).seconds
+          second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.seconds,
+          second_factor_attempts_count: 3
         )
-        subject.current_user.update(second_factor_attempts_count: 3)
       end
 
       it 'resets attempts count when user submits bad code' do

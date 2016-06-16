@@ -1,5 +1,11 @@
 - title t('upaya.titles.account_locked')
 
-h2 =  t('upaya.titles.account_locked')
-p
-  = raw(t('devise.two_factor_authentication.max_login_attempts_reached', time_remaining: user_decorator.lockout_time_remaining_in_words))
+.clearfix.mxn2
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = t('upaya.titles.account_locked')
+      p
+        'Your account is temporarily locked because you have entered the
+        'one-time passcode incorrectly too many times.
+      p Please try again in #{user_decorator.lockout_time_remaining_in_words}.
