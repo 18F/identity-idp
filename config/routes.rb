@@ -55,7 +55,7 @@ Rails.application.routes.draw do
     # base redirects to next active question, which will detect if there is active session
     get '/', to: redirect('/idv/questions')
 
-    resources :questions, :sessions
+    resources :questions, :sessions, :confirmations
   end
 
   root to: 'users/sessions#new'

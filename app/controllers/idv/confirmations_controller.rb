@@ -1,23 +1,20 @@
-class Idv::ConfirmationController < ApplicationController
+class Idv::ConfirmationsController < ApplicationController
+  include IdvSession
+
   def index
-    if session[:question_number] => session[:resolution].questions.count
+    if question_number >= resolution.questions.count
       submit_answers
     else
-      redirect_to idv_question_path
+      redirect_to idv_questions_path
     end
   end
 
   private
 
   def submit_answers
-    agent = Proofer::Agent.new(vendor: :mock)
-    @confirmation = agent.submit_answers(session[:answers], session[:resolution].session_id)
+    agent = Proofer::Agent.new(vendor: idv_vendor)
+    @confirmation = agent.submit_answers(resolution.questions, resolution.session_id)
     #TODO: actually alter the user
-    cleanup_session
-  end
-
-  def cleanup_session
-    session.delete(:resolution)
-    session.delete(:question_number)
+    clear_idv_session
   end
 end
