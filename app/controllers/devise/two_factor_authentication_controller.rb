@@ -6,6 +6,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   prepend_before_action :authenticate_scope!
   before_action :verify_user_is_not_second_factor_locked
   before_action :handle_two_factor_authentication
+  before_action :check_already_authenticated
 
   def new
     current_user.send_new_otp
@@ -14,10 +15,6 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def show
-    if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
-      redirect_to dashboard_index_url
-    end
-
     @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
   end
 
@@ -32,6 +29,12 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   private
+
+  def check_already_authenticated
+    if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
+      redirect_to dashboard_index_url
+    end
+  end
 
   def authenticate_scope!
     send(:"authenticate_#{resource_name}!", force: true)
