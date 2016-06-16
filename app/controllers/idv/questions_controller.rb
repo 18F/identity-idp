@@ -1,32 +1,28 @@
 class Idv::QuestionsController < ApplicationController
-  def index
-    redirect_to new_idv_session_path unless proofing_session_started?
+  include IdvSession
 
-    if question_number < resolution.questions.count
-      @question_sequence = question_number + 1
-      @question = resolution.questions[question_number]
+  def index
+    if proofing_session_started?
+      render_next_question
     else
-      redirect_to idv_confirmation_path
+      redirect_to idv_sessions_path
     end
   end
 
   def create
-    session[:resolution].questions[session[:question_number]].answer = params.require('answer')
+    resolution.questions[question_number].answer = params.require('answer')
     session[:question_number] += 1
     redirect_to idv_questions_path
   end
 
   private
 
-  def question_number
-    session[:question_number]
-  end
-
-  def resolution
-    session[:resolution]
-  end
-
-  def proofing_session_started?
-    session.key?(:resolution) && session[:resolution].present?
+  def render_next_question
+    if question_number < resolution.questions.count
+      @question_sequence = question_number + 1 
+      @question = resolution.questions[question_number]
+    else
+      redirect_to idv_confirmations_path
+    end 
   end
 end
