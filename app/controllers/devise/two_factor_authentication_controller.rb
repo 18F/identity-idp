@@ -9,7 +9,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
 
   def new
     current_user.send_new_otp
-    set_flash_message :success, 'new_otp_sent'
+    flash[:notice] = t('devise.two_factor_authentication.user.new_otp_sent')
     redirect_to user_two_factor_authentication_path
   end
 
@@ -52,7 +52,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     warden.session(resource_name)[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
 
     sign_in resource_name, resource, bypass: true
-    set_flash_message :notice, :success
+    flash[:notice] = t('devise.two_factor_authentication.success')
 
     send_number_change_sms_if_needed
 
@@ -91,7 +91,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def handle_invalid_otp
     update_invalid_resource if resource.two_factor_enabled?
 
-    flash.now[:error] = find_message(:attempt_failed)
+    flash.now[:error] = t('devise.two_factor_authentication.attempt_failed')
 
     if resource.second_factor_locked?
       handle_second_factor_locked_resource

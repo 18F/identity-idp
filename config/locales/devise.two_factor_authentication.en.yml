@@ -13,6 +13,7 @@ en:
         Please enter the phone number you would like to use to receive these messages.
       otp_sms_disclaimer: "Note: By accepting these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply."
       please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.
+      success: "Two factor authentication successful."
       two_factor_setup: Two-factor Authentication Setup
       user:
         new_otp_sent: A new one-time passcode has been sent.
