@@ -5,22 +5,26 @@ satisfies:
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative:  'Login.gov allows consumers to access user entitled resources with a combination of identity
-proofing and authentication. Identity proofing is done during account creation or recovery at IAA2 and periodically
-over time due to inactivity. It will use government approved (TSF) 3rd party identity verification services,
-where Login.gov system will interaction with said service for Identity verification and proceed with authentication
-services between the consumer and Service Provider. Authentication will be done using email address, password plus
-a 2nd Factor tools such as cellular phone service based SMS OTP or other emerging authenticators.'
+  narrative:
+  - text: |
+      Login.gov allows consumers to access user entitled resources with a combination of identity
+      proofing and authentication. Identity proofing is done during account creation or recovery at IAA2 and periodically
+      over time due to inactivity. It will use government approved (TSF) 3rd party identity verification services,
+      where Login.gov system will interaction with said service for Identity verification and proceed with authentication
+      services between the consumer and Service Provider. Authentication will be done using email address, password plus
+      a 2nd Factor tools such as cellular phone service based SMS OTP or other emerging authenticators.
+
+      Privileged users access to the system will be controlled through AWS IAM RBAC service.
   standard_key: NIST-800-53
-schema_version: 2.0
+schema_version: 3.0.0
 system: Login.gov
 verifications:
 - key: POLICY_DOC
   name: Policy Document
   path: https://github.com/18F/compliance-docs/blob/master/IA-Policy.md
   type: URL
-- description: "GIVEN the github link - <policy> THEN the policy has been updated\
-    \ within the last 180 days \n"
+- description: |
+    GIVEN the github link - <policy> THEN the policy has been updated within the last 180 days
   key: Policy_Update_Test
   last_run: 2016-04-07 13:25:17.630024
   name: 18F Policies Update

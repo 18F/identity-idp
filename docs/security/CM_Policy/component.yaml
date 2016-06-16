@@ -5,25 +5,27 @@ satisfies:
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative: 'Login.gov engineers have reviewed all necessary security controls, conducted impact
-analyses, and implemented all necessary controls.'
+  narrative:
+  - text: |
+    Login.gov engineers have reviewed all necessary security controls, conducted impact analyses, and implemented all necessary controls.
   standard_key: NIST-800-53
 - control_key: CM-9
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative: 'Login.gov will utilize Cloud.gov for deployment, github for source control, encryption
-to protect sensitive configuration data, aws s-3 bucket encryption'
+  narrative:
+  - text: |
+    Login.gov utilizes github for source control, encryption to protect sensitive configuration data with aws s3 bucket encryption
   standard_key: NIST-800-53
-schema_version: 2.0
+schema_version: 3.0.0
 system: Login.gov
 verifications:
 - key: POLICY_DOC
   name: Policy Document
   path: https://github.com/18F/compliance-docs/blob/master/CM-Policy.md
   type: URL
-- description: "GIVEN the github link - <policy> THEN the policy has been updated\
-    \ within the last 180 days \n"
+- description: |
+    GIVEN the github link - <policy> THEN the policy has been updated within the last 180 days.
   key: Policy_Update_Test
   last_run: 2016-04-07 13:25:17.581078
   name: 18F Policies Update

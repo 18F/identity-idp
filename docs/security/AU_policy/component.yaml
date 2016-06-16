@@ -1,47 +1,54 @@
 documentation_complete: false
-name: Audit and Accountability Policy for 18F
+name: Audit and Accountability Policy for Login.gov
 satisfies:
 - control_key: AU-2
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: Complete
-  narrative: "#### b  \nAudit logs will be made available to organizations for mutual\
-    \ support in response to security breaches, system and user access, incident reporting\
-    \ and continuous monitoring.\n18F will generate and distribute audit reports,\
-    \ provide customized dashoard access for audited events, and send audit log data\
-    \ to SIEM and log analysis systems from its  audit logging and metrics tools for\
-    \ the Login.Gov platform and virtual infrastructure as needed.\n  \n#### c  \n\
-    18F retains audit logs according to NARA retention standards to provide support\
-    \ for after-the-fact investigations of security incidents and to meet regulatory\
-    \ and organizational information retention requirements.\nThe log management framework\
-    \ will provide the capability to retain logs for 90 days online and one-year offline,\
-    \ with sufficient capacity as to mitigate the risk of exceeding storage space.\n\
-    Specific Policies, Procedures, Points of Contact, and Guidance will be established\
-    \ between 18F and other agencies to support after-the-fact investigations, by\
-    \ the 18F Project Lead.\n  \n"
+  narrative:
+  - key: b
+    text: |
+    Audit logs will be made available to organizations for mutual
+    support in response to security breaches, system and user access, incident reporting
+    and continuous monitoring. n18F will generate and distribute audit reports,
+    provide customized dashoard access for audited events, and send audit log data
+    to SIEM and log analysis systems from its  audit logging and metrics tools for
+    the Login.Gov platform and virtual infrastructure as needed.
+  - key: c
+    text: |
+    Login.gov retains audit logs according to NARA retention standards to provide support
+    for after-the-fact investigations of security incidents and to meet regulatory
+    and organizational information retention requirements. nThe log management framework
+    will provide the capability to retain logs for 90 days online and one-year offline,
+    with sufficient capacity as to mitigate the risk of exceeding storage space. n
+    Specific Policies, Procedures, Points of Contact, and Guidance will be established
+    between 18F and other agencies to support after-the-fact investigations, by
+    the 18F Project Lead.
   standard_key: NIST-800-53
 - control_key: AU-2 (3)
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative: 'The Devops and SecOps teams review all events that can be audited on
+  narrative:
+  - text: |
+    The Devops and SecOps teams review all events that can be audited on
     a real time basis using its event and monitoring solution for Cloud.Gov and through
     captured user and event api calls within its virtual infrastructure.
-
-    '
   standard_key: NIST-800-53
 - control_key: AU-6 (1)
   covered_by:
   - verification_key: POLICY_DOC
-  narrative: "Audit Monitoring, Analysis and Reporting\n * 18F establishes processes\
-    \ for regularly reviewing audit log information, and reporting security issues\
-    \ if discovered. Reviews will occur at a minimum of weekly. These processes should\
-    \ be integrated with processes for incident response, in order to ensure standardization\
-    \ and cross-functional collaboration\n * 18F employs automated mechanisms to integrate\
-    \ audit monitoring, analysis and reporting into an overall process for investigation\
-    \ and response to suspicious activities.\n * 18F employs automated mechanisms\
-    \ to immediately alert security personnel of inappropriate or unusual activities\
-    \ that have security implications.\n"
+  narrative:
+  - text: |
+      Audit Monitoring, Analysis and Reporting n * 18F establishes processes
+      for regularly reviewing audit log information, and reporting security issues
+      if discovered. Reviews will occur at a minimum of weekly. These processes should
+      be integrated with processes for incident response, in order to ensure standardization
+      and cross-functional collaboration n * 18F employs automated mechanisms to integrate
+      audit monitoring, analysis and reporting into an overall process for investigation
+      and response to suspicious activities. n * 18F employs automated mechanisms
+      to immediately alert security personnel of inappropriate or unusual activities
+      that have security implications.
   standard_key: NIST-800-53
 - control_key: AU-9(4)
   covered_by: []
@@ -51,15 +58,15 @@ satisfies:
 - control_key: AU-7
   covered_by: []
   implementation_status: none
-  narrative: 'The ELK Stack logging and monitoring system provides additional audit
+  narrative:
+  - text: |
+    The ELK Stack logging and monitoring system provides additional audit
     reduction and report generation capabilites for 18F Devops and end users of the
     Cloud.Gov platform. With the elasticsearch capabiltiy 18F DevOps and SecOps teams
     can structure and customize audit logs queries to specific app instances, API
     calls, system metrics, user access, system components, network traffic flow and
     other functions. Kibana is used to generate customized dashboards and Logstash
     to generate reports for analysis and review.
-
-    '
   standard_key: NIST-800-53
 - control_key: AU-7 (1)
   covered_by: []
@@ -69,28 +76,28 @@ satisfies:
 - control_key: AU-9
   covered_by: []
   implementation_status: none
-  narrative: 'Audit logs are stored and protected in specified S3 buckets and elasticsearch
-    clusters for Cloud.Gov. Access to logs are limited to designated 18F Devops and
+  narrative:
+  - text: |
+    Audit logs are stored and protected in specified S3 buckets and elasticsearch
+    clusters for Login.gov. Access to logs are limited to designated Login.gov Devops and
     Security staff and logs cannot be modified without proper authorization to the
     platform. Client agencies are restircted to access and view only their specified
     audit logs pertaining to the corresponding Org and space accounts.
-
-    '
   standard_key: NIST-800-53
 - control_key: AU-3 (1)
   covered_by: []
   implementation_status: none
-  narrative: "The Cloud.Gov system includes more detailed information in the audit\
-    \ events identified by tpye, location or subject. The Loggregator componett of\
-    \ Cloud.Gov produces additionl information based on the log type and orgin of\
-    \ the logs. There are six log types within Cloud.Gov\n  API - logs all API calls\
-    \ from a user\n  STG - logs when staging or restaging an app\n  DEA - logs when\
-    \ the Droplet excution agent starts and stops an app\n  RTR - logs when it routes\
-    \ HTTP requests to the application\n  LGR - logs when there are problems with\
-    \ the logging process itself\n  APP - logs all application data based on choices\
-    \ by the developer\n\nAll of the audit logs from Cloud.Gov are drained to the\
-    \ ELK Stack which has even more versitility in producing additional audit capabilities\
-    \ for the 18FDevOps and SecOps team for reivew.\n"
+  narrative: "The Cloud.Gov system includes more detailed information in the audit
+     events identified by tpye, location or subject. The Loggregator componett of
+     Cloud.Gov produces additionl information based on the log type and orgin of
+     the logs. There are six log types within Cloud.Gov n  API - logs all API calls
+     from a user n  STG - logs when staging or restaging an app n  DEA - logs when
+     the Droplet excution agent starts and stops an app n  RTR - logs when it routes
+     HTTP requests to the application n  LGR - logs when there are problems with
+     the logging process itself n  APP - logs all application data based on choices
+     by the developer n nAll of the audit logs from Cloud.Gov are drained to the
+     ELK Stack which has even more versitility in producing additional audit capabilities
+     for the 18FDevOps and SecOps team for reivew. n"
   standard_key: NIST-800-53
 - control_key: AU-9(2)
   covered_by: []
@@ -127,16 +134,16 @@ satisfies:
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: complete
-  narrative: "#### a  \nThe 18F Program Office develops, documents, and disseminates\
-    \ to all 18F staff,\nThe 18F Audit and Accountability Policy which  addresses\
-    \ purpose, scope, roles, responsibilities, management commitment, coordination\
-    \ among organizational entities, ompliance and procedures to facilitate the implementation\
-    \ of the audit and aaccountability policy and associated audit controls. The 18F\
-    \ Audit and Accountability policy is listed within 18F\u2019s  private Github\
-    \ repository and the docs.cloud.gov site that is accessible to all 18F staff.\n\
-    \  \n#### b  \nThe 18F Program Office will review and update the current 18F Audit\
-    \ control policy at least every 3 years and any documented audit procedures at\
-    \ least annually.\n  \n"
+  narrative: "#### a   nThe 18F Program Office develops, documents, and disseminates
+     to all 18F staff, nThe 18F Audit and Accountability Policy which  addresses
+     purpose, scope, roles, responsibilities, management commitment, coordination
+     among organizational entities, ompliance and procedures to facilitate the implementation
+     of the audit and aaccountability policy and associated audit controls. The 18F
+     Audit and Accountability policy is listed within 18F u2019s  private Github
+     repository and the docs.cloud.gov site that is accessible to all 18F staff. n
+       n#### b   nThe 18F Program Office will review and update the current 18F Audit
+     control policy at least every 3 years and any documented audit procedures at
+     least annually. n   n"
   standard_key: NIST-800-53
 - control_key: AU-11
   covered_by: []
@@ -146,41 +153,41 @@ satisfies:
 - control_key: AU-6 (3)
   covered_by:
   - verification_key: POLICY_DOC
-  narrative: "Audit Monitoring, Analysis and Reporting\n * 18F establishes processes\
-    \ for regularly reviewing audit log information, and reporting security issues\
-    \ if discovered. Reviews will occur at a minimum of weekly. These processes should\
-    \ be integrated with processes for incident response, in order to ensure standardization\
-    \ and cross-functional collaboration\n * 18F employs automated mechanisms to integrate\
-    \ audit monitoring, analysis and reporting into an overall process for investigation\
-    \ and response to suspicious activities.\n * 18F employs automated mechanisms\
-    \ to immediately alert security personnel of inappropriate or unusual activities\
-    \ that have security implications.\n"
+  narrative: "Audit Monitoring, Analysis and Reporting n * 18F establishes processes
+     for regularly reviewing audit log information, and reporting security issues
+     if discovered. Reviews will occur at a minimum of weekly. These processes should
+     be integrated with processes for incident response, in order to ensure standardization
+     and cross-functional collaboration n * 18F employs automated mechanisms to integrate
+     audit monitoring, analysis and reporting into an overall process for investigation
+     and response to suspicious activities. n * 18F employs automated mechanisms
+     to immediately alert security personnel of inappropriate or unusual activities
+     that have security implications. n"
   standard_key: NIST-800-53
 - control_key: AU-6
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative: "#### a  \nAWS Auditable Events:\nDevOps and SecOps teams will conduct\
-    \ weekly manual and automated continuous audits of authorized accounts and configurations.\
-    \ These audits will include but are not limited to:\nAdministrative Accounts\n\
-    * Virtual Private Cloud (VPC)\n* Elastic Compute Cloud (EC2)\n* Simple Storage\
-    \ Service (S3)\n* Identity and Access Management (IAM)\n* Elastic Block Store\
-    \ (EBS)\n\n\nLogin.gov Auditable Events:\nBy default, this service streams\
-    \ logs to a terminal. 18F will drain logs to a third-party log management service\
-    \ such as AWS CloudTrail\nLogin.gov logs are captured in multiple\
-    \ tables and log files. These will be reviewed weekly and if discovery of anomalous\
-    \ audit log content which appears to indicate a breach are handled according to\
-    \ the GSA Security Incident Handling Guide: CIO IT Security 01-02 Revision 7 (August\
-    \ 18, 2009) requirements.\n  \n#### b  \nWhen a credible source to the GSA Agency\
-    \ provides information that causes reason to enhance audit activities, develop\
-    \ and implement an enhanced auditing use-case that will adequately enhance auditing\
-    \ practices in a fashion necessary per the identified threat and following the\
-    \ Incident Reporting Procedures in GSA IT Security Procedural Guide 01-02 (04/07/2015),\
-    \ Incident Response. The GSA Agency may also, through analysis pertaining to the\
-    \ GSA Agency environment provide additional audit measures that will require an\
-    \ increase in review, analysis, and reporting for a necessary.\nUpon implementation,\
-    \ 18F will monitor information security news and alerts for indications of a need\
-    \ to heighten information system security monitoring.\n  \n"
+  narrative: "#### a   nAWS Auditable Events: nDevOps and SecOps teams will conduct
+     weekly manual and automated continuous audits of authorized accounts and configurations.
+     These audits will include but are not limited to: nAdministrative Accounts n
+    * Virtual Private Cloud (VPC) n* Elastic Compute Cloud (EC2) n* Simple Storage
+     Service (S3) n* Identity and Access Management (IAM) n* Elastic Block Store
+     (EBS) n n nLogin.gov Auditable Events: nBy default, this service streams
+     logs to a terminal. 18F will drain logs to a third-party log management service
+     such as AWS CloudTrail nLogin.gov logs are captured in multiple
+     tables and log files. These will be reviewed weekly and if discovery of anomalous
+     audit log content which appears to indicate a breach are handled according to
+     the GSA Security Incident Handling Guide: CIO IT Security 01-02 Revision 7 (August
+     18, 2009) requirements. n   n#### b   nWhen a credible source to the GSA Agency
+     provides information that causes reason to enhance audit activities, develop
+     and implement an enhanced auditing use-case that will adequately enhance auditing
+     practices in a fashion necessary per the identified threat and following the
+     Incident Reporting Procedures in GSA IT Security Procedural Guide 01-02 (04/07/2015),
+     Incident Response. The GSA Agency may also, through analysis pertaining to the
+     GSA Agency environment provide additional audit measures that will require an
+     increase in review, analysis, and reporting for a necessary. nUpon implementation,
+     18F will monitor information security news and alerts for indications of a need
+     to heighten information system security monitoring. n   n"
   standard_key: NIST-800-53
 - control_key: AU-5
   covered_by: []
@@ -195,8 +202,8 @@ verifications:
   name: Policy Document
   path: https://github.com/18F/compliance-docs/blob/master/AU-Policy.md
   type: URL
-- description: "GIVEN the github link - <policy> THEN the policy has been updated\
-    \ within the last 180 days \n"
+- description: "GIVEN the github link - <policy> THEN the policy has been updated
+     within the last 180 days  n"
   key: Policy_Update_Test
   last_run: 2016-04-07 13:25:17.473505
   name: 18F Policies Update

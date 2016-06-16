@@ -5,9 +5,11 @@ satisfies:
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative: 'Login.gov information system estabishes connections to other external information
-    systems through SAML and REST APIs to resolve identityies during online proofing process, to
-    comminucating 2FA messages via SMS or email services, and sending SAML assertions to agency partners'
+  narrative:
+  - text: |
+      Login.gov information system estabishes connections to other external information
+      systems through SAML and REST APIs to resolve identityies during online proofing process, to
+      comminucating 2FA messages via SMS or email services, and sending SAML assertions to agency partners'
   standard_key: NIST-800-53
 schema_version: 2.0
 system: Login.gov
@@ -16,8 +18,8 @@ verifications:
   name: Policy Document
   path: https://github.com/18F/compliance-docs/blob/master/CA-Policy.md
   type: URL
-- description: "GIVEN the github link - <policy> THEN the policy has been updated\
-    \ within the last 180 days \n"
+- description: |
+    GIVEN the github link - <policy> THEN the policy has been updated within the last 180 days
   key: Policy_Update_Test
   last_run: 2016-04-07 13:25:17.527067
   name: 18F Policies Update
