@@ -4,7 +4,8 @@ class Idv::SessionsController < ApplicationController
 
   def create
     agent = Proofer::Agent.new(vendor: pick_a_vendor)
-    app_vars = params.slice(:first_name, :last_name, :dob)
+    app_vars = params.slice(:first_name, :last_name, :dob, :ssn, :address1, :address2, :city, :state, :zipcode)
+                 .delete_if { |key, value| value.blank? }
     applicant = Proofer::Applicant.new(app_vars)
     session[:idv_vendor] = agent.vendor
     session[:resolution] = agent.start(applicant)

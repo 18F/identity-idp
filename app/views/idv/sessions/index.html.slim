@@ -18,7 +18,7 @@
             =date_field_tag 'dob', nil, class: 'block col-12 mb2 field'
           .sm-col.sm-col-12.px1
             label = t('idv.form.ssn')
-            =number_field_tag 'ssn', nil, class: 'block col-12 mb2 field'
+            =text_field_tag 'ssn', nil, class: 'block col-12 mb2 field'
           .sm-col.sm-col-12.px1
             label = t('idv.form.address1')
             =text_field_tag 'address1', nil, class: 'block col-12 mb2 field'
@@ -33,5 +33,5 @@
             =text_field_tag 'state', nil, class: 'block col-12 mb2 field'
           .sm-col.sm-col-3.px1
             label = t('idv.form.zipcode')
-            =number_field_tag 'zipcode', nil, class: 'block col-12 mb2 field'
+            =text_field_tag 'zipcode', nil, class: 'block col-12 mb2 field'
         button type='submit' class='btn btn-primary' = 'Submit'
