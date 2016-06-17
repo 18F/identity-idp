@@ -2,10 +2,10 @@
 
 .clearfix.mxn2
   .sm-col-6.px2.mx-auto
+    = render 'devise/shared/auth_nav'
     .panel
       .panel-heading
         h2.m0 = t('upaya.headings.registrations.new')
-
       = simple_form_for(@register_user_email_form,
           html: { autocomplete: 'off', role: 'form' },
           url: user_registration_path) do |f|
@@ -15,7 +15,3 @@
                   autofocus: true,
                   input_html: { 'aria-describedby' => 'email_description' }
         = f.button :submit, 'Sign up'
-        div
-          = t('upaya.forms.registration.already_have_account_html')
-          '
-          = link_to 'Log in', new_user_session_path

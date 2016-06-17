@@ -10,7 +10,6 @@ en:
         resend_confirmation: Resend confirmation instructions
       required_field: Indicates a required field.
       registration:
-        already_have_account_html: Already have an account?
         need_password: Please verify your current password to confirm changes.
       two_factor:
         code: Secure one-time password
@@ -18,7 +17,6 @@ en:
         show_hdr: Create a Password
 
     links:
-      create_new_account: create an account
       sign_out: 'Sign out'
       sign_in: 'Log in'
       sign_up: 'Sign up'
