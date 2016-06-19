@@ -221,18 +221,6 @@ describe SamlIdpController do
       end
     end
 
-    describe 'before_actions' do
-      it 'includes the appropriate before_actions' do
-        expect(subject).to have_filters(
-          :before,
-          :validate_saml_request,
-          :verify_authn_context,
-          :store_saml_request_in_session,
-          :confirm_two_factor_authenticated
-        )
-      end
-    end
-
     context 'SAML Response' do
       let(:xmldoc) { SamlResponseHelper::XmlDoc.new('controller', 'auth', response) }
 
@@ -633,6 +621,21 @@ describe SamlIdpController do
           expect(mobile['FriendlyName']).to eq('mobile')
         end
       end
+    end
+  end
+
+  describe 'before_actions' do
+    it 'includes the appropriate before_actions' do
+      expect(subject).to have_filters(
+        :before,
+        :disable_caching,
+        [:apply_secure_headers_override, only: [:auth, :logout]],
+        [:validate_saml_request, only: :auth],
+        [:verify_authn_context, only: :auth],
+        [:store_saml_request_in_session, only: :auth],
+        [:confirm_two_factor_authenticated, only: :auth],
+        [:validate_saml_logout_param, only: :logout]
+      )
     end
   end
 end
