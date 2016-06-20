@@ -4,7 +4,6 @@ module IdvSession
   if ENV['PROOFING_VENDORS']
     ENV.fetch('PROOFING_VENDORS', '').split(/\W+/).each do |vendor|
       vendor_path = "#{Rails.root}/vendor/#{vendor}/lib"
-      puts "vendor_path==#{vendor_path}"
       $LOAD_PATH.unshift vendor_path
     end 
   end 

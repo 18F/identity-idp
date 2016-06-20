@@ -1,6 +1,8 @@
 class Idv::QuestionsController < ApplicationController
   include IdvSession
 
+  before_action :confirm_two_factor_authenticated
+
   def index
     if proofing_session_started?
       render_next_question

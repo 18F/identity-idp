@@ -1,6 +1,8 @@
 class Idv::ConfirmationsController < ApplicationController
   include IdvSession
 
+  before_action :confirm_two_factor_authenticated
+
   def index
     if proofing_session_started?
       if idv_question_number >= idv_resolution.questions.count
