@@ -1,48 +1,57 @@
 documentation_complete: false
-name: Security Awareness Training Policy for Login.gov
+name: Security Awareness Training Policy for 18F
 satisfies:
 - control_key: AT-3
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
-  narrative: The 18F Program office reviews AT-2
+  narrative:
+    - text: The 18F Program office reviews AT-2
   standard_key: NIST-800-53
 - control_key: AT-1
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
   narrative:
-  - key: a
-    text: |
-      The 18F Program Office develops, documents, and disseminates to all 18F staff.
-      The 18F Security Awareness policy which  addresses purpose, scope, roles, responsibilities, management commitment, coordination among organizational entities, and compliance and procedures to facilitate the implementation of the security awareness access and training policy and associated security awareness controls. The 18F accecss control policy is listed within its private Github repository that is accessible to all 18F staff.
-  - keys: b
-    text: |
-      The 18F Program Office will review and update the current 18F Security Awareness and training control policy at least every 3 years and any documented access  procedures at least annually.
+    - key: a
+      text: |
+        The 18F Program Office develops, documents, and disseminates to all 18F staff
+        The 18F Security Awareness policy which addresses purpose, scope, roles,
+        responsibilities, management commitment, coordination among organizational
+        entities, and compliance and procedures to facilitate the implementation of the
+        security awareness access and training policy and associated security awareness
+        controls. The 18F accecss control policy is listed within its private Github
+        repository that is accessible to all 18F staff.
+    - key: b
+      text: |
+        The 18F Program Office will review and update the current 18F Security Awareness
+        and training control policy at least every 3 years and any documented access
+        procedures at least annually.
   standard_key: NIST-800-53
 - control_key: AT-2
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
   narrative:
-  - text: |
-      The 18F Program office reviews AT-2
+    - text: The 18F Program office reviews AT-2
   standard_key: NIST-800-53
 - control_key: AT-2 (2)
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
   narrative:
-  - text: |
-    The 18F Program office reviews AT-2
+    - text: The 18F Program office reviews AT-2
   standard_key: NIST-800-53
 - control_key: AT-4
   covered_by:
   - verification_key: POLICY_DOC
   implementation_status: none
   narrative:
-  - text: |
-      Completed the development of the Awareness training policy specifically for 18F program. ISSO support is looking into possible solutions for specific security awareness training for 18F staff. Currently reviewing the SEI training programs for Secure DevOps and Online line Learning management system.
+    - text: |
+        Completed the development of the Awareness training policy specifically
+        for 18F program. ISSO support is looking into possible solutions for specific
+        security awareness training for 18F staff. currently reviewing the SEI training
+        programs for Secure DevOps and Online line Learning management system.
   standard_key: NIST-800-53
 schema_version: 3.0.0
 system: 18F
@@ -56,7 +65,6 @@ verifications:
   key: Policy_Update_Test
   last_run: 2016-04-07 13:25:17.456091
   name: 18F Policies Update
-  path: https://github.com/18F/cg-compliance/blob/master/BDD/policies.feature
   path: BDD/policies.feature
   test_passed: false
   type: TEST

@@ -10,17 +10,15 @@ satisfies:
   - key: a
     text: |
       The 18F Program Office develops, documents, and disseminates
-      to all 18F staff, the 18F Access Control Policy which  addresses purpose, scope,
+      to all 18F staff the 18F Access Control Policy which addresses purpose, scope,
       roles, responsibilities, management commitment, coordination among organizational
-      entities, and compliance and procedures to facilitate the implementation of
-      the access control policy and associated access controls. The 18F access control
-      policy is listed within 18F’s  private Github repository and the docs. Login.gov
+      entities, compliance, and procedures to facilitate the implementation of
+      the access control policy and associated access controls. The 18F Access Control
+      Policy is listed within 18F’s private Github repository and the docs.cloud.gov
       site that is accessible to all 18F staff.
   - key: b
     text: |
-      The 18F Program Office
-      will review and update the current 18F Access control policy at least every
-      3 years and any documented access procedures at least annually.
+      The 18F Program Office will review and update the current 18F Access Control Policy at least every 3 years and any documented access procedures at least annually.
   standard_key: NIST-800-53
 - control_key: AC-2
   covered_by:
@@ -33,85 +31,89 @@ satisfies:
       information system accounts to support organizational missions/business functions:
   - key: b
     text: |
-      18F has established designated Devops personnel as the assigned
+      18F has established designated DevOps personnel as the assigned
       account managers for all information system accounts relating to the infrastructure
       and the Login.gov platform.
       System Owners, whose web applications and/or websites
-      reside on the Login.gov platform have the responsibility to assign an account
+      reside on the Login.gov platform, have the responsibility to assign an account
       manager for their information systems.
   - key: c
     text: |
       18F establishes conditions
-      for group and role membership within the Login.gov Platform and its virtual
+      for group and role membership within the Login.gov platform and its virtual
       environment.
       Conditions for groups and roles membership are based on an established
       need to manage and access the virtual infrastructure and Login.gov environments.
-      The user must meet the following conditions in order for the System Owner/ Project
+      The user must meet the following conditions in order for the System Owner / Project
       Manager to approve a group membership request:
-        * The user’s assigned role is required to access a particular group
-        * The user has the requirements and understanding to assume permissions associated with the group
-        * The user has completed the security role-based training
-        * The user complies with any other group-specific conditions created by the system owner
-      Once conditions have been met, the system owner /Project manager will request access within
-      GitHub, 18F’s tracking and ticketing system. Once approved, the 18F Devops group
-      completes the request for group and role membership within its infrastructure.
+        * The user’s assigned role is required to access a particular group.
+        * The user has the requirements and understanding to assume permissions associated with the group.
+        * The user has completed the security role-based training.
+        * The user complies with any other group-specific conditions created by the system owner.
+      Once conditions have been met, the System Owner / Project Manager will request access within
+      GitHub, 18F’s tracking and ticketing system. Once approved, the 18F DevOps group
+      completes the request for group and role membership within its infrastructure
+      and Login.gov platform.
   - key: d
     text: |
       The 18F Program Office specifies authorized
       users of the information system, group and role membership, and access authorizations
-      (i.e., privileges) and other attributes (as required) for each account. Systems
-      Owners/ Project managers provide the details of what type of access is needed
-      for an authorized authorized user.\nAll accounts will be documented within their
+      (i.e., privileges) and other attributes (as required) for each account. System
+      Owners / Project Managers provide the details of what type of access is needed
+      for an authorized authorized user.
+      All accounts will be documented within their
       respective information systems, detailing their group and role membership, and
-      access authorizations. This documentation will be exported by Devops and archived
+      access authorizations. This documentation will be exported by DevOps and archived
       for up to a year from the date of account creation by the managing 18F project
       lead and Login.gov Technical Point of Contact (Operating Environment) in accordance
       with best business and security practices.
   - key: e
     text: |
       18F requires approvals by the project lead and system owners for requests to create information system
-      accounts. All accounts will be documented within the Github ticketing and tracking
+      accounts. All accounts will be documented within the GitHub ticketing and tracking
       system with their respective information systems, detailing their group, role
       membership, and access authorizations.
   - key: f
     text: |
       User account establishment,
       activation, modification, disablement or removal requires approval by the managing
-      project lead and Login.gov Information System Technical Point of Contact.
+      \ project lead and Login.gov Information System Technical Point of Contact.
       Accounts will be created, enabled, modified, disabled, and removed from AWS in accordance
-      with 18F policies, guidelines and established by the project lead and Devops.
+      with 18F policies, guidelines and established by the project lead and DevOps.
   - key: g
     text: |
-      18F Monitors the use of all information system accounts within
+      18F monitors the use of all information system accounts within
       its environment.
   - key: h
     text: |
-      18F notifies its Devops account managers, when accounts are no longer required, users are terminated or transferred, and when
+      18F notifies its DevOps account managers when accounts are no longer required, users are terminated or transferred, and when
       individual’s information system usage or need-to-know changes within the Login.gov
-      platform and virtual private cloud infrastructure.\nThe project manager or information
-      system owner will be notified when accounts have been terminated, disabled or
-      transferred based on the access request submitted via Github.  Notification
-      will be sent via e-mail or the GitHub ticketing and tracking system when changes
+      platform and virtual private cloud infrastructure.
+      The Project Manager or Information
+      System Owner will be notified when accounts have been terminated, disabled or
+      transferred based on the access request submitted via GitHub.  Notification
+      will be sent via email or the GitHub ticketing and tracking system when changes
       to user and system access occur.
   - key: i
     text: |
       18F authorizes access to its
-      information systems based on a valid access authorization from system owners
-      and Devops, intended system usage within the network environment, and other
+      information systems based on a valid access authorization from System Owners
+      and DevOps, intended system usage within the network environment, and other
       attributes as required by the organization or associated missions/business functions.
-      This is documented within section 3 of  the 18F access control policy Access
-      Management.\nUser and system access is provided only to those with an established
+      This is documented within section 3 of the 18F Access Control Policy: Access
+      Management.
+      User and system access is provided only to those with an established
       need to access and manage the virtual private cloud and Login.gov environments.
       * User group membership is restricted to the least privilege necessary for the user to accomplish their assigned duties.
-      * All user accounts are issued only to those who have gained approval by 18F Devops.
-      Once approved, the Devops team creates the user account and adds it to the appropriate role and organization
+      * All user accounts are issued only to those who have gained approval by 18F DevOps.
+      Once approved, the DevOps team creates the user account and adds it to the appropriate role and organization
       within its information systems.
       18F grants access to the information system
       based on:
-        * a valid need-to-know/need-to-share that is determined by assigned official duties and satisfying all personnel security criteria
+        * A valid need-to-know/need-to-share that is determined by assigned official duties and satisfying all personnel security criteria.
         * Intended system usage.
       18F requires proper identification for requests to establish information
-      system accounts and approves all such requests Organizational or mission/business
+      system accounts, and it approves all such requests based on organizational or mission/business
       function attributes.
   - key: j
     text: |
@@ -121,7 +123,7 @@ satisfies:
   - key: k
     text: |
       18F establishes a process for reissuing shared/group account credentials when individuals are
-      removed from the group. 18F utilizes its GitHub tracking and ticketing system
+      removed from the group. 18F uses its GitHub tracking and ticketing system
       for requests to reissue and remove individuals from group memberships within
       its environment.
   standard_key: NIST-800-53
@@ -131,8 +133,8 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-      Login.gov integrates it's user management application with enterprise single sign on systems.
-      User management is automated by delegating user verification to a centralized system.
+      Login.gov integrates its user management application with enterprise single sign on systems.
+      Login.gov automates user management by delegating user verification to a centralized system.
   standard_key: NIST-800-53
 - control_key: AC-2 (2)
   covered_by:
@@ -141,8 +143,8 @@ satisfies:
   narrative:
   - text: |
       This control is not applicable. Login.gov does not contain any guest/anonymous,
-      group, or temporary user accounts. Devops only creates individual user accounts
-      and grants role based access to users within Login.gov.
+      group, or temporary user accounts. For PU DevOps only creates individual user accounts
+      and grants role based access to users within Login.gov's AWS VPC or ssh keys.
   standard_key: NIST-800-53
 - control_key: AC-2 (3)
   covered_by:
@@ -170,14 +172,10 @@ satisfies:
   narrative:
   - key: a
     text: |
-      Login.gov depends in AWS IAM RBAC for the creation of administrator accounts.
-      Roles are created by the administrators on a need by need basis.
+      Login.gov allows the creation of general user accounts. Privileged accounts are managed through AWS IAM RBAC and ssh keys. Roles are created by the administrators on a need by need basis.
   - key: c
     text: |
-      18F removes users from privileged access rights when privileged
-      role assignments are no longer appropriate or have been requested by the system
-      owner and program manager. Removal of access is sent to the DevOps team through
-      a change request within the GitHub ticketing system.
+      18F removes users from privileged access rights when privileged role assignments are no longer appropriate or have been requested by the system owner and program manager. Removal of access is sent to the DevOps team through a change request within the GitHub ticketing system.
   standard_key: NIST-800-53
 - control_key: AC-2 (9)
   covered_by:
@@ -185,7 +183,7 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-      Login.gov system does not permit shared accounts. Every user requires their own account.
+      Login.gov does not permit shared accounts. Every user requires their own account.
   standard_key: NIST-800-53
 - control_key: AC-2 (10)
   covered_by:
@@ -193,7 +191,7 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-      Login.gov system does not permit shared accounts. Every user requires their own account.
+      Login.gov does not permit shared accounts. Every user requires their own account.
   standard_key: NIST-800-53
 - control_key: AC-3
   covered_by:
@@ -201,9 +199,9 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-      18F information systems enforces approved authorizations for logical access to information and system resources in accordance with the 18F access control policy Section 3 Access Enforcement which states:
-        * 18F must enforce approved authorizations for logical access to its information systems in accordance with all applicable Federal, and 18F policies.
-        * 18F must provide access enforcement through the use of access control lists, access control matrices, cryptography) to control access between users (or processes acting on behalf of users) and objects (e.g., devices, files, records, processes, programs, domains) in the information system.
+      18F information systems enforce approved authorizations for logical access to information and system resources in accordance with the 18F Access Control Policy Section 3 Access Enforcement which states:
+        * 18F must enforce approved authorizations for logical access to its information systems in accordance with all applicable federal and 18F policies.
+        * 18F must provide access enforcement through the use of access control lists, access control matrices, and cryptography to control access between users (or processes acting on behalf of users) and objects (e.g., devices, files, records, processes, programs, domains) in the information system.
         * 18F must employ access enforcement mechanisms at the application level, when necessary, to provide increased information security for the organization.
   standard_key: NIST-800-53
 - control_key: AC-4
@@ -219,14 +217,14 @@ satisfies:
       within its information systems and between interconnected systems in accordance
       with applicable federal laws and 18F policies and procedures.
       * 18F shall use flow control restrictions to include: keeping export controlled
-      information from being transmitted in the clear to the Internet, blocking outside
+      information from being transmitted in the clear to the internet, blocking outside
       traffic that claims to be from within the organization and not passing any web
-      requests to the Internet that are not from the internal web proxy.
+      requests to the internet that are not from the internal web proxy.
       * 18F shall use boundary protection devices (e.g., proxies, gateways, guards,
       encrypted tunnels, firewalls, and routers) that employ rule sets or establish
       configuration settings that restrict information system services, provide a
       packet-filtering capability based on header information, or message-filtering
-      capability based on content (e.g., using key word searches or document characteristics.
+      capability based on content (e.g., using keyword searches or document characteristics.
   standard_key: NIST-800-53
 - control_key: AC-5
   covered_by:
@@ -235,16 +233,13 @@ satisfies:
   narrative:
   - key: a
     text: |
-      18F implements Identity and Access Management (IAM) Policies
+      18F implements Identity and Access Management (IAM)
       roles and individual user accounts for separation of duties at the AWS layer.
-      For Cloud Foundry access, Login.gov uses UAA role based access controls (RBAC) to
-      maintain separation of duties.
   - key: b
     text: |
-      18F documents separation of duties of AWS and Cloud Foundry users.  All AWS IAM
+      18F documents separation of duties of AWS users.  All AWS IAM
       users, groups and roles can be viewed within the AWS console. IAM users reports
-      are generated to show all separation of duties. Cloud Checkr also generates
-      an a report of all IAM users within 18F AWS environment.
+      are generated to show all separation of duties.
   - key: c
     text: |
       Login.gov defines roles at each layer of the system. Authorization to each
@@ -256,14 +251,14 @@ satisfies:
   - verification_key: POLICY_DOC
   implementation_status: none
   narrative:
-  - text: |
+  - text: |-
       IAM policies are attached to the users, enabling centralized control of permissions
       for users under 18F AWS Account to access services, buckets or objects. With IAM
-      policies, 18F only grant users within its own AWS account permission to access
+      policies, 18F only grants users within its own AWS account permission to access
       its Amazon resources.
       18F AWS IAM policies are defined to grant only the required access for 18F staff
       necessary to perform their functions. 18F defines least privilege access to each user,
-      group or role.
+      group, or role.
       Security functions within the AWS infrastructure are explicitly defined within IAM to
       include read-only permissions for any user functions.
       18F incorporate running the IAM Policy Simulator to test policies for least privilege access
@@ -275,7 +270,10 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-      Login.gov explicitly authorizes access to [Assignment: organization-defined security functions (deployed in hardware, software, and firmware) and security-relevant information].
+      Because Login.gov is a PaaS all accessible functions are privileged functions.
+      Nevertheless, 18F team members use different accounts with increasing security
+      requirements for accessing Cloud Foundry as a user, Cloud Foundry as a administrator,
+      and AWS as an administrator.
   standard_key: NIST-800-53
 - control_key: AC-6 (2)
   covered_by:
@@ -284,7 +282,7 @@ satisfies:
   narrative:
   - text: |
       Security functions within the Login.gov platform are limited to roles that can be taken
-      only by using Bosh, Concourse or UAA CLI. Non-security functions are performed using a
+      only by using BOSH, Concourse or UAA CLI. Non-security functions are performed using a
       non-privileged Cloud Foundry account.
   standard_key: NIST-800-53
 - control_key: AC-6 (5)
@@ -294,7 +292,7 @@ satisfies:
   narrative:
   - text: |
       18F restricts privileged accounts such as administrator and root access
-      accounts to designated members within the18F Devops and SecOps teams. Within
+      accounts to designated members within the 18F Devops and SecOps teams. Within
       the virtual infrastructure the admin account is not used for privileged access.
       It’s only used for billing and metrics.
   standard_key: NIST-800-53
@@ -305,10 +303,10 @@ satisfies:
   narrative:
   - text: |
       * Privileged access to the information system is using an audit trail through
-      the bosh tasks command. This command shows all actions that an operator has
+      the BOSH tasks command. This command shows all actions that an operator has
       taken with the platform. Additionally, all logging activity is forwarded to
-      CloudWatch Logs
-      * ELK (Logstash, Elasticsearch, Kibana is used to collect, manage and display
+      CloudWatch Logs.
+      * ELK (Logstash, Elasticsearch, Kibana) is used to collect, manage and display
       all user activity within the Login.gov platform.
   standard_key: NIST-800-53
 - control_key: AC-6 (10)
@@ -317,16 +315,14 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-      The Login.gov platform has built-in Role based access controls (RBAC). This
+      The Login.gov platform has built-in role based access controls (RBAC). This
       ensures that users can only view and affect the spaces for which they have been
       granted access to. It also prevents non-privileged users from executing privileged
       functions to include disabling, circumventing, or altering implemented security
       safeguards/countermeasures.
       Only designated Org Managers from the DevOps team can execute privileged functions
       to the Login.gov platform. All other accounts are non-privileged accounts.
-      Client agencies using Login.gov are only permitted to change settings within their
-      associated Org account, spaces and roles. These accounts do not have access to the
-      underlying Login.gov Platform.
+      Service providers integrating with Login.gov are only permitted to change settings within their enclave. These accounts do not have access to the underlying Login.gov platform.
   standard_key: NIST-800-53
 - control_key: AC-7
   covered_by:
@@ -334,9 +330,9 @@ satisfies:
   implementation_status: none
   narrative:
   - key: a
-    text: NA - User management is delegated to each organizations enterprise user management system.
+    text: NA - User management is delegated to each organization's enterprise user management system.
   - key: b
-    text: NA - User management is delegated to each organizations enterprise user management system.
+    text: NA - User management is delegated to each organization's enterprise user management system.
   standard_key: NIST-800-53
 - control_key: AC-8
   covered_by:
@@ -350,7 +346,7 @@ satisfies:
   - verification_key: POLICY_DOC
   implementation_status: none
   narrative:
-  - text: NA - User management is delegated to each organizations enterprise user management system.
+  - text: NA - User management is delegated to each organization's enterprise user management system.
   standard_key: NIST-800-53
 - control_key: AC-11
   covered_by:
@@ -358,9 +354,9 @@ satisfies:
   implementation_status: none
   narrative:
   - key: a
-    text: NA - User management is delegated to each organizations enterprise user management system.
+    text: NA - User management is delegated to each organization's enterprise user management system.
   - key: b
-    text: NA - User management is delegated to each organizations enterprise user management system.
+    text: NA - User management is delegated to each organization's enterprise user management system.
   standard_key: NIST-800-53
 - control_key: AC-11 (1)
   covered_by:
@@ -387,8 +383,7 @@ satisfies:
   - key: b
     text: |
       It is not possible for members of the 18F Devops and SecOps teams to access the 18F virtual
-      private cloud infrastructure without multifactor authentication and identification. All client
-      users of Login.gov must login using authenticated credentials in order to access the system.
+      private cloud infrastructure without multifactor authentication and identification. All General users of Login.gov must login using authenticated credentials in order to access the system.
   standard_key: NIST-800-53
 - control_key: AC-17
   covered_by:
@@ -397,12 +392,10 @@ satisfies:
   narrative:
   - key: a
     text: |
-      Login.gov has a distributed administrator, operator and management team. All remote actions are
-      allowed.
+      Login.gov has a distributed administrator, operator, and management team. All remote actions are allowed.
   - key: b
     text: |
-      AWS Security Groups are implemented to ensure that only users that have been granted access can
-      perform administrative actions.
+      AWS Security Groups are implemented to ensure that only users that have been granted access can perform administrative actions.
   standard_key: NIST-800-53
 - control_key: AC-17 (4)
   covered_by:
@@ -410,61 +403,63 @@ satisfies:
   implementation_status: none
   narrative:
   - key: a
-    text: 18F authorizes the execution of privileged commands and access
+    text: |
+      18F authorizes the execution of privileged commands and access
       to security-relevant information via remote access only for monitoring, managing,
-      and troubleshooting  the 18F virtual infrastructer and Login.gov platform. This
-      authorization is only given to specific members of the Devops and SecOps teams.
+      and troubleshooting the 18F virtual infrastructure and Login.gov platform. This
+      authorization is only given to specific members of the DevOps and SecOps teams.
       All other members are excluded from this type of access.
-  standard_key: NIST-800-53
-- control_key: AC-18 (1)
-  covered_by: []
-  implementation_status: none
-  narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
   standard_key: NIST-800-53
 - control_key: AC-18
   covered_by: []
   implementation_status: none
   narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
+  - text: Not Applicable for Login.gov
+  standard_key: NIST-800-53
+- control_key: AC-18 (1)
+  covered_by: []
+  implementation_status: none
+  narrative:
+  - text: Not Applicable for Login.gov
   standard_key: NIST-800-53
 - control_key: AC-19 (5)
   covered_by: []
   implementation_status: none
   narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
+  - text: Not Applicable for Login.gov
   standard_key: NIST-800-53
 - control_key: AC-19
   covered_by: []
   implementation_status: none
   narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
+  - text: Not Applicable for Login.gov
   standard_key: NIST-800-53
 - control_key: AC-20
   covered_by: []
   implementation_status: none
   narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
-  standard_key: NIST-800-53
-- control_key: AC-20 (2)
-  covered_by: []
-  implementation_status: none
-  narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
+  - text: Not Applicable for Login.gov
   standard_key: NIST-800-53
 - control_key: AC-20 (1)
   covered_by: []
   implementation_status: none
   narrative:
-  - text: Not Applicable for the Cloud Foundry Platform
+  - text: Not Applicable for Login.gov
+  standard_key: NIST-800-53
+- control_key: AC-20 (2)
+  covered_by: []
+  implementation_status: none
+  narrative:
+  - text: Not Applicable for Login.gov
   standard_key: NIST-800-53
 - control_key: AC-21
   covered_by: []
   implementation_status: none
   narrative:
-  - text: Not applicable to the the Login.gov platform. The Login.gov platform is
+  - text: |
+      Not applicable to the the Login.gov platform. The Login.gov platform is
       for use of development of and deployment of web applications. This control would
-      be handeld at the application level and is the responsibility of the application
+      be handled at the application level and is the responsibility of the application
       system owner.
   standard_key: NIST-800-53
 - control_key: AC-22
@@ -474,17 +469,17 @@ satisfies:
   - text: |
       Not applicable to the the Login.gov platform. The Login.gov platform is
       for use of development of and deployment of web applications. This control would
-      be handeld at the application level and is the responsibility of the application
+      be handled at the application level and is the responsibility of the application
       system owner.
   standard_key: NIST-800-53
-schema_version: "3.0.0"
+schema_version: 3.0.0
 verifications:
 - key: POLICY_DOC
   name: Policy Document
   path: https://github.com/18F/compliance-docs/blob/master/AC-Policy.md
   type: URL
-- description: "GIVEN the github link - <policy> THEN the policy has been updated
-    within the last 180 days \n"
+- description: |
+    GIVEN the github link - <policy> THEN the policy has been updated within the last 180 days
   key: Policy_Update_Test
   last_run: 2016-04-07 08:25:17.375257000 -05:00
   name: 18F Policies Update

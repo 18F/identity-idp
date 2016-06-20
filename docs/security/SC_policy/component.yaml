@@ -1,7 +1,7 @@
 ---
 schema_version: 3.0.0
 documentation_complete: false
-name: System and Communications Protection Policy for Login.gov
+name: System and Communications Protection Policy for 18F
 satisfies:
 - control_key: SC-1
   covered_by: []
@@ -49,7 +49,7 @@ satisfies:
     text: |
       18F implements subnetworks for publicly accessible system components that
       are logically separated from internal organizational networks. System management
-      functionality to  Login.gov infrastructure is hosted on AWS FedRAMP Certificated
+      functionality to Login.gov infrastructure is hosted on AWS FedRAMP Certificated
       Cloud Service Provider (CSP) and is accessible only to 18F Administrative teams
       through AWS IAM specified roles. This is a Service Provider and Customer Responsibility.
   standard_key: NIST-800-53
@@ -58,8 +58,8 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov system architecture prevents unauthorized and unintended information transfer
-      via shared system resources.  Login.gov uses Cloudfoundry components to protect
+      Login.gov system architecture prevents unauthorized and unintended information transfer
+      via shared system resources. Login.gov uses Cloudfoundry components to protect
       users and shared resources from security threats by minimizing network surface area, applying
       security controls, isolating customer applications and data in containers, and
       encrypting connections.
@@ -73,16 +73,16 @@ satisfies:
       protect our systems against.
       Policy https://github.com/18f/compliance-docs/blob/master/SC-Policy.md
 
-       Login.gov limits the effects of Volume Based and Protocol DoS type attacks by
+      Login.gov limits the effects of Volume Based and Protocol DoS type attacks by
       utilizing the following groups of technical measure:
 
       18F administrative staff maintains hardened Amazon Managed Images (AMI) and
       Cloud Foundry custom buildpacks with the lates patches and updates.
       A buildpacks provides framework and runtime support for an applications that
-      are deployed on  Login.gov.  The AMI and custome buildpacks are maintained
+      are deployed on Login.gov.  The AMI and custome buildpacks are maintained
       and secured within 18F's software repository, Github.
 
-       Login.gov also uses AWS's IaaS services with well formed Vitual Private Cloud (VPC)
+      Login.gov also uses AWS's IaaS services with well formed Vitual Private Cloud (VPC)
       firewall rules to reduce the attack surface, while service resiliencey is maintained
       by utilizing AWS Avaliability zones, Elastic Load balancing and Autoscaling services.
       Suricata, a NIDS/IPS is used to detected as well as prevent attacks and anomolies
@@ -109,7 +109,7 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov protects the availability of resources by allocating
+      Login.gov protects the availability of resources by allocating
       volatile and non-volatile storage, bandwidth, availability by using automated
       AWS features such as Elasctic load balancing and auto scaling technology at the
       infrastructure layer and CF's application lifecycle manage components,
@@ -145,7 +145,7 @@ satisfies:
       Virtual Private Cloud. VPC is a virtual network dedicated to your AWS account.
       It is logically isolated from other virtual networks in the AWS cloud.
       You can launch your AWS resources, such as Amazon EC2 instances, into your VPC.
-       Login.gov VPC has selected its IP address range, create subnets, and configure route
+      Login.gov VPC has selected its IP address range, create subnets, and configure route
       tables, network gateways, and security settings outside of the internal organizational
       boundaries.
   - key: c
@@ -167,7 +167,7 @@ satisfies:
       through the use of AWS network security groups which restricts types of network connections.
       AWS API authenticated service keys and managed ssh keys restrict PU access to the systems.
 
-       Login.gov CF components run on AWS AMI that exist within AWS VPCs.
+      Login.gov CF components run on AWS AMI that exist within AWS VPCs.
       In this configuration, the only access points visible on a public network are a
       load balancer that maps to one or more Cloud Foundry routers.
   standard_key: NIST-800-53
@@ -203,7 +203,7 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-       Login.gov's  managed interfaces at the AWS security control group defintions
+      Login.gov's  managed interfaces at the AWS security control group defintions
       denies network traffic by default and allows network communications traffic by exception.
   standard_key: NIST-800-53
 - control_key: SC-7 (7)
@@ -220,7 +220,7 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-       Login.gov doesn't require authenticated proxy servers at managed interfaces.
+      Login.gov doesn't require authenticated proxy servers at managed interfaces.
       18F adminitrative staff gain access to this system have access through
       AWS IAM multi-factor authentication process to perform adminitrative functions
       and duties at the IaaS layer to administer to any managed interfaces.
@@ -238,7 +238,7 @@ satisfies:
   narrative:
   - key: b
     text: |
-      Host-based boundary protection for application services hosted on  Login.gov
+      Host-based boundary protection for application services hosted on Login.gov
       are provided by CF components.
 
       CF Application Security Groups (ASGs) control the traffic flowing out of applications.
@@ -286,7 +286,7 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-       Login.gov provides integrity and confidentiality protection over data in transit
+      Login.gov provides integrity and confidentiality protection over data in transit
       by applying HTTPS to all public interfaces connecting to the service.
       Seee how HTTPS (TLS) https://tools.ietf.org/html/rfc5246 for details.
   parameters:
@@ -299,7 +299,7 @@ satisfies:
   implementation_status: none
   narrative:
   - text: |
-       Login.gov implements cryptographic mechanisms to prevent
+      Login.gov implements cryptographic mechanisms to prevent
       unauthorized disclosure of information and detect changes to
       information during transmission only as shown in SC-8.
       a hardened or alarmed carrier Protective Distribution System (PDS) is provided
@@ -314,7 +314,7 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov's RAS access terminates immediately  at the end of the session.
+      Login.gov's RAS access terminates immediately  at the end of the session.
   parameters:
   - key: SC-10
     text: |
@@ -334,13 +334,13 @@ satisfies:
   parameters:
   - key: SC-12
     text: |
-      see https://docs. Login.gov/ops/key-rotation/
+      see https://docs.Login.gov/ops/key-rotation/
   standard_key: NIST-800-53
 - control_key: SC-12 (2)
   implementation_status: partial
   narrative:
   - text: |
-       Login.gov doesn't produce , controls, and distributes symmetric cryptographic
+      Login.gov doesn't produce , controls, and distributes symmetric cryptographic
       keys.
   parameters:
   - key: SC-12-2
@@ -351,7 +351,7 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov doesn't produce , controls, and distributes asymmetric cryptographic
+      Login.gov doesn't produce , controls, and distributes asymmetric cryptographic
       keys.
   parameters:
   - key: SC-12-3
@@ -362,7 +362,7 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov inherits the control from the GovCloud package for the ELB SSL termination.
+      Login.gov inherits the control from the GovCloud package for the ELB SSL termination.
       See https://d0.awsstatic.com/whitepapers/compliance/AWS_Risk_and_Compliance_Whitepaper.pdf for further details.
   parameters:
   - key: SC-13
@@ -375,10 +375,10 @@ satisfies:
   narrative:
   - key: a
     text: |
-       Login.gov doesn't allow remote activation of collaborative computing devices thus not applicable.
+      Login.gov doesn't allow remote activation of collaborative computing devices thus not applicable.
   - key: b
     text: |
-      Explicit indication of use to users physically present at the devices is not applicable to  Login.gov.
+      Explicit indication of use to users physically present at the devices is not applicable to Login.gov.
   parameters:
   - key: SC-15-a
     text: N/A
@@ -388,7 +388,7 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov obtains public key certificates from COMODO, an approved service provider.
+      Login.gov obtains public key certificates from COMODO, an approved service provider.
   parameters:
   - key: SC-17
     text: N/A
@@ -399,13 +399,13 @@ satisfies:
   narrative:
   - key: a
     text: |
-      This is not an applicable control for  Login.gov. It doesn't depend on any mobile code such as flash, java, activex, etc.
+      This is not an applicable control for Login.gov. It doesn't depend on any mobile code such as flash, java, activex, etc.
   - key: b
     text: |
-      This is not an applicable control for  Login.gov. It doesn't depend on any mobile code such as flash, java, activex, etc.
+      This is not an applicable control for Login.gov. It doesn't depend on any mobile code such as flash, java, activex, etc.
   - key: c
     text: |
-      This is not an applicable control for  Login.gov. It doesn't depend on any mobile code such as flash, java, activex, etc.
+      This is not an applicable control for Login.gov. It doesn't depend on any mobile code such as flash, java, activex, etc.
   standard_key: NIST-800-53
 - control_key: SC-19
   covered_by: []
@@ -413,10 +413,10 @@ satisfies:
   narrative:
   - key: a
     text: |
-      This is not an applicable control for  Login.gov. It doesn't depend on any VoIP techologies.
+      This is not an applicable control for Login.gov. It doesn't depend on any VoIP techologies.
   - key: b
     text: |
-      This is not an applicable control for  Login.gov. It doesn't depend on any VoIP techologies.
+      This is not an applicable control for Login.gov. It doesn't depend on any VoIP techologies.
   standard_key: NIST-800-53
 - control_key: SC-20
   covered_by: []
@@ -424,24 +424,24 @@ satisfies:
   narrative:
   - key: a
     text: |
-       Login.gov  Login.gov inherits from AWS CSP Route 53 the ability to use DNS with HTTP Strict Transport Security (HSTS) to achieve data origin authentication and integrity verification artifacts along with the authoritative name resolution data the system returns in response to external name/address resolution queries.
+      Login.gov Login.gov inherits from AWS CSP Route 53 the ability to use DNS with HTTP Strict Transport Security (HSTS) to achieve data origin authentication and integrity verification artifacts along with the authoritative name resolution data the system returns in response to external name/address resolution queries.
   - key: b
     text: |
-      By allowing endpints to use Publie Key Infrastructure (PKI) certificates containing unique domain identifiers that map with top-level registered domain,  Login.gov provides the means to indicate the security status of child zones and (if the child supports secure resolution services to enable verification of a chain of trust among parent and child domains, when operating as part of a distributed, hierarchical namespace.
+      By allowing endpints to use Publie Key Infrastructure (PKI) certificates containing unique domain identifiers that map with top-level registered domain, Login.gov provides the means to indicate the security status of child zones and (if the child supports secure resolution services to enable verification of a chain of trust among parent and child domains, when operating as part of a distributed, hierarchical namespace.
   standard_key: NIST-800-53
 - control_key: SC-21
   covered_by: []
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov inherits from AWS CSP Route 53 the ability request and performs data origin authentication and data integrity verification on the name/address resolution responses the system receives from authoritative sources by using DNS, HSTS, HTTP Public Key Pinning , and PKI path validation.
+      Login.gov inherits from AWS CSP Route 53 the ability request and performs data origin authentication and data integrity verification on the name/address resolution responses the system receives from authoritative sources by using DNS, HSTS, HTTP Public Key Pinning , and PKI path validation.
   standard_key: NIST-800-53
 - control_key: SC-22
   covered_by: []
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov inherits from AWS CSP Route 53 the ability to provide name/address resolution service for an organization with fault-tolerance and does not require implementation of internal vs. external role separations since all connections are considered external non-administrative users.
+      Login.gov inherits from AWS CSP Route 53 the ability to provide name/address resolution service for an organization with fault-tolerance and does not require implementation of internal vs. external role separations since all connections are considered external non-administrative users.
 
       See https://aws.amazon.com/route53/ for further details.
   standard_key: NIST-800-53
@@ -450,14 +450,14 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov inherits from AWS CSP Route 53 the ability to protect the authenticity of communications sessions via DNS, HSTS, HTTP Public Key Pinning , and PKI path validation.  _check if al in action here_
+      Login.gov inherits from AWS CSP Route 53 the ability to protect the authenticity of communications sessions via DNS, HSTS, HTTP Public Key Pinning , and PKI path validation.  _check if al in action here_
   standard_key: NIST-800-53
 - control_key: SC-28
   covered_by: []
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov protects the confidentiality and integrity by encrypting internal system databases and AWS S3 object stores.
+      Login.gov protects the confidentiality and integrity by encrypting internal system databases and AWS S3 object stores.
   parameters:
   - key: SC-28-1
     text: |
@@ -471,8 +471,8 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov implements cryptographic mechanisms to prevent unauthorized
-      disclosure and modification of  Login.gov data stored in databases and S3 stores.
+      Login.gov implements cryptographic mechanisms to prevent unauthorized
+      disclosure and modification of Login.gov data stored in databases and S3 stores.
   parameters:
   - key: SC-28-1-1
     text: |
@@ -486,7 +486,7 @@ satisfies:
   implementation_status: complete
   narrative:
   - text: |
-       Login.gov maintains a separate execution domain for each executing process by
+      Login.gov maintains a separate execution domain for each executing process by
       running within its own self contained environment, a Garden container that isolates
       processes, memory, and the file system.
   standard_key: NIST-800-53
