@@ -135,8 +135,7 @@ describe 'user edits their account', email: true do
       sign_in_as_a_valid_user(user)
 
       expect(SmsSenderExistingMobileJob).to receive(:perform_later).with(user_with_mobile.mobile)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later).with(user)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later).with(user_with_mobile)
+      expect(SmsSenderOtpJob).to_not receive(:perform_later)
 
       patch_via_redirect(
         '/users',
@@ -172,8 +171,7 @@ describe 'user edits their account', email: true do
       sign_in_as_a_valid_user(user)
 
       expect(SmsSenderExistingMobileJob).to receive(:perform_later).with(user_with_mobile.mobile)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later).with(user)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later).with(user_with_mobile)
+      expect(SmsSenderOtpJob).to_not receive(:perform_later)
 
       patch_via_redirect(
         '/users',
@@ -208,8 +206,7 @@ describe 'user edits their account', email: true do
 
     it 'calls SmsSenderExistingMobileJob but not SmsSenderOtpJob' do
       expect(SmsSenderExistingMobileJob).to receive(:perform_later).with(user_with_mobile.mobile)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later).with(user)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later).with(user_with_mobile)
+      expect(SmsSenderOtpJob).to_not receive(:perform_later)
 
       patch_via_redirect(
         '/users',
