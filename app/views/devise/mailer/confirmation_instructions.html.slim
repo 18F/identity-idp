@@ -5,8 +5,8 @@ p = link_to confirmation_url(@resource, confirmation_token: @token), confirmatio
 p = "Please note that this confirmation link expires in #{@confirmation_period} and may require your immediate attention if you wish to access your online account in the future."
 
 p
-  'If you would like additional assistance, please contact the Upaya Customer Contact Center via the web form at
-  = link_to 'https://upaya.18f.gov/contact', 'https://upaya.18f.gov/contact'
+  'If you would like additional assistance, please contact the #{APP_NAME} Customer Contact Center via the web form at
+  = link_to nil, Figaro.env.support_url
 
 p
   strong PLEASE DO NOT REPLY TO THIS MESSAGE

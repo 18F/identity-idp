@@ -10,13 +10,11 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content 'Please note that this confirmation link expires in 24 hours'
   end
 
-  it 'includes a link to Upaya' do
+  it 'includes the support link' do
     assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
     render
 
-    expect(rendered).to have_link(
-      'https://upaya.18f.gov/contact', href: 'https://upaya.18f.gov/contact'
-    )
+    expect(rendered).to have_link(Figaro.env.support_url, href: Figaro.env.support_url)
   end
 
   it 'includes a link to confirmation' do
@@ -44,7 +42,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     render
 
     expect(rendered).
-      to have_content 'To finish updating your Upaya Account, you must confirm your email address.'
+      to have_content "To finish updating your #{APP_NAME} Account, you must confirm your email"
   end
 
   it 'mentions creating an account when user is not yet confirmed' do
@@ -54,7 +52,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     render
 
     expect(rendered).
-      to have_content 'To finish creating your Upaya Account, you must confirm your email address.'
+      to have_content "To finish creating your #{APP_NAME} Account, you must confirm your email"
   end
 
   it 'mentions resetting the account when account has been reset by tech support' do
@@ -64,12 +62,12 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     render
 
     expect(rendered).
-      to have_content 'Your Upaya account has been reset by a tech support representative'
+      to have_content "Your #{APP_NAME} account has been reset by a tech support representative"
 
     expect(rendered).
-      to_not have_content 'To finish creating Your Upaya account'
+      to_not have_content "To finish creating Your #{APP_NAME} account"
 
     expect(rendered).
-      to_not have_content 'To finish updating Your Upaya account'
+      to_not have_content "To finish updating Your #{APP_NAME} account"
   end
 end

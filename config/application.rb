@@ -6,6 +6,12 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+# User visible application name. Stored here in a global since it is
+# accessed from a wide variety of different places (views, controllers,
+# jobs, etc). Please file complaints about use of global variables
+# with the appropriate government office.
+APP_NAME = 'Login.gov'.freeze
+
 module Upaya
   class Application < Rails::Application
     config.generators do |g|
