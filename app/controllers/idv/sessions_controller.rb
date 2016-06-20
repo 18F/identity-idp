@@ -1,4 +1,8 @@
 class Idv::SessionsController < ApplicationController
+  include IdvSession
+
+  before_action :confirm_two_factor_authenticated
+
   def index
   end
 
@@ -7,9 +11,10 @@ class Idv::SessionsController < ApplicationController
     app_vars = params.slice(:first_name, :last_name, :dob, :ssn, :address1, :address2, :city, :state, :zipcode)
                  .delete_if { |key, value| value.blank? }
     applicant = Proofer::Applicant.new(app_vars)
-    session[:idv_vendor] = agent.vendor
-    session[:resolution] = agent.start(applicant)
-    session[:question_number] = 0
+    set_idv_applicant(applicant)
+    set_idv_vendor(agent.vendor)
+    set_idv_resolution(agent.start(applicant))
+    set_idv_question_number(0)
     redirect_to idv_questions_path
   end
 

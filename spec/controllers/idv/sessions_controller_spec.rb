@@ -6,7 +6,13 @@ describe Idv::SessionsController do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
 
   context 'user has created account' do
+    it 'requires login to proof' do
+      get :index
+      expect(response.status).to eq 302
+    end
+
     it 'starts new proofing session' do
+      sign_in(user)
       get :index
       expect(response.status).to eq 200
       expect(response.body).to include t('idv.form.first_name')

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: fa04d57affe6052cd696fc29874eb0bbf6fa38ff
+  revision: eda45a26f711164dd67f30d0eb946c7f665715d9
   branch: master
   specs:
     proofer (1.0.0)
@@ -70,6 +70,9 @@ GEM
     addressable (2.4.0)
     airbrussh (1.0.2)
       sshkit (>= 1.6.1, != 1.7.0)
+    akami (1.3.1)
+      gyoku (>= 0.4.0)
+      nokogiri
     arel (6.0.3)
     ast (2.2.0)
     bcrypt (3.1.11)
@@ -205,6 +208,8 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    gyoku (1.3.1)
+      builder (>= 2.1.2)
     hashdiff (0.3.0)
     hashie (3.4.4)
     heapy (0.1.2)
@@ -213,6 +218,9 @@ GEM
     httparty (0.13.7)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
+    httpi (2.4.2)
+      rack
+      socksify
     i18n (0.7.0)
     i18n-tasks (0.9.5)
       activesupport (>= 4.0.2)
@@ -270,6 +278,7 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    nori (2.6.0)
     notiffany (0.1.0)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -400,6 +409,14 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    savon (2.11.1)
+      akami (~> 1.2)
+      builder (>= 2.1.2)
+      gyoku (~> 1.2)
+      httpi (~> 2.3)
+      nokogiri (>= 1.4.0)
+      nori (~> 2.4)
+      wasabi (~> 3.4)
     secure_headers (3.3.2)
       useragent
     shellany (0.0.1)
@@ -439,6 +456,7 @@ GEM
       slim (~> 3.0)
       sysexits (~> 1.1)
     slop (3.6.0)
+    socksify (1.7.0)
     spring (1.7.1)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
@@ -494,6 +512,9 @@ GEM
       mail (~> 2.6.1)
     warden (1.2.6)
       rack (>= 1.0)
+    wasabi (3.5.0)
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.2)
     webmock (2.0.3)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
@@ -503,6 +524,7 @@ GEM
     websocket-extensions (0.1.2)
     whenever (0.9.4)
       chronic (>= 0.6.3)
+    xml-simple (1.1.5)
     xmlenc (0.6.4)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -541,6 +563,9 @@ DEPENDENCIES
   figaro
   guard-rspec
   i18n-tasks
+  gyoku
+  hashie
+  httparty
   lograge
   mailcatcher
   newrelic_rpm
@@ -564,6 +589,7 @@ DEPENDENCIES
   ruby-saml
   saml_idp (~> 0.3.1)
   sass-rails (~> 5.0)
+  savon
   secure_headers (~> 3.0)
   shoulda-matchers (~> 2.8)
   sidekiq
@@ -585,6 +611,7 @@ DEPENDENCIES
   valid_email
   webmock
   whenever
+  xml-simple
   xmlenc (~> 0.6.4)
 
 BUNDLED WITH
