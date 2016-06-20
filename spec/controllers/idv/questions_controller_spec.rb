@@ -4,8 +4,9 @@ describe Idv::QuestionsController do
   render_views
 
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+  let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
-  let(:resolution) { agent.start }
+  let(:resolution) { agent.start applicant }
 
   context 'user has started proofing session' do
     it 'retrieves next question' do
@@ -27,7 +28,10 @@ describe Idv::QuestionsController do
   end
 
   def init_idv_session
-    @request.session[:resolution] = resolution
-    @request.session[:question_number] = 0
+    sign_in(user)
+    @request.session[:idv_vendor] = :mock
+    @request.session[:idv_applicant] = applicant
+    @request.session[:idv_resolution] = resolution
+    @request.session[:idv_question_number] = 0
   end
 end

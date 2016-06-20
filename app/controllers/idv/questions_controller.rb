@@ -10,17 +10,17 @@ class Idv::QuestionsController < ApplicationController
   end
 
   def create
-    resolution.questions[question_number].answer = params.require('answer')
-    session[:question_number] += 1
+    idv_resolution.questions[idv_question_number].answer = params.require('answer')
+    set_idv_question_number(idv_question_number + 1)
     redirect_to idv_questions_path
   end
 
   private
 
   def render_next_question
-    if question_number < resolution.questions.count
-      @question_sequence = question_number + 1 
-      @question = resolution.questions[question_number]
+    if idv_question_number < idv_resolution.questions.count
+      @question_sequence = idv_question_number + 1 
+      @question = idv_resolution.questions[idv_question_number]
     else
       redirect_to idv_confirmations_path
     end 

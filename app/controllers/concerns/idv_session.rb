@@ -1,27 +1,59 @@
 module IdvSession
   extend ActiveSupport::Concern
 
-  protected
-
-  def question_number
-    session[:question_number] ||= 0
+  if ENV['PROOFING_VENDORS']
+    ENV.fetch('PROOFING_VENDORS', '').split(/\W+/).each do |vendor|
+      vendor_path = "#{Rails.root}/vendor/#{vendor}/lib"
+      puts "vendor_path==#{vendor_path}"
+      $LOAD_PATH.unshift vendor_path
+    end 
   end 
 
-  def resolution
-    session[:resolution]
+  protected
+
+  def idv_question_number
+    session[:idv_question_number] ||= 0
+  end 
+
+  def idv_resolution
+    session[:idv_resolution]
   end 
 
   def proofing_session_started?
-    session.key?(:resolution) && session[:resolution].present?
+    session.key?(:idv_resolution) &&
+      session[:idv_resolution].present? &&
+      session.key?(:idv_applicant) &&
+      session[:idv_applicant].present?
+  end
+
+  def set_idv_vendor(vendor)
+    session[:idv_vendor] = vendor
+  end
+
+  def set_idv_applicant(applicant)
+    session[:idv_applicant] = applicant
+  end
+
+  def set_idv_resolution(resolution)
+    session[:idv_resolution] = resolution
+  end
+
+  def set_idv_question_number(n)
+    session[:idv_question_number] = n
   end
 
   def idv_vendor
     session[:idv_vendor]
   end
 
+  def idv_applicant
+    session[:idv_applicant]
+  end
+
   def clear_idv_session
     session.delete(:idv_vendor)
-    session.delete(:resolution)
-    session.delete(:question_number)
+    session.delete(:idv_applicant)
+    session.delete(:idv_resolution)
+    session.delete(:idv_question_number)
   end
 end
