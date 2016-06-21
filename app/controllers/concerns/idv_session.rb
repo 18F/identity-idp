@@ -19,10 +19,11 @@ module IdvSession
   end 
 
   def proofing_session_started?
-    session.key?(:idv_resolution) &&
-      session[:idv_resolution].present? &&
-      session.key?(:idv_applicant) &&
-      session[:idv_applicant].present?
+    idv_resolution.present? &&
+      idv_applicant.present? &&
+      idv_resolution.success &&
+      idv_resolution.questions &&
+      idv_resolution.questions.any?
   end
 
   def set_idv_vendor(vendor)

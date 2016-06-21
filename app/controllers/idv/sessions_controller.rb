@@ -13,9 +13,15 @@ class Idv::SessionsController < ApplicationController
     applicant = Proofer::Applicant.new(app_vars)
     set_idv_applicant(applicant)
     set_idv_vendor(agent.vendor)
-    set_idv_resolution(agent.start(applicant))
-    set_idv_question_number(0)
-    redirect_to idv_questions_path
+    resolution = agent.start(applicant)
+    if resolution.success
+      set_idv_resolution(resolution)
+      set_idv_question_number(0)
+      redirect_to idv_questions_path
+    else
+      flash[:error] = I18n.t('idv.titles.fail')
+      redirect_to idv_sessions_path
+    end
   end
 
   private
