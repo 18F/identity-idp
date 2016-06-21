@@ -35,6 +35,6 @@ feature 'IdV session' do
       click_button 'Submit'
     end
 
-    expect(page).to have_content('Success')
+    expect(page).to have_content(t('idv.titles.complete'))
   end
 end
