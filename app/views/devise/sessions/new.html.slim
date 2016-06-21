@@ -1,16 +1,5 @@
 - title t('upaya.titles.visitors.index', app_name: APP_NAME)
 
-.clearfix.mxn2
-  .sm-col-6.px2.mx-auto
-    = render 'devise/shared/auth_nav'
-    .panel
-      .panel-heading
-        h2.m0 = t('upaya.headings.log_in')
-      = render 'devise/sessions/form'
-      h2.m0.py3.text-over-line
-        span or use your
-      = button_to 'Existing Credential',
-                  user_saml_omniauth_authorize_path,
-                  title: 'Existing Credential',
-                  class: 'btn btn-primary col-12 bg-navy mb1',
-                  method: :get
+
+= render 'devise/shared/auth_nav'
+= render 'devise/sessions/form'

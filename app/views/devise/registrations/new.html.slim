@@ -1,17 +1,13 @@
 - title t('upaya.titles.registrations.new')
 
-.clearfix.mxn2
-  .sm-col-6.px2.mx-auto
-    = render 'devise/shared/auth_nav'
-    .panel
-      .panel-heading
-        h2.m0 = t('upaya.headings.registrations.new')
-      = simple_form_for(@register_user_email_form,
-          html: { autocomplete: 'off', role: 'form' },
-          url: user_registration_path) do |f|
-        = f.error_notification
-        = f.input :email,
-                  required: true,
-                  autofocus: true,
-                  input_html: { 'aria-describedby' => 'email_description' }
-        = f.button :submit, 'Sign up'
+
+= render 'devise/shared/auth_nav'
+= simple_form_for(@register_user_email_form,
+    html: { autocomplete: 'off', role: 'form' },
+    url: user_registration_path) do |f|
+  = f.error_notification
+  = f.input :email,
+            required: true,
+            autofocus: true,
+            input_html: { 'aria-describedby' => 'email_description' }
+  = f.button :submit, 'Sign up'

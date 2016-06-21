@@ -1,5 +1,6 @@
 $aqua: #7fdbff !default;
 $blue: #0071bc !default;
+$blue-light: #ebf3fa !default;
 $navy: #112e51 !default;
 $teal: #39cccc !default;
 $green: #2ecc40 !default;
@@ -7,17 +8,18 @@ $olive: #3d9970 !default;
 $lime: #01ff70 !default;
 $yellow: #ffdc00 !default;
 $orange: #ff851b !default;
-$red: #ff4136 !default;
+$red: #e21c3d !default;
 $fuchsia: #f012be !default;
 $purple: #b10dc9 !default;
 $maroon: #85144b !default;
 $white: #fff !default;
 $silver: #ddd !default;
-$gray: #aaa !default;
+$gray: #5b616a !default;
 $gray-light: #ddd !default;
 $black: #111 !default;
 
-$body-background-color: #f5f5f5 !default;
+$body-color: $gray !default;
+$body-background-color: $blue-light !default;
 
 $font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Roboto", "Arial", sans-serif !default;
 $line-height: 1.5 !default;
@@ -64,7 +66,7 @@ $lighten-4: rgba(255, 255, 255, .5) !default;
 
 $border-width: 1px !default;
 $border-radius: 3px !default;
-$border-color: #ddd !default;
+$border-color: $blue-light !default;
 
 $table-header-font-weight: $bold-font-weight !default;
 $table-cell-padding-x: $space-2 !default;
@@ -86,4 +88,4 @@ $breakpoint-md-lg: '(min-width: 52em) and (max-width: 64em)' !default;
 
 $breakpoint-max-sm: '(max-width: 40em)' !default;
 
-$container-width: 960px !default;
+$container-width: 1000px !default;

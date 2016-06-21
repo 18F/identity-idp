@@ -1,10 +1,8 @@
-.clearfix.mxn1.mb1
+.clearfix.mb3
   - login_page = controller_name == 'sessions'
-  .sm-col.sm-col-6.px1.mb1
-    = link_to t('upaya.links.sign_up'), new_user_registration_path, \
-      class: 'btn btn-primary border-box col-12 center ' \
-             "#{login_page ? 'bg-gray' : 'bg-navy'}"
-  .sm-col.sm-col-6.px1.mb1
+  .col.col-6
     = link_to t('upaya.links.sign_in'), new_user_session_path, \
-      class: 'btn btn-primary border-box col-12 center ' \
-             "#{login_page ? 'bg-navy' : 'bg-gray'}"
+      class: 'btn-auth' + "#{login_page ? ' btn-auth--active' : ''}"
+  .col.col-6
+    = link_to t('upaya.links.sign_up'), new_user_registration_path, \
+      class: 'btn-auth' + "#{login_page ? '' : ' btn-auth--active'}"
