@@ -105,6 +105,12 @@ en:
       last_name: Last name
       ssn: Social Security Number
       dob: Date of birth
+      ccn: Credit Card Number
+      mortgage: Mortgage Account Number
+      home_equity_line: Home Equity Account Number
+      auto_loan: Auto Loan Account Number
+      bank_routing: Bank Routing Number
+      bank_acct: Bank Account Number
       address1: Street address
       address2: Street address (cont.)
       city: City
