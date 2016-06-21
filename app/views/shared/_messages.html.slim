@@ -2,7 +2,7 @@
   - flash.each do |name, msg|
     - if msg.present? && msg.is_a?(String)
       - good_msg = name.to_s.match(/notice|success/)
-      .px2.mb1
+      .mb3
         div class="p2 alert alert-#{good_msg ? 'success' : 'danger'}"
           button type="button" class="close" data-dismiss="true" aria-label="Close"
             '&times;

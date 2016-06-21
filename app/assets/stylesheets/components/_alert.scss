@@ -1,14 +1,14 @@
-.alert-success {
-  background-color: #dbefdc;
-  color: #265828;
+.alert {
+  font-weight: $bold-font-weight;
+}
+
+.alert-success,
+.alert-info {
+  background-color: $blue-light;
+  color: $gray;
 }
 
 .alert-danger {
   background-color: #fdd9d7;
   color: #8d1108;
-}
-
-.alert-info {
-  background-color: #d3eafd;
-  color: #074c83;
 }

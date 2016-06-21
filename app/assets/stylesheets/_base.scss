@@ -1,14 +1,3 @@
 html {
-  font-size: 14px;
-}
-
-@media #{$breakpoint-lg} {
-  html {
-    font-size: 16px;
-  }
-}
-
-.container {
-  margin: 0 auto;
-  max-width: $container-width;
+  font-size: 16px;
 }

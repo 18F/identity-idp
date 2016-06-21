@@ -30,12 +30,13 @@ html lang="#{I18n.locale}"
       = render 'layouts/performance_testing_mode'
       = render 'shared/usa_disclaimer'
       = render 'shared/navigation_links'
-      = render 'layouts/messages'
-      = render 'shared/branding'
 
-      .container.px2
-        #start-of-content
-          == render partial: 'dashboard/dashboard_navigation' if user_fully_authenticated? && !current_user.role.include?('tech')
+      .container.sm-py4
+        == render partial: 'dashboard/dashboard_navigation' \
+           if user_fully_authenticated? && !current_user.role.include?('tech')
+        .card.mx-auto.sm-col-6
+          = render 'shared/branding'
+          = render 'shared/messages'
           == yield
 
     .footer

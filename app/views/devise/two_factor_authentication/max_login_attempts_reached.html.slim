@@ -1,5 +1,6 @@
 - title t('upaya.titles.account_locked')
 
-h2 =  t('upaya.titles.account_locked')
+
+h2 = t('upaya.titles.account_locked')
 p
   = raw(t('devise.two_factor_authentication.max_login_attempts_reached', time_remaining: user_decorator.lockout_time_remaining_in_words))
