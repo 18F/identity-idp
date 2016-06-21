@@ -8,10 +8,7 @@ class Idv::SessionsController < ApplicationController
 
   def create
     agent = Proofer::Agent.new(vendor: pick_a_vendor)
-    app_vars = params.slice(:first_name, :last_name, :dob, :ssn,
-                            :ccn, :mortgage, :home_equity_line, :auto_loan, :bank_routing, :bank_acct,
-                            :address1, :address2, :city, :state, :zipcode)
-                 .delete_if { |key, value| value.blank? }
+    app_vars = applicant_params.delete_if { |key, value| value.blank? }
     applicant = Proofer::Applicant.new(app_vars)
     set_idv_applicant(applicant)
     set_idv_vendor(agent.vendor)
@@ -27,6 +24,26 @@ class Idv::SessionsController < ApplicationController
   end
 
   private
+
+  def applicant_params
+    params.slice(
+      :first_name,
+      :last_name,
+      :dob,
+      :ssn,
+      :ccn,
+      :mortgage,
+      :home_equity_line,
+      :auto_loan,
+      :bank_routing,
+      :bank_acct,
+      :address1,
+      :address2,
+      :city,
+      :state,
+      :zipcode
+    )
+  end
 
   def pick_a_vendor
     if Rails.env.test?
