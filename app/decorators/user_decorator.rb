@@ -26,7 +26,7 @@ UserDecorator = Struct.new(:user) do
       "Your #{APP_NAME} account has been reset by a tech support representative. " \
       'In order to continue, you must confirm your email address.'
     else
-      "To finish #{user.confirmed_at ? 'updating' : 'creating'} your " \
+      "To #{user.confirmed_at ? 'finish updating' : 'continue creating'} your " \
       "#{APP_NAME} Account, you must confirm your email address."
     end
   end

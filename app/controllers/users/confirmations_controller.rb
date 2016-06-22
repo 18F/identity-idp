@@ -2,6 +2,17 @@ module Users
   class ConfirmationsController < Devise::ConfirmationsController
     include ValidEmailParameter
 
+    def create
+      super
+
+      # The create action is called when a user asks for confirmation
+      # instructions to be sent. If a user has already confirmed their email,
+      # but asks for instructions again, Devise will not send them an email by
+      # default, so we override the create method so that an email is sent
+      # letting the user know that they've already confirmed.
+      UserMailer.already_confirmed(resource).deliver_later if resource.confirmed?
+    end
+
     # PATCH /confirm
     def confirm
       with_unconfirmed_confirmable do
@@ -51,7 +62,7 @@ module Users
       @confirmable.confirm
       @confirmable.update(reset_requested_at: nil)
       ::NewRelic::Agent.increment_metric('Custom/User/Confirmed')
-      sign_in_and_redirect(resource_name, @confirmable)
+      sign_in_and_redirect_user
     end
 
     def process_user_with_password_errors
@@ -60,8 +71,17 @@ module Users
     end
 
     def process_user_with_confirmation_errors
+      return process_already_confirmed_user if @confirmable.confirmed?
+
       set_view_variables
       render :new
+    end
+
+    def process_already_confirmed_user
+      action_text = 'Please sign in.' unless user_signed_in?
+      flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
+
+      redirect_to user_signed_in? ? dashboard_index_url : new_user_session_url
     end
 
     def process_unconfirmed_user
@@ -71,22 +91,24 @@ module Users
         flash[:error] = UserDecorator.new(resource).confirmation_period_expired_error
         render :new
       else
-        flash[:notice] = t('devise.confirmations.confirmed')
+        flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
         render :show
       end
     end
 
-    def after_confirmation_path_for(resource_name, _resource)
-      if signed_in?(resource_name)
-        user_root_path
+    def after_confirmation_path_for(resource)
+      if !user_signed_in?
+        new_user_session_url
+      elsif resource.two_factor_enabled?
+        dashboard_index_url
       else
-        new_session_path(resource_name)
+        users_otp_url
       end
     end
 
     def process_confirmed_user
       flash[:notice] = t('devise.confirmations.confirmed')
-      redirect_to after_confirmation_path_for(resource_name, resource)
+      redirect_to after_confirmation_path_for(@confirmable)
       EmailNotifier.new(@confirmable).send_email_changed_email
     end
 
@@ -95,6 +117,11 @@ module Users
     def permitted_params
       params.require(:password_form).
         permit(:confirmation_token, :password)
+    end
+
+    def sign_in_and_redirect_user
+      sign_in @confirmable
+      redirect_to after_confirmation_path_for(@confirmable)
     end
   end
 end
