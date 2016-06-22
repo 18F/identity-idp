@@ -105,8 +105,7 @@ module SamlIdpLogoutConcern
 
   def deactivate_session_and_identity(resource)
     resource.last_identity.deactivate! if resource.last_identity
-    sign_out current_user if user_signed_in?
-    clean_up_session
+    sign_out if user_signed_in?
   end
 
   def handle_saml_logout_request(resource)
@@ -132,12 +131,6 @@ module SamlIdpLogoutConcern
 
   def asserted_identity
     Identity.find_by(session_uuid: @saml_response.in_response_to.gsub(/^_/, ''))
-  end
-
-  def clean_up_session
-    [:logout_response, :logout_response_url].each do |key|
-      session.delete(key) if session[key]
-    end
   end
 
   def slo_request_builder(sp_data, name_id, session_index)
@@ -184,7 +177,7 @@ module SamlIdpLogoutConcern
   end
 
   def sign_out_with_flash
-    sign_out current_user if user_signed_in?
+    sign_out if user_signed_in?
     flash[:success] = t('devise.sessions.signed_out')
   end
 end
