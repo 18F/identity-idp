@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 91eab9fa91f933be123cdbb4f790335bb62a0d6c
+  revision: e511381dc171c75722382b4a3b9d03120304c4a3
   branch: master
   specs:
     proofer (1.0.0)
@@ -562,10 +562,10 @@ DEPENDENCIES
   faker
   figaro
   guard-rspec
-  i18n-tasks
   gyoku
   hashie
   httparty
+  i18n-tasks
   lograge
   mailcatcher
   newrelic_rpm

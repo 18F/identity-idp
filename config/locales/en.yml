@@ -100,6 +100,8 @@ en:
     form:
       first_name: First name
       last_name: Last name
+      email: Email
+      phone: Phone
       ssn: Social Security Number
       dob: Date of birth
       ccn: Credit Card Number
@@ -115,6 +117,7 @@ en:
       zipcode: ZIP code
     titles:
       welcome: Verify your identity
+      session_start: Basic information
       question: Identity Quiz
       fail: Identity verification unsuccessful
       hardfail: We cannot verify your identity
