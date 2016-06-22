@@ -1,5 +1,16 @@
 .alert {
   font-weight: $bold-font-weight;
+  position: relative;
+
+  &-ico {
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    right: 0;
+    top: -10px;
+    width: 20px;
+  }
 }
 
 .alert-success,

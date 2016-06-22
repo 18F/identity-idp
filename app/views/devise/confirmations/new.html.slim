@@ -8,4 +8,3 @@ h1.heading = t('upaya.headings.confirmations.new')
     = f.full_error :confirmation_token
   = f.input :email, required: true, autofocus: true
   = f.button :submit, t('upaya.forms.buttons.resend_confirmation')
-= render 'devise/shared/links'

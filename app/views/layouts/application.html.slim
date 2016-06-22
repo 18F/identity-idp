@@ -34,7 +34,7 @@ html lang="#{I18n.locale}"
       .container.sm-py4
         == render partial: 'dashboard/dashboard_navigation' \
            if user_fully_authenticated? && !current_user.role.include?('tech')
-        .card.mx-auto.sm-col-6
+        .card.mx-auto
           = render 'shared/branding'
           = render 'shared/messages'
           == yield
