@@ -3,6 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
+gem 'activerecord-session_store', '1.0.0.pre'
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise', '~> 4.1'
@@ -30,7 +31,6 @@ gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'xmlenc', '~> 0.6.4'
-gem 'activerecord-session_store', '1.0.0.pre'
 
 group :deploy do
   gem 'capistrano' # , '~> 3.4'
@@ -58,12 +58,12 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bullet'
   gem 'i18n-tasks'
+  gem 'mailcatcher', require: false
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
-  gem 'bullet'
-  gem 'mailcatcher', require: false
 end
 
 group :test do
