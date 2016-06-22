@@ -80,7 +80,7 @@ GEM
     bullet (5.1.0)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bummr (0.0.2)
+    bummr (0.1.5)
       colorize
       thor
     byebug (9.0.5)
@@ -508,7 +508,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-session_store (= 1.0.0.pre)
+  activerecord-session_store
   better_errors
   binding_of_caller
   brakeman

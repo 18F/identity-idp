@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
-gem 'activerecord-session_store', '1.0.0.pre'
+gem 'activerecord-session_store'
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise', '~> 4.1'
@@ -33,9 +33,9 @@ gem 'whenever', require: false
 gem 'xmlenc', '~> 0.6.4'
 
 group :deploy do
-  gem 'capistrano' # , '~> 3.4'
-  gem 'capistrano-rails' # , '~> 1.1', require: false
-  gem 'capistrano-rbenv' # , '~> 2.0', require: false
+  gem 'capistrano'
+  gem 'capistrano-rails'
+  gem 'capistrano-rbenv'
   gem 'capistrano-sidekiq'
 end
 
