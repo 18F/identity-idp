@@ -19,6 +19,7 @@ class Idv::ConfirmationsController < ApplicationController
 
   def submit_answers
     agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)
+    @idv_vendor = idv_vendor
     @confirmation = agent.submit_answers(idv_resolution.questions, idv_resolution.session_id)
     #TODO: actually alter the user
     clear_idv_session

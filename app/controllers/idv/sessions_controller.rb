@@ -29,6 +29,8 @@ class Idv::SessionsController < ApplicationController
     params.slice(
       :first_name,
       :last_name,
+      :phone,
+      :email,
       :dob,
       :ssn,
       :ccn,
