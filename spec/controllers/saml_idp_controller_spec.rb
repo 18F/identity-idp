@@ -7,16 +7,24 @@ describe SamlIdpController do
   render_views
 
   describe '/api/saml/logout' do
-    it 'calls UserOtpSender#reset_otp_state' do
-      user = create(:user, :signed_up)
-      sign_in user
+    let(:user) { create(:user, :signed_up) }
+    before { sign_in user }
 
+    it 'calls UserOtpSender#reset_otp_state' do
       otp_sender = instance_double(UserOtpSender)
       allow(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
 
       expect(otp_sender).to receive(:reset_otp_state)
 
       delete :logout
+    end
+
+    it 'clears session state' do
+      subject.session[:foo] = 'bar'
+      expect(subject.session[:foo]).to eq('bar')
+
+      delete :logout
+      expect(subject.session[:foo]).to be_nil
     end
   end
 

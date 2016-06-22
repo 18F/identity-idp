@@ -29,7 +29,7 @@ class SamlIdpController < ApplicationController
 
     return finish_slo_at_idp if message.nil? || message[:message].blank?
 
-    sign_out current_user if message[:action] == 'sign out'
+    sign_out if message[:action] == 'sign out'
 
     render_template_for(
       Base64.strict_encode64(message[:message]),
