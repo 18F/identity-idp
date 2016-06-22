@@ -1,8 +1,8 @@
 module IdvSession
   extend ActiveSupport::Concern
 
-  if ENV['PROOFING_VENDORS']
-    ENV.fetch('PROOFING_VENDORS', '').split(/\W+/).each do |vendor|
+  if Figaro.env.proofing_vendors
+    Figaro.env.proofing_vendors.split(/\W+/).each do |vendor|
       vendor_path = "#{Rails.root}/vendor/#{vendor}/lib"
       $LOAD_PATH.unshift vendor_path
     end 

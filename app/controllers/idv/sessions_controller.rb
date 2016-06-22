@@ -54,6 +54,6 @@ class Idv::SessionsController < ApplicationController
   end
 
   def available_vendors
-    @_vendors ||= ENV.fetch('PROOFING_VENDORS', '').split(/\W+/).map { |vendor| vendor.to_sym }
+    @_vendors ||= Figaro.env.proofing_vendors.split(/\W+/).map { |vendor| vendor.to_sym }
   end
 end
