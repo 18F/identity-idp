@@ -53,7 +53,7 @@ module SamlIdpLogoutConcern
     return generate_slo_request(resource) if resource_in_slo?(resource)
 
     # no SLO messages to generate; finish logout at IdP
-    return nil if session[:logout_response].nil?
+    return nil if user_session[:logout_response].nil?
 
     response = slo_response_from_session
 
@@ -65,7 +65,7 @@ module SamlIdpLogoutConcern
   def resource_in_slo?(resource)
     return true if resource && resource.multiple_identities?
     return true if
-      resource && resource.active_identities.present? && session[:logout_response].nil?
+      resource && resource.active_identities.present? && user_session[:logout_response].nil?
     false
   end
 
@@ -97,8 +97,8 @@ module SamlIdpLogoutConcern
     # The response was generated with the originating request
     # and stored in session
     {
-      message: session[:logout_response],
-      action_url: session[:logout_response_url],
+      message: user_session[:logout_response],
+      action_url: user_session[:logout_response_url],
       message_type: 'SAMLResponse'
     }
   end
@@ -164,11 +164,11 @@ module SamlIdpLogoutConcern
 
   def prepare_saml_logout_request
     validate_saml_request
-    return if session[:logout_response]
+    return if user_session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
-    session[:logout_response] = logout_response_builder.signed
-    session[:logout_response_url] = saml_request.response_url
+    user_session[:logout_response] = logout_response_builder.signed
+    user_session[:logout_response_url] = saml_request.response_url
   end
 
   def finish_slo_at_idp

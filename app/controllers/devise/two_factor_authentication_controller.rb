@@ -52,7 +52,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_valid_otp
-    warden.session(resource_name)[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+    user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
 
     sign_in resource_name, resource, bypass: true
     flash[:notice] = t('devise.two_factor_authentication.success')
