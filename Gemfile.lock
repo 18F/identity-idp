@@ -508,7 +508,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-session_store (= 1.0.0.pre)
+  activerecord-session_store
   better_errors
   binding_of_caller
   brakeman
