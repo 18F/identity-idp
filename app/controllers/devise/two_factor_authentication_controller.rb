@@ -112,11 +112,9 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_second_factor_locked_resource
-    sign_out
+    @user_decorator = UserDecorator.new(current_user)
+    render :max_login_attempts_reached
 
-    render(
-      :max_login_attempts_reached,
-      locals: { user_decorator: UserDecorator.new(resource) }
-    )
+    sign_out
   end
 end

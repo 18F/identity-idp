@@ -5,9 +5,9 @@ en:
       contact_administrator: Please contact your system administrator.
       header_text: Enter your one-time passcode
       max_login_attempts_reached: >
-        Your account is temporarily locked because you have entered the one-time passcode
-        incorrectly too many times.<br /><br />
-        Please try again in %{time_remaining}.
+        Your account is temporarily locked because you have entered the
+        one-time passcode incorrectly too many times.
+      please_try_again: Please try again in %{time_remaining}.
       otp_setup: >
         Every time you log in, a one-time passcode will be sent to your phone via SMS.
         Please enter the phone number you would like to use to receive these messages.
