@@ -59,6 +59,8 @@ en:
         change: Change your password
         forgot: Forgot password?
         update: Update your password
+      registrations:
+        verify_email: Verify email address
       search: Search for a user
       session_timeout_warning: Session Timeout
       users:
