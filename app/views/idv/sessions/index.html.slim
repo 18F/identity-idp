@@ -31,7 +31,7 @@ h1.heading = t('idv.titles.session_start')
         = text_field_tag 'city', nil, class: 'block col-12 mb2 field'
       .sm-col.sm-col-6.px1
         label = t('idv.form.state')
-        = text_field_tag 'state', nil, class: 'block col-12 mb2 field'
+        = select_tag 'state', options_for_select(us_states_territories), class: 'block col-12 mb2 field'
       .sm-col.sm-col-6.px1
         label = t('idv.form.zipcode')
         = text_field_tag 'zipcode', nil, class: 'block col-12 mb2 field'
