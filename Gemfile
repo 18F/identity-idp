@@ -70,7 +70,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
   gem 'thin'
-  gem 'proofer', github: '18F/identity-proofer-gem'
 end
 
 group :test do
