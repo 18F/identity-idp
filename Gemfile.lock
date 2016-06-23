@@ -483,7 +483,7 @@ GEM
       mail (~> 2.6.1)
     warden (1.2.6)
       rack (>= 1.0)
-    webmock (2.0.3)
+    webmock (2.1.0)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
