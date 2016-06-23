@@ -1,0 +1,9 @@
+- if @confirmation.success?
+  .alert.alert-success.p2
+    div = t('idv.titles.complete')
+- else
+  .alert.alert-danger.p2
+    div = t('idv.titles.hardfail')
+
+- if @idv_vendor == :mock && !@confirmation.success?
+  pre = @confirmation.vendor_resp.pretty_inspect

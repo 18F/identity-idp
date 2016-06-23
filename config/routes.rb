@@ -51,5 +51,12 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :idv do
+    # base redirects to next active question, which will detect if there is active session
+    get '/', to: redirect('/idv/questions')
+
+    resources :questions, :sessions, :confirmations
+  end
+
   root to: 'users/sessions#new'
 end

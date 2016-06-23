@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+#
+# generate YAML for config/application.yml
+# based on the .env files in each vendor gem directory.
+
+if ARGV.any?
+  puts "#{$0}\nGenerates YAML for config/application.yml from vendor gems"
+  exit
+end
+
+require 'pathname'
+require 'dotenv'
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+VENDOR_ROOT = "#{APP_ROOT}/vendor"
+
+puts "# the following can be copy/pasted into config/application.yml"
+Dir.new(VENDOR_ROOT).each do |filename|
+  next if filename =~ /^\./
+  #puts "Checking #{filename}"
+  dotenv_file = "#{VENDOR_ROOT}/#{filename}/.env"
+  vendor_env_prefix = filename.upcase
+  if File.file?(dotenv_file)
+    #puts "Read #{dotenv_file}"
+    Dotenv.load(dotenv_file)
+    ENV.each do |key, value|
+      if key =~ /^#{vendor_env_prefix}_/
+        puts "  #{key}: '#{value}'"
+      end
+    end
+  end
+end
