@@ -293,11 +293,11 @@ describe User do
       expect(user.direct_otp.length).to eq 6
     end
 
-    it 'is set to 8' do
+    it 'is set to 6' do
       user = build(:user)
       user.send_new_otp
 
-      expect(user.direct_otp.length).to eq 8
+      expect(user.direct_otp.length).to eq 6
     end
   end
 end
