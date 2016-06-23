@@ -51,6 +51,14 @@ feature 'Sign in' do
     expect(page).to have_content t('devise.failure.invalid')
   end
 
+  scenario 'user can see and use password visibility toggle', js: true do
+    visit new_user_session_path
+    expect(page).to have_css('#pw-toggle')
+
+    click_button 'Show'
+    expect(page).to have_content 'Hide'
+  end
+
   # Scenario: User is locked out from logging in after 3 failed attampts
   #   Given I exist as a user
   #   And I am not signed in
