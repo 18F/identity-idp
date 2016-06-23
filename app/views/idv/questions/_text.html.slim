@@ -1,0 +1,14 @@
+- title t('idv.titles.question')
+
+
+h1.heading = t('idv.titles.welcome')
+.mb1.h6.caps = "Question #{@question_sequence}"
+=form_tag(idv_questions_path, method: 'post')
+  =hidden_field_tag('question_key', @question.key)
+  =hidden_field_tag('text_question', true)
+  h4.mt2.mb2
+    = @question.display
+  = text_field_tag 'answer', nil, required: true, autofocus: true, \
+    class: 'block col-12 mb2 field'
+  .mt3
+    button type="submit" class="btn btn-primary" = 'Submit'

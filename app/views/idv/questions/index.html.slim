@@ -1,0 +1,4 @@
+- if @question.choices.nil?
+  = render 'idv/questions/text'
+- else
+  = render 'idv/questions/multiple_choice'

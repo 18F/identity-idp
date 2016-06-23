@@ -8,6 +8,7 @@ AllCops:
     - 'config/initializers/devise.rb'
     - 'db/migrate/20160405212342_initial_schema.rb'
   UseCache: true
+  TargetRubyVersion: 2.3.1
 
 Lint/AssignmentInCondition:
   Description: Don't use assignment in conditions.
