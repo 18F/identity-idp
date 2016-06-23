@@ -1,3 +1,7 @@
 html {
   font-size: 16px;
 }
+
+@media #{$breakpoint-sm} {
+  body { background-color: $blue-light; }
+}

@@ -1,7 +1,6 @@
-.mb4.center
-  img {
-    src="#{ asset_url('logo.svg') }"
-    alt="#{APP_NAME} logo"
-    width="172"
-    class="align-middle"
-  }
+.mb3.sm-mb4.center
+  =link_to \
+    image_tag(asset_url('logo.svg'),
+      alt: "#{APP_NAME}",
+      class: "align-middle",
+      width: 172), root_path, class: 'inline-block'

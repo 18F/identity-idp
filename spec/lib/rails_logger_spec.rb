@@ -88,7 +88,7 @@ describe 'Rails.logger', type: :feature do
       visit new_user_password_path
 
       fill_in 'Email', with: user.email
-      click_button 'Send me reset password instructions'
+      click_button t('upaya.forms.buttons.reset_password')
 
       raw_reset_token, db_confirmation_token =
         Devise.token_generator.generate(User, :reset_password_token)
