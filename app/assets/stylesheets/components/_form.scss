@@ -6,12 +6,8 @@
 
 [type="submit"] {
   margin-bottom: 1.5rem;
-  padding-left: 2rem;
-  padding-right: 2rem;
-}
 
-@media #{$breakpoint-max-sm} {
-  [type="submit"] {
+  @media #{$breakpoint-max-sm} {
     max-width: 100%;
     width: 100%;
   }
