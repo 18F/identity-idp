@@ -1,0 +1,60 @@
+- title t('idv.titles.welcome')
+
+
+h1.heading = t('idv.titles.session_start')
+= form_tag(idv_sessions_path, method: 'post')
+  .clearfix.mxn1.mb2
+    .required
+      .sm-col.sm-col-6.px1
+        label = t('idv.form.first_name')
+        = block_text_field_tag 'first_name', nil
+      .sm-col.sm-col-6.px1
+        label = t('idv.form.last_name')
+        = block_text_field_tag 'last_name', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.email')
+        = block_text_field_tag 'email', current_user.email
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.phone')
+        = block_text_field_tag 'phone', current_user.mobile
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.dob')
+        = block_date_field_tag 'dob', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.address1')
+        = block_text_field_tag 'address1', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.address2')
+        = block_text_field_tag 'address2', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.city')
+        = block_text_field_tag 'city', nil
+      .sm-col.sm-col-6.px1
+        label = t('idv.form.state')
+        = us_states_territories_select_tag
+      .sm-col.sm-col-6.px1
+        label = t('idv.form.zipcode')
+        = block_text_field_tag 'zipcode', nil
+    .optional
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.ssn')
+        = block_text_field_tag 'ssn', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.ccn')
+        = block_text_field_tag 'ccn', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.mortgage')
+        = block_text_field_tag 'mortgage', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.home_equity_line')
+        = block_text_field_tag 'home_equity_line', nil
+      .sm-col.sm-col-12.px1
+        label = t('idv.form.auto_loan')
+        = block_text_field_tag 'auto_loan', nil
+      .sm-col.sm-col-6.px1
+        label = t('idv.form.bank_routing')
+        = block_text_field_tag 'bank_routing', nil
+      .sm-col.sm-col-6.px1
+        label = t('idv.form.bank_acct')
+        = block_text_field_tag 'bank_acct', nil
+  button type='submit' class='btn btn-primary' = 'Submit'

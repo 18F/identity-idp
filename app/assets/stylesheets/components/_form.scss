@@ -13,10 +13,16 @@
   }
 }
 
-.radio label,
-.checkbox label {
-  margin-left: .5rem;
-  vertical-align: baseline;
+.radio,
+.checkbox {
+  padding-left: 1.5rem;
+}
+
+.radio [type=radio],
+.checkbox [type=checkbox] {
+  margin-left: -1.5rem;
+  margin-top: .25rem;
+  position: absolute;
 }
 
 // hide number field input spin box as per:
