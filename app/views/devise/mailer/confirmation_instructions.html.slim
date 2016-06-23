@@ -3,10 +3,3 @@ p = "#{@first_sentence} To confirm your email address, please click on the link 
 p = link_to confirmation_url(@resource, confirmation_token: @token), confirmation_url(@resource, confirmation_token: @token), target: '_blank'
 
 p = "Please note that this confirmation link expires in #{@confirmation_period} and may require your immediate attention if you wish to access your online account in the future."
-
-p
-  'If you would like additional assistance, please contact the #{APP_NAME} Customer Contact Center via the web form at
-  = link_to nil, Figaro.env.support_url
-
-p
-  strong PLEASE DO NOT REPLY TO THIS MESSAGE

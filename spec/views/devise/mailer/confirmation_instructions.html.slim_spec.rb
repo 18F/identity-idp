@@ -32,7 +32,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
     render
 
-    expect(rendered).to have_content 'PLEASE DO NOT REPLY TO THIS MESSAGE'
+    expect(rendered).to have_content 'Please do not reply to this message.'
   end
 
   it 'mentions updating an account when user has already been confirmed' do

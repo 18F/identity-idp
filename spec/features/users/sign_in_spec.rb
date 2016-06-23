@@ -80,12 +80,12 @@ feature 'Sign in' do
 
     it 'sends an email to user letting them know they are locked out', email: true do
       expect(last_email.subject).to eq "#{APP_NAME} Account Locked"
-      expect(last_email.body).
+      expect(last_email.parts.first.body.raw_source).
         to have_content 'Your account will be unlocked in 20 minutes.'
     end
 
     it 'does not include any links in the account locked email' do
-      expect(last_email.body).to_not have_selector 'a'
+      expect(last_email.parts.first.body.raw_source).to_not have_selector 'a'
     end
 
     it 'treats failed attempt as invalid password during lockout period' do

@@ -1,13 +1,5 @@
-html
-  head
-    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
-  body
+p You have asked #{APP_NAME} to change the email address currently associated with your #{APP_NAME} Account.
 
-    p You have asked #{APP_NAME} to change the email address currently associated with your #{APP_NAME} Account.
-
-    p
-      'If you did not change your email address, please contact the #{APP_NAME} Customer Contact Center via the web form at
-      = link_to nil, Figaro.env.support_url
-
-    p
-      strong PLEASE DO NOT REPLY TO THIS MESSAGE
+p
+  'If you did not change your email address, please contact the #{APP_NAME} Customer Contact Center via the web form at
+  = link_to nil, Figaro.env.support_url

@@ -43,22 +43,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'password_expiry' do
-    let(:mail) { UserMailer.password_expiry(user) }
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [user.email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('upaya.mailer.password_expires_soon.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.body).to have_content("Your #{APP_NAME} Account password will expire in 15 days")
-    end
-  end
-
   describe 'signup_with_your_email' do
     let(:mail) { UserMailer.signup_with_your_email(user.email) }
 
