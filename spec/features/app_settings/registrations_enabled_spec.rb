@@ -19,7 +19,7 @@ feature 'RegistrationsEnabled', devise: true do
 
       expect(page).
         to have_link(
-          t('upaya.links.sign_up'), href: new_user_registration_path
+          t('upaya.links.sign_up'), href: new_user_start_path
         )
     end
   end

@@ -3,6 +3,9 @@ module Users
     before_action :confirm_two_factor_authenticated, only: [:edit, :update]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
+    def start
+    end
+
     def new
       @register_user_email_form = RegisterUserEmailForm.new
     end
