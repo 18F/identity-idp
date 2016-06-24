@@ -4,7 +4,7 @@ class UpdateUserProfileForm
   include FormMobileValidator
   include FormPasswordValidator
 
-  attr_accessor :mobile, :email, :current_password, :password
+  attr_accessor :mobile, :email, :current_password, :password, :totp_enabled
 
   validates :current_password, presence: true
 
@@ -18,6 +18,7 @@ class UpdateUserProfileForm
     @user = user
     self.mobile = @user.mobile
     self.email = @user.email
+    self.totp_enabled = @user.totp_enabled?
   end
 
   def submit(params)

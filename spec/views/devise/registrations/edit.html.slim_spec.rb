@@ -16,4 +16,22 @@ describe 'devise/registrations/edit.html.slim' do
 
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
+
+  it 'contains link to enable TOTP' do
+    render
+
+    expect(rendered).to have_xpath("//input[@value='Enable']")
+    expect(rendered).not_to have_xpath("//input[@value='Disable']")
+  end
+
+  context 'when user is TOTP enabled' do
+    it 'contains link to disable TOTP' do
+      user = build_stubbed(:user, otp_secret_key: '123')
+      @update_user_profile_form = UpdateUserProfileForm.new(user)
+      render
+
+      expect(rendered).to have_xpath("//input[@value='Disable']")
+      expect(rendered).not_to have_xpath("//input[@value='Enable']")
+    end
+  end
 end

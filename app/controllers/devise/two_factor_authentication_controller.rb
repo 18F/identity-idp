@@ -11,10 +11,15 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def new
     current_user.send_new_otp
     flash[:notice] = t('devise.two_factor_authentication.user.new_otp_sent')
-    redirect_to user_two_factor_authentication_path
+    redirect_to user_two_factor_authentication_path(method: 'sms')
   end
 
   def show
+    if use_totp?
+      render :show_totp
+      return
+    end
+
     @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
   end
 
@@ -34,6 +39,12 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
       redirect_to dashboard_index_url
     end
+  end
+
+  def use_totp?
+    # Present the TOTP entry screen to users who are TOTP enabled, unless the user explictly
+    # selects SMS, or if they are trying to confirm a new mobile.
+    current_user.totp_enabled? && params[:method] != 'sms' && current_user.unconfirmed_mobile.blank?
   end
 
   def authenticate_scope!

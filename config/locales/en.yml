@@ -1,6 +1,7 @@
 en:
   upaya:
     errors:
+      invalid_totp: 'Invalid code entered.  Please try again.'
       not_authorized: 'You are not authorized to perform this action.'
       invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
 
@@ -14,6 +15,13 @@ en:
         need_password: Please verify your current password to confirm changes.
       two_factor:
         code: Secure one-time password
+      totp_setup:
+        header_text: Authenticator App Setup
+        totp_info: >
+          To enable app-based authentication, use your TOTP-compatible mobile
+          app to scan the QR code below, then enter the app-generated code
+          in the box below.
+        code: App-generated code
       confirmation:
         show_hdr: Create a Password
 
@@ -22,6 +30,8 @@ en:
       sign_in: 'Log in'
       sign_up: 'Sign up'
     notices:
+      totp_configured: Authenticator app successfully configured
+      totp_disabled: Authenticator app disabled
       account_created: >
         You have successfully created your account.
       password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
