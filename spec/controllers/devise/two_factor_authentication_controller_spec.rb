@@ -140,8 +140,8 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
         end
 
-        it 're-renders the OTP entry screen' do
-          expect(response).to render_template(:show)
+        it 're-renders the TOTP entry screen' do
+          expect(response).to render_template(:show_totp)
         end
 
         it 'displays flash error message' do
