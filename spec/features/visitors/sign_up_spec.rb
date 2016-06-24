@@ -14,9 +14,12 @@ feature 'Sign Up', devise: true do
   #   When I sign up with a valid email address
   #   Then I see a message that I need to confirm my email address
   scenario 'visitor can sign up with valid email address' do
-    sign_up_with('test@example.com')
+    email = 'test@example.com'
+    sign_up_with(email)
     expect(page).to have_content(
-      t('devise.registrations.signed_up_but_unconfirmed', email: 'test@example.com')
+      t('devise.registrations.signed_up_but_unconfirmed.message_start') +
+      " #{email}. " +
+      t('devise.registrations.signed_up_but_unconfirmed.message_end')
     )
   end
 
@@ -266,7 +269,9 @@ feature 'Sign Up', devise: true do
     sign_up_with('existing_user@example.com')
 
     expect(page).to have_content(
-      t('devise.registrations.signed_up_but_unconfirmed', email: user.email)
+      t('devise.registrations.signed_up_but_unconfirmed.message_start') +
+      " #{user.email}. " +
+      t('devise.registrations.signed_up_but_unconfirmed.message_end')
     )
     expect(last_email.body).to have_content 'This email address is already in use.'
     expect(last_email.body).

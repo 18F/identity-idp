@@ -62,14 +62,7 @@ module Users
     end
 
     def process_successful_creation
-      if is_flashing_format?
-        flash[:notice] = t(
-          'devise.registrations.signed_up_but_unconfirmed',
-          email: @register_user_email_form.user.email
-        )
-      end
-
-      redirect_to root_path
+      render :verify_email, locals: { email: @register_user_email_form.user.email }
     end
 
     def disable_account_creation
