@@ -13,7 +13,7 @@ html
 
     p
       'If you did not request a new account or suspect an error, please contact the #{APP_NAME} Customer Contact Center via the web form at
-      = link_to nil, Figaro.env.support_url
+      = link_to Figaro.env.support_url, Figaro.env.support_url
 
     p Please be aware that this update might require your immediate attention.
 
