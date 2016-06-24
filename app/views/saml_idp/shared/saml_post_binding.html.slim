@@ -17,6 +17,6 @@ html
           'in or signing out.
         form action=action_url method='POST' id='saml-post-binding'
           = hidden_field_tag(type, message)
-          - if params.has_key?(:RelayState)
-            = hidden_field_tag("RelayState", params[:RelayState])
+          - if params.key?(:RelayState)
+            = hidden_field_tag('RelayState', params[:RelayState])
           = submit_tag 'Submit', class: 'btn btn-primary'

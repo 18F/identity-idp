@@ -2,7 +2,10 @@
 
 
 h1.heading = t('upaya.headings.confirmations.new')
-= simple_form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
+= simple_form_for(resource,
+                  as: resource_name,
+                  url: confirmation_path(resource_name),
+                  html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   .mb2
     = f.error_notification
     = f.full_error :confirmation_token

@@ -1,9 +1,0 @@
-- title t('upaya.titles.passwords.update')
-
-
-h1.heading = t('upaya.headings.passwords.update')
-= simple_form_for(resource, as: resource_name, url: [resource_name, :password_expired], html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
-  = f.error_notification
-  = f.input :current_password, required: true, autofocus: true
-  = f.input :password, label: 'New password', required: true
-  = f.button :submit, 'Change my password'

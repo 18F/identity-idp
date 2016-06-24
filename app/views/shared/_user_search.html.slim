@@ -7,7 +7,9 @@
         hr
         = label_tag :email, nil, class: 'col-md-2 control-label'
         .col-md-10
-          = email_field_tag :email, params[:email],  class: 'form-control'
+          = email_field_tag :email, params[:email], class: 'form-control'
       .form-group
         .col-md-offset-10.col-md-2
-          = submit_tag 'Search', id: 'user_search', class: 'btn btn-default upaya-button-secondary-blue pull-right'
+          = submit_tag 'Search',
+                        id: 'user_search',
+                        class: 'btn btn-default upaya-button-secondary-blue pull-right'

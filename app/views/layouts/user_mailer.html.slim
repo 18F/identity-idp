@@ -32,7 +32,9 @@ html xmlns="http://www.w3.org/1999/xhtml"
                             table
                               tr
                                 th
-                                  = image_tag(asset_url('logo.png', host: Figaro.env.mailer_domain_name), class: 'small-float-center')
+                                  = image_tag(asset_url('logo.png', \
+                                                        host: Figaro.env.mailer_domain_name), \
+                                              class: 'small-float-center')
                                 th.expander
                     table.row
                       tbody
@@ -71,7 +73,9 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                     tr
                                       th
                                         p
-                                          'For more help, please contact the #{APP_NAME} Customer Contact Center via web form at
+                                          'For more help, please contact the
+                                          '#{APP_NAME} Customer Contact Center
+                                          'via web form at
                                           = link_to nil, Figaro.env.support_url
                                       th.expander
                     table.wrapper.legal align="center"
@@ -91,4 +95,6 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                       th.expander
     /! prevent Gmail on iOS font size manipulation
     div style="display:none; white-space:nowrap; font:15px courier; line-height:0;"
-      | &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+      '&#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+      '&#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0; &#xA0;
+      '&#xA0; &#xA0; &#xA0; &#xA0;

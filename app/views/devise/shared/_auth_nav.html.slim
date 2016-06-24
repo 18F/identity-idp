@@ -1,8 +1,10 @@
 .clearfix.mb3
   - login_page = controller_name == 'sessions'
   .col.col-6
-    = link_to t('upaya.links.sign_in'), new_user_session_path, \
-      class: 'btn-auth' + "#{login_page ? ' btn-auth--active' : ''}"
+    = link_to t('upaya.links.sign_in'),
+              new_user_session_path,
+              class: 'btn-auth' + (login_page ? ' btn-auth--active' : '')
   .col.col-6
-    = link_to t('upaya.links.sign_up'), new_user_start_path, \
-      class: 'btn-auth' + "#{login_page ? '' : ' btn-auth--active'}"
+    = link_to t('upaya.links.sign_up'),
+              new_user_start_path,
+              class: 'btn-auth' + (login_page ? '' : ' btn-auth--active')
