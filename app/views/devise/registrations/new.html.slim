@@ -1,7 +1,8 @@
 - title t('upaya.titles.registrations.new')
 
 
-= render 'devise/shared/auth_nav'
+h1.heading = t('upaya.headings.registrations.enter_email')
+p.italic Enter the email address you’d like to associate with login.gov
 = simple_form_for(@register_user_email_form,
     html: { autocomplete: 'off', role: 'form' },
     url: user_registration_path) do |f|

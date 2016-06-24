@@ -18,7 +18,7 @@ describe 'devise/sessions/new.html.slim' do
     render
 
     expect(rendered).
-      to have_xpath("//a[@class='btn-auth' and @href='#{new_user_registration_path}']")
+      to have_xpath("//a[@class='btn-auth' and @href='#{new_user_start_path}']")
 
     expect(rendered).
       to have_xpath("//a[@class='btn-auth btn-auth--active' and @href='#{new_user_session_path}']")
@@ -29,7 +29,7 @@ describe 'devise/sessions/new.html.slim' do
 
     expect(rendered).
       to have_link(
-        t('upaya.links.sign_up'), href: new_user_registration_path
+        t('upaya.links.sign_up'), href: new_user_start_path
       )
   end
 end

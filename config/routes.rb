@@ -19,6 +19,8 @@ Rails.application.routes.draw do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
 
+    get '/start' => 'users/registrations#start', as: :new_user_start
+
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 

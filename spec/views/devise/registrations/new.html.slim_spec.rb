@@ -12,18 +12,6 @@ describe 'devise/registrations/new.html.slim' do
     render
   end
 
-  it 'has proper css classes for log in / sign up nav' do
-    render
-
-    expect(rendered).to have_xpath(
-      "//a[@class='btn-auth btn-auth--active' and @href='#{new_user_registration_path}']"
-    )
-
-    expect(rendered).to have_xpath(
-      "//a[@class='btn-auth' and @href='#{new_user_session_path}']"
-    )
-  end
-
   it 'sets form autocomplete to off' do
     render
 

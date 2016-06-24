@@ -43,6 +43,14 @@ en:
       token_expired: 'You have taken too long to reset your password. Please try again.'
       invalid_token: 'The reset password token is invalid. Please try again.'
     registrations:
+      start:
+        bullet_1: Please use this site to securely log in to your participating government agency.
+        bullet_2: >
+          login.gov is a central login platform used by multiple U.S. government
+          agencies to make interacting with the government easier.
+        bullet_3: >
+          You can use your login.gov account to access all participating
+          U.S. government agencies.
       destroyed: "Bye! Your account has been successfully cancelled. We hope to see you again soon."
       signed_up: "Welcome! You have signed up successfully."
       signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."
