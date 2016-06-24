@@ -1,6 +1,5 @@
 # Currently, the two_factor_authentication gem is designed to enforce the 2FA requirement in all
-# controllers except Devise. However, the controller action for SLO and letter opener need to be
-# excluded.
+# controllers except Devise. However, the controller action for SLO needs to also be excluded.
 
 module TwoFactorAuthentication
   module Controllers
@@ -8,9 +7,8 @@ module TwoFactorAuthentication
       private
 
       def handle_two_factor_authentication
-        # Skip handling if devise, if the user is attempting to log out, or if the user is
-        # attempting to view letter opener
-        return if devise_controller? || requesting_letter_opener? || requesting_log_out?
+        # Skip handling if devise, if the user is attempting to log out
+        return if devise_controller? || requesting_log_out?
 
         Devise.mappings.keys.flatten.any? do |scope|
           if signed_in?(scope) &&
@@ -22,10 +20,6 @@ module TwoFactorAuthentication
 
       def requesting_log_out?
         request.fullpath == destroy_user_session_path
-      end
-
-      def requesting_letter_opener?
-        params[:controller].include?('letter_opener')
       end
     end
   end
