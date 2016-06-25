@@ -82,15 +82,6 @@ en:
         show: User Details
 
     mailer:
-      already_confirmed:
-        forgot_password: >
-          If you cannot remember your password, request reset password
-          instructions by clicking the link below:
-        sign_in: >
-          A request was made to resend confirmation instructions to this email.
-          This email address has already been confirmed. You can sign in with
-          your %{app_name} account by clicking the link below:
-        subject: Your %{app_name} account has already been confirmed
       password_expires_soon:
         subject: Password expiration notice
       email_reuse_notice:

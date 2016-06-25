@@ -2,17 +2,6 @@ module Users
   class ConfirmationsController < Devise::ConfirmationsController
     include ValidEmailParameter
 
-    def create
-      super
-
-      # The create action is called when a user asks for confirmation
-      # instructions to be sent. If a user has already confirmed their email,
-      # but asks for instructions again, Devise will not send them an email by
-      # default, so we override the create method so that an email is sent
-      # letting the user know that they've already confirmed.
-      UserMailer.already_confirmed(resource).deliver_later if resource.confirmed?
-    end
-
     # PATCH /confirm
     def confirm
       with_unconfirmed_confirmable do
