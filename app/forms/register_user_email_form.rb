@@ -34,11 +34,8 @@ class RegisterUserEmailForm
 
   def process_errors
     # To prevent discovery of existing emails, we check to see if the email is
-    # already taken and if so, we act as if the user update was successful.
-    if email_taken?
-      UserMailer.signup_with_your_email(email).deliver_later
-      return true
-    end
+    # already taken and if so, we act as if the user registration was successful.
+    return true if email_taken?
 
     false
   end

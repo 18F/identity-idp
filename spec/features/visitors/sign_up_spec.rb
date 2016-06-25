@@ -260,10 +260,11 @@ feature 'Sign Up', devise: true do
     expect(page).to have_content(invalid_email_message)
   end
 
-  # Scenario: Visitor is not aware of an email existing in the system
+  # Scenario: Visitor tries to determine if email exists in the system
   #   Given I am not signed in
-  #   When I sign up with an invalid email address
-  #   Then I see a valid, but unconfirmed email message
+  #   When I sign up with an existing email address
+  #   Then I can't tell whether or not the email exists
+  #   And no email is sent to the existing user
   scenario 'visitor signs up with an email already in the system', email: true do
     user = create(:user, email: 'existing_user@example.com')
     sign_up_with('existing_user@example.com')
@@ -273,9 +274,7 @@ feature 'Sign Up', devise: true do
       " #{user.email}. " +
       t('devise.registrations.signed_up_but_unconfirmed.message_end')
     )
-    expect(last_email.body).to have_content 'This email address is already in use.'
-    expect(last_email.body).
-      to include "at <a href=\"#{Figaro.env.support_url}\">"
+    expect(number_of_emails_sent).to eq 0
   end
 
   # Scenario: Visitor signs up but confirms with an expired token
@@ -313,13 +312,13 @@ feature 'Sign Up', devise: true do
     expect(current_path).to eq user_confirmation_path
   end
 
-  # Scenario: Visitor can be informed that they've already confirmed
-  #   Given I've confirmed my email and created a password, but forgot that I did
-  #   When I ask for confirmation instructions
-  #   Then I receive an email letting me know I've already confirmed
-  context 'confirmed user asks for confirmation instructions', email: true do
-    it 'sends an email to the user letting them they have already confirmed' do
+  # Scenario: Visitor tries to spam an existing user
+  #   When I resend confirmation instructions to an existing user
+  #   Then the user does not receive an email
+  context 'confirmation instructions sent to existing user', email: true do
+    it 'does not send an email to the existing user' do
       sign_up_with_and_set_password_for('test@example.com')
+      reset_email
 
       visit destroy_user_session_url
 
@@ -327,9 +326,7 @@ feature 'Sign Up', devise: true do
       fill_in 'Email', with: 'test@example.com'
       click_button 'Resend confirmation instructions'
 
-      expect(last_email.body).to match(/already been confirmed/)
-      expect(last_email.subject).
-        to eq t('upaya.mailer.already_confirmed.subject', app_name: APP_NAME)
+      expect(number_of_emails_sent).to eq 0
     end
   end
 
