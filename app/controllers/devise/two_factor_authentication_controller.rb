@@ -16,11 +16,10 @@ class Devise::TwoFactorAuthenticationController < DeviseController
 
   def show
     if use_totp?
-      render :show_totp
-      return
+      show_totp_prompt
+    else
+      show_direct_otp_prompt
     end
-
-    @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
   end
 
   def update
@@ -102,6 +101,15 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     )
   end
 
+  def show_direct_otp_prompt
+    @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
+    render :show
+  end
+
+  def show_totp_prompt
+    render :show_totp
+  end
+
   def handle_invalid_otp
     update_invalid_resource if resource.two_factor_enabled?
 
@@ -110,8 +118,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     if resource.second_factor_locked?
       handle_second_factor_locked_resource
     else
-      @user_decorator = UserDecorator.new(current_user)
-      render :show
+      show
     end
   end
 

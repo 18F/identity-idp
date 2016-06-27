@@ -5,7 +5,7 @@ p
   'Please enter the code from your authenticator app.
   'If you have several accounts set up in your app, enter the code
   'corresponding to <strong>#{current_user.email}</strong> at
-  '<strong>Login.gov</strong>.
+  '<strong>#{APP_NAME}</strong>.
 = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
   .mb2
     = label_tag 'code', raw('<abbr title="required">*</abbr> ') + t('upaya.forms.two_factor.code')
