@@ -94,11 +94,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def redirect_valid_resource
-    redirect_to(
-      after_sign_in_path_for(resource),
-      notice: t('upaya.notices.account_created',
-                date: (Time.current + 1.year).strftime('%B %d, %Y'))
-    )
+    redirect_to after_sign_in_path_for(resource)
   end
 
   def show_direct_otp_prompt
