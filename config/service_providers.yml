@@ -41,7 +41,7 @@ development:
       cert: 'demo_sp'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
       metadata_url: 'http://localhost:3003/saml/metadata'
-      acs_url: 'http://localhost:3003/consume'
+      acs_url: 'http://localhost:3003/auth/saml/callback'
       sp_initiated_login_url: 'http://localhost:3003/login'
       cert: 'demo_sp'
     'https://dashboard.login.gov':
