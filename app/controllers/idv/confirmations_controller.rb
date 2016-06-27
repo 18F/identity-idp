@@ -22,7 +22,11 @@ module Idv
       agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)
       @idv_vendor = idv_vendor
       @confirmation = agent.submit_answers(idv_resolution.questions, idv_resolution.session_id)
-      # HANDWAVING actually alter the user
+      if @confirmation.success?
+        pii = PII.find(pii_id)
+        pii.verified = true
+        pii.activate!
+      end
       clear_idv_session
     end
   end

@@ -4,7 +4,7 @@ feature 'IdV session' do
   let(:mock_questions) { Proofer::Agent.new(vendor: :mock).start.questions }
 
   scenario 'KBV with all answers correct' do
-    sign_in_and_2fa_user
+    user = sign_in_and_2fa_user
 
     visit '/idv'
 
@@ -36,5 +36,9 @@ feature 'IdV session' do
     end
 
     expect(page).to have_content(t('idv.titles.complete'))
+
+    expect(user.active_pii).to be_a(PII)
+    expect(user.active_pii.verified).to eq true
+    expect(user.active_pii.ssn).to eq '666661234'
   end
 end
