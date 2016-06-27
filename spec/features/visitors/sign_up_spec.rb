@@ -67,7 +67,6 @@ feature 'Sign Up', devise: true do
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
-      expect(page).to have_content(t('upaya.notices.account_created'))
       expect(current_path).to eq dashboard_index_path
     end
 
