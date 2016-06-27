@@ -4,6 +4,12 @@ require 'saml_idp_constants'
 MAX_GOOD_PASSWORD = '!1aZ' * 32
 
 describe User do
+  describe 'Associations' do
+    it { should have_many(:authorizations) }
+    it { should have_many(:identities) }
+    it { should have_many(:piis) }
+  end
+
   it 'should only send one email during creation' do
     expect do
       User.create(email: 'nobody@nobody.com')

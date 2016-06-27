@@ -34,6 +34,10 @@ module IdvSession
     idv_session[:applicant] = applicant
   end
 
+  def set_idv_pii(applicant)
+    idv_session[:pii_id] = PII.create_from_proofer_applicant(applicant, current_user).id
+  end
+
   def set_idv_resolution(resolution)
     idv_session[:resolution] = resolution
   end
@@ -50,9 +54,14 @@ module IdvSession
     idv_session[:applicant]
   end
 
+  def pii_id
+    idv_session[:pii_id]
+  end
+
   def clear_idv_session
     idv_session.delete(:vendor)
     idv_session.delete(:applicant)
+    idv_session.delete(:pii_id)
     idv_session.delete(:resolution)
     idv_session.delete(:question_number)
   end

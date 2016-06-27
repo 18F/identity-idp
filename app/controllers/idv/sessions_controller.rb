@@ -12,6 +12,7 @@ module Idv
       if resolution.success
         set_idv_resolution(resolution)
         set_idv_question_number(0)
+        set_idv_pii(idv_applicant)
         redirect_to idv_questions_path
       else
         flash[:error] = I18n.t('idv.titles.fail')

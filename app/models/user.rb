@@ -15,6 +15,7 @@ class User < ActiveRecord::Base
 
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
+  has_many :piis, dependent: :destroy, class_name: PII
 
   def set_default_role
     self.role ||= :user
@@ -82,6 +83,10 @@ class User < ActiveRecord::Base
 
   def multiple_identities?
     active_identities.size > 1
+  end
+
+  def active_pii
+    piis.where(active: true).first
   end
 
   # To send emails asynchronously via ActiveJob.
