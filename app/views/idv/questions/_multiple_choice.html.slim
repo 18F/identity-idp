@@ -1,5 +1,6 @@
 - @question.choices.each do |choice|
-  label.radio.block.mb1
-    = radio_button_tag('answer', choice.key, false,
-        id: "choice_#{choice.key_html_safe}", required: true)
-    = choice.display
+  .mb2.pl2.bg-light-blue.border.border-blue.rounded
+    label.radio.block.p2
+      = radio_button_tag('answer', choice.key, false,
+          id: "choice_#{choice.key_html_safe}", required: true)
+      = choice.display
