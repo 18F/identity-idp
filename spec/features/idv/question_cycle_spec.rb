@@ -18,7 +18,7 @@ feature 'IdV session' do
     fill_in :city, with: 'Nowhere'
     select 'Kansas', from: :state
     fill_in :zipcode, with: '66044'
-    click_button 'Submit'
+    click_button 'Continue'
 
     expect(page).to have_content('Where did you live')
 
@@ -32,7 +32,7 @@ feature 'IdV session' do
         el_id = "#choice_#{choice.key_html_safe}"
         find(el_id).set(true)
       end
-      click_button 'Submit'
+      click_button 'Next'
     end
 
     expect(page).to have_content(t('idv.titles.complete'))

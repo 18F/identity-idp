@@ -26,7 +26,7 @@ module FormHelper
   # rubocop:disable MethodLength, Style/WordArray
   def us_states_territories
     [
-      ['', ''],
+      ['--', ''],
       ['Alabama', 'AL'],
       ['Alaska', 'AK'],
       ['American Samoa', 'AS'],
