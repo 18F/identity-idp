@@ -25,7 +25,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def update
     reset_attempt_count_if_user_no_longer_locked_out
 
-    if resource.authenticate_otp(params[:code].strip) || FeatureManagement.pt_mode?
+    if resource.authenticate_otp(params[:code].strip)
       handle_valid_otp
     else
       handle_invalid_otp
@@ -98,6 +98,12 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def show_direct_otp_prompt
+    # In development, when SMS is disabled we pre-fill the correct code so that
+    # developers can log in without needing to configure SMS delivery.
+    if Rails.env.development? && FeatureManagement.sms_disabled?
+      @code_value = current_user.direct_otp
+    end
+
     @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
     render :show
   end

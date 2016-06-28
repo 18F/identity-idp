@@ -24,17 +24,19 @@ describe TwilioService do
     end
   end
 
-  describe 'performance testing mode' do
-    it 'uses NullTwilioClient when pt_mode is on' do
-      expect(FeatureManagement).to receive(:pt_mode?).and_return(true)
+  context 'when sms is disabled' do
+    before do
+      expect(FeatureManagement).to receive(:sms_disabled?).at_least(:once).and_return(true)
+    end
+
+    it 'uses NullTwilioClient' do
       expect(NullTwilioClient).to receive(:new)
       expect(Twilio::REST::Client).to_not receive(:new)
 
       TwilioService.new
     end
 
-    it 'uses NullTwilioClient when pt_mode is true and proxy is set' do
-      expect(FeatureManagement).to receive(:pt_mode?).and_return(true)
+    it 'uses NullTwilioClient when proxy is set' do
       allow(Figaro.env).to receive(:proxy_addr).and_return('123.456.789')
 
       expect(NullTwilioClient).to receive(:new)
@@ -43,36 +45,36 @@ describe TwilioService do
       TwilioService.new
     end
 
-    it 'uses a real Twilio client when pt_mode is false' do
-      expect(FeatureManagement).to receive(:pt_mode?).and_return(false)
-      expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/)
-
-      TwilioService.new
-    end
-
-    it 'does not send any OTP when pt_mode is true', sms: true do
-      expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
+    it 'does not send OTP messages', sms: true do
       SmsSenderOtpJob.perform_now('1234', '555-5555')
 
       expect(messages.size).to eq 0
     end
 
-    it 'sends an OTP when pt_mode is false', sms: true do
-      expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(false)
+    it 'does not send a number change messages', sms: true do
+      SmsSenderNumberChangeJob.perform_now('555-5555')
+
+      expect(messages.size).to eq 0
+    end
+  end
+
+  context 'when SMS is enabled' do
+    before do
+      expect(FeatureManagement).to receive(:sms_disabled?).at_least(:once).and_return(false)
+    end
+
+    it 'uses a real Twilio client' do
+      expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/)
+      TwilioService.new
+    end
+
+    it 'sends OTP messages', sms: true do
       SmsSenderOtpJob.perform_now('1234', '555-5555')
 
       expect(messages.size).to eq 1
     end
 
-    it 'does not send a number change SMS when pt_mode is true', sms: true do
-      expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(true)
-      SmsSenderNumberChangeJob.perform_now('555-5555')
-
-      expect(messages.size).to eq 0
-    end
-
-    it 'sends number change SMS when pt_mode is false', sms: true do
-      expect(FeatureManagement).to receive(:pt_mode?).at_least(:once).and_return(false)
+    it 'sends number change messages', sms: true do
       SmsSenderNumberChangeJob.perform_now('555-5555')
 
       expect(messages.size).to eq 1
