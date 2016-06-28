@@ -1,21 +1,13 @@
-html
-  head
-    meta content='text/html; charset=UTF-8' http-equiv='Content-Type'
-  body
+p= "A request was made to use this email address as a username for a #{APP_NAME} account. This email address is already in use. If you requested this change, please use the following link to #{t('upaya.headings.log_in').downcase} to #{APP_NAME}:"
 
-    p= "A request was made to use this email address as a username for a #{APP_NAME} account. This email address is already in use. If you requested this change, please use the following link to #{t('upaya.headings.log_in').downcase} to #{APP_NAME}:"
+p= link_to @root_url, @root_url, target: '_blank'
 
-    p= link_to @root_url, @root_url, target: '_blank'
+p If you would like to create a new account for online access to #{APP_NAME}, please follow the instructions for creating a new account using a different email address.
 
-    p If you would like to create a new account for online access to #{APP_NAME}, please follow the instructions for creating a new account using a different email address.
+p If you cannot remember your password, please follow the instructions for resetting your password.
 
-    p If you cannot remember your password, please follow the instructions for resetting your password.
+p
+  'If you did not request a new account or suspect an error, please contact the #{APP_NAME} Customer Contact Center via the web form at
+  = link_to nil, Figaro.env.support_url
 
-    p
-      'If you did not request a new account or suspect an error, please contact the #{APP_NAME} Customer Contact Center via the web form at
-      = link_to nil, Figaro.env.support_url
-
-    p Please be aware that this update might require your immediate attention.
-
-    p
-      strong PLEASE DO NOT REPLY TO THIS MESSAGE
+p Please be aware that this update might require your immediate attention.

@@ -1,0 +1,74 @@
+@import 'variables';
+@import 'foundation/foundation';
+
+// Utility
+// ---------
+
+.align-middle {
+  vertical-align: middle;
+}
+
+// Overrides
+// ---------
+
+.button.large.expanded table a {
+  padding: 20px 0;
+}
+
+// Containers
+// ---------
+
+.footer {
+  background: $secondary-color;
+
+  a {
+    color: $white;
+    text-decoration: underline;
+  }
+
+  p {
+    color: $white;
+    padding-top: 0;
+  }
+
+  .columns {
+    padding-bottom: 0;
+  }
+
+  .wrapper-inner {
+    padding: 25px 0;
+  }
+
+  .container {
+    background: transparent;
+  }
+
+}
+
+.legal {
+  background: $body-background;
+
+  a {
+    color: $dark-gray;
+  }
+
+  .container {
+    background: $body-background;
+  }
+
+  .wrapper-inner {
+    padding: 15px 0;
+  }
+}
+
+// Media Queries
+// ---------
+
+@media only screen and (max-width: #{$global-breakpoint}) {
+  .body .columns,
+  .body .column {
+    // scss-lint:disable ImportantRule
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+}

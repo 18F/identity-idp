@@ -10,13 +10,6 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content 'Please note that this confirmation link expires in 24 hours'
   end
 
-  it 'includes the support link' do
-    assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
-    render
-
-    expect(rendered).to have_link(Figaro.env.support_url, href: Figaro.env.support_url)
-  end
-
   it 'includes a link to confirmation' do
     assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
     assign(:token, 'foo')
@@ -26,13 +19,6 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
       'http://test.host/users/confirmation?confirmation_token=foo',
       href: 'http://test.host/users/confirmation?confirmation_token=foo'
     )
-  end
-
-  it 'includes a request to not reply to this messsage' do
-    assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
-    render
-
-    expect(rendered).to have_content 'PLEASE DO NOT REPLY TO THIS MESSAGE'
   end
 
   it 'mentions updating an account when user has already been confirmed' do

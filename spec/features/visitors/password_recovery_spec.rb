@@ -34,8 +34,8 @@ feature 'Password Recovery' do
     end
 
     it 'includes a link to customer service in the email' do
-      expect(last_email.body).
-        to include "at <a href=\"#{Figaro.env.support_url}\">"
+      expect(last_email.parts.first.body.raw_source).
+        to include Figaro.env.support_url
     end
 
     it 'displays a localized notice' do
@@ -44,13 +44,13 @@ feature 'Password Recovery' do
 
     it 'includes a link to reset the password in the email' do
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/reset_password_token/)
 
       expect(current_path).to eq edit_user_password_path
     end
 
     it 'specifies how long the user has to reset the password based on Devise settings' do
-      expect(last_email.body).
+      expect(last_email.parts.first.body.raw_source).
         to have_content "expires in #{Devise.reset_password_within / 3600} hours"
     end
   end
@@ -58,20 +58,21 @@ feature 'Password Recovery' do
   # Scenario: User that has only confirmed their email can reset their password
   #   Given I have not created my password yet
   #   And I click the Forgot password? link and enter my email
-  #   When I click the link in the password reset email
-  #   Then I can set a new password
+  #   Then I receive the confirmation email again
+  #   And when I click the link in the confirmation email
+  #   Then I can set my password
   context 'user with only email confirmation resets password', email: true do
     before do
       sign_up_with('email@example.com')
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/confirmation_token/)
       reset_email
       visit root_path
       click_link t('upaya.headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
       click_button t('upaya.forms.buttons.reset_password')
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/confirmation_token/)
     end
 
     it 'shows the password form' do
@@ -88,13 +89,13 @@ feature 'Password Recovery' do
     before do
       sign_up_with('email@example.com')
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/confirmation_token/)
       reset_email
       visit new_user_confirmation_path
       fill_in 'Email', with: 'email@example.com'
       click_button 'Resend confirmation instructions'
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/confirmation_token/)
     end
 
     it 'shows the password form' do
@@ -116,7 +117,7 @@ feature 'Password Recovery' do
       fill_in 'Email', with: 'email@example.com'
       click_button t('upaya.forms.buttons.reset_password')
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/reset_password_token/)
     end
 
     it 'shows the password form' do
@@ -174,7 +175,7 @@ feature 'Password Recovery' do
       fill_in 'Email', with: 'email@example.com'
       click_button t('upaya.forms.buttons.reset_password')
       open_last_email
-      click_first_link_in_email
+      click_email_link_matching(/reset_password_token/)
     end
 
     it 'shows the password form' do
