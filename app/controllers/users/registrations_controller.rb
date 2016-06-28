@@ -7,6 +7,7 @@ module Users
     end
 
     def new
+      ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
     end
 

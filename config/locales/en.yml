@@ -27,7 +27,6 @@ en:
         show_hdr: Create a Password
 
     links:
-      get_started: Get started
       sign_out: 'Sign out'
       sign_in: 'Log in'
       sign_up: 'Sign up'
