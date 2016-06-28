@@ -16,3 +16,10 @@ h1.heading = 'Authenticator App'
   = button_to 'Disable', disable_totp_url, method: :delete, class: 'btn btn-primary'
 - else
   = button_to 'Enable', users_totp_url, method: :get, class: 'btn btn-primary'
+
+h1.heading = t('upaya.headings.delete_account')
+= button_to t('upaya.forms.buttons.delete_account'), \
+          { action: :destroy, id: current_user.id }, \
+          method: :delete, \
+          data: { confirm: 'Are you sure?' }, \
+          class: 'btn btn-primary'
