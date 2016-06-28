@@ -45,7 +45,7 @@ describe 'user edits their account', email: true do
 
   shared_examples 'changing_email' do
     it 'displays a notice informing the user their email has been confirmed when user confirms' do
-      get_via_redirect links_in_email(last_email).first
+      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
 
       expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
       expect(response).to render_template('user_mailer/email_changed')
@@ -57,12 +57,12 @@ describe 'user edits their account', email: true do
       expect(EmailNotifier).to receive(:new).with(user).and_return(notifier)
       expect(notifier).to receive(:send_email_changed_email)
 
-      get_via_redirect links_in_email(last_email).first
+      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
     end
 
     it 'confirms email when user clicks link in email while signed out' do
       delete_via_redirect destroy_user_session_path
-      get_via_redirect links_in_email(last_email).first
+      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
 
       expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
     end
