@@ -374,7 +374,7 @@ feature 'Password Recovery' do
   end
 
   scenario 'passwords new view has a localized title' do
-    expect(page).to have_title t('upaya.titles.passwords.forgot')
+    expect(page).to have_title t('upaya.titles.passwords.forgot', app_name: APP_NAME)
   end
 
   scenario 'passwords new view has a localized heading' do

@@ -7,7 +7,7 @@ describe 'devise/registrations/new.html.slim' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('upaya.titles.registrations.new'))
+    expect(view).to receive(:title).with(t('upaya.titles.registrations.new', app_name: APP_NAME))
 
     render
   end

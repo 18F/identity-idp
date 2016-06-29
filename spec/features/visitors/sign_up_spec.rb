@@ -35,7 +35,7 @@ feature 'Sign Up', devise: true do
     confirm_last_user
 
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
-    expect(page).to have_title t('upaya.titles.confirmations.show')
+    expect(page).to have_title t('upaya.titles.confirmations.show', app_name: APP_NAME)
     expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: VALID_PASSWORD
