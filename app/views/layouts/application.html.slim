@@ -30,13 +30,15 @@ html lang="#{I18n.locale}"
       = render 'shared/usa_disclaimer'
       = render 'shared/navigation_links'
 
-      .container.sm-py4
-        == render partial: 'dashboard/dashboard_navigation' \
-           if user_fully_authenticated? && !current_user.role.include?('tech')
-        .card.mx-auto
-          = render 'shared/branding'
-          = render 'shared/messages'
-          == yield
+      - if content_for?(:content)
+        == yield(:content)
+      - else
+        .container.sm-py4
+          .mx-auto.card.card-narrow
+            .mb3.sm-mb4.center
+              = render 'shared/logo'
+            = render 'shared/messages'
+            == yield
 
     .footer
       - if Rails.env.development?

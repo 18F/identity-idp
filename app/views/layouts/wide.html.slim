@@ -1,0 +1,18 @@
+= content_for :content do |_|
+  .container
+    .py3.center
+      = render 'shared/logo'
+    = render 'shared/messages'
+    .bg-white
+      .clearfix.bg-navy
+        .sm-col.sm-col-4.md-col-3.center
+          = link_to '/', class: 'block p1 sm-p2 white border-bottom' do |_|
+            span.h6.caps.bold = 'My account'
+          = link_to '/', class: 'block p1 sm-p2 white border-bottom' do |_|
+            span.h6.caps.bold = 'My activity'
+          = link_to '/', class: 'block p1 sm-p2 white border-bottom' do |_|
+            span.h6.caps.bold = 'Privacy Policy'
+        .sm-col.sm-col-8.md-col-9.p2.bg-white
+          == yield
+
+= render template: 'layouts/application'
