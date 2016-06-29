@@ -1,6 +1,8 @@
 # Get the deployed git revision and version
 # thanks to: http://houseofding.com/2013/11/display-git-revision-in-your-application/
 module Git
+  REPO_URL = 'https://github.com/18F/identity-idp/'.freeze
+
   def self.store_git_attribute_constants
     %w(REVISION VERSION).each do |attribute|
       Git.const_set(attribute, git_attribute(attribute))
