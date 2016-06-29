@@ -36,7 +36,6 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'split', require: 'split/dashboard'
 gem 'staccato'
-gem 'turbolinks'
 gem 'twilio-ruby'
 gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'

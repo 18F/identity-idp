@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/Houdini/two_factor_authentication.git
-  revision: 9d7d3472f4d272f70c2357ca4bced6f32ec2fbc9
+  revision: c3691f1a965d8e5d7d80948332222924235f54bb
   specs:
     two_factor_authentication (1.1.5)
       devise
@@ -545,8 +545,6 @@ GEM
     tilt (2.0.5)
     timecop (0.8.1)
     tins (1.10.2)
-    turbolinks (2.5.3)
-      coffee-rails
     twilio-ruby (4.11.1)
       builder (>= 2.1.2)
       jwt (~> 1.0)
@@ -671,7 +669,6 @@ DEPENDENCIES
   test_after_commit
   thin
   timecop
-  turbolinks
   twilio-ruby
   two_factor_authentication!
   uglifier (>= 1.3.0)
