@@ -9,7 +9,7 @@ describe 'users/registrations/edit.html.slim' do
     end
 
     it 'has a localized title' do
-      expect(view).to receive(:title).with(t('upaya.titles.registrations.edit'))
+      expect(view).to receive(:title).with(t('upaya.titles.registrations.edit', app_name: APP_NAME))
 
       render
     end
