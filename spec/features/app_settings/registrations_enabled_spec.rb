@@ -1,26 +1,23 @@
 require 'rails_helper'
 
 feature 'RegistrationsEnabled', devise: true do
-  describe 'When registrations are disabled' do
-    xscenario 'user cannot create an account' do
+  context 'When registrations are disabled' do
+    it 'prevents users from visiting sign up page' do
       allow(AppSetting).to(receive(:registrations_enabled?)).and_return(false)
 
-      visit root_path
+      visit new_user_registration_path
 
-      expect(page).to(have_selector("input[type=submit][value='Not accepting new accounts']"))
+      expect(page.current_url).to eq(root_url)
     end
   end
 
-  describe 'When registrations are enabled' do
-    scenario 'user can create an account' do
+  context 'When registrations are enabled' do
+    it 'allows user to visit the sign up page' do
       allow(AppSetting).to(receive(:registrations_enabled?)).and_return(true)
 
-      visit root_path
+      visit new_user_registration_path
 
-      expect(page).
-        to have_link(
-          t('upaya.links.sign_up'), href: new_user_start_path
-        )
+      expect(page.current_url).to eq(new_user_registration_url)
     end
   end
 end
