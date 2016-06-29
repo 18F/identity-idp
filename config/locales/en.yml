@@ -8,6 +8,7 @@ en:
     forms:
       buttons:
         continue_browsing: Continue Browsing
+        delete_account: Delete My Account
         resend_confirmation: Resend confirmation instructions
         reset_password: Send reset password instructions
       required_field: Indicates a required field.
@@ -64,6 +65,7 @@ en:
         index: Admin Interface
       confirmations:
         new: Resend confirmation instructions
+      delete_account: Delete Account
       log_in: Log in
       passwords:
         change: Change your password
