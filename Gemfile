@@ -59,7 +59,6 @@ group :development do
   gem 'rack-mini-profiler'
   gem 'rails_layout'
   gem 'rubocop', require: false
-  gem 'slim_lint'
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen'
@@ -71,6 +70,7 @@ group :development, :test do
   gem 'mailcatcher', require: false
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
+  gem 'slim_lint'
   gem 'thin'
 end
 

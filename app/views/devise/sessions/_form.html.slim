@@ -1,8 +1,12 @@
-= simple_form_for(resource, as: resource_name, url: session_path(resource_name), html: { autocomplete: 'off', role: 'form' }) do |f|
+= simple_form_for(resource,
+                  as: resource_name,
+                  url: session_path(resource_name),
+                  html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true, autofocus: true
-  = f.input :password, required: true, \
-    hint: "#{link_to t('upaya.headings.passwords.forgot'), new_password_path(resource_name)}".html_safe, \
-    hint_html: { class: 'py1 line-height-1 right-align' }
-  = f.input :remember_me, label: false, inline_label: 'Yes, remember me', as: :boolean if devise_mapping.rememberable?
+  = f.input :password,
+            required: true,
+            hint: link_to(t('upaya.headings.passwords.forgot'),
+                          new_password_path(resource_name)),
+            hint_html: { class: 'py1 line-height-1 right-align' }
   = f.button :submit, t('upaya.headings.log_in')
 = render 'devise/shared/links'

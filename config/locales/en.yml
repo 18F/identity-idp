@@ -47,7 +47,6 @@ en:
       passwords:
         change: Change your password for your Upaya Account
         forgot: Reset your password for your Upaya Account
-        update: Update your password for your Upaya Account
       registrations:
         edit: Edit your Upaya Account
         new: Sign up for a Upaya Account
@@ -70,7 +69,6 @@ en:
       passwords:
         change: Change your password
         forgot: Forgot password?
-        update: Update your password
       registrations:
         enter_email: Email address
         verify_email: Verify email address
@@ -82,8 +80,6 @@ en:
         show: User Details
 
     mailer:
-      password_expires_soon:
-        subject: Password expiration notice
       email_reuse_notice:
         subject: Email confirmation notification
       email_change_notice:

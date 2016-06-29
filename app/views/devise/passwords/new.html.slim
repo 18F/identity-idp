@@ -2,7 +2,10 @@
 
 
 h1.heading = t('upaya.headings.passwords.forgot')
-= simple_form_for(resource, as: resource_name, url: password_path(resource_name), html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
+= simple_form_for(resource,
+                  as: resource_name,
+                  url: password_path(resource_name),
+                  html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.error_notification
   = f.input :email, required: true, autofocus: true
   = f.button :submit, t('upaya.forms.buttons.reset_password')
