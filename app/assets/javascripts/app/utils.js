@@ -10,7 +10,8 @@ $(document).on('click', dismiss, (e) => { $(e.target).parent().remove(); });
 // form inputs; this adds basic messaging and styling fallback for these browsers
 // "page:load" event needed because of turbolinks, which overrides normal loading process
 $(document).on('ready page:load', () => {
-  const message = '<div class="bold mb2">Please fill in all required fields.</div>';
+  const message = '<div class="error-notify alert-danger p1 mt1 mb2">Please fill in all required' +
+    ' fields.</div>';
 
   $('form').on('submit', function(e) {
     const $form = $(this);
@@ -18,7 +19,9 @@ $(document).on('ready page:load', () => {
 
     if ($fields.length) {
       e.preventDefault();
-      $form.prepend(message);
+      if (!$('.error-notify').length) {
+        $form.prepend(message);
+      }
       $fields.each(function() { $(this).addClass('border-red'); });
     }
   });
