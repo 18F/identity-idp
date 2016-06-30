@@ -18,7 +18,6 @@ Dir.chdir APP_ROOT do
   end
 
   puts "== Copying sample certs and keys =="
-  run "cp keys/saml.key.enc.example keys/saml.key.enc"
   run "cp certs/saml.crt.example certs/saml.crt"
 
   if ARGV.shift == "--docker" then
