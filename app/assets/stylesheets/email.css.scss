@@ -1,22 +1,15 @@
-@import 'variables';
-@import 'foundation/foundation';
+@import 'variables/base';
+@import 'variables/email';
 
-// Utility
-// ---------
+@import 'foundation/foundation';
 
 .align-middle {
   vertical-align: middle;
 }
 
-// Overrides
-// ---------
-
 .button.large.expanded table a {
   padding: 20px 0;
 }
-
-// Containers
-// ---------
 
 .footer {
   background: $secondary-color;
@@ -60,9 +53,6 @@
     padding: 15px 0;
   }
 }
-
-// Media Queries
-// ---------
 
 @media only screen and (max-width: #{$global-breakpoint}) {
   .body .columns,

@@ -16,22 +16,19 @@
 // 1. Global
 // ---------
 
-$primary-color: #0071bb;
-$secondary-color: #122e51;
+$primary-color: $blue;
+$secondary-color: $navy;
 $success-color: #3adb76;
 $warning-color: #ffae00;
 $alert-color: #ec5840;
 $light-gray: #f3f3f3;
 $medium-gray: #cacaca;
 $dark-gray: #212121;
-$black: #1a1a1a;
-$white: #fff;
-$red: #e21c3d;
 $pre-color: #ff6908;
 $global-width: 580px;
 $global-width-small: 95%;
 $global-gutter: 60px;
-$body-background: #dce4ee;
+$body-background: $blue-light;
 $container-background: $white;
 $global-font-color: $black;
 $body-font-family: Arial, Helvetica, sans-serif;
