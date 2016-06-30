@@ -32,6 +32,7 @@ gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
+gem 'split', require: 'split/dashboard'
 gem 'turbolinks'
 gem 'twilio-ruby'
 gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication'

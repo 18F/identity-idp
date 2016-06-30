@@ -18,4 +18,5 @@
   .col.col-10
     p.pb2.sm-pb3.mb2 = t('devise.registrations.start.bullet_3')
 .py1.sm-p0
-  = link_to t('upaya.links.get_started'), new_user_registration_path, class: 'btn btn-primary'
+  - ab_test(:demo) do |variant, _|
+    = link_to t(variant), new_user_registration_path, class: 'btn btn-primary'

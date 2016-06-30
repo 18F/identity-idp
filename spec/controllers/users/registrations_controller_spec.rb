@@ -410,4 +410,11 @@ describe Users::RegistrationsController, devise: true do
       expect(response.body).to have_content('is invalid')
     end
   end
+
+  describe '#new' do
+    it 'triggers completion of "demo" experiment' do
+      expect(subject).to receive(:ab_finished).with(:demo)
+      get :new
+    end
+  end
 end

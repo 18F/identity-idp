@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
+    mount Split::Dashboard => '/split'
   end
 
   match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get

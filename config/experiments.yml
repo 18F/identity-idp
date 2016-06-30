@@ -1,0 +1,4 @@
+demo:
+  alternatives:
+    - 'experiments.demo.get_started'
+    - 'experiments.demo.create_account'

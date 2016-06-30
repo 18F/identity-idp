@@ -94,6 +94,7 @@ ignore_unused:
 - 'errors.messages.*'
 - '{devise,simple_form}.*'
 - 'upaya.errors.not_authorized'
+- 'experiments.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'
