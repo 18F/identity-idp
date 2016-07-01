@@ -9,7 +9,7 @@ describe 'devise/sessions/new.html.slim' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('upaya.titles.visitors.index', app_name: APP_NAME))
+    expect(view).to receive(:title).with(t('upaya.titles.visitors.index'))
 
     render
   end

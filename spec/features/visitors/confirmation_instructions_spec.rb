@@ -86,10 +86,10 @@ feature 'Confirmation Instructions', devise: true do
   end
 
   scenario 'confirmations new page has localized title' do
-    expect(page).to have_title t('upaya.titles.confirmations.new', app_name: APP_NAME)
+    expect(page).to have_title t('upaya.titles.confirmations.new')
   end
 
   scenario 'confirmations new page has localized heading' do
-    expect(page).to have_title t('upaya.headings.confirmations.new', app_name: APP_NAME)
+    expect(page).to have_title t('upaya.headings.confirmations.new')
   end
 end

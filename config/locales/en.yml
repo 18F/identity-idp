@@ -38,17 +38,17 @@ en:
     session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
     titles:
       confirmations:
-        new: Resend confirmation instructions for your %{app_name} Account
-        show: Create a Password for your %{app_name} Account
-      dashboard: Your %{app_name} Account
-      enter_2fa_code: Enter the secure one-time password to log in to your %{app_name} Account
-      account_locked: Account Locked
+        new: Resend confirmation instructions for your account
+        show: Create a password for your account
+      dashboard: Dashboard
+      enter_2fa_code: Enter the secure one-time password to log in to your account
+      account_locked: Account locked
       passwords:
-        change: Change your password for your %{app_name} Account
-        forgot: Reset your password for your %{app_name} Account
+        change: Change the password for your account
+        forgot: Reset the password for your account
       registrations:
-        edit: Edit your %{app_name} Account
-        new: Sign up for a %{app_name} Account
+        edit: Edit your account
+        new: Sign up for a account
         start: Get started
       two_factor_setup: Two-factor Authentication Setup
       users:
@@ -56,7 +56,7 @@ en:
         index: Manage Users
         show: User - %{user}
       visitors:
-        index: Welcome to %{app_name}
+        index: Welcome
 
     headings:
       admin:
