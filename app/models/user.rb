@@ -51,12 +51,12 @@ class User < ActiveRecord::Base
 
   def otp_time_lockout?
     return false if second_factor_locked_at.nil?
-    (Time.current - second_factor_locked_at) < Devise.direct_otp_valid_for
+    (Time.current - second_factor_locked_at) < Devise.allowed_otp_drift_seconds
   end
 
   def lock_access!(opts = {})
     super
-    send_devise_notification(:unlock_instructions, nil, subject: "#{APP_NAME} Account Locked")
+    send_devise_notification(:unlock_instructions, nil, subject: 'Upaya Account Locked')
   end
 
   def first_identity

@@ -352,6 +352,19 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
+  context 'user signs up with existing email' do
+    it 'sends an email to the existing user' do
+      existing_user = create(:user, :signed_up)
+
+      mailer = instance_double(ActionMailer::MessageDelivery)
+      expect(UserMailer).to receive(:signup_with_your_email).
+        with(existing_user.email).and_return(mailer)
+      expect(mailer).to receive(:deliver_later)
+
+      put :create, user: { email: existing_user.email }
+    end
+  end
+
   context "user updates profile with invalid email and another user's mobile", sms: true do
     render_views
 
@@ -408,13 +421,6 @@ describe Users::RegistrationsController, devise: true do
       put :update, update_user_profile_form: attrs_with_invalid_current_password
 
       expect(response.body).to have_content('is invalid')
-    end
-  end
-
-  describe '#new' do
-    it 'triggers completion of "demo" experiment' do
-      expect(subject).to receive(:ab_finished).with(:demo)
-      get :new
     end
   end
 end

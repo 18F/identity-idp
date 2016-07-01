@@ -53,7 +53,7 @@ module SamlIdpLogoutConcern
     return generate_slo_request(resource) if resource_in_slo?(resource)
 
     # no SLO messages to generate; finish logout at IdP
-    return nil if user_session[:logout_response].nil?
+    return nil if session[:logout_response].nil?
 
     response = slo_response_from_session
 
@@ -65,7 +65,7 @@ module SamlIdpLogoutConcern
   def resource_in_slo?(resource)
     return true if resource && resource.multiple_identities?
     return true if
-      resource && resource.active_identities.present? && user_session[:logout_response].nil?
+      resource && resource.active_identities.present? && session[:logout_response].nil?
     false
   end
 
@@ -97,15 +97,16 @@ module SamlIdpLogoutConcern
     # The response was generated with the originating request
     # and stored in session
     {
-      message: user_session[:logout_response],
-      action_url: user_session[:logout_response_url],
+      message: session[:logout_response],
+      action_url: session[:logout_response_url],
       message_type: 'SAMLResponse'
     }
   end
 
   def deactivate_session_and_identity(resource)
     resource.last_identity.deactivate! if resource.last_identity
-    sign_out if user_signed_in?
+    sign_out current_user if user_signed_in?
+    clean_up_session
   end
 
   def handle_saml_logout_request(resource)
@@ -131,6 +132,12 @@ module SamlIdpLogoutConcern
 
   def asserted_identity
     Identity.find_by(session_uuid: @saml_response.in_response_to.gsub(/^_/, ''))
+  end
+
+  def clean_up_session
+    [:logout_response, :logout_response_url].each do |key|
+      session.delete(key) if session[key]
+    end
   end
 
   def slo_request_builder(sp_data, name_id, session_index)
@@ -164,11 +171,11 @@ module SamlIdpLogoutConcern
 
   def prepare_saml_logout_request
     validate_saml_request
-    return if user_session[:logout_response]
+    return if session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
-    user_session[:logout_response] = logout_response_builder.signed
-    user_session[:logout_response_url] = saml_request.response_url
+    session[:logout_response] = logout_response_builder.signed
+    session[:logout_response_url] = saml_request.response_url
   end
 
   def finish_slo_at_idp
@@ -177,7 +184,7 @@ module SamlIdpLogoutConcern
   end
 
   def sign_out_with_flash
-    sign_out if user_signed_in?
+    sign_out current_user if user_signed_in?
     flash[:success] = t('devise.sessions.signed_out')
   end
 end

@@ -31,7 +31,6 @@ PreCommit:
     required_executable: 'slim-lint'
     install_command: 'gem install slim_lint'
     include: '**/*.slim'
-    problem_on_unmodified_line: ignore
 
 CommitMsg:
   MessageFormat:
@@ -43,7 +42,6 @@ CommitMsg:
       See our contribution guidelines:
       https://github.com/18F/identity-idp/blob/master/CONTRIBUTING.md#commit-message-style-guide
     sample_message: '**Why**: To eliminate unnecessary database calls.'
-    on_fail: warn
 
   TextWidth:
     enabled: true

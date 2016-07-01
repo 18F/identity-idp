@@ -96,6 +96,14 @@ feature 'Two Factor Authentication', devise: true do
           expect(current_path).to eq dashboard_index_path
         end
 
+        it 'does not allow user to access OTP prompt page after entering valid OTP' do
+          fill_in 'code', with: @user.reload.direct_otp
+          click_button 'Submit'
+          visit user_two_factor_authentication_path
+
+          expect(current_path).to eq dashboard_index_path
+        end
+
         it 'does not allow user to bypass entering OTP' do
           visit edit_user_registration_path
 
@@ -147,19 +155,20 @@ feature 'Two Factor Authentication', devise: true do
     scenario 'user is displayed the time remaining until their otp expires' do
       my_user = create(:user, :signed_up)
       sign_in_user(my_user)
+      otp_drift_minutes = Devise.allowed_otp_drift_seconds / 60
 
-      expect(page).to have_content distance_of_time_in_words(Devise.direct_otp_valid_for)
+      expect(page).to have_content "#{otp_drift_minutes} minutes"
     end
 
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_user(user)
-      click_link 'request a new one'
+      click_link 'request a new passcode'
 
       expect(page).to have_content t('devise.two_factor_authentication.user.new_otp_sent')
     end
 
-    scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
+    scenario 'user enters OTP incorrectly 3 times and is locked out for otp drift period' do
       user = create(:user, :signed_up)
       signin(user.email, user.password)
       3.times do
@@ -169,8 +178,8 @@ feature 'Two Factor Authentication', devise: true do
 
       expect(page).to have_content t('upaya.titles.account_locked')
 
-      # let 10 minutes (otp validity period) magically pass
-      user.update(second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second))
+      # let 10 minutes (otp drift time) magically pass
+      user.update(second_factor_locked_at: Time.zone.now - (Devise.allowed_otp_drift_seconds + 1))
 
       signin(user.email, user.password)
 

@@ -6,12 +6,6 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-# User visible application name. Stored here in a global since it is
-# accessed from a wide variety of different places (views, controllers,
-# jobs, etc). Please file complaints about use of global variables
-# with the appropriate government office.
-APP_NAME = 'Login.gov'.freeze
-
 module Upaya
   class Application < Rails::Application
     config.generators do |g|
@@ -48,7 +42,7 @@ module Upaya
     # is a multiple of 60 seconds.
     config.session_check_frequency         = 60
 
-    # config.middleware.use Rack::Attack
+    # config.middleware.use Rack::Attack unless Figaro.env.pt_mode == 'on'
 
     # Configure Browserify to use babelify to compile ES6
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'

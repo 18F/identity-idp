@@ -5,6 +5,7 @@ addons:
 before_install:
   - npm install
 before_script:
+  - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml
   - cp certs/saml.crt.example certs/saml.crt
   - cp keys/saml.key.enc.example keys/saml.key.enc
@@ -22,4 +23,3 @@ rvm:
 sudo: false
 script:
   - bundle exec rspec
-  - bundle exec slim-lint app/views

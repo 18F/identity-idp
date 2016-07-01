@@ -16,9 +16,9 @@ class SmsSenderNumberChangeJob < ActiveJob::Base
 
   def number_change_message
     <<-END.strip_heredoc
-      You have changed the phone number for your #{APP_NAME} Account.
+      You have changed the phone number for your Upaya Account.
 
-      If you did not request this change, please contact #{APP_NAME} at #{Figaro.env.support_url}.
+      If you did not request this change, please contact Upaya at https://upaya.18f.gov/contact
     END
   end
 end

@@ -1,6 +1,6 @@
 class FeatureManagement
-  def self.sms_disabled?
-    Figaro.env.sms_disabled == 'true'
+  def self.pt_mode?
+    Figaro.env.pt_mode == 'on'
   end
 
   def self.allow_third_party_auth?

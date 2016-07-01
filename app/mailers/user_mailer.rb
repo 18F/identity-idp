@@ -14,4 +14,9 @@ class UserMailer < ActionMailer::Base
   def password_changed(user)
     mail(to: user.email, subject: t('devise.mailer.password_updated.subject'))
   end
+
+  def password_expiry(user)
+    @link_url = edit_user_registration_url
+    mail(to: user.email, subject: t('upaya.mailer.password_expires_soon.subject'))
+  end
 end

@@ -4,11 +4,10 @@ en:
       attempt_failed: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
       contact_administrator: Please contact your system administrator.
       header_text: Enter your one-time passcode
-      totp_header_text: Enter your Authenticator code
       max_login_attempts_reached: >
-        Your account is temporarily locked because you have entered the
-        one-time passcode incorrectly too many times.
-      please_try_again: Please try again in %{time_remaining}.
+        Your account is temporarily locked because you have entered the one-time passcode
+        incorrectly too many times.<br /><br />
+        Please try again in %{time_remaining}.
       otp_setup: >
         Every time you log in, a one-time passcode will be sent to your phone via SMS.
         Please enter the phone number you would like to use to receive these messages.
@@ -16,8 +15,5 @@ en:
       please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.
       success: "Two factor authentication successful."
       two_factor_setup: Two-factor Authentication Setup
-      totp_info: >
-        Use any standards compliant authenticator app (such as Google Authenticator) to scan the QR
-        Code below.
       user:
         new_otp_sent: A new one-time passcode has been sent.

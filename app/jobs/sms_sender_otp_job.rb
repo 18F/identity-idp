@@ -16,7 +16,7 @@ class SmsSenderOtpJob < ActiveJob::Base
 
   def otp_message(code)
     <<-END.strip_heredoc
-      You requested a secure one-time password to log in to your #{APP_NAME} Account.
+      You requested a secure one-time password to log in to your Upaya Account.
 
       Please enter this secure one-time password: #{code}
     END

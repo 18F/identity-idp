@@ -14,36 +14,29 @@ feature 'Sign Up', devise: true do
   #   When I sign up with a valid email address
   #   Then I see a message that I need to confirm my email address
   scenario 'visitor can sign up with valid email address' do
-    email = 'test@example.com'
-    sign_up_with(email)
+    sign_up_with('test@example.com')
     expect(page).to have_content(
-      t('devise.registrations.signed_up_but_unconfirmed.message_start') +
-      " #{email}. " +
-      t('devise.registrations.signed_up_but_unconfirmed.message_end')
+      t('devise.registrations.signed_up_but_unconfirmed', email: 'test@example.com')
     )
   end
 
   # Scenario: Visitor can sign up and confirm with valid email address and password
   #   Given I am not signed in
-  #   When I sign up with a valid email address and click my confirmation link
-  #   Then I see a message letting me know I need to set a password to finish creating my account
-  #   And when I set a valid password
-  #   Then I am prompted to set up 2FA without any flash messages
+  #   When I sign up with a valid email address and password and click my confirmation link
+  #   Then I see a successful confirmation message
   scenario 'visitor can sign up and confirm a valid email' do
     sign_up_with('test@example.com')
 
     confirm_last_user
 
-    expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
-    expect(page).to have_title t('upaya.titles.confirmations.show', app_name: APP_NAME)
+    expect(page).to have_content t('devise.confirmations.confirmed')
+    expect(page).to have_title t('upaya.titles.confirmations.show')
     expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: VALID_PASSWORD
     click_button 'Submit'
 
-    expect(current_url).to eq users_otp_url
-    expect(page).to_not have_content t('devise.confirmations.confirmed')
-    expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
+    expect(page).to have_content t('devise.two_factor_authentication.otp_setup')
   end
 
   scenario 'it sets reset_requested_at to nil after password confirmation' do
@@ -67,6 +60,7 @@ feature 'Sign Up', devise: true do
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
+      expect(page).to have_content(t('upaya.notices.account_created'))
       expect(current_path).to eq dashboard_index_path
     end
 
@@ -97,8 +91,8 @@ feature 'Sign Up', devise: true do
       expect(page).
         to have_content(
           'A one-time passcode has been sent to ***-***-5555. ' \
-          'Please enter the code that you received. Each code is valid for 5 minutes. ' \
-          'If you do not receive a code within this time, please request a new one.'
+          'Please enter the code that you received. ' \
+          'If you do not receive the code in 10 minutes, please request a new passcode.'
         )
     end
 
@@ -215,14 +209,12 @@ feature 'Sign Up', devise: true do
     expect(current_url).to eq confirm_url
   end
 
-  context 'confirmed user is signed in and tries to confirm again' do
-    it 'redirects the user to the dashboard' do
-      sign_up_and_2fa('test@example.com')
+  scenario 'visitor confirms more than once' do
+    sign_up_with_and_set_password_for('test@example.com')
 
-      visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
+    visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(current_url).to eq dashboard_index_url
-    end
+    expect(page).to have_content t('errors.messages.already_confirmed')
   end
 
   # Scenario: Visitor cannot sign up with invalid email address
@@ -259,21 +251,20 @@ feature 'Sign Up', devise: true do
     expect(page).to have_content(invalid_email_message)
   end
 
-  # Scenario: Visitor tries to determine if email exists in the system
+  # Scenario: Visitor is not aware of an email existing in the system
   #   Given I am not signed in
-  #   When I sign up with an existing email address
-  #   Then I can't tell whether or not the email exists
-  #   And no email is sent to the existing user
+  #   When I sign up with an invalid email address
+  #   Then I see a valid, but unconfirmed email message
   scenario 'visitor signs up with an email already in the system', email: true do
     user = create(:user, email: 'existing_user@example.com')
     sign_up_with('existing_user@example.com')
 
     expect(page).to have_content(
-      t('devise.registrations.signed_up_but_unconfirmed.message_start') +
-      " #{user.email}. " +
-      t('devise.registrations.signed_up_but_unconfirmed.message_end')
+      t('devise.registrations.signed_up_but_unconfirmed', email: user.email)
     )
-    expect(number_of_emails_sent).to eq 0
+    expect(last_email.body).to have_content 'This email address is already in use.'
+    expect(last_email.body).
+      to include 'at <a href="https://upaya.18f.gov/contact">'
   end
 
   # Scenario: Visitor signs up but confirms with an expired token
@@ -309,42 +300,5 @@ feature 'Sign Up', devise: true do
 
     expect(page).to have_content 'Confirmation token is invalid'
     expect(current_path).to eq user_confirmation_path
-  end
-
-  # Scenario: Visitor tries to spam an existing user
-  #   When I resend confirmation instructions to an existing user
-  #   Then the user does not receive an email
-  context 'confirmation instructions sent to existing user', email: true do
-    it 'does not send an email to the existing user' do
-      sign_up_with_and_set_password_for('test@example.com')
-      reset_email
-
-      visit destroy_user_session_url
-
-      click_link "Didn't receive confirmation instructions?"
-      fill_in 'Email', with: 'test@example.com'
-      click_button 'Resend confirmation instructions'
-
-      expect(number_of_emails_sent).to eq 0
-    end
-  end
-
-  # Scenario: Confirmed visitor confirms again while signed out
-  #   Given I've confirmed my email, created a password, and signed out
-  #   When I click the confirmation link in the email again
-  #   Then I see a message that I've already confirmed
-  #   And I am redirected to the sign in page
-  context 'confirmed user clicks confirmation link while again signed out' do
-    it 'redirects to sign in page with message that user is already confirmed' do
-      sign_up_with_and_set_password_for('test@example.com')
-
-      visit destroy_user_session_url
-
-      visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
-
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: 'Please sign in.')
-      expect(current_url).to eq new_user_session_url
-    end
   end
 end

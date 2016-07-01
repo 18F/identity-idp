@@ -1,0 +1,16 @@
+- title t('upaya.titles.registrations.edit')
+
+.clearfix.mxn2
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = 'Update information'
+      = simple_form_for(@update_user_profile_form,
+          url: user_registration_path,
+          html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+        = f.error_notification
+        = render 'devise/registrations/form', f: f
+        .mb2.p2.h5.alert-info
+          =t('upaya.forms.registration.need_password')
+        = f.input(:current_password, required: true)
+        = f.button :submit, 'Update'
