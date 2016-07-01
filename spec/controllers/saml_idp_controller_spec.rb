@@ -7,24 +7,16 @@ describe SamlIdpController do
   render_views
 
   describe '/api/saml/logout' do
-    let(:user) { create(:user, :signed_up) }
-    before { sign_in user }
-
     it 'calls UserOtpSender#reset_otp_state' do
+      user = create(:user, :signed_up)
+      sign_in user
+
       otp_sender = instance_double(UserOtpSender)
       allow(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
 
       expect(otp_sender).to receive(:reset_otp_state)
 
       delete :logout
-    end
-
-    it 'clears session state' do
-      subject.session[:foo] = 'bar'
-      expect(subject.session[:foo]).to eq('bar')
-
-      delete :logout
-      expect(subject.session[:foo]).to be_nil
     end
   end
 
@@ -226,6 +218,18 @@ describe SamlIdpController do
         expect(linker).to receive(:link_identity)
 
         generate_saml_response(user)
+      end
+    end
+
+    describe 'before_actions' do
+      it 'includes the appropriate before_actions' do
+        expect(subject).to have_filters(
+          :before,
+          :validate_saml_request,
+          :verify_authn_context,
+          :store_saml_request_in_session,
+          :confirm_two_factor_authenticated
+        )
       end
     end
 
@@ -629,21 +633,6 @@ describe SamlIdpController do
           expect(mobile['FriendlyName']).to eq('mobile')
         end
       end
-    end
-  end
-
-  describe 'before_actions' do
-    it 'includes the appropriate before_actions' do
-      expect(subject).to have_filters(
-        :before,
-        :disable_caching,
-        [:apply_secure_headers_override, only: [:auth, :logout]],
-        [:validate_saml_request, only: :auth],
-        [:verify_authn_context, only: :auth],
-        [:store_saml_request_in_session, only: :auth],
-        [:confirm_two_factor_authenticated, only: :auth],
-        [:validate_saml_logout_param, only: :logout]
-      )
     end
   end
 end

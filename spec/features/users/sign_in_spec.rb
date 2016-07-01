@@ -51,14 +51,6 @@ feature 'Sign in' do
     expect(page).to have_content t('devise.failure.invalid')
   end
 
-  scenario 'user can see and use password visibility toggle', js: true do
-    visit new_user_session_path
-    expect(page).to have_css('#pw-toggle')
-
-    click_button 'Show'
-    expect(page).to have_content 'Hide'
-  end
-
   # Scenario: User is locked out from logging in after 3 failed attampts
   #   Given I exist as a user
   #   And I am not signed in
@@ -79,13 +71,13 @@ feature 'Sign in' do
     end
 
     it 'sends an email to user letting them know they are locked out', email: true do
-      expect(last_email.subject).to eq "#{APP_NAME} Account Locked"
-      expect(last_email.parts.first.body.raw_source).
+      expect(last_email.subject).to eq 'Upaya Account Locked'
+      expect(last_email.body).
         to have_content 'Your account will be unlocked in 20 minutes.'
     end
 
     it 'does not include any links in the account locked email' do
-      expect(last_email.parts.first.body.raw_source).to_not have_selector 'a'
+      expect(last_email.body).to_not have_selector 'a'
     end
 
     it 'treats failed attempt as invalid password during lockout period' do

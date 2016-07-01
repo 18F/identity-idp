@@ -2,7 +2,7 @@ include ActionView::Helpers::DateHelper
 
 UserDecorator = Struct.new(:user) do
   def lockout_time_remaining
-    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
+    (Devise.allowed_otp_drift_seconds - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def lockout_time_remaining_in_words
@@ -23,11 +23,11 @@ UserDecorator = Struct.new(:user) do
 
   def first_sentence_for_confirmation_email
     if user.reset_requested_at
-      "Your #{APP_NAME} account has been reset by a tech support representative. " \
+      'Your Upaya account has been reset by a tech support representative. ' \
       'In order to continue, you must confirm your email address.'
     else
-      "To #{user.confirmed_at ? 'finish updating' : 'continue creating'} your " \
-      "#{APP_NAME} Account, you must confirm your email address."
+      "To finish #{user.confirmed_at ? 'updating' : 'creating'} your " \
+      'Upaya Account, you must confirm your email address.'
     end
   end
 
@@ -53,16 +53,6 @@ UserDecorator = Struct.new(:user) do
 
   def identity_not_verified?
     user.identities.pluck(:ial).uniq == [1]
-  end
-
-  def qrcode(otp_secret_key)
-    options = {
-      issuer: 'Login.gov',
-      otp_secret_key: otp_secret_key
-    }
-    url = user.provisioning_uri(nil, options)
-    qrcode = RQRCode::QRCode.new(url)
-    qrcode.as_png(size: 166).to_data_url
   end
 
   private

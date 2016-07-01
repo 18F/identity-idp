@@ -33,8 +33,11 @@ Vagrantfile
 /certs/saml.crt
 /config/application.yml
 /config/aws.yml
+/config/database.yml
 /config/newrelic.yml
+/config/saml.key.enc
 /keys/saml.key.enc
+/config/secrets.yml
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv

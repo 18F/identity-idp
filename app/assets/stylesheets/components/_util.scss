@@ -1,4 +1,22 @@
-// supplemental utility classes
+.text-over-line {
+  position: relative;
+  text-align: center;
 
-.bg-light-blue { background-color: $blue-light; }
-.ws-pre-line { white-space: pre-line; }
+  span {
+    background: $white;
+    padding: 0 1rem;
+    position: relative;
+    z-index: 2;
+  }
+}
+
+.text-over-line::before {
+  border-top: solid 3px $gray-light;
+  content: '';
+  display: block;
+  height: 3px;
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  z-index: 1;
+}

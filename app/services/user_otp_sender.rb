@@ -14,7 +14,7 @@ class UserOtpSender
   # This method is executed by the two_factor_authentication gem upon login
   # and logout. See https://git.io/vgRwz
   def reset_otp_state
-    @user.update(unconfirmed_mobile: nil) unless @user.destroyed?
+    @user.update(unconfirmed_mobile: nil)
   end
 
   private

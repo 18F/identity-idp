@@ -1,28 +1,20 @@
-.field {
-  background-color: $blue-light;
-  color: $gray;
-  font-weight: $bold-font-weight;
-}
-
 [type="submit"] {
   margin-bottom: 1.5rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
 
-  @media #{$breakpoint-max-sm} {
+@media #{$breakpoint-max-sm} {
+  [type="submit"] {
     max-width: 100%;
     width: 100%;
   }
 }
 
-.radio,
-.checkbox {
-  padding-left: 1.5rem;
-}
-
-.radio [type=radio],
-.checkbox [type=checkbox] {
-  margin-left: -1.5rem;
-  margin-top: .25rem;
-  position: absolute;
+.radio label,
+.checkbox label {
+  margin-left: .5rem;
+  vertical-align: baseline;
 }
 
 // hide number field input spin box as per:
@@ -35,6 +27,7 @@
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
+  // display: none; <- Crashes Chrome on hover
   -webkit-appearance: none;
-  margin: 0;
+  margin: 0; // <-- Apparently some margin are still there even though it's hidden
 }
