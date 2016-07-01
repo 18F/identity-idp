@@ -1,9 +1,11 @@
+Identity-IdP (Upaya)
+====================
+
 [![Build Status](https://travis-ci.org/18F/identity-idp.svg?branch=master)](https://travis-ci.org/18F/identity-idp)
 [![Code Climate](https://codeclimate.com/github/18F/identity-idp/badges/gpa.svg)](https://codeclimate.com/github/18F/identity-idp)
 [![Test Coverage](https://codeclimate.com/github/18F/identity-idp/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-idp/coverage)
 [![security](https://hakiri.io/github/18F/identity-idp/master.svg)](https://hakiri.io/github/18F/identity-idp/master)
 
-# Identity-IdP (Upaya)
 A proof-of-concept Identity Management System
 
 #### Dependencies
@@ -52,7 +54,6 @@ at `http://localhost:1080/`.
 
     ![docker](http://cl.ly/1Q0Q1H1i3J3c/download/Screen%20Shot%202016-04-27%20at%202.03.32%20PM.png)
 
-
 More useful Docker commands:
 
 * Stop this running container: `docker-compose stop`
@@ -86,6 +87,10 @@ script. The script will install all of this project's dependencies.
 1. Run the app server with:
 
         $ foreman start
+
+If you want to develop without and internet connection, you can set
+`RAILS_OFFLINE=1` in your envrionment.  This disables the `mx` record
+check on emails addresses.
 
 [Laptop]: https://github.com/18F/laptop
 
