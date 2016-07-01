@@ -7,7 +7,7 @@ module Users
     rescue_from Pundit::NotAuthorizedError do |_exception|
       # We are utilizing Pundit's policy for verifying which user can
       # recover passwords. However, we always want to return success.
-      flash[:success] = t('upaya.notices.password_reset')
+      flash[:success] = t('notices.password_reset')
       redirect_to after_sending_reset_password_instructions_path_for(
         resource_name
       )
@@ -34,7 +34,7 @@ module Users
                         end
       end
 
-      flash[:success] = t('upaya.notices.password_reset')
+      flash[:success] = t('notices.password_reset')
       respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
     end
 

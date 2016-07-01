@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :identity do
-    service_provider 'https://upaya.serviceprovider.com'
+    service_provider 'https://serviceprovider.com'
   end
 
   trait :active do

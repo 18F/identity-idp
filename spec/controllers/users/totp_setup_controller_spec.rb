@@ -51,7 +51,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'sets flash[:error] message' do
-        expect(flash[:error]).to eq t('upaya.errors.invalid_totp')
+        expect(flash[:error]).to eq t('errors.invalid_totp')
       end
 
       it 'does not enable TOTP for the current user' do
@@ -72,7 +72,7 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'sets flash[:success] message' do
-        expect(flash[:success]).to eq t('upaya.notices.totp_configured')
+        expect(flash[:success]).to eq t('notices.totp_configured')
       end
 
       it 'enables totp for the current user' do

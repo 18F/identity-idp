@@ -9,7 +9,7 @@ describe 'devise/sessions/new.html.slim' do
   end
 
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('upaya.titles.visitors.index'))
+    expect(view).to receive(:title).with(t('titles.visitors.index'))
 
     render
   end
@@ -29,7 +29,7 @@ describe 'devise/sessions/new.html.slim' do
 
     expect(rendered).
       to have_link(
-        t('upaya.links.sign_up'), href: new_user_start_path
+        t('links.sign_up'), href: new_user_start_path
       )
   end
 end

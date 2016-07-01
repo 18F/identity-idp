@@ -21,7 +21,7 @@ module Users
 
     def timeout
       flash[:notice] = t(
-        'upaya.session_timedout',
+        'session_timedout',
         session_timeout: distance_of_time_in_words(Devise.timeout_in)
       )
       redirect_to root_url

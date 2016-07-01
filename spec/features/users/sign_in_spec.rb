@@ -129,9 +129,9 @@ feature 'Sign in' do
 
     scenario 'user sees warning before session times out' do
       def warning_content
-        t('upaya.session_timeout_warning',
+        t('session_timeout_warning',
           time_left_in_session: time_left_in_session,
-          continue_text: t('upaya.forms.buttons.continue_browsing'))
+          continue_text: t('forms.buttons.continue_browsing'))
       end
 
       sign_in_and_2fa_user
@@ -177,7 +177,7 @@ feature 'Sign in' do
 
     it 'successfully signs in the user' do
       user = sign_in_user
-      click_link(t('upaya.links.sign_out'))
+      click_link(t('links.sign_out'))
 
       Timecop.travel(Devise.timeout_in + 1.minute)
 
@@ -185,7 +185,7 @@ feature 'Sign in' do
       fill_in 'Password', with: user.password
       click_button 'Log in'
 
-      expect(page).to_not have_content t('upaya.errors.invalid_authenticity_token')
+      expect(page).to_not have_content t('errors.invalid_authenticity_token')
       expect(current_path).to eq users_otp_path
     end
   end

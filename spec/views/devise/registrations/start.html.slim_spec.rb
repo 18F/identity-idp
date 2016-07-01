@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'devise/registrations/start.html.slim' do
   it 'has a localized title' do
-    expect(view).to receive(:title).with(t('upaya.titles.registrations.start'))
+    expect(view).to receive(:title).with(t('titles.registrations.start'))
 
     render
   end

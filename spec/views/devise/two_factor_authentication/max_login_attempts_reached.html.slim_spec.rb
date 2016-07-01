@@ -8,7 +8,7 @@ describe 'devise/two_factor_authentication/max_login_attempts_reached.html.slim'
 
       render
 
-      expect(rendered).to include(t('upaya.titles.account_locked'))
+      expect(rendered).to include(t('titles.account_locked'))
       expect(rendered).to include(t('devise.two_factor_authentication.max_login_attempts_reached'))
       expect(rendered).to include('1000 years')
     end

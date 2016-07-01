@@ -1,6 +1,6 @@
-- title t('upaya.titles.users.edit', user: @user.email)
+- title t('titles.users.edit', user: @user.email)
 
-h3 = t('upaya.headings.users.edit')
+h3 = t('headings.users.edit')
 = required_form_field(@user, html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.error_notification
   = f.input :email, required: true, autofocus: true

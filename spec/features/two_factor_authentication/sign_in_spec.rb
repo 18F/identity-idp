@@ -167,7 +167,7 @@ feature 'Two Factor Authentication', devise: true do
         click_button('Submit')
       end
 
-      expect(page).to have_content t('upaya.titles.account_locked')
+      expect(page).to have_content t('titles.account_locked')
 
       # let 10 minutes (otp validity period) magically pass
       user.update(second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second))

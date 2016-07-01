@@ -1,9 +1,9 @@
 #session-timeout-msg
   .p2.bg-white.border
-    .h3.bold.mb1 = t('upaya.headings.session_timeout_warning')
-    p = t('upaya.session_timeout_warning',
+    .h3.bold.mb1 = t('headings.session_timeout_warning')
+    p = t('session_timeout_warning',
           time_left_in_session: time_left_in_session,
-          continue_text: t('upaya.forms.buttons.continue_browsing'))
-    = link_to t('upaya.forms.buttons.continue_browsing'),
+          continue_text: t('forms.buttons.continue_browsing'))
+    = link_to t('forms.buttons.continue_browsing'),
               request.original_url,
               class: 'btn btn-primary'
