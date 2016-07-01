@@ -16,11 +16,11 @@ class SmsSenderExistingMobileJob < ActiveJob::Base
 
   def existing_mobile_message
     <<-END.strip_heredoc
-      A request was made to use this number to receive one-time passwords from #{APP_NAME}.
+      A request was made to use this number to receive one-time passwords from Upaya.
 
       This number is already set up to receive one-time passwords.
 
-      If you did not make this request, please contact #{APP_NAME} at #{Figaro.env.support_url}.
+      If you did not make this request, please contact Upaya at https://upaya.18f.gov/contact
     END
   end
 end

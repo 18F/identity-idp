@@ -17,8 +17,8 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.body).
         to have_content(
-          "You have asked #{APP_NAME} to change the email address currently associated with your " \
-          "#{APP_NAME} Account"
+          'You have asked Upaya to change the email address currently associated with your ' \
+          'Upaya Account'
         )
     end
   end
@@ -37,9 +37,25 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.body).
         to have_content(
-          "You have asked #{APP_NAME} to change the password currently associated with your " \
-          "#{APP_NAME} Account"
+          'You have asked Upaya to change the password currently associated with your ' \
+          'Upaya Account'
         )
+    end
+  end
+
+  describe 'password_expiry' do
+    let(:mail) { UserMailer.password_expiry(user) }
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('upaya.mailer.password_expires_soon.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.body).to have_content('Your Upaya Account password will expire in 15 days')
     end
   end
 

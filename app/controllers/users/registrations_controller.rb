@@ -3,11 +3,7 @@ module Users
     before_action :confirm_two_factor_authenticated, only: [:edit, :update]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
-    def start
-    end
-
     def new
-      ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
     end
 
@@ -66,7 +62,14 @@ module Users
     end
 
     def process_successful_creation
-      render :verify_email, locals: { email: @register_user_email_form.user.email }
+      if is_flashing_format?
+        flash[:notice] = t(
+          'devise.registrations.signed_up_but_unconfirmed',
+          email: @register_user_email_form.user.email
+        )
+      end
+
+      redirect_to root_path
     end
 
     def disable_account_creation

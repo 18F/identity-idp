@@ -1,0 +1,19 @@
+.panel {
+  background-color: $white;
+  border: 1px solid $gray-light;
+  margin-bottom: 3rem;
+  padding: 2rem;
+}
+
+.panel-heading {
+  border-bottom: 1px solid $gray-light;
+  margin-bottom: 3rem;
+  padding: 1rem 0;
+  text-align: center;
+}
+
+@media #{$breakpoint-sm} {
+  .panel {
+    padding: 3rem;
+  }
+}

@@ -1,12 +1,8 @@
 class TwilioService
   def initialize
-    @client = if FeatureManagement.sms_disabled?
-                NullTwilioClient.new
-              elsif proxy_addr.present?
-                twilio_proxy_client
-              else
-                twilio_client
-              end
+    return null_twilio_client if FeatureManagement.pt_mode?
+    return twilio_proxy_client if proxy_addr.present?
+    twilio_client
   end
 
   def account
@@ -28,8 +24,12 @@ class TwilioService
     Figaro.env.proxy_port
   end
 
+  def null_twilio_client
+    @client ||= NullTwilioClient.new
+  end
+
   def twilio_proxy_client
-    Twilio::REST::Client.new(
+    @client ||= Twilio::REST::Client.new(
       account['sid'],
       account['auth_token'],
       proxy_addr: proxy_addr,
@@ -38,7 +38,7 @@ class TwilioService
   end
 
   def twilio_client
-    Twilio::REST::Client.new(
+    @client ||= Twilio::REST::Client.new(
       account['sid'],
       account['auth_token']
     )

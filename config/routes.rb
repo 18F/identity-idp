@@ -2,7 +2,6 @@ Rails.application.routes.draw do
   authenticate :user, ->(u) { u.admin? } do
     require 'sidekiq/web'
     mount Sidekiq::Web => '/sidekiq'
-    mount Split::Dashboard => '/split'
   end
 
   match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
@@ -20,18 +19,12 @@ Rails.application.routes.draw do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
 
-    get '/start' => 'users/registrations#start', as: :new_user_start
-
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 
     get '/dashboard' => 'dashboard#index', as: :user_root
 
     patch '/confirm' => 'users/confirmations#confirm'
-
-    get '/users/totp' => 'users/totp_setup#new'
-    delete '/users/totp' => 'users/totp_setup#disable', as: :disable_totp
-    patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
 
     get '/users/otp' => 'devise/two_factor_authentication_setup#index'
     patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
@@ -56,13 +49,6 @@ Rails.application.routes.draw do
       post '/saml/decode_logoutresponse' => 'saml_test#decode_response'
       post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
     end
-  end
-
-  namespace :idv do
-    # base redirects to next active question, which will detect if there is active session
-    get '/', to: redirect('/idv/questions')
-
-    resources :questions, :sessions, :confirmations
   end
 
   root to: 'users/sessions#new'

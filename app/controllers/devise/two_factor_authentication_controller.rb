@@ -11,21 +11,17 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def new
     current_user.send_new_otp
     flash[:notice] = t('devise.two_factor_authentication.user.new_otp_sent')
-    redirect_to user_two_factor_authentication_path(method: 'sms')
+    redirect_to user_two_factor_authentication_path
   end
 
   def show
-    if use_totp?
-      show_totp_prompt
-    else
-      show_direct_otp_prompt
-    end
+    @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
   end
 
   def update
     reset_attempt_count_if_user_no_longer_locked_out
 
-    if resource.authenticate_otp(params[:code].strip)
+    if resource.authenticate_otp(params[:code].strip) || FeatureManagement.pt_mode?
       handle_valid_otp
     else
       handle_invalid_otp
@@ -38,12 +34,6 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
       redirect_to dashboard_index_url
     end
-  end
-
-  def use_totp?
-    # Present the TOTP entry screen to users who are TOTP enabled, unless the user explictly
-    # selects SMS, or if they are trying to confirm a new mobile.
-    current_user.totp_enabled? && params[:method] != 'sms' && current_user.unconfirmed_mobile.blank?
   end
 
   def authenticate_scope!
@@ -62,7 +52,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_valid_otp
-    user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+    warden.session(resource_name)[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
 
     sign_in resource_name, resource, bypass: true
     flash[:notice] = t('devise.two_factor_authentication.success')
@@ -94,22 +84,11 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def redirect_valid_resource
-    redirect_to after_sign_in_path_for(resource)
-  end
-
-  def show_direct_otp_prompt
-    # In development, when SMS is disabled we pre-fill the correct code so that
-    # developers can log in without needing to configure SMS delivery.
-    if Rails.env.development? && FeatureManagement.sms_disabled?
-      @code_value = current_user.direct_otp
-    end
-
-    @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
-    render :show
-  end
-
-  def show_totp_prompt
-    render :show_totp
+    redirect_to(
+      after_sign_in_path_for(resource),
+      notice: t('upaya.notices.account_created',
+                date: (Time.current + 1.year).strftime('%B %d, %Y'))
+    )
   end
 
   def handle_invalid_otp
@@ -120,7 +99,8 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     if resource.second_factor_locked?
       handle_second_factor_locked_resource
     else
-      show
+      @user_decorator = UserDecorator.new(current_user)
+      render :show
     end
   end
 
@@ -132,9 +112,11 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_second_factor_locked_resource
-    @user_decorator = UserDecorator.new(current_user)
-    render :max_login_attempts_reached
+    sign_out(resource)
 
-    sign_out
+    render(
+      :max_login_attempts_reached,
+      locals: { user_decorator: UserDecorator.new(resource) }
+    )
   end
 end

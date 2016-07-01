@@ -51,7 +51,7 @@ module Users
       @confirmable.confirm
       @confirmable.update(reset_requested_at: nil)
       ::NewRelic::Agent.increment_metric('Custom/User/Confirmed')
-      sign_in_and_redirect_user
+      sign_in_and_redirect(resource_name, @confirmable)
     end
 
     def process_user_with_password_errors
@@ -60,17 +60,8 @@ module Users
     end
 
     def process_user_with_confirmation_errors
-      return process_already_confirmed_user if @confirmable.confirmed?
-
       set_view_variables
       render :new
-    end
-
-    def process_already_confirmed_user
-      action_text = 'Please sign in.' unless user_signed_in?
-      flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
-
-      redirect_to user_signed_in? ? dashboard_index_url : new_user_session_url
     end
 
     def process_unconfirmed_user
@@ -80,24 +71,22 @@ module Users
         flash[:error] = UserDecorator.new(resource).confirmation_period_expired_error
         render :new
       else
-        flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
+        flash[:notice] = t('devise.confirmations.confirmed')
         render :show
       end
     end
 
-    def after_confirmation_path_for(resource)
-      if !user_signed_in?
-        new_user_session_url
-      elsif resource.two_factor_enabled?
-        dashboard_index_url
+    def after_confirmation_path_for(resource_name, _resource)
+      if signed_in?(resource_name)
+        user_root_path
       else
-        users_otp_url
+        new_session_path(resource_name)
       end
     end
 
     def process_confirmed_user
       flash[:notice] = t('devise.confirmations.confirmed')
-      redirect_to after_confirmation_path_for(@confirmable)
+      redirect_to after_confirmation_path_for(resource_name, resource)
       EmailNotifier.new(@confirmable).send_email_changed_email
     end
 
@@ -106,11 +95,6 @@ module Users
     def permitted_params
       params.require(:password_form).
         permit(:confirmation_token, :password)
-    end
-
-    def sign_in_and_redirect_user
-      sign_in @confirmable
-      redirect_to after_confirmation_path_for(@confirmable)
     end
   end
 end

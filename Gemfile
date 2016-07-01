@@ -3,48 +3,39 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
-gem 'activerecord-session_store'
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise', '~> 4.1'
 gem 'dotiw'
 gem 'figaro'
-gem 'gyoku'
-gem 'hashie'
-gem 'httparty'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'omniauth-saml'
 gem 'phony_rails'
 gem 'pg'
-gem 'premailer-rails'
-gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
 gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
-gem 'rqrcode'
 gem 'ruby-saml'
 gem 'saml_idp', '~> 0.3.1'
 gem 'sass-rails', '~> 5.0'
-gem 'savon'
 gem 'secure_headers', '~> 3.0'
 gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
-gem 'split', require: 'split/dashboard'
 gem 'turbolinks'
 gem 'twilio-ruby'
 gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'xmlenc', '~> 0.6.4'
-gem 'xml-simple'
+gem 'activerecord-session_store', '1.0.0.pre'
 
 group :deploy do
-  gem 'capistrano'
-  gem 'capistrano-rails'
-  gem 'capistrano-rbenv'
+  gem 'capistrano' # , '~> 3.4'
+  gem 'capistrano-rails' # , '~> 1.1', require: false
+  gem 'capistrano-rbenv' # , '~> 2.0', require: false
   gem 'capistrano-sidekiq'
 end
 
@@ -60,19 +51,19 @@ group :development do
   gem 'rack-mini-profiler'
   gem 'rails_layout'
   gem 'rubocop', require: false
+  gem 'slim_lint'
   gem 'spring'
   gem 'spring-commands-rspec'
   gem 'spring-watcher-listen'
 end
 
 group :development, :test do
-  gem 'bullet'
   gem 'i18n-tasks'
-  gem 'mailcatcher', require: false
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.3'
-  gem 'slim_lint'
   gem 'thin'
+  gem 'bullet'
+  gem 'mailcatcher', require: false
 end
 
 group :test do

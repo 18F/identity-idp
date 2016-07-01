@@ -25,10 +25,8 @@ SecureHeaders::Configuration.default do |config|
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
     httponly: true, # mark all cookies as "HttpOnly"
-    # We need to set the SameSite setting to "Lax", not "Strict" until this bug
-    # is fixed in Chrome: https://bugs.chromium.org/p/chromium/issues/detail?id=619603
     samesite: {
-      lax: true # mark all cookies as SameSite=Lax.
+      strict: true # mark all cookies as SameSite=Strict
     }
   }
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.

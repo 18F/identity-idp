@@ -6,7 +6,7 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(Devise).to receive(:direct_otp_valid_for).and_return(535)
+        allow(Devise).to receive(:allowed_otp_drift_seconds).and_return(535)
 
         expect(user_decorator.lockout_time_remaining).to eq 355
       end
@@ -18,7 +18,7 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(Devise).to receive(:direct_otp_valid_for).and_return(535)
+        allow(Devise).to receive(:allowed_otp_drift_seconds).and_return(535)
 
         expect(user_decorator.lockout_time_remaining_in_words).
           to eq '5 minutes and 55 seconds'
@@ -54,7 +54,7 @@ describe UserDecorator do
         user_decorator = UserDecorator.new(user)
 
         expect(user_decorator.first_sentence_for_confirmation_email).
-          to eq "Your #{APP_NAME} account has been reset by a tech support representative. " \
+          to eq 'Your Upaya account has been reset by a tech support representative. ' \
                 'In order to continue, you must confirm your email address.'
       end
     end
@@ -65,7 +65,7 @@ describe UserDecorator do
         user_decorator = UserDecorator.new(user)
 
         expect(user_decorator.first_sentence_for_confirmation_email).
-          to eq "To finish updating your #{APP_NAME} Account, you must confirm your email address."
+          to eq 'To finish updating your Upaya Account, you must confirm your email address.'
       end
     end
 
@@ -75,10 +75,7 @@ describe UserDecorator do
         user_decorator = UserDecorator.new(user)
 
         expect(user_decorator.first_sentence_for_confirmation_email).
-          to eq(
-            "To continue creating your #{APP_NAME} Account, " \
-            'you must confirm your email address.'
-          )
+          to eq 'To finish creating your Upaya Account, you must confirm your email address.'
       end
     end
   end

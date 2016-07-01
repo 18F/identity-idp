@@ -1,14 +1,21 @@
-- title t('upaya.titles.registrations.new', app_name: APP_NAME)
+- title t('upaya.titles.registrations.new')
 
+.clearfix.mxn2
+  .sm-col-6.px2.mx-auto
+    .panel
+      .panel-heading
+        h2.m0 = t('upaya.headings.registrations.new')
 
-h1.heading = t('upaya.headings.registrations.enter_email')
-p.italic Enter the email address you’d like to associate with login.gov
-= simple_form_for(@register_user_email_form,
-    html: { autocomplete: 'off', role: 'form' },
-    url: user_registration_path) do |f|
-  = f.error_notification
-  = f.input :email,
-            required: true,
-            autofocus: true,
-            input_html: { 'aria-describedby' => 'email_description' }
-  = f.button :submit, 'Sign up'
+      = simple_form_for(@register_user_email_form,
+          html: { autocomplete: 'off', role: 'form' },
+          url: user_registration_path) do |f|
+        = f.error_notification
+        = f.input :email,
+                  required: true,
+                  autofocus: true,
+                  input_html: { 'aria-describedby' => 'email_description' }
+        = f.button :submit, 'Sign up'
+        div
+          = t('upaya.forms.registration.already_have_account_html')
+          '
+          = link_to 'Log in', new_user_session_path
