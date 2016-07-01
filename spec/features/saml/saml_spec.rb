@@ -102,17 +102,11 @@ feature 'saml api', devise: true, sms: true do
         expect(xmldoc.signature_nodeset.length).to eq(1)
       end
 
-      it 'applies xmldsig enveloped signature correctly' do
-        skip
-        # Verify
-        #   http://www.w3.org/2000/09/xmldsig#enveloped-signature
-      end
+      # Verify http://www.w3.org/2000/09/xmldsig#enveloped-signature
+      it 'applies xmldsig enveloped signature correctly'
 
-      it 'applies canonicalization method correctly' do
-        skip
-        # Verify
-        #   http://www.w3.org/2001/10/xml-exc-c14n#
-      end
+      # Verify http://www.w3.org/2001/10/xml-exc-c14n#
+      it 'applies canonicalization method correctly'
 
       it 'contains a signature method nodeset with SHA256 algorithm' do
         expect(xmldoc.signature_method_nodeset.length).to eq(1)
