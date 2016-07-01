@@ -72,7 +72,7 @@ describe Users::SessionsController, devise: true do
 
       expect(response.request.env['rack.session']['flash']['flashes']).to(
         have_text(
-          t('upaya.session_timedout',
+          t('session_timedout',
             session_timeout: distance_of_time_in_words(Devise.timeout_in))
         )
       )

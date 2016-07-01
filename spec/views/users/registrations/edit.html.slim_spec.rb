@@ -9,7 +9,7 @@ describe 'users/registrations/edit.html.slim' do
     end
 
     it 'has a localized title' do
-      expect(view).to receive(:title).with(t('upaya.titles.registrations.edit'))
+      expect(view).to receive(:title).with(t('titles.registrations.edit'))
 
       render
     end
@@ -30,9 +30,9 @@ describe 'users/registrations/edit.html.slim' do
     it 'contains link to delete account' do
       render
 
-      expect(rendered).to have_content t('upaya.headings.delete_account')
+      expect(rendered).to have_content t('headings.delete_account')
       expect(rendered).
-        to have_xpath("//input[@value='#{t('upaya.forms.buttons.delete_account')}']")
+        to have_xpath("//input[@value='#{t('forms.buttons.delete_account')}']")
     end
   end
 

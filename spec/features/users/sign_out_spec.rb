@@ -11,7 +11,7 @@ feature 'Sign out', devise: true do
   #   Then I see a signed out message
   scenario 'user signs out successfully' do
     sign_in_user
-    click_link(t('upaya.links.sign_out'))
+    click_link(t('links.sign_out'))
 
     expect(page).to have_content t('devise.sessions.signed_out')
   end
