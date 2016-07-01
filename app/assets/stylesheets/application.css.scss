@@ -1,8 +1,9 @@
 @import 'fonts';
-@import 'variables';
+
+@import 'variables/base';
+@import 'variables/web';
 
 @import 'normalize';
 @import 'basscss/basscss';
 
-@import 'base';
 @import 'components/all';
