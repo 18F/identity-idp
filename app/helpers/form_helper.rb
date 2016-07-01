@@ -7,19 +7,19 @@ module FormHelper
     end
   end
 
-  def block_text_field_tag(name, value)
-    text_field_tag(name, value, class: 'block col-12 mb2 field')
+  def block_text_field_tag(name, value, options = {})
+    text_field_tag(name, value, options.merge(class: 'block col-12 mb2 field'))
   end
 
-  def block_date_field_tag(name, value)
-    date_field_tag(name, value, class: 'block col-12 mb2 field')
+  def block_date_field_tag(name, value, options = {})
+    date_field_tag(name, value, options.merge(class: 'block col-12 mb2 field'))
   end
 
-  def us_states_territories_select_tag
+  def us_states_territories_select_tag(options = {})
     select_tag(
       'state',
       options_for_select(us_states_territories),
-      class: 'block col-12 mb2 field'
+      options.merge(class: 'block col-12 mb2 field')
     )
   end
 
