@@ -22,7 +22,7 @@ module Users
       if current_user.otp_secret_key.present?
         current_user.update(otp_secret_key: nil)
       end
-      flash[:success] = t('upaya.notices.totp_disabled')
+      flash[:success] = t('notices.totp_disabled')
       redirect_to edit_user_registration_path
     end
 
@@ -34,13 +34,13 @@ module Users
     end
 
     def process_valid_code
-      flash[:success] = t('upaya.notices.totp_configured')
+      flash[:success] = t('notices.totp_configured')
       redirect_to edit_user_registration_path
       user_session.delete(:new_totp_secret)
     end
 
     def process_invalid_code
-      flash[:error] = t('upaya.errors.invalid_totp')
+      flash[:error] = t('errors.invalid_totp')
       redirect_to users_totp_path
     end
   end

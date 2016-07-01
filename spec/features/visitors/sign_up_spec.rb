@@ -35,8 +35,8 @@ feature 'Sign Up', devise: true do
     confirm_last_user
 
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
-    expect(page).to have_title t('upaya.titles.confirmations.show', app_name: APP_NAME)
-    expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
+    expect(page).to have_title t('titles.confirmations.show')
+    expect(page).to have_content t('forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: VALID_PASSWORD
     click_button 'Submit'
@@ -88,7 +88,7 @@ feature 'Sign Up', devise: true do
         click_button 'Submit'
       end
 
-      expect(page).to_not have_content t('upaya.titles.account_locked')
+      expect(page).to_not have_content t('titles.account_locked')
       visit user_two_factor_authentication_path
       expect(current_path).to eq user_two_factor_authentication_path
     end
@@ -105,7 +105,7 @@ feature 'Sign Up', devise: true do
     # JJG - I think we should go as far as making sure the user enters
     # a new number and that the OTP is sent to the new number.
     it 'allows user to enter new number if they Sign Out before confirming' do
-      click_link(t('upaya.links.sign_out'))
+      click_link(t('links.sign_out'))
       signin(@user.reload.email, VALID_PASSWORD)
       expect(current_path).to eq users_otp_path
     end

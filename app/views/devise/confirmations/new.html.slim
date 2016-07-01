@@ -1,7 +1,7 @@
-- title t('upaya.titles.confirmations.new', app_name: APP_NAME)
+- title t('titles.confirmations.new')
 
 
-h1.heading = t('upaya.headings.confirmations.new')
+h1.heading = t('headings.confirmations.new')
 = simple_form_for(resource,
                   as: resource_name,
                   url: confirmation_path(resource_name),
@@ -10,4 +10,4 @@ h1.heading = t('upaya.headings.confirmations.new')
     = f.error_notification
     = f.full_error :confirmation_token
   = f.input :email, required: true, autofocus: true
-  = f.button :submit, t('upaya.forms.buttons.resend_confirmation')
+  = f.button :submit, t('forms.buttons.resend_confirmation')

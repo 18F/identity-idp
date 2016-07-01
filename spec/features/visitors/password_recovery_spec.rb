@@ -15,7 +15,7 @@ feature 'Password Recovery' do
 
   before(:each) do
     visit root_path
-    click_link t('upaya.headings.passwords.forgot')
+    click_link t('headings.passwords.forgot')
   end
 
   # Scenario: User can request a password reset link be sent to them
@@ -26,7 +26,7 @@ feature 'Password Recovery' do
     before do
       user = create(:user, :signed_up)
       fill_in 'Email', with: user.email
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
     end
 
     it 'uses a relevant email subject' do
@@ -39,7 +39,7 @@ feature 'Password Recovery' do
     end
 
     it 'displays a localized notice' do
-      expect(page).to have_content t('upaya.notices.password_reset')
+      expect(page).to have_content t('notices.password_reset')
     end
 
     it 'includes a link to reset the password in the email' do
@@ -68,15 +68,15 @@ feature 'Password Recovery' do
       click_email_link_matching(/confirmation_token/)
       reset_email
       visit root_path
-      click_link t('upaya.headings.passwords.forgot')
+      click_link t('headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
       open_last_email
       click_email_link_matching(/confirmation_token/)
     end
 
     it 'shows the password form' do
-      expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
+      expect(page).to have_content t('forms.confirmation.show_hdr')
     end
   end
 
@@ -99,7 +99,7 @@ feature 'Password Recovery' do
     end
 
     it 'shows the password form' do
-      expect(page).to have_content t('upaya.forms.confirmation.show_hdr')
+      expect(page).to have_content t('forms.confirmation.show_hdr')
     end
   end
 
@@ -111,17 +111,17 @@ feature 'Password Recovery' do
   context 'user with password confirmation resets password', email: true do
     before do
       sign_up_with_and_set_password_for('email@example.com')
-      click_link(t('upaya.links.sign_out'))
+      click_link(t('links.sign_out'))
       visit root_path
-      click_link t('upaya.headings.passwords.forgot')
+      click_link t('headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
       open_last_email
       click_email_link_matching(/reset_password_token/)
     end
 
     it 'shows the password form' do
-      expect(page).to have_content t('upaya.headings.passwords.change')
+      expect(page).to have_content t('headings.passwords.change')
     end
 
     it 'keeps user signed out after they successfully reset their password' do
@@ -141,11 +141,11 @@ feature 'Password Recovery' do
   context 'user with invalid token cannot reset password', email: true do
     before do
       sign_up_with_and_set_password_for('email@example.com')
-      click_link(t('upaya.links.sign_out'))
+      click_link(t('links.sign_out'))
       visit root_path
-      click_link t('upaya.headings.passwords.forgot')
+      click_link t('headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
       visit edit_user_password_path(reset_password_token: 'invalid_token')
     end
 
@@ -169,17 +169,17 @@ feature 'Password Recovery' do
       click_button 'Submit'
       fill_in 'code', with: User.last.direct_otp
       click_button 'Submit'
-      click_link(t('upaya.links.sign_out'))
+      click_link(t('links.sign_out'))
       visit root_path
-      click_link t('upaya.headings.passwords.forgot')
+      click_link t('headings.passwords.forgot')
       fill_in 'Email', with: 'email@example.com'
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
       open_last_email
       click_email_link_matching(/reset_password_token/)
     end
 
     it 'shows the password form' do
-      expect(page).to have_content t('upaya.headings.passwords.change')
+      expect(page).to have_content t('headings.passwords.change')
     end
 
     it 'redirects user to dashboard after signing back in' do
@@ -204,7 +204,7 @@ feature 'Password Recovery' do
 
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
@@ -219,20 +219,20 @@ feature 'Password Recovery' do
 
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
   end
 
   scenario 'user submits blank email address' do
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
   end
 
   scenario 'user submits blank email address and has JS turned on', js: true do
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content 'Please fill in all required fields'
   end
@@ -243,7 +243,7 @@ feature 'Password Recovery' do
   #   Then I still don't know if an account exists
   scenario 'user is unable to determine if account exists' do
     fill_in 'Email', with: 'no_account_exists@gmail.com'
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
     expect(page).to have_content(t('devise.passwords.send_instructions'))
   end
 
@@ -256,7 +256,7 @@ feature 'Password Recovery' do
       @user = create(:user, :signed_up)
 
       fill_in 'Email', with: @user.email
-      click_button t('upaya.forms.buttons.reset_password')
+      click_button t('forms.buttons.reset_password')
 
       raw_reset_token, db_confirmation_token =
         Devise.token_generator.generate(User, :reset_password_token)
@@ -312,7 +312,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
 
     fill_in 'Email', with: user.email
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     user.reset_password_sent_at =
       Time.zone.now - Devise.reset_password_within - 1.hour
@@ -337,7 +337,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up)
 
     fill_in 'Email', with: user.email
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     raw_reset_token, db_confirmation_token =
       Devise.token_generator.generate(User, :reset_password_token)
@@ -365,20 +365,20 @@ feature 'Password Recovery' do
     user.update(confirmed_at: nil)
 
     visit root_path
-    click_link t('upaya.headings.passwords.forgot')
+    click_link t('headings.passwords.forgot')
     fill_in 'Email', with: user.email
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     expect(last_email.subject).
       to eq t('devise.mailer.confirmation_instructions.subject')
   end
 
   scenario 'passwords new view has a localized title' do
-    expect(page).to have_title t('upaya.titles.passwords.forgot', app_name: APP_NAME)
+    expect(page).to have_title t('titles.passwords.forgot')
   end
 
   scenario 'passwords new view has a localized heading' do
-    expect(page).to have_content t('upaya.headings.passwords.forgot')
+    expect(page).to have_content t('headings.passwords.forgot')
   end
 
   # Scenario: User enters non-existent email address into password reset form
@@ -387,7 +387,7 @@ feature 'Password Recovery' do
   #   Then I see 'email sent'
   scenario 'user enters non-existent email address into password reset form' do
     fill_in 'user_email', with: 'ThisEmailAddressShall@NeverExist.com'
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content t('devise.passwords.send_instructions')
     expect(page).not_to(have_content('not found'))
@@ -403,7 +403,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up, :tech_support)
 
     fill_in 'user_email', with: user.email
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content t('devise.passwords.send_instructions')
     expect(ActionMailer::Base.deliveries).to be_empty
@@ -418,7 +418,7 @@ feature 'Password Recovery' do
     user = create(:user, :signed_up, :admin)
 
     fill_in 'user_email', with: user.email
-    click_button t('upaya.forms.buttons.reset_password')
+    click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content t('devise.passwords.send_instructions')
     expect(ActionMailer::Base.deliveries).to be_empty

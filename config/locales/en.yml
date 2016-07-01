@@ -1,88 +1,89 @@
 en:
-  upaya:
-    errors:
-      invalid_totp: 'Invalid code entered.  Please try again.'
-      not_authorized: 'You are not authorized to perform this action.'
-      invalid_authenticity_token: 'Oops, something went wrong. Please sign in again.'
+  errors:
+    invalid_totp: Invalid code entered.  Please try again.
+    not_authorized: You are not authorized to perform this action.
+    invalid_authenticity_token: Oops, something went wrong. Please sign in again.
+    messages:
+      improbable_phone: Mobile number is invalid. Please make sure you enter a 10-digit phone number.
 
-    forms:
-      buttons:
-        continue_browsing: Continue Browsing
-        delete_account: Delete My Account
-        resend_confirmation: Resend confirmation instructions
-        reset_password: Send reset password instructions
-      required_field: Indicates a required field.
-      registration:
-        need_password: Please verify your current password to confirm changes.
-      two_factor:
-        code: Secure one-time password
-      totp_setup:
-        header_text: Authenticator App Setup
-        totp_info: >
-          To enable app-based authentication, use your TOTP-compatible mobile
-          app to scan the QR code below, then enter the app-generated code
-          in the box below.
-        code: App-generated code
-      confirmation:
-        show_hdr: Create a Password
+  forms:
+    buttons:
+      continue_browsing: Continue Browsing
+      delete_account: Delete My Account
+      resend_confirmation: Resend confirmation instructions
+      reset_password: Send reset password instructions
+    required_field: Indicates a required field.
+    registration:
+      need_password: Please verify your current password to confirm changes.
+    two_factor:
+      code: Secure one-time password
+    totp_setup:
+      header_text: Authenticator App Setup
+      totp_info: >
+        To enable app-based authentication, use your TOTP-compatible mobile
+        app to scan the QR code below, then enter the app-generated code
+        in the box below.
+      code: App-generated code
+    confirmation:
+      show_hdr: Create a Password
 
-    links:
-      sign_out: 'Sign out'
-      sign_in: 'Log in'
-      sign_up: 'Sign up'
-    notices:
-      totp_configured: Authenticator app successfully configured
-      totp_disabled: Authenticator app disabled
-      password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
-    session_timedout: "For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again."
-    session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
-    titles:
-      confirmations:
-        new: Resend confirmation instructions for your %{app_name} Account
-        show: Create a Password for your %{app_name} Account
-      dashboard: Your %{app_name} Account
-      enter_2fa_code: Enter the secure one-time password to log in to your %{app_name} Account
-      account_locked: Account Locked
-      passwords:
-        change: Change your password for your %{app_name} Account
-        forgot: Reset your password for your %{app_name} Account
-      registrations:
-        edit: Edit your %{app_name} Account
-        new: Sign up for a %{app_name} Account
-        start: Get started
-      two_factor_setup: Two-factor Authentication Setup
-      users:
-        edit: Editing User - %{user}
-        index: Manage Users
-        show: User - %{user}
-      visitors:
-        index: Welcome to %{app_name}
+  links:
+    sign_out: 'Sign out'
+    sign_in: 'Log in'
+    sign_up: 'Sign up'
+  notices:
+    totp_configured: Authenticator app successfully configured
+    totp_disabled: Authenticator app disabled
+    password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
+  session_timedout: "For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again."
+  session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
+  titles:
+    confirmations:
+      new: Resend confirmation instructions for your account
+      show: Create a password for your account
+    dashboard: Dashboard
+    enter_2fa_code: Enter the secure one-time password to log in to your account
+    account_locked: Account locked
+    passwords:
+      change: Change the password for your account
+      forgot: Reset the password for your account
+    registrations:
+      edit: Edit your account
+      new: Sign up for a account
+      start: Get started
+    two_factor_setup: Two-factor Authentication Setup
+    users:
+      edit: Editing User - %{user}
+      index: Manage Users
+      show: User - %{user}
+    visitors:
+      index: Welcome
 
-    headings:
-      admin:
-        index: Admin Interface
-      confirmations:
-        new: Resend confirmation instructions
-      delete_account: Delete Account
-      log_in: Log in
-      passwords:
-        change: Change your password
-        forgot: Forgot password?
-      registrations:
-        enter_email: Email address
-        verify_email: Verify email address
-      search: Search for a user
-      session_timeout_warning: Session Timeout
-      users:
-        edit: Edit User
-        index: Users
-        show: User Details
+  headings:
+    admin:
+      index: Admin Interface
+    confirmations:
+      new: Resend confirmation instructions
+    delete_account: Delete Account
+    log_in: Log in
+    passwords:
+      change: Change your password
+      forgot: Forgot password?
+    registrations:
+      enter_email: Email address
+      verify_email: Verify email address
+    search: Search for a user
+    session_timeout_warning: Session Timeout
+    users:
+      edit: Edit User
+      index: Users
+      show: User Details
 
-    mailer:
-      email_reuse_notice:
-        subject: Email confirmation notification
-      email_change_notice:
-        subject: Email change notification
+  mailer:
+    email_reuse_notice:
+      subject: Email confirmation notification
+    email_change_notice:
+      subject: Email change notification
 
   activerecord:
     errors:
@@ -126,6 +127,3 @@ en:
         ssn: Social Security Number (SSN)
         address: Mailing address
         finance: Financial information
-  errors:
-    messages:
-      improbable_phone: 'Mobile number is invalid. Please make sure you enter a 10-digit phone number.'

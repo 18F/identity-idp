@@ -1,4 +1,4 @@
-- title t('upaya.titles.registrations.edit', app_name: APP_NAME)
+- title t('titles.registrations.edit')
 
 
 h1.heading = 'Update information'
@@ -7,7 +7,7 @@ h1.heading = 'Update information'
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   = render 'devise/registrations/form', f: f
-  p.italic = t('upaya.forms.registration.need_password')
+  p.italic = t('forms.registration.need_password')
   = f.input(:current_password, required: true)
   = f.button :submit, 'Update'
 
@@ -17,8 +17,8 @@ h1.heading = 'Authenticator App'
 - else
   = button_to 'Enable', users_totp_url, method: :get, class: 'btn btn-primary'
 
-h1.heading = t('upaya.headings.delete_account')
-= button_to t('upaya.forms.buttons.delete_account'), \
+h1.heading = t('headings.delete_account')
+= button_to t('forms.buttons.delete_account'), \
           { action: :destroy, id: current_user.id }, \
           method: :delete, \
           data: { confirm: 'Are you sure?' }, \

@@ -163,7 +163,7 @@ describe 'user edits their account', email: true do
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq '+1 (202) 555-1212'
-      expect(last_email.subject).to eq t('upaya.mailer.email_reuse_notice.subject')
+      expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')
       expect(number_of_emails_sent).to eq 1
     end
 
@@ -231,7 +231,7 @@ describe 'user edits their account', email: true do
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq '+1 (202) 555-1212'
-      expect(last_email.subject).to eq t('upaya.mailer.email_reuse_notice.subject')
+      expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')
       expect(number_of_emails_sent).to eq 1
     end
 

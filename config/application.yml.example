@@ -9,7 +9,7 @@
 # Figaro requires all values to be explicit strings.
 
 mailer_domain_name: 'http://localhost:3000'
-support_url: 'https://upaya.18f.gov/contact'
+support_url: 'https://18f.gov/contact'
 
 development:
   allow_third_party_auth: 'yes'
