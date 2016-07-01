@@ -2,7 +2,6 @@
   background-color: $white;
   box-sizing: border-box;
   margin-bottom: $space-4;
-  max-width: 500px;
   padding: $space-3 $space-2;
 
   @media #{$breakpoint-sm} {
@@ -10,3 +9,6 @@
     padding: $space-4;
   }
 }
+
+.card-narrow { max-width: 500px; }
+.card-wide { max-width: 1000px; }
