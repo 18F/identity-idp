@@ -77,7 +77,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def update_metrics
-    ::NewRelic::Agent.increment_metric('Custom/User/OtpAuthenticated')
+    analytics.track_event('User 2FA successful')
   end
 
   def send_number_change_sms_if_needed
@@ -113,6 +113,8 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_invalid_otp
+    analytics.track_event('User entered invalid 2FA code')
+
     update_invalid_resource if resource.two_factor_enabled?
 
     flash.now[:error] = t('devise.two_factor_authentication.attempt_failed')

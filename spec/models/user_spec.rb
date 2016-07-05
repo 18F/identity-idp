@@ -148,16 +148,6 @@ describe User do
     end
   end
 
-  describe '#log' do
-    it 'sends the message to the Rails info logger' do
-      user = create(:user)
-      expect(Rails.logger).to receive(:info).
-        with("[#{user.uuid}] [Hello world]")
-
-      user.log('Hello world')
-    end
-  end
-
   context 'when identities are present' do
     let(:user) { create(:user, :signed_up) }
     let(:active_identity) do

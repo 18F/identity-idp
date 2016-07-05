@@ -62,6 +62,10 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     context 'when the user enters an invalid OTP' do
       before do
         sign_in_before_2fa
+
+        stub_analytics(subject.current_user)
+        expect(@analytics).to receive(:track_event).with('User entered invalid 2FA code')
+
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
         expect(subject.current_user).to receive(:authenticate_otp).and_return(false)
         patch :update, code: '12345'
@@ -99,6 +103,14 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         patch :update, code: subject.current_user.reload.direct_otp
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+      end
+
+      it 'tracks the valid authentication event' do
+        stub_analytics(subject.current_user)
+        expect(@analytics).to receive(:track_event).with('User 2FA successful')
+        expect(@analytics).to receive(:track_event).with('Authentication Successful')
+
+        patch :update, code: subject.current_user.reload.direct_otp
       end
     end
 

@@ -1,5 +1,11 @@
+FeatureEnvy:
+  exclude:
+   - 'track_registration'
 IrresponsibleModule:
   enabled: false
+TooManyMethods:
+  exclude:
+    - Users::ConfirmationsController
 exclude_paths:
   - db/migrate
   - spec/**/*

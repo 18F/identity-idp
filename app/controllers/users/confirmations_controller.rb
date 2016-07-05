@@ -29,12 +29,12 @@ module Users
     protected
 
     def with_unconfirmed_confirmable
-      @confirmable = User.find_or_initialize_with_error_by(
-        :confirmation_token, params[:confirmation_token]
-      )
+      token = params[:confirmation_token]
+
+      @confirmable = User.find_or_initialize_with_error_by(:confirmation_token, token)
 
       if @confirmable.confirmed?
-        @confirmable = User.confirm_by_token(params[:confirmation_token])
+        @confirmable = User.confirm_by_token(token)
       end
 
       @password_form = PasswordForm.new(@confirmable)
@@ -48,13 +48,16 @@ module Users
     end
 
     def do_confirm
+      analytics.track_event('Password Created and User Confirmed', @confirmable)
+
       @confirmable.confirm
       @confirmable.update(reset_requested_at: nil)
-      ::NewRelic::Agent.increment_metric('Custom/User/Confirmed')
       sign_in_and_redirect_user
     end
 
     def process_user_with_password_errors
+      analytics.track_event('Password Creation: invalid', @confirmable)
+
       set_view_variables
       render :show
     end
@@ -62,11 +65,15 @@ module Users
     def process_user_with_confirmation_errors
       return process_already_confirmed_user if @confirmable.confirmed?
 
+      track_invalid_confirmation_token(params[:confirmation_token])
+
       set_view_variables
       render :new
     end
 
     def process_already_confirmed_user
+      analytics.track_event('Email Confirmation: User Already Confirmed', @confirmable)
+
       action_text = 'Please sign in.' unless user_signed_in?
       flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
 
@@ -77,12 +84,24 @@ module Users
       set_view_variables
 
       if resource.confirmation_period_expired?
-        flash[:error] = UserDecorator.new(resource).confirmation_period_expired_error
-        render :new
+        process_expired_confirmation_token
       else
-        flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
-        render :show
+        process_valid_confirmation_token
       end
+    end
+
+    def process_expired_confirmation_token
+      analytics.track_event('Email Confirmation: token expired', @confirmable)
+
+      flash[:error] = UserDecorator.new(resource).confirmation_period_expired_error
+      render :new
+    end
+
+    def process_valid_confirmation_token
+      analytics.track_event('Email Confirmation: valid token', @confirmable)
+
+      flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
+      render :show
     end
 
     def after_confirmation_path_for(resource)
@@ -96,6 +115,8 @@ module Users
     end
 
     def process_confirmed_user
+      analytics.track_event('Email changed and confirmed', @confirmable)
+
       flash[:notice] = t('devise.confirmations.confirmed')
       redirect_to after_confirmation_path_for(@confirmable)
       EmailNotifier.new(@confirmable).send_email_changed_email
@@ -111,6 +132,12 @@ module Users
     def sign_in_and_redirect_user
       sign_in @confirmable
       redirect_to after_confirmation_path_for(@confirmable)
+    end
+
+    def track_invalid_confirmation_token(token)
+      token ||= 'nil'
+
+      analytics.track_anonymous_event('Invalid Email Confirmation Token', token)
     end
   end
 end

@@ -107,5 +107,24 @@ describe Users::SessionsController, devise: true do
 
       post :create, user: { email: 'user@example.com', password: '!1aZ' * 32 }
     end
+
+    it 'tracks the authentication for existing user' do
+      user = create(:user, :signed_up)
+
+      stub_analytics(user)
+      expect(@analytics).to receive(:track_event).with('Authentication Attempt', user)
+      expect(@analytics).to receive(:track_event).with('Authentication Successful')
+
+      post :create, user: { email: user.email, password: user.password }
+    end
+
+    it 'tracks the authentication attempt for nonexistent user' do
+      stub_analytics
+      expect(@analytics).to receive(:track_anonymous_event).
+        with('Authentication Attempt with nonexistent user')
+      expect(@analytics).to_not receive(:track_event).with('Authentication Successful')
+
+      post :create, user: { email: 'foo@example.com', password: 'password' }
+    end
   end
 end

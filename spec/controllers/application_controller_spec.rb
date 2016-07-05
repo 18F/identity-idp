@@ -8,25 +8,16 @@ describe ApplicationController do
       end
     end
 
-    it 'redirects to the sign in page' do
-      get :index
-
-      expect(response).to redirect_to(root_url)
-    end
-
-    it 'write to Rails log' do
-      expect(Rails.logger).
-        to receive(:info).with('Rescuing InvalidAuthenticityToken')
-
-      get :index
-    end
-
-    it 'signs user out' do
+    it 'tracks the InvalidAuthenticityToken event and signs user out' do
       sign_in_as_user
       expect(subject.current_user).to be_present
 
+      stub_analytics(subject.current_user)
+      expect(@analytics).to receive(:track_event).with('InvalidAuthenticityToken')
+
       get :index
 
+      expect(flash[:error]).to eq t('errors.invalid_authenticity_token')
       expect(response).to redirect_to(root_url)
       expect(subject.current_user).to be_nil
     end
