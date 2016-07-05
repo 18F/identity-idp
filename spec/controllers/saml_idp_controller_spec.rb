@@ -541,48 +541,30 @@ describe SamlIdpController do
       # a <saml:Conditions> element, which gives the conditions under which
       # the assertion is to be considered valid
       context 'Conditions' do
-        it 'has a saml:Conditions element' do
-          skip
-        end
+        it 'has a saml:Conditions element'
 
-        it 'has a NotBefore attribute' do
-          skip
-        end
+        it 'has a NotBefore attribute'
 
-        it 'has a NotOnOrAfter attribute' do
-          skip
-        end
+        it 'has a NotOnOrAfter attribute'
       end
 
       # a <saml:AuthnStatement> element, which describes the act of
       # authentication at the identity provider
       context 'AuthnStatement' do
-        it 'has a saml:AuthnStatement element' do
-          skip
-        end
+        it 'has a saml:AuthnStatement element'
 
-        it 'has an AuthnInstant attribute' do
-          skip
-        end
+        it 'has an AuthnInstant attribute'
 
-        it 'has a SessionIndex attribute' do
-          skip
-        end
+        it 'has a SessionIndex attribute'
       end
 
       context 'AuthnContext' do
-        it 'has a saml:AuthnContext element' do
-          skip
-        end
+        it 'has a saml:AuthnContext element'
 
         context 'AuthnContextClassRef' do
-          it 'has a saml:AuthnContextClassRef element' do
-            skip
-          end
+          it 'has a saml:AuthnContextClassRef element'
 
-          it 'has contents set to the loa of the ial?' do
-            skip
-          end
+          it 'has contents set to the loa of the ial?'
         end
       end
 
