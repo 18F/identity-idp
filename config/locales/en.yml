@@ -9,7 +9,7 @@ en:
   forms:
     buttons:
       continue_browsing: Continue Browsing
-      delete_account: Delete My Account
+      delete_account: Delete
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
     required_field: Indicates a required field.
@@ -41,12 +41,12 @@ en:
     confirmations:
       new: Resend confirmation instructions for your account
       show: Create a password for your account
-    dashboard: Dashboard
     enter_2fa_code: Enter the secure one-time password to log in to your account
     account_locked: Account locked
     passwords:
       change: Change the password for your account
       forgot: Reset the password for your account
+    profile: Profile
     registrations:
       edit: Edit your account
       new: Sign up for a account
@@ -64,11 +64,15 @@ en:
       index: Admin Interface
     confirmations:
       new: Resend confirmation instructions
-    delete_account: Delete Account
+    delete_account: Delete my login.gov account
     log_in: Log in
     passwords:
       change: Change your password
       forgot: Forgot password?
+    profile:
+      main: My account
+      account_settings: Account settings
+      advanced_settings: Advanced settings
     registrations:
       enter_email: Email address
       verify_email: Verify email address

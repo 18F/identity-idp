@@ -1,8 +1,5 @@
 - if signed_in?
-  - if current_user.admin?
-    = render 'dashboard/admin/navigation'
-  - else
-    .clearfix.p2
-      .sm-col-right.h5
-        = link_to t('links.sign_out'),
-          destroy_user_session_path, method: 'delete', class: 'navy bold'
+  .clearfix.p2
+    .sm-col-right.h5
+      = link_to t('links.sign_out'),
+        destroy_user_session_path, method: 'delete', class: 'navy bold'

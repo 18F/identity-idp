@@ -141,7 +141,7 @@ feature 'Sign in' do
 
       find_link('Continue Browsing').trigger('click')
 
-      expect(current_path).to eq dashboard_index_path
+      expect(current_path).to eq profile_index_path
     end
   end
 

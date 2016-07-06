@@ -5,7 +5,7 @@ Rails.application.routes.draw do
     mount Split::Dashboard => '/split'
   end
 
-  match '/dashboard' => 'dashboard#index', as: :dashboard_index, via: :get
+  match '/profile' => 'profile#index', as: :profile_index, via: :get
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
@@ -25,7 +25,7 @@ Rails.application.routes.draw do
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 
-    get '/dashboard' => 'dashboard#index', as: :user_root
+    get '/profile' => 'profile#index', as: :user_root
 
     patch '/confirm' => 'users/confirmations#confirm'
 

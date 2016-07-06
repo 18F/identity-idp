@@ -93,7 +93,7 @@ feature 'Two Factor Authentication', devise: true do
           click_button 'Submit'
           visit users_otp_path
 
-          expect(current_path).to eq dashboard_index_path
+          expect(current_path).to eq profile_index_path
         end
 
         it 'does not allow user to bypass entering OTP' do

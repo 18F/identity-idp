@@ -36,7 +36,7 @@ module Features
     def sign_in_with_warden(user)
       login_as(user, scope: :user, run_callbacks: false)
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
-      visit dashboard_index_path
+      visit profile_index_path
     end
 
     def sign_in_and_2fa_user(user = create(:user, :signed_up, mobile: '555-555-5556'))

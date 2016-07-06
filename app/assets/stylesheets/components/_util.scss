@@ -2,3 +2,7 @@
 
 .bg-light-blue { background-color: $blue-light; }
 .ws-pre-line { white-space: pre-line; }
+
+@media #{$breakpoint-sm} {
+  .sm-right-align { text-align: right; }
+}

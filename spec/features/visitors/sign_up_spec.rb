@@ -62,12 +62,12 @@ feature 'Sign Up', devise: true do
       @user = User.find_by_email('test@example.com')
     end
 
-    it 'updates mobile_confirmed_at and redirects to dashboard after confirmation' do
+    it 'updates mobile_confirmed_at and redirects to profile after confirmation' do
       fill_in 'Secure one-time password', with: @user.direct_otp
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
-      expect(current_path).to eq dashboard_index_path
+      expect(current_path).to eq profile_index_path
     end
 
     it 'does not enable 2FA until correct OTP is entered' do
@@ -216,12 +216,12 @@ feature 'Sign Up', devise: true do
   end
 
   context 'confirmed user is signed in and tries to confirm again' do
-    it 'redirects the user to the dashboard' do
+    it 'redirects the user to the profile' do
       sign_up_and_2fa('test@example.com')
 
       visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(current_url).to eq dashboard_index_url
+      expect(current_url).to eq profile_index_url
     end
   end
 

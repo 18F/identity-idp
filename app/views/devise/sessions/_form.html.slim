@@ -8,5 +8,5 @@
             hint: link_to(t('headings.passwords.forgot'),
                           new_password_path(resource_name)),
             hint_html: { class: 'py1 line-height-1 right-align' }
-  = f.button :submit, t('headings.log_in')
+  = f.button :submit, t('headings.log_in'), class: 'mb2'
 = render 'devise/shared/links'

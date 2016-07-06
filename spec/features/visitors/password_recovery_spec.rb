@@ -182,12 +182,12 @@ feature 'Password Recovery' do
       expect(page).to have_content t('headings.passwords.change')
     end
 
-    it 'redirects user to dashboard after signing back in' do
+    it 'redirects user to profile after signing back in' do
       reset_password_and_sign_back_in
       fill_in 'code', with: User.last.direct_otp
       click_button 'Submit'
 
-      expect(current_path).to eq dashboard_index_path
+      expect(current_path).to eq profile_index_path
     end
   end
 
