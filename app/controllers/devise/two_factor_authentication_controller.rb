@@ -36,7 +36,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
 
   def check_already_authenticated
     if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
-      redirect_to dashboard_index_url
+      redirect_to profile_index_path
     end
   end
 

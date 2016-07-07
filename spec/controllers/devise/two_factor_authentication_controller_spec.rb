@@ -29,17 +29,17 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         sign_in user
       end
 
-      it 'redirects to the dashboard' do
+      it 'redirects to the profile' do
         get :index
 
-        expect(response).to redirect_to(dashboard_index_url)
+        expect(response).to redirect_to(profile_index_url)
       end
 
       it 'does not redirect if the user has an unconfirmed mobile' do
         subject.current_user.unconfirmed_mobile = '123'
         get :index
 
-        expect(response).not_to redirect_to(dashboard_index_url)
+        expect(response).not_to redirect_to(profile_index_url)
         expect(response.code).to eq('200')
       end
     end
@@ -49,10 +49,10 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         sign_in_before_2fa
       end
 
-      it 'does not redirect to the dashboard' do
+      it 'does not redirect to the profile' do
         get :index
 
-        expect(response).not_to redirect_to(dashboard_index_url)
+        expect(response).not_to redirect_to(profile_index_url)
         expect(response.code).to eq('200')
       end
     end
@@ -88,10 +88,10 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
-      it 'redirects to the dashboard' do
+      it 'redirects to the profile' do
         patch :update, code: subject.current_user.reload.direct_otp
 
-        expect(response).to redirect_to dashboard_index_path
+        expect(response).to redirect_to profile_index_path
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -126,8 +126,8 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           patch :update, code: generate_totp_code(@secret)
         end
 
-        it 'redirects to the dashboard' do
-          expect(response).to redirect_to dashboard_index_path
+        it 'redirects to the profile' do
+          expect(response).to redirect_to profile_index_path
         end
       end
 
@@ -155,8 +155,8 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           patch :update, code: subject.current_user.direct_otp
         end
 
-        it 'redirects to the dashboard' do
-          expect(response).to redirect_to dashboard_index_path
+        it 'redirects to the profile' do
+          expect(response).to redirect_to profile_index_path
         end
       end
     end

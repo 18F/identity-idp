@@ -27,9 +27,9 @@ describe Users::OmniauthCallbacksController, devise: true do
         get :saml
       end
 
-      it 'signs the user in and redirects to dashboard' do
+      it 'signs the user in and redirects to profile' do
         expect(controller.user_signed_in?).to eq true
-        expect(response).to redirect_to(dashboard_index_path)
+        expect(response).to redirect_to(profile_index_path)
       end
 
       it 'displays a success notice' do

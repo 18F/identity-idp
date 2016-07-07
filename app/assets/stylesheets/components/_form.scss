@@ -5,8 +5,6 @@
 }
 
 [type="submit"] {
-  margin-bottom: 1.5rem;
-
   @media #{$breakpoint-max-sm} {
     max-width: 100%;
     width: 100%;

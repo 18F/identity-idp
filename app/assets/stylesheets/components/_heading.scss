@@ -1,7 +1,13 @@
-.heading {
+.heading,
+%heading {
   border-bottom: 4px solid $red;
   font-size: $h4;
   margin-bottom: 1.5rem;
   margin-top: 1rem;
   padding-bottom: .5rem;
+}
+
+.subheading {
+  @extend %heading;
+  border-color: $gray-light;
 }

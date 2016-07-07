@@ -1,6 +1,8 @@
 @import 'override';
+@import 'typography';
 
 @import 'alert';
+@import 'body';
 @import 'btn';
 @import 'card';
 @import 'close';
@@ -8,7 +10,5 @@
 @import 'footer';
 @import 'form';
 @import 'heading';
-@import 'main';
-@import 'media-query';
 @import 'password';
 @import 'util';
