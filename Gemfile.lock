@@ -474,7 +474,7 @@ GEM
       redis-namespace (>= 1.1.0)
       simple-random (>= 0.9.3)
       sinatra (>= 1.2.6)
-    spring (1.7.1)
+    spring (1.7.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
     spring-watcher-listen (2.0.0)
