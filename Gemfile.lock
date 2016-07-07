@@ -88,7 +88,7 @@ GEM
       railties (>= 4.0.0, < 5.1)
       sprockets (>= 3.5.2)
     builder (3.2.2)
-    bullet (5.1.0)
+    bullet (5.1.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
     bummr (0.1.5)
