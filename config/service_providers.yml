@@ -42,6 +42,7 @@ development:
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
       metadata_url: 'http://localhost:3003/saml/metadata'
       acs_url: 'http://localhost:3003/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3003/login'
       cert: 'demo_sp'
     'https://dashboard.login.gov':
@@ -79,11 +80,13 @@ production:
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
       metadata_url: 'https://identity-sp-rails-dev.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-sp-rails-dev.apps.cloud.gov/login'
       cert: 'demo_sp'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
       metadata_url: 'https://identity-sp-rails-demo.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-sp-rails-demo.apps.cloud.gov/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://identity-sp-rails-demo.apps.cloud.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-sp-rails-demo.apps.cloud.gov/login'
       cert: 'demo_sp'
 
