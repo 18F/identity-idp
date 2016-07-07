@@ -4,6 +4,10 @@
   font-weight: $bold-font-weight;
 }
 
+.is-invalid {
+  border-color: $red;
+}
+
 [type="submit"] {
   @media #{$breakpoint-max-sm} {
     max-width: 100%;

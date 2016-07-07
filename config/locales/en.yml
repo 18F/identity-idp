@@ -26,6 +26,8 @@ en:
       code: App-generated code
     confirmation:
       show_hdr: Create a Password
+    value_missing: This field is required
+    pattern_mismatch: Please enter information in the correct format
 
   links:
     sign_out: 'Sign out'
@@ -119,6 +121,9 @@ en:
       city: City
       state: State
       zipcode: ZIP Code
+    errors:
+      invalid_ssn: 'Please enter a valid SSN in the format of 123-45-6789'
+      invalid_zipcode: 'Please enter a valid Zip Code in the format of 20006'
     titles:
       welcome: Verify your identity
       question: Answer a few questions
