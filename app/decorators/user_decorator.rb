@@ -62,7 +62,7 @@ UserDecorator = Struct.new(:user) do
     }
     url = user.provisioning_uri(nil, options)
     qrcode = RQRCode::QRCode.new(url)
-    qrcode.as_png(size: 166).to_data_url
+    qrcode.as_png(size: 300).to_data_url
   end
 
   private
