@@ -24,6 +24,11 @@ engines:
     enabled: true
     exclude_paths:
     - 'public/build/bundle.js'
+  reek:
+    enabled: true
+    exclude_paths:
+    - 'spec/**/*'
+    - 'db/migrate/*'
   rubocop:
     enabled: true
   scss-lint:
