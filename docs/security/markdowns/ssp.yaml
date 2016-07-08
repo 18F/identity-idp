@@ -13,12 +13,12 @@ prepared_for:
   state:
   zip:
 information_system:
-  unique_id: cloud.gov
-  name: Cloud Foundy Platform as a Service
-  abbreviation: cloud.gov
+  unique_id: login.gov
+  name: Consumer Identification Platform as a Service
+  abbreviation: login.gov
   security_categorization: moderate
   security_objects_categorization:
-    confidentiality: low
+    confidentiality: moderate
     integrity: moderate
     availability: low
   e_authentication:
@@ -45,7 +45,7 @@ information_system:
     state: DC
     zip: 20405
   operation_status: operational
-  system_type: PaaS
+  system_type: IdPaaS
   deployment_model: Public
   leveraged_authorizations:
     - system_name:

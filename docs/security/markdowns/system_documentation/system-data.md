@@ -1,12 +1,12 @@
 # Identity Platform as a Service (Login.Gov)
-This System Security Plan provides an overview of the security requirements for the Login.gov as ruby based OSS Identity Management Platform as a Service (Login.gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the Cloud.Gov information system.  
+This System Security Plan provides an overview of the security requirements for the Login.gov as ruby based OSS Identity Management Platform as a Service (Login.gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the login.gov information system.  
 
-The security safeguards implemented for the Login.Gov system meet the policy and control requirements set forth in this System Security Plan (SSP).  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.  
+The security safeguards implemented for the Login.gov system meet the policy and control requirements set forth in this System Security Plan (SSP).  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.  
 
 Unique Identifier | Information System Name | Information System Abbreviation
 --- | --- | ---
 Login.gov | Federal Identity  as a Service | LOGIN.GOV
-This System Security Plan provides an overview of the security requirements for the Cloud Foundry Platform as a Service (Cloud.Gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the Cloud.Gov information system.  
+This System Security Plan provides an overview of the security requirements for the consumer identity platform (Login.gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the Cloud.Gov information system.  
 
 The security safeguards implemented for the Login.Gov system meet the policy and control requirements set forth in this System Security Plan.  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.  
 
@@ -34,8 +34,7 @@ Using this categorization, in conjunction with the risk assessment and any uniqu
 
 # Information Types
 The following tables identify the information types that are input, stored, processed, and/or output from Login.Gov. The selection of information types is based on guidance provided by OMB Federal Enterprise Architecture Program Management Office Business Reference Model 2.0, and FIPS Pub 199, Standards for Security Categorization of Federal Information and Information Systems which is based on NIST SP 800-60, Guide for Mapping Types of Information and Information Systems to Security Categories.
-=======
-The following tables identify the information types that are input, stored, processed, and/or output from Cloud.Gov. The selection of information types is based on guidance provided by OMB Federal Enterprise Architecture Program Management Office Business Reference Model 2.0, and FIPS Pub 199, Standards for Security Categorization of Federal Information and Information Systems which is based on NIST SP 800-60, Guide for Mapping Types of Information and Information Systems to Security Categories.
+
 
 |Information Type | Confidentiality   | Integrity | Availability|
 |-----------------|-------------------|-----------|-------------|
@@ -77,9 +76,6 @@ Name | Title | Organization | Address | Phone Number | Email Address
 ---  | ---   | ---          | ---     | ---          | ---
 Amos Stone  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 805-500-8050| amos@gsa.gov [at] gsa.gov  
 Mossadeq Zia  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 202-256-2063| mossadeq.zia [at] gsa.gov  
-=======
-Diego Lapiduz  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 415-730-5945| diego.lapiduz [at] gsa.gov  
-Bret Mogilefsky| Program Manager |18F/GSA| 1800 F Street, NW Washington DC 20405| 510-610-1956|bret.mogilefsky [at] gsa.gov
 
 # Assignment of Security Responsibility
 Name | Title | Organization | Address | Phone Number | Email Address
@@ -95,7 +91,7 @@ Operational | Under Development | Major Modification | Other
 X |  |  |
 
 # Information System Type
-The Login.Gov makes use of Cloud.gov's unique managed service provider architecture layer(s).
+The Login.gov makes use of FedRAMP AWS services for IaaS.
 
 # Cloud Service Models
 Information systems, particularly those based on cloud architecture models, are made up of different service layers.  The layers of the Login.gov defined in this SSP are indicated in the table that follows.
