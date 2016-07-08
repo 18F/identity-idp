@@ -131,10 +131,4 @@ The Login.gov information system plans to leverage a pre-existing Provisional Au
 
 Information System Name | Service Provider Owner | Date Granted
 --- | --- | ---
-Cloud.gov (issued by the GSA) | GSA |	July 31, 2016
-=======
-The Cloud.Gov information system plans to leverage a pre-existing Provisional Authorization.  Provisional Authorizations leveraged by this IAWS FedRAMP ATO (issued by the HHS are noted in the table that follows.  
-
-Information System Name | Service Provider Owner | Date Granted
---- | --- | ---
 AWS FedRamp Agency ATO (issued by the HHS) | Amazon |	May 13, 2013
