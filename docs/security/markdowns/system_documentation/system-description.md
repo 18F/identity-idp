@@ -132,7 +132,7 @@ The following table lists all other applications and components used in relation
 |New Relic| Application and performance metrics for Cloud.Gov| Latest Version|NA| Yes|
 |Cloudability| Monitor, optimize and govern Cloud Costs related to the AWS Infrastructure| Latest Version |NA| Yes|
 |Slack| Message, alert and communications app | Latest Version | NA |Yes|
-Trello| Used for agile, scrum and story boarding| Latest Version | NA | Yes|
+|Trello| Used for agile, scrum and story boarding| Latest Version | NA | Yes|
 |Pager Duty| Incident communication platform used by DevOps| Latest Version|
 
 
