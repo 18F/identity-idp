@@ -16,7 +16,7 @@ describe Analytics do
 
       analytics = Analytics.new(user, request_attributes)
 
-      expect(analytics.backend).to receive(:event).
+      expect(AnalyticsEventJob).to receive(:perform_later).
         with(common_options.merge(action: 'Trackable Event', user_id: user.uuid))
 
       analytics.track_event('Trackable Event')
@@ -28,7 +28,7 @@ describe Analytics do
 
       analytics = Analytics.new(current_user, request_attributes)
 
-      expect(analytics.backend).to receive(:event).
+      expect(AnalyticsEventJob).to receive(:perform_later).
         with(common_options.merge(user_id: tracked_user.uuid, action: 'Trackable Event'))
 
       analytics.track_event('Trackable Event', tracked_user)
@@ -39,7 +39,7 @@ describe Analytics do
     it 'sends the event and attribute value' do
       analytics = Analytics.new(nil, request_attributes)
 
-      expect(analytics.backend).to receive(:event).
+      expect(AnalyticsEventJob).to receive(:perform_later).
         with(common_options.merge(action: 'Anonymous Event', value: 'foo'))
 
       analytics.track_anonymous_event('Anonymous Event', 'foo')

@@ -16,7 +16,7 @@ set :rails_env, :production
 set :rbenv_ruby, '2.3.1'
 set :rbenv_type, :user # or :system, depends on your rbenv setup
 set :repo_url, 'https://github.com/18F/identity-idp.git'
-set :sidekiq_queue, [:mailers, :sms]
+set :sidekiq_queue, [:mailers, :sms, :analytics]
 set :ssh_options, forward_agent: false, user: 'ubuntu'
 set :whenever_roles, [:app]
 
