@@ -2,11 +2,10 @@
   background-color: $white;
   box-sizing: border-box;
   margin-bottom: $space-4;
-  max-width: 550px;
   padding: $space-3 $space-2;
 
   @media #{$breakpoint-sm} {
     border-radius: $border-radius;
-    padding: $space-4;
+    padding: $space-3 * 2;
   }
 }
