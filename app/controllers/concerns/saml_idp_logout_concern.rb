@@ -159,7 +159,11 @@ module SamlIdpLogoutConcern
   end
 
   def prepare_saml_logout_response
-    @saml_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse])
+    @saml_response = OneLogin::RubySaml::Logoutresponse.new(
+      params[:SAMLResponse],
+      nil,
+      { get_params: params }
+    )
   end
 
   def prepare_saml_logout_request
