@@ -1,25 +1,25 @@
 # General System Description
 
 ## System Function or Purpose
-Login.gov is 18F’s product line for the tools, tech, and services 18F provides to help teams delivering federal digital services to operate efficiently at-scale in a cloud-hosted environment, while complying with federal regulatory requirements. It’s based on and built using the open source ruby based identity-idp project, which is an open platform as a service, providing a choice of developer frameworks, and application services which makes it faster and easier to build, test, deploy, and scale applications. Login.Gov is a self-contained platform as a service (IdaaS) which can be used on top of underlying infrastructures such as Cloud Foundry AWS, VMware and Open Stack.
+Login.gov is 18F’s product line for the tools, tech, and services 18F provides to help teams delivering federal digital services to operate efficiently at-scale in a cloud-hosted environment, while complying with federal regulatory requirements. It’s based on and built using the open source ruby based identity-idp project, which is an open platform as a service, providing a choice of developer frameworks, and application services which makes it faster and easier to build, test, deploy, and scale applications. Login.gov is a Identity platform as a service (IdaaS) which can be used on top of underlying infrastructures such as Cloud Foundry AWS, VMware and Open Stack.
 
 ## Information System Components and Boundaries
-18F has created a specific set of VPCs (Live production, tooling, and staging) for Cloud.Gov.  All VPCs have subnets used to separate and control IP address space within each individual VPC. Subnets must be created in order to launch Availability Zone (AZ) specific services within a VPC. 18F has setup VPC Peering between the Staging VPC, tooling VPC and the CF Live production VPC.
+18F has created a specific set of VPCs (Live production, tooling, and staging) for Login.gov.  All VPCs have subnets used to separate and control IP address space within each individual VPC. Subnets must be created in order to launch Availability Zone (AZ) specific services within a VPC. 18F has setup VPC Peering between the Staging VPC, tooling VPC and the CF Live production VPC.
 
-Login.gov components include a self-service application execution engine, an automation engine for application deployment and lifecycle management, and a scriptable command line interface (CLI), as well as integration with development tools to ease deployment processes. It has an open architecture that includes a buildpack mechanism for adding frameworks, and application services interface, and a cloud provider interface.
+Login.gov components include identity provisioning and security components that will aid in protecting consumer PII data.
 
-The Login.Gov IdaaS Information System is hosted within Cloud.Gov running on AWS East Public Cloud in the Northern Virginia Region. AWS services utilized include ENI, EC2, EBS, VPC, RDS, S3, MFA, Route 53, ELB and IAM. These are listed as leveraged hardware, network and server components.
+The Login.gov IdaaS Information System is hosted  on AWS East Public Cloud in the Northern Virginia Region. AWS services utilized include ENI, EC2, EBS, VPC, RDS, S3, MFA, Route 53, ELB and IAM. These are listed as leveraged hardware, network and server components.
 
-Physical aspects of the Login.Gov IdaaS information system are outside of the authorization boundary due to all hardware being physically managed by AWS. While other services are reviewed and approved for use by the GSA OCISO, they were deemed to be ancillary support services that do not directly process/store data but rather provide general support services. These services include Cloudwatch, CloudFormation, AWS Config and Trusted Advisor.
+Physical aspects of the Login.gov IdaaS information system are outside of the authorization boundary due to all hardware being physically managed by AWS. While other services are reviewed and approved for use by the GSA OCISO, they were deemed to be ancillary support services that do not directly process/store data but rather provide general support services. _These services include Cloudwatch, CloudFormation, AWS Config and Trusted Advisor._
 
 The authorization boundary diagram represented depicts the core components which make up the System in its entirety.  Login.gov resides within Cloud.gov. While Cloud.gov is outside the boundary, it belongs to an authorized System thus allowing for inheritance of the component. Other support services outside the Login.Gov information system authorization boundary include Twilio, New Relic, SMPT service, MFA service, Experian, and Federal Information Technology systems.
 
 ## Network Architecture
 The following architectural diagram(s) provides a visual depiction of the system network components that constitute Login.gov.
 
-Login.gov service architecture: ![gras](login_gov_sys_arch.png)
+Login.gov service architecture: ![mz](login_gov_sys_arch.png)
 
-Login.gov Admin infrastructure: ![grass](continuous_delivery_infrastructure.png)
+Login.gov Admin infrastructure: ![mz](continuous_delivery_infrastructure.png)
 
 ## Login.Gov Security Domain Stack
 ### Identification and Authentication Control
