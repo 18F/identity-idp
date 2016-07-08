@@ -19,7 +19,7 @@ The following architectural diagram(s) provides a visual depiction of the system
 
 Login.gov service architecture: ![gras](login_gov_sys_arch.png)
 
-Login.gov Admin infrastructure: ![grass](continuous_delivery infrastructure.png)
+Login.gov Admin infrastructure: ![grass](continuous_delivery_infrastructure.png)
 
 ## Login.Gov Security Domain Stack
 ### Identification and Authentication Control
@@ -85,7 +85,7 @@ Login.Gov is a system with multiple components. All traffic through AWS elastic 
 
 A load-balancing router sits at the front of login.gov to route incoming requests to the correct application.  The only access points visible on a public network are a load balancer that maps to one or more Login.gov routers and, optionally, a NAT VM and a Bastion Host (Jumpbox).
 \
-### Logingov Virtual Private Cloud (VPC) environment
+### Login.gov Virtual Private Cloud (VPC) environment
 
 #### Public Subnet
 The hosts within the Public subnet are only used for system maintenance and DNS purposes only.  Instances do not contain any GSA operational data.  The Public subnet allows only the necessary inbound and outbound access with the Internet defined by AWS Security Groups.  In the public subnet there exists a Cloud Foundry bastion host (jump box), A VM that acts as a single access point for the deployed instances as disabling direct access to the instances is a common security measure.  The bastion host (Jumpbox) is used for the purpose of managing the infrastructure.
@@ -117,14 +117,13 @@ None - Leveraged from AWS Infrastructure|
 |---------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|-------------|--------------------|
 | Login.gov Server                          | Handles authentication for general users and delegates all other identity management tasks to the SP.| Version 1 |         | Yes                |
 | JumpBox                              | Used to run AWS AMI management                                                                                                                                                                                                                            | Version 1 |          | Yes                |
-
 | Audit services                           | Front end for consuming logging and monitoring data for metrics reporting                                                                                                                                                                                                                               | Version 1 |          | Yes                |
 | Concourse CI                               | Performs continuous deployment and integration of Login.gov components                                                                                                                                                                                                               | Version 0.75| 0.75         | Yes                |
-| Code Climate | CloudFoundry Static code analysis tool for the source code| Latest Version| NA| Yes|
-|GitHub| Login.gov code repository and version control| Latest Version| NA | Yes|
-|Login.gov AMI| operating system used in deployed EC2 instances for Login.gov| Ubuntu 12.04 LTS| 12| Yes|
+| Code Climate | Static code analysis tool for the source code| Latest Version| NA| Yes|
+| GitHub| Login.gov code repository and version control| Latest Version| NA | Yes|
+| Login.gov AMI| operating system used in deployed EC2 instances for Login.gov| Ubuntu 12.04 LTS| 12| Yes|
 
-The following table lists all other applications and components used in relation to the Cloud.Gov PaaS information system.
+The following table lists all other applications and components used in relation to the Login.gov  information system.
 
 |Component Name| Function| Version| Patch Level| Virtual|
 |--------------|---------|--------|------------|--------|
