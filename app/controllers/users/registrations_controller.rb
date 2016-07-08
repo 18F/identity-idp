@@ -43,7 +43,7 @@ module Users
 
     def process_successful_update(resource)
       process_updates(resource)
-      sign_in resource_name, resource, bypass: true
+      bypass_sign_in resource
     end
 
     def process_updates(resource)

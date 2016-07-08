@@ -64,7 +64,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def handle_valid_otp
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
 
-    sign_in resource_name, resource, bypass: true
+    bypass_sign_in resource
     flash[:notice] = t('devise.two_factor_authentication.success')
 
     send_number_change_sms_if_needed
