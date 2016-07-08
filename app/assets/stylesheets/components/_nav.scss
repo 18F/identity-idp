@@ -1,0 +1,7 @@
+.nav-el {
+  display: inline-block;
+
+  @media #{$breakpoint-sm} {
+    line-height: 30px;
+  }
+}

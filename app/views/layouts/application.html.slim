@@ -28,17 +28,14 @@ html lang="#{I18n.locale}"
   body class="#{Rails.env}-env site"
     .site-wrap
       = render 'shared/usa_disclaimer'
-      = render 'shared/navigation_links'
-
-      .container.sm-py4
-        .card.mx-auto
-          = render 'shared/branding'
+      = render 'shared/nav'
+      .container
+        .card.mb4.mx-auto
           = render 'shared/messages'
           == yield
-
-    .footer
+    footer.footer
       - if Rails.env.development?
-        == render 'layouts/debug'
+        = render 'layouts/debug'
 
   - if current_user
     = auto_session_timeout_js
