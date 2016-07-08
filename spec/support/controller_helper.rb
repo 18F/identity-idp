@@ -25,7 +25,7 @@ module ControllerHelper
 end
 
 RSpec.configure do |config|
-  config.include Devise::TestHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
   config.include ControllerHelper, type: :controller
 
   config.before(:example, devise: true, type: :controller) do
