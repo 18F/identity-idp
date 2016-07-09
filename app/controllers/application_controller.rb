@@ -23,9 +23,14 @@ class ApplicationController < ActionController::Base
     payload[:ip] = request.remote_ip
   end
 
+  def analytics
+    @analytics ||= Analytics.new(current_user, request_attributes)
+  end
+
   private
 
   def after_sign_in_path_for(resource)
+    analytics.track_event('Authentication Successful')
     stored_location_for(resource) || session[:saml_request_url] || profile_index_path
   end
 
@@ -34,9 +39,9 @@ class ApplicationController < ActionController::Base
   end
 
   def invalid_auth_token
-    logger.info 'Rescuing InvalidAuthenticityToken'
-    flash[:error] = t('errors.invalid_authenticity_token')
+    analytics.track_event('InvalidAuthenticityToken')
     sign_out
+    flash[:error] = t('errors.invalid_authenticity_token')
     redirect_to root_url
   end
 
@@ -62,5 +67,12 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
+  end
+
+  def request_attributes
+    {
+      user_agent: request.user_agent,
+      user_ip: request.remote_ip
+    }
   end
 end

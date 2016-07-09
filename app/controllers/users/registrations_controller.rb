@@ -18,8 +18,11 @@ module Users
       if @register_user_email_form.submit(params[:user])
         process_successful_creation
 
-        ::NewRelic::Agent.increment_metric('Custom/User/Created')
+        track_registration(@register_user_email_form)
       else
+        analytics.track_anonymous_event(
+          'User Registration: invalid email', @register_user_email_form.email
+        )
         render :new
       end
     end
@@ -76,6 +79,13 @@ module Users
     def user_params
       params.require(:update_user_profile_form).
         permit(:mobile, :email, :password, :current_password)
+    end
+
+    def track_registration(form)
+      return analytics.track_event('Account Created', form.user) unless form.email_taken?
+
+      existing_user = User.find_by_email(form.email)
+      analytics.track_event('Registration Attempt with existing email', existing_user)
     end
   end
 end

@@ -46,6 +46,7 @@ Metrics/ClassLength:
   Max: 100
   Exclude:
   - spec/**/*
+  - app/controllers/users/confirmations_controller.rb
 Metrics/CyclomaticComplexity:
   Description: A complexity metric that is strongly correlated to the number of test
     cases needed to validate a method.

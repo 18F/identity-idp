@@ -81,6 +81,8 @@ module Users
     end
 
     def handle_successful_password_reset_for(resource)
+      analytics.track_event('Password reset', resource)
+
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
 
       redirect_to new_user_session_path

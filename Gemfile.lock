@@ -491,6 +491,7 @@ GEM
     sshkit (1.11.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    staccato (0.4.7)
     sysexits (1.2.0)
     systemu (2.6.5)
     temple (0.7.7)
@@ -621,6 +622,7 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   spring-watcher-listen
+  staccato
   test_after_commit
   thin
   timecop

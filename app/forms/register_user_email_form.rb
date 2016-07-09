@@ -26,11 +26,11 @@ class RegisterUserEmailForm
     valid? && !email_taken?
   end
 
-  private
-
   def email_taken?
     @email_taken == true
   end
+
+  private
 
   def process_errors
     # To prevent discovery of existing emails, we check to see if the email is

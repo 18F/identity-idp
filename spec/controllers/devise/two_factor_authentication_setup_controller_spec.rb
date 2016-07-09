@@ -52,5 +52,22 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
         )
       end
     end
+
+    context 'when mobile number does not already exist' do
+      it 'prompts to confirm the number' do
+        user = create(:user)
+        sign_in(user)
+
+        stub_analytics(user)
+        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+
+        patch(
+          :set,
+          two_factor_setup_form: { mobile: '703-555-0100' }
+        )
+
+        expect(response).to redirect_to(user_two_factor_authentication_path)
+      end
+    end
   end
 end

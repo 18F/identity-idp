@@ -1,7 +1,6 @@
 class User < ActiveRecord::Base
   include NonNullUuid
   include PhoneConfirmable
-  include AuditEvents
 
   after_validation :set_default_role, if: :new_record?
 

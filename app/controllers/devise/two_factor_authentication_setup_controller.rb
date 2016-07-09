@@ -40,7 +40,7 @@ module Devise
     end
 
     def update_metrics
-      ::NewRelic::Agent.increment_metric('Custom/User/OtpDeliverySetup')
+      analytics.track_event('2FA setup: valid phone number')
     end
 
     def process_invalid_form

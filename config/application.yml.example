@@ -26,6 +26,7 @@ development:
 production:
   allow_third_party_auth: 'yes'
   domain_name: 'xxx.xxx'
+  google_analytics_key: 'UA-XXXXXXXXX-YY'
   idp_sso_target_url: 'xxx.xxx/saml/auth'
   log_all_active_job_arguments: 'false'
   newrelic_license_key: 'xxx'

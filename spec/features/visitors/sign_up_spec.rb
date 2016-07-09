@@ -32,6 +32,17 @@ feature 'Sign Up', devise: true do
   scenario 'visitor can sign up and confirm a valid email' do
     sign_up_with('test@example.com')
 
+    analytics = instance_double(Analytics)
+    request_attributes = {
+      user_agent: nil,
+      user_ip: '127.0.0.1'
+    }
+
+    expect(Analytics).to receive(:new).twice.with(nil, request_attributes).and_return(analytics)
+    expect(analytics).to receive(:track_event).with('Email Confirmation: valid token', User.last)
+    expect(analytics).to receive(:track_event).
+      with('Password Created and User Confirmed', User.last)
+
     confirm_last_user
 
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
@@ -209,6 +220,10 @@ feature 'Sign Up', devise: true do
     sign_up_with('test@example.com')
     confirm_last_user
     fill_in 'password_form_password', with: 'Q!2e'
+
+    stub_analytics
+    expect(@analytics).to receive(:track_event).with('Password Creation: invalid', User.last)
+
     click_button 'Submit'
 
     expect(page).to have_content('characters')
@@ -217,7 +232,11 @@ feature 'Sign Up', devise: true do
 
   context 'confirmed user is signed in and tries to confirm again' do
     it 'redirects the user to the profile' do
-      sign_up_and_2fa('test@example.com')
+      user = sign_up_and_2fa('test@example.com')
+
+      stub_analytics(user)
+      expect(@analytics).to receive(:track_event).
+        with('Email Confirmation: User Already Confirmed', user)
 
       visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
@@ -286,6 +305,11 @@ feature 'Sign Up', devise: true do
     sign_up_with('test@example.com')
     confirm_last_user
     User.last.update(confirmation_sent_at: Time.current - 2.days)
+
+    stub_analytics
+    expect(@analytics).to receive(:track_event).
+      with('Email Confirmation: token expired', User.last)
+
     visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
     expect(current_path).to eq user_confirmation_path

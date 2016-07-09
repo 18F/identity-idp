@@ -272,6 +272,10 @@ feature 'Password Recovery' do
     context 'when password form values are valid' do
       it 'changes the password, sends an email about the change, and does not sign the user in' do
         fill_in 'New password', with: 'NewVal!dPassw0rd'
+
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with('Password reset', @user.reload)
+
         click_button 'Change my password'
 
         expect(page).to have_content(t('devise.passwords.updated_not_active'))

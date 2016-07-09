@@ -1,5 +1,14 @@
+FeatureEnvy:
+  exclude:
+   - 'track_registration'
 IrresponsibleModule:
   enabled: false
+TooManyMethods:
+  exclude:
+    - Users::ConfirmationsController
+UtilityFunction:
+  exclude:
+    - AnalyticsEventJob#perform
 exclude_paths:
   - db/migrate
   - spec/**/*

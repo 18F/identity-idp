@@ -10,7 +10,7 @@ module Users
     end
 
     def create
-      logger.info '[Authentication Attempt]'
+      track_authentication_attempt(params[:user][:email])
       super
     end
 
@@ -25,6 +25,16 @@ module Users
         session_timeout: distance_of_time_in_words(Devise.timeout_in)
       )
       redirect_to root_url
+    end
+
+    private
+
+    def track_authentication_attempt(email)
+      existing_user = User.find_by_email(email)
+
+      return analytics.track_event('Authentication Attempt', existing_user) if existing_user
+
+      analytics.track_anonymous_event('Authentication Attempt with nonexistent user')
     end
   end
 end
