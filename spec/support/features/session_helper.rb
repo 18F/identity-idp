@@ -17,11 +17,8 @@ module Features
       click_button 'Log in'
     end
 
-    def sign_up_with_and_set_password_for(email = nil, reset_session = false)
-      email ||= Faker::Internet.email
-      sign_up_with(email)
-      user = User.find_by_email(email)
-      Capybara.reset_session! if reset_session
+    def sign_up_with_and_set_password_for(email)
+      user = User.create!(email: email)
       confirm_last_user
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button 'Submit'
@@ -30,6 +27,21 @@ module Features
 
     def sign_in_user(user = create(:user))
       signin(user.email, user.password)
+      user
+    end
+
+    def sign_in_before_2fa(user = create(:user))
+      login_as(user, scope: :user, run_callbacks: false)
+
+      if user.mobile.present?
+        Warden.on_next_request do |proxy|
+          session = proxy.env['rack.session']
+          session['warden.user.user.session'] = {}
+          session['warden.user.user.session']['need_two_factor_authentication'] = true
+        end
+      end
+
+      visit profile_index_path
       user
     end
 
@@ -53,13 +65,12 @@ module Features
       visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
     end
 
-    def sign_up_and_2fa(email = nil, reset_session = false)
-      user = sign_up_with_and_set_password_for(email, reset_session)
+    def sign_up_and_2fa
+      user = sign_up_with_and_set_password_for('email@example.com')
       fill_in 'Mobile', with: '202-555-1212'
       click_button 'Submit'
       fill_in 'code', with: user.reload.direct_otp
       click_button 'Submit'
-      user
     end
   end
 end

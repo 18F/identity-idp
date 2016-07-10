@@ -139,10 +139,4 @@ module SamlAuthHelper
   def authn_request(settings = saml_settings, params = {})
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
-
-  def authenticate_user(user = create(:user, :signed_up))
-    sign_in_user(user)
-    fill_in 'code', with: user.reload.direct_otp
-    click_button 'Submit'
-  end
 end

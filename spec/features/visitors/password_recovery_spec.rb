@@ -63,9 +63,8 @@ feature 'Password Recovery' do
   #   Then I can set my password
   context 'user with only email confirmation resets password', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_email_link_matching(/confirmation_token/)
+      User.create!(email: 'email@example.com')
+      confirm_last_user
       reset_email
       visit root_path
       click_link t('headings.passwords.forgot')
@@ -87,9 +86,8 @@ feature 'Password Recovery' do
   #   Then I can set a new password
   context 'user with email confirmation resends confirmation', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_email_link_matching(/confirmation_token/)
+      User.create!(email: 'email@example.com')
+      confirm_last_user
       reset_email
       visit new_user_confirmation_path
       fill_in 'Email', with: 'email@example.com'

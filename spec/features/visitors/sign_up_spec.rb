@@ -67,14 +67,13 @@ feature 'Sign Up', devise: true do
 
   context 'visitor can sign up and confirm a valid mobile for OTP' do
     before do
-      sign_up_with_and_set_password_for('test@example.com')
+      @user = sign_in_before_2fa
       fill_in 'Mobile', with: '555-555-5555'
       click_button 'Submit'
-      @user = User.find_by_email('test@example.com')
     end
 
     it 'updates mobile_confirmed_at and redirects to profile after confirmation' do
-      fill_in 'Secure one-time password', with: @user.direct_otp
+      fill_in 'Secure one-time password', with: @user.reload.direct_otp
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
@@ -113,11 +112,9 @@ feature 'Sign Up', devise: true do
         )
     end
 
-    # JJG - I think we should go as far as making sure the user enters
-    # a new number and that the OTP is sent to the new number.
     it 'allows user to enter new number if they Sign Out before confirming' do
       click_link(t('links.sign_out'))
-      signin(@user.reload.email, VALID_PASSWORD)
+      signin(@user.reload.email, @user.password)
       expect(current_path).to eq users_otp_path
     end
   end
@@ -125,10 +122,9 @@ feature 'Sign Up', devise: true do
   context "visitor tries to sign up with another user's mobile for OTP" do
     before do
       @existing_user = create(:user, :signed_up)
-      sign_up_with_and_set_password_for('test@example.com')
+      @user = sign_in_before_2fa
       fill_in 'Mobile', with: @existing_user.mobile
       click_button 'Submit'
-      @user = User.find_by_email('test@example.com')
     end
 
     it 'pretends the mobile is valid and prompts to confirm the number' do
@@ -148,7 +144,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'visitor is redirected back to password form when password is blank' do
-    sign_up_with('test@example.com')
+    User.create!(email: 'test@example.com')
     confirm_last_user
     fill_in 'password_form_password', with: ''
     click_button 'Submit'
@@ -172,7 +168,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'password strength indicator hidden when JS is off' do
-    sign_up_with('test@example.com')
+    User.create!(email: 'test@example.com')
     confirm_last_user
 
     expect(page).to have_css('#pw-strength-cntnr.hide')
@@ -207,7 +203,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'password visibility toggle when JS is on', js: true do
-    sign_up_with('test@example.com')
+    User.create!(email: 'test@example.com')
     confirm_last_user
 
     expect(page).to have_css('#pw-toggle')
@@ -217,7 +213,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'visitor is redirected back to password form when password is invalid' do
-    sign_up_with('test@example.com')
+    User.create!(email: 'test@example.com')
     confirm_last_user
     fill_in 'password_form_password', with: 'Q!2e'
 
@@ -232,11 +228,11 @@ feature 'Sign Up', devise: true do
 
   context 'confirmed user is signed in and tries to confirm again' do
     it 'redirects the user to the profile' do
-      user = sign_up_and_2fa('test@example.com')
+      sign_up_and_2fa
 
-      stub_analytics(user)
+      stub_analytics(User.last)
       expect(@analytics).to receive(:track_event).
-        with('Email Confirmation: User Already Confirmed', user)
+        with('Email Confirmation: User Already Confirmed', User.last)
 
       visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
@@ -302,7 +298,7 @@ feature 'Sign Up', devise: true do
   #   And that I should request a new one
   scenario 'visitor signs up but confirms with an expired token' do
     allow(Devise).to receive(:confirm_within).and_return(24.hours)
-    sign_up_with('test@example.com')
+    User.create!(email: 'test@example.com')
     confirm_last_user
     User.last.update(confirmation_sent_at: Time.current - 2.days)
 
@@ -323,12 +319,7 @@ feature 'Sign Up', devise: true do
   #   When I sign up with a email address and attempt to confirm with invalid token
   #   Then I see a message that the token is invalid
   scenario 'visitor signs up but confirms with an invalid token' do
-    sign_up_with('test@example.com')
-    raw_confirmation_token = Devise.token_generator.generate(User, :confirmation_token)
-
-    User.last.update(
-      confirmation_token: raw_confirmation_token, confirmation_sent_at: Time.current
-    )
+    User.create!(email: 'test@example.com')
     visit '/users/confirmation?confirmation_token=invalid_token'
 
     expect(page).to have_content 'Confirmation token is invalid'
@@ -340,11 +331,9 @@ feature 'Sign Up', devise: true do
   #   Then the user does not receive an email
   context 'confirmation instructions sent to existing user', email: true do
     it 'does not send an email to the existing user' do
-      sign_up_with_and_set_password_for('test@example.com')
-      reset_email
+      create(:user, email: 'test@example.com')
 
-      visit destroy_user_session_url
-
+      visit '/'
       click_link "Didn't receive confirmation instructions?"
       fill_in 'Email', with: 'test@example.com'
       click_button 'Resend confirmation instructions'
@@ -360,7 +349,7 @@ feature 'Sign Up', devise: true do
   #   And I am redirected to the sign in page
   context 'confirmed user clicks confirmation link while again signed out' do
     it 'redirects to sign in page with message that user is already confirmed' do
-      sign_up_with_and_set_password_for('test@example.com')
+      sign_up_with_and_set_password_for('email@example.com')
 
       visit destroy_user_session_url
 
