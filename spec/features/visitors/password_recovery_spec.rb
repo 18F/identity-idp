@@ -397,34 +397,4 @@ feature 'Password Recovery' do
     expect(page).not_to(have_content('not found'))
     expect(page).not_to(have_content('Please review the problems below:'))
   end
-
-  # Scenario: Tech support user requests password reset
-  #   Given I am not signed in
-  #   When I enter my email address
-  #   Then I see 'email sent' but do not receive recovery email.
-  scenario 'tech user enters email address into password reset form' do
-    reset_email
-    user = create(:user, :signed_up, :tech_support)
-
-    fill_in 'user_email', with: user.email
-    click_button t('forms.buttons.reset_password')
-
-    expect(page).to have_content t('devise.passwords.send_instructions')
-    expect(ActionMailer::Base.deliveries).to be_empty
-  end
-
-  # Scenario: Admin user requests password reset
-  #   Given I am not signed in
-  #   When I enter my email address
-  #   Then I see 'email sent' but do not receive recovery email.
-  scenario 'admin user enters email address into password reset form' do
-    reset_email
-    user = create(:user, :signed_up, :admin)
-
-    fill_in 'user_email', with: user.email
-    click_button t('forms.buttons.reset_password')
-
-    expect(page).to have_content t('devise.passwords.send_instructions')
-    expect(ActionMailer::Base.deliveries).to be_empty
-  end
 end

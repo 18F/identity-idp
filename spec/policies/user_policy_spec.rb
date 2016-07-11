@@ -94,25 +94,4 @@ describe UserPolicy do
 
     it { is_expected.to_not permit_action(:tech_reset_password) }
   end
-
-  context 'recover password for a normal user' do
-    let(:current_user) { nil }
-    let(:user) { create :user }
-
-    it { is_expected.to permit_action(:recover_password) }
-  end
-
-  context 'recover password for a tech user' do
-    let(:current_user) { nil }
-    let(:user) { build_stubbed :user, :tech_support }
-
-    it { is_expected.to_not permit_action(:recover_password) }
-  end
-
-  context 'recover password for an admin user' do
-    let(:current_user) { nil }
-    let(:user) { build_stubbed :user, :admin }
-
-    it { is_expected.to_not permit_action(:recover_password) }
-  end
 end

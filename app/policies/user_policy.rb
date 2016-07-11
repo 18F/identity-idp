@@ -35,8 +35,4 @@ class UserPolicy
     return false if @user.admin? || @user.tech?
     @current_user.tech? || @current_user.admin?
   end
-
-  def recover_password?
-    @user.role == 'user'
-  end
 end
