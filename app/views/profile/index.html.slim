@@ -35,8 +35,5 @@ h2.h5.mt4.mb2 = t('headings.profile.advanced_settings')
   .clearfix.mxn1
     .sm-col.sm-col-8.px1 = t('headings.delete_account')
     .sm-col.sm-col-4.px1.sm-right-align
-      = button_to t('forms.buttons.delete_account'), \
-                { controller: 'users/registrations', action: :destroy, id: current_user.id }, \
-                method: :delete, \
-                data: { confirm: 'Are you sure?' }, \
-                class: 'btn btn-primary bg-silver gray px2 py1 h5'
+      = button_to t('forms.buttons.delete_account'), user_destroy_confirm_path, \
+        method: :get, class: 'btn btn-primary bg-silver gray px2 py1 h5'
