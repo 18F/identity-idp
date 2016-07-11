@@ -7,6 +7,7 @@ AllCops:
     - 'bin/**/*'
     - 'config/initializers/devise.rb'
     - 'db/migrate/20160405212342_initial_schema.rb'
+  TargetRubyVersion: 2.3
   UseCache: true
 
 Lint/AssignmentInCondition:
@@ -159,6 +160,11 @@ Style/FileName:
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#snake-case-files
   Enabled: true
   Exclude: []
+Style/FrozenStringLiteralComment:
+  Description: >-
+                 Add the frozen_string_literal comment to the top of files
+                 to help transition from Ruby 2.3.0 to Ruby 3.0.
+  Enabled: false
 Style/GuardClause:
   Description: Check for conditionals that can be replaced with guard clauses
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#no-nested-conditionals

@@ -4,38 +4,19 @@ module Users
 
     before_action :confirm_valid_token, only: [:edit]
 
-    rescue_from Pundit::NotAuthorizedError do |_exception|
-      # We are utilizing Pundit's policy for verifying which user can
-      # recover passwords. However, we always want to return success.
-      flash[:success] = t('notices.password_reset')
-      redirect_to after_sending_reset_password_instructions_path_for(
-        resource_name
-      )
-    end
-
     def create
-      resource = resource_class.find_by_email(resource_params[:email])
+      user = User.find_by_email(params[:user][:email]) || NullUser.new
 
-      if resource
-        authorize resource, :recover_password?
-
-        self.resource = if resource.confirmed_at.nil?
-                          # If the account has not been confirmed, password reset should resend
-                          # the confirmation email instructions
-                          resource_class.send_confirmation_instructions(
-                            resource_params
-                          )
-                        else
-                          # only send_reset_password_instructions if resource is matched above.
-                          # this disallows other roles from using the password recovery form.
-                          resource_class.send_reset_password_instructions(
-                            resource_params
-                          )
-                        end
+      if user.confirmed?
+        user.send_reset_password_instructions
+      else
+        # If the account has not been confirmed, password reset should resend
+        # the confirmation email instructions
+        user.send_confirmation_instructions
       end
 
       flash[:success] = t('notices.password_reset')
-      respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
+      redirect_to new_user_session_path
     end
 
     def edit
