@@ -6,6 +6,10 @@ IrresponsibleModule:
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
+UnusedPrivateMethod:
+  enabled: true
+  exclude:
+    - ActiveJob::Logging::LogSubscriber
 UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
