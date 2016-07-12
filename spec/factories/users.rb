@@ -22,5 +22,10 @@ FactoryGirl.define do
     trait :signed_up do
       with_mobile
     end
+
+    trait :unconfirmed do
+      confirmed_at nil
+      password nil
+    end
   end
 end

@@ -46,13 +46,13 @@ feature 'saml api', devise: true, sms: true do
       before { visit authnrequest_get }
 
       it 'prompts user to set up 2FA after confirming email and setting password' do
-        sign_up_with_and_set_password_for('user@example.com')
+        sign_up_and_set_password
 
         expect(current_path).to eq users_otp_path
       end
 
       it 'prompts the user to enter OTP after setting up 2FA' do
-        sign_up_with_and_set_password_for('user@example.com')
+        sign_up_and_set_password
 
         fill_in 'Mobile', with: '202-555-1212'
         click_button 'Submit'

@@ -17,8 +17,8 @@ module Features
       click_button 'Log in'
     end
 
-    def sign_up_with_and_set_password_for(email)
-      user = User.create!(email: email)
+    def sign_up_and_set_password
+      user = create(:user, :unconfirmed)
       confirm_last_user
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button 'Submit'
@@ -66,11 +66,12 @@ module Features
     end
 
     def sign_up_and_2fa
-      user = sign_up_with_and_set_password_for('email@example.com')
+      user = sign_up_and_set_password
       fill_in 'Mobile', with: '202-555-1212'
       click_button 'Submit'
       fill_in 'code', with: user.reload.direct_otp
       click_button 'Submit'
+      user
     end
   end
 end

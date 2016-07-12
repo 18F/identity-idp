@@ -16,7 +16,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'user does not fill out a mobile number when signing up' do
-      sign_up_with_and_set_password_for('test@example.com')
+      sign_up_and_set_password
       click_button 'Submit'
 
       expect(current_path).to eq users_otp_path
@@ -48,13 +48,13 @@ feature 'Two Factor Authentication' do
       end
 
       scenario 'user enters a valid number' do
-        sign_in_before_2fa
+        user = sign_in_before_2fa
         fill_in 'Mobile', with: '555-555-1212'
         click_button 'Submit'
 
         expect(page).to_not have_content invalid_mobile_message
         expect(current_path).to eq user_two_factor_authentication_path
-        expect(User.last.reload.mobile).to_not eq '+1 (555) 555-1212'
+        expect(user.reload.mobile).to_not eq '+1 (555) 555-1212'
       end
     end
   end # describe 'When the user has not set a preferred method'

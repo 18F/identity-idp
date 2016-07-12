@@ -58,9 +58,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'it sets reset_requested_at to nil after password confirmation' do
-    sign_up_with_and_set_password_for('test@example.com')
-
-    user = User.find_by_email('test@example.com')
+    user = sign_up_and_set_password
 
     expect(user.reset_requested_at).to be_nil
   end
@@ -144,7 +142,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'visitor is redirected back to password form when password is blank' do
-    User.create!(email: 'test@example.com')
+    create(:user, :unconfirmed)
     confirm_last_user
     fill_in 'password_form_password', with: ''
     click_button 'Submit'
@@ -155,7 +153,7 @@ feature 'Sign Up', devise: true do
 
   context 'password field is blank when JS is on', js: true do
     before do
-      User.create!(email: 'test@example.com')
+      create(:user, :unconfirmed)
       confirm_last_user
     end
 
@@ -168,7 +166,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'password strength indicator hidden when JS is off' do
-    User.create!(email: 'test@example.com')
+    create(:user, :unconfirmed)
     confirm_last_user
 
     expect(page).to have_css('#pw-strength-cntnr.hide')
@@ -176,7 +174,7 @@ feature 'Sign Up', devise: true do
 
   context 'password strength indicator when JS is on', js: true do
     before do
-      User.create!(email: 'test@example.com')
+      create(:user, :unconfirmed)
       confirm_last_user
     end
 
@@ -203,7 +201,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'password visibility toggle when JS is on', js: true do
-    User.create!(email: 'test@example.com')
+    create(:user, :unconfirmed)
     confirm_last_user
 
     expect(page).to have_css('#pw-toggle')
@@ -213,7 +211,7 @@ feature 'Sign Up', devise: true do
   end
 
   scenario 'visitor is redirected back to password form when password is invalid' do
-    User.create!(email: 'test@example.com')
+    create(:user, :unconfirmed)
     confirm_last_user
     fill_in 'password_form_password', with: 'Q!2e'
 
@@ -228,11 +226,11 @@ feature 'Sign Up', devise: true do
 
   context 'confirmed user is signed in and tries to confirm again' do
     it 'redirects the user to the profile' do
-      sign_up_and_2fa
+      user = sign_up_and_2fa
 
-      stub_analytics(User.last)
+      stub_analytics(user)
       expect(@analytics).to receive(:track_event).
-        with('Email Confirmation: User Already Confirmed', User.last)
+        with('Email Confirmation: User Already Confirmed', user)
 
       visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
@@ -298,13 +296,13 @@ feature 'Sign Up', devise: true do
   #   And that I should request a new one
   scenario 'visitor signs up but confirms with an expired token' do
     allow(Devise).to receive(:confirm_within).and_return(24.hours)
-    User.create!(email: 'test@example.com')
+    user = create(:user, :unconfirmed)
     confirm_last_user
-    User.last.update(confirmation_sent_at: Time.current - 2.days)
+    user.update(confirmation_sent_at: Time.current - 2.days)
 
     stub_analytics
     expect(@analytics).to receive(:track_event).
-      with('Email Confirmation: token expired', User.last)
+      with('Email Confirmation: token expired', user)
 
     visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
@@ -319,7 +317,7 @@ feature 'Sign Up', devise: true do
   #   When I sign up with a email address and attempt to confirm with invalid token
   #   Then I see a message that the token is invalid
   scenario 'visitor signs up but confirms with an invalid token' do
-    User.create!(email: 'test@example.com')
+    create(:user, :unconfirmed)
     visit '/users/confirmation?confirmation_token=invalid_token'
 
     expect(page).to have_content 'Confirmation token is invalid'
@@ -331,11 +329,11 @@ feature 'Sign Up', devise: true do
   #   Then the user does not receive an email
   context 'confirmation instructions sent to existing user', email: true do
     it 'does not send an email to the existing user' do
-      create(:user, email: 'test@example.com')
+      user = create(:user)
 
       visit '/'
       click_link "Didn't receive confirmation instructions?"
-      fill_in 'Email', with: 'test@example.com'
+      fill_in 'Email', with: user.email
       click_button 'Resend confirmation instructions'
 
       expect(number_of_emails_sent).to eq 0
@@ -349,7 +347,7 @@ feature 'Sign Up', devise: true do
   #   And I am redirected to the sign in page
   context 'confirmed user clicks confirmation link while again signed out' do
     it 'redirects to sign in page with message that user is already confirmed' do
-      sign_up_with_and_set_password_for('email@example.com')
+      sign_up_and_set_password
 
       visit destroy_user_session_url
 
