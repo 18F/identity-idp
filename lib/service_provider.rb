@@ -33,6 +33,14 @@ class ServiceProvider
     host_attributes['metadata_url']
   end
 
+  def agency
+    host_attributes['agency']
+  end
+
+  def friendly_name
+    host_attributes['friendly_name']
+  end
+
   def cert
     return if host_attributes['cert'].blank?
 

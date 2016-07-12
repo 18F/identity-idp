@@ -6,6 +6,7 @@ IrresponsibleModule:
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
+    - ServiceProvider
 UnusedPrivateMethod:
   enabled: true
   exclude:

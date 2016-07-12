@@ -3,32 +3,42 @@
 
 h1.heading = t('headings.profile.main')
 
-.mb4
-  h2.h5.mt4.mb2 = t('headings.profile.account_settings')
-  .py2.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-4.px1 = 'Email address'
-      .sm-col.sm-col-6.px1 = current_user.email
-      .sm-col.sm-col-2.px1.sm-right-align
-        = link_to 'Edit', edit_user_registration_path, \
-          class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
-  .py2.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-4.px1 = 'Mobile'
-      .sm-col.sm-col-6.px1 = current_user.mobile
-      .sm-col.sm-col-2.px1.sm-right-align
-        = link_to 'Edit', edit_user_registration_path, \
-          class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
-  .py2.border-top.border-bottom
-    .clearfix.mxn1
-      .sm-col.sm-col-8.px1 = 'Authenticator App'
-      .sm-col.sm-col-4.px1.sm-right-align
-        - if current_user.totp_enabled?
-          = button_to 'Disable', disable_totp_url, method: :delete, \
-            class: 'btn btn-primary bg-silver gray px2 py1 h5'
-        - else
-          = button_to 'Enable', users_totp_url, method: :get, \
-            class: 'btn btn-primary bg-silver gray px2 py1 h5'
+h2.h5.mt4.mb2 = t('headings.profile.account_settings')
+.py2.border-top
+  .clearfix.mxn1
+    .sm-col.sm-col-4.px1 = 'Email address'
+    .sm-col.sm-col-6.px1 = current_user.email
+    .sm-col.sm-col-2.px1.sm-right-align
+      = link_to 'Edit', edit_user_registration_path, \
+        class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
+.py2.border-top
+  .clearfix.mxn1
+    .sm-col.sm-col-4.px1 = 'Mobile'
+    .sm-col.sm-col-6.px1 = current_user.mobile
+    .sm-col.sm-col-2.px1.sm-right-align
+      = link_to 'Edit', edit_user_registration_path, \
+        class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
+.py2.border-top.border-bottom
+  .clearfix.mxn1
+    .sm-col.sm-col-8.px1 = 'Authenticator App'
+    .sm-col.sm-col-4.px1.sm-right-align
+      - if current_user.totp_enabled?
+        = button_to 'Disable', disable_totp_url, method: :delete, \
+          class: 'btn btn-primary bg-silver gray px2 py1 h5'
+      - else
+        = button_to 'Enable', users_totp_url, method: :get, \
+          class: 'btn btn-primary bg-silver gray px2 py1 h5'
+
+- unless current_user.active_identities.empty?
+  h2.h5.mt4.mb2 = t('headings.profile.agencies')
+  - current_user.active_identities.each do |i|
+    .py2.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-8.px1
+          .h3.truncate = i.display_name
+        .sm-col.sm-col-4.px1
+          .h6.bold = 'Last login'
+          .h5 = i.last_authenticated_at.to_s(:date_pretty)
 
 h2.h5.mt4.mb2 = t('headings.profile.advanced_settings')
 .py2.border-top.border-bottom
