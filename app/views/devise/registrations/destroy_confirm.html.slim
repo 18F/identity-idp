@@ -1,0 +1,10 @@
+- title t('titles.registrations.destroy_confirm')
+
+
+h1.heading = t('headings.delete_account')
+p = t('devise.registrations.destroy_confirm')
+div
+  = button_to t('forms.buttons.delete_account_confirm'), \
+            { controller: 'users/registrations', action: :destroy, id: current_user.id }, \
+            method: :delete, \
+            class: 'btn btn-primary'

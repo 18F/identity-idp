@@ -51,6 +51,9 @@ en:
         bullet_3: >
           You can use your login.gov account to access all participating
           U.S. government agencies.
+      destroy_confirm: >
+        Deleting your account cannot be undone. All data associated with your
+        account will be removed. Are you sure you'd like to delete your account?
       destroyed: "Your account has been successfully deleted."
       signed_up: "Welcome! You have signed up successfully."
       signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."

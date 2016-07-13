@@ -10,6 +10,7 @@ en:
     buttons:
       continue_browsing: Continue Browsing
       delete_account: Delete
+      delete_account_confirm: Yes, delete account
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
     required_field: Indicates a required field.
@@ -48,6 +49,7 @@ en:
       forgot: Reset the password for your account
     profile: Profile
     registrations:
+      destroy_confirm: Delete your account
       edit: Edit your account
       new: Sign up for a account
       start: Get started

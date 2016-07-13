@@ -10,6 +10,7 @@ feature 'User profile' do
       visit profile_index_path
       click_button t('forms.buttons.delete_account')
 
+      click_button t('forms.buttons.delete_account_confirm')
       expect(page).to have_content t('devise.registrations.destroyed')
       expect(current_path).to eq root_path
       expect(User.count).to eq 0
