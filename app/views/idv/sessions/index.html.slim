@@ -5,47 +5,47 @@
   h1.heading = t('idv.titles.session.basic')
   .mb3
     label = t('idv.form.first_name')
-    = block_text_field_tag 'first_name', nil
+    = block_text_field_tag 'first_name', nil, required: true
     label = t('idv.form.last_name')
-    = block_text_field_tag 'last_name', nil
+    = block_text_field_tag 'last_name', nil, required: true
   h1.heading = t('idv.titles.session.dob')
   .mb3
     label.hide = t('idv.form.dob')
-    = block_date_field_tag 'dob', nil
+    = block_date_field_tag 'dob', nil, required: true
   h1.heading = t('idv.titles.session.ssn')
   .mb3
     label.hide = t('idv.form.ssn')
-    = block_text_field_tag 'ssn', nil
+    = block_text_field_tag 'ssn', nil, required: true, pattern: '[0-9]*'
   h1.heading = t('idv.titles.session.address')
   .mb3
     label = t('idv.form.address1')
-    = block_text_field_tag 'address1', nil
+    = block_text_field_tag 'address1', nil, required: true
     label = t('idv.form.address2')
     = block_text_field_tag 'address2', nil
     label = t('idv.form.city')
-    = block_text_field_tag 'city', nil
+    = block_text_field_tag 'city', nil, required: true
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
         label = t('idv.form.state')
-        = us_states_territories_select_tag
+        = us_states_territories_select_tag required: true
       .sm-col.sm-col-6.px1
         label = t('idv.form.zipcode')
-        = block_text_field_tag 'zipcode', nil
+        = block_text_field_tag 'zipcode', nil, required: true, pattern: '[0-9]*'
   h1.heading = t('idv.titles.session.finance')
   .mb3
     label = t('idv.form.ccn')
-    = block_text_field_tag 'ccn', nil
+    = block_text_field_tag 'ccn', nil, pattern: '[0-9]*'
     label = t('idv.form.mortgage')
-    = block_text_field_tag 'mortgage', nil
+    = block_text_field_tag 'mortgage', nil, pattern: '[0-9]*'
     label = t('idv.form.home_equity_line')
-    = block_text_field_tag 'home_equity_line', nil
+    = block_text_field_tag 'home_equity_line', nil, pattern: '[0-9]*'
     label = t('idv.form.auto_loan')
-    = block_text_field_tag 'auto_loan', nil
+    = block_text_field_tag 'auto_loan', nil, pattern: '[0-9]*'
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
         label = t('idv.form.bank_routing')
-        = block_text_field_tag 'bank_routing', nil
+        = block_text_field_tag 'bank_routing', nil, pattern: '[0-9]*'
       .sm-col.sm-col-6.px1
         label = t('idv.form.bank_acct')
-        = block_text_field_tag 'bank_acct', nil
+        = block_text_field_tag 'bank_acct', nil, pattern: '[0-9]*'
   button type='submit' class='btn btn-primary' = 'Continue'
