@@ -72,9 +72,10 @@ en:
       change: Change your password
       forgot: Forgot password?
     profile:
-      main: My account
       account_settings: Account settings
       advanced_settings: Advanced settings
+      agencies: Agencies I've logged into
+      main: My account
     registrations:
       enter_email: Email address
       verify_email: Verify email address

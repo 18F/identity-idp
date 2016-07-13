@@ -1,1 +1,1 @@
-Time::DATE_FORMATS[:admin_date_and_time] = '%m-%d-%Y %H:%M'
+Time::DATE_FORMATS[:date_pretty] = '%B %e, %Y'

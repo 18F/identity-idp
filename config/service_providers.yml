@@ -6,6 +6,8 @@ test:
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
       block_encryption: 'none'
       cert: 'saml_test_sp'
+      agency: 'test_agency'
+      friendly_name: 'test_friendly_name'
 
     'https://rp1.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://example.com/test/saml/decode_assertion'
@@ -45,6 +47,8 @@ development:
       assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3003/login'
       cert: 'demo_sp'
+      agency: '18F'
+      friendly_name: '18F Test Service Provider'
     'https://dashboard.login.gov':
       metadata_url: 'http://localhost:3001/users/auth/saml/metadata'
       acs_url: 'http://localhost:3001/users/auth/saml/callback'
@@ -110,3 +114,4 @@ superb.legit.domain.gov:
       acs_url: 'https://vets.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
       cert: 'saml_test_sp'
+      agency: 'test_agency'

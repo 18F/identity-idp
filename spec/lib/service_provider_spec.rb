@@ -15,7 +15,9 @@ describe ServiceProvider do
           block_encryption: 'none',
           key_transport: 'rsa-oaep-mgf1p',
           fingerprint: nil,
-          double_quote_xml_attribute_values: true
+          double_quote_xml_attribute_values: true,
+          agency: nil,
+          friendly_name: nil
         }
 
         expect(@service_provider.metadata).to eq attributes
@@ -35,7 +37,9 @@ describe ServiceProvider do
           block_encryption: 'none',
           key_transport: 'rsa-oaep-mgf1p',
           fingerprint: fingerprint,
-          double_quote_xml_attribute_values: true
+          double_quote_xml_attribute_values: true,
+          agency: 'test_agency',
+          friendly_name: 'test_friendly_name'
         }
 
         expect(service_provider.metadata).to eq attributes
@@ -73,7 +77,9 @@ describe ServiceProvider do
             fingerprint: fingerprint,
             key_transport: 'rsa-oaep-mgf1p',
             metadata_url: nil,
-            sp_initiated_login_url: nil
+            sp_initiated_login_url: nil,
+            agency: 'test_agency',
+            friendly_name: nil
           }
 
           expect(service_provider.metadata).to eq attributes
@@ -147,6 +153,44 @@ describe ServiceProvider do
 
         expect(service_provider.metadata_url).
           to eq 'http://test.host/test/saml/metadata'
+      end
+    end
+  end
+
+  describe '#agency' do
+    context 'when value is not specified in YAML' do
+      it 'returns nil' do
+        service_provider = ServiceProvider.new('http://test.host')
+
+        expect(service_provider.agency).to be_nil
+      end
+    end
+
+    context 'when value is specified in YAML' do
+      it 'returns the value from YAML' do
+        service_provider = ServiceProvider.new('http://localhost:3000')
+
+        expect(service_provider.agency).
+          to eq 'test_agency'
+      end
+    end
+  end
+
+  describe '#friendly_name' do
+    context 'when value is not specified in YAML' do
+      it 'returns nil' do
+        service_provider = ServiceProvider.new('http://test.host')
+
+        expect(service_provider.friendly_name).to be_nil
+      end
+    end
+
+    context 'when value is specified in YAML' do
+      it 'returns the value from YAML' do
+        service_provider = ServiceProvider.new('http://localhost:3000')
+
+        expect(service_provider.friendly_name).
+          to eq 'test_friendly_name'
       end
     end
   end

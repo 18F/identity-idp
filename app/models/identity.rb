@@ -9,4 +9,8 @@ class Identity < ActiveRecord::Base
   def sp_metadata
     ServiceProvider.new(service_provider).metadata
   end
+
+  def display_name
+    sp_metadata[:friendly_name] || sp_metadata[:agency] || service_provider
+  end
 end
