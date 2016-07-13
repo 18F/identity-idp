@@ -41,7 +41,7 @@ Rails.application.configure do
     host: Figaro.env.domain_name,
     protocol: 'http'
   }
-
+  config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
   config.action_mailer.default_options = { from: 'upaya@18f.gov' }
 

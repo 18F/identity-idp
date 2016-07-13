@@ -1,4 +1,5 @@
 class UserMailer < ActionMailer::Base
+  before_action :attach_images
   default from: 'upaya@18f.gov'
 
   def email_changed(old_email)
@@ -13,5 +14,9 @@ class UserMailer < ActionMailer::Base
 
   def password_changed(user)
     mail(to: user.email, subject: t('devise.mailer.password_updated.subject'))
+  end
+
+  def attach_images
+    attachments.inline['logo.png'] = File.read('app/assets/images/logo.png')
   end
 end

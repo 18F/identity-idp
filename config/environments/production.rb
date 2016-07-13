@@ -86,6 +86,7 @@ Rails.application.configure do
     host: Figaro.env.domain_name,
     protocol: 'https'
   }
+  config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_options = { from: 'upaya@18f.gov' }
 
