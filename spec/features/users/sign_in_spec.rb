@@ -176,7 +176,7 @@ feature 'Sign in' do
     end
 
     it 'successfully signs in the user' do
-      user = sign_in_user
+      user = sign_in_and_2fa_user
       click_link(t('links.sign_out'))
 
       Timecop.travel(Devise.timeout_in + 1.minute)
@@ -186,7 +186,7 @@ feature 'Sign in' do
       click_button 'Log in'
 
       expect(page).to_not have_content t('errors.invalid_authenticity_token')
-      expect(current_path).to eq users_otp_path
+      expect(current_path).to eq user_two_factor_authentication_path
     end
   end
 

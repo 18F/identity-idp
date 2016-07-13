@@ -29,4 +29,13 @@ describe 'devise/two_factor_authentication/show.html.slim' do
         to have_content t('devise.two_factor_authentication.header_text')
     end
   end
+
+  it 'displays how long the OTP is valid for' do
+    user = build_stubbed(:user, :signed_up)
+    allow(view).to receive(:current_user).and_return(user)
+
+    render
+
+    expect(rendered).to have_content distance_of_time_in_words(Devise.direct_otp_valid_for)
+  end
 end

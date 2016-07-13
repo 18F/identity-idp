@@ -5,17 +5,12 @@ require 'rails_helper'
 #   I want to recover my password
 #   So I can regain access to protected areas of the site
 feature 'Password Recovery' do
-  def reset_password_and_sign_back_in
+  def reset_password_and_sign_back_in(user)
     fill_in 'New password', with: 'NewVal!dPassw0rd'
     click_button 'Change my password'
-    fill_in 'Email', with: 'email@example.com'
+    fill_in 'Email', with: user.email
     fill_in 'user_password', with: 'NewVal!dPassw0rd'
     click_button 'Log in'
-  end
-
-  before(:each) do
-    visit root_path
-    click_link t('headings.passwords.forgot')
   end
 
   # Scenario: User can request a password reset link be sent to them
@@ -25,6 +20,9 @@ feature 'Password Recovery' do
   context 'user can reset their password via email', email: true do
     before do
       user = create(:user, :signed_up)
+
+      visit root_path
+      click_link t('headings.passwords.forgot')
       fill_in 'Email', with: user.email
       click_button t('forms.buttons.reset_password')
     end
@@ -63,13 +61,11 @@ feature 'Password Recovery' do
   #   Then I can set my password
   context 'user with only email confirmation resets password', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_email_link_matching(/confirmation_token/)
+      user = create(:user, :unconfirmed)
+      confirm_last_user
       reset_email
-      visit root_path
-      click_link t('headings.passwords.forgot')
-      fill_in 'Email', with: 'email@example.com'
+      visit new_user_password_path
+      fill_in 'Email', with: user.email
       click_button t('forms.buttons.reset_password')
       open_last_email
       click_email_link_matching(/confirmation_token/)
@@ -87,12 +83,11 @@ feature 'Password Recovery' do
   #   Then I can set a new password
   context 'user with email confirmation resends confirmation', email: true do
     before do
-      sign_up_with('email@example.com')
-      open_last_email
-      click_email_link_matching(/confirmation_token/)
+      user = create(:user, :unconfirmed)
+      confirm_last_user
       reset_email
       visit new_user_confirmation_path
-      fill_in 'Email', with: 'email@example.com'
+      fill_in 'Email', with: user.email
       click_button 'Resend confirmation instructions'
       open_last_email
       click_email_link_matching(/confirmation_token/)
@@ -110,18 +105,12 @@ feature 'Password Recovery' do
   #   Then I can set a new password
   context 'user with password confirmation resets password', email: true do
     before do
-      sign_up_with_and_set_password_for('email@example.com')
-      click_link(t('links.sign_out'))
-      visit root_path
-      click_link t('headings.passwords.forgot')
-      fill_in 'Email', with: 'email@example.com'
+      @user = create(:user)
+      visit new_user_password_path
+      fill_in 'Email', with: @user.email
       click_button t('forms.buttons.reset_password')
       open_last_email
       click_email_link_matching(/reset_password_token/)
-    end
-
-    it 'shows the password form' do
-      expect(page).to have_content t('headings.passwords.change')
     end
 
     it 'keeps user signed out after they successfully reset their password' do
@@ -132,7 +121,7 @@ feature 'Password Recovery' do
     end
 
     it 'prompts user to set up their 2FA options after signing back in' do
-      reset_password_and_sign_back_in
+      reset_password_and_sign_back_in(@user)
 
       expect(current_path).to eq users_otp_path
     end
@@ -140,11 +129,9 @@ feature 'Password Recovery' do
 
   context 'user with invalid token cannot reset password', email: true do
     before do
-      sign_up_with_and_set_password_for('email@example.com')
-      click_link(t('links.sign_out'))
-      visit root_path
-      click_link t('headings.passwords.forgot')
-      fill_in 'Email', with: 'email@example.com'
+      user = create(:user)
+      visit new_user_password_path
+      fill_in 'Email', with: user.email
       click_button t('forms.buttons.reset_password')
       visit edit_user_password_path(reset_password_token: 'invalid_token')
     end
@@ -164,27 +151,17 @@ feature 'Password Recovery' do
   #   Then I can set a new password
   context 'user with 2FA confirmation resets password', email: true do
     before do
-      sign_up_with_and_set_password_for('email@example.com')
-      fill_in 'Mobile', with: '5555555555'
-      click_button 'Submit'
-      fill_in 'code', with: User.last.direct_otp
-      click_button 'Submit'
-      click_link(t('links.sign_out'))
-      visit root_path
-      click_link t('headings.passwords.forgot')
-      fill_in 'Email', with: 'email@example.com'
+      @user = create(:user, :signed_up)
+      visit new_user_password_path
+      fill_in 'Email', with: @user.email
       click_button t('forms.buttons.reset_password')
       open_last_email
       click_email_link_matching(/reset_password_token/)
     end
 
-    it 'shows the password form' do
-      expect(page).to have_content t('headings.passwords.change')
-    end
-
     it 'redirects user to profile after signing back in' do
-      reset_password_and_sign_back_in
-      fill_in 'code', with: User.last.direct_otp
+      reset_password_and_sign_back_in(@user)
+      fill_in 'code', with: @user.reload.direct_otp
       click_button 'Submit'
 
       expect(current_path).to eq profile_index_path
@@ -202,6 +179,8 @@ feature 'Password Recovery' do
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
+    visit new_user_password_path
+
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
       click_button t('forms.buttons.reset_password')
@@ -217,6 +196,8 @@ feature 'Password Recovery' do
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
+    visit new_user_password_path
+
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
       click_button t('forms.buttons.reset_password')
@@ -226,12 +207,14 @@ feature 'Password Recovery' do
   end
 
   scenario 'user submits blank email address' do
+    visit new_user_password_path
     click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
   end
 
   scenario 'user submits blank email address and has JS turned on', js: true do
+    visit new_user_password_path
     click_button t('forms.buttons.reset_password')
 
     expect(page).to have_content 'Please fill in all required fields'
@@ -242,8 +225,10 @@ feature 'Password Recovery' do
   #   When I complete the form on the password recovery page
   #   Then I still don't know if an account exists
   scenario 'user is unable to determine if account exists' do
+    visit new_user_password_path
     fill_in 'Email', with: 'no_account_exists@gmail.com'
     click_button t('forms.buttons.reset_password')
+
     expect(page).to have_content(t('devise.passwords.send_instructions'))
   end
 
@@ -255,6 +240,7 @@ feature 'Password Recovery' do
     before do
       @user = create(:user, :signed_up)
 
+      visit new_user_password_path
       fill_in 'Email', with: @user.email
       click_button t('forms.buttons.reset_password')
 
@@ -315,6 +301,7 @@ feature 'Password Recovery' do
   scenario 'user takes too long to click the reset password link' do
     user = create(:user, :signed_up)
 
+    visit new_user_password_path
     fill_in 'Email', with: user.email
     click_button t('forms.buttons.reset_password')
 
@@ -340,6 +327,7 @@ feature 'Password Recovery' do
   scenario 'user takes too long to reset password' do
     user = create(:user, :signed_up)
 
+    visit new_user_password_path
     fill_in 'Email', with: user.email
     click_button t('forms.buttons.reset_password')
 
@@ -365,11 +353,9 @@ feature 'Password Recovery' do
   #   When I complete the form on the password recovery page
   #   Then I receive confirmation instructions
   scenario 'unconfirmed user requests reset instructions', email: true do
-    user = create(:user)
-    user.update(confirmed_at: nil)
+    user = create(:user, :unconfirmed)
 
-    visit root_path
-    click_link t('headings.passwords.forgot')
+    visit new_user_password_path
     fill_in 'Email', with: user.email
     click_button t('forms.buttons.reset_password')
 
@@ -377,19 +363,12 @@ feature 'Password Recovery' do
       to eq t('devise.mailer.confirmation_instructions.subject')
   end
 
-  scenario 'passwords new view has a localized title' do
-    expect(page).to have_title t('titles.passwords.forgot')
-  end
-
-  scenario 'passwords new view has a localized heading' do
-    expect(page).to have_content t('headings.passwords.forgot')
-  end
-
   # Scenario: User enters non-existent email address into password reset form
   #   Given I am not signed in
   #   When I enter a non-existent email address
   #   Then I see 'email sent'
   scenario 'user enters non-existent email address into password reset form' do
+    visit new_user_password_path
     fill_in 'user_email', with: 'ThisEmailAddressShall@NeverExist.com'
     click_button t('forms.buttons.reset_password')
 
@@ -406,6 +385,7 @@ feature 'Password Recovery' do
     reset_email
     user = create(:user, :signed_up, :tech_support)
 
+    visit new_user_password_path
     fill_in 'user_email', with: user.email
     click_button t('forms.buttons.reset_password')
 
@@ -421,6 +401,7 @@ feature 'Password Recovery' do
     reset_email
     user = create(:user, :signed_up, :admin)
 
+    visit new_user_password_path
     fill_in 'user_email', with: user.email
     click_button t('forms.buttons.reset_password')
 

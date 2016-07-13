@@ -8,31 +8,32 @@ feature 'saml api', devise: true, sms: true do
 
   context 'SAML Assertions' do
     context 'before fully signing in' do
-      before { visit authnrequest_get }
-
       it 'prompts the user to sign in' do
+        visit authnrequest_get
+
+        expect(current_path).to eq root_path
         expect(page).to have_content t('devise.failure.unauthenticated')
       end
 
       it 'prompts the user to enter OTP' do
-        sign_in_user(user)
-        expect(page).to have_content t('devise.two_factor_authentication.header_text')
+        sign_in_before_2fa(user)
+        visit authnrequest_get
+
+        expect(current_path).to eq(user_two_factor_authentication_path)
       end
     end
 
     context 'user has not set up 2FA yet and signs in' do
-      let(:user) { create(:user) }
-
-      before { visit authnrequest_get }
-
       it 'prompts the user to set up 2FA' do
-        sign_in_user(user)
+        sign_in_before_2fa
+        visit authnrequest_get
 
         expect(current_path).to eq users_otp_path
       end
 
       it 'prompts the user to enter OTP after setting up 2FA' do
-        sign_in_user(user)
+        sign_in_before_2fa
+        visit authnrequest_get
 
         fill_in 'Mobile', with: '202-555-1212'
         click_button 'Submit'
@@ -45,13 +46,13 @@ feature 'saml api', devise: true, sms: true do
       before { visit authnrequest_get }
 
       it 'prompts user to set up 2FA after confirming email and setting password' do
-        sign_up_with_and_set_password_for('user@example.com')
+        sign_up_and_set_password
 
         expect(current_path).to eq users_otp_path
       end
 
       it 'prompts the user to enter OTP after setting up 2FA' do
-        sign_up_with_and_set_password_for('user@example.com')
+        sign_up_and_set_password
 
         fill_in 'Mobile', with: '202-555-1212'
         click_button 'Submit'
@@ -62,8 +63,8 @@ feature 'saml api', devise: true, sms: true do
 
     context 'service provider does not explicitly disable encryption' do
       before do
+        sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-        authenticate_user(user)
       end
 
       let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
@@ -75,8 +76,8 @@ feature 'saml api', devise: true, sms: true do
 
     context 'user can get a well-formed signed Assertion' do
       before do
+        sign_in_and_2fa_user(user)
         visit authnrequest_get
-        authenticate_user(user)
       end
 
       let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
@@ -150,15 +151,15 @@ feature 'saml api', devise: true, sms: true do
 
   context 'visiting /test/saml' do
     scenario 'it requires 2FA' do
+      sign_in_before_2fa(user)
       visit '/test/saml'
-      sign_in_user
-      expect(current_path).to eq(users_otp_path)
-      expect(page).to have_content(t('devise.two_factor_authentication.otp_setup'))
+
+      expect(current_path).to eq(user_two_factor_authentication_path)
     end
 
     it 'adds acs_url domain names for current Rails env to CSP form_action' do
+      sign_in_and_2fa_user(user)
       visit '/test/saml'
-      authenticate_user(user)
 
       expect(page.response_headers['Content-Security-Policy']).
         to include('form-action \'self\' localhost:3000 example.com')
@@ -172,8 +173,8 @@ feature 'saml api', devise: true, sms: true do
       let(:response_xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
 
       before do
+        sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-        authenticate_user(user)
 
         @asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
         visit destroy_user_session_url
@@ -208,8 +209,8 @@ feature 'saml api', devise: true, sms: true do
       let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'logout_assertion') }
 
       before do
+        sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-        authenticate_user(user)
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp1_saml_settings
@@ -262,8 +263,8 @@ feature 'saml api', devise: true, sms: true do
       let(:logout_user) { create(:user, :signed_up) }
 
       before do
+        sign_in_and_2fa_user(logout_user)
         visit sp1_authnrequest
-        authenticate_user(logout_user)
       end
 
       it 'redirects to root' do
@@ -280,8 +281,9 @@ feature 'saml api', devise: true, sms: true do
       let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
 
       before do
+        sign_in_and_2fa_user(logout_user)
         visit sp1_authnrequest
-        authenticate_user(logout_user)
+
         @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
 
         click_button 'Submit'
@@ -326,8 +328,9 @@ feature 'saml api', devise: true, sms: true do
       let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
 
       before do
+        sign_in_and_2fa_user(user)
         visit sp1_authnrequest # sp1
-        authenticate_user(user)
+
         @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
         click_button 'Submit'
 
@@ -375,8 +378,9 @@ feature 'saml api', devise: true, sms: true do
       let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
 
       before do
+        sign_in_and_2fa_user(user)
         visit sp1_authnrequest # sp1
-        authenticate_user(user)
+
         @sp1_session_index = response_xmldoc.response_session_index_assertion
         click_button 'Submit'
 
@@ -411,8 +415,9 @@ feature 'saml api', devise: true, sms: true do
       let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
 
       before do
+        sign_in_and_2fa_user(user)
         visit sp2_authnrequest # sp2
-        authenticate_user(user)
+
         @sp2_session_index = response_xmldoc.response_session_index_assertion
         click_button 'Submit'
 
@@ -449,8 +454,9 @@ feature 'saml api', devise: true, sms: true do
       let(:logout_user) { create(:user, :signed_up) }
 
       before do
+        sign_in_and_2fa_user(logout_user)
         visit sp1_authnrequest
-        authenticate_user(logout_user)
+
         click_button 'Submit'
       end
 
