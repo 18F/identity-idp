@@ -8,6 +8,8 @@
     "npm": "~3.8.x"
   },
   "dependencies": {
+    "classlist.js": "^1.1.20150312",
+    "gentleform": "^2.0.1",
     "jquery": "^2.2.3",
     "zxcvbn": "^4.3.0"
   },
