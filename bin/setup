@@ -22,6 +22,10 @@ Dir.chdir APP_ROOT do
   run "cp certs/saml.crt.example certs/saml.crt"
 
   if ARGV.shift == "--docker" then
+    run 'docker-compose build'
+    run 'docker-compose up -d'
+    run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
+    run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
     exit
   end
 
@@ -32,8 +36,8 @@ Dir.chdir APP_ROOT do
   run "npm install"
 
   puts "\n== Preparing database =="
-  run "bin/rake db:setup RAILS_ENV=development"
-  run 'bin/rake db:setup RAILS_ENV=test'
+  run "bin/rake db:reset RAILS_ENV=development"
+  run 'bin/rake db:reset RAILS_ENV=test'
 
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"

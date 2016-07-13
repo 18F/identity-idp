@@ -20,44 +20,22 @@ Testing dependencies:
 
 ### Getting Started with Docker
 
-We have a pre-built development environment made with [Docker Compose].
-  * On non-Linux systems this will involve installing [Docker
-    Toolbox (v1.10+)](https://www.docker.com/products/docker-toolbox) and
-    starting a Docker Machine VM by launching the `Docker Quickstart Terminal`
-    app.
+1. Download, install, and launch [Docker]
 
-1. Copy the sample configuration files:
+1. Set up the Docker image
 
         $ bin/setup --docker
-
-1. Build/download the container images:
-
-        $ docker-compose build
-
-1. Start the app:
-
-        $ docker-compose up -d
-
-1. Setup the database(s):
-
-        $ docker-compose run --rm web rake db:setup RAILS_ENV=development
-
-        $ docker-compose run --rm web rake db:setup RAILS_ENV=test
 
 Once the docker images are up and running, the app will be accessible
 at `http://localhost:3000/`.  Email messages will be visible in MailCatcher
 at `http://localhost:1080/`.
-  * On non-Linux platforms, `localhost` will need to be replaced with the
-    IP address of your Docker Machine VM, which is `192.168.99.100` by default.
-    When you launch the `Docker Quickstart Terminal` app on a Mac, it will tell
-    you which machine and IP are in use:
 
-    ![docker](http://cl.ly/1Q0Q1H1i3J3c/download/Screen%20Shot%202016-04-27%20at%202.03.32%20PM.png)
+[Docker]: https://docs.docker.com/engine/getstarted/step_one/#step-1-get-docker
 
 More useful Docker commands:
 
+* Start the container: `docker-compose up`
 * Stop this running container: `docker-compose stop`
-* Stop the Docker Machine VM: `docker-machine stop`
 * Stop and delete the containers: `docker-compose down`
 * Open a shell in the web container: `docker-compose run --rm web bash`
 
