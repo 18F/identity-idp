@@ -75,7 +75,7 @@ README for more details.
 - Review pull requests within 24 hours of being opened
 - Keep pull requests as small as possible, and focused on a single topic
 - Once a pull request is good to go, the code reviewer is the one who merges
-it, then deletes the branch.
+  it, then deletes the branch.
 
 ## Public domain
 

@@ -67,12 +67,6 @@ describe User do
       expect(user.two_factor_enabled?).to eq true
     end
 
-    it 'is false when user has an unconfirmed mobile' do
-      user = create(:user, unconfirmed_mobile: '123456789')
-
-      expect(user.two_factor_enabled?).to eq false
-    end
-
     it 'is false when user does not have a mobile' do
       user = create(:user)
 

@@ -68,8 +68,11 @@ module Features
     def sign_up_and_2fa
       user = sign_up_and_set_password
       fill_in 'Mobile', with: '202-555-1212'
+      allow(Users::PhoneConfirmationController).
+        to receive(:generate_confirmation_code).and_return('1234')
       click_button 'Submit'
-      fill_in 'code', with: user.reload.direct_otp
+      fill_in 'code', with: '1234'
+
       click_button 'Submit'
       user
     end

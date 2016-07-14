@@ -24,40 +24,38 @@ feature 'saml api', devise: true, sms: true do
     end
 
     context 'user has not set up 2FA yet and signs in' do
-      it 'prompts the user to set up 2FA' do
+      before do
         sign_in_before_2fa
         visit authnrequest_get
+      end
 
+      it 'prompts the user to set up 2FA' do
         expect(current_path).to eq users_otp_path
       end
 
-      it 'prompts the user to enter OTP after setting up 2FA' do
-        sign_in_before_2fa
-        visit authnrequest_get
-
+      it 'prompts the user to confirm mobile after setting up 2FA' do
         fill_in 'Mobile', with: '202-555-1212'
         click_button 'Submit'
 
-        expect(current_path).to eq user_two_factor_authentication_path
+        expect(current_path).to eq phone_confirmation_path
       end
     end
 
     context 'first time registration' do
-      before { visit authnrequest_get }
+      before do
+        sign_up_and_set_password
+        visit authnrequest_get
+      end
 
       it 'prompts user to set up 2FA after confirming email and setting password' do
-        sign_up_and_set_password
-
         expect(current_path).to eq users_otp_path
       end
 
-      it 'prompts the user to enter OTP after setting up 2FA' do
-        sign_up_and_set_password
-
+      it 'prompts the user to confirm mobile after setting up 2FA' do
         fill_in 'Mobile', with: '202-555-1212'
         click_button 'Submit'
 
-        expect(current_path).to eq user_two_factor_authentication_path
+        expect(current_path).to eq phone_confirmation_path
       end
     end
 

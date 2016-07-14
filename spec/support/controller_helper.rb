@@ -20,6 +20,7 @@ module ControllerHelper
 
   def sign_in_before_2fa
     sign_in_as_user
+    controller.current_user.send_new_otp
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
 end

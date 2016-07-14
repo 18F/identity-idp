@@ -15,7 +15,6 @@ describe Users::TotpSetupController, devise: true do
   describe '#new' do
     before do
       sign_in_as_user
-
       get :new
     end
 

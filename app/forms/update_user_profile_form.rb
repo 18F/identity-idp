@@ -5,6 +5,7 @@ class UpdateUserProfileForm
   include FormPasswordValidator
 
   attr_accessor :mobile, :email, :current_password, :password, :totp_enabled
+  attr_reader :user
 
   validates :current_password, presence: true
 
@@ -24,8 +25,10 @@ class UpdateUserProfileForm
   def submit(params)
     set_attributes(params)
 
+    params.delete('mobile') if mobile_changed?
+
     if valid_form?
-      @user.update_with_password(params.merge!(mobile: mobile))
+      @user.update_with_password(params)
     else
       process_errors(params)
     end
@@ -39,6 +42,10 @@ class UpdateUserProfileForm
     @mobile_taken == true
   end
 
+  def mobile_changed?
+    @mobile_changed == true
+  end
+
   private
 
   def set_attributes(params)
@@ -46,7 +53,10 @@ class UpdateUserProfileForm
       format: :international, normalize: :US, spaces: ' '
     )
 
-    self.mobile = formatted_mobile if formatted_mobile != @user.mobile
+    if formatted_mobile != @user.mobile
+      @mobile_changed = true
+      self.mobile = formatted_mobile
+    end
     self.email = params[:email]
     self.current_password = params[:current_password]
     self.password = params[:password]
@@ -67,7 +77,7 @@ class UpdateUserProfileForm
     if attribute_taken? && valid?
       @user.skip_confirmation_notification! if email_taken?
       send_notifications
-      @user.update_with_password(params.merge!(mobile: mobile))
+      @user.update_with_password(params)
       return true
     end
 

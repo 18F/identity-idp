@@ -1,5 +1,7 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
+    include PhoneConfirmation
+
     before_action :confirm_two_factor_authenticated, only: [:edit, :update, :destroy_confirm]
     prepend_before_action :authenticate_scope!, only: [:edit, :update, :destroy, :destroy_confirm]
     prepend_before_action :disable_account_creation, only: [:new, :create]
@@ -54,22 +56,16 @@ module Users
     end
 
     def process_updates(resource)
-      updater = UserFlashUpdater.new(resource, flash)
+      updater = UserFlashUpdater.new(@update_user_profile_form, flash)
 
       updater.set_flash_message
 
-      if updater.needs_to_confirm_mobile_change?
-        process_redirection(resource)
+      if @update_user_profile_form.mobile_changed?
+        prompt_to_confirm_mobile(@update_user_profile_form)
       elsif is_flashing_format?
-        redirect_to edit_user_registration_url
         EmailNotifier.new(resource).send_password_changed_email
+        redirect_to edit_user_registration_url
       end
-    end
-
-    def process_redirection(resource)
-      resource.send_new_otp unless @update_user_profile_form.mobile_taken?
-
-      redirect_to user_two_factor_authentication_path
     end
 
     def process_successful_creation

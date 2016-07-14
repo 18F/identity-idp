@@ -34,6 +34,10 @@ Rails.application.routes.draw do
     delete '/users/totp' => 'users/totp_setup#disable', as: :disable_totp
     patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
 
+    get '/phone_confirmation' => 'users/phone_confirmation#show'
+    get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
+    put '/phone_confirmation' => 'users/phone_confirmation#confirm'
+
     get '/users/otp' => 'devise/two_factor_authentication_setup#index'
     patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
     get '/users/otp/new' => 'devise/two_factor_authentication#new'

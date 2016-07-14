@@ -122,11 +122,11 @@ describe Users::RegistrationsController, devise: true do
     end
 
     shared_examples 'adding_mobile' do
-      it 'redirects to otp page with message', sms: true do
+      it 'redirects to phone confirmation page with message', sms: true do
         expect(flash[:notice]).
           to eq t('devise.registrations.mobile_update_needs_confirmation')
 
-        expect(response).to redirect_to user_two_factor_authentication_path
+        expect(response).to redirect_to phone_confirmation_send_path
 
         expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
 
@@ -143,19 +143,18 @@ describe Users::RegistrationsController, devise: true do
     end
 
     shared_examples 'updating_mobile' do
-      it 'redirects to otp page with success message' do
-        expect(response).to redirect_to(user_two_factor_authentication_path)
+      it 'redirects to phone confirmation page with success message' do
+        expect(response).to redirect_to(phone_confirmation_send_path)
 
-        expect(flash[:notice]).
-          to eq t('devise.registrations.mobile_update_needs_confirmation')
+        expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
 
         expect(test_user.reload.mobile).to_not eq '+1 (555) 555-5555'
       end
     end
 
     shared_examples 'updating_both_email_and_mobile' do
-      it 'redirects to otp page with success message' do
-        expect(response).to redirect_to(user_two_factor_authentication_path)
+      it 'redirects to phone confirmation page with success message' do
+        expect(response).to redirect_to(phone_confirmation_send_path)
 
         expect(flash[:notice]).
           to eq t('devise.registrations.email_and_mobile_need_confirmation')
@@ -164,25 +163,8 @@ describe Users::RegistrationsController, devise: true do
       end
     end
 
-    context 'user adds mobile' do
-      before { sign_in(user) }
-
-      it 'sends an OTP to unconfirmed mobile after update' do
-        allow(SmsSenderOtpJob).to receive(:perform_later)
-
-        put(
-          :update,
-          update_user_profile_form: attrs_with_new_email_and_mobile
-        )
-
-        expect(SmsSenderOtpJob).to have_received(:perform_later).
-          with(user.reload.direct_otp, '+1 (555) 555-5555')
-      end
-    end
-
     context 'user updates existing mobile number' do
       before do
-        second_user.mobile_confirm
         sign_in(second_user)
         reset_job_queues
         patch :update, update_user_profile_form: attrs_for_new_mobile
@@ -192,26 +174,10 @@ describe Users::RegistrationsController, devise: true do
         let(:test_user) { second_user }
       end
 
-      it 'updates unconfirmed_mobile' do
-        expect(second_user.reload.unconfirmed_mobile).to eq '+1 (555) 555-5555'
-      end
-
-      it 'calls send_two_factor_authentication_code on current_user' do
-        expect(subject.current_user).to receive(:send_two_factor_authentication_code)
-
-        patch :update, update_user_profile_form: attrs_for_new_mobile
-      end
-
       it 'allows the user to abandon confirmation' do
         get :edit
 
         expect(response).to render_template(:edit)
-      end
-
-      it 'deletes the unconfirmed number once it has been confirmed' do
-        second_user.reload.mobile_confirm
-
-        expect(second_user.reload.unconfirmed_mobile).to be_nil
       end
     end
 
