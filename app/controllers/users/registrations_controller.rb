@@ -1,7 +1,9 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
     before_action :confirm_two_factor_authenticated, only: [:edit, :update, :destroy_confirm]
-    prepend_before_action :authenticate_scope!, only: [:edit, :update, :destroy, :destroy_confirm]
+    prepend_before_action :authenticate_scope!, only: [
+      :edit, :edit_field, :update, :update_field, :destroy, :destroy_confirm
+    ]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def start
@@ -29,13 +31,13 @@ module Users
     end
 
     def edit
-      @update_user_profile_form = UpdateUserProfileForm.new(resource)
+      @update_form = UpdateUserProfileForm.new(resource)
     end
 
     def update
-      @update_user_profile_form = UpdateUserProfileForm.new(resource)
+      @update_form = UpdateUserProfileForm.new(resource)
 
-      if @update_user_profile_form.submit(user_params)
+      if @update_form.submit(user_params)
         process_successful_update(resource)
       else
         clean_up_passwords resource
@@ -43,10 +45,34 @@ module Users
       end
     end
 
+    def edit_field
+      field = params[:field]
+
+      @update_form = update_field_form(field).new(resource)
+      render :"edit_#{field}"
+    end
+
+    def update_field
+      field = params[:field]
+
+      @update_form = update_field_form(field).new(resource)
+
+      if @update_form.submit(user_params)
+        process_successful_update(resource)
+      else
+        clean_up_passwords resource
+        render :"edit_#{field}"
+      end
+    end
+
     def destroy_confirm
     end
 
     protected
+
+    def update_field_form(field)
+      "UpdateUser#{field.capitalize}Form".constantize
+    end
 
     def process_successful_update(resource)
       process_updates(resource)
@@ -61,13 +87,14 @@ module Users
       if updater.needs_to_confirm_mobile_change?
         process_redirection(resource)
       elsif is_flashing_format?
-        redirect_to edit_user_registration_url
+        profile_form = @update_form.is_a?(UpdateUserProfileForm)
+        redirect_to profile_form ? edit_user_registration_url : profile_index_url
         EmailNotifier.new(resource).send_password_changed_email
       end
     end
 
     def process_redirection(resource)
-      resource.send_new_otp unless @update_user_profile_form.mobile_taken?
+      resource.send_new_otp unless @update_form.mobile_taken?
 
       redirect_to user_two_factor_authentication_path
     end
@@ -81,7 +108,7 @@ module Users
     end
 
     def user_params
-      params.require(:update_user_profile_form).
+      params.require(@update_form.class.name.underscore.to_sym).
         permit(:mobile, :email, :password, :current_password)
     end
 

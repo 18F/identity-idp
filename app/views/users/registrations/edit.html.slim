@@ -2,8 +2,7 @@
 
 
 h1.heading = 'Update information'
-= simple_form_for(@update_user_profile_form,
-    url: user_registration_path,
+= simple_form_for(@update_form, url: user_registration_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   = render 'devise/registrations/form', f: f
