@@ -53,6 +53,14 @@ UserDecorator = Struct.new(:user) do
     qrcode.as_png(size: 300).to_data_url
   end
 
+  def blocked_from_entering_2fa_code?
+    user.second_factor_locked_at && !blocked_from_2fa_period_expired?
+  end
+
+  def no_longer_blocked_from_entering_2fa_code?
+    user.second_factor_locked_at && blocked_from_2fa_period_expired?
+  end
+
   private
 
   def omniauthed?(session)
@@ -63,5 +71,9 @@ UserDecorator = Struct.new(:user) do
 
   def masked_number(number)
     "***-***-#{number[-4..-1]}"
+  end
+
+  def blocked_from_2fa_period_expired?
+    (Time.current - user.second_factor_locked_at) > Devise.direct_otp_valid_for
   end
 end

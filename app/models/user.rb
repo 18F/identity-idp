@@ -3,9 +3,9 @@ class User < ActiveRecord::Base
 
   after_validation :set_default_role, if: :new_record?
 
-  devise :confirmable, :database_authenticatable, :lockable, :recoverable,
-         :registerable, :timeoutable, :trackable, :two_factor_authenticatable,
-         :omniauthable, omniauth_providers: [:saml]
+  devise :confirmable, :database_authenticatable, :recoverable, :registerable,
+         :timeoutable, :trackable, :two_factor_authenticatable, :omniauthable,
+         omniauth_providers: [:saml]
 
   enum role: { user: 0, tech: 1, admin: 2 }
 
@@ -41,20 +41,6 @@ class User < ActiveRecord::Base
   def send_reset_confirmation
     update(reset_requested_at: Time.current, confirmed_at: nil)
     send_confirmation_instructions
-  end
-
-  def second_factor_locked?
-    max_login_attempts? && otp_time_lockout?
-  end
-
-  def otp_time_lockout?
-    return false if second_factor_locked_at.nil?
-    (Time.current - second_factor_locked_at) < Devise.direct_otp_valid_for
-  end
-
-  def lock_access!(opts = {})
-    super
-    send_devise_notification(:unlock_instructions, nil, subject: "#{APP_NAME} Account Locked")
   end
 
   def first_identity

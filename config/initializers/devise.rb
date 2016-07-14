@@ -158,24 +158,24 @@ Devise.setup do |config|
   # Defines which strategy will be used to lock an account.
   # :failed_attempts = Locks an account after a number of failed attempts to sign in.
   # :none            = No lock strategy. You should handle locking by yourself.
-  config.lock_strategy = :failed_attempts
+  # config.lock_strategy = :failed_attempts
 
   # Defines which key will be used when locking and unlocking an account
-  config.unlock_keys = [:time]
+  # config.unlock_keys = [:time]
 
   # Defines which strategy will be used to unlock an account.
   # :email = Sends an unlock link to the user email
   # :time  = Re-enables login after a certain amount of time (see :unlock_in below)
   # :both  = Enables both strategies
   # :none  = No unlock strategy. You should handle unlocking by yourself.
-  config.unlock_strategy = :time
+  # config.unlock_strategy = :time
 
   # Number of authentication tries before locking an account if lock_strategy
   # is failed attempts.
-  config.maximum_attempts = 3
+  # config.maximum_attempts = 3
 
   # Time interval to unlock the account if :time is enabled as unlock_strategy.
-  config.unlock_in = 20.minutes
+  # config.unlock_in = 20.minutes
 
   # Warn on the last attempt before the account is locked.
   # config.last_attempt_warning = true
@@ -264,7 +264,7 @@ Devise.setup do |config|
 
   # ==> Two Factor Authentication
   config.allowed_otp_drift_seconds = 30
-  config.max_login_attempts = 3 # max OTP login attemps, not devise strategies (e.g. pw auth)
+  config.max_login_attempts = 3 # max OTP login attempts, not devise strategies (e.g. pw auth)
   config.otp_length = 6
   config.direct_otp_length = 6
   config.direct_otp_valid_for = 5.minutes
