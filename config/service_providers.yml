@@ -40,6 +40,7 @@ development:
       metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
+      assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
       cert: 'demo_sp'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
       metadata_url: 'http://localhost:3003/saml/metadata'
@@ -74,11 +75,13 @@ production:
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev':
       metadata_url: 'https://identity-rp-dev.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-rp-dev.apps.cloud.gov/consume'
+      assertion_consumer_logout_service_url: 'https://identity-rp-dev.apps.cloud.gov/slo_logout'
       sp_initiated_login_url: 'https://identity-rp-dev.apps.cloud.gov/test/saml'
       cert: 'demo_sp'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo':
       metadata_url: 'https://identity-rp-demo.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-rp-demo.apps.cloud.gov/consume'
+      assertion_consumer_logout_service_url: 'https://identity-rp-demo.apps.cloud.gov/slo_logout'
       sp_initiated_login_url: 'https://identity-rp-demo.apps.cloud.gov/test/saml'
       cert: 'demo_sp'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
