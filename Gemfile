@@ -60,6 +60,7 @@ group :development do
   gem 'quiet_assets'
   gem 'rack-mini-profiler'
   gem 'rails_layout'
+  gem 'reek'
   gem 'rubocop', require: false
   gem 'spring'
   gem 'spring-commands-rspec'
