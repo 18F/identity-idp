@@ -8,6 +8,7 @@ if Rails.env.development?
   # have 'password' as password and are setup for mobile OTP delivery.
   %w(test1@test.com test2@test.com).each_with_index do |email, index|
     User.find_or_create_by!(email: email) do |user|
+      user.uuid = format('testuuid-3511-40a3-a0fc-ee64cbd896%02d', index)
       user.skip_confirmation!
       user.reset_password('password', 'password')
       user.unconfirmed_mobile = format('+1 (415) 555-01%02d', index)
