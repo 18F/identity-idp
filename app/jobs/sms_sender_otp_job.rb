@@ -15,10 +15,6 @@ class SmsSenderOtpJob < ActiveJob::Base
   end
 
   def otp_message(code)
-    <<-END.strip_heredoc
-      You requested a secure one-time password to log in to your #{APP_NAME} Account.
-
-      Please enter this secure one-time password: #{code}
-    END
+    "#{code} is your #{APP_NAME} one-time password."
   end
 end
