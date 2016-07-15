@@ -23,6 +23,9 @@ Rails.application.routes.draw do
     get '/start' => 'users/registrations#start', as: :new_user_start
     get '/delete' => 'users/registrations#destroy_confirm', as: :user_destroy_confirm
 
+    get '/users/edit/:field' => 'users/registrations#edit_field', as: :edit_user_field
+    put '/users/edit/:field' => 'users/registrations#update_field', as: :update_user_field
+
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 

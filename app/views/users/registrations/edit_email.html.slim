@@ -1,0 +1,9 @@
+- title t('titles.registrations.edit')
+
+
+h1.heading = 'Update email'
+= simple_form_for(@update_form, url: update_user_field_path(:email),
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.error_notification
+  = f.input :email, autofocus: true, required: true
+  = f.button :submit, 'Update'

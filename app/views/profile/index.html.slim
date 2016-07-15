@@ -9,14 +9,14 @@ h2.h5.mt4.mb2 = t('headings.profile.account_settings')
     .sm-col.sm-col-4.px1 = 'Email address'
     .sm-col.sm-col-6.px1 = current_user.email
     .sm-col.sm-col-2.px1.sm-right-align
-      = link_to 'Edit', edit_user_registration_path, \
+      = link_to 'Edit', edit_user_field_path(:email), \
         class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
 .py2.border-top
   .clearfix.mxn1
     .sm-col.sm-col-4.px1 = 'Mobile'
     .sm-col.sm-col-6.px1 = current_user.mobile
     .sm-col.sm-col-2.px1.sm-right-align
-      = link_to 'Edit', edit_user_registration_path, \
+      = link_to 'Edit', edit_user_field_path(:mobile), \
         class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
 .py2.border-top.border-bottom
   .clearfix.mxn1
