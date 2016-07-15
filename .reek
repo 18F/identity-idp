@@ -1,19 +1,35 @@
+Attribute:
+  enabled: false
 FeatureEnvy:
   exclude:
-   - 'track_registration'
+    - 'track_registration'
+DuplicateMethodCall:
+  exclude:
+    - UserFlashUpdater
+    - Users::PhoneConfirmationController
 IrresponsibleModule:
   enabled: false
+NilCheck:
+  exclude:
+    - Users::PhoneConfirmationController
+TooManyStatements:
+  max_statements: 6
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
     - ServiceProvider
-UnusedPrivateMethod:
-  enabled: true
+UncommunicativeMethodName:
   exclude:
+    - Users::PhoneConfirmationController
+UnusedPrivateMethod:
+  exclude:
+    - ApplicationController
     - ActiveJob::Logging::LogSubscriber
+    - Users::PhoneConfirmationController
 UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
+    - SmsSenderConfirmationJob
 exclude_paths:
   - db/migrate
   - spec/**/*

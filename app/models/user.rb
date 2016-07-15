@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
   include NonNullUuid
-  include PhoneConfirmable
 
   after_validation :set_default_role, if: :new_record?
 
@@ -28,7 +27,7 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_enabled?
-    mobile_confirmed_at.present?
+    mobile.present?
   end
 
   def send_two_factor_authentication_code(_code)

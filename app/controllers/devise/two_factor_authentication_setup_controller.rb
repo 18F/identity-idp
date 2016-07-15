@@ -1,5 +1,6 @@
 module Devise
   class TwoFactorAuthenticationSetupController < DeviseController
+    include PhoneConfirmation
     include ScopeAuthenticator
 
     before_action :authenticate_scope!
@@ -34,9 +35,7 @@ module Devise
     def process_valid_form
       update_metrics
 
-      resource.send_new_otp
-
-      redirect_to user_two_factor_authentication_path
+      prompt_to_confirm_mobile(@two_factor_setup_form)
     end
 
     def update_metrics
@@ -46,8 +45,7 @@ module Devise
     def process_invalid_form
       if @two_factor_setup_form.mobile_taken?
         SmsSenderExistingMobileJob.perform_later(@two_factor_setup_form.mobile)
-
-        redirect_to user_two_factor_authentication_path
+        prompt_to_confirm_mobile(@two_factor_setup_form)
       else
         render :index
       end

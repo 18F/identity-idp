@@ -31,23 +31,11 @@ UserDecorator = Struct.new(:user) do
     end
   end
 
-  def mobile_change_requested?
-    user.unconfirmed_mobile.present? && user.mobile.present?
-  end
-
   def may_bypass_2fa?(session = {})
     omniauthed?(session)
   end
 
-  def two_factor_phone_number
-    return user.unconfirmed_mobile if user.unconfirmed_mobile.present?
-
-    user.mobile
-  end
-
   def masked_two_factor_phone_number
-    return masked_number(user.unconfirmed_mobile) if user.unconfirmed_mobile.present?
-
     masked_number(user.mobile)
   end
 

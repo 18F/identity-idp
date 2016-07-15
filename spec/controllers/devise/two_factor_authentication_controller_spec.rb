@@ -34,14 +34,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         expect(response).to redirect_to(profile_index_url)
       end
-
-      it 'does not redirect if the user has an unconfirmed mobile' do
-        subject.current_user.unconfirmed_mobile = '123'
-        get :index
-
-        expect(response).not_to redirect_to(profile_index_url)
-        expect(response.code).to eq('200')
-      end
     end
 
     context 'when the user is not fully signed in' do
@@ -87,7 +79,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
-        subject.current_user.send_new_otp
         expect(subject.current_user).to receive(:authenticate_otp).and_return(true)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
@@ -118,7 +109,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'does not perform SmsSenderNumberChangeJob' do
         user = create(:user, :signed_up)
         sign_in user
-        user.send_new_otp
 
         expect(SmsSenderNumberChangeJob).to_not receive(:perform_later).with(user)
 
@@ -176,7 +166,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     context 'when the user lockout period expires' do
       before do
         sign_in_before_2fa
-        subject.current_user.send_new_otp
         subject.current_user.update(
           second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.seconds,
           second_factor_attempts_count: 3
@@ -242,15 +231,23 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           expect(response).to render_template(:show)
         end
       end
-    end
 
-    context 'when resource is fully authenticated but has unconfirmed mobile' do
-      it 'renders the show view' do
-        user = create(:user, :signed_up, unconfirmed_mobile: '202-555-1212')
-        sign_in user
-        get :show
+      context 'when FeatureManagement.prefill_otp_codes? is true' do
+        it 'sets @code_value to correct OTP value' do
+          allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+          get :show
 
-        expect(response).to render_template(:show)
+          expect(assigns(:code_value)).to eq(subject.current_user.direct_otp)
+        end
+      end
+
+      context 'when FeatureManagement.prefill_otp_codes? is false' do
+        it 'does not set @code_value' do
+          allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(false)
+          get :show
+
+          expect(assigns(:code_value)).to be_nil
+        end
       end
     end
   end

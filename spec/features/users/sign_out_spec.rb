@@ -15,14 +15,4 @@ feature 'Sign out' do
 
     expect(page).to have_content t('devise.sessions.signed_out')
   end
-
-  scenario 'user session times out before mobile has been confirmed' do
-    user = sign_in_user
-    user.update(unconfirmed_mobile: '555-555-5555')
-
-    Timecop.freeze(Time.current + 1200) do
-      visit edit_user_registration_path
-      expect(user.reload.unconfirmed_mobile).to be_nil
-    end
-  end
 end

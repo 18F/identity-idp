@@ -11,8 +11,8 @@ if Rails.env.development?
       user.uuid = format('testuuid-3511-40a3-a0fc-ee64cbd896%02d', index)
       user.skip_confirmation!
       user.reset_password('password', 'password')
-      user.unconfirmed_mobile = format('+1 (415) 555-01%02d', index)
-      user.mobile_confirm
+      user.mobile = format('+1 (415) 555-01%02d', index)
+      user.mobile_confirmed_at = Time.current
     end
   end
 end

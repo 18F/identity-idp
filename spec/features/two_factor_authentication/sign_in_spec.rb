@@ -53,7 +53,7 @@ feature 'Two Factor Authentication' do
         click_button 'Submit'
 
         expect(page).to_not have_content invalid_mobile_message
-        expect(current_path).to eq user_two_factor_authentication_path
+        expect(current_path).to eq phone_confirmation_path
         expect(user.reload.mobile).to_not eq '+1 (555) 555-1212'
       end
     end

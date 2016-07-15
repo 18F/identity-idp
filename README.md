@@ -74,7 +74,10 @@ check on emails addresses.
 
 ### Running Tests
 
-Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running tests. On OS X, PhantomJS can be installed with Homebrew via: `brew install phantomjs`. For other platforms, refer to the [PhantomJS download page](http://phantomjs.org/download.html).
+Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running
+tests. On OS X, PhantomJS can be installed with Homebrew via: `brew install
+phantomjs`. For other platforms, refer to the [PhantomJS download
+page](http://phantomjs.org/download.html).
 
 To run all the tests:
 

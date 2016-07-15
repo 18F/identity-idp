@@ -67,19 +67,26 @@ feature 'Sign Up', devise: true do
     before do
       @user = sign_in_before_2fa
       fill_in 'Mobile', with: '555-555-5555'
+      allow(Users::PhoneConfirmationController).
+        to receive(:generate_confirmation_code).and_return('1234')
       click_button 'Submit'
     end
 
     it 'updates mobile_confirmed_at and redirects to profile after confirmation' do
-      fill_in 'Secure one-time password', with: @user.reload.direct_otp
+      fill_in 'code', with: '1234'
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
       expect(current_path).to eq profile_index_path
     end
 
+    it 'allows user to resend confirmation code' do
+      click_link 'request it be sent again'
+      expect(current_path).to eq phone_confirmation_path
+    end
+
     it 'does not enable 2FA until correct OTP is entered' do
-      fill_in 'Secure one-time password', with: '12345678'
+      fill_in 'code', with: '12345678'
       click_button 'Submit'
 
       expect(@user.reload.two_factor_enabled?).to be false
@@ -90,24 +97,8 @@ feature 'Sign Up', devise: true do
       expect(current_path).to eq users_otp_path
     end
 
-    it 'disables OTP lockout during account creation' do
-      Devise.max_login_attempts.times do
-        fill_in 'Secure one-time password', with: '12345678'
-        click_button 'Submit'
-      end
-
-      expect(page).to_not have_content t('titles.account_locked')
-      visit user_two_factor_authentication_path
-      expect(current_path).to eq user_two_factor_authentication_path
-    end
-
     it 'informs the user that the OTP code is sent to the mobile' do
-      expect(page).
-        to have_content(
-          'A one-time passcode has been sent to ***-***-5555. ' \
-          'Please enter the code that you received. Each code is valid for 5 minutes. ' \
-          'If you do not receive a code within this time, please request a new one.'
-        )
+      expect(page).to have_content('A confirmation code has been sent to +1 (555) 555-5555.')
     end
 
     it 'allows user to enter new number if they Sign Out before confirming' do
@@ -126,18 +117,17 @@ feature 'Sign Up', devise: true do
     end
 
     it 'pretends the mobile is valid and prompts to confirm the number' do
-      expect(current_path).to eq user_two_factor_authentication_path
-      expect(page).
-        to have_content('A one-time passcode has been sent to ***-***-1212.')
+      expect(current_path).to eq phone_confirmation_path
+      expect(page).to have_content('A confirmation code has been sent to +1 (202) 555-1212')
     end
 
-    it 'does not confirm the new number with an invalid OTP' do
-      fill_in 'Secure one-time password', with: 'foobar'
+    it 'does not confirm the new number with an invalid code' do
+      fill_in 'code', with: 'foobar'
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_nil
-      expect(page).to have_content t('devise.two_factor_authentication.attempt_failed')
-      expect(current_path).to eq user_two_factor_authentication_path
+      expect(page).to have_content t('errors.invalid_confirmation_code')
+      expect(current_path).to eq phone_confirmation_path
     end
   end
 

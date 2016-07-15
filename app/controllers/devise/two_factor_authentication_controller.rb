@@ -35,15 +35,13 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   private
 
   def check_already_authenticated
-    if user_fully_authenticated? && current_user.unconfirmed_mobile.blank?
-      redirect_to profile_index_path
-    end
+    redirect_to profile_index_path if user_fully_authenticated?
   end
 
   def use_totp?
     # Present the TOTP entry screen to users who are TOTP enabled, unless the user explictly
-    # selects SMS, or if they are trying to confirm a new mobile.
-    current_user.totp_enabled? && params[:method] != 'sms' && current_user.unconfirmed_mobile.blank?
+    # selects SMS
+    current_user.totp_enabled? && params[:method] != 'sms'
   end
 
   def authenticate_scope!
@@ -67,11 +65,9 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     bypass_sign_in resource
     flash[:notice] = t('devise.two_factor_authentication.success')
 
-    send_number_change_sms_if_needed
-
     update_metrics
 
-    update_authenticated_resource
+    resource.update(second_factor_attempts_count: 0)
 
     redirect_valid_resource
   end
@@ -80,29 +76,12 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     analytics.track_event('User 2FA successful')
   end
 
-  def send_number_change_sms_if_needed
-    user_decorator = UserDecorator.new(resource)
-
-    if user_decorator.mobile_change_requested?
-      SmsSenderNumberChangeJob.perform_later(resource.mobile)
-    end
-  end
-
-  def update_authenticated_resource
-    resource.update(second_factor_attempts_count: 0)
-    resource.mobile_confirm
-  end
-
   def redirect_valid_resource
     redirect_to after_sign_in_path_for(resource)
   end
 
   def show_direct_otp_prompt
-    # In development, when SMS is disabled we pre-fill the correct code so that
-    # developers can log in without needing to configure SMS delivery.
-    if Rails.env.development? && FeatureManagement.sms_disabled?
-      @code_value = current_user.direct_otp
-    end
+    @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
 
     @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
     render :show

@@ -14,8 +14,6 @@ class TwoFactorSetupForm
     )
     self.mobile = formatted_mobile
 
-    @user.update(mobile: mobile)
-
     valid_form?
   end
 

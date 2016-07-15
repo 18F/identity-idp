@@ -96,18 +96,6 @@ describe Users::SessionsController, devise: true do
       post :create, user: { email: 'user@example.com', password: '!1aZ' * 32 }
     end
 
-    it 'calls UserOtpSender#reset_otp_state' do
-      user = create(:user, :signed_up, email: 'user@example.com')
-
-      otp_sender = instance_double(UserOtpSender)
-      allow(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
-
-      expect(otp_sender).to receive(:reset_otp_state)
-      expect(otp_sender).to receive(:send_otp)
-
-      post :create, user: { email: 'user@example.com', password: '!1aZ' * 32 }
-    end
-
     it 'tracks the authentication for existing user' do
       user = create(:user, :signed_up)
 

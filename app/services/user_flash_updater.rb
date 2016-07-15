@@ -1,4 +1,4 @@
-UserFlashUpdater = Struct.new(:user, :flash) do
+UserFlashUpdater = Struct.new(:form, :flash) do
   def set_flash_message
     unless needs_to_confirm_profile_changes?
       return flash[:notice] = I18n.t('devise.registrations.updated')
@@ -12,11 +12,11 @@ UserFlashUpdater = Struct.new(:user, :flash) do
     end
   end
 
-  def needs_to_confirm_mobile_change?
-    user.pending_mobile_reconfirmation? || user.mobile_changed?
-  end
-
   private
+
+  def needs_to_confirm_mobile_change?
+    form.mobile_changed?
+  end
 
   def needs_to_confirm_profile_changes?
     attributes_to_confirm.any?
@@ -33,6 +33,6 @@ UserFlashUpdater = Struct.new(:user, :flash) do
   end
 
   def needs_to_confirm_email_change?
-    user.pending_reconfirmation? || user.email_changed?
+    form.user.pending_reconfirmation? || form.user.email_changed?
   end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160524231157) do
+ActiveRecord::Schema.define(version: 20160606213257) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -93,7 +93,6 @@ ActiveRecord::Schema.define(version: 20160524231157) do
     t.integer  "failed_attempts",                           default: 0
     t.string   "unlock_token",                  limit: 255
     t.datetime "mobile_confirmed_at"
-    t.string   "unconfirmed_mobile",            limit: 255
     t.string   "encrypted_otp_secret_key",      limit: 255
     t.string   "encrypted_otp_secret_key_iv",   limit: 255
     t.string   "encrypted_otp_secret_key_salt", limit: 255
@@ -108,7 +107,6 @@ ActiveRecord::Schema.define(version: 20160524231157) do
   add_index "users", ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unconfirmed_email"], name: "index_users_on_unconfirmed_email", using: :btree
-  add_index "users", ["unconfirmed_mobile"], name: "index_users_on_unconfirmed_mobile", using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", using: :btree
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
