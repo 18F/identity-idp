@@ -1,7 +1,6 @@
 module Users
   class RegistrationsController < Devise::RegistrationsController
     before_action :confirm_two_factor_authenticated, only: [:edit, :update, :destroy_confirm]
-    prepend_before_action :authenticate_scope!, only: [:edit, :update, :destroy, :destroy_confirm]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def start

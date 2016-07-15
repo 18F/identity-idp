@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   end
 
   def confirm_two_factor_authenticated
-    authenticate_user!
+    authenticate_user!(force: true)
 
     user_decorator = UserDecorator.new(current_user)
 
