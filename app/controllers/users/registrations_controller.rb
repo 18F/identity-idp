@@ -60,7 +60,7 @@ module Users
       updater.set_flash_message
 
       if @update_user_profile_form.mobile_changed?
-        prompt_to_confirm_mobile(@update_user_profile_form)
+        prompt_to_confirm_mobile(@update_user_profile_form.mobile)
       elsif is_flashing_format?
         EmailNotifier.new(resource).send_password_changed_email
         redirect_to edit_user_registration_url

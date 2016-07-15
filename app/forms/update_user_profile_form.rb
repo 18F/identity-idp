@@ -35,11 +35,7 @@ class UpdateUserProfileForm
   end
 
   def valid_form?
-    valid? && !attribute_taken?
-  end
-
-  def mobile_taken?
-    @mobile_taken == true
+    valid? && !email_taken?
   end
 
   def mobile_changed?
@@ -62,21 +58,17 @@ class UpdateUserProfileForm
     self.password = params[:password]
   end
 
-  def attribute_taken?
-    @mobile_taken == true || @email_taken == true
-  end
-
   def email_taken?
     @email_taken == true
   end
 
   def process_errors(params)
-    # To prevent discovery of existing emails and phone numbers, we check
-    # to see if the only errors are "already taken" errors, and if so, we
-    # act as if the user update was successful.
-    if attribute_taken? && valid?
-      @user.skip_confirmation_notification! if email_taken?
-      send_notifications
+    # To prevent discovery of existing emails, we check to see if the only
+    # error was "already taken", and if so, we act as if the user update
+    # was successful.
+    if email_taken? && valid?
+      @user.skip_confirmation_notification!
+      UserMailer.signup_with_your_email(email).deliver_later
       @user.update_with_password(params)
       return true
     end
@@ -88,10 +80,5 @@ class UpdateUserProfileForm
     return if @user.valid_password?(current_password) || current_password.blank?
 
     errors.add(:current_password, :invalid)
-  end
-
-  def send_notifications
-    UserMailer.signup_with_your_email(email).deliver_later if email_taken?
-    SmsSenderExistingMobileJob.perform_later(mobile) if mobile_taken?
   end
 end

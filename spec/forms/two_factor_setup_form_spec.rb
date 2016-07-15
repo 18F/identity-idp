@@ -22,13 +22,13 @@ describe TwoFactorSetupForm do
 
   describe 'mobile uniqueness' do
     context 'when mobile is already taken' do
-      it 'is invalid' do
+      it 'is valid' do
         user = build_stubbed(:user, :signed_up, mobile: '+1 (202) 555-1213')
         allow(User).to receive(:exists?).with(mobile: user.mobile).and_return(true)
 
         subject.mobile = user.mobile
 
-        expect(subject.valid_form?).to be false
+        expect(subject.valid?).to be true
       end
     end
 
@@ -36,7 +36,7 @@ describe TwoFactorSetupForm do
       it 'is valid' do
         subject.mobile = '+1 (703) 555-1212'
 
-        expect(subject.valid_form?).to be true
+        expect(subject.valid?).to be true
       end
     end
 
@@ -44,7 +44,7 @@ describe TwoFactorSetupForm do
       it 'is valid' do
         subject.mobile = user.mobile
 
-        expect(subject.valid_form?).to be true
+        expect(subject.valid?).to be true
       end
     end
 
@@ -55,7 +55,7 @@ describe TwoFactorSetupForm do
 
         expect(subject.errors[:mobile].uniq).
           to eq [t('errors.messages.improbable_phone')]
-        expect(subject.valid_form?).to be false
+        expect(subject.valid?).to be false
       end
     end
   end

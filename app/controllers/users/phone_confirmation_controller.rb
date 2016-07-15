@@ -69,8 +69,6 @@ module Users
     end
 
     def send_confirmation_code
-      return if number_already_taken?
-
       # Generate a new confirmation code only if there isn't already one set in the
       # user's session. Re-sending the confirmation code doesn't generate a new one.
       if confirmation_code.nil?
@@ -88,17 +86,12 @@ module Users
       user_session[:phone_confirmation_code]
     end
 
-    def number_already_taken?
-      user_session[:unconfirmed_mobile_taken] == true
-    end
-
     def unconfirmed_mobile
       user_session[:unconfirmed_mobile]
     end
 
     def clear_session_data
       user_session.delete(:unconfirmed_mobile)
-      user_session.delete(:unconfirmed_mobile_taken)
       user_session.delete(:phone_confirmation_code)
     end
   end

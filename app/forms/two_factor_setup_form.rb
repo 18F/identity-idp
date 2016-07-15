@@ -14,14 +14,6 @@ class TwoFactorSetupForm
     )
     self.mobile = formatted_mobile
 
-    valid_form?
-  end
-
-  def valid_form?
-    valid? && !mobile_taken?
-  end
-
-  def mobile_taken?
-    @mobile_taken == true
+    valid?
   end
 end

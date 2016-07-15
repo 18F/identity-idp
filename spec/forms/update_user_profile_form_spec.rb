@@ -139,7 +139,7 @@ describe UpdateUserProfileForm do
 
   describe 'mobile uniqueness' do
     context 'when mobile is already taken' do
-      it 'is invalid' do
+      it 'is valid' do
         second_user = build_stubbed(:user, :signed_up, mobile: '+1 (202) 555-1213')
         allow(User).to receive(:exists?).with(email: 'new@gmail.com').and_return(false)
         allow(User).to receive(:exists?).with(mobile: second_user.mobile).and_return(true)
@@ -148,7 +148,7 @@ describe UpdateUserProfileForm do
         subject.mobile = second_user.mobile
         subject.current_password = user.password
 
-        expect(subject.valid_form?).to be false
+        expect(subject.valid_form?).to be true
       end
     end
 
