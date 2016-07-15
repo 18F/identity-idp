@@ -8,6 +8,7 @@
 *.sassc
 **.orig
 .bundle
+.byebug_history
 .coveralls.yml
 .databag_secret
 .env
