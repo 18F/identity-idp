@@ -616,7 +616,7 @@ describe SamlIdpController do
 
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
-      expect(subject).to have_filters(
+      expect(subject).to have_actions(
         :before,
         :disable_caching,
         [:apply_secure_headers_override, only: [:auth, :logout]],

@@ -38,7 +38,7 @@ describe ApplicationController do
 
   describe '#confirm_two_factor_authenticated' do
     controller do
-      before_filter :confirm_two_factor_authenticated
+      before_action :confirm_two_factor_authenticated
 
       def index
         render text: 'Hello'

@@ -73,7 +73,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
-      expect(subject).to have_filters(
+      expect(subject).to have_actions(
         :before,
         :authenticate_scope!,
         :authorize_otp_setup
