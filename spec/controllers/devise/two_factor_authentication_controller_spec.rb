@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Devise::TwoFactorAuthenticationController, devise: true do
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
-      expect(subject).to have_filters(
+      expect(subject).to have_actions(
         :before,
         :authenticate_scope!,
         :verify_user_is_not_second_factor_locked,
@@ -15,7 +15,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
   describe '#check_already_authenticated' do
     controller do
-      before_filter :check_already_authenticated
+      before_action :check_already_authenticated
 
       def index
         render text: 'Hello'
