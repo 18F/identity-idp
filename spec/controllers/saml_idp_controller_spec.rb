@@ -139,7 +139,7 @@ describe SamlIdpController do
         user = create(:user, :signed_up)
         generate_saml_response(user, loa3_saml_settings)
 
-        expect(response).to redirect_to 'https://loa3.example.com'
+        expect(response).to redirect_to idv_url
       end
     end
 

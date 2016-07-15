@@ -481,7 +481,7 @@ feature 'saml api', devise: true, sms: true do
 
         sign_up_and_2fa
 
-        expect(current_url).to eq 'https://loa2.example.com/'
+        expect(current_url).to eq idv_url
       end
     end
   end
