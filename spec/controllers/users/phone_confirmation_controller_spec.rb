@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Users::PhoneConfirmationController, devise: true do
   describe 'before_actions' do
     it 'includes authentication checks' do
-      expect(subject).to have_filters(
+      expect(subject).to have_actions(
         :before,
         :authenticate_user!,
         :check_for_unconfirmed_mobile
