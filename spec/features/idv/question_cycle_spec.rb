@@ -6,7 +6,7 @@ feature 'IdV session' do
   scenario 'KBV with all answers correct' do
     sign_in_and_2fa_user
 
-    visit '/idv'
+    visit '/idv/sessions'
 
     expect(page).to have_content(t('idv.form.first_name'))
 

@@ -37,17 +37,6 @@ module SamlIdpAuthConcern
     IdentityLinker.new(current_user, provider, authn_context).link_identity
   end
 
-  def idv_url
-    id_proofers_config[requested_authn_context]
-  end
-
-  def id_proofers_config
-    @config ||= begin
-      config = YAML.load_file("#{Rails.root}/config/id_proofers.yml")
-      config.merge!(config.fetch(Rails.env, {}))
-    end
-  end
-
   def identity_needs_verification?
     loa2_or_above? && identity_not_verified?
   end
