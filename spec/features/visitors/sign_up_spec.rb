@@ -32,15 +32,9 @@ feature 'Sign Up', devise: true do
   scenario 'visitor can sign up and confirm a valid email' do
     sign_up_with('test@example.com')
 
-    analytics = instance_double(Analytics)
-    request_attributes = {
-      user_agent: nil,
-      user_ip: '127.0.0.1'
-    }
-
-    expect(Analytics).to receive(:new).twice.with(nil, request_attributes).and_return(analytics)
-    expect(analytics).to receive(:track_event).with('Email Confirmation: valid token', User.last)
-    expect(analytics).to receive(:track_event).
+    stub_analytics
+    expect(@analytics).to receive(:track_event).with('Email Confirmation: valid token', User.last)
+    expect(@analytics).to receive(:track_event).
       with('Password Created and User Confirmed', User.last)
 
     confirm_last_user

@@ -9,6 +9,11 @@ module Users
       request.env['devise.skip_trackable'] = true
     end
 
+    def new
+      analytics.track_pageview
+      super
+    end
+
     def create
       track_authentication_attempt(params[:user][:email])
       super
@@ -20,6 +25,8 @@ module Users
     end
 
     def timeout
+      analytics.track_anonymous_event('Session Timed Out')
+
       flash[:notice] = t(
         'session_timedout',
         session_timeout: distance_of_time_in_words(Devise.timeout_in)

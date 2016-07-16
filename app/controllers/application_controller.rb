@@ -24,7 +24,7 @@ class ApplicationController < ActionController::Base
   end
 
   def analytics
-    @analytics ||= Analytics.new(current_user, request_attributes)
+    @analytics ||= Analytics.new(current_user, request_attributes, ahoy)
   end
 
   private
@@ -74,5 +74,9 @@ class ApplicationController < ActionController::Base
       user_agent: request.user_agent,
       user_ip: request.remote_ip
     }
+  end
+
+  def ahoy
+    @ahoy ||= Rails.env.test? ? NullAhoyTracker.new : Ahoy::Tracker.new(request: request)
   end
 end

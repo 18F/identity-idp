@@ -181,6 +181,16 @@ describe Users::RegistrationsController, devise: true do
       end
     end
 
+    it 'tracks the phone number update event' do
+      sign_in(second_user)
+
+      stub_analytics(second_user)
+      expect(@analytics).to receive(:track_event).
+        with('User asked to update their phone number')
+
+      patch :update, update_user_profile_form: attrs_for_new_mobile
+    end
+
     # Scenario: User updates both email and number
     #   Given I am signed in and editing my profile
     #   When I update both my mobile and email
@@ -384,6 +394,13 @@ describe Users::RegistrationsController, devise: true do
       expect(subject).to receive(:ab_finished).with(:demo)
       get :new
     end
+
+    it 'tracks the pageview' do
+      stub_analytics
+      expect(@analytics).to receive(:track_pageview)
+
+      get :new
+    end
   end
 
   describe '#create' do
@@ -426,6 +443,27 @@ describe Users::RegistrationsController, devise: true do
         with('User Registration: invalid email', 'invalid@')
 
       post :create, user: { email: 'invalid@' }
+    end
+  end
+
+  describe '#start' do
+    it 'tracks the pageview' do
+      stub_analytics
+      expect(@analytics).to receive(:track_pageview)
+
+      get :start
+    end
+  end
+
+  describe '#edit' do
+    it 'tracks the pageview' do
+      user = create(:user, :signed_up)
+      sign_in(user)
+
+      stub_analytics(subject.current_user)
+      expect(@analytics).to receive(:track_pageview)
+
+      get :edit
     end
   end
 end

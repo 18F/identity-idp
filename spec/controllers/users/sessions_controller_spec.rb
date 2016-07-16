@@ -85,6 +85,13 @@ describe Users::SessionsController, devise: true do
 
       expect(response).to redirect_to(root_url)
     end
+
+    it 'tracks the timeout' do
+      stub_analytics
+      expect(@analytics).to receive(:track_anonymous_event).with('Session Timed Out')
+
+      get :timeout
+    end
   end
 
   describe 'POST /' do
@@ -111,8 +118,18 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_anonymous_event).
         with('Authentication Attempt with nonexistent user')
       expect(@analytics).to_not receive(:track_event).with('Authentication Successful')
+      expect(@analytics).to receive(:track_pageview)
 
       post :create, user: { email: 'foo@example.com', password: 'password' }
+    end
+  end
+
+  describe '#new' do
+    it 'tracks the pageview' do
+      stub_analytics
+      expect(@analytics).to receive(:track_pageview)
+
+      get :new
     end
   end
 end
