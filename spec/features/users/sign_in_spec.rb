@@ -59,53 +59,6 @@ feature 'Sign in' do
     expect(page).to have_content 'Hide'
   end
 
-  # Scenario: User is locked out from logging in after 3 failed attampts
-  #   Given I exist as a user
-  #   And I am not signed in
-  #   When I sign in with a wrong password
-  #   Then I see an invalid password message
-  context 'user fails login 3 times' do
-    before do
-      password = '1Validpass!'
-      @user = create(:user, password: password)
-      signin(@user.email, 'invalidpass')
-      signin(@user.email, 'invalidpass')
-      signin(@user.email, 'invalidpass')
-      @user.reload
-    end
-
-    it 'locks the user account after 3 failed sign in attempts' do
-      expect(@user.locked_at).to be_present
-    end
-
-    it 'sends an email to user letting them know they are locked out', email: true do
-      expect(last_email.subject).to eq "#{APP_NAME} Account Locked"
-      expect(last_email.parts.first.body.raw_source).
-        to have_content 'Your account will be unlocked in 20 minutes.'
-    end
-
-    it 'does not include any links in the account locked email' do
-      expect(last_email.parts.first.body.raw_source).to_not have_selector 'a'
-    end
-
-    it 'treats failed attempt as invalid password during lockout period' do
-      signin(@user.email, 'invalidpass')
-      expect(page).to have_content t('devise.failure.invalid')
-    end
-
-    it 'keeps user locked out even with valid password during lockout period' do
-      signin(@user.email, '1Validpass!')
-      expect(current_path).to eq root_path
-    end
-
-    it 'allows the user back in after lockout period' do
-      @user.update(locked_at: Time.zone.now - (Devise.unlock_in + 1))
-      signin(@user.email, '1Validpass!')
-
-      expect(current_path).to eq users_otp_path
-    end
-  end
-
   scenario 'user session expires in amount of time specified by Devise config' do
     sign_in_and_2fa_user
     visit edit_user_registration_path

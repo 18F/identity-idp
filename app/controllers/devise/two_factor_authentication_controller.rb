@@ -50,11 +50,11 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def verify_user_is_not_second_factor_locked
-    handle_second_factor_locked_resource if resource.second_factor_locked?
+    handle_second_factor_locked_resource if user_decorator.blocked_from_entering_2fa_code?
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return if resource.otp_time_lockout? || resource.second_factor_locked_at.nil?
+    return unless user_decorator.no_longer_blocked_from_entering_2fa_code?
 
     resource.update(second_factor_attempts_count: 0, second_factor_locked_at: nil)
   end
@@ -83,7 +83,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   def show_direct_otp_prompt
     @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
 
-    @phone_number = UserDecorator.new(current_user).masked_two_factor_phone_number
+    @phone_number = user_decorator.masked_two_factor_phone_number
     render :show
   end
 
@@ -98,7 +98,7 @@ class Devise::TwoFactorAuthenticationController < DeviseController
 
     flash.now[:error] = t('devise.two_factor_authentication.attempt_failed')
 
-    if resource.second_factor_locked?
+    if user_decorator.blocked_from_entering_2fa_code?
       handle_second_factor_locked_resource
     else
       show
@@ -113,9 +113,12 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_second_factor_locked_resource
-    @user_decorator = UserDecorator.new(current_user)
     render :max_login_attempts_reached
 
     sign_out
+  end
+
+  def user_decorator
+    @user_decorator ||= UserDecorator.new(current_user)
   end
 end
