@@ -12,8 +12,6 @@ describe ServiceProvider do
           sp_initiated_login_url: nil,
           metadata_url: nil,
           cert: nil,
-          block_encryption: 'none',
-          key_transport: 'rsa-oaep-mgf1p',
           fingerprint: nil,
           double_quote_xml_attribute_values: true,
           agency: nil,
@@ -34,8 +32,6 @@ describe ServiceProvider do
           sp_initiated_login_url: 'http://localhost:3000/test/saml',
           metadata_url: nil,
           cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
-          block_encryption: 'none',
-          key_transport: 'rsa-oaep-mgf1p',
           fingerprint: fingerprint,
           double_quote_xml_attribute_values: true,
           agency: 'test_agency',
@@ -71,11 +67,9 @@ describe ServiceProvider do
           attributes = {
             acs_url: 'https://vets.gov/users/auth/saml/callback',
             assertion_consumer_logout_service_url: acls_url,
-            block_encryption: 'none',
             cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
             double_quote_xml_attribute_values: true,
             fingerprint: fingerprint,
-            key_transport: 'rsa-oaep-mgf1p',
             metadata_url: nil,
             sp_initiated_login_url: nil,
             agency: 'test_agency',
@@ -206,34 +200,6 @@ describe ServiceProvider do
       service_provider = ServiceProvider.new('http://localhost:3000')
 
       expect(service_provider.cert).to eq File.read("#{Rails.root}/certs/sp/saml_test_sp.crt")
-    end
-  end
-
-  describe '#block_encryption' do
-    context 'when no value is specified in YAML' do
-      it 'returns "none"' do
-        service_provider = ServiceProvider.new('http://test.host')
-
-        expect(service_provider.block_encryption).to eq 'none'
-      end
-    end
-
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new(
-          'https://rp1.serviceprovider.com/auth/saml/metadata'
-        )
-
-        expect(service_provider.block_encryption).to eq 'aes256-cbc'
-      end
-    end
-  end
-
-  describe '#key_transport' do
-    it 'returns a hardcoded value' do
-      service_provider = ServiceProvider.new('http://localhost:3000')
-
-      expect(service_provider.key_transport).to eq 'rsa-oaep-mgf1p'
     end
   end
 

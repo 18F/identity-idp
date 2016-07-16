@@ -13,18 +13,20 @@ div class='container'
         td Issuer
         td = response.issuers.first
       tr
-        td Document
+        td XML Document
         td
-          = link_to 'Open XML in New Window',
-                    "data:text/xml;charset=utf-8;base64,#{Base64.encode64(response.document.to_s)}",
+          - xml_doc = Base64.encode64(response.document.to_s)
+          = link_to 'Open in New Window',
+                    "data:text/xml;charset=utf-8;base64,#{xml_doc}",
                     target: '_blank'
 
       tr
-        td Encrypted Document
+        td Decrypted XML Document
         - if response.decrypted_document.present?
           td
-            = link_to 'Open Raw XML in New Window',
-                      "data:text/xml;charset=utf-8;base64,#{params[:SAMLResponse]}",
+            - xml_doc = Base64.encode64(response.decrypted_document.to_s)
+            = link_to 'Open in New Window',
+                      "data:text/xml;charset=utf-8;base64,#{xml_doc}",
                       target: '_blank'
 
         - else

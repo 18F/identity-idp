@@ -72,6 +72,20 @@ feature 'saml api', devise: true, sms: true do
       end
     end
 
+    context 'saml encryption is disabled' do
+      before do
+        expect(FeatureManagement).to receive(:saml_encryption_disabled?).and_return('true')
+        sign_in_and_2fa_user(user)
+        visit authnrequest_get
+      end
+
+      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
+
+      it 'does not encrypt SAML response' do
+        expect(xmldoc.original_encrypted?).to eq false
+      end
+    end
+
     context 'user can get a well-formed signed Assertion' do
       before do
         sign_in_and_2fa_user(user)
@@ -88,8 +102,8 @@ feature 'saml api', devise: true, sms: true do
         expect(xmldoc.response_assertion_nodeset.length).to eq(1)
       end
 
-      it 'respects service provider explicitly disabling encryption' do
-        expect(xmldoc.original_encrypted?).to eq false
+      it 'encrypts responses by default' do
+        expect(xmldoc.original_encrypted?).to eq true
       end
 
       it 'populates issuer with the idp name' do

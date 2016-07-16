@@ -1,9 +1,6 @@
 require 'fingerprinter'
 
 class ServiceProvider
-  # currently acceptable encryption values are 'none' and 'aes256-cbc'
-  DEFAULT_ENCRYPTION = 'none'.freeze
-
   def initialize(host)
     @host = host
   end
@@ -49,20 +46,12 @@ class ServiceProvider
     @cert ||= File.read("#{cert_dir}#{host_attributes['cert']}.crt")
   end
 
-  def block_encryption
-    host_attributes['block_encryption'] || DEFAULT_ENCRYPTION
-  end
-
-  def key_transport
-    'rsa-oaep-mgf1p'
-  end
-
   def encryption_opts
-    return nil unless encrypt_responses?
+    return nil if FeatureManagement.saml_encryption_disabled?
     {
       cert: OpenSSL::X509::Certificate.new(cert),
-      block_encryption: block_encryption,
-      key_transport: key_transport
+      block_encryption: 'aes256-cbc',
+      key_transport: 'rsa-oaep-mgf1p'
     }
   end
 
@@ -90,9 +79,5 @@ class ServiceProvider
 
   def host_attributes
     config[:valid_hosts].fetch(@host, {})
-  end
-
-  def encrypt_responses?
-    block_encryption != 'none'
   end
 end
