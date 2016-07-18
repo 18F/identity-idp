@@ -43,5 +43,14 @@ describe Idv::SessionsController do
       expect(flash).to be_empty
       expect(response).to redirect_to(idv_questions_path)
     end
+
+    it 'shows failure on intentionally bad values' do
+      sign_in(user)
+
+      post :create, first_name: 'Bad', ssn: '6666'
+
+      expect(response).to redirect_to(idv_sessions_path)
+      expect(flash[:error]).to eq t('idv.titles.fail')
+    end
   end
 end

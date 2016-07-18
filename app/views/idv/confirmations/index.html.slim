@@ -6,4 +6,4 @@
     div = t('idv.titles.hardfail')
 
 - if @idv_vendor == :mock && !@confirmation.success?
-  pre.mt2.p2.bg-silver.ws-pre-line = @confirmation.vendor_resp.pretty_inspect
+  pre.mt2.p2.bg-silver.ws-pre-line = @confirmation.vendor_resp.inspect
