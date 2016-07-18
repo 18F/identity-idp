@@ -4,6 +4,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 gem 'rails', '~> 4.2.6'
 
 gem 'activerecord-session_store'
+gem 'ahoy_matey'
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise', '~> 4.1'

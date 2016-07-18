@@ -6,9 +6,11 @@ module Users
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def start
+      analytics.track_pageview
     end
 
     def new
+      analytics.track_pageview
       ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
     end
@@ -30,6 +32,7 @@ module Users
     end
 
     def edit
+      analytics.track_pageview
       @update_user_profile_form = UpdateUserProfileForm.new(resource)
     end
 
@@ -60,6 +63,8 @@ module Users
       updater.set_flash_message
 
       if @update_user_profile_form.mobile_changed?
+        analytics.track_event('User asked to update their phone number')
+
         prompt_to_confirm_mobile(@update_user_profile_form.mobile)
       elsif is_flashing_format?
         EmailNotifier.new(resource).send_password_changed_email

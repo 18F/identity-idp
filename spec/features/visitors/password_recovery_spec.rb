@@ -261,6 +261,7 @@ feature 'Password Recovery' do
 
         stub_analytics
         expect(@analytics).to receive(:track_event).with('Password reset', @user.reload)
+        expect(@analytics).to receive(:track_pageview).twice
 
         click_button 'Change my password'
 

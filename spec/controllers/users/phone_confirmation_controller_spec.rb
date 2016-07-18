@@ -112,6 +112,23 @@ describe Users::PhoneConfirmationController, devise: true do
           expect(flash[:error]).to eq t('errors.invalid_confirmation_code')
         end
       end
+
+      it 'tracks the update and confirmation event' do
+        stub_analytics(subject.current_user)
+        expect(@analytics).to receive(:track_event).with('User confirmed their phone number')
+        expect(@analytics).to receive(:track_event).
+          with('User changed and confirmed their phone number')
+
+        post :confirm, code: '123'
+      end
+
+      it 'tracks an event when the user enters an invalid code' do
+        stub_analytics(subject.current_user)
+        expect(@analytics).to receive(:track_event).
+          with('User entered invalid phone confirmation code')
+
+        post :confirm, code: '999'
+      end
     end
 
     context 'user does not have an existing mobile number' do
@@ -127,6 +144,14 @@ describe Users::PhoneConfirmationController, devise: true do
           expect(response).to redirect_to(profile_index_path)
         end
       end
+
+      it 'tracks the confirmation event' do
+        stub_analytics(subject.current_user)
+        expect(@analytics).to receive(:track_event).with('User confirmed their phone number')
+        expect(@analytics).to receive(:track_event).with('Authentication Successful')
+
+        post :confirm, code: '123'
+      end
     end
   end
 
@@ -140,6 +165,13 @@ describe Users::PhoneConfirmationController, devise: true do
       get :show
 
       expect(response).to render_template(:show)
+    end
+
+    it 'tracks the pageview' do
+      stub_analytics(subject.current_user)
+      expect(@analytics).to receive(:track_pageview)
+
+      get :show
     end
 
     context 'when updating an existing phone number' do

@@ -9,12 +9,16 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   before_action :check_already_authenticated
 
   def new
+    analytics.track_event('User requested a new OTP code')
+
     current_user.send_new_otp
     flash[:notice] = t('devise.two_factor_authentication.user.new_otp_sent')
     redirect_to user_two_factor_authentication_path(method: 'sms')
   end
 
   def show
+    analytics.track_pageview
+
     if use_totp?
       show_totp_prompt
     else
@@ -113,6 +117,8 @@ class Devise::TwoFactorAuthenticationController < DeviseController
   end
 
   def handle_second_factor_locked_resource
+    analytics.track_event('User reached max 2FA attempts')
+
     render :max_login_attempts_reached
 
     sign_out

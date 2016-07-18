@@ -4,6 +4,8 @@ module Users
     before_action :check_for_unconfirmed_mobile
 
     def show
+      analytics.track_pageview
+
       @code_value = confirmation_code if FeatureManagement.prefill_otp_codes?
       @unconfirmed_mobile = unconfirmed_mobile
       @reenter_phone_number_path = if current_user.mobile.present?
@@ -20,8 +22,10 @@ module Users
 
     def confirm
       if params['code'] == confirmation_code
+        analytics.track_event('User confirmed their phone number')
         process_valid_code
       else
+        analytics.track_event('User entered invalid phone confirmation code')
         process_invalid_code
       end
     end
@@ -44,7 +48,10 @@ module Users
 
     def set_mobile_number
       @updating_existing_number = current_user.mobile.present?
-      SmsSenderNumberChangeJob.perform_later(current_user.mobile) if @updating_existing_number
+      if @updating_existing_number
+        analytics.track_event('User changed and confirmed their phone number')
+        SmsSenderNumberChangeJob.perform_later(current_user.mobile)
+      end
       current_user.update(mobile: unconfirmed_mobile, mobile_confirmed_at: Time.current)
     end
 
