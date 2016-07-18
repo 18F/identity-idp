@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   end
 
   match '/profile' => 'profile#index', as: :profile_index, via: :get
+  get '/splash' => 'home#index'
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.

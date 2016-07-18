@@ -7,7 +7,7 @@
   padding-bottom: .5rem;
 }
 
-.subheading {
+.heading-big {
   @extend %heading;
-  border-color: $gray-light;
+  font-size: $h1;
 }

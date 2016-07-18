@@ -1,0 +1,15 @@
+// normalize.css adds a text underline by default
+// scss-lint:disable QualifyingElement
+abbr[title] {
+  text-decoration: none;
+}
+
+@media #{$breakpoint-sm} {
+  body { background-color: $blue-light; }
+}
+
+.container-slim {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: $container-slim-width;
+}

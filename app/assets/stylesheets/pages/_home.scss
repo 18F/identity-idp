@@ -1,0 +1,17 @@
+// page-specific styles for homepage
+// try to avoid adding additional css here
+// instead, strive for more multi-purpose classes
+
+$offset: 16%;
+
+@media #{$breakpoint-md} {
+  .hero-img {
+    margin-left: -$offset;
+    max-width: 100% + $offset * 2;
+    width: 100% + $offset * 2;
+  }
+
+  .hero-txt {
+    margin-left: $offset;
+  }
+}
