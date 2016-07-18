@@ -118,77 +118,6 @@ describe 'user edits their account', email: true do
     end
   end
 
-  context 'user changes mobile to an existing mobile' do
-    it 'lets user know they need to confirm their new mobile' do
-      sign_in_as_a_valid_user(user)
-      patch_via_redirect(
-        '/users',
-        update_user_profile_form: attrs_for_new_mobile.merge!(
-          mobile: user_with_mobile.mobile
-        )
-      )
-
-      expect(response.body).
-        to include(
-          'A confirmation code has been sent to <strong>+1 (202) 555-1213</strong>.'
-        )
-      expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
-
-      expect(user.reload.mobile).to eq '+1 (202) 555-1212'
-    end
-
-    it 'calls SmsSenderExistingMobileJob but not SmsSenderOtpJob' do
-      sign_in_as_a_valid_user(user)
-
-      expect(SmsSenderExistingMobileJob).to receive(:perform_later).with(user_with_mobile.mobile)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later)
-
-      patch_via_redirect(
-        '/users',
-        update_user_profile_form: attrs_for_new_mobile.merge!(
-          mobile: user_with_mobile.mobile
-        )
-      )
-    end
-  end
-
-  context 'user changes both email and mobile to existing email and mobile' do
-    it 'lets user know they need to confirm both their new mobile and email' do
-      sign_in_as_a_valid_user(user)
-      patch_via_redirect(
-        '/users',
-        update_user_profile_form: attrs_for_new_mobile.merge!(
-          mobile: user_with_mobile.mobile,
-          email: user_with_mobile.email
-        )
-      )
-
-      expect(response.body).
-        to include(
-          'A confirmation code has been sent to <strong>+1 (202) 555-1213</strong>.'
-        )
-      expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
-      expect(user.reload.mobile).to eq '+1 (202) 555-1212'
-      expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')
-      expect(number_of_emails_sent).to eq 1
-    end
-
-    it 'calls SmsSenderExistingMobileJob but not SmsSenderOtpJob' do
-      sign_in_as_a_valid_user(user)
-
-      expect(SmsSenderExistingMobileJob).to receive(:perform_later).with(user_with_mobile.mobile)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later)
-
-      patch_via_redirect(
-        '/users',
-        update_user_profile_form: attrs_for_new_mobile.merge!(
-          mobile: user_with_mobile.mobile,
-          email: user_with_mobile.email
-        )
-      )
-    end
-  end
-
   context 'user changes email to nonexistent email and mobile to existing mobile' do
     before do
       sign_in_as_a_valid_user(user)
@@ -210,14 +139,16 @@ describe 'user edits their account', email: true do
 
     it_behaves_like 'changing_email'
 
-    it 'calls SmsSenderExistingMobileJob but not SmsSenderOtpJob' do
-      expect(SmsSenderExistingMobileJob).to receive(:perform_later).with(user_with_mobile.mobile)
-      expect(SmsSenderOtpJob).to_not receive(:perform_later)
+    it 'calls SmsSenderConfirmationJob' do
+      allow(SmsSenderConfirmationJob).to receive(:perform_later)
 
       patch_via_redirect(
         '/users',
         update_user_profile_form: attrs_with_new_email.merge!(mobile: user_with_mobile.mobile)
       )
+
+      expect(SmsSenderConfirmationJob).to have_received(:perform_later).
+        with(user_session[:phone_confirmation_code], user_with_mobile.mobile)
     end
   end
 
@@ -237,11 +168,10 @@ describe 'user edits their account', email: true do
       expect(number_of_emails_sent).to eq 1
     end
 
-    it 'calls SmsSenderConfirmationJob, but not SmsSenderExistingMobileJob' do
+    it 'calls SmsSenderConfirmationJob' do
       sign_in_as_a_valid_user(user)
 
       allow(SmsSenderConfirmationJob).to receive(:perform_later)
-      expect(SmsSenderExistingMobileJob).to_not receive(:perform_later)
 
       patch_via_redirect(
         '/users',

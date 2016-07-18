@@ -18,7 +18,7 @@ module Devise
       if @two_factor_setup_form.submit(params[:two_factor_setup_form])
         process_valid_form
       else
-        process_invalid_form
+        render :index
       end
     end
 
@@ -35,20 +35,11 @@ module Devise
     def process_valid_form
       update_metrics
 
-      prompt_to_confirm_mobile(@two_factor_setup_form)
+      prompt_to_confirm_mobile(@two_factor_setup_form.mobile)
     end
 
     def update_metrics
       analytics.track_event('2FA setup: valid phone number')
-    end
-
-    def process_invalid_form
-      if @two_factor_setup_form.mobile_taken?
-        SmsSenderExistingMobileJob.perform_later(@two_factor_setup_form.mobile)
-        prompt_to_confirm_mobile(@two_factor_setup_form)
-      else
-        render :index
-      end
     end
   end
 end

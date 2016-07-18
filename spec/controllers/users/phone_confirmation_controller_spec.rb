@@ -45,15 +45,6 @@ describe Users::PhoneConfirmationController, devise: true do
           with(subject.user_session[:phone_confirmation_code], '+1 (555) 555-5555')
       end
 
-      it 'does not send a code if the number is taken' do
-        allow(SmsSenderConfirmationJob).to receive(:perform_later)
-        subject.user_session[:unconfirmed_mobile_taken] = true
-
-        get :send_code
-
-        expect(SmsSenderConfirmationJob).not_to have_received(:perform_later)
-      end
-
       context 'confirmation code already exists in the session' do
         before { subject.user_session[:phone_confirmation_code] = '1234' }
 

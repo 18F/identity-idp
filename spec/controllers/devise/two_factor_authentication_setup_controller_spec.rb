@@ -12,62 +12,19 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
   end
 
   describe 'PATCH set' do
-    context 'when mobile number already exists' do
-      let(:user) { create(:user) }
-      let(:second_user) { create(:user, :signed_up) }
+    it 'prompts to confirm the number' do
+      user = create(:user)
+      sign_in(user)
 
-      it 'prompts to confirm the number' do
-        sign_in(user)
+      stub_analytics(user)
+      expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
 
-        patch(
-          :set,
-          two_factor_setup_form: { mobile: second_user.mobile }
-        )
+      patch(
+        :set,
+        two_factor_setup_form: { mobile: '703-555-0100' }
+      )
 
-        expect(response).to redirect_to(phone_confirmation_send_path)
-        expect(user.reload.mobile).to be_nil
-        expect(subject.user_session[:unconfirmed_mobile]).to eq second_user.mobile
-      end
-
-      it 'calls SmsSenderExistingMobileJob' do
-        sign_in(user)
-
-        expect(SmsSenderExistingMobileJob).to receive(:perform_later).
-          with(second_user.mobile)
-
-        patch(
-          :set,
-          two_factor_setup_form: { mobile: second_user.mobile }
-        )
-      end
-
-      it 'does not call User#send_two_factor_authentication_code' do
-        sign_in(user)
-
-        expect(subject.current_user).to_not receive(:send_two_factor_authentication_code)
-
-        patch(
-          :set,
-          two_factor_setup_form: { mobile: second_user.mobile }
-        )
-      end
-    end
-
-    context 'when mobile number does not already exist' do
-      it 'prompts to confirm the number' do
-        user = create(:user)
-        sign_in(user)
-
-        stub_analytics(user)
-        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
-
-        patch(
-          :set,
-          two_factor_setup_form: { mobile: '703-555-0100' }
-        )
-
-        expect(response).to redirect_to(phone_confirmation_send_path)
-      end
+      expect(response).to redirect_to(phone_confirmation_send_path)
     end
   end
 
