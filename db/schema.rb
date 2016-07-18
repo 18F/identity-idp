@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160715150022) do
+ActiveRecord::Schema.define(version: 20160718152327) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,30 @@ ActiveRecord::Schema.define(version: 20160715150022) do
   add_index "identities", ["service_provider", "authn_context"], name: "index_identities_on_service_provider_and_authn_context", using: :btree
   add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "profiles", force: :cascade do |t|
+    t.integer  "user_id",                      null: false
+    t.boolean  "active",       default: false, null: false
+    t.datetime "verified_at"
+    t.datetime "activated_at"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+    t.string   "first_name"
+    t.string   "middle_name"
+    t.string   "last_name"
+    t.string   "address1"
+    t.string   "address2"
+    t.string   "city"
+    t.string   "state"
+    t.string   "zipcode"
+    t.string   "ssn"
+    t.string   "dob"
+    t.string   "phone"
+    t.string   "vendor"
+  end
+
+  add_index "profiles", ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)", using: :btree
+  add_index "profiles", ["user_id"], name: "index_profiles_on_user_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255, null: false

@@ -1,4 +1,5 @@
 require 'rails_helper'
+require 'proofer/vendor/mock'
 
 describe Idv::ConfirmationsController do
   render_views
@@ -7,6 +8,7 @@ describe Idv::ConfirmationsController do
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
+  let(:profile) { Profile.create_from_proofer_applicant(applicant, user) }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -24,32 +26,38 @@ describe Idv::ConfirmationsController do
 
     describe 'all questions answered correctly' do
       it 'shows success' do
-        init_idv_session
         complete_idv_session(true)
 
         get :index
 
         expect(response.status).to eq 200
         expect(response.body).to include(t('idv.titles.complete'))
+
+        profile.reload
+
+        expect(profile).to be_active
+        expect(profile).to be_verified
       end
     end
 
     describe 'some answers incorrect' do
       it 'shows error' do
-        init_idv_session
         complete_idv_session(false)
 
         get :index
 
         expect(response.status).to eq 200
         expect(response.body).to include(t('idv.titles.hardfail'))
+
+        profile.reload
+
+        expect(profile).to_not be_active
+        expect(profile).to_not be_verified
       end
     end
 
     describe 'questions incomplete' do
       it 'redirects to /idv/questions' do
-        init_idv_session
-
         get :index
 
         expect(response).to redirect_to(idv_questions_path)
@@ -57,7 +65,7 @@ describe Idv::ConfirmationsController do
     end
   end
 
-  describe 'session not yet started' do
+  context 'session not yet started' do
     it 'redirects to /idv/sessions' do
       sign_in(user)
 
@@ -73,6 +81,7 @@ describe Idv::ConfirmationsController do
       vendor: :mock,
       applicant: applicant,
       resolution: resolution,
+      profile_id: profile.id,
       question_number: 0
     }
   end

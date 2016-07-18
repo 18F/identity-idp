@@ -22,7 +22,7 @@ module Idv
       agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)
       @idv_vendor = idv_vendor
       @confirmation = agent.submit_answers(idv_resolution.questions, idv_resolution.session_id)
-      # HANDWAVING actually alter the user
+      complete_idv_profile if @confirmation.success?
       clear_idv_session
     end
   end

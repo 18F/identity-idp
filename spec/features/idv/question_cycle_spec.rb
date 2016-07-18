@@ -4,7 +4,7 @@ feature 'IdV session' do
   let(:mock_questions) { Proofer::Vendor::Mock.new.build_question_set(nil) }
 
   scenario 'KBV with all answers correct' do
-    sign_in_and_2fa_user
+    user = sign_in_and_2fa_user
 
     visit '/idv/sessions'
 
@@ -36,6 +36,10 @@ feature 'IdV session' do
     end
 
     expect(page).to have_content(t('idv.titles.complete'))
+
+    expect(user.active_profile).to be_a(Profile)
+    expect(user.active_profile.verified?).to eq true
+    expect(user.active_profile.ssn).to eq '666661234'
   end
 
   scenario 'KBV with some incorrect answers' do
