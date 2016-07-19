@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160718152327) do
+ActiveRecord::Schema.define(version: 20160719164239) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,9 +44,7 @@ ActiveRecord::Schema.define(version: 20160718152327) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "session_index"
     t.string   "session_uuid",          limit: 255
-    t.boolean  "quiz_started",                      default: false
     t.integer  "ial",                               default: 1
   end
 

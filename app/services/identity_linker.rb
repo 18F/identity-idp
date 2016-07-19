@@ -19,13 +19,8 @@ IdentityLinker = Struct.new(:user, :provider, :authn_context) do
   def identity_attributes
     {
       authn_context: authn_context,
-      session_index: session_index,
       last_authenticated_at: Time.current,
       session_uuid: SecureRandom.uuid
     }
-  end
-
-  def session_index
-    user.active_identities.size + 1
   end
 end

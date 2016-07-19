@@ -52,10 +52,6 @@ class User < ActiveRecord::Base
     active_identities[-1] unless active_identities.empty?
   end
 
-  def last_quizzed_identity
-    identities.order(updated_at: :desc).detect(&:quiz_started)
-  end
-
   def active_identities
     identities.where(
       'last_authenticated_at IS NOT ?',
