@@ -55,10 +55,10 @@ $table-border-color: $border-color !default;
 $table-bg-accent: #f9f9f9 !default;
 $table-bg-hover: #f5f5f5 !default;
 
-$width-1: 24rem !default;
-$width-2: 32rem !default;
-$width-3: 48rem !default;
-$width-4: 64rem !default;
+$width-1: 3rem !default;
+$width-2: 6rem !default;
+$width-3: 12rem !default;
+$width-4: 24rem !default;
 
 $breakpoint-sm: '(min-width: 40em)' !default;
 $breakpoint-md: '(min-width: 52em)' !default;
@@ -68,4 +68,5 @@ $breakpoint-md-lg: '(min-width: 52em) and (max-width: 64em)' !default;
 
 $breakpoint-max-sm: '(max-width: 40em)' !default;
 
-$container-width: 540px !default;
+$container-slim-width: 540px !default;
+$container-width: 850px !default;
