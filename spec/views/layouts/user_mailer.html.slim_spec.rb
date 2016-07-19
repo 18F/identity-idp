@@ -4,6 +4,7 @@ describe 'layouts/user_mailer.html.slim' do
   before do
     @mail = UserMailer.email_changed('foo@example.com')
     allow(view).to receive(:message).and_return(@mail)
+    allow(view).to receive(:attachments).and_return(@mail.attachments)
 
     render
   end
@@ -13,7 +14,7 @@ describe 'layouts/user_mailer.html.slim' do
   end
 
   it 'includes the app logo' do
-    expect(rendered).to have_css("img[src*='logo']")
+    expect(rendered).to have_css("img[src*='.mail']")
   end
 
   it 'includes the message subject in the body' do

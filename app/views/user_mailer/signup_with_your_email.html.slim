@@ -1,10 +1,30 @@
-p
+p.lead
   'A request was made to use this email address as a username for a #{APP_NAME}
   'account. This email address is already in use. If you requested this change,
   'please use the following link to #{t('headings.log_in').downcase}
   'to #{APP_NAME}:
 
+table.button.expanded.large.radius
+  tbody
+    tr
+      td
+        table
+          tbody
+            tr
+              td
+                center
+                  = link_to "Go to #{APP_NAME}", \
+                    @root_url, target: '_blank', \
+                    class: 'float-center', align: 'center'
+      td.expander
+
 p= link_to @root_url, @root_url, target: '_blank'
+
+table.spacer
+  tbody
+    tr
+      td.s30 height="30px"
+      | &nbsp;
 
 p
   'If you would like to create a new account for online access to #{APP_NAME},

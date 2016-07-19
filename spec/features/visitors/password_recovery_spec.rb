@@ -32,7 +32,7 @@ feature 'Password Recovery' do
     end
 
     it 'includes a link to customer service in the email' do
-      expect(last_email.parts.first.body.raw_source).
+      expect(last_email.html_part.body).
         to include Figaro.env.support_url
     end
 
@@ -48,7 +48,7 @@ feature 'Password Recovery' do
     end
 
     it 'specifies how long the user has to reset the password based on Devise settings' do
-      expect(last_email.parts.first.body.raw_source).
+      expect(last_email.html_part.body).
         to have_content "expires in #{Devise.reset_password_within / 3600} hours"
     end
   end
