@@ -45,8 +45,8 @@ describe Users::TotpSetupController, devise: true do
         patch :confirm, code: 123
       end
 
-      it 'redirects :new' do
-        expect(response).to redirect_to(users_totp_path)
+      it 'redirects back to authenticator_setup_path' do
+        expect(response).to redirect_to(authenticator_setup_path)
       end
 
       it 'sets flash[:error] message' do
@@ -74,7 +74,7 @@ describe Users::TotpSetupController, devise: true do
         expect(flash[:success]).to eq t('notices.totp_configured')
       end
 
-      it 'enables totp for the current user' do
+      it 'enables TOTP for the current user' do
         expect(subject.current_user.totp_enabled?).to be(true)
       end
 

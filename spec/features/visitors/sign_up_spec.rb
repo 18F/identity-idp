@@ -46,7 +46,7 @@ feature 'Sign Up', devise: true do
     fill_in 'password_form_password', with: VALID_PASSWORD
     click_button 'Submit'
 
-    expect(current_url).to eq users_otp_url
+    expect(current_url).to eq phone_setup_url
     expect(page).to_not have_content t('devise.confirmations.confirmed')
     expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
   end
@@ -88,7 +88,7 @@ feature 'Sign Up', devise: true do
 
     it 'provides user with link to type in a phone number so they are not locked out' do
       click_link 'entering it again'
-      expect(current_path).to eq users_otp_path
+      expect(current_path).to eq phone_setup_path
     end
 
     it 'informs the user that the OTP code is sent to the mobile' do
@@ -98,7 +98,7 @@ feature 'Sign Up', devise: true do
     it 'allows user to enter new number if they Sign Out before confirming' do
       click_link(t('links.sign_out'))
       signin(@user.reload.email, @user.password)
-      expect(current_path).to eq users_otp_path
+      expect(current_path).to eq phone_setup_path
     end
   end
 

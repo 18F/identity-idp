@@ -10,7 +10,7 @@ feature 'Two Factor Authentication' do
     scenario 'user is prompted to setup two factor authentication at first sign in' do
       sign_in_before_2fa
 
-      expect(current_path).to eq users_otp_path
+      expect(current_path).to eq phone_setup_path
       expect(page).
         to have_content t('devise.two_factor_authentication.two_factor_setup')
     end
@@ -19,7 +19,7 @@ feature 'Two Factor Authentication' do
       sign_up_and_set_password
       click_button 'Submit'
 
-      expect(current_path).to eq users_otp_path
+      expect(current_path).to eq phone_setup_path
     end
 
     scenario 'user attempts to circumnavigate OTP setup' do
@@ -27,7 +27,7 @@ feature 'Two Factor Authentication' do
 
       visit edit_user_registration_path
 
-      expect(current_path).to eq users_otp_path
+      expect(current_path).to eq phone_setup_path
     end
 
     describe 'user selects Mobile' do

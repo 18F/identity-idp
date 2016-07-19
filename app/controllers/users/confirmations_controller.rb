@@ -107,7 +107,7 @@ module Users
       elsif resource.two_factor_enabled?
         profile_path
       else
-        users_otp_url
+        phone_setup_url
       end
     end
 

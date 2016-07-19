@@ -5,7 +5,7 @@ h1.heading = t('devise.two_factor_authentication.two_factor_setup')
 = simple_form_for(@two_factor_setup_form,
     html: { autocomplete: 'off', role: 'form' },
     method: :patch,
-    url: users_otp_path) do |f|
+    url: phone_setup_path) do |f|
   = f.error_notification
   p = t('devise.two_factor_authentication.otp_setup')
   = f.input :mobile, as: :tel, autofocus: true, label: 'Mobile Number', required: true
