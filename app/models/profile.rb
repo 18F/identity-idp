@@ -3,7 +3,7 @@ class Profile < ActiveRecord::Base
 
   validates_uniqueness_of :active, scope: :user_id, if: :active?
 
-  # rubocop:disable AbcSize, MethodLength
+  # rubocop:disable MethodLength
   def self.create_from_proofer_applicant(applicant, user)
     create(
       user: user,
@@ -20,7 +20,7 @@ class Profile < ActiveRecord::Base
       phone: applicant.phone
     )
   end
-  # rubocop:enable AbcSize, MethodLength
+  # rubocop:enable MethodLength
 
   def activate
     transaction do

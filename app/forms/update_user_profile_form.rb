@@ -44,6 +44,7 @@ class UpdateUserProfileForm
 
   private
 
+  # rubocop:disable AccessorMethodName
   def set_attributes(params)
     formatted_mobile = params[:mobile].phony_formatted(
       format: :international, normalize: :US, spaces: ' '
@@ -57,6 +58,7 @@ class UpdateUserProfileForm
     self.current_password = params[:current_password]
     self.password = params[:password]
   end
+  # rubocop:enable AccessorMethodName
 
   def email_taken?
     @email_taken == true
