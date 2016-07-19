@@ -27,6 +27,9 @@ Rails.application.routes.draw do
 
     patch '/confirm' => 'users/confirmations#confirm'
 
+    match '/edit/email' => 'users/edit_info#email', via: [:get, :put], as: :edit_email
+    match '/edit/mobile' => 'users/edit_info#mobile', via: [:get, :put], as: :edit_mobile
+
     get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
     patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
 

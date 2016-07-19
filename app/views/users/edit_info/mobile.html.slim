@@ -1,0 +1,9 @@
+- title t('titles.edit_info.mobile')
+
+
+h1.heading = t('headings.edit_info.mobile')
+= simple_form_for(@update_form, url: edit_mobile_path,
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.error_notification
+  = f.input :mobile, as: :tel, autofocus: true, required: true
+  = f.button :submit, 'Update'

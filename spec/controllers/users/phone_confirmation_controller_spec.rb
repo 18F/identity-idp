@@ -82,8 +82,8 @@ describe Users::PhoneConfirmationController, devise: true do
           expect(subject.current_user.mobile_confirmed_at).to_not eq(@previous_mobile_confirmed_at)
         end
 
-        it 'redirects to edit_user_registration_path' do
-          expect(response).to redirect_to(edit_user_registration_path)
+        it 'redirects to profile_path' do
+          expect(response).to redirect_to(profile_path)
         end
 
         it 'displays success flash notice' do
