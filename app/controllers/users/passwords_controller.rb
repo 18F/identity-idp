@@ -8,11 +8,10 @@ module Users
       # We are utilizing Pundit's policy for verifying which user can
       # recover passwords. However, we always want to return success.
       flash[:success] = t('notices.password_reset')
-      redirect_to after_sending_reset_password_instructions_path_for(
-        resource_name
-      )
+      redirect_to after_sending_reset_password_instructions_path_for(resource_name)
     end
 
+    # rubocop:disable AbcSize,MethodLength
     def create
       resource = resource_class.find_by_email(resource_params[:email])
 
@@ -35,8 +34,9 @@ module Users
       end
 
       flash[:success] = t('notices.password_reset')
-      respond_with({}, location: after_sending_reset_password_instructions_path_for(resource_name))
+      redirect_to after_sending_reset_password_instructions_path_for(resource_name)
     end
+    # rubocop:enable AbcSize,MethodLength
 
     def edit
       resource = User.new

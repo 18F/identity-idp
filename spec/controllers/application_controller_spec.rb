@@ -4,7 +4,7 @@ describe ApplicationController do
   describe 'handling InvalidAuthenticityToken exceptions' do
     controller do
       def index
-        fail ActionController::InvalidAuthenticityToken
+        raise ActionController::InvalidAuthenticityToken
       end
     end
 

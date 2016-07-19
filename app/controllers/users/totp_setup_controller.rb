@@ -21,8 +21,8 @@ module Users
     def disable
       if current_user.otp_secret_key.present?
         current_user.update(otp_secret_key: nil)
+        flash[:success] = t('notices.totp_disabled')
       end
-      flash[:success] = t('notices.totp_disabled')
       redirect_to edit_user_registration_path
     end
 
