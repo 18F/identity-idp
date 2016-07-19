@@ -26,20 +26,24 @@ module IdvSession
       idv_resolution.questions.any?
   end
 
-  def set_idv_vendor(vendor)
+  def idv_vendor=(vendor)
     idv_session[:vendor] = vendor
   end
 
-  def set_idv_applicant(applicant)
+  def idv_applicant=(applicant)
     idv_session[:applicant] = applicant
   end
 
-  def set_idv_resolution(resolution)
+  def idv_profile_from_applicant(applicant)
+    idv_session[:profile_id] = Profile.create_from_proofer_applicant(applicant, current_user).id
+  end
+
+  def idv_resolution=(resolution)
     idv_session[:resolution] = resolution
   end
 
-  def set_idv_question_number(n)
-    idv_session[:question_number] = n
+  def idv_question_number=(num)
+    idv_session[:question_number] = num
   end
 
   def idv_vendor
@@ -50,14 +54,29 @@ module IdvSession
     idv_session[:applicant]
   end
 
+  def idv_profile_id
+    idv_session[:profile_id]
+  end
+
+  def idv_profile
+    @_profile ||= Profile.find(idv_profile_id)
+  end
+
   def clear_idv_session
     idv_session.delete(:vendor)
     idv_session.delete(:applicant)
+    idv_session.delete(:profile_id)
     idv_session.delete(:resolution)
     idv_session.delete(:question_number)
   end
 
   def idv_session
     user_session[:idv] ||= {}
+  end
+
+  def complete_idv_profile
+    idv_profile.verified_at = Time.zone.now
+    idv_profile.vendor = idv_vendor
+    idv_profile.activate
   end
 end

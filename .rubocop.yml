@@ -12,7 +12,7 @@ AllCops:
     - 'db/schema.rb'
     - 'bin/**/*'
     - 'config/initializers/devise.rb'
-    - 'db/migrate/20160405212342_initial_schema.rb'
+    - 'db/migrate/*'
   TargetRubyVersion: 2.3
   UseCache: true
 
