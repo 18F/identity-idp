@@ -95,6 +95,7 @@ ignore_unused:
 - '{devise,simple_form}.*'
 - 'errors.not_authorized'
 - 'experiments.*'
+- 'event_types.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'

@@ -114,7 +114,7 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('Email changed and confirmed', user)
+        with('Email change confirmed', user)
 
       get :show, confirmation_token: 'foo'
     end

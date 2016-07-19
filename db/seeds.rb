@@ -12,6 +12,12 @@ if Rails.env.development?
       user.reset_password('password', 'password')
       user.phone = format('+1 (415) 555-01%02d', index)
       user.phone_confirmed_at = Time.current
+      Event.create(
+        user_id: user.id,
+        event_type: :account_created,
+        user_agent: 'Chrome/120 (MS-DOS)',
+        location: 'Washington, DC, USA'
+      )
     end
   end
 end

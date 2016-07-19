@@ -8,6 +8,7 @@ describe User do
     it { is_expected.to have_many(:authorizations) }
     it { is_expected.to have_many(:identities) }
     it { is_expected.to have_many(:profiles) }
+    it { is_expected.to have_many(:events) }
   end
 
   it 'should only send one email during creation' do

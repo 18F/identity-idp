@@ -63,6 +63,7 @@ describe Users::TotpSetupController, devise: true do
         sign_in_as_user
         get :new
         expect(subject.current_user.totp_enabled?).to be(false)
+        allow(subject).to receive(:create_user_event)
         patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
       end
 
@@ -81,6 +82,10 @@ describe Users::TotpSetupController, devise: true do
       it 'clears :new_totp_secret from session' do
         expect(subject.user_session[:new_totp_secret]).to be_nil
       end
+
+      it 'creates an :authenticator_enabled event' do
+        expect(subject).to have_received(:create_user_event).with(:authenticator_enabled)
+      end
     end
   end
 
@@ -94,11 +99,16 @@ describe Users::TotpSetupController, devise: true do
         get :new
         patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
         expect(subject.current_user.totp_enabled?).to be(true)
+        allow(subject).to receive(:create_user_event)
         delete :disable
       end
 
       it 'disables TOTP' do
         expect(subject.current_user.totp_enabled?).to be(false)
+      end
+
+      it 'creates an :authenticator_enabled event' do
+        expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)
       end
     end
   end

@@ -112,7 +112,12 @@ module Users
     end
 
     def process_confirmed_user
-      analytics.track_event('Email changed and confirmed', @confirmable)
+      if @confirmable.previous_changes.key?('email')
+        analytics.track_event('Email change confirmed', @confirmable)
+        create_user_event(:email_changed, @confirmable)
+      else
+        analytics.track_event('Email address confirmed', @confirmable)
+      end
 
       flash[:notice] = t('devise.confirmations.confirmed')
       redirect_to after_confirmation_path_for(@confirmable)

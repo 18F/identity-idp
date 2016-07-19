@@ -51,7 +51,13 @@ module Users
       clear_session_data
 
       flash[:success] = t('notices.phone_confirmation_successful')
-      redirect_to after_confirmation_path
+      if @updating_existing_number
+        create_user_event(:phone_changed)
+        redirect_to profile_path
+      else
+        create_user_event(:phone_confirmed)
+        redirect_to after_sign_in_path_for(current_user)
+      end
     end
 
     def assign_phone
@@ -63,14 +69,6 @@ module Users
       end
       current_user.update(phone: unconfirmed_phone,
                           phone_confirmed_at: Time.current)
-    end
-
-    def after_confirmation_path
-      if @updating_existing_number
-        profile_path
-      else
-        after_sign_in_path_for(current_user)
-      end
     end
 
     def check_for_unconfirmed_phone
