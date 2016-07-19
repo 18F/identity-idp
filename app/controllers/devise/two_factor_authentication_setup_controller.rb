@@ -3,7 +3,7 @@ module Devise
     include PhoneConfirmation
     include ScopeAuthenticator
 
-    before_action :authenticate_scope!
+    prepend_before_action :authenticate_scope!
     before_action :authorize_otp_setup
 
     # GET /users/otp
