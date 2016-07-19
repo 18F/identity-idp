@@ -32,10 +32,7 @@ module Users
       token = params[:confirmation_token]
 
       @confirmable = User.find_or_initialize_with_error_by(:confirmation_token, token)
-
-      if @confirmable.confirmed?
-        @confirmable = User.confirm_by_token(token)
-      end
+      @confirmable = User.confirm_by_token(token) if @confirmable.confirmed?
 
       @password_form = PasswordForm.new(@confirmable)
 

@@ -5,6 +5,7 @@ SecureHeaders::Configuration.default do |config|
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
+  # rubocop:disable PercentStringArray
   config.csp = {
     default_src: %w('self'),
     report_only: Rails.env.development? ? true : false,
@@ -22,6 +23,7 @@ SecureHeaders::Configuration.default do |config|
     style_src: %w('self'),
     base_uri: %w('self')
   }
+  # rubocop:enable PercentStringArray
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
     httponly: true, # mark all cookies as "HttpOnly"

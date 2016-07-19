@@ -55,7 +55,7 @@ describe UserDecorator do
 
         expect(user_decorator.first_sentence_for_confirmation_email).
           to eq "Your #{APP_NAME} account has been reset by a tech support representative. " \
-                'In order to continue, you must confirm your email address.'
+                "In order to continue, you must confirm your email address."
       end
     end
 
@@ -75,10 +75,8 @@ describe UserDecorator do
         user_decorator = UserDecorator.new(user)
 
         expect(user_decorator.first_sentence_for_confirmation_email).
-          to eq(
-            "To continue creating your #{APP_NAME} Account, " \
-            'you must confirm your email address.'
-          )
+          to eq "To continue creating your #{APP_NAME} Account, " \
+                "you must confirm your email address."
       end
     end
   end
