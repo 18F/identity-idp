@@ -13,13 +13,12 @@ describe IdentityLinker do
       new_attributes = {
         service_provider: 'test.host',
         authn_context: 'LOA1',
-        session_index: 1,
         user_id: user.id,
         ial: 1
       }
 
       identity_attributes = last_identity.attributes.symbolize_keys.
-                            except(:created_at, :updated_at, :id, :quiz_started, :session_uuid,
+                            except(:created_at, :updated_at, :id, :session_uuid,
                                    :last_authenticated_at)
 
       expect(last_identity.session_uuid).to match(/.{8}-.{4}-.{4}-.{4}-.{12}/)

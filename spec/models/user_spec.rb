@@ -193,67 +193,6 @@ describe User do
     end
   end
 
-  describe '#last_quizzed identity' do
-    let(:user) { create(:user, :signed_up) }
-
-    context 'when the most recent identity is active and has started a quiz' do
-      it 'returns the most recent identity' do
-        user.identities.create(
-          service_provider: 'first',
-          last_authenticated_at: nil,
-          quiz_started: true,
-          updated_at: 5.seconds.ago
-        )
-        user.identities.create(
-          service_provider: 'last',
-          last_authenticated_at: Time.current,
-          quiz_started: true,
-          updated_at: Time.current
-        )
-
-        expect(user.last_quizzed_identity.service_provider).to eq('last')
-      end
-    end
-
-    context 'when the most recent identity is inactive and has started a quiz' do
-      it 'returns the most recent identity' do
-        user.identities.create(
-          service_provider: 'first',
-          last_authenticated_at: 5.seconds.ago,
-          quiz_started: true,
-          updated_at: 5.seconds.ago
-        )
-        user.identities.create(
-          service_provider: 'last',
-          last_authenticated_at: nil,
-          quiz_started: true,
-          updated_at: Time.current
-        )
-
-        expect(user.last_quizzed_identity.service_provider).to eq('last')
-      end
-    end
-
-    context 'when none of the identities have started a quiz' do
-      it 'does not return any identity' do
-        user.identities.create(
-          service_provider: 'first',
-          last_authenticated_at: nil,
-          quiz_started: false,
-          updated_at: 5.seconds.ago
-        )
-        user.identities.create(
-          service_provider: 'last',
-          last_authenticated_at: Time.current,
-          quiz_started: false,
-          updated_at: Time.current
-        )
-
-        expect(user.last_quizzed_identity).to be_nil
-      end
-    end
-  end
-
   describe '#send_two_factor_authentication_code' do
     it 'calls UserOtpSender#send_otp' do
       user = build_stubbed(:user)
