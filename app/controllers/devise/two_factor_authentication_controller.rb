@@ -3,6 +3,8 @@ require 'feature_management'
 # rubocop:disable Style/ClassAndModuleChildren
 class Devise::TwoFactorAuthenticationController < DeviseController
   # rubocop:enable Style/ClassAndModuleChildren
+  include ScopeAuthenticator
+
   prepend_before_action :authenticate_scope!
   before_action :verify_user_is_not_second_factor_locked
   before_action :handle_two_factor_authentication
@@ -46,11 +48,6 @@ class Devise::TwoFactorAuthenticationController < DeviseController
     # Present the TOTP entry screen to users who are TOTP enabled, unless the user explictly
     # selects SMS
     current_user.totp_enabled? && params[:method] != 'sms'
-  end
-
-  def authenticate_scope!
-    send(:"authenticate_#{resource_name}!", force: true)
-    self.resource = send(:"current_#{resource_name}")
   end
 
   def verify_user_is_not_second_factor_locked
