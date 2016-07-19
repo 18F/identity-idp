@@ -16,6 +16,7 @@ TooManyStatements:
   max_statements: 6
 TooManyMethods:
   exclude:
+    - Devise::TwoFactorAuthenticationController
     - Users::ConfirmationsController
     - ServiceProvider
 UncommunicativeMethodName:
