@@ -72,7 +72,7 @@ en:
       index: Admin Interface
     confirmations:
       new: Resend confirmation instructions
-    delete_account: Delete my login.gov account
+    delete_account: Delete my %{app_name} account
     log_in: Log in
     passwords:
       change: Change your password

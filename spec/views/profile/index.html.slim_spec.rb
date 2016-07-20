@@ -24,7 +24,7 @@ describe 'profile/index.html.slim' do
     it 'contains link to delete account' do
       render
 
-      expect(rendered).to have_content t('headings.delete_account')
+      expect(rendered).to have_content t('headings.delete_account', app_name: APP_NAME)
       expect(rendered).
         to have_xpath("//input[@value='#{t('forms.buttons.delete_account')}']")
     end

@@ -43,7 +43,7 @@ h2.h5.mt4.mb2 = t('headings.profile.account_settings')
 h2.h5.mt4.mb2 = t('headings.profile.advanced_settings')
 .py2.border-top.border-bottom
   .clearfix.mxn1
-    .sm-col.sm-col-8.px1 = t('headings.delete_account')
+    .sm-col.sm-col-8.px1 = t('headings.delete_account', app_name: APP_NAME)
     .sm-col.sm-col-4.px1.sm-right-align
       = button_to t('forms.buttons.delete_account'), user_destroy_confirm_path, \
         method: :get, class: 'btn btn-primary px1 py0 h6 regular'
