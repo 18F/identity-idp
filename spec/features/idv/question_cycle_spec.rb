@@ -13,10 +13,13 @@ feature 'IdV session' do
 
       visit '/idv/sessions'
 
-      expect(page).to have_content(t('idv.form.first_name'))
-
       fill_out_idv_form_ok
       click_button 'Continue'
+      expect(page).to have_content(t('idv.form.ccn'))
+
+      fill_out_financial_form_ok
+      click_button 'Continue'
+
       expect(page).to have_content(t('idv.titles.complete'))
       expect(user.active_profile).to be_a(Profile)
     end
@@ -36,6 +39,9 @@ feature 'IdV session' do
 
       fill_out_idv_form_ok
       click_button 'Continue'
+      fill_out_financial_form_ok
+      click_button 'Continue'
+
       expect(page).to have_content('Where did you live')
 
       complete_idv_questions_ok
@@ -55,6 +61,8 @@ feature 'IdV session' do
 
       fill_out_idv_form_ok
       click_button 'Continue'
+      fill_out_financial_form_ok
+      click_button 'Continue'
 
       expect(page).to have_content('Where did you live')
 
@@ -70,6 +78,8 @@ feature 'IdV session' do
       expect(page).to have_content(t('idv.form.first_name'))
 
       fill_out_idv_form_fail
+      click_button 'Continue'
+      fill_out_financial_form_ok
       click_button 'Continue'
 
       expect(page).to have_content(t('idv.titles.fail'))

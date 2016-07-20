@@ -7,7 +7,16 @@ module Idv
     def index
     end
 
+    def show
+    end
+
     def create
+      self.idv_params = applicant_params.delete_if { |_key, value| value.blank? }
+      redirect_to idv_session_url(1)
+    end
+
+    def update
+      self.idv_applicant = applicant_from_params
       resolution = start_idv_session
       if resolution.success
         init_questions_and_profile(resolution)
@@ -31,7 +40,7 @@ module Idv
     end
 
     def applicant_from_params
-      app_vars = applicant_params.delete_if { |_key, value| value.blank? }
+      app_vars = idv_params.merge(financial_params.delete_if { |_key, value| value.blank? })
       Proofer::Applicant.new(app_vars)
     end
 
@@ -51,12 +60,6 @@ module Idv
         :email,
         :dob,
         :ssn,
-        :ccn,
-        :mortgage,
-        :home_equity_line,
-        :auto_loan,
-        :bank_routing,
-        :bank_acct,
         :address1,
         :address2,
         :city,
@@ -65,6 +68,17 @@ module Idv
       )
     end
     # rubocop:enable MethodLength
+
+    def financial_params
+      params.slice(
+        :ccn,
+        :mortgage,
+        :home_equity_line,
+        :auto_loan,
+        :bank_routing,
+        :bank_acct
+      )
+    end
 
     def pick_a_vendor
       if Rails.env.test?

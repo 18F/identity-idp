@@ -1,3 +1,5 @@
+$radio-checkbox-space: 1.5rem;
+
 .field {
   background-color: $blue-light;
   color: $gray;
@@ -17,14 +19,18 @@
 
 .radio,
 .checkbox {
-  padding-left: 1.5rem;
+  padding-left: $radio-checkbox-space;
 }
 
 .radio [type=radio],
 .checkbox [type=checkbox] {
-  margin-left: -1.5rem;
+  margin-left: -$radio-checkbox-space;
   margin-top: .25rem;
   position: absolute;
+}
+
+.radio-extra {
+  margin-left: $radio-checkbox-space;
 }
 
 // hide number field input spin box as per:

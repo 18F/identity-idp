@@ -48,6 +48,10 @@ module IdvSession
     idv_session[:question_number] = num
   end
 
+  def idv_params=(idv_params)
+    idv_session[:params] = idv_params
+  end
+
   def idv_vendor
     idv_session[:vendor]
   end
@@ -58,6 +62,10 @@ module IdvSession
 
   def idv_profile_id
     idv_session[:profile_id]
+  end
+
+  def idv_params
+    idv_session[:params]
   end
 
   def idv_profile

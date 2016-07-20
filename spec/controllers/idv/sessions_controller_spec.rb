@@ -46,6 +46,7 @@ describe Idv::SessionsController do
 
       it 'creates proofing applicant' do
         post :create, user_attrs
+        post :update, id: 1, ccn: '12341234'
 
         expect(flash).to be_empty
         expect(response).to redirect_to(idv_questions_path)
@@ -54,6 +55,7 @@ describe Idv::SessionsController do
 
       it 'shows failure on intentionally bad values' do
         post :create, first_name: 'Bad', ssn: '6666'
+        post :update, id: 1, ccn: '12341234'
 
         expect(response).to redirect_to(idv_sessions_path)
         expect(flash[:error]).to eq t('idv.titles.fail')
@@ -67,8 +69,17 @@ describe Idv::SessionsController do
 
       it 'skips questions creation' do
         post :create, user_attrs
+        post :update, id: 1, ccn: '12341234'
 
         expect(subject.user_session[:idv][:resolution].questions).to be_nil
+      end
+
+      it 'shows failure on intentionally bad values' do
+        post :create, first_name: 'Bad', ssn: '6666'
+        post :update, id: 1, ccn: '12341234'
+
+        expect(response).to redirect_to(idv_sessions_path)
+        expect(flash[:error]).to eq t('idv.titles.fail')
       end
     end
   end

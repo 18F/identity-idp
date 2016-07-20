@@ -54,4 +54,8 @@ module IdvHelper
     select 'Kansas', from: :state
     fill_in :zipcode, with: '66044'
   end
+
+  def fill_out_financial_form_ok
+    fill_in :ccn, with: '1111222233334444'
+  end
 end
