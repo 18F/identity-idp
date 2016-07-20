@@ -40,7 +40,7 @@ module Devise
     private
 
     def check_already_authenticated
-      redirect_to profile_index_path if user_fully_authenticated?
+      redirect_to profile_path if user_fully_authenticated?
     end
 
     def use_totp?

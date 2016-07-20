@@ -71,7 +71,7 @@ feature 'Sign Up', devise: true do
       click_button 'Submit'
 
       expect(@user.reload.mobile_confirmed_at).to be_present
-      expect(current_path).to eq profile_index_path
+      expect(current_path).to eq profile_path
     end
 
     it 'allows user to resend confirmation code' do
@@ -221,7 +221,7 @@ feature 'Sign Up', devise: true do
 
       visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(current_url).to eq profile_index_url
+      expect(current_url).to eq profile_url
     end
   end
 

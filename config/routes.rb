@@ -5,9 +5,6 @@ Rails.application.routes.draw do
     mount Split::Dashboard => '/split'
   end
 
-  match '/profile' => 'profile#index', as: :profile_index, via: :get
-  get '/splash' => 'home#index'
-
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
   devise_for :users, skip: [:sessions], controllers: {
@@ -17,6 +14,7 @@ Rails.application.routes.draw do
     registrations: 'users/registrations'
   }
 
+  # Additional device controller routes.
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
@@ -27,30 +25,15 @@ Rails.application.routes.draw do
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 
-    get '/profile' => 'profile#index', as: :user_root
-
     patch '/confirm' => 'users/confirmations#confirm'
-
-    get '/users/totp' => 'users/totp_setup#new'
-    delete '/users/totp' => 'users/totp_setup#disable', as: :disable_totp
-    patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
-
-    get '/phone_confirmation' => 'users/phone_confirmation#show'
-    get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
-    put '/phone_confirmation' => 'users/phone_confirmation#confirm'
 
     get '/users/otp' => 'devise/two_factor_authentication_setup#index'
     patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
     get '/users/otp/new' => 'devise/two_factor_authentication#new'
   end
 
-  match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
-  get '/api/saml/metadata' => 'saml_idp#metadata'
-  match '/api/saml/logout' => 'saml_idp#logout',
-        via: [:get, :post, :delete],
-        as: :destroy_user_session
-
   unless Figaro.env.domain_name.include?('superb.legit.domain.gov')
+    # Testing routes, should not be available in live production
     namespace :test do
       # Assertion granting test start + return.
       get '/saml' => 'saml_test#start'
@@ -64,10 +47,24 @@ Rails.application.routes.draw do
     end
   end
 
+  # Non-devise-contoller routes. Alphabetically sorted.
+  get '/api/saml/metadata' => 'saml_idp#metadata'
+  match '/api/saml/logout' => 'saml_idp#logout',
+        via: [:get, :post, :delete],
+        as: :destroy_user_session
+  match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
   get '/idv' => 'idv#index'
   namespace :idv do
     resources :questions, :sessions, :confirmations
   end
+  get '/phone_confirmation' => 'users/phone_confirmation#show'
+  get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
+  put '/phone_confirmation' => 'users/phone_confirmation#confirm'
+  get '/profile' => 'profile#index'
+  get '/splash' => 'home#index'
+  get '/users/totp' => 'users/totp_setup#new'
+  delete '/users/totp' => 'users/totp_setup#disable', as: :disable_totp
+  patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
 
   root to: 'users/sessions#new'
 end

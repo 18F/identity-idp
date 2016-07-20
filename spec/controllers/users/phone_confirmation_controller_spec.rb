@@ -141,7 +141,7 @@ describe Users::PhoneConfirmationController, devise: true do
         before { post :confirm, code: '123' }
 
         it 'redirects to profile page' do
-          expect(response).to redirect_to(profile_index_path)
+          expect(response).to redirect_to(profile_path)
         end
       end
 

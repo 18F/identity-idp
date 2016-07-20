@@ -32,7 +32,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'redirects to the profile' do
         get :index
 
-        expect(response).to redirect_to(profile_index_url)
+        expect(response).to redirect_to(profile_url)
       end
     end
 
@@ -44,7 +44,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'does not redirect to the profile' do
         get :index
 
-        expect(response).not_to redirect_to(profile_index_url)
+        expect(response).not_to redirect_to(profile_url)
         expect(response.code).to eq('200')
       end
     end
@@ -87,7 +87,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'redirects to the profile' do
         patch :update, code: subject.current_user.reload.direct_otp
 
-        expect(response).to redirect_to profile_index_path
+        expect(response).to redirect_to profile_path
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -130,7 +130,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         end
 
         it 'redirects to the profile' do
-          expect(response).to redirect_to profile_index_path
+          expect(response).to redirect_to profile_path
         end
       end
 
@@ -159,7 +159,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         end
 
         it 'redirects to the profile' do
-          expect(response).to redirect_to profile_index_path
+          expect(response).to redirect_to profile_path
         end
       end
     end

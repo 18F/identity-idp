@@ -74,7 +74,7 @@ module Users
       action_text = 'Please sign in.' unless user_signed_in?
       flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
 
-      redirect_to user_signed_in? ? profile_index_path : new_user_session_url
+      redirect_to user_signed_in? ? profile_path : new_user_session_url
     end
 
     def process_unconfirmed_user
@@ -105,7 +105,7 @@ module Users
       if !user_signed_in?
         new_user_session_url
       elsif resource.two_factor_enabled?
-        profile_index_path
+        profile_path
       else
         users_otp_url
       end

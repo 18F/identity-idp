@@ -164,7 +164,7 @@ feature 'Password Recovery' do
       fill_in 'code', with: @user.reload.direct_otp
       click_button 'Submit'
 
-      expect(current_path).to eq profile_index_path
+      expect(current_path).to eq profile_path
     end
   end
 
