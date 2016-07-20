@@ -11,7 +11,7 @@ p
 
 = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
   .mb2
-    = label_tag 'code', raw('<abbr title="required">*</abbr> ') + t('forms.two_factor.code')
+    = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.code')
     = hidden_field_tag('method', 'sms')
     = number_field_tag(:code, \
                        '', \

@@ -10,4 +10,4 @@ h1.heading = t('devise.two_factor_authentication.two_factor_setup')
   p = t('devise.two_factor_authentication.otp_setup')
   = f.input :mobile, as: :tel, autofocus: true, label: 'Mobile Number', required: true
   = f.button :submit, 'Submit', class: 'mb2'
-  p = t('devise.two_factor_authentication.otp_sms_disclaimer')
+  p.mt2.mb0 = t('devise.two_factor_authentication.otp_sms_disclaimer')

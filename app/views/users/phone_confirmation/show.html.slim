@@ -6,13 +6,12 @@ p
     Please enter it below:
 
 = form_tag([:phone_confirmation], method: :put, role: 'form') do
-  .mb2
-    = number_field_tag(:code, \
-                       '', required: true, \
-                       value: @code_value, \
-                       autofocus: true, \
-                       class: 'block col-12 field mfa')
-  = submit_tag 'Submit', class: 'btn btn-primary'
+  = number_field_tag(:code, \
+                     '', required: true, \
+                     value: @code_value, \
+                     autofocus: true, \
+                     class: 'mb2 block col-12 field mfa')
+  = submit_tag 'Submit', class: 'mb2 btn btn-primary'
 
 - resend_link = link_to('request it be sent again', \
                         phone_confirmation_send_path, \
@@ -21,5 +20,6 @@ p
                                @reenter_phone_number_path, \
                                data: { 'no-turbolink' => true })
 
-p If you do not receive a code, you can #{resend_link}.
-p If you entered the wrong number, try #{update_number_link}.
+.mt2
+  p If you do not receive a code, you can #{resend_link}.
+  p.m0 If you entered the wrong number, try #{update_number_link}.
