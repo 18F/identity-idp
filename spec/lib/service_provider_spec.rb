@@ -1,3 +1,4 @@
+require 'rails_helper'
 require 'service_provider'
 
 describe ServiceProvider do
@@ -12,7 +13,7 @@ describe ServiceProvider do
           sp_initiated_login_url: nil,
           metadata_url: nil,
           cert: nil,
-          block_encryption: 'none',
+          block_encryption: 'aes256-cbc',
           key_transport: 'rsa-oaep-mgf1p',
           fingerprint: nil,
           double_quote_xml_attribute_values: true,
@@ -71,7 +72,7 @@ describe ServiceProvider do
           attributes = {
             acs_url: 'https://vets.gov/users/auth/saml/callback',
             assertion_consumer_logout_service_url: acls_url,
-            block_encryption: 'none',
+            block_encryption: 'aes256-cbc',
             cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
             double_quote_xml_attribute_values: true,
             fingerprint: fingerprint,
@@ -211,10 +212,10 @@ describe ServiceProvider do
 
   describe '#block_encryption' do
     context 'when no value is specified in YAML' do
-      it 'returns "none"' do
+      it 'returns "aes256-cbc"' do
         service_provider = ServiceProvider.new('http://test.host')
 
-        expect(service_provider.block_encryption).to eq 'none'
+        expect(service_provider.block_encryption).to eq 'aes256-cbc'
       end
     end
 

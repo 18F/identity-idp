@@ -193,11 +193,19 @@ module SamlResponseHelper
   end
 
   def decrypted_saml_response
-    @decrypted_saml_response ||= Saml::XML::Document.parse(saml_response.document.to_s)
+    @decrypted_saml_response ||= Saml::XML::Document.parse(saml_response_string(saml_response))
+  end
+
+  def saml_response_string(response)
+    if response.decrypted_document.present?
+      response.decrypted_document.to_s
+    else
+      response.document.to_s
+    end
   end
 
   def saml_response
-    OneLogin::RubySaml::Response.new(
+    @saml_response ||= OneLogin::RubySaml::Response.new(
       Nokogiri::HTML(response.body).at_css('#SAMLResponse')['value'],
       settings: saml_settings
     )

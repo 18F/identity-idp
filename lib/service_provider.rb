@@ -2,7 +2,7 @@ require 'fingerprinter'
 
 class ServiceProvider
   # currently acceptable encryption values are 'none' and 'aes256-cbc'
-  DEFAULT_ENCRYPTION = 'none'.freeze
+  DEFAULT_ENCRYPTION = 'aes256-cbc'.freeze
 
   def initialize(host)
     @host = host

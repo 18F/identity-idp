@@ -13,13 +13,11 @@ test:
       acs_url: 'http://example.com/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
       sp_initiated_login_url: 'https://example.com/auth/saml/login'
-      block_encryption: 'aes256-cbc'
       cert: 'saml_test_sp'
 
     'https://rp2.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://example.com/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
-      block_encryption: 'aes256-cbc'
       cert: 'saml_test_sp'
 
     'http://test.host':
@@ -56,7 +54,6 @@ development:
       assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
       cert: 'identity_dashboard_cert'
-      block_encryption: 'aes256-cbc'
 
 production:
   valid_hosts:
@@ -66,7 +63,6 @@ production:
       assertion_consumer_logout_service_url: 'https://upaya-dev.18f.gov/test/saml/decode_logoutresponse'
       sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
       cert: 'saml_test_sp'
-      block_encryption: 'aes256-cbc'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
       metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
@@ -102,14 +98,12 @@ production:
       assertion_consumer_logout_service_url: 'https://identity-dashboard-dev.apps.cloud.gov/users/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-dashboard-dev.apps.cloud.gov/users/auth/saml'
       cert: 'identity_dashboard_cert'
-      block_encryption: 'aes256-cbc'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dashboard-demo':
       metadata_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml/metadata'
       acs_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml'
       cert: 'identity_dashboard_cert'
-      block_encryption: 'aes256-cbc'
 
 superb.legit.domain.gov:
   valid_hosts:
