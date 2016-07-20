@@ -18,12 +18,16 @@ module IdvSession
     idv_session[:resolution]
   end
 
+  def idv_questions
+    idv_resolution.questions
+  end
+
   def proofing_session_started?
     idv_resolution.present? &&
       idv_applicant.present? &&
       idv_resolution.success &&
-      idv_resolution.questions &&
-      idv_resolution.questions.any?
+      idv_questions &&
+      idv_questions.any?
   end
 
   def idv_vendor=(vendor)

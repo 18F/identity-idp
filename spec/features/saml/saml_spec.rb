@@ -2,6 +2,7 @@ require 'rails_helper'
 
 include SamlAuthHelper
 include SamlResponseHelper
+include IdvHelper
 
 feature 'saml api', devise: true, sms: true do
   let(:user) { create(:user, :signed_up) }
@@ -471,15 +472,38 @@ feature 'saml api', devise: true, sms: true do
   end
 
   context 'visiting /api/saml/auth' do
-    context 'with LOA2 authn_context' do
-      it 'redirects to IdV URL for LOA2 proofer after user creates their account and signs in' do
-        visit loa2_authnrequest
+    context 'with LOA3 authn_context' do
+      it 'redirects to IdV URL after user creates their account and signs in' do
+        visit loa3_authnrequest
 
         visit new_user_registration_path
 
         sign_up_and_2fa
 
         expect(current_url).to eq idv_url
+      end
+
+      it 'redirects to original SAML Authn Request after IdV is complete' do
+        saml_authn_request = loa3_authnrequest
+        visit saml_authn_request
+
+        visit new_user_registration_path
+
+        sign_up_and_2fa
+
+        expect(current_url).to eq idv_url
+
+        click_on 'Continue'
+
+        expect(page).to have_content(t('idv.form.first_name'))
+
+        fill_out_idv_form_ok
+        click_button 'Continue'
+
+        expect(page).to have_content('Where did you live')
+
+        complete_idv_questions_ok
+        expect(current_url).to eq saml_authn_request
       end
     end
   end

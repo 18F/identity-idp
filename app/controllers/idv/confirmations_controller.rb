@@ -22,8 +22,25 @@ module Idv
       agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)
       @idv_vendor = idv_vendor
       @confirmation = agent.submit_answers(idv_resolution.questions, idv_resolution.session_id)
-      complete_idv_profile if @confirmation.success?
+      if @confirmation.success?
+        finish_proofing_success
+      else
+        finish_proofing_failure
+      end
       clear_idv_session
+    end
+
+    def finish_proofing_failure
+      # do not store PII that failed.
+      idv_profile.destroy
+      analytics.track_event('IdV Failed')
+    end
+
+    def finish_proofing_success
+      complete_idv_profile
+      flash[:success] = I18n.t('idv.titles.complete')
+      analytics.track_event('IdV Successful')
+      redirect_to after_sign_in_path_for(current_user)
     end
   end
 end

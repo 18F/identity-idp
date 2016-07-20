@@ -27,26 +27,27 @@ describe Idv::SessionsController do
     end
   end
 
-  describe 'user has created account' do
-    it 'starts new proofing session' do
+  context 'user has created account' do
+    before do
       sign_in(user)
+    end
+
+    it 'starts new proofing session' do
       get :index
+
       expect(response.status).to eq 200
       expect(response.body).to include t('idv.form.first_name')
     end
 
-    it 'creates proofing session' do
-      sign_in(user)
-
+    it 'creates proofing applicant' do
       post :create, user_attrs
 
       expect(flash).to be_empty
       expect(response).to redirect_to(idv_questions_path)
+      expect(subject.user_session[:idv][:applicant]).to be_a Proofer::Applicant
     end
 
     it 'shows failure on intentionally bad values' do
-      sign_in(user)
-
       post :create, first_name: 'Bad', ssn: '6666'
 
       expect(response).to redirect_to(idv_sessions_path)
