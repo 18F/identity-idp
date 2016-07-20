@@ -40,7 +40,7 @@ UserDecorator = Struct.new(:user) do
   end
 
   def identity_not_verified?
-    user.identities.pluck(:ial).uniq == [1]
+    user.active_profile ? false : true
   end
 
   def qrcode(otp_secret_key)

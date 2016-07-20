@@ -2,6 +2,8 @@ require 'rails_helper'
 require 'proofer/vendor/mock'
 
 describe Idv::ConfirmationsController do
+  include SamlAuthHelper
+
   render_views
 
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
@@ -24,39 +26,62 @@ describe Idv::ConfirmationsController do
       init_idv_session
     end
 
-    describe 'all questions answered correctly' do
-      it 'shows success' do
-        complete_idv_session(true)
+    context 'all answers correct' do
+      context 'original SAML Authn request present' do
+        let(:saml_authn_request) { sp1_authnrequest }
 
-        get :index
+        before do
+          subject.session[:saml_request_url] = saml_authn_request
+          complete_idv_session(true)
+          get :index
+        end
 
-        expect(response.status).to eq 200
-        expect(response.body).to include(t('idv.titles.complete'))
+        it 'activates profile' do
+          profile.reload
 
-        profile.reload
+          expect(profile).to be_active
+          expect(profile).to be_verified
+        end
 
-        expect(profile).to be_active
-        expect(profile).to be_verified
+        it 'redirects to original SAML Authn request' do
+          expect(response).to redirect_to saml_authn_request
+        end
+
+        it 'cleans up PII from session' do
+          expect(subject.user_session[:idv][:applicant]).to eq nil
+        end
+      end
+
+      context 'original SAML Authn request missing' do
+        before do
+          subject.session[:saml_request_url] = nil
+          complete_idv_session(true)
+          get :index
+        end
+
+        it 'redirects to IdP profile' do
+          expect(response).to redirect_to(profile_path)
+        end
       end
     end
 
-    describe 'some answers incorrect' do
-      it 'shows error' do
+    context 'some answers incorrect' do
+      before do
         complete_idv_session(false)
-
         get :index
+      end
 
+      it 'shows error' do
         expect(response.status).to eq 200
         expect(response.body).to include(t('idv.titles.hardfail'))
+      end
 
-        profile.reload
-
-        expect(profile).to_not be_active
-        expect(profile).to_not be_verified
+      it 'does not save PII' do
+        expect(Profile.where(id: profile.id).count).to eq 0
       end
     end
 
-    describe 'questions incomplete' do
+    context 'questions incomplete' do
       it 'redirects to /idv/questions' do
         get :index
 

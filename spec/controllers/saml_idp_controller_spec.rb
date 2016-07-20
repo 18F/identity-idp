@@ -117,7 +117,7 @@ describe SamlIdpController do
         user = create(:user, :signed_up)
         generate_saml_response(user, loa3_saml_settings)
 
-        user.last_identity.update(ial: 2)
+        user.profiles.create(verified_at: Time.current, active: true, activated_at: Time.current)
 
         generate_saml_response(user, loa3_saml_settings)
 

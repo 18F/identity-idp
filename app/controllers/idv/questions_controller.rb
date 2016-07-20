@@ -21,9 +21,10 @@ module Idv
     private
 
     def render_next_question
-      if idv_question_number < idv_resolution.questions.count
+      questions = idv_resolution.questions
+      if idv_question_number < questions.count
         @question_sequence = idv_question_number + 1
-        @question = idv_resolution.questions[idv_question_number]
+        @question = questions[idv_question_number]
       else
         redirect_to idv_confirmations_path
       end
