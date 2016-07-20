@@ -8,7 +8,8 @@ p.italic Your password must be at least 8 characters.
     method: :patch,
     html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.error_notification
-  = f.input :password, required: true, input_html: { autofocus: true }
+  = f.input :password, required: true,
+      input_html: { autofocus: true, 'aria-described-by': 'pw-strength-cntnr' }
   = render 'devise/shared/password_strength'
   = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
   = f.button :submit, 'Submit'
