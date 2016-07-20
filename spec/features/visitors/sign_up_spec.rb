@@ -189,9 +189,12 @@ feature 'Sign Up', devise: true do
     confirm_last_user
 
     expect(page).to have_css('#pw-toggle')
+    expect(page).to have_css('input.password[type="password"]')
 
-    click_button 'Show'
-    expect(page).to have_content 'Hide'
+    check('Show password')
+
+    expect(page).to_not have_css('input.password[type="password"]')
+    expect(page).to have_css('input.password[type="text"]')
   end
 
   scenario 'visitor is redirected back to password form when password is invalid' do

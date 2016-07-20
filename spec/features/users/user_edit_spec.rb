@@ -32,7 +32,7 @@ feature 'User edit' do
     visit edit_user_registration_path
     expect(page).to have_css('#pw-toggle')
 
-    click_button 'Show'
-    expect(page).to have_content 'Hide'
+    check('Show password')
+    expect(page).to have_css('input.password[type="text"]')
   end
 end
