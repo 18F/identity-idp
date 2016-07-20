@@ -46,10 +46,10 @@ en:
       start:
         bullet_1: Please use this site to securely log in to your participating government agency.
         bullet_2: >
-          login.gov is a central login platform used by multiple U.S. government
+          %{app_name} is a central login platform used by multiple U.S. government
           agencies to make interacting with the government easier.
         bullet_3: >
-          You can use your login.gov account to access all participating
+          You can use your ${app_name} account to access all participating
           U.S. government agencies.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your

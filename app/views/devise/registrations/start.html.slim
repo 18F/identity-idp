@@ -11,12 +11,13 @@
   .col.col-2.center
     = image_tag(asset_url('shield.svg'), class: 'mt1')
   .col.col-10
-    p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = t('devise.registrations.start.bullet_2')
+    p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = t('devise.registrations.start.bullet_2',
+                                              app_name: APP_NAME)
   .clearfix
   .col.col-2.center
     = image_tag(asset_url('dot-gov.svg'), class: 'mt1')
   .col.col-10
-    p.pb2.sm-pb3.mb2 = t('devise.registrations.start.bullet_3')
+    p.pb2.sm-pb3.mb2 = t('devise.registrations.start.bullet_3', app_name: APP_NAME)
 .py1.sm-p0
   - ab_test(:demo) do |variant, _|
     = link_to t(variant), new_user_registration_path, class: 'btn btn-primary'
