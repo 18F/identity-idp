@@ -7,7 +7,7 @@ feature 'User profile' do
   context 'user clicks the delete account button' do
     it 'deletes the account and signs the user out with a flash message' do
       sign_in_and_2fa_user
-      visit profile_index_path
+      visit profile_path
       click_button t('forms.buttons.delete_account')
 
       click_button t('forms.buttons.delete_account_confirm')
