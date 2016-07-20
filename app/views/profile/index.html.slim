@@ -10,24 +10,24 @@ h2.h5.mt4.mb2 = t('headings.profile.account_settings')
     .sm-col.sm-col-6.px1 = current_user.email
     .sm-col.sm-col-2.px1.sm-right-align
       = link_to 'Edit', edit_user_registration_path, \
-        class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
+        class: 'btn btn-primary px1 py0 h6 regular'
 .py2.border-top
   .clearfix.mxn1
     .sm-col.sm-col-4.px1 = 'Mobile'
     .sm-col.sm-col-6.px1 = current_user.mobile
     .sm-col.sm-col-2.px1.sm-right-align
       = link_to 'Edit', edit_user_registration_path, \
-        class: 'btn btn-primary bg-light-blue gray px1 py0 h6 regular'
+        class: 'btn btn-primary px1 py0 h6 regular'
 .py2.border-top.border-bottom
   .clearfix.mxn1
     .sm-col.sm-col-8.px1 = 'Authenticator App'
     .sm-col.sm-col-4.px1.sm-right-align
       - if current_user.totp_enabled?
         = button_to 'Disable', disable_totp_url, method: :delete, \
-          class: 'btn btn-primary bg-silver gray px2 py1 h5'
+          class: 'btn btn-primary px1 py0 h6 regular'
       - else
         = button_to 'Enable', users_totp_url, method: :get, \
-          class: 'btn btn-primary bg-silver gray px2 py1 h5'
+          class: 'btn btn-primary px1 py0 h6 regular'
 
 - unless current_user.active_identities.empty?
   h2.h5.mt4.mb2 = t('headings.profile.agencies')
@@ -46,4 +46,4 @@ h2.h5.mt4.mb2 = t('headings.profile.advanced_settings')
     .sm-col.sm-col-8.px1 = t('headings.delete_account')
     .sm-col.sm-col-4.px1.sm-right-align
       = button_to t('forms.buttons.delete_account'), user_destroy_confirm_path, \
-        method: :get, class: 'btn btn-primary bg-silver gray px2 py1 h5'
+        method: :get, class: 'btn btn-primary px1 py0 h6 regular'

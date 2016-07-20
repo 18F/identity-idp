@@ -2,7 +2,7 @@
 
 
 h1.heading = t('headings.registrations.enter_email')
-p.italic Enter the email address you’d like to associate with login.gov
+p Enter the email address you’d like to associate with #{APP_NAME.downcase}
 = simple_form_for(@register_user_email_form,
     html: { autocomplete: 'off', role: 'form' },
     url: user_registration_path) do |f|

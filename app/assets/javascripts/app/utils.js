@@ -8,7 +8,6 @@ $(document).on('click', dismiss, (e) => { $(e.target).parent().remove(); });
 // Safari & IE 8/9 do not support client side handling of `required` attribute on
 // form inputs; this adds basic messaging and styling fallback for these browsers
 // "page:load" event needed because of turbolinks, which overrides normal loading process
-
 $(document).on('ready page:load', () => {
   const message = '<div class="error-notify alert-danger p1 mt1 mb2">Please fill in all required' +
     ' fields.</div>';
