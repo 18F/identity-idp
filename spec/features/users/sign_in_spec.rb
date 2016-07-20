@@ -55,8 +55,9 @@ feature 'Sign in' do
     visit new_user_session_path
     expect(page).to have_css('#pw-toggle')
 
-    click_button 'Show'
-    expect(page).to have_content 'Hide'
+    check('Show password')
+
+    expect(page).to have_css('input.password[type="text"]')
   end
 
   scenario 'user session expires in amount of time specified by Devise config' do
