@@ -6,9 +6,11 @@ Identity-IdP (Upaya)
 [![Test Coverage](https://codeclimate.com/github/18F/identity-idp/badges/coverage.svg)](https://codeclimate.com/github/18F/identity-idp/coverage)
 [![security](https://hakiri.io/github/18F/identity-idp/master.svg)](https://hakiri.io/github/18F/identity-idp/master)
 
-A proof-of-concept Identity Management System
+A proof-of-concept Identity Management System.
 
-#### Dependencies
+**Notice:** This project is still in alpha.
+
+### Dependencies
 
 - Ruby 2.3.0
 - [Postgresql](http://www.postgresql.org/download/)
@@ -103,10 +105,6 @@ cap <env/stage> deploy
 You will need to provide a copy of your SSH public key and you may need to
 provide your IP address if you are not in a GSA building or on the GSA VPN.
 Post a message in the Slack channel if you need help.
-
-## More Information
-
-**Notice:** This project is still in alpha.
 
 ### Why 'Upaya'?
 
