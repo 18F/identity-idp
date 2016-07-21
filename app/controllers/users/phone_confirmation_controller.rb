@@ -11,7 +11,7 @@ module Users
       @reenter_phone_number_path = if current_user.mobile.present?
                                      edit_user_registration_path
                                    else
-                                     users_otp_path
+                                     phone_setup_path
                                    end
     end
 

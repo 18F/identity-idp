@@ -41,7 +41,7 @@ module Users
 
     def process_invalid_code
       flash[:error] = t('errors.invalid_totp')
-      redirect_to users_totp_path
+      redirect_to authenticator_setup_path
     end
   end
 end

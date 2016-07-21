@@ -88,7 +88,7 @@ describe ApplicationController do
     end
 
     context 'when the user may not bypass 2FA and is not 2FA-enabled' do
-      it 'redirects to users_otp_url with a flash message' do
+      it 'redirects to phone_setup_url with a flash message' do
         user = create(:user)
         sign_in user
 
@@ -101,7 +101,7 @@ describe ApplicationController do
 
         get :index
 
-        expect(response).to redirect_to users_otp_url
+        expect(response).to redirect_to phone_setup_url
       end
     end
 

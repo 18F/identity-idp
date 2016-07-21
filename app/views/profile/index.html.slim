@@ -26,7 +26,7 @@ h2.h5.mt4.mb2 = t('headings.profile.account_settings')
         = button_to 'Disable', disable_totp_url, method: :delete, \
           class: 'btn btn-primary px1 py0 h6 regular'
       - else
-        = button_to 'Enable', users_totp_url, method: :get, \
+        = button_to 'Enable', authenticator_setup_url, method: :get, \
           class: 'btn btn-primary px1 py0 h6 regular'
 
 - unless current_user.active_identities.empty?

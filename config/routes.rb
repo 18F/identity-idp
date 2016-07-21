@@ -27,9 +27,10 @@ Rails.application.routes.draw do
 
     patch '/confirm' => 'users/confirmations#confirm'
 
-    get '/users/otp' => 'devise/two_factor_authentication_setup#index'
-    patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
-    get '/users/otp/new' => 'devise/two_factor_authentication#new'
+    get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
+    patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
+
+    get '/otp/new' => 'devise/two_factor_authentication#new'
   end
 
   unless Figaro.env.domain_name.include?('superb.legit.domain.gov')
@@ -62,9 +63,9 @@ Rails.application.routes.draw do
   put '/phone_confirmation' => 'users/phone_confirmation#confirm'
   get '/profile' => 'profile#index'
   get '/splash' => 'home#index'
-  get '/users/totp' => 'users/totp_setup#new'
-  delete '/users/totp' => 'users/totp_setup#disable', as: :disable_totp
-  patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
+  get '/authenticator_setup' => 'users/totp_setup#new'
+  delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
+  patch '/authenticator_setup' => 'users/totp_setup#confirm'
 
   root to: 'users/sessions#new'
 end

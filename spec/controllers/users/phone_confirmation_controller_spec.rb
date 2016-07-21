@@ -188,7 +188,7 @@ describe Users::PhoneConfirmationController, devise: true do
       it 'sets @reenter_phone_number_path to OTP setup path' do
         get :show
 
-        expect(assigns(:reenter_phone_number_path)).to eq(users_otp_path)
+        expect(assigns(:reenter_phone_number_path)).to eq(phone_setup_path)
       end
     end
 

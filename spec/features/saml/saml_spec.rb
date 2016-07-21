@@ -31,7 +31,7 @@ feature 'saml api', devise: true, sms: true do
       end
 
       it 'prompts the user to set up 2FA' do
-        expect(current_path).to eq users_otp_path
+        expect(current_path).to eq phone_setup_path
       end
 
       it 'prompts the user to confirm mobile after setting up 2FA' do
@@ -49,7 +49,7 @@ feature 'saml api', devise: true, sms: true do
       end
 
       it 'prompts user to set up 2FA after confirming email and setting password' do
-        expect(current_path).to eq users_otp_path
+        expect(current_path).to eq phone_setup_path
       end
 
       it 'prompts the user to confirm mobile after setting up 2FA' do

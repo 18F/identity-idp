@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_set_up_2fa
-    redirect_to users_otp_url
+    redirect_to phone_setup_url
   end
 
   def prompt_to_enter_otp
