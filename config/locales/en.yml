@@ -48,6 +48,9 @@ en:
     confirmations:
       new: Resend confirmation instructions for your account
       show: Create a password for your account
+    edit_info:
+      email: Edit your email
+      mobile: Edit your phone number
     enter_2fa_code: Enter the secure one-time password to log in to your account
     account_locked: Account locked
     passwords:
@@ -73,6 +76,9 @@ en:
     confirmations:
       new: Resend confirmation instructions
     delete_account: Delete my %{app_name} account
+    edit_info:
+      email: Edit your email
+      mobile: Edit your phone number
     log_in: Log in
     passwords:
       change: Change your password

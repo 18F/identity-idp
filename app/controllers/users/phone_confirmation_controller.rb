@@ -65,7 +65,7 @@ module Users
 
     def after_confirmation_path
       if @updating_existing_number
-        edit_user_registration_path
+        profile_path
       else
         after_sign_in_path_for(current_user)
       end
