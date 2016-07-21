@@ -10,7 +10,7 @@ describe 'users/phone_confirmation/show.html.slim' do
     @unconfirmed_mobile = '12345'
     render
 
-    expect(rendered).to have_content('A confirmation code has been sent to 12345')
+    expect(rendered).to have_content('Please enter the code sent to 12345')
   end
 
   it 'has a localized title' do
@@ -28,14 +28,14 @@ describe 'users/phone_confirmation/show.html.slim' do
   it 'allows user to resend code' do
     render
 
-    expect(rendered).to have_link('request it be sent again', href: phone_confirmation_send_path)
+    expect(rendered).to have_link('Resend', href: phone_confirmation_send_path)
   end
 
   it 'allows user to re-enter phone number' do
     @reenter_phone_number_path = 'reenter_url'
     render
 
-    expect(rendered).to have_link('entering it again', href: 'reenter_url')
+    expect(rendered).to have_link('Try again', href: 'reenter_url')
   end
 
   context 'when @code_value is set' do

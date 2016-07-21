@@ -18,7 +18,7 @@ feature 'Sign Up', devise: true do
     sign_up_with(email)
     expect(page).to have_content(
       t('devise.registrations.signed_up_but_unconfirmed.message_start') +
-      " #{email}. " +
+      " #{email} " +
       t('devise.registrations.signed_up_but_unconfirmed.message_end')
     )
   end
@@ -75,7 +75,7 @@ feature 'Sign Up', devise: true do
     end
 
     it 'allows user to resend confirmation code' do
-      click_link 'request it be sent again'
+      click_link 'Resend'
       expect(current_path).to eq phone_confirmation_path
     end
 
@@ -87,12 +87,12 @@ feature 'Sign Up', devise: true do
     end
 
     it 'provides user with link to type in a phone number so they are not locked out' do
-      click_link 'entering it again'
+      click_link 'Try again'
       expect(current_path).to eq phone_setup_path
     end
 
     it 'informs the user that the OTP code is sent to the mobile' do
-      expect(page).to have_content('A confirmation code has been sent to +1 (555) 555-5555.')
+      expect(page).to have_content('Please enter the code sent to +1 (555) 555-5555.')
     end
 
     it 'allows user to enter new number if they Sign Out before confirming' do
@@ -112,7 +112,7 @@ feature 'Sign Up', devise: true do
 
     it 'pretends the mobile is valid and prompts to confirm the number' do
       expect(current_path).to eq phone_confirmation_path
-      expect(page).to have_content('A confirmation code has been sent to +1 (202) 555-1212')
+      expect(page).to have_content('Please enter the code sent to +1 (202) 555-1212')
     end
 
     it 'does not confirm the new number with an invalid code' do
@@ -270,7 +270,7 @@ feature 'Sign Up', devise: true do
 
     expect(page).to have_content(
       t('devise.registrations.signed_up_but_unconfirmed.message_start') +
-      " #{user.email}. " +
+      " #{user.email} " +
       t('devise.registrations.signed_up_but_unconfirmed.message_end')
     )
     expect(number_of_emails_sent).to eq 0

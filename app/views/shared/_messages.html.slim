@@ -1,12 +1,10 @@
 - unless flash.empty?
   - flash.each do |name, msg|
     - if msg.present? && msg.is_a?(String)
-      - good_msg = name.to_s.match(/notice|success/)
+      - msg_type = name.to_s =~ /notice|success/ ? 'success' : 'danger'
       .mxn2.sm-m0
-        div class="mb3 p2 alert alert-#{good_msg ? 'success' : 'danger'}"
-          button type="button" class="close" data-dismiss="true" aria-label="Close"
-            '&times;
-          = image_tag(asset_url('check.svg'), class: 'alert-ico') if good_msg
-          = msg
+        div class="mb3 p2 alert alert-#{msg_type}"
+          = image_tag(asset_url("alert/ico-#{msg_type}.svg"), class: 'alert-ico')
+          div class="#{msg.length < 50 ? 'center bold' : ''}" = msg
 
 #session-timeout-cntnr

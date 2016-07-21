@@ -2,9 +2,11 @@
 
 
 h1.heading = t('headings.registrations.verify_email')
-p
-  '#{t('devise.registrations.signed_up_but_unconfirmed.message_start')}
-  '<strong>#{email}</strong>.
-  '#{t('devise.registrations.signed_up_but_unconfirmed.message_end')}
-p Didn't receive an email? #{link_to 'Resend', '/'}
-p = t('devise.registrations.close_window')
+.mt4.mb3.p2.alert.alert-success
+  = image_tag(asset_url('alert/ico-success.svg'), class: 'alert-ico')
+  p
+    | #{t('devise.registrations.signed_up_but_unconfirmed.message_start')}
+      <strong>#{email}</strong>
+      #{t('devise.registrations.signed_up_but_unconfirmed.message_end')}
+  p.m0 Didn't receive an email? #{link_to 'Resend', '/'}
+p.italic = t('devise.registrations.close_window')

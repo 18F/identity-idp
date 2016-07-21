@@ -130,7 +130,7 @@ describe 'user edits their account', email: true do
     it 'lets user know they need to confirm both their new mobile and email' do
       expect(response.body).
         to include(
-          'A confirmation code has been sent to <strong>+1 (202) 555-1213</strong>.'
+          'Please enter the code sent to <strong>+1 (202) 555-1213</strong>.'
         )
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(last_email.subject).to eq 'Email confirmation instructions'
@@ -161,7 +161,7 @@ describe 'user edits their account', email: true do
       )
 
       expect(response.body).
-        to include('A confirmation code has been sent to <strong>+1 (555) 555-5555</strong>.')
+        to include('Please enter the code sent to <strong>+1 (555) 555-5555</strong>.')
       expect(flash[:notice]).to eq t('devise.registrations.email_and_mobile_need_confirmation')
       expect(user.reload.mobile).to eq '+1 (202) 555-1212'
       expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')

@@ -1,9 +1,7 @@
 - title t('titles.enter_2fa_code')
 
 h1.heading = t('forms.phone_confirmation.header_text')
-p
-  | A confirmation code has been sent to <strong>#{@unconfirmed_mobile}</strong>.
-    Please enter it below:
+p Please enter the code sent to <strong>#{@unconfirmed_mobile}</strong>.
 
 = form_tag([:phone_confirmation], method: :put, role: 'form') do
   = number_field_tag(:code, \
@@ -13,13 +11,13 @@ p
                      class: 'mb2 block col-12 field mfa')
   = submit_tag 'Submit', class: 'mb2 btn btn-primary'
 
-- resend_link = link_to('request it be sent again', \
+- resend_link = link_to('Resend', \
                         phone_confirmation_send_path, \
                         data: { 'no-turbolink' => true })
-- update_number_link = link_to('entering it again', \
+- update_number_link = link_to('Try again', \
                                @reenter_phone_number_path, \
                                data: { 'no-turbolink' => true })
 
 .mt2
-  p If you do not receive a code, you can #{resend_link}.
-  p.m0 If you entered the wrong number, try #{update_number_link}.
+  p.m0 Didn't receive a code? #{resend_link}
+  p.m0 Entered the wrong phone number? #{update_number_link}
