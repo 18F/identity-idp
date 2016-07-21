@@ -25,9 +25,7 @@ module IdvSession
   def proofing_session_started?
     idv_resolution.present? &&
       idv_applicant.present? &&
-      idv_resolution.success &&
-      idv_questions &&
-      idv_questions.any?
+      idv_resolution.success?
   end
 
   def idv_vendor=(vendor)

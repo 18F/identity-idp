@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 3b44d294c9f12c4fb7ab89687f48d3453f8582a7
+  revision: d013230ddeba07d6f37a58c06351218bb5f525fe
   branch: master
   specs:
     proofer (1.0.0)

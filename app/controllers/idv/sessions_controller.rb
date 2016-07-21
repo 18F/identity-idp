@@ -21,7 +21,10 @@ module Idv
     private
 
     def start_idv_session
-      agent = Proofer::Agent.new(vendor: pick_a_vendor)
+      agent = Proofer::Agent.new(
+        vendor: pick_a_vendor,
+        kbv: FeatureManagement.proofing_requires_kbv?
+      )
       self.idv_applicant = applicant_from_params
       self.idv_vendor = agent.vendor
       agent.start(idv_applicant)

@@ -12,4 +12,8 @@ class FeatureManagement
     # developers can log in without needing to configure SMS delivery.
     Rails.env.development? && FeatureManagement.sms_disabled?
   end
+
+  def self.proofing_requires_kbv?
+    Figaro.env.proofing_kbv != 'false'
+  end
 end
