@@ -6,10 +6,10 @@ module Idv
 
     def index
       if proofing_session_started?
-        if idv_question_number >= idv_resolution.questions.count
-          submit_answers
+        if idv_questions && idv_questions.count
+          handle_kbv
         else
-          redirect_to idv_questions_path
+          handle_without_kbv
         end
       else
         redirect_to idv_sessions_path
@@ -17,6 +17,24 @@ module Idv
     end
 
     private
+
+    def handle_kbv
+      if idv_question_number >= idv_resolution.questions.count
+        submit_answers
+      else
+        redirect_to idv_questions_path
+      end
+    end
+
+    def handle_without_kbv
+      # should we do further interrogate idv_resolution?
+      # see https://github.com/18F/identity-private/issues/485
+      if idv_resolution.success?
+        finish_proofing_success
+      else
+        finish_proofing_failure
+      end
+    end
 
     def submit_answers
       agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)

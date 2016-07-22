@@ -22,7 +22,7 @@ module Idv
 
     def render_next_question
       questions = idv_resolution.questions
-      if idv_question_number < questions.count
+      if questions && idv_question_number < questions.count
         @question_sequence = idv_question_number + 1
         @question = questions[idv_question_number]
       else

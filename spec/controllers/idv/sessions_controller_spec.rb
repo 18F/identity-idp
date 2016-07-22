@@ -32,26 +32,44 @@ describe Idv::SessionsController do
       sign_in(user)
     end
 
-    it 'starts new proofing session' do
-      get :index
+    context 'KBV on' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(true)
+      end
 
-      expect(response.status).to eq 200
-      expect(response.body).to include t('idv.form.first_name')
+      it 'starts new proofing session' do
+        get :index
+
+        expect(response.status).to eq 200
+        expect(response.body).to include t('idv.form.first_name')
+      end
+
+      it 'creates proofing applicant' do
+        post :create, user_attrs
+
+        expect(flash).to be_empty
+        expect(response).to redirect_to(idv_questions_path)
+        expect(subject.user_session[:idv][:applicant]).to be_a Proofer::Applicant
+      end
+
+      it 'shows failure on intentionally bad values' do
+        post :create, first_name: 'Bad', ssn: '6666'
+
+        expect(response).to redirect_to(idv_sessions_path)
+        expect(flash[:error]).to eq t('idv.titles.fail')
+      end
     end
 
-    it 'creates proofing applicant' do
-      post :create, user_attrs
+    context 'KBV off' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(false)
+      end
 
-      expect(flash).to be_empty
-      expect(response).to redirect_to(idv_questions_path)
-      expect(subject.user_session[:idv][:applicant]).to be_a Proofer::Applicant
-    end
+      it 'skips questions creation' do
+        post :create, user_attrs
 
-    it 'shows failure on intentionally bad values' do
-      post :create, first_name: 'Bad', ssn: '6666'
-
-      expect(response).to redirect_to(idv_sessions_path)
-      expect(flash[:error]).to eq t('idv.titles.fail')
+        expect(subject.user_session[:idv][:resolution].questions).to be_nil
+      end
     end
   end
 end
