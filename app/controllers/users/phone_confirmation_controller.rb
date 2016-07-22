@@ -9,7 +9,7 @@ module Users
       @code_value = confirmation_code if FeatureManagement.prefill_otp_codes?
       @unconfirmed_mobile = unconfirmed_mobile
       @reenter_phone_number_path = if current_user.mobile.present?
-                                     edit_user_registration_path
+                                     profile_path
                                    else
                                      phone_setup_path
                                    end

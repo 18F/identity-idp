@@ -23,7 +23,7 @@ module Users
         current_user.update(otp_secret_key: nil)
         flash[:success] = t('notices.totp_disabled')
       end
-      redirect_to edit_user_registration_path
+      redirect_to profile_path
     end
 
     private
@@ -35,7 +35,7 @@ module Users
 
     def process_valid_code
       flash[:success] = t('notices.totp_configured')
-      redirect_to edit_user_registration_path
+      redirect_to profile_path
       user_session.delete(:new_totp_secret)
     end
 

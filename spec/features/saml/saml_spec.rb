@@ -219,7 +219,7 @@ feature 'saml api', devise: true, sms: true do
       end
 
       it 'signs out the user from IdP' do
-        visit edit_user_registration_path
+        visit profile_path
 
         expect(page).to have_content t('devise.failure.unauthenticated')
       end
@@ -304,7 +304,7 @@ feature 'saml api', devise: true, sms: true do
 
         expect(logout_user.active_identities).to be_empty
 
-        visit edit_user_registration_path
+        visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
       end
 
@@ -316,7 +316,7 @@ feature 'saml api', devise: true, sms: true do
 
         expect(request_xmldoc.asserted_session_index).to eq(@sp1_asserted_session_index)
         click_button 'Submit'
-        visit edit_user_registration_path
+        visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
       end
     end
@@ -366,7 +366,7 @@ feature 'saml api', devise: true, sms: true do
         expect(current_url).to eq(sp2.assertion_consumer_logout_service_url)
         expect(user.active_identities.size).to eq(0)
 
-        visit edit_user_registration_path
+        visit profile_path
         expect(current_url).to eq root_url
       end
     end
@@ -401,7 +401,7 @@ feature 'saml api', devise: true, sms: true do
           to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
         click_button 'Submit' # LogoutResponse for originating SP: sp1
 
-        visit edit_user_registration_path
+        visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
 
         expect(user.active_identities.size).to eq(0)
@@ -438,7 +438,7 @@ feature 'saml api', devise: true, sms: true do
           to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
         click_button 'Submit' # LogoutResponse for originating SP: sp2
 
-        visit edit_user_registration_path
+        visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
 
         expect(user.active_identities.size).to eq(0)

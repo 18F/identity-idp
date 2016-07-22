@@ -25,7 +25,7 @@ feature 'Two Factor Authentication' do
     scenario 'user attempts to circumnavigate OTP setup' do
       sign_in_before_2fa
 
-      visit edit_user_registration_path
+      visit profile_path
 
       expect(current_path).to eq phone_setup_path
     end
@@ -89,7 +89,7 @@ feature 'Two Factor Authentication' do
         end
 
         it 'does not allow user to bypass entering OTP' do
-          visit edit_user_registration_path
+          visit profile_path
 
           expect(current_path).to eq user_two_factor_authentication_path
         end
@@ -145,7 +145,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_content 'Your account is temporarily locked'
 
-        visit edit_user_registration_path
+        visit profile_path
         expect(current_path).to eq root_path
       end
     end
