@@ -2,13 +2,12 @@
 
 
 h1.heading = t('headings.registrations.enter_email')
-p Enter the email address you’d like to associate with #{APP_NAME}
+p#email-description Enter the email address you’d like to associate with #{APP_NAME}
 = simple_form_for(@register_user_email_form,
     html: { autocomplete: 'off', role: 'form' },
     url: user_registration_path) do |f|
   = f.error_notification
   = f.input :email,
             required: true,
-            autofocus: true,
-            input_html: { 'aria-describedby' => 'email_description' }
+            input_html: { 'aria-describedby' => 'email-description' }
   = f.button :submit, 'Sign up'

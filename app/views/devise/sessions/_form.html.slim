@@ -2,7 +2,7 @@
                   as: resource_name,
                   url: session_path(resource_name),
                   html: { autocomplete: 'off', role: 'form' }) do |f|
-  = f.input :email, required: true, autofocus: true
+  = f.input :email, required: true
   = f.input :password,
             required: true,
             hint: link_to(t('headings.passwords.forgot'),

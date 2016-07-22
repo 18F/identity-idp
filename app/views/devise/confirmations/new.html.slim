@@ -9,5 +9,5 @@ h1.heading = t('headings.confirmations.new')
   .mb2
     = f.error_notification
     = f.full_error :confirmation_token
-  = f.input :email, required: true, autofocus: true
+  = f.input :email, required: true
   = f.button :submit, t('forms.buttons.resend_confirmation')

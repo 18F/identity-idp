@@ -4,19 +4,17 @@ h1.heading = t('forms.phone_confirmation.header_text')
 p Please enter the code sent to <strong>#{@unconfirmed_mobile}</strong>.
 
 = form_tag([:phone_confirmation], method: :put, role: 'form') do
+  = label_tag 'code', 'Confirmation code'
   = number_field_tag(:code, \
                      '', required: true, \
                      value: @code_value, \
-                     autofocus: true, \
                      class: 'mb2 block col-12 field mfa')
   = submit_tag 'Submit', class: 'mb2 btn btn-primary'
 
 - resend_link = link_to('Resend', \
-                        phone_confirmation_send_path, \
-                        data: { 'no-turbolink' => true })
+                        phone_confirmation_send_path)
 - update_number_link = link_to('Try again', \
-                               @reenter_phone_number_path, \
-                               data: { 'no-turbolink' => true })
+                               @reenter_phone_number_path)
 
 .mt2
   p.m0 Didn't receive a code? #{resend_link}

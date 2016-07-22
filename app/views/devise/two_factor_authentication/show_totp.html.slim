@@ -9,7 +9,7 @@ p
 = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
   .mb2
     = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.code')
-    = number_field_tag :code, '', autofocus: true, class: 'block col-12 field mfa', required: true
+    = number_field_tag :code, '', class: 'block col-12 field mfa', required: true
   = submit_tag 'Submit', class: 'btn btn-primary'
 
 hr
