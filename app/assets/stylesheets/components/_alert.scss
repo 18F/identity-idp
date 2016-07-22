@@ -1,6 +1,6 @@
 .alert {
   border-radius: $border-radius;
-  font-weight: $bold-font-weight;
+  color: $gray;
   position: relative;
 
   &-ico {
@@ -14,13 +14,6 @@
   }
 }
 
-.alert-success,
-.alert-info {
-  background-color: $blue-light;
-  color: $gray;
-}
-
-.alert-danger {
-  background-color: #fdd9d7;
-  color: #8d1108;
-}
+.alert-success { background-color: #e7f4e3; }
+.alert-progress { background-color: $blue-light; }
+.alert-danger { background-color: #fdd9d7; }
