@@ -269,7 +269,7 @@ feature 'Password Recovery' do
 
         expect(last_email.subject).to eq 'Password change notification'
 
-        visit edit_user_registration_path
+        visit profile_path
         expect(current_path).to eq new_user_session_path
       end
     end

@@ -178,7 +178,7 @@ describe Users::PhoneConfirmationController, devise: true do
       it 'sets @reenter_phone_number_path to profile edit path' do
         get :show
 
-        expect(assigns(:reenter_phone_number_path)).to eq(edit_user_registration_path)
+        expect(assigns(:reenter_phone_number_path)).to eq(profile_path)
       end
     end
 

@@ -62,12 +62,13 @@ feature 'Sign in' do
 
   scenario 'user session expires in amount of time specified by Devise config' do
     sign_in_and_2fa_user
-    visit edit_user_registration_path
-    expect(current_path).to eq edit_user_registration_path
+
+    visit profile_path
+    expect(current_path).to eq profile_path
 
     Timecop.travel(Devise.timeout_in + 1.minute)
-    visit edit_user_registration_path
 
+    visit profile_path
     expect(current_path).to eq root_path
 
     Timecop.return

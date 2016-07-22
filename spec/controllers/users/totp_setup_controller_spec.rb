@@ -66,8 +66,8 @@ describe Users::TotpSetupController, devise: true do
         patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
       end
 
-      it 'redirects to edit_user_registration_path' do
-        expect(response).to redirect_to(edit_user_registration_path)
+      it 'redirects to profile_path' do
+        expect(response).to redirect_to(profile_path)
       end
 
       it 'sets flash[:success] message' do
