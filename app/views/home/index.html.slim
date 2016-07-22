@@ -11,16 +11,16 @@ html lang="#{I18n.locale}"
     title
       = content_for?(:title) ? APP_NAME + ' - ' + yield(:title) : APP_NAME
 
-    == stylesheet_link_tag 'application', :media => 'all', 'data-turbolinks-track' => true
+    == stylesheet_link_tag 'application', media: 'all'
     == csrf_meta_tags
     link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
     link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
 
     <!--[if lt IE 10]>
-      = stylesheet_link_tag 'ie9.css', :media => 'all', 'data-turbolinks-track' => true
+      = stylesheet_link_tag 'ie9.css', media: 'all'
     <!--[elseif lt IE 9]>
       <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
-      = stylesheet_link_tag 'ie8.css', :media => 'all', 'data-turbolinks-track' => true
+      = stylesheet_link_tag 'ie8.css', media: 'all'
       <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
     <![endif]-->
 
