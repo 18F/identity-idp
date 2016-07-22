@@ -7,7 +7,7 @@ p
 p
   'Each code is valid for #{otp_valid_for_in_words}.
   'If you do not receive a code within this time, please
-  '#{link_to 'request a new one', otp_new_path, data: { 'no-turbolink' => true }}.
+  '#{link_to 'request a new one', otp_new_path}.
 
 = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
   .mb2
