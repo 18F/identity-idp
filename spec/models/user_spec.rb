@@ -5,9 +5,9 @@ MAX_GOOD_PASSWORD = '!1aZ' * 32
 
 describe User do
   describe 'Associations' do
-    it { should have_many(:authorizations) }
-    it { should have_many(:identities) }
-    it { should have_many(:profiles) }
+    it { is_expected.to have_many(:authorizations) }
+    it { is_expected.to have_many(:identities) }
+    it { is_expected.to have_many(:profiles) }
   end
 
   it 'should only send one email during creation' do
