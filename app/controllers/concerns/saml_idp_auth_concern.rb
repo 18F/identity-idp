@@ -38,11 +38,11 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    loa2_or_above? && identity_not_verified?
+    loa3_requested? && identity_not_verified?
   end
 
-  def loa2_or_above?
-    requested_authn_context != Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
+  def loa3_requested?
+    requested_authn_context == Saml::Idp::Constants::LOA3_AUTHNCONTEXT_CLASSREF
   end
 
   def identity_not_verified?

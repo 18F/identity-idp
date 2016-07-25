@@ -75,12 +75,6 @@ module SamlAuthHelper
     settings
   end
 
-  def loa2_saml_settings
-    settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::LOA2_AUTHNCONTEXT_CLASSREF
-    settings
-  end
-
   def loa3_saml_settings
     settings = sp1_saml_settings.dup
     settings.authn_context = Saml::Idp::Constants::LOA3_AUTHNCONTEXT_CLASSREF
@@ -93,10 +87,6 @@ module SamlAuthHelper
 
   def sp2_authnrequest
     auth_request.create(sp2_saml_settings)
-  end
-
-  def loa2_authnrequest
-    auth_request.create(loa2_saml_settings)
   end
 
   def loa3_authnrequest
