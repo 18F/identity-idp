@@ -37,6 +37,7 @@ en:
     sign_out: 'Sign out'
     sign_in: 'Log in'
     sign_up: 'Sign up'
+    my_account: 'My account'
   notices:
     totp_configured: Authenticator app successfully configured
     totp_disabled: Authenticator app disabled

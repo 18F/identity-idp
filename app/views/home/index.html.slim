@@ -29,22 +29,32 @@ html lang="#{I18n.locale}"
 
     nav.bg-white
       .container.p2.sm-py3
-        .py1
-          = link_to \
-            image_tag(asset_url('logo.svg'),
-              alt: APP_NAME,
-              class: 'align-middle',
-              width: 172), root_path
-        .clearfix.py1.h5
-          .sm-col.mb1.sm-mb0
-            .mxn2
+        .clearfix.py1
+          .sm-col.mb2.sm-m0
+            = link_to \
+              image_tag(asset_url('logo.svg'),
+                alt: APP_NAME,
+                class: 'align-bottom',
+                width: 170), root_path, class: 'inline-block'
+            .mxn2.mt1.sm-mt2.h5
               = link_to 'About', root_path, class: 'px2 gray caps'
               = link_to 'News', root_path, class: 'px2 gray caps'
               = link_to 'Contact', root_path, class: 'px2 gray caps'
-          .sm-col-right
-            = link_to t('links.sign_in'), new_user_session_path, class: 'bold underline'
-            span.px1 = 'or'
-            = link_to t('links.sign_up'), new_user_start_path, class: 'bold underline'
+          .sm-col-right.sm-right-align
+            - if signed_in?
+              .h4 Welcome <strong>#{current_user.email}</strong>
+              .mt1.sm-mt2.h5
+                = link_to t('links.my_account'), profile_path, \
+                  class: 'bold underline'
+                span.px1.silver = '|'
+                = link_to t('links.sign_out'), destroy_user_session_path, \
+                  class: 'bold underline'
+            - else
+              .h4.sm-show &nbsp;
+              .mt1.sm-mt2.h5
+                = link_to t('links.sign_in'), new_user_session_path, class: 'bold underline'
+                span.px1 = 'or'
+                = link_to t('links.sign_up'), new_user_start_path, class: 'bold underline'
 
     .bg-navy.white
       .container.px2
