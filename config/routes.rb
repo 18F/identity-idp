@@ -7,17 +7,23 @@ Rails.application.routes.draw do
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
-  devise_for :users, skip: [:sessions], controllers: {
+  devise_for :users, skip: [:sessions, :registrations], controllers: {
     confirmations: 'users/confirmations',
     omniauth_callbacks: 'users/omniauth_callbacks',
-    passwords: 'users/passwords',
-    registrations: 'users/registrations'
+    passwords: 'users/passwords'
   }
 
   # Additional device controller routes.
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
+
+    get '/users/cancel' => 'users/registrations#cancel', as: :cancel_user_registration
+    post '/users' => 'users/registrations#create', as: :user_registration
+    get '/users/sign_up' => 'users/registrations#new', as: :new_user_registration
+    patch '/users' => 'users/registrations#update'
+    put '/users' => 'users/registrations#update'
+    delete '/users' => 'users/registrations#destroy'
 
     get '/start' => 'users/registrations#start', as: :new_user_start
     get '/delete' => 'users/registrations#destroy_confirm', as: :user_destroy_confirm
