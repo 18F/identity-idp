@@ -18,7 +18,9 @@ module Rack
     # whitelisting). It must implement .increment and .write like
     # ActiveSupport::Cache::Store
 
-    Rack::Attack.cache.store = StoreProxy::RedisStoreProxy.new(Redis.current)
+    Rack::Attack.cache.store = StoreProxy::RedisStoreProxy.new(
+      Redis.new(url: Figaro.env.redis_url)
+    )
 
     ### Configure Whitelisting ###
 
