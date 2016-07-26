@@ -65,7 +65,7 @@ Rails.application.routes.draw do
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
   put '/phone_confirmation' => 'users/phone_confirmation#confirm'
   get '/profile' => 'profile#index'
-  get '/splash' => 'home#index'
+  get '/home' => 'home#index'
   get '/authenticator_setup' => 'users/totp_setup#new'
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
