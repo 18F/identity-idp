@@ -6,7 +6,7 @@ module Users
       if user_session[:new_totp_secret].nil?
         user_session[:new_totp_secret] = current_user.generate_totp_secret
       end
-      @qrcode = UserDecorator.new(current_user).qrcode(user_session[:new_totp_secret])
+      @qrcode = decorated_user.qrcode(user_session[:new_totp_secret])
     end
 
     def confirm
