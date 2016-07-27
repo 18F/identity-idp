@@ -12,6 +12,8 @@ class Analytics
     ahoy.track(event, attributes.merge!(request_attributes))
   end
 
+  attr_writer :ahoy
+
   private
 
   attr_reader :user, :request
