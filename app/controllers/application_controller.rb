@@ -29,6 +29,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def decorated_user
+    UserDecorator.new(current_user)
+  end
+
   def after_sign_in_path_for(resource)
     analytics.track_event('Authentication Successful')
     stored_location_for(resource) || session[:saml_request_url] || profile_path
@@ -52,9 +56,7 @@ class ApplicationController < ActionController::Base
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
-    user_decorator = UserDecorator.new(current_user)
-
-    return if user_decorator.may_bypass_2fa?(session) || user_fully_authenticated?
+    return if decorated_user.may_bypass_2fa?(session) || user_fully_authenticated?
 
     return prompt_to_set_up_2fa unless current_user.two_factor_enabled?
 

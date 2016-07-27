@@ -38,15 +38,11 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    loa3_requested? && identity_not_verified?
+    loa3_requested? && decorated_user.identity_not_verified?
   end
 
   def loa3_requested?
     requested_authn_context == Saml::Idp::Constants::LOA3_AUTHNCONTEXT_CLASSREF
-  end
-
-  def identity_not_verified?
-    UserDecorator.new(current_user).identity_not_verified?
   end
 
   def active_identity
