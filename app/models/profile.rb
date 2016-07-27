@@ -2,6 +2,7 @@ class Profile < ActiveRecord::Base
   belongs_to :user
 
   validates_uniqueness_of :active, scope: :user_id, if: :active?
+  validates_uniqueness_of :ssn, scope: :active, if: :active?
 
   # rubocop:disable MethodLength
   def self.create_from_proofer_applicant(applicant, user)
