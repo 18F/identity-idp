@@ -3,7 +3,7 @@ require 'rails_helper'
 describe UserFlashUpdater do
   let(:user) { create(:user, :signed_up) }
   let(:second_user) { create(:user, :signed_up, mobile: '+1 (202) 555-1213') }
-  let(:form) { UpdateUserMobileForm.new(user) }
+  let(:form) { UpdateUserProfileForm.new(user) }
 
   describe '#set_flash_message' do
     context 'when there are no attribute changes that need confirmation' do

@@ -1,0 +1,13 @@
+- title t('titles.registrations.edit')
+
+
+h1.heading = 'Update information'
+= simple_form_for(@update_user_profile_form,
+    url: user_registration_path,
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.error_notification
+  = render 'devise/registrations/form', f: f
+  p#current_password_description.italic = t('forms.registration.need_password')
+  = f.input(:current_password, required: true,
+  	  input_html: { 'aria-describedby' => 'current_password_description' })
+  = f.button :submit, 'Update'

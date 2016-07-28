@@ -27,6 +27,7 @@ UnusedPrivateMethod:
     - ApplicationController
     - ActiveJob::Logging::LogSubscriber
     - Users::PhoneConfirmationController
+    - UpdateUserProfileForm
 UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
