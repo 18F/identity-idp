@@ -1,17 +1,21 @@
 Attribute:
   enabled: false
-FeatureEnvy:
-  exclude:
-    - 'track_registration'
 DuplicateMethodCall:
   exclude:
     - UserFlashUpdater
     - Users::PhoneConfirmationController
+FeatureEnvy:
+  exclude:
+    - track_registration
+    - append_info_to_payload
+    - generate_slo_request
 IrresponsibleModule:
   enabled: false
 NilCheck:
   exclude:
     - Users::PhoneConfirmationController
+    - slo_not_implemented_at_sp?
+    - in_slo?
 TooManyStatements:
   max_statements: 6
 TooManyMethods:
@@ -22,10 +26,12 @@ TooManyMethods:
 UncommunicativeMethodName:
   exclude:
     - Users::PhoneConfirmationController
+    - render_401
 UnusedPrivateMethod:
   exclude:
     - ApplicationController
     - ActiveJob::Logging::LogSubscriber
+    - SamlIdpController
     - Users::PhoneConfirmationController
     - UpdateUserProfileForm
 UtilityFunction:
@@ -33,6 +39,13 @@ UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
     - SmsSenderConfirmationJob
+
+'spec':
+  UtilityFunction:
+    enabled: false
+  TooManyStatements:
+    enabled: false
+
 exclude_paths:
   - db/migrate
   - spec/**/*

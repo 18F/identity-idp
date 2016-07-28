@@ -25,17 +25,13 @@ class SamlIdpController < ApplicationController
   end
 
   def logout
-    message = saml_logout_message
+    prepare_saml_logout_response_and_request
 
-    return finish_slo_at_idp if message.nil? || message[:message].blank?
+    return handle_saml_logout_response if slo.successful_saml_response?
+    return finish_slo_at_idp if slo.finish_logout_at_idp?
+    return handle_saml_logout_request(name_id_user) if slo.valid_saml_request?
 
-    sign_out if message[:action] == 'sign out'
-
-    render_template_for(
-      Base64.strict_encode64(message[:message]),
-      message[:action_url],
-      message[:message_type]
-    )
+    generate_slo_request
   end
 
   private

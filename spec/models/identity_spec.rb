@@ -14,11 +14,11 @@ describe Identity do
 
   it { is_expected.to validate_presence_of(:service_provider) }
 
-  describe '.deactivate!' do
+  describe '.deactivate' do
     let(:active_identity) { create(:identity, :active) }
 
     it 'sets last_authenticated_at to nil' do
-      active_identity.deactivate!
+      active_identity.deactivate
       expect(identity.last_authenticated_at).to be_nil
     end
   end

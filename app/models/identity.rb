@@ -2,7 +2,7 @@ class Identity < ActiveRecord::Base
   belongs_to :user
   validates :service_provider, presence: true
 
-  def deactivate!
+  def deactivate
     update(last_authenticated_at: nil)
   end
 

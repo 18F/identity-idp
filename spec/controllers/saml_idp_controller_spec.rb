@@ -696,8 +696,7 @@ describe SamlIdpController do
         [:validate_saml_request, only: :auth],
         [:verify_authn_context, only: :auth],
         [:store_saml_request_in_session, only: :auth],
-        [:confirm_two_factor_authenticated, only: :auth],
-        [:validate_saml_logout_param, only: :logout]
+        [:confirm_two_factor_authenticated, only: :auth]
       )
     end
   end
