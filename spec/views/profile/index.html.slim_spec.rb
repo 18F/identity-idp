@@ -5,6 +5,7 @@ describe 'profile/index.html.slim' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
+      @update_user_profile_form = UpdateUserProfileForm.new(user)
     end
 
     it 'has a localized title' do
@@ -33,6 +34,7 @@ describe 'profile/index.html.slim' do
     it 'contains link to disable TOTP' do
       user = build_stubbed(:user, :signed_up, otp_secret_key: '123')
       allow(view).to receive(:current_user).and_return(user)
+      @update_user_profile_form = UpdateUserProfileForm.new(user)
 
       render
 
