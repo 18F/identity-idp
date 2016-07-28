@@ -2,7 +2,7 @@
 
 
 h1.heading = t('forms.confirmation.show_hdr')
-p#password-description.italic Your password must be at least 8 characters.
+p#password-description Your password must be at least 8 characters.
 = simple_form_for(@password_form,
     url: confirm_path,
     method: :patch,

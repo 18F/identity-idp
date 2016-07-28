@@ -1,0 +1,15 @@
+footer.bg-navy.white
+  .container.px2.py4
+    .clearfix
+      .sm-col
+        = link_to \
+          image_tag(asset_url('logo-white.svg'),
+            alt: APP_NAME,
+            class: 'mb3 align-middle',
+            width: 172), root_path
+      .sm-col-right.sm-right-align
+        .inline-block
+          h4.mt0.regular Agency contact center
+          hr.bw2.border-red
+        div (800) CALL-GOVT
+        div info@login.gov

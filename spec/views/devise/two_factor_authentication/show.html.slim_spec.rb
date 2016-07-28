@@ -15,7 +15,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
       @phone_number = UserDecorator.new(user).masked_two_factor_phone_number
       render
 
-      expect(rendered).to have_content 'A one-time passcode has been sent to ***-***-1212'
+      expect(rendered).to have_content 'Please enter the code sent to ***-***-1212'
     end
 
     context 'when @code_value is set' do
@@ -27,14 +27,5 @@ describe 'devise/two_factor_authentication/show.html.slim' do
         expect(rendered).to have_xpath("//input[@value='12777']")
       end
     end
-  end
-
-  it 'displays how long the OTP is valid for' do
-    user = build_stubbed(:user, :signed_up)
-    allow(view).to receive(:current_user).and_return(user)
-
-    render
-
-    expect(rendered).to have_content distance_of_time_in_words(Devise.direct_otp_valid_for)
   end
 end

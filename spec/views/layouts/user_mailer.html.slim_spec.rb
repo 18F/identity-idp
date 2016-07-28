@@ -28,7 +28,7 @@ describe 'layouts/user_mailer.html.slim' do
   it 'includes the support text and link' do
     expect(rendered).
       to have_content(
-        'For more help, please contact the Login.gov Customer Contact Center via web form at'
+        'For more help, please contact the login.gov Customer Contact Center via web form at'
       )
     expect(rendered).to have_link(Figaro.env.support_url, href: Figaro.env.support_url)
   end
