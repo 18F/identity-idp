@@ -4,7 +4,7 @@ IdentityLinker = Struct.new(:user, :provider, :authn_context) do
   def link_identity
     find_or_create_identity
 
-    identity.update(identity_attributes)
+    identity.update!(identity_attributes)
   end
 
   private
