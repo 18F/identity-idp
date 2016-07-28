@@ -11,7 +11,8 @@ module Users
       redirect_to after_sending_reset_password_instructions_path_for(resource_name)
     end
 
-    # rubocop:disable AbcSize,MethodLength
+    # rubocop:disable AbcSize, MethodLength
+    # TODO(sbc): Refactor to address rubocop warnings
     def create
       resource = resource_class.find_by_email(resource_params[:email])
 
@@ -36,7 +37,7 @@ module Users
       flash[:success] = t('notices.password_reset')
       redirect_to after_sending_reset_password_instructions_path_for(resource_name)
     end
-    # rubocop:enable AbcSize,MethodLength
+    # rubocop:enable AbcSize, MethodLength
 
     def edit
       resource = User.new

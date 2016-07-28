@@ -1,6 +1,8 @@
-# rubocop:disable Metrics/ModuleLength
+# rubocop:disable ModuleLength
+# Although this module is long all the code is related to the SLO concern.
 require 'saml_idp/logout_request_builder'
 require 'saml_idp/logout_response_builder'
+
 module SamlIdpLogoutConcern
   extend ActiveSupport::Concern
 
@@ -181,4 +183,4 @@ module SamlIdpLogoutConcern
     flash[:success] = t('devise.sessions.signed_out')
   end
 end
-# rubocop:enable Metrics/ModuleLength
+# rubocop:enable ModuleLength
