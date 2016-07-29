@@ -92,7 +92,7 @@ describe 'throttling requests' do
     it 'uses an exponential backoff' do
       3.times do
         post '/', { user: { email: 'test@example.com' } }, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
-        Timecop.travel(4.seconds)
+        Timecop.travel(120.seconds)
       end
 
       (1..5).each do |level|
