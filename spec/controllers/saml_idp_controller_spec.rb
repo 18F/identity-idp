@@ -593,7 +593,7 @@ describe SamlIdpController do
             expect(subject).to_not be_nil
           end
 
-          it 'has contents set to the loa of the ial?' do
+          it 'has contents set to the loa of the ial' do
             expect(subject.content).to eq Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
           end
         end
