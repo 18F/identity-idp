@@ -1,6 +1,3 @@
-# rubocop:disable ModuleLength
-# TODO(sbc): Refactor to address rubocop warning
-# :reek:DataClump
 module FormHelper
   def app_setting_value_field_for(app_setting, f)
     if app_setting.boolean?
@@ -10,51 +7,23 @@ module FormHelper
     end
   end
 
-  def block_text_field_tag(name, value, options = {})
-    text_field_tag(name, value, options.merge(class: 'block col-12 mb2 field')) +
-      form_input_error_messages(name, options)
+  def block_text_field_tag(name, value)
+    text_field_tag(name, value, class: 'block col-12 mb2 field')
   end
 
-  def block_date_field_tag(name, value, options = {})
-    date_field_tag(name, value, options.merge(class: 'block col-12 mb2 field')) +
-      form_input_error_messages(name, options)
+  def block_date_field_tag(name, value)
+    date_field_tag(name, value, class: 'block col-12 mb2 field')
   end
 
-  # rubocop:disable MethodLength
-  # TODO(sbc): Refactor to address rubocop warning
-  def form_input_error_messages(name, options = {})
-    content_tag(:div, nil, class: 'bold red mb2', data: { 'errors-for' => name }) do
-      if options[:required]
-        concat content_tag(
-          :div,
-          t('forms.value_missing'),
-          style: 'display: none',
-          data: { 'errors-when' => 'valueMissing' }
-        )
-      end
-      if options[:pattern]
-        concat content_tag(
-          :div,
-          options[:'data-custom-message'] || t('forms.pattern_mismatch'),
-          style: 'display: none',
-          data: { 'errors-when' => 'patternMismatch' }
-        )
-      end
-    end
-  end
-  # rubocop:enable MethodLength
-
-  def us_states_territories_select_tag(options = {})
+  def us_states_territories_select_tag
     select_tag(
       'state',
       options_for_select(us_states_territories),
-      options.merge(class: 'block col-12 mb2 field')
-    ) +
-      form_input_error_messages('state', options)
+      class: 'block col-12 mb2 field'
+    )
   end
 
   # rubocop:disable MethodLength, WordArray
-  # This method is single statement spread across many lines for readability
   def us_states_territories
     [
       ['--', ''],
