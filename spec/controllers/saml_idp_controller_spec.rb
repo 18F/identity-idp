@@ -532,30 +532,70 @@ describe SamlIdpController do
       # a <saml:Conditions> element, which gives the conditions under which
       # the assertion is to be considered valid
       context 'Conditions' do
-        it 'has a saml:Conditions element'
+        let(:subject) do
+          decrypted_saml_response.at('//ds:Conditions', ds: Saml::XML::Namespaces::ASSERTION)
+        end
 
-        it 'has a NotBefore attribute'
+        it 'has a saml:Conditions element' do
+          expect(subject).to_not be_nil
+        end
 
-        it 'has a NotOnOrAfter attribute'
+        it 'has a NotBefore attribute' do
+          expect(subject.attributes['NotBefore'].value).to_not be_nil
+        end
+
+        it 'has a NotOnOrAfter attribute' do
+          expect(subject.attributes['NotOnOrAfter'].value).to_not be_nil
+        end
       end
 
       # a <saml:AuthnStatement> element, which describes the act of
       # authentication at the identity provider
       context 'AuthnStatement' do
-        it 'has a saml:AuthnStatement element'
+        let(:subject) do
+          decrypted_saml_response.at('//ds:AuthnStatement', ds: Saml::XML::Namespaces::ASSERTION)
+        end
 
-        it 'has an AuthnInstant attribute'
+        it 'has a saml:AuthnStatement element' do
+          expect(subject).to_not be_nil
+        end
 
-        it 'has a SessionIndex attribute'
+        it 'has an AuthnInstant attribute' do
+          expect(subject.attributes['AuthnInstant'].value).to_not be_nil
+        end
+
+        it 'has a SessionIndex attribute' do
+          expect(subject.attributes['SessionIndex'].value).to_not be_nil
+        end
       end
 
       context 'AuthnContext' do
-        it 'has a saml:AuthnContext element'
+        let(:subject) do
+          decrypted_saml_response.at(
+            '//ds:AuthnStatement/ds:AuthnContext',
+            ds: Saml::XML::Namespaces::ASSERTION
+          )
+        end
+
+        it 'has a saml:AuthnContext element' do
+          expect(subject).to_not be_nil
+        end
 
         context 'AuthnContextClassRef' do
-          it 'has a saml:AuthnContextClassRef element'
+          let(:subject) do
+            decrypted_saml_response.at(
+              '//ds:AuthnStatement/ds:AuthnContext/ds:AuthnContextClassRef',
+              ds: Saml::XML::Namespaces::ASSERTION
+            )
+          end
 
-          it 'has contents set to the loa of the ial?'
+          it 'has a saml:AuthnContextClassRef element' do
+            expect(subject).to_not be_nil
+          end
+
+          it 'has contents set to the loa of the ial?' do
+            expect(subject.content).to eq Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
+          end
         end
       end
 
