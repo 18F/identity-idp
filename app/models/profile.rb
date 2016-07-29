@@ -4,6 +4,9 @@ class Profile < ActiveRecord::Base
   validates_uniqueness_of :active, scope: :user_id, if: :active?
   validates_uniqueness_of :ssn, scope: :active, if: :active?
 
+  scope :active, -> { where(active: true) }
+  scope :verified, -> { where.not(verified_at: nil) }
+
   # rubocop:disable MethodLength
   # This method is single statement spread across many lines for readability
   def self.create_from_proofer_applicant(applicant, user)

@@ -33,21 +33,6 @@ SamlIdp.configure do |config|
       email_address: -> (principal) { principal.email }
     }
 
-  # Attributes
-  config.attributes = {
-    uuid: {
-      getter: :uuid,
-      name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
-      name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
-    },
-    email: {
-      getter: :email,
-      name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
-      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
-    },
-    mobile: { getter: :mobile }
-  }
-
   ## Technical contact ##
   # config.technical_contact.company = "Example"
   # config.technical_contact.given_name = "Jonny"

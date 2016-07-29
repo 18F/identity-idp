@@ -49,6 +49,16 @@ module SamlIdpAuthConcern
     current_user.last_identity
   end
 
+  def build_asserted_attributes(principal)
+    asserter = AttributeAsserter.new(principal, current_service_provider, saml_request)
+    asserter.build
+  end
+
+  def encode_authn_response(principal, opts)
+    build_asserted_attributes(principal)
+    super(principal, opts)
+  end
+
   def saml_response
     encode_response(
       current_user,

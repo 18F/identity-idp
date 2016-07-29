@@ -193,6 +193,21 @@ describe User do
     end
   end
 
+  context 'when user has multiple profiles' do
+    let(:user) { create(:user, :signed_up) }
+
+    before do
+      create(:profile, :active, :verified, first_name: 'Jane', user: user)
+      create(:profile, :verified, first_name: 'Susan', user: user)
+    end
+
+    describe '#active_profile' do
+      it 'returns the only active profile' do
+        expect(user.active_profile.first_name).to eq 'Jane'
+      end
+    end
+  end
+
   describe '#send_two_factor_authentication_code' do
     it 'calls UserOtpSender#send_otp' do
       user = build_stubbed(:user)

@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
   has_many :identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
 
+  attr_accessor :asserted_attributes
+
   def set_default_role
     self.role ||= :user
   end
@@ -66,7 +68,7 @@ class User < ActiveRecord::Base
   end
 
   def active_profile
-    profiles.where(active: true).first
+    profiles.find(&:active?)
   end
 
   # To send emails asynchronously via ActiveJob.
