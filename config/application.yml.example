@@ -51,7 +51,7 @@ test:
   sp_url: ''
   idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
   logins_per_ip_limit: '2'
-  logins_per_ip_period: '2'
+  logins_per_ip_period: '60'
   newrelic_license_key: 'xxx'
   proofing_kbv: 'true'
   proofing_vendors: 'mock'
