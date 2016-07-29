@@ -52,9 +52,9 @@ module SamlIdp
               restriction.Audience audience_uri
             end
           end
-          if !config.attributes.nil? && !config.attributes.empty?
+          if asserted_attributes
             assertion.AttributeStatement do |attr_statement|
-              config.attributes.each do |friendly_name, attrs|
+              asserted_attributes.each do |friendly_name, attrs|
                 attrs = (attrs || {}).with_indifferent_access
                 attr_statement.Attribute Name: attrs[:name] || friendly_name,
                   NameFormat: attrs[:name_format] || Saml::XML::Namespaces::Formats::Attr::URI,
@@ -84,6 +84,15 @@ module SamlIdp
       encryptor = Encryptor.new encryption_opts
       encryptor.encrypt(raw_xml)
     end
+
+    def asserted_attributes
+      if principal.respond_to?(:asserted_attributes)
+        principal.send(:asserted_attributes)
+      elsif !config.attributes.nil? && !config.attributes.empty?
+        config.attributes
+      end
+    end
+    private :asserted_attributes
 
     def get_values_for(friendly_name, getter)
       result = nil

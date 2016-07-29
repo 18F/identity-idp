@@ -98,7 +98,7 @@ CERT
   # config.attribute_service_location = "#{base}/saml/attributes"
   # config.single_service_post_location = "#{base}/saml/auth"
 
-  # Principal is passed in when you `encode_response`
+  # Principal (e.g. User) is passed in when you `encode_response`
   #
   # config.name_id.formats # =>
   #   {                         # All 2.0
@@ -117,6 +117,28 @@ CERT
   #       persistent: -> (p) { p.id },
   #     },
   #   }
+
+  # If Principal responds to a method called `asserted_attributes`
+  # the return value of that method will be used in lieu of the
+  # attributes defined here in the global space. This allows for
+  # per-user attribute definitions.
+  #
+  ## EXAMPLE **
+  # class User
+  #   def asserted_attributes
+  #     {
+  #       phone: { getter: :phone },
+  #       email: {
+  #         getter: :email,
+  #         name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+  #         name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+  #       }
+  #     }
+  #   end
+  # end
+  #
+  # If you have a method called `asserted_attributes` in your Principal class,
+  # there is no need to define it here in the config.
 
   # config.attributes # =>
   #   {
