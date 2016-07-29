@@ -1,4 +1,5 @@
 # rubocop:disable ModuleLength
+# TODO(sbc): Refactor to address rubocop warning
 # :reek:DataClump
 module FormHelper
   def app_setting_value_field_for(app_setting, f)
@@ -20,6 +21,7 @@ module FormHelper
   end
 
   # rubocop:disable MethodLength
+  # TODO(sbc): Refactor to address rubocop warning
   def form_input_error_messages(name, options = {})
     content_tag(:div, nil, class: 'bold red mb2', data: { 'errors-for' => name }) do
       if options[:required]
@@ -51,7 +53,8 @@ module FormHelper
       form_input_error_messages('state', options)
   end
 
-  # rubocop:disable MethodLength, Style/WordArray
+  # rubocop:disable MethodLength, WordArray
+  # This method is single statement spread across many lines for readability
   def us_states_territories
     [
       ['--', ''],
@@ -117,5 +120,5 @@ module FormHelper
       ['Wyoming', 'WY']
     ]
   end
-  # rubocop:enable MethodLength, Style/WordArray
+  # rubocop:enable MethodLength, WordArray
 end

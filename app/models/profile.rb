@@ -5,6 +5,7 @@ class Profile < ActiveRecord::Base
   validates_uniqueness_of :ssn, scope: :active, if: :active?
 
   # rubocop:disable MethodLength
+  # This method is single statement spread across many lines for readability
   def self.create_from_proofer_applicant(applicant, user)
     create(
       user: user,

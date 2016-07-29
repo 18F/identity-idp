@@ -14,6 +14,7 @@ module Test
     end
 
     # rubocop:disable MethodLength
+    # TODO(sbc): Refactor to address rubocop warnings
     def decode_response
       response = OneLogin::RubySaml::Response.new(
         params[:SAMLResponse],
@@ -40,6 +41,7 @@ module Test
 
     # Method to handle IdP initiated logouts
     # rubocop:disable AbcSize, MethodLength
+    # TODO(sbc): Refactor to address rubocop warning
     def decode_slo_request
       if params[:SAMLRequest]
         logout_request = OneLogin::RubySaml::SloLogoutrequest.new(params[:SAMLRequest])

@@ -42,6 +42,7 @@ module Idv
     end
 
     # rubocop:disable MethodLength
+    # This method is single statement spread across many lines for readability
     def applicant_params
       params.slice(
         :first_name,
