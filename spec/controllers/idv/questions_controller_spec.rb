@@ -17,7 +17,7 @@ describe Idv::QuestionsController do
     end
   end
 
-  describe 'user has started proofing session' do
+  context 'user has started proofing session' do
     before(:each) do
       init_idv_session
     end
@@ -33,6 +33,16 @@ describe Idv::QuestionsController do
 
       expect(resolution.questions.first.answer).to eq 'foo'
       expect(response).to redirect_to(idv_questions_path)
+    end
+  end
+
+  context 'user has not started proofing session' do
+    it 'redirects to session start page' do
+      sign_in(user)
+
+      get :index
+
+      expect(response).to redirect_to(idv_sessions_path)
     end
   end
 
