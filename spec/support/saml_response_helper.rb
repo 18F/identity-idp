@@ -177,6 +177,13 @@ module SamlResponseHelper
       )
     end
 
+    def attribute_value_for(name)
+      response_doc.at(
+        %(//ds:Attribute[@Name="#{name}"]),
+        ds: Saml::XML::Namespaces::ASSERTION
+      ).children.children.to_s
+    end
+
     def assertion_statement_node
       response_doc.xpath(
         '//samlp:Response/saml:Assertion/saml:AuthnStatement',

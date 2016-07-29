@@ -25,8 +25,11 @@ gem 'pundit'
 gem 'valid_email'
 gem 'rack-attack'
 gem 'rqrcode'
-gem 'ruby-saml'
-gem 'saml_idp', '~> 0.3.1'
+
+# unreleased feature via: https://github.com/onelogin/ruby-saml/pull/345
+gem 'ruby-saml', github: 'onelogin/ruby-saml', branch: 'master'
+
+gem 'saml_idp', '~> 0.4.0'
 gem 'sass-rails', '~> 5.0'
 gem 'savon'
 gem 'secure_headers', '~> 3.0'

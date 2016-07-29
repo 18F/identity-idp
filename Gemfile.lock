@@ -24,6 +24,14 @@ GIT
     sms-spec (0.2.0)
       rspec (~> 3.1)
 
+GIT
+  remote: https://github.com/onelogin/ruby-saml.git
+  revision: 709b4c09a06ab7a299a512eaa166a56ddc50290a
+  branch: master
+  specs:
+    ruby-saml (1.3.1)
+      nokogiri (>= 1.5.10)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -437,13 +445,11 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-progressbar (1.8.1)
-    ruby-saml (1.3.0)
-      nokogiri (>= 1.5.10)
     ruby_dep (1.3.1)
     safe_yaml (1.0.4)
     safely_block (0.1.1)
       errbase
-    saml_idp (0.3.2)
+    saml_idp (0.4.0)
       activesupport
       builder
       httparty
@@ -649,8 +655,8 @@ DEPENDENCIES
   rqrcode
   rspec-rails (~> 3.3)
   rubocop
-  ruby-saml
-  saml_idp (~> 0.3.1)
+  ruby-saml!
+  saml_idp (~> 0.4.0)
   sass-rails (~> 5.0)
   savon
   secure_headers (~> 3.0)

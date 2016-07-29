@@ -41,6 +41,10 @@ class ServiceProvider
     host_attributes['friendly_name']
   end
 
+  def attribute_bundle
+    host_attributes['attribute_bundle']
+  end
+
   def cert
     return if host_attributes['cert'].blank?
 

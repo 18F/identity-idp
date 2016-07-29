@@ -113,15 +113,57 @@ describe SamlIdpController do
 
   describe 'GET /api/saml/auth' do
     context 'with LOA3 but the identity is already verified' do
+      before do
+        allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
+          %w(first_name last_name ssn zipcode)
+        )
+      end
+
+      it 'calls AttributeAsserter#build' do
+        settings = loa3_saml_settings
+        user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user)
+
+        raw_req = URI.decode loa3_authnrequest.split('SAMLRequest').last
+        authn_request = SamlIdp::Request.from_deflated_request(raw_req)
+        asserter = AttributeAsserter.new(user, ServiceProvider.new(settings.issuer), authn_request)
+
+        expect(AttributeAsserter).to receive(:new).and_return(asserter)
+        expect(asserter).to receive(:build).at_least(:once)
+
+        generate_saml_response(user, settings)
+      end
+
       it 'does not redirect the user to the IdV URL' do
         user = create(:user, :signed_up)
-        generate_saml_response(user, loa3_saml_settings)
-
-        user.profiles.create(verified_at: Time.current, active: true, activated_at: Time.current)
-
+        _profile = create(:profile, :active, :verified, user: user)
         generate_saml_response(user, loa3_saml_settings)
 
         expect(response).to_not be_redirect
+      end
+
+      it 'contains verified attributes' do
+        user = create(:user, :signed_up)
+        user.profiles.create(
+          verified_at: Time.current,
+          active: true,
+          activated_at: Time.current,
+          first_name: 'Some',
+          last_name: 'One',
+          ssn: '666666666',
+          zipcode: '12345'
+        )
+        generate_saml_response(user, loa3_saml_settings)
+
+        xpath = '//ds:Attribute[@Name="address1"]'
+        expect(decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)).to be_nil
+
+        %w(first_name last_name ssn zipcode).each do |attr|
+          xpath = %(//ds:Attribute[@Name="#{attr}"])
+          node = decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)
+          node_value = node.children.children.to_s
+          expect(node_value).to eq(user.active_profile[attr.to_sym])
+        end
       end
     end
 

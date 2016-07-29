@@ -3,11 +3,7 @@ require 'rails_helper'
 describe Profile do
   let(:user) { create(:user, :signed_up) }
   let(:another_user) { create(:user, :signed_up) }
-  let(:profile) do
-    Profile.create(
-      user_id: user.id
-    )
-  end
+  let(:profile) { create(:profile, user: user) }
 
   subject { profile }
 
@@ -69,6 +65,24 @@ describe Profile do
       active_profile.reload
       expect(active_profile).to_not be_active
       expect(profile).to be_active
+    end
+  end
+
+  describe 'scopes' do
+    describe '#active' do
+      it 'returns only active Profiles' do
+        user.profiles.create(active: false)
+        user.profiles.create(active: true)
+        expect(user.profiles.active.count).to eq 1
+      end
+    end
+
+    describe '#verified' do
+      it 'returns only verified Profiles' do
+        user.profiles.create(verified_at: Time.current)
+        user.profiles.create(verified_at: nil)
+        expect(user.profiles.verified.count).to eq 1
+      end
     end
   end
 end
