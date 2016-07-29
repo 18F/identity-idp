@@ -5,14 +5,16 @@
     | Do not use real personal information. This is for demo purposes only.
 
 .mb3.h6.caps.red = t('idv.titles.welcome')
-= form_tag(idv_sessions_path, method: 'post', novalidate: true)
+= form_tag(idv_sessions_path, method: 'post')
   h2.heading = t('idv.titles.session.basic')
   p Please provide all of the following:
   .mb4.sm-col-7
-    = label_tag 'first_name', t('idv.form.first_name')
-    = block_text_field_tag 'first_name', nil, required: true
-    = label_tag 'last_name', t('idv.form.last_name')
-    = block_text_field_tag 'last_name', nil, required: true
+    .mb2
+      = label_tag 'first_name', t('idv.form.first_name')
+      = block_text_field_tag 'first_name', nil, required: true
+    .mb2
+      = label_tag 'last_name', t('idv.form.last_name')
+      = block_text_field_tag 'last_name', nil, required: true
   h2.heading = t('idv.titles.session.dob')
   .mb4.sm-col-5
     = label_tag 'dob', t('idv.form.dob'), class: 'hide'
@@ -20,22 +22,23 @@
   h2.heading = t('idv.titles.session.ssn')
   .mb4.sm-col-5
     = label_tag 'ssn', t('idv.form.ssn'), class: 'hide'
-    = block_text_field_tag 'ssn', nil, required: true, pattern: '[0-9]*', \
-      'data-custom-message': t('idv.errors.invalid_ssn')
+    = block_text_field_tag 'ssn', nil, required: true, pattern: '[0-9]*'
   h2.heading = t('idv.titles.session.address')
   .mb4.sm-col-7
-    = label_tag 'address1', t('idv.form.address1')
-    = block_text_field_tag 'address1', nil, required: true
-    = label_tag 'address2', t('idv.form.address2')
-    = block_text_field_tag 'address2', nil
-    = label_tag 'city', t('idv.form.city')
-    = block_text_field_tag 'city', nil, required: true
+    .mb2
+      = label_tag 'address1', t('idv.form.address1')
+      = block_text_field_tag 'address1', nil, required: true
+    .mb2
+      = label_tag 'address2', t('idv.form.address2')
+      = block_text_field_tag 'address2', nil
+    .mb2
+      = label_tag 'city', t('idv.form.city')
+      = block_text_field_tag 'city', nil, required: true
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
         = label_tag 'state', t('idv.form.state')
         = us_states_territories_select_tag required: true
       .sm-col.sm-col-6.px1
         = label_tag 'zipcode', t('idv.form.zipcode')
-        = block_text_field_tag 'zipcode', nil, required: true, pattern: '[0-9]*', \
-          'data-custom-message': t('idv.errors.invalid_zipcode')
+        = block_text_field_tag 'zipcode', nil, required: true, pattern: '[0-9]*'
   button type='submit' class='btn btn-primary' = 'Continue verifying'

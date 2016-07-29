@@ -13,8 +13,7 @@
   "dependencies": {
     "classlist.js": "^1.1.20150312",
     "formatter.js-pebble": "^0.1.8",
-    "gentleform": "^2.0.1",
-    "jquery": "^2.2.3",
+    "h5f": "^1.1.1",
     "zxcvbn": "^4.3.0"
   },
   "devDependencies": {
