@@ -37,7 +37,7 @@ describe ServiceProvider do
           cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
           block_encryption: 'none',
           key_transport: 'rsa-oaep-mgf1p',
-          fingerprint: fingerprint,
+          fingerprint: sp_fingerprint,
           double_quote_xml_attribute_values: true,
           agency: 'test_agency',
           friendly_name: 'test_friendly_name'
@@ -75,7 +75,7 @@ describe ServiceProvider do
             block_encryption: 'aes256-cbc',
             cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
             double_quote_xml_attribute_values: true,
-            fingerprint: fingerprint,
+            fingerprint: sp_fingerprint,
             key_transport: 'rsa-oaep-mgf1p',
             metadata_url: nil,
             sp_initiated_login_url: nil,
@@ -242,7 +242,7 @@ describe ServiceProvider do
     it 'returns a hex digest' do
       service_provider = ServiceProvider.new('http://localhost:3000')
 
-      expect(service_provider.fingerprint).to eq fingerprint
+      expect(service_provider.fingerprint).to eq sp_fingerprint
     end
   end
 

@@ -24,19 +24,28 @@ module SamlAuthHelper
     # IdP setting
     settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth"
     settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout"
-    settings.idp_cert_fingerprint = fingerprint
+    settings.idp_cert_fingerprint = idp_fingerprint
+    settings.idp_cert_fingerprint_algorithm = 'http://www.w3.org/2001/04/xmlenc#sha256'
 
     settings
   end
 
-  def fingerprint
-    @fingerprint ||= Fingerprinter.fingerprint_cert(saml_test_sp_cert)
+  def sp_fingerprint
+    @sp_fingerprint ||= Fingerprinter.fingerprint_cert(saml_test_sp_cert)
+  end
+
+  def idp_fingerprint
+    @idp_fingerprint ||= Fingerprinter.fingerprint_cert(saml_test_idp_cert)
   end
 
   def saml_test_sp_key
     @private_key ||= OpenSSL::PKey::RSA.new(
       File.read(Rails.root + 'keys/saml_test_sp.key')
     ).to_pem
+  end
+
+  def saml_test_idp_cert
+    @saml_test_idp_cert ||= File.read("#{Rails.root}/certs/saml.crt")
   end
 
   def saml_test_sp_cert

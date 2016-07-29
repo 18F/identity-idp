@@ -34,6 +34,13 @@ module SamlResponseHelper
       end
     end
 
+    def saml_response(settings)
+      @_saml_response ||= OneLogin::RubySaml::Response.new(
+        raw_xml_response,
+        settings: settings
+      )
+    end
+
     def response_doc
       if raw_xml_response =~ /EncryptedData/
         @original_encrypted = true
@@ -122,6 +129,13 @@ module SamlResponseHelper
     def signature_method_nodeset
       signature.xpath(
         './ds:SignedInfo/ds:SignatureMethod',
+        ds: Saml::XML::Namespaces::SIGNATURE
+      )
+    end
+
+    def signature_canon_method_nodeset
+      signature.xpath(
+        './ds:SignedInfo/ds:CanonicalizationMethod',
         ds: Saml::XML::Namespaces::SIGNATURE
       )
     end
