@@ -1,13 +1,10 @@
-.heading,
-%heading {
+.heading {
   border-bottom: 4px solid $red;
   font-size: $h4;
   margin-bottom: 1.5rem;
   margin-top: 0;
   padding-bottom: .5rem;
-}
 
-.heading-big {
-  @extend %heading;
-  font-size: $h1;
+  &-m0 { margin: 0; }
+  &-big { font-size: $h1; }
 }

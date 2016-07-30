@@ -10,7 +10,7 @@ Bundler.require(*Rails.groups)
 # accessed from a wide variety of different places (views, controllers,
 # jobs, etc). Please file complaints about use of global variables
 # with the appropriate government office.
-APP_NAME = 'Login.gov'.freeze
+APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application

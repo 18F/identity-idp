@@ -1,0 +1,7 @@
+= content_for :content do
+  .container.sm-pt4
+    div class="card #{yield(:card_cls)}"
+      = render 'shared/messages'
+      == yield
+
+= render template: 'layouts/application'

@@ -1,6 +1,0 @@
-.bg-white.h5.center
-  | GitHub:
-  = link_to('r' + Git::REVISION, "#{Git::REPO_URL}/commit/#{Git::REVISION}")
-  - if Git::VERSION != ''
-    | &nbsp;&middot;&nbsp;
-    = link_to('v' + Git::VERSION, "#{Git::REPO_URL}/releases/tag/#{Git::VERSION}")

@@ -12,7 +12,8 @@ html lang="#{I18n.locale}"
       = content_for?(:title) ? APP_NAME + ' - ' + yield(:title) : APP_NAME
 
     == stylesheet_link_tag 'application', media: 'all'
-    == javascript_include_tag 'application'
+    - unless controller_name == 'home'
+      == javascript_include_tag 'application'
     == csrf_meta_tags
     link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
     link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
@@ -29,13 +30,8 @@ html lang="#{I18n.locale}"
     .site-wrap
       = render 'shared/usa_disclaimer'
       = render 'shared/nav'
-      .container-slim
-        .card.mb4.mx-auto
-          = render 'shared/messages'
-          == yield
-    footer.footer
-      - if Rails.env.development?
-        = render 'layouts/debug'
+      = content_for?(:content) ? yield(:content) : yield
+    = render 'shared/footer'
 
   - if current_user
     = auto_session_timeout_js

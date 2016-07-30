@@ -1,138 +1,64 @@
-doctype html
-html lang="#{I18n.locale}"
+.bg-navy.white
+  .container.px2
+    .clearfix
+      .md-col.md-col-5.md-show
+        = image_tag(asset_url('home/hero.png'), alt: APP_NAME, width: 471,
+          class: 'align-middle hero-img')
+      .md-col.md-col-7
+        h3.sm-pl2.py4.regular.line-height-4.hero-txt
+          ' Lorem ipsum, GSA launched a new, permanent home for 18F — the
+          ' Technology Transformation Service, whose mission is to improve
+          ' the lorem ipsum dolor set.
 
-  head
-    meta charset='utf-8'
-    meta name='description' content="#{content_for?(:description) ? yield(:description) : APP_NAME}"
-    meta http-equiv='X-UA-Compatible' content='IE=edge'
-    meta name='msapplication-config' content='none'
-    meta[name='viewport' content='width=device-width, initial-scale=1.0']
+.bg-white
+  .container.p2.sm-py4
+    .clearfix.mxn2.sm-mxn3
+      .sm-col.sm-col-4.px2.sm-px3.mb2
+        = image_tag(asset_url('home/ico-1.png'), alt: APP_NAME, width: 125,
+          class: 'align-middle')
+        h3.mt1.caps Secure
+        hr.max-width-1.bw2.border-red.ml0
+        div
+          ' You can use #{APP_NAME} to securely login to government
+          ' agency websites.
+      .sm-col.sm-col-4.px2.sm-px3.mb2
+        = image_tag(asset_url('home/ico-2.png'), alt: APP_NAME, width: 125,
+          class: 'align-middle')
+        h3.mt1.caps Easy
+        hr.max-width-1.bw2.border-red.ml0
+        div
+          ' #{APP_NAME} is a service used by multiple U.S. government
+          ' agencies to make interacting with the government easier.
+      .sm-col.sm-col-4.px2.sm-px3.mb2
+        = image_tag(asset_url('home/ico-3.png'), alt: APP_NAME, width: 125,
+          class: 'align-middle')
+        h3.mt1.caps Inclusive
+        hr.max-width-1.bw2.border-red.ml0
+        div
+          ' You can use your #{APP_NAME} account to access all
+          ' participating U.S. government agencies.
 
-    title
-      = content_for?(:title) ? APP_NAME + ' - ' + yield(:title) : APP_NAME
-
-    == stylesheet_link_tag 'application', media: 'all'
-    == csrf_meta_tags
-    link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
-    link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
-
-    <!--[if lt IE 10]>
-      = stylesheet_link_tag 'ie9.css', media: 'all'
-    <!--[elseif lt IE 9]>
-      <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
-      = stylesheet_link_tag 'ie8.css', media: 'all'
-      <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
-    <![endif]-->
-
-  body
-    = render 'shared/usa_disclaimer'
-
-    nav.bg-white
-      .container.p2.sm-py3
-        .clearfix.py1
-          .sm-col.mb2.sm-m0
-            = link_to \
-              image_tag(asset_url('logo.svg'),
-                alt: APP_NAME,
-                class: 'align-bottom',
-                width: 170), root_path, class: 'inline-block'
-            .mxn2.mt1.sm-mt2.h5
-              = link_to 'About', root_path, class: 'px2 gray caps'
-              = link_to 'News', root_path, class: 'px2 gray caps'
-              = link_to 'Contact', root_path, class: 'px2 gray caps'
-          .sm-col-right.sm-right-align
-            - if signed_in?
-              .h4 Welcome <strong>#{current_user.email}</strong>
-              .mt1.sm-mt2.h5
-                = link_to t('links.my_account'), profile_path, \
-                  class: 'bold underline'
-                span.px1.silver = '|'
-                = link_to t('links.sign_out'), destroy_user_session_path, \
-                  class: 'bold underline'
-            - else
-              .h4.sm-show &nbsp;
-              .mt1.sm-mt2.h5
-                = link_to t('links.sign_in'), new_user_session_path, class: 'bold underline'
-                span.px1 = 'or'
-                = link_to t('links.sign_up'), new_user_start_path, class: 'bold underline'
-
-    .bg-navy.white
-      .container.px2
-        .clearfix
-          .md-col.md-col-5.md-show
-            = image_tag(asset_url('home/hero.png'), alt: APP_NAME, width: 471,
-              class: 'align-middle hero-img')
-          .md-col.md-col-7
-            h3.sm-pl2.py4.regular.line-height-4.hero-txt
-              ' Lorem ipsum, GSA launched a new, permanent home for 18F — the
-              ' Technology Transformation Service, whose mission is to improve
-              ' the lorem ipsum dolor set.
-
-    .bg-white
-      .container.p2.sm-py4
-        .clearfix.mxn2.sm-mxn3
-          .sm-col.sm-col-4.px2.sm-px3.mb2
-            = image_tag(asset_url('home/ico-1.png'), alt: APP_NAME, width: 125,
-              class: 'align-middle')
-            h3.mt1.caps Secure
-            hr.max-width-1.bw2.border-red.ml0
-            div
-              ' You can use #{APP_NAME} to securely login to government
-              ' agency websites.
-          .sm-col.sm-col-4.px2.sm-px3.mb2
-            = image_tag(asset_url('home/ico-2.png'), alt: APP_NAME, width: 125,
-              class: 'align-middle')
-            h3.mt1.caps Easy
-            hr.max-width-1.bw2.border-red.ml0
-            div
-              ' #{APP_NAME} is a service used by multiple U.S. government
-              ' agencies to make interacting with the government easier.
-          .sm-col.sm-col-4.px2.sm-px3.mb2
-            = image_tag(asset_url('home/ico-3.png'), alt: APP_NAME, width: 125,
-              class: 'align-middle')
-            h3.mt1.caps Inclusive
-            hr.max-width-1.bw2.border-red.ml0
-            div
-              ' You can use your #{APP_NAME} account to access all
-              ' participating U.S. government agencies.
-
-    .bg-light-blue
-      .container.px2.py4
-        h2.heading-big News
-        .clearfix.mxn2
-          .sm-col.sm-col-6.px2
-            .mb3.sm-mb2
-              h4 Building a modern shared authentication platform
-              hr.max-width-1.bw2.border-red.ml0
-              p.mt2.mb1
-                ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                ' eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                ' enim ad minim veniam, quis nostrud exercitation ullamco
-                ' laboris nisi ut aliquip ex ea commodo consequat.
-              = link_to 'Read more...', root_path
-          .sm-col.sm-col-6.px2
-            .mb3.sm-mb2
-              h4 Building a modern shared authentication platform
-              hr.max-width-1.bw2.border-red.ml0
-              p.mt2.mb1
-                ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                ' eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                ' enim ad minim veniam, quis nostrud exercitation ullamco
-                ' laboris nisi ut aliquip ex ea commodo consequat.
-              = link_to 'Read more...', root_path
-
-    footer.bg-navy.white
-      .container.px2.py4
-        .clearfix
-          .sm-col
-            = link_to \
-              image_tag(asset_url('logo-white.svg'),
-                alt: APP_NAME,
-                class: 'mb3 align-middle',
-                width: 172), root_path
-          .sm-col-right.sm-right-align
-            .inline-block
-              h4.mt0.regular Agency contact center
-              hr.bw2.border-red
-            div (800) CALL-GOVT
-            div info@login.gov
+.bg-light-blue
+  .container.px2.py4
+    h2.heading.heading-big News
+    .clearfix.mxn2
+      .sm-col.sm-col-6.px2
+        .mb3.sm-mb2
+          h4 Building a modern shared authentication platform
+          hr.max-width-1.bw2.border-red.ml0
+          p.mt2.mb1
+            ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            ' eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+            ' enim ad minim veniam, quis nostrud exercitation ullamco
+            ' laboris nisi ut aliquip ex ea commodo consequat.
+          = link_to 'Read more...', root_path
+      .sm-col.sm-col-6.px2
+        .mb3.sm-mb2
+          h4 Building a modern shared authentication platform
+          hr.max-width-1.bw2.border-red.ml0
+          p.mt2.mb1
+            ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+            ' eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+            ' enim ad minim veniam, quis nostrud exercitation ullamco
+            ' laboris nisi ut aliquip ex ea commodo consequat.
+          = link_to 'Read more...', root_path

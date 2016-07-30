@@ -13,6 +13,8 @@ class ApplicationController < ActionController::Base
 
   prepend_before_action :session_expires_at
 
+  layout 'card'
+
   def session_expires_at
     session[:session_expires_at] = Time.zone.now + Devise.timeout_in
   end

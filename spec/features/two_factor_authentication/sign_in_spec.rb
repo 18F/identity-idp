@@ -106,7 +106,7 @@ feature 'Two Factor Authentication' do
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_link 'request a new one'
+      click_link 'Resend'
 
       expect(page).to have_content t('devise.two_factor_authentication.user.new_otp_sent')
     end

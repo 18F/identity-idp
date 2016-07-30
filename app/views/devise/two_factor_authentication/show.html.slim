@@ -1,21 +1,15 @@
 - title t('titles.enter_2fa_code')
 
 h1.heading = t('devise.two_factor_authentication.header_text')
-p
-  'A one-time passcode has been sent to <strong>#{@phone_number}</strong>.
-  'Please enter the code that you received.
-p
-  'Each code is valid for #{otp_valid_for_in_words}.
-  'If you do not receive a code within this time, please
-  '#{link_to 'request a new one', otp_new_path}.
+p Please enter the code sent to <strong>#{@phone_number}</strong>.
 
 = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
-  .mb2
-    = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.code')
-    = hidden_field_tag('method', 'sms')
-    = number_field_tag(:code, \
-                       '', \
-                       value: @code_value, \
-                       class: 'block col-12 field mfa', \
-                       required: true)
+  = hidden_field_tag('method', 'sms')
+  = label_tag 'code', \
+    raw(t('simple_form.required.html')) + t('forms.two_factor.code'), \
+    class: 'block'
+  = number_field_tag(:code, '', required: true, value: @code_value, \
+                     class: 'col-12 sm-col-4 mb1 sm-mb0 sm-mr1 field mfa')
   = submit_tag 'Submit', class: 'btn btn-primary'
+
+p.mt3.mb0 Didn't receive a code? #{link_to 'Resend', otp_new_path}

@@ -1,36 +1,39 @@
 - title t('titles.profile')
 
 
-h1.heading = t('headings.profile.main')
+.mb3.h6.caps.red = t('headings.profile.main')
 
-h2.h5.mt4.mb2 = t('headings.profile.account_settings')
-.py2.border-top
-  .clearfix.mxn1
-    .sm-col.sm-col-4.px1 = 'Email address'
-    .sm-col.sm-col-6.px1 = current_user.email
-    .sm-col.sm-col-2.px1.sm-right-align
-      = link_to 'Edit', edit_email_path, \
-        class: 'btn btn-primary px1 py0 h6 regular'
-.py2.border-top
-  .clearfix.mxn1
-    .sm-col.sm-col-4.px1 = 'Mobile'
-    .sm-col.sm-col-6.px1 = current_user.mobile
-    .sm-col.sm-col-2.px1.sm-right-align
-      = link_to 'Edit', edit_mobile_path, \
-        class: 'btn btn-primary px1 py0 h6 regular'
-.py2.border-top.border-bottom
-  .clearfix.mxn1
-    .sm-col.sm-col-8.px1 = 'Authenticator App'
-    .sm-col.sm-col-4.px1.sm-right-align
-      - if current_user.totp_enabled?
-        = button_to 'Disable', disable_totp_url, method: :delete, \
+h2.heading.heading-m0 = t('headings.profile.login_info')
+.mb4
+  .py2.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1 = 'Email address'
+      .sm-col.sm-col-6.px1 = current_user.email
+      .sm-col.sm-col-2.px1.sm-right-align
+        = link_to 'Edit', edit_email_path, \
           class: 'btn btn-primary px1 py0 h6 regular'
-      - else
-        = button_to 'Enable', authenticator_setup_url, method: :get, \
+  .py2.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1 = 'Mobile'
+      .sm-col.sm-col-6.px1 = current_user.mobile
+      .sm-col.sm-col-2.px1.sm-right-align
+        = link_to 'Edit', edit_mobile_path, \
           class: 'btn btn-primary px1 py0 h6 regular'
+  .py2.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-8.px1 = 'Authenticator App'
+      .sm-col.sm-col-4.px1.sm-right-align
+        - if current_user.totp_enabled?
+          = button_to 'Disable', disable_totp_url, method: :delete, \
+            class: 'btn btn-primary px1 py0 h6 regular'
+        - else
+          = button_to 'Enable', authenticator_setup_url, method: :get, \
+            class: 'btn btn-primary px1 py0 h6 regular'
 
-- unless current_user.active_identities.empty?
-  h2.h5.mt4.mb2 = t('headings.profile.agencies')
+h2.heading.heading-m0 = t('headings.profile.agencies')
+- if current_user.active_identities.empty?
+  p.mt2.mb4 You haven't logged into any agencies yet.
+else
   - current_user.active_identities.each do |i|
     .py2.border-top
       .clearfix.mxn1
@@ -40,7 +43,7 @@ h2.h5.mt4.mb2 = t('headings.profile.account_settings')
           .h6.bold = 'Last login'
           .h5 = i.last_authenticated_at.to_s(:date_pretty)
 
-h2.h5.mt4.mb2 = t('headings.profile.advanced_settings')
+h2.heading.heading-m0 = t('headings.profile.advanced_settings')
 .py2.border-top.border-bottom
   .clearfix.mxn1
     .sm-col.sm-col-8.px1 = t('headings.delete_account', app_name: APP_NAME)

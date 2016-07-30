@@ -20,7 +20,7 @@ en:
     registration:
       need_password: Please verify your current password to confirm changes.
     two_factor:
-      code: Secure one-time password
+      code: One-time passcode
     totp_setup:
       header_text: Authenticator App Setup
       totp_info: >
@@ -85,7 +85,7 @@ en:
       change: Change your password
       forgot: Forgot password?
     profile:
-      account_settings: Account settings
+      login_info: Login information
       advanced_settings: Advanced settings
       agencies: Agencies I've logged into
       main: My account

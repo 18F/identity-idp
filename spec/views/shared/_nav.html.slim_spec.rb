@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'home/index.html.slim' do
+describe 'shared/_nav.html.slim' do
   context 'user is signed out' do
     before do
       allow(view).to receive(:signed_in?).and_return(false)
