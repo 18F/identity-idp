@@ -1,5 +1,8 @@
 - title t('idv.titles.welcome')
 
+- if @using_mock_vendor
+  .mb3.h6.caps.red
+    span = 'Do not use real personal information on this form. This is for demo purposes only.'
 
 .mb3.h6.caps.red = t('idv.titles.welcome')
 = form_tag(idv_sessions_path, method: 'post', novalidate: true)
