@@ -1,15 +1,15 @@
 require 'rails_helper'
 
-describe 'users/registrations/edit.html.slim' do
+describe 'users/edit_info/email.html.slim' do
   context 'user is not TOTP enabled' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
-      @update_user_profile_form = UpdateUserProfileForm.new(user)
+      @update_form = UpdateUserEmailForm.new(user)
     end
 
     it 'has a localized title' do
-      expect(view).to receive(:title).with(t('titles.registrations.edit'))
+      expect(view).to receive(:title).with(t('titles.edit_info.email'))
 
       render
     end

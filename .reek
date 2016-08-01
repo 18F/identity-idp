@@ -27,7 +27,6 @@ UnusedPrivateMethod:
     - ApplicationController
     - ActiveJob::Logging::LogSubscriber
     - Users::PhoneConfirmationController
-    - UpdateUserProfileForm
 UtilityFunction:
   public_methods_only: true
   exclude:

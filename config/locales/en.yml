@@ -18,8 +18,6 @@ en:
     required_field: Indicates a required field.
     phone_confirmation:
       header_text: Confirm your phone number
-    registration:
-      need_password: Please verify your current password to confirm changes.
     two_factor:
       code: One-time passcode
     totp_setup:
@@ -65,7 +63,6 @@ en:
     profile: Profile
     registrations:
       destroy_confirm: Delete your account
-      edit: Edit your account
       new: Sign up for a account
       start: Get started
       verify_email: Verify your email address

@@ -47,6 +47,7 @@ module Users
       updater.set_flash_message
 
       if @update_form.mobile_changed?
+        analytics.track_event('User asked to update their phone number')
         prompt_to_confirm_mobile(@update_form.mobile)
       elsif is_flashing_format?
         EmailNotifier.new(resource).send_password_changed_email
