@@ -5,6 +5,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
 
     def index
+      @using_mock_vendor = pick_a_vendor == :mock
     end
 
     def show
