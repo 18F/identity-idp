@@ -16,3 +16,10 @@
     font-weight: $bold-font-weight;
   }
 }
+
+.btn-xs-fit {
+  @media #{$breakpoint-max-sm} {
+    max-width: 100%;
+    width: 100%;
+  }
+}

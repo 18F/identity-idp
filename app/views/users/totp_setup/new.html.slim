@@ -1,11 +1,11 @@
-- title t('titles.enter_2fa_code')
+- title t('titles.totp_setup.new')
 
-h1.heading = t('forms.totp_setup.header_text')
+h1.heading = t('headings.totp_setup.new')
 p.mb0 = t('forms.totp_setup.totp_info')
-.py1.center
+.mxn3.center.sm-left-align
   = image_tag @qrcode, alt: 'QR Code for Authenticator App'
 = form_tag(authenticator_setup_path, method: :patch, role: 'form') do
   = label_tag 'code', t('forms.totp_setup.code'), class: 'block'
   = number_field_tag :code, '', required: true, \
-    class: 'col-12 sm-col-4 mb1 sm-mb0 sm-mr1 field mfa'
+    class: 'col-12 sm-col-3 mb1 sm-mb0 sm-mr1 field mfa'
   = submit_tag 'Submit', class: 'btn btn-primary'

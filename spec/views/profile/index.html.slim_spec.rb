@@ -17,7 +17,7 @@ describe 'profile/index.html.slim' do
     it 'contains link to enable TOTP' do
       render
 
-      expect(rendered).to have_xpath("//input[@value='Enable']")
+      expect(rendered).to have_link('Enable', href: authenticator_start_url)
       expect(rendered).not_to have_xpath("//input[@value='Disable']")
     end
 
@@ -39,7 +39,7 @@ describe 'profile/index.html.slim' do
       render
 
       expect(rendered).to have_xpath("//input[@value='Disable']")
-      expect(rendered).not_to have_xpath("//input[@value='Enable']")
+      expect(rendered).not_to have_link('Enable', href: authenticator_start_url)
     end
   end
 end
