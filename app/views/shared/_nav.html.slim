@@ -1,13 +1,13 @@
 nav.bg-white
   .container.p2.sm-py3
-    .clearfix.py1
-      .sm-col.mb2.sm-m0
+    .clearfix
+      .sm-col.mb1.sm-m0
         = link_to \
           image_tag(asset_url('logo.svg'),
             alt: APP_NAME,
             class: 'align-bottom',
             width: 170), root_path, class: 'inline-block'
-        .mxn2.mt1.sm-mt2.h5
+        .mxn2.mt1.sm-mt2.h5.sm-show
           = link_to 'About', root_path, class: 'px2 gray caps'
           = link_to 'News', root_path, class: 'px2 gray caps'
           = link_to 'Contact', root_path, class: 'px2 gray caps'
