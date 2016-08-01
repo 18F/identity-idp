@@ -50,7 +50,7 @@ UserDecorator = Struct.new(:user) do
     }
     url = user.provisioning_uri(nil, options)
     qrcode = RQRCode::QRCode.new(url)
-    qrcode.as_png(size: 300).to_data_url
+    qrcode.as_png(size: 280).to_data_url
   end
 
   def blocked_from_entering_2fa_code?

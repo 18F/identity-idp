@@ -14,6 +14,7 @@ en:
       delete_account_confirm: Yes, delete account
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
+      setup_totp: Set up authentication app
     required_field: Indicates a required field.
     phone_confirmation:
       header_text: Confirm your phone number
@@ -22,12 +23,15 @@ en:
     two_factor:
       code: One-time passcode
     totp_setup:
-      header_text: Authenticator App Setup
+      code: One-time passcode
       totp_info: >
-        To enable app-based authentication, use your TOTP-compatible mobile
-        app to scan the QR code below, then enter the app-generated code
-        in the box below.
-      code: App-generated code
+        To enable two-factor authentication, use the QR code provided here to
+        link your account to your authentication app.
+      totp_intro: >
+        To receive a one-time passode,  you may choose to use a two-factor
+        authentication application to log into to your account. If so, you’ll
+        need to link your login.gov account to the application you choose. Each
+        time you log in you’ll need to open the application and retrieve a code.
     confirmation:
       show_hdr: Create a Password
     value_missing: This field is required
@@ -53,7 +57,7 @@ en:
     edit_info:
       email: Edit your email
       mobile: Edit your phone number
-    enter_2fa_code: Enter the secure one-time password to log in to your account
+    enter_2fa_code: Enter the secure one-time passcode
     account_locked: Account locked
     passwords:
       change: Change the password for your account
@@ -65,6 +69,9 @@ en:
       new: Sign up for a account
       start: Get started
       verify_email: Verify your email address
+    totp_setup:
+      start: Set up two-factor authentication app
+      new: Enter the secure one-time passcode
     two_factor_setup: Two-factor Authentication Setup
     users:
       edit: Editing User - %{user}
@@ -87,15 +94,19 @@ en:
       change: Change your password
       forgot: Forgot password?
     profile:
-      login_info: Login information
       advanced_settings: Advanced settings
       agencies: Agencies I've logged into
+      login_info: Login information
       main: My account
+      two_factor: Two-factor Authentication
     registrations:
       enter_email: Email address
       verify_email: Verify email address
     search: Search for a user
     session_timeout_warning: Session Timeout
+    totp_setup:
+      start: Set up two-factor authentication app
+      new: Scan the QR code with your device
     users:
       edit: Edit User
       index: Users

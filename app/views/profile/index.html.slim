@@ -5,30 +5,31 @@
 
 h2.heading.heading-m0 = t('headings.profile.login_info')
 .mb4
-  .py2.border-top
+  .py2.border-top.border-bottom
     .clearfix.mxn1
       .sm-col.sm-col-4.px1 = 'Email address'
       .sm-col.sm-col-6.px1 = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_email_path, \
-          class: 'btn btn-primary px1 py0 h6 regular'
+          class: 'btn btn-primary px2 py0 h6 regular'
+  .mt2.mb1.h6.bold.caps = t('headings.profile.two_factor')
   .py2.border-top
     .clearfix.mxn1
-      .sm-col.sm-col-4.px1 = 'Mobile'
+      .sm-col.sm-col-4.px1 = 'Phone number'
       .sm-col.sm-col-6.px1 = current_user.mobile
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_mobile_path, \
-          class: 'btn btn-primary px1 py0 h6 regular'
+          class: 'btn btn-primary px2 py0 h6 regular'
   .py2.border-top.border-bottom
     .clearfix.mxn1
-      .sm-col.sm-col-8.px1 = 'Authenticator App'
+      .sm-col.sm-col-8.px1 = 'Authentication app'
       .sm-col.sm-col-4.px1.sm-right-align
         - if current_user.totp_enabled?
           = button_to 'Disable', disable_totp_url, method: :delete, \
-            class: 'btn btn-primary px1 py0 h6 regular'
+            class: 'btn btn-primary px2 py0 h6 regular'
         - else
-          = button_to 'Enable', authenticator_setup_url, method: :get, \
-            class: 'btn btn-primary px1 py0 h6 regular'
+          = link_to 'Enable', authenticator_start_url, \
+            class: 'btn btn-primary px2 py0 h6 regular'
 
 h2.heading.heading-m0 = t('headings.profile.agencies')
 - if current_user.active_identities.empty?
@@ -49,4 +50,4 @@ h2.heading.heading-m0 = t('headings.profile.advanced_settings')
     .sm-col.sm-col-8.px1 = t('headings.delete_account', app_name: APP_NAME)
     .sm-col.sm-col-4.px1.sm-right-align
       = button_to t('forms.buttons.delete_account'), user_destroy_confirm_path, \
-        method: :get, class: 'btn btn-primary px1 py0 h6 regular'
+        method: :get, class: 'btn btn-primary px2 py0 h6 regular'

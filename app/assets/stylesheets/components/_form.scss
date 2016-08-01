@@ -8,13 +8,6 @@
   border-color: $red;
 }
 
-[type="submit"] {
-  @media #{$breakpoint-max-sm} {
-    max-width: 100%;
-    width: 100%;
-  }
-}
-
 .radio,
 .checkbox {
   padding-left: 1.5rem;
