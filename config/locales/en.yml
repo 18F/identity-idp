@@ -34,6 +34,7 @@ en:
     pattern_mismatch: Please enter information in the correct format
 
   links:
+    resend: Resend
     sign_out: 'Sign out'
     sign_in: 'Log in'
     sign_up: 'Sign up'
@@ -63,6 +64,7 @@ en:
       edit: Edit your account
       new: Sign up for a account
       start: Get started
+      verify_email: Verify your email address
     two_factor_setup: Two-factor Authentication Setup
     users:
       edit: Editing User - %{user}
