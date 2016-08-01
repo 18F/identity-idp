@@ -1,33 +1,41 @@
 - title t('idv.titles.intro')
 
+
 h1.heading = t('idv.titles.expectations')
-
+.mb3.border-bottom
+  | <strong>1.</strong> Please have the following basic information
+    and materials to complete registration with login.gov:
+  .clearfix.mt2.mb3
+    .sm-col.sm-col-5
+      ul.red-dots
+        li Full name
+        li Birthdate
+        li Mailing address
+    .sm-col.sm-col-7
+      ul.m0.red-dots
+        li Social Security Number (SSN) <br><span class="h6">OR</span>
+        li Individual Tax Identification Number (ITIN)
+.mb3.border-bottom
+  | <strong>2.</strong> Additionally, we need a number from
+    <strong>only one of your financial accounts</strong>. We can
+    use any of the following:
+  ul.mt2.mb2.red-dots
+    li Last 8 digits of a credit card <br><span class="h6">OR</span>
+    li Auto loan account number <br><span class="h6">OR</span>
+    li Mortgage loan account number <br><span class="h6">OR</span>
+    li Home equity line of credit account number
+  .mb3.italic
+    | You will never be charged any money, and are not sharing
+      any account balances, or other financial information with us.
+.mb3.border-bottom
+  | <strong>3.</strong> Finally, we need your official phone number which can be:
+  ul.mt2.mb3.red-dots
+    li Lorem ipsum dolar set <br><span class="h6">BUT NOT</span>
+    li Mailing address
 p
-  | In order to use this service, we need to gather some more
-   information about you. Your personal information will be
-   used to help verify your identity.
+  | We have partnered with a trusted third party company to verify
+    this information and your identity.
+p.bold Do you have all of this information available?
 
-p You will need:
-
-ul
-  li Full name
-  li Current address
-  li Birthdate
-  li Social Security Number (SSN) or Individual Tax Identification Number (ITIN)
-  li
-    | Financial account
-    ul
-      li Credit Card OR
-      li Mortgage or Home Equity Loan OR
-      li Home Equity Line of Credit OR
-      li Auto Loan
-
-p
-  | You will only need to provide the loan account number or a few digits from a
-   credit card number. We only use this information to verify your identity.
-
-  strong
-    | You will not be charged any money and are not sharing any account balances
-     or other financial information with us.
-
-= link_to 'Continue', idv_sessions_path
+= link_to 'No', idv_sessions_path, class: 'btn btn-primary mr1'
+= link_to 'Yes', idv_sessions_path, class: 'btn btn-primary'

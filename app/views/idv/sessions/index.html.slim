@@ -1,23 +1,26 @@
 - title t('idv.titles.welcome')
 
+
+.mb3.h6.caps.red = t('idv.titles.welcome')
 = form_tag(idv_sessions_path, method: 'post', novalidate: true)
-  h1.heading = t('idv.titles.session.basic')
-  .mb3
+  h2.heading = t('idv.titles.session.basic')
+  p Please provide all of the following:
+  .mb4.sm-col-9
     = label_tag 'first_name', t('idv.form.first_name')
     = block_text_field_tag 'first_name', nil, required: true
     = label_tag 'last_name', t('idv.form.last_name')
     = block_text_field_tag 'last_name', nil, required: true
-  h1.heading = t('idv.titles.session.dob')
-  .mb3
+  h2.heading = t('idv.titles.session.dob')
+  .mb4.sm-col-6
     = label_tag 'dob', t('idv.form.dob'), class: 'hide'
     = block_date_field_tag 'dob', nil, required: true
-  h1.heading = t('idv.titles.session.ssn')
-  .mb3
+  h2.heading = t('idv.titles.session.ssn')
+  .mb4.sm-col-6
     = label_tag 'ssn', t('idv.form.ssn'), class: 'hide'
     = block_text_field_tag 'ssn', nil, required: true, pattern: '[0-9]*', \
       'data-custom-message': t('idv.errors.invalid_ssn')
-  h1.heading = t('idv.titles.session.address')
-  .mb3
+  h2.heading = t('idv.titles.session.address')
+  .mb4.sm-col-9
     = label_tag 'address1', t('idv.form.address1')
     = block_text_field_tag 'address1', nil, required: true
     = label_tag 'address2', t('idv.form.address2')
@@ -32,21 +35,4 @@
         = label_tag 'zipcode', t('idv.form.zipcode')
         = block_text_field_tag 'zipcode', nil, required: true, pattern: '[0-9]*', \
           'data-custom-message': t('idv.errors.invalid_zipcode')
-  h1.heading = t('idv.titles.session.finance')
-  .mb3
-    = label_tag 'ccn', t('idv.form.ccn')
-    = block_text_field_tag 'ccn', nil, pattern: '[0-9]*'
-    = label_tag 'mortgage', t('idv.form.mortgage')
-    = block_text_field_tag 'mortgage', nil, pattern: '[0-9]*'
-    = label_tag 'home_equity_line', t('idv.form.home_equity_line')
-    = block_text_field_tag 'home_equity_line', nil, pattern: '[0-9]*'
-    = label_tag 'auto_loan', t('idv.form.auto_loan')
-    = block_text_field_tag 'auto_loan', nil, pattern: '[0-9]*'
-    .clearfix.mxn1
-      .sm-col.sm-col-6.px1
-        = label_tag 'bank_routing', t('idv.form.bank_routing')
-        = block_text_field_tag 'bank_routing', nil, pattern: '[0-9]*'
-      .sm-col.sm-col-6.px1
-        = label_tag 'bank_acct', t('idv.form.bank_acct')
-        = block_text_field_tag 'bank_acct', nil, pattern: '[0-9]*'
-  button type='submit' class='btn btn-primary' = 'Continue'
+  button type='submit' class='btn btn-primary' = 'Continue verifying'

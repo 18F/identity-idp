@@ -1,0 +1,16 @@
+.red-dots {
+  list-style: none;
+  padding: 0;
+
+  li {
+    padding-left: 1rem;
+    text-indent: -1rem;
+
+    &::before {
+      color: $red;
+      content: '•';
+      font-size: 1.25rem;
+      padding-right: .5rem;
+    }
+  }
+}
