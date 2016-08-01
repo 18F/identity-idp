@@ -1,1 +1,2 @@
-server 'upaya-idp-demo.18f.gov', roles: %w(web app db)
+server 'demo.login.gov', roles: %w(web db)
+server 'demo-worker.login.gov', roles: %w(app)

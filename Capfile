@@ -7,9 +7,6 @@ require 'capistrano/deploy'
 # support for bundler, rails/assets and rails/migrations
 require 'capistrano/rails'
 
-# support for rbenv
-require 'capistrano/rbenv'
-
 # support for sidekiq
 require 'capistrano/sidekiq'
 require 'capistrano/sidekiq/monit'
