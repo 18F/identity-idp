@@ -112,6 +112,9 @@ en:
       index: Users
       show: User Details
 
+  tooltips:
+    placeholder: This is a placeholder tooltip.
+
   mailer:
     email_reuse_notice:
       subject: Email confirmation notification
