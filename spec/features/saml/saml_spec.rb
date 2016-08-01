@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 include SamlAuthHelper
-include SamlResponseHelper
 include IdvHelper
 
 feature 'saml api', devise: true, sms: true do
@@ -66,7 +65,7 @@ feature 'saml api', devise: true, sms: true do
         visit sp1_authnrequest
       end
 
-      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
+      let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
 
       it 'is encrypted' do
         expect(xmldoc.original_encrypted?).to eq true
@@ -79,7 +78,7 @@ feature 'saml api', devise: true, sms: true do
         visit authnrequest_get
       end
 
-      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
+      let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
 
       it 'renders saml_post_binding template with XML response' do
         expect(page.find('#SAMLResponse', visible: false)).to be_truthy
@@ -174,8 +173,8 @@ feature 'saml api', devise: true, sms: true do
   context 'visiting /api/saml/logout' do
     context 'when logged in to single SP with IdP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
-      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'request_assertion') }
-      let(:response_xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'response_assertion') }
+      let(:xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
+      let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
 
       before do
         sign_in_and_2fa_user(user)
@@ -211,7 +210,7 @@ feature 'saml api', devise: true, sms: true do
 
     context 'when logged in to a single SP with SP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
-      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('feature', 'logout_assertion') }
+      let(:xmldoc) { SamlResponseDoc.new('feature', 'logout_assertion') }
 
       before do
         sign_in_and_2fa_user(user)
@@ -282,8 +281,8 @@ feature 'saml api', devise: true, sms: true do
 
     context 'when logged in to multiple SPs with IdP-initiated logout' do
       let(:logout_user) { create(:user, :signed_up) }
-      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
-      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+      let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
 
       before do
         sign_in_and_2fa_user(logout_user)
@@ -329,8 +328,8 @@ feature 'saml api', devise: true, sms: true do
 
     context 'with multiple SP sessions and SP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
-      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
-      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+      let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
 
       before do
         sign_in_and_2fa_user(user)
@@ -379,8 +378,8 @@ feature 'saml api', devise: true, sms: true do
 
     context 'with multiple SP sessions and SP-initiated logout; non-chronological' do
       let(:user) { create(:user, :signed_up) }
-      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
-      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+      let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
 
       before do
         sign_in_and_2fa_user(user)
@@ -416,8 +415,8 @@ feature 'saml api', devise: true, sms: true do
 
     context 'with alternate multiple SP sessions and SP-initiated logout; non-chronological' do
       let(:user) { create(:user, :signed_up) }
-      let(:response_xmldoc) { XmlDoc.new('feature', 'response_assertion') }
-      let(:request_xmldoc) { XmlDoc.new('feature', 'request_assertion') }
+      let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
+      let(:request_xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
 
       before do
         sign_in_and_2fa_user(user)

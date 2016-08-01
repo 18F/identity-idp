@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe SamlIdpController do
-  include SamlResponseHelper
   include SamlAuthHelper
 
   render_views
@@ -58,7 +57,7 @@ describe SamlIdpController do
     end
 
     let(:org_name) { '18F' }
-    let(:xmldoc) { SamlResponseHelper::XmlDoc.new('controller', 'metadata', response) }
+    let(:xmldoc) { SamlResponseDoc.new('controller', 'metadata', response) }
 
     it 'renders XML inline' do
       expect(response.content_type).to eq 'text/xml'
@@ -112,6 +111,8 @@ describe SamlIdpController do
   end
 
   describe 'GET /api/saml/auth' do
+    let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
+
     context 'with LOA3 but the identity is already verified' do
       before do
         allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
@@ -155,13 +156,10 @@ describe SamlIdpController do
         )
         generate_saml_response(user, loa3_saml_settings)
 
-        xpath = '//ds:Attribute[@Name="address1"]'
-        expect(decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)).to be_nil
+        expect(xmldoc.attribute_node_for('address1')).to be_nil
 
         %w(first_name last_name ssn zipcode).each do |attr|
-          xpath = %(//ds:Attribute[@Name="#{attr}"])
-          node = decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)
-          node_value = node.children.children.to_s
+          node_value = xmldoc.attribute_value_for(attr)
           expect(node_value).to eq(user.active_profile[attr.to_sym])
         end
       end
@@ -263,7 +261,9 @@ describe SamlIdpController do
     end
 
     context 'SAML Response' do
-      let(:xmldoc) { SamlResponseHelper::XmlDoc.new('controller', 'auth', response) }
+      let(:issuer) { xmldoc.issuer_nodeset[0] }
+      let(:status) { xmldoc.status[0] }
+      let(:status_code) { xmldoc.status_code[0] }
 
       before do
         user = create(:user, :signed_up)
@@ -271,13 +271,12 @@ describe SamlIdpController do
       end
 
       it 'returns a valid xml document' do
-        expect(decrypted_saml_response.validate).to be(nil)
+        expect(xmldoc.saml_document.validate).to be(nil)
+        expect(xmldoc.saml_response(saml_settings).is_valid?).to eq(true)
       end
 
       # a <saml:Issuer> element, which contains the unique identifier of the identity provider
-      # NOTE JJG: I'm not sure where this is set or why we use this
       it 'includes an Issuer element inherited from the base URL' do
-        expect(decrypted_saml_response.root.children.include?(issuer)).to be(true)
         expect(issuer.name).to eq('Issuer')
         expect(issuer.namespace.href).to eq(Saml::XML::Namespaces::ASSERTION)
         expect(issuer.text).to eq("https://#{Figaro.env.domain_name}/api/saml")
@@ -285,7 +284,6 @@ describe SamlIdpController do
 
       it 'includes a Status element with a StatusCode child element' do
         # https://msdn.microsoft.com/en-us/library/hh269633.aspx
-        expect(decrypted_saml_response.root.children.include?(status)).to be(true)
         expect(status.name).to eq('Status')
       end
 
@@ -302,10 +300,7 @@ describe SamlIdpController do
 
       # http://en.wikipedia.org/wiki/SAML_2.0#SAML_2.0_Assertions
       context 'Assertion' do
-        let(:assertion) do
-          decrypted_saml_response.at('//ds:Assertion',
-                                     ds: Saml::XML::Namespaces::ASSERTION)
-        end
+        let(:assertion) { xmldoc.response_assertion_nodeset[0] }
 
         it 'includes the xmlns:saml attribute in the element' do
           # JJG NOTE: should this be xmlns:saml? See example block at:
@@ -332,27 +327,10 @@ describe SamlIdpController do
         end
       end
 
-      # a <saml:Issuer> element, which contains the unique identifier of the
-      # identity provider
-      context 'Issuer' do
-        let(:assertion_issuer) do
-          decrypted_saml_response.at('//ds:Assertion/ds:Issuer',
-                                     ds: Saml::XML::Namespaces::ASSERTION)
-        end
-
-        it 'includes an Issuer element and uses the base API url for a unique identifier' do
-          expect(assertion_issuer.name).to eq('Issuer')
-          expect(assertion_issuer.text).to eq("https://#{Figaro.env.domain_name}/api/saml")
-        end
-      end
-
       # a <ds:Signature> element, which contains an integrity-preserving
       # digital signature (not shown) over the <saml:Assertion> element
       context 'ds:Signature' do
-        let(:signature) do
-          decrypted_saml_response.at('//ds:Signature',
-                                     ds: Saml::XML::Namespaces::SIGNATURE)
-        end
+        let(:signature) { xmldoc.signature }
 
         it 'includes the ds:Signature element with the signature namespace' do
           # JJG NOTE: should this be xmlds:ds? See example block at:
@@ -402,50 +380,35 @@ describe SamlIdpController do
 
       # http://en.wikipedia.org/wiki/XML_Signature
       context 'SignedInfo' do
-        let(:signed_info) do
-          decrypted_saml_response.at(
-            '//ds:SignedInfo',
-            ds: Saml::XML::Namespaces::SIGNATURE
-          )
-        end
+        let(:signed_info) { xmldoc.signed_info_nodeset[0] }
 
         it 'includes a SignedInfo element' do
           expect(signed_info.name).to eq('SignedInfo')
         end
 
         it 'includes a CanonicalizationMethod element' do
-          element = signed_info.at('//ds:CanonicalizationMethod',
-                                   ds: Saml::XML::Namespaces::SIGNATURE)
+          element = xmldoc.signature_canon_method_nodeset[0]
 
           expect(element.name).to eq('CanonicalizationMethod')
           expect(element['Algorithm']).to eq('http://www.w3.org/2001/10/xml-exc-c14n#')
         end
 
         it 'includes a SignatureMethod element specifying rsa-sha256' do
-          element = signed_info.at('//ds:SignedInfo/ds:SignatureMethod',
-                                   ds: Saml::XML::Namespaces::SIGNATURE)
+          element = xmldoc.signature_method_nodeset[0]
 
           expect(element.name).to eq('SignatureMethod')
           expect(element['Algorithm']).to eq('http://www.w3.org/2001/04/xmldsig-more#rsa-sha256')
         end
 
         it 'includes a DigestMethod element' do
-          element = signed_info.at('//ds:DigestMethod',
-                                   ds: Saml::XML::Namespaces::SIGNATURE)
+          element = xmldoc.digest_method_nodeset[0]
 
           expect(element.name).to eq('DigestMethod')
           expect(element['Algorithm']).to eq('http://www.w3.org/2001/04/xmlenc#sha256')
         end
 
-        it 'includes a DigestValue element' do
-          element = signed_info.at('//ds:DigestValue',
-                                   ds: Saml::XML::Namespaces::SIGNATURE)
-
-          expect(element.name).to eq('DigestValue')
-
-          # Not sure how to check this, I think it may be created in the
-          # AuthN req
-          # expect(element.text).to eq('MN0TRdEU/ks2o5dot/Rl6stsOxRhwLyZvAD7Qv/QlJU=')
+        it 'has valid signature' do
+          expect(xmldoc.saml_document.valid_signature?(idp_fingerprint)).to eq(true)
         end
 
         context 'Reference' do
@@ -465,10 +428,7 @@ describe SamlIdpController do
       end
 
       context 'Transforms' do
-        let(:transforms) do
-          decrypted_saml_response.at('//ds:Reference/ds:Transforms',
-                                     ds: Saml::XML::Namespaces::SIGNATURE)
-        end
+        let(:transforms) { xmldoc.transforms_nodeset[0] }
 
         it 'includes a Transforms element specifying multiple transformation algorithms' do
           expect(transforms.name).to eq('Transforms')
@@ -477,15 +437,15 @@ describe SamlIdpController do
         it 'includes a Transform specifying the Schema for XML Signatures' do
           algorithm = 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'
 
-          expect(transforms.children.include?(transform(algorithm))).to be(true)
-          expect(transform(algorithm)['Algorithm']).to eq(algorithm)
+          expect(transforms.children.include?(xmldoc.transform(algorithm))).to be(true)
+          expect(xmldoc.transform(algorithm)['Algorithm']).to eq(algorithm)
         end
 
         it 'includes a Transform specifying the Canonical XML serialization' do
           algorithm = 'http://www.w3.org/2001/10/xml-exc-c14n#'
 
-          expect(transforms.children.include?(transform(algorithm))).to be(true)
-          expect(transform(algorithm)['Algorithm']).to eq(algorithm)
+          expect(transforms.children.include?(xmldoc.transform(algorithm))).to be(true)
+          expect(xmldoc.transform(algorithm)['Algorithm']).to eq(algorithm)
         end
       end
 
@@ -493,20 +453,14 @@ describe SamlIdpController do
       # principal (but in this case the identity of the principal is
       # hidden behind an opaque transient identifier, for reasons of privacy)
       context 'Subject' do
-        let(:subject) do
-          decrypted_saml_response.at('//ds:Subject',
-                                     ds: 'urn:oasis:names:tc:SAML:2.0:assertion')
-        end
+        let(:subject) { xmldoc.subject_nodeset[0] }
 
         it 'has a saml:Subject element' do
           expect(subject).to_not be_nil
         end
 
         context 'NameID' do
-          let(:name_id) do
-            subject.at('//ds:NameID',
-                       ds: 'urn:oasis:names:tc:SAML:2.0:assertion')
-          end
+          let(:name_id) { subject.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
 
           it 'has a saml:NameID element' do
             expect(name_id).to_not be_nil
@@ -574,9 +528,7 @@ describe SamlIdpController do
       # a <saml:Conditions> element, which gives the conditions under which
       # the assertion is to be considered valid
       context 'Conditions' do
-        let(:subject) do
-          decrypted_saml_response.at('//ds:Conditions', ds: Saml::XML::Namespaces::ASSERTION)
-        end
+        let(:subject) { xmldoc.conditions_nodeset[0] }
 
         it 'has a saml:Conditions element' do
           expect(subject).to_not be_nil
@@ -594,9 +546,7 @@ describe SamlIdpController do
       # a <saml:AuthnStatement> element, which describes the act of
       # authentication at the identity provider
       context 'AuthnStatement' do
-        let(:subject) do
-          decrypted_saml_response.at('//ds:AuthnStatement', ds: Saml::XML::Namespaces::ASSERTION)
-        end
+        let(:subject) { xmldoc.assertion_statement_node }
 
         it 'has a saml:AuthnStatement element' do
           expect(subject).to_not be_nil
@@ -613,7 +563,7 @@ describe SamlIdpController do
 
       context 'AuthnContext' do
         let(:subject) do
-          decrypted_saml_response.at(
+          xmldoc.saml_document.at(
             '//ds:AuthnStatement/ds:AuthnContext',
             ds: Saml::XML::Namespaces::ASSERTION
           )
@@ -625,7 +575,7 @@ describe SamlIdpController do
 
         context 'AuthnContextClassRef' do
           let(:subject) do
-            decrypted_saml_response.at(
+            xmldoc.saml_document.at(
               '//ds:AuthnStatement/ds:AuthnContext/ds:AuthnContextClassRef',
               ds: Saml::XML::Namespaces::ASSERTION
             )
@@ -635,7 +585,7 @@ describe SamlIdpController do
             expect(subject).to_not be_nil
           end
 
-          it 'has contents set to the loa of the ial' do
+          it 'has contents set to LOA1' do
             expect(subject.content).to eq Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
           end
         end
@@ -645,7 +595,7 @@ describe SamlIdpController do
       # attribute associated with the authenticated principal
       context 'saml:AttributeStatement' do
         it 'includes the saml:AttributeStatement element' do
-          attribute_statement = decrypted_saml_response.at(
+          attribute_statement = xmldoc.saml_document.at(
             '//*/saml:AttributeStatement',
             saml: Saml::XML::Namespaces::ASSERTION
           )
@@ -655,8 +605,7 @@ describe SamlIdpController do
         end
 
         it 'includes the email Attribute element' do
-          xpath = '//ds:Attribute[@Name="email"]'
-          email = decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)
+          email = xmldoc.attribute_node_for('email')
 
           expect(email.name).to eq('Attribute')
           expect(email['Name']).to eq('email')
@@ -665,8 +614,7 @@ describe SamlIdpController do
         end
 
         it 'includes the uuid Attribute element' do
-          xpath = '//ds:Attribute[@Name="uuid"]'
-          uuid = decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)
+          uuid = xmldoc.attribute_node_for('uuid')
 
           expect(uuid.name).to eq('Attribute')
           expect(uuid['Name']).to eq('uuid')
@@ -675,8 +623,7 @@ describe SamlIdpController do
         end
 
         it 'includes the mobile Attribute element' do
-          xpath = '//ds:Attribute[@Name="mobile"]'
-          mobile = decrypted_saml_response.at(xpath, ds: Saml::XML::Namespaces::ASSERTION)
+          mobile = xmldoc.mobile_number
 
           expect(mobile.name).to eq('Attribute')
           expect(mobile['Name']).to eq('mobile')
