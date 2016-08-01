@@ -8,5 +8,7 @@ h1.heading = t('headings.registrations.verify_email')
     | #{t('devise.registrations.signed_up_but_unconfirmed.message_start')}
       <strong>#{email}</strong>
       #{t('devise.registrations.signed_up_but_unconfirmed.message_end')}
-  p.m0 Didn't receive an email? #{link_to 'Resend', '/'}
+  p.m0
+    | Didn't receive an email?
+      #{link_to t('links.resend'), new_user_confirmation_path}
 p.italic = t('devise.registrations.close_window')
