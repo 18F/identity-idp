@@ -1,4 +1,5 @@
 [class*="hint--"] {
+  cursor: help;
   font-size: $h4;
   font-weight: normal;
   letter-spacing: normal;
@@ -8,4 +9,5 @@
 .img-tooltip {
   padding-left: 3px;
   padding-right: 3px;
+  vertical-align: middle;
 }
