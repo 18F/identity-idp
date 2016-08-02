@@ -93,17 +93,24 @@ production:
       assertion_consumer_logout_service_url: 'https://identity-sp-rails-demo.apps.cloud.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-sp-rails-demo.apps.cloud.gov/login'
       cert: 'demo_sp'
-    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dashboard-dev':
-      metadata_url: 'https://identity-dashboard-dev.apps.cloud.gov/users/auth/saml/metadata'
-      acs_url: 'https://identity-dashboard-dev.apps.cloud.gov/users/auth/saml/callback'
-      assertion_consumer_logout_service_url: 'https://identity-dashboard-dev.apps.cloud.gov/users/auth/saml/logout'
-      sp_initiated_login_url: 'https://identity-dashboard-dev.apps.cloud.gov/users/auth/saml'
+    # Dashboard
+    'https://dashboard.demo.login.gov':
+      metadata_url: 'https://dashboard.demo.login.gov/users/auth/saml/metadata'
+      acs_url: 'https://dashboard.demo.login.gov/users/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://dashboard.demo.login.gov/users/auth/saml/logout'
+      sp_initiated_login_url: 'https://dashboard.demo.login.gov/users/auth/saml'
       cert: 'identity_dashboard_cert'
-    'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dashboard-demo':
-      metadata_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml/metadata'
-      acs_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml/callback'
-      assertion_consumer_logout_service_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml/logout'
-      sp_initiated_login_url: 'https://identity-dashboard-demo.apps.cloud.gov/users/auth/saml'
+    'https://dashboard.qa.login.gov':
+      metadata_url: 'https://dashboard.qa.login.gov/users/auth/saml/metadata'
+      acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://dashboard.qa.login.gov/users/auth/saml/logout'
+      sp_initiated_login_url: 'https://dashboard.qa.login.gov/users/auth/saml'
+      cert: 'identity_dashboard_cert'
+    'https://dashboard.dev.login.gov':
+      metadata_url: 'https://dashboard.dev.login.gov/users/auth/saml/metadata'
+      acs_url: 'https://dashboard.dev.login.gov/users/auth/saml/callback'
+      assertion_consumer_logout_service_url: 'https://dashboard.dev.login.gov/users/auth/saml/logout'
+      sp_initiated_login_url: 'https://dashboard.dev.login.gov/users/auth/saml'
       cert: 'identity_dashboard_cert'
 
 superb.legit.domain.gov:
