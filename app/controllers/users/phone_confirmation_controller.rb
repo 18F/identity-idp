@@ -82,7 +82,7 @@ module Users
         self.confirmation_code = PhoneConfirmationController.generate_confirmation_code
       end
 
-      SmsSenderConfirmationJob.perform_later(confirmation_code, unconfirmed_mobile)
+      SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_mobile)
     end
 
     def confirmation_code=(code)

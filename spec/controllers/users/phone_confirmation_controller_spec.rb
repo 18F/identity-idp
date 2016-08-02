@@ -37,11 +37,11 @@ describe Users::PhoneConfirmationController, devise: true do
       end
 
       it 'sends confirmation code via SMS' do
-        allow(SmsSenderConfirmationJob).to receive(:perform_later)
+        allow(SmsSenderOtpJob).to receive(:perform_later)
 
         get :send_code
 
-        expect(SmsSenderConfirmationJob).to have_received(:perform_later).
+        expect(SmsSenderOtpJob).to have_received(:perform_later).
           with(subject.user_session[:phone_confirmation_code], '+1 (555) 555-5555')
       end
 
@@ -49,11 +49,11 @@ describe Users::PhoneConfirmationController, devise: true do
         before { subject.user_session[:phone_confirmation_code] = '1234' }
 
         it 're-sends existing code' do
-          allow(SmsSenderConfirmationJob).to receive(:perform_later)
+          allow(SmsSenderOtpJob).to receive(:perform_later)
 
           get :send_code
 
-          expect(SmsSenderConfirmationJob).
+          expect(SmsSenderOtpJob).
             to have_received(:perform_later).with('1234', '+1 (555) 555-5555')
         end
       end

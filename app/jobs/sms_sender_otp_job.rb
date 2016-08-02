@@ -10,11 +10,7 @@ class SmsSenderOtpJob < ActiveJob::Base
   def send_otp(twilio_service, code, mobile)
     twilio_service.send_sms(
       to: mobile,
-      body: otp_message(code)
+      body: "#{code} is your #{APP_NAME} one-time passcode."
     )
-  end
-
-  def otp_message(code)
-    "#{code} is your #{APP_NAME} one-time password."
   end
 end
