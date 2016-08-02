@@ -9,6 +9,10 @@ Identity-IdP (Upaya)
 
 A proof-of-concept Identity Management System.
 
+A top level `Makefile` exists which can be used to quickly and easily perform
+some of the most common tasks.  For example `make run` will run the server
+locally, `make test` will run the rspec tests.
+
 **Notice:** This project is still in alpha.
 
 ### Dependencies
@@ -19,13 +23,13 @@ A proof-of-concept Identity Management System.
 - [Node.js v4.4.x](https://nodejs.org)
 
 Testing dependencies:
- - [PhantomJS](http://phantomjs.org)
+- [PhantomJS](http://phantomjs.org)
 
 ### Getting Started with Docker
 
 1. Download, install, and launch [Docker]
 
-1. Set up the Docker image
+2. Set up the Docker image
 
         $ bin/setup --docker
 
@@ -49,25 +53,26 @@ more information.
 
 ### Getting Started Locally
 
-1. Make sure you have a working development environment with all the
-[dependencies](#dependencies) installed. On a Mac, the easiest way
-to set up a development environment is by running our [Laptop]
-script. The script will install all of this project's dependencies.
 
-1. Make sure Postgres and Redis are running. For example, on OS X:
+1. Make sure you have a working development environment with all the
+   [dependencies](#dependencies) installed. On a Mac, the easiest way
+   to set up a development environment is by running our [Laptop]
+   script. The script will install all of this project's dependencies.
+
+2. Make sure Postgres and Redis are running. For example, on OS X:
 
         $ brew services start redis postgres
 
-1. Run the following command to set up the environment:
+3. Run the following command to set up the environment:
 
-        $ bin/setup
+        $ make setup
 
    This command copies sample configuration files, installs required gems
    and sets up the database.
 
-1. Run the app server with:
+4. Run the app server with:
 
-        $ foreman start
+        $ make run
 
 If you want to develop without and internet connection, you can set
 `RAILS_OFFLINE=1` in your envrionment.  This disables the `mx` record
@@ -84,14 +89,14 @@ page](http://phantomjs.org/download.html).
 
 To run all the tests:
 
-    $ bundle exec rspec
+    $ make test
 
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
 Run security scanner
 
-    $ bundle exec brakeman
+    $ make brakeman
 
 ### Deploying
 
@@ -99,9 +104,7 @@ We currently run `dev` and `qa` environments at https://upaya-idp-dev.18f.gov
 and https://upaya-idp-qa.18f.gov. Core developers can deploy to those hosts
 with [Capistrano](http://capistranorb.com) using the following command:
 
-```
-cap <env/stage> deploy
-```
+    $ cap <env/stage> deploy
 
 You will need to provide a copy of your SSH public key and you may need to
 provide your IP address if you are not in a GSA building or on the GSA VPN.
