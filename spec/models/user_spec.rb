@@ -244,4 +244,12 @@ describe User do
       expect(user.direct_otp.length).to eq 6
     end
   end
+
+  describe '#decorate' do
+    it 'returns a UserDecorator' do
+      user = build(:user)
+
+      expect(user.decorate).to be_a(UserDecorator)
+    end
+  end
 end

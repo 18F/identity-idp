@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
   private
 
   def decorated_user
-    UserDecorator.new(current_user)
+    @_decorated_user ||= current_user.decorate
   end
 
   def after_sign_in_path_for(resource)
