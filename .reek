@@ -33,7 +33,6 @@ UnusedPrivateMethod:
     - ActiveJob::Logging::LogSubscriber
     - SamlIdpController
     - Users::PhoneConfirmationController
-    - UpdateUserProfileForm
 UtilityFunction:
   public_methods_only: true
   exclude:

@@ -23,7 +23,7 @@ describe Users::EditInfoController, devise: true do
       end
     end
 
-    context 'user attempts to remove email address' do
+    context 'user attempts enter empty email address' do
       render_views
 
       it 'displays an error message and does not delete the email' do
@@ -68,13 +68,23 @@ describe Users::EditInfoController, devise: true do
     context 'user changes mobile' do
       before do
         sign_in(user)
+        stub_analytics(user)
+        allow(@analytics).to receive(:track_event)
         put :mobile, update_user_mobile_form: { mobile: new_mobile }
       end
 
       it 'redirects to phone confirmation page with success message' do
         expect(response).to redirect_to(phone_confirmation_send_path)
         expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
+      end
+
+      it 'does not update the users phone number' do
         expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
+      end
+
+      it 'tracks the phone number update event' do
+        expect(@analytics).to have_received(:track_event).
+          with('User asked to update their phone number')
       end
     end
 
