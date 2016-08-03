@@ -5,16 +5,14 @@ describe IdentityLinker do
     let(:user) { create(:user) }
 
     it "updates user's last authenticated identity" do
-      IdentityLinker.new(user, 'test.host', 'LOA1').link_identity
+      IdentityLinker.new(user, 'test.host').link_identity
       user.reload
 
       last_identity = user.last_identity
 
       new_attributes = {
         service_provider: 'test.host',
-        authn_context: 'LOA1',
-        user_id: user.id,
-        ial: 1
+        user_id: user.id
       }
 
       identity_attributes = last_identity.attributes.symbolize_keys.
@@ -27,7 +25,7 @@ describe IdentityLinker do
     end
 
     it 'fails when given a nil provider' do
-      linker = IdentityLinker.new(user, nil, 'LOA1')
+      linker = IdentityLinker.new(user, nil)
       expect { linker.link_identity }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end

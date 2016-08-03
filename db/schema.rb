@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160727165624) do
+ActiveRecord::Schema.define(version: 20160803174440) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,18 +39,15 @@ ActiveRecord::Schema.define(version: 20160727165624) do
 
   create_table "identities", force: :cascade do |t|
     t.string   "service_provider",      limit: 255
-    t.string   "authn_context",         limit: 255
     t.datetime "last_authenticated_at"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "session_uuid",          limit: 255
-    t.integer  "ial",                               default: 1
   end
 
-  add_index "identities", ["ial"], name: "index_identities_on_ial", using: :btree
-  add_index "identities", ["service_provider", "authn_context"], name: "index_identities_on_service_provider_and_authn_context", using: :btree
   add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree
+  add_index "identities", ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "profiles", force: :cascade do |t|

@@ -135,10 +135,6 @@ feature 'saml api', devise: true, sms: true do
         expect(user.last_identity.service_provider).to eq saml_spec_settings.issuer
       end
 
-      it 'stores authn_context in Identity model' do
-        expect(user.last_identity.authn_context).to eq saml_settings.authn_context
-      end
-
       it 'stores last_authenticated_at in Identity model' do
         expect(user.last_identity.last_authenticated_at).to be_present
       end
