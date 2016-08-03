@@ -3,7 +3,7 @@ class Identity < ActiveRecord::Base
   validates :service_provider, presence: true
 
   def deactivate
-    update(last_authenticated_at: nil)
+    update!(last_authenticated_at: nil)
   end
 
   def sp_metadata

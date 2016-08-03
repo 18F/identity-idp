@@ -40,12 +40,6 @@ UtilityFunction:
     - AnalyticsEventJob#perform
     - SmsSenderConfirmationJob
 
-'spec':
-  UtilityFunction:
-    enabled: false
-  TooManyStatements:
-    enabled: false
-
 exclude_paths:
   - db/migrate
   - spec/**/*

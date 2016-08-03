@@ -12,9 +12,9 @@ module SamlIdpLogoutConcern
 
   def handle_saml_logout_response
     LogoutResponseHandler.new(asserted_identity, user_session[:logout_response]).perform do |status|
-      return generate_slo_request if status == 'continue logout with next identity'
+      return generate_slo_request if status == :continue_logout_with_next_identity
 
-      return finish_slo_at_idp if status == 'no more logout responses'
+      return finish_slo_at_idp if status == :no_more_logout_responses
     end
 
     generate_slo_response_and_sign_out

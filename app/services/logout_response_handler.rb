@@ -2,11 +2,11 @@ LogoutResponseHandler = Struct.new(:identity, :response) do
   def perform
     deactivate_identity
 
-    yield 'continue logout with next identity' if in_slo?
+    yield :continue_logout_with_next_identity if in_slo?
 
     deactivate_last_identity
 
-    yield 'no more logout responses' if response.blank?
+    yield :no_more_logout_responses if response.blank?
   end
 
   private
