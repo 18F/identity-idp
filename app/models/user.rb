@@ -47,11 +47,11 @@ class User < ActiveRecord::Base
   end
 
   def first_identity
-    active_identities[0] unless active_identities.empty?
+    active_identities[0]
   end
 
   def last_identity
-    active_identities[-1] unless active_identities.empty?
+    active_identities[-1] || NullIdentity.new
   end
 
   def active_identities
@@ -60,7 +60,7 @@ class User < ActiveRecord::Base
       nil
     ).order(
       last_authenticated_at: :asc
-    )
+    ) || []
   end
 
   def multiple_identities?

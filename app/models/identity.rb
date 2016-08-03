@@ -2,8 +2,8 @@ class Identity < ActiveRecord::Base
   belongs_to :user
   validates :service_provider, presence: true
 
-  def deactivate!
-    update(last_authenticated_at: nil)
+  def deactivate
+    update!(last_authenticated_at: nil)
   end
 
   def sp_metadata
