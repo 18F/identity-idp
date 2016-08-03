@@ -1,10 +1,11 @@
 #################
 # GLOBAL CONFIG
 #################
-set :application, 'upaya'
+set :application, 'idp'
 # set branch based on env var or ask with the default set to the current local branch
 set :branch, ENV['branch'] || ENV['BRANCH'] || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
 set :bundle_without, 'deploy development doc test'
+set :deploy_to, '/srv/idp'
 set :deploy_via, :remote_cache
 set :keep_releases, 5
 set :linked_files, %w(certs/saml.crt
@@ -13,10 +14,11 @@ set :linked_files, %w(certs/saml.crt
                       keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
 set :rails_env, :production
-set :rbenv_ruby, '2.3.1'
-set :rbenv_type, :user # or :system, depends on your rbenv setup
 set :repo_url, 'https://github.com/18F/identity-idp.git'
+set :sidekiq_options, ''
 set :sidekiq_queue, [:mailers, :sms, :analytics]
+set :sidekiq_monit_use_sudo, true
+set :sidekiq_user, 'ubuntu'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
 set :whenever_roles, [:app]
 
@@ -33,7 +35,7 @@ namespace :deploy do
 
   desc 'Install npm packages required for asset compilation with browserify'
   task :browserify do
-    on roles(:app), in: :sequence do
+    on roles(:app, :web), in: :sequence do
       within release_path do
         execute :npm, 'install'
       end
