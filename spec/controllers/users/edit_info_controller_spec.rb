@@ -68,7 +68,7 @@ describe Users::EditInfoController, devise: true do
     context 'user changes mobile' do
       before do
         sign_in(user)
-        stub_analytics(user)
+        stub_analytics
         allow(@analytics).to receive(:track_event)
         put :mobile, update_user_mobile_form: { mobile: new_mobile }
       end

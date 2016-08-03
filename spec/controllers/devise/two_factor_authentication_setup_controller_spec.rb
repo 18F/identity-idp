@@ -16,7 +16,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
       user = create(:user)
       sign_in(user)
 
-      stub_analytics(user)
+      stub_analytics
       expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
 
       patch(
