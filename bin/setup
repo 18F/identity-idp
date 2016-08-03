@@ -29,7 +29,7 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Installing dependencies =="
   run "gem install bundler --conservative"
-  run 'gem install foreman && gem update foreman'
+  run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install"
   run "npm install"
 
