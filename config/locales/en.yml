@@ -34,8 +34,6 @@ en:
         time you log in you’ll need to open the application and retrieve a code.
     confirmation:
       show_hdr: Create a Password
-    value_missing: This field is required
-    pattern_mismatch: Please enter information in the correct format
 
   links:
     resend: Resend
@@ -149,9 +147,6 @@ en:
       city: City
       state: State
       zipcode: ZIP Code
-    errors:
-      invalid_ssn: 'Please enter a valid SSN in the format of 123-45-6789'
-      invalid_zipcode: 'Please enter a valid Zip Code in the format of 20006'
     titles:
       intro: Help us identify you
       expectations: We need some information from you

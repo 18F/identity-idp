@@ -13,7 +13,7 @@ function formatForm() {
       input.className += ' monospace';
 
       /* eslint-disable no-new */
-      new Formatter(input, { pattern: ptrn, persistent: true });
+      new Formatter(input, { pattern: ptrn });
     }
   });
 }

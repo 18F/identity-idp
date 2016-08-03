@@ -6,7 +6,8 @@ $radio-checkbox-space: 1.5rem;
   font-weight: $bold-font-weight;
 }
 
-.is-invalid {
+.invalid,
+.interacted.required:invalid {
   border-color: $red;
 }
 
