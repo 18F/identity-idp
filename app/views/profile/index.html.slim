@@ -5,12 +5,19 @@
 
 h2.heading.heading-m0 = t('headings.profile.login_info')
 .mb4
-  .py2.border-top.border-bottom
+  .py2.border-top
     .clearfix.mxn1
       .sm-col.sm-col-4.px1 = 'Email address'
       .sm-col.sm-col-6.px1 = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_email_path, \
+          class: 'btn btn-primary px2 py0 h6 regular'
+  .py2.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1 = 'Password'
+      .sm-col.sm-col-6.px1 = '*' * 10
+      .sm-col.sm-col-2.px1.sm-right-align
+        = link_to 'Edit', change_password_path, \
           class: 'btn btn-primary px2 py0 h6 regular'
   .mt2.mb1.h6.bold.caps
     | #{t('headings.profile.two_factor')} #{tooltip(t('tooltips.placeholder'))}

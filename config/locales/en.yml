@@ -53,6 +53,7 @@ en:
     edit_info:
       email: Edit your email
       mobile: Edit your phone number
+      password: Change your password
     enter_2fa_code: Enter the secure one-time passcode
     account_locked: Account locked
     passwords:
@@ -84,6 +85,7 @@ en:
     edit_info:
       email: Edit your email
       mobile: Edit your phone number
+      password: Change your password
     log_in: Log in
     passwords:
       change: Change your password
