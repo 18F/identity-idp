@@ -32,9 +32,8 @@ module SamlIdpAuthConcern
 
   def link_identity_from_session_data
     provider = saml_request.service_provider.identifier
-    authn_context = requested_authn_context
 
-    IdentityLinker.new(current_user, provider, authn_context).link_identity
+    IdentityLinker.new(current_user, provider).link_identity
   end
 
   def identity_needs_verification?

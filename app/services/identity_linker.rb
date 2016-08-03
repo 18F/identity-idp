@@ -1,4 +1,4 @@
-IdentityLinker = Struct.new(:user, :provider, :authn_context) do
+IdentityLinker = Struct.new(:user, :provider) do
   attr_reader :identity
 
   def link_identity
@@ -18,7 +18,6 @@ IdentityLinker = Struct.new(:user, :provider, :authn_context) do
 
   def identity_attributes
     {
-      authn_context: authn_context,
       last_authenticated_at: Time.current,
       session_uuid: SecureRandom.uuid
     }

@@ -248,11 +248,7 @@ describe SamlIdpController do
         linker = instance_double(IdentityLinker)
 
         expect(IdentityLinker).to receive(:new).
-          with(
-            controller.current_user,
-            saml_settings.issuer,
-            'http://idmanagement.gov/ns/assurance/loa/1'
-          ).and_return(linker)
+          with(controller.current_user, saml_settings.issuer).and_return(linker)
 
         expect(linker).to receive(:link_identity)
 
