@@ -44,11 +44,13 @@ ActiveRecord::Schema.define(version: 20160803174440) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "session_uuid",          limit: 255
+    t.string   "uuid",                                          null: false
   end
 
   add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree
   add_index "identities", ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+  add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
 
   create_table "profiles", force: :cascade do |t|
     t.integer  "user_id",                      null: false

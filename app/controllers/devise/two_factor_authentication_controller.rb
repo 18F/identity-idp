@@ -121,7 +121,7 @@ module Devise
     end
 
     def user_decorator
-      @user_decorator ||= UserDecorator.new(current_user)
+      @user_decorator ||= current_user.decorate
     end
   end
 end

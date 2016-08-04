@@ -16,7 +16,7 @@ SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
   def request_message
     Base64.strict_encode64(slo_request_builder(
       sp_metadata,
-      user.uuid,
+      identity.uuid,
       identity.session_uuid
     ).signed)
   end

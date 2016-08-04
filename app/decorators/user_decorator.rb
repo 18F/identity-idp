@@ -43,6 +43,10 @@ UserDecorator = Struct.new(:user) do
     !user.active_profile.present?
   end
 
+  def active_identity_for(service_provider)
+    user.active_identities.find_by(service_provider: service_provider.issuer)
+  end
+
   def qrcode(otp_secret_key)
     options = {
       issuer: 'Login.gov',

@@ -41,7 +41,7 @@ module SamlIdpLogoutConcern
 
   def name_id_user
     name_id = saml_request.name_id
-    User.find_by(uuid: name_id)
+    Identity.includes(:user).find_by(uuid: name_id).user
   end
 
   def asserted_identity

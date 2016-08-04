@@ -4,12 +4,14 @@ class ServiceProvider
   # currently acceptable encryption values are 'none' and 'aes256-cbc'
   DEFAULT_ENCRYPTION = 'aes256-cbc'.freeze
 
-  def initialize(host)
-    @host = host
+  attr_reader :issuer
+
+  def initialize(issuer)
+    @issuer = issuer
   end
 
   def metadata
-    ignored_methods = [:metadata, :encrypt_responses?, :encryption_opts]
+    ignored_methods = [:metadata, :encrypt_responses?, :encryption_opts, :issuer]
     metadata_methods = self.class.instance_methods(false) - ignored_methods
 
     @metadata ||= metadata_methods.inject({}) do |hash, method|
@@ -18,43 +20,44 @@ class ServiceProvider
   end
 
   def acs_url
-    host_attributes['acs_url']
+    sp_attributes['acs_url']
   end
 
   def assertion_consumer_logout_service_url
-    host_attributes['assertion_consumer_logout_service_url']
+    sp_attributes['assertion_consumer_logout_service_url']
   end
 
   def sp_initiated_login_url
-    host_attributes['sp_initiated_login_url']
+    sp_attributes['sp_initiated_login_url']
   end
 
   def metadata_url
-    host_attributes['metadata_url']
+    sp_attributes['metadata_url']
   end
 
   def agency
-    host_attributes['agency']
+    sp_attributes['agency']
   end
 
   def friendly_name
-    host_attributes['friendly_name']
+    sp_attributes['friendly_name']
   end
 
   def attribute_bundle
-    host_attributes['attribute_bundle']
+    sp_attributes['attribute_bundle']
   end
 
   def cert
-    return if host_attributes['cert'].blank?
+    sp_cert = sp_attributes['cert']
+    return if sp_cert.blank?
 
     cert_dir = "#{Rails.root}/certs/sp/"
 
-    @cert ||= File.read("#{cert_dir}#{host_attributes['cert']}.crt")
+    @cert ||= File.read("#{cert_dir}#{sp_cert}.crt")
   end
 
   def block_encryption
-    host_attributes['block_encryption'] || DEFAULT_ENCRYPTION
+    sp_attributes['block_encryption'] || DEFAULT_ENCRYPTION
   end
 
   def key_transport
@@ -92,8 +95,8 @@ class ServiceProvider
     @config.symbolize_keys!
   end
 
-  def host_attributes
-    config[:valid_hosts].fetch(@host, {})
+  def sp_attributes
+    config[:valid_hosts].fetch(@issuer, {})
   end
 
   def encrypt_responses?

@@ -113,7 +113,7 @@ describe SamlIdpController do
   describe 'GET /api/saml/auth' do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
 
-    context 'with LOA3 but the identity is already verified' do
+    context 'with LOA3 and the identity is already verified' do
       before do
         allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
           %w(first_name last_name ssn zipcode)
@@ -129,8 +129,9 @@ describe SamlIdpController do
         authn_request = SamlIdp::Request.from_deflated_request(raw_req)
         asserter = AttributeAsserter.new(user, ServiceProvider.new(settings.issuer), authn_request)
 
-        expect(AttributeAsserter).to receive(:new).and_return(asserter)
-        expect(asserter).to receive(:build).at_least(:once)
+        allow(subject).to receive(:current_user) { user }
+        allow(subject).to receive(:attribute_asserter) { asserter }
+        expect(asserter).to receive(:build).at_least(:once).and_call_original
 
         generate_saml_response(user, settings)
       end
@@ -260,9 +261,9 @@ describe SamlIdpController do
       let(:issuer) { xmldoc.issuer_nodeset[0] }
       let(:status) { xmldoc.status[0] }
       let(:status_code) { xmldoc.status_code[0] }
+      let(:user) { create(:user, :signed_up) }
 
       before do
-        user = create(:user, :signed_up)
         generate_saml_response(user, saml_settings)
       end
 
@@ -308,7 +309,7 @@ describe SamlIdpController do
 
         it 'includes an ID attribute with a valid UUID' do
           expect(UUID.validate(assertion['ID'][1..-1])).to eq(true)
-          expect(assertion['ID']).to eq "_#{User.last.last_identity.session_uuid}"
+          expect(assertion['ID']).to eq "_#{user.last_identity.session_uuid}"
         end
 
         it 'includes an IssueInstant attribute with a timestamp' do
@@ -468,7 +469,7 @@ describe SamlIdpController do
           end
 
           it 'has the UUID of the user making the AuthN Request' do
-            expect(name_id.children.first.to_s).to eq(User.last.uuid)
+            expect(name_id.children.first.to_s).to eq(user.last_identity.uuid)
           end
         end
 

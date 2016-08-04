@@ -5,6 +5,13 @@ describe AttributeAsserter do
 
   let(:loa1_user) { create(:user, :signed_up) }
   let(:user) { create(:profile, :active, :verified, first_name: 'Jane').user }
+  let(:identity) do
+    build(
+      :identity,
+      service_provider: service_provider.issuer,
+      last_authenticated_at: Time.current
+    )
+  end
   let(:service_provider) { ServiceProvider.new(sp1_saml_settings.issuer) }
   let(:raw_authn_request) { URI.decode loa3_authnrequest.split('SAMLRequest').last }
   let(:authn_request) do
@@ -17,6 +24,7 @@ describe AttributeAsserter do
 
       context 'custom bundle includes email, mobile' do
         before do
+          user.identities << identity
           allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
             %w(email mobile first_name)
           )
@@ -32,6 +40,11 @@ describe AttributeAsserter do
 
         it 'creates getter function' do
           expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jane'
+        end
+
+        it 'gets UUID (MBUN) from Service Provider' do
+          uuid_getter = user.asserted_attributes[:uuid][:getter]
+          expect(uuid_getter.call(user)).to eq user.last_identity.uuid
         end
       end
 

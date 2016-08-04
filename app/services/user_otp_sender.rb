@@ -12,6 +12,6 @@ class UserOtpSender
   private
 
   def user_decorator
-    @user_decorator ||= UserDecorator.new(@user)
+    @user_decorator ||= @user.decorate
   end
 end

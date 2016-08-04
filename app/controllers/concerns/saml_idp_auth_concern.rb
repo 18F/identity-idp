@@ -48,8 +48,12 @@ module SamlIdpAuthConcern
     current_user.last_identity
   end
 
+  def attribute_asserter(principal)
+    AttributeAsserter.new(principal, current_service_provider, saml_request)
+  end
+
   def build_asserted_attributes(principal)
-    asserter = AttributeAsserter.new(principal, current_service_provider, saml_request)
+    asserter = attribute_asserter(principal)
     asserter.build
   end
 
