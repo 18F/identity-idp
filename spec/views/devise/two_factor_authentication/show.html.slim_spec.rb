@@ -12,7 +12,7 @@ describe 'devise/two_factor_authentication/show.html.slim' do
 
     it 'informs the user that an OTP has been sent to their number' do
       allow(view).to receive(:current_user).and_return(user)
-      @phone_number = UserDecorator.new(user).masked_two_factor_phone_number
+      @phone_number = user.decorate.masked_two_factor_phone_number
       render
 
       expect(rendered).to have_content 'Please enter the code sent to ***-***-1212'

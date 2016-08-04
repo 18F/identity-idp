@@ -99,4 +99,20 @@ describe UserDecorator do
       expect(user_decorator.may_bypass_2fa?).to eq false
     end
   end
+
+  describe '#active_identity_for' do
+    it 'returns Identity matching ServiceProvider' do
+      sp = ServiceProvider.new('http://sp.example.com')
+      user = create(:user)
+      user.identities << create(
+        :identity,
+        service_provider: sp.issuer,
+        last_authenticated_at: Time.current
+      )
+
+      user_decorator = UserDecorator.new(user)
+
+      expect(user_decorator.active_identity_for(sp)).to eq user.last_identity
+    end
+  end
 end

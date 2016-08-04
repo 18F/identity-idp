@@ -214,7 +214,8 @@ feature 'saml api', devise: true, sms: true do
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp1_saml_settings
-        settings.name_identifier_value = user.uuid
+        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+        settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
         visit request.create(settings)
       end
@@ -340,7 +341,8 @@ feature 'saml api', devise: true, sms: true do
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp2_saml_settings # sp2
-        settings.name_identifier_value = user.uuid
+        sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+        settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
         visit request.create(settings)
       end
 
@@ -390,7 +392,8 @@ feature 'saml api', devise: true, sms: true do
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp1_saml_settings
-        settings.name_identifier_value = user.uuid
+        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+        settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
         visit request.create(settings) # sp1
       end
 
@@ -427,7 +430,8 @@ feature 'saml api', devise: true, sms: true do
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp2_saml_settings
-        settings.name_identifier_value = user.uuid
+        sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+        settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
         visit request.create(settings) # sp2
       end
 

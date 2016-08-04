@@ -4,6 +4,13 @@ require 'service_provider'
 describe ServiceProvider do
   include SamlAuthHelper
 
+  describe '#issuer' do
+    it 'returns the constructor value' do
+      sp = ServiceProvider.new('something')
+      expect(sp.issuer).to eq 'something'
+    end
+  end
+
   describe '#metadata' do
     shared_examples 'invalid service provider' do
       it 'returns nil values for all non-hardcoded keys' do

@@ -4,7 +4,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   it 'mentions how long the user has to confirm' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)
     assign(:resource, user)
-    assign(:confirmation_period, UserDecorator.new(user).confirmation_period)
+    assign(:confirmation_period, user.decorate.confirmation_period)
     render
 
     expect(rendered).to have_content 'Please note that this confirmation link expires in 24 hours'
@@ -24,7 +24,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   it 'mentions updating an account when user has already been confirmed' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)
     assign(:resource, user)
-    assign(:first_sentence, UserDecorator.new(user).first_sentence_for_confirmation_email)
+    assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
     render
 
     expect(rendered).
@@ -34,7 +34,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   it 'mentions creating an account when user is not yet confirmed' do
     user = build_stubbed(:user, confirmed_at: nil)
     assign(:resource, user)
-    assign(:first_sentence, UserDecorator.new(user).first_sentence_for_confirmation_email)
+    assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
     render
 
     expect(rendered).
@@ -44,7 +44,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   it 'mentions resetting the account when account has been reset by tech support' do
     user = build_stubbed(:user, reset_requested_at: Time.zone.now)
     assign(:resource, user)
-    assign(:first_sentence, UserDecorator.new(user).first_sentence_for_confirmation_email)
+    assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
     render
 
     expect(rendered).

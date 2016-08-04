@@ -15,17 +15,18 @@ describe Authorization do
 
   context 'valid attributes' do
     let(:user) { create(:user, :signed_up) }
-    subject { build(:authorization, uid: user.uuid, user_id: user.id) }
+    subject { build(:authorization, uid: SecureRandom.uuid, user_id: user.id) }
     it { is_expected.to be_valid }
   end
 
-  context 'user.uuid is not the same as uid' do
+  context 'uid is not the same as user.uuid or identity UUIDs' do
     it 'does not update the user uuid' do
       user = create(:user, :signed_up)
       auth = build(:authorization, user: user)
       auth.save
       user.save
       expect(auth.uid).to_not eq(user.uuid)
+      expect(user.identities.map(&:uuid)).to_not include(auth.uid)
     end
   end
 end

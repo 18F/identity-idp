@@ -34,7 +34,7 @@ class AttributeAsserter
   def default_attrs
     {
       uuid: {
-        getter: :uuid,
+        getter: uuid_getter_function,
         name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
         name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
       }
@@ -46,6 +46,10 @@ class AttributeAsserter
       next unless DEFAULT_BUNDLE.include? attr
       attrs[attr] = { getter: attribute_getter_function(attr) }
     end
+  end
+
+  def uuid_getter_function
+    -> (principal) { principal.decorate.active_identity_for(service_provider).uuid }
   end
 
   def attribute_getter_function(attr)

@@ -90,7 +90,7 @@ module Users
     def process_expired_confirmation_token
       analytics.track_event('Email Confirmation: token expired', @confirmable)
 
-      flash[:error] = UserDecorator.new(resource).confirmation_period_expired_error
+      flash[:error] = resource.decorate.confirmation_period_expired_error
       render :new
     end
 
