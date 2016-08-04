@@ -1,0 +1,154 @@
+doctype html
+html lang="#{I18n.locale}"
+
+  head
+    meta charset='utf-8'
+    meta name='description' content=APP_NAME
+    meta http-equiv='X-UA-Compatible' content='IE=edge'
+    meta name='msapplication-config' content='none'
+    meta[name='viewport' content='width=device-width, initial-scale=1.0']
+    title = APP_NAME
+    == stylesheet_link_tag 'application', media: 'all'
+    == csrf_meta_tags
+    link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
+    link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
+    <!--[if lt IE 10]>
+      = stylesheet_link_tag 'ie9.css', media: 'all'
+    <!--[elseif lt IE 9]>
+      <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
+      = stylesheet_link_tag 'ie8.css', media: 'all'
+      <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
+    <![endif]-->
+
+  body
+    .site-wrap
+      = render 'shared/usa_disclaimer'
+
+      nav.bg-white
+        .container.p2.sm-py3
+          = link_to \
+            image_tag(asset_url('logo.svg'),
+              alt: APP_NAME,
+              class: 'align-middle',
+              width: 172), root_path
+
+      - bg_img_css = "background-image: url(#{asset_url('splash/hero.png')})"
+      .bg-navy.bg-cover.bg-center.py4 style=bg_img_css
+        .py3
+
+      .bg-white
+        .container.px2.py4
+          h2.mt2.mb1.h0
+            | Improving access to government services through a
+              shared authentication platform
+          = image_tag(asset_url('splash/hr-red-1.svg'), alt: 'hr', class: 'mb3')
+          .h3.serif.line-height-4
+            p.mb3
+              | The General Service Administration's Technology Transformation
+                Service is building an authentication platform to give the
+                public simple and efficient online interactions with the U.S.
+                government. This platform will be a single service shared by
+                different agencies to simplify and streamline logging in and
+                securely accessing personal information on federal government websites.
+            p.mb3
+              | Federal agencies will be able to integrate our platform with
+                their existing services as they choose. What the public will
+                experience is a simpler, more intuitive way to move through
+                the identity authentication step on the way to accessing
+                government services.
+
+      .bg-light-blue
+        .container.px2.py4
+          .clearfix.mxn2
+            .sm-col.sm-col-4.px2.center.sm-show
+              = image_tag(asset_url('splash/graphic-circles.png'),
+                alt: APP_NAME, width: 230, class: 'mt2')
+            .sm-col.sm-col-8.px2
+              h2.mt2.mb1.h1 Easy, secure, and privacy-protecting
+              = image_tag(asset_url('splash/hr-red-2.svg'), alt: 'hr', class: 'mb3')
+              .h3.serif.line-height-4
+                p.mb3
+                  | Our goal is to drastically shorten the amount of time it takes
+                    to work with the government by reducing paperwork the public
+                    has to fill out and forms the government has to process.
+                p.mb3
+                  | In doing so, we’re committed to ensuring individuals control
+                    their own information, and that they can choose whether to use
+                    this new service or go with an alternative.
+
+      .bg-navy.white
+        .container.px2.py4
+          h2.mt2.mb1.h1 Focused on agency needs
+          = image_tag(asset_url('splash/hr-red-3.svg'), alt: 'hr', class: 'mb3')
+          p.mb3.h3.serif.line-height-4
+            | We also believe that a shared authentication platform will
+              reduce the burden of operations, maintenance, and security
+              oversight across the government. This platform addresses concerns
+              that we’ve heard from IT teams across the federal government:
+          .clearfix.mxn2
+            .sm-col.sm-col-4.px2.mb3
+              = image_tag(asset_url('splash/hr-blue-1.svg'), alt: 'hr', class: 'mb2')
+              p
+                | The process of standing up an identity and access management
+                  system should take days, not months.
+            .sm-col.sm-col-4.px2.mb3
+              = image_tag(asset_url('splash/hr-blue-2.svg'), alt: 'hr', class: 'mb2')
+              p
+                | Security updates and identity fraud alerts should arrive in
+                  milliseconds, not weeks.
+            .sm-col.sm-col-4.px2.mb3
+              = image_tag(asset_url('splash/hr-blue-3.svg'), alt: 'hr', class: 'mb2')
+              p
+                | Agencies should be able to concentrate IT resources on
+                  mission-specific operations, not basic authentication tech support.
+
+      .bg-white
+        .container.px2.py4
+          .clearfix.mxn2
+            .sm-col.sm-col-4.px2.center.sm-show
+              = image_tag(asset_url('splash/graphic-people.png'),
+                alt: APP_NAME, class: 'mt2')
+            .sm-col.sm-col-8.px2
+              h2.mt2.mb1.h1 Open and user centered
+              = image_tag(asset_url('splash/hr-red-4.svg'), alt: 'hr', class: 'mb3')
+              .h3.serif.line-height-4
+                p.mb3
+                  | This platform is being built in the open, using agile methods.
+                    We're working iteratively and testing what we build with the
+                    public as we go.
+                p.mb3
+                  = 'You can follow along with development at '
+                  = link_to 'github.com/18F/identity-idp.', \
+                    'https://github.com/18F/identity-idp', class: 'black bold'
+
+      .bg-navy.white
+        .container.px2.py4
+          h2.mt2.mb1.h1 Building cooperatively
+          = image_tag(asset_url('splash/hr-red-5.svg'), alt: 'hr', class: 'mb3')
+          p.mb3.h3.serif.line-height-4
+            | This project builds on groundwork laid by the National Institute
+              for Standards in Technology, the Cybersecurity National Action
+              Plan, and the General Service Administration’s technology procurement
+              experts. We’re working hand-in-hand with organizations across the
+              government and in the private sector to implement best practices
+              and emerging standards in secure, privacy-protecting authentication.
+
+      .bg-light-blue
+        .container.px2.py4
+          h2.mt2.mb1.h1 Learn more
+          = image_tag(asset_url('splash/hr-red-1.svg'), alt: 'hr', class: 'mb3')
+          .h3.serif.line-height-4
+            p.mb3
+              | We’ll be publishing more information as the project advances.
+                To stay up to date with our work, please sign up for our newsletter
+                below. To follow the technical development of the project, you can
+                see our code on GitHub.
+            p.mb3
+              | For more information about government policies about this work,
+                you can read the in-progress NIST standards.
+          .mt1.mb3
+            btn.btn.btn-primary.rounded-big.regular.px3.py2.mb1.mr1 Newsletter
+            btn.btn.btn-primary.rounded-big.regular.px3.py2.mb1.mr1 See on GitHub
+            btn.btn.btn-primary.rounded-big.regular.px3.py2.mb1 Read the standards
+
+    = render 'shared/footer'
