@@ -55,7 +55,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       before do
         sign_in_before_2fa
 
-        stub_analytics(subject.current_user)
+        stub_analytics
         expect(@analytics).to receive(:track_event).with('User entered invalid 2FA code')
         expect(@analytics).to receive(:track_pageview)
 
@@ -74,6 +74,20 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
       it 'displays flash error message' do
         expect(flash[:error]).to eq t('devise.two_factor_authentication.attempt_failed')
+      end
+    end
+
+    context 'when the user has reached the max number of OTP attempts' do
+      it 'tracks the event' do
+        sign_in_before_2fa
+
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).exactly(3).times.
+          with('User entered invalid 2FA code')
+        expect(@analytics).to receive(:track_event).with('User reached max 2FA attempts')
+
+        3.times { patch :update, code: '12345' }
       end
     end
 
@@ -98,7 +112,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'tracks the valid authentication event' do
-        stub_analytics(subject.current_user)
+        stub_analytics
         expect(@analytics).to receive(:track_event).with('User 2FA successful')
         expect(@analytics).to receive(:track_event).with('Authentication Successful')
 
@@ -216,7 +230,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'tracks the pageview' do
-        stub_analytics(subject.current_user)
+        stub_analytics
         expect(@analytics).to receive(:track_pageview)
 
         get :show
@@ -283,7 +297,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     end
 
     it 'tracks the event' do
-      stub_analytics(subject.current_user)
+      stub_analytics
       expect(@analytics).to receive(:track_event).with('User requested a new OTP code')
 
       get :new

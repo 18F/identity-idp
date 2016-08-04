@@ -115,12 +115,6 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      stub_analytics(user)
-      expect(@analytics).to receive(:track_pageview).exactly(3).times
-      expect(@analytics).to receive(:track_event).exactly(3).times.
-        with('User entered invalid 2FA code')
-      expect(@analytics).to receive(:track_event).with('User reached max 2FA attempts')
-
       3.times do
         fill_in('code', with: 'bad-code')
         click_button('Submit')

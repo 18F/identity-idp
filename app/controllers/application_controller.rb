@@ -25,8 +25,10 @@ class ApplicationController < ActionController::Base
     payload[:ip] = request.remote_ip
   end
 
+  attr_writer :analytics
+
   def analytics
-    @analytics ||= Analytics.new(current_user, request_attributes, ahoy)
+    @analytics ||= Analytics.new(current_user, request)
   end
 
   private
@@ -71,16 +73,5 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
-  end
-
-  def request_attributes
-    {
-      user_agent: request.user_agent,
-      user_ip: request.remote_ip
-    }
-  end
-
-  def ahoy
-    @ahoy ||= Rails.env.test? ? NullAhoyTracker.new : Ahoy::Tracker.new(request: request)
   end
 end

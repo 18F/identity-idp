@@ -53,15 +53,6 @@ describe 'user edits their account', email: true do
 
       expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
     end
-
-    it 'tracks the confirmation event' do
-      stub_analytics(user)
-
-      expect(@analytics).to receive(:track_event).
-        with('Email changed and confirmed', user)
-
-      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
-    end
   end
 
   context 'user changes mobile' do

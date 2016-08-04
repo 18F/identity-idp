@@ -12,7 +12,7 @@ describe ApplicationController do
       sign_in_as_user
       expect(subject.current_user).to be_present
 
-      stub_analytics(subject.current_user)
+      stub_analytics
       expect(@analytics).to receive(:track_event).with('InvalidAuthenticityToken')
 
       get :index
@@ -120,6 +120,14 @@ describe ApplicationController do
 
         expect(response).to redirect_to user_two_factor_authentication_url
       end
+    end
+  end
+
+  describe '#analytics' do
+    it 'calls the Analytics class by default with current_user and request parameters' do
+      expect(Analytics).to receive(:new).with(controller.current_user, request)
+
+      controller.analytics
     end
   end
 end

@@ -114,7 +114,7 @@ describe Users::PhoneConfirmationController, devise: true do
       end
 
       it 'tracks the update and confirmation event' do
-        stub_analytics(subject.current_user)
+        stub_analytics
         expect(@analytics).to receive(:track_event).with('User confirmed their phone number')
         expect(@analytics).to receive(:track_event).
           with('User changed and confirmed their phone number')
@@ -123,7 +123,7 @@ describe Users::PhoneConfirmationController, devise: true do
       end
 
       it 'tracks an event when the user enters an invalid code' do
-        stub_analytics(subject.current_user)
+        stub_analytics
         expect(@analytics).to receive(:track_event).
           with('User entered invalid phone confirmation code')
 
@@ -146,7 +146,7 @@ describe Users::PhoneConfirmationController, devise: true do
       end
 
       it 'tracks the confirmation event' do
-        stub_analytics(subject.current_user)
+        stub_analytics
         expect(@analytics).to receive(:track_event).with('User confirmed their phone number')
         expect(@analytics).to receive(:track_event).with('Authentication Successful')
 
@@ -168,7 +168,7 @@ describe Users::PhoneConfirmationController, devise: true do
     end
 
     it 'tracks the pageview' do
-      stub_analytics(subject.current_user)
+      stub_analytics
       expect(@analytics).to receive(:track_pageview)
 
       get :show
