@@ -1,5 +1,6 @@
 module AnalyticsHelper
   def stub_analytics
-    @analytics = controller.analytics(FakeAnalytics.new)
+    controller.analytics = FakeAnalytics.new
+    @analytics = controller.analytics
   end
 end

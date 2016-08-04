@@ -25,8 +25,10 @@ class ApplicationController < ActionController::Base
     payload[:ip] = request.remote_ip
   end
 
-  def analytics(service = Analytics.new(current_user, request))
-    @analytics ||= service
+  attr_writer :analytics
+
+  def analytics
+    @analytics ||= Analytics.new(current_user, request)
   end
 
   private
