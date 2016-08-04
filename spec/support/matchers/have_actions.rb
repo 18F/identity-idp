@@ -59,7 +59,7 @@ end
 
 def symbol_from_string(string)
   if string.include?('||')
-    string.split('||').map { |s| s.split('==')[1].strip.tr("'", '').to_sym }
+    string.split('||').map { |str| str.split('==')[1].strip.tr("'", '').to_sym }
   else
     string.split('==')[1].strip.tr("'", '').to_sym
   end

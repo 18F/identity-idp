@@ -7,10 +7,12 @@ module IdvHelper
     %w(city bear quest color speed).each do |answer_key|
       question = mock_idv_questions.find_by_key(answer_key)
       answer_text = Proofer::Vendor::Mock::ANSWERS[answer_key]
-      if question.choices.nil?
+      choices = question.choices
+
+      if choices.nil?
         fill_in :answer, with: answer_text
       else
-        choice = question.choices.detect { |c| c.key == answer_text }
+        choice = choices.detect { |c| c.key == answer_text }
         el_id = "#choice_#{choice.key_html_safe}"
         find(el_id).set(true)
       end
@@ -22,10 +24,12 @@ module IdvHelper
     %w(city bear quest color speed).each do |answer_key|
       question = mock_idv_questions.find_by_key(answer_key)
       answer_text = Proofer::Vendor::Mock::ANSWERS[answer_key]
-      if question.choices.nil?
+      choices = question.choices
+
+      if choices.nil?
         fill_in :answer, with: 'wrong'
       else
-        choice = question.choices.detect { |c| c.key == answer_text }
+        choice = choices.detect { |c| c.key == answer_text }
         el_id = "#choice_#{choice.key_html_safe}"
         find(el_id).set(true)
       end
