@@ -28,6 +28,10 @@ class UpdateUserEmailForm
     valid? && !email_taken?
   end
 
+  def require_phone_confirmation?
+    false
+  end
+
   def phone_changed?
     false
   end

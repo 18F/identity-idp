@@ -2,7 +2,7 @@ class SmsSenderOtpJob < ActiveJob::Base
   queue_as :sms
 
   def perform(code, phone)
-    send_otp(TwilioService.new, code, phone)
+    send_otp(TwilioSmsService.new, code, phone)
   end
 
   private

@@ -1,0 +1,4 @@
+- if @sms_enabled
+	p.m0= link_to 'Click here if you prefer to receive a phone call', @fallback_confirmation_link
+- else
+	p.m0= link_to 'Click here if you prefer to receive a text message', @fallback_confirmation_link

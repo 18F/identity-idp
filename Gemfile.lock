@@ -18,13 +18,6 @@ GIT
       rotp
 
 GIT
-  remote: https://github.com/monfresh/sms-spec.git
-  revision: 786238c1924c055d16a4963abb329c9b985ce104
-  specs:
-    sms-spec (0.2.0)
-      rspec (~> 3.1)
-
-GIT
   remote: https://github.com/onelogin/ruby-saml.git
   revision: 709b4c09a06ab7a299a512eaa166a56ddc50290a
   branch: master
@@ -666,7 +659,6 @@ DEPENDENCIES
   sinatra
   slim-rails
   slim_lint
-  sms-spec!
   split
   spring
   spring-commands-rspec

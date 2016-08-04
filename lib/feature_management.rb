@@ -1,6 +1,6 @@
 class FeatureManagement
-  def self.sms_disabled?
-    Figaro.env.sms_disabled == 'true'
+  def self.telephony_disabled?
+    Figaro.env.telephony_disabled == 'true'
   end
 
   def self.allow_third_party_auth?
@@ -10,7 +10,7 @@ class FeatureManagement
   def self.prefill_otp_codes?
     # In development, when SMS is disabled we pre-fill the correct codes so that
     # developers can log in without needing to configure SMS delivery.
-    Rails.env.development? && FeatureManagement.sms_disabled?
+    Rails.env.development? && FeatureManagement.telephony_disabled?
   end
 
   def self.proofing_requires_kbv?

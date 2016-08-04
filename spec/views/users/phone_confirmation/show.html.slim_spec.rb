@@ -47,4 +47,32 @@ describe 'users/phone_confirmation/show.html.slim' do
       expect(rendered).to have_xpath("//input[@value='12777']")
     end
   end
+
+  context 'when choosing to receive OTP via SMS' do
+    before do
+      @sms_enabled = true
+      @fallback_confirmation_link = '/phone_confirmation/disable_sms'
+    end
+
+    it 'has a link to send confirmation with voice' do
+      render
+
+      expect(rendered).to have_link('Click here if you prefer to receive a ' \
+        'phone call', href: '/phone_confirmation/disable_sms')
+    end
+  end
+
+  context 'when choosing to receive OTP via voice' do
+    before do
+      @sms_enabled = false
+      @fallback_confirmation_link = '/phone_confirmation/enable_sms'
+    end
+
+    it 'has a link to send confirmation as SMS' do
+      render
+
+      expect(rendered).to have_link('Click here if you prefer to receive a ' \
+        'text message', href: '/phone_confirmation/enable_sms')
+    end
+  end
 end

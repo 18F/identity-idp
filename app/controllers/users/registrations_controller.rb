@@ -36,12 +36,41 @@ module Users
 
     protected
 
+    def process_successful_update(resource)
+      process_updates(resource)
+      bypass_sign_in resource
+    end
+
+    # rubocop:disable MethodLength, Metrics/AbcSize
+    def process_updates(resource)
+      updater = UserFlashUpdater.new(@update_user_profile_form, flash)
+
+      updater.set_flash_message
+
+      analytics.track_event('User asked to update their phone number') if
+        @update_user_profile_form.phone_changed?
+
+      if @update_user_profile_form.require_phone_confirmation?
+        prompt_to_confirm_phone(@update_user_profile_form.phone,
+                                @update_user_profile_form.phone_sms_enabled)
+      elsif is_flashing_format?
+        EmailNotifier.new(resource).send_password_changed_email
+        redirect_to edit_user_registration_url
+      end
+    end
+    # rubocop:enable MethodLength, Metrics/AbcSize
+
     def process_successful_creation
       render :verify_email, locals: { email: @register_user_email_form.user.email }
     end
 
     def disable_account_creation
       redirect_to root_path if AppSetting.registrations_disabled?
+    end
+
+    def user_params
+      params.require(:update_user_profile_form).
+        permit(:phone, :phone_sms_enabled, :email, :password, :current_password)
     end
 
     def track_registration(form)

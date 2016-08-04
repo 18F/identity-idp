@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe TwoFactorSetupForm do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build_stubbed(:user) }
+  let(:valid_phone) { '+1 (202) 202-2020' }
   subject { TwoFactorSetupForm.new(user) }
 
   it do
@@ -13,10 +14,34 @@ describe TwoFactorSetupForm do
   describe 'phone validation' do
     it 'uses the phony_rails gem with country option set to US' do
       phone_validator = subject._validators.values.flatten.
-                         detect { |v| v.class == PhonyPlausibleValidator }
+                        detect { |v| v.class == PhonyPlausibleValidator }
 
       expect(phone_validator.options).
         to eq(country_code: 'US', presence: true, message: :improbable_phone)
+    end
+  end
+
+  describe 'OTP delivery preference' do
+    context 'when SMS is enabled' do
+      before do
+        subject.submit(phone: valid_phone,
+                       phone_sms_enabled: '1')
+      end
+
+      it 'sets phone_sms_enabled to true' do
+        expect(subject.phone_sms_enabled).to be(true)
+      end
+    end
+
+    context 'when SMS is disabled' do
+      before do
+        subject.submit(phone: valid_phone,
+                       phone_sms_enabled: '0')
+      end
+
+      it 'sets phone_sms_enabled to false' do
+        expect(subject.phone_sms_enabled).to be(false)
+      end
     end
   end
 
@@ -41,6 +66,10 @@ describe TwoFactorSetupForm do
     end
 
     context 'when phone is same as current user' do
+      before do
+        user.phone = valid_phone
+      end
+
       it 'is valid' do
         subject.phone = user.phone
 

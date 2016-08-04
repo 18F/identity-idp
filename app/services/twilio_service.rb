@@ -1,6 +1,8 @@
 class TwilioService
+  attr_reader :client
+
   def initialize
-    @client = if FeatureManagement.sms_disabled?
+    @client = if FeatureManagement.telephony_disabled?
                 NullTwilioClient.new
               elsif proxy_addr.present?
                 twilio_proxy_client
@@ -13,9 +15,8 @@ class TwilioService
     @account ||= random_account
   end
 
-  def send_sms(params = {})
-    params = params.reverse_merge(from: from_number)
-    @client.messages.create(params)
+  def from_number
+    "+1#{account['number']}"
   end
 
   private
@@ -42,10 +43,6 @@ class TwilioService
       account['sid'],
       account['auth_token']
     )
-  end
-
-  def from_number
-    "+1#{account['number']}"
   end
 
   def random_account

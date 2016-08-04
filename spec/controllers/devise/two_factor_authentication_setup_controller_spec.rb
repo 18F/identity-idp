@@ -12,8 +12,9 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
   end
 
   describe 'PATCH set' do
+    let(:user) { create(:user) }
+
     it 'prompts to confirm the number' do
-      user = create(:user)
       sign_in(user)
 
       stub_analytics
@@ -21,10 +22,37 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
       patch(
         :set,
-        two_factor_setup_form: { phone: '703-555-0100' }
+        two_factor_setup_form: { phone: '703-555-0100',
+                                 phone_sms_enabled: '1' }
       )
 
       expect(response).to redirect_to(phone_confirmation_send_path)
+    end
+
+    describe 'delivery preference' do
+      it 'sets SMS enabled to true' do
+        sign_in(user)
+
+        patch(
+          :set,
+          two_factor_setup_form: { phone: '703-555-0100',
+                                   phone_sms_enabled: '1' }
+        )
+
+        expect(subject.user_session[:unconfirmed_phone_sms_enabled]).to eq(true)
+      end
+
+      it 'sets SMS enabled to false' do
+        sign_in(user)
+
+        patch(
+          :set,
+          two_factor_setup_form: { phone: '703-555-0100',
+                                   phone_sms_enabled: '0' }
+        )
+
+        expect(subject.user_session[:unconfirmed_phone_sms_enabled]).to eq(false)
+      end
     end
   end
 

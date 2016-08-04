@@ -24,9 +24,9 @@ describe TwilioService do
     end
   end
 
-  context 'when sms is disabled' do
+  context 'when telephony is disabled' do
     before do
-      expect(FeatureManagement).to receive(:sms_disabled?).at_least(:once).and_return(true)
+      expect(FeatureManagement).to receive(:telephony_disabled?).at_least(:once).and_return(true)
     end
 
     it 'uses NullTwilioClient' do
@@ -45,59 +45,27 @@ describe TwilioService do
       TwilioService.new
     end
 
-    it 'does not send OTP messages', sms: true do
+    it 'does not send OTP messages', twilio: true do
       SmsSenderOtpJob.perform_now('1234', '555-5555')
 
-      expect(messages.size).to eq 0
+      expect(MockTwilioClient.messages.size).to eq 0
     end
 
-    it 'does not send a number change messages', sms: true do
+    it 'does not send a number change messages', twilio: true do
       SmsSenderNumberChangeJob.perform_now('555-5555')
 
-      expect(messages.size).to eq 0
+      expect(MockTwilioClient.messages.size).to eq 0
     end
   end
 
-  context 'when SMS is enabled' do
+  context 'when telephony is enabled' do
     before do
-      expect(FeatureManagement).to receive(:sms_disabled?).at_least(:once).and_return(false)
+      expect(FeatureManagement).to receive(:telephony_disabled?).at_least(:once).and_return(false)
     end
 
     it 'uses a real Twilio client' do
       expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/)
       TwilioService.new
-    end
-
-    it 'sends OTP messages', sms: true do
-      SmsSenderOtpJob.perform_now('1234', '555-5555')
-
-      expect(messages.size).to eq 1
-    end
-
-    it 'sends number change messages', sms: true do
-      SmsSenderNumberChangeJob.perform_now('555-5555')
-
-      expect(messages.size).to eq 1
-    end
-  end
-
-  describe '#send_sms' do
-    it 'sends an SMS from the number configured in the twilio_accounts config', sms: true do
-      expect(Twilio::REST::Client).
-        to receive(:new).with(/sid(1|2)/, /token(1|2)/).and_call_original
-
-      twilio = TwilioService.new
-      twilio.send_sms(
-        to: '5555555555',
-        body: '!!CODE1!!'
-      )
-
-      expect(messages.size).to eq(1)
-      messages.each do |msg|
-        expect(msg.from).to match(/(\+19999999999|\+12222222222)/)
-        expect(msg.number).to eq('5555555555')
-        expect(msg.body).to eq('!!CODE1!!')
-      end
     end
   end
 

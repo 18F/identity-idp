@@ -17,5 +17,6 @@ p Please enter the code sent to <strong>#{@unconfirmed_phone}</strong>.
                                @reenter_phone_number_path)
 
 .mt3
+  = render 'phone_confirmation_fallback'
   p.m0 Didn't receive a code? #{resend_link}
   p.m0 Entered the wrong phone number? #{update_number_link}

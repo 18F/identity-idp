@@ -1,5 +1,8 @@
 module Users
   class PhoneConfirmationController < ApplicationController
+    include PhoneConfirmationFallbackConcern
+    include PhoneConfirmationSessionConcern
+
     before_action :authenticate_user!
     before_action :check_for_unconfirmed_phone
 
@@ -8,11 +11,7 @@ module Users
 
       @code_value = confirmation_code if FeatureManagement.prefill_otp_codes?
       @unconfirmed_phone = unconfirmed_phone
-      @reenter_phone_number_path = if current_user.phone.present?
-                                     profile_path
-                                   else
-                                     phone_setup_path
-                                   end
+      @reenter_phone_number_path = reenter_phone_number_path
     end
 
     def send_code
@@ -27,6 +26,14 @@ module Users
       else
         analytics.track_event('User entered invalid phone confirmation code')
         process_invalid_code
+      end
+    end
+
+    def reenter_phone_number_path
+      if current_user.phone.present?
+        profile_path
+      else
+        phone_setup_path
       end
     end
 
@@ -46,17 +53,20 @@ module Users
       redirect_to phone_confirmation_path
     end
 
-    def set_phone_number
+    def assign_phone_and_delivery
       @updating_existing_number = current_user.phone.present?
       if @updating_existing_number
         analytics.track_event('User changed and confirmed their phone number')
         SmsSenderNumberChangeJob.perform_later(current_user.phone)
       end
-      current_user.update(phone: unconfirmed_phone, phone_confirmed_at: Time.current)
+      current_user.update(phone: unconfirmed_phone,
+                          phone_sms_enabled: unconfirmed_phone_sms_enabled?,
+                          phone_confirmed_at: Time.current)
     end
 
     def process_valid_code
-      set_phone_number
+      assign_phone_and_delivery
+
       clear_session_data
 
       flash[:success] = t('notices.phone_confirmation_successful')
@@ -82,24 +92,11 @@ module Users
         self.confirmation_code = PhoneConfirmationController.generate_confirmation_code
       end
 
-      SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
-    end
-
-    def confirmation_code=(code)
-      user_session[:phone_confirmation_code] = code
-    end
-
-    def confirmation_code
-      user_session[:phone_confirmation_code]
-    end
-
-    def unconfirmed_phone
-      user_session[:unconfirmed_phone]
-    end
-
-    def clear_session_data
-      user_session.delete(:unconfirmed_phone)
-      user_session.delete(:phone_confirmation_code)
+      if unconfirmed_phone_sms_enabled?
+        SmsSenderConfirmationJob.perform_later(confirmation_code, unconfirmed_phone)
+      else
+        VoiceSenderConfirmationJob.perform_later(confirmation_code, unconfirmed_phone)
+      end
     end
   end
 end

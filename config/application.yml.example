@@ -23,7 +23,7 @@ development:
   redis_url: 'redis://localhost:6379/0'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
-  sms_disabled: 'true'
+  telephony_disabled: 'true'
   saml_passphrase: 'trust-but-verify'
   secret_key_base: 'development_secret_key_base'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
