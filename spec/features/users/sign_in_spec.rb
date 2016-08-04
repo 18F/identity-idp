@@ -149,10 +149,10 @@ feature 'Sign in' do
     it 'prompts to enter OTP' do
       allow(Rails.application.config).to receive(:session_check_frequency).and_return(0.01)
       allow(Rails.application.config).to receive(:session_check_delay).and_return(0.01)
-      allow(Devise).to receive(:timeout_in).and_return(1.second)
+      allow(Devise).to receive(:timeout_in).and_return(1.minute)
 
       user = sign_in_and_2fa_user
-      Timecop.travel(1.minute)
+      Timecop.travel(5.minutes)
       visit '/'
 
       fill_in 'Email', with: user.email
