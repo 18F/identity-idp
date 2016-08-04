@@ -1,7 +1,10 @@
 // supplemental utility classes
 
 .bg-light-blue { background-color: $blue-light; }
+
 .ws-pre-line { white-space: pre-line; }
+
+.rounded-big { border-radius: 2rem; }
 
 @media #{$breakpoint-sm} {
   .sm-left-align { text-align: left; }

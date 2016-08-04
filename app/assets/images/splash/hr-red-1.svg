@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="88px" height="8px" viewBox="0 0 88 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>separator1</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="separator1" fill="#E21C3D">
+            <path d="M14,4 C14,1.790861 15.7956808,0 18.0065556,0 L69.9934444,0 C72.206204,0 74,1.79535615 74,4 L74,4 C74,6.209139 72.2043192,8 69.9934444,8 L18.0065556,8 C15.793796,8 14,6.20464385 14,4 L14,4 Z" id="Rectangle-234-Copy-8"></path>
+            <path d="M-1.77635684e-16,4 C-1.77635684e-16,1.790861 1.79535615,0 4,0 L4,0 C6.209139,0 8,1.79535615 8,4 L8,4 C8,6.209139 6.20464385,8 4,8 L4,8 C1.790861,8 -1.77635684e-16,6.20464385 -1.77635684e-16,4 L-1.77635684e-16,4 Z" id="Rectangle-234-Copy-10"></path>
+            <path d="M80,4 C80,1.790861 81.7953562,0 84,0 L84,0 C86.209139,0 88,1.79535615 88,4 L88,4 C88,6.209139 86.2046438,8 84,8 L84,8 C81.790861,8 80,6.20464385 80,4 L80,4 Z" id="Rectangle-234-Copy-11"></path>
+        </g>
+    </g>
+</svg>

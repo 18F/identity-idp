@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="62px" height="8px" viewBox="0 0 62 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>hr-blue-3</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-3" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="hr-blue-3" fill="#00BFE7">
+            <path d="M1.13065113e-13,4 C1.13065113e-13,1.790861 1.79412025,0 3.99683887,0 L24.0031611,0 C26.2105543,0 28,1.79535615 28,4 L28,4 C28,6.209139 26.2058797,8 24.0031611,8 L3.99683887,8 C1.78944571,8 1.13065113e-13,6.20464385 1.13065113e-13,4 L1.13065113e-13,4 Z" id="Rectangle-234-Copy-8" transform="translate(14.000000, 4.000000) rotate(-180.000000) translate(-14.000000, -4.000000) "></path>
+            <path d="M34,4 C34,1.790861 35.7941203,0 37.9968389,0 L58.0031611,0 C60.2105543,0 62,1.79535615 62,4 L62,4 C62,6.209139 60.2058797,8 58.0031611,8 L37.9968389,8 C35.7894457,8 34,6.20464385 34,4 L34,4 Z" id="Rectangle-234-Copy-9" transform="translate(48.000000, 4.000000) rotate(-180.000000) translate(-48.000000, -4.000000) "></path>
+        </g>
+    </g>
+</svg>
