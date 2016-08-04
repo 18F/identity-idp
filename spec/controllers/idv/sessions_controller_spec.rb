@@ -60,6 +60,25 @@ describe Idv::SessionsController do
         expect(response).to redirect_to(idv_sessions_path)
         expect(flash[:error]).to eq t('idv.titles.fail')
       end
+
+      it 'disallows duplicate SSN' do
+        create(:profile, ssn: '1234')
+
+        post :create, ssn: '1234'
+
+        expect(response).to redirect_to(idv_sessions_path)
+        expect(flash[:error]).to include t('idv.errors.duplicate_ssn')
+      end
+
+      it 'checks for required fields' do
+        partial_attrs = user_attrs.dup
+        partial_attrs.delete :first_name
+
+        post :create, partial_attrs
+
+        expect(response).to redirect_to(idv_sessions_path)
+        expect(flash[:error]).to include "#{t('idv.form.first_name')} is required"
+      end
     end
 
     context 'KBV off' do

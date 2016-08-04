@@ -144,6 +144,10 @@ en:
       city: City
       state: State
       zipcode: ZIP Code
+    errors:
+      duplicate_ssn: >
+        You may already have an account, please use that one.
+        You can always change your email address in your existing account.
     titles:
       intro: Help us identify you
       expectations: We need some information from you

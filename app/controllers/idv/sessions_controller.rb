@@ -14,7 +14,13 @@ module Idv
 
     def create
       self.idv_params = applicant_params.delete_if { |_key, value| value.blank? }
-      redirect_to idv_session_url(1)
+      idv_form = IdvProfileForm.new(current_user)
+      if idv_form.submit(idv_params)
+        redirect_to idv_session_url(1)
+      else
+        flash[:error] = idv_form.errors
+        redirect_to idv_sessions_path
+      end
     end
 
     def update
