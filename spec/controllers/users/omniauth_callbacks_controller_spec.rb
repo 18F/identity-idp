@@ -16,8 +16,9 @@ describe Users::OmniauthCallbacksController, devise: true do
   end
 
   def configure_request_env
-    request.env['devise.mapping'] = Devise.mappings[:user]
-    request.env['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
+    env = request.env
+    env['devise.mapping'] = Devise.mappings[:user]
+    env['omniauth.auth'] = OmniAuth.config.mock_auth[:saml]
   end
 
   describe 'GET /users/auth/saml/callback' do
