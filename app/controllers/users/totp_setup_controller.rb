@@ -21,7 +21,8 @@ module Users
     end
 
     def disable
-      if current_user.otp_secret_key.present?
+      if current_user.totp_enabled?
+        analytics.track_event('User Disabled TOTP')
         current_user.update(otp_secret_key: nil)
         flash[:success] = t('notices.totp_disabled')
       end
@@ -36,12 +37,14 @@ module Users
     end
 
     def process_valid_code
+      analytics.track_event('TOTP Setup: valid code')
       flash[:success] = t('notices.totp_configured')
       redirect_to profile_path
       user_session.delete(:new_totp_secret)
     end
 
     def process_invalid_code
+      analytics.track_event('TOTP Setup: invalid code')
       flash[:error] = t('errors.invalid_totp')
       redirect_to authenticator_setup_path
     end

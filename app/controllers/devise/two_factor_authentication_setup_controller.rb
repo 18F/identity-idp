@@ -18,6 +18,7 @@ module Devise
       if @two_factor_setup_form.submit(params[:two_factor_setup_form])
         process_valid_form
       else
+        analytics.track_event('2FA setup: invalid phone number')
         render :index
       end
     end
