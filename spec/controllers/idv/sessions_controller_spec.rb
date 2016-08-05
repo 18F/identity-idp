@@ -45,7 +45,7 @@ describe Idv::SessionsController do
       end
 
       it 'creates proofing applicant' do
-        post :create, user_attrs
+        post :create, profile: user_attrs
         post :update, id: 1, ccn: '12341234'
 
         expect(flash).to be_empty
@@ -54,7 +54,7 @@ describe Idv::SessionsController do
       end
 
       it 'shows failure on intentionally bad values' do
-        post :create, first_name: 'Bad', ssn: '6666'
+        post :create, profile: user_attrs.merge(first_name: 'Bad', ssn: '6666')
         post :update, id: 1, ccn: '12341234'
 
         expect(response).to redirect_to(idv_sessions_path)
@@ -64,20 +64,20 @@ describe Idv::SessionsController do
       it 'disallows duplicate SSN' do
         create(:profile, ssn: '1234')
 
-        post :create, ssn: '1234'
+        post :create, profile: user_attrs.merge(ssn: '1234')
 
-        expect(response).to redirect_to(idv_sessions_path)
-        expect(flash[:error]).to include t('idv.errors.duplicate_ssn')
+        expect(response).to render_template(:index)
+        expect(response.body).to match t('idv.errors.duplicate_ssn')
       end
 
       it 'checks for required fields' do
         partial_attrs = user_attrs.dup
         partial_attrs.delete :first_name
 
-        post :create, partial_attrs
+        post :create, profile: partial_attrs
 
-        expect(response).to redirect_to(idv_sessions_path)
-        expect(flash[:error]).to include "#{t('idv.form.first_name')} is required"
+        expect(response).to render_template(:index)
+        expect(response.body).to match 'can&#39;t be blank'
       end
     end
 
@@ -87,14 +87,14 @@ describe Idv::SessionsController do
       end
 
       it 'skips questions creation' do
-        post :create, user_attrs
+        post :create, profile: user_attrs
         post :update, id: 1, ccn: '12341234'
 
         expect(subject.user_session[:idv][:resolution].questions).to be_nil
       end
 
       it 'shows failure on intentionally bad values' do
-        post :create, first_name: 'Bad', ssn: '6666'
+        post :create, profile: user_attrs.merge(first_name: 'Bad', ssn: '6666')
         post :update, id: 1, ccn: '12341234'
 
         expect(response).to redirect_to(idv_sessions_path)

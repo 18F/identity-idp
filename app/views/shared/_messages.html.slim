@@ -1,12 +1,10 @@
 - unless flash.empty?
-  - flash.each do |name, message|
-    - if message.present? && (message.is_a?(String) || message.is_a?(Array))
-      - messages = message.is_a?(Array) ? message : [message]
+  - flash.each do |name, msg|
+    - if msg.present? && msg.is_a?(String)
       - msg_type = name.to_s =~ /notice|success/ ? 'success' : 'danger'
-      - messages.each do |msg|
-        .mxn2.sm-m0
-          div class="mb3 p2 alert alert-#{msg_type}"
-            = image_tag(asset_url("alert/ico-#{msg_type}.svg"), class: 'alert-ico')
-            div class="#{msg.length < 50 ? 'center bold' : ''}" = msg
+      .mxn2.sm-m0
+        div class="mb3 p2 alert alert-#{msg_type}"
+          = image_tag(asset_url("alert/ico-#{msg_type}.svg"), class: 'alert-ico')
+          div class="#{msg.length < 50 ? 'center bold' : ''}" = msg
 
 #session-timeout-cntnr

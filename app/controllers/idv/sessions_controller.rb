@@ -7,19 +7,19 @@ module Idv
 
     def index
       @using_mock_vendor = pick_a_vendor == :mock
+      @profile = IdvProfileForm.new
     end
 
     def show
     end
 
     def create
-      self.idv_params = applicant_params.delete_if { |_key, value| value.blank? }
-      idv_form = IdvProfileForm.new(current_user)
-      if idv_form.submit(idv_params)
+      self.idv_params = profile_params
+      @profile = IdvProfileForm.new
+      if @profile.submit(profile_params, current_user.id)
         redirect_to idv_session_url(1)
       else
-        flash[:error] = idv_form.errors
-        redirect_to idv_sessions_path
+        render :index
       end
     end
 
@@ -60,8 +60,8 @@ module Idv
 
     # rubocop:disable MethodLength
     # This method is single statement spread across many lines for readability
-    def applicant_params
-      params.slice(
+    def profile_params
+      params.require(:profile).permit(
         :first_name,
         :last_name,
         :phone,
