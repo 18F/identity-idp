@@ -24,8 +24,8 @@ Please follow our [Git Protocol][git] and [Code Review][review] guidelines.
 [Glen Sanford's thoughts on code reviews][thoughts] are also well worth
 reading.
 
-[git]: https://pages.18f.gov/development-guide/git-protocol/
-[review]: https://pages.18f.gov/development-guide/code-review/
+[git]: https://github.com/18F/development-guide/tree/master/git_protocol
+[review]: https://github.com/18F/development-guide/tree/master/code_review
 [thoughts]: http://glen.nu/ramblings/oncodereview.php
 
 ### Commit message style guide:
