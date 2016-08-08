@@ -6,11 +6,6 @@ $radio-checkbox-space: 1.5rem;
   font-weight: $bold-font-weight;
 }
 
-.invalid,
-.interacted.required:invalid {
-  border-color: $red;
-}
-
 .radio,
 .checkbox {
   padding-left: $radio-checkbox-space;
@@ -26,6 +21,20 @@ $radio-checkbox-space: 1.5rem;
 .radio-extra {
   margin-left: $radio-checkbox-space;
 }
+
+
+// error states
+.invalid,
+.interacted.required:invalid {
+  background-image: $form-icon-error;
+  background-position: center right .5rem;
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+  border-color: $red;
+}
+
+.error-message { margin-top: 2px; }
+
 
 // hide number field input spin box as per:
 // http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box

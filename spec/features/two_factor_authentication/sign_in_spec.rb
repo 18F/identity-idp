@@ -98,7 +98,7 @@ feature 'Two Factor Authentication' do
           fill_in 'code', with: ''
           click_button 'Submit'
 
-          expect(page).to have_content('Please fill in all required fields')
+          expect(page).to have_content('Please fill in this field')
         end
       end
     end

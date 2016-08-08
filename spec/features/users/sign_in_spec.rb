@@ -31,13 +31,13 @@ feature 'Sign in' do
   scenario 'user cannot sign in with empty email', js: true do
     signin('', 'foo')
 
-    expect(page).to have_content 'Please fill in all required fields'
+    expect(page).to have_content 'Please fill in this field'
   end
 
   scenario 'user cannot sign in with empty password', js: true do
     signin('test@example.com', '')
 
-    expect(page).to have_content 'Please fill in all required fields'
+    expect(page).to have_content 'Please fill in this field'
   end
 
   # Scenario: User cannot sign in with wrong password

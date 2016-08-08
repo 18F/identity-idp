@@ -217,7 +217,7 @@ feature 'Password Recovery' do
     visit new_user_password_path
     click_button t('forms.buttons.reset_password')
 
-    expect(page).to have_content 'Please fill in all required fields'
+    expect(page).to have_content 'Please fill in this field'
   end
 
   # Scenario: User is unable to determine if someone else's account exists
@@ -273,7 +273,7 @@ feature 'Password Recovery' do
     it 'displays error when password fields are empty & JS is on', js: true do
       click_button 'Change my password'
 
-      expect(page).to have_content 'Please fill in all required fields'
+      expect(page).to have_content 'Please fill in this field'
     end
 
     it 'displays field validation error when password fields are empty' do

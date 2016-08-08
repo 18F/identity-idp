@@ -4,7 +4,7 @@ import h5f from 'h5f';
 
 const validate = {
   msgs: {
-    missing: 'Please fill in all required fields.',
+    missing: 'Please fill in this field.',
     mismatch: 'Please match the requested format.',
   },
 
@@ -67,7 +67,7 @@ const validate = {
 
     f.insertAdjacentHTML(
       'afterend',
-      `<div role='alert' class='error-message red h5' id='alert_${f.id}'>
+      `<div role='alert' class='error-message red h6' id='alert_${f.id}'>
         ${f.validationMessage}
       </div>`
     );
