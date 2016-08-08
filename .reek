@@ -8,6 +8,7 @@ FeatureEnvy:
     - track_registration
     - append_info_to_payload
     - generate_slo_request
+    - Users::PasswordsController#create
 IrresponsibleModule:
   enabled: false
 NilCheck:
