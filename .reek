@@ -2,8 +2,7 @@ Attribute:
   enabled: false
 DuplicateMethodCall:
   exclude:
-    - UserFlashUpdater
-    - Users::PhoneConfirmationController
+    - needs_to_confirm_email_change?
 FeatureEnvy:
   exclude:
     - track_registration
@@ -16,6 +15,8 @@ NilCheck:
     - Users::PhoneConfirmationController
     - slo_not_implemented_at_sp?
     - in_slo?
+    - TotpSetupController#new
+    - TotpSetupController#valid_code?
 TooManyStatements:
   max_statements: 6
 TooManyMethods:
@@ -47,6 +48,7 @@ UtilityFunction:
       - saml_settings
       - sign_up_and_2fa
       - raw_xml_response
+      - sign_in_user
   FeatureEnvy:
     enabled: false
   NestedIterators:

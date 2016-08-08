@@ -22,7 +22,9 @@ module Devise
       private
 
       def recipient
-        resource.unconfirmed_email.present? ? resource.unconfirmed_email : resource.email
+        unconfirmed_email = resource.unconfirmed_email
+
+        unconfirmed_email.present? ? unconfirmed_email : resource.email
       end
     end
   end

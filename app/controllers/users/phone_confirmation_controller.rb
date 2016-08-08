@@ -47,10 +47,12 @@ module Users
     end
 
     def set_mobile_number
-      @updating_existing_number = current_user.mobile.present?
+      mobile = current_user.mobile
+
+      @updating_existing_number = mobile.present?
       if @updating_existing_number
         analytics.track_event('User changed and confirmed their phone number')
-        SmsSenderNumberChangeJob.perform_later(current_user.mobile)
+        SmsSenderNumberChangeJob.perform_later(mobile)
       end
       current_user.update(mobile: unconfirmed_mobile, mobile_confirmed_at: Time.current)
     end

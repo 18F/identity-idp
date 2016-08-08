@@ -5,20 +5,20 @@ OmniauthAuthorizer = Struct.new(:auth_hash, :session) do
     find_or_create_auth
 
     unless auth.valid?
-      yield auth.user, :process_invalid_authorization if block_given?
+      yield auth_user, :process_invalid_authorization if block_given?
       return
     end
 
     update_auth
     update_session
 
-    yield auth.user, :process_valid_authorization if block_given?
+    yield auth_user, :process_valid_authorization if block_given?
   end
 
   private
 
   def find_or_create_auth
-    @auth = find_from_hash || create_from_hash
+    @auth ||= find_from_hash || create_from_hash
   end
 
   def find_from_hash
@@ -28,11 +28,13 @@ OmniauthAuthorizer = Struct.new(:auth_hash, :session) do
   end
 
   def create_from_hash
-    user = CreateOmniauthUser.new(auth_hash.extra.raw_info['email']).perform
+    extra_attributes = auth_hash.extra.raw_info
+
+    user = CreateOmniauthUser.new(extra_attributes['email']).perform
 
     Authorization.create(
       user: user,
-      uid: auth_hash.extra.raw_info['uuid'],
+      uid: extra_attributes['uuid'],
       provider: auth_hash.provider
     )
   end
@@ -43,5 +45,9 @@ OmniauthAuthorizer = Struct.new(:auth_hash, :session) do
 
   def update_session
     session[:omniauthed] = true
+  end
+
+  def auth_user
+    auth.user
   end
 end

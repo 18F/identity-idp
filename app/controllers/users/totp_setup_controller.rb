@@ -7,10 +7,9 @@ module Users
     end
 
     def new
-      if user_session[:new_totp_secret].nil?
-        user_session[:new_totp_secret] = current_user.generate_totp_secret
-      end
-      @qrcode = decorated_user.qrcode(user_session[:new_totp_secret])
+      user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
+
+      @qrcode = decorated_user.qrcode(new_totp_secret)
     end
 
     def confirm
@@ -33,8 +32,8 @@ module Users
     private
 
     def valid_code?
-      return false if user_session[:new_totp_secret].nil?
-      current_user.confirm_totp_secret(user_session[:new_totp_secret], params[:code].strip)
+      return false if new_totp_secret.nil?
+      current_user.confirm_totp_secret(new_totp_secret, params[:code].strip)
     end
 
     def process_valid_code
@@ -46,6 +45,10 @@ module Users
     def process_invalid_code
       flash[:error] = t('errors.invalid_totp')
       redirect_to authenticator_setup_path
+    end
+
+    def new_totp_secret
+      user_session[:new_totp_secret]
     end
   end
 end

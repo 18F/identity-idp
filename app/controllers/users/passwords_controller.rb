@@ -65,20 +65,24 @@ module Users
     protected
 
     def token_user
-      User.with_reset_password_token(params[:reset_password_token])
+      @token_user ||= User.with_reset_password_token(params[:reset_password_token])
     end
 
     def confirm_valid_token
-      return if token_user.present? && token_user.reset_password_period_valid?
+      return if token_user.present? && reset_password_period_valid?
 
       flash[:error] =
         if token_user.blank?
           t('devise.passwords.invalid_token')
-        elsif !token_user.reset_password_period_valid?
+        elsif !reset_password_period_valid?
           t('devise.passwords.token_expired')
         end
 
       redirect_to new_user_password_path
+    end
+
+    def reset_password_period_valid?
+      token_user.reset_password_period_valid?
     end
 
     def handle_successful_password_reset_for(resource)
