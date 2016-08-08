@@ -140,7 +140,7 @@ feature 'Sign Up', devise: true do
       fill_in 'password_form_password', with: ''
       click_button 'Submit'
 
-      expect(page).to have_content 'Please fill in all required fields'
+      expect(page).to have_content 'Please fill in this field'
     end
   end
 
@@ -225,7 +225,7 @@ feature 'Sign Up', devise: true do
   scenario 'visitor cannot sign up with empty email address', js: true do
     sign_up_with('')
 
-    expect(page).to have_content('Please fill in all required fields')
+    expect(page).to have_content('Please fill in this field')
   end
 
   scenario 'visitor cannot sign up with email with invalid domain name' do

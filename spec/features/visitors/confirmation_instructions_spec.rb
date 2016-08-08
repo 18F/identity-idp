@@ -75,7 +75,7 @@ feature 'Confirmation Instructions', devise: true do
     fill_in 'Email', with: ''
     click_button 'Resend confirmation instructions'
 
-    expect(page).to have_content 'Please fill in all required fields'
+    expect(page).to have_content 'Please fill in this field'
   end
 
   scenario 'user enters empty email' do
