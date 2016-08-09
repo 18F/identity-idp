@@ -4,11 +4,6 @@ module Users
 
     before_action :confirm_two_factor_authenticated
 
-    def email
-      @update_form = UpdateUserEmailForm.new(current_user)
-      handle_request
-    end
-
     def mobile
       @update_form = UpdateUserMobileForm.new(current_user)
       handle_request

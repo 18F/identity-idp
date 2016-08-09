@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/edit_info/email.html.slim' do
+describe 'users/edit_email/edit.html.slim' do
   context 'user is not TOTP enabled' do
     before do
       user = build_stubbed(:user, :signed_up)
