@@ -28,10 +28,6 @@ Rails.application.routes.draw do
 
     patch '/confirm' => 'users/confirmations#confirm'
 
-    get '/edit/email' => 'users/edit_email#edit'
-    match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
-    match '/edit/mobile' => 'users/edit_info#mobile', via: [:get, :put], as: :edit_mobile
-
     get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
     patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
 
@@ -53,12 +49,18 @@ Rails.application.routes.draw do
     end
   end
 
-  # Non-devise-contoller routes. Alphabetically sorted.
+  # Non-devise-controller routes. Alphabetically sorted.
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
         via: [:get, :post, :delete],
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
+
+  get '/edit/email' => 'users/edit_email#edit'
+  match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
+  get '/edit/mobile' => 'users/edit_mobile#edit'
+  match '/edit/mobile' => 'users/edit_mobile#update', via: [:patch, :put]
+
   get '/idv' => 'idv#index'
   namespace :idv do
     resources :questions, :sessions, :confirmations

@@ -33,10 +33,10 @@ module Users
     end
 
     def track_email_change
-      if !@update_user_email_form.email_taken?
-        analytics.track_event('User changed their email')
-      else
+      if @update_user_email_form.email_taken?
         analytics.track_event('User attempted to change their email to an existing email')
+      else
+        analytics.track_event('User asked to change their email')
       end
     end
   end

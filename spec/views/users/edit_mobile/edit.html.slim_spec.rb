@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-describe 'users/edit_info/mobile.html.slim' do
+describe 'users/edit_mobile/edit.html.slim' do
   context 'user is not TOTP enabled' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
-      @update_form = UpdateUserMobileForm.new(user)
+      @update_user_mobile_form = UpdateUserMobileForm.new(user)
     end
 
     it 'has a localized title' do

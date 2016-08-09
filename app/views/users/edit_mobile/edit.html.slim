@@ -2,7 +2,7 @@
 
 
 h1.heading = t('headings.edit_info.mobile')
-= simple_form_for(@update_form, url: edit_mobile_path,
+= simple_form_for(@update_user_mobile_form, url: edit_mobile_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   = f.input :mobile, as: :tel, required: true
