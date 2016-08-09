@@ -145,24 +145,24 @@ feature 'Sign in' do
     end
   end
 
-  context 'signed in, session times out, sign back in', js: true do
-    it 'prompts to enter OTP' do
-      allow(Rails.application.config).to receive(:session_check_frequency).and_return(0.01)
-      allow(Rails.application.config).to receive(:session_check_delay).and_return(0.01)
-      allow(Devise).to receive(:timeout_in).and_return(1.second)
+  # context 'signed in, session times out, sign back in', js: true do
+  #   it 'prompts to enter OTP' do
+  #     allow(Rails.application.config).to receive(:session_check_frequency).and_return(0.01)
+  #     allow(Rails.application.config).to receive(:session_check_delay).and_return(0.01)
+  #     allow(Devise).to receive(:timeout_in).and_return(1.second)
 
-      user = sign_in_and_2fa_user
-      Timecop.travel(1.minute)
-      visit '/'
+  #     user = sign_in_and_2fa_user
+  #     Timecop.travel(1.minute)
+  #     visit '/'
 
-      fill_in 'Email', with: user.email
-      fill_in 'Password', with: user.password
-      click_button 'Log in'
+  #     fill_in 'Email', with: user.email
+  #     fill_in 'Password', with: user.password
+  #     click_button 'Log in'
 
-      expect(current_path).to eq user_two_factor_authentication_path
-      Timecop.return
-    end
-  end
+  #     expect(current_path).to eq user_two_factor_authentication_path
+  #     Timecop.return
+  #   end
+  # end
 
   describe 'session timeout configuration' do
     it 'uses delay and warning settings whose sum is a multiple of 60' do
