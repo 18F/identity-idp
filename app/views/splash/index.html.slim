@@ -94,7 +94,7 @@ html lang="#{I18n.locale}"
               = image_tag(asset_url('splash/hr-blue-2.svg'), alt: 'hr', class: 'mb2')
               p
                 | Security updates and identity fraud alerts should arrive in
-                  milliseconds, not weeks.
+                  minutes, not weeks.
             .sm-col.sm-col-4.px2.mb3
               = image_tag(asset_url('splash/hr-blue-3.svg'), alt: 'hr', class: 'mb2')
               p
@@ -115,10 +115,6 @@ html lang="#{I18n.locale}"
                   | This platform is being built in the open, using agile methods.
                     We're working iteratively and testing what we build with the
                     public as we go.
-                p.mb3
-                  = 'You can follow along with development at '
-                  = link_to 'github.com/18F/identity-idp.', \
-                    'https://github.com/18F/identity-idp', class: 'black bold'
 
       .bg-navy.white
         .container.px2.py4
@@ -139,15 +135,14 @@ html lang="#{I18n.locale}"
           .h3.serif.line-height-4
             p.mb3
               | We’ll be publishing more information as the project advances.
-                To stay up to date with our work, please sign up for our newsletter
-                below. To follow the technical development of the project, you can
-                see our code on GitHub.
-            p.mb3
-              | For more information about government policies about this work,
-                you can read the in-progress NIST standards.
-          .mt1.mb3
-            btn.btn.btn-primary.rounded-big.regular.px3.py2.mb1.mr1 Newsletter
-            btn.btn.btn-primary.rounded-big.regular.px3.py2.mb1.mr1 See on GitHub
-            btn.btn.btn-primary.rounded-big.regular.px3.py2.mb1 Read the standards
+                To follow the technical development of the project, you can
+                see our code
+                on #{link_to 'GitHub', 'https://github.com/18F/identity-idp', class: 'navy bold'}.
 
-    = render 'shared/footer'
+    footer.bg-navy.white
+      .container.px2.py3.center
+        = link_to \
+          image_tag(asset_url('logo-white.svg'),
+            alt: APP_NAME,
+            class: 'align-middle',
+            width: 150), root_path
