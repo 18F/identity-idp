@@ -38,25 +38,25 @@ module IdvHelper
   end
 
   def fill_out_idv_form_ok
-    fill_in :first_name, with: 'Some'
-    fill_in :last_name, with: 'One'
-    fill_in :ssn, with: '666661234'
-    fill_in :dob, with: '19800102'
-    fill_in :address1, with: '123 Main St'
-    fill_in :city, with: 'Nowhere'
-    select 'Kansas', from: :state
-    fill_in :zipcode, with: '66044'
+    fill_in 'profile_first_name', with: 'Some'
+    fill_in 'profile_last_name', with: 'One'
+    fill_in 'profile_ssn', with: '666661234'
+    fill_in 'profile_dob', with: '19800102'
+    fill_in 'profile_address1', with: '123 Main St'
+    fill_in 'profile_city', with: 'Nowhere'
+    select 'Kansas', from: 'profile_state'
+    fill_in 'profile_zipcode', with: '66044'
   end
 
   def fill_out_idv_form_fail
-    fill_in :first_name, with: 'Bad'
-    fill_in :last_name, with: 'User'
-    fill_in :ssn, with: '6666'
-    fill_in :dob, with: '19000102'
-    fill_in :address1, with: '123 Main St'
-    fill_in :city, with: 'Nowhere'
-    select 'Kansas', from: :state
-    fill_in :zipcode, with: '66044'
+    fill_in 'profile_first_name', with: 'Bad'
+    fill_in 'profile_last_name', with: 'User'
+    fill_in 'profile_ssn', with: '6666'
+    fill_in 'profile_dob', with: '19000102'
+    fill_in 'profile_address1', with: '123 Main St'
+    fill_in 'profile_city', with: 'Nowhere'
+    select 'Kansas', from: 'profile_state'
+    fill_in 'profile_zipcode', with: '66044'
   end
 
   def fill_out_financial_form_ok

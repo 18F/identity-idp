@@ -33,6 +33,7 @@ UnusedPrivateMethod:
     - ActiveJob::Logging::LogSubscriber
     - SamlIdpController
     - Users::PhoneConfirmationController
+    - ssn_is_unique
 UtilityFunction:
   public_methods_only: true
   exclude:
