@@ -3,7 +3,7 @@ class NullTwilioClient
     self
   end
 
-  def create(params = {})
+  def create(_params)
     # noop
   end
 end
