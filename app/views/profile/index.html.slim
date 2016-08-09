@@ -45,13 +45,3 @@ else
         .sm-col.sm-col-4.px1
           .h6.bold = 'Last login'
           .h5 = i.last_authenticated_at.to_s(:date_pretty)
-
-h2.heading = t('headings.profile.advanced_settings')
-.py2.border-bottom
-  .clearfix.mxn1
-    .sm-col.sm-col-10.px1
-      | #{t('headings.delete_account', app_name: APP_NAME)}
-        #{tooltip(t('tooltips.placeholder'))}
-    .sm-col.sm-col-2.px1.sm-right-align
-      = button_to t('forms.buttons.delete_account'), user_destroy_confirm_path, \
-        method: :get, class: btn_cls

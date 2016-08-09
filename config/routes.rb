@@ -20,10 +20,8 @@ Rails.application.routes.draw do
 
     post '/users' => 'users/registrations#create', as: :user_registration
     get '/users/sign_up' => 'users/registrations#new', as: :new_user_registration
-    delete '/users' => 'users/registrations#destroy'
 
     get '/start' => 'users/registrations#start', as: :new_user_start
-    get '/delete' => 'users/registrations#destroy_confirm', as: :user_destroy_confirm
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
