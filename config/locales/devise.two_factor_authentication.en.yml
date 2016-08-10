@@ -10,7 +10,8 @@ en:
         one-time passcode incorrectly too many times.
       please_try_again: Please try again in %{time_remaining}.
       otp_setup: >
-        Every time you log in, a one-time passcode will be sent to your phone via SMS.
+        Every time you log in, a one-time passcode will be sent to your phone via SMS or with a
+        phone call.
         Please enter the phone number you would like to use to receive these messages.
       otp_sms_disclaimer: "Note: By accepting these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply."
       please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.

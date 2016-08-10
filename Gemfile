@@ -92,7 +92,6 @@ group :test do
   gem 'rack_session_access'
   gem 'rack-test'
   gem 'shoulda-matchers', '~> 2.8', require: false
-  gem 'sms-spec', github: 'monfresh/sms-spec', require: 'sms_spec'
   gem 'test_after_commit'
   gem 'timecop'
   gem 'webmock'

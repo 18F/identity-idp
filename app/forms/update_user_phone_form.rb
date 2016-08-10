@@ -1,8 +1,9 @@
 class UpdateUserPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
+  include CustomFormHelpers::PhoneHelpers
 
-  attr_accessor :phone
+  attr_accessor :phone, :sms_otp_delivery
   attr_reader :user
 
   def persisted?
@@ -12,22 +13,14 @@ class UpdateUserPhoneForm
   def initialize(user)
     @user = user
     self.phone = @user.phone
+    self.sms_otp_delivery = @user.sms_otp_delivery
   end
 
   def submit(params)
-    formatted_phone = params[:phone].phony_formatted(
-      format: :international, normalize: :US, spaces: ' '
-    )
+    check_phone_change(params)
 
-    if formatted_phone != @user.phone
-      @phone_changed = true
-      self.phone = formatted_phone
-    end
+    check_sms_preference_change(params)
 
     valid?
-  end
-
-  def phone_changed?
-    @phone_changed == true
   end
 end

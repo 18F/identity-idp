@@ -168,7 +168,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
       context 'user requests a direct OTP via SMS and enters the direct OTP' do
         before do
-          get :new, sms: true
+          get :new
           patch :update, code: subject.current_user.direct_otp
         end
 

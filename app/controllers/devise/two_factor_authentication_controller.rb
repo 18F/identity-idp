@@ -3,6 +3,7 @@ require 'feature_management'
 module Devise
   class TwoFactorAuthenticationController < DeviseController
     include ScopeAuthenticator
+    include PhoneConfirmationFallbackConcern
 
     prepend_before_action :authenticate_scope!
     before_action :verify_user_is_not_second_factor_locked
@@ -12,7 +13,7 @@ module Devise
     def new
       analytics.track_event('User requested a new OTP code')
 
-      current_user.send_new_otp
+      current_user.send_new_otp(params[:method])
       flash[:notice] = t('devise.two_factor_authentication.user.new_otp_sent')
       redirect_to user_two_factor_authentication_path(method: 'sms')
     end

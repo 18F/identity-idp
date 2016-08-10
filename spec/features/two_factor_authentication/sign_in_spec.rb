@@ -67,7 +67,7 @@ feature 'Two Factor Authentication' do
       #   When I sign in
       #   Then an OTP is sent to my phone
       #   And I am prompted to enter it
-      context 'user is prompted for otp via phone only', sms: true do
+      context 'user is prompted for otp via phone only' do
         before do
           reset_job_queues
           @user = create(:user, :signed_up)
