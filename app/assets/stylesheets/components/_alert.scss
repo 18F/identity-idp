@@ -2,18 +2,33 @@
   border-radius: $border-radius;
   color: $gray;
   position: relative;
+}
 
-  &-ico {
-    left: 0;
-    margin-left: auto;
-    margin-right: auto;
-    position: absolute;
-    right: 0;
-    top: -10px;
-    width: 20px;
+.alert-success::before,
+.alert-danger::before {
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  right: 0;
+  top: -10px;
+  width: 20px;
+}
+
+.alert-success {
+  background-color: #e7f4e3;
+
+  &::before {
+    content: url(image-path('alert/ico-success.svg'));
   }
 }
 
-.alert-success { background-color: #e7f4e3; }
+.alert-danger {
+  background-color: #ffe7eb;
+
+  &::before {
+    content: url(image-path('alert/ico-danger.png'));
+  }
+}
+
 .alert-progress { background-color: $blue-light; }
-.alert-danger { background-color: #ffe7eb; }

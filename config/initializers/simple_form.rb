@@ -2,7 +2,7 @@ SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
   config.error_notification_tag = :div
-  config.error_notification_class = 'error-notify red bold mb2'
+  config.error_notification_class = 'mb2 p2 alert alert-danger bold center'
 
   config.wrappers :base do |b|
     b.use :html5
@@ -19,7 +19,7 @@ SimpleForm.setup do |config|
     b.use :label
     b.use :input, class: 'block col-12 field'
     b.use :hint,  wrap_with: { tag: 'div' }
-    b.use :error, wrap_with: { tag: 'div', class: 'error-notify alert-danger p1 mt1' }
+    b.use :error, wrap_with: { tag: 'div', class: 'error-message red h5' }
   end
 
   config.default_wrapper = :vertical_form

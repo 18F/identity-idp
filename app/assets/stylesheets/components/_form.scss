@@ -1,5 +1,10 @@
 $radio-checkbox-space: 1.5rem;
 
+label {
+  display: inline-block;
+  margin-bottom: .375rem;
+}
+
 .field {
   background-color: $blue-light;
   color: $gray;
@@ -25,12 +30,18 @@ $radio-checkbox-space: 1.5rem;
 
 // error states
 .invalid,
-.interacted.required:invalid {
+.interacted.required:invalid,
+.has-error input {
   background-image: $form-icon-error;
   background-position: center right .5rem;
   background-repeat: no-repeat;
   background-size: 1rem 1rem;
   border-color: $red;
+
+  &:focus {
+    border-color: $red;
+    box-shadow: 0 0 0 2px rgba($red, .5);
+  }
 }
 
 .error-message { margin-top: 2px; }

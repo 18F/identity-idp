@@ -11,6 +11,7 @@ const validate = {
   init() {
     this.form = document.querySelector('form');
     if (!this.form) return;
+    this.form.noValidate = true;
     this.btn = this.form.querySelector('[type=submit]');
 
     h5f.setup(this.form, {
@@ -24,17 +25,13 @@ const validate = {
   },
 
   addEvents() {
-    this.form.addEventListener('invalid', e => e.preventDefault(), true);
     this.form.addEventListener('change', e => this.validateField(e.target));
-    this.form.addEventListener('submit', e => this.submitForm(e));
-    this.btn.addEventListener('click', () => this.validateForm());
+    this.form.addEventListener('submit', e => this.validateForm(e));
   },
 
-  submitForm(e) {
+  validateForm(e) {
     if (!this.form.checkValidity()) e.preventDefault();
-  },
 
-  validateForm() {
     const fields = this.form.querySelectorAll('.field');
     for (let i = 0; i < fields.length; i++) {
       this.validateField(fields[i]);
@@ -67,13 +64,14 @@ const validate = {
 
     f.insertAdjacentHTML(
       'afterend',
-      `<div role='alert' class='error-message red h6' id='alert_${f.id}'>
+      `<div role='alert' class='error-message red h5' id='alert_${f.id}'>
         ${f.validationMessage}
       </div>`
     );
   },
 
   removeInvalidMarkup(f) {
+    f.parentNode.classList.remove('has-error');
     f.removeAttribute('aria-invalid');
     f.removeAttribute('aria-describedby');
   },
