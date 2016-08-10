@@ -122,4 +122,42 @@ describe Users::EditInfoController, devise: true do
       end
     end
   end
+
+  describe '#password' do
+    let(:user) { create(:user, :signed_up) }
+    let!(:old_encrypted_password) { user.encrypted_password }
+
+    context 'user changes password', email: true do
+      before do
+        sign_in(user)
+        put :password, update_user_password_form: { password: 'abcdefgh' }
+      end
+
+      it 'changes the password successfully and sends the user an email' do
+        expect(response).to redirect_to profile_url
+        expect(user.reload.encrypted_password).to_not eq old_encrypted_password
+        expect(response).to render_template('user_mailer/password_changed')
+      end
+    end
+
+    context 'invalid password' do
+      render_views
+
+      it 'displays invalid password error (blank)' do
+        sign_in(user)
+        put :password, update_user_password_form: { password: '' }
+
+        expect(response.body).to have_content('can\'t be blank')
+        expect(user.reload.encrypted_password).to eq old_encrypted_password
+      end
+
+      it 'displays invalid password error (too short)' do
+        sign_in(user)
+        put :password, update_user_password_form: { password: 'abc' }
+
+        expect(response.body).to have_content('too short')
+        expect(user.reload.encrypted_password).to eq old_encrypted_password
+      end
+    end
+  end
 end

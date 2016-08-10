@@ -32,7 +32,7 @@ function getFeedback(z) {
 
 
 function analyzePw() {
-  const input = document.getElementById('password_form_password');
+  const input = document.querySelector('[type=password]');
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');

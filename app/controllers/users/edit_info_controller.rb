@@ -14,6 +14,11 @@ module Users
       handle_request
     end
 
+    def password
+      @update_form = UpdateUserPasswordForm.new(current_user)
+      handle_request
+    end
+
     private
 
     def handle_request
@@ -34,7 +39,7 @@ module Users
 
     def user_params
       form = @update_form.class.name.underscore.to_sym
-      params.require(form).permit(:email, :mobile)
+      params.require(form).permit(:email, :mobile, :password)
     end
 
     def process_successful_update(resource)
