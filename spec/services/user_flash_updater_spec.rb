@@ -2,8 +2,8 @@ require 'rails_helper'
 
 describe UserFlashUpdater do
   let(:user) { create(:user, :signed_up) }
-  let(:second_user) { create(:user, :signed_up, mobile: '+1 (202) 555-1213') }
-  let(:form) { UpdateUserMobileForm.new(user) }
+  let(:second_user) { create(:user, :signed_up, phone: '+1 (202) 555-1213') }
+  let(:form) { UpdateUserPhoneForm.new(user) }
 
   describe '#set_flash_message' do
     context 'when there are no attribute changes that need confirmation' do
@@ -19,12 +19,12 @@ describe UserFlashUpdater do
       end
     end
 
-    context 'when mobile is updated' do
-      it 'returns a mobile confirmation notice' do
-        form.submit(mobile: second_user.mobile)
+    context 'when phone is updated' do
+      it 'returns a phone confirmation notice' do
+        form.submit(phone: second_user.phone)
 
         flash = {}
-        updated_flash = { notice: t('devise.registrations.mobile_update_needs_confirmation') }
+        updated_flash = { notice: t('devise.registrations.phone_update_needs_confirmation') }
 
         UserFlashUpdater.new(form, flash).set_flash_message
 
@@ -45,13 +45,13 @@ describe UserFlashUpdater do
       end
     end
 
-    context 'when both email and mobile are updated to ones that have already been taken' do
-      it 'returns both an email and mobile confirmation notice' do
-        user.update(mobile: second_user.mobile, email: second_user.email)
-        allow(form).to receive(:mobile_changed?).and_return(true)
+    context 'when both email and phone are updated to ones that have already been taken' do
+      it 'returns both an email and phone confirmation notice' do
+        user.update(phone: second_user.phone, email: second_user.email)
+        allow(form).to receive(:phone_changed?).and_return(true)
 
         flash = {}
-        updated_flash = { notice: t('devise.registrations.email_and_mobile_need_confirmation') }
+        updated_flash = { notice: t('devise.registrations.email_and_phone_need_confirmation') }
 
         UserFlashUpdater.new(form, flash).set_flash_message
 
@@ -72,13 +72,13 @@ describe UserFlashUpdater do
       end
     end
 
-    context 'when mobile is updated' do
-      it 'returns a mobile confirmation notice' do
-        user.update(mobile: '555-333-1212')
-        allow(form).to receive(:mobile_changed?).and_return(true)
+    context 'when phone is updated' do
+      it 'returns a phone confirmation notice' do
+        user.update(phone: '555-333-1212')
+        allow(form).to receive(:phone_changed?).and_return(true)
 
         flash = {}
-        updated_flash = { notice: t('devise.registrations.mobile_update_needs_confirmation') }
+        updated_flash = { notice: t('devise.registrations.phone_update_needs_confirmation') }
 
         UserFlashUpdater.new(form, flash).set_flash_message
 
@@ -86,13 +86,13 @@ describe UserFlashUpdater do
       end
     end
 
-    context 'when both email and mobile are updated' do
-      it 'returns both an email and mobile confirmation notice' do
+    context 'when both email and phone are updated' do
+      it 'returns both an email and phone confirmation notice' do
         user.update(email: 'foo@example.com')
-        allow(form).to receive(:mobile_changed?).and_return(true)
+        allow(form).to receive(:phone_changed?).and_return(true)
 
         flash = {}
-        updated_flash = { notice: t('devise.registrations.email_and_mobile_need_confirmation') }
+        updated_flash = { notice: t('devise.registrations.email_and_phone_need_confirmation') }
 
         UserFlashUpdater.new(form, flash).set_flash_message
 

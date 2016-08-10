@@ -60,26 +60,26 @@ describe Users::EditInfoController, devise: true do
     end
   end
 
-  describe '#mobile' do
-    let(:user) { create(:user, :signed_up, mobile: '+1 (202) 555-1234') }
-    let(:second_user) { create(:user, :signed_up, mobile: '+1 (202) 555-5678') }
-    let(:new_mobile) { '555-555-5555' }
+  describe '#phone' do
+    let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1234') }
+    let(:second_user) { create(:user, :signed_up, phone: '+1 (202) 555-5678') }
+    let(:new_phone) { '555-555-5555' }
 
-    context 'user changes mobile' do
+    context 'user changes phone' do
       before do
         sign_in(user)
         stub_analytics
         allow(@analytics).to receive(:track_event)
-        put :mobile, update_user_mobile_form: { mobile: new_mobile }
+        put :phone, update_user_phone_form: { phone: new_phone }
       end
 
       it 'redirects to phone confirmation page with success message' do
         expect(response).to redirect_to(phone_confirmation_send_path)
-        expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
+        expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
       end
 
       it 'does not update the users phone number' do
-        expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
+        expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
       end
 
       it 'tracks the phone number update event' do
@@ -88,35 +88,35 @@ describe Users::EditInfoController, devise: true do
       end
     end
 
-    context 'user attempts to remove mobile number' do
+    context 'user attempts to remove phone number' do
       render_views
 
-      it 'displays error message and does not remove mobile' do
+      it 'displays error message and does not remove phone' do
         sign_in(user)
-        put :mobile, update_user_mobile_form: { mobile: '' }
+        put :phone, update_user_phone_form: { phone: '' }
 
-        expect(response.body).to have_content invalid_mobile_message
-        expect(second_user.reload.mobile).to be_present
+        expect(response.body).to have_content invalid_phone_message
+        expect(second_user.reload.phone).to be_present
       end
     end
 
-    context "user changes mobile to another user's mobile" do
+    context "user changes phone to another user's phone" do
       it 'redirects to phone confirmation page with success message' do
         sign_in(user)
-        put :mobile, update_user_mobile_form: { mobile: second_user.mobile }
+        put :phone, update_user_phone_form: { phone: second_user.phone }
 
         expect(response).to redirect_to(phone_confirmation_send_path)
-        expect(flash[:notice]).to eq t('devise.registrations.mobile_update_needs_confirmation')
-        expect(user.reload.mobile).to_not eq second_user.mobile
+        expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
+        expect(user.reload.phone).to_not eq second_user.phone
       end
     end
 
-    context 'user updates with invalid mobile' do
+    context 'user updates with invalid phone' do
       render_views
 
-      it 'displays error about invalid mobile' do
+      it 'displays error about invalid phone' do
         sign_in(user)
-        put :mobile, update_user_mobile_form: { mobile: '123' }
+        put :phone, update_user_phone_form: { phone: '123' }
 
         expect(response.body).to have_content('number is invalid')
       end

@@ -15,7 +15,7 @@ feature 'Two Factor Authentication' do
         to have_content t('devise.two_factor_authentication.two_factor_setup')
     end
 
-    scenario 'user does not fill out a mobile number when signing up' do
+    scenario 'user does not fill out a phone number when signing up' do
       sign_up_and_set_password
       click_button 'Submit'
 
@@ -30,44 +30,44 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq phone_setup_path
     end
 
-    describe 'user selects Mobile' do
-      scenario 'user leaves mobile blank' do
+    describe 'user selects phone' do
+      scenario 'user leaves phone blank' do
         sign_in_before_2fa
-        fill_in 'Mobile', with: ''
+        fill_in 'Phone', with: ''
         click_button 'Submit'
 
-        expect(page).to have_content invalid_mobile_message
+        expect(page).to have_content invalid_phone_message
       end
 
       scenario 'user enters an invalid number with no digits' do
         sign_in_before_2fa
-        fill_in 'Mobile', with: 'five one zero five five five four three two one'
+        fill_in 'Phone', with: 'five one zero five five five four three two one'
         click_button 'Submit'
 
-        expect(page).to have_content invalid_mobile_message
+        expect(page).to have_content invalid_phone_message
       end
 
       scenario 'user enters a valid number' do
         user = sign_in_before_2fa
-        fill_in 'Mobile', with: '555-555-1212'
+        fill_in 'Phone', with: '555-555-1212'
         click_button 'Submit'
 
-        expect(page).to_not have_content invalid_mobile_message
+        expect(page).to_not have_content invalid_phone_message
         expect(current_path).to eq phone_confirmation_path
-        expect(user.reload.mobile).to_not eq '+1 (555) 555-1212'
+        expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       end
     end
   end # describe 'When the user has not set a preferred method'
 
   describe 'When the user has set a preferred method' do
-    describe 'Using Mobile' do
-      # Scenario: User with mobile 2fa is prompted for otp
+    describe 'Using phone' do
+      # Scenario: User with phone 2fa is prompted for otp
       #   Given I exist as a user
-      #   And I am not signed in and have mobile 2fa enabled
+      #   And I am not signed in and have phone 2fa enabled
       #   When I sign in
-      #   Then an OTP is sent to my mobile
+      #   Then an OTP is sent to my phone
       #   And I am prompted to enter it
-      context 'user is prompted for otp via mobile only', sms: true do
+      context 'user is prompted for otp via phone only', sms: true do
         before do
           reset_job_queues
           @user = create(:user, :signed_up)

@@ -33,8 +33,8 @@ feature 'saml api', devise: true, sms: true do
         expect(current_path).to eq phone_setup_path
       end
 
-      it 'prompts the user to confirm mobile after setting up 2FA' do
-        fill_in 'Mobile', with: '202-555-1212'
+      it 'prompts the user to confirm phone after setting up 2FA' do
+        fill_in 'Phone', with: '202-555-1212'
         click_button 'Submit'
 
         expect(current_path).to eq phone_confirmation_path
@@ -51,8 +51,8 @@ feature 'saml api', devise: true, sms: true do
         expect(current_path).to eq phone_setup_path
       end
 
-      it 'prompts the user to confirm mobile after setting up 2FA' do
-        fill_in 'Mobile', with: '202-555-1212'
+      it 'prompts the user to confirm phone after setting up 2FA' do
+        fill_in 'Phone', with: '202-555-1212'
         click_button 'Submit'
 
         expect(current_path).to eq phone_confirmation_path
@@ -143,8 +143,8 @@ feature 'saml api', devise: true, sms: true do
         expect(page.response_headers['Pragma']).to eq 'no-cache'
       end
 
-      it 'retains the formatting of the mobile number' do
-        expect(xmldoc.mobile_number.children.children.to_s).to eq(user.mobile)
+      it 'retains the formatting of the phone number' do
+        expect(xmldoc.phone_number.children.children.to_s).to eq(user.phone)
       end
     end
   end

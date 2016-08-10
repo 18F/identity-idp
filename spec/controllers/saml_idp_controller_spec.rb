@@ -619,13 +619,13 @@ describe SamlIdpController do
           expect(uuid['FriendlyName']).to eq('uuid')
         end
 
-        it 'includes the mobile Attribute element' do
-          mobile = xmldoc.mobile_number
+        it 'includes the phone Attribute element' do
+          phone = xmldoc.phone_number
 
-          expect(mobile.name).to eq('Attribute')
-          expect(mobile['Name']).to eq('mobile')
-          expect(mobile['NameFormat']).to eq(Saml::XML::Namespaces::Formats::Attr::URI)
-          expect(mobile['FriendlyName']).to eq('mobile')
+          expect(phone.name).to eq('Attribute')
+          expect(phone['Name']).to eq('phone')
+          expect(phone['NameFormat']).to eq(Saml::XML::Namespaces::Formats::Attr::URI)
+          expect(phone['FriendlyName']).to eq('phone')
         end
       end
     end

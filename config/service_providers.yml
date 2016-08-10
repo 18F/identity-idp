@@ -8,7 +8,7 @@ test:
       cert: 'saml_test_sp'
       agency: 'test_agency'
       friendly_name: 'test_friendly_name'
-      attribute_bundle: ['email', 'mobile']
+      attribute_bundle: ['email', 'phone']
 
     'https://rp1.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://example.com/test/saml/decode_assertion'
@@ -120,4 +120,4 @@ superb.legit.domain.gov:
       assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
       cert: 'saml_test_sp'
       agency: 'test_agency'
-      attribute_bundle: ['email', 'mobile']
+      attribute_bundle: ['email', 'phone']

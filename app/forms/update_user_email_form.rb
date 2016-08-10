@@ -28,7 +28,7 @@ class UpdateUserEmailForm
     valid? && !email_taken?
   end
 
-  def mobile_changed?
+  def phone_changed?
     false
   end
 

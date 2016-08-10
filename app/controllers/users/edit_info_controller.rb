@@ -9,8 +9,8 @@ module Users
       handle_request
     end
 
-    def mobile
-      @update_form = UpdateUserMobileForm.new(current_user)
+    def phone
+      @update_form = UpdateUserPhoneForm.new(current_user)
       handle_request
     end
 
@@ -34,7 +34,7 @@ module Users
 
     def user_params
       form = @update_form.class.name.underscore.to_sym
-      params.require(form).permit(:email, :mobile)
+      params.require(form).permit(:email, :phone)
     end
 
     def process_successful_update(resource)
@@ -46,9 +46,9 @@ module Users
       updater = UserFlashUpdater.new(@update_form, flash)
       updater.set_flash_message
 
-      if @update_form.mobile_changed?
+      if @update_form.phone_changed?
         analytics.track_event('User asked to update their phone number')
-        prompt_to_confirm_mobile(@update_form.mobile)
+        prompt_to_confirm_phone(@update_form.phone)
       elsif is_flashing_format?
         EmailNotifier.new(resource).send_password_changed_email
         redirect_to profile_url

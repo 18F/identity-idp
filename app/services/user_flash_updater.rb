@@ -8,14 +8,14 @@ UserFlashUpdater = Struct.new(:form, :flash) do
       attr = attributes_to_confirm.pop
       flash[:notice] = I18n.t("devise.registrations.#{attr}_update_needs_confirmation")
     else
-      flash[:notice] = I18n.t('devise.registrations.email_and_mobile_need_confirmation')
+      flash[:notice] = I18n.t('devise.registrations.email_and_phone_need_confirmation')
     end
   end
 
   private
 
-  def needs_to_confirm_mobile_change?
-    form.mobile_changed?
+  def needs_to_confirm_phone_change?
+    form.phone_changed?
   end
 
   def needs_to_confirm_profile_changes?
@@ -29,7 +29,7 @@ UserFlashUpdater = Struct.new(:form, :flash) do
   end
 
   def updatable_attributes
-    @updatable_attributes ||= %w(mobile email)
+    @updatable_attributes ||= %w(phone email)
   end
 
   def needs_to_confirm_email_change?

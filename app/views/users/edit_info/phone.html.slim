@@ -1,0 +1,9 @@
+- title t('titles.edit_info.phone')
+
+
+h1.heading = t('headings.edit_info.phone')
+= simple_form_for(@update_form, url: edit_phone_path,
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.error_notification
+  = f.input :phone, as: :tel, required: true
+  = f.button :submit, 'Update'

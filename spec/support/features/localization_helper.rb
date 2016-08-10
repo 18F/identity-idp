@@ -1,6 +1,6 @@
 module Features
   module LocalizationHelper
-    def invalid_mobile_message
+    def invalid_phone_message
       t('errors.messages.improbable_phone')
     end
 
