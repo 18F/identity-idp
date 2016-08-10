@@ -1,9 +1,20 @@
+$separator-height: .5rem;
+
 .heading {
-  border-bottom: 4px solid $red;
-  font-size: $h4;
-  margin-bottom: 1.5rem;
+  font-size: $h3;
+  margin-bottom: .75rem;
   margin-top: 0;
-  padding-bottom: .5rem;
+  padding-bottom: .75rem + $separator-height;
+  position: relative;
+
+  &::before {
+    border-bottom: $separator-height solid $red;
+    border-radius: 12px;
+    bottom: 0;
+    content: '';
+    position: absolute;
+    width: 60px;
+  }
 
   &-m0 { margin: 0; }
   &-big { font-size: $h1; }
