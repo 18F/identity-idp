@@ -7,6 +7,9 @@ addons:
     packages:
       - jq
 before_install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
   - npm install
 before_script:
   - cp config/application.yml.example config/application.yml
