@@ -6,37 +6,35 @@
           class: 'align-middle hero-img')
       .md-col.md-col-7
         h3.sm-pl2.py4.regular.line-height-3.hero-txt
-          ' Lorem ipsum, GSA launched a new, permanent home for 18F — the
-          ' Technology Transformation Service, whose mission is to improve
-          ' the lorem ipsum dolor set.
+          | Lorem ipsum, GSA launched a new, permanent home for 18F — the
+            Technology Transformation Service, whose mission is to improve
+            the lorem ipsum dolor set.
 
 .bg-white
-  .container.p2.sm-py4
+  .container.px2.py3
     .clearfix.mxn2.sm-mxn3
-      .sm-col.sm-col-4.px2.sm-px3.mb2
-        = image_tag(asset_url('home/ico-1.png'), alt: APP_NAME, width: 125,
-          class: 'align-middle')
-        h3.mt1.caps Secure
-        hr.max-width-1.bw2.border-red.ml0
+      .sm-col.sm-col-4.px2.sm-px3.py3
+        = image_tag(asset_url('home/ico-shield.svg'), alt: APP_NAME, width: 100,
+          class: 'mb1 align-middle')
+        h3.caps Secure
+        hr.max-width-1.bw2.border-red.ml0.mb2
+        div You can use #{APP_NAME} to securely login to government agency websites.
+      .sm-col.sm-col-4.px2.sm-px3.py3
+        = image_tag(asset_url('home/ico-check.svg'), alt: APP_NAME, width: 100,
+          class: 'mb1 align-middle')
+        h3.caps Easy
+        hr.max-width-1.bw2.border-red.ml0.mb2
         div
-          ' You can use #{APP_NAME} to securely login to government
-          ' agency websites.
-      .sm-col.sm-col-4.px2.sm-px3.mb2
-        = image_tag(asset_url('home/ico-2.png'), alt: APP_NAME, width: 125,
-          class: 'align-middle')
-        h3.mt1.caps Easy
-        hr.max-width-1.bw2.border-red.ml0
+          | #{APP_NAME} is a service used by multiple U.S. government
+            agencies to make interacting with the government easier.
+      .sm-col.sm-col-4.px2.sm-px3.py3
+        = image_tag(asset_url('home/ico-gov.svg'), alt: APP_NAME, width: 100,
+          class: 'mb1 align-middle')
+        h3.caps Inclusive
+        hr.max-width-1.bw2.border-red.ml0.mb2
         div
-          ' #{APP_NAME} is a service used by multiple U.S. government
-          ' agencies to make interacting with the government easier.
-      .sm-col.sm-col-4.px2.sm-px3.mb2
-        = image_tag(asset_url('home/ico-3.png'), alt: APP_NAME, width: 125,
-          class: 'align-middle')
-        h3.mt1.caps Inclusive
-        hr.max-width-1.bw2.border-red.ml0
-        div
-          ' You can use your #{APP_NAME} account to access all
-          ' participating U.S. government agencies.
+          | You can use your #{APP_NAME} account to access all
+            participating U.S. government agencies.
 
 .bg-light-blue
   .container.px2.py4
@@ -47,18 +45,18 @@
           h4 Building a modern shared authentication platform
           hr.max-width-1.bw2.border-red.ml0
           p.mt2.mb1
-            ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            ' eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-            ' enim ad minim veniam, quis nostrud exercitation ullamco
-            ' laboris nisi ut aliquip ex ea commodo consequat.
+            | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco
+              laboris nisi ut aliquip ex ea commodo consequat.
           = link_to 'Read more...', root_path
       .sm-col.sm-col-6.px2
         .mb3.sm-mb2
           h4 Building a modern shared authentication platform
           hr.max-width-1.bw2.border-red.ml0
           p.mt2.mb1
-            ' Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            ' eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-            ' enim ad minim veniam, quis nostrud exercitation ullamco
-            ' laboris nisi ut aliquip ex ea commodo consequat.
+            | Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
+              enim ad minim veniam, quis nostrud exercitation ullamco
+              laboris nisi ut aliquip ex ea commodo consequat.
           = link_to 'Read more...', root_path

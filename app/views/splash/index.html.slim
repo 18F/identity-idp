@@ -43,18 +43,15 @@ html lang="#{I18n.locale}"
           = image_tag(asset_url('splash/hr-red-1.svg'), alt: 'hr', class: 'mb3')
           .h3.serif.line-height-4
             p.mb3
-              | The General Service Administration's Technology Transformation
-                Service is building an authentication platform to give the
-                public simple and efficient online interactions with the U.S.
-                government. This platform will be a single service shared by
-                different agencies to simplify and streamline logging in and
-                securely accessing personal information on federal government websites.
+              | 18F, which is part of the General Services Administration’s Technology
+                Transformation Service, is building an authentication platform to make
+                online interactions with the U.S. government simple, efficient, and intuitive.
+                This platform will be a service shared by agencies to streamline logging in
+                and to allow the public to securely access personal information and
+                federal government services.
             p.mb3
-              | Federal agencies will be able to integrate our platform with
-                their existing services as they choose. What the public will
-                experience is a simpler, more intuitive way to move through
-                the identity authentication step on the way to accessing
-                government services.
+              | Federal agencies will be able to integrate our platform with their
+                existing services as they choose.
 
       .bg-light-blue
         .container.px2.py4
@@ -67,13 +64,13 @@ html lang="#{I18n.locale}"
               = image_tag(asset_url('splash/hr-red-2.svg'), alt: 'hr', class: 'mb3')
               .h3.serif.line-height-4
                 p.mb3
-                  | Our goal is to drastically shorten the amount of time it takes
-                    to work with the government by reducing paperwork the public
-                    has to fill out and forms the government has to process.
+                  | Our goal is to shorten the amount of time it takes to work with
+                    the government by reducing paperwork the public has to fill out and
+                    forms the government has to process.
                 p.mb3
-                  | In doing so, we’re committed to ensuring individuals control
-                    their own information, and that they can choose whether to use
-                    this new service or go with an alternative.
+                  | In doing so, we’re committed to ensuring individuals control their
+                    own information in a highly secure manner with a delightful
+                    user experience.
 
       .bg-navy.white
         .container.px2.py4
@@ -85,17 +82,17 @@ html lang="#{I18n.locale}"
               oversight across the government. This platform addresses concerns
               that we’ve heard from IT teams across the federal government:
           .clearfix.mxn2
-            .sm-col.sm-col-4.px2.mb3
+            .sm-col.sm-col-4.px2.mb4.sm-mb3
               = image_tag(asset_url('splash/hr-blue-1.svg'), alt: 'hr', class: 'mb2')
               p
                 | The process of standing up an identity and access management
                   system should take days, not months.
-            .sm-col.sm-col-4.px2.mb3
+            .sm-col.sm-col-4.px2.mb4.sm-mb3
               = image_tag(asset_url('splash/hr-blue-2.svg'), alt: 'hr', class: 'mb2')
               p
                 | Security updates and identity fraud alerts should arrive in
-                  minutes, not weeks.
-            .sm-col.sm-col-4.px2.mb3
+                  seconds, not weeks.
+            .sm-col.sm-col-4.px2.mb4.sm-mb3
               = image_tag(asset_url('splash/hr-blue-3.svg'), alt: 'hr', class: 'mb2')
               p
                 | Agencies should be able to concentrate IT resources on
@@ -108,24 +105,29 @@ html lang="#{I18n.locale}"
               = image_tag(asset_url('splash/graphic-people.png'),
                 alt: APP_NAME, class: 'mt2')
             .sm-col.sm-col-8.px2
-              h2.mt2.mb1.h1 Open and user centered
+              h2.mt2.mb1.h1 Open and user-centered
               = image_tag(asset_url('splash/hr-red-4.svg'), alt: 'hr', class: 'mb3')
               .h3.serif.line-height-4
                 p.mb3
                   | This platform is being built in the open, using agile methods.
-                    We're working iteratively and testing what we build with the
+                    We’re working iteratively and testing what we build with the
                     public as we go.
 
       .bg-navy.white
         .container.px2.py4
           h2.mt2.mb1.h1 Building cooperatively
           = image_tag(asset_url('splash/hr-red-5.svg'), alt: 'hr', class: 'mb3')
+          - cnap_url = 'https://www.whitehouse.gov/the-press-office/2016/02/09/'\
+                       'fact-sheet-cybersecurity-national-action-plan'
           p.mb3.h3.serif.line-height-4
-            | This project builds on groundwork laid by the National Institute
-              for Standards in Technology, the Cybersecurity National Action
-              Plan, and the General Service Administration’s technology procurement
-              experts. We’re working hand-in-hand with organizations across the
-              government and in the private sector to implement best practices
+            | This project builds on groundwork laid by the
+              <a href='http://www.nist.gov/' class='teal bold'>National Institute
+              for Standards in Technology</a>, the
+              <a href='#{cnap_url}' class='teal bold'>Cybersecurity National Action
+              Plan</a>, and the General Services Administration’s
+              <a href='http://www.gsa.gov/portal/content/105080' class='teal bold'>
+              Federal Acquisition Service</a>. We’re working hand-in-hand with organizations
+              across the government and in the private sector to implement best practices
               and emerging standards in secure, privacy-protecting authentication.
 
       .bg-light-blue
@@ -135,14 +137,27 @@ html lang="#{I18n.locale}"
           .h3.serif.line-height-4
             p.mb3
               | We’ll be publishing more information as the project advances.
-                To follow the technical development of the project, you can
-                see our code
-                on #{link_to 'GitHub', 'https://github.com/18F/identity-idp', class: 'navy bold'}.
+                If you’re interested in learning more or helping us deliver this
+                platform for millions of Americans, please send us a note at
+                <a href='mailto:info@login.gov' class='navy bold'>info@login.gov</a>.
 
     footer.bg-navy.white
-      .container.px2.py3.center
-        = link_to \
-          image_tag(asset_url('logo-white.svg'),
-            alt: APP_NAME,
-            class: 'align-middle',
-            width: 150), root_path
+      .container.px2.py3
+        .clearfix
+          .sm-col.mb1.sm-m0
+            = link_to \
+              image_tag(asset_url('square-18f.svg'),
+                alt: '18F',
+                class: 'mr1 align-middle',
+                width: 40), 'https://18f.gsa.gov/'
+            = link_to \
+              image_tag(asset_url('square-gsa.svg'),
+                alt: 'GSA',
+                class: 'align-middle',
+                width: 40), 'http://www.gsa.gov/portal/category/100000'
+          .sm-col-right.sm-right-align
+            = link_to \
+              image_tag(asset_url('logo-white.svg'),
+                alt: APP_NAME,
+                class: 'py1 align-middle',
+                width: 172), root_path, class: 'inline-block'
