@@ -184,7 +184,9 @@ describe 'throttling requests' do
         'user[password]' => user.password
       )
 
-      3.times do
+      get '/otp/send', {}, 'REMOTE_ADDR' => '1.2.3.4'
+
+      2.times do
         get '/otp/new', {}, 'REMOTE_ADDR' => '1.2.3.4'
       end
 

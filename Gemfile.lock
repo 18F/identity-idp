@@ -7,8 +7,9 @@ GIT
       dotenv
 
 GIT
-  remote: https://github.com/Houdini/two_factor_authentication.git
-  revision: c3691f1a965d8e5d7d80948332222924235f54bb
+  remote: https://github.com/amoose/two_factor_authentication.git
+  revision: 58521f467ab0e3a8b02342f9d7ae11bbf9afdb14
+  branch: feature/more_options
   specs:
     two_factor_authentication (1.1.5)
       devise
@@ -16,13 +17,6 @@ GIT
       rails (>= 3.1.1)
       randexp
       rotp
-
-GIT
-  remote: https://github.com/monfresh/sms-spec.git
-  revision: 786238c1924c055d16a4963abb329c9b985ce104
-  specs:
-    sms-spec (0.2.0)
-      rspec (~> 3.1)
 
 GIT
   remote: https://github.com/onelogin/ruby-saml.git
@@ -670,7 +664,6 @@ DEPENDENCIES
   sinatra
   slim-rails
   slim_lint
-  sms-spec!
   split
   spring
   spring-commands-rspec

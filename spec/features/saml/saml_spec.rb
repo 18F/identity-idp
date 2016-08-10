@@ -3,7 +3,7 @@ require 'rails_helper'
 include SamlAuthHelper
 include IdvHelper
 
-feature 'saml api', devise: true, sms: true do
+feature 'saml api', devise: true do
   let(:user) { create(:user, :signed_up) }
 
   context 'SAML Assertions' do
@@ -35,7 +35,7 @@ feature 'saml api', devise: true, sms: true do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button 'Submit'
+        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
         expect(current_path).to eq phone_confirmation_path
       end
@@ -53,7 +53,7 @@ feature 'saml api', devise: true, sms: true do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button 'Submit'
+        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
         expect(current_path).to eq phone_confirmation_path
       end

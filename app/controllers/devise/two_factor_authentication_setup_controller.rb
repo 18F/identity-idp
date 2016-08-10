@@ -35,8 +35,10 @@ module Devise
 
     def process_valid_form
       update_metrics
-
-      prompt_to_confirm_phone(@two_factor_setup_form.phone)
+      prompt_to_confirm_phone(
+        @two_factor_setup_form.phone,
+        @two_factor_setup_form.delivery_method
+      )
     end
 
     def update_metrics

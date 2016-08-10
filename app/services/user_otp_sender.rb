@@ -3,10 +3,15 @@ class UserOtpSender
     @user = user
   end
 
-  def send_otp(code)
+  def send_otp(code, options = {})
     return if user_decorator.blocked_from_entering_2fa_code?
 
-    SmsSenderOtpJob.perform_later(code, @user.phone)
+    phone_number = @user.phone
+    if options[:delivery_method] == :voice
+      VoiceSenderOtpJob.perform_later(code, phone_number)
+    else
+      SmsSenderOtpJob.perform_later(code, phone_number)
+    end
   end
 
   private

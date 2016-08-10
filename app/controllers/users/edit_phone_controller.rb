@@ -28,7 +28,6 @@ module Users
     def process_updates
       if @update_user_phone_form.phone_changed?
         analytics.track_event('User asked to update their phone number')
-
         flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
         prompt_to_confirm_phone(@update_user_phone_form.phone)
       else

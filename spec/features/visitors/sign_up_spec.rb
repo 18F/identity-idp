@@ -57,7 +57,7 @@ feature 'Sign Up', devise: true do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
-      click_button 'Submit'
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
     end
 
     it 'updates phone_confirmed_at and redirects to profile after confirmation' do
@@ -100,7 +100,7 @@ feature 'Sign Up', devise: true do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: @existing_user.phone
-      click_button 'Submit'
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do

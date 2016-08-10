@@ -10,5 +10,10 @@ h1.heading = t('devise.two_factor_authentication.two_factor_setup')
   p#2fa-description = t('devise.two_factor_authentication.otp_setup')
   = f.input :phone, as: :tel, label: 'Phone Number', required: true,
       input_html: { 'aria-describedby' => '2fa-description' }
-  = f.button :submit, 'Submit', class: 'btn-wide mb2'
-  p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
+  = f.button :submit, t('devise.two_factor_authentication.buttons.' \
+    'confirm_with_sms'), class: 'mb2',
+      name: 'two_factor_setup_form[sms]'
+  = f.button :submit, t('devise.two_factor_authentication.buttons.' \
+    'confirm_with_voice'), class: 'mb2',
+    name: 'two_factor_setup_form[voice]'
+  p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

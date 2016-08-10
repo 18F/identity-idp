@@ -13,10 +13,11 @@ p.m0 Please enter the code sent to <strong>#{@unconfirmed_phone}</strong>.
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
 - resend_link = link_to('Resend', \
-                        phone_confirmation_send_path)
+                        phone_confirmation_send_path(delivery_method: params[:delivery_method]))
 - update_number_link = link_to('Try again', \
                                @reenter_phone_number_path)
 
 .mt2
+  = render 'phone_confirmation_fallback'
   div Didn't receive a code? #{resend_link}
   div Entered the wrong phone number? #{update_number_link}

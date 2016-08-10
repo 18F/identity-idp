@@ -12,20 +12,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
   end
 
   describe 'PATCH set' do
-    it 'prompts to confirm the number' do
-      user = create(:user)
-      sign_in(user)
-
-      stub_analytics
-      expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
-
-      patch(
-        :set,
-        two_factor_setup_form: { phone: '703-555-0100' }
-      )
-
-      expect(response).to redirect_to(phone_confirmation_send_path)
-    end
+    let(:user) { create(:user) }
 
     it 'tracks an event when the number is invalid' do
       allow(subject).to receive(:authenticate_scope!).and_return(true)
@@ -37,6 +24,62 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
       patch :set, two_factor_setup_form: { phone: '703-555-010' }
 
       expect(response).to render_template(:index)
+    end
+
+    context 'with voice' do
+      it 'prompts to confirm the number' do
+        sign_in(user)
+
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+
+        patch(
+          :set,
+          two_factor_setup_form: { phone: '703-555-0100',
+                                   voice: 'Confirm with voice call' }
+        )
+
+        expect(response).to redirect_to(
+          phone_confirmation_send_path(delivery_method: :voice)
+        )
+      end
+    end
+
+    context 'with SMS' do
+      it 'prompts to confirm the number' do
+        sign_in(user)
+
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+
+        patch(
+          :set,
+          two_factor_setup_form: { phone: '703-555-0100',
+                                   sms: 'Confirm with text message' }
+        )
+
+        expect(response).to redirect_to(
+          phone_confirmation_send_path(delivery_method: :sms)
+        )
+      end
+    end
+
+    context 'without selection' do
+      it 'prompts to confirm via SMS by default' do
+        sign_in(user)
+
+        stub_analytics
+        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+
+        patch(
+          :set,
+          two_factor_setup_form: { phone: '703-555-0100' }
+        )
+
+        expect(response).to redirect_to(
+          phone_confirmation_send_path(delivery_method: :sms)
+        )
+      end
     end
   end
 

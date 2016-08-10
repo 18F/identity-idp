@@ -32,6 +32,8 @@ Rails.application.routes.draw do
     patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
 
     get '/otp/new' => 'devise/two_factor_authentication#new'
+    get '/otp/send' => 'devise/two_factor_authentication#send_code'
+    get '/otp/confirm' => 'devise/two_factor_authentication#confirm'
   end
 
   unless Figaro.env.domain_name.include?('superb.legit.domain.gov')

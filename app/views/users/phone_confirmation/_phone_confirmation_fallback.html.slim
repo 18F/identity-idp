@@ -1,0 +1,9 @@
+p.mb0
+  - if @sms_enabled
+    - link = link_to t('links.phone_confirmation.fallback_to_voice.link_text'),
+      @fallback_confirmation_link
+    == t('links.phone_confirmation.fallback_to_voice.text', link: link)
+  - else
+    - link = link_to t('links.phone_confirmation.fallback_to_sms.link_text'),
+      @fallback_confirmation_link
+    == t('links.phone_confirmation.fallback_to_sms.text', link: link)

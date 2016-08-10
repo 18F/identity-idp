@@ -1,0 +1,15 @@
+- title t('titles.edit_info.confirm_phone')
+
+h1.heading = t('forms.phone_confirmation.header_text')
+
+p#2fa-description = t('devise.two_factor_authentication.choose_delivery_confirmation',
+  phone: @phone_number)
+
+= button_to t('devise.two_factor_authentication.buttons.' \
+  'confirm_with_sms'), phone_confirmation_send_path,
+  class: 'btn btn-primary mb2', method: :get, params: { delivery_method: :sms }
+= button_to t('devise.two_factor_authentication.buttons.' \
+  'confirm_with_voice'), phone_confirmation_send_path,
+  class: 'btn btn-primary mb2', method: :get, params: { delivery_method: :voice }
+
+p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
