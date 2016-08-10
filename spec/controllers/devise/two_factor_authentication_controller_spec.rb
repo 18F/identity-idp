@@ -291,7 +291,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       get :new
 
       expect(SmsSenderOtpJob).to have_received(:perform_later).
-        with(subject.current_user.direct_otp, subject.current_user.mobile)
+        with(subject.current_user.direct_otp, subject.current_user.phone)
       expect(subject.current_user.direct_otp).not_to eq(old_otp)
       expect(subject.current_user.direct_otp).not_to be_nil
     end

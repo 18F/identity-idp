@@ -52,20 +52,20 @@ feature 'Sign Up', devise: true do
     expect(user.reset_requested_at).to be_nil
   end
 
-  context 'visitor can sign up and confirm a valid mobile for OTP' do
+  context 'visitor can sign up and confirm a valid phone for OTP' do
     before do
       @user = sign_in_before_2fa
-      fill_in 'Mobile', with: '555-555-5555'
+      fill_in 'Phone', with: '555-555-5555'
       allow(Users::PhoneConfirmationController).
         to receive(:generate_confirmation_code).and_return('1234')
       click_button 'Submit'
     end
 
-    it 'updates mobile_confirmed_at and redirects to profile after confirmation' do
+    it 'updates phone_confirmed_at and redirects to profile after confirmation' do
       fill_in 'code', with: '1234'
       click_button 'Submit'
 
-      expect(@user.reload.mobile_confirmed_at).to be_present
+      expect(@user.reload.phone_confirmed_at).to be_present
       expect(current_path).to eq profile_path
     end
 
@@ -86,7 +86,7 @@ feature 'Sign Up', devise: true do
       expect(current_path).to eq phone_setup_path
     end
 
-    it 'informs the user that the OTP code is sent to the mobile' do
+    it 'informs the user that the OTP code is sent to the phone' do
       expect(page).to have_content('Please enter the code sent to +1 (555) 555-5555.')
     end
 
@@ -97,15 +97,15 @@ feature 'Sign Up', devise: true do
     end
   end
 
-  context "visitor tries to sign up with another user's mobile for OTP" do
+  context "visitor tries to sign up with another user's phone for OTP" do
     before do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
-      fill_in 'Mobile', with: @existing_user.mobile
+      fill_in 'Phone', with: @existing_user.phone
       click_button 'Submit'
     end
 
-    it 'pretends the mobile is valid and prompts to confirm the number' do
+    it 'pretends the phone is valid and prompts to confirm the number' do
       expect(current_path).to eq phone_confirmation_path
       expect(page).to have_content('Please enter the code sent to +1 (202) 555-1212')
     end
@@ -114,7 +114,7 @@ feature 'Sign Up', devise: true do
       fill_in 'code', with: 'foobar'
       click_button 'Submit'
 
-      expect(@user.reload.mobile_confirmed_at).to be_nil
+      expect(@user.reload.phone_confirmed_at).to be_nil
       expect(page).to have_content t('errors.invalid_confirmation_code')
       expect(current_path).to eq phone_confirmation_path
     end

@@ -7,7 +7,7 @@ describe 'users/phone_confirmation/show.html.slim' do
   end
 
   it 'informs the user that a confirmation code has been sent' do
-    @unconfirmed_mobile = '12345'
+    @unconfirmed_phone = '12345'
     render
 
     expect(rendered).to have_content('Please enter the code sent to 12345')

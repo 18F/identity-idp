@@ -66,12 +66,12 @@ en:
         You updated your account successfully, but we need to verify your new
         email address. Please check your email and follow the confirm link to
         confirm your new email address.
-      mobile_update_needs_confirmation: >
+      phone_update_needs_confirmation: >
         Your request to update your phone number was processed successfully,
         but we need to verify your new number first. Please follow the
         instructions below. If you do not confirm your new number, we will
         keep using your old phone number.
-      email_and_mobile_need_confirmation: >
+      email_and_phone_need_confirmation: >
         Your request to update your account was processed successfully,
         but we need to verify both your new number and new email. Please follow
         the instructions below to verify your new number, then check your
@@ -95,4 +95,4 @@ en:
       not_saved:
         one: "1 error prohibited this %{resource} from being saved:"
         other: "%{count} errors prohibited this %{resource} from being saved:"
-      requires_mobile: "requires you to enter your mobile number."
+      requires_phone: "requires you to enter your phone number."

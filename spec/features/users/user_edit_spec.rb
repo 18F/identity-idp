@@ -18,8 +18,8 @@ feature 'User edit' do
   scenario 'user sees error message if form is submitted without phone number', js: true do
     sign_in_and_2fa_user
 
-    visit edit_mobile_path
-    fill_in 'Mobile', with: ''
+    visit edit_phone_path
+    fill_in 'Phone', with: ''
     click_button 'Update'
 
     expect(page).to have_content 'Please fill in this field'

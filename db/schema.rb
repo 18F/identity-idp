@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160803174440) do
+ActiveRecord::Schema.define(version: 20160809195935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20160803174440) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "session_uuid",          limit: 255
-    t.string   "uuid",                                          null: false
+    t.string   "uuid",                              null: false
   end
 
   add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree
@@ -107,14 +107,14 @@ ActiveRecord::Schema.define(version: 20160803174440) do
     t.integer  "role"
     t.string   "otp_secret_key",                limit: 255
     t.integer  "second_factor_attempts_count",              default: 0
-    t.string   "mobile",                        limit: 255
+    t.string   "phone",                         limit: 255
     t.string   "uuid",                          limit: 255,              null: false
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
     t.integer  "failed_attempts",                           default: 0
     t.string   "unlock_token",                  limit: 255
-    t.datetime "mobile_confirmed_at"
+    t.datetime "phone_confirmed_at"
     t.string   "encrypted_otp_secret_key",      limit: 255
     t.string   "encrypted_otp_secret_key_iv",   limit: 255
     t.string   "encrypted_otp_secret_key_salt", limit: 255

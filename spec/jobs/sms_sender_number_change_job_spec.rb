@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe SmsSenderNumberChangeJob, sms: true do
   describe '.perform' do
-    it 'sends number change message to the mobile number' do
+    it 'sends number change message to the phone number' do
       SmsSenderNumberChangeJob.perform_now('1234')
 
       expect(messages.size).to eq(1)

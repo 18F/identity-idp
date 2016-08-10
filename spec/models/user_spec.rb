@@ -67,13 +67,13 @@ describe User do
   end
 
   context '#two_factor_enabled?' do
-    it 'is true when user has a confirmed mobile' do
-      user = create(:user, :with_mobile)
+    it 'is true when user has a confirmed phone' do
+      user = create(:user, :with_phone)
 
       expect(user.two_factor_enabled?).to eq true
     end
 
-    it 'is false when user does not have a mobile' do
+    it 'is false when user does not have a phone' do
       user = create(:user)
 
       expect(user.two_factor_enabled?).to eq false

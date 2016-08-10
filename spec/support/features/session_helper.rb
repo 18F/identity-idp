@@ -33,7 +33,7 @@ module Features
     def sign_in_before_2fa(user = create(:user))
       login_as(user, scope: :user, run_callbacks: false)
 
-      if user.mobile.present?
+      if user.phone.present?
         Warden.on_next_request do |proxy|
           session = proxy.env['rack.session']
           session['warden.user.user.session'] = {}
@@ -51,7 +51,7 @@ module Features
       visit profile_path
     end
 
-    def sign_in_and_2fa_user(user = create(:user, :signed_up, mobile: '555-555-5556'))
+    def sign_in_and_2fa_user(user = create(:user, :signed_up, phone: '555-555-5556'))
       sign_in_with_warden(user)
       user
     end
@@ -67,7 +67,7 @@ module Features
 
     def sign_up_and_2fa
       user = sign_up_and_set_password
-      fill_in 'Mobile', with: '202-555-1212'
+      fill_in 'Phone', with: '202-555-1212'
       allow(Users::PhoneConfirmationController).
         to receive(:generate_confirmation_code).and_return('1234')
       click_button 'Submit'

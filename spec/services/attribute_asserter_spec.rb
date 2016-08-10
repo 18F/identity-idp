@@ -22,18 +22,18 @@ describe AttributeAsserter do
     context 'verified user' do
       let(:subject) { described_class.new(user, service_provider, authn_request) }
 
-      context 'custom bundle includes email, mobile' do
+      context 'custom bundle includes email, phone' do
         before do
           user.identities << identity
           allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
-            %w(email mobile first_name)
+            %w(email phone first_name)
           )
           subject.build
         end
 
         it 'includes all defined attributes' do
           expect(user.asserted_attributes).to have_key :email
-          expect(user.asserted_attributes).to have_key :mobile
+          expect(user.asserted_attributes).to have_key :phone
           expect(user.asserted_attributes).to have_key :first_name
           expect(user.asserted_attributes).to_not have_key :last_name
         end
@@ -69,7 +69,7 @@ describe AttributeAsserter do
 
           it 'uses authn request bundle' do
             expect(user.asserted_attributes).to have_key :email
-            expect(user.asserted_attributes).to have_key :mobile
+            expect(user.asserted_attributes).to have_key :phone
             expect(user.asserted_attributes).to have_key :first_name
             expect(user.asserted_attributes).to have_key :last_name
             expect(user.asserted_attributes).to have_key :ssn
@@ -107,7 +107,7 @@ describe AttributeAsserter do
     context 'un-verified user' do
       let(:subject) { described_class.new(loa1_user, service_provider, authn_request) }
 
-      context 'custom bundle does not include email, mobile' do
+      context 'custom bundle does not include email, phone' do
         before do
           allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
             %w(first_name last_name)
@@ -118,24 +118,24 @@ describe AttributeAsserter do
         it 'includes only UUID' do
           expect(loa1_user.asserted_attributes).to have_key :uuid
           expect(loa1_user.asserted_attributes).to_not have_key :email
-          expect(loa1_user.asserted_attributes).to_not have_key :mobile
+          expect(loa1_user.asserted_attributes).to_not have_key :phone
           expect(loa1_user.asserted_attributes).to_not have_key :first_name
           expect(loa1_user.asserted_attributes).to_not have_key :last_name
         end
       end
 
-      context 'custom bundle includes email, mobile' do
+      context 'custom bundle includes email, phone' do
         before do
           allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
-            %w(first_name last_name email mobile)
+            %w(first_name last_name email phone)
           )
           subject.build
         end
 
-        it 'includes UUID, email, mobile only' do
+        it 'includes UUID, email, phone only' do
           expect(loa1_user.asserted_attributes).to have_key :uuid
           expect(loa1_user.asserted_attributes).to have_key :email
-          expect(loa1_user.asserted_attributes).to have_key :mobile
+          expect(loa1_user.asserted_attributes).to have_key :phone
           expect(loa1_user.asserted_attributes).to_not have_key :first_name
           expect(loa1_user.asserted_attributes).to_not have_key :last_name
         end

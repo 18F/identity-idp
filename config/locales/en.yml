@@ -5,7 +5,7 @@ en:
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
     invalid_confirmation_code: Invalid confirmation code.
     messages:
-      improbable_phone: Mobile number is invalid. Please make sure you enter a 10-digit phone number.
+      improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
 
   forms:
     buttons:
@@ -50,7 +50,7 @@ en:
       show: Create a password for your account
     edit_info:
       email: Edit your email
-      mobile: Edit your phone number
+      phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time passcode
     account_locked: Account locked
     passwords:
@@ -79,7 +79,7 @@ en:
       new: Resend confirmation instructions
     edit_info:
       email: Edit your email
-      mobile: Edit your phone number
+      phone: Edit your phone number
     log_in: Log in
     passwords:
       change: Change your password

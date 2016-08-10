@@ -1,15 +1,15 @@
 class SmsSenderOtpJob < ActiveJob::Base
   queue_as :sms
 
-  def perform(code, mobile)
-    send_otp(TwilioService.new, code, mobile)
+  def perform(code, phone)
+    send_otp(TwilioService.new, code, phone)
   end
 
   private
 
-  def send_otp(twilio_service, code, mobile)
+  def send_otp(twilio_service, code, phone)
     twilio_service.send_sms(
-      to: mobile,
+      to: phone,
       body: "#{code} is your #{APP_NAME} one-time passcode."
     )
   end

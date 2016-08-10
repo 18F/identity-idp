@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_enabled?
-    mobile.present?
+    phone.present?
   end
 
   def send_two_factor_authentication_code(code)
