@@ -174,7 +174,7 @@ GEM
       safe_yaml (~> 1.0.0)
     css_parser (1.4.5)
       addressable
-    daemons (1.2.3)
+    daemons (1.2.4)
     database_cleaner (1.5.3)
     debug_inspector (0.0.2)
     derailed (0.1.0)
@@ -289,8 +289,7 @@ GEM
       systemu (~> 2.6.2)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
-    mailcatcher (0.6.4)
-      activesupport (~> 4.0)
+    mailcatcher (0.6.5)
       eventmachine (= 1.0.9.1)
       mail (~> 2.3)
       rack (~> 1.5)
