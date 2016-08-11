@@ -1,8 +1,8 @@
 - title t('titles.profile')
 
 
+- btn_cls = 'btn btn-primary px2 py0 h6 regular sm-col-12 border-box center'
 .mb3.h6.caps.red = t('headings.profile.main')
-
 h2.heading = t('headings.profile.login_info')
 .mb4
   .py2.border-bottom
@@ -11,7 +11,7 @@ h2.heading = t('headings.profile.login_info')
       .sm-col.sm-col-5.px1 = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_email_path, \
-          class: 'btn btn-primary px2 py0 h6 regular'
+          class: btn_cls
   .mt3.mb1.h6.bold.caps
     | #{t('headings.profile.two_factor')} #{tooltip(t('tooltips.placeholder'))}
   .py2.border-top
@@ -20,17 +20,17 @@ h2.heading = t('headings.profile.login_info')
       .sm-col.sm-col-5.px1 = current_user.mobile
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_mobile_path, \
-          class: 'btn btn-primary px2 py0 h6 regular'
+          class: btn_cls
   .py2.border-top.border-bottom
     .clearfix.mxn1
-      .sm-col.sm-col-8.px1 = 'Authentication app'
-      .sm-col.sm-col-4.px1.sm-right-align
+      .sm-col.sm-col-10.px1 = 'Authentication app'
+      .sm-col.sm-col-2.px1.sm-right-align
         - if current_user.totp_enabled?
           = button_to 'Disable', disable_totp_url, method: :delete, \
-            class: 'btn btn-primary px2 py0 h6 regular'
+            class: btn_cls
         - else
           = link_to 'Enable', authenticator_start_url, \
-            class: 'btn btn-primary px2 py0 h6 regular'
+            class: btn_cls
 
 h2.heading
   | #{t('headings.profile.agencies')} #{tooltip(t('tooltips.placeholder'))}
@@ -49,9 +49,9 @@ else
 h2.heading = t('headings.profile.advanced_settings')
 .py2.border-bottom
   .clearfix.mxn1
-    .sm-col.sm-col-8.px1
+    .sm-col.sm-col-10.px1
       | #{t('headings.delete_account', app_name: APP_NAME)}
         #{tooltip(t('tooltips.placeholder'))}
-    .sm-col.sm-col-4.px1.sm-right-align
+    .sm-col.sm-col-2.px1.sm-right-align
       = button_to t('forms.buttons.delete_account'), user_destroy_confirm_path, \
-        method: :get, class: 'btn btn-primary px2 py0 h6 regular'
+        method: :get, class: btn_cls
