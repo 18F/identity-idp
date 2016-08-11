@@ -53,6 +53,7 @@ describe UpdateUserEmailForm do
         subject.email = nil
 
         expect(subject.valid_form?).to be false
+        expect(subject.instance_variable_get(:@email_taken)).to be_nil
         expect(subject.errors[:email].uniq).
           to eq [t('valid_email.validations.email.invalid')]
       end

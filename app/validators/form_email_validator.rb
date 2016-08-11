@@ -14,7 +14,7 @@ module FormEmailValidator
   private
 
   def email_is_unique
-    return if email.nil? || (persisted? && email == @user.email)
+    return if persisted? && email == @user.email
 
     @email_taken = true if User.exists?(email: email)
   end
