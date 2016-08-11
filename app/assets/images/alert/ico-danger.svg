@@ -4,16 +4,10 @@
     <title>ico-danger</title>
     <desc>Created with Sketch.</desc>
     <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="ico-danger">
-            <g id="Page-2">
-                <g id="ico-danger">
-                    <path d="M9.99833333,0 C4.47583333,0 0,4.475 0,9.99833333 C0,15.5233333 4.47583333,20 9.99833333,20 C15.5216667,20 20,15.5233333 20,9.99833333 C20,4.475 15.5216667,0 9.99833333,0" id="Fill-1" fill="#E21C3D"></path>
-                    <text id="!" fill="#FFFFFF" font-family="SourceSansPro-Bold, Source Sans Pro" font-size="20" font-weight="bold" line-spacing="20">
-                        <tspan x="7" y="20">!</tspan>
-                    </text>
-                </g>
-            </g>
+            <circle id="Oval" fill="#E21C3D" opacity="0.98" transform="translate(10.000000, 10.000000) scale(1, -1) translate(-10.000000, -10.000000) " cx="10" cy="10" r="10"></circle>
+            <path d="M9.9932087,5.198899 C9.5498827,5.198899 9.1910892,5.5625766 9.1910892,5.9987643 L9.1910892,10.8152383 C9.1910892,11.2570615 9.5472528,11.6151036 9.9932087,11.6151036 C10.4376618,11.6151036 10.7953282,11.251426 10.7953282,10.8152383 L10.7953282,5.9987643 C10.7953282,5.5569411 10.439916,5.198899 9.9932087,5.198899 L9.9932087,5.198899 Z M9.9932087,13.2193426 C9.5498827,13.2193426 9.1910892,13.5777604 9.1910892,14.0214621 C9.1910892,14.4647881 9.549507,14.8235816 9.9932087,14.8235816 C10.4369104,14.8235816 10.7953282,14.4651638 10.7953282,14.0214621 C10.7953282,13.5781361 10.4376618,13.2193426 9.9932087,13.2193426 L9.9932087,13.2193426 Z" id="Shape" stroke="#FFFFFF" stroke-width="0.5" fill="#FFFFFF"></path>
         </g>
     </g>
 </svg>
