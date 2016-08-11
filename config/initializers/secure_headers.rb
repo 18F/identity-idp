@@ -8,7 +8,6 @@ SecureHeaders::Configuration.default do |config|
   config.csp = {
     default_src: ["'self'"],
     report_only: Rails.env.development? ? true : false,
-    frame_src: ["'self'"], # deprecated in CSP 2.0
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: ["'self'"], # CSP 2.0 only
