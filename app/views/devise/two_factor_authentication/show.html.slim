@@ -9,7 +9,7 @@ p Please enter the code sent to <strong>#{@phone_number}</strong>.
     raw(t('simple_form.required.html')) + t('forms.two_factor.code'), \
     class: 'block'
   = number_field_tag(:code, '', required: true, value: @code_value, \
-                     class: 'col-12 sm-col-4 mb1 sm-mb0 sm-mr1 field mfa')
+                     class: 'col-12 sm-col-4 mb1 sm-mb0 sm-mr2 field mfa')
   = submit_tag 'Submit', class: 'btn btn-primary'
 
 p.mt3.mb0 Didn't receive a code? #{link_to 'Resend', otp_new_path}

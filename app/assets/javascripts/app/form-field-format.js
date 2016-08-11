@@ -10,8 +10,6 @@ function formatForm() {
     const [el, ptrn] = f;
     const input = document.querySelector(el);
     if (input) {
-      input.className += ' monospace';
-
       /* eslint-disable no-new */
       new Formatter(input, { pattern: ptrn });
     }

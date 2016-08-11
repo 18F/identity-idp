@@ -13,36 +13,34 @@
   p Please provide all of the following:
   .mb4.sm-col-7
     .mb2
-      = label_tag 'first_name', t('idv.form.first_name')
-      = f.input :first_name, required: true, class: 'block col-12 field'
+      = f.input :first_name, label: t('idv.form.first_name'), required: true,
+        class: 'block col-12 field'
     .mb2
-      = label_tag 'last_name', t('idv.form.last_name')
-      = f.input :last_name, required: true, class: 'block col-12 field'
-  h2.heading = t('idv.titles.session.dob')
+      = f.input :last_name, label: t('idv.form.last_name'), required: true,
+        class: 'block col-12 field'
+  h2#label-dob.heading = t('idv.titles.session.dob')
   .mb4.sm-col-5
-    = label_tag 'dob', t('idv.form.dob'), class: 'hide'
-    = f.input :dob, as: :date, html5: true, required: true, class: 'block col-12 field'
-  h2.heading = t('idv.titles.session.ssn')
+    = f.input :dob, as: :date, html5: true, label: false, required: true,
+      class: 'block col-12 field', input_html: { 'aria-labelledby': 'label-dob' }
+  h2#label-ssn.heading = t('idv.titles.session.ssn')
   .mb4.sm-col-5
-    = label_tag 'ssn', t('idv.form.ssn'), class: 'hide'
-    = f.input :ssn, required: true, pattern: '[0-9]*'
+    = f.input :ssn, label: false, required: true, pattern: '[0-9]*',
+      input_html: { 'aria-labelledby': 'label-ssn' }
   h2.heading = t('idv.titles.session.address')
   .mb4.sm-col-7
     .mb2
-      = label_tag 'address1', t('idv.form.address1')
-      = f.input :address1, required: true, class: 'block col-12 field'
+      = f.input :address1, label: t('idv.form.address1'), required: true,
+        class: 'block col-12 field'
     .mb2
-      = label_tag 'address2', t('idv.form.address2')
-      = f.input :address2, class: 'block col-12 field'
+      = f.input :address2, label: t('idv.form.address2'), class: 'block col-12 field'
     .mb2
-      = label_tag 'city', t('idv.form.city')
-      = f.input :city, required: true, class: 'block col-12 field'
+      = f.input :city, label: t('idv.form.city'), required: true, class: 'block col-12 field'
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
-        = label_tag 'state', t('idv.form.state')
         = f.input :state,
-                  collection: us_states_territories, required: true, class: 'block col-12 field'
+                  collection: us_states_territories, label: t('idv.form.state'), required: true,
+                  class: 'block col-12 field'
       .sm-col.sm-col-6.px1
-        = label_tag 'zipcode', t('idv.form.zipcode')
-        = f.input :zipcode, required: true, class: 'block col-12 field', pattern: '[0-9]*'
+        = f.input :zipcode, label: t('idv.form.zipcode'), required: true,
+          class: 'block col-12 field', pattern: '[0-9]*'
   button type='submit' class='btn btn-primary' = 'Continue verifying'
