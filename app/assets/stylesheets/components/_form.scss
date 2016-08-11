@@ -37,7 +37,7 @@ label {
 .invalid,
 .interacted:invalid,
 .has-error input {
-  background-image: $form-icon-error;
+  background-image: url(image-path('alert/ico-danger.svg'));
   background-position: center right .5rem;
   background-repeat: no-repeat;
   background-size: 1rem 1rem;

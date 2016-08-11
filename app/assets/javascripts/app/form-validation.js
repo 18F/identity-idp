@@ -59,7 +59,8 @@ const validate = {
     f.setAttribute('aria-describedby', `alert_${f.id}`);
 
     if (f.validity.valueMissing) f.setCustomValidity(this.msgs.missing);
-    else if (f.validity.typeMismatch) f.setCustomValidity(this.msgs.mismatch);
+    else if (f.validity.patternMismatch
+      || f.validity.typeMismatch) f.setCustomValidity(this.msgs.mismatch);
     else f.setCustomValidity('');
 
     f.insertAdjacentHTML(

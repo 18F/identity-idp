@@ -24,7 +24,7 @@
       class: 'block col-12 field', input_html: { 'aria-labelledby': 'label-dob' }
   h2#label-ssn.heading = t('idv.titles.session.ssn')
   .mb4.sm-col-5
-    = f.input :ssn, label: false, required: true, pattern: '[0-9]*',
+    = f.input :ssn, label: false, required: true, pattern: '^\d{3}-?\d{2}-?\d{4}$',
       input_html: { 'aria-labelledby': 'label-ssn' }
   h2.heading = t('idv.titles.session.address')
   .mb4.sm-col-7
@@ -42,5 +42,5 @@
                   class: 'block col-12 field'
       .sm-col.sm-col-6.px1
         = f.input :zipcode, label: t('idv.form.zipcode'), required: true,
-          class: 'block col-12 field', pattern: '[0-9]*'
+          class: 'block col-12 field', pattern: '(\d{5}([\-]\d{4})?)'
   button type='submit' class='btn btn-primary' = 'Continue verifying'
