@@ -133,8 +133,6 @@ en:
     form:
       first_name: First name
       last_name: Last name
-      ssn: Social Security Number
-      dob: Date of birth
       ccn: Last 8 Digits of your Credit Card Number
       mortgage: Mortgage Account Number
       home_equity_line: Home Equity Account Number

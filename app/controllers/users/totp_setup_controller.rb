@@ -1,7 +1,6 @@
 module Users
   class TotpSetupController < ApplicationController
     before_action :confirm_two_factor_authenticated
-    layout 'card_wide'
 
     def start
     end

@@ -7,5 +7,5 @@ p.mb0 = t('forms.totp_setup.totp_info')
 = form_tag(authenticator_setup_path, method: :patch, role: 'form') do
   = label_tag 'code', t('forms.totp_setup.code'), class: 'block'
   = number_field_tag :code, '', required: true, \
-    class: 'col-12 sm-col-3 mb1 sm-mb0 sm-mr1 field mfa'
+    class: 'col-12 sm-col-3 mb1 sm-mb0 sm-mr2 field mfa'
   = submit_tag 'Submit', class: 'btn btn-primary'

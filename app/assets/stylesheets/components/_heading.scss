@@ -1,10 +1,10 @@
-$separator-height: .5rem;
+$separator-height: .375rem;
 
 .heading {
-  font-size: $h3;
+  font-size: $h2;
   margin-bottom: .75rem;
   margin-top: 0;
-  padding-bottom: .75rem + $separator-height;
+  padding-bottom: .5rem + $separator-height;
   position: relative;
 
   &::before {
