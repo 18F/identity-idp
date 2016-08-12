@@ -5,21 +5,10 @@ module Users
     before_action :confirm_valid_token, only: [:edit]
 
     def create
-      user = User.find_by_email(params[:user][:email]) || NullUser.new
+      RequestPasswordReset.new(params[:user][:email]).perform
 
-      # For security purposes, Tech and Admin users are required to use a PIV
-      # card to authenticate, so we don't allow them to reset their password.
-      return redirect_with_flash unless user.role == 'user'
-
-      if user.confirmed?
-        user.send_reset_password_instructions
-      else
-        # If the account has not been confirmed, password reset should resend
-        # the confirmation email instructions
-        user.send_confirmation_instructions
-      end
-
-      redirect_with_flash
+      flash[:success] = t('notices.password_reset')
+      redirect_to new_user_session_path
     end
 
     def edit
@@ -91,11 +80,6 @@ module Users
 
     def form_params
       params.fetch(:password_form, {})
-    end
-
-    def redirect_with_flash
-      flash[:success] = t('notices.password_reset')
-      redirect_to new_user_session_path
     end
   end
 end

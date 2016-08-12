@@ -8,7 +8,6 @@ FeatureEnvy:
     - track_registration
     - append_info_to_payload
     - generate_slo_request
-    - Users::PasswordsController#create
 IrresponsibleModule:
   enabled: false
 NilCheck:
@@ -18,6 +17,7 @@ NilCheck:
     - in_slo?
     - TotpSetupController#new
     - TotpSetupController#valid_code?
+    - user_not_found?
 TooManyStatements:
   max_statements: 6
 TooManyMethods:
