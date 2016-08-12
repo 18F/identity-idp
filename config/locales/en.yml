@@ -10,8 +10,6 @@ en:
   forms:
     buttons:
       continue_browsing: Continue Browsing
-      delete_account: Delete
-      delete_account_confirm: Yes, delete account
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       setup_totp: Set up authentication app
@@ -60,7 +58,6 @@ en:
       forgot: Reset the password for your account
     profile: Profile
     registrations:
-      destroy_confirm: Delete your account
       new: Sign up for a account
       start: Get started
       verify_email: Verify your email address
@@ -80,7 +77,6 @@ en:
       index: Admin Interface
     confirmations:
       new: Resend confirmation instructions
-    delete_account: Delete my %{app_name} account
     edit_info:
       email: Edit your email
       mobile: Edit your phone number
@@ -89,7 +85,6 @@ en:
       change: Change your password
       forgot: Forgot password?
     profile:
-      advanced_settings: Advanced settings
       agencies: Agencies I've logged into
       login_info: Login information
       main: My account
