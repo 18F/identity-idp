@@ -10,10 +10,12 @@ class PasswordForm
   end
 
   def submit(params)
-    self.password = params[:password]
+    submitted_password = params[:password]
+
+    self.password = submitted_password
 
     if valid? && user_valid?
-      @user.password = params[:password]
+      @user.password = submitted_password
     else
       false
     end

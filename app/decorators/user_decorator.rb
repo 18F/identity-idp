@@ -6,8 +6,10 @@ UserDecorator = Struct.new(:user) do
   end
 
   def lockout_time_remaining_in_words
+    current_time = Time.zone.now
+
     distance_of_time_in_words(
-      Time.zone.now, Time.zone.now + lockout_time_remaining, true, highest_measures: 2
+      current_time, current_time + lockout_time_remaining, true, highest_measures: 2
     )
   end
 
@@ -16,8 +18,10 @@ UserDecorator = Struct.new(:user) do
   end
 
   def confirmation_period
+    current_time = Time.zone.now
+
     distance_of_time_in_words(
-      Time.zone.now, Time.zone.now + Devise.confirm_within, true, accumulate_on: :hours
+      current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
     )
   end
 

@@ -8,7 +8,10 @@ module ValidEmailParameter
   protected
 
   def check_for_valid_email_param
-    return if email_param[:email].present? && ValidateEmail.mx_valid?(email_param[:email])
+    email = email_param[:email]
+
+    return if email.present? && ValidateEmail.mx_valid?(email)
+
     flash[:error] = t('valid_email.validations.email.invalid')
     redirect_to action: :new
   end
