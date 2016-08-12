@@ -17,6 +17,7 @@ NilCheck:
     - in_slo?
     - TotpSetupController#new
     - TotpSetupController#valid_code?
+    - user_not_found?
 TooManyStatements:
   max_statements: 6
 TooManyMethods:
