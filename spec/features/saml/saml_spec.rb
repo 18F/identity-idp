@@ -507,9 +507,6 @@ feature 'saml api', devise: true, sms: true do
         fill_out_financial_form_ok
         click_button 'Continue verifying'
 
-        expect(page).to have_content('Where did you live')
-
-        complete_idv_questions_ok
         expect(current_url).to eq saml_authn_request
       end
     end

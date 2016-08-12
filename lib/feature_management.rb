@@ -14,6 +14,6 @@ class FeatureManagement
   end
 
   def self.proofing_requires_kbv?
-    Figaro.env.proofing_kbv != 'false'
+    Figaro.env.proofing_kbv == 'true'
   end
 end
