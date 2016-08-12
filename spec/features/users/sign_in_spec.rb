@@ -145,9 +145,8 @@ feature 'Sign in' do
     end
   end
 
-  # TODO(bren): Enable once flaky fails are fixed (re: /active ajax backlog)
   context 'signed in, session times out, sign back in', js: true do
-    xit 'prompts to enter OTP' do
+    it 'prompts to enter OTP' do
       allow(Rails.application.config).to receive(:session_check_frequency).and_return(0.01)
       allow(Rails.application.config).to receive(:session_check_delay).and_return(0.01)
       allow(Devise).to receive(:timeout_in).and_return(1.second)
