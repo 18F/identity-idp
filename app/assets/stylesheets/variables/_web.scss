@@ -23,7 +23,7 @@ $h2: 1.5rem !default;
 $h3: 1.25rem !default;
 $h4: 1rem !default;
 $h5: .875rem !default;
-$h6: .75rem !default;
+$h6: .8125rem !default;
 
 $h00: 4rem !default;
 $h0: 3rem !default;
@@ -37,9 +37,6 @@ $form-field-font-size: 1rem !default;
 $form-field-height: 2.5rem !default;
 $form-field-padding-y: .5rem !default;
 $form-field-padding-x: .5rem !default;
-
-$form-icon-success: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%235cb85c' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3E%3C/svg%3E") !default;
-$form-icon-error: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23d9534f' viewBox='-2 -2 7 7'%3E%3Cpath stroke='%23d9534f' d='M0 0l3 3m0-3L0 3'/%3E%3Ccircle r='.5'/%3E%3Ccircle cx='3' r='.5'/%3E%3Ccircle cy='3' r='.5'/%3E%3Ccircle cx='3' cy='3' r='.5'/%3E%3C/svg%3E") !default;
 
 $button-font-size: inherit !default;
 $button-font-weight: bold !default;
