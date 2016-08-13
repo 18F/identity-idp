@@ -15,7 +15,11 @@ class UpdateUserEmailForm
   end
 
   def submit(params)
-    self.email = params[:email]
+    email = params[:email]
+    if email != @user.email
+      @email_changed = true
+      self.email = email
+    end
 
     if valid_form?
       @user.update(params)
@@ -28,15 +32,15 @@ class UpdateUserEmailForm
     valid? && !email_taken?
   end
 
-  def mobile_changed?
-    false
+  def email_changed?
+    @email_changed == true
   end
-
-  private
 
   def email_taken?
     @email_taken == true
   end
+
+  private
 
   def process_errors(params)
     return false unless email_taken? && valid?
