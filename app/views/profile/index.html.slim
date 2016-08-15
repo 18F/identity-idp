@@ -4,7 +4,7 @@
 - btn_cls = 'btn btn-primary px2 py0 h6 regular sm-col-12 border-box center'
 .mb3.h6.caps.red = t('headings.profile.main')
 h2.heading = t('headings.profile.login_info')
-.mb4
+.mb5
   .py2.border-bottom
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = 'Email address'
@@ -35,7 +35,7 @@ h2.heading = t('headings.profile.login_info')
 h2.heading
   | #{t('headings.profile.agencies')} #{tooltip(t('tooltips.placeholder'))}
 - if current_user.active_identities.empty?
-  p.mt2.mb4.italic You haven't logged into any agencies yet.
+  p.mt2.mb5.italic You haven't logged into any agencies yet.
 else
   - current_user.active_identities.each do |i|
     .py2.border-top
