@@ -5,13 +5,13 @@ end
 
 if Rails.env.development?
   # Create a few dummy accounts for use during development.  These accounts all
-  # have 'password' as password and are setup for mobile OTP delivery.
+  # have 'password' as password and are setup for phone OTP delivery.
   %w(test1@test.com test2@test.com).each_with_index do |email, index|
     User.find_or_create_by!(email: email) do |user|
       user.skip_confirmation!
       user.reset_password('password', 'password')
-      user.mobile = format('+1 (415) 555-01%02d', index)
-      user.mobile_confirmed_at = Time.current
+      user.phone = format('+1 (415) 555-01%02d', index)
+      user.phone_confirmed_at = Time.current
     end
   end
 end

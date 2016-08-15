@@ -95,7 +95,7 @@ module SamlAuthHelper
     settings.authn_context = [
       settings.authn_context,
       "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
-      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}mobile"
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone"
     ]
     settings
   end

@@ -17,9 +17,9 @@ h2.heading = t('headings.profile.login_info')
   .py2.border-top
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = 'Phone number'
-      .sm-col.sm-col-5.px1 = current_user.mobile
+      .sm-col.sm-col-5.px1 = current_user.phone
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to 'Edit', edit_mobile_path, \
+        = link_to 'Edit', edit_phone_path, \
           class: btn_cls
   .py2.border-top.border-bottom
     .clearfix.mxn1

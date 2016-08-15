@@ -24,7 +24,7 @@ class AttributeAsserter
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
-    add_mobile(attrs) if bundle.include? :mobile
+    add_phone(attrs) if bundle.include? :phone
     add_bundle(attrs) if user.active_profile.present?
     user.asserted_attributes = attrs
   end
@@ -64,8 +64,8 @@ class AttributeAsserter
     }
   end
 
-  def add_mobile(attrs)
-    attrs[:mobile] = { getter: :mobile }
+  def add_phone(attrs)
+    attrs[:phone] = { getter: :phone }
   end
 
   def bundle

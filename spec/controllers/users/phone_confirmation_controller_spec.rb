@@ -6,7 +6,7 @@ describe Users::PhoneConfirmationController, devise: true do
       expect(subject).to have_actions(
         :before,
         :authenticate_user!,
-        :check_for_unconfirmed_mobile
+        :check_for_unconfirmed_phone
       )
     end
   end
@@ -14,7 +14,7 @@ describe Users::PhoneConfirmationController, devise: true do
   describe '#send_code' do
     before { sign_in_as_user }
 
-    context 'when :unconfirmed_mobile is not set in session' do
+    context 'when :unconfirmed_phone is not set in session' do
       it 'redirects to rool_url' do
         get :send_code
 
@@ -22,8 +22,8 @@ describe Users::PhoneConfirmationController, devise: true do
       end
     end
 
-    context 'when :unconfirmed_mobile is set in session' do
-      before { subject.user_session[:unconfirmed_mobile] = '+1 (555) 555-5555' }
+    context 'when :unconfirmed_phone is set in session' do
+      before { subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555' }
 
       it 'generates a confirmation code in the session' do
         expect(subject.user_session[:phone_confirmation_code]).to be_nil
@@ -63,23 +63,23 @@ describe Users::PhoneConfirmationController, devise: true do
   describe '#confirm' do
     before do
       sign_in_as_user
-      subject.user_session[:unconfirmed_mobile] = '+1 (555) 555-5555'
+      subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
       subject.user_session[:phone_confirmation_code] = '123'
-      @previous_mobile_confirmed_at = subject.current_user.mobile_confirmed_at
+      @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
     end
 
-    context 'user has an existing mobile number' do
+    context 'user has an existing phone number' do
       context 'user enters a valid code' do
         before { post :confirm, code: '123' }
 
         it 'clears session data' do
-          expect(subject.user_session[:unconfirmed_mobile]).to be_nil
+          expect(subject.user_session[:unconfirmed_phone]).to be_nil
           expect(subject.user_session[:phone_confirmation_code]).to be_nil
         end
 
-        it 'updates user mobile and mobile_confirmed_at attributes' do
-          expect(subject.current_user.mobile).to eq('+1 (555) 555-5555')
-          expect(subject.current_user.mobile_confirmed_at).to_not eq(@previous_mobile_confirmed_at)
+        it 'updates user phone and phone_confirmed_at attributes' do
+          expect(subject.current_user.phone).to eq('+1 (555) 555-5555')
+          expect(subject.current_user.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
         end
 
         it 'redirects to profile_path' do
@@ -95,13 +95,13 @@ describe Users::PhoneConfirmationController, devise: true do
         before { post :confirm, code: '999' }
 
         it 'does not clear session data' do
-          expect(subject.user_session[:unconfirmed_mobile]).to eq('+1 (555) 555-5555')
+          expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (555) 555-5555')
           expect(subject.user_session[:phone_confirmation_code]).to eq('123')
         end
 
-        it 'does not update user mobile or mobile_confirmed_at attributes' do
-          expect(subject.current_user.mobile).to eq('+1 (202) 555-1212')
-          expect(subject.current_user.mobile_confirmed_at).to eq(@previous_mobile_confirmed_at)
+        it 'does not update user phone or phone_confirmed_at attributes' do
+          expect(subject.current_user.phone).to eq('+1 (202) 555-1212')
+          expect(subject.current_user.phone_confirmed_at).to eq(@previous_phone_confirmed_at)
         end
 
         it 'redirects back phone_confirmation_path' do
@@ -131,10 +131,10 @@ describe Users::PhoneConfirmationController, devise: true do
       end
     end
 
-    context 'user does not have an existing mobile number' do
+    context 'user does not have an existing phone number' do
       before do
-        subject.current_user.mobile = nil
-        subject.current_user.mobile_confirmed_at = nil
+        subject.current_user.phone = nil
+        subject.current_user.phone_confirmed_at = nil
       end
 
       context 'when given valid code' do
@@ -158,7 +158,7 @@ describe Users::PhoneConfirmationController, devise: true do
   describe '#show' do
     before do
       sign_in_as_user
-      subject.user_session[:unconfirmed_mobile] = '+1 (555) 555-5555'
+      subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
     end
 
     it 'renders the :show template' do
@@ -183,7 +183,7 @@ describe Users::PhoneConfirmationController, devise: true do
     end
 
     context 'when entering phone number for the first time' do
-      before { subject.current_user.mobile = nil }
+      before { subject.current_user.phone = nil }
 
       it 'sets @reenter_phone_number_path to OTP setup path' do
         get :show

@@ -58,8 +58,8 @@ Rails.application.routes.draw do
 
   get '/edit/email' => 'users/edit_email#edit'
   match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
-  get '/edit/mobile' => 'users/edit_mobile#edit'
-  match '/edit/mobile' => 'users/edit_mobile#update', via: [:patch, :put]
+  get '/edit/phone' => 'users/edit_phone#edit'
+  match '/edit/phone' => 'users/edit_phone#update', via: [:patch, :put]
 
   get '/idv' => 'idv#index'
   namespace :idv do

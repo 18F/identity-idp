@@ -1,14 +1,14 @@
 module Users
   class PhoneConfirmationController < ApplicationController
     before_action :authenticate_user!
-    before_action :check_for_unconfirmed_mobile
+    before_action :check_for_unconfirmed_phone
 
     def show
       analytics.track_pageview
 
       @code_value = confirmation_code if FeatureManagement.prefill_otp_codes?
-      @unconfirmed_mobile = unconfirmed_mobile
-      @reenter_phone_number_path = if current_user.mobile.present?
+      @unconfirmed_phone = unconfirmed_phone
+      @reenter_phone_number_path = if current_user.phone.present?
                                      profile_path
                                    else
                                      phone_setup_path
@@ -46,23 +46,23 @@ module Users
       redirect_to phone_confirmation_path
     end
 
-    def set_mobile_number
-      mobile = current_user.mobile
-
-      @updating_existing_number = mobile.present?
-      if @updating_existing_number
-        analytics.track_event('User changed and confirmed their phone number')
-        SmsSenderNumberChangeJob.perform_later(mobile)
-      end
-      current_user.update(mobile: unconfirmed_mobile, mobile_confirmed_at: Time.current)
-    end
-
     def process_valid_code
-      set_mobile_number
+      assign_phone
       clear_session_data
 
       flash[:success] = t('notices.phone_confirmation_successful')
       redirect_to after_confirmation_path
+    end
+
+    def assign_phone
+      old_phone = current_user.phone
+      @updating_existing_number = old_phone.present?
+      if @updating_existing_number
+        analytics.track_event('User changed and confirmed their phone number')
+        SmsSenderNumberChangeJob.perform_later(old_phone)
+      end
+      current_user.update(phone: unconfirmed_phone,
+                          phone_confirmed_at: Time.current)
     end
 
     def after_confirmation_path
@@ -73,8 +73,8 @@ module Users
       end
     end
 
-    def check_for_unconfirmed_mobile
-      redirect_to root_path unless unconfirmed_mobile
+    def check_for_unconfirmed_phone
+      redirect_to root_path unless unconfirmed_phone
     end
 
     def send_confirmation_code
@@ -84,7 +84,7 @@ module Users
         self.confirmation_code = PhoneConfirmationController.generate_confirmation_code
       end
 
-      SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_mobile)
+      SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
     end
 
     def confirmation_code=(code)
@@ -95,12 +95,12 @@ module Users
       user_session[:phone_confirmation_code]
     end
 
-    def unconfirmed_mobile
-      user_session[:unconfirmed_mobile]
+    def unconfirmed_phone
+      user_session[:unconfirmed_phone]
     end
 
     def clear_session_data
-      user_session.delete(:unconfirmed_mobile)
+      user_session.delete(:unconfirmed_phone)
       user_session.delete(:phone_confirmation_code)
     end
   end

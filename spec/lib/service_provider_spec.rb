@@ -42,7 +42,7 @@ describe ServiceProvider do
           assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request',
           sp_initiated_login_url: 'http://localhost:3000/test/saml',
           metadata_url: nil,
-          attribute_bundle: %w(email mobile),
+          attribute_bundle: %w(email phone),
           cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
           block_encryption: 'none',
           key_transport: 'rsa-oaep-mgf1p',
@@ -90,7 +90,7 @@ describe ServiceProvider do
             sp_initiated_login_url: nil,
             agency: 'test_agency',
             friendly_name: nil,
-            attribute_bundle: %w(email mobile)
+            attribute_bundle: %w(email phone)
           }
 
           expect(service_provider.metadata).to eq attributes

@@ -21,7 +21,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
       patch(
         :set,
-        two_factor_setup_form: { mobile: '703-555-0100' }
+        two_factor_setup_form: { phone: '703-555-0100' }
       )
 
       expect(response).to redirect_to(phone_confirmation_send_path)

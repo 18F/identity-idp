@@ -6,7 +6,7 @@ class UserOtpSender
   def send_otp(code)
     return if user_decorator.blocked_from_entering_2fa_code?
 
-    SmsSenderOtpJob.perform_later(code, @user.mobile)
+    SmsSenderOtpJob.perform_later(code, @user.phone)
   end
 
   private

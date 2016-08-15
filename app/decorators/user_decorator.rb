@@ -40,7 +40,7 @@ UserDecorator = Struct.new(:user) do
   end
 
   def masked_two_factor_phone_number
-    masked_number(user.mobile)
+    masked_number(user.phone)
   end
 
   def identity_not_verified?

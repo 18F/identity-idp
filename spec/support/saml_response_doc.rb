@@ -230,9 +230,9 @@ class SamlResponseDoc
       ).first.content
   end
 
-  def mobile_number
+  def phone_number
     response_doc.at(
-      '//ds:Attribute[@Name="mobile"]',
+      '//ds:Attribute[@Name="phone"]',
       ds: Saml::XML::Namespaces::ASSERTION
     )
   end

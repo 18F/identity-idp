@@ -4,7 +4,7 @@ include Features::MailerHelper
 include Features::ActiveJobHelper
 
 describe 'user edits their account', email: true do
-  let(:user) { create(:user, :signed_up, mobile: '+1 (202) 555-1213') }
+  let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1213') }
 
   def user_session
     session['warden.user.user.session']
@@ -55,31 +55,31 @@ describe 'user edits their account', email: true do
     end
   end
 
-  context 'user changes mobile' do
+  context 'user changes phone' do
     before do
       sign_in_as_a_valid_user
       @old_otp_code = user.direct_otp
-      put_via_redirect edit_mobile_path, update_user_mobile_form: { mobile: '555-555-5555' }
+      put_via_redirect edit_phone_path, update_user_phone_form: { phone: '555-555-5555' }
     end
 
     it 'does not allow the OTP to be used for confirmation' do
       put_via_redirect phone_confirmation_path, 'code' => @old_otp_code
 
       expect(response.body).to match(/Invalid confirmation code/)
-      expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
+      expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
     end
 
     it 'sends SMS to old number, then changes current number once confirmed' do
       expect(SmsSenderNumberChangeJob).to receive(:perform_later).with('+1 (202) 555-1213')
 
       put_via_redirect phone_confirmation_path, 'code' => user_session[:phone_confirmation_code]
-      expect(user.reload.mobile).to eq '+1 (555) 555-5555'
+      expect(user.reload.phone).to eq '+1 (555) 555-5555'
     end
 
     it 'does not change the current number if incorrect code is entered' do
       patch_via_redirect user_two_factor_authentication_path, 'code' => '12345678'
 
-      expect(user.reload.mobile).to_not eq '+1 (555) 555-5555'
+      expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
     end
   end
 end
