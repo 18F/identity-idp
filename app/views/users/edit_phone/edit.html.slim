@@ -7,3 +7,4 @@ h1.heading = t('headings.edit_info.phone')
   = f.error_notification
   = f.input :phone, as: :tel, required: true
   = f.button :submit, 'Update'
+.mt2 = link_to 'Cancel', :back, class: 'underline'

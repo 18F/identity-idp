@@ -1,0 +1,19 @@
+.m5 { margin: $space-5; }
+.mt5 { margin-top: $space-5; }
+.mr5 { margin-right: $space-5; }
+.mb5 { margin-bottom: $space-5; }
+.ml5 { margin-left: $space-5; }
+.mx5 {
+  margin-left: $space-5;
+  margin-right: $space-5;
+}
+
+.my5 {
+  margin-bottom: $space-5;
+  margin-top: $space-5;
+}
+
+.mxn5 {
+  margin-left: -$space-5;
+  margin-right: -$space-5;
+}
