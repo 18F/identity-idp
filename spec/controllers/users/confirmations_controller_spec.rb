@@ -43,6 +43,7 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
+      expect(@analytics).to receive(:track_event).with('GET request for confirmations#show')
       expect(@analytics).to receive(:track_event).
         with('Email Confirmation: User Already Confirmed', user)
 
@@ -55,6 +56,7 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
+      expect(@analytics).to receive(:track_event).with('GET request for confirmations#show')
       expect(@analytics).to receive(:track_event).
         with('Email Confirmation: token expired', user)
 
@@ -69,6 +71,7 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
+      expect(@analytics).to receive(:track_event).with('GET request for confirmations#show')
       expect(@analytics).to receive(:track_event).
         with('Email Confirmation: valid token', user)
 
@@ -113,6 +116,7 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
+      expect(@analytics).to receive(:track_event).with('GET request for confirmations#show')
       expect(@analytics).to receive(:track_event).
         with('Email changed and confirmed', user)
 

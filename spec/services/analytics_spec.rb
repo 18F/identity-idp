@@ -64,14 +64,4 @@ describe Analytics do
       analytics.track_anonymous_event('Anonymous Event', 'foo')
     end
   end
-
-  describe '#track_pageview' do
-    it 'logs the pageview' do
-      analytics = Analytics.new(nil, FakeRequest.new)
-
-      expect(ahoy).to receive(:track_visit)
-
-      analytics.track_pageview
-    end
-  end
 end

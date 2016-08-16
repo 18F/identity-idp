@@ -6,11 +6,9 @@ module Users
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def start
-      analytics.track_pageview
     end
 
     def new
-      analytics.track_pageview
       ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
     end

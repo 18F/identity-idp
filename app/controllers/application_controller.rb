@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   helper_method :user_fully_authenticated?, :generate_warning, :read_help_content
 
   prepend_before_action :session_expires_at
+  after_action :track_get_requests
 
   layout 'card'
 
@@ -28,7 +29,9 @@ class ApplicationController < ActionController::Base
   attr_writer :analytics
 
   def analytics
-    @analytics ||= Analytics.new(current_user, request)
+    user = current_user || AnonymousUser.new
+
+    @analytics ||= Analytics.new(user, request)
   end
 
   private
@@ -73,5 +76,11 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
+  end
+
+  def track_get_requests
+    return unless request.get?
+
+    analytics.track_event("GET request for #{controller_name}##{action_name}")
   end
 end

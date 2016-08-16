@@ -57,7 +57,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         stub_analytics
         expect(@analytics).to receive(:track_event).with('User entered invalid 2FA code')
-        expect(@analytics).to receive(:track_pageview)
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
         expect(subject.current_user).to receive(:authenticate_otp).and_return(false)
@@ -226,14 +225,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'renders the :show view' do
         get :show
         expect(response).to_not be_redirect
-        expect(response).to render_template(:show)
-      end
-
-      it 'tracks the pageview' do
-        stub_analytics
-        expect(@analytics).to receive(:track_pageview)
-
-        get :show
       end
 
       context 'when user is TOTP enabled' do
@@ -298,6 +289,8 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
     it 'tracks the event' do
       stub_analytics
+      expect(@analytics).to receive(:track_event).
+        with('GET request for two_factor_authentication#new')
       expect(@analytics).to receive(:track_event).with('User requested a new OTP code')
 
       get :new

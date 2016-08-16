@@ -167,13 +167,6 @@ describe Users::PhoneConfirmationController, devise: true do
       expect(response).to render_template(:show)
     end
 
-    it 'tracks the pageview' do
-      stub_analytics
-      expect(@analytics).to receive(:track_pageview)
-
-      get :show
-    end
-
     context 'when updating an existing phone number' do
       it 'sets @reenter_phone_number_path to profile edit path' do
         get :show

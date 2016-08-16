@@ -122,13 +122,4 @@ describe Users::SessionsController, devise: true do
       post :create, user: { email: 'foo@example.com', password: 'password' }
     end
   end
-
-  describe '#new' do
-    it 'tracks the pageview' do
-      stub_analytics
-      expect(@analytics).to receive(:track_pageview)
-
-      get :new
-    end
-  end
 end
