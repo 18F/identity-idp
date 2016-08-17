@@ -18,9 +18,12 @@ module Rack
     # whitelisting). It must implement .increment and .write like
     # ActiveSupport::Cache::Store
 
-    Rack::Attack.cache.store = StoreProxy::RedisStoreProxy.new(
-      Redis.new(url: Figaro.env.redis_url)
+    cache = Readthis::Cache.new(
+      expires_in: 2.weeks.to_i,
+      redis: { url: Figaro.env.redis_url, driver: :hiredis }
     )
+
+    Rack::Attack.cache.store = cache
 
     ### Configure Whitelisting ###
 
@@ -78,6 +81,24 @@ module Rack
       end
     end
 
+    # After maxretry OTP requests in findtime minutes,
+    # block all requests from that user for bantime minutes.
+    blocklist('OTP delivery') do |req|
+      # `filter` returns truthy value if request fails, or if it's to a
+      # previously banned phone_number so the request is blocked
+      phone_number = req.env['warden'].user&.phone
+
+      Allow2Ban.filter(
+        "otp-#{phone_number}",
+        maxretry: Figaro.env.otp_delivery_blocklist_maxretry.to_i,
+        findtime: Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes,
+        bantime: Figaro.env.otp_delivery_blocklist_bantime.to_i.minutes
+      ) do
+        # The count for the phone_number is incremented if the return value is truthy
+        req.get? && req.path == '/otp/new'
+      end
+    end
+
     ### Custom Throttle Response ###
 
     # By default, Rack::Attack returns an HTTP 429 for throttled responses,
@@ -93,12 +114,15 @@ module Rack
         [::File.read('public/429.html')] # body
       ]
     end
+
+    self.blocklisted_response = throttled_response
   end
 end
 
 ActiveSupport::Notifications.subscribe('rack.attack') do |_name, _start, _finish, _request_id, req|
+  discriminator = req.env['rack.attack.match_discriminator'] || req.env['warden'].user&.uuid
+
   Rails.logger.warn(
-    "#{req.env['rack.attack.matched']} throttle occurred for " \
-    "#{req.env['rack.attack.match_discriminator']}"
+    "#{req.env['rack.attack.matched']} throttle occurred for #{discriminator}"
   )
 end

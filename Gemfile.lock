@@ -251,6 +251,7 @@ GEM
     hashie (3.4.4)
     heapy (0.1.2)
     highline (1.7.8)
+    hiredis (0.6.1)
     htmlentities (4.3.4)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
@@ -401,6 +402,9 @@ GEM
     rb-fsevent (0.9.7)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
+    readthis (2.0.1)
+      connection_pool (~> 2.1)
+      redis (~> 3.0)
     redis (3.3.1)
     redis-namespace (1.5.2)
       redis (~> 3.0, >= 3.0.4)
@@ -628,6 +632,7 @@ DEPENDENCIES
   guard-rspec
   gyoku
   hashie
+  hiredis
   httparty
   i18n-tasks
   lograge
@@ -649,6 +654,7 @@ DEPENDENCIES
   rack_session_access
   rails (~> 4.2.6)
   rails_layout
+  readthis
   reek
   rqrcode
   rspec-rails (~> 3.3)

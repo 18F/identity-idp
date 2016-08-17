@@ -166,4 +166,50 @@ describe 'throttling requests' do
       Rack::Attack::Request.new(env).remote_ip
     end
   end
+
+  describe 'OTP delivery blocklist' do
+    it 'blocks the user for bantime after maxretry OTP requests within findtime period' do
+      allow(Figaro.env).to receive(:requests_per_ip_limit).and_return('300')
+      allow(Rails.logger).to receive(:warn)
+
+      user = create(:user, :signed_up, phone: '+1 (202) 555-0100')
+      second_user_with_same_number = create(:user, :signed_up, phone: '+1 (202) 555-0100')
+
+      # sign in with first user and have them trigger the throttle
+      post(
+        new_user_session_path,
+        'user[email]' => user.email,
+        'user[password]' => user.password
+      )
+
+      3.times do
+        get '/otp/new', {}, 'REMOTE_ADDR' => '1.2.3.4'
+      end
+
+      expect(last_response.status).to eq(429)
+      expect(Rails.logger).to have_received(:warn).
+        with("OTP delivery throttle occurred for #{user.uuid}")
+
+      delete destroy_user_session_path
+
+      # sign in with second user, and make sure they are blocked on the first
+      # attempt since they have the same number and the throttling is based
+      # on the phone number
+      post(
+        new_user_session_path,
+        'user[email]' => second_user_with_same_number.email,
+        'user[password]' => second_user_with_same_number.password
+      )
+
+      get '/otp/new', {}, 'REMOTE_ADDR' => '1.2.3.5'
+
+      expect(last_response.status).to eq(429)
+      expect(Rails.logger).to have_received(:warn).
+        with("OTP delivery throttle occurred for #{second_user_with_same_number.uuid}")
+    end
+
+    it 'uses the throttled_response for the blocklisted_response' do
+      expect(Rack::Attack.blocklisted_response).to eq Rack::Attack.throttled_response
+    end
+  end
 end
