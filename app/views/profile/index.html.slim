@@ -45,3 +45,27 @@ else
         .sm-col.sm-col-4.px1
           .h6.bold = 'Last login'
           .h5 = i.last_authenticated_at.to_s(:date_pretty)
+
+h2.heading.heading-m0 = t('headings.profile.account_history')
+  | #{t('headings.profile.account_history')} #{tooltip(t('tooltips.placeholder'))}
+.mb4
+  .py2.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-4.px1
+        .h6.bold Event
+      .sm-col.sm-col-4.px1
+        .h6.bold Using
+      .sm-col.sm-col-2.px1
+        .h6.bold When
+      .sm-col.sm-col-2.px1
+        .h6.bold From
+    - current_user.events.each do |i|
+      .clearfix.mxn1
+        .sm-col.sm-col-4.px1
+          .h4.truncate = Event.event_type_to_s(i.event_type)
+        .sm-col.sm-col-4.px1
+          .h5 = i.user_agent
+        .sm-col.sm-col-2.px1
+          .h5 = i.created_at.to_formatted_s(:long)
+        .sm-col.sm-col-2.px1
+          .h5 = i.location

@@ -66,6 +66,9 @@ describe Users::PhoneConfirmationController, devise: true do
       subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
       subject.user_session[:phone_confirmation_code] = '123'
       @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+      allow(subject).to receive(:create_user_event)
     end
 
     context 'user has an existing phone number' do
@@ -88,6 +91,18 @@ describe Users::PhoneConfirmationController, devise: true do
 
         it 'displays success flash notice' do
           expect(flash[:success]).to eq t('notices.phone_confirmation_successful')
+        end
+
+        it 'tracks the update and confirmation event' do
+          expect(@analytics).to have_received(:track_event).
+            with('User confirmed their phone number')
+          expect(@analytics).to have_received(:track_event).
+            with('User changed and confirmed their phone number')
+        end
+
+        it 'creates a new :phone_changed event' do
+          expect(subject).to have_received(:create_user_event).with(:phone_changed)
+          expect(subject).to have_received(:create_user_event).exactly(:once)
         end
       end
 
@@ -143,14 +158,16 @@ describe Users::PhoneConfirmationController, devise: true do
         it 'redirects to profile page' do
           expect(response).to redirect_to(profile_path)
         end
-      end
 
-      it 'tracks the confirmation event' do
-        stub_analytics
-        expect(@analytics).to receive(:track_event).with('User confirmed their phone number')
-        expect(@analytics).to receive(:track_event).with('Authentication Successful')
+        it 'tracks the confirmation event' do
+          expect(@analytics).to have_received(:track_event).with('User confirmed their phone number')
+          expect(@analytics).to have_received(:track_event).with('Authentication Successful')
+        end
 
-        post :confirm, code: '123'
+        it 'creates a new :phone_confirmed event' do
+          expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
+          expect(subject).to have_received(:create_user_event).exactly(:once)
+        end
       end
     end
   end

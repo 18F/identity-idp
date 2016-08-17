@@ -19,7 +19,7 @@ NilCheck:
     - TotpSetupController#valid_code?
     - user_not_found?
 TooManyStatements:
-  max_statements: 6
+  max_statements: 7
 TooManyMethods:
   exclude:
     - Devise::TwoFactorAuthenticationController

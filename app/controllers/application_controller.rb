@@ -74,4 +74,8 @@ class ApplicationController < ActionController::Base
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
   end
+
+  def create_user_event(event_type, user = current_user)
+    Event.create_from_request(user, event_type, request)
+  end
 end

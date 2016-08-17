@@ -625,6 +625,7 @@ DEPENDENCIES
   faker
   figaro
   foundation_emails
+  geocoder
   guard-rspec
   gyoku
   hashie
@@ -676,6 +677,7 @@ DEPENDENCIES
   twilio-ruby
   two_factor_authentication!
   uglifier (>= 1.3.0)
+  useragent
   valid_email
   webmock
   whenever
