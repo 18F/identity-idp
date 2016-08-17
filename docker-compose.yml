@@ -15,7 +15,7 @@ services:
       - worker
   worker:
     build: .
-    command: "bundle exec sidekiq -q sms -q mailers -q analytics"
+    command: "bundle exec sidekiq -q sms -q voice -q mailers -q analytics"
     environment:
       REDIS_URL: "redis://redis"
       DATABASE_URL: "postgres://postgres@db"

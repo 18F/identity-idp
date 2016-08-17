@@ -22,15 +22,17 @@ module Users
     private
 
     def user_params
-      params.require(:update_user_phone_form).permit(:phone)
+      params.require(:update_user_phone_form).permit(:phone, :sms_otp_delivery)
     end
 
     def process_updates
-      if @update_user_phone_form.phone_changed?
-        analytics.track_event('User asked to update their phone number')
+      analytics.track_event('User asked to update their phone number') if
+        @update_user_phone_form.phone_changed?
 
+      if @update_user_phone_form.require_phone_confirmation?
         flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
-        prompt_to_confirm_phone(@update_user_phone_form.phone)
+        prompt_to_confirm_phone(@update_user_phone_form.phone,
+                                @update_user_phone_form.sms_otp_delivery)
       else
         redirect_to profile_url
       end

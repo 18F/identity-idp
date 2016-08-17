@@ -65,4 +65,95 @@ describe UpdateUserPhoneForm do
       end
     end
   end
+
+  describe 'OTP delivery preference' do
+    context 'when updating phone number' do
+      let(:params) { { phone: '+1 (705) 705-7005' } }
+
+      context 'when changing SMS enabled' do
+        before do
+          params[:sms_otp_delivery] = '1'
+          subject.submit(params)
+        end
+
+        it 'requires confirmation' do
+          expect(subject.require_phone_confirmation?).to be_truthy
+        end
+      end
+
+      context 'when not changing SMS enabled' do
+        before do
+          params[:sms_otp_delivery] = '0'
+          subject.submit(params)
+        end
+
+        it 'requires confirmation' do
+          expect(subject.require_phone_confirmation?).to be_truthy
+        end
+      end
+    end
+
+    context 'when SMS disabled and enabling SMS' do
+      let(:user) { build_stubbed(:user, :signed_up, sms_otp_delivery: false) }
+      let(:params) do
+        { phone: user.phone,
+          sms_otp_delivery: '1' }
+      end
+
+      subject { UpdateUserPhoneForm.new(user) }
+
+      it 'requires confirmation' do
+        subject.submit(params)
+        expect(subject.require_phone_confirmation?).to be_truthy
+      end
+    end
+
+    context 'when SMS enabled and disabling SMS' do
+      let(:user) { build_stubbed(:user, :signed_up) }
+      let(:params) do
+        { phone: user.phone,
+          sms_otp_delivery: '0' }
+      end
+
+      subject { UpdateUserPhoneForm.new(user) }
+
+      it 'requires confirmation' do
+        subject.submit(params)
+        expect(subject.require_phone_confirmation?).to be_truthy
+      end
+    end
+
+    context 'when not changing SMS preference' do
+      let(:user_sms) { build_stubbed(:user, :signed_up, sms_otp_delivery: true) }
+      let(:user_no_sms) { build_stubbed(:user, :signed_up, sms_otp_delivery: false) }
+
+      context 'when SMS enabled' do
+        let(:params) do
+          { phone: user_sms.phone,
+            sms_otp_delivery: '1' }
+        end
+
+        subject { UpdateUserPhoneForm.new(user_sms) }
+
+        it 'does not require confirmation' do
+          subject.submit(params)
+          expect(subject.require_phone_confirmation?).to be false
+        end
+      end
+
+      context 'when SMS disabled' do
+        let(:params) do
+          { phone: user_no_sms.phone,
+            sms_otp_delivery: '0' }
+        end
+
+        subject { UpdateUserPhoneForm.new(user_no_sms) }
+
+        it 'does not require confirmation' do
+          subject.submit(params)
+          expect(subject.require_phone_confirmation?).to be false
+        end
+      end
+    end
+  end
 end

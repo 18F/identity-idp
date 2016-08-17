@@ -40,4 +40,10 @@ RSpec.configure do |config|
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
     Rack::Attack.cache.store.clear
   end
+
+  config.before(:each, twilio: true) do
+    stub_const('Twilio::REST::Client', MockTwilioClient)
+    MockTwilioClient.messages = []
+    MockTwilioClient.calls = []
+  end
 end

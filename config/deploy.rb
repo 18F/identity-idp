@@ -16,7 +16,7 @@ set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public
 set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-idp.git'
 set :sidekiq_options, ''
-set :sidekiq_queue, [:mailers, :sms, :analytics]
+set :sidekiq_queue, [:mailers, :sms, :voice, :analytics]
 set :sidekiq_monit_use_sudo, true
 set :sidekiq_user, 'ubuntu'
 set :ssh_options, forward_agent: false, user: 'ubuntu'

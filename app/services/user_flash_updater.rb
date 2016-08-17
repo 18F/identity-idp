@@ -15,7 +15,7 @@ UserFlashUpdater = Struct.new(:form, :flash) do
   private
 
   def needs_to_confirm_phone_change?
-    form.phone_changed?
+    form.require_phone_confirmation?
   end
 
   def needs_to_confirm_profile_changes?

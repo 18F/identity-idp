@@ -16,7 +16,8 @@ describe Users::EditPhoneController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        put :update, update_user_phone_form: { phone: new_phone }
+        put :update, update_user_phone_form: { phone: new_phone,
+                                               sms_otp_delivery: '1' }
       end
 
       it 'lets user know they need to confirm their new phone' do
@@ -33,7 +34,8 @@ describe Users::EditPhoneController do
 
       it 'displays an error message and does not delete the phone' do
         sign_in(user)
-        put :update, update_user_phone_form: { phone: '' }
+        put :update, update_user_phone_form: { phone: '',
+                                               sms_otp_delivery: '1' }
 
         expect(response.body).to have_content invalid_phone_message
         expect(user.reload.phone).to be_present
@@ -47,7 +49,8 @@ describe Users::EditPhoneController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        put :update, update_user_phone_form: { phone: second_user.phone }
+        put :update, update_user_phone_form: { phone: second_user.phone,
+                                               sms_otp_delivery: '1' }
 
         expect(response).to redirect_to(phone_confirmation_send_path)
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
@@ -71,7 +74,9 @@ describe Users::EditPhoneController do
     context 'user submits the form without changing their phone' do
       it 'redirects to profile page without any messages' do
         sign_in(user)
-        put :update, update_user_phone_form: { phone: user.phone }
+
+        put :update, update_user_phone_form: { phone: user.phone,
+                                               sms_otp_delivery: user.sms_otp_delivery? ? '1' : '0' }
 
         expect(response).to redirect_to profile_url
         expect(flash.keys).to be_empty

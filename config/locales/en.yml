@@ -155,3 +155,8 @@ en:
         ssn: Social Security Number (SSN)
         address: Mailing address
         finance: Financial information
+
+  voice:
+    otp_confirmation: >
+      Hello! Your login.gov one time passcode is, %{code},
+      again, your passcode is, %{code},  goodbye!

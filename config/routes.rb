@@ -67,6 +67,8 @@ Rails.application.routes.draw do
   end
   get '/phone_confirmation' => 'users/phone_confirmation#show'
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
+  get '/phone_confirmation/disable_sms' => 'users/phone_confirmation#disable_sms'
+  get '/phone_confirmation/enable_sms' => 'users/phone_confirmation#enable_sms'
   put '/phone_confirmation' => 'users/phone_confirmation#confirm'
   get '/profile' => 'profile#index'
   get '/home' => 'home#index'
