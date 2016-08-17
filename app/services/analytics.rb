@@ -26,10 +26,6 @@ class Analytics
     ahoy.track(event, request_attributes.merge(value: attribute))
   end
 
-  def track_pageview
-    ahoy.track_visit
-  end
-
   private
 
   attr_reader :user, :request

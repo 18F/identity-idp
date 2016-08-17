@@ -18,8 +18,6 @@ module Devise
     end
 
     def show
-      analytics.track_pageview
-
       if use_totp?
         show_totp_prompt
       else

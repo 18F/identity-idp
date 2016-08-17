@@ -124,10 +124,65 @@ describe ApplicationController do
   end
 
   describe '#analytics' do
-    it 'calls the Analytics class by default with current_user and request parameters' do
-      expect(Analytics).to receive(:new).with(controller.current_user, request)
+    context 'when a current_user is present' do
+      it 'calls the Analytics class by default with current_user and request parameters' do
+        user = build_stubbed(:user)
+        allow(controller).to receive(:current_user).and_return(user)
 
-      controller.analytics
+        expect(Analytics).to receive(:new).with(user, request)
+
+        controller.analytics
+      end
+    end
+
+    context 'when a current_user is not present' do
+      it 'calls the Analytics class with AnonymousUser.new and request parameters' do
+        allow(controller).to receive(:current_user).and_return(nil)
+
+        user = instance_double(AnonymousUser)
+        allow(AnonymousUser).to receive(:new).and_return(user)
+
+        expect(Analytics).to receive(:new).with(user, request)
+
+        controller.analytics
+      end
+    end
+  end
+
+  describe 'after_action' do
+    it 'includes the appropriate after_action' do
+      expect(subject).to have_actions(
+        :after,
+        :track_get_requests
+      )
+    end
+  end
+
+  describe '#track_get_requests' do
+    controller do
+      def index
+        render text: 'Hello'
+      end
+    end
+
+    context 'when the request is a GET request' do
+      it 'tracks the controller name and action' do
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).with('GET request for anonymous#index')
+
+        get :index
+      end
+    end
+
+    context 'when the request is not a GET request' do
+      it 'does not track the controller name and action' do
+        stub_analytics
+
+        expect(@analytics).to_not receive(:track_event)
+
+        put :index
+      end
     end
   end
 end

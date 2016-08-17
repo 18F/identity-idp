@@ -4,8 +4,6 @@ module Users
     before_action :check_for_unconfirmed_phone
 
     def show
-      analytics.track_pageview
-
       @code_value = confirmation_code if FeatureManagement.prefill_otp_codes?
       @unconfirmed_phone = unconfirmed_phone
       @reenter_phone_number_path = if current_user.phone.present?

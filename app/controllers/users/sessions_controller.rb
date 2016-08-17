@@ -10,7 +10,6 @@ module Users
     end
 
     def new
-      analytics.track_pageview
       super
     end
 

@@ -10,13 +10,6 @@ describe Users::RegistrationsController, devise: true do
       expect(subject).to receive(:ab_finished).with(:demo)
       get :new
     end
-
-    it 'tracks the pageview' do
-      stub_analytics
-      expect(@analytics).to receive(:track_pageview)
-
-      get :new
-    end
   end
 
   describe '#create' do
@@ -59,15 +52,6 @@ describe Users::RegistrationsController, devise: true do
         with('User Registration: invalid email', 'invalid@')
 
       post :create, user: { email: 'invalid@' }
-    end
-  end
-
-  describe '#start' do
-    it 'tracks the pageview' do
-      stub_analytics
-      expect(@analytics).to receive(:track_pageview)
-
-      get :start
     end
   end
 end
