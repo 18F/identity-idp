@@ -4,10 +4,6 @@ describe PasswordForm do
   subject { PasswordForm.new(build_stubbed(:user)) }
 
   it do
-    is_expected.to validate_confirmation_of(:password)
-  end
-
-  it do
     is_expected.to validate_length_of(:password).
       is_at_least(Devise.password_length.first)
   end
