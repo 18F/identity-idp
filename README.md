@@ -1,6 +1,6 @@
 # Ruby SAML Identity Provider (IdP)
 
-Forked from https://github.com/sportngin/ruby-saml-idp
+Forked from https://github.com/sportngin/saml_idp
 
 [![Build Status](https://travis-ci.org/18F/saml_idp.png)](https://travis-ci.org/18F/saml_idp)
 
