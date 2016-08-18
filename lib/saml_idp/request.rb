@@ -115,10 +115,11 @@ module SamlIdp
     end
 
     def service_provider?
-      service_provider.valid?
+      service_provider && service_provider.valid?
     end
 
     def service_provider
+      return unless issuer.present?
       @_service_provider ||= ServiceProvider.new((service_provider_finder[issuer] || {}).merge(identifier: issuer))
     end
 

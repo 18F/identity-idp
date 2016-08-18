@@ -66,6 +66,7 @@ module SamlIdp
         authn_request = described_class.new raw_req
         authn_request.issuer.should_not == ''
         authn_request.issuer.should == nil
+        authn_request.valid?.should == false
       end
     end
 
