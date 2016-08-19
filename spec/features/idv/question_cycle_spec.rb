@@ -3,6 +3,25 @@ require 'rails_helper'
 feature 'IdV session' do
   include IdvHelper
 
+  context 'landing page' do
+    before do
+      sign_in_and_2fa_user
+      visit idv_path
+    end
+
+    scenario 'decline to verify identity' do
+      click_link 'No'
+
+      expect(page).to have_content(t('idv.titles.hardfail'))
+    end
+
+    scenario 'proceed to verify identity' do
+      click_link 'Yes'
+
+      expect(page).to have_content(t('idv.titles.welcome'))
+    end
+  end
+
   context 'KBV off' do
     before do
       allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(false)
