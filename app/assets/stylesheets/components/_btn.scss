@@ -1,7 +1,3 @@
-.btn {
-  -webkit-font-smoothing: antialiased;
-}
-
 .btn-auth {
   border: 0;
   border-bottom: 5px solid $blue-light;
@@ -18,12 +14,5 @@
   &--active {
     border-color: $red;
     font-weight: $bold-font-weight;
-  }
-}
-
-.btn-xs-fit {
-  @media #{$breakpoint-max-sm} {
-    max-width: 100%;
-    width: 100%;
   }
 }

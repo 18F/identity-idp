@@ -14,6 +14,8 @@
     "classlist.js": "^1.1.20150312",
     "formatter.js-pebble": "^0.1.8",
     "h5f": "^1.1.1",
+    "hint.css": "^2.3.2",
+    "normalize.css": "^4.2.0",
     "zxcvbn": "^4.3.0"
   },
   "devDependencies": {

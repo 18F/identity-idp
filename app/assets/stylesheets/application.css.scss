@@ -3,9 +3,11 @@
 @import 'variables/colors';
 @import 'variables/web';
 
-@import 'normalize';
+// imported from node_modules
+@import 'normalize.css/normalize';
+@import 'hint.css/hint';
+
 @import 'basscss/basscss';
-@import 'hint';
 
 @import 'components/all';
 @import 'pages/all';
