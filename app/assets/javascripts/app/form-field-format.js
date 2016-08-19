@@ -1,17 +1,27 @@
-import Formatter from 'formatter.js-pebble';
+import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-kit';
+
+import validateField from './validate-field';
+import ZipCodeFormatter from './modules/zip-code-formatter';
 
 
 function formatForm() {
   const formats = [
-    ['input[type="tel"]', '+1 ({{999}}) {{999}}-{{9999}}'],
+    ['[type=tel]', new PhoneFormatter()],
+    ['.ssn', new SocialSecurityNumberFormatter()],
+    ['.zipcode', new ZipCodeFormatter()],
   ];
 
   formats.forEach(function(f) {
-    const [el, ptrn] = f;
+    const [el, formatter] = f;
     const input = document.querySelector(el);
     if (input) {
-      /* eslint-disable no-new */
-      new Formatter(input, { pattern: ptrn });
+      /* eslint-disable no-new, no-shadow */
+      const field = new TextField(input, formatter);
+      field.setDelegate({
+        textFieldDidEndEditing(field) {
+          validateField(field.element);
+        },
+      });
     }
   });
 }
