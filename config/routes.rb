@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   match '/edit/phone' => 'users/edit_phone#update', via: [:patch, :put]
 
   get '/idv' => 'idv#index'
+  get '/idv/cancel' => 'idv#cancel'
   namespace :idv do
     resources :questions, :sessions, :confirmations
   end
