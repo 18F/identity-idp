@@ -40,13 +40,13 @@ development:
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
       assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
-      cert: 'demo_sp'
+      cert: 'sp_sinatra_demo'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
       metadata_url: 'http://localhost:3003/saml/metadata'
       acs_url: 'http://localhost:3003/auth/saml/callback'
       assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3003/login'
-      cert: 'demo_sp'
+      cert: 'sp_rails_demo'
       agency: '18F'
       friendly_name: '18F Test Service Provider'
     'https://dashboard.login.gov':
@@ -68,31 +68,31 @@ production:
       metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
-      cert: 'demo_sp'
+      cert: 'sp_sinatra_demo'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev':
       metadata_url: 'https://sp-sinatra.dev.login.gov/saml/metadata'
       acs_url: 'https://sp-sinatra.dev.login.gov/consume'
       assertion_consumer_logout_service_url: 'https://sp-sinatra.dev.login.gov/slo_logout'
       sp_initiated_login_url: 'https://sp-sinatra.dev.login.gov/test/saml'
-      cert: 'demo_sp'
+      cert: 'sp_sinatra_demo'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo':
       metadata_url: 'https://sp-sinatra.demo.login.gov/saml/metadata'
       acs_url: 'https://sp-sinatra.demo.login.gov/consume'
       assertion_consumer_logout_service_url: 'https://sp-sinatra.demo.login.gov/slo_logout'
       sp_initiated_login_url: 'https://sp-sinatra.demo.login.gov/test/saml'
-      cert: 'demo_sp'
+      cert: 'sp_sinatra_demo'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
       metadata_url: 'https://identity-sp-rails-dev.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-sp-rails-dev.apps.cloud.gov/login'
-      cert: 'demo_sp'
+      cert: 'sp_rails_demo'
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
       metadata_url: 'https://sp.demo.login.gov/saml/metadata'
       acs_url: 'https://sp.demo.login.gov/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://sp.demo.login.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://sp.demo.login.gov/login'
-      cert: 'demo_sp'
+      cert: 'sp_rails_demo'
     # Dashboard
     'https://dashboard.demo.login.gov':
       metadata_url: 'https://dashboard.demo.login.gov/users/auth/saml/metadata'
