@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160809195935) do
+ActiveRecord::Schema.define(version: 20160815174550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,15 @@ ActiveRecord::Schema.define(version: 20160809195935) do
 
   add_index "authorizations", ["provider", "uid"], name: "index_authorizations_on_provider_and_uid", using: :btree
   add_index "authorizations", ["user_id"], name: "index_authorizations_on_user_id", using: :btree
+
+  create_table "events", force: :cascade do |t|
+    t.integer  "user_id",                    null: false
+    t.integer  "event_type",                 null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "events", ["user_id"], name: "index_events_on_user_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
     t.string   "service_provider",      limit: 255
@@ -131,4 +140,5 @@ ActiveRecord::Schema.define(version: 20160809195935) do
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", using: :btree
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
+  add_foreign_key "events", "users"
 end

@@ -29,17 +29,22 @@ module Users
       :unconfirmed_phone
     end
 
+    # TODO(sbc): refactor to reduce method length
+    # rubocop:disable MethodLength
     def assign_phone
       old_phone = current_user.phone
       @updating_existing_number = old_phone.present?
       if @updating_existing_number
+        create_user_event(:phone_changed)
         analytics.track_event('User changed their phone number')
         SmsSenderNumberChangeJob.perform_later(old_phone)
       else
+        create_user_event(:phone_confirmed)
         analytics.track_event('User confirmed their phone number')
       end
       current_user.update(phone: unconfirmed_phone, phone_confirmed_at: Time.current)
     end
+    # rubocop:enable MethodLength
 
     def after_confirmation_path
       if @updating_existing_number

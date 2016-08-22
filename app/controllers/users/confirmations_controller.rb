@@ -113,6 +113,7 @@ module Users
 
     def process_confirmed_user
       analytics.track_event('Email changed and confirmed', @confirmable)
+      create_user_event(:email_changed, @confirmable)
 
       flash[:notice] = t('devise.confirmations.confirmed')
       redirect_to after_confirmation_path_for(@confirmable)

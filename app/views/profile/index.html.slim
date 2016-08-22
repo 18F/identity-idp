@@ -76,3 +76,18 @@ h2.heading = t('headings.profile.agencies')
           .sm-col.sm-col-4.px1
             .h6.bold = 'Last login'
             .h5 = i.last_authenticated_at.to_s(:date_pretty)
+
+h2.heading = t('headings.profile.account_history')
+.mt3.mb2
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-6.px1
+        .h6.bold Event
+      .sm-col.sm-col-6.px1
+        .h6.bold When
+    - current_user.events.each do |event|
+      .clearfix.mxn1
+        .sm-col.sm-col-6.px1
+          .h4.truncate = event.decorate.pretty_event_type
+        .sm-col.sm-col-6.px1
+          .h5 = event.created_at.to_formatted_s(:long)
