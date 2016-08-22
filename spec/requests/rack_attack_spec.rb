@@ -62,11 +62,12 @@ describe 'throttling requests' do
       end
 
       it 'returns a custom body' do
-        expect(last_response.body).to eq(File.read('public/429.html'))
+        expect(last_response.body).
+          to include('Your request was denied because of unusual activity.')
       end
 
       it 'returns text/html for Content-type' do
-        expect(last_response.header['Content-type']).to eq('text/html')
+        expect(last_response.header['Content-type']).to include('text/html')
       end
 
       it 'logs the throttle' do
@@ -143,11 +144,12 @@ describe 'throttling requests' do
       end
 
       it 'returns a custom body' do
-        expect(last_response.body).to eq(File.read('public/429.html'))
+        expect(last_response.body).
+          to include('Your request was denied because of unusual activity.')
       end
 
       it 'returns text/html for Content-type' do
-        expect(last_response.header['Content-type']).to eq('text/html')
+        expect(last_response.header['Content-type']).to include('text/html')
       end
 
       it 'logs the throttle' do
