@@ -15,11 +15,10 @@ nav.bg-white
         - if signed_in?
           .h4 Welcome <strong>#{current_user.email}</strong>
           .mt1.sm-mt2.h5
-            = link_to t('links.my_account'), profile_path, \
-              class: 'bold underline'
+            = link_to t('links.my_account'), profile_path,
+              class: current_page?(profile_path) ? 'bold gray' : 'underline'
             span.px1.silver = '|'
-            = link_to t('links.sign_out'), destroy_user_session_path, \
-              class: 'bold underline'
+            = link_to t('links.sign_out'), destroy_user_session_path, class: 'underline'
         - else
           .h4.sm-show &nbsp;
           .mt1.sm-mt2.h5
