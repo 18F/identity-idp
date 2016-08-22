@@ -2,11 +2,12 @@ $radio-checkbox-space: 1.5rem;
 
 label {
   display: inline-block;
-  margin-bottom: .3125rem;
+  margin-bottom: $space-tiny;
 }
 
 .field {
   background-color: $blue-light;
+  border-color: #cedbec;
   color: $gray;
   font-weight: $bold-font-weight;
 
