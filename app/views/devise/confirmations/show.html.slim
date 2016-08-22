@@ -2,7 +2,7 @@
 
 
 h1.heading = t('forms.confirmation.show_hdr')
-p#password-description Your password must be at least 8 characters.
+p.m0.italic#password-description Your password must be at least 8 characters.
 = simple_form_for(@password_form,
     url: confirm_path,
     method: :patch,
@@ -12,6 +12,6 @@ p#password-description Your password must be at least 8 characters.
       input_html: { 'aria-describedby': 'password-description' }
   = render 'devise/shared/password_strength'
   = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
-  = f.button :submit, 'Submit'
+  = f.button :submit, 'Submit', class: 'btn-wide'
 
 == javascript_include_tag 'misc/pw-strength'

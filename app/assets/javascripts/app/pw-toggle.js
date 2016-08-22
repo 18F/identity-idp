@@ -5,8 +5,8 @@ function togglePw() {
     input.parentNode.className += ' relative';
 
     const el = `
-      <label class="pw-toggle-cntnr absolute top-0 right-0 h6">
-        <input class="h6" id="pw-toggle" type="checkbox"> Show password
+      <label class="pw-toggle-cntnr absolute top-0 right-0">
+        <input class="mr1" id="pw-toggle" type="checkbox">Show password
       </label>`;
     input.insertAdjacentHTML('afterend', el);
 

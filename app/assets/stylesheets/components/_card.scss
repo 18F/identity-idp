@@ -10,7 +10,7 @@
   &-wide { max-width: 100%; }
 
   @media #{$breakpoint-sm} {
-    border-radius: $border-radius;
-    padding: $space-3 * 2;
+    border-radius: 5px;
+    padding: $space-5 $space-6;
   }
 }

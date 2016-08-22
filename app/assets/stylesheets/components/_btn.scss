@@ -1,18 +1,50 @@
+.btn { text-align: center; }
+
 .btn-auth {
-  border: 0;
-  border-bottom: 5px solid $blue-light;
   color: $blue;
   display: block;
   font-family: $heading-font-family;
-  padding: .25rem;
+  font-size: $h3;
+  line-height: 1.3;
+  padding-bottom: .5rem;
+  position: relative;
   text-align: center;
 
   &:hover {
     text-decoration: none;
   }
 
+  &::before {
+    border-bottom: 4px solid $blue-light;
+    bottom: 0;
+    content: '';
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+
   &--active {
-    border-color: $red;
     font-weight: $bold-font-weight;
+
+    &::before {
+      border-color: $red;
+      border-radius: 12px;
+    }
+
+    &::after {
+      border-left: solid 6px transparent;
+      border-right: solid 6px transparent;
+      border-top: solid 6px $red;
+      content: '';
+      height: 0;
+      left: 0;
+      margin: 0 auto;
+      position: absolute;
+      right: 0;
+      top: 100%;
+      width: 0;
+    }
   }
 }
+
+.btn-wide { min-width: 220px; }
