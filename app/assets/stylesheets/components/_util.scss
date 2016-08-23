@@ -6,6 +6,8 @@
 
 .rounded-big { border-radius: 2rem; }
 
+.w-60p { width: 60px; }
+
 @media #{$breakpoint-sm} {
   .sm-left-align { text-align: left; }
   .sm-right-align { text-align: right; }

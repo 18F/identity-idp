@@ -1,10 +1,12 @@
+$rule-border-radius: 12px;
+
 .btn-auth {
   color: $blue;
   display: block;
   font-family: $heading-font-family;
   font-size: $h3;
   line-height: 1.3;
-  margin-bottom: .5rem;
+  margin-bottom: .25rem;
   padding-bottom: .5rem;
   position: relative;
   text-align: center;
@@ -27,7 +29,6 @@
 
     &::before {
       border-color: $red;
-      border-radius: 12px;
     }
 
     &::after {
@@ -42,6 +43,20 @@
       right: 0;
       top: 100%;
       width: 0;
+    }
+  }
+
+  &--l {
+    &::before {
+      border-bottom-left-radius: $rule-border-radius;
+      border-top-left-radius: $rule-border-radius;
+    }
+  }
+
+  &--r {
+    &::before {
+      border-bottom-right-radius: $rule-border-radius;
+      border-top-right-radius: $rule-border-radius;
     }
   }
 }

@@ -9,8 +9,8 @@ module ApplicationHelper
 
   def tooltip(text)
     content_tag(
-      :div, \
-      image_tag(asset_url('tooltip.svg'), width: 12, class: 'img-tooltip'), \
+      :span, \
+      image_tag(asset_url('tooltip.svg'), width: 16, class: 'px1 img-tooltip'), \
       class: 'hint--top', \
       'aria-label': text
     )

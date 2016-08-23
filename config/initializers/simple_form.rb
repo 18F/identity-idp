@@ -4,7 +4,7 @@ SimpleForm.setup do |config|
   config.default_form_class = 'mt4'
   config.error_notification_tag = :div
   config.error_notification_class = 'mb2 p2 alert alert-danger bold center'
-  config.label_class = 'caps bold'
+  config.label_class = 'caps ls-05 bold'
 
   config.wrappers :base do |b|
     b.use :html5
