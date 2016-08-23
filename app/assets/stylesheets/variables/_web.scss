@@ -62,7 +62,7 @@ $lighten-4: rgba(255, 255, 255, .5) !default;
 
 $border-width: 1px !default;
 $border-radius: 3px !default;
-$border-color: $blue-light !default;
+$border-color: #cedbec !default;
 
 $table-header-font-weight: $bold-font-weight !default;
 $table-cell-padding-x: $space-2 !default;
@@ -85,5 +85,5 @@ $breakpoint-md-lg: '(min-width: 52em) and (max-width: 64em)' !default;
 
 $breakpoint-max-sm: '(max-width: 40em)' !default;
 
-$container-width: 800px !default;
+$container-width: 780px !default;
 $container-skinny-width: 620px !default;

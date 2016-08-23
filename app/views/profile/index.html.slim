@@ -1,27 +1,27 @@
 - title t('titles.profile')
 
 
-- btn_cls = 'btn btn-primary px2 py0 h6 regular sm-col-12 border-box center'
-.mb3.h6.caps.red = t('headings.profile.main')
+- btn_cls = 'btn btn-primary p0 h6 regular w-60p border-box center'
+.mt1.mb3.h6.caps.red = t('headings.profile.main')
 h2.heading = t('headings.profile.login_info')
-.mb5
-  .py2.border-bottom
+.mt3.mb4
+  .py-12p.border-bottom.border-top
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = 'Email address'
-      .sm-col.sm-col-5.px1 = current_user.email
+      .sm-col.sm-col-5.px1.truncate = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_email_path, \
           class: btn_cls
   .mt3.mb1.h6.bold.caps
-    | #{t('headings.profile.two_factor')} #{tooltip(t('tooltips.placeholder'))}
-  .py2.border-top
+    | #{t('headings.profile.two_factor')}#{tooltip(t('tooltips.placeholder'))}
+  .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = 'Phone number'
       .sm-col.sm-col-5.px1 = current_user.phone
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_phone_path, \
           class: btn_cls
-  .py2.border-top.border-bottom
+  .py-12p.border-top.border-bottom
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = 'Authentication app'
       .sm-col.sm-col-2.px1.sm-right-align
@@ -32,16 +32,17 @@ h2.heading = t('headings.profile.login_info')
           = link_to 'Enable', authenticator_start_url, \
             class: btn_cls
 
-h2.heading
-  | #{t('headings.profile.agencies')} #{tooltip(t('tooltips.placeholder'))}
-- if current_user.active_identities.empty?
-  p.mt2.mb5.italic You haven't logged into any agencies yet.
-else
-  - current_user.active_identities.each do |i|
-    .py2.border-top
-      .clearfix.mxn1
-        .sm-col.sm-col-8.px1
-          .h3.truncate = i.display_name
-        .sm-col.sm-col-4.px1
-          .h6.bold = 'Last login'
-          .h5 = i.last_authenticated_at.to_s(:date_pretty)
+h2.heading = t('headings.profile.agencies')
+.mt3.mb2
+  - if current_user.active_identities.empty?
+    .py-12p.border-bottom.border-top.italic
+      | You haven't logged into any agencies yet.#{tooltip(t('tooltips.placeholder'))}
+  - else
+    - current_user.active_identities.each do |i|
+      .py-12p.border-top
+        .clearfix.mxn1
+          .sm-col.sm-col-8.px1
+            .h3.truncate = i.display_name
+          .sm-col.sm-col-4.px1
+            .h6.bold = 'Last login'
+            .h5 = i.last_authenticated_at.to_s(:date_pretty)

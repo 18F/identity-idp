@@ -1,6 +1,8 @@
 .alert {
   border-radius: $border-radius;
   color: $gray;
+  margin-bottom: 2.5rem;
+  padding: 1.75rem;
   position: relative;
 }
 
@@ -11,8 +13,8 @@
   margin-right: auto;
   position: absolute;
   right: 0;
-  top: -10px;
-  width: 20px;
+  top: -16px;
+  width: 32px;
 }
 
 .alert-success {
