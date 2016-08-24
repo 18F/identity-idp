@@ -3,7 +3,7 @@ module Users
     skip_before_action :verify_authenticity_token
 
     def saml
-      authorize :omniauth_callback, :saml?
+      return render_401 unless FeatureManagement.allow_third_party_auth?
 
       OmniauthAuthorizer.new(auth_hash, session).perform do |user, action|
         @user = user
