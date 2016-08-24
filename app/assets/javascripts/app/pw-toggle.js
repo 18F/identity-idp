@@ -5,9 +5,13 @@ function togglePw() {
     input.parentNode.className += ' relative';
 
     const el = `
-      <label class="pw-toggle-cntnr absolute top-0 right-0">
-        <input class="mr1" id="pw-toggle" type="checkbox">Show password
-      </label>`;
+      <div class="top-0 right-0 absolute">
+        <label class="checkbox">
+          <input id="pw-toggle" type="checkbox">
+          <span class="indicator"></span>
+          Show password
+        </label>
+      </div>`;
     input.insertAdjacentHTML('afterend', el);
 
     const toggle = document.getElementById('pw-toggle');
