@@ -1,5 +1,19 @@
 $rule-border-radius: 12px;
 
+.btn-auth-cntnr {
+  position: relative;
+
+  &::before {
+    border-bottom: 4px solid $blue-light;
+    border-radius: 12px;
+    bottom: 0;
+    content: '';
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+}
+
 .btn-auth {
   color: $blue;
   display: block;
@@ -12,23 +26,21 @@ $rule-border-radius: 12px;
   text-align: center;
 
   &:hover {
+    font-weight: $bold-font-weight;
     text-decoration: none;
-  }
-
-  &::before {
-    border-bottom: 4px solid $blue-light;
-    content: '';
-    left: 0;
-    position: absolute;
-    top: 100%;
-    width: 100%;
   }
 
   &--active {
     font-weight: $bold-font-weight;
 
     &::before {
-      border-color: $red;
+      border-bottom: 4px solid $red;
+      border-radius: 12px;
+      content: '';
+      left: 0;
+      position: absolute;
+      top: 100%;
+      width: 100%;
     }
 
     &::after {
@@ -43,20 +55,6 @@ $rule-border-radius: 12px;
       right: 0;
       top: 100%;
       width: 0;
-    }
-  }
-
-  &--l {
-    &::before {
-      border-bottom-left-radius: $rule-border-radius;
-      border-top-left-radius: $rule-border-radius;
-    }
-  }
-
-  &--r {
-    &::before {
-      border-bottom-right-radius: $rule-border-radius;
-      border-top-right-radius: $rule-border-radius;
     }
   }
 }

@@ -5,4 +5,5 @@ body { -webkit-font-smoothing: antialiased; }
 .sans-serif { font-family: $sans-serif-font-family; }
 .serif { font-family: $serif-font-family; }
 
+.ls-0 { letter-spacing: 0; }
 .ls-05 { letter-spacing: .5px; }

@@ -1,9 +1,8 @@
 - title t('titles.totp_setup.start')
 
 h1.heading = t('headings.totp_setup.start')
-p.mb0 = t('forms.totp_setup.totp_intro')
-.py2
-  = image_tag(asset_url('auth-app.png'), width: 500, alt: 'Authentication App')
-.mt1
+p.mb3 = t('forms.totp_setup.totp_intro')
+= image_tag(asset_url('auth-app.png'), width: 500, alt: 'Authentication App')
+.mt4.mb1
   = link_to t('forms.buttons.setup_totp'), authenticator_setup_url, \
     class: 'btn btn-primary'
