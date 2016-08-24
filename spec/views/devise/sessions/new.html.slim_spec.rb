@@ -18,11 +18,11 @@ describe 'devise/sessions/new.html.slim' do
     render
 
     expect(rendered).
-      to have_xpath("//a[@class='btn-auth btn-auth--r' and @href='#{new_user_start_path}']")
+      to have_xpath("//a[@class='btn-auth' and @href='#{new_user_start_path}']")
 
     expect(rendered).
       to have_xpath(
-        "//a[@class='btn-auth btn-auth--l btn-auth--active' and @href='#{new_user_session_path}']"
+        "//a[@class='btn-auth btn-auth--active' and @href='#{new_user_session_path}']"
       )
   end
 

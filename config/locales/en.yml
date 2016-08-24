@@ -62,7 +62,7 @@ en:
       start: Get started
       verify_email: Verify your email address
     totp_setup:
-      start: Set up two-factor authentication app
+      start: Set up two-factor authentication
       new: Enter the secure one-time passcode
     two_factor_setup: Two-factor Authentication Setup
     users:
@@ -95,7 +95,7 @@ en:
     search: Search for a user
     session_timeout_warning: Session Timeout
     totp_setup:
-      start: Set up two-factor authentication app
+      start: Set up two-factor authentication
       new: Scan the QR code with your device
     users:
       edit: Edit User

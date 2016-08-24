@@ -7,4 +7,4 @@ h1.heading = t('headings.passwords.forgot')
                   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.error_notification
   = f.input :email, required: true
-  = f.button :submit, t('forms.buttons.reset_password')
+  = f.button :submit, t('forms.buttons.reset_password'), class: 'mt2 mb1'
