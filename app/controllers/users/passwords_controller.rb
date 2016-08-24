@@ -2,19 +2,29 @@ module Users
   class PasswordsController < Devise::PasswordsController
     include ValidEmailParameter
 
-    before_action :confirm_valid_token, only: [:edit]
-
     def create
-      RequestPasswordReset.new(params[:user][:email]).perform
+      email = params[:user][:email]
+
+      RequestPasswordReset.new(email).perform
+
+      analytics_user = User.find_by_email(email) || NonexistentUser.new
+      analytics.track_event(
+        "Password Reset Requested for #{analytics_user.role} role", analytics_user
+      )
 
       flash[:success] = t('notices.password_reset')
       redirect_to new_user_session_path
     end
 
     def edit
-      resource = User.new
-      resource.reset_password_token = params[:reset_password_token]
-      @password_form = PasswordForm.new(resource)
+      if token_user&.reset_password_period_valid?
+        resource = User.new
+        resource.reset_password_token = params[:reset_password_token]
+        @password_form = PasswordForm.new(resource)
+      else
+        handle_invalid_token
+        redirect_to new_user_password_path
+      end
     end
 
     # PUT /resource/password
@@ -24,40 +34,39 @@ module Users
       @password_form = PasswordForm.new(resource)
 
       if @password_form.submit(user_params)
-        handle_successful_password_reset_for(resource)
+        handle_successful_password_reset
       else
-        if resource.errors[:reset_password_token].present?
-          return handle_expired_reset_password_token
-        end
-
-        render :edit
+        handle_unsuccessful_password_reset
       end
     end
 
     protected
 
     def token_user
-      @token_user ||= User.with_reset_password_token(params[:reset_password_token])
+      @_token_user ||= User.with_reset_password_token(params[:reset_password_token])
     end
 
-    def confirm_valid_token
-      return if token_user.present? && reset_password_period_valid?
-
-      flash[:error] =
-        if token_user.blank?
-          t('devise.passwords.invalid_token')
-        elsif !reset_password_period_valid?
-          t('devise.passwords.token_expired')
-        end
-
-      redirect_to new_user_password_path
+    def handle_invalid_token
+      if token_user.blank?
+        handle_no_user_matches_token
+      elsif !token_user.reset_password_period_valid?
+        handle_expired_token(token_user)
+      end
     end
 
-    def reset_password_period_valid?
-      token_user.reset_password_period_valid?
+    def handle_no_user_matches_token
+      analytics.track_anonymous_event(
+        'Reset password: invalid token', params[:reset_password_token]
+      )
+      flash[:error] = t('devise.passwords.invalid_token')
     end
 
-    def handle_successful_password_reset_for(resource)
+    def handle_expired_token(user)
+      analytics.track_event('Reset password: token expired', user)
+      flash[:error] = t('devise.passwords.token_expired')
+    end
+
+    def handle_successful_password_reset
       analytics.track_event('Password reset', resource)
 
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
@@ -67,10 +76,15 @@ module Users
       EmailNotifier.new(resource).send_password_changed_email
     end
 
-    def handle_expired_reset_password_token
-      flash[:error] = t('devise.passwords.token_expired') if is_flashing_format?
+    def handle_unsuccessful_password_reset
+      if resource.errors[:reset_password_token].present?
+        handle_expired_token(resource)
+        redirect_to new_user_password_path
+        return
+      end
 
-      redirect_to new_user_password_path
+      analytics.track_event('Reset password: invalid password', resource)
+      render :edit
     end
 
     def user_params

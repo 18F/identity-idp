@@ -41,64 +41,59 @@ describe Users::TotpSetupController, devise: true do
     context 'when user presents invalid code' do
       before do
         sign_in_as_user
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
         get :new
         patch :confirm, code: 123
       end
 
-      it 'redirects back to authenticator_setup_path' do
+      it 'redirects with an error message' do
         expect(response).to redirect_to(authenticator_setup_path)
-      end
-
-      it 'sets flash[:error] message' do
         expect(flash[:error]).to eq t('errors.invalid_totp')
-      end
-
-      it 'does not enable TOTP for the current user' do
         expect(subject.current_user.totp_enabled?).to be(false)
+        expect(@analytics).to have_received(:track_event).with('TOTP Setup: invalid code')
       end
     end
 
     context 'when user presents correct code' do
       before do
         sign_in_as_user
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
         get :new
-        expect(subject.current_user.totp_enabled?).to be(false)
         patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
       end
 
-      it 'redirects to profile_path' do
+      it 'redirects to profile_path with a success message' do
         expect(response).to redirect_to(profile_path)
-      end
-
-      it 'sets flash[:success] message' do
         expect(flash[:success]).to eq t('notices.totp_configured')
-      end
-
-      it 'enables TOTP for the current user' do
         expect(subject.current_user.totp_enabled?).to be(true)
-      end
-
-      it 'clears :new_totp_secret from session' do
         expect(subject.user_session[:new_totp_secret]).to be_nil
+        expect(@analytics).to have_received(:track_event).with('TOTP Setup: valid code')
       end
     end
   end
 
   describe '#disable' do
-    before do
-      sign_in_as_user
-    end
-
     context 'when a user has configured TOTP' do
-      before do
-        get :new
-        patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
-        expect(subject.current_user.totp_enabled?).to be(true)
-        delete :disable
-      end
-
       it 'disables TOTP' do
-        expect(subject.current_user.totp_enabled?).to be(false)
+        user = create(:user, :signed_up, otp_secret_key: 'foo')
+        sign_in user
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        delete :disable
+
+        expect(user.reload.otp_secret_key).to be_nil
+        expect(user.reload.totp_enabled?).to be(false)
+        expect(response).to redirect_to(profile_path)
+        expect(flash[:success]).to eq t('notices.totp_disabled')
+        expect(@analytics).to have_received(:track_event).with('User Disabled TOTP')
       end
     end
   end

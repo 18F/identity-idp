@@ -629,6 +629,40 @@ describe SamlIdpController do
         end
       end
     end
+
+    def stub_auth
+      allow(controller).to receive(:validate_saml_request).and_return(true)
+      allow(controller).to receive(:verify_authn_context).and_return(true)
+      allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
+      allow(controller).to receive(:link_identity_from_session_data).and_return(true)
+    end
+
+    context 'user requires ID verification' do
+      it 'tracks the authentication and IdV redirection event' do
+        stub_analytics
+        stub_auth
+        allow(controller).to receive(:identity_needs_verification?).and_return(true)
+
+        expect(@analytics).to receive(:track_event).with('GET request for saml_idp#auth')
+        expect(@analytics).to receive(:track_event).with('SAML Auth (idv=true)')
+
+        get :auth
+      end
+    end
+
+    context 'user is not redirected to IdV' do
+      it 'tracks the authentication without IdV redirection event' do
+        user = create(:user, :signed_up)
+
+        stub_analytics
+        allow(controller).to receive(:identity_needs_verification?).and_return(false)
+
+        expect(@analytics).to receive(:track_event).with('GET request for saml_idp#auth')
+        expect(@analytics).to receive(:track_event).with('SAML Auth (idv=false)')
+
+        generate_saml_response(user)
+      end
+    end
   end
 
   describe 'before_actions' do

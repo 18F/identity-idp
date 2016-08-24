@@ -50,6 +50,7 @@ UtilityFunction:
       - sign_up_and_2fa
       - raw_xml_response
       - sign_in_user
+      - stub_auth
   FeatureEnvy:
     enabled: false
   NestedIterators:

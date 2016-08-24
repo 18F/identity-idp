@@ -15,7 +15,11 @@ class SamlIdpController < ApplicationController
   def auth
     link_identity_from_session_data
 
-    return redirect_to idv_url if identity_needs_verification?
+    needs_idv = identity_needs_verification?
+
+    analytics.track_event("SAML Auth (idv=#{needs_idv})")
+
+    return redirect_to idv_url if needs_idv
 
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end

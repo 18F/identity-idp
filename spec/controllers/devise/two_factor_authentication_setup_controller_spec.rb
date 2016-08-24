@@ -26,6 +26,18 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
       expect(response).to redirect_to(phone_confirmation_send_path)
     end
+
+    it 'tracks an event when the number is invalid' do
+      allow(subject).to receive(:authenticate_scope!).and_return(true)
+      allow(subject).to receive(:authorize_otp_setup).and_return(true)
+
+      stub_analytics
+      expect(@analytics).to receive(:track_event).with('2FA setup: invalid phone number')
+
+      patch :set, two_factor_setup_form: { phone: '703-555-010' }
+
+      expect(response).to render_template(:index)
+    end
   end
 
   describe 'before_actions' do
