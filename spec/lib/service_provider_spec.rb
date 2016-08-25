@@ -1,65 +1,44 @@
 require 'rails_helper'
-require 'service_provider'
 
 describe ServiceProvider do
-  include SamlAuthHelper
-
   describe '#issuer' do
     it 'returns the constructor value' do
-      sp = ServiceProvider.new('something')
-      expect(sp.issuer).to eq 'something'
+      sp = ServiceProvider.new('http://localhost:3000')
+      expect(sp.issuer).to eq 'http://localhost:3000'
     end
   end
 
   describe '#metadata' do
     shared_examples 'invalid service provider' do
-      it 'returns nil values for all non-hardcoded keys' do
-        attributes = {
-          acs_url: nil,
-          assertion_consumer_logout_service_url: nil,
-          sp_initiated_login_url: nil,
-          metadata_url: nil,
-          attribute_bundle: nil,
-          cert: nil,
-          block_encryption: 'aes256-cbc',
-          key_transport: 'rsa-oaep-mgf1p',
-          fingerprint: nil,
-          double_quote_xml_attribute_values: true,
-          agency: nil,
-          friendly_name: nil
+      it 'returns a hash with only shared attributes' do
+        hash = {
+          fingerprint: nil
         }
 
-        expect(@service_provider.metadata).to eq attributes
+        expect(@service_provider.metadata).to eq hash
       end
     end
 
     context 'when the service provider is defined in the YAML' do
-      it 'returns a hash with all possible keys and values that are predefined or from YAML' do
+      it 'returns a hash with symbolized attributes from YAML plus shared attributes' do
         service_provider = ServiceProvider.new('http://localhost:3000')
 
-        attributes = {
-          acs_url: 'http://localhost:3000/test/saml/decode_assertion',
-          assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request',
-          sp_initiated_login_url: 'http://localhost:3000/test/saml',
-          metadata_url: nil,
-          attribute_bundle: %w(email phone),
-          cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
-          block_encryption: 'none',
-          key_transport: 'rsa-oaep-mgf1p',
-          fingerprint: sp_fingerprint,
-          double_quote_xml_attribute_values: true,
-          agency: 'test_agency',
-          friendly_name: 'test_friendly_name'
+        shared_attributes = {
+          fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa'
         }
 
-        expect(service_provider.metadata).to eq attributes
+        yaml_attributes = ServiceProviderConfig.new(
+          filename: 'service_providers.yml', issuer: 'http://localhost:3000'
+        ).sp_attributes.symbolize_keys
+
+        expect(service_provider.metadata).to eq yaml_attributes.merge(shared_attributes)
       end
     end
 
     context 'when the service provider is not defined in the YAML' do
       before { @service_provider = ServiceProvider.new('invalid_host') }
 
-      it_behaves_like 'invalid service provider'
+      it_behaves_like 'invalid service provider', 'invalid_host'
     end
 
     context 'when the app is running on a superb legit domain' do
@@ -70,197 +49,56 @@ describe ServiceProvider do
       context 'when the host is valid in the current env but not on the legit domain' do
         before { @service_provider = ServiceProvider.new('http://test.host') }
 
-        it_behaves_like 'invalid service provider'
+        it_behaves_like 'invalid service provider', 'http://test.host'
       end
 
       context 'when the host is valid on the legit domain' do
         it 'uses the config from the domain_name key' do
           service_provider = ServiceProvider.new('urn:govheroku:serviceprovider')
-          acls_url = 'https://vets.gov/api/saml/logout'
 
-          attributes = {
-            acs_url: 'https://vets.gov/users/auth/saml/callback',
-            assertion_consumer_logout_service_url: acls_url,
-            block_encryption: 'aes256-cbc',
-            cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
-            double_quote_xml_attribute_values: true,
-            fingerprint: sp_fingerprint,
-            key_transport: 'rsa-oaep-mgf1p',
-            metadata_url: nil,
-            sp_initiated_login_url: nil,
-            agency: 'test_agency',
-            friendly_name: nil,
-            attribute_bundle: %w(email phone)
+          yaml_attributes = ServiceProviderConfig.new(
+            filename: 'service_providers.yml', issuer: 'urn:govheroku:serviceprovider'
+          ).sp_attributes.symbolize_keys
+
+          shared_attributes = {
+            fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa'
           }
 
-          expect(service_provider.metadata).to eq attributes
+          expect(service_provider.metadata).to eq yaml_attributes.merge(shared_attributes)
         end
       end
     end
   end
 
-  describe '#acs_url' do
-    it 'returns the value specified in the YAML' do
-      service_provider = ServiceProvider.new('http://localhost:3000')
-
-      expect(service_provider.acs_url).to eq 'http://localhost:3000/test/saml/decode_assertion'
-    end
-  end
-
-  describe '#assertion_consumer_logout_service_url' do
-    context 'when no value is specified in YAML' do
+  describe '#encryption_opts' do
+    context 'when responses are not encrypted' do
       it 'returns nil' do
-        service_provider = ServiceProvider.new('http://test.host')
+        # block_encryption is set to 'none' for this SP
+        sp = ServiceProvider.new('http://localhost:3000')
 
-        expect(service_provider.assertion_consumer_logout_service_url).to be_nil
+        expect(sp.encryption_opts).to be_nil
       end
     end
 
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new(
-          'https://rp1.serviceprovider.com/auth/saml/metadata'
-        )
+    context 'when responses are encrypted' do
+      it 'returns a hash with cert, block_encryption, and key_transport keys' do
+        # block_encryption is 'aes256-cbc' for this SP
+        sp = ServiceProvider.new('https://rp1.serviceprovider.com/auth/saml/metadata')
 
-        expect(service_provider.assertion_consumer_logout_service_url).
-          to eq 'http://example.com/test/saml/decode_slo_request'
+        expect(sp.encryption_opts.keys).to eq [:cert, :block_encryption, :key_transport]
+        expect(sp.encryption_opts[:block_encryption]).to eq 'aes256-cbc'
+        expect(sp.encryption_opts[:key_transport]).to eq 'rsa-oaep-mgf1p'
+        expect(sp.encryption_opts[:cert]).to be_an_instance_of(OpenSSL::X509::Certificate)
       end
-    end
-  end
 
-  describe '#sp_initiated_login_url' do
-    context 'when no value is specified in YAML' do
-      it 'returns nil' do
-        service_provider = ServiceProvider.new(
-          'https://uscis.serviceprovider.com/auth/saml/metadata'
-        )
+      it 'calls OpenSSL::X509::Certificate with the SP cert' do
+        sp = ServiceProvider.new('https://rp1.serviceprovider.com/auth/saml/metadata')
+        cert = File.read("#{Rails.root}/certs/sp/saml_test_sp.crt")
 
-        expect(service_provider.sp_initiated_login_url).to be_nil
+        expect(OpenSSL::X509::Certificate).to receive(:new).with(cert)
+
+        sp.encryption_opts
       end
-    end
-
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new('http://localhost:3000')
-
-        expect(service_provider.sp_initiated_login_url).
-          to eq 'http://localhost:3000/test/saml'
-      end
-    end
-  end
-
-  describe '#metadata_url' do
-    context 'when value is not specified in YAML' do
-      it 'returns nil' do
-        service_provider = ServiceProvider.new('http://localhost:3000')
-
-        expect(service_provider.metadata_url).to be_nil
-      end
-    end
-
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new('http://test.host')
-
-        expect(service_provider.metadata_url).
-          to eq 'http://test.host/test/saml/metadata'
-      end
-    end
-  end
-
-  describe '#agency' do
-    context 'when value is not specified in YAML' do
-      it 'returns nil' do
-        service_provider = ServiceProvider.new('http://test.host')
-
-        expect(service_provider.agency).to be_nil
-      end
-    end
-
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new('http://localhost:3000')
-
-        expect(service_provider.agency).
-          to eq 'test_agency'
-      end
-    end
-  end
-
-  describe '#friendly_name' do
-    context 'when value is not specified in YAML' do
-      it 'returns nil' do
-        service_provider = ServiceProvider.new('http://test.host')
-
-        expect(service_provider.friendly_name).to be_nil
-      end
-    end
-
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new('http://localhost:3000')
-
-        expect(service_provider.friendly_name).
-          to eq 'test_friendly_name'
-      end
-    end
-  end
-
-  describe '#cert' do
-    it 'returns nil when no cert is specified' do
-      service_provider = ServiceProvider.new('http://test.host')
-
-      expect(service_provider.cert).to be_nil
-    end
-
-    it 'reads the cert from the value specified in the YAML' do
-      service_provider = ServiceProvider.new('http://localhost:3000')
-
-      expect(service_provider.cert).to eq File.read("#{Rails.root}/certs/sp/saml_test_sp.crt")
-    end
-  end
-
-  describe '#block_encryption' do
-    context 'when no value is specified in YAML' do
-      it 'returns "aes256-cbc"' do
-        service_provider = ServiceProvider.new('http://test.host')
-
-        expect(service_provider.block_encryption).to eq 'aes256-cbc'
-      end
-    end
-
-    context 'when value is specified in YAML' do
-      it 'returns the value from YAML' do
-        service_provider = ServiceProvider.new(
-          'https://rp1.serviceprovider.com/auth/saml/metadata'
-        )
-
-        expect(service_provider.block_encryption).to eq 'aes256-cbc'
-      end
-    end
-  end
-
-  describe '#key_transport' do
-    it 'returns a hardcoded value' do
-      service_provider = ServiceProvider.new('http://localhost:3000')
-
-      expect(service_provider.key_transport).to eq 'rsa-oaep-mgf1p'
-    end
-  end
-
-  describe '#fingerprint' do
-    it 'returns a hex digest' do
-      service_provider = ServiceProvider.new('http://localhost:3000')
-
-      expect(service_provider.fingerprint).to eq sp_fingerprint
-    end
-  end
-
-  describe '#double_quote_xml_attribute_values' do
-    it 'returns a hardcoded value' do
-      service_provider = ServiceProvider.new('http://localhost:3000')
-
-      expect(service_provider.double_quote_xml_attribute_values).to eq true
     end
   end
 end

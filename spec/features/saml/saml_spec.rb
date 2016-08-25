@@ -366,7 +366,7 @@ feature 'saml api', devise: true, sms: true do
 
         sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
 
-        expect(current_url).to eq(sp2.assertion_consumer_logout_service_url)
+        expect(current_url).to eq(sp2.metadata[:assertion_consumer_logout_service_url])
         expect(user.active_identities.size).to eq(0)
 
         visit profile_path

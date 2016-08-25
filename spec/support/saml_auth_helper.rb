@@ -31,11 +31,15 @@ module SamlAuthHelper
   end
 
   def sp_fingerprint
-    @sp_fingerprint ||= Fingerprinter.fingerprint_cert(saml_test_sp_cert)
+    @sp_fingerprint ||= Fingerprinter.fingerprint_cert(
+      OpenSSL::X509::Certificate.new(saml_test_sp_cert)
+    )
   end
 
   def idp_fingerprint
-    @idp_fingerprint ||= Fingerprinter.fingerprint_cert(saml_test_idp_cert)
+    @idp_fingerprint ||= Fingerprinter.fingerprint_cert(
+      OpenSSL::X509::Certificate.new(saml_test_idp_cert)
+    )
   end
 
   def saml_test_sp_key
