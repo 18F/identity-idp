@@ -6,6 +6,6 @@ p.mb0 = t('forms.totp_setup.totp_info')
   = image_tag @qrcode, alt: 'QR Code for Authenticator App'
 = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
   = label_tag 'code', t('forms.totp_setup.code'), class: 'block caps ls-05 bold'
-  = number_field_tag :code, '', required: true, \
-    class: 'col-12 sm-col-5 mb4 sm-mb0 sm-mr-20p field mfa'
-  = submit_tag 'Submit', class: 'btn btn-primary'
+  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
+    = number_field_tag :code, '', required: true, class: 'col-12 field mfa'
+  = submit_tag 'Submit', class: 'btn btn-primary align-top'
