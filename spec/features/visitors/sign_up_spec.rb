@@ -54,15 +54,13 @@ feature 'Sign Up', devise: true do
 
   context 'visitor can sign up and confirm a valid phone for OTP' do
     before do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
-      allow(Users::PhoneConfirmationController).
-        to receive(:generate_confirmation_code).and_return('1234')
       click_button 'Submit'
     end
 
     it 'updates phone_confirmed_at and redirects to profile after confirmation' do
-      fill_in 'code', with: '1234'
       click_button 'Submit'
 
       expect(@user.reload.phone_confirmed_at).to be_present

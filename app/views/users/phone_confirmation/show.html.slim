@@ -5,11 +5,12 @@ p.m0 Please enter the code sent to <strong>#{@unconfirmed_phone}</strong>.
 
 = form_tag([:phone_confirmation], method: :put, role: 'form', class: 'mt4') do
   = label_tag 'code', 'One-time passcode', class: 'block caps ls-05 bold'
-  = number_field_tag(:code, \
-                     '', required: true, \
-                     value: @code_value, \
-                     class: 'col-12 sm-col-5 mb4 sm-mb0 sm-mr-20p field mfa')
-  = submit_tag 'Submit', class: 'btn btn-primary'
+  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
+    = number_field_tag(:code, \
+                       '', required: true, \
+                       value: @code_value, \
+                       class: 'col-12 field mfa')
+  = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
 - resend_link = link_to('Resend', \
                         phone_confirmation_send_path)

@@ -66,13 +66,10 @@ module Features
     end
 
     def sign_up_and_2fa
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
-      allow(Users::PhoneConfirmationController).
-        to receive(:generate_confirmation_code).and_return('1234')
       click_button 'Submit'
-      fill_in 'code', with: '1234'
-
       click_button 'Submit'
       user
     end

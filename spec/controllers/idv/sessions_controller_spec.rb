@@ -46,7 +46,9 @@ describe Idv::SessionsController do
 
       it 'creates proofing applicant' do
         post :create, profile: user_attrs
-        post :update, id: 1, ccn: '12341234'
+        post :update_finance, ccn: '12341234'
+        post :update_phone, phone: user.phone
+        post :update_review
 
         expect(flash).to be_empty
         expect(response).to redirect_to(idv_questions_path)
@@ -55,7 +57,9 @@ describe Idv::SessionsController do
 
       it 'shows failure on intentionally bad values' do
         post :create, profile: user_attrs.merge(first_name: 'Bad', ssn: '6666')
-        post :update, id: 1, ccn: '12341234'
+        post :update_finance, ccn: '12341234'
+        post :update_phone, phone: user.phone
+        post :update_review
 
         expect(response).to redirect_to(idv_sessions_path)
         expect(flash[:error]).to eq t('idv.titles.fail')
@@ -88,17 +92,43 @@ describe Idv::SessionsController do
 
       it 'skips questions creation' do
         post :create, profile: user_attrs
-        post :update, id: 1, ccn: '12341234'
+        post :update_finance, ccn: '12341234'
+        post :update_phone, phone: user.phone
+        post :update_review
 
         expect(subject.user_session[:idv][:resolution].questions).to be_nil
       end
 
       it 'shows failure on intentionally bad values' do
         post :create, profile: user_attrs.merge(first_name: 'Bad', ssn: '6666')
-        post :update, id: 1, ccn: '12341234'
+        post :update_finance, ccn: '12341234'
+        post :update_phone, phone: user.phone
+        post :update_review
 
         expect(response).to redirect_to(idv_sessions_path)
         expect(flash[:error]).to eq t('idv.titles.fail')
+      end
+    end
+
+    context 'multi-step forms' do
+      it 'is re-entrant' do
+        post :create, profile: user_attrs
+        post :update_finance, ccn: '12341234'
+
+        expect(subject.user_session[:idv][:params]['ccn']).to eq '12341234'
+
+        post :update_finance, ccn: '55556666'
+
+        expect(subject.user_session[:idv][:params]['ccn']).to eq '55556666'
+      end
+
+      it 'requires confirmation for new phone' do
+        post :create, profile: user_attrs
+        post :update_finance, ccn: '12341234'
+        post :update_phone, phone: '1233334444'
+        post :update_review
+
+        expect(response).to redirect_to(idv_phone_confirmation_send_path)
       end
     end
   end

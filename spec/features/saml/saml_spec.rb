@@ -503,9 +503,11 @@ feature 'saml api', devise: true, sms: true do
         expect(page).to have_content(t('idv.form.first_name'))
 
         fill_out_idv_form_ok
-        click_button 'Continue verifying'
+        click_button 'Continue'
         fill_out_financial_form_ok
-        click_button 'Continue verifying'
+        click_button 'Continue'
+        click_button 'Continue'
+        click_button 'Submit'
 
         expect(current_url).to eq saml_authn_request
       end

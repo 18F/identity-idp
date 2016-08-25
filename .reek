@@ -12,7 +12,7 @@ IrresponsibleModule:
   enabled: false
 NilCheck:
   exclude:
-    - Users::PhoneConfirmationController
+    - PhoneConfirmationFlow
     - slo_not_implemented_at_sp?
     - in_slo?
     - TotpSetupController#new
@@ -25,9 +25,10 @@ TooManyMethods:
     - Devise::TwoFactorAuthenticationController
     - Users::ConfirmationsController
     - ServiceProvider
+    - Idv::SessionsController
 UncommunicativeMethodName:
   exclude:
-    - Users::PhoneConfirmationController
+    - PhoneConfirmationFlow
     - render_401
 UnusedPrivateMethod:
   exclude:
@@ -40,6 +41,9 @@ UtilityFunction:
   public_methods_only: true
   exclude:
     - AnalyticsEventJob#perform
+    - SessionTimeoutWarningHelper#frequency
+    - SessionTimeoutWarningHelper#start
+    - SessionTimeoutWarningHelper#warning
 'spec':
   ControlParameter:
     exclude:

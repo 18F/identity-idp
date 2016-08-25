@@ -85,7 +85,8 @@ en:
       change: Change your password
       forgot: Forgot password?
     profile:
-      agencies: Agencies I've logged into
+      agencies: "Agencies I've logged into"
+      profile_info: Profile information
       login_info: Login information
       main: My account
       two_factor: Two-factor Authentication
@@ -128,15 +129,18 @@ en:
     form:
       first_name: First name
       last_name: Last name
-      ccn: Last 8 Digits of your Credit Card Number
-      mortgage: Mortgage Account Number
-      home_equity_line: Home Equity Account Number
-      auto_loan: Auto Loan Account Number
+      dob: Date of birth
+      ssn: Social Security Number (SSN)
+      ccn: Last 8 digits of your credit card number
+      mortgage: Mortgage account number
+      home_equity_line: Home equity account number
+      auto_loan: Auto loan account number
       address1: Mailing address
       address2: Mailing address (optional)
       city: City
       state: State
       zipcode: ZIP Code
+      phone: Phone
     errors:
       duplicate_ssn: >
         You may already have an account, please use that one.
@@ -145,13 +149,14 @@ en:
       intro: Help us identify you
       expectations: We need some information from you
       welcome: Verify your identity
+      phone: Phone number of record
       question: Answer a few questions
       fail: Identity verification unsuccessful
       hardfail: We cannot verify your identity
       complete: Identity verification complete
+      review: Review and submit
       session:
         basic: Basic information
-        dob: Date of birth
-        ssn: Social Security Number (SSN)
-        address: Mailing address
         finance: Financial information
+        phone: What is your phone number?
+        review: Review and submit
