@@ -34,7 +34,7 @@ const validate = {
     }
 
     // add focus to first invalid input
-    const invalidField = this.form.querySelector(':invalid');
+    const invalidField = this.form.querySelector('.invalid, .interacted.required');
     if (invalidField) invalidField.focus();
   },
 };
