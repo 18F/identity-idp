@@ -23,7 +23,7 @@ label {
 
 // error states
 .invalid,
-.interacted:invalid,
+.interacted.required,
 .has-error input {
   background-image: url(image-path('alert/ico-danger.svg'));
   background-position: center right $form-field-padding-x;
@@ -33,7 +33,7 @@ label {
 
   &.date,
   &.select {
-    background-position: center right 1.5rem;
+    background-image: none;
   }
 
   &:focus {
