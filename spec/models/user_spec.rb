@@ -86,7 +86,6 @@ describe User do
     it 'is true when two_factor_enabled' do
       user = build_stubbed(:user)
 
-      allow(user).to receive(:third_party_authenticated?).and_return(false)
       allow(user).to receive(:two_factor_enabled?).and_return true
 
       expect(user.need_two_factor_authentication?(nil)).to be_truthy
@@ -95,40 +94,9 @@ describe User do
     it 'is false when not two_factor_enabled' do
       user = build_stubbed(:user)
 
-      allow(user).to receive(:third_party_authenticated?).and_return(false)
       allow(user).to receive(:two_factor_enabled?).and_return false
 
       expect(user.need_two_factor_authentication?(nil)).to be_falsey
-    end
-
-    it 'is false when signed up and authenticating with third party' do
-      user = create(:user, :signed_up)
-      allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
-
-    it 'is false when 2fa is enabled and authenticating with third party' do
-      user = create(:user, :signed_up)
-      allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
-
-    it 'is true when 2fa is enabled and not authenticating with third party' do
-      user = create(:user, :signed_up)
-      allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
-      expect(user.need_two_factor_authentication?(request)).to be_truthy
-    end
-
-    it 'is false when 2fa is not enabled and authenticating with third party' do
-      user = create(:user)
-      allow(user).to receive(:third_party_authenticated?).with(request).and_return(true)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
-    end
-
-    it 'is false when 2fa is not enabled and not authenticating with third party' do
-      user = create(:user)
-      allow(user).to receive(:third_party_authenticated?).with(request).and_return(false)
-      expect(user.need_two_factor_authentication?(request)).to be_falsey
     end
   end
 
