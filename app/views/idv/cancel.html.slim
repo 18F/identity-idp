@@ -1,4 +1,5 @@
 - title t('idv.titles.hardfail')
 
 h1.heading = t('idv.titles.hardfail')
-p.mb1 = t('idv.messages.hardfail', app_name: APP_NAME)
+p.mb1 = t('idv.messages.hardfail', app_name: APP_NAME,
+        link: link_to(t('idv.messages.hardfail_link'), idv_url)).html_safe
