@@ -70,8 +70,8 @@ describe Idv::SessionsController do
 
         post :create, profile: user_attrs.merge(ssn: '1234')
 
-        expect(response).to render_template(:index)
-        expect(response.body).to match t('idv.errors.duplicate_ssn')
+        expect(response).to redirect_to(idv_sessions_dupe_url)
+        expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
       end
 
       it 'checks for required fields' do

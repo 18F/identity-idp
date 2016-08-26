@@ -1,0 +1,8 @@
+- title t('idv.titles.dupe')
+
+h1.heading = t('idv.titles.dupe')
+p.mb1 = t('idv.messages.dupe_ssn1')
+p.mb1 = t('idv.messages.dupe_ssn2',
+        link: link_to(t('idv.messages.dupe_ssn2_link'), destroy_user_session_path)).html_safe
+p.mb1 = t('idv.messages.dupe_ssn3',
+        link: link_to(t('idv.messages.dupe_ssn3_link'), new_user_password_path)).html_safe

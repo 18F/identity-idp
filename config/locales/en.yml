@@ -33,17 +33,17 @@ en:
 
   links:
     resend: Resend
-    sign_out: 'Sign out'
-    sign_in: 'Log in'
-    sign_up: 'Sign up'
-    my_account: 'My account'
+    sign_out: Sign out
+    sign_in: Log in
+    sign_up: Sign up
+    my_account: My account
   notices:
     totp_configured: Authenticator app successfully configured
     totp_disabled: Authenticator app disabled
     phone_confirmation_successful: Phone confirmation successful!
-    password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
-  session_timedout: "For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again."
-  session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
+    password_reset: You will receive an email with instructions on how to reset your password in a few minutes.
+  session_timedout: For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again.
+  session_timeout_warning: We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in.
   titles:
     confirmations:
       new: Resend confirmation instructions for your account
@@ -85,7 +85,7 @@ en:
       change: Change your password
       forgot: Forgot password?
     profile:
-      agencies: "Agencies I've logged into"
+      agencies: Agencies I've logged into
       profile_info: Profile information
       login_info: Login information
       main: My account
@@ -118,13 +118,13 @@ en:
         app_setting:
           attributes:
             value:
-              cannot_disable_2fa_in_prod: 'Two-factor Authentication cannot be disabled in production'
-              invalid: "Value must be '1' or '0'"
+              cannot_disable_2fa_in_prod: Two-factor Authentication cannot be disabled in production
+              invalid: Value must be '1' or '0'
 
   valid_email:
     validations:
       email:
-        invalid: 'Please enter a valid email in the format of user@domain.com'
+        invalid: Please enter a valid email in the format of user@domain.com
   idv:
     form:
       first_name: First name
@@ -143,8 +143,7 @@ en:
       phone: Phone
     errors:
       duplicate_ssn: >
-        You may already have an account, please use that one.
-        You can always change your email address in your existing account.
+        An account already exists using the information you provided.
     messages:
       hardfail: >
         To access your information with the participating agency’s website,
@@ -153,6 +152,13 @@ en:
         complete this process. If you don’t have the information we need at this
         time you can %{link}.
       hardfail_link: continue later
+      dupe_ssn1: >
+        If you are getting this error, you may have already created and verified
+        and account, but with a different email address.
+      dupe_ssn2: Please %{link} with the email address you originally used.
+      dupe_ssn2_link: sign out now and sign back in
+      dupe_ssn3: If you can't remember your original login information, you can %{link}.
+      dupe_ssn3_link: try recovering it here
     titles:
       intro: Help us identify you
       expectations: We need some information from you
@@ -163,6 +169,7 @@ en:
       hardfail: We cannot verify your identity
       complete: Identity verification complete
       review: Review and submit
+      dupe: "Error: An account may already exist"
       session:
         basic: Basic information
         finance: Financial information
