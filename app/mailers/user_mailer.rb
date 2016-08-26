@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
   before_action :attach_images
-  default from: 'upaya@18f.gov'
+  default from: 'no-reply@login.gov'
 
   def email_changed(old_email)
     mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
