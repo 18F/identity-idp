@@ -17,9 +17,14 @@ function formatForm() {
     if (input) {
       /* eslint-disable no-new, no-shadow */
       const field = new TextField(input, formatter);
+      // removes focus set by field-kit bug https://github.com/square/field-kit/issues/62
+      document.activeElement.blur();
       field.setDelegate({
         textFieldDidEndEditing(field) {
-          validateField(field.element);
+          // prevents IE from thinking empty field has changed
+          if (field.element.value !== '') {
+            validateField(field.element);
+          }
         },
       });
     }
