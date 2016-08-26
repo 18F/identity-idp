@@ -3,6 +3,36 @@
 
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 .mt1.mb3.h6.caps.red = t('headings.profile.main')
+
+- if current_user.active_profile
+  - p = current_user.active_profile
+  h2.heading = t('headings.profile.profile_info')
+  .mt3.mb4
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Full name
+        .sm-col.sm-col-7.px1.truncate #{p.first_name} #{p.last_name}
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Address
+        .sm-col.sm-col-7.px1
+          | #{p.address1}<br>
+          - if p.address2.present?
+            | #{p.address2}<br>
+          | #{p.city}, #{p.state} #{p.zipcode}
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Date of birth
+        .sm-col.sm-col-7.px1 #{p.dob.to_time.to_s(:date_pretty)}
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Social Security Number (SSN)
+        .sm-col.sm-col-7.px1 = "***-**-#{p.ssn[-4..-1]}"
+    .py-12p.border-top.border-bottom
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Phone number
+        .sm-col.sm-col-7.px1 = p.phone
+
 h2.heading = t('headings.profile.login_info')
 .mt3.mb4
   .py-12p.border-bottom.border-top

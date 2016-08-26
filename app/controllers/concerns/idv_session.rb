@@ -65,7 +65,7 @@ module IdvSession
   end
 
   def idv_params
-    idv_session[:params]
+    idv_session[:params] ||= {}
   end
 
   def idv_profile
@@ -73,11 +73,7 @@ module IdvSession
   end
 
   def clear_idv_session
-    idv_session.delete(:vendor)
-    idv_session.delete(:applicant)
-    idv_session.delete(:profile_id)
-    idv_session.delete(:resolution)
-    idv_session.delete(:question_number)
+    user_session.delete(:idv)
   end
 
   def idv_session

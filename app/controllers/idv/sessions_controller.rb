@@ -3,39 +3,84 @@ module Idv
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
-    layout 'card_wide'
 
     def index
       @using_mock_vendor = pick_a_vendor == :mock
-      @profile = IdvProfileForm.new
-    end
-
-    def show
+      @profile = idv_profile_form
     end
 
     def create
-      self.idv_params = profile_params
-      @profile = IdvProfileForm.new
-      if @profile.submit(profile_params, current_user.id)
-        redirect_to idv_session_url(1)
+      idv_params.merge!(profile_params)
+      @profile = idv_profile_form
+      if @profile.submit(profile_params)
+        redirect_to idv_sessions_finance_url
       else
         render :index
       end
     end
 
-    def update
+    def finance
+      prep_step
+    end
+
+    def phone
+      prep_step
+    end
+
+    def review
+      prep_step
+    end
+
+    def update_finance
+      prep_step
+      idv_params.merge!(financial_params.delete_if { |_key, value| value.blank? })
+      redirect_to idv_sessions_phone_url
+    end
+
+    def update_phone
+      prep_step
+      idv_params['phone'] = params.require(:phone)
+      if idv_params['phone'] == current_user.phone
+        idv_params['phone_confirmed_at'] = current_user.phone_confirmed_at
+      end
+      redirect_to idv_sessions_review_url
+    end
+
+    def update_review
       self.idv_applicant = applicant_from_params
       resolution = start_idv_session
       if resolution.success
         init_questions_and_profile(resolution)
-        redirect_to idv_questions_path
+        redirect_on_success
       else
         flash[:error] = I18n.t('idv.titles.fail')
-        redirect_to idv_sessions_path
+        redirect_to idv_sessions_url
       end
     end
 
     private
+
+    def redirect_on_success
+      if phone_confirmation_required?
+        user_session[:idv_unconfirmed_phone] = idv_params['phone']
+        redirect_to idv_phone_confirmation_send_path
+      else
+        redirect_to idv_questions_path
+      end
+    end
+
+    def phone_confirmation_required?
+      !idv_params['phone_confirmed_at'] || idv_params['phone'] != current_user.phone
+    end
+
+    def prep_step
+      @profile = idv_profile_form
+      @idv_params = idv_params
+    end
+
+    def idv_profile_form
+      IdvProfileForm.new((idv_params || {}), current_user.id)
+    end
 
     def start_idv_session
       agent = Proofer::Agent.new(
@@ -48,7 +93,7 @@ module Idv
     end
 
     def applicant_from_params
-      app_vars = idv_params.merge(financial_params.delete_if { |_key, value| value.blank? })
+      app_vars = idv_params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
       Proofer::Applicant.new(app_vars)
     end
 
@@ -58,34 +103,13 @@ module Idv
       idv_profile_from_applicant(idv_applicant)
     end
 
-    # rubocop:disable MethodLength
-    # This method is single statement spread across many lines for readability
     def profile_params
-      params.require(:profile).permit(
-        :first_name,
-        :last_name,
-        :phone,
-        :email,
-        :dob,
-        :ssn,
-        :address1,
-        :address2,
-        :city,
-        :state,
-        :zipcode
-      )
+      params.require(:profile).permit(:first_name, :last_name, :dob, :ssn, :address1, :address2,
+                                      :city, :state, :zipcode)
     end
-    # rubocop:enable MethodLength
 
     def financial_params
-      params.slice(
-        :ccn,
-        :mortgage,
-        :home_equity_line,
-        :auto_loan,
-        :bank_routing,
-        :bank_acct
-      )
+      params.slice(:ccn, :mortgage, :home_equity_line, :auto_loan, :bank_routing, :bank_acct)
     end
 
     def pick_a_vendor

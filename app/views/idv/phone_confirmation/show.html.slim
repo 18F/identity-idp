@@ -1,0 +1,20 @@
+- title t('titles.enter_2fa_code')
+
+h1.heading = t('forms.phone_confirmation.header_text')
+p Please enter the code sent to <strong>#{@unconfirmed_phone}</strong>.
+
+= form_tag([:idv_phone_confirmation], method: :put, role: 'form', class: 'mt4') do
+  = label_tag 'code', 'One-time passcode', class: 'block caps ls-05 bold'
+  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
+    = number_field_tag(:code, '', required: true, value: @code_value, \
+                       class: 'col-12 field mfa')
+  = submit_tag 'Submit', class: 'btn btn-primary align-top'
+
+- resend_link = link_to('Resend', \
+                        idv_phone_confirmation_send_path)
+- update_number_link = link_to('Try again', \
+                               @reenter_phone_number_path)
+
+.mt3
+  p.m0 Didn't receive a code? #{resend_link}
+  p.m0 Entered the wrong phone number? #{update_number_link}

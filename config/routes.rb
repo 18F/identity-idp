@@ -63,9 +63,18 @@ Rails.application.routes.draw do
 
   get '/idv' => 'idv#index'
   get '/idv/cancel' => 'idv#cancel'
+  get '/idv/phone_confirmation' => 'idv/phone_confirmation#show'
+  get '/idv/phone_confirmation/send' => 'idv/phone_confirmation#send_code'
+  put '/idv/phone_confirmation' => 'idv/phone_confirmation#confirm'
   namespace :idv do
-    resources :questions, :sessions, :confirmations
+    resources :questions, :confirmations
+    resources :sessions, only: [:index, :create]
   end
+  %w(finance phone review).each do |step|
+    get "/idv/sessions/#{step}" => "idv/sessions##{step}"
+    match "/idv/sessions/#{step}" => "idv/sessions#update_#{step}", via: [:post, :put]
+  end
+
   get '/phone_confirmation' => 'users/phone_confirmation#show'
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
   put '/phone_confirmation' => 'users/phone_confirmation#confirm'

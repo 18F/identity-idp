@@ -48,7 +48,7 @@ describe Idv::ConfirmationsController do
         end
 
         it 'cleans up PII from session' do
-          expect(subject.user_session[:idv][:applicant]).to eq nil
+          expect(subject.user_session[:idv]).to eq nil
         end
       end
 

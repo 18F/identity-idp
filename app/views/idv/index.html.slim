@@ -10,16 +10,12 @@ h1.heading = t('idv.titles.expectations')
     div
       | Please have the following basic information
         and materials to complete registration with login.gov:
-    .clearfix.mt2.mb3
-      .sm-col.sm-col-5
-        ul.m0.red-dots
-          li Full name
-          li Birthdate
-          li Mailing address
-      .sm-col.sm-col-7
-        ul.m0.red-dots
-          li Social Security Number (SSN) <br><span class="h6">OR</span>
-          li Individual Tax Identification Number (ITIN)
+    ul.mt2.mb3.red-dots
+      li Full name
+      li Date of birth
+      li Mailing address
+      li Social Security Number (SSN) <br><span class="h6">OR</span>
+      li Individual Tax Identification Number (ITIN)
 
 .mb3.overflow-hidden.border-bottom
   .left.pr1.sm-pr2
@@ -51,6 +47,6 @@ p
   | We have partnered with a trusted third party company to verify
     this information and your identity.
 p.bold Do you have all of this information available?
-
-= link_to 'No', idv_cancel_path, class: 'btn btn-primary mr1'
-= link_to 'Yes', idv_sessions_path, class: 'btn btn-primary'
+.mb1
+  = link_to 'No', idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
+  = link_to 'Yes', idv_sessions_path, class: 'btn btn-primary'
