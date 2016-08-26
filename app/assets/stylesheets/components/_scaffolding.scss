@@ -4,6 +4,8 @@ abbr[title] {
   text-decoration: none;
 }
 
+.cntnr-skinny { max-width: $container-skinny-width; }
+
 @media #{$breakpoint-sm} {
   body { background-color: $blue-light; }
 }

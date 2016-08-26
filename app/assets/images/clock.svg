@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
+    <title>clock</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="clock">
+            <path d="M50,25 C50,11.1928571 38.8071429,0 25,0 C11.1928571,0 0,11.1928571 0,25 C0,38.8071429 11.1928571,50 25,50 C38.8071429,50 50,38.8071429 50,25" id="Fill-1" fill="#00BFE7"></path>
+            <polyline id="Stroke-3" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" points="30.0829464 25.3798214 24.5722321 25.3798214 24.5722321 16.6664286"></polyline>
+            <path d="M37.5114286,25.0001786 C37.5114286,31.91 31.9096429,37.5117857 24.9998214,37.5117857 C18.09,37.5117857 12.4882143,31.91 12.4882143,25.0001786 C12.4882143,18.0903571 18.09,12.4885714 24.9998214,12.4885714 C31.9096429,12.4885714 37.5114286,18.0903571 37.5114286,25.0001786 L37.5114286,25.0001786 Z" id="Stroke-5" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+        </g>
+    </g>
+</svg>

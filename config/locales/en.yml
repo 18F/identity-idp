@@ -9,7 +9,7 @@ en:
 
   forms:
     buttons:
-      continue_browsing: Continue Browsing
+      continue_browsing: Continue browsing
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       setup_totp: Set up authentication app
@@ -94,7 +94,7 @@ en:
       enter_email: Email address
       verify_email: Verify email address
     search: Search for a user
-    session_timeout_warning: Session Timeout
+    session_timeout_warning: Session timeout
     totp_setup:
       start: Set up two-factor authentication
       new: Scan the QR code with your device

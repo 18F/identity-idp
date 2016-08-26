@@ -94,7 +94,7 @@ feature 'Sign in' do
 
       expect(page).to have_css('#session-timeout-msg', text: warning_content)
 
-      find_link('Continue Browsing').trigger('click')
+      find_link(t('forms.buttons.continue_browsing')).trigger('click')
 
       expect(current_path).to eq profile_path
     end
