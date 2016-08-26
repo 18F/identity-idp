@@ -1,0 +1,31 @@
+.modal-cntnr {
+  background-color: rgba(91, 97, 106, .9);
+  display: table;
+  height: 100%;
+  left: 0;
+  min-height: 100%;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
+.modal-inner {
+  display: table-cell;
+  vertical-align: top;
+}
+
+@media #{$breakpoint-sm} {
+  .modal-inner {
+    vertical-align: middle;
+  }
+}
+
+.modal-ico {
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  position: absolute;
+  right: 0;
+  top: -25px;
+  width: 50px;
+}
