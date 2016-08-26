@@ -12,11 +12,10 @@ module Idv
     def create
       idv_params.merge!(profile_params)
       @profile = idv_profile_form
-      if @profile.submit(profile_params)
-        redirect_to idv_sessions_finance_url
-      else
-        render :index
-      end
+      submit_profile
+    end
+
+    def dupe
     end
 
     def finance
@@ -59,6 +58,17 @@ module Idv
     end
 
     private
+
+    def submit_profile
+      if @profile.submit(profile_params)
+        redirect_to idv_sessions_finance_url
+      elsif @profile.errors.include?(:ssn)
+        flash[:error] = I18n.t('idv.errors.duplicate_ssn')
+        redirect_to idv_sessions_dupe_url
+      else
+        render :index
+      end
+    end
 
     def redirect_on_success
       if phone_confirmation_required?

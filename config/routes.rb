@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     get "/idv/sessions/#{step}" => "idv/sessions##{step}"
     match "/idv/sessions/#{step}" => "idv/sessions#update_#{step}", via: [:post, :put]
   end
+  get '/idv/sessions/dupe' => 'idv/sessions#dupe'
 
   get '/phone_confirmation' => 'users/phone_confirmation#show'
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
