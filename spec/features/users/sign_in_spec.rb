@@ -147,12 +147,12 @@ feature 'Sign in' do
 
   context 'signed in, session times out, sign back in', js: true do
     it 'prompts to enter OTP' do
-      allow(Rails.application.config).to receive(:session_check_frequency).and_return(0.01)
-      allow(Rails.application.config).to receive(:session_check_delay).and_return(0.01)
+      allow(Rails.application.config).to receive(:session_check_frequency).and_return(1)
+      allow(Rails.application.config).to receive(:session_check_delay).and_return(1)
       allow(Devise).to receive(:timeout_in).and_return(1.second)
 
       user = sign_in_and_2fa_user
-      Timecop.travel(1.minute)
+      sleep 3
       visit '/'
 
       fill_in 'Email', with: user.email
@@ -160,7 +160,6 @@ feature 'Sign in' do
       click_button 'Log in'
 
       expect(current_path).to eq user_two_factor_authentication_path
-      Timecop.return
     end
   end
 
