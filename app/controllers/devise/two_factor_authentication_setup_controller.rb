@@ -27,7 +27,7 @@ module Devise
 
     def authorize_otp_setup
       if user_fully_authenticated?
-        redirect_to(request.referrer || root_url)
+        redirect_to(request.referer || root_url)
       elsif resource.two_factor_enabled?
         redirect_to user_two_factor_authentication_path
       end
