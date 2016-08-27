@@ -27,9 +27,9 @@ p.italic Please review your information and ensure it is correct.
       .h4.bold #{@idv_params[finance_type]}
 
 .mb3.p3.border.rounded
-  = link_to 'Edit', idv_sessions_phone_path, class: edit_btn_cls
+  = link_to 'Edit', idv_phone_path, class: edit_btn_cls
   .h6 Phone number
-  .h4.bold #{@idv_params['phone']}
+  .h4.bold #{@idv_params[:phone]}
 
 = form_tag('/idv/sessions/review', method: 'put')
   .mt4.mb1

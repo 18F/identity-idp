@@ -33,16 +33,7 @@ module Idv
     def update_finance
       prep_step
       idv_params.merge!(financial_params.delete_if { |_key, value| value.blank? })
-      redirect_to idv_sessions_phone_url
-    end
-
-    def update_phone
-      prep_step
-      idv_params['phone'] = params.require(:phone)
-      if idv_params['phone'] == current_user.phone
-        idv_params['phone_confirmed_at'] = current_user.phone_confirmed_at
-      end
-      redirect_to idv_sessions_review_url
+      redirect_to idv_phone_url
     end
 
     def update_review
@@ -72,7 +63,7 @@ module Idv
 
     def redirect_on_success
       if phone_confirmation_required?
-        user_session[:idv_unconfirmed_phone] = idv_params['phone']
+        user_session[:idv_unconfirmed_phone] = idv_params[:phone]
         redirect_to idv_phone_confirmation_send_path
       else
         redirect_to idv_questions_path
@@ -80,7 +71,7 @@ module Idv
     end
 
     def phone_confirmation_required?
-      !idv_params['phone_confirmed_at'] || idv_params['phone'] != current_user.phone
+      !idv_params[:phone_confirmed_at] || idv_params[:phone] != current_user.phone
     end
 
     def prep_step

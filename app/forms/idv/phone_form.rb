@@ -1,0 +1,42 @@
+module Idv
+  class PhoneForm
+    include ActiveModel::Model
+    include FormPhoneValidator
+
+    attr_reader :idv_params, :user, :phone
+
+    def initialize(idv_params, user)
+      @idv_params = idv_params
+      @user = user
+      self.phone = idv_params[:phone] || user.phone
+    end
+
+    def submit(params)
+      submitted_phone = params[:phone]
+
+      formatted_phone = submitted_phone.phony_formatted(
+        format: :international, normalize: :US, spaces: ' '
+      )
+
+      self.phone = formatted_phone
+
+      return false unless valid?
+
+      update_idv_params(formatted_phone)
+
+      true
+    end
+
+    private
+
+    attr_writer :phone
+
+    def update_idv_params(phone)
+      idv_params[:phone] = phone
+
+      return if phone != user.phone
+
+      idv_params[:phone_confirmed_at] = user.phone_confirmed_at
+    end
+  end
+end

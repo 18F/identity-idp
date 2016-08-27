@@ -58,7 +58,7 @@ feature 'IdV session' do
       second_ssn_value = '666669876'
       first_ccn_value = '12345678'
       second_ccn_value = '99998888'
-      first_phone_value = '123-456-7890'
+      first_phone_value = '415-555-0199'
       second_phone_value = '456-789-0000'
 
       expect(page).to_not have_selector("input[value='#{first_ssn_value}']")
@@ -89,13 +89,13 @@ feature 'IdV session' do
       fill_in :ccn, with: second_ccn_value
       click_button 'Continue'
 
-      expect(page).to_not have_selector("input[value='#{first_phone_value}']")
+      expect(page).to_not have_selector("input[value='+1 (415) 555-0199']")
 
       fill_out_phone_form_ok(first_phone_value)
       click_button 'Continue'
-      visit idv_sessions_phone_path
+      visit idv_phone_path
 
-      expect(page).to have_selector("input[value='#{first_phone_value}']")
+      expect(page).to have_selector("input[value='+1 (415) 555-0199']")
 
       fill_out_phone_form_ok(second_phone_value)
       click_button 'Continue'
@@ -103,7 +103,24 @@ feature 'IdV session' do
       expect(page).to have_content(t('idv.titles.review'))
       expect(page).to have_content(second_ssn_value)
       expect(page).to have_content(second_ccn_value)
-      expect(page).to have_content(second_phone_value)
+      expect(page).to have_content('+1 (456) 789-0000')
+    end
+
+    context 'Idv phone and user phone are different' do
+      it 'redirects to phone confirmation path' do
+        sign_in_and_2fa_user
+        visit idv_sessions_path
+
+        fill_out_idv_form_ok
+        click_button 'Continue'
+        fill_out_financial_form_ok
+        click_button 'Continue'
+        fill_out_phone_form_ok('416-555-0190')
+        click_button 'Continue'
+        click_button 'Submit'
+
+        expect(current_path).to eq idv_phone_confirmation_path
+      end
     end
   end
 
@@ -158,6 +175,7 @@ feature 'IdV session' do
       click_button 'Submit'
 
       expect(page).to have_content(t('idv.titles.fail'))
+      expect(current_path).to eq idv_sessions_path
     end
   end
 
