@@ -8,6 +8,10 @@ module IdvSession
     end
   end
 
+  def idv_session
+    user_session[:idv] ||= {}
+  end
+
   protected
 
   def idv_question_number
@@ -74,10 +78,6 @@ module IdvSession
 
   def clear_idv_session
     user_session.delete(:idv)
-  end
-
-  def idv_session
-    user_session[:idv] ||= {}
   end
 
   def complete_idv_profile

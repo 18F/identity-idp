@@ -70,11 +70,13 @@ Rails.application.routes.draw do
     resources :questions, :confirmations
     resources :sessions, only: [:index, :create]
   end
-  %w(finance phone review).each do |step|
+  %w(finance review).each do |step|
     get "/idv/sessions/#{step}" => "idv/sessions##{step}"
     match "/idv/sessions/#{step}" => "idv/sessions#update_#{step}", via: [:post, :put]
   end
   get '/idv/sessions/dupe' => 'idv/sessions#dupe'
+  get 'idv/phone' => 'idv/phone#new'
+  put 'idv/phone' => 'idv/phone#create'
 
   get '/phone_confirmation' => 'users/phone_confirmation#show'
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'

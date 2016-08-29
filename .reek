@@ -50,6 +50,7 @@ UtilityFunction:
       - complete_idv_session
   DuplicateMethodCall:
     exclude:
+      - complete_idv_profile
       - saml_settings
       - sign_up_and_2fa
       - raw_xml_response

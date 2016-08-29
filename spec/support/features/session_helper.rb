@@ -51,7 +51,7 @@ module Features
       visit profile_path
     end
 
-    def sign_in_and_2fa_user(user = create(:user, :signed_up, phone: '555-555-5556'))
+    def sign_in_and_2fa_user(user = create(:user, :signed_up, phone: '+1 (555) 555-5556'))
       sign_in_with_warden(user)
       user
     end

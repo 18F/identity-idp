@@ -63,7 +63,7 @@ module IdvHelper
     fill_in :ccn, with: '12345678'
   end
 
-  def fill_out_phone_form_ok(phone = '123-456-7890')
-    fill_in :phone, with: phone
+  def fill_out_phone_form_ok(phone = '415-555-0199')
+    fill_in :idv_phone_form_phone, with: phone
   end
 end
