@@ -151,7 +151,7 @@ feature 'Sign in' do
       allow(Rails.application.config).to receive(:session_check_delay).and_return(1)
       allow(Devise).to receive(:timeout_in).and_return(1.second)
 
-      user = sign_in_and_2fa_user
+      user = sign_in_user(create(:user, :signed_up))
       sleep 3
       visit '/'
 
