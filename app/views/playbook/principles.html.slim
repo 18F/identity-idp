@@ -1,0 +1,265 @@
+doctype html
+html lang="#{I18n.locale}"
+
+  = render 'head'
+
+  body
+    .site-wrap
+      = render 'shared/usa_banner'
+
+      nav.bg-white
+        .container.cntnr-wide.px2.py3
+          = render 'nav_top'
+
+              = link_to(playbook_principles_path(anchor: 'pb-flexible'),
+                class: 'py3 pl3 pr5 bg-white block pb-principle-cntnr') do
+
+      .bg-navy
+        .container.cntnr-wide.px2.py5
+          h2.mt0.mb1.h1.white The principles
+          = image_tag(asset_url('playbook/hr-red-1.svg'), alt: 'hr', class: 'mb3')
+          .clearfix.mxn2.fs-lead
+            .sm-col.sm-col-8.px2.white
+              .serif
+                p
+                  | Building this system includes taking recommendations and best practices from
+                    policy experts, system architects, and people focused on creating a great user
+                    experience. Our research and our progress so far has led us to identify five
+                    major principles that we believe will help us make the best system possible.
+                p
+                  | If you are adopting the system we’re building or creating your own, please use
+                    these principles as a guide to ensure a reliable product that deserves the
+                    public trust.
+              ul.mt3.mb0.ml1.pl1.pb-list--bullet
+                li.mb2
+                  = link_to('Focus on user needs',
+                    playbook_principles_path(anchor: 'pb-users'), class: 'white bold')
+                li.mb2
+                  = link_to('Be transparent about how it works',
+                    playbook_principles_path(anchor: 'pb-transparent'), class: 'white bold')
+                li.mb2
+                  = link_to('Build a flexible product',
+                    playbook_principles_path(anchor: 'pb-flexible'), class: 'white bold')
+                li.mb2
+                  = link_to('Use modern privacy practices',
+                    playbook_principles_path(anchor: 'pb-privacy'), class: 'white bold')
+                li.mb2
+                  = link_to('Create responsive security systems',
+                    playbook_principles_path(anchor: 'pb-security'), class: 'white bold')
+            .sm-col.sm-col-4.px2.center.sm-show
+              = image_tag(asset_url('playbook/graphic-playbook.png'),
+                alt: APP_NAME, width: 244, class: 'mt2')
+
+      .bg-white
+        .container.cntnr-wide.px2.py5
+          .sm-col-8
+            #pb-users.mb6
+              = image_tag(asset_url('playbook/graphic-users.svg'),
+                alt: APP_NAME, width: 126, class: 'mb3 block')
+              h3.mt0.mb1.h1 Focus on user needs
+              = image_tag(asset_url('playbook/hr-red-3.svg'), alt: 'hr', class: 'mb3')
+              ul.list-reset.mb3.serif.bold.h4.pb-list--checked
+                li.mb2.pl3 Identify your potential audiences
+                li.mb2.pl3 Understand the login experiences and identity needs of your audiences
+                li.mb2.pl3 Conduct research before building or implementing a system
+                li.mb2.pl3 Test your product to identify blind spots or areas for improvement
+                li.mb2.pl3
+                  | When the current best practices aren’t good enough for your users, test new
+                    solutions and help guide adoption
+              p
+                | Solving real problems for potential users should be the focus for any system,
+                  and is doubly important when building an identity management system. Throughout
+                  this playbook, you’ll see how satisfying user needs is a guiding principle in
+                  every decision made.
+              p
+                | One of the first steps you should take is identifying your core users. For
+                  login.gov, we’ve identified two groups as our core users: the general public
+                  and tech people inside government agencies. The goal for the system itself is
+                  to support and address the needs of the general public. To put it plainly, we
+                  want to make sure that our system makes people comfortable with logging in to
+                  government services. The public needs to feel confident that login.gov behaves
+                  as expected and will not disappoint them. The system also needs to address
+                  users’ entire experience as they try to accomplish their goals. Because
+                  identity verification and authentication is technologically complex, it’s not
+                  unlikely that even the most tech-savvy people could get stuck if their phone
+                  is lost or a system has errors. So in support of each agency’s mission,
+                  architects and designers of consumer identity management systems need to
+                  anticipate likely sticking points so that people don’t lose access to the
+                  services and benefits.
+              p
+                | Agencies should figure out what portion of the public they serve and how
+                  services can be built to address their needs specifically. This will help
+                  agency integration teams understand what they need if they decide to implement
+                  the login.gov platform or any other consumer identity management system.
+              p
+                | Finally, you should continuously test designs and tools as they’re ready to
+                  share and then adjust your project based on what you learn. In some cases, we
+                  learn that the current best practices aren’t good enough. And in those cases
+                  we’re pushed to try out new ways to give the users the best experience possible.
+                  That process involves further testing, educating users, and a willingness to
+                  iterate.
+              p
+                | There are a number of specific design methods we practice to remain
+                  user-centered, and you can read about all of them, and use them yourself, by
+                  reviewing the <a href="#">18F Design Methods</a>.
+
+            #pb-transparent.mb6
+              = image_tag(asset_url('playbook/graphic-venn.svg'),
+                alt: APP_NAME, width: 154, class: 'mb3 block')
+              h3.mt0.mb1.h1 Be transparent about how it works
+              = image_tag(asset_url('playbook/hr-red-4.svg'), alt: 'hr', class: 'mb3')
+              ul.list-reset.mb3.serif.bold.h4.pb-list--checked
+                li.mb2.pl3 Engage experts, advocates, and the public early and often
+                li.mb2.pl3 Explain how and why you’re collecting, sharing, and storing data
+                li.mb2.pl3 Create a privacy policy that regular people can access and understand
+                li.mb2.pl3 Create a privacy policy that is inclusive and informative
+              p
+                | <a href="#">Working transparently</a> and creating a transparent system should
+                  be the way any agency works when building or implementing an identity management
+                  system. To execute this principle with login.gov, we’re building the platform so
+                  that interested parties can advise us on best practices and so that we remain
+                  accountable to the public and to our partners across the government. Further, it
+                  means building a system that tells users what it does with their information to
+                  create accountability and build trust. We’re engaging users and other interested
+                  parties through our GitHub repo and working on creating public forums where
+                  people can discuss our work.
+              p
+                | To make an identity management system transparent for end users, the system
+                  you build should include features that educate people about how the system
+                  works, why it works that way, and how they can control what’s happening with
+                  their data. You should also let users know what information is needed by an
+                  agency when logging in to a service. It’s also important to tell users what
+                  information your systems will store and if any data is shared with other
+                  agencies. If people using the system aren’t comfortable with information
+                  sharing, they shouldn’t be forced to participate.
+              p
+                | login.gov is working to implement all of these transparency-enhancing features.
+                  Further, to help people understand all that is happening, we’re creating a
+                  privacy policy that explains how data is shared and what it means to opt out.
+              p
+                | Finally, another way of giving users control is to give them the option to
+                  delete their account completely. Currently, policy and technical hurdles are
+                  standing in the way of adding this feature to login.gov. But, because of this
+                  feature’s importance, the login.gov team is working to implement it in a future
+                  iteration.
+
+            #pb-flexible.mb6
+              = image_tag(asset_url('playbook/graphic-half-circle.svg'),
+                alt: APP_NAME, width: 151, class: 'mb3 block')
+              h3.mt0.mb1.h1 Build a flexible product
+              = image_tag(asset_url('playbook/hr-red-4.svg'), alt: 'hr', class: 'mb3')
+              ul.list-reset.mb3.serif.bold.h4.pb-list--checked
+                li.mb2.pl3
+                  | Develop the product in sprints and evaluate effectiveness after each sprint
+                li.mb2.pl3
+                  | Continually talk with stakeholders and experts to evaluate needs and success
+                    metrics
+                li.mb2.pl3
+                  | Test your product with users continuously as you add new features and
+                    refine old ones
+                li.mb2.pl3
+                  | Define what a minimal viable product is for your identity management needs
+                li.mb2.pl3
+                  | Plan to evolve based on changing technology and changing standards
+              p
+                | Technology and standards for identity verification and authentication can
+                  change rapidly. Consumer identity management systems should readily adapt to
+                  changing standards and react to new security threats. To make adapting to new
+                  policies and capabilities possible, it’s a good practice to build products using
+                  agile methods and with changing versions in mind. In other words, plan for
+                  modifications to help your identity service be as up-to-date as possible and
+                  compliant with current standards and policies.
+              p
+                | In building login.gov, we’re embracing this principle for every aspect of the
+                  project.
+              p
+                | To learn more about what it means to work in an agile way, read this guide to
+                  agile principles and practices put together by the 18F team.
+
+            #pb-privacy.mb6
+              = image_tag(asset_url('playbook/graphic-locks.svg'),
+                alt: APP_NAME, width: 123, class: 'mb3 block')
+              h3.mt0.mb1.h1 Use modern privacy practices
+              = image_tag(asset_url('playbook/hr-red-2.svg'), alt: 'hr', class: 'mb3')
+              ul.list-reset.mb3.serif.bold.h4.pb-list--checked
+                li.mb2.pl3 Store as little personally identifying data as possible
+                li.mb2.pl3 Give users other means of accomplishing their goals
+                li.mb2.pl3 Give users control over their data
+              p
+                | Consumer identity management systems store personal information about users so
+                  that people don’t have to repeat the verification and authentication processes
+                  over and over again. However, collecting and storing personal information
+                  raises ethical and legal questions that system designers and developers need
+                  to consider. Often, what comes to mind first are technical questions about
+                  security: protecting information from unauthorized or illegal access and uses.
+                  However, we also need to worry about authorized, legal uses of personal
+                  information that violate users’ expectations of privacy. Users of login.gov
+                  need to be sure that we’re handling their personal information respectfully
+                  and appropriately.
+              p
+                | The first step is only collecting the information you absolutely need. And
+                  that’s what login.gov is doing. High-assurance identity verification for
+                  sensitive tasks does require extensive information collection. However, many
+                  activities don’t really require high levels of assurance. Minimizing the
+                  amount of information collected and stored not only lowers the security risk;
+                  it also reduces worries about re-use and disclosure for users.
+              p
+                | The next step is to give users as much control as possible over what
+                  information is shared. We believe firmly that people own their data, not us, and
+                  we will always act accordingly. If people aren’t comfortable with the data
+                  requirements for using a system, they should know they don’t have to sign up,
+                  and that there are other ways to accomplish their goals.
+              p
+                | As we design login.gov, we’re also working to educate users to help them
+                  safeguard their own data. We want people to understand why we have to ask for
+                  certain kinds of sensitive information, such as social security numbers, and
+                  how we’re using them. We’re also working to educate users about any behavioral
+                  information we’re collecting about them as they use the system to help us
+                  detect any fraud. We believe that if users understand behavioral information
+                  logging, they will both have greater trust in the product offered and feel
+                  more confident choosing how they use it. These efforts should demonstrate that
+                  it’s possible to provide a great experience for users while respecting their
+                  privacy.
+
+            #pb-security.mb2
+              = image_tag(asset_url('playbook/graphic-hex.svg'),
+                alt: APP_NAME, width: 152, class: 'mb3 block')
+              h3.mt0.mb1.h1 Create responsive security systems
+              = image_tag(asset_url('playbook/hr-red-2.svg'), alt: 'hr', class: 'mb3')
+              ul.list-reset.mb3.serif.bold.h4.pb-list--checked
+                li.mb2.pl3 Identify industry best practices and abide by them
+                li.mb2.pl3 Comply with federal regulations such as FISMA and FedRamp
+                li.mb2.pl3 Set up systems to monitor and detect fraud
+                li.mb2.pl3 Use modern encryption techniques throughout the technology stack
+                li.mb2.pl3 Only store the absolute minimum data necessary
+                li.mb2.pl3
+                  | Help users understand the security measures they are required to carry
+                    out
+              p
+                | Figuring out who is trying to access personal information and making sure
+                  only authorized users can gain access to that information are the keys to
+                  consumer identity management. The reason systems like this exist is to secure
+                  the user’s identity from those looking to commit theft or fraud.
+              p
+                | Being deliberate about security means focusing our attention on what needs to
+                  be protected. It means thinking carefully about how to balance protection,
+                  accessibility, and liability. Doing this successfully includes educating users
+                  about how they can protect themselves or mitigate the effects of crime.
+              p
+                | In login.gov’s case, for instance, we have to decide exactly what data we
+                  store and for how long. We also have to decide what steps users must take to
+                  access their information. All of these decisions take careful deliberation
+                  to determine what’s the best option for both users and agencies and to ensure
+                  maximum functionality.
+              p
+                | In building login.gov, we’re using the new standards being drafted by
+                  the <a href="#">National Institute of Standards in Technology</a>
+                  (NIST 800-63-3) as one of our guides. These draft standards are taking a
+                  very different approach to authentication and identity proofing (how a person
+                  logs in and how they verify their identity) from the previous version of the
+                  NIST standards (NIST 800-63-2). Additionally we’re adhering to
+                  <a href="#">government security best practices</a> including FedRAMP, building
+                  in the open, conducting rigorous and routine security evaluations in addition
+                  to compliance with the Federal Information Security Management Act (FISMA).
+
+    = render 'footer'
