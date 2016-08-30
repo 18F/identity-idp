@@ -3,39 +3,7 @@ require 'rails_helper'
 describe PasswordForm do
   subject { PasswordForm.new(build_stubbed(:user)) }
 
-  it do
-    is_expected.to validate_length_of(:password).
-      is_at_least(Devise.password_length.first)
-  end
-
-  it do
-    is_expected.to validate_length_of(:password).
-      is_at_most(Devise.password_length.last)
-  end
-
-  it do
-    is_expected.to allow_value('ValidPassword1!').for(:password)
-  end
-
-  it do
-    is_expected.to allow_value('ValidPassword1').for(:password)
-  end
-
-  it do
-    is_expected.to allow_value('validpassword1!').for(:password)
-  end
-
-  it do
-    is_expected.to allow_value('VALIDPASSWORD1!').for(:password)
-  end
-
-  it do
-    is_expected.to allow_value('ValidPASSWORD!').for(:password)
-  end
-
-  it do
-    is_expected.to allow_value('bear bull bat baboon').for(:password)
-  end
+  it_behaves_like 'password validation'
 
   it "is initialized with the user's reset_password_token" do
     user = build_stubbed(:user, reset_password_token: 'foo')

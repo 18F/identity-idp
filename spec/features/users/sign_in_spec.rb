@@ -53,9 +53,8 @@ feature 'Sign in' do
 
   scenario 'user can see and use password visibility toggle', js: true do
     visit new_user_session_path
-    expect(page).to have_css('#pw-toggle', visible: false)
 
-    find(:css, '#pw-toggle', visible: false).trigger('click')
+    find('#pw-toggle-0', visible: false).trigger('click')
 
     expect(page).to have_css('input.password[type="text"]')
   end

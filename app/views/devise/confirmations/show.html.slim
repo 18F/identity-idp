@@ -2,7 +2,8 @@
 
 
 h1.heading = t('forms.confirmation.show_hdr')
-p.m0.italic#password-description Your password must be at least 8 characters.
+p.m0.italic#password-description
+  = t('instructions.edit_info.password', min_length: Devise.password_length.first)
 = simple_form_for(@password_form,
     url: confirm_path,
     method: :patch,

@@ -35,13 +35,18 @@
 
 h2.heading = t('headings.profile.login_info')
 .mt3.mb4
-  .py-12p.border-bottom.border-top
+  .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = 'Email address'
       .sm-col.sm-col-5.px1.truncate = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_email_path, \
           class: btn_cls
+  .py-12p.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-10.px1 = 'Password'
+      .sm-col.sm-col-2.px1.sm-right-align
+        = link_to 'Edit', settings_password_path, class: btn_cls
   .mt3.mb1.h6.bold.caps.ls-0
     | #{t('headings.profile.two_factor')}#{tooltip(t('tooltips.placeholder'))}
   .py-12p.border-top
