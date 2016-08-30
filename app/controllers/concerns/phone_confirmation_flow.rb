@@ -12,10 +12,8 @@ module PhoneConfirmationFlow
 
   def confirm
     if params['code'] == confirmation_code
-      analytics.track_event('User confirmed their phone number')
       process_valid_code
     else
-      analytics.track_event('User entered invalid phone confirmation code')
       process_invalid_code
     end
   end
@@ -32,6 +30,7 @@ module PhoneConfirmationFlow
   end
 
   def process_invalid_code
+    analytics.track_event('User entered invalid phone confirmation code')
     flash[:error] = t('errors.invalid_confirmation_code')
     redirect_to this_phone_confirmation_path
   end

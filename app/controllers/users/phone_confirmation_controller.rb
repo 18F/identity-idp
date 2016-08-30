@@ -33,11 +33,12 @@ module Users
       old_phone = current_user.phone
       @updating_existing_number = old_phone.present?
       if @updating_existing_number
-        analytics.track_event('User changed and confirmed their phone number')
+        analytics.track_event('User changed their phone number')
         SmsSenderNumberChangeJob.perform_later(old_phone)
+      else
+        analytics.track_event('User confirmed their phone number')
       end
-      current_user.update(phone: unconfirmed_phone,
-                          phone_confirmed_at: Time.current)
+      current_user.update(phone: unconfirmed_phone, phone_confirmed_at: Time.current)
     end
 
     def after_confirmation_path
