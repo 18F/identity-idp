@@ -1,6 +1,6 @@
 class UserMailer < ActionMailer::Base
   before_action :attach_images
-  default from: 'no-reply@login.gov'
+  default from: Figaro.env.email_from
 
   def email_changed(old_email)
     mail(to: old_email, subject: t('mailer.email_change_notice.subject'))

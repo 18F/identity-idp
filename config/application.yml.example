@@ -8,6 +8,7 @@
 # Make sure any new entries you add are enclosed in single quotes.
 # Figaro requires all values to be explicit strings.
 
+email_from: 'no-reply@login.gov'
 mailer_domain_name: 'http://localhost:3000'
 support_url: 'https://18f.gov/contact'
 
