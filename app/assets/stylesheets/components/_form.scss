@@ -25,7 +25,7 @@ label {
 .invalid,
 .interacted.required,
 .has-error input {
-  background-image: url(image-path('alert/ico-danger.svg'));
+  background-image: url(image-path('alert/ico-exclamation.svg'));
   background-position: center right $form-field-padding-x;
   background-repeat: no-repeat;
   background-size: 1rem 1rem;

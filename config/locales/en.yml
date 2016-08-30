@@ -42,8 +42,8 @@ en:
     totp_disabled: Authenticator app disabled
     phone_confirmation_successful: Phone confirmation successful!
     password_reset: You will receive an email with instructions on how to reset your password in a few minutes.
-  session_timedout: For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again.
-  session_timeout_warning: We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in.
+  session_timedout: For your security, you’ve been logged out due to inactivity. Please log in again.
+  session_timeout_warning: You’ll be logged out of your account in %{time_left_in_session} due to inactivity. If you’d like to remain logged in, please click the button below.
   titles:
     confirmations:
       new: Resend confirmation instructions for your account

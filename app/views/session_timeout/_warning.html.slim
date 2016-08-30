@@ -5,7 +5,6 @@
         = image_tag(asset_url('clock.svg'), class: 'modal-ico')
         h3.mt0.mb2 = t('headings.session_timeout_warning')
         p.mb3 = t('session_timeout_warning',
-                  time_left_in_session: time_left_in_session,
-                  continue_text: t('forms.buttons.continue_browsing'))
+                  time_left_in_session: time_left_in_session)
         = link_to t('forms.buttons.continue_browsing'),
           request.original_url, class: 'btn btn-primary'
