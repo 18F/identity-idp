@@ -84,9 +84,7 @@ feature 'Sign in' do
 
     scenario 'user sees warning before session times out' do
       def warning_content
-        t('session_timeout_warning',
-          time_left_in_session: time_left_in_session,
-          continue_text: t('forms.buttons.continue_browsing'))
+        t('session_timeout_warning', time_left_in_session: time_left_in_session)
       end
 
       sign_in_and_2fa_user

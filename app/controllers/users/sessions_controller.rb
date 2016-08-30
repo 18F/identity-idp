@@ -26,10 +26,7 @@ module Users
     def timeout
       analytics.track_anonymous_event('Session Timed Out')
 
-      flash[:notice] = t(
-        'session_timedout',
-        session_timeout: distance_of_time_in_words(Devise.timeout_in)
-      )
+      flash[:timeout] = t('session_timedout')
       redirect_to root_url
     end
 

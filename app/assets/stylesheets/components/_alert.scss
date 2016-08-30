@@ -1,36 +1,43 @@
 .alert {
+  background-color: $blue-light;
   border-radius: $border-radius;
   color: $gray;
   margin-bottom: 2.5rem;
   padding: 1.75rem;
   position: relative;
+
+  &::before {
+    left: 0;
+    margin-left: auto;
+    margin-right: auto;
+    position: absolute;
+    right: 0;
+    top: -16px;
+    width: 32px;
+  }
 }
 
-.alert-success::before,
-.alert-danger::before {
-  left: 0;
-  margin-left: auto;
-  margin-right: auto;
-  position: absolute;
-  right: 0;
-  top: -16px;
-  width: 32px;
-}
-
+.alert-notice,
 .alert-success {
   background-color: #f0faed;
 
   &::before {
-    content: url(image-path('alert/ico-success.svg'));
+    content: url(image-path('alert/ico-check.svg'));
   }
 }
 
-.alert-danger {
+.alert-oops {
   background-color: #ffe7eb;
 
   &::before {
-    content: url(image-path('alert/ico-danger.svg'));
+    content: url(image-path('alert/ico-exclamation.svg'));
   }
 }
 
-.alert-progress { background-color: $blue-light; }
+.alert-timeout {
+  background-color: #fff1d1;
+
+  &::before {
+    content: url(image-path('alert/ico-shield.svg'));
+  }
+}
