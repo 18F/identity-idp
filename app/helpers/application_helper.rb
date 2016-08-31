@@ -20,4 +20,8 @@ module ApplicationHelper
     content_tag(:p, "* #{t('forms.required_field')}", class: 'italic') +
       simple_form_for(*args, &block)
   end
+
+  def current_path(path)
+    'active' if current_page?(path)
+  end
 end

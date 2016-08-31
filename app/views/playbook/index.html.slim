@@ -1,0 +1,37 @@
+doctype html
+html lang="#{I18n.locale}"
+
+  = render 'head'
+
+  body
+    .site-wrap
+      = render 'shared/usa_banner'
+
+      nav.bg-white
+        .container.cntnr-wide.px2.py3
+          = render 'nav_top'
+          .clearfix.mb3
+            = image_tag(asset_url('playbook/graphic-circle.png'), alt: APP_NAME, width: 240,
+              class: 'ml6 right sm-show')
+            p.mt3.h4.overflow-hidden.serif.line-height-3.fs-lead
+              | “Identity management,” or making sure that only the correct people get access
+                to systems, is central to delivering public services online. We are sharing
+                these principles to help developers and technologists in government agencies
+                build usable, secure, and privacy-protecting consumer identity management
+                systems.
+
+      .bg-navy
+        .container.cntnr-wide.px2.py5
+          h2.mt0.mb4.h1.white The principles
+          .flex.flex-wrap.mxn1
+            - @principles.each do |p|
+              .col.col-12.sm-col-6.mb2.px1
+                = link_to(playbook_principles_path(anchor: p[0]),
+                  class: 'p3 flex flex-center bg-white navy rounded-med') do
+                  = image_tag(asset_url("playbook/#{p[1]}.svg"),
+                    alt: APP_NAME, height: 50, class: 'flex-none mr2 sm-mr3')
+                  .flex-auto.h3.bold.line-height-1 = p[2]
+                  = image_tag(asset_url('playbook/ico-arrow.svg'),
+                    alt: APP_NAME, width: 14, class: 'flex-none ml1')
+
+    = render 'footer'

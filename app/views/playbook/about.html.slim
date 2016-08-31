@@ -1,0 +1,159 @@
+doctype html
+html lang="#{I18n.locale}"
+
+  = render 'head'
+
+  body
+    .site-wrap
+      = render 'shared/usa_banner'
+
+      nav.bg-white
+        .container.cntnr-wide.px2.py3
+          = render 'nav_top'
+
+      .bg-navy
+        .container.cntnr-wide.px2.py5
+          h2.mt0.mb1.h1.white About identity management
+          = image_tag(asset_url('playbook/hr-red-2.svg'), alt: 'hr', class: 'mb3')
+          p.h2.mb2.serif.white
+            | Before implementing login.gov or any other consumer identity management system,
+              you should determine whether your agency or organization needs one. Below is a
+              list of questions to ask and things to consider to help you figure that out.
+
+      .bg-white
+        .container.cntnr-wide.px2.py5
+          .sm-col-8.mb2
+            h3.mt0.mb2.h2 What are you protecting?
+            p.mb4.serif.fs-lead
+              | It’s worth assessing what you really need before beginning implementation. Not
+                all information requires an identity system to manage access. You can protect
+                the privacy of users and reduce the security risk to your systems by avoiding
+                any unnecessary collection of personally identifiable information — this even
+                includes contact details.
+            h4.mt0.mb2.h3 You might not need to implement an identity system if:
+            ul.mb3.pl2.ml2.serif.h4.pb-list--bullet
+              li.mb2.fs-lead
+                .gray You do not need to have an ongoing relationship with users
+              li.mb2.fs-lead
+                .gray Transactions don’t depend upon personal information being accurate
+              li.mb2.fs-lead
+                .gray You can rely on other forms of security
+            h4.mt0.mb2.h3 To answer this, ask
+            ul.list-reset.mb4.pb-list--checkbox
+              li.mb3.pl3
+                .mb1.serif.h4.bold What transactions will users need?
+                p
+                  | Will the transactions be ongoing, as when users bookmark benefits or grant
+                    applications to fill out later, then return repeatedly to check the
+                    application status? Or will they be a one-time or infrequent, as when
+                    people download medical or financial records?
+              li.mb3.pl3
+                .mb1.serif.h4.bold
+                  | What kind of information do you need to protect your customers?
+                p
+                  | Do you need full name and other personal information so that users can
+                    access private information? Or do you only need to verify that a user fits
+                    in certain categories, such as the veterans category or the senior citizens
+                    category?
+              li.mb3.pl3
+                .mb1.serif.h4.bold
+                  | What sort of crime might access to this information make possible?
+                p
+                  | Information that seems innocent on its own might still be valuable to
+                    fraudsters and other criminals in combination with other easily accessed
+                    information.
+              li.mb3.pl3
+                .mb1.serif.h4.bold What other means of security are available?
+                p
+                  | Postal tracking numbers, for example, are not secrets because the package
+                    will only be delivered to a specific address. The safety of the delivery
+                    rests on the security of the building and the conduct of the delivery
+                    person, not on the secrecy of the number itself.
+            h4.mt0.mb2.h3 What kinds of resources do you already have to identify customers?
+            p.mb3.serif.fs-lead
+              | Your agency may already have mission-specific information and resources
+                that can be used to identify customers. By integrating resources you know
+                and trust, you can increase the reliability of identification.
+            h4.mt0.mb2.h3 To answer this, ask
+            ul.list-reset.mb4.pb-list--checkbox
+              li.mb3.pl3
+                .mb1.serif.h4.bold What resources are unique to your agency?
+                p
+                  | Individuals’ confidential interactions with government agencies can
+                    generate a trail of metadata. Used carefully, that metadata can facilitate
+                    identity verification based on knowledge of those activities. Other
+                    government organizations serve as authoritative repositories of biometric
+                    data available for internal use. Some agencies may have physical locations
+                    that customers can visit.
+
+            h3.mt0.mb1.h1 What is a consumer identity management system?
+            = image_tag(asset_url('playbook/hr-red-5.svg'), alt: 'hr', class: 'mb3')
+            p.mb5.serif.fs-lead
+              | When you’re at home and someone knocks at your door it’s easy enough to
+                decide whether or not to answer. Based on your knowledge of who’s outside, you
+                can decide whether to open the door. Is the person outside a friend? A mail
+                carrier or other expected service provider? A complete stranger? Online, the
+                question of deciding “who’s there” is much harder. Consumer identity management
+                systems make it easier for system administrators to decide whether or not to
+                open the door, and how wide.
+            h4.mt0.mb1.h3 What is an identity?
+            p.mb3
+              | In the world of security, “identity” has a very specific technical meaning that
+                differs from a plain English sense. An “identity” in technical terms is a
+                special kind of record—a bundle of different types of data that together
+                describes only one system user [NIST 800-63-3]. That data can include
+                references to official government records, such as driver’s license numbers and
+                registered birth dates, as well as more mutable data such as email addresses
+                and usernames. Physical attributes such as fingerprints and DNA can also be
+                part of an identity record.
+            h4.mt0.mb1.h3 How does identity and access management work?
+            p
+              | System administrators assign access privileges to each identity record. These
+                privileges authorize certain activities and forbid others. To “open the door”
+                safely, however, administrators need confidence that the users knocking at the
+                door are who they say they are.
+            p.mb3
+              | To give the system and its administrators confidence in their identities, users
+                need to prove their identities through an activity called authentication. Users
+                authenticate themselves by presenting evidence linking themselves to records.
+                To do that, users first help the system validate their record — for example,
+                by typing in a username. Then users hand over the evidence — often, passwords
+                or other information only the real person would know.
+            h4.mt0.mb1.h3 What does having an identity record enable?
+            p.mb3
+              | Identity systems don’t just benefit system administrators. With an authenticated
+                digital identity, users can do some very handy things. Here’s a small list:
+            ul.mt0.mb6.ml1.pl1.pb-list--bullet
+              li.mb2
+                span.gray
+                  span.bold
+                    | Pre-filling online forms with verified information speeds up application
+                      processing.
+                  |  There’s less redundant effort, and users don’t need to worry about basic
+                    errors.
+              li.mb2
+                span.gray
+                  span.bold
+                    | Authenticated users can access and download data the system holds about
+                      them, such as account activity.
+                  |  With a verified legal identity, the user can access very sensitive medical
+                    or financial records and even download them.
+              li.mb2
+                span.gray
+                  span.bold
+                    | Identity systems can protect your privacy.
+                  |  If you need to be 21 or older to access a service, you can authorize an
+                    identity system to confirm your age without sharing your exact birth date.
+            h3.mb2.h1 Implementation
+            = image_tag(asset_url('playbook/hr-red-6.svg'), alt: 'hr', class: 'mb3')
+            ul.list-reset.mb6
+              li.mb2 <a href="#">Please read the developer documentation.</a>
+            h3.mb2.h1 Resources
+            = image_tag(asset_url('playbook/hr-red-7.svg'), alt: 'hr', class: 'mb3')
+            ul.list-reset
+              li.mb2 <a href="#">National Institute of Standards in Technology</a> (NIST 800-63-3)
+              li.mb2 <a href="#">Digital Services Playbook</a>
+              li.mb2 <a href="#">GitHub repo for login.gov</a>
+              li.mb2 <a href="#">On the internet, nobody knows who you are</a>
+
+    = render 'footer'

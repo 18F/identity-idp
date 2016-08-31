@@ -1,0 +1,16 @@
+footer.footer
+  .container.cntnr-wide.px2.py3
+    .clearfix
+      .sm-col.mb1.sm-m0
+        = link_to \
+          image_tag(asset_url('square-18f-dark.svg'),
+            alt: '18F',
+            class: 'mr2 align-middle',
+            width: 48), 'https://18f.gsa.gov/'
+        = link_to \
+          image_tag(asset_url('square-gsa-dark.svg'),
+            alt: 'GSA',
+            class: 'align-middle',
+            width: 48), 'http://www.gsa.gov/portal/category/100000'
+      .sm-col-right.sm-right-align
+        = link_to 'Contact 18F', root_path, class: 'inline-block py1'
