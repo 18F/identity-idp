@@ -1,5 +1,4 @@
-require 'spec_helper'
-require 'fingerprinter'
+require 'rails_helper'
 
 describe Fingerprinter do
   describe '.fingerprint_cert' do

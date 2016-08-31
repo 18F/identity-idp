@@ -1,22 +1,21 @@
 class ServiceProviderConfig
-  def initialize(filename:, issuer:)
+  def initialize(issuer:)
     @issuer = issuer
-    @data = YAML.load_file("#{Rails.root}/config/#{filename}")
   end
 
   def sp_attributes
-    data_hash['valid_hosts'].fetch(issuer, {}).symbolize_keys
+    SERVICE_PROVIDERS['valid_hosts'].fetch(issuer, {}).symbolize_keys
+  end
+
+  def self.fetch_providers_from_domain_name_or_rails_env
+    if Figaro.env.domain_name == 'superb.legit.domain.gov'
+      SERVICE_PROVIDERS.merge!(SERVICE_PROVIDERS.fetch('superb.legit.domain.gov', {}))
+    else
+      SERVICE_PROVIDERS.merge!(SERVICE_PROVIDERS.fetch(Rails.env, {}))
+    end
   end
 
   private
 
-  attr_reader :data, :issuer
-
-  def data_hash
-    if Figaro.env.domain_name == 'superb.legit.domain.gov'
-      data.merge!(data.fetch('superb.legit.domain.gov', {}))
-    else
-      data.merge!(data.fetch(Rails.env, {}))
-    end
-  end
+  attr_reader :issuer
 end

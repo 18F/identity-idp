@@ -8,7 +8,7 @@ class ServiceProvider
   end
 
   def metadata
-    sp_attributes.merge(shared_attributes)
+    sp_attributes.merge!(fingerprint: fingerprint)
   end
 
   def encryption_opts
@@ -27,13 +27,7 @@ class ServiceProvider
   end
 
   def config
-    ServiceProviderConfig.new(filename: 'service_providers.yml', issuer: issuer)
-  end
-
-  def shared_attributes
-    {
-      fingerprint: fingerprint
-    }
+    ServiceProviderConfig.new(issuer: issuer)
   end
 
   def ssl_cert
