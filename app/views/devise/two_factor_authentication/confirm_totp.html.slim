@@ -13,8 +13,7 @@ p
     = number_field_tag :code, '', class: 'block col-12 field mfa', required: true
   = submit_tag 'Submit', class: 'btn btn-primary'
 
-hr
-p
+p.mt2.mb0.italic
  - sms_link = link_to t('devise.two_factor_authentication.totp_fallback.' \
     'sms_link_text'), otp_send_path(otp_method: :sms)
  - voice_link = link_to t('devise.two_factor_authentication.totp_fallback.' \

@@ -31,6 +31,6 @@ module OtpDeliveryFallback
     query_method = params[:otp_method]
     return query_method.to_sym if %w(sms voice totp rescue_code).include? query_method
     return :totp if current_user.totp_enabled?
-    return :sms
+    :sms
   end
 end

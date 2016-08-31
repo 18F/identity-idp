@@ -1,0 +1,21 @@
+- title t('titles.rescue_codes')
+
+h1.heading = t('headings.rescue_codes')
+p
+  | Below are a set of rescue codes that we have generated for you.
+    You can use these codes to access your account in case you loose
+    access to your phone. Please download these codes and keep them
+    in a safe place.
+
+.mt3.mb4
+  .clearfix.mxn1.monospace
+    - @codes.each_with_index do |code, i|
+      .col.col-1.px1.right-align #{i + 1}
+      .col.col-5.px1 #{code}
+.mt3.mb4
+  = link_to('Download', @download_data_url,
+    class: 'btn btn-primary',
+    target: '_blank',
+    download: 'Login_gov_rescue_codes.txt')
+.mt3.mb4
+  = button_to('Continue', rescue_codes_url, class: 'btn btn-primary')

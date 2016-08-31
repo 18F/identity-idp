@@ -18,3 +18,6 @@ p#2fa-description
       = t('devise.two_factor_authentication.otp_method.voice')
   = submit_tag t('forms.buttons.submit'), class: 'btn btn-primary btn-wide mb2'
 p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
+- link = link_to(t('devise.two_factor_authentication.rescue_code_fallback.link'),
+  otp_confirm_url(otp_method: :rescue_code))
+p.mt2.mb0.italic == t('devise.two_factor_authentication.rescue_code_fallback.text', link: link)

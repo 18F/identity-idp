@@ -59,7 +59,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         expect(@analytics).to receive(:track_event).with('User entered invalid 2FA code')
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
-        expect(subject.current_user).to receive(:authenticate_otp).and_return(false)
+        expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(false)
         patch :update, code: '12345', otp_method: :sms
       end
 
@@ -93,7 +93,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     context 'when the user enters a valid OTP' do
       before do
         sign_in_before_2fa
-        expect(subject.current_user).to receive(:authenticate_otp).and_return(true)
+        expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(true)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
 
@@ -156,8 +156,8 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
         end
 
-        it 're-renders the TOTP entry screen' do
-          expect(response).to render_template(:confirm_totp)
+        it 'redirects the TOTP entry screen' do
+          expect(response).to redirect_to(otp_confirm_path(otp_method: :totp))
         end
 
         it 'displays flash error message' do
@@ -177,7 +177,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         context 'when user enters correct OTP' do
           it 'redirects to the profile' do
-            patch :update, code: subject.current_user.direct_otp
+            patch :update, code: subject.current_user.direct_otp, otp_method: :sms
             expect(response).to redirect_to profile_path
           end
         end
@@ -198,7 +198,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         context 'when user enters correct OTP' do
           it 'redirects to the profile' do
-            patch :update, code: subject.current_user.direct_otp
+            patch :update, code: subject.current_user.direct_otp, otp_method: :sms
             expect(response).to redirect_to profile_path
           end
         end
@@ -367,7 +367,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'tracks the events' do
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with('User requested sms OTP delivery')
+        expect(@analytics).to receive(:track_event).with('User requested OTP method: sms')
         expect(@analytics).to receive(:track_event).with('GET request for ' \
           'two_factor_authentication#send_code')
 
@@ -399,7 +399,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
       it 'tracks the event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('User requested voice OTP delivery')
+        expect(@analytics).to receive(:track_event).with('User requested OTP method: voice')
         expect(@analytics).to receive(:track_event).with('GET request for ' \
           'two_factor_authentication#send_code')
 

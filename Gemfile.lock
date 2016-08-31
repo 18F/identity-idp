@@ -7,24 +7,24 @@ GIT
       dotenv
 
 GIT
-  remote: https://github.com/amoose/two_factor_authentication.git
-  revision: 58521f467ab0e3a8b02342f9d7ae11bbf9afdb14
-  branch: feature/more_options
-  specs:
-    two_factor_authentication (1.1.5)
-      devise
-      encryptor
-      rails (>= 3.1.1)
-      randexp
-      rotp
-
-GIT
   remote: https://github.com/onelogin/ruby-saml.git
   revision: 709b4c09a06ab7a299a512eaa166a56ddc50290a
   branch: master
   specs:
     ruby-saml (1.3.1)
       nokogiri (>= 1.5.10)
+
+GIT
+  remote: https://github.com/sbc100/two_factor_authentication.git
+  revision: 952f43566f136a0521e0ffd545c52631d703cf86
+  branch: add_backup_codes_plus_amoose_changes
+  specs:
+    two_factor_authentication (1.1.5)
+      devise
+      encryptor
+      rails (>= 3.1.1)
+      randexp
+      rotp (>= 3.2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -410,7 +410,7 @@ GEM
     request_store (1.3.1)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
-    rotp (3.1.0)
+    rotp (3.2.0)
     rqrcode (0.10.1)
       chunky_png (~> 1.0)
     rspec (3.4.0)

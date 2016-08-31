@@ -69,8 +69,12 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
+      # Select SMS delivery
       click_button t('forms.buttons.submit')
+      # Enter 2FA code
       click_button t('forms.buttons.submit')
+      # Acknowledge backup codes
+      click_button 'Continue'
       user
     end
   end

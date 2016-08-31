@@ -18,9 +18,7 @@ module Users
     private
 
     def this_phone_confirmation_path
-      phone_confirmation_path(
-        otp_method: current_otp_method
-      )
+      phone_confirmation_path(otp_method: current_otp_method)
     end
 
     def this_send_confirmation_code_path(otp_method)

@@ -1,0 +1,11 @@
+- title t('titles.enter_2fa_code')
+
+h1.heading = t('devise.two_factor_authentication.rescue_code_header_text')
+p = t('devise.two_factor_authentication.rescue_code_prompt')
+
+= form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
+  .mb2
+    = hidden_field_tag(:otp_method, :rescue_code)
+    = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.rescue_code')
+    = block_text_field_tag :code, '', class: 'block col-12 field mfa', required: true
+  = submit_tag 'Submit', class: 'btn btn-primary'
