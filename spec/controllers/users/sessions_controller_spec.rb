@@ -33,12 +33,12 @@ describe Users::SessionsController, devise: true do
         expect(response.content_type).to eq('application/json')
       end
 
-      it 'sets the timeout key to nil' do
+      it 'sets the timeout key' do
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout']).to be_nil
+        expect(json['timeout']).to_not be_nil
       end
     end
 
@@ -55,11 +55,22 @@ describe Users::SessionsController, devise: true do
     context 'when user is present' do
       it 'sets live key to true' do
         sign_in_as_user
+        session[:session_expires_at] = Time.current + 10
         get :active
 
         json ||= JSON.parse(response.body)
 
         expect(json['live']).to eq true
+      end
+
+      it 'respects session_expires_at' do
+        sign_in_as_user
+        session[:session_expires_at] = Time.current - 1
+        get :active
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['live']).to eq false
       end
     end
   end
@@ -68,14 +79,12 @@ describe Users::SessionsController, devise: true do
     it 'signs the user out' do
       sign_in_as_user
 
+      expect(subject.current_user).to_not be_nil
+
       get :timeout
 
-      expect(response.request.env['rack.session']['flash']['flashes']).to(
-        have_text(
-          t('session_timedout',
-            session_timeout: distance_of_time_in_words(Devise.timeout_in))
-        )
-      )
+      expect(flash[:timeout]).to eq t('session_timedout')
+      expect(subject.current_user).to be_nil
     end
 
     it 'redirects to the homepage' do
@@ -88,6 +97,8 @@ describe Users::SessionsController, devise: true do
 
     it 'tracks the timeout' do
       stub_analytics
+      sign_in_as_user
+
       expect(@analytics).to receive(:track_anonymous_event).with('Session Timed Out')
 
       get :timeout
