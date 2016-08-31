@@ -115,11 +115,10 @@ describe Idv::PhoneConfirmationController, devise: true do
         end
       end
 
-      it 'tracks the update and confirmation event' do
+      it 'tracks the confirmation event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('User confirmed their phone number')
         expect(@analytics).to receive(:track_event).
-          with('User changed and confirmed their verified phone number')
+          with('User confirmed their verified phone number')
 
         post :confirm, code: '123'
       end

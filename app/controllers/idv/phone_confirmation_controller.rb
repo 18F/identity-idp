@@ -27,20 +27,8 @@ module Idv
     end
 
     def assign_phone
-      if current_active_profile && unconfirmed_phone != current_active_profile.phone
-        track_existing_phone_change
-      end
+      analytics.track_event('User confirmed their verified phone number')
       idv_params['phone_confirmed_at'] = Time.current
-    end
-
-    def current_active_profile
-      current_user.active_profile
-    end
-
-    def track_existing_phone_change
-      old_phone = current_active_profile.phone
-      analytics.track_event('User changed and confirmed their verified phone number')
-      SmsSenderNumberChangeJob.perform_later(old_phone)
     end
 
     def after_confirmation_path
