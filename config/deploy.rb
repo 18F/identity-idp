@@ -12,6 +12,7 @@ set :keep_releases, 5
 set :linked_files, %w(certs/saml.crt
                       config/application.yml
                       config/database.yml
+                      config/newrelic.yml
                       keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
 set :rails_env, :production
