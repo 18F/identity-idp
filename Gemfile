@@ -40,7 +40,6 @@ gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'split', require: 'split/dashboard'
-gem 'staccato'
 gem 'twilio-ruby'
 # TODO(amos): Unfork this gem: https://github.com/18F/identity-private/issues/708
 gem 'two_factor_authentication', github: 'amoose/two_factor_authentication',

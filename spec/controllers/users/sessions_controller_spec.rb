@@ -99,7 +99,8 @@ describe Users::SessionsController, devise: true do
       stub_analytics
       sign_in_as_user
 
-      expect(@analytics).to receive(:track_anonymous_event).with('Session Timed Out')
+      expect(@analytics).to receive(:track_event).with('Session Timed Out')
+      expect(@analytics).to receive(:track_event).with('GET request for sessions#timeout')
 
       get :timeout
     end
@@ -118,7 +119,7 @@ describe Users::SessionsController, devise: true do
       user = create(:user, :signed_up)
 
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('Authentication Attempt', user)
+      expect(@analytics).to receive(:track_event).with('Authentication Attempt', user_id: user.uuid)
       expect(@analytics).to receive(:track_event).with('Authentication Successful')
 
       post :create, user: { email: user.email, password: user.password }
@@ -126,7 +127,7 @@ describe Users::SessionsController, devise: true do
 
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics
-      expect(@analytics).to receive(:track_anonymous_event).
+      expect(@analytics).to receive(:track_event).
         with('Authentication Attempt with nonexistent user')
       expect(@analytics).to_not receive(:track_event).with('Authentication Successful')
 

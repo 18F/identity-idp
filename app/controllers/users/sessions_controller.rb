@@ -17,7 +17,7 @@ module Users
 
     def timeout
       if sign_out
-        analytics.track_anonymous_event('Session Timed Out')
+        analytics.track_event('Session Timed Out')
         flash[:timeout] = t('session_timedout')
       end
       redirect_to root_url
@@ -38,9 +38,11 @@ module Users
     def track_authentication_attempt(email)
       existing_user = User.find_by_email(email)
 
-      return analytics.track_event('Authentication Attempt', existing_user) if existing_user
+      if existing_user
+        return analytics.track_event('Authentication Attempt', user_id: existing_user.uuid)
+      end
 
-      analytics.track_anonymous_event('Authentication Attempt with nonexistent user')
+      analytics.track_event('Authentication Attempt with nonexistent user')
     end
   end
 end

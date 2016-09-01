@@ -20,13 +20,10 @@ describe Analytics do
 
       analytics = Analytics.new(user, FakeRequest.new)
 
-      expect(AnalyticsEventJob).to receive(:perform_later).
-        with(google_analytics_options.merge(action: 'Trackable Event', user_id: user.uuid))
-
       expect(ahoy).to receive(:track).
         with('Trackable Event', request_attributes.merge(user_id: user.uuid))
 
-      expect(Rails.logger).to receive(:info).with("Trackable Event by #{user.uuid}")
+      expect(Rails.logger).to receive(:info).with("Trackable Event: #{{ user_id: user.uuid }}")
 
       analytics.track_event('Trackable Event')
     end
@@ -37,31 +34,13 @@ describe Analytics do
 
       analytics = Analytics.new(current_user, FakeRequest.new)
 
-      expect(AnalyticsEventJob).to receive(:perform_later).
-        with(google_analytics_options.merge(user_id: tracked_user.uuid, action: 'Trackable Event'))
-
       expect(ahoy).to receive(:track).
         with('Trackable Event', request_attributes.merge(user_id: tracked_user.uuid))
 
-      expect(Rails.logger).to receive(:info).with("Trackable Event by #{tracked_user.uuid}")
+      expect(Rails.logger).to receive(:info).
+        with("Trackable Event: #{{ user_id: tracked_user.uuid }}")
 
-      analytics.track_event('Trackable Event', tracked_user)
-    end
-  end
-
-  describe '#track_anonymous_event' do
-    it 'sends the event and attribute value' do
-      analytics = Analytics.new(nil, FakeRequest.new)
-
-      expect(AnalyticsEventJob).to receive(:perform_later).
-        with(google_analytics_options.merge(action: 'Anonymous Event', value: 'foo'))
-
-      expect(ahoy).to receive(:track).
-        with('Anonymous Event', request_attributes.merge(value: 'foo'))
-
-      expect(Rails.logger).to receive(:info).with('Anonymous Event: foo')
-
-      analytics.track_anonymous_event('Anonymous Event', 'foo')
+      analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
   end
 end

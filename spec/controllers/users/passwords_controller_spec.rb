@@ -5,12 +5,12 @@ describe Users::PasswordsController, devise: true do
     context 'no user matches token' do
       it 'redirects to page where user enters email for password reset token' do
         stub_analytics
-        allow(@analytics).to receive(:track_anonymous_event)
+        allow(@analytics).to receive(:track_event)
 
         get :edit, reset_password_token: 'foo'
 
-        expect(@analytics).to have_received(:track_anonymous_event).
-          with('Reset password: invalid token', 'foo')
+        expect(@analytics).to have_received(:track_event).
+          with('Reset password: invalid token', token: 'foo')
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.invalid_token')
@@ -22,14 +22,14 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        user = instance_double('User')
+        user = instance_double('User', uuid: '123')
         allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
 
         get :edit, reset_password_token: 'foo'
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: token expired', user)
+          with('Reset password: token expired', user_id: user.uuid)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -60,7 +60,7 @@ describe Users::PasswordsController, devise: true do
 
         params = { password: 'password', reset_password_token: 'foo' }
 
-        user = instance_double('User')
+        user = instance_double('User', uuid: '123')
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
         allow(user).to receive(:reset_password_token).and_return('foo')
         allow(user).to receive(:errors).and_return(reset_password_token: 'token expired')
@@ -68,7 +68,7 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: token expired', user)
+          with('Reset password: token expired', user_id: user.uuid)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -82,7 +82,7 @@ describe Users::PasswordsController, devise: true do
 
         params = { password: 'pass', reset_password_token: 'foo' }
 
-        user = instance_double('User')
+        user = instance_double('User', uuid: '123')
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
         allow(user).to receive(:reset_password_token).and_return('foo')
         allow(user).to receive(:errors).and_return({})
@@ -90,7 +90,7 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: invalid password', user)
+          with('Reset password: invalid password', user_id: user.uuid)
 
         expect(response).to render_template(:edit)
       end
@@ -103,7 +103,7 @@ describe Users::PasswordsController, devise: true do
 
         params = { password: 'password', reset_password_token: 'foo' }
 
-        user = instance_double('User')
+        user = instance_double('User', uuid: '123')
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
         allow(user).to receive(:reset_password_token).and_return('foo')
         allow(user).to receive(:errors).and_return({})
@@ -117,7 +117,7 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Password reset', user)
+          with('Password reset', user_id: user.uuid)
 
         expect(response).to redirect_to new_user_session_path
         expect(flash[:notice]).to eq t('devise.passwords.updated_not_active')
@@ -130,13 +130,12 @@ describe Users::PasswordsController, devise: true do
       it 'tracks event using anonymous user' do
         stub_analytics
 
-        nonexistent_user = instance_double(NonexistentUser)
+        nonexistent_user = instance_double(NonexistentUser, uuid: '123', role: 'nonexistent')
         allow(NonexistentUser).to receive(:new).and_return(nonexistent_user)
 
-        expect(nonexistent_user).to receive(:role).and_return('nonexistent')
-
         expect(@analytics).to receive(:track_event).
-          with('Password Reset Requested for nonexistent role', nonexistent_user)
+          with('Password Reset Request',
+               user_id: nonexistent_user.uuid, role: nonexistent_user.role)
 
         put :create, user: { email: 'nonexistent@example.com' }
       end
@@ -150,21 +149,21 @@ describe Users::PasswordsController, devise: true do
         allow(User).to receive(:find_by_email).with('tech@example.com').and_return(tech_user)
 
         expect(@analytics).to receive(:track_event).
-          with('Password Reset Requested for tech role', tech_user)
+          with('Password Reset Request', user_id: tech_user.uuid, role: 'tech')
 
         put :create, user: { email: 'tech@example.com' }
       end
     end
 
     context 'matched email belongs to an admin user' do
-      it 'tracks event using tech user' do
+      it 'tracks event using admin user' do
         stub_analytics
 
         admin = build_stubbed(:user, :admin)
         allow(User).to receive(:find_by_email).with('admin@example.com').and_return(admin)
 
         expect(@analytics).to receive(:track_event).
-          with('Password Reset Requested for admin role', admin)
+          with('Password Reset Request', user_id: admin.uuid, role: 'admin')
 
         put :create, user: { email: 'admin@example.com' }
       end
