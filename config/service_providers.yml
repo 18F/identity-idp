@@ -15,16 +15,24 @@ test:
     'https://rp1.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://example.com/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+      block_encryption: 'aes256-cbc'
       sp_initiated_login_url: 'https://example.com/auth/saml/login'
       cert: 'saml_test_sp'
+      attribute_bundle:
+        - first_name
+        - last_name
+        - ssn
+        - zipcode
 
     'https://rp2.serviceprovider.com/auth/saml/metadata':
       acs_url: 'http://example.com/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
+      block_encryption: 'aes256-cbc'
       cert: 'saml_test_sp'
 
     'http://test.host':
       acs_url: 'http://test.host/test/saml/decode_assertion'
+      block_encryption: 'aes256-cbc'
       metadata_url: 'http://test.host/test/saml/metadata'
       sp_initiated_login_url: 'http://test.host/test/saml'
 
@@ -34,24 +42,25 @@ development:
       metadata_url: 'http://localhost:3000/test/saml/metadata'
       acs_url: 'http://localhost:3000/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+      block_encryption: 'aes256-cbc'
       sp_initiated_login_url: 'http://localhost:3000/test/saml'
       cert: 'saml_test_sp'
       fingerprint: '08:79:F5:B1:B8:CC:EC:8F:5C:2A:58:03:30:14:C9:E6:F1:67:78:F1:97:E8:3A:88:EB:8E:70:92:25:D2:2F:32'
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
-      metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
       assertion_consumer_logout_service_url: 'http://localhost:4567/slo_logout'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_sinatra_demo'
       attribute_bundle:
         - email
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
-      metadata_url: 'http://localhost:3003/saml/metadata'
       acs_url: 'http://localhost:3003/auth/saml/callback'
       assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3003/login'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_rails_demo'
       agency: '18F'
       friendly_name: '18F Test Service Provider'
@@ -59,10 +68,10 @@ development:
         - email
 
     'https://dashboard.login.gov':
-      metadata_url: 'http://localhost:3001/users/auth/saml/metadata'
       acs_url: 'http://localhost:3001/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
       sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'identity_dashboard_cert'
 
 production:
@@ -72,74 +81,75 @@ production:
       acs_url: 'https://upaya-dev.18f.gov/test/saml/decode_assertion'
       assertion_consumer_logout_service_url: 'https://upaya-dev.18f.gov/test/saml/decode_logoutresponse'
       sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'saml_test_sp'
       attribute_bundle:
         - email
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
-      metadata_url: 'http://localhost:4567/saml/metadata'
       acs_url: 'http://localhost:4567/consume'
       sp_initiated_login_url: 'http://localhost:4567/test/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_sinatra_demo'
       attribute_bundle:
         - email
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev':
-      metadata_url: 'https://sp-sinatra.dev.login.gov/saml/metadata'
       acs_url: 'https://sp-sinatra.dev.login.gov/consume'
       assertion_consumer_logout_service_url: 'https://sp-sinatra.dev.login.gov/slo_logout'
       sp_initiated_login_url: 'https://sp-sinatra.dev.login.gov/test/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_sinatra_demo'
       attribute_bundle:
         - email
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo':
-      metadata_url: 'https://sp-sinatra.demo.login.gov/saml/metadata'
       acs_url: 'https://sp-sinatra.demo.login.gov/consume'
       assertion_consumer_logout_service_url: 'https://sp-sinatra.demo.login.gov/slo_logout'
       sp_initiated_login_url: 'https://sp-sinatra.demo.login.gov/test/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_sinatra_demo'
       attribute_bundle:
         - email
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
-      metadata_url: 'https://identity-sp-rails-dev.apps.cloud.gov/saml/metadata'
       acs_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://identity-sp-rails-dev.apps.cloud.gov/login'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_rails_demo'
       attribute_bundle:
         - email
 
     'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
-      metadata_url: 'https://sp.demo.login.gov/saml/metadata'
       acs_url: 'https://sp.demo.login.gov/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://sp.demo.login.gov/auth/saml/logout'
       sp_initiated_login_url: 'https://sp.demo.login.gov/login'
+      block_encryption: 'aes256-cbc'
       cert: 'sp_rails_demo'
       attribute_bundle:
         - email
 
     # Dashboard
     'https://dashboard.demo.login.gov':
-      metadata_url: 'https://dashboard.demo.login.gov/users/auth/saml/metadata'
       acs_url: 'https://dashboard.demo.login.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://dashboard.demo.login.gov/users/auth/saml/logout'
       sp_initiated_login_url: 'https://dashboard.demo.login.gov/users/auth/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'identity_dashboard_cert'
 
     'https://dashboard.qa.login.gov':
-      metadata_url: 'https://dashboard.qa.login.gov/users/auth/saml/metadata'
       acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://dashboard.qa.login.gov/users/auth/saml/logout'
       sp_initiated_login_url: 'https://dashboard.qa.login.gov/users/auth/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'identity_dashboard_cert'
 
     'https://dashboard.dev.login.gov':
-      metadata_url: 'https://dashboard.dev.login.gov/users/auth/saml/metadata'
       acs_url: 'https://dashboard.dev.login.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://dashboard.dev.login.gov/users/auth/saml/logout'
       sp_initiated_login_url: 'https://dashboard.dev.login.gov/users/auth/saml'
+      block_encryption: 'aes256-cbc'
       cert: 'identity_dashboard_cert'
 
 superb.legit.domain.gov:
@@ -147,6 +157,7 @@ superb.legit.domain.gov:
     'urn:govheroku:serviceprovider':
       acs_url: 'https://vets.gov/users/auth/saml/callback'
       assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
+      block_encryption: 'aes256-cbc'
       cert: 'saml_test_sp'
       agency: 'test_agency'
       attribute_bundle:

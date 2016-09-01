@@ -12,7 +12,13 @@ describe AttributeAsserter do
       last_authenticated_at: Time.current
     )
   end
-  let(:service_provider) { ServiceProvider.new(sp1_saml_settings.issuer) }
+  let(:service_provider) do
+    instance_double(
+      ServiceProvider,
+      issuer: 'http://localhost:3000',
+      metadata: {}
+    )
+  end
   let(:raw_authn_request) { URI.decode loa3_authnrequest.split('SAMLRequest').last }
   let(:authn_request) do
     SamlIdp::Request.from_deflated_request(raw_authn_request)
@@ -25,9 +31,8 @@ describe AttributeAsserter do
       context 'custom bundle includes email, phone' do
         before do
           user.identities << identity
-          allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
-            %w(email phone first_name)
-          )
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w(email phone first_name))
           subject.build
         end
 
@@ -50,7 +55,8 @@ describe AttributeAsserter do
 
       context 'Service Provider does not specify bundle' do
         before do
-          allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(nil)
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(nil)
           subject.build
         end
 
@@ -80,7 +86,8 @@ describe AttributeAsserter do
 
       context 'Service Provider specifies empty bundle' do
         before do
-          allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return([])
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return([])
           subject.build
         end
 
@@ -91,7 +98,7 @@ describe AttributeAsserter do
 
       context 'custom bundle has invalid attribute name' do
         before do
-          allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
             %w(email foo)
           )
           subject.build
@@ -109,7 +116,7 @@ describe AttributeAsserter do
 
       context 'custom bundle does not include email, phone' do
         before do
-          allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
             %w(first_name last_name)
           )
           subject.build
@@ -126,7 +133,7 @@ describe AttributeAsserter do
 
       context 'custom bundle includes email, phone' do
         before do
-          allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
             %w(first_name last_name email phone)
           )
           subject.build

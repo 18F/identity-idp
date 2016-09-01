@@ -114,12 +114,6 @@ describe SamlIdpController do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
 
     context 'with LOA3 and the identity is already verified' do
-      before do
-        allow_any_instance_of(ServiceProvider).to receive(:attribute_bundle).and_return(
-          %w(first_name last_name ssn zipcode)
-        )
-      end
-
       it 'calls AttributeAsserter#build' do
         settings = loa3_saml_settings
         user = create(:user, :signed_up)
@@ -203,21 +197,24 @@ describe SamlIdpController do
     end
 
     describe 'HEAD /api/saml/auth', type: :request do
-      it 'responds with "400 Forbidden" with unknown bindings' do
+      it 'responds with "403 Forbidden"' do
         head '/api/saml/auth?SAMLRequest=bang!'
 
         expect(response.status).to eq(403)
       end
     end
 
-    context 'with invalid requests' do
-      it 'responds with "403 Forbidden" to GET requests without SAML request params' do
+    context 'with missing SAMLRequest params' do
+      it 'responds with "403 Forbidden"' do
         get :auth
+
         expect(response.status).to eq(403)
       end
+    end
 
-      it 'responds with a 403 error' do
-        get(:auth, SAMLRequest: 'bang!')
+    context 'with invalid SAMLRequest param' do
+      it 'responds with "403 Forbidden"' do
+        get :auth
 
         expect(response.status).to eq(403)
       end

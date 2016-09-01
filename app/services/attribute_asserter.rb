@@ -70,7 +70,7 @@ class AttributeAsserter
 
   def bundle
     @_bundle ||= (
-      authn_request_bundle || service_provider.attribute_bundle || DEFAULT_BUNDLE
+      authn_request_bundle || service_provider.metadata[:attribute_bundle] || DEFAULT_BUNDLE
     ).map(&:to_sym)
   end
 
