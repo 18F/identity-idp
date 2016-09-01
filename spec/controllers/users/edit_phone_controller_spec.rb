@@ -20,11 +20,11 @@ describe Users::EditPhoneController do
       end
 
       it 'lets user know they need to confirm their new phone' do
-        expect(response).to redirect_to(phone_confirmation_send_path)
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
         expect(@analytics).to have_received(:track_event).
           with('User asked to update their phone number')
+        expect(response).to render_template('shared/choose_delivery_method')
       end
     end
 
@@ -41,19 +41,21 @@ describe Users::EditPhoneController do
     end
 
     context "user changes phone to another user's phone" do
-      it 'redirects to phone confirmation page with success message' do
+      before do
         sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
         put :update, update_user_phone_form: { phone: second_user.phone }
+      end
 
-        expect(response).to redirect_to(phone_confirmation_send_path)
+      it 'processes successfully and informs user' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
         expect(user.reload.phone).to_not eq second_user.phone
         expect(@analytics).to have_received(:track_event).
           with('User asked to update their phone number')
+        expect(response).to render_template('shared/choose_delivery_method')
       end
     end
 
@@ -71,6 +73,7 @@ describe Users::EditPhoneController do
     context 'user submits the form without changing their phone' do
       it 'redirects to profile page without any messages' do
         sign_in(user)
+
         put :update, update_user_phone_form: { phone: user.phone }
 
         expect(response).to redirect_to profile_url

@@ -17,7 +17,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'user does not fill out a phone number when signing up' do
       sign_up_and_set_password
-      click_button 'Submit'
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
       expect(current_path).to eq phone_setup_path
     end
@@ -34,7 +34,7 @@ feature 'Two Factor Authentication' do
       scenario 'user leaves phone blank' do
         sign_in_before_2fa
         fill_in 'Phone', with: ''
-        click_button 'Submit'
+        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
         expect(page).to have_content invalid_phone_message
       end
@@ -42,7 +42,7 @@ feature 'Two Factor Authentication' do
       scenario 'user enters an invalid number with no digits' do
         sign_in_before_2fa
         fill_in 'Phone', with: 'five one zero five five five four three two one'
-        click_button 'Submit'
+        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
         expect(page).to have_content invalid_phone_message
       end
@@ -50,7 +50,7 @@ feature 'Two Factor Authentication' do
       scenario 'user enters a valid number' do
         user = sign_in_before_2fa
         fill_in 'Phone', with: '555-555-1212'
-        click_button 'Submit'
+        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
         expect(page).to_not have_content invalid_phone_message
         expect(current_path).to eq phone_confirmation_path
@@ -67,12 +67,13 @@ feature 'Two Factor Authentication' do
       #   When I sign in
       #   Then an OTP is sent to my phone
       #   And I am prompted to enter it
-      context 'user is prompted for otp via phone only', sms: true do
+      context 'user is prompted for otp via phone only' do
         before do
           reset_job_queues
           @user = create(:user, :signed_up)
           reset_email
           sign_in_before_2fa(@user)
+          click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
         end
 
         it 'lets the user know they are signed in' do
@@ -106,6 +107,7 @@ feature 'Two Factor Authentication' do
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
       click_link 'Resend'
 
       expect(page).to have_content t('devise.two_factor_authentication.user.new_otp_sent')
@@ -114,6 +116,7 @@ feature 'Two Factor Authentication' do
     scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
       3.times do
         fill_in('code', with: 'bad-code')
@@ -126,6 +129,7 @@ feature 'Two Factor Authentication' do
       user.update(second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second))
 
       sign_in_before_2fa(user)
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
 
       expect(page).to have_content t('devise.two_factor_authentication.header_text')
     end

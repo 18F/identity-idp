@@ -29,8 +29,8 @@ class User < ActiveRecord::Base
     phone.present?
   end
 
-  def send_two_factor_authentication_code(code)
-    UserOtpSender.new(self).send_otp(code)
+  def send_two_factor_authentication_code(code, options = {})
+    UserOtpSender.new(self).send_otp(code, options)
   end
 
   def confirmation_period_expired?

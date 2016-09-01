@@ -182,7 +182,7 @@ describe User do
       otp_sender = instance_double(UserOtpSender)
 
       expect(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
-      expect(otp_sender).to receive(:send_otp).with(123)
+      expect(otp_sender).to receive(:send_otp).with(123, {})
 
       user.send_two_factor_authentication_code(123)
     end

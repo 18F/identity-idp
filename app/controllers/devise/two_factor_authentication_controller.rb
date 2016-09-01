@@ -3,6 +3,7 @@ require 'feature_management'
 module Devise
   class TwoFactorAuthenticationController < DeviseController
     include ScopeAuthenticator
+    include OtpDeliveryFallback
 
     prepend_before_action :authenticate_scope!
     before_action :verify_user_is_not_second_factor_locked
@@ -12,17 +13,28 @@ module Devise
     def new
       analytics.track_event('User requested a new OTP code')
 
-      current_user.send_new_otp
+      send_user_otp
+
       flash[:notice] = t('devise.two_factor_authentication.user.new_otp_sent')
-      redirect_to user_two_factor_authentication_path(method: 'sms')
     end
 
     def show
       if use_totp?
         show_totp_prompt
       else
-        show_direct_otp_prompt
+        @phone_number = user_decorator.masked_two_factor_phone_number
       end
+    end
+
+    def confirm
+      @phone_number = user_decorator.masked_two_factor_phone_number
+      @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+    end
+
+    def send_code
+      analytics.track_event("User requested #{current_otp_delivery_method} OTP delivery")
+      send_user_otp
+      flash[:success] = t("notices.send_code.#{current_otp_delivery_method}")
     end
 
     def update
@@ -42,9 +54,9 @@ module Devise
     end
 
     def use_totp?
-      # Present the TOTP entry screen to users who are TOTP enabled, unless the user explictly
-      # selects SMS
-      current_user.totp_enabled? && params[:method] != 'sms'
+      # Present the TOTP entry screen to users who are TOTP enabled,
+      # unless the user explictly selects SMS or voice
+      current_user.totp_enabled? && !use_sms_or_voice_otp_delivery?
     end
 
     def verify_user_is_not_second_factor_locked
@@ -63,15 +75,11 @@ module Devise
       bypass_sign_in resource
       flash[:notice] = t('devise.two_factor_authentication.success')
 
-      update_metrics
+      analytics.track_event('User 2FA successful')
 
       resource.update(second_factor_attempts_count: 0)
 
       redirect_valid_resource
-    end
-
-    def update_metrics
-      analytics.track_event('User 2FA successful')
     end
 
     def redirect_valid_resource
@@ -79,14 +87,11 @@ module Devise
     end
 
     def show_direct_otp_prompt
-      @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-
-      @phone_number = user_decorator.masked_two_factor_phone_number
-      render :show
+      redirect_to otp_confirm_path(delivery_method: current_otp_delivery_method)
     end
 
     def show_totp_prompt
-      render :show_totp
+      render :confirm_totp
     end
 
     def handle_invalid_otp
@@ -94,12 +99,12 @@ module Devise
 
       update_invalid_resource if resource.two_factor_enabled?
 
-      flash.now[:error] = t('devise.two_factor_authentication.attempt_failed')
+      flash[:error] = t('devise.two_factor_authentication.attempt_failed')
 
       if user_decorator.blocked_from_entering_2fa_code?
         handle_second_factor_locked_resource
       else
-        show
+        prompt_for_otp_reentry
       end
     end
 
@@ -116,6 +121,19 @@ module Devise
       render :max_login_attempts_reached
 
       sign_out
+    end
+
+    def prompt_for_otp_reentry
+      if current_otp_delivery_method == :totp
+        show_totp_prompt
+      else
+        show_direct_otp_prompt
+      end
+    end
+
+    def send_user_otp
+      current_user.send_new_otp(delivery_method: current_otp_delivery_method)
+      show_direct_otp_prompt
     end
 
     def user_decorator

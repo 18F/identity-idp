@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe TwoFactorSetupForm do
-  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:user) { build_stubbed(:user) }
+  let(:valid_phone) { '+1 (202) 202-2020' }
   subject { TwoFactorSetupForm.new(user) }
 
   it do
@@ -17,6 +18,30 @@ describe TwoFactorSetupForm do
 
       expect(phone_validator.options).
         to eq(country_code: 'US', presence: true, message: :improbable_phone)
+    end
+  end
+
+  describe 'OTP delivery preference' do
+    context 'when voice is selected' do
+      before do
+        subject.submit(phone: valid_phone,
+                       voice: 'Confirm with voice message')
+      end
+
+      it 'sets delivery_method to "voice"' do
+        expect(subject.delivery_method).to eq(:voice)
+      end
+    end
+
+    context 'when SMS is selected' do
+      before do
+        subject.submit(phone: valid_phone,
+                       sms: 'Confirm with text message')
+      end
+
+      it 'sets delivery_method to "sms"' do
+        expect(subject.delivery_method).to eq(:sms)
+      end
     end
   end
 
@@ -41,6 +66,10 @@ describe TwoFactorSetupForm do
     end
 
     context 'when phone is same as current user' do
+      before do
+        user.phone = valid_phone
+      end
+
       it 'is valid' do
         subject.phone = user.phone
 

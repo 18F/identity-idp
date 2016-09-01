@@ -69,7 +69,7 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
-      click_button 'Submit'
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
       click_button 'Submit'
       user
     end

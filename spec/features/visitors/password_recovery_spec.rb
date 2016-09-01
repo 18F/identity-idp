@@ -161,6 +161,7 @@ feature 'Password Recovery' do
 
     it 'redirects user to profile after signing back in' do
       reset_password_and_sign_back_in(@user)
+      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
       fill_in 'code', with: @user.reload.direct_otp
       click_button 'Submit'
 

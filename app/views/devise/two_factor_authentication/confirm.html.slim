@@ -1,0 +1,18 @@
+- title t('titles.enter_2fa_code')
+
+h1.heading = t('devise.two_factor_authentication.header_text')
+p Please enter the code sent to <strong>#{@phone_number}</strong>.
+
+= form_tag([:user, :two_factor_authentication], method: :put, role: 'form', class: 'mt4') do
+  = hidden_field_tag(:delivery_method, @current_otp_delivery_method)
+  = label_tag 'code', \
+    raw(t('simple_form.required.html')) + t('forms.two_factor.code'), \
+    class: 'block caps ls-05 bold'
+  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
+    = number_field_tag(:code, '', required: true, value: @code_value, class: 'col-12 field mfa')
+  = submit_tag 'Submit', class: 'btn btn-primary align-top'
+
+p.mt2.mb0
+  = render 'users/phone_confirmation/phone_confirmation_fallback'
+  p.mb0== "Didn't receive a code? #{link_to 'Resend',
+    otp_new_path(delivery_method: params[:delivery_method])}"

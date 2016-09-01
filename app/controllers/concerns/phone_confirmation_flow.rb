@@ -1,7 +1,27 @@
 module PhoneConfirmationFlow
   extend ActiveSupport::Concern
 
+  included do
+    before_action :set_fallback_vars, only: :show
+  end
+
   def show
+    raise 'must override'
+  end
+
+  def this_phone_confirmation_path
+    raise 'must override'
+  end
+
+  def assign_phone
+    raise 'must override'
+  end
+
+  def after_confirmation_path
+    raise 'must override'
+  end
+
+  def this_send_confirmation_code_path
     raise 'must override'
   end
 
@@ -43,18 +63,6 @@ module PhoneConfirmationFlow
     redirect_to after_confirmation_path
   end
 
-  def this_phone_confirmation_path
-    raise 'must override'
-  end
-
-  def assign_phone
-    raise 'must override'
-  end
-
-  def after_confirmation_path
-    raise 'must override'
-  end
-
   def check_for_unconfirmed_phone
     redirect_to root_path unless unconfirmed_phone
   end
@@ -64,7 +72,26 @@ module PhoneConfirmationFlow
     # user's session. Re-sending the confirmation code doesn't generate a new one.
     self.confirmation_code = generate_confirmation_code unless confirmation_code
 
-    SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
+    if current_otp_delivery_method == :voice
+      VoiceSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
+    else
+      SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
+    end
+    flash[:success] = t("notices.send_code.#{current_otp_delivery_method}")
+  end
+
+  def set_fallback_vars
+    @fallback_confirmation_link = fallback_confirmation_link
+    @sms_enabled = sms_enabled?
+    @current_otp_delivery_method = current_otp_delivery_method
+  end
+
+  def fallback_confirmation_link
+    if sms_enabled?
+      this_send_confirmation_code_path(:voice)
+    else
+      this_send_confirmation_code_path(:sms)
+    end
   end
 
   def confirmation_code=(code)
@@ -82,5 +109,15 @@ module PhoneConfirmationFlow
   def clear_session_data
     user_session.delete(unconfirmed_phone_session_key)
     user_session.delete(confirmation_code_session_key)
+  end
+
+  def sms_enabled?
+    current_otp_delivery_method == :sms
+  end
+
+  def current_otp_delivery_method
+    query_method = params[:delivery_method]
+    query_method.to_sym if
+      %w(sms voice totp).include? query_method
   end
 end

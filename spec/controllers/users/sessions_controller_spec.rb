@@ -106,10 +106,10 @@ describe Users::SessionsController, devise: true do
   end
 
   describe 'POST /' do
-    it 'calls User#send_two_factor_authentication_code' do
+    it 'does not call User#send_two_factor_authentication_code' do
       create(:user, :signed_up, email: 'user@example.com')
 
-      expect_any_instance_of(User).to receive(:send_two_factor_authentication_code)
+      expect_any_instance_of(User).to_not receive(:send_two_factor_authentication_code)
 
       post :create, user: { email: 'user@example.com', password: '!1aZ' * 32 }
     end

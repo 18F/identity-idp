@@ -8,11 +8,17 @@ p
   '<strong>#{APP_NAME}</strong>.
 = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
   .mb2
+    = hidden_field_tag(:delivery_method, :totp)
     = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.code')
     = number_field_tag :code, '', class: 'block col-12 field mfa', required: true
   = submit_tag 'Submit', class: 'btn btn-primary'
 
 hr
 p
-  'If you don't have access to your authenticator app you can choose to
-  '#{link_to 'receive a code via SMS', otp_new_path}.
+ - sms_link = link_to t('devise.two_factor_authentication.totp_fallback.' \
+    'sms_link_text'), otp_send_path(delivery_method: :sms)
+ - voice_link = link_to t('devise.two_factor_authentication.totp_fallback.' \
+    'voice_link_text'), otp_send_path(delivery_method: :voice)
+
+ == t('devise.two_factor_authentication.totp_fallback.text', sms_link: sms_link,
+    voice_link: voice_link)

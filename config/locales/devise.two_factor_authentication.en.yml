@@ -10,8 +10,13 @@ en:
         one-time passcode incorrectly too many times.
       please_try_again: Please try again in %{time_remaining}.
       otp_setup: >
-        Every time you log in, a one-time passcode will be sent to your phone via SMS.
+        Every time you log in, a one-time passcode will be sent to your phone via SMS or with a
+        phone call.
         Please enter the phone number you would like to use to receive these messages.
+      choose_delivery_confirmation: >
+        Please select how you would like to receive your confirmation code for %{phone}
+      choose_otp_delivery: >
+        Please select how you would like to receive your one-time passcode for %{phone}
       otp_sms_disclaimer: "Note: By accepting these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply."
       please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.
       success: "Two factor authentication successful."
@@ -19,5 +24,14 @@ en:
       totp_info: >
         Use any standards compliant authenticator app (such as Google Authenticator) to scan the QR
         Code below.
+      totp_fallback:
+        text: >
+          If you don't have access to your authenticator app you can choose to %{sms_link}
+          or %{voice_link}.
+        sms_link_text: receive a code via SMS
+        voice_link_text: with a phone call
       user:
         new_otp_sent: A new one-time passcode has been sent.
+      buttons:
+        confirm_with_sms: Confirm with text message
+        confirm_with_voice: Confirm with voice call

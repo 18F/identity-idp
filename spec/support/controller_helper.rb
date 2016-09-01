@@ -4,9 +4,10 @@ module ControllerHelper
     sign_in FactoryGirl.create(:user, :admin, :signed_up)
   end
 
-  def sign_in_as_user
+  def sign_in_as_user(user = create(:user, :signed_up))
     @request.env['devise.mapping'] = Devise.mappings[:user]
-    sign_in FactoryGirl.create(:user, :signed_up)
+    sign_in user
+    user
   end
 
   def has_before_actions(*names)
