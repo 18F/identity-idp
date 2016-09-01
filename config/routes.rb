@@ -86,7 +86,6 @@ Rails.application.routes.draw do
   get '/playbook/about' => 'playbook#about', as: :playbook_about
   get '/playbook' => 'playbook#index', as: :playbook_overview
   get '/playbook/principles' => 'playbook#principles', as: :playbook_principles
-  get '/splash' => 'splash#index'
   get '/authenticator_start' => 'users/totp_setup#start'
   get '/authenticator_setup' => 'users/totp_setup#new'
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
