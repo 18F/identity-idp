@@ -34,6 +34,10 @@ class ApplicationController < ActionController::Base
     @analytics ||= Analytics.new(user, request)
   end
 
+  def create_user_event(event_type, user = current_user)
+    Event.create(user_id: user.id, event_type: event_type)
+  end
+
   private
 
   def decorated_user

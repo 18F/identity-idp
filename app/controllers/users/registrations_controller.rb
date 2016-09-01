@@ -43,10 +43,14 @@ module Users
     end
 
     def track_registration(form)
-      return analytics.track_event('Account Created', form.user) unless form.email_taken?
-
-      existing_user = User.find_by_email(form.email)
-      analytics.track_event('Registration Attempt with existing email', existing_user)
+      if form.email_taken?
+        existing_user = User.find_by_email(form.email)
+        analytics.track_event('Registration Attempt with existing email', existing_user)
+      else
+        user = form.user
+        analytics.track_event('Account Created', user)
+        create_user_event(:account_created, user)
+      end
     end
   end
 end

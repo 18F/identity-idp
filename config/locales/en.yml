@@ -7,6 +7,14 @@ en:
     messages:
       improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
 
+  event_types:
+    account_created: Account created
+    phone_confirmed: Phone confirmed
+    phone_changed: Phone changed
+    email_changed: Email changed
+    authenticator_enabled: Authenticator app enabled
+    authenticator_disabled: Authenticator app disabled
+
   forms:
     buttons:
       continue_browsing: Continue browsing
@@ -105,6 +113,7 @@ en:
     profile:
       agencies: Agencies I've logged into
       profile_info: Profile information
+      account_history: Account history
       login_info: Login information
       main: My account
       two_factor: Two-factor Authentication
@@ -143,6 +152,7 @@ en:
     validations:
       email:
         invalid: Please enter a valid email in the format of user@domain.com
+
   idv:
     form:
       first_name: First name

@@ -185,4 +185,26 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#create_user_event' do
+    let(:user) { build_stubbed(:user) }
+
+    context 'when the user is not specified' do
+      it 'creates an Event object for the current_user' do
+        allow(subject).to receive(:current_user).and_return(user)
+
+        expect(Event).to receive(:create).with(user_id: user.id, event_type: :account_created)
+
+        subject.create_user_event(:account_created)
+      end
+    end
+
+    context 'when the user is specified' do
+      it 'creates an Event object for the specified user' do
+        expect(Event).to receive(:create).with(user_id: user.id, event_type: :account_created)
+
+        subject.create_user_event(:account_created, user)
+      end
+    end
+  end
 end

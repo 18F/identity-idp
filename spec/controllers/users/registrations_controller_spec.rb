@@ -13,18 +13,29 @@ describe Users::RegistrationsController, devise: true do
   end
 
   describe '#create' do
-    it 'tracks successful user registration' do
-      stub_analytics
+    context 'when registering with a new email' do
+      let(:form) { instance_double(RegisterUserEmailForm) }
 
-      form = instance_double(RegisterUserEmailForm)
-      allow(RegisterUserEmailForm).to receive(:new).and_return(form)
-      allow(form).to receive(:submit).with(email: 'new@example.com').and_return(true)
-      allow(form).to receive(:email_taken?).and_return(false)
-      allow(form).to receive_message_chain(:user, :email).and_return('new@example.com')
+      before do
+        stub_analytics
 
-      expect(@analytics).to receive(:track_event).with('Account Created', form.user)
+        allow(RegisterUserEmailForm).to receive(:new).and_return(form)
+        allow(form).to receive(:submit).with(email: 'new@example.com').and_return(true)
+        allow(form).to receive(:email_taken?).and_return(false)
+        allow(form).to receive_message_chain(:user, :email).and_return('new@example.com')
+        allow(@analytics).to receive(:track_event)
+        allow(subject).to receive(:create_user_event)
 
-      post :create, user: { email: 'new@example.com' }
+        post :create, user: { email: 'new@example.com' }
+      end
+
+      it 'tracks successful user registration' do
+        expect(@analytics).to have_received(:track_event).with('Account Created', form.user)
+      end
+
+      it 'creates an :account_created event' do
+        expect(subject).to have_received(:create_user_event).with(:account_created, form.user)
+      end
     end
 
     it 'tracks successful user registration with existing email' do
