@@ -7,10 +7,3 @@ check process <%= sidekiq_service_name(idx) %>
   stop program = "/bin/bash -c 'cd <%= current_path %> && <%= SSHKit.config.command_map[:sidekiqctl] %> stop <%= pid_file %>'" as uid ubuntu and gid ubuntu with timeout <%= fetch(:sidekiq_timeout).to_i + 10  %> seconds
   group <%= fetch(:sidekiq_monit_group, fetch(:application)) %>-sidekiq
 <% end %>
-
-# check process sidekiq_idp_production0
-#   with pidfile "/var/www/idp/shared/tmp/pids/sidekiq-0.pid"
-#   start program = "/bin/bash -c 'cd /var/www/idp/current && /opt/ruby_build/builds/2.3.1/bin/bundle exec sidekiq  --index 0 --pidfile /var/www/idp/shared/tmp/pids/sidekiq-0.pid --environment production  --logfile /var/www/idp/shared/log/sidekiq.log --queue mailers --queue sms --queue analytics'" as uid ubuntu and gid ubuntu with timeout 30 seconds
-# 
-#   stop program = "/bin/bash -c 'cd /var/www/idp/current && /opt/ruby_build/builds/2.3.1/bin/bundle exec sidekiqctl stop /var/www/idp/shared/tmp/pids/sidekiq-0.pid'" as uid ubuntu and gid ubuntu with timeout 20 seconds
-#   group idp-sidekiq
