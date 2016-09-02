@@ -4,37 +4,17 @@ class Analytics
     @request = request
   end
 
-  def track_event(event, subject = user)
-    uuid = subject.uuid
+  def track_event(event, attributes = { user_id: uuid })
+    attributes[:user_id] = uuid unless attributes.key?(:user_id)
 
-    AnalyticsEventJob.perform_later(
-      google_analytics_options.merge(action: event, user_id: uuid)
-    )
+    Rails.logger.info("#{event}: #{attributes}")
 
-    Rails.logger.info("#{event} by #{uuid}")
-
-    ahoy.track(event, request_attributes.merge(user_id: uuid))
-  end
-
-  def track_anonymous_event(event, attribute = nil)
-    AnalyticsEventJob.perform_later(
-      google_analytics_options.merge(action: event, value: attribute)
-    )
-
-    Rails.logger.info("#{event}: #{attribute}")
-
-    ahoy.track(event, request_attributes.merge(value: attribute))
+    ahoy.track(event, attributes.merge!(request_attributes))
   end
 
   private
 
   attr_reader :user, :request
-
-  def google_analytics_options
-    @google_analytics_options ||= request_attributes.merge(
-      anonymize_ip: true
-    )
-  end
 
   def request_attributes
     {
@@ -45,5 +25,9 @@ class Analytics
 
   def ahoy
     @ahoy ||= Rails.env.test? ? FakeAhoyTracker.new : Ahoy::Tracker.new(request: request)
+  end
+
+  def uuid
+    user.uuid
   end
 end

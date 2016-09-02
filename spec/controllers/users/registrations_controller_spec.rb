@@ -14,7 +14,11 @@ describe Users::RegistrationsController, devise: true do
 
   describe '#create' do
     context 'when registering with a new email' do
-      let(:form) { instance_double(RegisterUserEmailForm) }
+      let(:form) do
+        instance_double(
+          RegisterUserEmailForm, user: User.new(uuid: '123', email: 'new@example.com')
+        )
+      end
 
       before do
         stub_analytics
@@ -22,7 +26,6 @@ describe Users::RegistrationsController, devise: true do
         allow(RegisterUserEmailForm).to receive(:new).and_return(form)
         allow(form).to receive(:submit).with(email: 'new@example.com').and_return(true)
         allow(form).to receive(:email_taken?).and_return(false)
-        allow(form).to receive_message_chain(:user, :email).and_return('new@example.com')
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
 
@@ -30,7 +33,8 @@ describe Users::RegistrationsController, devise: true do
       end
 
       it 'tracks successful user registration' do
-        expect(@analytics).to have_received(:track_event).with('Account Created', form.user)
+        expect(@analytics).to have_received(:track_event).
+          with('Account Created', user_id: form.user.uuid)
       end
 
       it 'creates an :account_created event' do
@@ -51,7 +55,7 @@ describe Users::RegistrationsController, devise: true do
       allow(form).to receive_message_chain(:user, :email).and_return(existing_user.email)
 
       expect(@analytics).to receive(:track_event).
-        with('Registration Attempt with existing email', existing_user)
+        with('Registration Attempt with existing email', user_id: existing_user.uuid)
 
       post :create, user: { email: existing_user.email }
     end
@@ -59,8 +63,8 @@ describe Users::RegistrationsController, devise: true do
     it 'tracks unsuccessful user registration' do
       stub_analytics
 
-      expect(@analytics).to receive(:track_anonymous_event).
-        with('User Registration: invalid email', 'invalid@')
+      expect(@analytics).to receive(:track_event).
+        with('User Registration: invalid email', email: 'invalid@')
 
       post :create, user: { email: 'invalid@' }
     end

@@ -45,15 +45,14 @@ module Users
     end
 
     def do_confirm
-      analytics.track_event('Password Created and User Confirmed', @confirmable)
-
       @confirmable.confirm
       @confirmable.update(reset_requested_at: nil)
       sign_in_and_redirect_user
+      analytics.track_event('Password Created and User Confirmed')
     end
 
     def process_user_with_password_errors
-      analytics.track_event('Password Creation: invalid', @confirmable)
+      analytics.track_event('Password Creation: invalid', user_id: @confirmable.uuid)
 
       set_view_variables
       render :show
@@ -69,7 +68,9 @@ module Users
     end
 
     def process_already_confirmed_user
-      analytics.track_event('Email Confirmation: User Already Confirmed', @confirmable)
+      analytics.track_event(
+        'Email Confirmation: User Already Confirmed', user_id: @confirmable.uuid
+      )
 
       action_text = 'Please sign in.' unless user_signed_in?
       flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
@@ -88,14 +89,14 @@ module Users
     end
 
     def process_expired_confirmation_token
-      analytics.track_event('Email Confirmation: token expired', @confirmable)
+      analytics.track_event('Email Confirmation: token expired', user_id: @confirmable.uuid)
 
       flash[:error] = resource.decorate.confirmation_period_expired_error
       render :new
     end
 
     def process_valid_confirmation_token
-      analytics.track_event('Email Confirmation: valid token', @confirmable)
+      analytics.track_event('Email Confirmation: valid token', user_id: @confirmable.uuid)
 
       flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
       render :show
@@ -112,7 +113,7 @@ module Users
     end
 
     def process_confirmed_user
-      analytics.track_event('Email changed and confirmed', @confirmable)
+      analytics.track_event('Email changed and confirmed', user_id: @confirmable.uuid)
       create_user_event(:email_changed, @confirmable)
 
       flash[:notice] = t('devise.confirmations.confirmed')
@@ -135,7 +136,7 @@ module Users
     def track_invalid_confirmation_token(token)
       token ||= 'nil'
 
-      analytics.track_anonymous_event('Invalid Email Confirmation Token', token)
+      analytics.track_event('Invalid Email Confirmation Token', token: token)
     end
   end
 end
