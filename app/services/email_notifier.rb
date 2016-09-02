@@ -1,6 +1,6 @@
 EmailNotifier = Struct.new(:user) do
   def send_password_changed_email
-    UserMailer.password_changed(user).deliver_later if password_changed?
+    UserMailer.password_changed(user).deliver_later
   end
 
   def send_email_changed_email
@@ -8,10 +8,6 @@ EmailNotifier = Struct.new(:user) do
   end
 
   private
-
-  def password_changed?
-    changed_attributes.fetch('encrypted_password', false)
-  end
 
   def email_changed?
     changed_attributes.fetch('email', false)

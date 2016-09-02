@@ -181,10 +181,9 @@ feature 'Sign Up', devise: true do
     create(:user, :unconfirmed)
     confirm_last_user
 
-    expect(page).to have_css('#pw-toggle', visible: false)
     expect(page).to have_css('input.password[type="password"]')
 
-    find(:css, '#pw-toggle', visible: false).trigger('click')
+    find('#pw-toggle-0', visible: false).trigger('click')
 
     expect(page).to_not have_css('input.password[type="password"]')
     expect(page).to have_css('input.password[type="text"]')

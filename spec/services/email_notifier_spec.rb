@@ -4,16 +4,6 @@ describe EmailNotifier do
   describe '#send_password_changed_email' do
     let(:mailer) { instance_double(ActionMailer::MessageDelivery) }
 
-    context 'when the password has not changed' do
-      it 'does not send an email' do
-        user = build_stubbed(:user, :signed_up)
-
-        expect(UserMailer).to_not receive(:password_changed).with(user)
-
-        EmailNotifier.new(user).send_password_changed_email
-      end
-    end
-
     context 'when the password has changed' do
       it 'sends an email notifiying the user of the password change' do
         user = create(:user, :signed_up)

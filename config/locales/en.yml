@@ -1,5 +1,6 @@
 en:
   errors:
+    incorrect_password: is incorrect
     invalid_totp: Invalid code entered.  Please try again.
     not_authorized: You are not authorized to perform this action.
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
@@ -39,6 +40,10 @@ en:
     confirmation:
       show_hdr: Create a Password
 
+  instructions:
+    edit_info:
+      password: Your new password must be at least %{min_length} characters.
+
   links:
     resend: Resend
     sign_out: Sign out
@@ -53,11 +58,12 @@ en:
         text: Or, %{link}
         link_text: call me with the one-time passcode
   notices:
+    password_changed: Your password was successfully changed.
     totp_configured: Authenticator app successfully configured
     totp_disabled: Authenticator app disabled
     phone_confirmation_successful: Phone confirmation successful!
     password_reset: >
-      You will receive an email with instructions on how to reset your password 
+      You will receive an email with instructions on how to reset your password
       in a few minutes.
     send_code:
       voice: You will be called with your one-time passcode.
@@ -73,6 +79,7 @@ en:
       show: Create a password for your account
     edit_info:
       email: Edit your email
+      password: Edit your password
       phone: Edit your phone number
       confirm_phone: Confirm your phone number
     enter_2fa_code: Enter the secure one-time passcode
@@ -104,6 +111,7 @@ en:
       new: Resend confirmation instructions
     edit_info:
       email: Edit your email
+      password: Edit your password
       phone: Edit your phone number
     log_in: Log in
     choose_otp_delivery: Choose delivery method

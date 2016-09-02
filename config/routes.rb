@@ -62,6 +62,8 @@ Rails.application.routes.draw do
   match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
   get '/edit/phone' => 'users/edit_phone#edit'
   match '/edit/phone' => 'users/edit_phone#update', via: [:patch, :put]
+  get '/settings/password' => 'users/edit_password#edit'
+  patch '/settings/password' => 'users/edit_password#update'
 
   get '/idv' => 'idv#index'
   get '/idv/cancel' => 'idv#cancel'

@@ -1,23 +1,27 @@
 function togglePw() {
-  const input = document.querySelectorAll('input[type="password"]')[0];
+  const inputs = document.querySelectorAll('input[type="password"]');
 
-  if (input) {
-    input.parentNode.className += ' relative';
+  if (inputs) {
+    for (let i = 0; i < inputs.length; i++) {
+      const input = inputs[i];
 
-    const el = `
-      <div class="top-0 right-0 absolute">
-        <label class="checkbox">
-          <input id="pw-toggle" type="checkbox">
-          <span class="indicator"></span>
-          Show password
-        </label>
-      </div>`;
-    input.insertAdjacentHTML('afterend', el);
+      input.parentNode.className += ' relative';
 
-    const toggle = document.getElementById('pw-toggle');
-    toggle.addEventListener('change', function() {
-      input.type = toggle.checked ? 'text' : 'password';
-    });
+      const el = `
+        <div class="top-0 right-0 absolute">
+          <label class="checkbox">
+            <input id="pw-toggle-${i}" type="checkbox">
+            <span class="indicator"></span>
+            Show password
+          </label>
+        </div>`;
+      input.insertAdjacentHTML('afterend', el);
+
+      const toggle = document.getElementById(`pw-toggle-${i}`);
+      toggle.addEventListener('change', function() {
+        input.type = toggle.checked ? 'text' : 'password';
+      });
+    }
   }
 }
 
