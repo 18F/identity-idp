@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Idv::QuestionsController do
-  render_views
-
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
@@ -18,6 +16,8 @@ describe Idv::QuestionsController do
   end
 
   context 'user has started proofing session' do
+    render_views
+
     before(:each) do
       init_idv_session
     end
@@ -42,7 +42,7 @@ describe Idv::QuestionsController do
 
       get :index
 
-      expect(response).to redirect_to(idv_sessions_path)
+      expect(response).to redirect_to(idv_session_path)
     end
   end
 

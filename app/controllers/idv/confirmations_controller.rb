@@ -12,7 +12,7 @@ module Idv
           handle_without_kbv
         end
       else
-        redirect_to idv_sessions_path
+        redirect_to idv_session_path
       end
     end
 

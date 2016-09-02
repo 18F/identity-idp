@@ -8,7 +8,7 @@ module Idv
       if proofing_session_started?
         render_next_question
       else
-        redirect_to idv_sessions_path
+        redirect_to idv_session_path
       end
     end
 

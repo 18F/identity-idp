@@ -1,7 +1,7 @@
 - title t('idv.titles.phone')
 
 .mt1.mb3.h6.caps.red = t('idv.titles.phone')
-= simple_form_for(@idv_phone_form, url: idv_phone_path,
+= simple_form_for(idv_phone_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   h2.heading = t('idv.titles.session.phone')
   p.m0 To help us verify your identity, please give us a phone number that belongs

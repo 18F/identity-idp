@@ -1,19 +1,14 @@
 module Idv
-  class PhoneController < ApplicationController
-    include IdvSession
-
-    before_action :confirm_two_factor_authenticated
+  class PhoneController < StepController
+    helper_method :idv_phone_form
 
     def new
-      @idv_phone_form = Idv::PhoneForm.new(idv_params, current_user)
     end
 
     def create
-      @idv_phone_form = Idv::PhoneForm.new(idv_params, current_user)
-
-      if @idv_phone_form.submit(profile_params)
-        redirect_to idv_sessions_review_url
-        idv_session[:params] = @idv_phone_form.idv_params
+      if idv_phone_form.submit(phone_params)
+        redirect_to idv_review_url
+        self.idv_params = idv_phone_form.idv_params
       else
         render :new
       end
@@ -21,7 +16,11 @@ module Idv
 
     private
 
-    def profile_params
+    def idv_phone_form
+      @_idv_phone_form ||= Idv::PhoneForm.new(idv_params, current_user)
+    end
+
+    def phone_params
       params.require(:idv_phone_form).permit(:phone)
     end
   end

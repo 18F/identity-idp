@@ -9,7 +9,7 @@ module Idv
     def show
       @code_value = confirmation_code if FeatureManagement.prefill_otp_codes?
       @unconfirmed_phone = unconfirmed_phone
-      @reenter_phone_number_path = idv_sessions_path
+      @reenter_phone_number_path = idv_session_path
     end
 
     private

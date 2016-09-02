@@ -96,7 +96,7 @@ describe Idv::ConfirmationsController do
 
       get :index
 
-      expect(response).to redirect_to(idv_sessions_path)
+      expect(response).to redirect_to(idv_session_path)
     end
   end
 

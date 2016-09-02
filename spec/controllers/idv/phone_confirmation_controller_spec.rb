@@ -151,7 +151,7 @@ describe Idv::PhoneConfirmationController, devise: true do
       it 'sets @reenter_phone_number_path to idv sessions path' do
         get :show
 
-        expect(assigns(:reenter_phone_number_path)).to eq(idv_sessions_path)
+        expect(assigns(:reenter_phone_number_path)).to eq(idv_session_path)
       end
     end
 
