@@ -13,7 +13,7 @@ describe UserOtpSender do
     end
 
     context 'with voice delivery method' do
-      let(:options) { { delivery_method: :voice } }
+      let(:options) { { otp_method: :voice } }
 
       it 'sends OTP via voice delivery' do
         expect(VoiceSenderOtpJob).to receive(:perform_later).with('123', user.phone)
@@ -23,7 +23,7 @@ describe UserOtpSender do
     end
 
     context 'with SMS delivery method' do
-      let(:options) { { delivery_method: :sms } }
+      let(:options) { { otp_method: :sms } }
 
       it 'sends OTP via voice delivery' do
         expect(SmsSenderOtpJob).to receive(:perform_later).with('123', user.phone)

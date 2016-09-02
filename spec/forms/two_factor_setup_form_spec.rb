@@ -28,8 +28,8 @@ describe TwoFactorSetupForm do
                        voice: 'Confirm with voice message')
       end
 
-      it 'sets delivery_method to "voice"' do
-        expect(subject.delivery_method).to eq(:voice)
+      it 'sets otp_method to "voice"' do
+        expect(subject.otp_method).to eq(:voice)
       end
     end
 
@@ -39,8 +39,8 @@ describe TwoFactorSetupForm do
                        sms: 'Confirm with text message')
       end
 
-      it 'sets delivery_method to "sms"' do
-        expect(subject.delivery_method).to eq(:sms)
+      it 'sets otp_method to "sms"' do
+        expect(subject.otp_method).to eq(:sms)
       end
     end
   end

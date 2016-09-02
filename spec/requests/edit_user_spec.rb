@@ -16,7 +16,7 @@ describe 'user edits their account', email: true do
       'user[email]' => user.email,
       'user[password]' => user.password
     )
-    get_via_redirect otp_send_path(delivery_method: :sms)
+    get_via_redirect otp_send_path(otp_method: :sms)
     if user.reload.direct_otp
       patch_via_redirect(
         user_two_factor_authentication_path,
@@ -60,7 +60,7 @@ describe 'user edits their account', email: true do
       sign_in_as_a_valid_user
       @old_otp_code = user.direct_otp
       put_via_redirect edit_phone_path, update_user_phone_form: { phone: '555-555-5555' }
-      get_via_redirect phone_confirmation_send_path(delivery_method: :sms)
+      get_via_redirect phone_confirmation_send_path(otp_method: :sms)
     end
 
     it 'does not allow the OTP to be used for confirmation' do

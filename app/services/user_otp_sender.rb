@@ -7,7 +7,7 @@ class UserOtpSender
     return if user_decorator.blocked_from_entering_2fa_code?
 
     phone_number = @user.phone
-    if options[:delivery_method] == :voice
+    if options[:otp_method] == :voice
       VoiceSenderOtpJob.perform_later(code, phone_number)
     else
       SmsSenderOtpJob.perform_later(code, phone_number)

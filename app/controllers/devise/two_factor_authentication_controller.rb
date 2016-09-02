@@ -32,9 +32,9 @@ module Devise
     end
 
     def send_code
-      analytics.track_event("User requested #{current_otp_delivery_method} OTP delivery")
+      analytics.track_event("User requested #{current_otp_method} OTP delivery")
       send_user_otp
-      flash[:success] = t("notices.send_code.#{current_otp_delivery_method}")
+      flash[:success] = t("notices.send_code.#{current_otp_method}")
     end
 
     def update
@@ -87,7 +87,7 @@ module Devise
     end
 
     def show_direct_otp_prompt
-      redirect_to otp_confirm_path(delivery_method: current_otp_delivery_method)
+      redirect_to otp_confirm_path(otp_method: current_otp_method)
     end
 
     def show_totp_prompt
@@ -124,7 +124,7 @@ module Devise
     end
 
     def prompt_for_otp_reentry
-      if current_otp_delivery_method == :totp
+      if current_otp_method == :totp
         show_totp_prompt
       else
         show_direct_otp_prompt
@@ -132,7 +132,7 @@ module Devise
     end
 
     def send_user_otp
-      current_user.send_new_otp(delivery_method: current_otp_delivery_method)
+      current_user.send_new_otp(otp_method: current_otp_method)
       show_direct_otp_prompt
     end
 

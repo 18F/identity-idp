@@ -60,7 +60,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
         expect(subject.current_user).to receive(:authenticate_otp).and_return(false)
-        patch :update, code: '12345', delivery_method: :sms
+        patch :update, code: '12345', otp_method: :sms
       end
 
       it 'increments second_factor_attempts_count' do
@@ -68,7 +68,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'redirects to the OTP entry screen' do
-        expect(response).to redirect_to(otp_confirm_path(delivery_method: :sms))
+        expect(response).to redirect_to(otp_confirm_path(otp_method: :sms))
       end
 
       it 'displays flash error message' do
@@ -149,7 +149,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
       context 'when the user enters an invalid TOTP' do
         before do
-          patch :update, code: 'abc', delivery_method: :totp
+          patch :update, code: 'abc', otp_method: :totp
         end
 
         it 'increments second_factor_attempts_count' do
@@ -167,12 +167,12 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
       context 'user requests a direct OTP via SMS' do
         before do
-          get :new, delivery_method: :sms
+          get :new, otp_method: :sms
         end
 
         it 'redirects to the confirmation screen' do
           expect(response).to_not render_template(:confirm_totp)
-          expect(response).to redirect_to(otp_confirm_path(delivery_method: :sms))
+          expect(response).to redirect_to(otp_confirm_path(otp_method: :sms))
         end
 
         context 'when user enters correct OTP' do
@@ -184,16 +184,16 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         context 'when user enters incorrect OTP' do
           it 'redirects to the confirmation screen' do
-            patch :update, code: 'rrrr', delivery_method: :sms
+            patch :update, code: 'rrrr', otp_method: :sms
             expect(flash[:error]).to eq t('devise.two_factor_authentication.attempt_failed')
-            expect(response).to redirect_to(otp_confirm_path(delivery_method: :sms))
+            expect(response).to redirect_to(otp_confirm_path(otp_method: :sms))
           end
         end
       end
 
       context 'user requests a direct OTP via voice' do
         before do
-          get :new, delivery_method: :voice
+          get :new, otp_method: :voice
         end
 
         context 'when user enters correct OTP' do
@@ -205,9 +205,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         context 'when user enters incorrect OTP' do
           it 'redirects to the confirmation screen' do
-            patch :update, code: 'rrrr', delivery_method: :voice
+            patch :update, code: 'rrrr', otp_method: :voice
             expect(flash[:error]).to eq t('devise.two_factor_authentication.attempt_failed')
-            expect(response).to redirect_to(otp_confirm_path(delivery_method: :voice))
+            expect(response).to redirect_to(otp_confirm_path(otp_method: :voice))
           end
         end
       end
@@ -309,9 +309,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     end
 
     it 'redirects to :show' do
-      get :new, delivery_method: :sms
+      get :new, otp_method: :sms
 
-      expect(response).to redirect_to(action: :confirm, delivery_method: :sms)
+      expect(response).to redirect_to(action: :confirm, otp_method: :sms)
     end
 
     it 'sends a new OTP' do
@@ -337,7 +337,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     context 'when selecting an unsupported delivery method' do
       before do
         allow(SmsSenderOtpJob).to receive(:perform_later)
-        get :new, delivery_method: :email
+        get :new, otp_method: :email
       end
 
       it 'sends OTP via SMS' do
@@ -356,7 +356,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'sends OTP via SMS' do
-        get :send_code, delivery_method: :sms
+        get :send_code, otp_method: :sms
 
         expect(SmsSenderOtpJob).to have_received(:perform_later).
           with(subject.current_user.direct_otp, subject.current_user.phone)
@@ -371,11 +371,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         expect(@analytics).to receive(:track_event).with('GET request for ' \
           'two_factor_authentication#send_code')
 
-        get :send_code, delivery_method: :sms
+        get :send_code, otp_method: :sms
       end
 
       it 'notifies the user of OTP transmission' do
-        get :send_code, delivery_method: :sms
+        get :send_code, otp_method: :sms
 
         expect(flash[:success]).to eq t('notices.send_code.sms')
       end
@@ -389,7 +389,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'sends OTP via voice' do
-        get :send_code, delivery_method: :voice
+        get :send_code, otp_method: :voice
 
         expect(VoiceSenderOtpJob).to have_received(:perform_later).
           with(subject.current_user.direct_otp, subject.current_user.phone)
@@ -403,11 +403,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         expect(@analytics).to receive(:track_event).with('GET request for ' \
           'two_factor_authentication#send_code')
 
-        get :send_code, delivery_method: :voice
+        get :send_code, otp_method: :voice
       end
 
       it 'notifies the user of OTP transmission' do
-        get :send_code, delivery_method: :voice
+        get :send_code, otp_method: :voice
 
         expect(flash[:success]).to eq t('notices.send_code.voice')
       end
@@ -421,7 +421,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'sends OTP via SMS' do
-        get :send_code, delivery_method: :pigeon
+        get :send_code, otp_method: :pigeon
 
         expect(SmsSenderOtpJob).to have_received(:perform_later).
           with(subject.current_user.direct_otp, subject.current_user.phone)
