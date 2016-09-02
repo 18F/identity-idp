@@ -8,6 +8,10 @@ module IdvSession
     end
   end
 
+  def confirm_idv_session_started
+    redirect_to idv_session_url unless idv_session[:params].present?
+  end
+
   def idv_session
     user_session[:idv] ||= {}
   end
@@ -84,5 +88,17 @@ module IdvSession
     idv_profile.verified_at = Time.zone.now
     idv_profile.vendor = idv_vendor
     idv_profile.activate
+  end
+
+  def pick_a_vendor
+    if Rails.env.test?
+      :mock
+    else
+      available_vendors.sample
+    end
+  end
+
+  def available_vendors
+    @_vendors ||= Figaro.env.proofing_vendors.split(/\W+/).map(&:to_sym)
   end
 end

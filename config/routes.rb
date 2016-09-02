@@ -68,17 +68,18 @@ Rails.application.routes.draw do
   get '/idv/phone_confirmation' => 'idv/phone_confirmation#show'
   get '/idv/phone_confirmation/send' => 'idv/phone_confirmation#send_code'
   put '/idv/phone_confirmation' => 'idv/phone_confirmation#confirm'
-  namespace :idv do
-    resources :questions, :confirmations
-    resources :sessions, only: [:index, :create]
-  end
-  %w(finance review).each do |step|
-    get "/idv/sessions/#{step}" => "idv/sessions##{step}"
-    match "/idv/sessions/#{step}" => "idv/sessions#update_#{step}", via: [:post, :put]
-  end
-  get '/idv/sessions/dupe' => 'idv/sessions#dupe'
-  get 'idv/phone' => 'idv/phone#new'
-  put 'idv/phone' => 'idv/phone#create'
+  get '/idv/questions' => 'idv/questions#index'
+  post '/idv/questions' => 'idv/questions#create'
+  get '/idv/confirmations' => 'idv/confirmations#index'
+  get '/idv/session' => 'idv/sessions#new'
+  put '/idv/session' => 'idv/sessions#create'
+  get '/idv/session/dupe' => 'idv/sessions#dupe'
+  get '/idv/finance' => 'idv/finance#new'
+  put '/idv/finance' => 'idv/finance#create'
+  get '/idv/phone' => 'idv/phone#new'
+  put '/idv/phone' => 'idv/phone#create'
+  get '/idv/review' => 'idv/review#new'
+  put '/idv/review' => 'idv/review#create'
 
   get '/phone_confirmation' => 'users/phone_confirmation#show'
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
