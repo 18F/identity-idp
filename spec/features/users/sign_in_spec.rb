@@ -91,6 +91,12 @@ feature 'Sign in' do
 
       expect(page).to have_css('#session-timeout-msg', text: warning_content)
 
+      request_headers = page.driver.network_traffic.flat_map(&:headers).uniq
+
+      ajax_headers = { 'name' => 'X-Requested-With', 'value' => 'XMLHttpRequest' }
+
+      expect(request_headers).to include ajax_headers
+
       find_link(t('forms.buttons.continue_browsing')).trigger('click')
 
       expect(current_path).to eq profile_path
@@ -107,7 +113,7 @@ feature 'Sign in' do
       visit root_path
       sleep 2
 
-      expect(page).to_not have_css('.alert')
+      expect(page).to_not have_css('#session-timeout-msg')
     end
 
     it 'does not render session_timeout/warning partial' do
@@ -138,24 +144,6 @@ feature 'Sign in' do
       click_button 'Log in'
 
       expect(page).to_not have_content t('errors.invalid_authenticity_token')
-      expect(current_path).to eq user_two_factor_authentication_path
-    end
-  end
-
-  context 'signed in, session times out, sign back in', js: true do
-    it 'prompts to enter OTP' do
-      allow(Rails.application.config).to receive(:session_check_frequency).and_return(1)
-      allow(Rails.application.config).to receive(:session_check_delay).and_return(1)
-      allow(Devise).to receive(:timeout_in).and_return(2.seconds)
-
-      user = sign_in_user(create(:user, :signed_up))
-      sleep 4
-      visit '/'
-
-      fill_in 'Email', with: user.email
-      fill_in 'Password', with: user.password
-      click_button 'Log in'
-
       expect(current_path).to eq user_two_factor_authentication_path
     end
   end

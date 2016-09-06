@@ -16,7 +16,7 @@ describe Users::SessionsController, devise: true do
   describe 'GET /active' do
     context 'when user is present' do
       before do
-        sign_in_as_user
+        stub_sign_in
 
         get :active
       end
@@ -54,7 +54,7 @@ describe Users::SessionsController, devise: true do
 
     context 'when user is present' do
       it 'sets live key to true' do
-        sign_in_as_user
+        stub_sign_in
         session[:session_expires_at] = Time.current + 10
         get :active
 
@@ -64,7 +64,7 @@ describe Users::SessionsController, devise: true do
       end
 
       it 'respects session_expires_at' do
-        sign_in_as_user
+        stub_sign_in
         session[:session_expires_at] = Time.current - 1
         get :active
 
@@ -88,7 +88,7 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'redirects to the homepage' do
-      sign_in_as_user
+      stub_sign_in
 
       get :timeout
 
