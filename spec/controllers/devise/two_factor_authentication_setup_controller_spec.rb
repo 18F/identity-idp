@@ -36,7 +36,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
         patch(
           :set,
           two_factor_setup_form: { phone: '703-555-0100',
-                                   voice: 'Confirm with voice call' }
+                                   otp_method: 'voice' }
         )
 
         expect(response).to redirect_to(

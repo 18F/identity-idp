@@ -1,12 +1,20 @@
 - title t('titles.two_factor_verification')
 
 h1.heading = t('headings.choose_otp_delivery')
-
-p#2fa-description = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
-
-= button_to t('devise.two_factor_authentication.buttons.confirm_with_sms'),
-  otp_send_path, class: 'btn btn-primary mb2', method: :get, params: { otp_method: :sms }
-= button_to t('devise.two_factor_authentication.buttons.confirm_with_voice'),
-  otp_send_path, class: 'btn btn-primary mb2', method: :get, params: { otp_method: :voice }
-
-p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
+p#2fa-description
+  = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
+= form_tag(otp_send_path, method: :get, role: 'form', class: 'mt3') do
+  .mb3
+    = label_tag 'otp_method',
+      t('devise.two_factor_authentication.otp_method.title'),
+      class: 'hide block caps ls-05 bold'
+    label.radio.mr2
+      = radio_button_tag :otp_method, :sms, checked: true
+      span.indicator
+      = t('devise.two_factor_authentication.otp_method.sms')
+    label.radio
+      = radio_button_tag :otp_method, :voice
+      span.indicator
+      = t('devise.two_factor_authentication.otp_method.voice')
+  = submit_tag t('forms.buttons.submit'), class: 'btn btn-primary btn-wide mb2'
+p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

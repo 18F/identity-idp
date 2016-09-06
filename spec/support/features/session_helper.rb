@@ -21,7 +21,7 @@ module Features
       user = create(:user, :unconfirmed)
       confirm_last_user
       fill_in 'password_form_password', with: VALID_PASSWORD
-      click_button 'Submit'
+      click_button t('forms.buttons.submit')
       user
     end
 
@@ -69,8 +69,8 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
-      click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
-      click_button 'Submit'
+      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit')
       user
     end
   end

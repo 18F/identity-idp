@@ -25,7 +25,7 @@ describe TwoFactorSetupForm do
     context 'when voice is selected' do
       before do
         subject.submit(phone: valid_phone,
-                       voice: 'Confirm with voice message')
+                       otp_method: 'voice')
       end
 
       it 'sets otp_method to "voice"' do
@@ -36,7 +36,7 @@ describe TwoFactorSetupForm do
     context 'when SMS is selected' do
       before do
         subject.submit(phone: valid_phone,
-                       sms: 'Confirm with text message')
+                       otp_method: 'sms')
       end
 
       it 'sets otp_method to "sms"' do
