@@ -12,7 +12,7 @@ class TwoFactorSetupForm
     self.phone = params[:phone].phony_formatted(
       format: :international, normalize: :US, spaces: ' '
     )
-    self.otp_method = params[:voice].present? ? :voice : :sms
+    self.otp_method = params[:otp_method] == 'voice' ? :voice : :sms
 
     valid?
   end

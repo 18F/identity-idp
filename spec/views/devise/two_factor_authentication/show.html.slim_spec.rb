@@ -14,10 +14,8 @@ describe 'devise/two_factor_authentication/show.html.slim' do
       allow(view).to receive(:current_user).and_return(user)
       render
 
-      expect(rendered).to have_button(t('devise.two_factor_authentication.' \
-                                        'buttons.confirm_with_sms'))
-      expect(rendered).to have_button(t('devise.two_factor_authentication.' \
-                                        'buttons.confirm_with_voice'))
+      expect(rendered).to have_content t('devise.two_factor_authentication.otp_method.sms')
+      expect(rendered).to have_content t('devise.two_factor_authentication.otp_method.voice')
     end
 
     it 'informs the user that an OTP will be sent to their number' do

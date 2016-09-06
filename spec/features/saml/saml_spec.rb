@@ -35,7 +35,7 @@ feature 'saml api', devise: true do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
+        click_button t('forms.buttons.submit')
 
         expect(current_path).to eq phone_confirmation_path
       end
@@ -53,7 +53,7 @@ feature 'saml api', devise: true do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button t('devise.two_factor_authentication.buttons.confirm_with_sms')
+        click_button t('forms.buttons.submit')
 
         expect(current_path).to eq phone_confirmation_path
       end

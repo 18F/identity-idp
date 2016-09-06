@@ -22,6 +22,7 @@ en:
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       setup_totp: Set up authentication app
+      submit: Submit
     required_field: Indicates a required field.
     phone_confirmation:
       header_text: Confirm your phone number

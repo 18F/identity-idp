@@ -35,3 +35,7 @@ en:
       buttons:
         confirm_with_sms: Confirm with text message
         confirm_with_voice: Confirm with voice call
+      otp_method:
+        title: Delivery method
+        sms: Text message (SMS)
+        voice: Phone call

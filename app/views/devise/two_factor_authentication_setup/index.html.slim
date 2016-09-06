@@ -10,10 +10,18 @@ h1.heading = t('devise.two_factor_authentication.two_factor_setup')
   p#2fa-description = t('devise.two_factor_authentication.otp_setup')
   = f.input :phone, as: :tel, label: 'Phone Number', required: true,
       input_html: { 'aria-describedby' => '2fa-description' }
-  = f.button :submit, t('devise.two_factor_authentication.buttons.' \
-    'confirm_with_sms'), class: 'mb2',
-      name: 'two_factor_setup_form[sms]'
-  = f.button :submit, t('devise.two_factor_authentication.buttons.' \
-    'confirm_with_voice'), class: 'mb2',
-    name: 'two_factor_setup_form[voice]'
+  .mb2
+    = label_tag 'two_factor_setup_form[otp_method]',
+      t('devise.two_factor_authentication.otp_method.title'),
+      class: 'block caps ls-05 bold'
+    label.radio.mr2
+      = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
+        checked: true
+      span.indicator
+      = t('devise.two_factor_authentication.otp_method.sms')
+    label.radio
+      = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
+      span.indicator
+      = t('devise.two_factor_authentication.otp_method.voice')
+  = f.button :submit, t('forms.buttons.submit'), class: 'mt2'
   p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
