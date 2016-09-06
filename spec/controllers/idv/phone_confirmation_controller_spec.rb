@@ -95,7 +95,7 @@ describe Idv::PhoneConfirmationController, devise: true do
       end
 
       context 'user enters an invalid code' do
-        before { post :confirm, code: '999', delivery_method: :sms }
+        before { post :confirm, code: '999', otp_method: :sms }
 
         it 'does not clear session data' do
           expect(subject.user_session[:idv_unconfirmed_phone]).to eq('+1 (555) 555-5555')
@@ -108,7 +108,7 @@ describe Idv::PhoneConfirmationController, devise: true do
 
         it 'redirects back phone_confirmation_path' do
           expect(response).to redirect_to(
-            idv_phone_confirmation_path(delivery_method: :sms)
+            idv_phone_confirmation_path(otp_method: :sms)
           )
         end
 

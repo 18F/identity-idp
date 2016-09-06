@@ -18,8 +18,8 @@ describe 'devise/two_factor_authentication/confirm_totp.html.slim' do
     render
 
     expect(rendered).to have_link('receive a code via SMS',
-                                  href: otp_send_path(delivery_method: :sms))
+                                  href: otp_send_path(otp_method: :sms))
     expect(rendered).to have_link('with a phone call',
-                                  href: otp_send_path(delivery_method: :voice))
+                                  href: otp_send_path(otp_method: :voice))
   end
 end

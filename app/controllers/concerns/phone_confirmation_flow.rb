@@ -72,18 +72,18 @@ module PhoneConfirmationFlow
     # user's session. Re-sending the confirmation code doesn't generate a new one.
     self.confirmation_code = generate_confirmation_code unless confirmation_code
 
-    if current_otp_delivery_method == :voice
+    if current_otp_method == :voice
       VoiceSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
     else
       SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
     end
-    flash[:success] = t("notices.send_code.#{current_otp_delivery_method}")
+    flash[:success] = t("notices.send_code.#{current_otp_method}")
   end
 
   def set_fallback_vars
     @fallback_confirmation_link = fallback_confirmation_link
     @sms_enabled = sms_enabled?
-    @current_otp_delivery_method = current_otp_delivery_method
+    @current_otp_method = current_otp_method
   end
 
   def fallback_confirmation_link
@@ -112,11 +112,11 @@ module PhoneConfirmationFlow
   end
 
   def sms_enabled?
-    current_otp_delivery_method == :sms
+    current_otp_method == :sms
   end
 
-  def current_otp_delivery_method
-    query_method = params[:delivery_method]
+  def current_otp_method
+    query_method = params[:otp_method]
     query_method.to_sym if
       %w(sms voice totp).include? query_method
   end

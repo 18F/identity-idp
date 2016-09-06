@@ -51,7 +51,7 @@ describe Users::PhoneConfirmationController, devise: true do
 
       context 'when choosing SMS OTP delivery' do
         it 'notifies the user of OTP transmission' do
-          get :send_code, delivery_method: :sms
+          get :send_code, otp_method: :sms
 
           expect(flash[:success]).to eq t('notices.send_code.sms')
         end
@@ -59,7 +59,7 @@ describe Users::PhoneConfirmationController, devise: true do
 
       context 'when choosing voice OTP delivery' do
         it 'notifies the user of OTP transmission' do
-          get :send_code, delivery_method: :voice
+          get :send_code, otp_method: :voice
 
           expect(flash[:success]).to eq t('notices.send_code.voice')
         end
@@ -109,7 +109,7 @@ describe Users::PhoneConfirmationController, devise: true do
       end
 
       context 'user enters an invalid code' do
-        before { post :confirm, code: '999', delivery_method: :sms }
+        before { post :confirm, code: '999', otp_method: :sms }
 
         it 'does not clear session data' do
           expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (555) 555-5555')
@@ -123,7 +123,7 @@ describe Users::PhoneConfirmationController, devise: true do
 
         it 'redirects back phone_confirmation_path' do
           expect(response).to redirect_to(
-            phone_confirmation_path(delivery_method: :sms)
+            phone_confirmation_path(otp_method: :sms)
           )
         end
 

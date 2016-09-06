@@ -15,11 +15,11 @@ module Idv
     private
 
     def this_phone_confirmation_path
-      idv_phone_confirmation_path(delivery_method: current_otp_delivery_method)
+      idv_phone_confirmation_path(otp_method: current_otp_method)
     end
 
-    def this_send_confirmation_code_path(delivery_method)
-      idv_phone_confirmation_send_path(delivery_method: delivery_method)
+    def this_send_confirmation_code_path(otp_method)
+      idv_phone_confirmation_send_path(otp_method: otp_method)
     end
 
     def confirmation_code_session_key

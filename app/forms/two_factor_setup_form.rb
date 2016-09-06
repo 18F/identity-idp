@@ -2,7 +2,7 @@ class TwoFactorSetupForm
   include ActiveModel::Model
   include FormPhoneValidator
 
-  attr_accessor :phone, :delivery_method
+  attr_accessor :phone, :otp_method
 
   def initialize(user)
     @user = user
@@ -12,7 +12,7 @@ class TwoFactorSetupForm
     self.phone = params[:phone].phony_formatted(
       format: :international, normalize: :US, spaces: ' '
     )
-    self.delivery_method = params[:voice].present? ? :voice : :sms
+    self.otp_method = params[:voice].present? ? :voice : :sms
 
     valid?
   end

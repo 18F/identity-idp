@@ -5,8 +5,8 @@ h1.heading = t('headings.choose_otp_delivery')
 p#2fa-description = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
 
 = button_to t('devise.two_factor_authentication.buttons.confirm_with_sms'),
-  otp_send_path, class: 'btn btn-primary mb2', method: :get, params: { delivery_method: :sms }
+  otp_send_path, class: 'btn btn-primary mb2', method: :get, params: { otp_method: :sms }
 = button_to t('devise.two_factor_authentication.buttons.confirm_with_voice'),
-  otp_send_path, class: 'btn btn-primary mb2', method: :get, params: { delivery_method: :voice }
+  otp_send_path, class: 'btn btn-primary mb2', method: :get, params: { otp_method: :voice }
 
 p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

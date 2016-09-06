@@ -7,9 +7,9 @@ p#2fa-description = t('devise.two_factor_authentication.choose_delivery_confirma
 
 = button_to t('devise.two_factor_authentication.buttons.' \
   'confirm_with_sms'), phone_confirmation_send_path,
-  class: 'btn btn-primary mb2', method: :get, params: { delivery_method: :sms }
+  class: 'btn btn-primary mb2', method: :get, params: { otp_method: :sms }
 = button_to t('devise.two_factor_authentication.buttons.' \
   'confirm_with_voice'), phone_confirmation_send_path,
-  class: 'btn btn-primary mb2', method: :get, params: { delivery_method: :voice }
+  class: 'btn btn-primary mb2', method: :get, params: { otp_method: :voice }
 
 p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
