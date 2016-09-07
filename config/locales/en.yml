@@ -181,6 +181,8 @@ en:
       duplicate_ssn: >
         An account already exists using the information you provided.
       missing_finance: You must provide a financial account ID.
+      invalid_ccn: Credit card number should be only last 8 digits.
+      bad_dob: Your date of birth must be a valid date.
     messages:
       hardfail: >
         To access your information with the participating agency’s website,

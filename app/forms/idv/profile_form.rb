@@ -9,7 +9,7 @@ module Idv
     validates :first_name, :last_name, :dob, :ssn,
               :address1, :city, :state, :zipcode, presence: true
 
-    validate :ssn_is_unique
+    validate :ssn_is_unique, :dob_is_sane
 
     delegate :user_id, :first_name, :last_name, :phone, :email, :dob, :ssn, :address1,
              :address2, :city, :state, :zipcode, to: :profile
@@ -37,6 +37,24 @@ module Idv
       if Profile.where.not(user_id: @user.id).where(ssn: ssn).any?
         errors.add :ssn, I18n.t('idv.errors.duplicate_ssn')
       end
+    end
+
+    def dob_is_sane
+      date = parsed_dob
+
+      return if date && dob_in_the_past?(date)
+
+      errors.add :dob, I18n.t('idv.errors.bad_dob')
+    end
+
+    def dob_in_the_past?(date)
+      date < Date.today
+    end
+
+    def parsed_dob
+      Date.parse(dob)
+    rescue
+      nil
     end
   end
 end
