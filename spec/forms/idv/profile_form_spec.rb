@@ -77,6 +77,24 @@ describe Idv::ProfileForm do
     end
   end
 
+  describe 'dob validity' do
+    context 'when dob is not parse-able' do
+      it 'is invalid' do
+        expect(subject.submit(profile_attrs.merge(dob: '00000000'))).to eq false
+        expect(subject.errors[:dob]).to eq [t('idv.errors.bad_dob')]
+      end
+    end
+
+    context 'when dob is in the future' do
+      it 'is invalid' do
+        expect(
+          subject.submit(profile_attrs.merge(dob: (Date.today + 1).strftime('%Y-%m-%d')))
+        ).to eq false
+        expect(subject.errors[:dob]).to eq [t('idv.errors.bad_dob')]
+      end
+    end
+  end
+
   describe '#submit' do
     it 'returns true on success' do
       expect(subject.submit(profile_attrs)).to eq true

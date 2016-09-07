@@ -8,6 +8,10 @@ module Idv
 
     validates :finance_type, :finance_account, presence: true
 
+    validates :finance_account,
+              format: { with: /\A\d{8}\z/, message: I18n.t('idv.errors.invalid_ccn') },
+              if: :ccn?
+
     validate :finance_type_valid
 
     def initialize(idv_params)
@@ -32,6 +36,10 @@ module Idv
     private
 
     attr_writer :finance_type, :finance_account
+
+    def ccn?
+      finance_type == :ccn
+    end
 
     def finance_type_valid
       unless finance_type.present? && FINANCE_TYPES.include?(finance_type.to_sym)

@@ -27,5 +27,22 @@ describe Idv::FinanceForm do
     it 'fails when missing all finance fields' do
       expect(subject.submit(foo: 'bar')).to eq false
     end
+
+    context 'when CCN is not 8 digits' do
+      it 'fails when alpha' do
+        expect(subject.submit(finance_account: '1234567a', finance_type: :ccn)).to eq false
+        expect(subject.errors[:finance_account]).to eq([t('idv.errors.invalid_ccn')])
+      end
+
+      it 'fails when long' do
+        expect(subject.submit(finance_account: '123456789', finance_type: :ccn)).to eq false
+        expect(subject.errors[:finance_account]).to eq([t('idv.errors.invalid_ccn')])
+      end
+
+      it 'fails when short' do
+        expect(subject.submit(finance_account: '1234567', finance_type: :ccn)).to eq false
+        expect(subject.errors[:finance_account]).to eq([t('idv.errors.invalid_ccn')])
+      end
+    end
   end
 end
