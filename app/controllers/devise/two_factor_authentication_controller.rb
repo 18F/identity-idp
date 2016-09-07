@@ -19,7 +19,7 @@ module Devise
     end
 
     def show
-      if use_totp?
+      if current_otp_method == :totp
         show_totp_prompt
       else
         @phone_number = user_decorator.masked_two_factor_phone_number
@@ -51,12 +51,6 @@ module Devise
 
     def check_already_authenticated
       redirect_to profile_path if user_fully_authenticated?
-    end
-
-    def use_totp?
-      # Present the TOTP entry screen to users who are TOTP enabled,
-      # unless the user explictly selects SMS or voice
-      current_user.totp_enabled? && !use_sms_or_voice_otp_delivery?
     end
 
     def verify_user_is_not_second_factor_locked
