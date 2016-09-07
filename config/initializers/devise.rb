@@ -268,5 +268,4 @@ Devise.setup do |config|
   config.otp_length = 6
   config.direct_otp_length = 6
   config.direct_otp_valid_for = 5.minutes
-  config.enable_auto_send_otp = false # disable auto-sending of OTP after authentication
 end

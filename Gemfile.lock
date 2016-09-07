@@ -7,9 +7,9 @@ GIT
       dotenv
 
 GIT
-  remote: https://github.com/amoose/two_factor_authentication.git
-  revision: 58521f467ab0e3a8b02342f9d7ae11bbf9afdb14
-  branch: feature/more_options
+  remote: https://github.com/Houdini/two_factor_authentication.git
+  revision: 1d6abe30a61c849863d6ec3f6f9e44f978d7b181
+  ref: 1d6abe3
   specs:
     two_factor_authentication (1.1.5)
       devise
@@ -410,7 +410,7 @@ GEM
     request_store (1.3.1)
     responders (2.2.0)
       railties (>= 4.2.0, < 5.1)
-    rotp (3.1.0)
+    rotp (3.2.0)
     rqrcode (0.10.1)
       chunky_png (~> 1.0)
     rspec (3.4.0)
