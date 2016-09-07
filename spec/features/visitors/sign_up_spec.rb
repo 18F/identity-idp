@@ -16,11 +16,13 @@ feature 'Sign Up', devise: true do
   scenario 'visitor can sign up with valid email address' do
     email = 'test@example.com'
     sign_up_with(email)
-    expect(page).to have_content(
-      t('devise.registrations.signed_up_but_unconfirmed.message_start') +
-      " #{email} " +
-      t('devise.registrations.signed_up_but_unconfirmed.message_end')
-    )
+
+    expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_start')
+    expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_end')
+    expect(page).
+      to have_content t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')
+    expect(page).to have_content email
+    expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
   end
 
   # Scenario: Visitor can sign up and confirm with valid email address and password
@@ -253,12 +255,13 @@ feature 'Sign Up', devise: true do
     user = create(:user, email: 'existing_user@example.com')
     sign_up_with('existing_user@example.com')
 
-    expect(page).to have_content(
-      t('devise.registrations.signed_up_but_unconfirmed.message_start') +
-      " #{user.email} " +
-      t('devise.registrations.signed_up_but_unconfirmed.message_end')
-    )
-    expect(number_of_emails_sent).to eq 0
+    expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_start')
+    expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_end')
+    expect(page).
+      to have_content t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')
+    expect(page).to have_content user.email
+    expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
+    expect(last_email.html_part.body).to have_content 'This email address is already in use.'
   end
 
   # Scenario: Visitor signs up but confirms with an expired token

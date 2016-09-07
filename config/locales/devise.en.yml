@@ -57,11 +57,6 @@ en:
       signed_up: "Welcome! You have signed up successfully."
       signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."
       signed_up_but_locked: "You have signed up successfully. However, we could not sign you in because your account is locked."
-      signed_up_but_unconfirmed:
-        message_start: We sent an email to
-        message_end: >
-          with a link to confirm your email address. Please click on the
-          link in your email to continue signing up.
       email_update_needs_confirmation: >
         You updated your account successfully, but we need to verify your new
         email address. Please check your email and follow the confirm link to

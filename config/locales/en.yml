@@ -46,7 +46,7 @@ en:
       password: Your new password must be at least %{min_length} characters.
 
   links:
-    resend: Resend
+    resend: Try resending the confirmation instructions.
     sign_out: Sign out
     sign_in: Log in
     sign_up: Sign up
@@ -69,6 +69,12 @@ en:
     send_code:
       voice: You will be called with your one-time passcode.
       sms: Your one-time passcode has been sent via text message.
+    signed_up_but_unconfirmed:
+      first_paragraph_start: We sent an email to
+      first_paragraph_end: >
+        with a link to confirm your email address. Please click on the
+        link in your email to continue signing up.
+      no_email_sent_explanation_start: Didn't receive an email?
   session_timedout: >
     For your security, you’ve been logged out due to inactivity. Please log in again.
   session_timeout_warning: >-
