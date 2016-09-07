@@ -17,7 +17,7 @@ locally, `make test` will run the rspec tests.
 
 ### Dependencies
 
-- Ruby 2.3.0
+- Ruby 2.3.1
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v4.4.x](https://nodejs.org)
@@ -75,10 +75,15 @@ more information.
         $ make run
 
 If you want to develop without and internet connection, you can set
-`RAILS_OFFLINE=1` in your envrionment.  This disables the `mx` record
-check on emails addresses.
+`RAILS_OFFLINE=1` in your environment.  This disables the `mx` record
+check on email addresses.
+
+If you want to measure the app's performance in development, set the
+`rack_mini_profiler` option to `'on'` in `config/application.yml` and
+restart the server. See the [rack_mini_profiler] gem for more details.
 
 [Laptop]: https://github.com/18F/laptop
+[rack_mini_profiler]: https://github.com/MiniProfiler/rack-mini-profiler
 
 ### Running Tests
 

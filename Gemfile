@@ -65,7 +65,7 @@ group :development do
   gem 'guard-rspec', require: false
   gem 'overcommit', require: false
   gem 'quiet_assets'
-  gem 'rack-mini-profiler'
+  gem 'rack-mini-profiler', require: false
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
