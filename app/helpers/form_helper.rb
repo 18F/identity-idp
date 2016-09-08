@@ -19,7 +19,6 @@ module FormHelper
   # This method is single statement spread across many lines for readability
   def us_states_territories
     [
-      ['--', ''],
       ['Alabama', 'AL'],
       ['Alaska', 'AK'],
       ['American Samoa', 'AS'],
