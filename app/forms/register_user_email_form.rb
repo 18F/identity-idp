@@ -13,7 +13,7 @@ class RegisterUserEmailForm
   end
 
   def submit(params)
-    user.email = params[:email]
+    user.email = params[:email].downcase
 
     if valid_form?
       user.save!
@@ -22,15 +22,15 @@ class RegisterUserEmailForm
     end
   end
 
-  def valid_form?
-    valid? && !email_taken?
-  end
-
   def email_taken?
     @email_taken == true
   end
 
   private
+
+  def valid_form?
+    valid? && !email_taken?
+  end
 
   def process_errors
     # To prevent discovery of existing emails, we check to see if the email is

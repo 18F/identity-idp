@@ -1,61 +1,53 @@
 require 'rails_helper'
 
 describe UpdateUserEmailForm do
-  let(:user) { build_stubbed(:user, :signed_up) }
-  subject { UpdateUserEmailForm.new(user) }
+  subject { UpdateUserEmailForm.new(User.new(email: 'old@gmail.com')) }
 
-  it do
-    is_expected.
-      to validate_presence_of(:email).
-      with_message(t('valid_email.validations.email.invalid'))
-  end
+  it_behaves_like 'email validation'
 
-  describe 'email validation' do
-    it 'uses the valid_email gem with mx and ban_disposable options' do
-      email_validator = subject._validators.values.flatten.
-                        detect { |v| v.class == EmailValidator }
+  describe '#email_changed?' do
+    it 'is false when the submitted email is the same as the current email' do
+      result = subject.submit(email: 'OLD@gmail.com')
 
-      expect(email_validator.options).
-        to eq(mx: true, ban_disposable_email: true)
+      expect(result).to be true
+      expect(subject.email_changed?).to eq false
     end
   end
 
-  describe 'email uniqueness' do
-    context 'when email is already taken' do
-      it 'is invalid' do
-        second_user = build_stubbed(:user, :signed_up, email: 'taken@gmail.com')
-        allow(User).to receive(:exists?).with(email: second_user.email).and_return(true)
+  describe '#submit' do
+    context "when the user attempts to change their email to another user's email" do
+      it 'sends an email alerting the other user' do
+        user = create(:user, email: 'old@gmail.com')
+        subject = UpdateUserEmailForm.new(user)
+        _second_user = create(:user, :signed_up, email: 'another@gmail.com')
 
-        subject.email = second_user.email
+        expect(user).to receive(:skip_confirmation_notification!).and_call_original
 
-        expect(subject.valid_form?).to be false
+        mailer = instance_double(ActionMailer::MessageDelivery)
+        expect(UserMailer).to receive(:signup_with_your_email).
+          with('another@gmail.com').and_return(mailer)
+        expect(mailer).to receive(:deliver_later)
+
+        result = subject.submit(email: 'ANOTHER@gmail.com')
+
+        expect(result).to be true
+        expect(subject.email_changed?).to eq true
+        expect(user.unconfirmed_email).to be_nil
+        expect(user.email).to eq 'old@gmail.com'
       end
     end
 
-    context 'when email is not already taken' do
-      it 'is valid' do
-        subject.email = 'not_taken@gmail.com'
+    context 'when the user changes their email to a nonexistent email' do
+      it "updates the user's unconfirmed_email" do
+        user = create(:user, email: 'old@gmail.com')
+        subject = UpdateUserEmailForm.new(user)
 
-        expect(subject.valid_form?).to be true
-      end
-    end
+        result = subject.submit(email: 'new@example.com')
 
-    context 'when email is same as current user' do
-      it 'is valid' do
-        subject.email = user.email
-
-        expect(subject.valid_form?).to be true
-      end
-    end
-
-    context 'when email is nil' do
-      it 'does not add already taken errors' do
-        subject.email = nil
-
-        expect(subject.valid_form?).to be false
-        expect(subject.instance_variable_get(:@email_taken)).to be_nil
-        expect(subject.errors[:email].uniq).
-          to eq [t('valid_email.validations.email.invalid')]
+        expect(user.unconfirmed_email).to eq 'new@example.com'
+        expect(user.email).to eq 'old@gmail.com'
+        expect(result).to be true
+        expect(subject.email_changed?).to eq true
       end
     end
   end

@@ -151,7 +151,7 @@ describe Users::PasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with('Password Reset Request', user_id: tech_user.uuid, role: 'tech')
 
-        put :create, user: { email: 'tech@example.com' }
+        put :create, user: { email: 'TECH@example.com' }
       end
     end
 
@@ -165,7 +165,7 @@ describe Users::PasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with('Password Reset Request', user_id: admin.uuid, role: 'admin')
 
-        put :create, user: { email: 'admin@example.com' }
+        put :create, user: { email: 'ADMIN@example.com' }
       end
     end
   end

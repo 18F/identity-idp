@@ -122,7 +122,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).with('Authentication Attempt', user_id: user.uuid)
       expect(@analytics).to receive(:track_event).with('Authentication Successful')
 
-      post :create, user: { email: user.email, password: user.password }
+      post :create, user: { email: user.email.upcase, password: user.password }
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
