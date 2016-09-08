@@ -32,6 +32,26 @@
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 Phone number
         .sm-col.sm-col-7.px1 = p.phone
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Address
+        .sm-col.sm-col-7.px1
+          | #{p.address1}<br>
+          - if p.address2.present?
+            | #{p.address2}<br>
+          | #{p.city}, #{p.state} #{p.zipcode}
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Date of birth
+        .sm-col.sm-col-7.px1 #{p.dob.to_time.to_s(:date_pretty)}
+    .py-12p.border-top
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Social Security Number (SSN)
+        .sm-col.sm-col-7.px1 = "***-**-#{p.ssn[-4..-1]}"
+    .py-12p.border-top.border-bottom
+      .clearfix.mxn1
+        .sm-col.sm-col-5.px1 Phone number
+        .sm-col.sm-col-7.px1 = p.phone
 
 h2.heading = t('headings.profile.login_info')
 .mt3.mb4
@@ -56,7 +76,7 @@ h2.heading = t('headings.profile.login_info')
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_phone_path, \
           class: btn_cls
-  .py-12p.border-top.border-bottom
+  .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = 'Authentication app'
       .sm-col.sm-col-2.px1.sm-right-align
@@ -64,8 +84,12 @@ h2.heading = t('headings.profile.login_info')
           = button_to 'Disable', disable_totp_url, method: :delete, \
             class: btn_cls
         - else
-          = link_to 'Enable', authenticator_start_url, \
-            class: btn_cls
+          = link_to 'Enable', authenticator_start_url, class: btn_cls
+  .py-12p.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-10.px1 = 'Rescue codes'
+      .sm-col.sm-col-2.px1.sm-right-align
+        = link_to 'Regenerate', rescue_codes_url, class: btn_cls
 
 h2.heading = t('headings.profile.agencies')
 .mt3.mb2

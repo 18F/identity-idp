@@ -19,20 +19,27 @@ module Devise
     end
 
     def show
-      if use_totp?
-        show_totp_prompt
+      if current_otp_method == :totp
+        render :confirm_totp
       else
         @phone_number = user_decorator.masked_two_factor_phone_number
       end
     end
 
     def confirm
-      @phone_number = user_decorator.masked_two_factor_phone_number
-      @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+      if current_otp_method == :totp
+        render :confirm_totp
+      elsif current_otp_method == :rescue_code
+        render :confirm_rescue_code
+      else
+        @phone_number = user_decorator.masked_two_factor_phone_number
+        @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+        render :confirm
+      end
     end
 
     def send_code
-      analytics.track_event("User requested #{current_otp_method} OTP delivery")
+      analytics.track_event("User requested OTP method: #{current_otp_method}")
       send_user_otp
       flash[:success] = t("notices.send_code.#{current_otp_method}")
     end
@@ -40,7 +47,7 @@ module Devise
     def update
       reset_attempt_count_if_user_no_longer_locked_out
 
-      if resource.authenticate_otp(params[:code].strip)
+      if valid_otp?(params[:code].strip)
         handle_valid_otp
       else
         handle_invalid_otp
@@ -49,14 +56,20 @@ module Devise
 
     private
 
-    def check_already_authenticated
-      redirect_to profile_path if user_fully_authenticated?
+    def valid_otp?(code)
+      case current_otp_method
+      when :totp
+        return resource.authenticate_totp(code)
+      when :rescue_code
+        code.tr!('-', '')
+        return resource.authenticate_backup_code(code)
+      else
+        return resource.authenticate_direct_otp(code)
+      end
     end
 
-    def use_totp?
-      # Present the TOTP entry screen to users who are TOTP enabled,
-      # unless the user explictly selects SMS or voice
-      current_user.totp_enabled? && !use_sms_or_voice_otp_delivery?
+    def check_already_authenticated
+      redirect_to profile_path if user_fully_authenticated?
     end
 
     def verify_user_is_not_second_factor_locked
@@ -86,25 +99,21 @@ module Devise
       redirect_to after_sign_in_path_for(resource)
     end
 
-    def show_direct_otp_prompt
-      redirect_to otp_confirm_path(otp_method: current_otp_method)
-    end
-
-    def show_totp_prompt
-      render :confirm_totp
-    end
-
     def handle_invalid_otp
       analytics.track_event('User entered invalid 2FA code')
 
       update_invalid_resource if resource.two_factor_enabled?
 
-      flash[:error] = t('devise.two_factor_authentication.attempt_failed')
+      flash[:error] = if current_otp_method == :rescue_code
+                        t('devise.two_factor_authentication.invalid_rescue_code')
+                      else
+                        t('devise.two_factor_authentication.attempt_failed')
+                      end
 
       if user_decorator.blocked_from_entering_2fa_code?
         handle_second_factor_locked_resource
       else
-        prompt_for_otp_reentry
+        redirect_to otp_confirm_path(otp_method: current_otp_method)
       end
     end
 
@@ -123,17 +132,9 @@ module Devise
       sign_out
     end
 
-    def prompt_for_otp_reentry
-      if current_otp_method == :totp
-        show_totp_prompt
-      else
-        show_direct_otp_prompt
-      end
-    end
-
     def send_user_otp
       current_user.send_new_otp(otp_method: current_otp_method)
-      show_direct_otp_prompt
+      redirect_to otp_confirm_path(otp_method: current_otp_method)
     end
 
     def user_decorator

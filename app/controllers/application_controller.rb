@@ -67,11 +67,15 @@ class ApplicationController < ActionController::Base
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
-    return if decorated_user.may_bypass_2fa?(session) || user_fully_authenticated?
+    return if decorated_user.may_bypass_2fa?(session)
 
     return prompt_to_set_up_2fa unless current_user.two_factor_enabled?
 
-    prompt_to_enter_otp
+    return prompt_to_enter_otp unless user_fully_authenticated?
+
+    if !current_user.backup_codes_downloaded && controller_name != 'rescue_codes'
+      return redirect_to rescue_codes_url
+    end
   end
 
   def prompt_to_set_up_2fa

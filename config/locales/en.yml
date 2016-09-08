@@ -28,6 +28,7 @@ en:
       header_text: Confirm your phone number
     two_factor:
       code: One-time passcode
+      rescue_code: Rescue code
     totp_setup:
       code: One-time passcode
       totp_info: >
@@ -81,6 +82,7 @@ en:
     You’ll be logged out of your account in %{time_left_in_session} due to
     inactivity. If you’d like to remain logged in, please click the button below.
   titles:
+    rescue_codes: Download your rescue codes
     confirmations:
       new: Resend confirmation instructions for your account
       show: Create a password for your account
@@ -112,6 +114,7 @@ en:
       index: Welcome
 
   headings:
+    rescue_codes: Download your rescue codes
     admin:
       index: Admin Interface
     confirmations:

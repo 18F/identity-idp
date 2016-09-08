@@ -9,6 +9,7 @@ FactoryGirl.define do
     trait :with_phone do
       phone '+1 (202) 555-1212'
       phone_confirmed_at Time.zone.now
+      backup_codes_downloaded true
     end
 
     trait :admin do

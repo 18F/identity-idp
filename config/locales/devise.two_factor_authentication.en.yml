@@ -2,9 +2,13 @@ en:
   devise:
     two_factor_authentication:
       attempt_failed: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
+      invalid_rescue_code: Invalid rescue code.
       contact_administrator: Please contact your system administrator.
       header_text: Enter your one-time passcode
       totp_header_text: Enter your Authenticator code
+      rescue_code_header_text: Enter a rescue code
+      rescue_code_prompt: >
+        Please enter one of your 10 rescue codes. Each code can only be used once.
       max_login_attempts_reached: >
         Your account is temporarily locked because you have entered the
         one-time passcode incorrectly too many times.
@@ -39,3 +43,6 @@ en:
         title: Delivery method
         sms: Text message (SMS)
         voice: Phone call
+      rescue_code_fallback:
+        text: Don't have access to your phone? Use a %{link} instead.
+        link: rescue code
