@@ -26,6 +26,9 @@ html lang="#{I18n.locale}"
       <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
     <![endif]-->
 
+    - if Figaro.env.google_analytics_key.present?
+      = render 'shared/google_analytics/page_tracking'
+
   body class="#{Rails.env}-env site"
     .site-wrap
       = render 'shared/usa_banner'
@@ -36,3 +39,9 @@ html lang="#{I18n.locale}"
   - if current_user
     #session-timeout-cntnr
     = auto_session_timeout_js
+
+  - if Figaro.env.participate_in_dap == 'yes'
+    <!-- We participate in the US government's analytics program. -->
+    <!-- See the data at analytics.usa.gov. -->
+    - dap_source = 'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA'
+    <script async type='text/javascript' src='#{dap_source}' id='_fed_an_ua_tag'></script>

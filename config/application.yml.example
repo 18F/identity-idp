@@ -45,6 +45,7 @@ production:
   otp_delivery_blocklist_bantime: '10'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '5'
+  participate_in_dap: 'no'
   proxy_addr: '123.456.789'
   proxy_port: '80'
   redis_url: 'redis://localhost:6379/0'
