@@ -3,6 +3,7 @@ module SamlIdpAuthConcern
 
   included do
     before_action :validate_saml_request, only: :auth
+    before_action :validate_service_provider, only: :auth
     before_action :verify_authn_context, only: :auth
     before_action :store_saml_request_in_session, only: :auth
     before_action :confirm_two_factor_authenticated, only: :auth
@@ -14,6 +15,17 @@ module SamlIdpAuthConcern
     return if Saml::Idp::Constants::VALID_AUTHNCONTEXTS.include?(requested_authn_context)
 
     process_invalid_authn_context
+  end
+
+  def validate_service_provider
+    return if current_service_provider.valid?
+
+    analytics.track_event(
+      :invalid_service_provider,
+      service_provider: current_service_provider.issuer
+    )
+
+    render nothing: true, status: :unauthorized
   end
 
   # stores original SAMLRequest in session to continue SAML Authn flow

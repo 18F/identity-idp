@@ -20,6 +20,10 @@ class ServiceProvider
     }
   end
 
+  def valid?
+    VALID_SERVICE_PROVIDERS.include?(issuer)
+  end
+
   private
 
   def sp_attributes

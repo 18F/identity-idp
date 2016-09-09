@@ -43,11 +43,7 @@ SecureHeaders::Configuration.default do |config|
 end
 
 SecureHeaders::Configuration.override(:saml) do |config|
-  providers = YAML.load_file("#{Rails.root}/config/service_providers.yml")
-  providers = providers.fetch(Rails.env, {})
-  providers.symbolize_keys!
-
-  provider_attributes = providers[:valid_hosts].values
+  provider_attributes = SERVICE_PROVIDERS.values
 
   acs_urls = provider_attributes.map { |hash| hash['acs_url'] }
 
