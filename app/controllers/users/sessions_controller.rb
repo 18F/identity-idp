@@ -36,7 +36,7 @@ module Users
     end
 
     def track_authentication_attempt(email)
-      existing_user = User.find_by_email(email)
+      existing_user = User.find_by_email(email.downcase)
 
       if existing_user
         return analytics.track_event('Authentication Attempt', user_id: existing_user.uuid)

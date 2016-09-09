@@ -42,17 +42,16 @@ describe Users::EditEmailController do
 
     context "user changes email to another user's email address" do
       it 'lets user know they need to confirm their new email' do
-        sign_in(user)
+        stub_sign_in
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        put :update, update_user_email_form: { email: second_user.email }
+        put :update, update_user_email_form: { email: second_user.email.upcase }
 
         expect(response).to redirect_to profile_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
         expect(response).to render_template('user_mailer/signup_with_your_email')
-        expect(user.reload.email).to eq 'old_email@example.com'
         expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')
         expect(@analytics).to have_received(:track_event).
           with('User attempted to change their email to an existing email')
