@@ -34,7 +34,7 @@ describe Idv::ProfileForm do
 
   it do
     is_expected.
-      to validate_presence_of(:dob).with_message("can't be blank")
+      to validate_presence_of(:dob).with_message(t('idv.errors.bad_dob'))
   end
 
   it do
