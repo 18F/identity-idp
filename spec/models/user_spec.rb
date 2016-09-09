@@ -177,18 +177,6 @@ describe User do
     end
   end
 
-  describe '#send_two_factor_authentication_code' do
-    it 'calls UserOtpSender#send_otp' do
-      user = build_stubbed(:user)
-      otp_sender = instance_double(UserOtpSender)
-
-      expect(UserOtpSender).to receive(:new).with(user).and_return(otp_sender)
-      expect(otp_sender).to receive(:send_otp).with(123, {})
-
-      user.send_two_factor_authentication_code(123)
-    end
-  end
-
   describe 'OTP length' do
     it 'uses Devise setting when set' do
       allow(Devise).to receive(:direct_otp_length).and_return(10)

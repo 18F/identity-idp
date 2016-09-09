@@ -30,8 +30,19 @@ class User < ActiveRecord::Base
     phone.present?
   end
 
-  def send_two_factor_authentication_code(code, options = {})
-    UserOtpSender.new(self).send_otp(code, options)
+  def send_two_factor_authentication_code(_code)
+    # The two_factor_authentication gem assumes that if a user needs to receive
+    # a code, the code should be automatically sent right after Warden signs
+    # the user in by calling this method. However, we don't want a code to be
+    # automatically sent until the user has reached the TwoFactorAuthenticationController,
+    # where we prompt them to select how they would like to receive the OTP code.
+    # Sending an OTP code is not a User responsibility. It belongs either in the
+    # controller, or in a dedicated class that the controller sends messages to.
+    # Based on the delivery method chosen by the user, the controller calls the
+    # appropriate background job to send the code, such as SmsSenderOtpJob.
+    #
+    # Hence, we define this method as a no-op method, meaning it doesn't do anything.
+    # See https://github.com/18F/identity-idp/pull/452 for more details.
   end
 
   def confirmation_period_expired?

@@ -72,11 +72,10 @@ module PhoneConfirmationFlow
     # user's session. Re-sending the confirmation code doesn't generate a new one.
     self.confirmation_code = generate_confirmation_code unless confirmation_code
 
-    if current_otp_method == :voice
-      VoiceSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
-    else
-      SmsSenderOtpJob.perform_later(confirmation_code, unconfirmed_phone)
-    end
+    job = "#{current_otp_method.to_s.capitalize}SenderOtpJob".constantize
+
+    job.perform_later(confirmation_code, unconfirmed_phone)
+
     flash[:success] = t("notices.send_code.#{current_otp_method}")
   end
 
@@ -117,7 +116,9 @@ module PhoneConfirmationFlow
 
   def current_otp_method
     query_method = params[:otp_method]
-    query_method.to_sym if
-      %w(sms voice totp).include? query_method
+
+    return :sms unless %w(sms voice totp).include? query_method
+
+    query_method.to_sym
   end
 end

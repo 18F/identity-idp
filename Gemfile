@@ -41,9 +41,7 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'split', require: 'split/dashboard'
 gem 'twilio-ruby'
-# TODO(amos): Unfork this gem: https://github.com/18F/identity-private/issues/708
-gem 'two_factor_authentication', github: 'amoose/two_factor_authentication',
-                                 branch: 'feature/more_options'
+gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication', ref: '1d6abe3'
 gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'xmlenc', '~> 0.6.4'

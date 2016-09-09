@@ -29,11 +29,9 @@ module OtpDeliveryFallback
 
   def current_otp_method
     query_method = params[:otp_method]
-    query_method.to_sym if
-      %w(sms voice totp).include? query_method
-  end
 
-  def use_sms_or_voice_otp_delivery?
-    %i(sms voice).include? current_otp_method
+    return :sms unless %w(sms voice totp).include? query_method
+
+    query_method.to_sym
   end
 end
