@@ -196,6 +196,21 @@ describe SamlIdpController do
       end
     end
 
+    context 'service provider is invalid' do
+      it 'responds with a 401 Unauthorized error' do
+        user = create(:user, :signed_up)
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        generate_saml_response(user, invalid_service_provider_settings)
+
+        expect(response.status).to eq(401)
+        expect(@analytics).to have_received(:track_event).
+          with(:invalid_service_provider, service_provider: 'invalid_provider')
+      end
+    end
+
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
         head '/api/saml/auth?SAMLRequest=bang!'
@@ -639,6 +654,7 @@ describe SamlIdpController do
         stub_analytics
         stub_auth
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
+        allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
 
         expect(@analytics).to receive(:track_event).with('GET request for saml_idp#auth')
         expect(@analytics).to receive(:track_event).with('SAML Auth (idv=true)')
@@ -669,6 +685,7 @@ describe SamlIdpController do
         :disable_caching,
         [:apply_secure_headers_override, only: [:auth, :logout]],
         [:validate_saml_request, only: :auth],
+        [:validate_service_provider, only: :auth],
         [:verify_authn_context, only: :auth],
         [:store_saml_request_in_session, only: :auth],
         [:confirm_two_factor_authenticated, only: :auth]

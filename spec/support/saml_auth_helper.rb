@@ -76,6 +76,12 @@ module SamlAuthHelper
     settings
   end
 
+  def invalid_service_provider_settings
+    settings = saml_settings.dup
+    settings.issuer = 'invalid_provider'
+    settings
+  end
+
   def sp1_saml_settings
     settings = saml_settings.dup
     settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'

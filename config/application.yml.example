@@ -33,6 +33,7 @@ development:
   session_timeout_in: '15'
   telephony_disabled: 'true'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
+  valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov"]'
 
 production:
   allow_third_party_auth: 'yes'
@@ -56,6 +57,7 @@ production:
   session_timeout_in: '8'
   smtp_settings: '{"address":"smtp.mandrillapp.com", "port":587, "authentication":"login", "enable_starttls_auto":true, "user_name":"user@gmail.com","password":"xxx"}'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
+  valid_service_providers: '["https://upaya-dev.18f.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo", "https://dashboard.demo.login.gov", "https://dashboard.qa.login.gov", "https://dashboard.dev.login.gov"]'
 
 test:
   allow_third_party_auth: 'yes'
@@ -78,3 +80,4 @@ test:
   secret_key_base: 'test_secret_key_base'
   session_timeout_in: '8'
   twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
+  valid_service_providers: '["http://localhost:3000", "https://rp1.serviceprovider.com/auth/saml/metadata", "https://rp2.serviceprovider.com/auth/saml/metadata", "http://test.host"]'

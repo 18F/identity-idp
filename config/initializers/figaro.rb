@@ -3,5 +3,5 @@ Figaro.require_keys(
   'logins_per_ip_limit', 'logins_per_ip_period', 'otp_delivery_blocklist_bantime',
   'otp_delivery_blocklist_findtime', 'otp_delivery_blocklist_maxretry',
   'requests_per_ip_limit', 'requests_per_ip_period', 'saml_passphrase',
-  'secret_key_base', 'session_timeout_in', 'twilio_accounts'
+  'secret_key_base', 'session_timeout_in', 'twilio_accounts', 'valid_service_providers'
 )

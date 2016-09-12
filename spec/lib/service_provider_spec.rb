@@ -38,40 +38,6 @@ describe ServiceProvider do
 
       it_behaves_like 'invalid service provider'
     end
-
-    context 'when the app is running on a superb legit domain' do
-      before do
-        allow(Figaro.env).to receive(:domain_name).and_return('superb.legit.domain.gov')
-        ServiceProviderConfig.fetch_providers_from_domain_name_or_rails_env
-      end
-
-      after do
-        allow(Figaro.env).to receive(:domain_name).and_return('')
-        ServiceProviderConfig.fetch_providers_from_domain_name_or_rails_env
-      end
-
-      context 'when the host is valid in the current env but not on the legit domain' do
-        before { @service_provider = ServiceProvider.new('http://test.host') }
-
-        it_behaves_like 'invalid service provider'
-      end
-
-      context 'when the host is valid on the legit domain' do
-        it 'uses the config from the domain_name key' do
-          service_provider = ServiceProvider.new('urn:govheroku:serviceprovider')
-
-          yaml_attributes = ServiceProviderConfig.new(
-            issuer: 'urn:govheroku:serviceprovider'
-          ).sp_attributes
-
-          fingerprint = {
-            fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa'
-          }
-
-          expect(service_provider.metadata).to eq yaml_attributes.merge!(fingerprint)
-        end
-      end
-    end
   end
 
   describe '#encryption_opts' do
@@ -102,6 +68,24 @@ describe ServiceProvider do
         expect(OpenSSL::X509::Certificate).to receive(:new).with(cert)
 
         sp.encryption_opts
+      end
+    end
+  end
+
+  describe '#valid?' do
+    context 'when the service provider is not included in the list of authorized providers' do
+      it 'returns false' do
+        sp = ServiceProvider.new('foo')
+
+        expect(sp.valid?).to be false
+      end
+    end
+
+    context 'when the service provider is included in the list of authorized providers' do
+      it 'returns true' do
+        sp = ServiceProvider.new('http://localhost:3000')
+
+        expect(sp.valid?).to be true
       end
     end
   end
