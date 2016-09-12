@@ -72,6 +72,18 @@ describe Users::SessionsController, devise: true do
 
         expect(json['live']).to eq false
       end
+
+      it 'updates pinged_at session key' do
+        stub_sign_in
+        now = Time.current
+        session[:pinged_at] = now
+
+        Timecop.travel(Time.current + 10)
+        get :active
+        Timecop.return
+
+        expect(session[:pinged_at]).to_not eq(now)
+      end
     end
   end
 

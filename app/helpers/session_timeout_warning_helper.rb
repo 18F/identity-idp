@@ -1,14 +1,14 @@
 module SessionTimeoutWarningHelper
   def frequency
-    Rails.application.config.session_check_frequency
+    (Figaro.env.session_check_frequency || 150).to_i
   end
 
   def start
-    Rails.application.config.session_check_delay
+    (Figaro.env.session_check_delay || 30).to_i
   end
 
   def warning
-    Rails.application.config.session_timeout_warning_seconds
+    (Figaro.env.session_timeout_warning_seconds || 30).to_i
   end
 
   def auto_session_timeout_js

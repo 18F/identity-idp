@@ -26,7 +26,15 @@ const validate = {
   },
 
   validateForm(e) {
-    if (!this.form.checkValidity()) e.preventDefault();
+    if (!this.form.checkValidity()) {
+      if (this.pageUnloader) {
+        window.onbeforeunload = this.pageUnloader;
+      }
+      e.preventDefault();
+    } else {
+      this.pageUnloader = window.onbeforeunload;
+      window.onbeforeunload = false;
+    }
 
     const fields = this.form.querySelectorAll('.field');
     for (let i = 0; i < fields.length; i++) {

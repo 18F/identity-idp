@@ -25,18 +25,6 @@ module Upaya
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    # Set the number of seconds the timeout warning should occur before
-    # login session is timed out.
-    config.session_timeout_warning_seconds = 120
-    # Set the number of seconds in which to delay the start of the
-    # PeriodicalQuery() call. Make sure the sum of this value and
-    # session_timeout_warning_seconds is a multiple of 60 seconds.
-    config.session_check_delay             = 60
-    # Set the frequency of the PeriodicalQuery() call in seconds.
-    # Make sure the sum of this value and session_timeout_warning_seconds
-    # is a multiple of 60 seconds.
-    config.session_check_frequency         = 60
-
     config.middleware.use Rack::Attack
 
     # Configure Browserify to use babelify to compile ES6

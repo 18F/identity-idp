@@ -10,6 +10,20 @@
 
 email_from: 'no-reply@login.gov'
 mailer_domain_name: 'http://localhost:3000'
+
+# Set the number of seconds the timeout warning should occur before
+# login session is timed out.
+session_timeout_warning_seconds: '150'
+# Set the number of seconds in which to delay the start of the
+# PeriodicalQuery() call. Make sure the sum of this value and
+# session_timeout_warning_seconds is a multiple of 60 seconds.
+session_check_delay: '30'
+# Set the frequency of the PeriodicalQuery() call in seconds.
+# Make sure the sum of this value and session_timeout_warning_seconds
+# is a multiple of 60 seconds.
+session_check_frequency: '30'
+
+stale_session_window: '180'
 support_url: 'https://18f.gov/contact'
 
 development:

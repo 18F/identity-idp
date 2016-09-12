@@ -11,7 +11,8 @@ module Users
 
     def active
       response.headers['Etag'] = '' # clear etags to prevent caching
-      Rails.logger.debug("alive?:#{alive?} expires_at:#{expires_at} now:#{Time.zone.now}")
+      session[:pinged_at] = now
+      Rails.logger.debug("alive?:#{alive?} expires_at:#{expires_at} now:#{now}")
       render json: { live: alive?, timeout: expires_at }
     end
 
@@ -25,13 +26,17 @@ module Users
 
     private
 
+    def now
+      @_now ||= Time.zone.now
+    end
+
     def expires_at
-      @_expires_at ||= (session[:session_expires_at] || (Time.zone.now - 1))
+      @_expires_at ||= (session[:session_expires_at] || (now - 1))
     end
 
     def alive?
       return false unless session && expires_at
-      session_alive = expires_at > Time.zone.now
+      session_alive = expires_at > now
       current_user.present? && session_alive
     end
 
