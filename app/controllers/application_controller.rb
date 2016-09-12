@@ -17,7 +17,9 @@ class ApplicationController < ActionController::Base
   layout 'card'
 
   def session_expires_at
-    session[:session_expires_at] = Time.zone.now + Devise.timeout_in
+    now = Time.zone.now
+    session[:session_expires_at] = now + Devise.timeout_in
+    session[:pinged_at] ||= now
   end
 
   def append_info_to_payload(payload)

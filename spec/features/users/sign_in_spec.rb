@@ -75,9 +75,9 @@ feature 'Sign in' do
 
   context 'session approaches timeout', js: true do
     before :each do
-      allow(Rails.application.config).to receive(:session_check_frequency).and_return(1)
-      allow(Rails.application.config).to receive(:session_check_delay).and_return(1)
-      allow(Rails.application.config).to receive(:session_timeout_warning_seconds).
+      allow(Figaro.env).to receive(:session_check_frequency).and_return(1)
+      allow(Figaro.env).to receive(:session_check_delay).and_return(1)
+      allow(Figaro.env).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
     end
 

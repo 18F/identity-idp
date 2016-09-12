@@ -3,11 +3,9 @@ module Users
     include ValidEmailParameter
 
     def create
-      email = params[:user][:email]
+      RequestPasswordReset.new(downcased_email).perform
 
-      RequestPasswordReset.new(email).perform
-
-      analytics_user = User.find_by_email(email) || NonexistentUser.new
+      analytics_user = User.find_by_email(downcased_email) || NonexistentUser.new
       analytics.track_event(
         'Password Reset Request', user_id: analytics_user.uuid, role: analytics_user.role
       )
@@ -93,6 +91,10 @@ module Users
 
     def form_params
       params.fetch(:password_form, {})
+    end
+
+    def downcased_email
+      params[:user][:email].downcase
     end
   end
 end

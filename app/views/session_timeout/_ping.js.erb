@@ -26,7 +26,11 @@ function success(data) {
 
   if (show_warning & !el) cntnr.insertAdjacentHTML('afterbegin', warning_info);
   if (!show_warning & el) el.remove();
-  if (data.live == false) window.location.href = '/timeout';
+  if (data.live == false) {
+    window.onbeforeunload = null;
+    window.onunload = null;
+    window.location.href = '/timeout';
+  }
 }
 
 
