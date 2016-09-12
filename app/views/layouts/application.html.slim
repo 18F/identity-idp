@@ -15,8 +15,13 @@ html lang="#{I18n.locale}"
     - unless controller_name == 'home'
       == javascript_include_tag 'application'
     == csrf_meta_tags
-    link rel='icon' type='image/png' href="#{asset_url('favicon.png')}"
-    link rel='icon' type='image/ico' href="#{asset_url('favicon.ico')}"
+
+    link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png'
+    link rel='icon' type='image/png' href='/favicon-32x32.png' sizes='32x32'
+    link rel='icon' type='image/png' href='/favicon-16x16.png' sizes='16x16'
+    link rel='manifest' href='/manifest.json'
+    link rel='mask-icon' href='/safari-pinned-tab.svg' color='#e21c3d'
+    meta name='theme-color' content='#ffffff'
 
     <!--[if lt IE 10]>
       = stylesheet_link_tag 'ie9.css', media: 'all'
