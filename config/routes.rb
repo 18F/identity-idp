@@ -88,9 +88,6 @@ Rails.application.routes.draw do
   put '/phone_confirmation' => 'users/phone_confirmation#confirm'
   get '/profile' => 'profile#index'
   get '/home' => 'home#index'
-  get '/playbook/about' => 'playbook#about', as: :playbook_about
-  get '/playbook' => 'playbook#index', as: :playbook_overview
-  get '/playbook/principles' => 'playbook#principles', as: :playbook_principles
   get '/authenticator_start' => 'users/totp_setup#start'
   get '/authenticator_setup' => 'users/totp_setup#new'
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
