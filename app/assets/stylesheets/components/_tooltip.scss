@@ -1,10 +1,17 @@
 [class*="hint--"] {
   cursor: help;
-  font-size: $h4;
   font-style: normal;
   font-weight: normal;
   letter-spacing: normal;
   text-transform: none;
+
+  &::after {
+    font-size: $h6;
+    line-height: 1.3;
+    min-width: 125px;
+    white-space: normal;
+    width: 100%;
+  }
 }
 
 .img-tooltip {
