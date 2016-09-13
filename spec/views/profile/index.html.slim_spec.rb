@@ -41,4 +41,15 @@ describe 'profile/index.html.slim' do
       expect(rendered).not_to have_link('Enable', href: authenticator_start_url)
     end
   end
+
+  it 'contains a recovery code section' do
+    user = User.new
+    allow(view).to receive(:current_user).and_return(user)
+
+    render
+
+    expect(rendered).to have_content t('profile.items.recovery_code')
+    expect(rendered).
+      to have_link(t('profile.links.regenerate_recovery_code'), href: settings_recovery_code_url)
+  end
 end

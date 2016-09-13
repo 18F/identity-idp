@@ -46,12 +46,12 @@ module TwoFactorAuthenticatable
     redirect_to after_sign_in_path_for(current_user)
   end
 
-  def handle_invalid_otp
+  def handle_invalid_otp(type: 'otp')
     analytics.track_event('User entered invalid 2FA code')
 
     update_invalid_user if current_user.two_factor_enabled?
 
-    flash[:error] = t('devise.two_factor_authentication.attempt_failed')
+    flash[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
     if user_decorator.blocked_from_entering_2fa_code?
       handle_second_factor_locked_user

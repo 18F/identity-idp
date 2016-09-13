@@ -62,11 +62,11 @@ feature 'Sign Up', devise: true do
       click_button t('forms.buttons.submit')
     end
 
-    it 'updates phone_confirmed_at and redirects to profile after confirmation' do
+    it 'updates phone_confirmed_at and redirects to acknowledge recovery code' do
       click_button 'Submit'
 
       expect(@user.reload.phone_confirmed_at).to be_present
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq settings_recovery_code_path
     end
 
     it 'allows user to resend confirmation code' do

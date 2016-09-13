@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160914155344) do
+ActiveRecord::Schema.define(version: 20160915202036) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20160914155344) do
     t.datetime "direct_otp_sent_at"
     t.datetime "idv_attempted_at"
     t.integer  "idv_attempts",                              default: 0
+    t.string   "recovery_code"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
