@@ -7,10 +7,10 @@ require 'rails_helper'
 feature 'Password Recovery' do
   def reset_password_and_sign_back_in(user)
     fill_in 'New password', with: 'NewVal!dPassw0rd'
-    click_button 'Change my password'
+    click_button t('forms.passwords.edit.buttons.submit')
     fill_in 'Email', with: user.email
     fill_in 'user_password', with: 'NewVal!dPassw0rd'
-    click_button 'Log in'
+    click_button t('links.sign_in')
   end
 
   # Scenario: User can request a password reset link be sent to them
@@ -28,7 +28,8 @@ feature 'Password Recovery' do
     end
 
     it 'uses a relevant email subject' do
-      expect(last_email.subject).to eq 'Password reset instructions'
+      expect(last_email.subject).to eq t('devise.mailer.reset_password_instructions.' \
+                                         'subject')
     end
 
     it 'includes a link to customer service in the email' do
@@ -88,7 +89,7 @@ feature 'Password Recovery' do
       reset_email
       visit new_user_confirmation_path
       fill_in 'Email', with: user.email
-      click_button 'Resend confirmation instructions'
+      click_button t('forms.buttons.resend_confirmation')
       open_last_email
       click_email_link_matching(/confirmation_token/)
     end
@@ -115,7 +116,7 @@ feature 'Password Recovery' do
 
     it 'keeps user signed out after they successfully reset their password' do
       fill_in 'New password', with: 'NewVal!dPassw0rd'
-      click_button 'Change my password'
+      click_button t('forms.passwords.edit.buttons.submit')
 
       expect(current_path).to eq new_user_session_path
     end
@@ -161,9 +162,9 @@ feature 'Password Recovery' do
 
     it 'redirects user to profile after signing back in' do
       reset_password_and_sign_back_in(@user)
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       fill_in 'code', with: @user.reload.direct_otp
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.default')
 
       expect(current_path).to eq profile_path
     end
@@ -218,7 +219,7 @@ feature 'Password Recovery' do
     visit new_user_password_path
     click_button t('forms.buttons.reset_password')
 
-    expect(page).to have_content 'Please fill in this field'
+    expect(page).to have_content 'Please fill in this field.'
   end
 
   # Scenario: User is unable to determine if someone else's account exists
@@ -260,11 +261,11 @@ feature 'Password Recovery' do
       it 'changes the password, sends an email about the change, and does not sign the user in' do
         fill_in 'New password', with: 'NewVal!dPassw0rd'
 
-        click_button 'Change my password'
+        click_button t('forms.passwords.edit.buttons.submit')
 
         expect(page).to have_content(t('devise.passwords.updated_not_active'))
 
-        expect(last_email.subject).to eq 'Password change notification'
+        expect(last_email.subject).to eq t('devise.mailer.password_updated.subject')
 
         visit profile_path
         expect(current_path).to eq new_user_session_path
@@ -272,20 +273,20 @@ feature 'Password Recovery' do
     end
 
     it 'displays error when password fields are empty & JS is on', js: true do
-      click_button 'Change my password'
+      click_button t('forms.passwords.edit.buttons.submit')
 
-      expect(page).to have_content 'Please fill in this field'
+      expect(page).to have_content 'Please fill in this field.'
     end
 
     it 'displays field validation error when password fields are empty' do
-      click_button 'Change my password'
+      click_button t('forms.passwords.edit.buttons.submit')
 
-      expect(page).to have_content "can't be blank"
+      expect(page).to have_content t('errors.messages.blank')
     end
 
     it 'displays field validation error when password field is too short' do
       fill_in 'New password', with: '1234'
-      click_button 'Change my password'
+      click_button t('forms.passwords.edit.buttons.submit')
 
       expect(page).to have_content 'is too short (minimum is 8 characters)'
     end
@@ -338,7 +339,7 @@ feature 'Password Recovery' do
     Timecop.travel(Devise.reset_password_within + 1.minute)
 
     fill_in 'New password', with: 'NewVal!dPassw0rd'
-    click_button 'Change my password'
+    click_button t('forms.passwords.edit.buttons.submit')
 
     expect(page).to have_content t('devise.passwords.token_expired')
     expect(current_path).to eq new_user_password_path
@@ -372,7 +373,7 @@ feature 'Password Recovery' do
 
     expect(page).to have_content t('devise.passwords.send_instructions')
     expect(page).not_to(have_content('not found'))
-    expect(page).not_to(have_content('Please review the problems below:'))
+    expect(page).not_to(have_content(t('simple_form.error_notification.default_message')))
   end
 
   # Scenario: Tech support user requests password reset

@@ -23,5 +23,5 @@ h1.heading = t('devise.two_factor_authentication.two_factor_setup')
       = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
       span.indicator
       = t('devise.two_factor_authentication.otp_method.voice')
-  = f.button :submit, t('forms.buttons.submit'), class: 'mt2'
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'mt2'
   p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

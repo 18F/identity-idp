@@ -1,5 +1,6 @@
 - title t('titles.edit_info.password')
 
+
 h1.heading = t('headings.edit_info.password')
 p.m0.italic#password-description
   = t('instructions.edit_info.password', min_length: Devise.password_length.first)
@@ -7,10 +8,10 @@ p.m0.italic#password-description
     html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
   = f.error_notification
   = f.input :current_password, required: true
-  = f.input :password, label: 'New Password', required: true,
+  = f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
             input_html: { 'aria-describedby': 'password-description' }
   = render 'devise/shared/password_strength'
-  = f.button :submit, 'Update', class: 'mt2 mb1'
-= link_to 'Cancel', :back, class: 'underline'
+  = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2 mb1'
+= link_to t('forms.buttons.cancel'), :back, class: 'underline'
 
 == javascript_include_tag 'misc/pw-strength'

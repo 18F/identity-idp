@@ -5,12 +5,12 @@ describe Idv::FinanceForm do
 
   it do
     is_expected.
-      to validate_presence_of(:finance_type).with_message("can't be blank")
+      to validate_presence_of(:finance_type).with_message(t('errors.messages.blank'))
   end
 
   it do
     is_expected.
-      to validate_presence_of(:finance_account).with_message("can't be blank")
+      to validate_presence_of(:finance_account).with_message(t('errors.messages.blank'))
   end
 
   describe '#submit' do

@@ -33,14 +33,14 @@ feature 'IdV session' do
       visit idv_session_path
 
       fill_out_idv_form_ok
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
       expect(page).to have_content(t('idv.form.ccn'))
 
       fill_out_financial_form_ok
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
       fill_out_phone_form_ok(user.phone)
-      click_button 'Continue'
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('idv.titles.complete'))
       expect(page).to have_content('Some One')
@@ -97,30 +97,30 @@ feature 'IdV session' do
       expect(page).to_not have_selector("input[value='#{first_ssn_value}']")
 
       fill_out_idv_form_ok
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       expect(page).to_not have_selector("input[value='#{first_ccn_value}']")
 
       fill_out_financial_form_ok
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       visit idv_session_path
 
       expect(page).to have_selector("input[value='#{first_ssn_value}']")
 
       fill_in 'profile_ssn', with: second_ssn_value
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       expect(current_url).to eq idv_finance_url
       expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_selector("input[value='#{first_ccn_value}']")
 
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       visit idv_finance_path
       find('#idv_finance_form_finance_type_mortgage').set(true)
       fill_in :idv_finance_form_finance_account, with: mortgage_value
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       expect(current_url).to eq idv_phone_url
 
@@ -129,18 +129,18 @@ feature 'IdV session' do
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
       fill_in :idv_finance_form_finance_account, with: second_ccn_value
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       expect(page).to_not have_selector("input[value='#{first_phone_formatted}']")
 
       fill_out_phone_form_ok(first_phone_value)
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
       visit idv_phone_path
 
       expect(page).to have_selector("input[value='#{first_phone_formatted}']")
 
       fill_out_phone_form_ok(second_phone_value)
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
 
       expect(page).to have_content(t('idv.titles.review'))
       expect(page).to have_content(second_ssn_value)
@@ -174,12 +174,12 @@ feature 'IdV session' do
         visit idv_session_path
 
         fill_out_idv_form_ok
-        click_button 'Continue'
+        click_button t('forms.buttons.submit.continue')
         fill_out_financial_form_ok
-        click_button 'Continue'
+        click_button t('forms.buttons.submit.continue')
         fill_out_phone_form_ok('416-555-0190')
-        click_button 'Continue'
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.continue')
+        click_button t('forms.buttons.submit.default')
 
         expect(current_path).to eq idv_phone_confirmation_path
       end
@@ -231,12 +231,12 @@ feature 'IdV session' do
       expect(page).to have_content(t('idv.form.first_name'))
 
       fill_out_idv_form_fail
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
       fill_out_financial_form_ok
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
       fill_out_phone_form_ok
-      click_button 'Continue'
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('idv.titles.fail'))
       expect(current_path).to eq idv_retry_path
@@ -245,12 +245,12 @@ feature 'IdV session' do
 
   def complete_idv_profile_ok(user)
     fill_out_idv_form_ok
-    click_button 'Continue'
+    click_button t('forms.buttons.submit.continue')
     fill_out_financial_form_ok
-    click_button 'Continue'
+    click_button t('forms.buttons.submit.continue')
     fill_out_phone_form_ok(user.phone)
-    click_button 'Continue'
-    click_button 'Submit'
+    click_button t('forms.buttons.submit.continue')
+    click_button t('forms.buttons.submit.default')
   end
 
   def complete_idv_profile_fail(user)

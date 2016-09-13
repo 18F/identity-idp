@@ -10,7 +10,7 @@ describe 'users/phone_confirmation/show.html.slim' do
     @unconfirmed_phone = '12345'
     render
 
-    expect(rendered).to have_content('Please enter the code sent to 12345')
+    expect(rendered).to have_content(t('instructions.2fa.confirm_code', number: '12345'))
   end
 
   it 'has a localized title' do
@@ -28,14 +28,14 @@ describe 'users/phone_confirmation/show.html.slim' do
   it 'allows user to resend code' do
     render
 
-    expect(rendered).to have_link('Resend', href: phone_confirmation_send_path)
+    expect(rendered).to have_link(t('forms.buttons.resend'), href: phone_confirmation_send_path)
   end
 
   it 'allows user to re-enter phone number' do
     @reenter_phone_number_path = 'reenter_url'
     render
 
-    expect(rendered).to have_link('Try again', href: 'reenter_url')
+    expect(rendered).to have_link(t('forms.two_factor.try_again'), href: 'reenter_url')
   end
 
   context 'when @code_value is set' do
@@ -57,7 +57,7 @@ describe 'users/phone_confirmation/show.html.slim' do
     it 'has a link to send confirmation with voice' do
       render
 
-      expect(rendered).to have_link('call me with the one-time passcode',
+      expect(rendered).to have_link(t('links.phone_confirmation.fallback_to_voice.link_text'),
                                     href: '/users/phone_confirmation/send?otp_method=voice')
     end
   end
@@ -71,8 +71,8 @@ describe 'users/phone_confirmation/show.html.slim' do
     it 'has a link to send confirmation as SMS' do
       render
 
-      expect(rendered).to have_link('send me a text message with the one-time ' \
-        'passcode', href: '/users/phone_confirmation/send?otp_method=sms')
+      expect(rendered).to have_link(t('links.phone_confirmation.fallback_to_sms.link_text'),
+                                    href: '/users/phone_confirmation/send?otp_method=sms')
     end
   end
 end

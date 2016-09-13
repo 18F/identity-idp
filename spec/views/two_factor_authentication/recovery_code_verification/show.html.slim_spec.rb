@@ -25,7 +25,7 @@ describe 'two_factor_authentication/recovery_code_verification/show.html.slim' d
     render
 
     expect(rendered).
-      to have_xpath("//input[@value='#{t('forms.buttons.submit')}']")
+      to have_xpath("//input[@value='#{t('forms.buttons.submit.default')}']")
     expect(rendered).
       to have_xpath("//form[@action='#{login_two_factor_recovery_code_path}']")
     expect(rendered).

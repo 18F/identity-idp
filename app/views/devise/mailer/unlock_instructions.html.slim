@@ -1,5 +1,3 @@
-p.lead
-  | Your account has been locked due to an excessive number of unsuccessful sign in attempts.
+p.lead= t('mailer.unlock_instructions.header')
 
-p
-  | Your account will be unlocked in 20 minutes.
+p= t('mailer.unlock_instructions.body')

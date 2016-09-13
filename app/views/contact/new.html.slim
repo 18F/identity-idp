@@ -12,12 +12,12 @@ h1.heading = t('headings.contact')
       = f.label :want_learn, class: 'checkbox'
         = f.input :want_learn, as: :boolean, wrapper: false
         span.indicator
-        = t('contact.learn_more', app_name: APP_NAME)
+        = t('contact.learn_more', app: APP_NAME)
     div
       = f.label :want_tell, class: 'checkbox'
         = f.input :want_tell, as: :boolean, wrapper: false
         span.indicator
-        = t('contact.tell_experience', app_name: APP_NAME)
+        = t('contact.tell_experience', app: APP_NAME)
   .mb3
     = f.label :email_or_tel, class: 'block bold'
       span.caps.ls-05 = t('contact.labels.email')

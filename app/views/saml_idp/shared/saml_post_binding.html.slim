@@ -9,12 +9,9 @@ html
   body
     .container.sm-py4
       .card.mx-auto.sm-col-6
-        h1.heading = 'Submit to continue'
-        p
-          'JavaScript seems to be turned off in your browser. Normally this
-          'step happens automatically, but because you have JavaScript
-          'turned off, please click the submit button to continue signing
-          'in or signing out.
+        h1.heading = t('.heading')
+        p = t('.no_js')
+
         form action=action_url method='POST' id='saml-post-binding'
           = hidden_field_tag(type, message)
           - if params.key?(:RelayState)

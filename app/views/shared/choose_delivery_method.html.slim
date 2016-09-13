@@ -1,5 +1,6 @@
 - title t('titles.edit_info.confirm_phone')
 
+
 h1.heading = t('forms.phone_confirmation.header_text')
 p#2fa-description
   = t('devise.two_factor_authentication.choose_delivery_confirmation', phone: @phone_number)
@@ -16,5 +17,5 @@ p#2fa-description
       = radio_button_tag :otp_method, :voice
       span.indicator
       = t('devise.two_factor_authentication.otp_method.voice')
-  = submit_tag t('forms.buttons.submit'), class: 'btn btn-primary btn-wide mb2'
+  = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide mb2'
 p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

@@ -1,11 +1,12 @@
 - title t('idv.titles.welcome')
 
+
 - if @using_mock_vendor
-  .mt1.mb2.h6.caps.bold Do not use real personal information (demo purposes only)
+  .mt1.mb2.h6.caps.bold = t('idv.messages.sessions.no_pii')
 
 .mt1.mb3.h6.caps.red = t('idv.titles.welcome')
 h2.heading = t('idv.titles.session.basic')
-p.italic Please provide all of the following:
+p.italic = t('idv.messages.sessions.intro')
 = simple_form_for(idv_profile_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
@@ -30,7 +31,7 @@ p.italic Please provide all of the following:
         pattern: '(\d{5}([\-]\d{4})?)',
         input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
   .mt3.mb2
-    = link_to 'Cancel', idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-    button type='submit' class='btn btn-primary' = 'Continue'
+    = link_to t('forms.buttons.cancel'), idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
+    button type='submit' class='btn btn-primary' = t('forms.buttons.submit.continue')
 
 == javascript_include_tag 'misc/page-unload-warning'

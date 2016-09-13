@@ -35,7 +35,7 @@ feature 'saml api', devise: true do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button t('forms.buttons.submit')
+        click_button t('forms.buttons.submit.default')
 
         expect(current_path).to eq phone_confirmation_path
       end
@@ -53,7 +53,7 @@ feature 'saml api', devise: true do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button t('forms.buttons.submit')
+        click_button t('forms.buttons.submit.default')
 
         expect(current_path).to eq phone_confirmation_path
       end
@@ -126,7 +126,7 @@ feature 'saml api', devise: true do
       end
 
       it 'redirects to /test/saml/decode_assertion after submitting the form' do
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
         expect(page.current_url).
           to eq(saml_spec_settings.assertion_consumer_service_url)
       end
@@ -181,7 +181,7 @@ feature 'saml api', devise: true do
       end
 
       it 'successfully logs the user out' do
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
         expect(page).to have_content t('devise.sessions.signed_out')
       end
 
@@ -287,18 +287,18 @@ feature 'saml api', devise: true do
 
         @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
 
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         visit sp2_authnrequest
         @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
       end
 
       it 'deactivates each authenticated Identity and logs the user out' do
         visit destroy_user_session_url
 
-        click_button 'Submit' # logout request for first SP
-        click_button 'Submit' # logout request for second SP
+        click_button t('forms.buttons.submit.default') # logout request for first SP
+        click_button t('forms.buttons.submit.default') # logout request for second SP
 
         logout_user.identities.each do |ident|
           expect(ident.session_uuid).to be_nil
@@ -314,10 +314,10 @@ feature 'saml api', devise: true do
         visit destroy_user_session_url
 
         expect(request_xmldoc.asserted_session_index).to eq(@sp2_asserted_session_index)
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         expect(request_xmldoc.asserted_session_index).to eq(@sp1_asserted_session_index)
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
         visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
       end
@@ -333,11 +333,11 @@ feature 'saml api', devise: true do
         visit sp1_authnrequest # sp1
 
         @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         visit sp2_authnrequest # sp2
         @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp2_saml_settings # sp2
@@ -354,7 +354,7 @@ feature 'saml api', devise: true do
         expect(request_xmldoc.asserted_session_index).
           to eq(@sp1_asserted_session_index)
 
-        click_button 'Submit' # LogoutRequest for first SP
+        click_button t('forms.buttons.submit.default') # LogoutRequest for first SP
 
         # SP1 logs user out and responds with success
         # User session is terminated at IdP and success
@@ -362,7 +362,7 @@ feature 'saml api', devise: true do
         expect(response_xmldoc.logout_status_assertion).
           to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
 
-        click_button 'Submit' # LogoutResponse for originating SP
+        click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP
 
         sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
 
@@ -384,11 +384,11 @@ feature 'saml api', devise: true do
         visit sp1_authnrequest # sp1
 
         @sp1_session_index = response_xmldoc.response_session_index_assertion
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         visit sp2_authnrequest # sp2
         @sp2_session_index = response_xmldoc.response_session_index_assertion
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp1_saml_settings
@@ -399,11 +399,11 @@ feature 'saml api', devise: true do
 
       it 'terminates sessions in order of authentication' do
         expect(request_xmldoc.asserted_session_index).to eq(@sp2_session_index)
-        click_button 'Submit' # LogoutRequest for first SP: sp2
+        click_button t('forms.buttons.submit.default') # LogoutRequest for first SP: sp2
 
         expect(response_xmldoc.logout_status_assertion).
           to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
-        click_button 'Submit' # LogoutResponse for originating SP: sp1
+        click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp1
 
         visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
@@ -422,11 +422,11 @@ feature 'saml api', devise: true do
         visit sp2_authnrequest # sp2
 
         @sp2_session_index = response_xmldoc.response_session_index_assertion
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         visit sp1_authnrequest # sp1
         @sp1_session_index = response_xmldoc.response_session_index_assertion
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
 
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp2_saml_settings
@@ -437,11 +437,11 @@ feature 'saml api', devise: true do
 
       it 'terminates sessions in order of authentication' do
         expect(request_xmldoc.asserted_session_index).to eq(@sp1_session_index)
-        click_button 'Submit' # LogoutRequest for most recent SP: sp1
+        click_button t('forms.buttons.submit.default') # LogoutRequest for most recent SP: sp1
 
         expect(response_xmldoc.logout_status_assertion).
           to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
-        click_button 'Submit' # LogoutResponse for originating SP: sp2
+        click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp2
 
         visit profile_path
         expect(page).to have_content t('devise.failure.unauthenticated')
@@ -461,7 +461,7 @@ feature 'saml api', devise: true do
         sign_in_and_2fa_user(logout_user)
         visit sp1_authnrequest
 
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.default')
       end
 
       it 'completes logout at IdP' do
@@ -503,11 +503,11 @@ feature 'saml api', devise: true do
         expect(page).to have_content(t('idv.form.first_name'))
 
         fill_out_idv_form_ok
-        click_button 'Continue'
+        click_button t('forms.buttons.submit.continue')
         fill_out_financial_form_ok
-        click_button 'Continue'
-        click_button 'Continue'
-        click_button 'Submit'
+        click_button t('forms.buttons.submit.continue')
+        click_button t('forms.buttons.submit.continue')
+        click_button t('forms.buttons.submit.default')
 
         expect(current_url).to eq saml_authn_request
       end

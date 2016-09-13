@@ -1,6 +1,6 @@
 shared_examples 'password validation' do
   it do
-    is_expected.to validate_presence_of(:password).with_message("can't be blank")
+    is_expected.to validate_presence_of(:password).with_message(t('errors.messages.blank'))
   end
 
   it do

@@ -1,11 +1,13 @@
 - title t('idv.titles.review')
 - edit_btn_cls = 'right btn btn-primary p0 w-60p h6 bg-light-blue blue regular center'
 
+
 .mt1.mb3.h6.caps.red = t('idv.titles.welcome')
 h2.heading = t('idv.titles.session.review')
-p.italic Please review your information and ensure it is correct.
+p.italic = t('idv.messages.review.intro')
+
 .mt4.mb3.p3.border.rounded
-  = link_to 'Edit', idv_session_path, class: edit_btn_cls
+  = link_to t('links.edit'), idv_session_path, class: edit_btn_cls
   .h6 Full name
   .h4.bold #{idv_params[:first_name]} #{idv_params[:last_name]}
   .mt3.h6 Mailing address
@@ -33,7 +35,7 @@ p.italic Please review your information and ensure it is correct.
 
 = form_tag('/idv/review', method: 'put')
   .mt4.mb1
-    = link_to 'Cancel', idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-    button type='submit' class='btn btn-primary' = 'Submit'
+    = link_to t('forms.buttons.cancel'), idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
+    button type='submit' class='btn btn-primary' = t('forms.buttons.submit.default')
 
 == javascript_include_tag 'misc/page-unload-warning'

@@ -1,8 +1,5 @@
-p.lead
-  'A request was made to use this email address as a username for a #{APP_NAME}
-  'account. This email address is already in use. If you requested this change,
-  'please use the following link to #{t('headings.log_in').downcase}
-  'to #{APP_NAME}:
+p.lead = t('.intro', app: APP_NAME)
+
 
 table.button.expanded.large.radius
   tbody
@@ -13,8 +10,8 @@ table.button.expanded.large.radius
             tr
               td
                 center
-                  = link_to "Go to #{APP_NAME}", \
-                    @root_url, target: '_blank', \
+                  = link_to t('.link_text', app: APP_NAME),
+                    @root_url, target: '_blank',
                     class: 'float-center', align: 'center'
       td.expander
 
@@ -26,18 +23,10 @@ table.spacer
       td.s30 height="30px"
       | &nbsp;
 
-p
-  'If you would like to create a new account for online access to #{APP_NAME},
-  'please follow the instructions for creating a new account using a different
-  'email address.
+p = t('.new_account', app: APP_NAME)
 
-p
-  'If you cannot remember your password, please follow the instructions for
-  'resetting your password.
+p = t('.reset_password')
 
-p
-  'If you did not request a new account or suspect an error, please contact the
-  '#{APP_NAME} Customer Contact Center via the web form at
-  = link_to nil, Figaro.env.support_url
+p == t('.help', app: APP_NAME, link: link_to(Figaro.env.support_url, Figaro.env.support_url))
 
-p Please be aware that this update might require your immediate attention.
+p = t('.footer')

@@ -14,14 +14,14 @@ module Features
       visit new_user_session_path
       fill_in 'Email', with: email
       fill_in 'Password', with: password
-      click_button 'Log in'
+      click_button t('links.sign_in')
     end
 
     def sign_up_and_set_password
       user = create(:user, :unconfirmed)
       confirm_last_user
       fill_in 'password_form_password', with: VALID_PASSWORD
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       user
     end
 
@@ -70,11 +70,11 @@ module Features
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
       # Select SMS delivery
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       # Enter 2FA code
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       # Acknowledge recovery code
-      click_button 'Continue'
+      click_button t('forms.buttons.submit.continue')
       user
     end
   end

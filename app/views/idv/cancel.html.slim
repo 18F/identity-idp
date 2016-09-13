@@ -1,5 +1,6 @@
 - title t('idv.titles.cancel')
 
+
 h1.heading = t('idv.titles.cancel')
-p.mb1 = t('idv.messages.cancel', app_name: APP_NAME)
-= link_to 'Back', idv_url, class: 'underline'
+p.mb1 = t('idv.messages.cancel', app: APP_NAME)
+= link_to t('forms.buttons.back'), idv_url, class: 'underline'

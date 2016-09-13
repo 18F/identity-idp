@@ -1,6 +1,5 @@
-p.lead
-  '#{@first_sentence} To confirm your email address, please click on the link
-  'below, or copy and paste the entire link into your browser.
+p.lead= t('mailer.confirmation_instructions.header', intro: @first_sentence)
+
 
 table.button.expanded.large.radius
   tbody
@@ -11,7 +10,7 @@ table.button.expanded.large.radius
             tr
               td
                 center
-                  = link_to 'Confirm this email address', \
+                  = link_to t('mailer.confirmation_instructions.link_text'), \
                     confirmation_url(@resource, confirmation_token: @token), target: '_blank', \
                     class: 'float-center', align: 'center'
       td.expander
@@ -25,7 +24,4 @@ table.spacer
       td.s30 height="30px"
       | &nbsp;
 
-p
-  'Please note that this confirmation link expires in #{@confirmation_period}
-  'and may require your immediate attention if you wish to access your online
-  'account in the future.
+p= t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)
