@@ -3,5 +3,5 @@
     - if msg.present? && msg.is_a?(String)
       - msg_type = name.to_s =~ /error|alert/ ? 'oops' : name
       .mxn2.sm-m0
-        div class="alert alert-#{msg_type} h4"
+        div class="alert alert-#{msg_type} h4" role="alert"
           div class="#{msg.length < 50 ? 'bold serif center' : ''}" = msg
