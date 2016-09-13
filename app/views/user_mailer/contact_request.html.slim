@@ -1,0 +1,15 @@
+div
+  strong.mr-tiny Email or phone:
+  | #{@details['email_or_tel']}
+
+div
+  strong.mr-tiny Learn more?
+  = @details['want_learn'] ? 'yes' : 'no'
+
+div
+  strong.mr-tiny Talk about experience?
+  = @details['want_tell'] ? 'yes' : 'no'
+
+div
+  strong.mr-tiny Comments:
+  = @details['comments'] || 'No comments left'

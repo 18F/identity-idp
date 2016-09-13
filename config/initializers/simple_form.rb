@@ -4,7 +4,6 @@ SimpleForm.setup do |config|
   config.default_form_class = 'mt4'
   config.error_notification_tag = :div
   config.error_notification_class = 'mb2 p2 alert alert-oops bold center'
-  config.label_class = 'caps ls-05 bold'
 
   config.wrappers :base do |b|
     b.use :html5
@@ -18,7 +17,7 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.use :label
+    b.use :label, class: 'caps ls-05 bold'
     b.use :input, class: 'block col-12 field'
     b.use :hint,  wrap_with: { tag: 'div' }
     b.use :error, wrap_with: { tag: 'div', class: 'error-message red h5' }

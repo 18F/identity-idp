@@ -58,4 +58,31 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content('This email address is already in use.')
     end
   end
+
+  describe 'contact_request' do
+    details = {
+      'want_learn' => '1',
+      'want_tell' => '0',
+      'email_or_tel' => 'thomas jefferson',
+      'comments' => 'usa!'
+    }
+
+    let(:mail) { UserMailer.contact_request(details) }
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [Figaro.env.support_email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('mailer.contact_request.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).
+        to have_content("Email or phone:#{details['email_or_tel']}")
+
+      expect(mail.html_part.body).
+        to have_content("Comments:#{details['comments']}")
+    end
+  end
 end

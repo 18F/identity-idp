@@ -57,6 +57,9 @@ Rails.application.routes.draw do
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
 
+  get '/contact' => 'contact#new'
+  post '/contact' => 'contact#create'
+
   get '/edit/email' => 'users/edit_email#edit'
   match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
   get '/edit/phone' => 'users/edit_phone#edit'
