@@ -30,6 +30,11 @@ module ControllerHelper
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
   end
+
+  def stub_sign_in_before_2fa(user = User.new)
+    allow(controller).to receive(:current_user).and_return(user)
+    allow(controller).to receive(:user_fully_authenticated?).and_return(false)
+  end
 end
 
 RSpec.configure do |config|

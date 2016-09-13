@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/two_factor_authentication/max_login_attempts_reached.html.slim' do
+describe 'two_factor_authentication/shared/max_login_attempts_reached.html.slim' do
   context 'locked out account' do
     it 'includes localized error message with time remaining' do
       @user_decorator = instance_double(UserDecorator)

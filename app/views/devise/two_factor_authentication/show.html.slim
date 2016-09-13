@@ -3,18 +3,21 @@
 h1.heading = t('headings.choose_otp_delivery')
 p#2fa-description
   = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
-= form_tag(otp_send_path, method: :get, role: 'form', class: 'mt3') do
+= simple_form_for(@otp_delivery_selection_form,
+    url: otp_send_path,
+    method: :get,
+    role: 'form', class: 'mt3') do |f|
   .mb3
     = label_tag 'otp_method',
       t('devise.two_factor_authentication.otp_method.title'),
       class: 'hide block caps ls-05 bold'
     label.radio.mr2
-      = radio_button_tag :otp_method, :sms, checked: true
+      = f.radio_button :otp_method, 'sms', checked: true
       span.indicator
       = t('devise.two_factor_authentication.otp_method.sms')
     label.radio
-      = radio_button_tag :otp_method, :voice
+      = f.radio_button :otp_method, 'voice'
       span.indicator
       = t('devise.two_factor_authentication.otp_method.voice')
-  = submit_tag t('forms.buttons.submit'), class: 'btn btn-primary btn-wide mb2'
+  = f.button :submit, t('forms.buttons.submit'), class: 'btn btn-primary btn-wide mb2'
 p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

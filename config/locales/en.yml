@@ -58,6 +58,8 @@ en:
       fallback_to_voice:
         text: Or, %{link}
         link_text: call me with the one-time passcode
+    two_factor_authentication:
+      resend_code: Send a new one
   notices:
     password_changed: Your password was successfully changed.
     totp_configured: Authenticator app successfully configured

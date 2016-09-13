@@ -108,9 +108,9 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       click_button t('forms.buttons.submit')
-      click_link 'Resend'
+      click_link t('links.two_factor_authentication.resend_code')
 
-      expect(page).to have_content t('devise.two_factor_authentication.user.new_otp_sent')
+      expect(page).to have_content t('notices.send_code.sms')
     end
 
     scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
@@ -148,4 +148,21 @@ feature 'Two Factor Authentication' do
       end
     end
   end # describe 'When the user has set a preferred method'
+
+  describe 'when the user is TOTP enabled' do
+    it 'allows SMS and Voice fallbacks' do
+      user = create(:user, :signed_up, otp_secret_key: 'foo')
+      sign_in_before_2fa(user)
+
+      click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
+
+      expect(current_path).to eq '/login/two-factor/sms'
+
+      visit login_two_factor_authenticator_path
+
+      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
+
+      expect(current_path).to eq '/login/two-factor/voice'
+    end
+  end
 end # feature 'Two Factor Authentication'

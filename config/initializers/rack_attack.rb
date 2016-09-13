@@ -95,7 +95,7 @@ module Rack
         bantime: Figaro.env.otp_delivery_blocklist_bantime.to_i.minutes
       ) do
         # The count for the phone_number is incremented if the return value is truthy
-        (req.get? && req.path == '/otp/new') || (req.get? && req.path == '/otp/send')
+        req.get? && req.path == '/otp/send'
       end
     end
 

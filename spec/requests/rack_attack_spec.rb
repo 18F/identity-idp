@@ -184,10 +184,12 @@ describe 'throttling requests' do
         'user[password]' => user.password
       )
 
-      get '/otp/send', {}, 'REMOTE_ADDR' => '1.2.3.4'
-
-      2.times do
-        get '/otp/new', {}, 'REMOTE_ADDR' => '1.2.3.4'
+      3.times do
+        get(
+          '/otp/send',
+          { otp_delivery_selection_form: { otp_method: 'sms' } },
+          'REMOTE_ADDR' => '1.2.3.4'
+        )
       end
 
       expect(last_response.status).to eq(429)
@@ -205,7 +207,11 @@ describe 'throttling requests' do
         'user[password]' => second_user_with_same_number.password
       )
 
-      get '/otp/new', {}, 'REMOTE_ADDR' => '1.2.3.5'
+      get(
+        '/otp/send',
+        { otp_delivery_selection_form: { otp_method: 'sms' } },
+        'REMOTE_ADDR' => '1.2.3.5'
+      )
 
       expect(last_response.status).to eq(429)
       expect(Rails.logger).to have_received(:warn).
