@@ -72,7 +72,7 @@ h2.heading = t('headings.profile.login_info')
             class: btn_cls
 
 h2.heading = t('headings.profile.agencies')
-.mt3.mb2
+.mt3.mb4
   - if current_user.active_identities.empty?
     .py-12p.border-bottom.border-top.italic
       | You haven't logged into any agencies yet.#{tooltip(t('tooltips.placeholder'))}
@@ -88,15 +88,11 @@ h2.heading = t('headings.profile.agencies')
 
 h2.heading = t('headings.profile.account_history')
 .mt3.mb2
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-6.px1
-        .h6.bold Event
-      .sm-col.sm-col-6.px1
-        .h6.bold When
-    - current_user.events.each do |event|
+  - events_len = current_user.events.length
+  - current_user.events.each_with_index do |event, i|
+    div class="py-12p border-top #{'border-bottom' if i + 1 == events_len}"
       .clearfix.mxn1
         .sm-col.sm-col-6.px1
-          .h4.truncate = event.decorate.pretty_event_type
-        .sm-col.sm-col-6.px1
-          .h5 = event.created_at.to_formatted_s(:long)
+          .truncate = event.decorate.pretty_event_type
+        .sm-col.sm-col-6.px1.sm-right-align
+          = event.created_at.to_s(:date_pretty)
