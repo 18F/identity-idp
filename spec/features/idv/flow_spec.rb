@@ -122,6 +122,22 @@ feature 'IdV session' do
       expect(page).to_not have_content(first_phone_formatted)
     end
 
+    scenario 'clicking finance option changes input label', js: true do
+      _user = sign_in_and_2fa_user
+
+      visit idv_session_path
+
+      fill_out_idv_form_ok
+      click_button 'Continue'
+
+      expect(page).to have_content(t('idv.form.finance_unselected').upcase)
+
+      find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
+
+      expect(page).to_not have_content(t('idv.form.finance_unselected').upcase)
+      expect(page).to have_content(t('idv.form.ccn').upcase)
+    end
+
     context 'Idv phone and user phone are different' do
       it 'redirects to phone confirmation path' do
         sign_in_and_2fa_user

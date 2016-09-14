@@ -179,6 +179,7 @@ en:
       last_name: Last name
       dob: Date of birth
       ssn: Social Security Number (SSN)
+      finance_unselected: Select an option above...
       ccn: Last 8 digits of your credit card number
       mortgage: Mortgage account number
       home_equity_line: Home equity account number
