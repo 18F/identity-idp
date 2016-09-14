@@ -12,11 +12,36 @@ module IdvSession
     redirect_to idv_session_url unless idv_session[:params].present?
   end
 
+  def confirm_idv_attempts_allowed
+    if idv_attempter.exceeded?
+      flash[:error] = t('idv.errors.hardfail')
+      redirect_to idv_fail_url
+    elsif idv_attempter.reset_attempts?
+      self.idv_attempts = 0
+    end
+  end
+
   def idv_session
     user_session[:idv] ||= {}
   end
 
   protected
+
+  def idv_attempts=(num)
+    current_user.update!(idv_attempts: num)
+  end
+
+  def idv_attempts
+    current_user.idv_attempts
+  end
+
+  def idv_attempter
+    @_attempter ||= IdvAttempter.new(current_user)
+  end
+
+  def idv_flag_user_attempt
+    current_user.update!(idv_attempted_at: Time.zone.now)
+  end
 
   def idv_question_number
     idv_session[:question_number] ||= 0

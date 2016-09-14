@@ -7,7 +7,8 @@ describe Idv::PhoneController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started
+        :confirm_idv_session_started,
+        :confirm_idv_attempts_allowed
       )
     end
   end
@@ -18,10 +19,7 @@ describe Idv::PhoneController do
 
       it 'renders #new' do
         user = User.new(phone: '+1 (415) 555-0130')
-        allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
-        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        allow(subject).to receive(:idv_session).and_return(params: {})
-        allow(subject).to receive(:current_user).and_return(user)
+        stub_subject(user)
 
         put :create, idv_phone_form: { phone: '703' }
 
@@ -33,10 +31,7 @@ describe Idv::PhoneController do
     context 'when form is valid and submitted phone is same as user phone' do
       it 'redirects to review page and sets phone_confirmed_at' do
         user = User.new(phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
-        allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
-        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        allow(subject).to receive(:idv_session).and_return(params: {})
-        allow(subject).to receive(:current_user).and_return(user)
+        stub_subject(user)
 
         put :create, idv_phone_form: { phone: '+1 (415) 555-0130' }
 
@@ -53,10 +48,7 @@ describe Idv::PhoneController do
     context 'when form is valid and submitted phone is different from user phone' do
       it 'redirects to review page and does not set phone_confirmed_at' do
         user = User.new(phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
-        allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
-        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-        allow(subject).to receive(:idv_session).and_return(params: {})
-        allow(subject).to receive(:current_user).and_return(user)
+        stub_subject(user)
 
         put :create, idv_phone_form: { phone: '+1 (415) 555-0160' }
 
@@ -68,5 +60,13 @@ describe Idv::PhoneController do
         expect(subject.idv_session[:params]).to eq expected_params
       end
     end
+  end
+
+  def stub_subject(user)
+    allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
+    allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+    allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
+    allow(subject).to receive(:idv_session).and_return(params: {})
+    allow(subject).to receive(:current_user).and_return(user)
   end
 end

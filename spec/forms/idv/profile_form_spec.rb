@@ -88,7 +88,7 @@ describe Idv::ProfileForm do
     context 'when dob is in the future' do
       it 'is invalid' do
         expect(
-          subject.submit(profile_attrs.merge(dob: (Date.today + 1).strftime('%Y-%m-%d')))
+          subject.submit(profile_attrs.merge(dob: (Time.zone.today + 1).strftime('%Y-%m-%d')))
         ).to eq false
         expect(subject.errors[:dob]).to eq [t('idv.errors.bad_dob')]
       end

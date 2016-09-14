@@ -48,7 +48,7 @@ module Idv
     end
 
     def dob_in_the_past?(date)
-      date < Date.today
+      date < Time.zone.today
     end
 
     def parsed_dob

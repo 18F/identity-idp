@@ -52,9 +52,17 @@ module Idv
       # do not store PII that failed.
       idv_profile.destroy
       analytics.track_event('IdV Failed')
+      if idv_attempter.exceeded?
+        idv_flag_user_attempt
+        redirect_to idv_fail_url
+      else
+        redirect_to idv_retry_url
+      end
     end
 
     def finish_proofing_success
+      idv_flag_user_attempt
+      self.idv_attempts = 0
       complete_idv_profile
       flash[:success] = I18n.t('idv.titles.complete')
       analytics.track_event('IdV Successful')

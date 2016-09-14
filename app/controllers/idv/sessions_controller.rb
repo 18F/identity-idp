@@ -3,6 +3,7 @@ module Idv
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_attempts_allowed
 
     helper_method :idv_profile_form
 

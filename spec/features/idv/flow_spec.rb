@@ -12,7 +12,7 @@ feature 'IdV session' do
     scenario 'decline to verify identity' do
       click_link 'No'
 
-      expect(page).to have_content(t('idv.titles.hardfail'))
+      expect(page).to have_content(t('idv.titles.cancel'))
     end
 
     scenario 'proceed to verify identity' do
@@ -47,6 +47,36 @@ feature 'IdV session' do
       expect(page).to have_content('123 Main St')
       expect(current_url).to eq(profile_url)
       expect(user.reload.active_profile).to be_a(Profile)
+    end
+
+    scenario 'allows 3 attempts in 24 hours' do
+      user = sign_in_and_2fa_user
+
+      2.times do
+        visit idv_session_path
+        complete_idv_profile_fail(user)
+
+        expect(page).to have_content(t('idv.titles.fail'))
+      end
+
+      user.reload
+      expect(user.idv_attempted_at).to_not be_nil
+
+      visit destroy_user_session_url
+      sign_in_and_2fa_user(user)
+
+      visit idv_session_path
+      complete_idv_profile_fail(user)
+
+      expect(page).to have_content(t('idv.titles.hardfail'))
+
+      visit idv_session_path
+
+      expect(page).to have_content(t('idv.errors.hardfail'))
+      expect(current_url).to eq idv_fail_url
+
+      user.reload
+      expect(user.idv_attempted_at).to_not be_nil
     end
 
     scenario 'steps are re-entrant and sticky' do
@@ -151,7 +181,7 @@ feature 'IdV session' do
       visit idv_session_path
       expect(page).to have_content(t('idv.form.first_name'))
 
-      complete_idv_profile(user)
+      complete_idv_profile_ok(user)
       expect(page).to have_content('Where did you live')
 
       complete_idv_questions_ok
@@ -169,11 +199,13 @@ feature 'IdV session' do
       visit idv_session_path
       expect(page).to have_content(t('idv.form.first_name'))
 
-      complete_idv_profile(user)
+      complete_idv_profile_ok(user)
       expect(page).to have_content('Where did you live')
 
       complete_idv_questions_fail
-      expect(page).to have_content(t('idv.titles.hardfail'))
+      expect(current_path).to eq idv_retry_path
+      expect(page).to have_content(t('idv.titles.fail'))
+      expect(page).to have_content(t('idv.errors.fail'))
     end
 
     scenario 'un-resolvable PII' do
@@ -191,12 +223,22 @@ feature 'IdV session' do
       click_button 'Submit'
 
       expect(page).to have_content(t('idv.titles.fail'))
-      expect(current_path).to eq idv_session_path
+      expect(current_path).to eq idv_retry_path
     end
   end
 
-  def complete_idv_profile(user)
+  def complete_idv_profile_ok(user)
     fill_out_idv_form_ok
+    click_button 'Continue'
+    fill_out_financial_form_ok
+    click_button 'Continue'
+    fill_out_phone_form_ok(user.phone)
+    click_button 'Continue'
+    click_button 'Submit'
+  end
+
+  def complete_idv_profile_fail(user)
+    fill_out_idv_form_fail
     click_button 'Continue'
     fill_out_financial_form_ok
     click_button 'Continue'

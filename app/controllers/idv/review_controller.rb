@@ -14,16 +14,21 @@ module Idv
     def create
       self.idv_applicant = applicant_from_params
       resolution = start_idv_session
-      if resolution.success
-        init_questions_and_profile(resolution)
-        redirect_on_success
-      else
-        flash[:error] = I18n.t('idv.titles.fail')
-        redirect_to idv_session_url
-      end
+      process_resolution(resolution)
     end
 
     private
+
+    def process_resolution(resolution)
+      if resolution.success
+        init_questions_and_profile(resolution)
+        redirect_on_success
+      elsif idv_attempter.exceeded?
+        redirect_to idv_fail_url
+      else
+        redirect_to idv_retry_url
+      end
+    end
 
     def idv_finance_complete?
       (idv_params.keys & Idv::FinanceForm::FINANCE_TYPES).any?
@@ -47,13 +52,23 @@ module Idv
     end
 
     def start_idv_session
-      agent = Proofer::Agent.new(
+      self.idv_applicant = applicant_from_params
+      self.idv_vendor = idv_agent.vendor
+      submit_applicant
+    end
+
+    def submit_applicant
+      resolution = idv_agent.start(idv_applicant)
+      self.idv_attempts += 1
+      idv_flag_user_attempt
+      resolution
+    end
+
+    def idv_agent
+      @_agent ||= Proofer::Agent.new(
         vendor: pick_a_vendor,
         kbv: FeatureManagement.proofing_requires_kbv?
       )
-      self.idv_applicant = applicant_from_params
-      self.idv_vendor = agent.vendor
-      agent.start(idv_applicant)
     end
 
     def applicant_from_params
