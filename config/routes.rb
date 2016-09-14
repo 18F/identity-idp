@@ -36,8 +36,7 @@ Rails.application.routes.draw do
     get '/otp/confirm' => 'devise/two_factor_authentication#confirm'
   end
 
-  unless Figaro.env.domain_name.include?('superb.legit.domain.gov')
-    # Testing routes, should not be available in live production
+  if Figaro.env.enable_test_routes == 'yes'
     namespace :test do
       # Assertion granting test start + return.
       get '/saml' => 'saml_test#start'
