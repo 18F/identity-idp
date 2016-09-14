@@ -53,6 +53,7 @@ UtilityFunction:
   DuplicateMethodCall:
     exclude:
       - complete_idv_profile
+      - stub_subject
       - saml_settings
       - sign_up_and_2fa
       - raw_xml_response

@@ -187,11 +187,30 @@ en:
     errors:
       duplicate_ssn: >
         An account already exists using the information you provided.
+      fail: >
+        Sorry, we were unable to verify your identity based on the information you provided.
+      hardfail: >
+        We were unable to verify your identity at this time.
       missing_finance: You must provide a financial account ID.
       invalid_ccn: Credit card number should be only last 8 digits.
       bad_dob: Your date of birth must be a valid date.
     messages:
+      fail: >
+        Please check that the personal and financial information you provided is accurate.
+        To learn more about the information we need from you and how it’s used to verify your identity,
+        please see our troubleshooting page.
       hardfail: >
+        Your login.gov account can’t be used to access information with 
+        participating agencies until you successfully complete this process.
+      hardfail2: >
+        You can try to complete the verification process again in %{hours} hours.
+      hardfail3: >
+        If you’re unable to verify your identity through this process there might
+        be other options available to you. Please see our troubleshooting page to learn about those options.
+      hardfail4: >
+        You can also return to the agency website that directed you here to try to log in there
+        for the services you are attempting to access.
+      cancel: >
         To access your information with the participating agency’s website,
         %{app_name} needs to verify your identity. We need to collect some basic
         personal information as well as some financial information from you to
@@ -204,14 +223,16 @@ en:
       dupe_ssn2_link: sign out now and sign back in
       dupe_ssn3: If you can't remember your original login information, you can %{link}.
       dupe_ssn3_link: try recovering it here
+      review_and_continue: Review my info and try again
     titles:
       intro: Help us identify you
       expectations: We need some information from you
       welcome: Verify your identity
       phone: Phone number of record
       question: Answer a few questions
-      fail: Identity verification unsuccessful
-      hardfail: We cannot verify your identity
+      fail: We were unable to verify your identity
+      cancel: We cannot verify your identity
+      hardfail: We were unable to verify your identity
       complete: Identity verification complete
       review: Review and submit
       dupe: "Error: An account may already exist"

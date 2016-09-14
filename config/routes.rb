@@ -67,6 +67,8 @@ Rails.application.routes.draw do
 
   get '/idv' => 'idv#index'
   get '/idv/cancel' => 'idv#cancel'
+  get '/idv/fail' => 'idv#fail'
+  get '/idv/retry' => 'idv#retry'
   get '/idv/phone_confirmation' => 'idv/phone_confirmation#show'
   get '/idv/phone_confirmation/send' => 'idv/phone_confirmation#send_code'
   put '/idv/phone_confirmation' => 'idv/phone_confirmation#confirm'

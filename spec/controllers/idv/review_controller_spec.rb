@@ -24,7 +24,8 @@ describe Idv::ReviewController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_session_started,
-        :confirm_idv_steps_complete
+        :confirm_idv_steps_complete,
+        :confirm_idv_attempts_allowed
       )
     end
   end
@@ -78,6 +79,7 @@ describe Idv::ReviewController do
     before do
       allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       allow(subject).to receive(:current_user).and_return(user)
     end
 
@@ -99,6 +101,7 @@ describe Idv::ReviewController do
       sign_in(user)
       allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       allow(subject).to receive(:current_user).and_return(user)
     end
 
@@ -113,6 +116,32 @@ describe Idv::ReviewController do
         put :create
 
         expect(response).to redirect_to idv_questions_path
+      end
+    end
+
+    context 'user attributes fail to resolve' do
+      before do
+        allow(subject).to receive(:idv_session).and_return(
+          params: user_attrs.merge(first_name: 'Bad')
+        )
+      end
+
+      it 'redirects to retry' do
+        put :create
+
+        expect(response).to redirect_to idv_retry_url
+      end
+
+      context 'max attempts exceeded' do
+        before do
+          user.idv_attempts = 3
+        end
+
+        it 'redirects to fail' do
+          put :create
+
+          expect(response).to redirect_to idv_fail_url
+        end
       end
     end
 

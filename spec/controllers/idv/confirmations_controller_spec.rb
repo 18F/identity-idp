@@ -24,6 +24,7 @@ describe Idv::ConfirmationsController do
   context 'session started' do
     before do
       init_idv_session
+      allow(subject).to receive(:current_user).and_return(user)
     end
 
     context 'all answers correct' do
@@ -71,13 +72,25 @@ describe Idv::ConfirmationsController do
         get :index
       end
 
-      it 'shows error' do
-        expect(response.status).to eq 200
-        expect(response.body).to include(t('idv.titles.hardfail'))
+      it 'redirects to retry' do
+        expect(response).to redirect_to(idv_retry_url)
       end
 
       it 'does not save PII' do
         expect(Profile.where(id: profile.id).count).to eq 0
+      end
+    end
+
+    context 'max attempts exceeded' do
+      before do
+        complete_idv_session(false)
+        user.idv_attempts = 3
+        user.idv_attempted_at = Time.zone.now
+        get :index
+      end
+
+      it 'redirects to fail' do
+        expect(response).to redirect_to(idv_fail_url)
       end
     end
 

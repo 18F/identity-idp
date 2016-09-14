@@ -10,4 +10,11 @@ class IdvController < ApplicationController
 
   def cancel
   end
+
+  def fail
+  end
+
+  def retry
+    flash.now[:error] = I18n.t('idv.errors.fail')
+  end
 end

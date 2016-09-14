@@ -6,7 +6,8 @@ describe Idv::FinanceController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started
+        :confirm_idv_session_started,
+        :confirm_idv_attempts_allowed
       )
     end
   end
@@ -15,6 +16,7 @@ describe Idv::FinanceController do
     before do
       allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       allow(subject).to receive(:idv_session).and_return(params: {})
     end
 
