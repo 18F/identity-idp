@@ -1,15 +1,12 @@
 // supplemental utility classes
 
-.bg-light-blue { background-color: $blue-light; }
-
-.ws-pre-line { white-space: pre-line; }
-
-.rounded-med { border-radius: .75rem; }
-.rounded-big { border-radius: 2rem; }
-
 .w-60p { width: 60px; }
 
+.bg-light-blue { background-color: $blue-light; }
+
 @media #{$breakpoint-sm} {
+  .sm-bg-light-blue { background-color: $blue-light; }
+
   .sm-left-align { text-align: left; }
   .sm-right-align { text-align: right; }
 }

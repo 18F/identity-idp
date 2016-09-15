@@ -17,7 +17,7 @@ function addInvalidMarkup(f) {
 
   f.insertAdjacentHTML(
     'afterend',
-    `<div role='alert' class='error-message red h6' id='alert_${f.id}'>
+    `<div role='alert' class='mt-tiny h6 red error-message' id='alert_${f.id}'>
       ${f.validationMessage}
     </div>`
   );
