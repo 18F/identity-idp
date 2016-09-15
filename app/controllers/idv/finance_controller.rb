@@ -3,6 +3,7 @@ module Idv
     helper_method :idv_finance_form
 
     def new
+      @finance_account_label = FinanceFormDecorator.new(idv_params).label_text
     end
 
     def create

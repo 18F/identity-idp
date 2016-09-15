@@ -6,10 +6,15 @@ p.italic Please provide only one of the following:
 = simple_form_for(idv_finance_form, url: idv_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = f.error_notification
-  = f.collection_radio_buttons :finance_type, Idv::FinanceForm.finance_type_choices,
-    :first, :last, required: true, item_wrapper_tag: :div
-  = f.input :finance_account, label: false
-
+  .mb3.js-finance-choice-cntnr
+    = f.collection_radio_buttons(:finance_type, Idv::FinanceForm.finance_type_choices,
+      :first, :last, required: true, item_wrapper_tag: :div) do |r|
+      = r.label(class: 'radio')
+        = r.radio_button
+        span.indicator
+        = r.text
+  = f.input :finance_account, required: true,
+    label: @finance_account_label, label_html: { class: 'js-finance-label' }
   .mt4.mb1
     = link_to 'Cancel', idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
     = f.button :submit, 'Continue', class: 'btn btn-primary'
