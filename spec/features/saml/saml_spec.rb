@@ -301,7 +301,7 @@ feature 'saml api', devise: true do
         click_button 'Submit' # logout request for second SP
 
         logout_user.identities.each do |ident|
-          expect(ident.last_authenticated_at).to be_nil
+          expect(ident.session_uuid).to be_nil
         end
 
         expect(logout_user.active_identities).to be_empty
