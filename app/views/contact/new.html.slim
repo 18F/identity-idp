@@ -1,0 +1,34 @@
+- title t('titles.contact')
+
+h1.heading = t('headings.contact')
+
+= simple_form_for(@contact_form, url: contact_path, wrapper: :base,
+    html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
+  = f.error_notification
+  h4.mb-tiny = t('contact.intro')
+  hr.mt0.mb-12p
+  .mb4
+    .mb-tiny
+      = f.label :want_learn, class: 'checkbox'
+        = f.input :want_learn, as: :boolean, wrapper: false
+        span.indicator
+        = t('contact.learn_more', app_name: APP_NAME)
+    div
+      = f.label :want_tell, class: 'checkbox'
+        = f.input :want_tell, as: :boolean, wrapper: false
+        span.indicator
+        = t('contact.tell_experience', app_name: APP_NAME)
+  .mb3
+    = f.label :email_or_tel, class: 'block bold'
+      span.caps.ls-05 = t('contact.labels.email')
+      span.px-tiny = t('contact.labels.or')
+      span.caps.ls-05 = t('contact.labels.phone')
+    = f.input :email_or_tel, as: 'string', required: true,
+      wrapper: false, input_html: { class: 'block col-12' }
+  .mb3
+    = f.label :comments, class: 'block'
+      span.caps.bold.ls-05.mr1 = t('contact.labels.comments')
+      span.italic = t('contact.labels.comments_note')
+    = f.input :comments, as: 'text', wrapper: false,
+      input_html: { class: 'block col-12', rows: 4 }
+  = f.button :submit, t('forms.buttons.send'), class: 'mt2 btn-wide'

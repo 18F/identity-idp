@@ -16,6 +16,11 @@ class UserMailer < ActionMailer::Base
     mail(to: user.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
+  def contact_request(details)
+    @details = details
+    mail(to: Figaro.env.support_email, subject: t('mailer.contact_request.subject'))
+  end
+
   def attach_images
     attachments.inline['logo.png'] = File.read('app/assets/images/logo.png')
   end

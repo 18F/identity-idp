@@ -21,6 +21,7 @@ en:
       continue_browsing: Continue browsing
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
+      send: Send
       setup_totp: Set up authentication app
       submit: Submit
     required_field: Indicates a required field.
@@ -84,6 +85,7 @@ en:
     confirmations:
       new: Resend confirmation instructions for your account
       show: Create a password for your account
+    contact: Contact us
     edit_info:
       email: Edit your email
       password: Edit your password
@@ -116,6 +118,7 @@ en:
       index: Admin Interface
     confirmations:
       new: Resend confirmation instructions
+    contact: Contact us
     edit_info:
       email: Edit your email
       password: Edit your password
@@ -154,6 +157,8 @@ en:
       here, you’ll have to go through the verification process again.
 
   mailer:
+    contact_request:
+      subject: Contact request
     email_reuse_notice:
       subject: Email confirmation notification
     email_change_notice:
@@ -247,6 +252,19 @@ en:
         finance: Financial information
         phone: What is your phone number?
         review: Review and submit
+
+  contact:
+    intro: I want to
+    learn_more: Learn more about %{app_name}
+    tell_experience: Tell you about my %{app_name} experience
+    labels:
+      email: Email address
+      or: or
+      phone: Telephone
+      comments: Comments
+      comments_note: Optional, but very helpful
+    messages:
+      thanks: Thanks! We'll be in touch soon.
 
   voice:
     otp_confirmation: >

@@ -5,6 +5,10 @@ label {
   margin-bottom: $space-tiny;
 }
 
+textarea {
+  resize: vertical;
+}
+
 .field {
   background-color: #f2f9ff;
   color: $gray;

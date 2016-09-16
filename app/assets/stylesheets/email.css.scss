@@ -3,13 +3,9 @@
 
 @import 'foundation-emails';
 
-.hr {
-  margin: $hr-margin;
-}
-
-.lead {
-  margin-bottom: 30px;
-}
+.hr { margin: $hr-margin; }
+.lead { margin-bottom: 30px; }
+.mr-tiny { margin-right: 4px; }
 
 .s10 {
   font-size: 10px;
@@ -33,9 +29,7 @@ h4 {
   padding-bottom: 10px;
 }
 
-.button.large.expanded table a {
-  padding: 20px 0;
-}
+.button.large.expanded table a { padding: 20px 0; }
 
 .footer {
   background: $secondary-color;
@@ -61,7 +55,6 @@ h4 {
   .container {
     background: transparent;
   }
-
 }
 
 .legal {

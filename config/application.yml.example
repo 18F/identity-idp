@@ -26,6 +26,8 @@ session_check_delay: '30'
 session_check_frequency: '30'
 
 stale_session_window: '180'
+
+support_email: 'hello@login.gov'
 support_url: 'https://18f.gov/contact'
 
 development:
