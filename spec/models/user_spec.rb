@@ -120,10 +120,10 @@ describe User do
   context 'when identities are present' do
     let(:user) { create(:user, :signed_up) }
     let(:active_identity) do
-      Identity.create(service_provider: 'entity_id', last_authenticated_at: Time.current - 1.hour)
+      Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
     end
     let(:inactive_identity) do
-      Identity.create(service_provider: 'entity_id', last_authenticated_at: nil)
+      Identity.create(service_provider: 'entity_id', session_uuid: nil)
     end
 
     describe '#active_identities' do
@@ -141,11 +141,13 @@ describe User do
     before do
       user.identities << Identity.create(
         service_provider: 'first',
-        last_authenticated_at: Time.current - 1.hour
+        last_authenticated_at: Time.current - 1.hour,
+        session_uuid: SecureRandom.uuid
       )
       user.identities << Identity.create(
         service_provider: 'last',
-        last_authenticated_at: Time.current
+        last_authenticated_at: Time.current,
+        session_uuid: SecureRandom.uuid
       )
     end
 

@@ -64,7 +64,7 @@ class User < ActiveRecord::Base
 
   def active_identities
     identities.where(
-      'last_authenticated_at IS NOT ?',
+      'session_uuid IS NOT ?',
       nil
     ).order(
       last_authenticated_at: :asc

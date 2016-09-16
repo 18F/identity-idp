@@ -107,7 +107,7 @@ describe UserDecorator do
       user.identities << create(
         :identity,
         service_provider: sp.issuer,
-        last_authenticated_at: Time.current
+        session_uuid: SecureRandom.uuid
       )
 
       user_decorator = UserDecorator.new(user)

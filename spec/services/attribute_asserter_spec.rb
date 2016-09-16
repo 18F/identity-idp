@@ -9,7 +9,7 @@ describe AttributeAsserter do
     build(
       :identity,
       service_provider: service_provider.issuer,
-      last_authenticated_at: Time.current
+      session_uuid: SecureRandom.uuid
     )
   end
   let(:service_provider) do
