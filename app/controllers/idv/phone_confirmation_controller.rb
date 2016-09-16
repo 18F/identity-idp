@@ -32,7 +32,7 @@ module Idv
 
     def assign_phone
       analytics.track_event('User confirmed their verified phone number')
-      idv_params['phone_confirmed_at'] = Time.current
+      idv_session.params['phone_confirmed_at'] = Time.current
     end
 
     def after_confirmation_path

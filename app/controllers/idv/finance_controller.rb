@@ -3,12 +3,12 @@ module Idv
     helper_method :idv_finance_form
 
     def new
-      @finance_account_label = FinanceFormDecorator.new(idv_params).label_text
+      @finance_account_label = FinanceFormDecorator.new(idv_session.params).label_text
     end
 
     def create
       if idv_finance_form.submit(finance_params)
-        self.idv_params = idv_finance_form.idv_params
+        idv_session.params = idv_finance_form.idv_params
         redirect_to idv_phone_url
       else
         render :new
@@ -18,7 +18,7 @@ module Idv
     private
 
     def idv_finance_form
-      @_idv_finance_form ||= Idv::FinanceForm.new(idv_params)
+      @_idv_finance_form ||= Idv::FinanceForm.new(idv_session.params)
     end
 
     def finance_params
