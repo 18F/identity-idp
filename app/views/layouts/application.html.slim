@@ -34,7 +34,7 @@ html lang="#{I18n.locale}"
     - if Figaro.env.google_analytics_key.present?
       = render 'shared/google_analytics/page_tracking'
 
-  body class="#{Rails.env}-env site"
+  body class="#{Rails.env}-env site sm-bg-light-blue"
     .site-wrap
       = render 'shared/usa_banner'
       = render 'shared/nav'

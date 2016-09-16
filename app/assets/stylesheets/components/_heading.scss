@@ -1,5 +1,3 @@
-$separator-height: .25rem;
-
 .heading {
   font-size: $h3;
   margin-bottom: .75rem;
@@ -8,7 +6,7 @@ $separator-height: .25rem;
   position: relative;
 
   &::before {
-    border-bottom: $separator-height solid $red;
+    border-bottom: .25rem solid $teal;
     border-radius: 12px;
     bottom: 0;
     content: '';
@@ -16,14 +14,5 @@ $separator-height: .25rem;
     width: 40px;
   }
 
-  &-m0 { margin: 0; }
   &-big { font-size: $h1; }
-}
-
-.h0 {
-  font-size: $h1;
-
-  @media #{$breakpoint-sm} {
-    font-size: $h0;
-  }
 }
