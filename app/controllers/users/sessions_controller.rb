@@ -3,6 +3,7 @@ module Users
     include ::ActionView::Helpers::DateHelper
 
     skip_before_action :session_expires_at, only: [:active]
+    skip_after_action :track_get_requests, only: [:active]
 
     def create
       track_authentication_attempt(params[:user][:email])

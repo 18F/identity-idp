@@ -85,6 +85,15 @@ describe Users::SessionsController, devise: true do
         expect(session[:pinged_at]).to_not eq(now)
       end
     end
+
+    it 'does not track analytics event' do
+      stub_sign_in
+      stub_analytics
+
+      expect(@analytics).to_not receive(:track_event)
+
+      get :active
+    end
   end
 
   describe 'GET /timeout' do
