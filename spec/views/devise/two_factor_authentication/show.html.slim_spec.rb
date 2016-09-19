@@ -4,6 +4,8 @@ describe 'devise/two_factor_authentication/show.html.slim' do
   context 'user has a phone' do
     let(:user) { build_stubbed(:user, :signed_up) }
 
+    before { @otp_delivery_selection_form = OtpDeliverySelectionForm.new }
+
     it 'has a localized heading' do
       render
 

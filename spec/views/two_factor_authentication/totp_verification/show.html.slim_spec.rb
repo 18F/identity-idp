@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/two_factor_authentication/confirm_totp.html.slim' do
+describe 'two_factor_authentication/totp_verification/show.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: 123) }
 
   it 'prompts to enter code from app' do
@@ -17,9 +17,11 @@ describe 'devise/two_factor_authentication/confirm_totp.html.slim' do
 
     render
 
-    expect(rendered).to have_link('receive a code via SMS',
-                                  href: otp_send_path(otp_method: :sms))
-    expect(rendered).to have_link('with a phone call',
-                                  href: otp_send_path(otp_method: :voice))
+    expect(rendered).
+      to have_link(t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
+                   href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' }))
+    expect(rendered).
+      to have_link(t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+                   href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
   end
 end
