@@ -1,0 +1,3 @@
+* re-encrypt PII when password changed
+* mark profile.active=false when password reset
+* encrypt IdV session at rest

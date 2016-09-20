@@ -1,0 +1,634 @@
+diff --git a/Gemfile.lock b/Gemfile.lock
+index 170e13d..1ddcb47 100644
+--- a/Gemfile.lock
++++ b/Gemfile.lock
+@@ -1,6 +1,6 @@
+ GIT
+   remote: https://github.com/18F/identity-proofer-gem.git
+-  revision: 3b44d294c9f12c4fb7ab89687f48d3453f8582a7
++  revision: d013230ddeba07d6f37a58c06351218bb5f525fe
+   branch: master
+   specs:
+     proofer (1.0.0)
+diff --git a/app/controllers/application_controller.rb b/app/controllers/application_controller.rb
+index e32fab4..2fa2fe6 100644
+--- a/app/controllers/application_controller.rb
++++ b/app/controllers/application_controller.rb
+@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
+   end
+ 
+   def prompt_to_set_up_2fa
+-    redirect_to phone_setup_url
++    redirect_to users_otp_url
+   end
+ 
+   def prompt_to_enter_otp
+diff --git a/app/controllers/concerns/idv_session.rb b/app/controllers/concerns/idv_session.rb
+index afc9125..39b139a 100644
+--- a/app/controllers/concerns/idv_session.rb
++++ b/app/controllers/concerns/idv_session.rb
+@@ -25,9 +25,7 @@ module IdvSession
+   def proofing_session_started?
+     idv_resolution.present? &&
+       idv_applicant.present? &&
+-      idv_resolution.success &&
+-      idv_questions &&
+-      idv_questions.any?
++      idv_resolution.success?
+   end
+ 
+   def idv_vendor=(vendor)
+diff --git a/app/controllers/idv/confirmations_controller.rb b/app/controllers/idv/confirmations_controller.rb
+index 599e36c..e6fea3d 100644
+--- a/app/controllers/idv/confirmations_controller.rb
++++ b/app/controllers/idv/confirmations_controller.rb
+@@ -6,10 +6,10 @@ module Idv
+ 
+     def index
+       if proofing_session_started?
+-        if idv_question_number >= idv_resolution.questions.count
+-          submit_answers
++        if idv_questions && idv_questions.count
++          handle_kbv
+         else
+-          redirect_to idv_questions_path
++          handle_without_kbv
+         end
+       else
+         redirect_to idv_sessions_path
+@@ -18,6 +18,24 @@ module Idv
+ 
+     private
+ 
++    def handle_kbv
++      if idv_question_number >= idv_resolution.questions.count
++        submit_answers
++      else
++        redirect_to idv_questions_path
++      end
++    end
++
++    def handle_without_kbv
++      # should we do further interrogate idv_resolution?
++      # see https://github.com/18F/identity-private/issues/485
++      if idv_resolution.success?
++        finish_proofing_success
++      else
++        finish_proofing_failure
++      end
++    end
++
+     def submit_answers
+       agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)
+       @idv_vendor = idv_vendor
+diff --git a/app/controllers/idv/questions_controller.rb b/app/controllers/idv/questions_controller.rb
+index 2f0910c..e73e4b5 100644
+--- a/app/controllers/idv/questions_controller.rb
++++ b/app/controllers/idv/questions_controller.rb
+@@ -22,7 +22,7 @@ module Idv
+ 
+     def render_next_question
+       questions = idv_resolution.questions
+-      if idv_question_number < questions.count
++      if questions && idv_question_number < questions.count
+         @question_sequence = idv_question_number + 1
+         @question = questions[idv_question_number]
+       else
+diff --git a/app/controllers/idv/sessions_controller.rb b/app/controllers/idv/sessions_controller.rb
+index 5cb1fc9..0196ebb 100644
+--- a/app/controllers/idv/sessions_controller.rb
++++ b/app/controllers/idv/sessions_controller.rb
+@@ -21,7 +21,10 @@ module Idv
+     private
+ 
+     def start_idv_session
+-      agent = Proofer::Agent.new(vendor: pick_a_vendor)
++      agent = Proofer::Agent.new(
++        vendor: pick_a_vendor,
++        kbv: FeatureManagement.proofing_requires_kbv?
++      )
+       self.idv_applicant = applicant_from_params
+       self.idv_vendor = agent.vendor
+       agent.start(idv_applicant)
+diff --git a/app/controllers/users/confirmations_controller.rb b/app/controllers/users/confirmations_controller.rb
+index 133af0f..9b28f5e 100644
+--- a/app/controllers/users/confirmations_controller.rb
++++ b/app/controllers/users/confirmations_controller.rb
+@@ -107,7 +107,7 @@ module Users
+       elsif resource.two_factor_enabled?
+         profile_path
+       else
+-        phone_setup_url
++        users_otp_url
+       end
+     end
+ 
+diff --git a/app/controllers/users/phone_confirmation_controller.rb b/app/controllers/users/phone_confirmation_controller.rb
+index c848a08..49429ae 100644
+--- a/app/controllers/users/phone_confirmation_controller.rb
++++ b/app/controllers/users/phone_confirmation_controller.rb
+@@ -11,7 +11,7 @@ module Users
+       @reenter_phone_number_path = if current_user.mobile.present?
+                                      edit_user_registration_path
+                                    else
+-                                     phone_setup_path
++                                     users_otp_path
+                                    end
+     end
+ 
+diff --git a/app/controllers/users/totp_setup_controller.rb b/app/controllers/users/totp_setup_controller.rb
+index 17dcab8..4e4007e 100644
+--- a/app/controllers/users/totp_setup_controller.rb
++++ b/app/controllers/users/totp_setup_controller.rb
+@@ -41,7 +41,7 @@ module Users
+ 
+     def process_invalid_code
+       flash[:error] = t('errors.invalid_totp')
+-      redirect_to authenticator_setup_path
++      redirect_to users_totp_path
+     end
+   end
+ end
+diff --git a/app/views/devise/two_factor_authentication/show.html.slim b/app/views/devise/two_factor_authentication/show.html.slim
+index 9e31399..1e7c4d3 100644
+--- a/app/views/devise/two_factor_authentication/show.html.slim
++++ b/app/views/devise/two_factor_authentication/show.html.slim
+@@ -7,7 +7,7 @@ p
+ p
+   'Each code is valid for #{otp_valid_for_in_words}.
+   'If you do not receive a code within this time, please
+-  '#{link_to 'request a new one', otp_new_path, data: { 'no-turbolink' => true }}.
++  '#{link_to 'request a new one', users_otp_new_path, data: { 'no-turbolink' => true }}.
+ 
+ = form_tag([:user, :two_factor_authentication], method: :put, role: 'form') do
+   .mb2
+diff --git a/app/views/devise/two_factor_authentication/show_totp.html.slim b/app/views/devise/two_factor_authentication/show_totp.html.slim
+index 43c26f2..1d14b1a 100644
+--- a/app/views/devise/two_factor_authentication/show_totp.html.slim
++++ b/app/views/devise/two_factor_authentication/show_totp.html.slim
+@@ -15,4 +15,4 @@ p
+ hr
+ p
+   'If you don't have access to your authenticator app you can choose to
+-  '#{link_to 'receive a code via SMS', otp_new_path}.
++  '#{link_to 'receive a code via SMS', users_otp_new_path}.
+diff --git a/app/views/devise/two_factor_authentication_setup/index.html.slim b/app/views/devise/two_factor_authentication_setup/index.html.slim
+index ab3f4fe..ffcbb2c 100644
+--- a/app/views/devise/two_factor_authentication_setup/index.html.slim
++++ b/app/views/devise/two_factor_authentication_setup/index.html.slim
+@@ -5,7 +5,7 @@ h1.heading = t('devise.two_factor_authentication.two_factor_setup')
+ = simple_form_for(@two_factor_setup_form,
+     html: { autocomplete: 'off', role: 'form' },
+     method: :patch,
+-    url: phone_setup_path) do |f|
++    url: users_otp_path) do |f|
+   = f.error_notification
+   p = t('devise.two_factor_authentication.otp_setup')
+   = f.input :mobile, as: :tel, autofocus: true, label: 'Mobile Number', required: true
+diff --git a/app/views/profile/index.html.slim b/app/views/profile/index.html.slim
+index 3c7d4de..35938c8 100644
+--- a/app/views/profile/index.html.slim
++++ b/app/views/profile/index.html.slim
+@@ -26,7 +26,7 @@ h2.h5.mt4.mb2 = t('headings.profile.account_settings')
+         = button_to 'Disable', disable_totp_url, method: :delete, \
+           class: 'btn btn-primary px1 py0 h6 regular'
+       - else
+-        = button_to 'Enable', authenticator_setup_url, method: :get, \
++        = button_to 'Enable', users_totp_url, method: :get, \
+           class: 'btn btn-primary px1 py0 h6 regular'
+ 
+ - unless current_user.active_identities.empty?
+diff --git a/app/views/users/totp_setup/new.html.slim b/app/views/users/totp_setup/new.html.slim
+index 15498cb..0aabd20 100644
+--- a/app/views/users/totp_setup/new.html.slim
++++ b/app/views/users/totp_setup/new.html.slim
+@@ -4,7 +4,7 @@ h1.heading = t('forms.totp_setup.header_text')
+ p.mb0 = t('forms.totp_setup.totp_info')
+ .py1.center
+   = image_tag @qrcode, alt: 'QR Code for Authenticator App'
+-= form_tag(authenticator_setup_path, method: :patch, role: 'form') do
++= form_tag(confirm_totp_path, method: :patch, role: 'form') do
+   .mb2
+     = label_tag 'code', t('forms.totp_setup.code'), class: 'hide'
+     = number_field_tag :code, '', autofocus: true, class: 'block col-12 field mfa', required: true
+diff --git a/config/application.yml.example b/config/application.yml.example
+index 1a9b29d..d03ac5b 100644
+--- a/config/application.yml.example
++++ b/config/application.yml.example
+@@ -18,13 +18,14 @@ development:
+   logins_per_ip_limit: '20'
+   logins_per_ip_period: '8'
+   newrelic_license_key: 'xxx'
++  proofing_kbv: 'true'
++  proofing_vendors: 'mock'
+   requests_per_ip_limit: '300'
+   requests_per_ip_period: '300'
+   sms_disabled: 'true'
+   saml_passphrase: 'trust-but-verify'
+   secret_key_base: 'development_secret_key_base'
+   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
+-  proofing_vendors: 'mock'
+ 
+ production:
+   allow_third_party_auth: 'yes'
+@@ -52,9 +53,10 @@ test:
+   logins_per_ip_limit: '2'
+   logins_per_ip_period: '2'
+   newrelic_license_key: 'xxx'
++  proofing_kbv: 'true'
++  proofing_vendors: 'mock'
+   requests_per_ip_limit: '3'
+   requests_per_ip_period: '60'
+   saml_passphrase: 'trust-but-verify'
+   secret_key_base: 'test_secret_key_base'
+   twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
+-  proofing_vendors: 'mock'
+diff --git a/config/routes.rb b/config/routes.rb
+index 74a6346..6807457 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -27,10 +27,9 @@ Rails.application.routes.draw do
+ 
+     patch '/confirm' => 'users/confirmations#confirm'
+ 
+-    get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
+-    patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
+-
+-    get '/otp/new' => 'devise/two_factor_authentication#new'
++    get '/users/otp' => 'devise/two_factor_authentication_setup#index'
++    patch '/users/otp' => 'devise/two_factor_authentication_setup#set'
++    get '/users/otp/new' => 'devise/two_factor_authentication#new'
+   end
+ 
+   unless Figaro.env.domain_name.include?('superb.legit.domain.gov')
+@@ -63,9 +62,9 @@ Rails.application.routes.draw do
+   put '/phone_confirmation' => 'users/phone_confirmation#confirm'
+   get '/profile' => 'profile#index'
+   get '/splash' => 'home#index'
+-  get '/authenticator_setup' => 'users/totp_setup#new'
+-  delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
+-  patch '/authenticator_setup' => 'users/totp_setup#confirm'
++  get '/users/totp' => 'users/totp_setup#new'
++  delete '/users/totp' => 'users/totp_setup#disable', as: :disable_totp
++  patch '/users/totp' => 'users/totp_setup#confirm', as: :confirm_totp
+ 
+   root to: 'users/sessions#new'
+ end
+diff --git a/lib/feature_management.rb b/lib/feature_management.rb
+index 30830b8..c9cdc7b 100644
+--- a/lib/feature_management.rb
++++ b/lib/feature_management.rb
+@@ -12,4 +12,8 @@ class FeatureManagement
+     # developers can log in without needing to configure SMS delivery.
+     Rails.env.development? && FeatureManagement.sms_disabled?
+   end
++
++  def self.proofing_requires_kbv?
++    Figaro.env.proofing_kbv != 'false'
++  end
+ end
+diff --git a/spec/controllers/application_controller_spec.rb b/spec/controllers/application_controller_spec.rb
+index 784ec75..8f1346e 100644
+--- a/spec/controllers/application_controller_spec.rb
++++ b/spec/controllers/application_controller_spec.rb
+@@ -88,7 +88,7 @@ describe ApplicationController do
+     end
+ 
+     context 'when the user may not bypass 2FA and is not 2FA-enabled' do
+-      it 'redirects to phone_setup_url with a flash message' do
++      it 'redirects to users_otp_url with a flash message' do
+         user = create(:user)
+         sign_in user
+ 
+@@ -101,7 +101,7 @@ describe ApplicationController do
+ 
+         get :index
+ 
+-        expect(response).to redirect_to phone_setup_url
++        expect(response).to redirect_to users_otp_url
+       end
+     end
+ 
+diff --git a/spec/controllers/idv/sessions_controller_spec.rb b/spec/controllers/idv/sessions_controller_spec.rb
+index 37d58cf..620b6c6 100644
+--- a/spec/controllers/idv/sessions_controller_spec.rb
++++ b/spec/controllers/idv/sessions_controller_spec.rb
+@@ -32,26 +32,52 @@ describe Idv::SessionsController do
+       sign_in(user)
+     end
+ 
+-    it 'starts new proofing session' do
+-      get :index
++    context 'KBV on' do
++      before do
++        ENV['PROOFING_KBV'] = 'true'
++      end
+ 
+-      expect(response.status).to eq 200
+-      expect(response.body).to include t('idv.form.first_name')
+-    end
++      after do
++        ENV['PROOFING_KBV'] = Figaro.env.proofing_kbv
++      end
++
++      it 'starts new proofing session' do
++        get :index
++
++        expect(response.status).to eq 200
++        expect(response.body).to include t('idv.form.first_name')
++      end
++
++      it 'creates proofing applicant' do
++        post :create, user_attrs
+ 
+-    it 'creates proofing applicant' do
+-      post :create, user_attrs
++        expect(flash).to be_empty
++        expect(response).to redirect_to(idv_questions_path)
++        expect(subject.user_session[:idv][:applicant]).to be_a Proofer::Applicant
++      end
+ 
+-      expect(flash).to be_empty
+-      expect(response).to redirect_to(idv_questions_path)
+-      expect(subject.user_session[:idv][:applicant]).to be_a Proofer::Applicant
++      it 'shows failure on intentionally bad values' do
++        post :create, first_name: 'Bad', ssn: '6666'
++
++        expect(response).to redirect_to(idv_sessions_path)
++        expect(flash[:error]).to eq t('idv.titles.fail')
++      end
+     end
+ 
+-    it 'shows failure on intentionally bad values' do
+-      post :create, first_name: 'Bad', ssn: '6666'
++    context 'KBV off' do
++      before do
++        ENV['PROOFING_KBV'] = 'false'
++      end
++
++      after do
++        ENV['PROOFING_KBV'] = Figaro.env.proofing_kbv
++      end
++
++      it 'skips questions creation' do
++        post :create, user_attrs
+ 
+-      expect(response).to redirect_to(idv_sessions_path)
+-      expect(flash[:error]).to eq t('idv.titles.fail')
++        expect(subject.user_session[:idv][:resolution].questions).to be_nil
++      end
+     end
+   end
+ end
+diff --git a/spec/controllers/users/phone_confirmation_controller_spec.rb b/spec/controllers/users/phone_confirmation_controller_spec.rb
+index 88b8cc8..bb145b3 100644
+--- a/spec/controllers/users/phone_confirmation_controller_spec.rb
++++ b/spec/controllers/users/phone_confirmation_controller_spec.rb
+@@ -188,7 +188,7 @@ describe Users::PhoneConfirmationController, devise: true do
+       it 'sets @reenter_phone_number_path to OTP setup path' do
+         get :show
+ 
+-        expect(assigns(:reenter_phone_number_path)).to eq(phone_setup_path)
++        expect(assigns(:reenter_phone_number_path)).to eq(users_otp_path)
+       end
+     end
+ 
+diff --git a/spec/controllers/users/totp_setup_controller_spec.rb b/spec/controllers/users/totp_setup_controller_spec.rb
+index a5c4008..045196d 100644
+--- a/spec/controllers/users/totp_setup_controller_spec.rb
++++ b/spec/controllers/users/totp_setup_controller_spec.rb
+@@ -45,8 +45,8 @@ describe Users::TotpSetupController, devise: true do
+         patch :confirm, code: 123
+       end
+ 
+-      it 'redirects back to authenticator_setup_path' do
+-        expect(response).to redirect_to(authenticator_setup_path)
++      it 'redirects :new' do
++        expect(response).to redirect_to(users_totp_path)
+       end
+ 
+       it 'sets flash[:error] message' do
+@@ -74,7 +74,7 @@ describe Users::TotpSetupController, devise: true do
+         expect(flash[:success]).to eq t('notices.totp_configured')
+       end
+ 
+-      it 'enables TOTP for the current user' do
++      it 'enables totp for the current user' do
+         expect(subject.current_user.totp_enabled?).to be(true)
+       end
+ 
+diff --git a/spec/features/idv/question_cycle_spec.rb b/spec/features/idv/question_cycle_spec.rb
+index 903cac0..69090fa 100644
+--- a/spec/features/idv/question_cycle_spec.rb
++++ b/spec/features/idv/question_cycle_spec.rb
+@@ -3,51 +3,84 @@ require 'rails_helper'
+ feature 'IdV session' do
+   include IdvHelper
+ 
+-  scenario 'KBV with all answers correct' do
+-    user = sign_in_and_2fa_user
++  context 'KBV off' do
++    before do
++      ENV['PROOFING_KBV'] = 'false'
++    end
+ 
+-    visit '/idv/sessions'
++    after do
++      ENV['PROOFING_KBV'] = Figaro.env.proofing_kbv
++    end
+ 
+-    expect(page).to have_content(t('idv.form.first_name'))
++    scenario 'skips KBV' do
++      user = sign_in_and_2fa_user
+ 
+-    fill_out_idv_form_ok
+-    click_button 'Continue'
+-    expect(page).to have_content('Where did you live')
++      visit '/idv/sessions'
+ 
+-    complete_idv_questions_ok
+-    expect(page).to have_content(t('idv.titles.complete'))
++      expect(page).to have_content(t('idv.form.first_name'))
+ 
+-    expect(user.active_profile).to be_a(Profile)
+-    expect(user.active_profile.verified?).to eq true
+-    expect(user.active_profile.ssn).to eq '666661234'
++      fill_out_idv_form_ok
++      click_button 'Continue'
++      expect(page).to have_content(t('idv.titles.complete'))
++      expect(user.active_profile).to be_a(Profile)
++    end
+   end
+ 
+-  scenario 'KBV with some incorrect answers' do
+-    sign_in_and_2fa_user
++  context 'KBV on' do
++    before do
++      ENV['PROOFING_KBV'] = 'true'
++    end
+ 
+-    visit '/idv/sessions'
++    after do
++      ENV['PROOFING_KBV'] = Figaro.env.proofing_kbv
++    end
+ 
+-    expect(page).to have_content(t('idv.form.first_name'))
++    scenario 'KBV with all answers correct' do
++      user = sign_in_and_2fa_user
+ 
+-    fill_out_idv_form_ok
+-    click_button 'Continue'
++      visit '/idv/sessions'
+ 
+-    expect(page).to have_content('Where did you live')
++      expect(page).to have_content(t('idv.form.first_name'))
+ 
+-    complete_idv_questions_fail
+-    expect(page).to have_content(t('idv.titles.hardfail'))
+-  end
++      fill_out_idv_form_ok
++      click_button 'Continue'
++      expect(page).to have_content('Where did you live')
++
++      complete_idv_questions_ok
++      expect(page).to have_content(t('idv.titles.complete'))
++
++      expect(user.active_profile).to be_a(Profile)
++      expect(user.active_profile.verified?).to eq true
++      expect(user.active_profile.ssn).to eq '666661234'
++    end
++
++    scenario 'KBV with some incorrect answers' do
++      sign_in_and_2fa_user
++
++      visit '/idv/sessions'
++
++      expect(page).to have_content(t('idv.form.first_name'))
++
++      fill_out_idv_form_ok
++      click_button 'Continue'
++
++      expect(page).to have_content('Where did you live')
++
++      complete_idv_questions_fail
++      expect(page).to have_content(t('idv.titles.hardfail'))
++    end
+ 
+-  scenario 'un-resolvable PII' do
+-    sign_in_and_2fa_user
++    scenario 'un-resolvable PII' do
++      sign_in_and_2fa_user
+ 
+-    visit '/idv/sessions'
++      visit '/idv/sessions'
+ 
+-    expect(page).to have_content(t('idv.form.first_name'))
++      expect(page).to have_content(t('idv.form.first_name'))
+ 
+-    fill_out_idv_form_fail
+-    click_button 'Continue'
++      fill_out_idv_form_fail
++      click_button 'Continue'
+ 
+-    expect(page).to have_content(t('idv.titles.fail'))
++      expect(page).to have_content(t('idv.titles.fail'))
++    end
+   end
+ end
+diff --git a/spec/features/saml/saml_spec.rb b/spec/features/saml/saml_spec.rb
+index 9f1c550..aaaf8ae 100644
+--- a/spec/features/saml/saml_spec.rb
++++ b/spec/features/saml/saml_spec.rb
+@@ -31,7 +31,7 @@ feature 'saml api', devise: true, sms: true do
+       end
+ 
+       it 'prompts the user to set up 2FA' do
+-        expect(current_path).to eq phone_setup_path
++        expect(current_path).to eq users_otp_path
+       end
+ 
+       it 'prompts the user to confirm mobile after setting up 2FA' do
+@@ -49,7 +49,7 @@ feature 'saml api', devise: true, sms: true do
+       end
+ 
+       it 'prompts user to set up 2FA after confirming email and setting password' do
+-        expect(current_path).to eq phone_setup_path
++        expect(current_path).to eq users_otp_path
+       end
+ 
+       it 'prompts the user to confirm mobile after setting up 2FA' do
+diff --git a/spec/features/two_factor_authentication/sign_in_spec.rb b/spec/features/two_factor_authentication/sign_in_spec.rb
+index 67e459e..c956072 100644
+--- a/spec/features/two_factor_authentication/sign_in_spec.rb
++++ b/spec/features/two_factor_authentication/sign_in_spec.rb
+@@ -10,7 +10,7 @@ feature 'Two Factor Authentication' do
+     scenario 'user is prompted to setup two factor authentication at first sign in' do
+       sign_in_before_2fa
+ 
+-      expect(current_path).to eq phone_setup_path
++      expect(current_path).to eq users_otp_path
+       expect(page).
+         to have_content t('devise.two_factor_authentication.two_factor_setup')
+     end
+@@ -19,7 +19,7 @@ feature 'Two Factor Authentication' do
+       sign_up_and_set_password
+       click_button 'Submit'
+ 
+-      expect(current_path).to eq phone_setup_path
++      expect(current_path).to eq users_otp_path
+     end
+ 
+     scenario 'user attempts to circumnavigate OTP setup' do
+@@ -27,7 +27,7 @@ feature 'Two Factor Authentication' do
+ 
+       visit edit_user_registration_path
+ 
+-      expect(current_path).to eq phone_setup_path
++      expect(current_path).to eq users_otp_path
+     end
+ 
+     describe 'user selects Mobile' do
+diff --git a/spec/features/visitors/password_recovery_spec.rb b/spec/features/visitors/password_recovery_spec.rb
+index 90f8ac8..83a18b6 100644
+--- a/spec/features/visitors/password_recovery_spec.rb
++++ b/spec/features/visitors/password_recovery_spec.rb
+@@ -123,7 +123,7 @@ feature 'Password Recovery' do
+     it 'prompts user to set up their 2FA options after signing back in' do
+       reset_password_and_sign_back_in(@user)
+ 
+-      expect(current_path).to eq phone_setup_path
++      expect(current_path).to eq users_otp_path
+     end
+   end
+ 
+diff --git a/spec/features/visitors/sign_up_spec.rb b/spec/features/visitors/sign_up_spec.rb
+index 53a3f48..01d3eb7 100644
+--- a/spec/features/visitors/sign_up_spec.rb
++++ b/spec/features/visitors/sign_up_spec.rb
+@@ -46,7 +46,7 @@ feature 'Sign Up', devise: true do
+     fill_in 'password_form_password', with: VALID_PASSWORD
+     click_button 'Submit'
+ 
+-    expect(current_url).to eq phone_setup_url
++    expect(current_url).to eq users_otp_url
+     expect(page).to_not have_content t('devise.confirmations.confirmed')
+     expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
+   end
+@@ -88,7 +88,7 @@ feature 'Sign Up', devise: true do
+ 
+     it 'provides user with link to type in a phone number so they are not locked out' do
+       click_link 'entering it again'
+-      expect(current_path).to eq phone_setup_path
++      expect(current_path).to eq users_otp_path
+     end
+ 
+     it 'informs the user that the OTP code is sent to the mobile' do
+@@ -98,7 +98,7 @@ feature 'Sign Up', devise: true do
+     it 'allows user to enter new number if they Sign Out before confirming' do
+       click_link(t('links.sign_out'))
+       signin(@user.reload.email, @user.password)
+-      expect(current_path).to eq phone_setup_path
++      expect(current_path).to eq users_otp_path
+     end
+   end
+ 

@@ -1,0 +1,85 @@
+diff --git a/app/controllers/idv/sessions_controller.rb b/app/controllers/idv/sessions_controller.rb
+index 747b56d..b86ab94 100644
+--- a/app/controllers/idv/sessions_controller.rb
++++ b/app/controllers/idv/sessions_controller.rb
+@@ -4,6 +4,7 @@ module Idv
+ 
+     before_action :confirm_two_factor_authenticated
+     before_action :confirm_idv_attempts_allowed
++    before_action :confirm_idv_needed
+ 
+     helper_method :idv_profile_form
+ 
+diff --git a/app/controllers/idv_controller.rb b/app/controllers/idv_controller.rb
+index 1b279c8..eccd90e 100644
+--- a/app/controllers/idv_controller.rb
++++ b/app/controllers/idv_controller.rb
+@@ -16,4 +16,7 @@ class IdvController < ApplicationController
+   def retry
+     flash.now[:error] = I18n.t('idv.errors.fail')
+   end
++
++  def activated
++  end
+ end
+diff --git a/app/views/idv/activated.html.slim b/app/views/idv/activated.html.slim
+new file mode 100644
+index 0000000..100475b
+--- /dev/null
++++ b/app/views/idv/activated.html.slim
+@@ -0,0 +1,6 @@
++- title t('idv.titles.activated')
++
++h1.heading = t('idv.titles.activated')
++- activated_link = link_to(t('idv.messages.activated_link'), Figaro.env.support_url)
++p.mb1 = t('idv.messages.activated', link: activated_link).html_safe
++= link_to 'Back', idv_url, class: 'underline'
+diff --git a/config/locales/en.yml b/config/locales/en.yml
+index 90223bc..f77fdcc 100644
+--- a/config/locales/en.yml
++++ b/config/locales/en.yml
+@@ -220,6 +220,10 @@ en:
+         Please check that the personal and financial information you provided is accurate.
+         To learn more about the information we need from you and how it’s used to verify your identity,
+         please see our troubleshooting page.
++      activated: >
++        Your identity has been verified. If you need to change your verified information,
++        please %{link}.
++      activated_link: contact us
+       hardfail: >
+         Your login.gov account can’t be used to access information with
+         participating agencies until you successfully complete this process.
+@@ -246,6 +250,7 @@ en:
+       dupe_ssn3_link: try recovering it here
+       review_and_continue: Review my info and try again
+     titles:
++      activated: Your identity has already been verified
+       intro: Help us identify you
+       expectations: We need some information from you
+       welcome: Verify your identity
+diff --git a/config/routes.rb b/config/routes.rb
+index fe8bd79..ffcceea 100644
+--- a/config/routes.rb
++++ b/config/routes.rb
+@@ -82,6 +82,7 @@ Rails.application.routes.draw do
+   post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
+ 
+   get '/idv' => 'idv#index'
++  get '/idv/activated' => 'idv#activated'
+   get '/idv/cancel' => 'idv#cancel'
+   get '/idv/fail' => 'idv#fail'
+   get '/idv/retry' => 'idv#retry'
+diff --git a/spec/controllers/idv/sessions_controller_spec.rb b/spec/controllers/idv/sessions_controller_spec.rb
+index f382add..74ede03 100644
+--- a/spec/controllers/idv/sessions_controller_spec.rb
++++ b/spec/controllers/idv/sessions_controller_spec.rb
+@@ -21,7 +21,8 @@ describe Idv::SessionsController do
+       expect(subject).to have_actions(
+         :before,
+         :confirm_two_factor_authenticated,
+-        :confirm_idv_attempts_allowed
++        :confirm_idv_attempts_allowed,
++        :confirm_idv_needed
+       )
+     end
+   end

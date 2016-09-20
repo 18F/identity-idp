@@ -1,0 +1,49 @@
+# This file is used by the Figaro gem: https://github.com/laserlemon/figaro
+
+# Be sure to restart your server when you modify this file.
+
+# Make sure the secrets in this file are kept private
+# if you're sharing your code publicly.
+
+# Make sure any new entries you add are enclosed in single quotes.
+# Figaro requires all values to be explicit strings.
+
+support_url: 'https://upaya.18f.gov/contact'
+
+development:
+  allow_third_party_auth: 'yes'
+  domain_name: 'localhost:3000'
+  idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
+  log_all_active_job_arguments: 'false'
+  newrelic_license_key: 'xxx'
+  pt_mode: 'on'
+  saml_passphrase: 'trust-but-verify'
+  secret_key_base: 'development_secret_key_base'
+  twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
+
+production:
+  allow_third_party_auth: 'yes'
+  domain_name: 'xxx.xxx'
+  idp_sso_target_url: 'xxx.xxx/saml/auth'
+  log_all_active_job_arguments: 'false'
+  newrelic_license_key: 'xxx'
+  proxy_addr: '123.456.789'
+  proxy_port: '80'
+  pt_mode: 'off'
+  saml_passphrase: 'trust-but-verify'
+  secret_key_base: 'rake secret'
+  smtp_settings: '{"address":"smtp.mandrillapp.com", "port":587, "authentication":"login", "enable_starttls_auto":true, "user_name":"user@gmail.com","password":"xxx"}'
+  twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
+
+test:
+  allow_third_party_auth: 'yes'
+  domain_name: 'www.example.com'
+  ducksboard_uid: '8VEQre2c8b62mQV0sa'
+  sp_url: ''
+  idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
+  log_all_active_job_arguments: 'false'
+  newrelic_license_key: 'xxx'
+  pt_mode: 'off'
+  saml_passphrase: 'trust-but-verify'
+  secret_key_base: 'test_secret_key_base'
+  twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
