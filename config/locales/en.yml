@@ -18,6 +18,7 @@ en:
 
   forms:
     buttons:
+      acknowledge_recovery_code: Continue
       continue_browsing: Continue browsing
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
@@ -29,6 +30,7 @@ en:
       header_text: Confirm your phone number
     two_factor:
       code: One-time passcode
+      recovery_code: Recovery code
     totp_setup:
       code: One-time passcode
       totp_info: >
@@ -45,6 +47,10 @@ en:
   instructions:
     edit_info:
       password: Your new password must be at least %{min_length} characters.
+    recovery_code: >
+      Below is the recovery code that we have generated for you. You can use
+      this code to access your account in case you lose access to your phone.
+      Make sure to print and/or write down this code and keep it in a safe place.
 
   links:
     resend: Try resending the confirmation instructions.
@@ -99,6 +105,7 @@ en:
       change: Change the password for your account
       forgot: Reset the password for your account
     profile: Profile
+    recovery_code: Your Recovery Code
     registrations:
       new: Sign up for a account
       start: Get started
@@ -138,6 +145,7 @@ en:
       login_info: Login information
       main: My account
       two_factor: Two-factor Authentication
+    recovery_code: Your Recovery Code
     registrations:
       enter_email: Email address
       verify_email: Verify email address
@@ -213,7 +221,7 @@ en:
         To learn more about the information we need from you and how it’s used to verify your identity,
         please see our troubleshooting page.
       hardfail: >
-        Your login.gov account can’t be used to access information with 
+        Your login.gov account can’t be used to access information with
         participating agencies until you successfully complete this process.
       hardfail2: >
         You can try to complete the verification process again in %{hours} hours.
@@ -267,6 +275,12 @@ en:
       comments_note: Optional, but very helpful
     messages:
       thanks: Thanks! We'll be in touch soon.
+
+  profile:
+    items:
+      recovery_code: Recovery code
+    links:
+      regenerate_recovery_code: Regenerate
 
   voice:
     otp_confirmation: >

@@ -55,6 +55,8 @@ module Users
     def after_confirmation_path
       if @updating_existing_number
         profile_path
+      elsif decorated_user.should_acknowledge_recovery_code?(session)
+        settings_recovery_code_url
       else
         after_sign_in_path_for(current_user)
       end

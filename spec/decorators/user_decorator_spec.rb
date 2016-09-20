@@ -115,4 +115,27 @@ describe UserDecorator do
       expect(user_decorator.active_identity_for(sp)).to eq user.last_identity
     end
   end
+
+  describe '#should_acknowledge_recovery_code?' do
+    it 'returns true when the user has no recovery code and is not omniauthed' do
+      user_decorator = UserDecorator.new(User.new)
+      session = { omniauthed: false }
+
+      expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+    end
+
+    it 'returns false when the user has a recovery code' do
+      user_decorator = UserDecorator.new(User.new(recovery_code: 'foo'))
+      session = { omniauthed: false }
+
+      expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+    end
+
+    it 'returns false when the user is omniauthed' do
+      user_decorator = UserDecorator.new(User.new)
+      session = { omniauthed: true }
+
+      expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+    end
+  end
 end

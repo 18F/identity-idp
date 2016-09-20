@@ -34,6 +34,10 @@ Rails.application.routes.draw do
     get '/otp/send' => 'devise/two_factor_authentication#send_code'
     get '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#show'
     post '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#create'
+    # rubocop:disable LineLength
+    get '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#show'
+    post '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#create'
+    # rubocop:enable LineLength
     get(
       '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
       as: :login_two_factor
@@ -74,6 +78,8 @@ Rails.application.routes.draw do
   match '/edit/phone' => 'users/edit_phone#update', via: [:patch, :put]
   get '/settings/password' => 'users/edit_password#edit'
   patch '/settings/password' => 'users/edit_password#update'
+  get '/settings/recovery-code' => 'two_factor_authentication/recovery_code#show'
+  post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
 
   get '/idv' => 'idv#index'
   get '/idv/cancel' => 'idv#cancel'

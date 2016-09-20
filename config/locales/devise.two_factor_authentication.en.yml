@@ -1,14 +1,21 @@
 en:
   devise:
     two_factor_authentication:
-      attempt_failed: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
       contact_administrator: Please contact your system administrator.
       header_text: Enter your one-time passcode
+      invalid_otp: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
+      invalid_recovery_code: Invalid recovery code. Please try again.
       totp_header_text: Enter your Authenticator code
       max_login_attempts_reached: >
         Your account is temporarily locked because you have entered the
         one-time passcode incorrectly too many times.
       please_try_again: Please try again in %{time_remaining}.
+      recovery_code_header_text: Enter a recovery code
+      recovery_code_prompt: >
+        Please enter your recovery code. Once used, a new one will be generated for you.
+      recovery_code_fallback:
+        text: Don't have access to your phone? Use a %{link} instead.
+        link: recovery code
       otp_setup: >
         Every time you log in, a one-time passcode will be sent to your phone via SMS or with a
         phone call.

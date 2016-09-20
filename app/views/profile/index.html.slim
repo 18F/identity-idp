@@ -60,7 +60,7 @@ h2.heading = t('headings.profile.login_info')
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to 'Edit', edit_phone_path, \
           class: btn_cls
-  .py-12p.border-top.border-bottom
+  .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = 'Authentication app'
       .sm-col.sm-col-2.px1.sm-right-align
@@ -70,6 +70,12 @@ h2.heading = t('headings.profile.login_info')
         - else
           = link_to 'Enable', authenticator_start_url, \
             class: btn_cls
+  .py-12p.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-10.px1 =  t('profile.items.recovery_code')
+      .sm-col.sm-col-2.px1.sm-right-align
+        = link_to t('profile.links.regenerate_recovery_code'), \
+          settings_recovery_code_url, class: btn_cls
 
 h2.heading = t('headings.profile.agencies')
 .mt3.mb4

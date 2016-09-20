@@ -69,6 +69,10 @@ UserDecorator = Struct.new(:user) do
     user.second_factor_locked_at && blocked_from_2fa_period_expired?
   end
 
+  def should_acknowledge_recovery_code?(session)
+    user.recovery_code.blank? && !omniauthed?(session)
+  end
+
   private
 
   def omniauthed?(session)
