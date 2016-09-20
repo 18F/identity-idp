@@ -5,7 +5,7 @@ module Idv
     before_action :confirm_two_factor_authenticated
 
     def index
-      if proofing_session_started?
+      if idv_session.proofing_started?
         if idv_questions && idv_questions.count
           handle_kbv
         else
@@ -18,8 +18,12 @@ module Idv
 
     private
 
+    def idv_questions
+      idv_session.questions
+    end
+
     def handle_kbv
-      if idv_question_number >= idv_resolution.questions.count
+      if idv_session.question_number >= idv_questions.count
         submit_answers
       else
         redirect_to idv_questions_path
@@ -29,31 +33,34 @@ module Idv
     def handle_without_kbv
       # should we do further interrogate idv_resolution?
       # see https://github.com/18F/identity-private/issues/485
-      if idv_resolution.success?
+      if idv_session.resolution.success?
         finish_proofing_success
       else
         finish_proofing_failure
       end
     end
 
+    def proofer_agent
+      @_agent ||= Proofer::Agent.new(vendor: idv_session.vendor, applicant: idv_session.applicant)
+    end
+
     def submit_answers
-      agent = Proofer::Agent.new(vendor: idv_vendor, applicant: idv_applicant)
-      @idv_vendor = idv_vendor
-      @confirmation = agent.submit_answers(idv_resolution.questions, idv_resolution.session_id)
+      @idv_vendor = idv_session.vendor
+      resolution = idv_session.resolution
+      @confirmation = proofer_agent.submit_answers(resolution.questions, resolution.session_id)
       if @confirmation.success?
         finish_proofing_success
       else
         finish_proofing_failure
       end
-      clear_idv_session
     end
 
     def finish_proofing_failure
       # do not store PII that failed.
-      idv_profile.destroy
+      idv_session.profile.destroy
+      idv_session.clear
       analytics.track_event('IdV Failed')
-      if idv_attempter.exceeded?
-        idv_flag_user_attempt
+      if idv_session.attempter.exceeded?
         redirect_to idv_fail_url
       else
         redirect_to idv_retry_url
@@ -61,9 +68,9 @@ module Idv
     end
 
     def finish_proofing_success
-      idv_flag_user_attempt
-      self.idv_attempts = 0
-      complete_idv_profile
+      idv_session.attempts = 0
+      idv_session.complete_profile
+      idv_session.clear
       flash[:success] = I18n.t('idv.titles.complete')
       analytics.track_event('IdV Successful')
       redirect_to after_sign_in_path_for(current_user)
