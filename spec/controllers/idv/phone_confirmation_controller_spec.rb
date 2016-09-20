@@ -62,10 +62,12 @@ describe Idv::PhoneConfirmationController, devise: true do
 
   describe '#confirm' do
     before do
-      sign_in_as_user
+      user = sign_in_as_user
+      idv_session = Idv::Session.new(subject.user_session, user)
+      idv_session.params = { 'phone' => '+1 (555) 555-5555' }
       subject.user_session[:idv_unconfirmed_phone] = '+1 (555) 555-5555'
       subject.user_session[:idv_phone_confirmation_code] = '123'
-      subject.user_session[:idv] = { params: { 'phone' => '+1 (555) 555-5555' } }
+      allow(subject).to receive(:idv_session).and_return(idv_session)
     end
 
     context 'user has an existing phone number' do
@@ -103,7 +105,7 @@ describe Idv::PhoneConfirmationController, devise: true do
         end
 
         it 'does not update phone_confirmed_at attribute' do
-          expect(subject.user_session[:idv][:params]['phone_confirmed_at']).to be_nil
+          expect(subject.idv_session.params['phone_confirmed_at']).to be_nil
         end
 
         it 'redirects back phone_confirmation_path' do

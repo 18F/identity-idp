@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe IdvAttempter do
+describe Idv::Attempter do
   let(:current_user) { User.new }
-  let(:subject) { IdvAttempter.new(current_user) }
+  let(:subject) { Idv::Attempter.new(current_user) }
 
   describe '#window_expired?' do
     context 'inside window' do
