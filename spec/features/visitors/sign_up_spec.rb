@@ -67,6 +67,10 @@ feature 'Sign Up', devise: true do
 
       expect(@user.reload.phone_confirmed_at).to be_present
       expect(current_path).to eq settings_recovery_code_path
+
+      click_button t('forms.buttons.acknowledge_recovery_code')
+
+      expect(current_path).to eq profile_path
     end
 
     it 'allows user to resend confirmation code' do

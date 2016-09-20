@@ -43,9 +43,12 @@ module TwoFactorAuthenticatable
 
     current_user.update(second_factor_attempts_count: 0)
 
-    redirect_to after_sign_in_path_for(current_user)
+    redirect_to after_2fa_path
   end
 
+  # Method will be renamed in the next refactor.
+  # You can pass in any "type" with a corresponding I18n key in
+  # devise.two_factor_authentication.invalid_#{type}
   def handle_invalid_otp(type: 'otp')
     analytics.track_event('User entered invalid 2FA code')
 
@@ -69,5 +72,13 @@ module TwoFactorAuthenticatable
 
   def user_decorator
     @user_decorator ||= current_user.decorate
+  end
+
+  def after_2fa_path
+    if decorated_user.should_acknowledge_recovery_code?(session)
+      settings_recovery_code_url
+    else
+      after_sign_in_path_for(current_user)
+    end
   end
 end

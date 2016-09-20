@@ -12,6 +12,8 @@ email_from: 'no-reply@login.gov'
 idv_max_attempts: '3'
 idv_attempt_window_in_hours: '24'
 mailer_domain_name: 'http://localhost:3000'
+
+# Must be an even number. 16 seems to be what most sites use.
 recovery_code_length: '16'
 
 # Set the number of seconds the timeout warning should occur before

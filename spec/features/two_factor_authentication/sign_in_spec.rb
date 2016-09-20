@@ -165,4 +165,35 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq '/login/two-factor/voice'
     end
   end
+
+  describe 'signing in via recovery code' do
+    it 'displays new recovery code and redirects to profile after acknowledging' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+
+      code = RecoveryCodeGenerator.new(user).create
+      click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
+      fill_in 'code', with: code
+      click_button t('forms.buttons.submit')
+
+      click_button t('forms.buttons.acknowledge_recovery_code')
+
+      expect(current_path).to eq profile_path
+    end
+  end
+
+  describe 'signing in when user does not already have recovery code' do
+    # For example, when migrating users from another DB
+    it 'displays recovery code and redirects to profile after acknowledging' do
+      user = create(:user, :signed_up, recovery_code: nil)
+
+      sign_in_user(user)
+      click_button t('forms.buttons.submit')
+      fill_in 'code', with: user.reload.direct_otp
+      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.acknowledge_recovery_code')
+
+      expect(current_path).to eq profile_path
+    end
+  end
 end # feature 'Two Factor Authentication'

@@ -49,11 +49,7 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for(resource)
     analytics.track_event('Authentication Successful')
 
-    if decorated_user.should_acknowledge_recovery_code?(session)
-      settings_recovery_code_url
-    else
-      stored_location_for(resource) || session[:saml_request_url] || profile_path
-    end
+    stored_location_for(resource) || session[:saml_request_url] || profile_path
   end
 
   def render_401
