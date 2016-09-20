@@ -94,7 +94,6 @@ Rails.application.routes.draw do
   get '/idv/confirmations' => 'idv/confirmations#index'
   get '/idv/session' => 'idv/sessions#new'
   put '/idv/session' => 'idv/sessions#create'
-  get '/idv/session/dupe' => 'idv/sessions#dupe'
   get '/idv/finance' => 'idv/finance#new'
   put '/idv/finance' => 'idv/finance#create'
   get '/idv/phone' => 'idv/phone#new'
