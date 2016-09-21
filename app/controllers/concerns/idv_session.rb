@@ -21,6 +21,10 @@ module IdvSession
     end
   end
 
+  def confirm_idv_needed
+    redirect_to idv_activated_url if current_user.active_profile.present?
+  end
+
   def idv_session
     user_session[:idv] ||= {}
   end

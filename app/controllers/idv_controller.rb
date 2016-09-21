@@ -17,4 +17,7 @@ class IdvController < ApplicationController
   def retry
     flash.now[:error] = I18n.t('idv.errors.fail')
   end
+
+  def activated
+  end
 end

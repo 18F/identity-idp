@@ -82,6 +82,7 @@ Rails.application.routes.draw do
   post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
 
   get '/idv' => 'idv#index'
+  get '/idv/activated' => 'idv#activated'
   get '/idv/cancel' => 'idv#cancel'
   get '/idv/fail' => 'idv#fail'
   get '/idv/retry' => 'idv#retry'

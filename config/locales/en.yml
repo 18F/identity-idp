@@ -220,6 +220,10 @@ en:
         Please check that the personal and financial information you provided is accurate.
         To learn more about the information we need from you and how it’s used to verify your identity,
         please see our troubleshooting page.
+      activated: >
+        Your identity has been verified. If you need to change your verified information,
+        please %{link}.
+      activated_link: contact us
       hardfail: >
         Your login.gov account can’t be used to access information with
         participating agencies until you successfully complete this process.
@@ -246,6 +250,7 @@ en:
       dupe_ssn3_link: try recovering it here
       review_and_continue: Review my info and try again
     titles:
+      activated: Your identity has already been verified
       intro: Help us identify you
       expectations: We need some information from you
       welcome: Verify your identity
