@@ -110,4 +110,52 @@ describe Idv::StepController do
       end
     end
   end
+
+  describe '#confirm_idv_needed' do
+    controller do
+      before_action :confirm_idv_needed
+
+      def show
+        render text: 'Hello'
+      end
+    end
+
+    before(:each) do
+      sign_in(user)
+      routes.draw do
+        get 'show' => 'idv/step#show'
+      end
+    end
+
+    context 'user has active profile' do
+      before do
+        allow(user).to receive(:active_profile).and_return(Profile.new)
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
+        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      end
+
+      it 'redirects to activated page' do
+        get :show
+
+        expect(response).to redirect_to idv_activated_url
+      end
+    end
+
+    context 'user does not have active profile' do
+      before do
+        allow(subject).to receive(:current_user).and_return(user)
+        allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
+        allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+      end
+
+      it 'does not redirect to activated page' do
+        get :show
+
+        expect(response.body).to eq 'Hello'
+        expect(response).to_not redirect_to idv_activated_url
+        expect(response.status).to eq 200
+      end
+    end
+  end
 end

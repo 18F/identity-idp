@@ -14,7 +14,7 @@ describe Idv::FinanceController do
 
   describe '#create' do
     before do
-      allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
+      stub_sign_in
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       allow(subject).to receive(:idv_session).and_return(params: {})
