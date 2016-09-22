@@ -31,7 +31,7 @@ describe Idv::SessionsController do
     render_views
 
     before do
-      sign_in(user)
+      stub_sign_in(user)
     end
 
     context 'KBV on' do

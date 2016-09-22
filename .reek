@@ -27,7 +27,6 @@ TooManyMethods:
     - Devise::TwoFactorAuthenticationController
     - Users::ConfirmationsController
     - ServiceProvider
-    - Idv::SessionsController
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -54,6 +53,7 @@ UtilityFunction:
     exclude:
       - complete_idv_profile
       - stub_subject
+      - stub_idv_session
       - saml_settings
       - sign_up_and_2fa
       - raw_xml_response

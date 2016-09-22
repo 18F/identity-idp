@@ -25,10 +25,12 @@ module ControllerHelper
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
 
-  def stub_sign_in
-    user = User.new(password: 'password')
+  def stub_sign_in(user = User.new(password: 'password'))
+    allow(request.env['warden']).to receive(:authenticate!).and_return(user)
+    allow(request.env['warden']).to receive(:session).and_return(user: {})
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
+    user
   end
 
   def stub_sign_in_before_2fa(user = User.new)
