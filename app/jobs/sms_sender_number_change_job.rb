@@ -18,7 +18,7 @@ class SmsSenderNumberChangeJob < ActiveJob::Base
     <<-END.strip_heredoc
       You have changed the phone number for your #{APP_NAME} Account.
 
-      If you did not request this change, please contact #{APP_NAME} at #{Figaro.env.support_url}.
+      If you did not request this change, please contact #{APP_NAME} at #{Figaro.env.support_url}
     END
   end
 end
