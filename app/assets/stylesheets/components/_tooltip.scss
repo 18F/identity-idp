@@ -12,6 +12,37 @@
     white-space: normal;
     width: 100%;
   }
+
+  &:focus::before,
+  &:focus::after {
+    opacity: 1;
+    transition-delay: 100ms;
+    visibility: visible;
+  }
+}
+
+.hint--top {
+  &:focus::before {
+    transform: translateY($space-1);
+  }
+
+  &:focus::after {
+    transform: translateX(-50%) translateY($space-1);
+  }
+}
+
+.hint--no-animate {
+  &::before,
+  &::after {
+    display: none;
+  }
+
+  &:focus::before,
+  &:focus::after,
+  &:hover::before,
+  &:hover::after {
+    display: block;
+  }
 }
 
 .img-tooltip {
