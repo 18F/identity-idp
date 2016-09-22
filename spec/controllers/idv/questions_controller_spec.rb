@@ -19,7 +19,7 @@ describe Idv::QuestionsController do
     render_views
 
     before(:each) do
-      init_idv_session
+      stub_idv_session
     end
 
     it 'retrieves next question' do
@@ -38,7 +38,7 @@ describe Idv::QuestionsController do
 
   context 'user has not started proofing session' do
     it 'redirects to session start page' do
-      sign_in(user)
+      stub_sign_in(user)
 
       get :index
 
@@ -46,8 +46,8 @@ describe Idv::QuestionsController do
     end
   end
 
-  def init_idv_session
-    sign_in(user)
+  def stub_idv_session
+    stub_sign_in(user)
     subject.user_session[:idv] = {
       vendor: :mock,
       applicant: applicant,

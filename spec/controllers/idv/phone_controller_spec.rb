@@ -24,7 +24,7 @@ describe Idv::PhoneController do
         put :create, idv_phone_form: { phone: '703' }
 
         expect(response.body).to have_content invalid_phone_message
-        expect(subject.idv_session[:params]).to be_empty
+        expect(subject.idv_session.params).to be_empty
       end
     end
 
@@ -41,7 +41,7 @@ describe Idv::PhoneController do
           phone: '+1 (415) 555-0130',
           phone_confirmed_at: user.phone_confirmed_at
         }
-        expect(subject.idv_session[:params]).to eq expected_params
+        expect(subject.idv_session.params).to eq expected_params
       end
     end
 
@@ -57,16 +57,18 @@ describe Idv::PhoneController do
         expected_params = {
           phone: '+1 (415) 555-0160'
         }
-        expect(subject.idv_session[:params]).to eq expected_params
+        expect(subject.idv_session.params).to eq expected_params
       end
     end
   end
 
   def stub_subject(user)
-    allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
+    user_session = {}
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(user_session, user)
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)
     allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-    allow(subject).to receive(:idv_session).and_return(params: {})
-    allow(subject).to receive(:current_user).and_return(user)
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+    allow(subject).to receive(:user_session).and_return(user_session)
   end
 end

@@ -3,31 +3,34 @@ module Idv
     include IdvSession
 
     before_action :confirm_two_factor_authenticated
+    before_action :confirm_idv_vendor_session_started
 
     def index
-      if proofing_session_started?
-        render_next_question
-      else
-        redirect_to idv_session_path
-      end
+      render_next_question
     end
 
     def create
-      idv_resolution.questions[idv_question_number].answer = params.require('answer')
-      self.idv_question_number += 1
+      idv_session.answer_next_question(idv_session.question_number, params.require('answer'))
       redirect_to idv_questions_path
     end
 
     private
 
     def render_next_question
-      questions = idv_resolution.questions
-      if questions && idv_question_number < questions.count
-        @question_sequence = idv_question_number + 1
-        @question = questions[idv_question_number]
+      questions = idv_session.resolution.questions
+      question_number = idv_session.question_number
+      if more_questions?
+        @question_sequence = question_number + 1
+        @question = questions[question_number]
       else
         redirect_to idv_confirmations_path
       end
+    end
+
+    def more_questions?
+      questions = idv_session.questions
+      question_number = idv_session.question_number
+      questions && question_number < questions.count
     end
   end
 end

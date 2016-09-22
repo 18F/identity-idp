@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Idv::StepController do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+  let(:idv_session) { Idv::Session.new(subject.user_session, user) }
 
   describe '#confirm_idv_attempts_allowed' do
     controller do
@@ -13,7 +14,7 @@ describe Idv::StepController do
     end
 
     before(:each) do
-      sign_in(user)
+      stub_sign_in(user)
       routes.draw do
         get 'show' => 'idv/step#show'
       end
@@ -23,7 +24,6 @@ describe Idv::StepController do
       before do
         user.idv_attempts = 3
         user.idv_attempted_at = Time.zone.now
-        allow(subject).to receive(:current_user).and_return(user)
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       end
 
@@ -36,7 +36,6 @@ describe Idv::StepController do
 
     context 'user has exceeded IdV max attempts in a single period' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
         user.idv_attempts = 3
         user.idv_attempted_at = Time.zone.now
@@ -51,7 +50,6 @@ describe Idv::StepController do
 
     context 'user attempts IdV after window has passed' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
         user.idv_attempts = 3
         user.idv_attempted_at = Time.zone.now - 25.hours
@@ -78,7 +76,7 @@ describe Idv::StepController do
     end
 
     before(:each) do
-      sign_in(user)
+      stub_sign_in(user)
       routes.draw do
         get 'show' => 'idv/step#show'
       end
@@ -86,7 +84,6 @@ describe Idv::StepController do
 
     context 'user has not started IdV session' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
         allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
       end
 
@@ -99,8 +96,8 @@ describe Idv::StepController do
 
     context 'user has started IdV session' do
       before do
-        allow(subject).to receive(:current_user).and_return(user)
-        allow(subject).to receive(:idv_session).and_return(params: { first_name: 'Jane' })
+        idv_session.params = { first_name: 'Jane' }
+        allow(subject).to receive(:idv_session).and_return(idv_session)
       end
 
       it 'allows request' do

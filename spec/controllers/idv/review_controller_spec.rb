@@ -17,6 +17,7 @@ describe Idv::ReviewController do
       ccn: '12345678'
     }
   end
+  let(:idv_session) { Idv::Session.new(subject.user_session, user) }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -40,17 +41,16 @@ describe Idv::ReviewController do
     end
 
     before(:each) do
-      sign_in(user)
+      stub_sign_in(user)
       routes.draw do
         get 'show' => 'idv/review#show'
       end
+      allow(subject).to receive(:idv_session).and_return(idv_session)
     end
 
     context 'user has missed phone step' do
       before do
-        allow(subject).to receive(:idv_session).and_return(
-          params: user_attrs.reject { |key| key == :phone }
-        )
+        idv_session.params = user_attrs.reject { |key| key == :phone }
       end
 
       it 'redirects to phone step' do
@@ -62,9 +62,7 @@ describe Idv::ReviewController do
 
     context 'user has missed finance step' do
       before do
-        allow(subject).to receive(:idv_session).and_return(
-          params: user_attrs.reject { |key| key == :ccn }
-        )
+        idv_session.params = user_attrs.reject { |key| key == :ccn }
       end
 
       it 'redirects to finance step' do
@@ -77,15 +75,14 @@ describe Idv::ReviewController do
 
   describe '#new' do
     before do
-      allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
+      stub_sign_in(user)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-      allow(subject).to receive(:current_user).and_return(user)
     end
 
     context 'user has completed all steps' do
       before do
-        allow(subject).to receive(:idv_session).and_return(params: user_attrs)
+        idv_session.params = user_attrs
       end
 
       it 'shows completed session' do
@@ -98,18 +95,14 @@ describe Idv::ReviewController do
 
   describe '#create' do
     before do
-      sign_in(user)
-      allow(subject).to receive(:confirm_two_factor_authenticated).and_return(true)
+      stub_sign_in(user)
       allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-      allow(subject).to receive(:current_user).and_return(user)
     end
 
     context 'user has completed all steps' do
       before do
-        allow(subject).to receive(:idv_session).and_return(
-          params: user_attrs.merge(phone_confirmed_at: Time.zone.now)
-        )
+        idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
       end
 
       it 'redirects to questions path' do
@@ -121,9 +114,7 @@ describe Idv::ReviewController do
 
     context 'user attributes fail to resolve' do
       before do
-        allow(subject).to receive(:idv_session).and_return(
-          params: user_attrs.merge(first_name: 'Bad')
-        )
+        idv_session.params = user_attrs.merge(first_name: 'Bad')
       end
 
       it 'redirects to retry' do
@@ -147,9 +138,7 @@ describe Idv::ReviewController do
 
     context 'user has entered different phone number from MFA' do
       before do
-        allow(subject).to receive(:idv_session).and_return(
-          params: user_attrs.merge(phone: '213-555-1000')
-        )
+        idv_session.params = user_attrs.merge(phone: '213-555-1000')
       end
 
       it 'redirects to phone confirmation path' do

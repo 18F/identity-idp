@@ -9,11 +9,11 @@ module Idv
     helper_method :idv_profile_form
 
     def new
-      @using_mock_vendor = pick_a_vendor == :mock
+      @using_mock_vendor = idv_vendor.pick == :mock
     end
 
     def create
-      idv_params.merge!(profile_params)
+      idv_session.params.merge!(profile_params)
       submit_profile
     end
 
@@ -43,7 +43,7 @@ module Idv
     end
 
     def idv_profile_form
-      @_idv_profile_form ||= Idv::ProfileForm.new((idv_params || {}), current_user)
+      @_idv_profile_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
     end
 
     def profile_params
