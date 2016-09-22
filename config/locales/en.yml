@@ -42,7 +42,7 @@ en:
         need to link your login.gov account to the application you choose. Each
         time you log in you’ll need to open the application and retrieve a code.
     confirmation:
-      show_hdr: Create a Password
+      show_hdr: Create a password
 
   instructions:
     edit_info:
@@ -105,7 +105,7 @@ en:
       change: Change the password for your account
       forgot: Reset the password for your account
     profile: Profile
-    recovery_code: Your Recovery Code
+    recovery_code: Your recovery code
     registrations:
       new: Sign up for a account
       start: Get started
@@ -113,18 +113,18 @@ en:
     totp_setup:
       start: Set up two-factor authentication
       new: Enter the secure one-time passcode
-    two_factor_setup: Two-factor Authentication Setup
+    two_factor_setup: Two-factor authentication setup
     two_factor_verification: Choose verification method
     users:
-      edit: Editing User - %{user}
-      index: Manage Users
+      edit: Editing user - %{user}
+      index: Manage users
       show: User - %{user}
     visitors:
       index: Welcome
 
   headings:
     admin:
-      index: Admin Interface
+      index: Admin interface
     confirmations:
       new: Resend confirmation instructions
     contact: Contact us
@@ -144,8 +144,8 @@ en:
       account_history: Account history
       login_info: Login information
       main: My account
-      two_factor: Two-factor Authentication
-    recovery_code: Your Recovery Code
+      two_factor: Two-factor authentication
+    recovery_code: Your recovery code
     registrations:
       enter_email: Email address
       verify_email: Verify email address
@@ -155,9 +155,9 @@ en:
       start: Set up two-factor authentication
       new: Scan the QR code with your device
     users:
-      edit: Edit User
+      edit: Edit user
       index: Users
-      show: User Details
+      show: User details
 
   tooltips:
     placeholder: This is a placeholder tooltip.
@@ -180,7 +180,7 @@ en:
         app_setting:
           attributes:
             value:
-              cannot_disable_2fa_in_prod: Two-factor Authentication cannot be disabled in production
+              cannot_disable_2fa_in_prod: Two-factor authentication cannot be disabled in production
               invalid: Value must be '1' or '0'
 
   valid_email:
