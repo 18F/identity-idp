@@ -90,12 +90,13 @@ en:
         corresponding to %{email} at %{app}.
 
   links:
+    create_account: Create account
     resend: Try resending the confirmation instructions.
     sign_out: Sign out
     sign_in: Log in
     sign_up: Sign up
     my_account: My account
-    user_confirmation: Didn't receive confirmation instructions?
+    user_confirmation: Confirm account
     edit: Edit
     phone_confirmation:
       fallback_to_sms:
@@ -172,6 +173,7 @@ en:
     confirmations:
       new: Resend confirmation instructions
     contact: Contact us
+    create_account: Create account
     edit_info:
       email: Edit your email
       password: Edit your password
@@ -180,7 +182,7 @@ en:
     choose_otp_delivery: Choose delivery method
     passwords:
       change: Change your password
-      forgot: Forgot password?
+      forgot: Forgot password
     profile:
       agencies: Agencies I've logged into
       profile_info: Profile information

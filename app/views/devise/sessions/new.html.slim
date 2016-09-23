@@ -1,5 +1,17 @@
 - title t('titles.visitors.index')
 
-
-= render 'devise/shared/auth_nav'
-= render 'devise/sessions/form'
+h1.heading = t('headings.log_in')
+= simple_form_for(resource,
+                  as: resource_name,
+                  url: session_path(resource_name),
+                  html: { autocomplete: 'off', role: 'form' }) do |f|
+  = f.input :email, required: true
+  = f.input :password, required: true
+  = f.button :submit, t('headings.log_in'), class: 'btn-wide mt2 mb4'
+.clearfix.pt1.border-top
+  .sm-col.py1.sm-p0
+    = link_to t('links.create_account'), new_user_start_path, class: 'underline'
+  .sm-col-right
+    = link_to t('links.user_confirmation'), new_user_confirmation_path, class: 'underline'
+    span.px1.silver = '|'
+    = link_to t('headings.passwords.forgot'), new_password_path(resource_name), class: 'underline'
