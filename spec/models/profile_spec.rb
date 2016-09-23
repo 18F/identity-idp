@@ -9,6 +9,30 @@ describe Profile do
 
   it { is_expected.to belong_to(:user) }
 
+  describe '#method_missing' do
+    it 'allows PII attribute assignment' do
+      profile.dob = '1920-01-01'
+
+      expect(profile.dob).to eq '1920-01-01'
+      expect(profile.decrypted_pii).to eq(dob: '1920-01-01')
+    end
+
+    it 'disallows invalid PII attribute assignment' do
+      expect { profile.foo = 'bar' }.to raise_error NoMethodError
+    end
+  end
+
+  describe 'before_save' do
+    it 'encrypts decrypted_pii' do
+      expect(profile.encrypted_pii).to eq nil
+
+      profile.dob = '1920-01-01'
+      profile.save
+
+      expect(profile.encrypted_pii).to eq({ dob: '1920-01-01' }.to_json)
+    end
+  end
+
   describe 'allows only one active Profile per user' do
     it 'prevents create! via ActiveRecord uniqueness validation' do
       profile.active = true
@@ -23,36 +47,6 @@ describe Profile do
       profile.save!
       expect do
         another_profile = Profile.new(user_id: user.id, active: true)
-        another_profile.save!(validate: false)
-      end.to raise_error(ActiveRecord::RecordNotUnique)
-    end
-  end
-
-  describe 'allows one unique SSN per user' do
-    it 'allows multiple records per user if only one is active' do
-      profile.active = true
-      profile.ssn = '1234'
-      profile.save!
-      expect do
-        user.profiles.create(ssn: '1234')
-      end.to_not raise_error
-    end
-
-    it 'prevents create! via ActiveRecord uniqueness validation' do
-      profile.active = true
-      profile.ssn = '1234'
-      profile.save!
-      expect do
-        Profile.create!(user_id: another_user.id, active: true, ssn: '1234')
-      end.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'prevents save! via psql unique partial index' do
-      profile.active = true
-      profile.ssn = '1234'
-      profile.save!
-      expect do
-        another_profile = Profile.new(user_id: another_user.id, active: true, ssn: '1234')
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end

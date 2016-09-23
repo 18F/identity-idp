@@ -17,29 +17,14 @@ module Idv
       submit_profile
     end
 
-    def dupe
-    end
-
     private
 
     def submit_profile
       if idv_profile_form.submit(profile_params)
         redirect_to idv_finance_url
-      elsif duplicate_ssn_error?
-        flash[:error] = dupe_ssn_msg
-        redirect_to idv_session_dupe_url
       else
         render :new
       end
-    end
-
-    def duplicate_ssn_error?
-      form_errors = idv_profile_form.errors
-      form_errors.include?(:ssn) && form_errors[:ssn].include?(dupe_ssn_msg)
-    end
-
-    def dupe_ssn_msg
-      I18n.t('idv.errors.duplicate_ssn')
     end
 
     def idv_profile_form

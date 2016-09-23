@@ -53,7 +53,7 @@ class AttributeAsserter
   end
 
   def attribute_getter_function(attr)
-    -> (principal) { principal.active_profile[attr] }
+    -> (principal) { principal.active_profile.decrypted_pii[attr] }
   end
 
   def add_email(attrs)

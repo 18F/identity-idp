@@ -155,7 +155,7 @@ describe SamlIdpController do
 
         %w(first_name last_name ssn zipcode).each do |attr|
           node_value = xmldoc.attribute_value_for(attr)
-          expect(node_value).to eq(user.active_profile[attr.to_sym])
+          expect(node_value).to eq(user.active_profile.decrypted_pii[attr.to_sym])
         end
       end
     end
