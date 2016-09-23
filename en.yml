@@ -1,0 +1,167 @@
+en:
+  errors:
+    invalid_totp: Invalid code entered.  Please try again.
+    not_authorized: You are not authorized to perform this action.
+    invalid_authenticity_token: Oops, something went wrong. Please sign in again.
+    invalid_confirmation_code: Invalid confirmation code.
+    messages:
+      improbable_phone: Mobile number is invalid. Please make sure you enter a 10-digit phone number.
+
+  forms:
+    buttons:
+      continue_browsing: Continue Browsing
+      delete_account: Delete
+      delete_account_confirm: Yes, delete account
+      resend_confirmation: Resend confirmation instructions
+      reset_password: Send reset password instructions
+      setup_totp: Set up authentication app
+    required_field: Indicates a required field.
+    phone_confirmation:
+      header_text: Confirm your phone number
+    registration:
+      need_password: Please verify your current password to confirm changes.
+    two_factor:
+      code: One-time passcode
+    totp_setup:
+      code: One-time passcode
+      totp_info: >
+        To enable two-factor authentication, use the QR code provided here to
+        link your account to your authentication app.
+      totp_intro: >
+        To receive a one-time passode,  you may choose to use a two-factor
+        authentication application to log into to your account. If so, you’ll
+        need to link your login.gov account to the application you choose. Each
+        time you log in you’ll need to open the application and retrieve a code.
+    confirmation:
+      show_hdr: Create a Password
+
+  links:
+    resend: Resend
+    sign_out: 'Sign out'
+    sign_in: 'Log in'
+    sign_up: 'Sign up'
+    my_account: 'My account'
+  notices:
+    totp_configured: Authenticator app successfully configured
+    totp_disabled: Authenticator app disabled
+    phone_confirmation_successful: Phone confirmation successful!
+    password_reset: 'You will receive an email with instructions on how to reset your password in a few minutes.'
+  session_timedout: "For your safety, we signed you out after being idle for %{session_timeout}. Please sign in again."
+  session_timeout_warning: "We noticed you haven't been very active, hence we will sign you out in %{time_left_in_session}. Please click '%{continue_text}' to remain signed in."
+  titles:
+    confirmations:
+      new: Resend confirmation instructions for your account
+      show: Create a password for your account
+    edit_info:
+      email: Edit your email
+      mobile: Edit your phone number
+    enter_2fa_code: Enter the secure one-time passcode
+    account_locked: Account locked
+    passwords:
+      change: Change the password for your account
+      forgot: Reset the password for your account
+    profile: Profile
+    registrations:
+      destroy_confirm: Delete your account
+      edit: Edit your account
+      new: Sign up for a account
+      start: Get started
+      verify_email: Verify your email address
+    totp_setup:
+      start: Set up two-factor authentication app
+      new: Enter the secure one-time passcode
+    two_factor_setup: Two-factor Authentication Setup
+    users:
+      edit: Editing User - %{user}
+      index: Manage Users
+      show: User - %{user}
+    visitors:
+      index: Welcome
+
+  headings:
+    admin:
+      index: Admin Interface
+    confirmations:
+      new: Resend confirmation instructions
+    delete_account: Delete my %{app_name} account
+    edit_info:
+      email: Edit your email
+      mobile: Edit your phone number
+    log_in: Log in
+    passwords:
+      change: Change your password
+      forgot: Forgot password?
+    profile:
+      advanced_settings: Advanced settings
+      agencies: "Agencies I've logged into"
+      login_info: Login information
+      main: My account
+      two_factor: Two-factor Authentication
+    registrations:
+      enter_email: Email address
+      verify_email: Verify email address
+    search: Search for a user
+    session_timeout_warning: Session Timeout
+    totp_setup:
+      start: Set up two-factor authentication app
+      new: Scan the QR code with your device
+    users:
+      edit: Edit User
+      index: Users
+      show: User Details
+
+  tooltips:
+    placeholder: This is a placeholder tooltip.
+
+  mailer:
+    email_reuse_notice:
+      subject: Email confirmation notification
+    email_change_notice:
+      subject: Email change notification
+
+  activerecord:
+    errors:
+      models:
+        app_setting:
+          attributes:
+            value:
+              cannot_disable_2fa_in_prod: 'Two-factor Authentication cannot be disabled in production'
+              invalid: "Value must be '1' or '0'"
+
+  valid_email:
+    validations:
+      email:
+        invalid: 'Please enter a valid email in the format of user@domain.com'
+  idv:
+    form:
+      first_name: First name
+      last_name: Last name
+      ssn: Social Security Number
+      dob: Date of birth
+      ccn: Last 8 Digits of your Credit Card Number
+      mortgage: Mortgage Account Number
+      home_equity_line: Home Equity Account Number
+      auto_loan: Auto Loan Account Number
+      address1: Mailing address
+      address2: Mailing address (optional)
+      city: City
+      state: State
+      zipcode: ZIP Code
+    errors:
+      duplicate_ssn: >
+        You may already have an account, please use that one.
+        You can always change your email address in your existing account.
+    titles:
+      intro: Help us identify you
+      expectations: We need some information from you
+      welcome: Verify your identity
+      question: Answer a few questions
+      fail: Identity verification unsuccessful
+      hardfail: We cannot verify your identity
+      complete: Identity verification complete
+      session:
+        basic: Basic information
+        dob: Date of birth
+        ssn: Social Security Number (SSN)
+        address: Mailing address
+        finance: Financial information

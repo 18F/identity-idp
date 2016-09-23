@@ -46,19 +46,9 @@ describe Idv::SessionsController do
         expect(response.body).to include t('idv.form.first_name')
       end
 
-      it 'redirects to custom error on duplicate SSN' do
-        create(:profile, ssn: '1234')
-
-        post :create, profile: user_attrs.merge(ssn: '1234')
-
-        expect(response).to redirect_to(idv_session_dupe_url)
-        expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
-      end
-
       it 'shows normal form with error on empty SSN' do
         post :create, profile: user_attrs.merge(ssn: '')
 
-        expect(response).to_not redirect_to(idv_session_dupe_url)
         expect(response.body).to match 'can&#39;t be blank'
       end
 

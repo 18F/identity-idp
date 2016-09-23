@@ -284,8 +284,6 @@ en:
       zipcode: ZIP Code
       phone: Phone
     errors:
-      duplicate_ssn: >
-        An account already exists using the information you provided.
       fail: >
         Sorry, we were unable to verify your identity based on the information you provided.
       hardfail: >
@@ -319,13 +317,6 @@ en:
         personal information as well as some financial information from you to
         complete this process. If you don’t have the information we need at this
         time you can continue later.
-      dupe_ssn1: >
-        If you are getting this error, you may have already created and verified
-        and account, but with a different email address.
-      dupe_ssn2: Please %{link} with the email address you originally used.
-      dupe_ssn2_link: sign out now and sign back in
-      dupe_ssn3: If you can't remember your original login information, you can %{link}.
-      dupe_ssn3_link: try recovering it here
       review_and_continue: Review my info and try again
       finance:
         intro: 'Please provide only one of the following:'
@@ -361,7 +352,6 @@ en:
       hardfail: We were unable to verify your identity
       complete: Identity verification complete
       review: Review and submit
-      dupe: "Error: An account may already exist"
       session:
         basic: Basic information
         finance: Financial information

@@ -1,0 +1,511 @@
+diff --git a/.reek b/.reek
+index 0310ee8..9f49b90 100644
+--- a/.reek
++++ b/.reek
+@@ -28,6 +28,7 @@ UnusedPrivateMethod:
+     - ActiveJob::Logging::LogSubscriber
+     - Users::PhoneConfirmationController
+ UtilityFunction:
++  public_methods_only: true
+   exclude:
+     - AnalyticsEventJob#perform
+     - SmsSenderConfirmationJob
+diff --git a/Gemfile b/Gemfile
+index 977381b..eb134da 100644
+--- a/Gemfile
++++ b/Gemfile
+@@ -26,7 +26,7 @@ gem 'valid_email'
+ gem 'rack-attack'
+ gem 'rqrcode'
+ gem 'ruby-saml'
+-gem 'saml_idp', '~> 0.3.1'
++gem 'saml_idp', '~> 0.3.1', github: 'pkarman/saml_idp', branch: 'principal-asserted-attributes'
+ gem 'sass-rails', '~> 5.0'
+ gem 'savon'
+ gem 'secure_headers', '~> 3.0'
+diff --git a/Gemfile.lock b/Gemfile.lock
+index 8c32722..443bbfe 100644
+--- a/Gemfile.lock
++++ b/Gemfile.lock
+@@ -24,6 +24,18 @@ GIT
+     sms-spec (0.2.0)
+       rspec (~> 3.1)
+ 
++GIT
++  remote: https://github.com/pkarman/saml_idp.git
++  revision: 6157eaa6232df478af2f38474dbefbf12c74fb63
++  branch: principal-asserted-attributes
++  specs:
++    saml_idp (0.3.2)
++      activesupport
++      builder
++      httparty
++      nokogiri (>= 1.6.2)
++      uuid
++
+ GEM
+   remote: https://rubygems.org/
+   specs:
+@@ -443,12 +455,6 @@ GEM
+     safe_yaml (1.0.4)
+     safely_block (0.1.1)
+       errbase
+-    saml_idp (0.3.2)
+-      activesupport
+-      builder
+-      httparty
+-      nokogiri (>= 1.6.2)
+-      uuid
+     sass (3.4.22)
+     sass-rails (5.0.5)
+       railties (>= 4.0.0, < 6)
+@@ -650,7 +656,7 @@ DEPENDENCIES
+   rspec-rails (~> 3.3)
+   rubocop
+   ruby-saml
+-  saml_idp (~> 0.3.1)
++  saml_idp (~> 0.3.1)!
+   sass-rails (~> 5.0)
+   savon
+   secure_headers (~> 3.0)
+diff --git a/app/controllers/concerns/saml_idp_auth_concern.rb b/app/controllers/concerns/saml_idp_auth_concern.rb
+index 99b258e..3d695b2 100644
+--- a/app/controllers/concerns/saml_idp_auth_concern.rb
++++ b/app/controllers/concerns/saml_idp_auth_concern.rb
+@@ -46,13 +46,23 @@ module SamlIdpAuthConcern
+   end
+ 
+   def identity_not_verified?
+-    UserDecorator.new(current_user).identity_not_verified?
++    !current_user.verified?
+   end
+ 
+   def active_identity
+     current_user.last_identity
+   end
+ 
++  def build_asserted_attributes(principal)
++    asserter = AttributeAsserter.new(principal, current_service_provider, saml_request)
++    asserter.build
++  end
++
++  def encode_authn_response(principal, opts)
++    build_asserted_attributes(principal)
++    super(principal, opts)
++  end
++
+   def saml_response
+     encode_response(
+       current_user,
+diff --git a/app/decorators/user_decorator.rb b/app/decorators/user_decorator.rb
+index 98a7685..7217ba3 100644
+--- a/app/decorators/user_decorator.rb
++++ b/app/decorators/user_decorator.rb
+@@ -40,7 +40,7 @@ UserDecorator = Struct.new(:user) do
+   end
+ 
+   def identity_not_verified?
+-    user.active_profile ? false : true
++    !user.verified?
+   end
+ 
+   def qrcode(otp_secret_key)
+diff --git a/app/models/profile.rb b/app/models/profile.rb
+index 02513ee..978985c 100644
+--- a/app/models/profile.rb
++++ b/app/models/profile.rb
+@@ -3,6 +3,9 @@ class Profile < ActiveRecord::Base
+ 
+   validates_uniqueness_of :active, scope: :user_id, if: :active?
+ 
++  scope :active, -> { where(active: true) }
++  scope :verified, -> { where.not(verified_at: nil) }
++
+   # rubocop:disable MethodLength
+   def self.create_from_proofer_applicant(applicant, user)
+     create(
+@@ -20,6 +23,22 @@ class Profile < ActiveRecord::Base
+       phone: applicant.phone
+     )
+   end
++
++  def self.default_attribute_bundle
++    [
++      :first_name,
++      :middle_name,
++      :last_name,
++      :address1,
++      :address2,
++      :city,
++      :state,
++      :zipcode,
++      :dob,
++      :ssn,
++      :phone
++    ]
++  end
+   # rubocop:enable MethodLength
+ 
+   def activate
+diff --git a/app/models/user.rb b/app/models/user.rb
+index 5baa7db..b139fbd 100644
+--- a/app/models/user.rb
++++ b/app/models/user.rb
+@@ -15,6 +15,8 @@ class User < ActiveRecord::Base
+   has_many :identities, dependent: :destroy
+   has_many :profiles, dependent: :destroy
+ 
++  attr_accessor :asserted_attributes
++
+   def set_default_role
+     self.role ||= :user
+   end
+@@ -66,7 +68,11 @@ class User < ActiveRecord::Base
+   end
+ 
+   def active_profile
+-    profiles.where(active: true).first
++    profiles.find(&:active?)
++  end
++
++  def verified?
++    active_profile ? true : false
+   end
+ 
+   # To send emails asynchronously via ActiveJob.
+diff --git a/app/services/attribute_asserter.rb b/app/services/attribute_asserter.rb
+new file mode 100644
+index 0000000..3203dd6
+--- /dev/null
++++ b/app/services/attribute_asserter.rb
+@@ -0,0 +1,66 @@
++class AttributeAsserter
++  attr_accessor :user, :service_provider, :authn_request
++
++  def initialize(user, service_provider, authn_request)
++    self.user = user
++    self.service_provider = service_provider
++    self.authn_request = authn_request
++  end
++
++  def build
++    attrs = default_attrs
++    add_email(attrs) if bundle.include? 'email'
++    add_mobile(attrs) if bundle.include? 'mobile'
++    add_bundle(attrs) if user.verified?
++    user.asserted_attributes = attrs
++  end
++
++  private
++
++  def default_attrs
++    {
++      uuid: {
++        getter: :uuid,
++        name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
++        name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
++      }
++    }
++  end
++
++  def add_bundle(attrs)
++    bundle.each do |attr|
++      attrs[attr] = { getter: deferred_profile_attribute(attr) }
++    end
++  end
++
++  def deferred_profile_attribute(attr)
++    -> (principal) { principal.active_profile[attr] }
++  end
++
++  def add_email(attrs)
++    attrs[:email] = {
++      getter: :email,
++      name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
++      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
++    }
++  end
++
++  def add_mobile(attrs)
++    attrs[:mobile] = { getter: :mobile }
++  end
++
++  def bundle
++    sp_bundle = service_provider.attribute_bundle
++    if sp_bundle.present?
++      sp_bundle
++    elsif authn_request_bundle
++      authn_request_bundle
++    else
++      Profile.default_attribute_bundle
++    end
++  end
++
++  def authn_request_bundle
++    # future: SAMLRequest can declare desired attributes
++  end
++end
+diff --git a/config/initializers/saml_idp.rb b/config/initializers/saml_idp.rb
+index 26b662b..a36773b 100644
+--- a/config/initializers/saml_idp.rb
++++ b/config/initializers/saml_idp.rb
+@@ -33,21 +33,6 @@ SamlIdp.configure do |config|
+       email_address: -> (principal) { principal.email }
+     }
+ 
+-  # Attributes
+-  config.attributes = {
+-    uuid: {
+-      getter: :uuid,
+-      name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
+-      name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
+-    },
+-    email: {
+-      getter: :email,
+-      name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+-      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+-    },
+-    mobile: { getter: :mobile }
+-  }
+-
+   ## Technical contact ##
+   # config.technical_contact.company = "Example"
+   # config.technical_contact.given_name = "Jonny"
+diff --git a/config/service_providers.yml b/config/service_providers.yml
+index 1b2e97f..51fb551 100644
+--- a/config/service_providers.yml
++++ b/config/service_providers.yml
+@@ -8,6 +8,7 @@ test:
+       cert: 'saml_test_sp'
+       agency: 'test_agency'
+       friendly_name: 'test_friendly_name'
++      attribute_bundle: ['email', 'mobile']
+ 
+     'https://rp1.serviceprovider.com/auth/saml/metadata':
+       acs_url: 'http://example.com/test/saml/decode_assertion'
+@@ -112,3 +113,4 @@ superb.legit.domain.gov:
+       assertion_consumer_logout_service_url: 'https://vets.gov/api/saml/logout'
+       cert: 'saml_test_sp'
+       agency: 'test_agency'
++      attribute_bundle: ['email', 'mobile']
+diff --git a/lib/service_provider.rb b/lib/service_provider.rb
+index 10d1125..a23fd42 100644
+--- a/lib/service_provider.rb
++++ b/lib/service_provider.rb
+@@ -41,6 +41,10 @@ class ServiceProvider
+     host_attributes['friendly_name']
+   end
+ 
++  def attribute_bundle
++    host_attributes['attribute_bundle']
++  end
++
+   def cert
+     return if host_attributes['cert'].blank?
+ 
+diff --git a/spec/controllers/saml_idp_controller_spec.rb b/spec/controllers/saml_idp_controller_spec.rb
+index 911848d..a121f08 100644
+--- a/spec/controllers/saml_idp_controller_spec.rb
++++ b/spec/controllers/saml_idp_controller_spec.rb
+@@ -115,10 +115,7 @@ describe SamlIdpController do
+     context 'with LOA3 but the identity is already verified' do
+       it 'does not redirect the user to the IdV URL' do
+         user = create(:user, :signed_up)
+-        generate_saml_response(user, loa3_saml_settings)
+-
+         user.profiles.create(verified_at: Time.current, active: true, activated_at: Time.current)
+-
+         generate_saml_response(user, loa3_saml_settings)
+ 
+         expect(response).to_not be_redirect
+diff --git a/spec/features/saml/saml_spec.rb b/spec/features/saml/saml_spec.rb
+index 5dd5f2d..561ba88 100644
+--- a/spec/features/saml/saml_spec.rb
++++ b/spec/features/saml/saml_spec.rb
+@@ -505,6 +505,22 @@ feature 'saml api', devise: true, sms: true do
+         complete_idv_questions_ok
+         expect(current_url).to eq saml_authn_request
+       end
++
++      it 'contains verified profile attributes in SAML Response' do
++        saml_authn_request = loa3_authnrequest
++        visit saml_authn_request
++        visit new_user_registration_path
++        sign_up_and_2fa
++        click_on 'Continue'
++        fill_out_idv_form_ok
++        click_button 'Continue'
++        complete_idv_questions_ok
++
++        saml_response_assertions = SamlResponseHelper::XmlDoc.new('feature', 'response_assertion')
++
++        expect(saml_response_assertions.attribute_value_for('first_name')).to eq 'Some'
++        expect(saml_response_assertions.attribute_value_for('last_name')).to eq 'One'
++      end
+     end
+   end
+ end
+diff --git a/spec/lib/service_provider_spec.rb b/spec/lib/service_provider_spec.rb
+index d55391b..6fcede6 100644
+--- a/spec/lib/service_provider_spec.rb
++++ b/spec/lib/service_provider_spec.rb
+@@ -12,6 +12,7 @@ describe ServiceProvider do
+           assertion_consumer_logout_service_url: nil,
+           sp_initiated_login_url: nil,
+           metadata_url: nil,
++          attribute_bundle: nil,
+           cert: nil,
+           block_encryption: 'aes256-cbc',
+           key_transport: 'rsa-oaep-mgf1p',
+@@ -34,6 +35,7 @@ describe ServiceProvider do
+           assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request',
+           sp_initiated_login_url: 'http://localhost:3000/test/saml',
+           metadata_url: nil,
++          attribute_bundle: %w(email mobile),
+           cert: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
+           block_encryption: 'none',
+           key_transport: 'rsa-oaep-mgf1p',
+@@ -80,7 +82,8 @@ describe ServiceProvider do
+             metadata_url: nil,
+             sp_initiated_login_url: nil,
+             agency: 'test_agency',
+-            friendly_name: nil
++            friendly_name: nil,
++            attribute_bundle: %w(email mobile)
+           }
+ 
+           expect(service_provider.metadata).to eq attributes
+diff --git a/spec/models/profile_spec.rb b/spec/models/profile_spec.rb
+index 0335b51..d2538da 100644
+--- a/spec/models/profile_spec.rb
++++ b/spec/models/profile_spec.rb
+@@ -40,4 +40,22 @@ describe Profile do
+       expect(profile).to be_active
+     end
+   end
++
++  describe 'scopes' do
++    describe '#active' do
++      it 'returns only active Profiles' do
++        user.profiles.create(active: false)
++        user.profiles.create(active: true)
++        expect(user.profiles.active.count).to eq 1
++      end
++    end
++
++    describe '#verified' do
++      it 'returns only verified Profiles' do
++        user.profiles.create(verified_at: Time.current)
++        user.profiles.create(verified_at: nil)
++        expect(user.profiles.verified.count).to eq 1
++      end
++    end
++  end
+ end
+diff --git a/spec/models/user_spec.rb b/spec/models/user_spec.rb
+index 36e5270..3c82f96 100644
+--- a/spec/models/user_spec.rb
++++ b/spec/models/user_spec.rb
+@@ -5,9 +5,9 @@ MAX_GOOD_PASSWORD = '!1aZ' * 32
+ 
+ describe User do
+   describe 'Associations' do
+-    it { should have_many(:authorizations) }
+-    it { should have_many(:identities) }
+-    it { should have_many(:profiles) }
++    it { is_expected.to have_many(:authorizations) }
++    it { is_expected.to have_many(:identities) }
++    it { is_expected.to have_many(:profiles) }
+   end
+ 
+   it 'should only send one email during creation' do
+@@ -193,6 +193,37 @@ describe User do
+     end
+   end
+ 
++  context 'when user has multiple profiles' do
++    let(:user) { create(:user, :signed_up) }
++
++    before do
++      user.profiles.create(
++        active: true,
++        activated_at: Time.current,
++        verified_at: Time.current,
++        first_name: 'Jane'
++      )
++      user.profiles.create(
++        active: false,
++        activated_at: Time.current,
++        verified_at: Time.current,
++        first_name: 'Susan'
++      )
++    end
++
++    describe '#active_profile' do
++      it 'returns the only active profile' do
++        expect(user.active_profile.first_name).to eq 'Jane'
++      end
++    end
++
++    describe '#verified?' do
++      it 'returns true' do
++        expect(user.verified?).to eq true
++      end
++    end
++  end
++
+   describe '#send_two_factor_authentication_code' do
+     it 'calls UserOtpSender#send_otp' do
+       user = build_stubbed(:user)
+diff --git a/spec/services/attribute_asserter_spec.rb b/spec/services/attribute_asserter_spec.rb
+new file mode 100644
+index 0000000..7af9d99
+--- /dev/null
++++ b/spec/services/attribute_asserter_spec.rb
+@@ -0,0 +1,28 @@
++require 'rails_helper'
++
++describe AttributeAsserter do
++  include SamlAuthHelper
++
++  let(:user) do
++    user = create(:user, :signed_up)
++    user.profiles.create(
++      active: true,
++      activated_at: Time.current,
++      verified_at: Time.current,
++      first_name: 'Jane'
++    )
++    user
++  end
++  let(:service_provider) { ServiceProvider.new(sp1_saml_settings.issuer) }
++  let(:subject) { described_class.new(user, service_provider, sp1_authnrequest) }
++
++  describe '#build' do
++    before do
++      subject.build
++    end
++
++    it 'sets user asserted_attributes' do
++      expect(user.asserted_attributes).to have_key :first_name
++    end
++  end
++end
+diff --git a/spec/support/saml_response_helper.rb b/spec/support/saml_response_helper.rb
+index 961c466..6fa3c4c 100644
+--- a/spec/support/saml_response_helper.rb
++++ b/spec/support/saml_response_helper.rb
+@@ -177,6 +177,13 @@ module SamlResponseHelper
+       )
+     end
+ 
++    def attribute_value_for(name)
++      response_doc.at(
++        %(//ds:Attribute[@Name="#{name}"]),
++        ds: Saml::XML::Namespaces::ASSERTION
++      ).children.children.to_s
++    end
++
+     def assertion_statement_node
+       response_doc.xpath(
+         '//samlp:Response/saml:Assertion/saml:AuthnStatement',
