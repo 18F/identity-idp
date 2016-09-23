@@ -14,24 +14,12 @@ describe 'devise/sessions/new.html.slim' do
     render
   end
 
-  it 'has proper css classes for log in / sign up nav' do
-    render
-
-    expect(rendered).
-      to have_xpath("//a[@class='btn-auth' and @href='#{new_user_start_path}']")
-
-    expect(rendered).
-      to have_xpath(
-        "//a[@class='btn-auth btn-auth--active' and @href='#{new_user_session_path}']"
-      )
-  end
-
   it 'includes a link to create a new account' do
     render
 
     expect(rendered).
       to have_link(
-        t('links.sign_up'), href: new_user_start_path
+        t('links.create_account'), href: new_user_start_path
       )
   end
 end
