@@ -1,7 +1,8 @@
 - title t('titles.enter_2fa_code')
 
+
 h1.heading = t('devise.two_factor_authentication.header_text')
-p Please enter the code sent to <strong>#{@phone_number}</strong>.
+p== t('instructions.2fa.confirm_code', number: "<strong>#{@phone_number}</strong>")
 
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt4') do
   = label_tag 'code', \
@@ -11,10 +12,10 @@ p Please enter the code sent to <strong>#{@phone_number}</strong>.
     = number_field_tag(:code, '', required: true, value: @code_value, class: 'col-12 field mfa')
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
+- resend_uri = otp_send_path(otp_delivery_selection_form: { otp_method: @delivery_method,
+                                                            resend: true })
+- resend_link = link_to(t('links.two_factor_authentication.resend_code'), resend_uri)
+
 p.mt2.mb0
   = render 'two_factor_authentication/phone_confirmation_fallback'
-  p.mb0
-    = "Didn't receive a code? "
-    = link_to t('links.two_factor_authentication.resend_code'), \
-      otp_send_path(otp_delivery_selection_form: { otp_method: @delivery_method, resend: true })
-    = '.'
+  p.mb0== t('instructions.2fa.resend', link: resend_link)

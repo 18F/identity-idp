@@ -2,8 +2,7 @@
 
 
 h1.heading = t('headings.registrations.enter_email')
-p.m0.italic#email-description
-  | Enter the email address you’d like to associate with #{APP_NAME}
+p.m0.italic#email-description= t('instructions.registration.email', app: APP_NAME)
 = simple_form_for(@register_user_email_form,
     html: { autocomplete: 'off', role: 'form' },
     url: user_registration_path) do |f|

@@ -33,9 +33,8 @@ html xmlns="http://www.w3.org/1999/xhtml"
                               table
                                 tr
                                   th
-                                    //= image_tag('logo.png',
                                     = image_tag(attachments['logo.png'].url,
-                                      alt: "Sent from #{APP_NAME}",
+                                      alt: t('mailer.sent_from', app: APP_NAME),
                                       size: '142x19',
                                       style: 'width: 142px; height: 19px;')
                                   th.expander
@@ -59,7 +58,7 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                         th
                                           | &nbsp;
                                     p
-                                      i Please do not reply to this message.
+                                      i = t('mailer.no_reply')
                                     table.spacer
                                       tbody
                                         tr
@@ -76,10 +75,10 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                     table
                                       tr
                                         th
-                                          p
-                                            'For more help, please contact the #{APP_NAME} Customer
-                                            'Contact Center via web form at
-                                            = link_to nil, Figaro.env.support_url
+                                          p == t('mailer.help',
+                                                link: link_to(Figaro.env.support_url,
+                                                              Figaro.env.support_url),
+                                                app: APP_NAME)
                                         th.expander
                       table.wrapper.legal align="center"
                         tr
@@ -92,9 +91,9 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                       tr
                                         th
                                           p.text-center
-                                            a href="#" About #{APP_NAME}
+                                            a href="#" = t('mailer.about', app: APP_NAME)
                                             ' &nbsp;&nbsp;|&nbsp;&nbsp;
-                                            a href="#" Privacy policy
+                                            a href="#" = t('mailer.privacy_policy')
                                         th.expander
       /! prevent Gmail on iOS font size manipulation
       div style="display:none; white-space:nowrap; font:15px courier; line-height:0;"

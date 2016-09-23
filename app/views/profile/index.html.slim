@@ -14,11 +14,11 @@
   .mt3.mb4
     .py-12p.border-top
       .clearfix.mxn1
-        .sm-col.sm-col-5.px1 Full name
+        .sm-col.sm-col-5.px1 = t('.full_name')
         .sm-col.sm-col-7.px1.truncate #{p.first_name} #{p.last_name}
     .py-12p.border-top
       .clearfix.mxn1
-        .sm-col.sm-col-5.px1 Address
+        .sm-col.sm-col-5.px1 = t('.address')
         .sm-col.sm-col-7.px1
           | #{p.address1}<br>
           - if p.address2.present?
@@ -26,49 +26,49 @@
           | #{p.city}, #{p.state} #{p.zipcode}
     .py-12p.border-top
       .clearfix.mxn1
-        .sm-col.sm-col-5.px1 Date of birth
+        .sm-col.sm-col-5.px1 = t('.dob')
         .sm-col.sm-col-7.px1 #{p.dob.to_time.to_s(:date_pretty)}
     .py-12p.border-top
       .clearfix.mxn1
-        .sm-col.sm-col-5.px1 Social Security Number (SSN)
+        .sm-col.sm-col-5.px1 = t('.ssn')
         .sm-col.sm-col-7.px1 = "***-**-#{p.ssn[-4..-1]}"
     .py-12p.border-top.border-bottom
       .clearfix.mxn1
-        .sm-col.sm-col-5.px1 Phone number
+        .sm-col.sm-col-5.px1 = t('.phone')
         .sm-col.sm-col-7.px1 = p.phone
 
 h2.heading = t('headings.profile.login_info')
 .mt3.mb4
   .py-12p.border-top
     .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = 'Email address'
+      .sm-col.sm-col-5.px1 = t('.email')
       .sm-col.sm-col-5.px1.truncate = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to 'Edit', edit_email_path, \
+        = link_to t('forms.buttons.edit'), edit_email_path, \
           class: btn_cls
   .py-12p.border-top.border-bottom
     .clearfix.mxn1
-      .sm-col.sm-col-10.px1 = 'Password'
+      .sm-col.sm-col-10.px1 = t('.password')
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to 'Edit', settings_password_path, class: btn_cls
+        = link_to t('forms.buttons.edit'), settings_password_path, class: btn_cls
   .mt3.mb1.h6.bold.caps.ls-0
     | #{t('headings.profile.two_factor')}#{tooltip(t('tooltips.placeholder'))}
   .py-12p.border-top
     .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = 'Phone number'
+      .sm-col.sm-col-5.px1 = t('.phone')
       .sm-col.sm-col-5.px1 = current_user.phone
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to 'Edit', edit_phone_path, \
+        = link_to t('forms.buttons.edit'), edit_phone_path, \
           class: btn_cls
   .py-12p.border-top
     .clearfix.mxn1
-      .sm-col.sm-col-10.px1 = 'Authentication app'
+      .sm-col.sm-col-10.px1 = t('.authentication_app')
       .sm-col.sm-col-2.px1.sm-right-align
         - if current_user.totp_enabled?
-          = button_to 'Disable', disable_totp_url, method: :delete, \
+          = button_to t('forms.buttons.disable'), disable_totp_url, method: :delete, \
             class: btn_cls
         - else
-          = link_to 'Enable', authenticator_start_url, \
+          = link_to t('forms.buttons.enable'), authenticator_start_url, \
             class: btn_cls
   .py-12p.border-top.border-bottom
     .clearfix.mxn1
@@ -81,7 +81,7 @@ h2.heading = t('headings.profile.agencies')
 .mt3.mb4
   - if current_user.active_identities.empty?
     .py-12p.border-bottom.border-top.italic
-      | You haven't logged into any agencies yet.#{tooltip(t('tooltips.placeholder'))}
+      | #{t('.no_identities')}#{tooltip(t('tooltips.placeholder'))}
   - else
     - current_user.active_identities.each do |i|
       .py-12p.border-top
@@ -89,7 +89,7 @@ h2.heading = t('headings.profile.agencies')
           .sm-col.sm-col-8.px1
             .h3.truncate = i.display_name
           .sm-col.sm-col-4.px1
-            .h6.bold = 'Last login'
+            .h6.bold = t('.last_login')
             .h5 = i.last_authenticated_at.to_s(:date_pretty)
 
 h2.heading = t('headings.profile.account_history')

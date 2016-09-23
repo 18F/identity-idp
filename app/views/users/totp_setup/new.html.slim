@@ -1,9 +1,10 @@
 - title t('titles.totp_setup.new')
 
+
 h1.heading = t('headings.totp_setup.new')
 p.mb0 = t('forms.totp_setup.totp_info')
 .mxn3.center.sm-left-align
-  = image_tag @qrcode, alt: 'QR Code for Authenticator App'
+  = image_tag @qrcode, alt: t('.qr_img_alt')
 = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
   = label_tag 'code', t('forms.totp_setup.code'), class: 'block caps ls-05 bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block

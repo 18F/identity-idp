@@ -1,9 +1,11 @@
 - title t('titles.edit_info.email')
 
+
 h1.heading = t('headings.edit_info.email')
+
 = simple_form_for(@update_user_email_form, url: edit_email_path,
     html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
   = f.error_notification
   = f.input :email, required: true
-  = f.button :submit, 'Update', class: 'mt2 mb1'
-= link_to 'Cancel', :back, class: 'underline'
+  = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2 mb1'
+= link_to t('forms.buttons.cancel'), :back, class: 'underline'

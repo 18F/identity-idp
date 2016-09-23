@@ -12,7 +12,7 @@ feature 'User edit' do
     fill_in 'Email', with: ''
     click_button 'Update'
 
-    expect(page).to have_content 'Please fill in this field'
+    expect(page).to have_content 'Please fill in this field.'
   end
 
   scenario 'user sees error message if form is submitted without phone number', js: true do
@@ -22,6 +22,6 @@ feature 'User edit' do
     fill_in 'Phone', with: ''
     click_button 'Update'
 
-    expect(page).to have_content 'Please fill in this field'
+    expect(page).to have_content 'Please fill in this field.'
   end
 end

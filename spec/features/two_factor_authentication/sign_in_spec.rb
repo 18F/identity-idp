@@ -17,7 +17,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'user does not fill out a phone number when signing up' do
       sign_up_and_set_password
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
 
       expect(current_path).to eq phone_setup_path
     end
@@ -34,7 +34,7 @@ feature 'Two Factor Authentication' do
       scenario 'user leaves phone blank' do
         sign_in_before_2fa
         fill_in 'Phone', with: ''
-        click_button t('forms.buttons.submit')
+        click_button t('forms.buttons.submit.default')
 
         expect(page).to have_content invalid_phone_message
       end
@@ -42,7 +42,7 @@ feature 'Two Factor Authentication' do
       scenario 'user enters an invalid number with no digits' do
         sign_in_before_2fa
         fill_in 'Phone', with: 'five one zero five five five four three two one'
-        click_button t('forms.buttons.submit')
+        click_button t('forms.buttons.submit.default')
 
         expect(page).to have_content invalid_phone_message
       end
@@ -50,7 +50,7 @@ feature 'Two Factor Authentication' do
       scenario 'user enters a valid number' do
         user = sign_in_before_2fa
         fill_in 'Phone', with: '555-555-1212'
-        click_button t('forms.buttons.submit')
+        click_button t('forms.buttons.submit.default')
 
         expect(page).to_not have_content invalid_phone_message
         expect(current_path).to eq phone_confirmation_path
@@ -73,7 +73,7 @@ feature 'Two Factor Authentication' do
           @user = create(:user, :signed_up)
           reset_email
           sign_in_before_2fa(@user)
-          click_button t('forms.buttons.submit')
+          click_button t('forms.buttons.submit.default')
         end
 
         it 'lets the user know they are signed in' do
@@ -86,7 +86,7 @@ feature 'Two Factor Authentication' do
         end
 
         it 'does not send an OTP via email' do
-          expect(last_email).to_not have_content('one-time password')
+          expect(last_email).to_not have_content('one-time passcode')
         end
 
         it 'does not allow user to bypass entering OTP' do
@@ -97,7 +97,7 @@ feature 'Two Factor Authentication' do
 
         it 'displays an error message if the code field is empty', js: true do
           fill_in 'code', with: ''
-          click_button 'Submit'
+          click_button t('forms.buttons.submit.default')
 
           expect(page).to have_content('Please fill in this field')
         end
@@ -107,7 +107,7 @@ feature 'Two Factor Authentication' do
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       click_link t('links.two_factor_authentication.resend_code')
 
       expect(page).to have_content t('notices.send_code.sms')
@@ -116,11 +116,11 @@ feature 'Two Factor Authentication' do
     scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
 
       3.times do
         fill_in('code', with: 'bad-code')
-        click_button('Submit')
+        click_button t('forms.buttons.submit.default')
       end
 
       expect(page).to have_content t('titles.account_locked')
@@ -129,7 +129,7 @@ feature 'Two Factor Authentication' do
       user.update(second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second))
 
       sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content t('devise.two_factor_authentication.header_text')
     end
@@ -141,7 +141,8 @@ feature 'Two Factor Authentication' do
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         sign_in_before_2fa(user)
 
-        expect(page).to have_content 'Your account is temporarily locked'
+        expect(page).to have_content t('devise.two_factor_authentication.' \
+                                       'max_login_attempts_reached')
 
         visit profile_path
         expect(current_path).to eq root_path
@@ -174,7 +175,7 @@ feature 'Two Factor Authentication' do
       code = RecoveryCodeGenerator.new(user).create
       click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
       fill_in 'code', with: code
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
 
       click_button t('forms.buttons.acknowledge_recovery_code')
 
@@ -188,9 +189,9 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up, recovery_code: nil)
 
       sign_in_user(user)
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       fill_in 'code', with: user.reload.direct_otp
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
       click_button t('forms.buttons.acknowledge_recovery_code')
 
       expect(current_path).to eq profile_path

@@ -1,7 +1,9 @@
 - title t('idv.titles.question')
 
+
 h1.heading = t('idv.titles.question')
-.mb1.h6.caps.red = "Question #{@question_sequence}"
+.mb1.h6.caps.red = t('idv.messages.questions.intro', number: @question_sequence)
+
 = form_tag(idv_questions_path, method: 'post')
   .mb3.h3 = @question.display
   =hidden_field_tag('question_key', @question.key)
@@ -10,4 +12,4 @@ h1.heading = t('idv.titles.question')
   - else
     = render 'idv/questions/multiple_choice'
   .mt3
-    button type="submit" class="btn btn-primary" = 'Next'
+    button type="submit" class="btn btn-primary" = t('forms.buttons.submit.next')

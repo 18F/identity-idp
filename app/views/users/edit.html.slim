@@ -1,9 +1,11 @@
 - title t('titles.users.edit', user: @user.email)
 
+
 h3 = t('headings.users.edit')
+
 = required_form_field(@user, html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.error_notification
   = f.input :email, required: true
   = f.input :phone, as: :tel, readonly: true, required: false
   = f.input :role, collection: User.roles.keys.map { |role| [role.titleize, role] }
-  = f.button :submit, 'Update', class: 'usa-button'
+  = f.button :submit, t('forms.buttons.submit.update'), class: 'usa-button'

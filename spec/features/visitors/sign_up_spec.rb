@@ -41,7 +41,7 @@ feature 'Sign Up', devise: true do
     expect(page).to have_content t('forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: VALID_PASSWORD
-    click_button 'Submit'
+    click_button t('forms.buttons.submit.default')
 
     expect(current_url).to eq phone_setup_url
     expect(page).to_not have_content t('devise.confirmations.confirmed')
@@ -59,11 +59,11 @@ feature 'Sign Up', devise: true do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
     end
 
     it 'updates phone_confirmed_at and redirects to acknowledge recovery code' do
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.phone_confirmed_at).to be_present
       expect(current_path).to eq settings_recovery_code_path
@@ -74,13 +74,13 @@ feature 'Sign Up', devise: true do
     end
 
     it 'allows user to resend confirmation code' do
-      click_link 'Resend'
+      click_link t('forms.buttons.resend')
       expect(current_path).to eq phone_confirmation_path
     end
 
     it 'does not enable 2FA until correct OTP is entered' do
       fill_in 'code', with: '12345678'
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.two_factor_enabled?).to be false
     end
@@ -91,7 +91,7 @@ feature 'Sign Up', devise: true do
     end
 
     it 'informs the user that the OTP code is sent to the phone' do
-      expect(page).to have_content('Please enter the code sent to +1 (555) 555-5555.')
+      expect(page).to have_content(t('instructions.2fa.confirm_code', number: '+1 (555) 555-5555'))
     end
 
     it 'allows user to enter new number if they Sign Out before confirming' do
@@ -106,17 +106,17 @@ feature 'Sign Up', devise: true do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: @existing_user.phone
-      click_button t('forms.buttons.submit')
+      click_button t('forms.buttons.submit.default')
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do
       expect(current_path).to eq phone_confirmation_path
-      expect(page).to have_content('Please enter the code sent to +1 (202) 555-1212')
+      expect(page).to have_content(t('instructions.2fa.confirm_code', number: '+1 (202) 555-1212'))
     end
 
     it 'does not confirm the new number with an invalid code' do
       fill_in 'code', with: 'foobar'
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.phone_confirmed_at).to be_nil
       expect(page).to have_content t('errors.invalid_confirmation_code')
@@ -128,9 +128,9 @@ feature 'Sign Up', devise: true do
     create(:user, :unconfirmed)
     confirm_last_user
     fill_in 'password_form_password', with: ''
-    click_button 'Submit'
+    click_button t('forms.buttons.submit.default')
 
-    expect(page).to have_content "can't be blank"
+    expect(page).to have_content t('errors.messages.blank')
     expect(current_url).to eq confirm_url
   end
 
@@ -142,9 +142,9 @@ feature 'Sign Up', devise: true do
 
     it 'shows error message when password is blank' do
       fill_in 'password_form_password', with: ''
-      click_button 'Submit'
+      click_button t('forms.buttons.submit.default')
 
-      expect(page).to have_content 'Please fill in this field'
+      expect(page).to have_content 'Please fill in this field.'
     end
   end
 
@@ -169,10 +169,10 @@ feature 'Sign Up', devise: true do
       expect(page).to have_content '...'
 
       fill_in 'password_form_password', with: 'password'
-      expect(page).to have_content 'Very weak'
+      expect(page).to have_content t('instructions.password.strength.i')
 
       fill_in 'password_form_password', with: 'this is a great sentence'
-      expect(page).to have_content 'Great'
+      expect(page).to have_content t('instructions.password.strength.v')
     end
 
     it 'has dynamic password strength feedback' do
@@ -200,7 +200,7 @@ feature 'Sign Up', devise: true do
     confirm_last_user
     fill_in 'password_form_password', with: 'Q!2e'
 
-    click_button 'Submit'
+    click_button t('forms.buttons.submit.default')
 
     expect(page).to have_content('characters')
     expect(current_url).to eq confirm_url
@@ -307,9 +307,9 @@ feature 'Sign Up', devise: true do
       user = create(:user)
 
       visit '/'
-      click_link "Didn't receive confirmation instructions?"
+      click_link t('links.user_confirmation')
       fill_in 'Email', with: user.email
-      click_button 'Resend confirmation instructions'
+      click_button t('forms.buttons.resend_confirmation')
 
       expect(number_of_emails_sent).to eq 0
     end

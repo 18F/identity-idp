@@ -23,7 +23,7 @@ feature 'Confirmation Instructions', devise: true do
     user.save!
     fill_in 'Email', with: user.email
 
-    click_button 'Resend confirmation instructions'
+    click_button t('forms.buttons.resend_confirmation')
     expect(unread_emails_for(user.email)).to be_present
   end
 
@@ -33,7 +33,7 @@ feature 'Confirmation Instructions', devise: true do
   #   Then I still don't know if an account exists
   scenario 'user is unable to determine if account exists' do
     fill_in 'Email', with: 'no_account_exists@example.com'
-    click_button 'Resend confirmation instructions'
+    click_button t('forms.buttons.resend_confirmation')
     expect(page).to have_content t('devise.confirmations.send_paranoid_instructions')
   end
 
@@ -50,7 +50,7 @@ feature 'Confirmation Instructions', devise: true do
 
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button 'Resend confirmation instructions'
+      click_button t('forms.buttons.resend_confirmation')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
@@ -65,7 +65,7 @@ feature 'Confirmation Instructions', devise: true do
 
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button 'Resend confirmation instructions'
+      click_button t('forms.buttons.resend_confirmation')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
@@ -73,14 +73,14 @@ feature 'Confirmation Instructions', devise: true do
 
   scenario 'user enters empty email with JS turned on', js: true do
     fill_in 'Email', with: ''
-    click_button 'Resend confirmation instructions'
+    click_button t('forms.buttons.resend_confirmation')
 
-    expect(page).to have_content 'Please fill in this field'
+    expect(page).to have_content 'Please fill in this field.'
   end
 
   scenario 'user enters empty email' do
     fill_in 'Email', with: ''
-    click_button 'Resend confirmation instructions'
+    click_button t('forms.buttons.resend_confirmation')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
   end

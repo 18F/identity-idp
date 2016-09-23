@@ -1,27 +1,28 @@
 - title t('idv.titles.phone')
 
+
 .mt1.mb3.h6.caps.red = t('idv.titles.phone')
+
 = simple_form_for(idv_phone_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   h2.heading = t('idv.titles.session.phone')
-  p.m0 To help us verify your identity, please give us a phone number that belongs
-    to you and that meets the criteria below:
+  p.m0 = t('idv.messages.phone.intro')
   ul.py1.m0
     li
-      strong is not
-      |  a google voice number, skype account or virtual phone
+      strong= t('idv.messages.phone.is_not')
+      = t('idv.messages.phone.virtual')
     li
-      strong is not
-      |  a pay as you go phone
+      strong= t('idv.messages.phone.is_not')
+      = t('idv.messages.phone.prepaid')
     li
-      strong is
-      |  in your name, or your spouse's name
-  p This phone number can be the same one you used to set up your one-time password
-    as long as it meets the criteria above.
+      strong= t('idv.messages.phone.is')
+      = t('idv.messages.phone.in_your_name')
+
+  p = t('idv.messages.phone.same_as_2fa')
   .mt4.mb3
     = f.input :phone, required: true, class: 'caps ls-05 bold'
   .mt4.mb1
-    = link_to 'Cancel', idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-    = f.button :submit, 'Continue', class: 'btn btn-primary'
+    = link_to t('forms.buttons.cancel'), idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
+    = f.button :submit, t('forms.buttons.submit.continue'), class: 'btn btn-primary'
 
 == javascript_include_tag 'misc/page-unload-warning'

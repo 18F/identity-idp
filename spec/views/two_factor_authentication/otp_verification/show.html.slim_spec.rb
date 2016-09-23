@@ -19,7 +19,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       render
 
-      expect(rendered).to have_content 'Please enter the code sent to ***-***-1212'
+      expect(rendered).to have_content t('instructions.2fa.confirm_code', number: '***-***-1212')
     end
 
     context 'when @code_value is set' do

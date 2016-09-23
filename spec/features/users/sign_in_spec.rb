@@ -31,13 +31,13 @@ feature 'Sign in' do
   scenario 'user cannot sign in with empty email', js: true do
     signin('', 'foo')
 
-    expect(page).to have_content 'Please fill in this field'
+    expect(page).to have_content 'Please fill in this field.'
   end
 
   scenario 'user cannot sign in with empty password', js: true do
     signin('test@example.com', '')
 
-    expect(page).to have_content 'Please fill in this field'
+    expect(page).to have_content 'Please fill in this field.'
   end
 
   # Scenario: User cannot sign in with wrong password
@@ -141,7 +141,7 @@ feature 'Sign in' do
 
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
-      click_button 'Log in'
+      click_button t('links.sign_in')
 
       expect(page).to_not have_content t('errors.invalid_authenticity_token')
       expect(current_path).to eq user_two_factor_authentication_path

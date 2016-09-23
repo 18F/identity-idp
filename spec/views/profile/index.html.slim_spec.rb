@@ -24,7 +24,7 @@ describe 'profile/index.html.slim' do
       pending 'temporarily disabled until we figure out the MBUN to SSN mapping'
       render
 
-      expect(rendered).to have_content t('headings.delete_account', app_name: APP_NAME)
+      expect(rendered).to have_content t('headings.delete_account', app: APP_NAME)
       expect(rendered).
         to have_xpath("//input[@value='#{t('forms.buttons.delete_account')}']")
     end

@@ -19,17 +19,17 @@ describe Idv::ProfileForm do
 
   it do
     is_expected.
-      to validate_presence_of(:first_name).with_message("can't be blank")
+      to validate_presence_of(:first_name).with_message(t('errors.messages.blank'))
   end
 
   it do
     is_expected.
-      to validate_presence_of(:last_name).with_message("can't be blank")
+      to validate_presence_of(:last_name).with_message(t('errors.messages.blank'))
   end
 
   it do
     is_expected.
-      to validate_presence_of(:ssn).with_message("can't be blank")
+      to validate_presence_of(:ssn).with_message(t('errors.messages.blank'))
   end
 
   it do
@@ -39,22 +39,22 @@ describe Idv::ProfileForm do
 
   it do
     is_expected.
-      to validate_presence_of(:address1).with_message("can't be blank")
+      to validate_presence_of(:address1).with_message(t('errors.messages.blank'))
   end
 
   it do
     is_expected.
-      to validate_presence_of(:city).with_message("can't be blank")
+      to validate_presence_of(:city).with_message(t('errors.messages.blank'))
   end
 
   it do
     is_expected.
-      to validate_presence_of(:state).with_message("can't be blank")
+      to validate_presence_of(:state).with_message(t('errors.messages.blank'))
   end
 
   it do
     is_expected.
-      to validate_presence_of(:zipcode).with_message("can't be blank")
+      to validate_presence_of(:zipcode).with_message(t('errors.messages.blank'))
   end
 
   describe 'ssn uniqueness' do

@@ -20,7 +20,7 @@ feature 'Interrupted IdV session' do
         end
 
         fill_out_idv_form_ok
-        click_button 'Continue'
+        click_button t('forms.buttons.submit.continue')
 
         expect(page).to have_content(t('idv.form.ccn'))
       end

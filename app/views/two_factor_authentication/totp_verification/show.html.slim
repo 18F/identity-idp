@@ -1,11 +1,11 @@
 - title t('titles.enter_2fa_code')
 
+
 h1.heading = t('devise.two_factor_authentication.totp_header_text')
-p
-  'Please enter the code from your authenticator app.
-  'If you have several accounts set up in your app, enter the code
-  'corresponding to <strong>#{current_user.email}</strong> at
-  '<strong>#{APP_NAME}</strong>.
+p== t('instructions.2fa.totp_intro', \
+      email: "<strong>#{current_user.email}</strong>",
+      app: "<strong>#{APP_NAME}</strong>")
+
 = form_tag(:login_two_factor_authenticator, method: :post, role: 'form') do
   .mb2
     = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.code')
