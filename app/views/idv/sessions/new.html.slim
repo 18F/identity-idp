@@ -26,8 +26,11 @@ h2.pb0.heading. = t('idv.titles.session.basic')
           pattern: '(\d{5}([\-]\d{4})?)',
           input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
   .mt0.mb3.pb-tiny.border-bottom.border-teal Other information
-  = f.input :dob, as: :date, html5: true, label: t('idv.form.dob'), required: true,
-    input_html: { 'aria-labelledby': 'label-dob', value: idv_profile_form.dob }
+  = f.input :dob, label: t('idv.form.dob'), required: true,
+    pattern: '(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}',
+    input_html: { class: 'dob', value: idv_profile_form.dob.try(:strftime, '%m/%d/%Y'),
+      'aria-describedby': 'dob-instructs' }
+  #dob-instructs.hide Must be in mm/dd/yyyy format
   = f.input :ssn, label: t('idv.form.ssn'), required: true, pattern: '^\d{3}-?\d{2}-?\d{4}$',
     input_html: { class: 'ssn', 'aria-labelledby': 'label-ssn', value: idv_profile_form.ssn }
   .mt5
