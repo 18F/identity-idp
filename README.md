@@ -105,15 +105,31 @@ Run security scanner
 
 ### Deploying
 
-We currently run `dev` and `qa` environments at https://upaya-idp-dev.18f.gov
-and https://upaya-idp-qa.18f.gov. Core developers can deploy to those hosts
-with [Capistrano](http://capistranorb.com) using the following command:
+We currently run a demo environment at https://idp.demo.login.gov.
+Core developers can deploy to those hosts with [Capistrano](http://capistranorb.com)
+using the following command:
 
     $ cap <env/stage> deploy
 
 You will need to provide a copy of your SSH public key and you may need to
 provide your IP address if you are not in a GSA building or on the GSA VPN.
 Post a message in the Slack channel if you need help.
+
+Note: server secrets are currently manually configured. If you deploy to an
+environment, make sure to update any required configuration in application.yml
+and be sure any worker hosts are also updated. 
+
+To restart the web server (on a web host, from /srv/idp/current)
+
+    $ touch tmp/restart.txt
+
+To get status of the background workers (on a worker host):
+
+    $ sudo monit status
+
+To restart the background workers:
+
+    $ sudo monit restart sidekiq_idp_production0
 
 ### Why 'Upaya'?
 
