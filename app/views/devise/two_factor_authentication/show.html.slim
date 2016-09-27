@@ -2,7 +2,7 @@
 
 
 h1.heading = t('headings.choose_otp_delivery')
-p#2fa-description
+p.mt-tiny.mb0#2fa-description
   = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
 = simple_form_for(@otp_delivery_selection_form,
     url: otp_send_path,

@@ -2,8 +2,8 @@
 
 
 h1.heading = t('forms.phone_confirmation.header_text')
-p.m0 == t('instructions.2fa.confirm_code',
-          number: "<strong>#{@unconfirmed_phone}</strong>")
+p.mt-tiny.mb0 == t('instructions.2fa.confirm_code', \
+  number: "<strong>#{@unconfirmed_phone}</strong>")
 
 = form_tag([:phone_confirmation], method: :put, role: 'form', class: 'mt4') do
   = label_tag 'code', t('forms.two_factor.code'), class: 'block caps ls-05 bold'

@@ -2,9 +2,9 @@
 
 
 h1.heading = t('forms.phone_confirmation.header_text')
-p#2fa-description
+p.mt-tiny.mb0#2fa-description
   = t('devise.two_factor_authentication.choose_delivery_confirmation', phone: @phone_number)
-= form_tag(phone_confirmation_send_path, method: :get, role: 'form', class: 'mt3') do
+= form_tag(phone_confirmation_send_path, method: :get, role: 'form', class: 'mt4') do
   .mb3
     = label_tag 'otp_method',
       t('devise.two_factor_authentication.otp_method.title'),

@@ -2,7 +2,7 @@
 
 
 h1.heading = t('headings.registrations.enter_email')
-p.m0.italic#email-description= t('instructions.registration.email', app: APP_NAME)
+p.mt-tiny.mb0#email-description = t('instructions.registration.email', app: APP_NAME)
 = simple_form_for(@register_user_email_form,
     html: { autocomplete: 'off', role: 'form' },
     url: user_registration_path) do |f|
