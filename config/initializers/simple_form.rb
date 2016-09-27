@@ -17,7 +17,7 @@ SimpleForm.setup do |config|
     b.optional :pattern
     b.optional :min_max
     b.optional :readonly
-    b.use :label, class: 'caps ls-05 bold'
+    b.use :label, class: 'bold'
     b.use :input, class: 'block col-12 field'
     b.use :hint,  wrap_with: { tag: 'div' }
     b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 red error-message' }

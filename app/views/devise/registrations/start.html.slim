@@ -3,20 +3,23 @@
 h1.heading = t('headings.create_account')
 .clearfix.pt3
   .col.col-1.center
-    = image_tag(asset_url('check-outline.svg'), size: '26x26', class: 'mt1')
+    = image_tag(asset_url('check-outline.svg'), size: '26x26', alt: '', class: 'mt1')
   .col.col-11.pl2
     p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = t('devise.registrations.start.bullet_1')
   .clearfix
   .col.col-1.center
-    = image_tag(asset_url('shield.svg'), size: '25x32', class: 'mt1')
+    = image_tag(asset_url('shield.svg'), size: '25x32', alt: '', class: 'mt1')
   .col.col-11.pl2
     p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = t('devise.registrations.start.bullet_2',
                                               app: APP_NAME)
   .clearfix
   .col.col-1.center
-    = image_tag(asset_url('dot-gov.svg'), size: '31x27', class: 'mt1')
+    = image_tag(asset_url('dot-gov.svg'), size: '31x27', alt: '', class: 'mt1')
   .col.col-11.pl2
     p.pb2.sm-pb3.mb2 = t('devise.registrations.start.bullet_3', app: APP_NAME)
 .py1.sm-p0
   - ab_test(:demo) do |variant, _|
-    = link_to t(variant), new_user_registration_path, class: 'btn btn-primary btn-wide'
+    = link_to t(variant), new_user_registration_path, class: 'btn btn-primary btn-wide mb4'
+.clearfix.pt1.border-top
+  - auth_link = link_to(t('links.sign_in'), new_user_session_path, class: 'underline')
+  .sm-col-right == t('instructions.registration.already_have_account', link: auth_link)

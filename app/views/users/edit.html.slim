@@ -2,7 +2,6 @@
 
 
 h3 = t('headings.users.edit')
-
 = required_form_field(@user, html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.error_notification
   = f.input :email, required: true

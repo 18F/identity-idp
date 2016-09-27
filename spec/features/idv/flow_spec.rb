@@ -160,12 +160,12 @@ feature 'IdV session' do
       fill_out_idv_form_ok
       click_button 'Continue'
 
-      expect(page).to have_content(t('idv.form.finance_unselected').upcase)
+      expect(page).to have_content(t('idv.form.finance_unselected'))
 
       find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
 
-      expect(page).to_not have_content(t('idv.form.finance_unselected').upcase)
-      expect(page).to have_content(t('idv.form.ccn').upcase)
+      expect(page).to_not have_content(t('idv.form.finance_unselected'))
+      expect(page).to have_content(t('idv.form.ccn'))
     end
 
     context 'Idv phone and user phone are different' do

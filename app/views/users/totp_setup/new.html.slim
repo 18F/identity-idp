@@ -2,7 +2,7 @@
 
 
 h1.heading = t('headings.totp_setup.new')
-p.mb0 = t('forms.totp_setup.totp_info')
+p.mt-tiny.mb0 = t('forms.totp_setup.totp_info')
 .mxn3.center.sm-left-align
   = image_tag @qrcode, alt: t('.qr_img_alt')
 = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do

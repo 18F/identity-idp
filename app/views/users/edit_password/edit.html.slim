@@ -2,7 +2,7 @@
 
 
 h1.heading = t('headings.edit_info.password')
-p.m0.italic#password-description
+p.mt-tiny.mb0#password-description
   = t('instructions.edit_info.password', min_length: Devise.password_length.first)
 = simple_form_for(@update_user_password_form, url: settings_password_path,
     html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|

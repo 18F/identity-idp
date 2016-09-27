@@ -2,7 +2,6 @@
 
 
 h1.heading = t('headings.edit_info.phone')
-
 = simple_form_for(@update_user_phone_form, url: edit_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification

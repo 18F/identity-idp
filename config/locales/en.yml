@@ -71,13 +71,14 @@ en:
       Make sure to print and/or write down this code and keep it in a safe place.
     password:
       strength:
-        intro: 'Strength: '
+        intro: 'Password strength: '
         i: Very weak
         ii: Weak
         iii: So-so
         iv: Good
         v: Great!
     registration:
+      already_have_account: Already have account? %{link}
       email: >
         Enter the email address you’d like to associate with %{app}
     2fa:
@@ -173,7 +174,7 @@ en:
     confirmations:
       new: Resend confirmation instructions
     contact: Contact us
-    create_account: Create account
+    create_account: Create an account
     edit_info:
       email: Edit your email
       password: Edit your password
