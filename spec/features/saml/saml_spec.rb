@@ -167,6 +167,23 @@ feature 'saml api', devise: true do
   end
 
   context 'visiting /api/saml/logout' do
+    context 'via SP-initiated logout when not logged in to IdP' do
+      let(:user) { create(:user, :signed_up) }
+
+      it 'redirects to home page' do
+        request = OneLogin::RubySaml::Logoutrequest.new
+        settings = sp1_saml_settings
+        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+        linker = IdentityLinker.new(user, sp1.issuer)
+        linker.link_identity
+        settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+
+        visit request.create(settings)
+
+        expect(current_path).to eq root_path
+      end
+    end
+
     context 'when logged in to single SP with IdP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
       let(:xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }

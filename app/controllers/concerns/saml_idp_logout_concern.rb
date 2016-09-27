@@ -69,6 +69,7 @@ module SamlIdpLogoutConcern
 
   def prepare_saml_logout_request
     validate_saml_request
+    return unless user_session
     return if user_session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
