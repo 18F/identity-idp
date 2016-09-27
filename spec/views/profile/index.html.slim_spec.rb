@@ -52,4 +52,13 @@ describe 'profile/index.html.slim' do
     expect(rendered).
       to have_link(t('profile.links.regenerate_recovery_code'), href: settings_recovery_code_url)
   end
+
+  it 'contains account history' do
+    user = User.new
+    allow(view).to receive(:current_user).and_return(user)
+
+    render
+
+    expect(rendered).to have_content t('headings.profile.account_history')
+  end
 end

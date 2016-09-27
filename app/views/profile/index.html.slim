@@ -77,28 +77,14 @@ h2.heading = t('headings.profile.login_info')
         = link_to t('profile.links.regenerate_recovery_code'), \
           settings_recovery_code_url, class: btn_cls
 
-h2.heading = t('headings.profile.agencies')
-.mt3.mb4
-  - if current_user.active_identities.empty?
-    .py-12p.border-bottom.border-top.italic
-      | #{t('.no_identities')}#{tooltip(t('tooltips.placeholder'))}
-  - else
-    - current_user.active_identities.each do |i|
-      .py-12p.border-top
-        .clearfix.mxn1
-          .sm-col.sm-col-8.px1
-            .h3.truncate = i.display_name
-          .sm-col.sm-col-4.px1
-            .h6.bold = t('.last_login')
-            .h5 = i.last_authenticated_at.to_s(:date_pretty)
-
 h2.heading = t('headings.profile.account_history')
 .mt3.mb2
-  - events_len = current_user.events.length
-  - current_user.events.each_with_index do |event, i|
+  - decorated_user = current_user.decorate
+  - events_len = decorated_user.recent_events.length
+  - decorated_user.recent_events.each_with_index do |event, i|
     div class="py-12p border-top #{'border-bottom' if i + 1 == events_len}"
       .clearfix.mxn1
         .sm-col.sm-col-6.px1
-          .truncate = event.decorate.pretty_event_type
+          .truncate = event.pretty_event_type
         .sm-col.sm-col-6.px1.sm-right-align
-          = event.created_at.to_s(:date_pretty)
+          = event.happened_at.to_s(:date_pretty)

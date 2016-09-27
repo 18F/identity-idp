@@ -1,6 +1,8 @@
 include ActionView::Helpers::DateHelper
 
 UserDecorator = Struct.new(:user) do
+  MAX_RECENT_EVENTS = 5
+
   def lockout_time_remaining
     (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
@@ -71,6 +73,12 @@ UserDecorator = Struct.new(:user) do
 
   def should_acknowledge_recovery_code?(session)
     user.recovery_code.blank? && !omniauthed?(session)
+  end
+
+  def recent_events
+    events = user.events.order('updated_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
+    identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
+    (events + identities).sort { |thing_a, thing_b| thing_b.happened_at <=> thing_a.happened_at }
   end
 
   private

@@ -15,4 +15,8 @@ class Identity < ActiveRecord::Base
   def display_name
     sp_metadata[:friendly_name] || sp_metadata[:agency] || service_provider
   end
+
+  def decorate
+    IdentityDecorator.new(self)
+  end
 end
