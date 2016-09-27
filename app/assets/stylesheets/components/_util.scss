@@ -4,6 +4,8 @@
 
 .bg-light-blue { background-color: $blue-light; }
 
+.no-hover-decoration:hover { text-decoration: none; }
+
 @media #{$breakpoint-sm} {
   .sm-bg-light-blue { background-color: $blue-light; }
 

@@ -16,4 +16,8 @@ class FeatureManagement
   def self.proofing_requires_kbv?
     Figaro.env.proofing_kbv == 'true'
   end
+
+  def self.enable_i18n_mode?
+    Figaro.env.enable_i18n_mode == 'true'
+  end
 end

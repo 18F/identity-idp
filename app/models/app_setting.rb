@@ -1,5 +1,3 @@
-require 'feature_management'
-
 class AppSetting < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
