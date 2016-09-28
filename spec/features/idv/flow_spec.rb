@@ -10,7 +10,7 @@ feature 'IdV session' do
     end
 
     scenario 'decline to verify identity' do
-      click_link 'No'
+      click_link t('idv.messages.cancel_link')
 
       expect(page).to have_content(t('idv.titles.cancel'))
     end
@@ -18,7 +18,7 @@ feature 'IdV session' do
     scenario 'proceed to verify identity' do
       click_link 'Yes'
 
-      expect(page).to have_content(t('idv.titles.welcome'))
+      expect(page).to have_content(t('idv.titles.session.basic'))
     end
   end
 
@@ -37,7 +37,7 @@ feature 'IdV session' do
       expect(page).to have_content(t('idv.form.ccn'))
 
       fill_out_financial_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('idv.messages.finance.continue')
       fill_out_phone_form_ok(user.phone)
       click_button t('forms.buttons.submit.continue')
       click_button t('forms.buttons.submit.default')
@@ -102,7 +102,7 @@ feature 'IdV session' do
       expect(page).to_not have_selector("input[value='#{first_ccn_value}']")
 
       fill_out_financial_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('idv.messages.finance.continue')
 
       visit idv_session_path
 
@@ -115,12 +115,12 @@ feature 'IdV session' do
       expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_selector("input[value='#{first_ccn_value}']")
 
-      click_button t('forms.buttons.submit.continue')
+      click_button t('idv.messages.finance.continue')
 
       visit idv_finance_path
       find('#idv_finance_form_finance_type_mortgage').set(true)
       fill_in :idv_finance_form_finance_account, with: mortgage_value
-      click_button t('forms.buttons.submit.continue')
+      click_button t('idv.messages.finance.continue')
 
       expect(current_url).to eq idv_phone_url
 
@@ -129,7 +129,7 @@ feature 'IdV session' do
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
       fill_in :idv_finance_form_finance_account, with: second_ccn_value
-      click_button t('forms.buttons.submit.continue')
+      click_button t('idv.messages.finance.continue')
 
       expect(page).to_not have_selector("input[value='#{first_phone_formatted}']")
 
@@ -176,7 +176,7 @@ feature 'IdV session' do
         fill_out_idv_form_ok
         click_button t('forms.buttons.submit.continue')
         fill_out_financial_form_ok
-        click_button t('forms.buttons.submit.continue')
+        click_button t('idv.messages.finance.continue')
         fill_out_phone_form_ok('416-555-0190')
         click_button t('forms.buttons.submit.continue')
         click_button t('forms.buttons.submit.default')
@@ -233,7 +233,7 @@ feature 'IdV session' do
       fill_out_idv_form_fail
       click_button t('forms.buttons.submit.continue')
       fill_out_financial_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('idv.messages.finance.continue')
       fill_out_phone_form_ok
       click_button t('forms.buttons.submit.continue')
       click_button t('forms.buttons.submit.default')
@@ -247,7 +247,7 @@ feature 'IdV session' do
     fill_out_idv_form_ok
     click_button t('forms.buttons.submit.continue')
     fill_out_financial_form_ok
-    click_button t('forms.buttons.submit.continue')
+    click_button t('idv.messages.finance.continue')
     fill_out_phone_form_ok(user.phone)
     click_button t('forms.buttons.submit.continue')
     click_button t('forms.buttons.submit.default')
@@ -257,7 +257,7 @@ feature 'IdV session' do
     fill_out_idv_form_fail
     click_button 'Continue'
     fill_out_financial_form_ok
-    click_button 'Continue'
+    click_button t('idv.messages.finance.continue')
     fill_out_phone_form_ok(user.phone)
     click_button 'Continue'
     click_button 'Submit'

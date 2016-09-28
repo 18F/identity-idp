@@ -1,37 +1,37 @@
-- title t('idv.titles.welcome')
+- title t('idv.titles.session.basic')
 
 
 - if @using_mock_vendor
   .mt1.mb2.h6.caps.bold = t('idv.messages.sessions.no_pii')
 
-.mt1.mb3.h6.caps.red = t('idv.titles.welcome')
-h2.heading = t('idv.titles.session.basic')
-p.italic = t('idv.messages.sessions.intro')
+h2.pb0.heading. = t('idv.titles.session.basic')
 = simple_form_for(idv_profile_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
-  = f.input :first_name, label: t('idv.form.first_name'), required: true
-  = f.input :last_name, label: t('idv.form.last_name'), required: true
-  hr.mt0.mb3.pt1
+  .mb5
+    .mb3.pb-tiny.border-bottom.border-teal Name
+    = f.input :first_name, label: t('idv.form.first_name'), required: true
+    = f.input :last_name, label: t('idv.form.last_name'), required: true
+  .mb4
+    .mb3.pb-tiny.border-bottom.border-teal Address
+    = f.input :address1, label: t('idv.form.address1'), required: true
+    = f.input :address2, label: t('idv.form.address2')
+    = f.input :city, label: t('idv.form.city'), required: true
+    .clearfix.mxn1
+      .sm-col.sm-col-6.px1
+        = f.input :state,
+                  collection: us_states_territories, label: t('idv.form.state'), required: true
+      .sm-col.sm-col-4.px1
+        = f.input :zipcode, label: t('idv.form.zipcode'), required: true,
+          pattern: '(\d{5}([\-]\d{4})?)',
+          input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
+  .mt0.mb3.pb-tiny.border-bottom.border-teal Other information
   = f.input :dob, as: :date, html5: true, label: t('idv.form.dob'), required: true,
     input_html: { 'aria-labelledby': 'label-dob', value: idv_profile_form.dob }
-  hr.mt0.mb3.pt1
   = f.input :ssn, label: t('idv.form.ssn'), required: true, pattern: '^\d{3}-?\d{2}-?\d{4}$',
     input_html: { class: 'ssn', 'aria-labelledby': 'label-ssn', value: idv_profile_form.ssn }
-  hr.mt0.mb3.pt1
-  = f.input :address1, label: t('idv.form.address1'), required: true
-  = f.input :address2, label: t('idv.form.address2')
-  = f.input :city, label: t('idv.form.city'), required: true
-  .clearfix.mxn1
-    .sm-col.sm-col-6.px1
-      = f.input :state,
-                collection: us_states_territories, label: t('idv.form.state'), required: true
-    .sm-col.sm-col-6.px1
-      = f.input :zipcode, label: t('idv.form.zipcode'), required: true,
-        pattern: '(\d{5}([\-]\d{4})?)',
-        input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
-  .mt3.mb2
-    = link_to t('forms.buttons.cancel'), idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-    button type='submit' class='btn btn-primary' = t('forms.buttons.submit.continue')
+  .mt5
+    button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.submit.continue')
+    .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'
 
 == javascript_include_tag 'misc/page-unload-warning'
