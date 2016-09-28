@@ -1,8 +1,5 @@
 - title t('idv.titles.phone')
 
-
-.mt1.mb3.h6.caps.red = t('idv.titles.phone')
-
 = simple_form_for(idv_phone_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   h2.heading = t('idv.titles.session.phone')
@@ -21,8 +18,8 @@
   p = t('idv.messages.phone.same_as_2fa')
   .mt4.mb3
     = f.input :phone, required: true, class: 'caps ls-05 bold'
-  .mt4.mb1
-    = link_to t('forms.buttons.cancel'), idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-    = f.button :submit, t('forms.buttons.submit.continue'), class: 'btn btn-primary'
+  .mt3
+    = f.button :submit, t('forms.buttons.submit.continue'), class: 'btn btn-primary btn-wide'
+  .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'
 
 == javascript_include_tag 'misc/page-unload-warning'

@@ -264,14 +264,14 @@ en:
       first_name: First name
       last_name: Last name
       dob: Date of birth
-      ssn: Social Security Number (SSN)
+      ssn: Social Security Number
       finance_unselected: Select an option above...
-      ccn: Last 8 digits of your credit card number
-      mortgage: Mortgage account number
-      home_equity_line: Home equity account number
+      ccn: Last 8 digits of a credit card
+      mortgage: Mortgage loan account number
+      home_equity_line: Home equity line of credit account number
       auto_loan: Auto loan account number
-      address1: Mailing address
-      address2: Mailing address (optional)
+      address1: Mailing address 1
+      address2: Mailing address 2 (optional)
       city: City
       state: State
       zipcode: ZIP Code
@@ -312,6 +312,7 @@ en:
         personal information as well as some financial information from you to
         complete this process. If you don’t have the information we need at this
         time you can continue later.
+      cancel_link: 'Cancel verification'
       dupe_ssn1: >
         If you are getting this error, you may have already created and verified
         and account, but with a different email address.
@@ -322,6 +323,7 @@ en:
       review_and_continue: Review my info and try again
       finance:
         intro: 'Please provide only one of the following:'
+        continue: 'Verify my account number'
       phone:
         intro: >
           To help us verify your identity, please give us a phone number that belongs
@@ -340,13 +342,11 @@ en:
         intro: Please review your information and ensure it is correct.
       sessions:
         no_pii: Do not use real personal information (demo purposes only)
-        intro: 'Please provide all of the following:'
 
     titles:
       activated: Your identity has already been verified
       intro: Help us identify you
-      expectations: We need some information from you
-      welcome: Verify your identity
+      expectations: Next, help us identify you
       phone: Phone number of record
       question: Answer a few questions
       fail: We were unable to verify your identity
@@ -356,8 +356,8 @@ en:
       review: Review and submit
       dupe: "Error: An account may already exist"
       session:
-        basic: Basic information
-        finance: Financial information
+        basic: First, some basic information
+        finance: Next, we need some financial information
         phone: What is your phone number?
         review: Review and submit
 

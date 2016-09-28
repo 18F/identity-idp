@@ -1,24 +1,23 @@
-- title t('idv.titles.welcome')
+- title t('idv.titles.session.finance')
 
 
-.mt1.mb3.h6.caps.red = t('idv.titles.welcome')
 h2.heading = t('idv.titles.session.finance')
-p.italic = t('idv.messages.finance.intro')
+p = t('idv.messages.finance.intro')
 
 = simple_form_for(idv_finance_form, url: idv_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = f.error_notification
-  .mb3.js-finance-choice-cntnr
+  .mb4.js-finance-choice-cntnr
     = f.collection_radio_buttons(:finance_type, Idv::FinanceForm.finance_type_choices,
-      :first, :last, required: true, item_wrapper_tag: :div) do |r|
+      :first, :last, required: true, item_wrapper_class: 'mb1', item_wrapper_tag: :div) do |r|
       = r.label(class: 'radio')
         = r.radio_button
         span.indicator
         = r.text
   = f.input :finance_account, required: true,
     label: @finance_account_label, label_html: { class: 'js-finance-label' }
-  .mt4.mb1
-    = link_to t('forms.buttons.cancel'), idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-    = f.button :submit, t('forms.buttons.submit.continue'), class: 'btn btn-primary'
+  .mt3
+    = f.button :submit, t('idv.messages.finance.continue'), class: 'btn btn-primary btn-wide'
+  .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'
 
 == javascript_include_tag 'misc/page-unload-warning'

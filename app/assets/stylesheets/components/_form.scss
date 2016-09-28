@@ -67,7 +67,7 @@ input::-webkit-inner-spin-button {
 .radio {
   cursor: pointer;
   display: inline-block;
-  padding-left: $radio-checkbox-space;
+  padding-left: 24px;
   position: relative;
 }
 
@@ -85,9 +85,9 @@ input::-webkit-inner-spin-button {
   background-size: 50% 50%;
   display: block;
   font-size: 65%;
-  height: $radio-checkbox-space - .5rem;
+  height: 14px;
   left: 0;
-  line-height: $radio-checkbox-space - .5rem;
+  line-height: 14px;
   position: absolute;
   text-align: center;
   top: .25rem;
@@ -95,7 +95,7 @@ input::-webkit-inner-spin-button {
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
-  width: $radio-checkbox-space - .5rem;
+  width: 14px;
 }
 
 .checkbox input:checked ~ .indicator,

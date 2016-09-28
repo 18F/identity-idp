@@ -505,7 +505,7 @@ feature 'saml api', devise: true do
         fill_out_idv_form_ok
         click_button t('forms.buttons.submit.continue')
         fill_out_financial_form_ok
-        click_button t('forms.buttons.submit.continue')
+        click_button t('idv.messages.finance.continue')
         click_button t('forms.buttons.submit.continue')
         click_button t('forms.buttons.submit.default')
 

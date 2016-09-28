@@ -3,50 +3,43 @@
 
 h1.heading = t('idv.titles.expectations')
 
-.mt3.mb3.overflow-hidden.border-bottom
-  .left.pr1.sm-pr2
-    = image_tag(asset_url('circle-1.svg'), width: 30, alt: '1')
-  .overflow-hidden
-    div
-      | Please have the following basic information
-        and materials to complete registration with login.gov:
-    ul.mt2.mb3.red-dots
-      li Full name
-      li Date of birth
-      li Mailing address
-      li Social Security Number (SSN) <br><span class="h6">OR</span>
-      li Individual Tax Identification Number (ITIN)
+.mb-40p
+  .mb-40p
+    | To complete registration with login.gov, we’ll ask you about the following:
+  h2.mb1.pb-tiny.h5.border-bottom.border-teal Basic information
+  .mb-12p.h6 We’ll start with basic information, like:
+  ul.mb0.teal-dots
+    li.mb1 Full name
+    li.mb1 Date of birth
+    li.mb1 Mailing address
+    li.mb1 Social Security Number or Individual Tax Identification Number
 
-.mb3.overflow-hidden.border-bottom
-  .left.pr1.sm-pr2
-    = image_tag(asset_url('circle-2.svg'), width: 30, alt: '2')
-  .overflow-hidden
-    div
-      | Additionally, we need a number from
-        <strong>only one of your financial accounts</strong>.
-        We can use any of the following:
-    ul.mt2.mb2.red-dots
-      li Last 8 digits of a credit card <br><span class="h6">OR</span>
-      li Auto loan account number <br><span class="h6">OR</span>
-      li Mortgage loan account number <br><span class="h6">OR</span>
-      li Home equity line of credit account number
-    .mb3.italic
-      | You will never be charged any money, and are not sharing
-        any account balances, or other financial information with us.
+.mb-40p
+  h2.mt0.mb1.pb-tiny.h5.border-bottom.border-teal Financial information
+  .mb-12p.h6
+    | Additionally, we need a number from only one of your financial accounts.
+      We can use any of the following:
+  ul.mb-12p.teal-dots
+    li.mb1 Last 8 digits of a credit card
+    li.mb1 Auto loan account number
+    li.mb1 Mortgage loan account number
+    li.mb1 Home equity line of credit account number
+  .h6.italic
+    | You will never be charged any money, and are not sharing any account balances,
+      or other financial information with us.
 
-.mb3.overflow-hidden.border-bottom
-  .left.pr1.sm-pr2
-    = image_tag(asset_url('circle-3.svg'), width: 30, alt: '3')
-  .overflow-hidden
-    div Finally, we need your official phone number which can be:
-    ul.mt2.mb3.red-dots
-      li Lorem ipsum dolar set <br><span class="h6">BUT NOT</span>
-      li Mailing address
+.mb-40p
+  h2.mt0.mb1.pb-tiny.h5.border-bottom.border-teal Official phone number
+  .mb-12p.h6 Finally, we need your official phone number, which can be:
+  ul.mb0.teal-dots
+    li.mb1 Lorem ipsum dolor set
+    li.mb1 Lorem ipsum dolor
 
-p
-  | We have partnered with a trusted third party company to verify
-    this information and your identity.
-p.bold Do you have all of this information available?
-.mb1
-  = link_to 'No', idv_cancel_path, class: 'btn btn-primary bg-gray mr2'
-  = link_to 'Yes', idv_session_path, class: 'btn btn-primary'
+p.mb3
+  | We have partnered with a trusted third party company to verify this information
+    and your identity.
+
+p.mb3.bold Do you have all of this information available?
+
+= link_to 'Yes', idv_session_path, class: 'btn btn-primary btn-wide'
+.mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'

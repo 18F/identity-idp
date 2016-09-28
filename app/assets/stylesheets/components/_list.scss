@@ -1,4 +1,4 @@
-.red-dots {
+.teal-dots {
   list-style: none;
   padding: 0;
 
@@ -7,10 +7,12 @@
     text-indent: -1rem;
 
     &::before {
-      color: $red;
+      color: $teal;
       content: '•';
-      font-size: 1.25rem;
+      font-size: 2rem;
+      line-height: 1rem;
       padding-right: .5rem;
+      vertical-align: text-top;
     }
   }
 }
