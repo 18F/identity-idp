@@ -1,11 +1,7 @@
 - title t('titles.recovery_code')
 
 h1.heading = t('headings.recovery_code')
-p= t('instructions.recovery_code')
-
-.mt3.mb4.monospace
-  = @code
-
-.mt3.mb4
-  = button_to(t('forms.buttons.acknowledge_recovery_code'), \
-    acknowledge_recovery_code_path, class: 'btn btn-primary')
+p.mt-tiny.mb0 = t('instructions.recovery_code')
+.mt4.mb4.py2.px3.inline-block.fs-20p.border.border-dashed.monospace = @code
+= button_to(t('forms.buttons.acknowledge_recovery_code'), \
+  acknowledge_recovery_code_path, class: 'btn btn-primary btn-wide mb1')

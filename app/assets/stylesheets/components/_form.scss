@@ -98,11 +98,6 @@ input::-webkit-inner-spin-button {
   width: $radio-checkbox-space - .5rem;
 }
 
-.checkbox input:focus ~ .indicator,
-.radio input:focus ~ .indicator {
-  box-shadow: 0 0 0 .075rem $white, 0 0 0 .2rem $blue;
-}
-
 .checkbox input:checked ~ .indicator,
 .radio input:checked ~ .indicator, {
   background-color: $blue;

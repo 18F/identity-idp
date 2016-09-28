@@ -41,7 +41,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to have_link(
-          t('links.phone_confirmation.fallback_to_voice.link_text'),
+          t('links.phone_confirmation.fallback_to_voice'),
           href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })
         )
       end
@@ -55,7 +55,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to have_link(
-          t('links.phone_confirmation.fallback_to_sms.link_text'),
+          t('links.phone_confirmation.fallback_to_sms'),
           href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
         )
       end

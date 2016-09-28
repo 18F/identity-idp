@@ -17,7 +17,7 @@ feature 'Two Factor Authentication' do
 
     scenario 'user does not fill out a phone number when signing up' do
       sign_up_and_set_password
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.send_passcode')
 
       expect(current_path).to eq phone_setup_path
     end
@@ -34,7 +34,7 @@ feature 'Two Factor Authentication' do
       scenario 'user leaves phone blank' do
         sign_in_before_2fa
         fill_in 'Phone', with: ''
-        click_button t('forms.buttons.submit.default')
+        click_button t('forms.buttons.send_passcode')
 
         expect(page).to have_content invalid_phone_message
       end
@@ -42,7 +42,7 @@ feature 'Two Factor Authentication' do
       scenario 'user enters an invalid number with no digits' do
         sign_in_before_2fa
         fill_in 'Phone', with: 'five one zero five five five four three two one'
-        click_button t('forms.buttons.submit.default')
+        click_button t('forms.buttons.send_passcode')
 
         expect(page).to have_content invalid_phone_message
       end
@@ -50,7 +50,7 @@ feature 'Two Factor Authentication' do
       scenario 'user enters a valid number' do
         user = sign_in_before_2fa
         fill_in 'Phone', with: '555-555-1212'
-        click_button t('forms.buttons.submit.default')
+        click_button t('forms.buttons.send_passcode')
 
         expect(page).to_not have_content invalid_phone_message
         expect(current_path).to eq phone_confirmation_path

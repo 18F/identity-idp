@@ -11,7 +11,7 @@ p.mt-tiny.mb0#password-description
   = f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
             input_html: { 'aria-describedby': 'password-description' }
   = render 'devise/shared/password_strength'
-  = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2 mb1'
-= link_to t('forms.buttons.cancel'), :back, class: 'underline'
+  = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2'
+.mt1 = link_to t('forms.buttons.cancel'), :back, class: 'underline'
 
 == javascript_include_tag 'misc/pw-strength'

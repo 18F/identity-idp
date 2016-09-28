@@ -11,19 +11,20 @@ p.mt-tiny.mb0#2fa-description
   .mb3
     = label_tag 'otp_method',
       t('devise.two_factor_authentication.otp_method.title'),
-      class: 'hide block caps ls-05 bold'
-    label.radio.mr2
+      class: 'hide block bold'
+    label.radio.mb0.mr3
       = f.radio_button :otp_method, 'sms', checked: true
       span.indicator
       = t('devise.two_factor_authentication.otp_method.sms')
-    label.radio
+    label.radio.mb0
       = f.radio_button :otp_method, 'voice'
       span.indicator
       = t('devise.two_factor_authentication.otp_method.voice')
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide mb2'
-
-p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
 
 - link = link_to(t('devise.two_factor_authentication.recovery_code_fallback.link'),
   login_two_factor_recovery_code_path)
-p.mt2.mb0.italic == t('devise.two_factor_authentication.recovery_code_fallback.text', link: link)
+
+.mt3
+  p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
+  p.mb1.italic == t('devise.two_factor_authentication.recovery_code_fallback.text', link: link)

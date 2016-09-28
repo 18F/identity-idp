@@ -23,6 +23,7 @@ en:
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       send: Send
+      send_passcode: Send one-time passcode
       setup_totp: Set up authentication app
       submit: 
         default: Submit
@@ -38,7 +39,7 @@ en:
       resend: Resend
     required_field: Indicates a required field.
     phone_confirmation:
-      header_text: Confirm your phone number
+      header_text: Enter the passcode we sent you
     two_factor:
       code: One-time passcode
       recovery_code: Recovery code
@@ -100,12 +101,8 @@ en:
     user_confirmation: Confirm account
     edit: Edit
     phone_confirmation:
-      fallback_to_sms:
-        text: Or, %{link}
-        link_text: send me a text message with the one-time passcode
-      fallback_to_voice:
-        text: Or, %{link}
-        link_text: call me with the one-time passcode
+      fallback_to_sms: Send me a text message with the code instead
+      fallback_to_voice: Call me with the code instead
     two_factor_authentication:
       resend_code: Send a new one
 
@@ -151,7 +148,7 @@ en:
       change: Change the password for your account
       forgot: Reset the password for your account
     profile: Profile
-    recovery_code: Your recovery code
+    recovery_code: Just in case
     registrations:
       new: Sign up for a account
       start: Get started
@@ -397,7 +394,7 @@ en:
     items:
       recovery_code: Recovery code
     links:
-      regenerate_recovery_code: Regenerate
+      regenerate_recovery_code: View
 
   saml_idp:
     shared:

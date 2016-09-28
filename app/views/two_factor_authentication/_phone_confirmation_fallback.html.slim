@@ -1,9 +1,7 @@
-p.mb0
+p.mb1
   - if @delivery_method == 'sms'
-    - link = link_to t('links.phone_confirmation.fallback_to_voice.link_text'),
+    = link_to t('links.phone_confirmation.fallback_to_voice'),
       otp_send_path(otp_delivery_selection_form: { otp_method: :voice })
-    == t('links.phone_confirmation.fallback_to_voice.text', link: link)
   - elsif @delivery_method == 'voice'
-    - link = link_to t('links.phone_confirmation.fallback_to_sms.link_text'),
+    = link_to t('links.phone_confirmation.fallback_to_sms'),
       otp_send_path(otp_delivery_selection_form: { otp_method: :sms })
-    == t('links.phone_confirmation.fallback_to_sms.text', link: link)
