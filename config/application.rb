@@ -28,6 +28,6 @@ module Upaya
     config.middleware.use Rack::Attack
 
     # Configure Browserify to use babelify to compile ES6
-    config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015-loose ] ]'
+    config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
   end
 end
