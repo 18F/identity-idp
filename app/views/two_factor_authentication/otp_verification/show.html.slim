@@ -5,6 +5,7 @@ h1.heading = t('devise.two_factor_authentication.header_text')
 p.mt-tiny.mb0 == t('instructions.2fa.confirm_code', number: "<strong>#{@phone_number}</strong>")
 
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt4') do
+  = hidden_field_tag(:reauthn, reauthn?)
   = label_tag 'code', \
     raw(t('simple_form.required.html')) + t('forms.two_factor.code'), \
     class: 'block bold'

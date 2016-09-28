@@ -4,6 +4,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
   context 'user has a phone' do
     let(:user) { build_stubbed(:user, :signed_up) }
 
+    before do
+      allow(view).to receive(:reauthn?).and_return(false)
+    end
+
     it 'has a localized heading' do
       controller.request.path_parameters[:delivery_method] = 'sms'
 

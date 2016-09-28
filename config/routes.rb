@@ -15,6 +15,8 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
+    get '/reauthn' => 'users/sessions#show', as: :user_password_confirm
+    put '/reauthn' => 'users/sessions#update', as: :reauthn_user_password
 
     post '/users' => 'users/registrations#create', as: :user_registration
     get '/users/sign_up' => 'users/registrations#new', as: :new_user_registration

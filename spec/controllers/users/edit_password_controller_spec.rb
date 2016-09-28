@@ -38,12 +38,11 @@ describe Users::EditPasswordController do
 
         expect(EmailNotifier).to_not receive(:new)
 
-        params = { password: 'new', current_password: 'current password' }
+        params = { password: 'new' }
         patch :update, update_user_password_form: params
 
         errors = [
-          "Password #{t('errors.messages.too_short.other', count: Devise.password_length.first)}",
-          "Current password #{t('errors.incorrect_password')}"
+          "Password #{t('errors.messages.too_short.other', count: Devise.password_length.first)}"
         ]
 
         expect(@analytics).to have_received(:track_event).

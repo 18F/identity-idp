@@ -12,7 +12,7 @@ module TwoFactorAuthenticatable
   private
 
   def verify_user_is_not_second_factor_locked
-    handle_second_factor_locked_user if user_decorator.blocked_from_entering_2fa_code?
+    handle_second_factor_locked_user if decorated_user.blocked_from_entering_2fa_code?
   end
 
   def handle_second_factor_locked_user
@@ -28,16 +28,20 @@ module TwoFactorAuthenticatable
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless user_decorator.no_longer_blocked_from_entering_2fa_code?
+    return unless decorated_user.no_longer_blocked_from_entering_2fa_code?
 
     current_user.update(second_factor_attempts_count: 0, second_factor_locked_at: nil)
   end
 
-  def handle_valid_otp
+  def mark_user_session_authenticated
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+    user_session[:authn_at] = Time.zone.now
+  end
 
+  def handle_valid_otp
+    mark_user_session_authenticated
     bypass_sign_in current_user
-    flash[:notice] = t('devise.two_factor_authentication.success')
+    flash[:notice] = t('devise.two_factor_authentication.success') unless reauthn?
 
     analytics.track_event('User 2FA successful')
 
@@ -56,7 +60,7 @@ module TwoFactorAuthenticatable
 
     flash[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
-    if user_decorator.blocked_from_entering_2fa_code?
+    if decorated_user.blocked_from_entering_2fa_code?
       handle_second_factor_locked_user
     else
       render :show
@@ -68,10 +72,6 @@ module TwoFactorAuthenticatable
     # set time lock if max attempts reached
     current_user.second_factor_locked_at = Time.zone.now if current_user.max_login_attempts?
     current_user.save
-  end
-
-  def user_decorator
-    @user_decorator ||= current_user.decorate
   end
 
   def after_2fa_path

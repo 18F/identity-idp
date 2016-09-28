@@ -48,6 +48,10 @@ module Features
     def sign_in_with_warden(user)
       login_as(user, scope: :user, run_callbacks: false)
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session['warden.user.user.session'] = { authn_at: Time.zone.now }
+      end
       visit profile_path
     end
 

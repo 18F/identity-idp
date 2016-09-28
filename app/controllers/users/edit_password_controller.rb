@@ -1,5 +1,5 @@
 module Users
-  class EditPasswordController < ApplicationController
+  class EditPasswordController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
 
     def edit
@@ -23,7 +23,7 @@ module Users
     private
 
     def user_params
-      params.require(:update_user_password_form).permit(:password, :current_password)
+      params.require(:update_user_password_form).permit(:password)
     end
 
     def handle_success

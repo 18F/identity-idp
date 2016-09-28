@@ -1,5 +1,5 @@
 module Users
-  class EditEmailController < ApplicationController
+  class EditEmailController < ReauthnRequiredController
     before_action :confirm_two_factor_authenticated
 
     def edit
