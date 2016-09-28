@@ -1,13 +1,14 @@
 - title t('titles.registrations.verify_email')
 
-
-h1.heading = t('headings.registrations.verify_email')
-.mt4.mb3.p2.alert.alert-success
-  p
+.my2.p3.sm-px4.border.border-teal.rounded.relative
+  = image_tag(asset_url('ico-email.svg'), size: '32x32', alt: '',\
+    class: 'absolute top-n16 left-0 right-0 mx-auto')
+  h1.mt1.mb-12p.h3 = t('headings.registrations.verify_email')
+  p.mb2
     | #{t('notices.signed_up_but_unconfirmed.first_paragraph_start')}
       <strong>#{email}</strong>
       #{t('notices.signed_up_but_unconfirmed.first_paragraph_end')}
-  p.m0
+  p.mb2
     | #{t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')}
       #{link_to t('links.resend'), new_user_confirmation_path}
-p.italic = t('devise.registrations.close_window')
+  p.mb2.h5.italic = t('devise.registrations.close_window')
