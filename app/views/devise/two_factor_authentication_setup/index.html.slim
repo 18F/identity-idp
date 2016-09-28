@@ -2,26 +2,26 @@
 
 
 h1.heading = t('devise.two_factor_authentication.two_factor_setup')
+p.mt-tiny.mb0#2fa-description = t('devise.two_factor_authentication.otp_setup')
 = simple_form_for(@two_factor_setup_form,
     html: { autocomplete: 'off', role: 'form' },
     method: :patch,
     url: phone_setup_path) do |f|
   = f.error_notification
-  p#2fa-description = t('devise.two_factor_authentication.otp_setup')
   = f.input :phone, as: :tel, label: 'Phone Number', required: true,
       input_html: { 'aria-describedby' => '2fa-description' }
-  .mb2
+  .mb3
     = label_tag 'two_factor_setup_form[otp_method]',
       t('devise.two_factor_authentication.otp_method.title'),
-      class: 'block caps ls-05 bold'
-    label.radio.mr2
+      class: 'block bold'
+    label.radio.mb0.mr3
       = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
         checked: true
       span.indicator
       = t('devise.two_factor_authentication.otp_method.sms')
-    label.radio
+    label.radio.mb0
       = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
       span.indicator
       = t('devise.two_factor_authentication.otp_method.voice')
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'mt2'
-  p.mt2.mb0.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
+  = f.button :submit, t('forms.buttons.send_passcode')
+  p.mt3.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')

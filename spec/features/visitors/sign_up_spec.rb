@@ -59,7 +59,7 @@ feature 'Sign Up', devise: true do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.send_passcode')
     end
 
     it 'updates phone_confirmed_at and redirects to acknowledge recovery code' do
@@ -106,7 +106,7 @@ feature 'Sign Up', devise: true do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: @existing_user.phone
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.send_passcode')
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do

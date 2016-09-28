@@ -2,12 +2,12 @@
 
 
 h1.heading = t('devise.two_factor_authentication.header_text')
-p== t('instructions.2fa.confirm_code', number: "<strong>#{@phone_number}</strong>")
+p.mt-tiny.mb0 == t('instructions.2fa.confirm_code', number: "<strong>#{@phone_number}</strong>")
 
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt4') do
   = label_tag 'code', \
     raw(t('simple_form.required.html')) + t('forms.two_factor.code'), \
-    class: 'block caps ls-05 bold'
+    class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = number_field_tag(:code, '', required: true, value: @code_value, class: 'col-12 field mfa')
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
@@ -16,6 +16,6 @@ p== t('instructions.2fa.confirm_code', number: "<strong>#{@phone_number}</strong
                                                             resend: true })
 - resend_link = link_to(t('links.two_factor_authentication.resend_code'), resend_uri)
 
-p.mt2.mb0
+.mt3.mb1
   = render 'two_factor_authentication/phone_confirmation_fallback'
-  p.mb0== t('instructions.2fa.resend', link: resend_link)
+  p.mb1 == t('instructions.2fa.resend', link: resend_link)

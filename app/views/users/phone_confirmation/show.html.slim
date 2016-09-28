@@ -6,7 +6,7 @@ p.mt-tiny.mb0 == t('instructions.2fa.confirm_code', \
   number: "<strong>#{@unconfirmed_phone}</strong>")
 
 = form_tag([:phone_confirmation], method: :put, role: 'form', class: 'mt4') do
-  = label_tag 'code', t('forms.two_factor.code'), class: 'block caps ls-05 bold'
+  = label_tag 'code', t('forms.two_factor.code'), class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = number_field_tag(:code, \
                        '', required: true, \
@@ -16,10 +16,9 @@ p.mt-tiny.mb0 == t('instructions.2fa.confirm_code', \
 
 - resend_link = link_to(t('forms.buttons.resend'), \
                         phone_confirmation_send_path(otp_method: params[:otp_method]))
-- update_number_link = link_to(t('forms.two_factor.try_again'), \
-                               @reenter_phone_number_path)
+- update_number_link = link_to(t('forms.two_factor.try_again'), @reenter_phone_number_path)
 
-.mt2
+.mt3.mb1
   = render 'phone_confirmation_fallback'
-  div == t('instructions.2fa.resend', link: resend_link)
-  div == t('instructions.2fa.wrong_number', link: update_number_link)
+  p.mb1 == t('instructions.2fa.resend', link: resend_link)
+  p.mb1 == t('instructions.2fa.wrong_number', link: update_number_link)

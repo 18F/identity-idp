@@ -6,5 +6,5 @@ h1.heading = t('headings.edit_info.phone')
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   = f.input :phone, as: :tel, required: true
-  = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2 mb1'
-= link_to t('forms.buttons.cancel'), :back, class: 'underline'
+  = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2'
+.mt1 = link_to t('forms.buttons.cancel'), :back, class: 'underline'

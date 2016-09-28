@@ -8,7 +8,7 @@ p.mt-tiny.mb0#2fa-description
   .mb3
     = label_tag 'otp_method',
       t('devise.two_factor_authentication.otp_method.title'),
-      class: 'hide block caps ls-05 bold'
+      class: 'hide block bold'
     label.radio.mr2
       = radio_button_tag :otp_method, :sms, checked: true
       span.indicator

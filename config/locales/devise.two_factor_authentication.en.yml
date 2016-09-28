@@ -2,7 +2,7 @@ en:
   devise:
     two_factor_authentication:
       contact_administrator: Please contact your system administrator.
-      header_text: Enter your one-time passcode
+      header_text: Enter the passcode we sent you
       invalid_otp: Secure one-time passcode is invalid. Please try again or request a new one-time passcode.
       invalid_recovery_code: Invalid recovery code. Please try again.
       totp_header_text: Enter your Authenticator code
@@ -26,8 +26,8 @@ en:
         Please select how you would like to receive your one-time passcode for %{phone}
       otp_sms_disclaimer: "Note: By accepting these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply."
       please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.
-      success: "Two factor authentication successful."
-      two_factor_setup: Two-factor Authentication Setup
+      success: "Two-factor authentication successful."
+      two_factor_setup: Extra protection for your account
       totp_info: >
         Use any standards compliant authenticator app (such as Google Authenticator) to scan the QR
         Code below.

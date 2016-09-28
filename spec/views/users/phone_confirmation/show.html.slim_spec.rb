@@ -57,7 +57,7 @@ describe 'users/phone_confirmation/show.html.slim' do
     it 'has a link to send confirmation with voice' do
       render
 
-      expect(rendered).to have_link(t('links.phone_confirmation.fallback_to_voice.link_text'),
+      expect(rendered).to have_link(t('links.phone_confirmation.fallback_to_voice'),
                                     href: '/users/phone_confirmation/send?otp_method=voice')
     end
   end
@@ -71,7 +71,7 @@ describe 'users/phone_confirmation/show.html.slim' do
     it 'has a link to send confirmation as SMS' do
       render
 
-      expect(rendered).to have_link(t('links.phone_confirmation.fallback_to_sms.link_text'),
+      expect(rendered).to have_link(t('links.phone_confirmation.fallback_to_sms'),
                                     href: '/users/phone_confirmation/send?otp_method=sms')
     end
   end

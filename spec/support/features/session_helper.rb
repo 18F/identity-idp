@@ -70,7 +70,7 @@ module Features
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
       # Select SMS delivery
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.send_passcode')
       # Enter 2FA code
       click_button t('forms.buttons.submit.default')
       # Acknowledge recovery code
