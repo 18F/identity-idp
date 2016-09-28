@@ -169,10 +169,10 @@ feature 'Sign Up', devise: true do
       expect(page).to have_content '...'
 
       fill_in 'password_form_password', with: 'password'
-      expect(page).to have_content t('instructions.password.strength.i')
+      expect(page).to have_content 'Very weak'
 
       fill_in 'password_form_password', with: 'this is a great sentence'
-      expect(page).to have_content t('instructions.password.strength.v')
+      expect(page).to have_content 'Great!'
     end
 
     it 'has dynamic password strength feedback' do
