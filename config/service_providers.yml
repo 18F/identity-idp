@@ -5,8 +5,8 @@ test:
     sp_initiated_login_url: 'http://localhost:3000/test/saml'
     block_encryption: 'none'
     cert: 'saml_test_sp'
-    agency: 'test_agency'
-    friendly_name: 'test_friendly_name'
+    agency: 'Test Government Agency'
+    friendly_name: 'Your friendly Government Agency'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
     attribute_bundle:

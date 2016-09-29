@@ -48,3 +48,5 @@ ratings:
   - lib/**
   - '**.rb'
   - '**.go'
+  exclude_paths:
+    - 'lib/rspec/formatters/*'
