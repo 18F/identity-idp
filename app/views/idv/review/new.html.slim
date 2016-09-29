@@ -32,7 +32,9 @@ p.italic = t('idv.messages.review.intro')
   .h6 Phone number
   .h4.bold #{idv_params[:phone]}
 
-= form_tag('/idv/review', method: 'put')
+= simple_form_for(current_user, url: idv_review_path,
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.input :password, label: t('idv.form.password'), required: 'true'
   .mt3
     button type='submit' class='btn btn-primary' = t('forms.buttons.submit.default')
   .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'

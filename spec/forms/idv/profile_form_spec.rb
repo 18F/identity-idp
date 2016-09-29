@@ -61,7 +61,9 @@ describe Idv::ProfileForm do
     context 'when ssn is already taken by another profile' do
       it 'is invalid' do
         diff_user = create(:user)
-        create(:profile, ssn: '1234', user: diff_user)
+        profile = build(:profile, ssn: '1234', user: diff_user)
+        profile.encrypt_pii('sekrit')
+        profile.save!
 
         expect(subject.submit(profile_attrs.merge(ssn: '1234'))).to eq false
         expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
@@ -70,7 +72,9 @@ describe Idv::ProfileForm do
 
     context 'when ssn is already taken by same profile' do
       it 'is valid' do
-        create(:profile, ssn: '1234', user: user)
+        profile = build(:profile, ssn: '1234', user: user)
+        profile.encrypt_pii('sekrit')
+        profile.save!
 
         expect(subject.submit(profile_attrs.merge(ssn: '1234'))).to eq true
       end

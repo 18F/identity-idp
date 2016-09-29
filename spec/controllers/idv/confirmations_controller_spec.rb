@@ -6,11 +6,12 @@ describe Idv::ConfirmationsController do
 
   render_views
 
-  let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+  let(:password) { 'sekrit phrase' }
+  let(:user) { create(:user, :signed_up, password: password, email: 'old_email@example.com') }
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
-  let(:profile) { Profile.create_from_proofer_applicant(applicant, user) }
+  let(:profile) { Profile.create_from_proofer_applicant(applicant, user, password) }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
