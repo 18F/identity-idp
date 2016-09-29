@@ -68,8 +68,7 @@ module SamlIdpLogoutConcern
   end
 
   def slo_session
-    return user_session if user_session
-    session
+    user_session || session
   end
 
   def prepare_saml_logout_request
