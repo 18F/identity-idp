@@ -75,6 +75,7 @@ module IdvHelper
     click_button t('idv.messages.finance.continue')
     fill_out_phone_form_ok(user.phone)
     click_button t('forms.buttons.submit.continue')
+    fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.submit.default')
   end
 end

@@ -3,6 +3,8 @@ require 'rails_helper'
 feature 'IdV session' do
   include IdvHelper
 
+  let(:user_password) { Features::SessionHelper::VALID_PASSWORD }
+
   context 'landing page' do
     before do
       sign_in_and_2fa_user
@@ -40,6 +42,7 @@ feature 'IdV session' do
       click_button t('idv.messages.finance.continue')
       fill_out_phone_form_ok(user.phone)
       click_button t('forms.buttons.submit.continue')
+      fill_in :user_password, with: user_password
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('idv.titles.complete'))
@@ -204,7 +207,9 @@ feature 'IdV session' do
       expect(current_url).to eq(profile_url)
       expect(user.reload.active_profile).to be_a(Profile)
       expect(user.active_profile.verified?).to eq true
-      expect(user.active_profile.ssn).to eq '666661234'
+
+      decrypted_pii = user.active_profile.decrypt_pii(user_password)
+      expect(decrypted_pii.ssn).to eq '666661234'
     end
 
     scenario 'KBV with some incorrect answers' do
@@ -234,6 +239,7 @@ feature 'IdV session' do
       click_button t('idv.messages.finance.continue')
       fill_out_phone_form_ok
       click_button t('forms.buttons.submit.continue')
+      fill_in :user_password, with: user_password
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('idv.titles.fail'))
@@ -248,6 +254,7 @@ feature 'IdV session' do
     click_button t('idv.messages.finance.continue')
     fill_out_phone_form_ok(user.phone)
     click_button 'Continue'
+    fill_in :user_password, with: user_password
     click_button 'Submit'
   end
 
@@ -258,6 +265,7 @@ feature 'IdV session' do
     click_button t('idv.messages.finance.continue')
     fill_out_phone_form_ok(phone)
     click_button t('forms.buttons.submit.continue')
+    fill_in :user_password, with: user_password
     click_submit_default
     # choose default SMS delivery method for confirming this new number
     click_submit_default

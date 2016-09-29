@@ -6,6 +6,8 @@ module Users
     skip_after_action :track_get_requests, only: [:active]
     before_action :confirm_two_factor_authenticated, only: [:update]
 
+    after_action :cache_active_profile, only: [:create]
+
     def create
       track_authentication_attempt(params[:user][:email])
       super
@@ -50,6 +52,11 @@ module Users
       end
 
       analytics.track_event('Authentication Attempt with nonexistent user')
+    end
+
+    def cache_active_profile
+      cacher = Pii::Cacher.new(current_user, user_session)
+      cacher.save(params[:user][:password])
     end
   end
 end
