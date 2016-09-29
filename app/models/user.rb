@@ -3,7 +3,7 @@ class User < ActiveRecord::Base
 
   after_validation :set_default_role, if: :new_record?
 
-  devise :confirmable, :database_authenticatable, :recoverable, :registerable,
+  devise :confirmable, :database_authenticatable, :encryptable, :recoverable, :registerable,
          :timeoutable, :trackable, :two_factor_authenticatable, :omniauthable,
          omniauth_providers: [:saml]
 
