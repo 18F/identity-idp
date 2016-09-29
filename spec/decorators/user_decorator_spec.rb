@@ -138,4 +138,18 @@ describe UserDecorator do
       expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
     end
   end
+
+  describe '#recent_events' do
+    it 'interleaves identities and events' do
+      user_decorator = UserDecorator.new(User.new)
+      identity = create(
+        :identity,
+        last_authenticated_at: Time.zone.now - 1,
+        user: user_decorator.user
+      )
+      event = create(:event, event_type: :email_changed, user: user_decorator.user)
+
+      expect(user_decorator.recent_events).to eq [event.decorate, identity.decorate]
+    end
+  end
 end

@@ -72,4 +72,12 @@ describe Identity do
       end
     end
   end
+
+  describe '#decorate' do
+    it 'returns a IdentityDecorator' do
+      identity = build(:identity)
+
+      expect(identity.decorate).to be_a(IdentityDecorator)
+    end
+  end
 end

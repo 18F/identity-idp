@@ -15,6 +15,7 @@ en:
     email_changed: Email changed
     authenticator_enabled: Authenticator app enabled
     authenticator_disabled: Authenticator app disabled
+    authenticated_at: Authenticated at %{service_provider}
 
   forms:
     buttons:
@@ -177,7 +178,6 @@ en:
       change: Change your password
       forgot: Forgot password
     profile:
-      agencies: Agencies I've logged into
       profile_info: Profile information
       profile_info_tt: Why can't I edit my profile information?
       account_history: Account history
@@ -384,8 +384,6 @@ en:
       email: Email address
       password: Password
       authentication_app: Authentication app
-      last_login: Last login
-      no_identities: You haven't logged into any agencies yet.
     items:
       recovery_code: Recovery code
     links:
