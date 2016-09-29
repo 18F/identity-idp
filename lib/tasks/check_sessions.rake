@@ -8,7 +8,6 @@ task check_stale_sessions: :environment do
   puts "stale_window_time: #{stale_window_time}" if debug
   ActiveRecord::SessionStore::Session.where('updated_at < ?', stale_window_time).each do |session|
     next unless session.data.keys.any?
-    session.data.symbolize_keys!
     puts "pinged_at:         #{session.data[:pinged_at]}" if debug
     puts session.data.pretty_inspect if debug
     if stale?(session.data)

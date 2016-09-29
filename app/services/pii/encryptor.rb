@@ -41,7 +41,7 @@ module Pii
     end
 
     # DHS/NIST algorithm
-    def encrypt_with_key(plaintext, private_key)
+    def encrypt_with_key(plaintext, private_key = key_maker.server_key)
       plaintext_signature = sign(plaintext, private_key)
       payload = join_segments(plaintext, plaintext_signature)
       cek = cipher.random_key
@@ -49,7 +49,7 @@ module Pii
     end
 
     # DHS/NIST algorithm
-    def decrypt_with_key(ciphertext, private_key)
+    def decrypt_with_key(ciphertext, private_key = key_maker.server_key)
       encrypted_cek, encrypted_payload = split_into_segments(ciphertext)
       cek = private_key.private_decrypt(encrypted_cek)
       payload = decrypt_payload(payload: encrypted_payload, cek: cek)

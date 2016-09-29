@@ -503,12 +503,21 @@ feature 'saml api', devise: true do
         expect(page).to have_content(t('idv.form.first_name'))
 
         fill_out_idv_form_ok
-        click_button t('forms.buttons.submit.continue')
+        click_button t('forms.buttons.submit.continue') # /profile
+
+        expect(current_url).to eq idv_finance_url
+
         fill_out_financial_form_ok
-        click_button t('idv.messages.finance.continue')
-        click_button t('forms.buttons.submit.continue')
+        click_button t('idv.messages.finance.continue') # /finance
+
+        expect(current_url).to eq idv_phone_url
+
+        click_button t('forms.buttons.submit.continue') # /phone
+
+        expect(current_url).to eq idv_review_url
+
         fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
-        click_button t('forms.buttons.submit.default')
+        click_button t('forms.buttons.submit.default') # /review
 
         expect(current_url).to eq saml_authn_request
       end
