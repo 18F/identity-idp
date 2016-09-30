@@ -70,7 +70,7 @@ ActiveRecord::Schema.define(version: 20160923195429) do
     t.datetime "updated_at",                    null: false
     t.string   "vendor"
     t.text     "encrypted_pii"
-    t.text     "ssn_signature"
+    t.string   "ssn_signature", limit: 64
   end
 
   add_index "profiles", ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree

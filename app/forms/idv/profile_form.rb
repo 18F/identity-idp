@@ -39,7 +39,7 @@ module Idv
     end
 
     def ssn_signature
-      encryptor.sign(ssn) if ssn
+      Digest::SHA256.hexdigest(encryptor.sign(ssn)) if ssn
     end
 
     def ssn_is_unique

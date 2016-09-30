@@ -32,7 +32,7 @@ class Profile < ActiveRecord::Base
 
   def encrypt_pii(password, pii = plain_pii)
     ssn = pii.ssn
-    self.ssn_signature = encryptor.sign(ssn) if ssn
+    self.ssn_signature = Digest::SHA256.hexdigest(encryptor.sign(ssn)) if ssn
     self.encrypted_pii = encryptor.encrypt(pii.to_json, password)
   end
 
