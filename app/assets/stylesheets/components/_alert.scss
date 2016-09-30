@@ -1,43 +1,30 @@
-.alert {
-  background-color: $blue-light;
-  border-radius: $border-radius;
-  color: $gray;
-  margin-bottom: 2.5rem;
-  padding: 1.75rem;
-  position: relative;
+$alert-ico-size: .75rem;
 
-  &::before {
-    left: 0;
-    margin-left: auto;
-    margin-right: auto;
-    position: absolute;
-    right: 0;
-    top: -16px;
-    width: 32px;
-  }
+.alert {
+  background-color: #fff1d1;
+  color: #fdb81e;
+}
+
+.alert-inner {
+  background-image: url(image-path('alert/ico-shield.svg'));
+  background-position: center left;
+  background-repeat: no-repeat;
+  background-size: $alert-ico-size $alert-ico-size;
+  padding-left: $alert-ico-size + $space-1;
 }
 
 .alert-notice,
 .alert-success {
   background-color: #f0faed;
+  color: #088a22;
 
-  &::before {
-    content: url(image-path('alert/ico-check.svg'));
-  }
+  .alert-inner { background-image: url(image-path('alert/ico-check.svg')); }
 }
 
-.alert-oops {
+.alert-error,
+.alert-alert {
   background-color: #ffe7eb;
+  color: #e32042;
 
-  &::before {
-    content: url(image-path('alert/ico-exclamation.svg'));
-  }
-}
-
-.alert-timeout {
-  background-color: #fff1d1;
-
-  &::before {
-    content: url(image-path('alert/ico-shield.svg'));
-  }
+  .alert-inner { background-image: url(image-path('alert/ico-exclamation.svg')); }
 }
