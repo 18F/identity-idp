@@ -11,7 +11,7 @@ describe Users::EditPhoneController do
 
     context 'user changes phone' do
       before do
-        sign_in(user)
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -32,7 +32,7 @@ describe Users::EditPhoneController do
       render_views
 
       it 'displays an error message and does not delete the phone' do
-        sign_in(user)
+        stub_sign_in(user)
         put :update, update_user_phone_form: { phone: '' }
 
         expect(response.body).to have_content invalid_phone_message
@@ -42,7 +42,7 @@ describe Users::EditPhoneController do
 
     context "user changes phone to another user's phone" do
       before do
-        sign_in(user)
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -63,7 +63,7 @@ describe Users::EditPhoneController do
       render_views
 
       it 'displays error about invalid phone' do
-        sign_in(user)
+        stub_sign_in(user)
         put :update, update_user_phone_form: { phone: '123' }
 
         expect(response.body).to have_content('number is invalid')
@@ -72,7 +72,7 @@ describe Users::EditPhoneController do
 
     context 'user submits the form without changing their phone' do
       it 'redirects to profile page without any messages' do
-        sign_in(user)
+        stub_sign_in(user)
 
         put :update, update_user_phone_form: { phone: user.phone }
 

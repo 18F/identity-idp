@@ -1,0 +1,8 @@
+- title t('titles.passwords.confirm')
+
+h1.heading = t('headings.passwords.confirm')
+= simple_form_for(current_user,
+                  url: reauthn_user_password_path,
+                  html: { autocomplete: 'off', role: 'form', method: 'put' }) do |f|
+  = f.input :password, required: true
+  = f.button :submit, t('headings.passwords.confirm'), class: 'btn-wide mt2 mb4'

@@ -4,10 +4,23 @@ module Users
 
     skip_before_action :session_expires_at, only: [:active]
     skip_after_action :track_get_requests, only: [:active]
+    before_action :confirm_two_factor_authenticated, only: [:update]
 
     def create
       track_authentication_attempt(params[:user][:email])
       super
+    end
+
+    def show
+    end
+
+    def update
+      if current_user.valid_password?(password)
+        redirect_to user_two_factor_authentication_path(reauthn: true)
+      else
+        flash[:error] = t('errors.confirm_password_incorrect')
+        redirect_to user_password_confirm_path
+      end
     end
 
     def active
@@ -49,6 +62,12 @@ module Users
       end
 
       analytics.track_event('Authentication Attempt with nonexistent user')
+    end
+
+    def password
+      params.require(:user)[:password]
+    rescue ActionController::ParameterMissing
+      ''
     end
   end
 end
