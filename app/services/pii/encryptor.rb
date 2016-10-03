@@ -2,6 +2,7 @@ module Pii
   class Encryptor
     DELIMITER = '.'.freeze
     DIGEST = OpenSSL::Digest::SHA256.new.freeze
+    PADDING = OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
 
     # structure of the encrypted payload:
     #
@@ -45,13 +46,13 @@ module Pii
       plaintext_signature = sign(plaintext, private_key)
       payload = join_segments(plaintext, plaintext_signature)
       cek = cipher.random_key
-      join_segments(private_key.public_encrypt(cek), encrypt_payload(payload, cek))
+      join_segments(private_key.public_encrypt(cek, PADDING), encrypt_payload(payload, cek))
     end
 
     # DHS/NIST algorithm
     def decrypt_with_key(ciphertext, private_key)
       encrypted_cek, encrypted_payload = split_into_segments(ciphertext)
-      cek = private_key.private_decrypt(encrypted_cek)
+      cek = private_key.private_decrypt(encrypted_cek, PADDING)
       payload = decrypt_payload(payload: encrypted_payload, cek: cek)
       plaintext, plaintext_signature = split_into_segments(payload)
       return plaintext if sign(plaintext, private_key) == plaintext_signature
