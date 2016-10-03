@@ -14,6 +14,14 @@ class Profile < ActiveRecord::Base
     profile
   end
 
+  def self.inflate_pii_json(pii_json)
+    pii_attrs = Pii::Attributes.new
+    return pii_attrs unless pii_json.present?
+    pii = JSON.parse(pii_json, symbolize_names: true)
+    pii.keys.each { |attr| pii_attrs[attr] = pii[attr] }
+    pii_attrs
+  end
+
   def activate
     transaction do
       Profile.where('user_id=?', user_id).update_all(active: false)
@@ -25,6 +33,10 @@ class Profile < ActiveRecord::Base
     verified_at.present?
   end
 
+  def plain_pii
+    @_plain_pii ||= Pii::Attributes.new
+  end
+
   def decrypt_pii(password)
     pii_json = encryptor.decrypt(encrypted_pii, password)
     self.class.inflate_pii_json(pii_json)
@@ -34,10 +46,6 @@ class Profile < ActiveRecord::Base
     ssn = pii.ssn
     self.ssn_signature = Digest::SHA256.hexdigest(encryptor.sign(ssn)) if ssn
     self.encrypted_pii = encryptor.encrypt(pii.to_json, password)
-  end
-
-  def plain_pii
-    @_plain_pii ||= Pii::Attributes.new
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -53,14 +61,6 @@ class Profile < ActiveRecord::Base
   def respond_to_missing?(method_sym, include_private)
     attr_name_sym = method_sym.to_s.gsub(/=\z/, '').to_sym
     plain_pii.members.include?(attr_name_sym) || super
-  end
-
-  def self.inflate_pii_json(pii_json)
-    pii_attrs = Pii::Attributes.new
-    return pii_attrs unless pii_json.present?
-    pii = JSON.parse(pii_json, symbolize_names: true)
-    pii.keys.each { |attr| pii_attrs[attr] = pii[attr] }
-    pii_attrs
   end
 
   def encryptor

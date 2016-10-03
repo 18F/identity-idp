@@ -43,9 +43,13 @@ module Idv
     end
 
     def ssn_is_unique
-      if Profile.where.not(user_id: @user.id).where(ssn_signature: ssn_signature).any?
+      if ssn_is_duplicate?
         errors.add :ssn, I18n.t('idv.errors.duplicate_ssn')
       end
+    end
+
+    def ssn_is_duplicate?
+      Profile.where.not(user_id: @user.id).where(ssn_signature: ssn_signature).any?
     end
 
     def dob_is_sane

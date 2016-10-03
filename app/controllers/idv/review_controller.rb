@@ -13,7 +13,7 @@ module Idv
     end
 
     def confirm_current_password
-      unless current_user.valid_password?(password)
+      if invalid_password?
         flash[:error] = t('idv.errors.incorrect_password')
         redirect_to idv_review_path
       end
@@ -94,6 +94,10 @@ module Idv
       params.require(:user)[:password]
     rescue ActionController::ParameterMissing
       ''
+    end
+
+    def invalid_password?
+      !current_user.valid_password?(password)
     end
   end
 end
