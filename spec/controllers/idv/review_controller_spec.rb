@@ -1,7 +1,14 @@
 require 'rails_helper'
 
 describe Idv::ReviewController do
-  let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+  let(:user) do
+    create(
+      :user,
+      :signed_up,
+      password: ControllerHelper::VALID_PASSWORD,
+      email: 'old_email@example.com'
+    )
+  end
   let(:user_attrs) do
     {
       first_name: 'Some',
@@ -73,6 +80,53 @@ describe Idv::ReviewController do
     end
   end
 
+  describe '#confirm_current_password' do
+    controller do
+      before_action :confirm_current_password
+
+      def show
+        render text: 'Hello'
+      end
+    end
+
+    before(:each) do
+      stub_sign_in(user)
+      routes.draw do
+        post 'show' => 'idv/review#show'
+      end
+      allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
+      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
+      idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+      allow(subject).to receive(:idv_session).and_return(idv_session)
+    end
+
+    context 'user does not provide password' do
+      it 'redirects to new' do
+        post :show
+
+        expect(flash[:error]).to eq t('idv.errors.incorrect_password')
+        expect(response).to redirect_to idv_review_path
+      end
+    end
+
+    context 'user provides wrong password' do
+      it 'redirects to new' do
+        post :show, user: { password: 'wrong' }
+
+        expect(flash[:error]).to eq t('idv.errors.incorrect_password')
+        expect(response).to redirect_to idv_review_path
+      end
+    end
+
+    context 'user provides correct password' do
+      it 'allows request to proceed' do
+        post :show, user: { password: ControllerHelper::VALID_PASSWORD }
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+  end
+
   describe '#new' do
     before do
       stub_sign_in(user)
@@ -100,13 +154,25 @@ describe Idv::ReviewController do
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
+    context 'user fails to supply correct password' do
+      before do
+        idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+      end
+
+      it 'redirects to original path' do
+        put :create, user: { password: 'wrong' }
+
+        expect(response).to redirect_to idv_review_path
+      end
+    end
+
     context 'user has completed all steps' do
       before do
         idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
       end
 
       it 'redirects to questions path' do
-        put :create
+        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
         expect(response).to redirect_to idv_questions_path
       end
@@ -118,7 +184,7 @@ describe Idv::ReviewController do
       end
 
       it 'redirects to retry' do
-        put :create
+        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
         expect(response).to redirect_to idv_retry_url
       end
@@ -129,7 +195,7 @@ describe Idv::ReviewController do
         end
 
         it 'redirects to fail' do
-          put :create
+          put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
           expect(response).to redirect_to idv_fail_url
         end
@@ -142,7 +208,7 @@ describe Idv::ReviewController do
       end
 
       it 'redirects to phone confirmation path' do
-        put :create
+        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
         expect(response).to redirect_to idv_phone_confirmation_send_path
       end

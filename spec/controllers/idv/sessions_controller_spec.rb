@@ -47,7 +47,9 @@ describe Idv::SessionsController do
       end
 
       it 'redirects to custom error on duplicate SSN' do
-        create(:profile, ssn: '1234')
+        profile = build(:profile, ssn: '1234')
+        profile.encrypt_pii('sekrit')
+        profile.save!
 
         post :create, profile: user_attrs.merge(ssn: '1234')
 

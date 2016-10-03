@@ -4,10 +4,75 @@ describe Profile do
   let(:user) { create(:user, :signed_up) }
   let(:another_user) { create(:user, :signed_up) }
   let(:profile) { create(:profile, user: user) }
-
-  subject { profile }
+  let(:pii) do
+    Pii::Attributes.new_from_hash(
+      dob: '1920-01-01',
+      ssn: '666-66-1234',
+      first_name: 'Jane',
+      last_name: 'Doe'
+    )
+  end
+  let(:password) { 'sekrit' }
 
   it { is_expected.to belong_to(:user) }
+
+  describe '#create_from_proofer_applicant' do
+    it 'creates Profile with encrypted PII' do
+      applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
+      profile = Profile.create_from_proofer_applicant(applicant, user, password)
+
+      expect(profile.id).to_not be_nil
+      expect(profile.encrypted_pii).to_not be_nil
+      expect(profile.encrypted_pii).to_not match 'Some'
+    end
+  end
+
+  describe '#plain_pii' do
+    it 'allows PII attribute assignment' do
+      profile.dob = '1920-01-01'
+      expect(profile.dob).to eq '1920-01-01'
+      expect(profile.plain_pii).to be_a Pii::Attributes
+      expect(profile.plain_pii.dob).to eq('1920-01-01')
+    end
+
+    it 'disallows invalid PII attribute assignment' do
+      expect { profile.foo = 'bar' }.to raise_error NoMethodError
+    end
+  end
+
+  describe '#encrypt_pii' do
+    it 'encrypts PII' do
+      expect(profile.encrypted_pii).to be_nil
+
+      profile.encrypt_pii(password, pii)
+
+      expect(profile.encrypted_pii).to_not be_nil
+      expect(profile.encrypted_pii).to_not match 'Jane'
+      expect(profile.encrypted_pii).to_not match '666'
+    end
+
+    it 'defaults to plain_pii' do
+      expect(profile.encrypted_pii).to be_nil
+
+      profile.dob = '1920-01-01'
+      profile.encrypt_pii(password)
+
+      expect(profile.encrypted_pii).to_not be_nil
+      expect(profile.encrypted_pii).to_not match '1920'
+    end
+  end
+
+  describe '#decrypt_pii' do
+    it 'decrypts PII' do
+      expect(profile.encrypted_pii).to be_nil
+
+      profile.encrypt_pii(password, pii)
+
+      decrypted_pii = profile.decrypt_pii(password)
+
+      expect(decrypted_pii).to eq pii
+    end
+  end
 
   describe 'allows only one active Profile per user' do
     it 'prevents create! via ActiveRecord uniqueness validation' do
@@ -32,27 +97,33 @@ describe Profile do
     it 'allows multiple records per user if only one is active' do
       profile.active = true
       profile.ssn = '1234'
+      profile.encrypt_pii(password)
       profile.save!
       expect do
-        user.profiles.create(ssn: '1234')
+        another_profile = build(:profile, ssn: '1234', user: user)
+        another_profile.encrypt_pii(password)
+        another_profile.save!
       end.to_not raise_error
     end
 
-    it 'prevents create! via ActiveRecord uniqueness validation' do
-      profile.active = true
-      profile.ssn = '1234'
+    it 'prevents save! via ActiveRecord uniqueness validation' do
+      profile = Profile.new(active: true, user: user, ssn: '1234')
+      profile.encrypt_pii(password)
       profile.save!
       expect do
-        Profile.create!(user_id: another_user.id, active: true, ssn: '1234')
+        another_profile = Profile.new(active: true, user: another_user, ssn: '1234')
+        another_profile.encrypt_pii(password)
+        another_profile.save!
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'prevents save! via psql unique partial index' do
-      profile.active = true
-      profile.ssn = '1234'
+      profile = Profile.new(active: true, user: user, ssn: '1234')
+      profile.encrypt_pii(password)
       profile.save!
       expect do
-        another_profile = Profile.new(user_id: another_user.id, active: true, ssn: '1234')
+        another_profile = Profile.new(active: true, user: another_user, ssn: '1234')
+        another_profile.encrypt_pii(password)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end

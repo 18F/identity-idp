@@ -507,6 +507,7 @@ feature 'saml api', devise: true do
         fill_out_financial_form_ok
         click_button t('idv.messages.finance.continue')
         click_button t('forms.buttons.submit.continue')
+        fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
         click_button t('forms.buttons.submit.default')
 
         expect(current_url).to eq saml_authn_request

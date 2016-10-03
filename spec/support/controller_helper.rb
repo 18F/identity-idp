@@ -1,10 +1,12 @@
 module ControllerHelper
+  VALID_PASSWORD = 'Val!dPassw0rd'.freeze
+
   def sign_in_as_admin
     @request.env['devise.mapping'] = Devise.mappings[:user]
-    sign_in FactoryGirl.create(:user, :admin, :signed_up)
+    sign_in FactoryGirl.create(:user, :admin, :signed_up, password: VALID_PASSWORD)
   end
 
-  def sign_in_as_user(user = create(:user, :signed_up))
+  def sign_in_as_user(user = create(:user, :signed_up, password: VALID_PASSWORD))
     @request.env['devise.mapping'] = Devise.mappings[:user]
     sign_in user
     user
@@ -16,7 +18,7 @@ module ControllerHelper
 
   def sign_in_as_tech_user
     @request.env['devise.mapping'] = Devise.mappings[:user]
-    sign_in create(:user, :signed_up, :tech_support)
+    sign_in create(:user, :signed_up, :tech_support, password: VALID_PASSWORD)
   end
 
   def sign_in_before_2fa
@@ -25,7 +27,7 @@ module ControllerHelper
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
 
-  def stub_sign_in(user = User.new(password: 'password'))
+  def stub_sign_in(user = User.new(password: VALID_PASSWORD))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
     allow(controller).to receive(:current_user).and_return(user)
@@ -33,7 +35,7 @@ module ControllerHelper
     user
   end
 
-  def stub_sign_in_before_2fa(user = User.new)
+  def stub_sign_in_before_2fa(user = User.new(password: VALID_PASSWORD))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
     allow(controller).to receive(:current_user).and_return(user)

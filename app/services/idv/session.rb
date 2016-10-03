@@ -31,8 +31,16 @@ module Idv
       resolution.present? && applicant.present? && resolution.success?
     end
 
-    def profile_from_applicant(applicant)
-      self.profile_id = Profile.create_from_proofer_applicant(applicant, current_user).id
+    def profile_from_applicant(applicant, password)
+      profile = Profile.create_from_proofer_applicant(applicant, current_user, password)
+      self.profile_id = profile.id
+      cache_encrypted_pii(password)
+      profile
+    end
+
+    def applicant_from_params
+      app_vars = params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
+      Proofer::Applicant.new(app_vars)
     end
 
     def profile
@@ -47,6 +55,8 @@ module Idv
       profile.verified_at = Time.zone.now
       profile.vendor = vendor
       profile.activate
+      # move from temp slot to 'permanent' slot
+      user_session[:encrypted_pii] = session.delete(:encrypted_pii)
     end
 
     def alive?
@@ -64,6 +74,11 @@ module Idv
 
     def session
       user_session[:idv]
+    end
+
+    def cache_encrypted_pii(password)
+      cacher = Pii::Cacher.new(current_user, session)
+      cacher.save(password, profile)
     end
   end
 end

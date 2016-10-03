@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160915202036) do
+ActiveRecord::Schema.define(version: 20160923195429) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,28 +62,21 @@ ActiveRecord::Schema.define(version: 20160915202036) do
   add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
 
   create_table "profiles", force: :cascade do |t|
-    t.integer  "user_id",                      null: false
-    t.boolean  "active",       default: false, null: false
+    t.integer  "user_id",                       null: false
+    t.boolean  "active",        default: false, null: false
     t.datetime "verified_at"
     t.datetime "activated_at"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.string   "first_name"
-    t.string   "middle_name"
-    t.string   "last_name"
-    t.string   "address1"
-    t.string   "address2"
-    t.string   "city"
-    t.string   "state"
-    t.string   "zipcode"
-    t.string   "ssn"
-    t.date     "dob"
-    t.string   "phone"
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
     t.string   "vendor"
+    t.text     "encrypted_pii"
+    t.text     "ssn_signature"
   end
 
-  add_index "profiles", ["ssn", "active"], name: "index_profiles_on_ssn_and_active", unique: true, where: "(active = true)", using: :btree
+  add_index "profiles", ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
+  add_index "profiles", ["ssn_signature"], name: "index_profiles_on_ssn_signature", using: :btree
   add_index "profiles", ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)", using: :btree
+  add_index "profiles", ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
   add_index "profiles", ["user_id"], name: "index_profiles_on_user_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|

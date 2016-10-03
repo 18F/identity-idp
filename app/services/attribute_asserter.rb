@@ -15,10 +15,11 @@ class AttributeAsserter
     :phone
   ].freeze
 
-  def initialize(user, service_provider, authn_request)
+  def initialize(user, service_provider, authn_request, decrypted_pii)
     self.user = user
     self.service_provider = service_provider
     self.authn_request = authn_request
+    @decrypted_pii = decrypted_pii
   end
 
   def build
@@ -53,7 +54,7 @@ class AttributeAsserter
   end
 
   def attribute_getter_function(attr)
-    -> (principal) { principal.active_profile[attr] }
+    -> (_principal) { @decrypted_pii[attr] }
   end
 
   def add_email(attrs)

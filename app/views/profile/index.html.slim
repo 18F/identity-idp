@@ -4,8 +4,8 @@
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 .mt1.mb3.h6.caps.red = t('headings.profile.main')
 
-- if current_user.active_profile
-  - p = current_user.active_profile
+- if @active_profile
+  - p = @active_profile
   h2.heading.mr1.inline-block
     = t('headings.profile.profile_info')
   = content_tag(:span, t('headings.profile.profile_info_tt'),

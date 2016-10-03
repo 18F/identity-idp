@@ -114,48 +114,53 @@ describe SamlIdpController do
     let(:xmldoc) { SamlResponseDoc.new('controller', 'response_assertion', response) }
 
     context 'with LOA3 and the identity is already verified' do
-      it 'calls AttributeAsserter#build' do
-        settings = loa3_saml_settings
-        user = create(:user, :signed_up)
-        create(:profile, :active, :verified, user: user)
-
-        raw_req = URI.decode loa3_authnrequest.split('SAMLRequest').last
-        authn_request = SamlIdp::Request.from_deflated_request(raw_req)
-        asserter = AttributeAsserter.new(user, ServiceProvider.new(settings.issuer), authn_request)
-
-        allow(subject).to receive(:current_user) { user }
-        allow(subject).to receive(:attribute_asserter) { asserter }
-        expect(asserter).to receive(:build).at_least(:once).and_call_original
-
-        generate_saml_response(user, settings)
-      end
-
-      it 'does not redirect the user to the IdV URL' do
-        user = create(:user, :signed_up)
-        _profile = create(:profile, :active, :verified, user: user)
-        generate_saml_response(user, loa3_saml_settings)
-
-        expect(response).to_not be_redirect
-      end
-
-      it 'contains verified attributes' do
-        user = create(:user, :signed_up)
-        user.profiles.create(
-          verified_at: Time.current,
-          active: true,
-          activated_at: Time.current,
+      let(:user) { create(:profile, :active, :verified).user }
+      let(:pii) do
+        Pii::Attributes.new_from_hash(
           first_name: 'Some',
           last_name: 'One',
           ssn: '666666666',
           zipcode: '12345'
         )
-        generate_saml_response(user, loa3_saml_settings)
+      end
+      let(:this_authn_request) do
+        raw_req = URI.decode loa3_authnrequest.split('SAMLRequest').last
+        SamlIdp::Request.from_deflated_request(raw_req)
+      end
+      let(:asserter) do
+        AttributeAsserter.new(
+          user,
+          ServiceProvider.new(loa3_saml_settings.issuer),
+          this_authn_request,
+          pii
+        )
+      end
+
+      before do
+        stub_sign_in(user)
+        allow(subject).to receive(:attribute_asserter) { asserter }
+      end
+
+      it 'calls AttributeAsserter#build' do
+        expect(asserter).to receive(:build).at_least(:once).and_call_original
+
+        saml_get_auth(loa3_saml_settings)
+      end
+
+      it 'does not redirect the user to the IdV URL' do
+        saml_get_auth(loa3_saml_settings)
+
+        expect(response).to_not be_redirect
+      end
+
+      it 'contains verified attributes' do
+        saml_get_auth(loa3_saml_settings)
 
         expect(xmldoc.attribute_node_for('address1')).to be_nil
 
         %w(first_name last_name ssn zipcode).each do |attr|
           node_value = xmldoc.attribute_value_for(attr)
-          expect(node_value).to eq(user.active_profile[attr.to_sym])
+          expect(node_value).to eq(pii[attr])
         end
       end
     end
