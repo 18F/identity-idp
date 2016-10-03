@@ -9,13 +9,11 @@ Identity-IdP (Upaya)
 
 A proof-of-concept Identity Management System.
 
-A top level `Makefile` exists which can be used to quickly and easily perform
-some of the most common tasks.  For example `make run` will run the server
-locally, `make test` will run the rspec tests.
-
 **Notice:** This project is still in alpha.
 
-### Dependencies
+### Local development
+
+#### Dependencies
 
 - Ruby 2.3.1
 - [Postgresql](http://www.postgresql.org/download/)
@@ -25,17 +23,54 @@ locally, `make test` will run the rspec tests.
 Testing dependencies:
 - [PhantomJS](http://phantomjs.org)
 
-### Getting Started with Docker
+#### Setting up and running the app
+
+1. Make sure you have a working development environment with all the
+  [dependencies](#dependencies) installed. On a Mac, the easiest way
+  to set up a development environment is by running our [Laptop]
+  script. The script will install all of this project's dependencies.
+
+2. Make sure Postgres and Redis are running. For example, on OS X:
+
+```
+$ brew services start redis postgres
+```
+
+3. Run the following command to set up the environment:
+
+```
+$ make setup
+```
+
+  This command copies sample configuration files, installs required gems
+  and sets up the database.
+
+4. Run the app server with:
+
+```
+$ make run
+```
+
+If you want to develop without and internet connection, you can set
+`RAILS_OFFLINE=1` in your environment. This disables the `mx` record
+check on email addresses.
+
+If you want to measure the app's performance in development, set the
+`rack_mini_profiler` option to `'on'` in `config/application.yml` and
+restart the server. See the [rack_mini_profiler] gem for more details.
+
+[Laptop]: https://github.com/18F/laptop
+[rack_mini_profiler]: https://github.com/MiniProfiler/rack-mini-profiler
+
+#### Using Docker
 
 1. Download, install, and launch [Docker]
 
 2. Set up the Docker image
 
-        $ bin/setup --docker
-
-Once the docker images are up and running, the app will be accessible
-at `http://localhost:3000/`.  Email messages will be visible in MailCatcher
-at `http://localhost:1080/`.
+```
+$ bin/setup --docker
+```
 
 [Docker]: https://docs.docker.com/engine/getstarted/step_one/#step-1-get-docker
 
@@ -51,39 +86,11 @@ more information.
 
 [Docker Compose]: (https://docs.docker.com/compose/install/)
 
-### Getting Started Locally
+### Viewing the app locally
 
-
-1. Make sure you have a working development environment with all the
-   [dependencies](#dependencies) installed. On a Mac, the easiest way
-   to set up a development environment is by running our [Laptop]
-   script. The script will install all of this project's dependencies.
-
-2. Make sure Postgres and Redis are running. For example, on OS X:
-
-        $ brew services start redis postgres
-
-3. Run the following command to set up the environment:
-
-        $ make setup
-
-   This command copies sample configuration files, installs required gems
-   and sets up the database.
-
-4. Run the app server with:
-
-        $ make run
-
-If you want to develop without and internet connection, you can set
-`RAILS_OFFLINE=1` in your environment.  This disables the `mx` record
-check on email addresses.
-
-If you want to measure the app's performance in development, set the
-`rack_mini_profiler` option to `'on'` in `config/application.yml` and
-restart the server. See the [rack_mini_profiler] gem for more details.
-
-[Laptop]: https://github.com/18F/laptop
-[rack_mini_profiler]: https://github.com/MiniProfiler/rack-mini-profiler
+Once it is up and running, the app will be accessible
+at `http://localhost:3000/`. Email messages will be visible in MailCatcher
+at `http://localhost:1080/`.
 
 ### Running Tests
 
@@ -94,14 +101,19 @@ page](http://phantomjs.org/download.html).
 
 To run all the tests:
 
-    $ make test
+```
+$ make test
+```
+
 
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
 Run security scanner
 
-    $ make brakeman
+```
+$ make brakeman
+```
 
 ### Deploying
 
@@ -109,7 +121,9 @@ We currently run a demo environment at https://idp.demo.login.gov.
 Core developers can deploy to those hosts with [Capistrano](http://capistranorb.com)
 using the following command:
 
-    $ cap <env/stage> deploy
+```
+$ cap <env/stage> deploy
+```
 
 You will need to provide a copy of your SSH public key and you may need to
 provide your IP address if you are not in a GSA building or on the GSA VPN.
@@ -121,15 +135,21 @@ and be sure any worker hosts are also updated.
 
 To restart the web server (on a web host, from /srv/idp/current)
 
-    $ touch tmp/restart.txt
+```
+$ touch tmp/restart.txt
+```
 
 To get status of the background workers (on a worker host):
 
-    $ sudo monit status
+```
+$ sudo monit status
+```
 
 To restart the background workers:
 
-    $ sudo monit restart sidekiq_idp_production0
+```
+$ sudo monit restart sidekiq_idp_production0
+```
 
 ### Why 'Upaya'?
 
