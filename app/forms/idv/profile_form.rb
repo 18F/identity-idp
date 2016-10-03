@@ -43,9 +43,7 @@ module Idv
     end
 
     def ssn_is_unique
-      if ssn_is_duplicate?
-        errors.add :ssn, I18n.t('idv.errors.duplicate_ssn')
-      end
+      errors.add :ssn, I18n.t('idv.errors.duplicate_ssn') if ssn_is_duplicate?
     end
 
     def ssn_is_duplicate?

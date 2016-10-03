@@ -77,19 +77,6 @@ module Idv
       resolution
     end
 
-    def idv_agent
-      @_agent ||= Proofer::Agent.new(
-        vendor: idv_vendor.pick,
-        kbv: FeatureManagement.proofing_requires_kbv?
-      )
-    end
-
-    def init_questions_and_profile(resolution)
-      idv_session.resolution = resolution
-      idv_session.question_number = 0
-      idv_session.profile_from_applicant(idv_session.applicant, password)
-    end
-
     def password
       params.require(:user)[:password]
     rescue ActionController::ParameterMissing
