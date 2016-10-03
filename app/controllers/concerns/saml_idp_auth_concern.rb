@@ -61,7 +61,12 @@ module SamlIdpAuthConcern
   end
 
   def attribute_asserter(principal)
-    AttributeAsserter.new(principal, current_service_provider, saml_request)
+    AttributeAsserter.new(principal, current_service_provider, saml_request, decrypted_pii)
+  end
+
+  def decrypted_pii
+    cacher = Pii::Cacher.new(current_user, user_session)
+    cacher.fetch
   end
 
   def build_asserted_attributes(principal)

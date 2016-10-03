@@ -25,6 +25,7 @@ module Idv
 
     def submit(params)
       profile.assign_attributes(params)
+      profile.ssn_signature = ssn_signature
       valid?
     end
 
@@ -33,8 +34,16 @@ module Idv
     attr_writer :first_name, :last_name, :phone, :email, :dob, :ssn, :address1,
                 :address2, :city, :state, :zipcode
 
+    def encryptor
+      @_encryptor ||= Pii::Encryptor.new
+    end
+
+    def ssn_signature
+      encryptor.sign(ssn) if ssn
+    end
+
     def ssn_is_unique
-      if Profile.where.not(user_id: @user.id).where(ssn: ssn).any?
+      if Profile.where.not(user_id: @user.id).where(ssn_signature: ssn_signature).any?
         errors.add :ssn, I18n.t('idv.errors.duplicate_ssn')
       end
     end

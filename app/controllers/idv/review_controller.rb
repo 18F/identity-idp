@@ -1,6 +1,7 @@
 module Idv
   class ReviewController < StepController
     before_action :confirm_idv_steps_complete
+    before_action :confirm_current_password, only: [:create]
 
     helper_method :idv_params
 
@@ -9,12 +10,18 @@ module Idv
       redirect_to idv_phone_path unless idv_phone_complete?
     end
 
+    def confirm_current_password
+      unless current_user.valid_password?(password)
+        flash[:error] = t('idv.errors.incorrect_password')
+        redirect_to idv_review_path
+      end
+    end
+
     def new
       idv_session.params.symbolize_keys!
     end
 
     def create
-      idv_session.applicant = applicant_from_params
       resolution = start_idv_session
       process_resolution(resolution)
     end
@@ -58,7 +65,7 @@ module Idv
     end
 
     def start_idv_session
-      idv_session.applicant = applicant_from_params
+      idv_session.applicant = idv_session.applicant_from_params
       idv_session.vendor = idv_agent.vendor
       submit_applicant
     end
@@ -76,15 +83,16 @@ module Idv
       )
     end
 
-    def applicant_from_params
-      app_vars = idv_session.params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
-      Proofer::Applicant.new(app_vars)
-    end
-
     def init_questions_and_profile(resolution)
       idv_session.resolution = resolution
       idv_session.question_number = 0
-      idv_session.profile_from_applicant(idv_session.applicant)
+      idv_session.profile_from_applicant(idv_session.applicant, password)
+    end
+
+    def password
+      params.require(:user)[:password]
+    rescue ActionController::ParameterMissing
+      ''
     end
   end
 end
