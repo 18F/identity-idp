@@ -633,6 +633,7 @@ DEPENDENCIES
   lograge
   mailcatcher
   newrelic_rpm
+  nokogiri
   omniauth-saml
   overcommit
   pg
