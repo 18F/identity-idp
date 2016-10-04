@@ -265,13 +265,14 @@ en:
       last_name: Last name
       dob: Date of birth
       ssn: Social Security Number
+      tin: Individual Tax Identification Number
       finance_unselected: Select an option above...
       ccn: Last 8 digits of a credit card
       mortgage: Mortgage loan account number
       home_equity_line: Home equity line of credit account number
       auto_loan: Auto loan account number
-      address1: Mailing address 1
-      address2: Mailing address 2 (optional)
+      address1: Street address 1
+      address2: Street address 2 (optional)
       city: City
       state: State
       zipcode: ZIP Code
@@ -356,7 +357,7 @@ en:
       review: Review and submit
       dupe: "Error: An account may already exist"
       session:
-        basic: First, some basic information
+        basic: First, tell us about yourself
         finance: Next, we need some financial information
         phone: What is your phone number?
         review: Review and submit
@@ -377,9 +378,9 @@ en:
   profile:
     index:
       full_name: Full name
-      address: Address
-      dob: Date of Birth
-      ssn: Social Security Number (SSN)
+      address: Mailing address
+      dob: Date of birth
+      ssn: Social Security Number
       phone: Phone number
       email: Email address
       password: Password
