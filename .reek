@@ -24,9 +24,7 @@ TooManyStatements:
     - Users::PhoneConfirmationController
 TooManyMethods:
   exclude:
-    - Devise::TwoFactorAuthenticationController
     - Users::ConfirmationsController
-    - ServiceProvider
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
