@@ -1,7 +1,6 @@
 - unless flash.empty?
   - flash.each do |name, msg|
     - if msg.present? && msg.is_a?(String)
-      - msg_type = name.to_s =~ /error|alert/ ? 'oops' : name
-      .mxn2.sm-m0
-        div class="alert alert-#{msg_type} h4" role="alert"
-          div class="#{msg.length < 50 ? 'bold serif center' : ''}" = msg
+      .mxn2.sm-mxn6.sm-mtn3
+        div class="px2 py1 sm-px6 mb-40p h5 line-height-2 alert alert-#{name}" role='alert'
+          .alert-inner = msg
