@@ -93,8 +93,8 @@ Devise.setup do |config|
   #
   # Limiting the stretches to just one in testing will increase the performance of
   # your test suite dramatically.
-  # For pbkdf2, 4k iterations ~~ 0.5 per encryption.
-  config.stretches = Rails.env.test? ? 1 : 400_000
+  # For pbkdf2, 100k iterations ~~ 0.125sec per encryption.
+  config.stretches = Rails.env.test? ? 1 : 100_000
 
   # Setup a pepper to generate the encrypted password.
   # config.pepper = 'b1108db70077daa6b0be8863b3b611ade79090f24be0e2f53aea51a59bca8462265fb4407110b182a69fdf2fef56589da7c2dbeaf3081b21794387f052e1ea47'
