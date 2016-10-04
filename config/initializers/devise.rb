@@ -92,11 +92,9 @@ Devise.setup do |config|
   # using other encryptors, it sets how many times you want the password re-encrypted.
   #
   # Limiting the stretches to just one in testing will increase the performance of
-  # your test suite dramatically. However, it is STRONGLY RECOMMENDED to not use
-  # a value less than 10 in other environments. Note that, for bcrypt (the default
-  # encryptor), the cost increases exponentially with the number of stretches (e.g.
-  # a value of 20 is already extremely slow: approx. 60 seconds for 1 calculation).
-  config.stretches = Rails.env.test? ? 1 : 100_000
+  # your test suite dramatically.
+  # For pbkdf2, 4k iterations ~~ 0.5 per encryption.
+  config.stretches = Rails.env.test? ? 1 : 400_000
 
   # Setup a pepper to generate the encrypted password.
   # config.pepper = 'b1108db70077daa6b0be8863b3b611ade79090f24be0e2f53aea51a59bca8462265fb4407110b182a69fdf2fef56589da7c2dbeaf3081b21794387f052e1ea47'
