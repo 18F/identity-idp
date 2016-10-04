@@ -401,7 +401,7 @@ en:
 
   shared:
     usa_banner:
-      official_site: '&nbsp; An official website of the United States government'
+      official_site: An official website of the United States government
     footer_lite:
       GSA: GSA
       18F: 18F
