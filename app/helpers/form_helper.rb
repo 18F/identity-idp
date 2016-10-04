@@ -3,18 +3,6 @@ module FormHelper
     text_field_tag(name, value, options.merge(class: 'block col-12 field'))
   end
 
-  def block_date_field_tag(name, value, options = {})
-    date_field_tag(name, value, options.merge(class: 'block col-12 field'))
-  end
-
-  def us_states_territories_select_tag(options = {})
-    select_tag(
-      'state',
-      options_for_select(us_states_territories),
-      options.merge(class: 'block col-12 field')
-    )
-  end
-
   # rubocop:disable MethodLength, WordArray
   # This method is single statement spread across many lines for readability
   def us_states_territories
