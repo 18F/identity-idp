@@ -30,26 +30,26 @@ Testing dependencies:
   to set up a development environment is by running our [Laptop]
   script. The script will install all of this project's dependencies.
 
-2. Make sure Postgres and Redis are running. For example, on OS X:
+1. Make sure Postgres and Redis are running. For example, on OS X:
 
-```
-$ brew services start redis postgres
-```
+  ```
+  $ brew services start redis postgres
+  ```
 
-3. Run the following command to set up the environment:
+1. Run the following command to set up the environment:
 
-```
-$ make setup
-```
+  ```
+  $ make setup
+  ```
 
   This command copies sample configuration files, installs required gems
   and sets up the database.
 
-4. Run the app server with:
+1. Run the app server with:
 
-```
-$ make run
-```
+  ```
+  $ make run
+  ```
 
 If you want to develop without and internet connection, you can set
 `RAILS_OFFLINE=1` in your environment. This disables the `mx` record
@@ -66,11 +66,11 @@ restart the server. See the [rack_mini_profiler] gem for more details.
 
 1. Download, install, and launch [Docker]
 
-2. Set up the Docker image
+1. Set up the Docker image
 
-```
-$ bin/setup --docker
-```
+  ```
+  $ bin/setup --docker
+  ```
 
 [Docker]: https://docs.docker.com/engine/getstarted/step_one/#step-1-get-docker
 
