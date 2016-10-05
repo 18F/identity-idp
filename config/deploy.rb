@@ -45,5 +45,6 @@ namespace :deploy do
   end
 
   before 'assets:precompile', :browserify
+  after 'deploy:updated', 'newrelic:notice_deployment'
   after :publishing, :restart
 end
