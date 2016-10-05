@@ -4,6 +4,9 @@ module Pii
     DIGEST = OpenSSL::Digest::SHA256.new.freeze
     PADDING = OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
 
+    # "It is a riddle, wrapped in a mystery, inside an enigma; but perhaps there is a key."
+    #  - Winston Churchill, https://en.wiktionary.org/wiki/a_riddle_wrapped_up_in_an_enigma
+    #
     # structure of the encrypted payload:
     #
     #  cek_encrypted_with_server_key + user_payload_encrypted_with_server_key
