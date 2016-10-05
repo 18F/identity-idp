@@ -170,17 +170,14 @@ feature 'saml api', devise: true do
     context 'via SP-initiated logout when not logged in to IdP' do
       let(:user) { create(:user, :signed_up) }
 
-      it 'redirects to home page' do
+      it 'does not raise an exception' do
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp1_saml_settings
-        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
-        linker = IdentityLinker.new(user, sp1.issuer)
-        linker.link_identity
-        settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+        settings.name_identifier_value = SecureRandom.uuid
 
-        visit request.create(settings)
-
-        expect(current_path).to eq root_path
+        expect {
+          visit request.create(settings)
+        }.to_not raise_error NoMethodError
       end
     end
 
