@@ -206,7 +206,7 @@ feature 'IdV session' do
       expect(page).to have_content(t('idv.titles.complete'))
       expect(current_url).to eq(profile_url)
       expect(user.reload.active_profile).to be_a(Profile)
-      expect(user.active_profile.verified?).to eq true
+      expect(user.active_profile.verified_at.present?).to eq true
 
       decrypted_pii = user.active_profile.decrypt_pii(user_password)
       expect(decrypted_pii.ssn).to eq '666661234'

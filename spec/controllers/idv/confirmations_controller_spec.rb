@@ -11,7 +11,7 @@ describe Idv::ConfirmationsController do
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
-  let(:profile) { Profile.create_from_proofer_applicant(applicant, user, password) }
+  let(:profile) { Idv::Applicant.new(applicant, user, password).profile }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -60,7 +60,7 @@ describe Idv::ConfirmationsController do
             profile.reload
 
             expect(profile).to be_active
-            expect(profile).to be_verified
+            expect(profile.verified_at).to_not be_nil
           end
 
           it 'redirects to original SAML Authn request' do

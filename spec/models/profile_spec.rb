@@ -16,14 +16,13 @@ describe Profile do
 
   it { is_expected.to belong_to(:user) }
 
-  describe '#create_from_proofer_applicant' do
+  describe '#create_with_encrypted_pii' do
     it 'creates Profile with encrypted PII' do
-      applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
-      profile = Profile.create_from_proofer_applicant(applicant, user, password)
+      profile = described_class.create_with_encrypted_pii(user, pii, password)
 
-      expect(profile.id).to_not be_nil
+      expect(profile.persisted?).to eq true
       expect(profile.encrypted_pii).to_not be_nil
-      expect(profile.encrypted_pii).to_not match 'Some'
+      expect(profile.encrypted_pii).to_not match 'Jane'
     end
   end
 

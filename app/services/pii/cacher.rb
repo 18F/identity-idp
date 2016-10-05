@@ -17,7 +17,7 @@ module Pii
       encrypted_pii = user_session[:encrypted_pii]
       return unless encrypted_pii
       decrypted_pii = encryptor.decrypt_with_key(encrypted_pii, key_maker.server_key)
-      Profile.inflate_pii_json(decrypted_pii)
+      Pii::Attributes.new_from_json(decrypted_pii)
     end
 
     private

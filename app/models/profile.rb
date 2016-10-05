@@ -7,19 +7,11 @@ class Profile < ActiveRecord::Base
   scope :active, -> { where(active: true) }
   scope :verified, -> { where.not(verified_at: nil) }
 
-  def self.create_from_proofer_applicant(applicant, user, password)
+  def self.create_with_encrypted_pii(user, plain_pii, password)
     profile = new(user: user)
-    profile.encrypt_pii(password, pii_from_applicant(applicant))
+    profile.encrypt_pii(password, plain_pii)
     profile.save!
     profile
-  end
-
-  def self.inflate_pii_json(pii_json)
-    pii_attrs = Pii::Attributes.new
-    return pii_attrs unless pii_json.present?
-    pii = JSON.parse(pii_json, symbolize_names: true)
-    pii.keys.each { |attr| pii_attrs[attr] = pii[attr] }
-    pii_attrs
   end
 
   def activate
@@ -29,23 +21,19 @@ class Profile < ActiveRecord::Base
     end
   end
 
-  def verified?
-    verified_at.present?
-  end
-
   def plain_pii
     @_plain_pii ||= Pii::Attributes.new
   end
 
   def decrypt_pii(password)
-    pii_json = encryptor.decrypt(encrypted_pii, password)
-    self.class.inflate_pii_json(pii_json)
+    Pii::Attributes.new_from_encrypted(encrypted_pii, password)
   end
 
   def encrypt_pii(password, pii = plain_pii)
     ssn = pii.ssn
+    encryptor = Pii::Encryptor.new
     self.ssn_signature = Digest::SHA256.hexdigest(encryptor.sign(ssn)) if ssn
-    self.encrypted_pii = encryptor.encrypt(pii.to_json, password)
+    self.encrypted_pii = pii.encrypted(password)
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -62,29 +50,4 @@ class Profile < ActiveRecord::Base
     attr_name_sym = method_sym.to_s.gsub(/=\z/, '').to_sym
     plain_pii.members.include?(attr_name_sym) || super
   end
-
-  def encryptor
-    @_encryptor ||= Pii::Encryptor.new
-  end
-
-  # rubocop:disable MethodLength
-  # This method is single statement spread across many lines for readability
-  def self.pii_from_applicant(applicant)
-    Pii::Attributes.new_from_hash(
-      first_name: applicant.first_name,
-      middle_name: applicant.middle_name,
-      last_name: applicant.last_name,
-      address1: applicant.address1,
-      address2: applicant.address2,
-      city: applicant.city,
-      state: applicant.state,
-      zipcode: applicant.zipcode,
-      dob: applicant.dob,
-      ssn: applicant.ssn,
-      phone: applicant.phone
-    )
-  end
-  # rubocop:enable MethodLength
-
-  private_class_method :pii_from_applicant
 end
