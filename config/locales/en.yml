@@ -363,13 +363,11 @@ en:
         review: Review and submit
 
   contact:
-    intro: I want to
+    intro: I want to...
     learn_more: Learn more about %{app}
     tell_experience: Tell you about my %{app} experience
     labels:
-      email: Email address
-      or: or
-      phone: Telephone
+      email_or_tel: Email address or telephone
       comments: Comments
       comments_note: Optional, but very helpful
     messages:
