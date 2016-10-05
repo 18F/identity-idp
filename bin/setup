@@ -46,6 +46,7 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Preparing database =="
   run "bin/rake db:reset RAILS_ENV=development"
+  run 'bin/rake dev:prime RAILS_ENV=development'
   run 'bin/rake db:reset RAILS_ENV=test'
 
   puts "\n== Removing old logs and tempfiles =="
