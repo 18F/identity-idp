@@ -46,7 +46,7 @@ html lang="#{I18n.locale}"
     #session-timeout-cntnr
     = auto_session_timeout_js
 
-  - if Figaro.env.participate_in_dap == 'yes'
+  - if Figaro.env.participate_in_dap == 'true'
     = t('notices.dap_html')
     - dap_source = 'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA'
     <script async type='text/javascript' src='#{dap_source}' id='_fed_an_ua_tag'></script>
