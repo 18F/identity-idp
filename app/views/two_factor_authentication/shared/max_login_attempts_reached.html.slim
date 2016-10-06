@@ -4,4 +4,4 @@
 h1.heading = t('titles.account_locked')
 p = t('devise.two_factor_authentication.max_login_attempts_reached')
 p = t('devise.two_factor_authentication.please_try_again',
-      time_remaining: @user_decorator.lockout_time_remaining_in_words)
+      time_remaining: decorated_user.lockout_time_remaining_in_words)

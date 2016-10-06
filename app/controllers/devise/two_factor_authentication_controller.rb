@@ -8,7 +8,7 @@ module Devise
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_path
       else
-        @phone_number = user_decorator.masked_two_factor_phone_number
+        @phone_number = decorated_user.masked_two_factor_phone_number
         @otp_delivery_selection_form = OtpDeliverySelectionForm.new
       end
     end
@@ -23,17 +23,22 @@ module Devise
       if result[:success?]
         handle_valid_delivery_method(delivery_params[:otp_method])
       else
-        redirect_to user_two_factor_authentication_path
+        redirect_to user_two_factor_authentication_path(reauthn: reauthn?)
       end
     end
 
     private
 
+    def reauthn_param
+      otp_form = params.permit(otp_delivery_selection_form: [:reauthn])
+      super || otp_form.dig(:otp_delivery_selection_form, :reauthn)
+    end
+
     def handle_valid_delivery_method(method)
       send_user_otp(method)
 
       flash[:success] = t("notices.send_code.#{method}")
-      redirect_to login_two_factor_path(delivery_method: method)
+      redirect_to login_two_factor_path(delivery_method: method, reauthn: reauthn?)
     end
 
     def send_user_otp(method)

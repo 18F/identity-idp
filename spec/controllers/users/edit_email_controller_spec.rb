@@ -11,7 +11,7 @@ describe Users::EditEmailController do
 
     context 'user changes email' do
       before do
-        sign_in(user)
+        stub_sign_in(user)
 
         stub_analytics
         allow(@analytics).to receive(:track_event)
@@ -32,7 +32,7 @@ describe Users::EditEmailController do
       render_views
 
       it 'displays an error message and does not delete the email' do
-        sign_in(user)
+        stub_sign_in(user)
         put :update, update_user_email_form: { email: '' }
 
         expect(response.body).to have_content invalid_email_message
@@ -62,7 +62,7 @@ describe Users::EditEmailController do
       render_views
 
       it 'displays error about invalid email' do
-        sign_in(user)
+        stub_sign_in(user)
         put :update, update_user_email_form: { email: 'foo' }
 
         expect(response.body).to have_content('Please enter a valid email')
@@ -73,7 +73,7 @@ describe Users::EditEmailController do
       render_views
 
       it 'redirects to profile page without any messages' do
-        sign_in(user)
+        stub_sign_in(user)
         put :update, update_user_email_form: { email: user.email }
 
         expect(response).to redirect_to profile_url

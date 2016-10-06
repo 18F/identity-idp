@@ -4,6 +4,7 @@ module Users
 
     skip_before_action :session_expires_at, only: [:active]
     skip_after_action :track_get_requests, only: [:active]
+    before_action :confirm_two_factor_authenticated, only: [:update]
 
     def create
       track_authentication_attempt(params[:user][:email])

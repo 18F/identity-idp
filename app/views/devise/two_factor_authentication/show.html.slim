@@ -8,6 +8,8 @@ p.mt-tiny.mb0#2fa-description
     url: otp_send_path,
     method: :get,
     role: 'form', class: 'mt3') do |f|
+  - if reauthn?
+    = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb3
     = label_tag 'otp_method',
       t('devise.two_factor_authentication.otp_method.title'),

@@ -92,7 +92,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           with(subject.current_user.direct_otp, subject.current_user.phone)
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
-        expect(response).to redirect_to login_two_factor_path(delivery_method: 'sms')
+        expect(response).to redirect_to(
+          login_two_factor_path(delivery_method: 'sms', reauthn: false)
+        )
       end
 
       it 'tracks the events' do
@@ -129,7 +131,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           with(subject.current_user.direct_otp, subject.current_user.phone)
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
-        expect(response).to redirect_to login_two_factor_path(delivery_method: 'voice')
+        expect(response).to redirect_to(
+          login_two_factor_path(delivery_method: 'voice', reauthn: false)
+        )
       end
 
       it 'tracks the event' do
@@ -160,7 +164,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'redirects user to choose a valid delivery method' do
         get :send_code, otp_delivery_selection_form: { otp_method: 'pigeon' }
 
-        expect(response).to redirect_to user_two_factor_authentication_path
+        expect(response).to redirect_to user_two_factor_authentication_path(reauthn: false)
       end
     end
   end
