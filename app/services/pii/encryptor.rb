@@ -44,7 +44,7 @@ module Pii
       decrypt_with_key(user_ciphertext, user_private_key)
     end
 
-    # DHS/NIST algorithm
+    # DHS/NIST algorithm = Digital Envelope Encryption Model
     def encrypt_with_key(plaintext, private_key)
       plaintext_signature = sign(plaintext, private_key)
       payload = join_segments(plaintext, plaintext_signature)
@@ -52,7 +52,7 @@ module Pii
       join_segments(private_key.public_encrypt(cek, PADDING), encrypt_payload(payload, cek))
     end
 
-    # DHS/NIST algorithm
+    # DHS/NIST algorithm = Digital Envelope Encryption Model
     def decrypt_with_key(ciphertext, private_key)
       encrypted_cek, encrypted_payload = split_into_segments(ciphertext)
       cek = private_key.private_decrypt(encrypted_cek, PADDING)
