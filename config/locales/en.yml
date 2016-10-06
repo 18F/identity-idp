@@ -26,7 +26,7 @@ en:
       send: Send
       send_passcode: Send one-time passcode
       setup_totp: Set up authentication app
-      submit: 
+      submit:
         default: Submit
         continue: Continue
         next: Next
@@ -123,10 +123,10 @@ en:
       <!-- We participate in the US government's analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
   session_timedout: >
-    For your security, you’ve been logged out due to inactivity. Please log in again.
+    For your security, we've ended your session due to inactivity. Please log in again.
   session_timeout_warning: >-
-    You’ll be logged out of your account in %{time_left_in_session} due to
-    inactivity. If you’d like to remain logged in, please click the button below.
+    Your session will end in %{time_left_in_session} due to inactivity.
+    If you’d like to continue using the site, please click the button below.
 
   titles:
     confirmations:
