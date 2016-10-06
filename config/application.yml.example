@@ -33,6 +33,8 @@ stale_session_window: '180'
 support_email: 'hello@login.gov'
 support_url: 'https://18f.gov/contact'
 
+valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
+
 development:
   allow_third_party_auth: 'true'
   domain_name: 'localhost:3000'

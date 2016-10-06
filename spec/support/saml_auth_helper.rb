@@ -10,7 +10,7 @@ module SamlAuthHelper
     settings.assertion_consumer_logout_service_url = 'http://localhost:3000/test/saml/decode_slo_request'
     settings.certificate = saml_test_sp_cert
     settings.private_key = saml_test_sp_key
-    settings.authn_context = Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
+    settings.authn_context = Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
 
     # SP + IdP Settings
     settings.issuer = 'http://localhost:3000'
@@ -96,7 +96,7 @@ module SamlAuthHelper
 
   def loa3_saml_settings
     settings = sp1_saml_settings.dup
-    settings.authn_context = Saml::Idp::Constants::LOA3_AUTHNCONTEXT_CLASSREF
+    settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
     settings
   end
 

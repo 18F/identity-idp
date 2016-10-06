@@ -12,7 +12,7 @@ module SamlIdpAuthConcern
   private
 
   def verify_authn_context
-    return if Saml::Idp::Constants::VALID_AUTHNCONTEXTS.include?(requested_authn_context)
+    return if Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(requested_authn_context)
 
     process_invalid_authn_context
   end
@@ -59,7 +59,7 @@ module SamlIdpAuthConcern
   end
 
   def loa3_requested?
-    requested_authn_context == Saml::Idp::Constants::LOA3_AUTHNCONTEXT_CLASSREF
+    requested_authn_context == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
   end
 
   def active_identity
