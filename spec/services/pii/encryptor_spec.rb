@@ -70,9 +70,8 @@ describe Pii::Encryptor do
       it 'applies DEEM twice' do
         allow(subject).to receive(:encrypt_with_key).and_call_original
 
-        expect(subject).to receive(:encrypt_with_key).
-                           with(instance_of(String), instance_of(OpenSSL::PKey::RSA)).
-                           twice
+        encrypt_with_key_args = [instance_of(String), instance_of(OpenSSL::PKey::RSA)]
+        expect(subject).to receive(:encrypt_with_key).with(*encrypt_with_key_args).twice
 
         subject.encrypt(plaintext, password)
       end
