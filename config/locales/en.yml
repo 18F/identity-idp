@@ -125,7 +125,7 @@ en:
   session_timedout: >
     For your security, we've ended your session due to inactivity. Please log in again.
   session_timeout_warning: >-
-    Your session will end in %{time_left_in_session} due to inactivity.
+    Your session will end in <span id="countdown">%{time_left_in_session}</span> due to inactivity.
     If you’d like to continue using the site, please click the button below.
 
   titles:
@@ -452,4 +452,3 @@ en:
     otp_confirmation: >
       Hello! Your login.gov one time passcode is, %{code},
       again, your passcode is, %{code}, goodbye!
-

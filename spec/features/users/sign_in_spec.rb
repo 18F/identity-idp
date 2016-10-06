@@ -76,26 +76,23 @@ feature 'Sign in' do
   context 'session approaches timeout', js: true do
     before :each do
       allow(Figaro.env).to receive(:session_check_frequency).and_return(1)
-      allow(Figaro.env).to receive(:session_check_delay).and_return(1)
+      allow(Figaro.env).to receive(:session_check_delay).and_return(2)
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in)
     end
 
     scenario 'user sees warning before session times out' do
-      def warning_content
-        t('session_timeout_warning', time_left_in_session: time_left_in_session)
-      end
-
       sign_in_and_2fa_user
       visit root_path
 
-      expect(page).to have_css('#session-timeout-msg', text: warning_content)
+      expect(page).to have_css('#session-timeout-msg')
 
       request_headers = page.driver.network_traffic.flat_map(&:headers).uniq
-
       ajax_headers = { 'name' => 'X-Requested-With', 'value' => 'XMLHttpRequest' }
 
       expect(request_headers).to include ajax_headers
+      expect(page).to have_content('7 minutes and 59 seconds')
+      expect(page).to have_content('7 minutes and 58 seconds')
 
       find_link(t('forms.buttons.continue_browsing')).trigger('click')
 
