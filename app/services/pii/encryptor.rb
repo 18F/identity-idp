@@ -21,8 +21,8 @@ module Pii
     # private key, then again with the server-password-encrypted private key.
     # The user private key is encrypted inside the server-encrypted payload.
 
-    def initialize
-      @key_maker = Pii::KeyMaker.new
+    def initialize(key_maker = Pii::KeyMaker.new)
+      @key_maker = key_maker
       @cipher = OpenSSL::Cipher.new 'AES-256-CBC'
     end
 
