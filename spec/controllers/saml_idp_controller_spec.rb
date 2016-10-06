@@ -211,6 +211,29 @@ describe SamlIdpController do
       end
     end
 
+    context 'service provider is valid' do
+      before do
+        @user = create(:user, :signed_up)
+        saml_get_auth(saml_settings)
+      end
+
+      it 'stores SP metadata in session' do
+        expect(session[:sp]).to eq(logo: 'sample_sp_logo.png',
+                                   name: 'test_friendly_name')
+      end
+
+      context 'after successful assertion' do
+        before do
+          sign_in(@user)
+          saml_get_auth(saml_settings)
+        end
+
+        it 'deletes SP metadata from session' do
+          expect(session.key?(:sp)).to eq(false)
+        end
+      end
+    end
+
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
         head '/api/saml/auth?SAMLRequest=bang!'

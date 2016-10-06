@@ -21,6 +21,7 @@ class SamlIdpController < ApplicationController
 
     return redirect_to idv_url if needs_idv
 
+    delete_branded_experience
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
@@ -59,5 +60,9 @@ class SamlIdpController < ApplicationController
 
   def apply_secure_headers_override
     use_secure_headers_override(:saml)
+  end
+
+  def delete_branded_experience
+    session.delete(:sp) if session[:sp]
   end
 end
