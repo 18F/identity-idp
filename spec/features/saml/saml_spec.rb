@@ -168,8 +168,6 @@ feature 'saml api', devise: true do
 
   context 'visiting /api/saml/logout' do
     context 'via SP-initiated logout when not logged in to IdP' do
-      let(:user) { create(:user, :signed_up) }
-
       it 'does not raise an exception' do
         request = OneLogin::RubySaml::Logoutrequest.new
         settings = sp1_saml_settings
