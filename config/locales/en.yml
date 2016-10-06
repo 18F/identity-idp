@@ -1,6 +1,6 @@
 en:
   errors:
-    incorrect_password: is incorrect
+    confirm_password_incorrect: The password you provided is incorrect.
     invalid_totp: Invalid code entered.  Please try again.
     not_authorized: You are not authorized to perform this action.
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
@@ -143,6 +143,7 @@ en:
     passwords:
       change: Change the password for your account
       forgot: Reset the password for your account
+      confirm: Confirm the password for your account
     profile: Profile
     recovery_code: Just in case
     registrations:
@@ -177,6 +178,7 @@ en:
     passwords:
       change: Change your password
       forgot: Forgot password
+      confirm: Confirm your password
     profile:
       profile_info: Profile information
       profile_info_tt: Why can't I edit my profile information?

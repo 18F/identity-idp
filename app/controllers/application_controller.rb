@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :invalid_auth_token
 
-  helper_method :user_fully_authenticated?, :generate_warning, :read_help_content
+  helper_method :decorated_user, :reauthn?
 
   prepend_before_action :session_expires_at
   after_action :track_get_requests
@@ -56,6 +56,15 @@ class ApplicationController < ActionController::Base
     render file: 'public/401.html', status: 401
   end
 
+  def reauthn_param
+    params[:reauthn]
+  end
+
+  def reauthn?
+    reauthn = reauthn_param
+    reauthn.present? && reauthn == 'true'
+  end
+
   def invalid_auth_token
     analytics.track_event('InvalidAuthenticityToken')
     sign_out
@@ -64,7 +73,7 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
+    !reauthn? && user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
   end
 
   def confirm_two_factor_authenticated

@@ -8,6 +8,7 @@ FeatureEnvy:
     - track_registration
     - append_info_to_payload
     - generate_slo_request
+    - reauthn?
 IrresponsibleModule:
   enabled: false
 NilCheck:
@@ -49,6 +50,7 @@ UtilityFunction:
       - complete_idv_session
   DuplicateMethodCall:
     exclude:
+      - complete_2fa_confirmation
       - complete_idv_profile
       - stub_subject
       - stub_idv_session

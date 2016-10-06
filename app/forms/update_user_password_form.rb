@@ -2,8 +2,7 @@ class UpdateUserPasswordForm
   include ActiveModel::Model
   include FormPasswordValidator
 
-  validates :current_password, presence: true
-  validate :verify_current_password
+  validates :password, presence: true
 
   def initialize(user)
     @user = user
@@ -11,9 +10,8 @@ class UpdateUserPasswordForm
 
   def submit(params)
     self.password = params[:password]
-    self.current_password = params[:current_password]
 
-    @success = valid? && user.update_with_password(params)
+    @success = valid? && user.update(params)
 
     result
   end
@@ -22,13 +20,7 @@ class UpdateUserPasswordForm
 
   attr_reader :user, :success
 
-  attr_accessor :password, :current_password
-
-  def verify_current_password
-    return if user.valid_password?(current_password)
-
-    errors.add(:current_password, I18n.t('errors.incorrect_password'))
-  end
+  attr_accessor :password
 
   def result
     {
