@@ -91,8 +91,8 @@ feature 'Sign in' do
       ajax_headers = { 'name' => 'X-Requested-With', 'value' => 'XMLHttpRequest' }
 
       expect(request_headers).to include ajax_headers
-      expect(page).to have_content("7 minutes and 59 seconds")
-      expect(page).to have_content("7 minutes and 58 seconds")
+      expect(page).to have_content('7 minutes and 59 seconds')
+      expect(page).to have_content('7 minutes and 58 seconds')
 
       find_link(t('forms.buttons.continue_browsing')).trigger('click')
 
