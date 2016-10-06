@@ -102,7 +102,7 @@ describe Idv::ReviewController do
 
     context 'user does not provide password' do
       it 'redirects to new' do
-        post :show
+        post :show, user: { password: '' }
 
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
         expect(response).to redirect_to idv_review_path
