@@ -175,9 +175,9 @@ feature 'saml api', devise: true do
         settings = sp1_saml_settings
         settings.name_identifier_value = SecureRandom.uuid
 
-        expect  do
+        expect do
           visit request.create(settings)
-        end.to_not raise_error NoMethodError
+        end.to_not raise_error
       end
     end
 
