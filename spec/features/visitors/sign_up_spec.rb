@@ -295,7 +295,7 @@ feature 'Sign Up', devise: true do
     create(:user, :unconfirmed)
     visit '/users/confirmation?confirmation_token=invalid_token'
 
-    expect(page).to have_content 'Confirmation token is invalid'
+    expect(page).to have_content t('errors.messages.confirmation_invalid_token')
     expect(current_path).to eq user_confirmation_path
   end
 

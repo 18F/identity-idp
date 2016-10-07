@@ -6,8 +6,5 @@ h1.heading = t('headings.confirmations.new')
                   as: resource_name,
                   url: confirmation_path(resource_name),
                   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
-  .mb2
-    = f.error_notification
-    = f.full_error :confirmation_token
   = f.input :email, required: true
   = f.button :submit, t('forms.buttons.resend_confirmation'), class: 'mt2 mb1'
