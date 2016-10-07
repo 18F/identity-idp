@@ -56,7 +56,7 @@ en:
         need to link your login.gov account to the application you choose. Each
         time you log in you’ll need to open the application and retrieve a code.
     confirmation:
-      show_hdr: Create a Password
+      show_hdr: Create a password
     passwords:
       edit:
         labels:
