@@ -1,18 +1,6 @@
-nav.center
-  .clearfix.p2.sm-px0
-    .sm-col.mxn1
-      =link_to \
-        image_tag(asset_url('logo.svg'),
-          alt: APP_NAME,
-          class: 'align-middle',
-          width: 172), root_path, class: 'nav-el p1'
-    .sm-col-right.mxn1
-      - if signed_in?
-        = link_to t('links.sign_out'), destroy_user_session_path, \
-          method: 'delete', class: 'nav-el p1 h6 caps bold'
-      - else
-        = link_to t('links.sign_in'), new_user_session_path, \
-          class: 'nav-el p1 h6 caps bold'
-        span.nav-el.py1.h6.caps.bold = 'or'
-        = link_to t('links.sign_up'), new_user_start_path, \
-          class: 'nav-el p1 h6 caps bold'
+nav.p2.sm-pt3.sm-pb0.bg-light-blue.center
+  = link_to \
+    image_tag(asset_url('logo.svg'),
+      alt: APP_NAME,
+      class: 'align-bottom',
+      width: 170), root_path, class: 'p1 inline-block'

@@ -38,7 +38,7 @@ html lang="#{I18n.locale}"
   body class="#{Rails.env}-env site sm-bg-light-blue"
     .site-wrap
       = render 'shared/usa_banner'
-      = render 'shared/nav'
+      = render signed_in? ? 'shared/nav' : 'shared/nav_lite'
       = content_for?(:content) ? yield(:content) : yield
     = render 'shared/footer_lite'
 

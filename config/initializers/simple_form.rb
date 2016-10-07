@@ -1,7 +1,7 @@
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
-  config.default_form_class = 'mt4'
+  config.default_form_class = 'mt3 sm-mt4'
   config.error_notification_tag = :div
   config.error_notification_class = 'mb3 p2 h5 rounded alert alert-error'
 
