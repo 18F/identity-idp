@@ -1,7 +1,7 @@
 - title t('titles.two_factor_verification')
 
 
-h1.heading = t('headings.choose_otp_delivery')
+h1.h3.my0 = t('headings.choose_otp_delivery')
 p.mt-tiny.mb0#2fa-description
   = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
 = simple_form_for(@otp_delivery_selection_form,
