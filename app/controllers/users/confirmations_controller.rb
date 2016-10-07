@@ -64,6 +64,8 @@ module Users
       track_invalid_confirmation_token(params[:confirmation_token])
 
       set_view_variables
+
+      flash[:error] = t('errors.messages.confirmation_invalid_token')
       render :new
     end
 
