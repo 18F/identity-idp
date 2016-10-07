@@ -48,7 +48,7 @@ Rails.application.routes.draw do
     )
   end
 
-  if Figaro.env.enable_test_routes == 'yes'
+  if Figaro.env.enable_test_routes == 'true'
     namespace :test do
       # Assertion granting test start + return.
       get '/saml' => 'saml_test#start'

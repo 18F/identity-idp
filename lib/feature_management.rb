@@ -4,7 +4,7 @@ class FeatureManagement
   end
 
   def self.allow_third_party_auth?
-    Figaro.env.allow_third_party_auth == 'yes'
+    Figaro.env.allow_third_party_auth == 'true'
   end
 
   def self.prefill_otp_codes?

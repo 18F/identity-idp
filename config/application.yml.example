@@ -34,9 +34,9 @@ support_email: 'hello@login.gov'
 support_url: 'https://18f.gov/contact'
 
 development:
-  allow_third_party_auth: 'yes'
+  allow_third_party_auth: 'true'
   domain_name: 'localhost:3000'
-  enable_test_routes: 'yes'
+  enable_test_routes: 'true'
   idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
@@ -60,9 +60,9 @@ development:
   valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov"]'
 
 production:
-  allow_third_party_auth: 'yes'
+  allow_third_party_auth: 'true'
   domain_name: 'xxx.xxx'
-  enable_test_routes: 'no'
+  enable_test_routes: 'false'
   google_analytics_key: 'UA-XXXXXXXXX-YY'
   idp_sso_target_url: 'xxx.xxx/saml/auth'
   logins_per_ip_limit: '20'
@@ -71,7 +71,7 @@ production:
   otp_delivery_blocklist_bantime: '10'
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '5'
-  participate_in_dap: 'no'
+  participate_in_dap: 'false'
   password_pepper: 'rake secret'
   proxy_addr: '123.456.789'
   proxy_port: '80'
@@ -87,10 +87,10 @@ production:
   valid_service_providers: '["https://upaya-dev.18f.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo", "https://dashboard.demo.login.gov", "https://dashboard.qa.login.gov", "https://dashboard.dev.login.gov"]'
 
 test:
-  allow_third_party_auth: 'yes'
+  allow_third_party_auth: 'true'
   domain_name: 'www.example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
-  enable_test_routes: 'yes'
+  enable_test_routes: 'true'
   idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
   logins_per_ip_limit: '2'
   logins_per_ip_period: '60'
