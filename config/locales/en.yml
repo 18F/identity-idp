@@ -173,7 +173,7 @@ en:
       email: Edit your email
       password: Edit your password
       phone: Edit your phone number
-    log_in: Log in
+    log_in: Sign in
     choose_otp_delivery: Choose delivery method
     passwords:
       change: Change your password
