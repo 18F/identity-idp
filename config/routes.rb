@@ -113,4 +113,10 @@ Rails.application.routes.draw do
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
 
   root to: 'users/sessions#new'
+
+  # Make sure any new routes are added above this line!
+  # The line below will route all requests that aren'
+  # defined route to the 404 page. Therefore, anything you put after this rule
+  # will be ignored.
+  match '*path', via: :all, to: 'pages#page_not_found'
 end

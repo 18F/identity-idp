@@ -20,12 +20,15 @@ describe 'routes that require admin + 2FA' do
         user = create(:user, :signed_up)
         sign_in_user(user)
 
-        expect { get endpoint }.to raise_error ActionController::RoutingError
+        get endpoint
+
+        expect(response.body).
+          to match('The page you were looking for doesn&#39;t exist')
       end
     end
 
     context 'user is an admin but is not signed in via 2FA' do
-      it 'does not allow access' do
+      it 'prompts admin to 2FA' do
         user = create(:user, :signed_up, :admin)
 
         post_via_redirect(
@@ -34,7 +37,9 @@ describe 'routes that require admin + 2FA' do
           'user[password]' => user.password
         )
 
-        expect { get endpoint }.to raise_error ActionController::RoutingError
+        get endpoint
+
+        expect(response).to redirect_to '/users/two_factor_authentication'
       end
     end
 
@@ -43,7 +48,10 @@ describe 'routes that require admin + 2FA' do
         user = create(:user, :signed_up, :admin)
         sign_in_user(user)
 
-        expect { get endpoint }.to_not raise_error
+        get endpoint
+
+        expect(response.body).
+          to_not match('The page you were looking for doesn&#39;t exist')
       end
     end
   end
