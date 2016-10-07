@@ -7,8 +7,8 @@ h1.h3.my0 = t('headings.log_in')
                   html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true
   = f.input :password, required: true
-  = f.button :submit, t('headings.log_in'), class: 'btn-wide mt2 mb4'
-.clearfix.pt1.border-top
+  = f.button :submit, t('headings.log_in'), class: 'btn-wide mt2'
+.clearfix.mt3.sm-mt4.pt1.border-top
   .sm-col.py1.sm-p0
     = link_to t('links.create_account'), new_user_start_path, class: 'underline'
   .sm-col-right

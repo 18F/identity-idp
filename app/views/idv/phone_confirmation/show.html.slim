@@ -6,7 +6,7 @@ h1.h3.my0 = t('forms.phone_confirmation.header_text')
 p.mt-tiny.mb0#code-instructs == t('instructions.2fa.confirm_code',
   number: "<strong>#{@unconfirmed_phone}</strong>")
 
-= form_tag([:idv_phone_confirmation], method: :put, role: 'form', class: 'mt4') do
+= form_tag([:idv_phone_confirmation], method: :put, role: 'form', class: 'mt3 sm-mt4') do
   = label_tag 'code', t('forms.two_factor.code'), class: 'block caps ls-05 bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = number_field_tag(:code, '', required: true, value: @code_value, \
