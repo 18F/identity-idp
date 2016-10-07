@@ -1,7 +1,7 @@
 - title t('titles.confirmations.show')
 
 
-h1.heading = t('forms.confirmation.show_hdr')
+h1.h3.my0 = t('forms.confirmation.show_hdr')
 p.mt-tiny.mb0#password-description
   = t('instructions.edit_info.password', min_length: Devise.password_length.first)
 = simple_form_for(@password_form,

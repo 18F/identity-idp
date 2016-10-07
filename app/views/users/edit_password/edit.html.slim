@@ -1,7 +1,7 @@
 - title t('titles.edit_info.password')
 
 
-h1.heading = t('headings.edit_info.password')
+h1.h3.my0 = t('headings.edit_info.password')
 p.mt-tiny.mb0#password-description
   = t('instructions.edit_info.password', min_length: Devise.password_length.first)
 = simple_form_for(@update_user_password_form, url: settings_password_path,

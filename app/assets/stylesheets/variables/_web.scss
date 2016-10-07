@@ -20,13 +20,19 @@ $line-height-2: 1.3 !default;
 $line-height-3: 1.75 !default;
 $line-height-4: 2 !default;
 
-$h0: 3rem !default;
-$h1: 2.5rem !default;
-$h2: 2rem !default;
-$h3: 1.5rem !default;
-$h4: 1.125rem !default;
-$h5: .875rem !default;
-$h6: .8125rem !default;
+$h1: 1.75rem !default;
+$h2: 1.5rem !default;
+$h3: 1.125rem !default;
+$h4: .875rem !default;
+$h5: .75rem !default;
+$h6: .75rem !default;
+
+$sm-h1: 2.5rem !default;
+$sm-h2: 2rem !default;
+$sm-h3: 1.5rem !default;
+$sm-h4: 1.125rem !default;
+$sm-h5: .875rem !default;
+$sm-h6: .8125rem !default;
 
 $space-tiny: .25rem !default;
 
@@ -37,12 +43,14 @@ $space-4: 3rem !default;
 $space-5: 4rem !default;
 $space-6: 5rem !default;
 
-$form-field-font-size: 1.25rem !default;
+$form-field-font-size: 1rem !default;
+$form-field-font-size-sm: 1.25rem !default;
 $form-field-height: 3rem !default;
 $form-field-padding-y: .75rem !default;
 $form-field-padding-x: 1rem !default;
 
-$button-font-size: 1.25rem !default;
+$button-font-size: 1rem !default;
+$button-font-size-sm: 1.25rem !default;
 $button-font-weight: bold !default;
 $button-line-height: 1.375rem !default;
 $button-padding-y: .75rem !default;

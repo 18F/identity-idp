@@ -1,3 +1,7 @@
+@media #{$breakpoint-sm} {
+  .btn { font-size: $button-font-size-sm; }
+}
+
 .btn-wide {
   box-sizing: border-box;
   min-width: 220px;

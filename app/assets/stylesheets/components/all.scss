@@ -1,5 +1,3 @@
-@import 'typography';
-
 @import 'abbr';
 @import 'alert';
 @import 'background-images';
@@ -9,13 +7,14 @@
 @import 'container';
 @import 'footer';
 @import 'form';
-@import 'heading';
 @import 'list';
 @import 'modal';
 @import 'nav';
 @import 'password';
 @import 'position';
-@import 'space-addon';
-@import 'space-misc';
 @import 'tooltip';
 @import 'util';
+
+@import 'space-addon';
+@import 'space-misc';
+@import 'typography';
