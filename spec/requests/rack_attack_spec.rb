@@ -171,9 +171,10 @@ describe 'throttling requests' do
 
   describe 'OTP delivery blocklist' do
     it 'blocks the user for bantime after maxretry OTP requests within findtime period' do
+      maxretry_limit = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+      over_maxretry_limit = maxretry_limit + 1
       allow(Figaro.env).to receive(:requests_per_ip_limit).and_return('300')
       allow(Rails.logger).to receive(:warn)
-
       user = create(:user, :signed_up, phone: '+1 (202) 555-0100')
       second_user_with_same_number = create(:user, :signed_up, phone: '+1 (202) 555-0100')
 
@@ -184,7 +185,7 @@ describe 'throttling requests' do
         'user[password]' => user.password
       )
 
-      3.times do
+      over_maxretry_limit.times do
         get(
           '/otp/send',
           { otp_delivery_selection_form: { otp_method: 'sms' } },
@@ -216,6 +217,58 @@ describe 'throttling requests' do
       expect(last_response.status).to eq(429)
       expect(Rails.logger).to have_received(:warn).
         with("OTP delivery throttle occurred for #{second_user_with_same_number.uuid}")
+    end
+
+    it 'blocks the user for bantime after maxretry phone confirmation requests' do
+      maxretry_limit = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+      over_maxretry_limit = maxretry_limit + 1
+      allow(Rails.logger).to receive(:warn)
+
+      user = create(:user, :signed_up, phone: '+1 (202) 555-0100')
+
+      post(
+        new_user_session_path,
+        'user[email]' => user.email,
+        'user[password]' => user.password
+      )
+
+      over_maxretry_limit.times do
+        get(
+          '/phone_confirmation/send',
+          { otp_method: 'sms' },
+          'REMOTE_ADDR' => '1.2.3.4'
+        )
+      end
+
+      expect(last_response.status).to eq(429)
+      expect(Rails.logger).to have_received(:warn).
+        with("OTP delivery throttle occurred for #{user.uuid}")
+    end
+
+    it 'blocks the user for bantime after maxretry idv phone confirmation requests' do
+      maxretry_limit = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+      over_maxretry_limit = maxretry_limit + 1
+      allow(Rails.logger).to receive(:warn)
+
+      user = create(:user, :signed_up, phone: '+1 (202) 555-0100')
+
+      post(
+        new_user_session_path,
+        'user[email]' => user.email,
+        'user[password]' => user.password
+      )
+
+      over_maxretry_limit.times do
+        get(
+          '/idv/phone_confirmation/send',
+          { otp_method: 'sms' },
+          'REMOTE_ADDR' => '1.2.3.4'
+        )
+      end
+
+      expect(last_response.status).to eq(429)
+      expect(Rails.logger).to have_received(:warn).
+        with("OTP delivery throttle occurred for #{user.uuid}")
     end
 
     it 'uses the throttled_response for the blocklisted_response' do
