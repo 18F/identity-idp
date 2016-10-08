@@ -1,6 +1,5 @@
 - title t('idv.titles.session.basic')
 
-
 - if @using_mock_vendor
   .mt1.mb2.h6.caps.bold = t('idv.messages.sessions.no_pii')
 
@@ -19,8 +18,8 @@ h2.pb0.heading = t('idv.titles.session.basic')
     = f.input :city, label: t('idv.form.city'), required: true
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
-        = f.input :state,
-                  collection: us_states_territories, label: t('idv.form.state'), required: true
+        = f.input :state, collection: us_states_territories,
+          label: t('idv.form.state'), required: true
       .sm-col.sm-col-4.px1
         = f.input :zipcode, label: t('idv.form.zipcode'), required: true,
           pattern: '(\d{5}([\-]\d{4})?)',

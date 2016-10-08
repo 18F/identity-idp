@@ -1,18 +1,19 @@
 td = link_to user.email, user, title: "View account for #{user.email}"
-td
-  = form_for(user) do |f|
-    = f.select :role,
-                User.roles.keys.map { |role| [role.titleize, role] },
-                {},
-                title: "Select role for #{user.email}",
-                id: "user_role_#{user.email}"
-    = f.submit 'Change Role', class: 'usa-button', title: "Change role for #{user.email}"
-td = link_to('Edit', edit_user_path(user), title: "Edit account for #{user.email}")
-td = link_to('Reset password',
-             user_reset_password_path(user),
-             title: "Send reset password instructions for #{user.email}")
-td = link_to('Delete user',
-             user_path(user),
-             data: { confirm: "Are you sure you want to delete user #{user.email}?" },
-             method: :delete,
-             title: "Delete account for #{user.email}") unless user == current_user
+tr.user
+  td
+    = form_for(user) do |f|
+      = f.select :role,
+                  User.roles.keys.map { |role| [role.titleize, role] },
+                  {},
+                  title: "Select role for #{user.email}",
+                  id: "user_role_#{user.email}"
+      = f.submit 'Change Role', class: 'usa-button', title: "Change role for #{user.email}"
+  td = link_to('Edit', edit_user_path(user), title: "Edit account for #{user.email}")
+  td = link_to('Reset password',
+              user_reset_password_path(user),
+              title: "Send reset password instructions for #{user.email}")
+  td = link_to('Delete user',
+              user_path(user),
+              data: { confirm: "Are you sure you want to delete user #{user.email}?" },
+              method: :delete,
+              title: "Delete account for #{user.email}") unless user == current_user

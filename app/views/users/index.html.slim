@@ -6,8 +6,6 @@ h2 = t('headings.admin.index')
 h3 = t('headings.users.index')
 table.table
   tbody
-    - @users.each do |user|
-      tr.user
-        = render user
+    = render @users
 
 = paginate @users
