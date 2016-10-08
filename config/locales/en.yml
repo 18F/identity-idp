@@ -38,7 +38,6 @@ en:
       disable: Disable
       search: Search
       resend: Resend
-    required_field: Indicates a required field.
     phone_confirmation:
       header_text: Enter the passcode we sent you
     two_factor:

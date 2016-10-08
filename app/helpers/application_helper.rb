@@ -16,9 +16,4 @@ module ApplicationHelper
       'tabindex': '0'
     )
   end
-
-  def required_form_field(*args, &block)
-    content_tag(:p, "* #{t('forms.required_field')}", class: 'italic') +
-      simple_form_for(*args, &block)
-  end
 end

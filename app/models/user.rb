@@ -49,11 +49,6 @@ class User < ActiveRecord::Base
     confirmation_sent_at && confirmation_sent_at.utc <= self.class.confirm_within.ago
   end
 
-  def send_reset_confirmation
-    update(reset_requested_at: Time.current, confirmed_at: nil)
-    send_confirmation_instructions
-  end
-
   def first_identity
     active_identities[0]
   end
