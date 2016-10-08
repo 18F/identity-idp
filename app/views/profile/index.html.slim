@@ -1,6 +1,5 @@
 - title t('titles.profile')
 
-
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 .mt1.mb3.h6.caps.red = t('headings.profile.main')
 
@@ -9,7 +8,8 @@
   h2.heading.mr1.inline-block
     = t('headings.profile.profile_info')
   = content_tag(:span, t('headings.profile.profile_info_tt'),
-    class: 'h5 blue sans-serif underline hint--top hint--no-animate', tabindex: 0,
+    class: 'h5 blue sans-serif underline hint--top hint--no-animate',
+    tabindex: 0,
     'aria-label': t('tooltips.profile_idv'))
   .mt3.mb4
     .py-12p.border-top
@@ -44,8 +44,7 @@ h2.heading = t('headings.profile.login_info')
       .sm-col.sm-col-5.px1 = t('.email')
       .sm-col.sm-col-5.px1.truncate = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to t('forms.buttons.edit'), edit_email_path, \
-          class: btn_cls
+        = link_to t('forms.buttons.edit'), edit_email_path, class: btn_cls
   .py-12p.border-top.border-bottom
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = t('.password')
@@ -58,15 +57,14 @@ h2.heading = t('headings.profile.login_info')
       .sm-col.sm-col-5.px1 = t('.phone')
       .sm-col.sm-col-5.px1 = current_user.phone
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to t('forms.buttons.edit'), edit_phone_path, \
-          class: btn_cls
+        = link_to t('forms.buttons.edit'), edit_phone_path, class: btn_cls
   .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = t('.authentication_app')
       .sm-col.sm-col-2.px1.sm-right-align
         - if current_user.totp_enabled?
-          = button_to t('forms.buttons.disable'), disable_totp_url, method: :delete, \
-            class: btn_cls
+          = button_to t('forms.buttons.disable'), disable_totp_url, \
+            method: :delete, class: btn_cls
         - else
           = link_to t('forms.buttons.enable'), authenticator_start_url, \
             class: btn_cls
