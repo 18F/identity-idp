@@ -1,4 +1,13 @@
 class RecoveryCodeGenerator
+  STRETCHES = 12
+
+  def self.compare(hashed_code, recovery_code)
+    return false if hashed_code.blank?
+    bcrypt = BCrypt::Password.new(hashed_code)
+    password = BCrypt::Engine.hash_secret(recovery_code, bcrypt.salt)
+    Devise.secure_compare(password, hashed_code)
+  end
+
   def initialize(user, length: 16)
     @user = user
     @length = length
@@ -15,7 +24,7 @@ class RecoveryCodeGenerator
   attr_reader :length, :user
 
   def hashed_code
-    Devise::Encryptor.digest(User, raw_recovery_code)
+    BCrypt::Password.create(raw_recovery_code, cost: STRETCHES).to_s
   end
 
   def raw_recovery_code
