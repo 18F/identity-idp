@@ -2,6 +2,7 @@ import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-
 
 import validateField from './validate-field';
 import DateFormatter from './modules/date-formatter';
+import OtpCodeFormatter from './modules/otp-code-formatter';
 import ZipCodeFormatter from './modules/zip-code-formatter';
 
 
@@ -11,6 +12,7 @@ function formatForm() {
     ['[type=tel]', new PhoneFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
+    ['.mfa', new OtpCodeFormatter()],
   ];
 
   formats.forEach(function(f) {

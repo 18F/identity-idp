@@ -11,9 +11,9 @@ engines:
     enabled: true
     config:
       languages:
-      - ruby
-        # mass_threshold: 30
-      - javascript
+        ruby:
+        javascript:
+          mass_threshold: 50
     exclude_paths:
     - 'spec/**/*'
     - 'node_modules/**/*'
