@@ -50,6 +50,7 @@ gem 'xml-simple'
 
 group :deploy do
   gem 'capistrano'
+  gem 'capistrano-passenger'
   gem 'capistrano-rails'
   gem 'capistrano-rbenv'
   gem 'capistrano-sidekiq'
