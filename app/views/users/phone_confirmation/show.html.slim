@@ -8,10 +8,8 @@ p.mt-tiny.mb0 == t('instructions.2fa.confirm_code', \
 = form_tag([:phone_confirmation], method: :put, role: 'form', class: 'mt3 sm-mt4') do
   = label_tag 'code', t('forms.two_factor.code'), class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
-    = number_field_tag(:code, \
-                       '', required: true, \
-                       value: @code_value, \
-                       class: 'col-12 field mfa')
+    = text_field_tag(:code, '', value: @code_value, required: true,
+      autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
 - resend_link = link_to(t('forms.buttons.resend'), \

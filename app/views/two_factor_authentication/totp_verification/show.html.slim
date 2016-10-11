@@ -9,8 +9,9 @@ p.mt-tiny.mb0#code-instructs == t('instructions.2fa.totp_intro', \
 = form_tag(:login_two_factor_authenticator, method: :post, role: 'form') do
   .mb2
     = label_tag 'code', raw(t('simple_form.required.html')) + t('forms.two_factor.code')
-    = number_field_tag :code, '', class: 'block col-12 field mfa', required: true,
-      autofocus: true,  'aria-describedby': 'code-instructs'
+    = text_field_tag :code, '', required: true, autofocus: true,
+      pattern: '[0-9]*', class: 'block col-12 field monospace mfa',
+      'aria-describedby': 'code-instructs'
   = submit_tag 'Submit', class: 'btn btn-primary'
 
 hr

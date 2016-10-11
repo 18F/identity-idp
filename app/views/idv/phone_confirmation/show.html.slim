@@ -6,10 +6,11 @@ p.mt-tiny.mb0#code-instructs == t('instructions.2fa.confirm_code',
   number: "<strong>#{@unconfirmed_phone}</strong>")
 
 = form_tag([:idv_phone_confirmation], method: :put, role: 'form', class: 'mt3 sm-mt4') do
-  = label_tag 'code', t('forms.two_factor.code'), class: 'block caps ls-05 bold'
+  = label_tag 'code', t('forms.two_factor.code'), class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
-    = number_field_tag(:code, '', required: true, value: @code_value, \
-      class: 'col-12 field mfa', autofocus: true, 'aria-describedby': 'code-instructs')
+    = text_field_tag(:code, '', value: @code_value, required: true,
+      autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
+      'aria-describedby': 'code-instructs')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
 - resend_link = link_to(t('forms.buttons.resend'), \

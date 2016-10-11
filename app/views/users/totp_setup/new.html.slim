@@ -8,5 +8,6 @@ p.mt-tiny.mb0 = t('forms.totp_setup.totp_info')
 = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
   = label_tag 'code', t('forms.totp_setup.code'), class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
-    = number_field_tag :code, '', required: true, class: 'col-12 field mfa'
+    = text_field_tag :code, '', required: true, pattern: '[0-9]*',
+      class: 'block col-12 field monospace mfa'
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
