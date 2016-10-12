@@ -18,7 +18,7 @@ module SamlIdpAuthConcern
   end
 
   def validate_service_provider
-    return if current_service_provider.valid?
+    add_sp_metadata_to_session and return if current_service_provider.valid?
 
     analytics.track_event(
       :invalid_service_provider,
@@ -31,6 +31,12 @@ module SamlIdpAuthConcern
   # stores original SAMLRequest in session to continue SAML Authn flow
   def store_saml_request_in_session
     session[:saml_request_url] = request.original_url
+  end
+
+  def add_sp_metadata_to_session
+    session[:sp] = { logo: current_sp_metadata[:logo],
+                     name: current_sp_metadata[:friendly_name] ||
+                           current_sp_metadata[:agency] }
   end
 
   def requested_authn_context
@@ -84,6 +90,10 @@ module SamlIdpAuthConcern
   end
 
   def current_service_provider
-    ServiceProvider.new(saml_request.service_provider.identifier)
+    @_sp ||= ServiceProvider.new(saml_request.service_provider.identifier)
+  end
+
+  def current_sp_metadata
+    current_service_provider.metadata
   end
 end

@@ -1,0 +1,20 @@
+nav.bg-white
+  .container.px2.py3
+    .clearfix
+      .sm-col.mb1.sm-m0
+        = link_to \
+          image_tag(asset_url('logo.svg'),
+            alt: APP_NAME,
+            class: 'align-bottom',
+            width: 170), root_path, class: 'inline-block'
+        .mt-12p.h6.sm-show.caps
+          = link_to 'About', root_path, class: 'mr3 gray'
+          = link_to 'News', root_path, class: 'mr3 gray'
+          = link_to 'Contact', root_path, class: 'mr3 gray'
+      .sm-col-right.sm-right-align
+        div Welcome <strong>#{current_user.email}</strong>
+        .mt-12p.h6
+          = link_to t('links.my_account'), profile_path,
+            class: current_page?(profile_path) ? 'bold gray' : 'underline'
+          span.px1.silver = '|'
+          = link_to t('links.sign_out'), destroy_user_session_path, class: 'underline'
