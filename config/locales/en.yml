@@ -21,7 +21,7 @@ en:
     buttons:
       acknowledge_recovery_code: Continue
       continue_browsing: Continue browsing
-      resend_confirmation: Resend confirmation email
+      resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       send: Send
       send_passcode: Send one-time passcode
