@@ -214,3 +214,6 @@ Style/TrailingCommaInLiteral:
     - comma
     - consistent_comma
     - no_comma
+
+Style/SingleLineBlockParams:
+  Enabled: false

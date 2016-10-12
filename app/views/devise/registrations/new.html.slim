@@ -10,4 +10,4 @@ p.mt-tiny.mb0#email-description = t('instructions.registration.email', app: APP_
   = f.input :email,
             required: true,
             input_html: { 'aria-describedby' => 'email-description' }
-  = f.button :submit, 'Sign up', class: 'btn-wide mt2 mb1'
+  = f.button :submit, t('links.sign_up'), class: 'btn-wide mt2 mb1'

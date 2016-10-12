@@ -1,5 +1,3 @@
-require 'feature_management'
-
 module Devise
   class TwoFactorAuthenticationController < DeviseController
     include TwoFactorAuthenticatable
