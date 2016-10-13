@@ -113,9 +113,9 @@ production:
       - email
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
-    acs_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://identity-sp-rails-dev.apps.cloud.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://identity-sp-rails-dev.apps.cloud.gov/login'
+    acs_url: 'https://sp.dev.login.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.dev.login.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.dev.login.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
     attribute_bundle:
