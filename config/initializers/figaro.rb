@@ -21,6 +21,7 @@ Figaro.require_keys(
   'session_timeout_in',
   'support_email',
   'twilio_accounts',
+  'valid_authn_contexts',
   'valid_service_providers'
 )
 

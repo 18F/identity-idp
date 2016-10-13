@@ -618,7 +618,7 @@ describe SamlIdpController do
           end
 
           it 'has contents set to LOA1' do
-            expect(subject.content).to eq Saml::Idp::Constants::LOA1_AUTHNCONTEXT_CLASSREF
+            expect(subject.content).to eq Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
           end
         end
       end
