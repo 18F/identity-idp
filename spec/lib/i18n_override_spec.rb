@@ -10,7 +10,7 @@ describe 'i18n override' do
 
       expect(localized_str).to eq('An official website of the United States government' \
         '<small class="i18n-anchor"><a href="https://github.com/18F/identity-idp/' \
-        'tree/master/config/locales/en.yml#L404" target="_blank" class="ml-tiny ' \
+        'tree/master/config/locales/en.yml#L406" target="_blank" class="ml-tiny ' \
         'no-hover-decoration">🔗</a></small>')
     end
   end

@@ -8,6 +8,7 @@ test:
     agency: 'test_agency'
     friendly_name: 'test_friendly_name'
     logo: 'sample_sp_logo.png'
+    return_to_sp_url: 'http://localhost:3000'
     attribute_bundle:
       - email
       - phone
@@ -65,6 +66,7 @@ development:
     agency: '18F'
     friendly_name: '18F Test Service Provider'
     logo: 'sample_sp_logo.png'
+    return_to_sp_url: 'http://localhost:3003'
     attribute_bundle:
       - email
 

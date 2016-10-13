@@ -87,6 +87,7 @@ en:
         corresponding to %{email} at %{app}.
 
   links:
+    back_to_sp: '‹ Back to %{app}'
     create_account: Create account
     resend: Resend
     sign_out: Sign out
@@ -173,6 +174,7 @@ en:
       password: Edit your password
       phone: Edit your phone number
     log_in: Log in
+    log_in_branded: Log in to continue to %{app}
     choose_otp_delivery: Choose delivery method
     passwords:
       change: Change your password
