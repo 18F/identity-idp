@@ -89,7 +89,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
 
         expect(SmsSenderOtpJob).to have_received(:perform_later).
-          with(subject.current_user.direct_otp, subject.current_user.phone)
+          with(
+            code: subject.current_user.direct_otp,
+            phone: subject.current_user.phone,
+            otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+          )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
@@ -128,7 +132,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
 
         expect(VoiceSenderOtpJob).to have_received(:perform_later).
-          with(subject.current_user.direct_otp, subject.current_user.phone)
+          with(
+            code: subject.current_user.direct_otp,
+            phone: subject.current_user.phone,
+            otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+          )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(

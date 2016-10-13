@@ -1,11 +1,15 @@
 class SmsSenderOtpJob < ActiveJob::Base
   queue_as :sms
 
-  def perform(code, phone)
-    send_otp(TwilioService.new, code, phone)
+  def perform(code:, phone:, otp_created_at:)
+    send_otp(TwilioService.new, code, phone) if otp_valid?(otp_created_at)
   end
 
   private
+
+  def otp_valid?(otp_created_at)
+    Time.now.utc < otp_created_at + Devise.direct_otp_valid_for
+  end
 
   def send_otp(twilio_service, code, phone)
     twilio_service.send_sms(

@@ -10,6 +10,7 @@ Figaro.require_keys(
   'otp_delivery_blocklist_bantime',
   'otp_delivery_blocklist_findtime',
   'otp_delivery_blocklist_maxretry',
+  'otp_valid_for',
   'password_pepper',
   'reauthn_window',
   'recovery_code_length',
