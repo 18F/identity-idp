@@ -1,6 +1,9 @@
 - title t('titles.visitors.index')
 
-h1.h3.my0 = t('headings.log_in')
+- if @sp_name
+  h1.h3.my0 = t('headings.log_in_branded', app: @sp_name)
+- else
+  h1.h3.my0 = t('headings.log_in')
 = simple_form_for(resource,
                   as: resource_name,
                   url: session_path(resource_name),
@@ -9,9 +12,11 @@ h1.h3.my0 = t('headings.log_in')
   = f.input :password, required: true
   = f.button :submit, t('headings.log_in'), class: 'btn-wide mt2'
 .clearfix.mt3.sm-mt4.pt1.border-top
-  .sm-col.py1.sm-p0
-    = link_to t('links.create_account'), new_user_start_path, class: 'underline'
+  - if @sp_name && @sp_return_url
+    .sm-col.py1.sm-p0
+      = link_to t('links.back_to_sp', app: @sp_name), @sp_return_url,
+        class: 'inline-block truncate align-bottom underline sm-maxw-190p'
   .sm-col-right
-    = link_to t('links.user_confirmation'), new_user_confirmation_path, class: 'underline'
-    span.px1.silver = '|'
     = link_to t('headings.passwords.forgot'), new_password_path(resource_name), class: 'underline'
+    span.px1.silver = '|'
+    = link_to t('links.create_account'), new_user_start_path, class: 'underline'

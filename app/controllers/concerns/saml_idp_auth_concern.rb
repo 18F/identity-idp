@@ -35,6 +35,7 @@ module SamlIdpAuthConcern
 
   def add_sp_metadata_to_session
     session[:sp] = { logo: current_sp_metadata[:logo],
+                     return_url: current_sp_metadata[:return_to_sp_url],
                      name: current_sp_metadata[:friendly_name] ||
                            current_sp_metadata[:agency] }
   end

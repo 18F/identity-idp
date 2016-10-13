@@ -7,6 +7,8 @@
 .no-hover-decoration:hover { text-decoration: none; }
 
 @media #{$breakpoint-sm} {
+  .sm-maxw-190p { max-width: 190px; }
+
   .sm-bg-light-blue { background-color: $blue-light; }
 
   .sm-left-align { text-align: left; }

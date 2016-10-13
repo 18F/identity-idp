@@ -9,6 +9,7 @@ module BrandedExperience
     return unless session_metadata
     @sp_logo = session_metadata[:logo]
     @sp_name = session_metadata[:name]
+    @sp_return_url = session_metadata[:return_url]
   end
 
   def session_metadata

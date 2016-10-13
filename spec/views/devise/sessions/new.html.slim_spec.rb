@@ -22,4 +22,35 @@ describe 'devise/sessions/new.html.slim' do
         t('links.create_account'), href: new_user_start_path
       )
   end
+
+  context 'when @sp_name is set' do
+    before do
+      @sp_name = 'Awesome Application!'
+      @sp_return_url = 'www.awesomeness.com'
+    end
+
+    it 'displays a custom header' do
+      render
+
+      expect(rendered).to have_content(t('headings.log_in_branded',
+                                         app: 'Awesome Application!'))
+    end
+
+    it 'displays a back to sp link' do
+      render
+
+      expect(rendered).
+        to have_link(
+          t('links.back_to_sp', app: 'Awesome Application!'), href: @sp_return_url
+        )
+    end
+  end
+
+  context 'when @sp_name is not set' do
+    it 'displays the normal header' do
+      render
+
+      expect(rendered).to have_content(t('headings.log_in'))
+    end
+  end
 end
