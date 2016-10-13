@@ -1,6 +1,10 @@
 - title t('titles.visitors.index')
 
-h1.h3.my0 = t('headings.log_in')
+- if @sp_name
+  h1.h3.my0 = t('headings.log_in_branded', app: @sp_name)
+- else
+  h1.h3.my0 = t('headings.log_in')
+
 = simple_form_for(resource,
                   as: resource_name,
                   url: session_path(resource_name),
