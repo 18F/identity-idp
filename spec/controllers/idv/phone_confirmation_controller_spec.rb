@@ -37,11 +37,11 @@ describe Idv::PhoneConfirmationController, devise: true do
       end
 
       it 'sends confirmation code via SMS' do
-        allow(SmsSenderOtpJob).to receive(:perform_later)
+        allow(SmsOtpSenderJob).to receive(:perform_later)
 
         get :send_code
 
-        expect(SmsSenderOtpJob).to have_received(:perform_later).
+        expect(SmsOtpSenderJob).to have_received(:perform_later).
           with(
             code: subject.user_session[:idv_phone_confirmation_code],
             phone: '+1 (555) 555-5555',
@@ -53,11 +53,11 @@ describe Idv::PhoneConfirmationController, devise: true do
         before { subject.user_session[:idv_phone_confirmation_code] = '1234' }
 
         it 're-sends existing code' do
-          allow(SmsSenderOtpJob).to receive(:perform_later)
+          allow(SmsOtpSenderJob).to receive(:perform_later)
 
           get :send_code
 
-          expect(SmsSenderOtpJob).to have_received(:perform_later).
+          expect(SmsOtpSenderJob).to have_received(:perform_later).
             with(
               code: '1234',
               phone: '+1 (555) 555-5555',

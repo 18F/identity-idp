@@ -42,7 +42,7 @@ module Devise
     def send_user_otp(method)
       current_user.create_direct_otp
 
-      job = "#{method.capitalize}SenderOtpJob".constantize
+      job = "#{method.capitalize}OtpSenderJob".constantize
 
       job.perform_later(
         code: current_user.direct_otp,

@@ -1,4 +1,4 @@
-class SmsSenderOtpJob < ActiveJob::Base
+class SmsOtpSenderJob < ActiveJob::Base
   queue_as :sms
 
   def perform(code:, phone:, otp_created_at:)

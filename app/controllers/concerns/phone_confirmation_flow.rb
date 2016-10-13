@@ -72,7 +72,7 @@ module PhoneConfirmationFlow
     # Generate a new confirmation code only if there isn't already one set in the
     # user's session. Re-sending the confirmation code doesn't generate a new one.
     self.confirmation_code = generate_confirmation_code unless confirmation_code
-    job = "#{current_otp_method.to_s.capitalize}SenderOtpJob".constantize
+    job = "#{current_otp_method.to_s.capitalize}OtpSenderJob".constantize
     job.perform_later(
       code: confirmation_code,
       phone: unconfirmed_phone,

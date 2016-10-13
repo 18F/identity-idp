@@ -42,7 +42,7 @@ describe Users::PhoneConfirmationController, devise: true do
         end
 
         it 're-sends existing code' do
-          expect(SmsSenderOtpJob).to receive(:perform_later).
+          expect(SmsOtpSenderJob).to receive(:perform_later).
             with(
               code: '1234',
               phone: '+1 (555) 555-5555',
