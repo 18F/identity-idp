@@ -11,7 +11,7 @@ module SamlIdpLogoutConcern
   end
 
   def handle_saml_logout_response
-    handler = LogoutResponseHandler.new(asserted_identity, user_session[:logout_response])
+    handler = LogoutResponseHandler.new(asserted_identity, slo_session[:logout_response])
 
     handler.deactivate_identity
 
@@ -67,13 +67,17 @@ module SamlIdpLogoutConcern
     @saml_response = OneLogin::RubySaml::Logoutresponse.new(params[:SAMLResponse])
   end
 
+  def slo_session
+    user_session || session
+  end
+
   def prepare_saml_logout_request
     validate_saml_request
-    return if user_session[:logout_response]
+    return if slo_session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
-    user_session[:logout_response] = logout_response_builder.signed
-    user_session[:logout_response_url] = saml_request.response_url
+    slo_session[:logout_response] = logout_response_builder.signed
+    slo_session[:logout_response_url] = saml_request.response_url
   end
 
   def finish_slo_at_idp
@@ -88,8 +92,8 @@ module SamlIdpLogoutConcern
 
   def generate_slo_response_and_sign_out
     render_template_for(
-      Base64.strict_encode64(user_session[:logout_response]),
-      user_session[:logout_response_url],
+      Base64.strict_encode64(slo_session[:logout_response]),
+      slo_session[:logout_response_url],
       'SAMLResponse'
     )
 

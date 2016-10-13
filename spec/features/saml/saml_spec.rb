@@ -167,6 +167,18 @@ feature 'saml api', devise: true do
   end
 
   context 'visiting /api/saml/logout' do
+    context 'via SP-initiated logout when not logged in to IdP' do
+      it 'does not raise an exception' do
+        request = OneLogin::RubySaml::Logoutrequest.new
+        settings = sp1_saml_settings
+        settings.name_identifier_value = SecureRandom.uuid
+
+        expect do
+          visit request.create(settings)
+        end.to_not raise_error
+      end
+    end
+
     context 'when logged in to single SP with IdP-initiated logout' do
       let(:user) { create(:user, :signed_up) }
       let(:xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
