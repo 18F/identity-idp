@@ -1,5 +1,5 @@
 SecureHeaders::Configuration.default do |config|
-  config.hsts = "max-age=#{1.day.to_i}; includeSubDomains"
+  config.hsts = "max-age=#{365.days.to_i}; includeSubDomains"
   config.x_frame_options = 'SAMEORIGIN'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
