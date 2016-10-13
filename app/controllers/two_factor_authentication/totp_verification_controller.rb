@@ -6,7 +6,11 @@ module TwoFactorAuthentication
     end
 
     def create
-      if current_user.authenticate_totp(params[:code].strip)
+      result = TotpVerificationForm.new(current_user, params[:code].strip).submit
+
+      analytics.track_event(:totp_authentication, result)
+
+      if result[:success?]
         handle_valid_otp
       else
         handle_invalid_otp

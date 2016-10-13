@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
     before do
-      sign_up_and_2fa
+      @user = sign_up_and_2fa
       allow(Figaro.env).to receive(:reauthn_window).and_return(0)
     end
 
@@ -15,10 +15,39 @@ feature 'Changing authentication factor' do
     end
 
     scenario 'editing phone number' do
+      allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+
+      @previous_phone_confirmed_at = @user.phone_confirmed_at
+
       visit edit_phone_path
       complete_2fa_confirmation
 
-      expect(current_path).to eq edit_phone_path
+      # update the phone number
+      fill_in 'update_user_phone_form[phone]', with: '703-555-0100'
+      click_button t('forms.buttons.submit.update')
+
+      # choose default SMS delivery method for confirming this new number
+      click_submit_default
+
+      expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
+
+      # enter incorrect code
+      fill_in 'code', with: '12345'
+      click_submit_default
+
+      expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
+      expect(@user.reload.phone).to_not eq '+1 (703) 555-0100'
+      expect(@user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
+      expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
+
+      # enter correct code
+      fill_in 'code', with: @user.reload.direct_otp
+      click_submit_default
+
+      expect(page).to have_content t('notices.phone_confirmation_successful')
+      expect(current_path).to eq profile_path
+      expect(SmsSenderNumberChangeJob).to have_received(:perform_later).with('+1 (202) 555-1212')
+      expect(@user.reload.phone).to eq '+1 (703) 555-0100'
     end
 
     scenario 'editing email' do
@@ -44,9 +73,5 @@ feature 'Changing authentication factor' do
     expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
 
     click_submit_default
-  end
-
-  def click_submit_default
-    click_button t('forms.buttons.submit.default')
   end
 end

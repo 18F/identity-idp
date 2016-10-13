@@ -3,17 +3,25 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     def show
-      @phone_number = decorated_user.masked_two_factor_phone_number
-      @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-      @delivery_method = params[:delivery_method]
+      assign_variables_for_otp_verification_show_view
     end
 
     def create
-      if current_user.authenticate_direct_otp(params[:code].strip)
+      result = OtpVerificationForm.new(current_user, form_params[:code].strip).submit
+
+      analytics.track_event(:"otp_#{context}", result)
+
+      if result[:success?]
         handle_valid_otp
       else
         handle_invalid_otp
       end
+    end
+
+    private
+
+    def form_params
+      params.permit(:code)
     end
   end
 end

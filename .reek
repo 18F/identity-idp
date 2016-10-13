@@ -23,6 +23,7 @@ TooManyStatements:
   max_statements: 6
   exclude:
     - Users::PhoneConfirmationController
+    - TwoFactorAuthenticatable
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController

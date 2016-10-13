@@ -74,8 +74,9 @@ feature 'Sign Up', devise: true do
     end
 
     it 'allows user to resend confirmation code' do
-      click_link t('forms.buttons.resend')
-      expect(current_path).to eq phone_confirmation_path
+      click_link t('links.two_factor_authentication.resend_code')
+
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
     end
 
     it 'does not enable 2FA until correct OTP is entered' do
@@ -110,7 +111,7 @@ feature 'Sign Up', devise: true do
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do
-      expect(current_path).to eq phone_confirmation_path
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
       expect(page).to have_content(t('instructions.2fa.confirm_code', number: '+1 (202) 555-1212'))
     end
 
@@ -119,8 +120,8 @@ feature 'Sign Up', devise: true do
       click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.phone_confirmed_at).to be_nil
-      expect(page).to have_content t('errors.invalid_confirmation_code')
-      expect(current_path).to eq phone_confirmation_path
+      expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
     end
   end
 

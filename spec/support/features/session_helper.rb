@@ -81,5 +81,9 @@ module Features
       click_button t('forms.buttons.submit.continue')
       user
     end
+
+    def click_submit_default
+      click_button t('forms.buttons.submit.default')
+    end
   end
 end

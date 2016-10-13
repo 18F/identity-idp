@@ -22,7 +22,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
     end
 
-    context 'when the user is fully authenticated' do
+    context 'when the user is fully authenticated and the context is authentication' do
       let(:user) { create(:user, :signed_up) }
 
       before do
@@ -30,9 +30,23 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'redirects to the profile' do
-        get :index
+        get :index, context: 'authentication'
 
         expect(response).to redirect_to(profile_url)
+      end
+    end
+
+    context 'when the user is fully authenticated and the context is not authentication' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        sign_in user
+      end
+
+      it 'does not redirect to the profile' do
+        get :index, context: 'confirmation'
+
+        expect(response).to_not be_redirect
       end
     end
 

@@ -8,6 +8,7 @@ module Devise
       else
         @phone_number = decorated_user.masked_two_factor_phone_number
         @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+        @context = params[:context]
       end
     end
 
@@ -37,7 +38,9 @@ module Devise
       resent_message = t("notices.send_code.#{method}")
       flash[:success] = resent_message if session[:code_sent].present?
       session[:code_sent] = 'true'
-      redirect_to login_two_factor_path(delivery_method: method, reauthn: reauthn?)
+      redirect_to login_two_factor_path(
+        delivery_method: method, reauthn: reauthn?, context: delivery_params[:context]
+      )
     end
 
     def send_user_otp(method)
@@ -48,12 +51,12 @@ module Devise
       job.perform_later(
         code: current_user.direct_otp,
         phone: current_user.phone,
-        otp_created_at: (current_user.direct_otp_sent_at || Time.zone.now).to_s
+        otp_created_at: current_user.direct_otp_sent_at.to_s
       )
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(:otp_method, :resend)
+      params.require(:otp_delivery_selection_form).permit(:otp_method, :resend, :context)
     end
   end
 end

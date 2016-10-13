@@ -24,6 +24,8 @@ module TwoFactorAuthenticatable
   end
 
   def check_already_authenticated
+    return unless params[:context] == 'authentication'
+
     redirect_to profile_path if user_fully_authenticated?
   end
 
@@ -33,29 +35,25 @@ module TwoFactorAuthenticatable
     current_user.update(second_factor_attempts_count: 0, second_factor_locked_at: nil)
   end
 
-  def mark_user_session_authenticated
-    user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
-    user_session[:authn_at] = Time.zone.now
+  def handle_valid_otp
+    if context == 'authentication'
+      handle_valid_otp_for_authentication_context
+    else
+      handle_valid_otp_for_confirmation_context
+    end
+
+    redirect_to after_otp_verification_confirmation_path
   end
 
-  def handle_valid_otp
-    mark_user_session_authenticated
-    bypass_sign_in current_user
-    flash[:notice] = t('devise.two_factor_authentication.success') unless reauthn?
-
-    analytics.track_event('User 2FA successful')
-
-    current_user.update(second_factor_attempts_count: 0)
-
-    redirect_to after_2fa_path
+  def context
+    context = params[:context]
+    context.present? ? context : 'authentication'
   end
 
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # devise.two_factor_authentication.invalid_#{type}
   def handle_invalid_otp(type: 'otp')
-    analytics.track_event('User entered invalid 2FA code')
-
     update_invalid_user if current_user.two_factor_enabled?
 
     flash[:error] = t("devise.two_factor_authentication.invalid_#{type}")
@@ -63,6 +61,7 @@ module TwoFactorAuthenticatable
     if decorated_user.blocked_from_entering_2fa_code?
       handle_second_factor_locked_user
     else
+      assign_variables_for_otp_verification_show_view
       render :show
     end
   end
@@ -74,11 +73,93 @@ module TwoFactorAuthenticatable
     current_user.save
   end
 
-  def after_2fa_path
-    if decorated_user.should_acknowledge_recovery_code?(session)
+  def handle_valid_otp_for_confirmation_context
+    assign_phone
+    clear_session_data
+
+    flash[:success] = t('notices.phone_confirmation_successful')
+  end
+
+  def handle_valid_otp_for_authentication_context
+    mark_user_session_authenticated
+    bypass_sign_in current_user
+    flash[:notice] = t('devise.two_factor_authentication.success') unless reauthn?
+
+    current_user.update(second_factor_attempts_count: 0)
+  end
+
+  def assign_phone
+    @updating_existing_number = old_phone
+
+    if @updating_existing_number
+      phone_changed
+    else
+      phone_confirmed
+    end
+
+    update_phone_attributes
+  end
+
+  def old_phone
+    current_user.phone
+  end
+
+  def phone_changed
+    create_user_event(:phone_changed)
+    analytics.track_event('User changed their phone number')
+    SmsSenderNumberChangeJob.perform_later(old_phone)
+  end
+
+  def phone_confirmed
+    create_user_event(:phone_confirmed)
+    analytics.track_event('User confirmed their phone number')
+  end
+
+  def update_phone_attributes
+    current_time = Time.current
+
+    if params[:context] == 'idv'
+      Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
+    else
+      current_user.update(phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time)
+    end
+  end
+
+  def clear_session_data
+    user_session.delete(:unconfirmed_phone)
+  end
+
+  def after_otp_verification_confirmation_path
+    if params[:context] == 'idv'
+      idv_questions_path
+    elsif @updating_existing_number
+      profile_path
+    elsif decorated_user.should_acknowledge_recovery_code?(session)
       settings_recovery_code_url
     else
       after_sign_in_path_for(current_user)
     end
   end
+
+  def mark_user_session_authenticated
+    user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+    user_session[:authn_at] = Time.zone.now
+  end
+
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+  def assign_variables_for_otp_verification_show_view
+    @phone_number = user_session[:unconfirmed_phone] ||
+                    decorated_user.masked_two_factor_phone_number
+    @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+    @context = params[:context]
+    @delivery_method = params[:delivery_method]
+    @reenter_phone_number_path = if @context == 'idv'
+                                   idv_session_path
+                                 elsif current_user.phone.present?
+                                   edit_phone_path
+                                 else
+                                   phone_setup_path
+                                 end
+  end
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 end
