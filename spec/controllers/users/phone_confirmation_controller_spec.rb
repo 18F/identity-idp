@@ -43,7 +43,11 @@ describe Users::PhoneConfirmationController, devise: true do
 
         it 're-sends existing code' do
           expect(SmsSenderOtpJob).to receive(:perform_later).
-            with('1234', '+1 (555) 555-5555')
+            with(
+              code: '1234',
+              phone: '+1 (555) 555-5555',
+              otp_created_at: controller.current_user.direct_otp_sent_at.to_s
+            )
 
           get :send_code
         end

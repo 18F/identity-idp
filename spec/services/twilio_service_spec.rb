@@ -56,7 +56,11 @@ describe TwilioService do
     it 'does not send OTP messages', twilio: true do
       TwilioService.telephony_service = FakeSms
 
-      SmsSenderOtpJob.perform_now('1234', '555-5555')
+      SmsSenderOtpJob.perform_now(
+        code: '1234',
+        phone: '555-5555',
+        otp_created_at: Time.current
+      )
 
       expect(FakeSms.messages.size).to eq 0
     end

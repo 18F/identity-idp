@@ -42,7 +42,11 @@ describe Idv::PhoneConfirmationController, devise: true do
         get :send_code
 
         expect(SmsSenderOtpJob).to have_received(:perform_later).
-          with(subject.user_session[:idv_phone_confirmation_code], '+1 (555) 555-5555')
+          with(
+            code: subject.user_session[:idv_phone_confirmation_code],
+            phone: '+1 (555) 555-5555',
+            otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+          )
       end
 
       context 'confirmation code already exists in the session' do
@@ -53,8 +57,12 @@ describe Idv::PhoneConfirmationController, devise: true do
 
           get :send_code
 
-          expect(SmsSenderOtpJob).
-            to have_received(:perform_later).with('1234', '+1 (555) 555-5555')
+          expect(SmsSenderOtpJob).to have_received(:perform_later).
+            with(
+              code: '1234',
+              phone: '+1 (555) 555-5555',
+              otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+            )
         end
       end
     end

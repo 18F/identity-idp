@@ -44,7 +44,11 @@ module Devise
 
       job = "#{method.capitalize}SenderOtpJob".constantize
 
-      job.perform_later(current_user.direct_otp, current_user.phone)
+      job.perform_later(
+        code: current_user.direct_otp,
+        phone: current_user.phone,
+        otp_created_at: current_user.direct_otp_sent_at.to_s
+      )
     end
 
     def delivery_params

@@ -27,6 +27,7 @@ module PhoneConfirmationFlow
 
   def send_code
     send_confirmation_code
+    flash[:success] = t("notices.send_code.#{current_otp_method}")
     redirect_to this_phone_confirmation_path
   end
 
@@ -71,12 +72,12 @@ module PhoneConfirmationFlow
     # Generate a new confirmation code only if there isn't already one set in the
     # user's session. Re-sending the confirmation code doesn't generate a new one.
     self.confirmation_code = generate_confirmation_code unless confirmation_code
-
     job = "#{current_otp_method.to_s.capitalize}SenderOtpJob".constantize
-
-    job.perform_later(confirmation_code, unconfirmed_phone)
-
-    flash[:success] = t("notices.send_code.#{current_otp_method}")
+    job.perform_later(
+      code: confirmation_code,
+      phone: unconfirmed_phone,
+      otp_created_at: current_user.direct_otp_sent_at.to_s
+    )
   end
 
   def set_fallback_vars

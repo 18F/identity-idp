@@ -267,5 +267,5 @@ Devise.setup do |config|
   config.max_login_attempts = 3 # max OTP login attempts, not devise strategies (e.g. pw auth)
   config.otp_length = 6
   config.direct_otp_length = 6
-  config.direct_otp_valid_for = 5.minutes
+  config.direct_otp_valid_for = Figaro.env.otp_valid_for.to_i.minutes
 end
