@@ -7,7 +7,7 @@ test:
     cert: 'saml_test_sp'
     agency: 'test_agency'
     friendly_name: 'test_friendly_name'
-    logo: 'sample_sp_logo.png'
+    logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
     attribute_bundle:
       - email
@@ -19,7 +19,7 @@ test:
     block_encryption: 'aes256-cbc'
     sp_initiated_login_url: 'https://example.com/auth/saml/login'
     cert: 'saml_test_sp'
-    logo: 'sample_sp_logo.png'
+    logo: 'generic.svg'
     attribute_bundle:
       - first_name
       - last_name
@@ -65,7 +65,7 @@ development:
     cert: 'sp_rails_demo'
     agency: '18F'
     friendly_name: '18F Test Service Provider'
-    logo: 'sample_sp_logo.png'
+    logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3003'
     attribute_bundle:
       - email
