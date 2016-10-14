@@ -1,12 +1,12 @@
 require 'rails_helper'
 include Features::ActiveJobHelper
 
-describe VoiceSenderOtpJob do
+describe VoiceOtpSenderJob do
   describe '.perform' do
     it 'initiates the phone call to deliver the OTP', twilio: true do
       TwilioService.telephony_service = FakeVoiceCall
 
-      VoiceSenderOtpJob.perform_now(
+      VoiceOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
         otp_created_at: Time.current
@@ -31,7 +31,7 @@ describe VoiceSenderOtpJob do
       FakeVoiceCall.calls = []
       otp_expiration_period = Devise.direct_otp_valid_for
 
-      VoiceSenderOtpJob.perform_now(
+      VoiceOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
         otp_created_at: otp_expiration_period.ago

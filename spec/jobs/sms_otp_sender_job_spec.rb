@@ -1,12 +1,12 @@
 require 'rails_helper'
 include Features::ActiveJobHelper
 
-describe SmsSenderOtpJob do
+describe SmsOtpSenderJob do
   describe '.perform' do
     it 'sends a message containing the OTP code to the mobile number', twilio: true do
       TwilioService.telephony_service = FakeSms
 
-      SmsSenderOtpJob.perform_now(
+      SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
         otp_created_at: Time.current
@@ -30,7 +30,7 @@ describe SmsSenderOtpJob do
       FakeSms.messages = []
       otp_expiration_period = Devise.direct_otp_valid_for
 
-      SmsSenderOtpJob.perform_now(
+      SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
         otp_created_at: otp_expiration_period.ago

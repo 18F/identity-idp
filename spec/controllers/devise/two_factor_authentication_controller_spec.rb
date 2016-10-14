@@ -82,13 +82,13 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       before do
         sign_in_before_2fa
         @old_otp = subject.current_user.direct_otp
-        allow(SmsSenderOtpJob).to receive(:perform_later)
+        allow(SmsOtpSenderJob).to receive(:perform_later)
       end
 
       it 'sends OTP via SMS' do
         get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
 
-        expect(SmsSenderOtpJob).to have_received(:perform_later).
+        expect(SmsOtpSenderJob).to have_received(:perform_later).
           with(
             code: subject.current_user.direct_otp,
             phone: subject.current_user.phone,
@@ -125,13 +125,13 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       before do
         sign_in_before_2fa
         @old_otp = subject.current_user.direct_otp
-        allow(VoiceSenderOtpJob).to receive(:perform_later)
+        allow(VoiceOtpSenderJob).to receive(:perform_later)
       end
 
       it 'sends OTP via voice' do
         get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
 
-        expect(VoiceSenderOtpJob).to have_received(:perform_later).
+        expect(VoiceOtpSenderJob).to have_received(:perform_later).
           with(
             code: subject.current_user.direct_otp,
             phone: subject.current_user.phone,
