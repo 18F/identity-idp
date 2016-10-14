@@ -59,7 +59,7 @@ describe TwilioService do
       SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
-        otp_created_at: Time.current
+        otp_created_at: Time.current.to_s
       )
 
       expect(FakeSms.messages.size).to eq 0

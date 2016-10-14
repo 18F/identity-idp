@@ -8,7 +8,7 @@ class SmsOtpSenderJob < ActiveJob::Base
   private
 
   def otp_valid?(otp_created_at)
-    Time.now.utc < otp_created_at + Devise.direct_otp_valid_for
+    Time.now.utc < DateTime.parse(otp_created_at) + Devise.direct_otp_valid_for
   end
 
   def send_otp(twilio_service, code, phone)
