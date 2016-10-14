@@ -218,7 +218,7 @@ describe SamlIdpController do
       end
 
       it 'stores SP metadata in session' do
-        expect(session[:sp]).to eq(logo: 'sample_sp_logo.png',
+        expect(session[:sp]).to eq(logo: 'generic.svg',
                                    return_url: 'http://localhost:3000',
                                    name: 'test_friendly_name')
       end
