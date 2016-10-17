@@ -7,9 +7,7 @@ Identity-IdP (Upaya)
 [![security](https://hakiri.io/github/18F/identity-idp/master.svg)](https://hakiri.io/github/18F/identity-idp/master)
 [![accessibility](https://continua11y.18f.gov/18F/identity-idp.svg?branch=master)](https://continua11y.18f.gov/18F/identity-idp)
 
-A proof-of-concept Identity Management System.
-
-**Notice:** This project is still in alpha.
+A Identity Management System powering login.gov.
 
 ### Local development
 
