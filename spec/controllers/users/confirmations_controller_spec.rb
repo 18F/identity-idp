@@ -95,6 +95,24 @@ describe Users::ConfirmationsController, devise: true do
 
       patch :confirm, password_form: { password: 'NewVal' }, confirmation_token: 'foo'
     end
+
+    context 'user supplies invalid password' do
+      render_views
+
+      it 'includes invalid password feedback message' do
+        user = create(:user, :unconfirmed)
+        user.update(confirmation_token: 'foo')
+
+        patch :confirm, password_form: { password: 'password' }, confirmation_token: 'foo'
+
+        expect(response).to_not redirect_to phone_setup_url
+        expect(response.body).to match('not strong enough')
+        expect(response.status).to eq 200
+
+        user.reload
+        expect(user.confirmed_at).to be_nil
+      end
+    end
   end
 
   describe 'User confirms new email' do

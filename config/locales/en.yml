@@ -7,6 +7,7 @@ en:
     invalid_confirmation_code: Invalid confirmation code.
     messages:
       improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
+      weak_password: not strong enough. Consider adding a number, symbols or more letters to make it stronger. %{feedback}
 
   event_types:
     account_created: Account created

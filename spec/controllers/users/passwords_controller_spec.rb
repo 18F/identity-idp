@@ -101,13 +101,15 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        params = { password: 'password', reset_password_token: 'foo' }
+        password = 'a really long passw0rd'
 
-        user = instance_double('User', uuid: '123')
+        params = { password: password, reset_password_token: 'foo' }
+
+        user = User.new(uuid: '123')
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
         allow(user).to receive(:reset_password_token).and_return('foo')
         allow(user).to receive(:errors).and_return({})
-        allow(user).to receive(:password=).with('password')
+        allow(user).to receive(:password=).with(password)
 
         notifier = instance_double(EmailNotifier)
         allow(EmailNotifier).to receive(:new).with(user).and_return(notifier)

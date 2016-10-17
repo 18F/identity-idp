@@ -6,10 +6,11 @@ require 'rails_helper'
 #   So I can regain access to protected areas of the site
 feature 'Password Recovery' do
   def reset_password_and_sign_back_in(user)
-    fill_in 'New password', with: 'NewVal!dPassw0rd'
+    password = 'a really long password'
+    fill_in 'New password', with: password
     click_button t('forms.passwords.edit.buttons.submit')
     fill_in 'Email', with: user.email
-    fill_in 'user_password', with: 'NewVal!dPassw0rd'
+    fill_in 'user_password', with: password
     click_button t('links.sign_in')
   end
 

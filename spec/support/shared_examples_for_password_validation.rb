@@ -18,7 +18,7 @@ shared_examples 'password validation' do
   end
 
   it do
-    is_expected.to allow_value('ValidPassword1').for(:password)
+    is_expected.to allow_value('Valid Password1').for(:password)
   end
 
   it do

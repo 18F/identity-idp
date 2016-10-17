@@ -3,9 +3,18 @@ class User < ActiveRecord::Base
 
   after_validation :set_default_role, if: :new_record?
 
-  devise :confirmable, :database_authenticatable, :recoverable, :registerable,
-         :timeoutable, :trackable, :two_factor_authenticatable, :omniauthable,
-         omniauth_providers: [:saml]
+  devise(
+    :confirmable,
+    :database_authenticatable,
+    :recoverable,
+    :registerable,
+    :timeoutable,
+    :trackable,
+    :two_factor_authenticatable,
+    :omniauthable,
+    :zxcvbnable,
+    omniauth_providers: [:saml]
+  )
 
   enum role: { user: 0, tech: 1, admin: 2 }
 
@@ -81,5 +90,17 @@ class User < ActiveRecord::Base
 
   def decorate
     UserDecorator.new(self)
+  end
+
+  # used by zxcvbn
+  def weak_words
+    [APP_NAME]
+  end
+
+  private
+
+  # method required by zxcvbn
+  def password_required?
+    password.present?
   end
 end

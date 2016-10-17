@@ -19,7 +19,7 @@ describe Users::EditPasswordController do
 
         expect(email_notifier).to receive(:send_password_changed_email)
 
-        params = { password: 'new password', current_password: 'password' }
+        params = { password: 'salty new password', current_password: user.password }
         patch :update, update_user_password_form: params
 
         expect(@analytics).to have_received(:track_event).

@@ -25,7 +25,7 @@ module ControllerHelper
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
 
-  def stub_sign_in(user = User.new(password: 'password'))
+  def stub_sign_in(user = User.new(password: 'salted peanuts are best'))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
     allow(controller).to receive(:user_session).and_return(authn_at: Time.zone.now)
