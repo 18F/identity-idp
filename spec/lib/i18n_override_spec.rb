@@ -8,10 +8,9 @@ describe 'i18n override' do
 
       localized_str = I18n.translate_with_markup('shared.usa_banner.official_site')
 
-      expect(localized_str).to eq('An official website of the United States government' \
-        '<small class="i18n-anchor"><a href="https://github.com/18F/identity-idp/' \
-        'tree/master/config/locales/en.yml#L406" target="_blank" class="ml-tiny ' \
-        'no-hover-decoration">🔗</a></small>')
+      regex = /^An official website of the United States government.+i18n-anchor/
+
+      expect(localized_str).to match regex
     end
   end
 end
