@@ -27,7 +27,10 @@ module PhoneConfirmationFlow
 
   def send_code
     send_confirmation_code
-    flash[:success] = t("notices.send_code.#{current_otp_method}")
+    resent_message = t("notices.send_code.#{current_otp_method}")
+    flash[:success] = resent_message if session[:code_sent].present?
+
+    session[:code_sent] = 'true'
     redirect_to this_phone_confirmation_path
   end
 
@@ -59,7 +62,6 @@ module PhoneConfirmationFlow
   def process_valid_code
     assign_phone
     clear_session_data
-
     flash[:success] = t('notices.phone_confirmation_successful')
     redirect_to after_confirmation_path
   end

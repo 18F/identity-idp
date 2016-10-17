@@ -54,18 +54,40 @@ describe Users::PhoneConfirmationController, devise: true do
       end
 
       context 'when choosing SMS OTP delivery' do
-        it 'notifies the user of OTP transmission' do
-          get :send_code, otp_method: :sms
+        context 'first request' do
+          it 'does not notify the user of OTP transmission via flash message' do
+            get :send_code, otp_method: :sms
 
-          expect(flash[:success]).to eq t('notices.send_code.sms')
+            expect(flash[:success]).to eq nil
+          end
+        end
+
+        context 'multiple requests' do
+          it 'notifies the user of OTP transmission via flash message' do
+            get :send_code, otp_method: :sms
+            get :send_code, otp_method: :sms
+
+            expect(flash[:success]).to eq t('notices.send_code.sms')
+          end
         end
       end
 
       context 'when choosing voice OTP delivery' do
-        it 'notifies the user of OTP transmission' do
-          get :send_code, otp_method: :voice
+        context 'first request' do
+          it 'does not notify the user of OTP transmission via flash message' do
+            get :send_code, otp_method: :voice
 
-          expect(flash[:success]).to eq t('notices.send_code.voice')
+            expect(flash[:success]).to eq nil
+          end
+        end
+
+        context 'multiple requests' do
+          it 'notifies the user of OTP transmission via flash message' do
+            get :send_code, otp_method: :voice
+            get :send_code, otp_method: :voice
+
+            expect(flash[:success]).to eq t('notices.send_code.voice')
+          end
         end
       end
     end
