@@ -21,6 +21,7 @@ en:
   forms:
     buttons:
       acknowledge_recovery_code: Continue
+      continue: Continue
       continue_browsing: Continue browsing
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
@@ -123,6 +124,7 @@ en:
     dap_html: >
       <!-- We participate in the US government's analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
+  session_expired: Please <a href=".">refresh</a> the page to log in.
   session_timedout: >
     For your security, we've ended your session due to inactivity. Please log in again.
   session_timeout_warning: >-

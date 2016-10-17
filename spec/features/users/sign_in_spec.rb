@@ -101,22 +101,20 @@ feature 'Sign in' do
   end
 
   context 'signed out' do
-    it 'does not display session timeout JS', js: true do
-      allow(Rails.application.config).to receive(:session_check_frequency).and_return(1)
-      allow(Rails.application.config).to receive(:session_check_delay).and_return(1)
-      allow(Rails.application.config).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in)
+    it 'displays session timeout modal when session times out', js: true do
+      allow(Figaro.env).to receive(:session_timeout_in_seconds).and_return('0')
 
       visit root_path
-      sleep 2
 
-      expect(page).to_not have_css('#session-timeout-msg')
+      expect(page).to have_css('#session-expired-msg')
     end
 
-    it 'does not render session_timeout/warning partial' do
+    it 'does not display timeout modal when session not timed out', js: true do
+      allow(Figaro.env).to receive(:session_timeout_in_seconds).and_return('100')
+
       visit root_path
 
-      expect(page).to_not have_css('#session-timeout-msg', visible: false)
+      expect(page).not_to have_css('#session-expired-msg')
     end
   end
 

@@ -23,6 +23,17 @@ module SessionTimeoutWarningHelper
     end
   end
 
+  def auto_session_expired_js
+    session_timeout_in = (Figaro.env.session_timeout_in_seconds || 8.minutes).to_i
+    nonced_javascript_tag do
+      render(
+        partial: 'session_timeout/expire_session',
+        formats: [:js],
+        locals: { session_timeout_in: session_timeout_in }
+      )
+    end
+  end
+
   def time_left_in_session
     distance_of_time_in_words(warning)
   end

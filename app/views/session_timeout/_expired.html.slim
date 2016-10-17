@@ -1,0 +1,8 @@
+#session-expired-msg
+  .modal-cntnr
+    .px2.py4.modal-inner
+      .mx-auto.p4.cntnr-skinny.border-box.bg-white.rounded.relative
+        = image_tag(asset_url('clock.svg'), class: 'modal-ico')
+        h3.mt0.mb2 = t('headings.session_timeout_warning')
+        p.mb3 == raw t('session_expired')
+        = link_to t('forms.buttons.continue'), '.', class: 'btn btn-primary'
