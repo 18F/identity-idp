@@ -18,9 +18,7 @@ class UpdateUserPasswordForm
 
   private
 
-  attr_reader :user, :success
-
-  attr_accessor :password
+  attr_reader :success
 
   def result
     {

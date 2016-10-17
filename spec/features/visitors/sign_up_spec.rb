@@ -5,7 +5,7 @@ require 'rails_helper'
 #   I want to sign up
 #   So I can visit protected areas of the site
 
-VALID_PASSWORD = 'Val!dPassw0rd'.freeze
+VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 INVALID_PASSWORD = 'asdf'.freeze
 
 feature 'Sign Up', devise: true do
@@ -195,15 +195,27 @@ feature 'Sign Up', devise: true do
     expect(page).to have_css('input.password[type="text"]')
   end
 
-  scenario 'visitor is redirected back to password form when password is invalid' do
-    create(:user, :unconfirmed)
-    confirm_last_user
-    fill_in 'password_form_password', with: 'Q!2e'
+  context 'password is invalid' do
+    scenario 'visitor is redirected back to password form' do
+      create(:user, :unconfirmed)
+      confirm_last_user
+      fill_in 'password_form_password', with: 'Q!2e'
 
-    click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.submit.default')
 
-    expect(page).to have_content('characters')
-    expect(current_url).to eq confirm_url
+      expect(page).to have_content('characters')
+      expect(current_url).to eq confirm_url
+    end
+
+    scenario 'visitor gets password help message' do
+      create(:user, :unconfirmed)
+      confirm_last_user
+      fill_in 'password_form_password', with: 'password'
+
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_content('not strong enough')
+    end
   end
 
   context 'confirmed user is signed in and tries to confirm again' do

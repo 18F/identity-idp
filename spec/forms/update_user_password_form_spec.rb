@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe UpdateUserPasswordForm do
-  let(:user) { User.new(password: 'fancy password') }
+  let(:password) { 'fancy password' }
+  let(:user) { User.new(password: password) }
   subject { UpdateUserPasswordForm.new(user) }
 
   it_behaves_like 'password validation'
@@ -24,7 +25,7 @@ describe UpdateUserPasswordForm do
 
     context 'when both the form and user are valid' do
       it 'sets the user password to the submitted password' do
-        params = { password: 'new password' }
+        params = { password: 'salty new password' }
 
         expect(subject.errors).to receive(:full_messages).and_call_original
 

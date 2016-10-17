@@ -2,7 +2,7 @@ require 'omniauth_spec_helper'
 
 module Features
   module SessionHelper
-    VALID_PASSWORD = 'Val!dPassw0rd'.freeze
+    VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 
     def sign_up_with(email)
       visit new_user_registration_path
