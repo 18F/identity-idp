@@ -37,32 +37,38 @@ describe Idv::PhoneConfirmationController, devise: true do
       end
 
       it 'sends confirmation code via SMS' do
-        allow(SmsOtpSenderJob).to receive(:perform_later)
-
-        get :send_code
-
-        expect(SmsOtpSenderJob).to have_received(:perform_later).
-          with(
-            code: subject.user_session[:idv_phone_confirmation_code],
-            phone: '+1 (555) 555-5555',
-            otp_created_at: subject.current_user.direct_otp_sent_at.to_s
-          )
-      end
-
-      context 'confirmation code already exists in the session' do
-        before { subject.user_session[:idv_phone_confirmation_code] = '1234' }
-
-        it 're-sends existing code' do
+        now = Time.zone.now
+        Timecop.freeze(now) do
           allow(SmsOtpSenderJob).to receive(:perform_later)
 
           get :send_code
 
           expect(SmsOtpSenderJob).to have_received(:perform_later).
             with(
-              code: '1234',
+              code: subject.user_session[:idv_phone_confirmation_code],
               phone: '+1 (555) 555-5555',
-              otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+              otp_created_at: now.to_s
             )
+        end
+      end
+
+      context 'confirmation code already exists in the session' do
+        before { subject.user_session[:idv_phone_confirmation_code] = '1234' }
+
+        it 're-sends existing code' do
+          now = Time.zone.now
+          Timecop.freeze(now) do
+            allow(SmsOtpSenderJob).to receive(:perform_later)
+
+            get :send_code
+
+            expect(SmsOtpSenderJob).to have_received(:perform_later).
+              with(
+                code: '1234',
+                phone: '+1 (555) 555-5555',
+                otp_created_at: now.to_s
+              )
+          end
         end
       end
     end
