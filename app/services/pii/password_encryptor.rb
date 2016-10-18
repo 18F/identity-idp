@@ -1,5 +1,5 @@
 module Pii
-  class PasswordEncryptor < Encryptor
+  class PasswordEncryptor < ::Pii::Encryptor
     def encrypt(plaintext, password, salt)
       cek = key_maker.generate_aes(password, salt)
       super(plaintext, cek)
