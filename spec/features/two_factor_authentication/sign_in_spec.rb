@@ -110,7 +110,7 @@ feature 'Two Factor Authentication' do
       click_button t('forms.buttons.submit.default')
       click_link t('links.two_factor_authentication.resend_code')
 
-      expect(page).to have_content t('notices.send_code.sms')
+      expect(page).to have_content(t('notices.send_code.sms'))
     end
 
     scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do

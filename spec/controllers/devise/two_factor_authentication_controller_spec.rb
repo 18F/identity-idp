@@ -88,12 +88,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'sends OTP via SMS' do
         get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
 
-        expect(SmsOtpSenderJob).to have_received(:perform_later).
-          with(
-            code: subject.current_user.direct_otp,
-            phone: subject.current_user.phone,
-            otp_created_at: subject.current_user.direct_otp_sent_at.to_s
-          )
+        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+          code: subject.current_user.direct_otp,
+          phone: subject.current_user.phone,
+          otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+        )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
@@ -108,16 +107,28 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         expect(@analytics).to receive(:track_event).
           with(:otp_delivery_selection, analytics_hash)
-        expect(@analytics).to receive(:track_event).with('GET request for ' \
-          'two_factor_authentication#send_code')
+        expect(@analytics).to receive(:track_event).with(
+          'GET request for two_factor_authentication#send_code'
+        )
 
         get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
       end
 
-      it 'notifies the user of OTP transmission' do
-        get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
+      context 'first request' do
+        it 'does not notify the user of OTP transmission via flash message' do
+          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
 
-        expect(flash[:success]).to eq t('notices.send_code.sms')
+          expect(flash[:success]).to eq nil
+        end
+      end
+
+      context 'multiple requests' do
+        it 'notifies the user of OTP transmission via flash message' do
+          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
+          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
+
+          expect(flash[:success]).to eq t('notices.send_code.sms')
+        end
       end
     end
 
@@ -131,12 +142,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'sends OTP via voice' do
         get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
 
-        expect(VoiceOtpSenderJob).to have_received(:perform_later).
-          with(
-            code: subject.current_user.direct_otp,
-            phone: subject.current_user.phone,
-            otp_created_at: subject.current_user.direct_otp_sent_at.to_s
-          )
+        expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
+          code: subject.current_user.direct_otp,
+          phone: subject.current_user.phone,
+          otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+        )
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
@@ -152,15 +162,26 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(:otp_delivery_selection, analytics_hash)
         expect(@analytics).to receive(:track_event).with('GET request for ' \
-          'two_factor_authentication#send_code')
+                                                         'two_factor_authentication#send_code')
 
         get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
       end
 
-      it 'notifies the user of OTP transmission' do
-        get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
+      context 'first request' do
+        it 'does not notify the user of OTP transmission via flash message' do
+          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
 
-        expect(flash[:success]).to eq t('notices.send_code.voice')
+          expect(flash[:success]).to eq nil
+        end
+      end
+
+      context 'multiple requests' do
+        it 'notifies the user of OTP transmission via flash message' do
+          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
+          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
+
+          expect(flash[:success]).to eq t('notices.send_code.voice')
+        end
       end
     end
 
