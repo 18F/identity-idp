@@ -81,13 +81,16 @@ development:
     cert: 'identity_dashboard_cert'
 
 production:
-  'https://upaya-dev.18f.gov':
-    metadata_url: 'https://upaya-dev.18f.gov/api/saml/metadata'
-    acs_url: 'https://upaya-dev.18f.gov/test/saml/decode_assertion'
-    assertion_consumer_logout_service_url: 'https://upaya-dev.18f.gov/test/saml/decode_logoutresponse'
-    sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
+  'https://idp.dev.login.gov':
+    metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
+    acs_url: 'https://idp.dev.login.gov/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'https://idp.dev.login.gov/test/saml/decode_logoutresponse'
+    sp_initiated_login_url: 'https://idp.dev.login.gov/test/saml'
     block_encryption: 'aes256-cbc'
     cert: 'saml_test_sp'
+    logo: 'generic.svg'
+    agency: 'GSA'
+    friendly_name: 'Awesome test SP'
     attribute_bundle:
       - email
 
