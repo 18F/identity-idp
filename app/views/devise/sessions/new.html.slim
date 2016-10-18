@@ -13,7 +13,7 @@
   = f.input :password, required: true
   = f.button :submit, t('headings.log_in'), class: 'btn-wide'
 
-- link = link_to t('notices.log_in_consent.link'), '#'
+- link = link_to t('notices.log_in_consent.link'), privacy_path
 p.my3 == t('notices.log_in_consent.text', app: APP_NAME, link: link)
 
 .clearfix.pt1.border-top

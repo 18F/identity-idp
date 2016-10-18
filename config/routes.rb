@@ -105,6 +105,7 @@ Rails.application.routes.draw do
   get '/phone_confirmation' => 'users/phone_confirmation#show'
   get '/phone_confirmation/send' => 'users/phone_confirmation#send_code'
   put '/phone_confirmation' => 'users/phone_confirmation#confirm'
+  get '/privacy' => 'pages#privacy_policy'
   get '/profile' => 'profile#index'
   get '/home' => 'home#index'
   get '/authenticator_start' => 'users/totp_setup#start'

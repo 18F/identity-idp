@@ -6,4 +6,7 @@ class PagesController < ApplicationController
 
     render layout: false, status: 404
   end
+
+  def privacy_policy
+  end
 end

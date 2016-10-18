@@ -12,6 +12,13 @@ describe 'devise/registrations/new.html.slim' do
     render
   end
 
+  it 'includes a link to terms of service' do
+    render
+
+    expect(rendered).
+      to have_link(t('notices.terms_of_service.link'), href: privacy_path)
+  end
+
   it 'sets form autocomplete to off' do
     render
 

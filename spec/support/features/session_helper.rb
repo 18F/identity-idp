@@ -7,7 +7,7 @@ module Features
     def sign_up_with(email)
       visit new_user_registration_path
       fill_in 'Email', with: email
-      click_button 'Sign up'
+      click_button t('forms.buttons.submit.default')
     end
 
     def signin(email, password)
