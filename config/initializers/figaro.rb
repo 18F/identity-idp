@@ -19,6 +19,7 @@ Figaro.require_keys(
   'saml_passphrase',
   'secret_key_base',
   'session_timeout_in',
+  'session_timeout_in_seconds',
   'support_email',
   'twilio_accounts',
   'valid_authn_contexts',
