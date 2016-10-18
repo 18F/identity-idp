@@ -26,7 +26,7 @@ en:
       password_updated:
         subject: 'Password change notification'
       account_locked:
-        subject: 'Your Login.gov account has been locked'
+        subject: 'Your login.gov account has been locked'
     omniauth_callbacks:
       failure: "Could not authenticate you due to: %{reason}."
       success: "Third party authentication successful!"
@@ -43,13 +43,11 @@ en:
       invalid_token: 'The reset password token is invalid. Please try again.'
     registrations:
       start:
-        bullet_1: Please use this site to securely log in to your participating government agency.
+        bullet_1: Please use this site to securely log in to %{app}.
         bullet_2: >
-          %{app} is a central login platform used by multiple U.S. government
-          agencies to make interacting with the government easier.
+          U.S. government agencies are using login.gov to make interacting with the government easier.
         bullet_3: >
-          You can use your %{app} account to access all participating
-          U.S. government agencies.
+          You can use your account to log in to all participating U.S. government agencies.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your
         account will be removed. Are you sure you'd like to delete your account?
