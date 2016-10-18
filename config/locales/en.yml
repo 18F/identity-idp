@@ -55,7 +55,7 @@ en:
         To receive a one-time passode,  you may choose to use a two-factor
         authentication application to log into to your account. If so, you’ll
         need to link your login.gov account to the application you choose. Each
-        time you log in you’ll need to open the application and retrieve a code.
+        time you sign in you’ll need to open the application and retrieve a code.
     confirmation:
       show_hdr: Create a password
     passwords:
@@ -76,7 +76,7 @@ en:
       strength:
         intro: 'Password strength: '
     registration:
-      already_have_account: Already have account? %{link}
+      already_have_account: Already have an account? %{link}
       email: >
         Pick an address to use for government communications.
     2fa:
@@ -93,8 +93,8 @@ en:
     create_account: Create account
     resend: Resend
     sign_out: Sign out
-    sign_in: Log in
-    sign_up: Sign up
+    sign_in: Sign in
+    sign_up: Make an account
     my_account: My account
     user_confirmation: Confirm account
     edit: Edit
@@ -129,7 +129,7 @@ en:
       <!-- See the data at analytics.usa.gov. -->
   session_expired: Please <a href=".">refresh</a> the page to log in.
   session_timedout: >
-    For your security, we've ended your session due to inactivity. Please log in again.
+    For your security, we've ended your session due to inactivity. Please sign in again.
   session_timeout_warning: >-
     Your session will end in <span id="countdown">%{time_left_in_session}</span> due to inactivity.
     If you’d like to continue using the site, please click the button below.
@@ -174,13 +174,13 @@ en:
     confirmations:
       new: Resend confirmation instructions
     contact: Contact us
-    create_account: Create an account
+    create_account: Make a login.gov account to continue to %{app}
     edit_info:
       email: Edit your email
       password: Edit your password
       phone: Edit your phone number
-    log_in: Log in
-    log_in_branded: Log in to continue to %{app}
+    log_in: Sign in
+    log_in_branded: Sign in to continue to %{app}
     choose_otp_delivery: Choose delivery method
     passwords:
       change: Change your password
@@ -239,7 +239,7 @@ en:
         account in the future.
     reset_password:
       header: >
-        You have asked %{app} to reset your password to log in to your
+        You have asked %{app} to reset your password to sign in to your
         %{app} Account. To confirm your request, please click on the link
         below, or copy and paste the entire link into your browser.
       link_text: Continue password reset
@@ -314,7 +314,7 @@ en:
         If you’re unable to verify your identity through this process there might
         be other options available to you. Please see our troubleshooting page to learn about those options.
       hardfail4: >
-        You can also return to the agency website that directed you here to try to log in there
+        You can also return to the agency website that directed you here to try to sign in there
         for the services you are attempting to access.
       cancel: >
         To access your information with the participating agency’s website,
@@ -433,7 +433,7 @@ en:
       intro: >
         A request was made to use this email address as a username for a %{app}
         account. This email address is already in use. If you requested this change,
-        please use the following link to log in to %{app}
+        please use the following link to sign in to %{app}
       link_text: Go to %{app}
       new_account: >
         If you would like to create a new account for online access to %{app},

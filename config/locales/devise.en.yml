@@ -43,11 +43,11 @@ en:
       invalid_token: 'The reset password token is invalid. Please try again.'
     registrations:
       start:
-        bullet_1: Please use this site to securely log in to %{app}.
+        bullet_1: login.gov is providing account services to %{app}.
         bullet_2: >
           U.S. government agencies are using login.gov to make interacting with the government easier.
         bullet_3: >
-          You can use your account to log in to all participating U.S. government agencies.
+          You can use your account to sign in to all participating U.S. government agencies.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your
         account will be removed. Are you sure you'd like to delete your account?
