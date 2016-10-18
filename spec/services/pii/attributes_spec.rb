@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe Pii::Attributes do
   let(:password) { 'sekrit' }
+  let(:salt) { SecureRandom.uuid }
 
   describe '#new_from_hash' do
     it 'initializes from plain Hash' do
@@ -14,8 +15,8 @@ describe Pii::Attributes do
   describe '#new_from_encrypted' do
     it 'inflates from encrypted string' do
       orig_attrs = described_class.new_from_hash(first_name: 'Jane')
-      encrypted_pii = orig_attrs.encrypted(password)
-      pii_attrs = described_class.new_from_encrypted(encrypted_pii, password)
+      encrypted_pii = orig_attrs.encrypted(password, salt)
+      pii_attrs = described_class.new_from_encrypted(encrypted_pii, password, salt)
 
       expect(pii_attrs.first_name).to eq 'Jane'
     end
@@ -34,7 +35,7 @@ describe Pii::Attributes do
     it 'returns the object as encrypted string' do
       pii_attrs = described_class.new_from_hash(first_name: 'Jane')
 
-      expect(pii_attrs.encrypted(password)).to_not match 'Jane'
+      expect(pii_attrs.encrypted(password, salt)).to_not match 'Jane'
     end
   end
 end

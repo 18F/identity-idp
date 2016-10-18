@@ -26,14 +26,13 @@ class Profile < ActiveRecord::Base
   end
 
   def decrypt_pii(password)
-    Pii::Attributes.new_from_encrypted(encrypted_pii, password)
+    Pii::Attributes.new_from_encrypted(encrypted_pii, password, salt)
   end
 
   def encrypt_pii(password, pii = plain_pii)
     ssn = pii.ssn
-    encryptor = Pii::Encryptor.new
-    self.ssn_signature = Digest::SHA256.hexdigest(encryptor.sign(ssn)) if ssn
-    self.encrypted_pii = pii.encrypted(password)
+    self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
+    self.encrypted_pii = pii.encrypted(password, salt)
   end
 
   def method_missing(method_sym, *arguments, &block)
@@ -49,5 +48,11 @@ class Profile < ActiveRecord::Base
   def respond_to_missing?(method_sym, include_private)
     attr_name_sym = method_sym.to_s.gsub(/=\z/, '').to_sym
     plain_pii.members.include?(attr_name_sym) || super
+  end
+
+  private
+
+  def salt
+    Pii::Fingerprinter.fingerprint(ssn_signature.to_s + user.uuid.to_s)
   end
 end

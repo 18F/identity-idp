@@ -4,7 +4,6 @@
 .mt1.mb3.h6.caps.red = t('headings.profile.main')
 
 - if @active_profile
-  - p = @active_profile
   h2.heading.mr1.inline-block
     = t('headings.profile.profile_info')
   = content_tag(:span, t('headings.profile.profile_info_tt'),
@@ -15,27 +14,27 @@
     .py-12p.border-top
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.full_name')
-        .sm-col.sm-col-7.px1.truncate #{p.first_name} #{p.last_name}
+        .sm-col.sm-col-7.px1.truncate #{@active_profile.first_name} #{@active_profile.last_name}
     .py-12p.border-top
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.address')
         .sm-col.sm-col-7.px1
-          | #{p.address1}<br>
-          - if p.address2.present?
-            | #{p.address2}<br>
-          | #{p.city}, #{p.state} #{p.zipcode}
+          | #{@active_profile.address1}<br>
+          - if @active_profile.address2.present?
+            | #{@active_profile.address2}<br>
+          | #{@active_profile.city}, #{@active_profile.state} #{@active_profile.zipcode}
     .py-12p.border-top
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.dob')
-        .sm-col.sm-col-7.px1 #{p.dob.to_time.to_s(:date_pretty)}
+        .sm-col.sm-col-7.px1 #{@active_profile.dob.to_time.to_s(:date_pretty)}
     .py-12p.border-top
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.ssn')
-        .sm-col.sm-col-7.px1 = "***-**-#{p.ssn[-4..-1]}"
+        .sm-col.sm-col-7.px1 = "***-**-#{@active_profile.ssn[-4..-1]}"
     .py-12p.border-top.border-bottom
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.phone')
-        .sm-col.sm-col-7.px1 = p.phone
+        .sm-col.sm-col-7.px1 = @active_profile.phone
 
 h2.heading = t('headings.profile.login_info')
 .mt3.mb4

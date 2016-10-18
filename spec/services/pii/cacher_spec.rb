@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Pii::Cacher do
-  let(:password) { 'sekrit' }
+  let(:password) { 'salty peanuts are best' }
   let(:user) { create(:user, password: password) }
   let(:profile) { build(:profile, :active, :verified, user: user, ssn: '1234') }
   let(:diff_user) { create(:user, password: password) }

@@ -9,14 +9,14 @@ module Pii
       return unless profile
       decrypted_pii = profile.decrypt_pii(password)
       pii_json = decrypted_pii.to_json
-      encrypted_pii = encryptor.encrypt_with_key(pii_json, key_maker.server_key)
+      encrypted_pii = encryptor.encrypt(pii_json, key_maker.fetch_server_cek)
       user_session[:encrypted_pii] = encrypted_pii
     end
 
     def fetch
       encrypted_pii = user_session[:encrypted_pii]
       return unless encrypted_pii
-      decrypted_pii = encryptor.decrypt_with_key(encrypted_pii, key_maker.server_key)
+      decrypted_pii = encryptor.decrypt(encrypted_pii, key_maker.fetch_server_cek)
       Pii::Attributes.new_from_json(decrypted_pii)
     end
 

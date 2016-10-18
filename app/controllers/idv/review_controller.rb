@@ -13,10 +13,10 @@ module Idv
     end
 
     def confirm_current_password
-      if invalid_password?
-        flash[:error] = t('idv.errors.incorrect_password')
-        redirect_to idv_review_path
-      end
+      return unless invalid_password?
+
+      flash[:error] = t('idv.errors.incorrect_password')
+      redirect_to idv_review_path
     end
 
     def new

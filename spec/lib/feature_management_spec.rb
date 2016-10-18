@@ -56,4 +56,22 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '#use_kms?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:use_kms).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.use_kms?).to eq(true)
+      end
+
+      it 'throws exception when attempting to fetch PII signing key' do
+        expect do
+          Pii::KeyMaker.new
+        end.to raise_error RuntimeError
+      end
+    end
+  end
 end

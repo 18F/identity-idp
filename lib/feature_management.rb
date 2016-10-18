@@ -20,4 +20,8 @@ class FeatureManagement
   def self.enable_i18n_mode?
     Figaro.env.enable_i18n_mode == 'true'
   end
+
+  def self.use_kms?
+    Figaro.env.use_kms == 'true'
+  end
 end
