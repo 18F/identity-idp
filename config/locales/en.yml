@@ -78,7 +78,7 @@ en:
     registration:
       already_have_account: Already have account? %{link}
       email: >
-        Enter the email address you’d like to associate with %{app}
+        Pick an address to use for government communications.
     2fa:
       resend: Didn't receive a code? %{link}
       confirm_code: Please enter the code sent to %{number}.
@@ -418,7 +418,7 @@ en:
     email_changed:
       intro: >
         You have asked %{app} to change the email address currently associated
-        with your %{app} Account.
+        with your %{app} account.
       help: >
         If you did not change your email address, please contact the %{app}
         Customer Contact Center via the web form at %{link}
