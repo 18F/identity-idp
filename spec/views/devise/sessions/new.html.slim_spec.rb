@@ -23,6 +23,13 @@ describe 'devise/sessions/new.html.slim' do
       )
   end
 
+  it 'includes a link to security / privacy page' do
+    render
+
+    expect(rendered).
+      to have_link(t('notices.log_in_consent.link'), href: '#')
+  end
+
   context 'when @sp_name is set' do
     before do
       @sp_name = 'Awesome Application!'

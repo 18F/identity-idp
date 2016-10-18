@@ -10,7 +10,7 @@ SimpleForm.setup do |config|
     b.use :input, class: 'field'
   end
 
-  config.wrappers :vertical_form, tag: 'div', class: 'mb2', error_class: 'has-error' do |b|
+  config.wrappers :vertical_form, tag: 'div', class: 'mb3', error_class: 'has-error' do |b|
     b.use :html5
     b.use :placeholder
     b.optional :maxlength

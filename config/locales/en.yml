@@ -107,6 +107,9 @@ en:
     password_changed: Your password was successfully changed.
     totp_configured: Authenticator app successfully configured
     totp_disabled: Authenticator app disabled
+    log_in_consent:
+      text: By signing in, you agree to %{app}’s %{link}
+      link: Security Consent & Privacy Act Statement
     phone_confirmation_successful: Phone confirmation successful!
     password_reset: >
       You will receive an email with instructions on how to reset your password

@@ -4,14 +4,19 @@
   h1.h3.my0 = t('headings.log_in_branded', app: @sp_name)
 - else
   h1.h3.my0 = t('headings.log_in')
+
 = simple_form_for(resource,
                   as: resource_name,
                   url: session_path(resource_name),
                   html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true
   = f.input :password, required: true
-  = f.button :submit, t('headings.log_in'), class: 'btn-wide mt2'
-.clearfix.mt3.sm-mt4.pt1.border-top
+  = f.button :submit, t('headings.log_in'), class: 'btn-wide'
+
+- link = link_to t('notices.log_in_consent.link'), '#'
+p.my3 == t('notices.log_in_consent.text', app: APP_NAME, link: link)
+
+.clearfix.pt1.border-top
   - if @sp_name && @sp_return_url
     .sm-col.py1.sm-p0
       = link_to t('links.back_to_sp', app: @sp_name), @sp_return_url,
