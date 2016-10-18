@@ -48,7 +48,7 @@ module Devise
       job.perform_later(
         code: current_user.direct_otp,
         phone: current_user.phone,
-        otp_created_at: current_user.direct_otp_sent_at.to_s
+        otp_created_at: (current_user.direct_otp_sent_at || Time.zone.now).to_s
       )
     end
 

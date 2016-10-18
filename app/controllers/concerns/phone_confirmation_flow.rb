@@ -78,7 +78,7 @@ module PhoneConfirmationFlow
     job.perform_later(
       code: confirmation_code,
       phone: unconfirmed_phone,
-      otp_created_at: current_user.direct_otp_sent_at.to_s
+      otp_created_at: (current_user.direct_otp_sent_at || Time.zone.now).to_s
     )
   end
 
