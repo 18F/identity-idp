@@ -47,6 +47,9 @@ development:
     sp_initiated_login_url: 'http://localhost:3000/test/saml'
     cert: 'saml_test_sp'
     fingerprint: '08:79:F5:B1:B8:CC:EC:8F:5C:2A:58:03:30:14:C9:E6:F1:67:78:F1:97:E8:3A:88:EB:8E:70:92:25:D2:2F:32'
+    logo: 'generic.svg'
+    agency: 'GSA'
+    friendly_name: 'Awesome test SP'
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost':
     acs_url: 'http://localhost:4567/consume'
@@ -78,13 +81,16 @@ development:
     cert: 'identity_dashboard_cert'
 
 production:
-  'https://upaya-dev.18f.gov':
-    metadata_url: 'https://upaya-dev.18f.gov/api/saml/metadata'
-    acs_url: 'https://upaya-dev.18f.gov/test/saml/decode_assertion'
-    assertion_consumer_logout_service_url: 'https://upaya-dev.18f.gov/test/saml/decode_logoutresponse'
-    sp_initiated_login_url: 'https://upaya-dev.18f.gov/test/saml'
+  'https://idp.dev.login.gov':
+    metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
+    acs_url: 'https://idp.dev.login.gov/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'https://idp.dev.login.gov/test/saml/decode_logoutresponse'
+    sp_initiated_login_url: 'https://idp.dev.login.gov/test/saml'
     block_encryption: 'aes256-cbc'
     cert: 'saml_test_sp'
+    logo: 'generic.svg'
+    agency: 'GSA'
+    friendly_name: 'Awesome test SP'
     attribute_bundle:
       - email
 
