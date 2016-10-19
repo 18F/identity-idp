@@ -42,6 +42,9 @@ en:
       resend: Resend
     phone_confirmation:
       header_text: Enter the passcode we sent you
+    registration:
+      labels:
+        email: Email address
     two_factor:
       code: One-time passcode
       recovery_code: Recovery code
@@ -77,8 +80,7 @@ en:
         intro: 'Password strength: '
     registration:
       already_have_account: Already have account? %{link}
-      email: >
-        Enter the email address you’d like to associate with %{app}
+      email: Pick an address you want to use for government communications.
     2fa:
       resend: Didn't receive a code? %{link}
       confirm_code: Please enter the code sent to %{number}.
@@ -94,7 +96,6 @@ en:
     resend: Resend
     sign_out: Sign out
     sign_in: Log in
-    sign_up: Sign up
     my_account: My account
     user_confirmation: Confirm account
     edit: Edit
@@ -124,6 +125,13 @@ en:
         with a link to confirm your email address. Please click on the
         link in your email to continue signing up.
       no_email_sent_explanation_start: Didn't receive an email?
+    terms_of_service:
+      headline: I agree to the terms of this service
+      text: >
+        Providing your information is voluntary, and is used to help you
+        access government services. We use industry-standard monitoring and
+        security practices to protect your data. %{link}
+      link: 'Learn more ›'
     dap_html: >
       <!-- We participate in the US government's analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
@@ -150,6 +158,7 @@ en:
       change: Change the password for your account
       forgot: Reset the password for your account
       confirm: Confirm the password for your account
+    privacy_policy: Privacy
     profile: Profile
     recovery_code: Just in case
     registrations:
@@ -186,6 +195,9 @@ en:
       change: Change your password
       forgot: Forgot password
       confirm: Confirm your password
+    privacy_policy:
+      security_consent: Security Consent
+      privacy_act: Privacy Act Statement
     profile:
       profile_info: Profile information
       profile_info_tt: Why can't I edit my profile information?
@@ -195,7 +207,7 @@ en:
       two_factor: Two-factor authentication
     recovery_code: Your recovery code
     registrations:
-      enter_email: Email address
+      enter_email: Start making an account
       verify_email: Check your email
     search: Search for a user
     session_timeout_warning: Session timeout
@@ -381,6 +393,16 @@ en:
       comments_note: Optional, but very helpful
     messages:
       thanks: Thanks! We'll be in touch soon.
+
+  privacy_policy:
+    privacy_act: >
+      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+    security_consent: >
+      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+      Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
 
   profile:
     index:
