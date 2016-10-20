@@ -33,7 +33,7 @@ feature 'Changing authentication factor' do
       expect(@user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
       expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
 
-      enter_correct_otp_code
+      enter_correct_otp_code_for_user(@user)
 
       expect(page).to have_content t('notices.phone_confirmation_successful')
       expect(current_path).to eq profile_path
@@ -74,11 +74,6 @@ feature 'Changing authentication factor' do
 
   def enter_incorrect_otp_code
     fill_in 'code', with: '12345'
-    click_submit_default
-  end
-
-  def enter_correct_otp_code
-    fill_in 'code', with: @user.reload.direct_otp
     click_submit_default
   end
 end

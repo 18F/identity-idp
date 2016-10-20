@@ -173,23 +173,11 @@ feature 'IdV session' do
         user = sign_in_and_2fa_user
         visit idv_session_path
 
-        fill_out_idv_form_ok
-        click_button t('forms.buttons.submit.continue')
-        fill_out_financial_form_ok
-        click_button t('idv.messages.finance.continue')
-        fill_out_phone_form_ok('416-555-0190')
-        click_button t('forms.buttons.submit.continue')
-        # click submit on review info page
-        click_button t('forms.buttons.submit.default')
-
-        # choose default SMS delivery method for confirming this new number
-        click_submit_default
+        complete_idv_profile_with_phone('416-555-0190')
 
         expect(page).to have_link t('forms.two_factor.try_again'), href: idv_phone_path
 
-        # enter correct code
-        fill_in 'code', with: user.reload.direct_otp
-        click_submit_default
+        enter_correct_otp_code_for_user(user)
 
         expect(current_path).to eq profile_path
       end
@@ -271,5 +259,17 @@ feature 'IdV session' do
     fill_out_phone_form_ok(user.phone)
     click_button 'Continue'
     click_button 'Submit'
+  end
+
+  def complete_idv_profile_with_phone(phone)
+    fill_out_idv_form_ok
+    click_button t('forms.buttons.submit.continue')
+    fill_out_financial_form_ok
+    click_button t('idv.messages.finance.continue')
+    fill_out_phone_form_ok(phone)
+    click_button t('forms.buttons.submit.continue')
+    click_submit_default
+    # choose default SMS delivery method for confirming this new number
+    click_submit_default
   end
 end
