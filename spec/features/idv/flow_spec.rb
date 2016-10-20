@@ -185,7 +185,7 @@ feature 'IdV session' do
         # choose default SMS delivery method for confirming this new number
         click_submit_default
 
-        expect(page).to have_link t('forms.two_factor.try_again'), href: idv_session_path
+        expect(page).to have_link t('forms.two_factor.try_again'), href: idv_phone_path
 
         # enter correct code
         fill_in 'code', with: user.reload.direct_otp

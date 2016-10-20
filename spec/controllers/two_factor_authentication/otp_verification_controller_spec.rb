@@ -172,6 +172,10 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         context 'user enters an invalid code' do
           before { post :create, code: '999', delivery_method: 'sms', context: 'confirmation' }
 
+          it 'does not increment second_factor_attempts_count' do
+            expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+          end
+
           it 'does not clear session data' do
             expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (555) 555-5555')
           end
@@ -283,6 +287,10 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
       context 'user enters an invalid code' do
         before { post :create, code: '999', delivery_method: 'sms', context: 'idv' }
+
+        it 'does not increment second_factor_attempts_count' do
+          expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+        end
 
         it 'does not clear session data' do
           expect(subject.user_session[:unconfirmed_phone]).to eq('+1 (555) 555-5555')
