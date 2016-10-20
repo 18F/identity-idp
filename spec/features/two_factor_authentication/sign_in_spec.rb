@@ -2,9 +2,6 @@ require 'rails_helper'
 
 include Features::ActiveJobHelper
 
-#   As a user
-#   I want to sign in
-#   So I can visit protected areas of the site
 feature 'Two Factor Authentication' do
   describe 'When the user has not setup 2FA' do
     scenario 'user is prompted to setup two factor authentication at first sign in' do
@@ -57,16 +54,10 @@ feature 'Two Factor Authentication' do
         expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       end
     end
-  end # describe 'When the user has not set a preferred method'
+  end
 
   describe 'When the user has set a preferred method' do
     describe 'Using phone' do
-      # Scenario: User with phone 2fa is prompted for otp
-      #   Given I exist as a user
-      #   And I am not signed in and have phone 2fa enabled
-      #   When I sign in
-      #   Then an OTP is sent to my phone
-      #   And I am prompted to enter it
       context 'user is prompted for otp via phone only' do
         before do
           reset_job_queues
@@ -148,7 +139,7 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq root_path
       end
     end
-  end # describe 'When the user has set a preferred method'
+  end
 
   describe 'when the user is TOTP enabled' do
     it 'allows SMS and Voice fallbacks' do
@@ -197,4 +188,4 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq profile_path
     end
   end
-end # feature 'Two Factor Authentication'
+end

@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-# Feature: Password Recovery
-#   As a user
-#   I want to recover my password
-#   So I can regain access to protected areas of the site
 feature 'Password Recovery' do
   def reset_password_and_sign_back_in(user)
     password = 'a really long password'
@@ -14,10 +10,6 @@ feature 'Password Recovery' do
     click_button t('links.sign_in')
   end
 
-  # Scenario: User can request a password reset link be sent to them
-  #   Given I do not remember my password as a user
-  #   When I complete the form on the password recovery page
-  #   Then I receive an email
   context 'user can reset their password via email', email: true do
     before do
       user = create(:user, :signed_up)
@@ -55,12 +47,6 @@ feature 'Password Recovery' do
     end
   end
 
-  # Scenario: User that has only confirmed their email can reset their password
-  #   Given I have not created my password yet
-  #   And I click the Forgot password? link and enter my email
-  #   Then I receive the confirmation email again
-  #   And when I click the link in the confirmation email
-  #   Then I can set my password
   context 'user with only email confirmation resets password', email: true do
     before do
       user = create(:user, :unconfirmed)
@@ -78,11 +64,6 @@ feature 'Password Recovery' do
     end
   end
 
-  # Scenario: User that has only confirmed their email can reset their password
-  #   Given I have not created my password yet
-  #   And I go to new user confirmation page and enter my email
-  #   When I click the link in the confirmation email
-  #   Then I can set a new password
   context 'user with email confirmation resends confirmation', email: true do
     before do
       user = create(:user, :unconfirmed)
@@ -100,11 +81,6 @@ feature 'Password Recovery' do
     end
   end
 
-  # Scenario: User that has only confirmed password can reset their password
-  #   Given I have not set up 2FA yet
-  #   And I click the Forgot password? link and enter my email
-  #   When I click the link in the email
-  #   Then I can set a new password
   context 'user with password confirmation resets password', email: true do
     before do
       @user = create(:user)
@@ -147,10 +123,6 @@ feature 'Password Recovery' do
     end
   end
 
-  # Scenario: User that has only confirmed 2FA can reset their password
-  #   When I click the Forgot password? link and enter my email
-  #   And I click the link in the email
-  #   Then I can set a new password
   context 'user with 2FA confirmation resets password', email: true do
     before do
       @user = create(:user, :signed_up)
@@ -171,10 +143,6 @@ feature 'Password Recovery' do
     end
   end
 
-  # Scenario: User can only submit valid email addresses
-  #   Given I do not remember my password as a user
-  #   When I complete the form with invalid email addresses
-  #   Then I receive a useful error
   scenario 'user submits email address with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
@@ -223,10 +191,6 @@ feature 'Password Recovery' do
     expect(page).to have_content 'Please fill in this field.'
   end
 
-  # Scenario: User is unable to determine if someone else's account exists
-  #   Given I want to find out if an account exists
-  #   When I complete the form on the password recovery page
-  #   Then I still don't know if an account exists
   scenario 'user is unable to determine if account exists' do
     visit new_user_password_path
     fill_in 'Email', with: 'no_account_exists@gmail.com'
@@ -235,10 +199,6 @@ feature 'Password Recovery' do
     expect(page).to have_content(t('devise.passwords.send_instructions'))
   end
 
-  # Scenario: User can reset their password
-  #   Given I do not remember my password as a user
-  #   When I complete the form on the password recovery page
-  #   Then I receive an email
   context 'user can reset their password' do
     before do
       @user = create(:user, :signed_up)
@@ -293,11 +253,6 @@ feature 'Password Recovery' do
     end
   end
 
-  # Scenario: User takes too long to click the reset password link
-  #   Given I have waited too long to click the link in my email
-  #   When I click the link
-  #   Then I see a error message that tells me the token has expired
-  #   And I am prompted to send instructions again
   scenario 'user takes too long to click the reset password link' do
     user = create(:user, :signed_up)
 
@@ -319,11 +274,6 @@ feature 'Password Recovery' do
     expect(current_path).to eq new_user_password_path
   end
 
-  # Scenario: User takes too long to reset password
-  #   Given I do not remember my password as a user
-  #   When I complete the forms to reset password after time limit
-  #   Then I see a helpful error message
-  #   And I am redirected to the new_user_password_path
   scenario 'user takes too long to reset password' do
     user = create(:user, :signed_up)
 
@@ -348,10 +298,6 @@ feature 'Password Recovery' do
     Timecop.return
   end
 
-  # Scenario: Unconfirmed user account receives confirmation instructions
-  #   Given my user account is unconfirmed
-  #   When I complete the form on the password recovery page
-  #   Then I receive confirmation instructions
   scenario 'unconfirmed user requests reset instructions', email: true do
     user = create(:user, :unconfirmed)
 
@@ -363,10 +309,6 @@ feature 'Password Recovery' do
       to eq t('devise.mailer.confirmation_instructions.subject')
   end
 
-  # Scenario: User enters non-existent email address into password reset form
-  #   Given I am not signed in
-  #   When I enter a non-existent email address
-  #   Then I see 'email sent'
   scenario 'user enters non-existent email address into password reset form' do
     visit new_user_password_path
     fill_in 'user_email', with: 'ThisEmailAddressShall@NeverExist.com'
@@ -377,10 +319,6 @@ feature 'Password Recovery' do
     expect(page).not_to(have_content(t('simple_form.error_notification.default_message')))
   end
 
-  # Scenario: Tech support user requests password reset
-  #   Given I am not signed in
-  #   When I enter my email address
-  #   Then I see 'email sent' but do not receive recovery email.
   scenario 'tech user enters email address into password reset form' do
     reset_email
     user = create(:user, :signed_up, :tech_support)
@@ -393,10 +331,6 @@ feature 'Password Recovery' do
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
-  # Scenario: Admin user requests password reset
-  #   Given I am not signed in
-  #   When I enter my email address
-  #   Then I see 'email sent' but do not receive recovery email.
   scenario 'admin user enters email address into password reset form' do
     reset_email
     user = create(:user, :signed_up, :admin)

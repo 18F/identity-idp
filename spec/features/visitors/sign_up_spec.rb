@@ -1,18 +1,9 @@
 require 'rails_helper'
 
-# Feature: Sign up
-#   As a visitor
-#   I want to sign up
-#   So I can visit protected areas of the site
-
 VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 INVALID_PASSWORD = 'asdf'.freeze
 
 feature 'Sign Up', devise: true do
-  # Scenario: Visitor can sign up with valid email address
-  #   Given I am not signed in
-  #   When I sign up with a valid email address
-  #   Then I see a message that I need to confirm my email address
   scenario 'visitor can sign up with valid email address' do
     email = 'test@example.com'
     sign_up_with(email)
@@ -25,12 +16,6 @@ feature 'Sign Up', devise: true do
     expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
   end
 
-  # Scenario: Visitor can sign up and confirm with valid email address and password
-  #   Given I am not signed in
-  #   When I sign up with a valid email address and click my confirmation link
-  #   Then I see a message letting me know I need to set a password to finish creating my account
-  #   And when I set a valid password
-  #   Then I am prompted to set up 2FA without any flash messages
   scenario 'visitor can sign up and confirm a valid email' do
     sign_up_with('test@example.com')
 
@@ -228,10 +213,6 @@ feature 'Sign Up', devise: true do
     end
   end
 
-  # Scenario: Visitor cannot sign up with invalid email address
-  #   Given I am not signed in
-  #   When I sign up with an invalid email address
-  #   Then I see an invalid email message
   scenario 'visitor cannot sign up with invalid email address' do
     sign_up_with('bogus')
     expect(page).to have_content t('valid_email.validations.email.invalid')
@@ -262,11 +243,6 @@ feature 'Sign Up', devise: true do
     expect(page).to have_content(invalid_email_message)
   end
 
-  # Scenario: Visitor tries to determine if email exists in the system
-  #   Given I am not signed in
-  #   When I sign up with an existing email address
-  #   Then I can't tell whether or not the email exists
-  #   And no email is sent to the existing user
   scenario 'visitor signs up with an email already in the system', email: true do
     user = create(:user, email: 'existing_user@example.com')
     sign_up_with('existing_user@example.com')
@@ -280,11 +256,6 @@ feature 'Sign Up', devise: true do
     expect(last_email.html_part.body).to have_content 'This email address is already in use.'
   end
 
-  # Scenario: Visitor signs up but confirms with an expired token
-  #   Given I am not signed in
-  #   When I sign up with a email address and attempt to confirm with expired token
-  #   Then I see a message that my confirmation token has expired
-  #   And that I should request a new one
   scenario 'visitor signs up but confirms with an expired token' do
     allow(Devise).to receive(:confirm_within).and_return(24.hours)
     user = create(:user, :unconfirmed)
@@ -299,10 +270,6 @@ feature 'Sign Up', devise: true do
     )
   end
 
-  # Scenario: Visitor signs up but confirms with an invalid token
-  #   Given I am not signed in
-  #   When I sign up with a email address and attempt to confirm with invalid token
-  #   Then I see a message that the token is invalid
   scenario 'visitor signs up but confirms with an invalid token' do
     create(:user, :unconfirmed)
     visit '/users/confirmation?confirmation_token=invalid_token'
@@ -311,9 +278,6 @@ feature 'Sign Up', devise: true do
     expect(current_path).to eq user_confirmation_path
   end
 
-  # Scenario: Visitor tries to spam an existing user
-  #   When I resend confirmation instructions to an existing user
-  #   Then the user does not receive an email
   context 'confirmation instructions sent to existing user', email: true do
     xit 'does not send an email to the existing user' do
       user = create(:user)
@@ -327,11 +291,6 @@ feature 'Sign Up', devise: true do
     end
   end
 
-  # Scenario: Confirmed visitor confirms again while signed out
-  #   Given I've confirmed my email, created a password, and signed out
-  #   When I click the confirmation link in the email again
-  #   Then I see a message that I've already confirmed
-  #   And I am redirected to the sign in page
   context 'confirmed user clicks confirmation link while again signed out' do
     it 'redirects to sign in page with message that user is already confirmed' do
       sign_up_and_set_password

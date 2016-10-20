@@ -1,7 +1,7 @@
 module ControllerHelper
   def sign_in_as_admin
     @request.env['devise.mapping'] = Devise.mappings[:user]
-    sign_in FactoryGirl.create(:user, :admin, :signed_up)
+    sign_in create(:user, :admin, :signed_up)
   end
 
   def sign_in_as_user(user = create(:user, :signed_up))

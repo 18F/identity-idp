@@ -3,10 +3,10 @@ require 'rails_helper'
 describe AppSettingPolicy do
   subject { AppSettingPolicy }
 
-  let(:current_user) { FactoryGirl.build_stubbed :user }
-  let(:other_user) { FactoryGirl.build_stubbed :user }
-  let(:tech_support_user) { FactoryGirl.build_stubbed :user, :tech_support }
-  let(:admin) { FactoryGirl.build_stubbed :user, :admin }
+  let(:current_user) { build_stubbed :user }
+  let(:other_user) { build_stubbed :user }
+  let(:tech_support_user) { build_stubbed :user, :tech_support }
+  let(:admin) { build_stubbed :user, :admin }
 
   permissions :index? do
     it 'denies access if not an admin' do

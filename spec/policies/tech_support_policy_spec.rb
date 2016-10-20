@@ -3,10 +3,10 @@ require 'rails_helper'
 describe TechSupportPolicy do
   subject { TechSupportPolicy }
 
-  let(:regular_user) { FactoryGirl.build_stubbed :user }
-  let(:privileged_user) { FactoryGirl.build_stubbed :user, :privileged }
-  let(:admin) { FactoryGirl.build_stubbed :user, :admin }
-  let(:tech) { FactoryGirl.build_stubbed :user, :tech_support }
+  let(:regular_user) { build_stubbed :user }
+  let(:privileged_user) { build_stubbed :user, :privileged }
+  let(:admin) { build_stubbed :user, :admin }
+  let(:tech) { build_stubbed :user, :tech_support }
 
   shared_examples 'allows_admin_and_tech' do
     it 'allows tech' do
