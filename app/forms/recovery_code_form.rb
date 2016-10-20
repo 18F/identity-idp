@@ -17,7 +17,7 @@ class RecoveryCodeForm
   attr_reader :user, :code, :success
 
   def valid_recovery_code?
-    Devise::Encryptor.compare(User, user.recovery_code, code)
+    RecoveryCodeGenerator.new(user).valid?(code)
   end
 
   def result

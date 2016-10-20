@@ -17,7 +17,23 @@ Devise.setup do |config|
   config.sign_in_after_reset_password = false
   config.sign_out_via = :delete
   config.skip_session_storage = [:http_auth]
-  config.stretches = Rails.env.test? ? 1 : 12
+
+  # The scrypt encryptor ignores stretches but we keep for compatability.
+  # We can set the scrypt config directly.
+  # see https://github.com/pbhogan/scrypt
+  # and https://github.com/capita/devise-scrypt
+  # We set the test config much lower just to speed up tests.
+  config.encryptor = :scrypt
+  if Rails.env.test?
+    SCrypt::Engine::DEFAULTS[:key_len] = 16
+    SCrypt::Engine::DEFAULTS[:salt_size] = 8
+    config.stretches = 1
+  else
+    SCrypt::Engine::DEFAULTS[:key_len] = 64
+    SCrypt::Engine::DEFAULTS[:salt_size] = 32
+    config.stretches = 12
+  end
+
   config.strip_whitespace_keys = [:email]
   config.timeout_in = Figaro.env.session_timeout_in.to_i.minutes
 

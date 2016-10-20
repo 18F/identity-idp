@@ -184,6 +184,12 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
+    devise-encryptable (0.2.0)
+      devise (>= 2.1.0)
+    devise-scrypt (1.0.0)
+      devise (>= 2.1.0)
+      devise-encryptable (>= 0.1.1)
+      scrypt (>= 1.1.0)
     devise_zxcvbn (2.1.2)
       devise
       zxcvbn-js (~> 4.2.0)
@@ -215,6 +221,9 @@ GEM
     faker (1.6.6)
       i18n (~> 0.5)
     ffi (1.9.14)
+    ffi-compiler (1.0.1)
+      ffi (>= 1.0.0)
+      rake
     figaro (1.1.1)
       thor (~> 0.14)
     formatador (0.2.5)
@@ -464,6 +473,9 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.4)
       wasabi (~> 3.4)
+    scrypt (3.0.3)
+      ffi-compiler (>= 1.0.0)
+      rake
     secure_headers (3.4.0)
       useragent
     shellany (0.0.1)
@@ -619,6 +631,8 @@ DEPENDENCIES
   database_cleaner
   derailed
   devise (~> 4.1)
+  devise-encryptable
+  devise-scrypt
   devise_zxcvbn
   dotiw
   email_spec

@@ -35,4 +35,16 @@ describe RecoveryCodeGenerator do
       expect(generator.create).to match(/\A[a-zA-Z0-9]{14}\z/)
     end
   end
+
+  describe '#valid?' do
+    it 'validates the raw recovery code against what is stored for the User' do
+      user = create(:user)
+      generator = RecoveryCodeGenerator.new(user)
+      raw_code = generator.create
+
+      generator2 = RecoveryCodeGenerator.new(user)
+
+      expect(generator2.valid?(raw_code)).to eq true
+    end
+  end
 end
