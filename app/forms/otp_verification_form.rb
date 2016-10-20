@@ -5,7 +5,7 @@ class OtpVerificationForm
   end
 
   def submit
-    @success = user.authenticate_direct_otp(code)
+    @success = valid_direct_otp_code?
 
     result
   end
@@ -13,6 +13,10 @@ class OtpVerificationForm
   private
 
   attr_reader :code, :user, :success
+
+  def valid_direct_otp_code?
+    user.authenticate_direct_otp(code)
+  end
 
   def result
     {

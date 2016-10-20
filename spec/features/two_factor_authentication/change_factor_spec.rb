@@ -22,27 +22,18 @@ feature 'Changing authentication factor' do
       visit edit_phone_path
       complete_2fa_confirmation
 
-      # update the phone number
-      fill_in 'update_user_phone_form[phone]', with: '703-555-0100'
-      click_button t('forms.buttons.submit.update')
-
-      # choose default SMS delivery method for confirming this new number
-      click_submit_default
+      update_phone_number_and_choose_sms_delivery
 
       expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
 
-      # enter incorrect code
-      fill_in 'code', with: '12345'
-      click_submit_default
+      enter_incorrect_otp_code
 
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
       expect(@user.reload.phone).to_not eq '+1 (703) 555-0100'
       expect(@user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
       expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
 
-      # enter correct code
-      fill_in 'code', with: @user.reload.direct_otp
-      click_submit_default
+      enter_correct_otp_code
 
       expect(page).to have_content t('notices.phone_confirmation_successful')
       expect(current_path).to eq profile_path
@@ -72,6 +63,22 @@ feature 'Changing authentication factor' do
 
     expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
 
+    click_submit_default
+  end
+
+  def update_phone_number_and_choose_sms_delivery
+    fill_in 'update_user_phone_form[phone]', with: '703-555-0100'
+    click_button t('forms.buttons.submit.update')
+    click_submit_default
+  end
+
+  def enter_incorrect_otp_code
+    fill_in 'code', with: '12345'
+    click_submit_default
+  end
+
+  def enter_correct_otp_code
+    fill_in 'code', with: @user.reload.direct_otp
     click_submit_default
   end
 end

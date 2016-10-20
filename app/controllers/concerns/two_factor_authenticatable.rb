@@ -36,18 +36,25 @@ module TwoFactorAuthenticatable
   end
 
   def handle_valid_otp
-    if context == 'authentication'
+    if authentication_context?
       handle_valid_otp_for_authentication_context
-    else
+    elsif confirmation_context?
       handle_valid_otp_for_confirmation_context
     end
 
     redirect_to after_otp_verification_confirmation_path
   end
 
+  def authentication_context?
+    context == 'authentication'
+  end
+
+  def confirmation_context?
+    context == 'confirmation' || context == 'idv'
+  end
+
   def context
-    context = params[:context]
-    context.present? ? context : 'authentication'
+    params[:context].presence || 'authentication'
   end
 
   # Method will be renamed in the next refactor.
@@ -146,20 +153,22 @@ module TwoFactorAuthenticatable
     user_session[:authn_at] = Time.zone.now
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def assign_variables_for_otp_verification_show_view
     @phone_number = user_session[:unconfirmed_phone] ||
                     decorated_user.masked_two_factor_phone_number
     @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-    @context = params[:context]
+    @context = context
     @delivery_method = params[:delivery_method]
-    @reenter_phone_number_path = if @context == 'idv'
-                                   idv_session_path
-                                 elsif current_user.phone.present?
-                                   edit_phone_path
-                                 else
-                                   phone_setup_path
-                                 end
+    @reenter_phone_number_path = reenter_phone_number_path
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
+
+  def reenter_phone_number_path
+    if context == 'idv'
+      idv_session_path
+    elsif current_user.phone.present?
+      edit_phone_path
+    else
+      phone_setup_path
+    end
+  end
 end

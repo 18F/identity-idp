@@ -5,7 +5,7 @@ class TotpVerificationForm
   end
 
   def submit
-    @success = valid_recovery_code?
+    @success = valid_totp_code?
 
     result
   end
@@ -14,7 +14,7 @@ class TotpVerificationForm
 
   attr_reader :user, :code, :success
 
-  def valid_recovery_code?
+  def valid_totp_code?
     user.authenticate_totp(code)
   end
 
