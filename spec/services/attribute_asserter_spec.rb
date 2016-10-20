@@ -19,16 +19,20 @@ describe AttributeAsserter do
       metadata: {}
     )
   end
-  let(:raw_authn_request) { URI.decode loa3_authnrequest.split('SAMLRequest').last }
-  let(:authn_request) do
-    SamlIdp::Request.from_deflated_request(raw_authn_request)
+  let(:raw_loa1_authn_request) { URI.decode sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_loa3_authn_request) { URI.decode loa3_authnrequest.split('SAMLRequest').last }
+  let(:loa1_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_loa1_authn_request)
+  end
+  let(:loa3_authn_request) do
+    SamlIdp::Request.from_deflated_request(raw_loa3_authn_request)
   end
 
   describe '#build' do
-    context 'verified user' do
-      let(:subject) { described_class.new(user, service_provider, authn_request) }
+    context 'verified user and LOA3 request' do
+      let(:subject) { described_class.new(user, service_provider, loa3_authn_request) }
 
-      context 'custom bundle includes email, phone' do
+      context 'custom bundle includes email, phone, and first_name' do
         before do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
@@ -36,11 +40,9 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes all defined attributes' do
-          expect(user.asserted_attributes).to have_key :email
-          expect(user.asserted_attributes).to have_key :phone
-          expect(user.asserted_attributes).to have_key :first_name
-          expect(user.asserted_attributes).to_not have_key :last_name
+        it 'includes all requested attributes + uuid' do
+          expect(user.asserted_attributes.keys).
+            to eq([:uuid, :email, :phone, :first_name])
         end
 
         it 'creates getter function' do
@@ -61,25 +63,19 @@ describe AttributeAsserter do
         end
 
         context 'authn request does not specify bundle' do
-          it 'contains DEFAULT_BUNDLE' do
-            expect(user.asserted_attributes.keys).to match_array(
-              AttributeAsserter::DEFAULT_BUNDLE + [:uuid]
-            )
+          it 'only returns uuid' do
+            expect(user.asserted_attributes.keys).to eq [:uuid]
           end
         end
 
         context 'authn request specifies bundle' do
-          let(:raw_authn_request) do
+          let(:raw_loa3_authn_request) do
             URI.decode auth_request.create(loa3_with_bundle_saml_settings).split('SAMLRequest').last
           end
 
           it 'uses authn request bundle' do
-            expect(user.asserted_attributes).to have_key :email
-            expect(user.asserted_attributes).to have_key :phone
-            expect(user.asserted_attributes).to have_key :first_name
-            expect(user.asserted_attributes).to have_key :last_name
-            expect(user.asserted_attributes).to have_key :ssn
-            expect(user.asserted_attributes).to_not have_key :dob
+            expect(user.asserted_attributes.keys).
+              to eq([:uuid, :email, :first_name, :last_name, :ssn, :phone])
           end
         end
       end
@@ -105,15 +101,87 @@ describe AttributeAsserter do
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes).to have_key :email
-          expect(user.asserted_attributes).to_not have_key :foo
+          expect(user.asserted_attributes.keys).to eq([:uuid, :email])
         end
       end
     end
 
-    context 'un-verified user' do
-      let(:subject) { described_class.new(loa1_user, service_provider, authn_request) }
+    context 'verified user and LOA1 request' do
+      let(:subject) { described_class.new(user, service_provider, loa1_authn_request) }
 
+      context 'custom bundle includes email, phone, and first_name' do
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w(email phone first_name))
+          subject.build
+        end
+
+        it 'only includes uuid + email' do
+          expect(user.asserted_attributes.keys).to eq [:uuid, :email]
+        end
+
+        it 'does not create a getter function for LOA1 attributes' do
+          expect(user.asserted_attributes[:email][:getter]).to eq :email
+        end
+
+        it 'gets UUID (MBUN) from Service Provider' do
+          uuid_getter = user.asserted_attributes[:uuid][:getter]
+          expect(uuid_getter.call(user)).to eq user.last_identity.uuid
+        end
+      end
+
+      context 'Service Provider does not specify bundle' do
+        before do
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(nil)
+          subject.build
+        end
+
+        context 'authn request does not specify bundle' do
+          it 'only returns uuid' do
+            expect(user.asserted_attributes.keys).to eq [:uuid]
+          end
+        end
+
+        context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
+          let(:raw_loa1_authn_request) do
+            URI.decode auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last
+          end
+
+          it 'only returns uuid + email' do
+            expect(user.asserted_attributes.keys).to eq [:uuid, :email]
+          end
+        end
+      end
+
+      context 'Service Provider specifies empty bundle' do
+        before do
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return([])
+          subject.build
+        end
+
+        it 'contains UUID only' do
+          expect(user.asserted_attributes.keys).to eq([:uuid])
+        end
+      end
+
+      context 'custom bundle has invalid attribute name' do
+        before do
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
+            %w(email foo)
+          )
+          subject.build
+        end
+
+        it 'silently skips invalid attribute name' do
+          expect(user.asserted_attributes.keys).to eq([:uuid, :email])
+        end
+      end
+    end
+
+    shared_examples 'unverified user' do
       context 'custom bundle does not include email, phone' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
@@ -123,11 +191,7 @@ describe AttributeAsserter do
         end
 
         it 'includes only UUID' do
-          expect(loa1_user.asserted_attributes).to have_key :uuid
-          expect(loa1_user.asserted_attributes).to_not have_key :email
-          expect(loa1_user.asserted_attributes).to_not have_key :phone
-          expect(loa1_user.asserted_attributes).to_not have_key :first_name
-          expect(loa1_user.asserted_attributes).to_not have_key :last_name
+          expect(loa1_user.asserted_attributes.keys).to eq([:uuid])
         end
       end
 
@@ -139,14 +203,22 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'includes UUID, email, phone only' do
-          expect(loa1_user.asserted_attributes).to have_key :uuid
-          expect(loa1_user.asserted_attributes).to have_key :email
-          expect(loa1_user.asserted_attributes).to have_key :phone
-          expect(loa1_user.asserted_attributes).to_not have_key :first_name
-          expect(loa1_user.asserted_attributes).to_not have_key :last_name
+        it 'only includes UUID and email' do
+          expect(loa1_user.asserted_attributes.keys).to eq([:uuid, :email])
         end
       end
+    end
+
+    context 'unverified user and LOA3 request' do
+      let(:subject) { described_class.new(loa1_user, service_provider, loa3_authn_request) }
+
+      it_behaves_like 'unverified user'
+    end
+
+    context 'unverified user and LOA1 request' do
+      let(:subject) { described_class.new(loa1_user, service_provider, loa1_authn_request) }
+
+      it_behaves_like 'unverified user'
     end
   end
 end

@@ -110,6 +110,16 @@ module SamlAuthHelper
     settings
   end
 
+  def loa1_with_bundle_saml_settings
+    settings = sp1_saml_settings
+    settings.authn_context = [
+      settings.authn_context,
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}first_name:last_name email, ssn",
+      "#{Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF}phone"
+    ]
+    settings
+  end
+
   def sp1_authnrequest
     auth_request.create(sp1_saml_settings)
   end

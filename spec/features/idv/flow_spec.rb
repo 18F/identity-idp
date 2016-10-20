@@ -243,16 +243,6 @@ feature 'IdV session' do
     end
   end
 
-  def complete_idv_profile_ok(user)
-    fill_out_idv_form_ok
-    click_button t('forms.buttons.submit.continue')
-    fill_out_financial_form_ok
-    click_button t('idv.messages.finance.continue')
-    fill_out_phone_form_ok(user.phone)
-    click_button t('forms.buttons.submit.continue')
-    click_button t('forms.buttons.submit.default')
-  end
-
   def complete_idv_profile_fail(user)
     fill_out_idv_form_fail
     click_button 'Continue'
