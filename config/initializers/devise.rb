@@ -19,7 +19,7 @@ Devise.setup do |config|
   config.skip_session_storage = [:http_auth]
   config.stretches = Rails.env.test? ? 1 : 12
   config.strip_whitespace_keys = [:email]
-  config.timeout_in = Figaro.env.session_timeout_in.to_i.minutes
+  config.timeout_in = Figaro.env.session_timeout_in_minutes.to_i.minutes
 
   # ==> Two Factor Authentication
   config.allowed_otp_drift_seconds = 30
