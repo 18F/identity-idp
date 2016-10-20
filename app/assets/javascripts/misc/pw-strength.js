@@ -56,5 +56,4 @@ function analyzePw() {
   });
 }
 
-
 document.addEventListener('DOMContentLoaded', analyzePw);

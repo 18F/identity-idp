@@ -21,7 +21,6 @@ const validate = {
   },
 
   addEvents() {
-    this.form.addEventListener('change', e => validateField(e.target));
     this.form.addEventListener('submit', e => this.validateForm(e));
   },
 
@@ -46,6 +45,5 @@ const validate = {
     if (invalidField) invalidField.focus();
   },
 };
-
 
 document.addEventListener('DOMContentLoaded', () => validate.init());
