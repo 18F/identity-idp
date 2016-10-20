@@ -1,8 +1,5 @@
 require 'rails_helper'
 
-# Feature: User profile
-#   As a user
-#   I want to interact with my user info
 feature 'User profile' do
   context 'user clicks the delete account button' do
     xit 'deletes the account and signs the user out with a flash message' do

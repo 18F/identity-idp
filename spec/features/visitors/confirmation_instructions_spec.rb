@@ -1,24 +1,16 @@
 require 'rails_helper'
 require 'email_spec'
 
-# Feature: Confirmation Instructions
-#   As a user
-#   I want to resend my confirmation instructions
-#   So I can confirm my account and gain access to the site
 feature 'Confirmation Instructions', devise: true do
   include(EmailSpec::Helpers)
   include(EmailSpec::Matchers)
 
-  let!(:user) { FactoryGirl.build(:user, confirmed_at: nil) }
+  let!(:user) { build(:user, confirmed_at: nil) }
 
   before(:each) do
     visit new_user_confirmation_path
   end
 
-  # Scenario: User can request confirmation instructions be sent to them
-  #   Given I do not confirm my account in time
-  #   When I complete the form on the resend confirmation instructions page
-  #   Then I receive an email
   scenario 'user can resend their confirmation instructions via email' do
     user.save!
     fill_in 'Email', with: user.email
@@ -27,20 +19,12 @@ feature 'Confirmation Instructions', devise: true do
     expect(unread_emails_for(user.email)).to be_present
   end
 
-  # Scenario: User is unable to determine if someone else's account exists
-  #   Given I want to find out if an account exists for no_account_exists@example.com
-  #   When I complete the form on the resend confirmation instructions page
-  #   Then I still don't know if an account exists
   scenario 'user is unable to determine if account exists' do
     fill_in 'Email', with: 'no_account_exists@example.com'
     click_button t('forms.buttons.resend_confirmation')
     expect(page).to have_content t('devise.confirmations.send_paranoid_instructions')
   end
 
-  # Scenario: User must enter a valid email address
-  #   Given I am phising for accounts
-  #   When I enter invalid email addresses
-  #   Then I receive an error
   scenario 'user enters email with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
