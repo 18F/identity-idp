@@ -84,7 +84,7 @@ feature 'Sign in' do
 
   context 'signed out' do
     it 'displays session timeout modal when session times out', js: true do
-      allow(Figaro.env).to receive(:session_timeout_in_seconds).and_return('0')
+      allow(Figaro.env).to receive(:session_timeout_in_minutes).and_return('0')
 
       visit root_path
 
@@ -92,7 +92,7 @@ feature 'Sign in' do
     end
 
     it 'does not display timeout modal when session not timed out', js: true do
-      allow(Figaro.env).to receive(:session_timeout_in_seconds).and_return('100')
+      allow(Figaro.env).to receive(:session_timeout_in_minutes).and_return('1')
 
       visit root_path
 
