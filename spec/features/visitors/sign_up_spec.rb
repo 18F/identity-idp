@@ -1,8 +1,5 @@
 require 'rails_helper'
 
-VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
-INVALID_PASSWORD = 'asdf'.freeze
-
 feature 'Sign Up', devise: true do
   scenario 'visitor can sign up with valid email address' do
     email = 'test@example.com'
