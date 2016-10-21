@@ -26,6 +26,11 @@ module Pii
       encode(signing_key.sign(DIGEST, encode(text)))
     end
 
+    def verify(text, signature)
+      signing_key = key_maker.signing_key
+      signing_key.verify(DIGEST, decode(signature), encode(text))
+    end
+
     private
 
     attr_reader :key_maker, :cipher
@@ -39,7 +44,7 @@ module Pii
       payload = cipher.decrypt(payload, cek)
       raise EncryptionError unless sane_payload?(payload)
       plaintext, plaintext_signature = split_into_segments(payload)
-      return plaintext if sign(plaintext) == plaintext_signature
+      return plaintext if verify(plaintext, plaintext_signature)
     end
 
     def sane_payload?(payload)
