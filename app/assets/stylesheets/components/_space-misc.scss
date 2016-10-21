@@ -13,6 +13,8 @@
 
 .mb-40p { margin-bottom: 40px; }
 
+.mtn1 { margin-top: -$space-1; }
+
 @media #{$breakpoint-sm} {
   .sm-mr-20p { margin-right: 20px; }
   .sm-mtn3 { margin-top: -$space-3; }

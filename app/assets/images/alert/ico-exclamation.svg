@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 39.1 (31720) - http://www.bohemiancoding.com/sketch -->
-    <title>ico-danger</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="ico-danger">
-            <circle id="Oval" fill="#E21C3D" opacity="0.98" transform="translate(16.000000, 16.000000) scale(1, -1) translate(-16.000000, -16.000000) " cx="16" cy="16" r="16"></circle>
-            <path d="M15.9891339,8.3182384 C15.2798123,8.3182384 14.7057427,8.90012256 14.7057427,9.59802288 L14.7057427,17.3043813 C14.7057427,18.0112984 15.2756045,18.5841658 15.9891339,18.5841658 C16.7002589,18.5841658 17.2725251,18.0022816 17.2725251,17.3043813 L17.2725251,9.59802288 C17.2725251,8.89110576 16.7038656,8.3182384 15.9891339,8.3182384 L15.9891339,8.3182384 L15.9891339,8.3182384 Z M15.9891339,21.1509482 C15.2798123,21.1509482 14.7057427,21.7244166 14.7057427,22.4343394 C14.7057427,23.143661 15.2792112,23.7177306 15.9891339,23.7177306 C16.6990566,23.7177306 17.2725251,23.1442621 17.2725251,22.4343394 C17.2725251,21.7250178 16.7002589,21.1509482 15.9891339,21.1509482 L15.9891339,21.1509482 L15.9891339,21.1509482 Z" id="Shape" stroke="#FFFFFF" stroke-width="0.5" fill="#FFFFFF"></path>
-        </g>
-    </g>
-</svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><defs><style>.cls-1{fill:#e21c3d;}.cls-2{fill:#fff;}</style></defs><title>ALERT-Error</title><circle class="cls-1" cx="12" cy="12" r="12"/><path class="cls-2" d="M10,17.09a2.14,2.14,0,0,1,.57-1.52A1.92,1.92,0,0,1,12,15a1.93,1.93,0,0,1,1.48.61,2.29,2.29,0,0,1,0,3,1.93,1.93,0,0,1-1.48.61,1.92,1.92,0,0,1-1.48-.61A2.14,2.14,0,0,1,10,17.09Zm.41-8.81-.12-3h3.53l-.12,3L13.15,14H10.85Z"/></svg>
