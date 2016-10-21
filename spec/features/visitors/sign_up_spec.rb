@@ -16,29 +16,6 @@ feature 'Sign Up', devise: true do
     expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
   end
 
-  scenario 'visitor can sign up and confirm a valid email' do
-    sign_up_with('test@example.com')
-
-    confirm_last_user
-
-    expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
-    expect(page).to have_title t('titles.confirmations.show')
-    expect(page).to have_content t('forms.confirmation.show_hdr')
-
-    fill_in 'password_form_password', with: VALID_PASSWORD
-    click_button t('forms.buttons.submit.default')
-
-    expect(current_url).to eq phone_setup_url
-    expect(page).to_not have_content t('devise.confirmations.confirmed')
-    expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
-  end
-
-  scenario 'it sets reset_requested_at to nil after password confirmation' do
-    user = sign_up_and_set_password
-
-    expect(user.reset_requested_at).to be_nil
-  end
-
   context 'visitor can sign up and confirm a valid phone for OTP' do
     before do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)

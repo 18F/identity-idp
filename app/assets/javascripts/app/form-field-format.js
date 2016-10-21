@@ -1,5 +1,4 @@
 import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-kit';
-
 import validateField from './validate-field';
 import DateFormatter from './modules/date-formatter';
 import OtpCodeFormatter from './modules/otp-code-formatter';
