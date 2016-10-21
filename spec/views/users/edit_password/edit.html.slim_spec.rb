@@ -29,7 +29,7 @@ describe 'users/edit_password/edit.html.slim' do
     render
 
     expect(rendered).to have_content t(
-      'instructions.edit_info.password', min_length: Devise.password_length.first
+      'instructions.password.info.lead', min_length: Devise.password_length.first
     )
   end
 end

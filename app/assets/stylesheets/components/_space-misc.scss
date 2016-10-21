@@ -1,3 +1,5 @@
+// additional, ad-hoc spacing utilities added as needed
+
 .mxn-tiny { margin-left: -$space-tiny; margin-right: -$space-tiny; }
 .mb-tiny { margin-bottom: $space-tiny; }
 .ml-tiny { margin-left: $space-tiny; }
@@ -14,6 +16,7 @@
 .mb-40p { margin-bottom: 40px; }
 
 .mtn1 { margin-top: -$space-1; }
+.mtn3 { margin-top: -$space-3; }
 
 @media #{$breakpoint-sm} {
   .sm-mr-20p { margin-right: 20px; }

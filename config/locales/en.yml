@@ -69,13 +69,20 @@ en:
           submit: Change my password
 
   instructions:
-    edit_info:
-      password: Your new password must be at least %{min_length} characters.
     recovery_code: >
       Below is the recovery code that we have generated for you. You can use
       this code to access your account in case you lose access to your phone.
       Make sure to print and/or write down this code and keep it in a safe place.
     password:
+      info:
+        lead: Your password must be at least %{min_length} characters long.
+        point_1: >
+          It can be a mix of alphanumeric and special characters and individual
+          words in a phrase.
+        point_2: >
+          Create a password that's secure, but still easy for you to remember.
+          And don't use the same one you use with your other online accounts, such
+          as bank, email, and social media.
       strength:
         intro: 'Password strength: '
     registration:

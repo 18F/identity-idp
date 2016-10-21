@@ -2,8 +2,12 @@
 
 
 h1.h3.my0 = t('forms.confirmation.show_hdr')
-p.mt-tiny.mb0#password-description
-  = t('instructions.edit_info.password', min_length: Devise.password_length.first)
+p.my2#password-description
+  strong = t('instructions.password.info.lead', min_length: Devise.password_length.first)
+  | &nbsp;
+  = t('instructions.password.info.point_1')
+p.mb0
+  = t('instructions.password.info.point_2')
 = simple_form_for(@password_form,
     url: confirm_path,
     method: :patch,
@@ -13,6 +17,6 @@ p.mt-tiny.mb0#password-description
       input_html: { 'aria-describedby': 'password-description' }
   = render 'devise/shared/password_strength'
   = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mt2 mb1'
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb1'
 
 == javascript_include_tag 'misc/pw-strength'
