@@ -57,10 +57,10 @@ feature 'Sign in' do
 
   context 'session approaches timeout', js: true do
     before :each do
-      allow(Figaro.env).to receive(:session_check_frequency).and_return(1)
-      allow(Figaro.env).to receive(:session_check_delay).and_return(2)
+      allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
+      allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in)
+        and_return(Devise.timeout_in.to_s)
     end
 
     scenario 'user sees warning before session times out' do
@@ -92,7 +92,7 @@ feature 'Sign in' do
     end
 
     it 'does not display timeout modal when session not timed out', js: true do
-      allow(Figaro.env).to receive(:session_timeout_in_minutes).and_return('1')
+      allow(Figaro.env).to receive(:session_timeout_in_minutes).and_return('0.1')
 
       visit root_path
 
