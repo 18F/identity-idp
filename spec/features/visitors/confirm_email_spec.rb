@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Confirm email' do
-  VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
-
   scenario 'confirms valid email and sets valid password' do
     sign_up_with('test@example.com')
     confirm_last_user
