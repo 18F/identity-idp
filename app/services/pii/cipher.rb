@@ -3,37 +3,53 @@ module Pii
     delegate :random_key, to: :cipher
 
     def initialize
-      @cipher = OpenSSL::Cipher.new 'AES-256-CBC'
+      @cipher = OpenSSL::Cipher.new 'aes-256-gcm'
     end
 
-    def encrypt(payload, cek)
-      iv = cipher.random_iv
+    def encrypt(plaintext, cek)
+      cipher.reset
       cipher.encrypt
       cipher.key = cek
-      cipher.iv = iv
-      iv << cipher.update(payload) << cipher.final
+      encipher(plaintext)
     end
 
     def decrypt(payload, cek)
-      prep_decrypting_cipher(payload, cek)
-      decrypted_payload = cipher.update(payload[cipher.iv_len..-1]) << cipher.final
-      unpack_decrypted_payload(decrypted_payload)
+      cipher.reset
+      cipher.decrypt
+      cipher.key = cek
+      decipher(payload)
     end
 
     private
 
     attr_reader :cipher
 
-    def unpack_decrypted_payload(decrypted_payload)
-      padding_size = decrypted_payload.last.unpack('c').first
-      decrypted_payload[0...-padding_size]
+    def encipher(plaintext)
+      iv = cipher.random_iv
+      cipher.auth_data = 'PII'
+      ciphertext = cipher.update(plaintext) + cipher.final
+      tag = cipher.auth_tag(CipherPayload::TAG_LENGTH)
+      iv + ciphertext + tag
     end
 
-    def prep_decrypting_cipher(payload, cek)
-      cipher.decrypt
-      cipher.padding = 0
-      cipher.iv = payload[0...cipher.iv_len]
-      cipher.key = cek
+    def decipher(payload)
+      unpacked_payload = CipherPayload.unpack(payload, cipher.iv_len)
+      cipher.iv = unpacked_payload[0]
+      cipher.auth_tag = unpacked_payload[2]
+      cipher.auth_data = 'PII'
+      cipher.update(unpacked_payload[1]) + cipher.final
+    end
+  end
+
+  class CipherPayload
+    TAG_LENGTH = 16
+
+    def self.unpack(payload, iv_len)
+      ciphertext_len = payload.length - iv_len - TAG_LENGTH
+      iv = payload.byteslice(0, iv_len)
+      ciphertext = payload.byteslice(iv_len, ciphertext_len)
+      tag = payload.byteslice(iv_len + ciphertext_len, TAG_LENGTH)
+      [iv, ciphertext, tag]
     end
   end
 end

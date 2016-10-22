@@ -27,7 +27,7 @@ describe Pii::Encryptor do
 
       expect do
         subject.decrypt(encrypted, diff_cek)
-      end.to raise_error Pii::EncryptionError
+      end.to raise_error OpenSSL::Cipher::CipherError
     end
   end
 end

@@ -27,7 +27,7 @@ describe Pii::PasswordEncryptor do
 
       expect do
         subject.decrypt(encrypted, 'different password', salt)
-      end.to raise_error Pii::EncryptionError
+      end.to raise_error OpenSSL::Cipher::CipherError
     end
   end
 end
