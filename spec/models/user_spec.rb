@@ -31,13 +31,6 @@ describe User do
 
       expect(user).to be_valid
     end
-
-    it 'disallows weak words' do
-      user = create(:user)
-      user.password = APP_NAME
-
-      expect(user).to_not be_valid
-    end
   end
 
   describe 'uuid validations' do

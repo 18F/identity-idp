@@ -170,6 +170,8 @@ feature 'Sign Up', devise: true do
     end
 
     scenario 'visitor gets password help message' do
+      allow(Figaro.env).to receive(:password_strength_enabled).and_return('true')
+
       create(:user, :unconfirmed)
       confirm_last_user
       fill_in 'password_form_password', with: 'password'

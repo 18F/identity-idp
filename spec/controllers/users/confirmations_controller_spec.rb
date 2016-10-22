@@ -97,20 +97,13 @@ describe Users::ConfirmationsController, devise: true do
     end
 
     context 'user supplies invalid password' do
-      render_views
+      it 'calls PasswordForm#submit' do
+        form = instance_double(PasswordForm)
+        allow(PasswordForm).to receive(:new).and_return(form)
 
-      it 'includes invalid password feedback message' do
-        user = create(:user, :unconfirmed)
-        user.update(confirmation_token: 'foo')
+        expect(form).to receive(:submit).with(password: 'password')
 
         patch :confirm, password_form: { password: 'password' }, confirmation_token: 'foo'
-
-        expect(response).to_not redirect_to phone_setup_url
-        expect(response.body).to match('not strong enough')
-        expect(response.status).to eq 200
-
-        user.reload
-        expect(user.confirmed_at).to be_nil
       end
     end
   end
