@@ -33,14 +33,10 @@ module Idv
       finish_proofing_success
     end
 
-    def proofer_agent
-      @_agent ||= Proofer::Agent.new(vendor: idv_session.vendor, applicant: idv_session.applicant)
-    end
-
     def submit_answers
       @idv_vendor = idv_session.vendor
       resolution = idv_session.resolution
-      @confirmation = proofer_agent.submit_answers(resolution.questions, resolution.session_id)
+      @confirmation = idv_agent.submit_answers(resolution.questions, resolution.session_id)
       if @confirmation.success?
         finish_proofing_success
       else
