@@ -142,10 +142,6 @@ feature 'saml api', devise: true do
       it 'disables cache' do
         expect(page.response_headers['Pragma']).to eq 'no-cache'
       end
-
-      it 'retains the formatting of the phone number' do
-        expect(xmldoc.phone_number.children.children.to_s).to eq(user.phone)
-      end
     end
   end
 
@@ -478,38 +474,27 @@ feature 'saml api', devise: true do
 
   context 'visiting /api/saml/auth' do
     context 'with LOA3 authn_context' do
-      it 'redirects to IdV URL after user creates their account and signs in' do
-        visit loa3_authnrequest
-
-        visit new_user_registration_path
-
-        sign_up_and_2fa
-
-        expect(current_url).to eq idv_url
-      end
-
       it 'redirects to original SAML Authn Request after IdV is complete' do
-        saml_authn_request = loa3_authnrequest
+        include IdvHelper
+
+        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
         visit saml_authn_request
 
+        xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
         visit new_user_registration_path
 
-        sign_up_and_2fa
+        user = sign_up_and_2fa
 
         expect(current_url).to eq idv_url
 
         click_on 'Yes'
 
-        expect(page).to have_content(t('idv.form.first_name'))
-
-        fill_out_idv_form_ok
-        click_button t('forms.buttons.submit.continue')
-        fill_out_financial_form_ok
-        click_button t('idv.messages.finance.continue')
-        click_button t('forms.buttons.submit.continue')
-        click_button t('forms.buttons.submit.default')
+        complete_idv_profile_ok(user.reload)
 
         expect(current_url).to eq saml_authn_request
+
+        expect(xmldoc.phone_number.children.children.to_s).to eq(user.active_profile.phone)
       end
     end
   end

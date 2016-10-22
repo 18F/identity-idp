@@ -1,7 +1,7 @@
 class AttributeAsserter
   attr_accessor :user, :service_provider, :authn_request
 
-  DEFAULT_BUNDLE = [
+  VALID_ATTRIBUTES = [
     :first_name,
     :middle_name,
     :last_name,
@@ -24,8 +24,7 @@ class AttributeAsserter
   def build
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
-    add_phone(attrs) if bundle.include? :phone
-    add_bundle(attrs) if user.active_profile.present?
+    add_bundle(attrs) if user.active_profile.present? && loa3_authn_context?
     user.asserted_attributes = attrs
   end
 
@@ -43,7 +42,7 @@ class AttributeAsserter
 
   def add_bundle(attrs)
     bundle.each do |attr|
-      next unless DEFAULT_BUNDLE.include? attr
+      next unless VALID_ATTRIBUTES.include? attr
       attrs[attr] = { getter: attribute_getter_function(attr) }
     end
   end
@@ -64,13 +63,9 @@ class AttributeAsserter
     }
   end
 
-  def add_phone(attrs)
-    attrs[:phone] = { getter: :phone }
-  end
-
   def bundle
     @_bundle ||= (
-      authn_request_bundle || service_provider.metadata[:attribute_bundle] || DEFAULT_BUNDLE
+      authn_request_bundle || service_provider.metadata[:attribute_bundle] || []
     ).map(&:to_sym)
   end
 
@@ -94,5 +89,13 @@ class AttributeAsserter
         node.content =~ /#{Regexp.escape(uri_pattern)}/
       end
     end
+  end
+
+  def loa3_authn_context?
+    authn_context == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+  end
+
+  def authn_context
+    authn_request.requested_authn_context
   end
 end

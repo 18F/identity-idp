@@ -655,13 +655,10 @@ describe SamlIdpController do
           expect(uuid['FriendlyName']).to eq('uuid')
         end
 
-        it 'includes the phone Attribute element' do
+        it 'does not include the phone Attribute element when authn_context is LOA1' do
           phone = xmldoc.phone_number
 
-          expect(phone.name).to eq('Attribute')
-          expect(phone['Name']).to eq('phone')
-          expect(phone['NameFormat']).to eq(Saml::XML::Namespaces::Formats::Attr::URI)
-          expect(phone['FriendlyName']).to eq('phone')
+          expect(phone).to be_nil
         end
       end
     end
