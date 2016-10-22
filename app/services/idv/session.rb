@@ -35,6 +35,11 @@ module Idv
       self.profile_id = Profile.create_from_proofer_applicant(applicant, current_user).id
     end
 
+    def applicant_from_params
+      app_vars = params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
+      Proofer::Applicant.new(app_vars)
+    end
+
     def profile
       @_profile ||= Profile.find(profile_id)
     end

@@ -16,7 +16,6 @@ module Idv
     end
 
     def create
-      idv_session.applicant = applicant_from_params
       resolution = start_idv_session
       process_resolution(resolution)
     end
@@ -59,7 +58,7 @@ module Idv
     end
 
     def start_idv_session
-      idv_session.applicant = applicant_from_params
+      idv_session.applicant = idv_session.applicant_from_params
       idv_session.vendor = idv_agent.vendor
       submit_applicant
     end
@@ -68,24 +67,6 @@ module Idv
       resolution = idv_agent.start(idv_session.applicant)
       idv_attempter.increment
       resolution
-    end
-
-    def idv_agent
-      @_agent ||= Proofer::Agent.new(
-        vendor: idv_vendor.pick,
-        kbv: FeatureManagement.proofing_requires_kbv?
-      )
-    end
-
-    def applicant_from_params
-      app_vars = idv_session.params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
-      Proofer::Applicant.new(app_vars)
-    end
-
-    def init_questions_and_profile(resolution)
-      idv_session.resolution = resolution
-      idv_session.question_number = 0
-      idv_session.profile_from_applicant(idv_session.applicant)
     end
   end
 end
