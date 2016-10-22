@@ -4,6 +4,7 @@ Figaro.require_keys(
   'allow_third_party_auth',
   'domain_name',
   'enable_test_routes',
+  'hmac_fingerprinter_key',
   'idp_sso_target_url',
   'logins_per_ip_limit',
   'logins_per_ip_period',
@@ -12,6 +13,9 @@ Figaro.require_keys(
   'otp_delivery_blocklist_maxretry',
   'otp_valid_for',
   'password_pepper',
+  'pii_passphrase',
+  'pii_server_cek',
+  'pii_signing_passphrase',
   'reauthn_window',
   'recovery_code_length',
   'requests_per_ip_limit',
@@ -21,6 +25,7 @@ Figaro.require_keys(
   'session_timeout_in_minutes',
   'support_email',
   'twilio_accounts',
+  'use_kms',
   'valid_authn_contexts',
   'valid_service_providers'
 )

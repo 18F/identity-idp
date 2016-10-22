@@ -4,7 +4,7 @@ describe AttributeAsserter do
   include SamlAuthHelper
 
   let(:loa1_user) { create(:user, :signed_up) }
-  let(:user) { create(:profile, :active, :verified, first_name: 'Jane').user }
+  let(:user) { create(:profile, :active, :verified).user }
   let(:identity) do
     build(
       :identity,
@@ -27,10 +27,11 @@ describe AttributeAsserter do
   let(:loa3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_loa3_authn_request)
   end
+  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jane') }
 
   describe '#build' do
     context 'verified user and LOA3 request' do
-      let(:subject) { described_class.new(user, service_provider, loa3_authn_request) }
+      let(:subject) { described_class.new(user, service_provider, loa3_authn_request, decrypted_pii) }
 
       context 'custom bundle includes email, phone, and first_name' do
         before do
@@ -107,7 +108,7 @@ describe AttributeAsserter do
     end
 
     context 'verified user and LOA1 request' do
-      let(:subject) { described_class.new(user, service_provider, loa1_authn_request) }
+      let(:subject) { described_class.new(user, service_provider, loa1_authn_request, decrypted_pii) }
 
       context 'custom bundle includes email, phone, and first_name' do
         before do

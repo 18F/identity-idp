@@ -33,4 +33,18 @@ module IdvSession
   def idv_attempter
     @_idv_attempter ||= Idv::Attempter.new(current_user)
   end
+
+  def idv_agent
+    @_agent ||= Proofer::Agent.new(
+      applicant: idv_session.applicant,
+      vendor: (idv_session.vendor || idv_vendor.pick),
+      kbv: FeatureManagement.proofing_requires_kbv?
+    )
+  end
+
+  def init_questions_and_profile(resolution)
+    idv_session.resolution = resolution
+    idv_session.question_number = 0
+    idv_session.profile_from_applicant(idv_session.applicant, password)
+  end
 end
