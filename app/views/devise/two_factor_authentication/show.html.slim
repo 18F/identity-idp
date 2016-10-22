@@ -22,6 +22,7 @@ p.mt-tiny.mb0#2fa-description
       = f.radio_button :otp_method, 'voice'
       span.indicator
       = t('devise.two_factor_authentication.otp_method.voice')
+  = f.input :context, as: :hidden, input_html: { value: @context }
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
 
 - link = link_to(t('devise.two_factor_authentication.recovery_code_fallback.link'),

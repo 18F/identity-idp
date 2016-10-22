@@ -2,34 +2,48 @@ require 'rails_helper'
 
 describe 'two_factor_authentication/otp_verification/show.html.slim' do
   context 'user has a phone' do
-    let(:user) { build_stubbed(:user, :signed_up) }
-
     before do
       allow(view).to receive(:reauthn?).and_return(false)
+      allow(view).to receive(:user_session).and_return({})
+      controller.request.path_parameters[:delivery_method] = 'sms'
+      @delivery_method = 'sms'
+    end
+
+    it 'has a localized title' do
+      expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
+
+      render
     end
 
     it 'has a localized heading' do
-      controller.request.path_parameters[:delivery_method] = 'sms'
-
       render
 
       expect(rendered).to have_content t('devise.two_factor_authentication.header_text')
     end
 
     it 'informs the user that an OTP has been sent to their number' do
-      allow(view).to receive(:current_user).and_return(user)
+      user = build_stubbed(:user, :signed_up)
       @phone_number = user.decorate.masked_two_factor_phone_number
-      controller.request.path_parameters[:delivery_method] = 'sms'
 
       render
 
       expect(rendered).to have_content t('instructions.2fa.confirm_code', number: '***-***-1212')
     end
 
+    it 'allows user to resend code' do
+      render
+
+      expect(rendered).
+        to have_link(
+          t('links.two_factor_authentication.resend_code'),
+          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms',
+                                                             resend: true, context: nil })
+        )
+    end
+
     context 'when @code_value is set' do
       it 'pre-populates the form field' do
         @code_value = '12777'
-        controller.request.path_parameters[:delivery_method] = 'sms'
 
         render
 
@@ -39,14 +53,13 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'when choosing to receive OTP via SMS' do
       it 'has a link to send confirmation with voice' do
-        controller.request.path_parameters[:delivery_method] = 'sms'
         @delivery_method = 'sms'
 
         render
 
         expect(rendered).to have_link(
           t('links.phone_confirmation.fallback_to_voice'),
-          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })
+          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice', context: '' })
         )
       end
     end
@@ -60,7 +73,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).to have_link(
           t('links.phone_confirmation.fallback_to_sms'),
-          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
+          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms', context: '' })
         )
       end
     end

@@ -29,7 +29,6 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
 
         expect(@analytics).to receive(:track_event).
           with(:recovery_code_authentication, analytics_hash).ordered
-        expect(@analytics).to receive(:track_event).with('User 2FA successful').ordered
         expect(@analytics).to receive(:track_event).with('Authentication Successful').ordered
 
         post :create, code: 'foo'
@@ -38,7 +37,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
 
     context 'when the user enters an invalid recovery code' do
       before do
-        stub_sign_in_before_2fa
+        stub_sign_in_before_2fa(User.new(phone: '+1 (703) 555-1212'))
         form = instance_double(RecoveryCodeForm)
         allow(RecoveryCodeForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)

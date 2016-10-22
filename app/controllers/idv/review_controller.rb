@@ -1,5 +1,7 @@
 module Idv
   class ReviewController < StepController
+    include PhoneConfirmation
+
     before_action :confirm_idv_steps_complete
 
     helper_method :idv_params
@@ -42,8 +44,7 @@ module Idv
 
     def redirect_on_success
       if phone_confirmation_required?
-        user_session[:idv_unconfirmed_phone] = idv_session.params[:phone]
-        redirect_to idv_phone_confirmation_send_path
+        prompt_to_confirm_phone(phone: idv_params[:phone], otp_method: nil, context: 'idv')
       else
         redirect_to idv_questions_path
       end

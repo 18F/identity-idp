@@ -37,7 +37,7 @@ feature 'saml api', devise: true do
         fill_in 'Phone', with: '202-555-1212'
         click_button t('forms.buttons.send_passcode')
 
-        expect(current_path).to eq phone_confirmation_path
+        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
       end
     end
 
@@ -55,7 +55,7 @@ feature 'saml api', devise: true do
         fill_in 'Phone', with: '202-555-1212'
         click_button t('forms.buttons.send_passcode')
 
-        expect(current_path).to eq phone_confirmation_path
+        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
       end
     end
 

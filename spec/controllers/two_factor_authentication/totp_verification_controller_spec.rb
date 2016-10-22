@@ -27,7 +27,7 @@ describe TwoFactorAuthentication::TotpVerificationController, devise: true do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('User 2FA successful')
+        expect(@analytics).to receive(:track_event).with(:totp_authentication, success?: true)
         expect(@analytics).to receive(:track_event).with('Authentication Successful')
 
         post :create, code: generate_totp_code(@secret)
@@ -64,7 +64,7 @@ describe TwoFactorAuthentication::TotpVerificationController, devise: true do
         stub_analytics
 
         expect(@analytics).to receive(:track_event).exactly(3).times.
-          with('User entered invalid 2FA code')
+          with(:totp_authentication, success?: false)
         expect(@analytics).to receive(:track_event).with('User reached max 2FA attempts')
 
         3.times { post :create, code: '12345' }

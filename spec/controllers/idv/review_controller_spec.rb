@@ -144,7 +144,7 @@ describe Idv::ReviewController do
       it 'redirects to phone confirmation path' do
         put :create
 
-        expect(response).to redirect_to idv_phone_confirmation_send_path
+        expect(response).to render_template('devise/two_factor_authentication/show')
       end
     end
   end

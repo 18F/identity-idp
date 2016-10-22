@@ -4,7 +4,6 @@ en:
     invalid_totp: Invalid code entered.  Please try again.
     not_authorized: You are not authorized to perform this action.
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
-    invalid_confirmation_code: Invalid confirmation code.
     messages:
       improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
       weak_password: not strong enough. Consider adding a number, symbols or more letters to make it stronger. %{feedback}
@@ -39,9 +38,6 @@ en:
       enable: Enable
       disable: Disable
       search: Search
-      resend: Resend
-    phone_confirmation:
-      header_text: Enter the passcode we sent you
     registration:
       labels:
         email: Email address
@@ -158,7 +154,6 @@ en:
       email: Edit your email
       password: Edit your password
       phone: Edit your phone number
-      confirm_phone: Confirm your phone number
     enter_2fa_code: Enter the secure one-time passcode
     account_locked: Account locked
     passwords:
@@ -176,7 +171,7 @@ en:
       start: Set up two-factor authentication
       new: Enter the secure one-time passcode
     two_factor_setup: Two-factor authentication setup
-    two_factor_verification: Choose verification method
+    two_factor_verification: Choose OTP delivery method
     users:
       edit: Editing user - %{user}
       index: Manage users

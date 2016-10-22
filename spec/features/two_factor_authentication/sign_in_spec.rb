@@ -50,7 +50,7 @@ feature 'Two Factor Authentication' do
         click_button t('forms.buttons.send_passcode')
 
         expect(page).to_not have_content invalid_phone_message
-        expect(current_path).to eq phone_confirmation_path
+        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
         expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       end
     end

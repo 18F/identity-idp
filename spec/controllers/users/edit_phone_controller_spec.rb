@@ -24,7 +24,7 @@ describe Users::EditPhoneController do
         expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
         expect(@analytics).to have_received(:track_event).
           with('User asked to update their phone number')
-        expect(response).to render_template('shared/choose_delivery_method')
+        expect(response).to render_template('devise/two_factor_authentication/show')
       end
     end
 
@@ -55,7 +55,7 @@ describe Users::EditPhoneController do
         expect(user.reload.phone).to_not eq second_user.phone
         expect(@analytics).to have_received(:track_event).
           with('User asked to update their phone number')
-        expect(response).to render_template('shared/choose_delivery_method')
+        expect(response).to render_template('devise/two_factor_authentication/show')
       end
     end
 

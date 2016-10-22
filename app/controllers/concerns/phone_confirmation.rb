@@ -1,17 +1,19 @@
 module PhoneConfirmation
-  def prompt_to_confirm_phone(phone, otp_method = nil)
+  def prompt_to_confirm_phone(phone:, otp_method: nil, context: 'confirmation')
     user_session[:unconfirmed_phone] = phone
     # If the user selected delivery method, the code is sent and user is
     # prompted to confirm.
-    prompt_to_choose_delivery_method and return unless otp_method
+    prompt_to_choose_delivery_method(context) and return unless otp_method
 
-    redirect_to phone_confirmation_send_path(
-      otp_method: otp_method
+    redirect_to otp_send_path(
+      otp_delivery_selection_form: { otp_method: otp_method, context: context }
     )
   end
 
-  def prompt_to_choose_delivery_method
+  def prompt_to_choose_delivery_method(context)
     @phone_number = user_session[:unconfirmed_phone]
-    render 'shared/choose_delivery_method'
+    @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+    @context = context
+    render 'devise/two_factor_authentication/show'
   end
 end

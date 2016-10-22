@@ -61,8 +61,7 @@ Metrics/ModuleLength:
   Enabled: true
   Exclude:
   - spec/**/*
-# idv_session should be removed after https://github.com/18F/identity-idp/pull/489 merged
-  - app/controllers/concerns/idv_session.rb
+  - 'app/controllers/concerns/two_factor_authenticatable.rb'
 
 Rails/TimeZone:
   # The value `strict` means that `Time` should be used with `zone`.

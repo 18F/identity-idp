@@ -20,8 +20,6 @@ en:
         Every time you log in, a one-time passcode will be sent to your phone via SMS or with a
         phone call.
         Please enter the phone number you would like to use to receive these messages.
-      choose_delivery_confirmation: >
-        Please select how you would like to receive your confirmation code for %{phone}
       choose_otp_delivery: >
         Please select how you would like to receive your one-time passcode for %{phone}
       otp_sms_disclaimer: "Note: By accepting these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply."
