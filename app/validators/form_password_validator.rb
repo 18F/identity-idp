@@ -11,14 +11,14 @@ module FormPasswordValidator
               presence: true,
               length: Devise.password_length
 
-    validate :not_weak_password, if: :password_strength_enabled?
+    validate :strong_password, if: :password_strength_enabled?
   end
-
-  ZXCVBN_TESTER = ::Zxcvbn::Tester.new
 
   private
 
-  def not_weak_password
+  ZXCVBN_TESTER = ::Zxcvbn::Tester.new
+
+  def strong_password
     return unless errors.messages.blank? && password_score.score < min_password_score
 
     errors.add :password, :weak_password, i18n_variables

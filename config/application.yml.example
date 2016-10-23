@@ -13,10 +13,10 @@ idv_max_attempts: '3'
 idv_attempt_window_in_hours: '24'
 mailer_domain_name: 'http://localhost:3000'
 
-# The scores 0, 1, 2, 3 or 4 are given when the estimated crack time (seconds)
-# is less than 10**2, 10**4, 10**6, 10**8, Infinity.
+# The scores 0, 1, 2, 3 or 4 are given when the number of guesses to crack the
+# password are less than 10^3, 10^6, 10^8, 10^10, and >= 10^10 respectively.
 # Default minimum is 4 (best).
-# https://github.com/bitzesty/devise_zxcvbn
+# https://github.com/dropbox/zxcvbn#usage
 min_password_score: '3'
 
 # Must be an even number. 16 seems to be what most sites use.
