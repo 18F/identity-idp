@@ -184,7 +184,7 @@ Style/MultilineOperationIndentation:
   IndentationWidth: ~
 
 Style/SafeNavigation:
-  ConvertCodeThatCanStartToReturnNil: true
+  ConvertCodeThatCanStartToReturnNil: false
 
 Style/StringLiterals:
   Description: Checks if uses of quotes match the configured preference.
