@@ -57,10 +57,10 @@ feature 'Sign in' do
 
   context 'session approaches timeout', js: true do
     before :each do
-      allow(Figaro.env).to receive(:session_check_frequency).and_return(1)
-      allow(Figaro.env).to receive(:session_check_delay).and_return(2)
+      allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
+      allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in)
+        and_return(Devise.timeout_in.to_s)
     end
 
     scenario 'user sees warning before session times out' do
@@ -92,7 +92,7 @@ feature 'Sign in' do
     end
 
     it 'does not display timeout modal when session not timed out', js: true do
-      allow(Figaro.env).to receive(:session_timeout_in_minutes).and_return('1')
+      allow(Figaro.env).to receive(:session_timeout_in_minutes).and_return('0.1')
 
       visit root_path
 
@@ -115,6 +115,37 @@ feature 'Sign in' do
       click_link(t('links.sign_out'))
 
       Timecop.travel(Devise.timeout_in + 1.minute)
+
+      # mimic what happens on the server side
+      ActiveRecord::SessionStore::Session.delete_all
+
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button t('links.sign_in')
+
+      expect(page).to_not have_content t('errors.invalid_authenticity_token')
+      expect(current_path).to eq user_two_factor_authentication_path
+    end
+  end
+
+  context 'signing in after sitting on the landing page past session expiration' do
+    before do
+      ActionController::Base.allow_forgery_protection = true
+    end
+
+    after do
+      ActionController::Base.allow_forgery_protection = false
+      Timecop.return
+    end
+
+    it 'successfully signs in the user' do
+      user = create(:user, :signed_up, phone: '+1 (555) 555-5556')
+      visit root_path
+
+      Timecop.travel(Devise.timeout_in + 1.minute)
+
+      # mimic what happens on the server side
+      ActiveRecord::SessionStore::Session.delete_all
 
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
