@@ -27,11 +27,4 @@ Devise.setup do |config|
   config.direct_otp_valid_for = Figaro.env.otp_valid_for.to_i.minutes
   config.max_login_attempts = 3 # max OTP login attempts, not devise strategies (e.g. pw auth)
   config.otp_length = 6
-
-  # zxcvbnable
-  # The scores 0, 1, 2, 3 or 4 are given when the estimated crack time (seconds)
-  # is less than 10**2, 10**4, 10**6, 10**8, Infinity.
-  # Default minimum is 4 (best).
-  # https://github.com/bitzesty/devise_zxcvbn
-  config.min_password_score = 3
 end

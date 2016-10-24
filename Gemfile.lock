@@ -184,9 +184,6 @@ GEM
       railties (>= 4.1.0, < 5.1)
       responders
       warden (~> 1.2.3)
-    devise_zxcvbn (2.1.2)
-      devise
-      zxcvbn-js (~> 4.2.0)
     diff-lcs (1.2.5)
     docile (1.1.5)
     dotenv (2.1.1)
@@ -619,7 +616,6 @@ DEPENDENCIES
   database_cleaner
   derailed
   devise (~> 4.1)
-  devise_zxcvbn
   dotiw
   email_spec
   factory_girl_rails
@@ -683,6 +679,7 @@ DEPENDENCIES
   xml-simple
   xmlenc (~> 0.6.4)
   zonebie
+  zxcvbn-js
 
 BUNDLED WITH
    1.13.3

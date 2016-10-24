@@ -6,7 +6,7 @@ en:
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
     messages:
       improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
-      weak_password: not strong enough. Consider adding a number, symbols or more letters to make it stronger. %{feedback}
+      weak_password: Your password is not strong enough. %{feedback}
 
   event_types:
     account_created: Account created

@@ -12,7 +12,6 @@ class User < ActiveRecord::Base
     :trackable,
     :two_factor_authenticatable,
     :omniauthable,
-    :zxcvbnable,
     omniauth_providers: [:saml]
   )
 
@@ -90,17 +89,5 @@ class User < ActiveRecord::Base
 
   def decorate
     UserDecorator.new(self)
-  end
-
-  # used by zxcvbn
-  def weak_words
-    [APP_NAME]
-  end
-
-  private
-
-  # method required by zxcvbn
-  def password_required?
-    password.present?
   end
 end

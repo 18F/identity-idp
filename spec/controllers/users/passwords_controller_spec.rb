@@ -40,7 +40,7 @@ describe Users::PasswordsController, devise: true do
       it 'displays the form to enter a new password' do
         stub_analytics
 
-        user = instance_double('User')
+        user = instance_double('User', email: 'test@test1.com')
         allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
 
@@ -60,7 +60,7 @@ describe Users::PasswordsController, devise: true do
 
         params = { password: 'password', reset_password_token: 'foo' }
 
-        user = instance_double('User', uuid: '123')
+        user = instance_double('User', uuid: '123', email: 'test1@test.com')
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
         allow(user).to receive(:reset_password_token).and_return('foo')
         allow(user).to receive(:errors).and_return(reset_password_token: 'token expired')

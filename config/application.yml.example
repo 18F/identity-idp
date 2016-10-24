@@ -13,6 +13,12 @@ idv_max_attempts: '3'
 idv_attempt_window_in_hours: '24'
 mailer_domain_name: 'http://localhost:3000'
 
+# The scores 0, 1, 2, 3 or 4 are given when the number of guesses to crack the
+# password are less than 10^3, 10^6, 10^8, 10^10, and >= 10^10 respectively.
+# Default minimum is 4 (best).
+# https://github.com/dropbox/zxcvbn#usage
+min_password_score: '3'
+
 # Must be an even number. 16 seems to be what most sites use.
 recovery_code_length: '16'
 
@@ -48,6 +54,7 @@ development:
   otp_delivery_blocklist_maxretry: '5'
   otp_valid_for: '5'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
+  password_strength_enabled: 'true'
   proofing_kbv: 'false'
   proofing_vendors: 'mock'
   rack_mini_profiler: 'off'
@@ -78,6 +85,7 @@ production:
   otp_valid_for: '5'
   participate_in_dap: 'false'
   password_pepper: 'rake secret'
+  password_strength_enabled: 'true'
   proxy_addr: '123.456.789'
   proxy_port: '80'
   reauthn_window: '30'
@@ -106,6 +114,7 @@ test:
   otp_delivery_blocklist_maxretry: '2'
   otp_valid_for: '5'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
+  password_strength_enabled: 'false'
   proofing_kbv: 'false'
   proofing_vendors: 'mock'
   reauthn_window: '30'

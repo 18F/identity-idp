@@ -9,7 +9,6 @@ gem 'american_date'
 gem 'browserify-rails'
 gem 'coffee-rails', '~> 4.1.0'
 gem 'devise', '~> 4.1'
-gem 'devise_zxcvbn'
 gem 'dotiw'
 gem 'figaro'
 gem 'foundation_emails'
@@ -45,6 +44,7 @@ gem 'uglifier', '>= 1.3.0'
 gem 'whenever', require: false
 gem 'xmlenc', '~> 0.6.4'
 gem 'xml-simple'
+gem 'zxcvbn-js'
 
 group :deploy do
   gem 'capistrano'
