@@ -116,6 +116,37 @@ feature 'Sign in' do
 
       Timecop.travel(Devise.timeout_in + 1.minute)
 
+      # mimic what happens on the server side
+      ActiveRecord::SessionStore::Session.delete_all
+
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+      click_button t('links.sign_in')
+
+      expect(page).to_not have_content t('errors.invalid_authenticity_token')
+      expect(current_path).to eq user_two_factor_authentication_path
+    end
+  end
+
+  context 'signing in after sitting on the landing page past session expiration' do
+    before do
+      ActionController::Base.allow_forgery_protection = true
+    end
+
+    after do
+      ActionController::Base.allow_forgery_protection = false
+      Timecop.return
+    end
+
+    it 'successfully signs in the user' do
+      user = create(:user, :signed_up, phone: '+1 (555) 555-5556')
+      visit root_path
+
+      Timecop.travel(Devise.timeout_in + 1.minute)
+
+      # mimic what happens on the server side
+      ActiveRecord::SessionStore::Session.delete_all
+
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
       click_button t('links.sign_in')
