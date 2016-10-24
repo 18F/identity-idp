@@ -183,6 +183,9 @@ Style/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Style/SafeNavigation:
+  ConvertCodeThatCanStartToReturnNil: true
+
 Style/StringLiterals:
   Description: Checks if uses of quotes match the configured preference.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-string-literals
