@@ -9,8 +9,6 @@ module Devise
         headers = {
           subject: subject_for(action),
           to: recipient,
-          from: mailer_sender(devise_mapping),
-          reply_to: mailer_reply_to(devise_mapping),
           template_path: template_paths,
           template_name: action
         }.merge(opts)

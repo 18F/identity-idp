@@ -1,6 +1,7 @@
 class UserMailer < ActionMailer::Base
+  include Mailable
   before_action :attach_images
-  default from: Figaro.env.email_from
+  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
 
   def email_changed(old_email)
     mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
@@ -19,9 +20,5 @@ class UserMailer < ActionMailer::Base
   def contact_request(details)
     @details = details
     mail(to: Figaro.env.support_email, subject: t('mailer.contact_request.subject'))
-  end
-
-  def attach_images
-    attachments.inline['logo.png'] = File.read('app/assets/images/logo.png')
   end
 end
