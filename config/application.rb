@@ -29,6 +29,8 @@ module Upaya
 
     config.middleware.use Rack::Attack
 
+    config.autoload_paths << Rails.root.join('app/mailers/concerns')
+
     # Configure Browserify to use babelify to compile ES6
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
   end

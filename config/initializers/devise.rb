@@ -1,13 +1,14 @@
 require 'saml_idp_constants'
 
 Devise.setup do |config|
+  include Mailable
   require 'devise/orm/active_record'
   config.allow_unconfirmed_access_for = 0.days
   config.case_insensitive_keys = [:email]
   config.confirm_within = 24.hours
   config.expire_all_remember_me_on_sign_out = true
   config.mailer = 'CustomDeviseMailer'
-  config.mailer_sender = Figaro.env.email_from
+  config.mailer_sender = email_with_name(Figaro.env.email_from, Figaro.env.email_from)
   config.paranoid = true
   config.password_length = 8..128
   config.pepper = Figaro.env.password_pepper

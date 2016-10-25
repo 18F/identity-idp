@@ -6,6 +6,8 @@ describe UserMailer, type: :mailer do
   describe 'email_changed' do
     let(:mail) { UserMailer.email_changed('old@email.com') }
 
+    it_behaves_like 'a system email'
+
     it 'sends to the old email' do
       expect(mail.to).to eq ['old@email.com']
     end
@@ -26,6 +28,8 @@ describe UserMailer, type: :mailer do
   describe 'password_changed' do
     let(:mail) { UserMailer.password_changed(user) }
 
+    it_behaves_like 'a system email'
+
     it 'sends to the current email' do
       expect(mail.to).to eq [user.email]
     end
@@ -45,6 +49,8 @@ describe UserMailer, type: :mailer do
 
   describe 'signup_with_your_email' do
     let(:mail) { UserMailer.signup_with_your_email(user.email) }
+
+    it_behaves_like 'a system email'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [user.email]
@@ -68,6 +74,8 @@ describe UserMailer, type: :mailer do
     }
 
     let(:mail) { UserMailer.contact_request(details) }
+
+    it_behaves_like 'a system email'
 
     it 'sends to the current email' do
       expect(mail.to).to eq [Figaro.env.support_email]
