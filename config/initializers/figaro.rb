@@ -16,6 +16,7 @@ Figaro.require_keys(
   'password_strength_enabled',
   'reauthn_window',
   'recovery_code_length',
+  'redis_url',
   'requests_per_ip_limit',
   'requests_per_ip_period',
   'saml_passphrase',
