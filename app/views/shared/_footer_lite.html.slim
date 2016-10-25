@@ -1,20 +1,6 @@
 footer.footer.bg-navy.white
-  .container.p2
+  .container.p2.h6
     .clearfix
-      .sm-col.center.sm-left-align
-        = link_to \
-          image_tag(asset_url('square-18f.svg'),
-            alt: t('.18F'),
-            class: 'mr2 align-middle',
-            width: 40), 'https://18f.gsa.gov/'
-        = link_to \
-          image_tag(asset_url('square-gsa.svg'),
-            alt: t('.GSA'),
-            class: 'align-middle',
-            width: 40), 'http://www.gsa.gov/portal/category/100000'
-      .sm-col-right.sm-show
-        = link_to \
-          image_tag(asset_url('logo-white.svg'),
-            alt: APP_NAME,
-            class: 'py1 align-middle',
-            width: 172), root_path, class: 'inline-block'
+      .sm-col = t('shared.footer_lite.gsa')
+      .sm-col-right
+        = link_to t('links.privacy_policy'), privacy_path, class: 'caps white'
