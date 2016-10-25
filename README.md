@@ -31,7 +31,8 @@ Testing dependencies:
 1. Make sure Postgres and Redis are running. For example, on OS X:
 
   ```
-  $ brew services start redis postgres
+  $ brew services start redis 
+  $ brew services start postgres
   ```
 
 1. Run the following command to set up the environment:
