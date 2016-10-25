@@ -4,8 +4,8 @@ en:
   devise:
     confirmations:
       already_confirmed: "Your email address has already been confirmed. %{action}"
-      confirmed: Your email has been confirmed!
-      confirmed_but_must_set_password: Your email has been confirmed!
+      confirmed: You have confirmed your email address
+      confirmed_but_must_set_password: You have confirmed your email address
       send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
       send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
     failure:

@@ -17,17 +17,16 @@ en:
         text: Don't have access to your phone? Use a %{link} instead.
         link: recovery code
       otp_setup: >
-        Every time you log in, a one-time passcode will be sent to your phone via SMS or with a
-        phone call.
-        Please enter the phone number you would like to use to receive these messages.
+        Every time you log in, we will send you a one-time passcode via text message or phone call.
+        This helps safeguard your account.
       choose_delivery_confirmation: >
         Please select how you would like to receive your confirmation code for %{phone}
       choose_otp_delivery: >
         Please select how you would like to receive your one-time passcode for %{phone}
-      otp_sms_disclaimer: "Note: By accepting these terms and conditions, you acknowledge that Standard Messaging Rates or other charges related to these notifications may apply."
+      otp_sms_disclaimer: "Message and data rates may apply."
       please_confirm: Your phone number has been set. Please confirm it by entering the passcode below.
       success: "Two-factor authentication successful."
-      two_factor_setup: Extra protection for your account
+      two_factor_setup: Add extra protection
       totp_info: >
         Use any standards compliant authenticator app (such as Google Authenticator) to scan the QR
         Code below.
@@ -43,6 +42,6 @@ en:
         confirm_with_sms: Confirm with text message
         confirm_with_voice: Confirm with voice call
       otp_method:
-        title: Delivery method
+        title: How would you like to receive your passcode?
         sms: Text message (SMS)
         voice: Phone call
