@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
-gem 'activerecord-session_store'
+gem 'redis-session-store'
 gem 'ahoy_matey'
 gem 'american_date'
 gem 'browserify-rails'

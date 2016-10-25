@@ -106,21 +106,50 @@ feature 'Sign in' do
 
     after do
       ActionController::Base.allow_forgery_protection = false
-      Timecop.return
     end
 
-    it 'successfully signs in the user' do
-      user = sign_in_and_2fa_user
-      click_link(t('links.sign_out'))
+    context 'javascript enabled', js: true do
+      it 'pops up session timeout warning' do
+        # 0.07.minutes == 4.2 sec
+        # Capybara.default_max_wait_time = 5 sec
+        # we need session timeout long enough to allow session to live
+        # between requests (esp at travis), but short enough so that
+        # default_max_wait_time does not expire during find_link().
+        allow(Devise).to receive(:timeout_in).and_return(0.07.minutes)
 
-      Timecop.travel(Devise.timeout_in + 1.minute)
+        user = sign_in_and_2fa_user
+        click_link(t('links.sign_out'))
 
-      fill_in 'Email', with: user.email
-      fill_in 'Password', with: user.password
-      click_button t('links.sign_in')
+        find_link(t('forms.buttons.continue')).trigger('click')
 
-      expect(page).to_not have_content t('errors.invalid_authenticity_token')
-      expect(current_path).to eq user_two_factor_authentication_path
+        expect(current_path).to eq root_path
+
+        fill_in 'Email', with: user.email
+        fill_in 'Password', with: user.password
+        click_button t('links.sign_in')
+
+        expect(page).to_not have_content t('errors.invalid_authenticity_token')
+        expect(current_path).to eq user_two_factor_authentication_path
+      end
+    end
+
+    context 'javascript disabled' do
+      it 'fails to sign in the user, with CSRF error' do
+        user = sign_in_and_2fa_user
+        click_link(t('links.sign_out'))
+
+        Timecop.travel(Devise.timeout_in + 1.minute) do
+          expect(page).to_not have_content(t('forms.buttons.submit.continue'))
+          expect(current_path).to eq root_path
+
+          fill_in 'Email', with: user.email
+          fill_in 'Password', with: user.password
+          click_button t('links.sign_in')
+
+          expect(page).to have_content t('errors.invalid_authenticity_token')
+          expect(current_path).to eq root_path
+        end
+      end
     end
   end
 
