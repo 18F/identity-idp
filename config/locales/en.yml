@@ -66,7 +66,7 @@ en:
 
   instructions:
     recovery_code: >
-      You can still log in using a special recovery code if you can't get to
+      You can still log in using a special recovery code if you can’t get to
       your phone. Check your email for a link to your personal code.
     password:
       info:
@@ -75,8 +75,8 @@ en:
           It can be a mix of alphanumeric and special characters and individual
           words in a phrase.
         point_2: >
-          Create a password that's secure, but still easy for you to remember.
-          And don't use the same one you use with your other online accounts, such
+          Create a password that’s secure, but still easy for you to remember.
+          And don’t use the same one you use with your other online accounts, such
           as bank, email, and social media.
       strength:
         intro: 'Password strength: '
@@ -84,7 +84,7 @@ en:
       already_have_account: Already have account? %{link}
       email: Pick an address to use for government communications.
     2fa:
-      resend: Didn't receive a code? %{link}
+      resend: Didn’t receive a code? %{link}
       confirm_code: We sent the code to %{number}.
       wrong_number: Entered the wrong phone number? %{link}
       totp_intro: >
@@ -127,20 +127,20 @@ en:
       first_paragraph_end: >
         with a link to confirm your email address. Follow the link to continue
         creating your account.
-      no_email_sent_explanation_start: "Didn't get an email?"
+      no_email_sent_explanation_start: Didn’t get an email?
     terms_of_service:
       headline: I agree to the terms of this service
       text: >
         Providing your information is voluntary, and is used to help you
         access government services. We use industry-standard monitoring and
         security practices to protect your data. %{link}
-      link: 'Learn more ›'
+      link: Learn more ›
     dap_html: >
-      <!-- We participate in the US government's analytics program. -->
+      <!-- We participate in the US government’s analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
   session_expired: Please <a href=".">refresh</a> the page to log in.
   session_timedout: >
-    For your security, we've ended your session due to inactivity. Please sign in again.
+    For your security, we’ve ended your session due to inactivity. Please sign in again.
   session_timeout_warning: >-
     Your session will end in <span id="countdown">%{time_left_in_session}</span> due to inactivity.
     If you’d like to continue using the site, please click the button below.
@@ -202,7 +202,7 @@ en:
       privacy_act: Privacy Act Statement
     profile:
       profile_info: Profile information
-      profile_info_tt: Why can't I edit my profile information?
+      profile_info_tt: Why can’t I edit my profile information?
       account_history: Account history
       login_info: Login information
       main: My account
@@ -335,13 +335,13 @@ en:
         personal information as well as some financial information from you to
         complete this process. If you don’t have the information we need at this
         time you can continue later.
-      cancel_link: 'Cancel verification'
+      cancel_link: Cancel verification
       dupe_ssn1: >
         If you are getting this error, you may have already created and verified
         and account, but with a different email address.
       dupe_ssn2: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
-      dupe_ssn3: "If you can't remember your original login information, you can %{link}."
+      dupe_ssn3: If you can’t remember your original login information, you can %{link}.
       dupe_ssn3_link: try recovering it here
       review_and_continue: Review my info and try again
       finance:
@@ -357,7 +357,7 @@ en:
         is: 'is '
         virtual: a google voice number, skype account or virtual phone
         prepaid: a pay as you go phone
-        in_your_name: in your name, or your spouse's name
+        in_your_name: in your name, or your spouse’s name
         same_as_2fa: >
           This phone number can be the same one you used to set up your one-time
           password as long as it meets the criteria above.
@@ -379,7 +379,7 @@ en:
       hardfail: We were unable to verify your identity
       complete: Identity verification complete
       review: Review and submit
-      dupe: "Error: An account may already exist"
+      dupe: 'Error: An account may already exist'
       session:
         basic: First, tell us about yourself
         finance: Next, we will check your personal information against financial records
@@ -395,7 +395,7 @@ en:
       comments: Comments
       comments_note: Optional, but very helpful
     messages:
-      thanks: Thanks! We'll be in touch soon.
+      thanks: Thanks! We’ll be in touch soon.
 
   privacy_policy:
     privacy_act: >
@@ -455,9 +455,9 @@ en:
         Contact Center at %{link}
     signup_with_your_email:
       intro: >
-        We received a request to use this email address for a %{app}
-        account. This email address is already in use. Click the button to continue signing in to %{app}
-        using this email address. You can also paste the link into your browser.
+        We received a request to use this email address for a %{app} account.
+        This email address is already in use. Click the button to continue signing in to
+        %{app} using this email address. You can also paste the link into your browser.
       link_text: Go to %{app}
       new_account: >
         If you would like to use a different email address to sign in to %{app},

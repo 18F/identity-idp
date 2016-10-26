@@ -3,47 +3,60 @@
 en:
   devise:
     confirmations:
-      already_confirmed: "Your email address has already been confirmed. %{action}"
+      already_confirmed: Your email address has already been confirmed. %{action}
       confirmed: You have confirmed your email address
       confirmed_but_must_set_password: You have confirmed your email address
-      send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
-      send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
+      send_instructions: >
+        You will receive an email with instructions for how to confirm your
+        email address in a few minutes.
+      send_paranoid_instructions: >
+        If your email address exists in our database, you will receive an email
+        with instructions for how to confirm your email address in a few minutes.
     failure:
-      already_authenticated: ""
-      inactive: "Your account is not activated yet."
-      invalid: "Invalid email or password."
-      locked: "Your account is locked."
-      last_attempt: "You have one more attempt before your account is locked."
-      not_found_in_database: "Invalid email or password."
-      timeout: "Your session expired. Please sign in again to continue."
-      unauthenticated: ""
-      unconfirmed: "You have to confirm your email address before continuing."
+      already_authenticated: ''
+      inactive: Your account is not activated yet.
+      invalid: Invalid email or password.
+      locked: Your account is locked.
+      last_attempt: You have one more attempt before your account is locked.
+      not_found_in_database: Invalid email or password.
+      timeout: Your session expired. Please sign in again to continue.
+      unauthenticated: ''
+      unconfirmed: You have to confirm your email address before continuing.
     mailer:
       confirmation_instructions:
-        subject: "Email confirmation instructions"
+        subject: Email confirmation instructions
       reset_password_instructions:
-        subject: 'Password reset instructions'
+        subject: Password reset instructions
       password_updated:
-        subject: 'Password change notification'
+        subject: Password change notification
       account_locked:
-        subject: 'Your login.gov account has been locked'
+        subject: Your login.gov account has been locked
     omniauth_callbacks:
-      failure: "Could not authenticate you due to: %{reason}."
-      success: "Third party authentication successful!"
+      failure: 'Could not authenticate you due to: %{reason}.'
+      success: Third party authentication successful!
     passwords:
-      no_token: "You can't access this page without coming from a password reset email. If you do come from a password reset email, please make sure you used the full URL provided."
-      send_instructions: "You will receive an email with instructions on how to reset your password in a few minutes."
-      send_paranoid_instructions: "If your email address exists in our database, you will receive a password recovery link at your email address in a few minutes."
-      updated: "Your password has been changed successfully. You are now signed in."
+      no_token: >
+        You can’t access this page without coming from a password reset email.
+        If you do come from a password reset email, please make sure you used the full
+        URL provided.
+      send_instructions: >
+        You will receive an email with instructions on how to reset your
+        password in a few minutes.
+      send_paranoid_instructions: >
+        If your email address exists in our database, you will receive a
+        password recovery link at your email address in a few minutes.
+      updated: Your password has been changed successfully. You are now signed in.
       updated_not_active: >
         Your password has been changed successfully.
         Please sign in with your new password.
-      choose_new_password: "Choose a new password."
-      token_expired: 'You have taken too long to reset your password. Please try again.'
-      invalid_token: 'The reset password token is invalid. Please try again.'
+      choose_new_password: Choose a new password.
+      token_expired: You have taken too long to reset your password. Please try again.
+      invalid_token: The reset password token is invalid. Please try again.
     registrations:
       start:
-        bullet_1: Please use this site to securely log in to your participating government agency.
+        bullet_1: >
+          Please use this site to securely log in to your participating
+          government agency.
         bullet_2: >
           U.S. government agencies are using login.gov to make interacting with
           the government easier.
@@ -52,11 +65,15 @@ en:
           government agencies.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your
-        account will be removed. Are you sure you'd like to delete your account?
-      destroyed: "Your account has been successfully deleted."
-      signed_up: "Welcome! You have signed up successfully."
-      signed_up_but_inactive: "You have signed up successfully. However, we could not sign you in because your account is not yet activated."
-      signed_up_but_locked: "You have signed up successfully. However, we could not sign you in because your account is locked."
+        account will be removed. Are you sure you’d like to delete your account?
+      destroyed: Your account has been successfully deleted.
+      signed_up: Welcome! You have signed up successfully.
+      signed_up_but_inactive: >
+        You have signed up successfully. However, we could not sign you in
+        because your account is not yet activated.
+      signed_up_but_locked: >
+        You have signed up successfully. However, we could not sign you in
+        because your account is locked.
       email_update_needs_confirmation: >
         You updated your account successfully, but we need to verify your new
         email address. Please check your email and follow the confirm link to
@@ -72,25 +89,25 @@ en:
         the instructions below to verify your new number, then check your
         email and click the confirmation link to confirm your new email address.
       updated: Account update successful!
-      enabled_twofactor: "Successfully enabled two-factor authentication."
-      close_window: "You can close this browser window once you have verified your email address."
+      enabled_twofactor: Successfully enabled two-factor authentication.
+      close_window: You can close this browser window once you have verified your email address.
     sessions:
       signed_in: ''
-      signed_out: "You are now signed out."
-      already_signed_out: "You are now signed out."
+      signed_out: You are now signed out.
+      already_signed_out: You are now signed out.
   errors:
     messages:
-      already_confirmed: "was already confirmed, please try signing in"
+      already_confirmed: was already confirmed, please try signing in
       confirmation_period_expired: >
         You have taken longer than %{period} to confirm your email.
         Please click "Resend confirmation instructions."
       confirmation_invalid_token: >
         The confirmation link you clicked on is no longer valid.  This may have been caused by
         clicking on an old link in your email, or you may have already confirmed your account.
-      expired: "has expired, please request a new one"
-      not_found: "not found"
-      not_locked: "was not locked"
+      expired: has expired, please request a new one
+      not_found: not found
+      not_locked: was not locked
       not_saved:
-        one: "1 error prohibited this %{resource} from being saved:"
-        other: "%{count} errors prohibited this %{resource} from being saved:"
-      requires_phone: "requires you to enter your phone number."
+        one: '1 error prohibited this %{resource} from being saved:'
+        other: '%{count} errors prohibited this %{resource} from being saved:'
+      requires_phone: requires you to enter your phone number.

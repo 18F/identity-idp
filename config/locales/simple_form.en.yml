@@ -3,10 +3,10 @@ en:
     "yes": 'Yes'
     "no": 'No'
     required:
-      text: 'This field is required'
+      text: This field is required
       mark: '*'
       # You can uncomment the line below if you need to overwrite the whole required html.
       # When using html, text and mark won't be used.
       html: '<abbr title="required" class="red display-none">*</abbr> '
     error_notification:
-      default_message: "Please review the problems below:"
+      default_message: 'Please review the problems below:'
