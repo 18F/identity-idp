@@ -96,6 +96,7 @@ en:
   links:
     back_to_sp: '‹ Back to %{app}'
     create_account: Create account
+    privacy_policy: Privacy Policy
     resend: Resend
     sign_out: Sign out
     sign_in: Log in
@@ -435,8 +436,7 @@ en:
     usa_banner:
       official_site: An official website of the United States government
     footer_lite:
-      GSA: GSA
-      18F: 18F
+      gsa: U.S. General Services Administration
 
   user_mailer:
     email_changed:
