@@ -25,7 +25,7 @@ en:
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       send: Send
-      send_passcode: Send one-time passcode
+      send_passcode: Send passcode
       setup_totp: Set up authentication app
       submit:
         default: Submit
@@ -54,9 +54,9 @@ en:
         To receive a one-time passode,  you may choose to use a two-factor
         authentication application to log into to your account. If so, you’ll
         need to link your login.gov account to the application you choose. Each
-        time you log in you’ll need to open the application and retrieve a code.
+        time you sign in you’ll need to open the application and retrieve a code.
     confirmation:
-      show_hdr: Create a password
+      show_hdr: Create a strong password
     passwords:
       edit:
         labels:
@@ -66,9 +66,8 @@ en:
 
   instructions:
     recovery_code: >
-      Below is the recovery code that we have generated for you. You can use
-      this code to access your account in case you lose access to your phone.
-      Make sure to print and/or write down this code and keep it in a safe place.
+      You can still log in using a special recovery code if you can't get to
+      your phone. Check your email for a link to your personal code.
     password:
       info:
         lead: Your password must be at least %{min_length} characters long.
@@ -83,10 +82,10 @@ en:
         intro: 'Password strength: '
     registration:
       already_have_account: Already have account? %{link}
-      email: Pick an address you want to use for government communications.
+      email: Pick an address to use for government communications.
     2fa:
       resend: Didn't receive a code? %{link}
-      confirm_code: Please enter the code sent to %{number}.
+      confirm_code: We sent the code to %{number}.
       wrong_number: Entered the wrong phone number? %{link}
       totp_intro: >
         Please enter the code from your authenticator app.
@@ -97,11 +96,11 @@ en:
     back_to_sp: '‹ Back to %{app}'
     create_account: Create account
     privacy_policy: Privacy Policy
-    resend: Resend
+    resend: Send again
     sign_out: Sign out
-    sign_in: Log in
+    sign_in: Sign in
     my_account: My account
-    user_confirmation: Confirm account
+    user_confirmation: Confirm this email address
     edit: Edit
     phone_confirmation:
       fallback_to_sms: Send me a text message with the code instead
@@ -116,7 +115,7 @@ en:
     log_in_consent:
       text: By signing in, you agree to %{app}’s %{link}
       link: Security Consent & Privacy Act Statement
-    phone_confirmation_successful: Phone confirmation successful!
+    phone_confirmation_successful: Congratulations! Your account is now more secure.
     password_reset: >
       You will receive an email with instructions on how to reset your password
       in a few minutes.
@@ -126,9 +125,9 @@ en:
     signed_up_but_unconfirmed:
       first_paragraph_start: We sent an email to
       first_paragraph_end: >
-        with a link to confirm your email address. Please click on the
-        link in your email to continue signing up.
-      no_email_sent_explanation_start: Didn't receive an email?
+        with a link to confirm your email address. Follow the link to continue
+        creating your account.
+      no_email_sent_explanation_start: "Didn't get an email?"
     terms_of_service:
       headline: I agree to the terms of this service
       text: >
@@ -141,7 +140,7 @@ en:
       <!-- See the data at analytics.usa.gov. -->
   session_expired: Please <a href=".">refresh</a> the page to log in.
   session_timedout: >
-    For your security, we've ended your session due to inactivity. Please log in again.
+    For your security, we've ended your session due to inactivity. Please sign in again.
   session_timeout_warning: >-
     Your session will end in <span id="countdown">%{time_left_in_session}</span> due to inactivity.
     If you’d like to continue using the site, please click the button below.
@@ -191,8 +190,8 @@ en:
       email: Edit your email
       password: Edit your password
       phone: Edit your phone number
-    log_in: Log in
-    log_in_branded: Log in to continue to %{app}
+    log_in: Sign in
+    log_in_branded: Sign in to continue to %{app}
     choose_otp_delivery: Choose delivery method
     passwords:
       change: Change your password
@@ -208,9 +207,9 @@ en:
       login_info: Login information
       main: My account
       two_factor: Two-factor authentication
-    recovery_code: Your recovery code
+    recovery_code: Make sure you can always log in, even without your phone
     registrations:
-      enter_email: Start making an account
+      enter_email: Start making your account
       verify_email: Check your email
     search: Search for a user
     session_timeout_warning: Session timeout
@@ -236,38 +235,35 @@ en:
     no_reply: Please do not reply to this message.
     help: >
       For more help, please contact the %{app} Customer
-      Contact Center via web form at %{link}
+      Contact Center at %{link}
     about: About %{app}
     privacy_policy: Privacy policy
     email_reuse_notice:
-      subject: Email confirmation notification
+      subject: Confirm your email address
     email_change_notice:
-      subject: Email change notification
+      subject: Change your email
     confirmation_instructions:
       header: >
         %{intro} To confirm your email address, please click on the link
         below, or copy and paste the entire link into your browser.
       link_text: Confirm this email address
       footer: >
-        Please note that this confirmation link expires in %{confirmation_period}
-        and may require your immediate attention if you wish to access your online
-        account in the future.
+        This confirmation link will expire in %{confirmation_period}. If you
+        need another link, return to login.gov.
     reset_password:
       header: >
-        You have asked %{app} to reset your password to log in to your
-        %{app} Account. To confirm your request, please click on the link
-        below, or copy and paste the entire link into your browser.
-      link_text: Continue password reset
+        You have asked %{app} to reset your password so you can sign in to your
+        %{app} account. Click the button to confirm your request. You can also paste the
+        link into your browser.
+      link_text: Reset your password
       footer: >
-        Please note that this confirmation link expires in %{expires} hours
-        and may require your immediate attention if you wish to access your
-        online account in the future.
+        This confirmation link will expire in %{expires} hours. If you need
+        another link, return to login.gov.
     unlock_instructions:
       header: >
         Your account has been locked due to an excessive number of unsuccessful
         sign in attempts.
       body: Your account will be unlocked in 20 minutes.
-
 
   activerecord:
     errors:
@@ -329,7 +325,7 @@ en:
         If you’re unable to verify your identity through this process there might
         be other options available to you. Please see our troubleshooting page to learn about those options.
       hardfail4: >
-        You can also return to the agency website that directed you here to try to log in there
+        You can also return to the agency website that directed you here to try to sign in there
         for the services you are attempting to access.
       cancel: >
         To access your information with the participating agency’s website,
@@ -343,12 +339,14 @@ en:
         and account, but with a different email address.
       dupe_ssn2: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
-      dupe_ssn3: If you can't remember your original login information, you can %{link}.
+      dupe_ssn3: "If you can't remember your original login information, you can %{link}."
       dupe_ssn3_link: try recovering it here
       review_and_continue: Review my info and try again
       finance:
-        intro: 'Please provide only one of the following:'
-        continue: 'Verify my account number'
+        intro: >
+          You are not sharing account balances or transaction details, and we
+          will never charge any fees.
+        continue: Continue
       phone:
         intro: >
           To help us verify your identity, please give us a phone number that belongs
@@ -382,7 +380,7 @@ en:
       dupe: "Error: An account may already exist"
       session:
         basic: First, tell us about yourself
-        finance: Next, we need some financial information
+        finance: Next, we will check your personal information against financial records
         phone: What is your phone number?
         review: Review and submit
 
@@ -442,33 +440,32 @@ en:
     email_changed:
       intro: >
         You have asked %{app} to change the email address currently associated
-        with your %{app} Account.
+        with your %{app} account.
       help: >
         If you did not change your email address, please contact the %{app}
-        Customer Contact Center via the web form at %{link}
+        Customer Contact Center at %{link}
     password_changed:
       intro: >
         You have asked %{app} to change the password currently associated with
-        your %{app} Account.
+        your %{app} account.
       help: >
         If you did not change your password, please contact the %{app} Customer
-        Contact Center via the web form at %{link}
+        Contact Center at %{link}
     signup_with_your_email:
       intro: >
-        A request was made to use this email address as a username for a %{app}
-        account. This email address is already in use. If you requested this change,
-        please use the following link to log in to %{app}
+        We received a request to use this email address for a %{app}
+        account. This email address is already in use. Click the button to continue signing in to %{app}
+        using this email address. You can also paste the link into your browser.
       link_text: Go to %{app}
       new_account: >
-        If you would like to create a new account for online access to %{app},
-        please follow the instructions for creating a new account using a different
-        email address.
+        If you would like to use a different email address to sign in to %{app},
+        please create a new account with that email address.
       reset_password: >
         If you cannot remember your password, please follow the instructions for
         resetting your password.
       help: >
         If you did not request a new account or suspect an error, please contact the
-        %{app} Customer Contact Center via the web form at %{link}
+        %{app} Customer Contact Center at %{link}
       footer: >
         Please be aware that this update might require your immediate attention.
 
