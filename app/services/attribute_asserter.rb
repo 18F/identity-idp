@@ -1,6 +1,4 @@
 class AttributeAsserter
-  attr_accessor :user, :service_provider, :authn_request
-
   VALID_ATTRIBUTES = [
     :first_name,
     :middle_name,
@@ -15,10 +13,13 @@ class AttributeAsserter
     :phone
   ].freeze
 
-  def initialize(user, service_provider, authn_request)
+  URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
+
+  def initialize(user:, service_provider:, authn_request:, decrypted_pii:)
     self.user = user
     self.service_provider = service_provider
     self.authn_request = authn_request
+    self.decrypted_pii = decrypted_pii
   end
 
   def build
@@ -29,6 +30,8 @@ class AttributeAsserter
   end
 
   private
+
+  attr_accessor :user, :service_provider, :authn_request, :decrypted_pii
 
   def default_attrs
     {
@@ -52,7 +55,7 @@ class AttributeAsserter
   end
 
   def attribute_getter_function(attr)
-    -> (principal) { principal.active_profile[attr] }
+    -> (_principal) { decrypted_pii[attr] }
   end
 
   def add_email(attrs)
@@ -69,13 +72,9 @@ class AttributeAsserter
     ).map(&:to_sym)
   end
 
-  def uri_pattern
-    Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
-  end
-
   def authn_request_bundle
     return unless authn_context_attr_nodes.any?
-    authn_context_attr_nodes.join(':').gsub(uri_pattern, '').split(/\W+/).compact.uniq
+    authn_context_attr_nodes.join(':').gsub(URI_PATTERN, '').split(/\W+/).compact.uniq
   end
 
   def authn_context_attr_nodes
@@ -86,7 +85,7 @@ class AttributeAsserter
         samlp: Saml::XML::Namespaces::PROTOCOL,
         saml: Saml::XML::Namespaces::ASSERTION
       ).select do |node|
-        node.content =~ /#{Regexp.escape(uri_pattern)}/
+        node.content =~ /#{Regexp.escape(URI_PATTERN)}/
       end
     end
   end

@@ -24,4 +24,8 @@ class FeatureManagement
   def self.password_strength_enabled?
     Figaro.env.password_strength_enabled == 'true'
   end
+
+  def self.use_kms?
+    Figaro.env.use_kms == 'true'
+  end
 end

@@ -300,6 +300,7 @@ en:
       state: State
       zipcode: ZIP Code
       phone: Phone
+      password: Password
     errors:
       duplicate_ssn: >
         An account already exists using the information you provided.
@@ -310,6 +311,7 @@ en:
       missing_finance: You must provide a financial account ID.
       invalid_ccn: Credit card number should be only last 8 digits.
       bad_dob: Your date of birth must be a valid date.
+      incorrect_password: The password you entered is not correct.
     messages:
       fail: >
         Please check that the personal and financial information you provided is accurate.
