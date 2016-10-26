@@ -459,7 +459,7 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.4)
       wasabi (~> 3.4)
-    secure_headers (3.4.0)
+    secure_headers (3.5.0)
       useragent
     shellany (0.0.1)
     shoulda-matchers (2.8.0)
@@ -550,7 +550,7 @@ GEM
     unicode-display_width (1.1.0)
     uniform_notifier (1.10.0)
     user_agent_parser (2.3.0)
-    useragent (0.16.7)
+    useragent (0.16.8)
     uuid (2.3.8)
       macaddr (~> 1.0)
     uuidtools (2.1.5)
