@@ -81,6 +81,11 @@ en:
           as bank, email, and social media.
       strength:
         intro: 'Password strength: '
+        i: Very weak
+        ii: Weak
+        iii: So-so
+        iv: Good
+        v: Great!
     registration:
       already_have_account: Already have account? %{link}
       email: Pick an address you want to use for government communications.
