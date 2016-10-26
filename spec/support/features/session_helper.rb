@@ -12,6 +12,10 @@ module Features
 
     def signin(email, password)
       visit new_user_session_path
+      fill_in_credentials_and_click_sign_in(email, password)
+    end
+
+    def fill_in_credentials_and_click_sign_in(email, password)
       fill_in 'Email', with: email
       fill_in 'Password', with: password
       click_button t('links.sign_in')
