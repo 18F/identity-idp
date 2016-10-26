@@ -114,51 +114,20 @@ feature 'Sign in' do
       ActionController::Base.allow_forgery_protection = false
     end
 
-    context 'javascript enabled', js: true do
-      it 'pops up session timeout warning' do
-        # session of length 0.2.minutes == 12 sec
-        # we need session timeout long enough to allow session to live
-        # between requests (esp at travis), but short enough so that
-        # using_wait_time does not expire during find_link().
-        session_ttl = 0.2.minutes # 12 sec
-        page_wait_time = 15 # seconds, must be >= session_ttl
+    it 'fails to sign in the user, with CSRF error' do
+      user = sign_in_and_2fa_user
+      click_link(t('links.sign_out'))
 
-        allow(Devise).to receive(:timeout_in).and_return(session_ttl)
+      Timecop.travel(Devise.timeout_in + 1.minute) do
+        expect(page).to_not have_content(t('forms.buttons.submit.continue'))
 
-        user = sign_in_and_2fa_user
-        click_link(t('links.sign_out'))
+        fill_in_credentials_and_click_sign_in(user.email, user.password)
 
-        Capybara.using_wait_time(page_wait_time) do
-          find_link(t('forms.buttons.continue')).trigger('click')
-        end
+        expect(page).to have_content t('errors.invalid_authenticity_token')
 
-        expect(current_path).to eq root_path
+        fill_in_credentials_and_click_sign_in(user.email, user.password)
 
-        fill_in 'Email', with: user.email
-        fill_in 'Password', with: user.password
-        click_button t('links.sign_in')
-
-        expect(page).to_not have_content t('errors.invalid_authenticity_token')
         expect(current_path).to eq user_two_factor_authentication_path
-      end
-    end
-
-    context 'javascript disabled' do
-      it 'fails to sign in the user, with CSRF error' do
-        user = sign_in_and_2fa_user
-        click_link(t('links.sign_out'))
-
-        Timecop.travel(Devise.timeout_in + 1.minute) do
-          expect(page).to_not have_content(t('forms.buttons.submit.continue'))
-          expect(current_path).to eq root_path
-
-          fill_in 'Email', with: user.email
-          fill_in 'Password', with: user.password
-          click_button t('links.sign_in')
-
-          expect(page).to have_content t('errors.invalid_authenticity_token')
-          expect(current_path).to eq root_path
-        end
       end
     end
   end
