@@ -116,17 +116,21 @@ feature 'Sign in' do
 
     context 'javascript enabled', js: true do
       it 'pops up session timeout warning' do
-        # 0.07.minutes == 4.2 sec
-        # Capybara.default_max_wait_time = 5 sec
+        # session of length 0.2.minutes == 12 sec
         # we need session timeout long enough to allow session to live
         # between requests (esp at travis), but short enough so that
-        # default_max_wait_time does not expire during find_link().
-        allow(Devise).to receive(:timeout_in).and_return(0.07.minutes)
+        # using_wait_time does not expire during find_link().
+        session_ttl = 0.2.minutes # 12 sec
+        page_wait_time = 15 # seconds, must be >= session_ttl
+
+        allow(Devise).to receive(:timeout_in).and_return(session_ttl)
 
         user = sign_in_and_2fa_user
         click_link(t('links.sign_out'))
 
-        find_link(t('forms.buttons.continue')).trigger('click')
+        Capybara.using_wait_time(page_wait_time) do
+          find_link(t('forms.buttons.continue')).trigger('click')
+        end
 
         expect(current_path).to eq root_path
 
