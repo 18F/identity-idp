@@ -21,6 +21,12 @@ feature 'Sign in' do
     expect(page).to have_content 'Please fill in this field.'
   end
 
+  scenario 'user cannot sign in with invalid email', js: true do
+    signin('invalid', 'foo')
+
+    expect(page).to have_content 'Please enter a valid email address.'
+  end
+
   scenario 'user cannot sign in with empty password', js: true do
     signin('test@example.com', '')
 

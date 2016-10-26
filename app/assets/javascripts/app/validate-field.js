@@ -2,6 +2,7 @@ import 'classlist.js';
 
 
 const msgs = {
+  email: 'Please enter a valid email address.',
   missing: 'Please fill in this field.',
   mismatch: 'Please match the requested format.',
 };
@@ -11,9 +12,10 @@ function addInvalidMarkup(f) {
   f.setAttribute('aria-describedby', `alert_${f.id}`);
 
   if (f.validity.valueMissing) f.setCustomValidity(msgs.missing);
+  else if (f.validity.typeMismatch &&
+    f.type === 'email') f.setCustomValidity(msgs.email);
   else if (f.validity.patternMismatch
     || f.validity.typeMismatch) f.setCustomValidity(msgs.mismatch);
-  else f.setCustomValidity('');
 
   f.insertAdjacentHTML(
     'afterend',
@@ -30,6 +32,7 @@ function removeInvalidMarkup(f) {
 }
 
 function validateField(f) {
+  f.setCustomValidity('');
   f.classList.add('interacted');
 
   const parent = f.parentNode;
