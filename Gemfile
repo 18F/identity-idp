@@ -64,6 +64,7 @@ group :development do
   gem 'overcommit', require: false
   gem 'quiet_assets'
   gem 'rack-mini-profiler', require: false
+  gem 'rails-erd'
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
