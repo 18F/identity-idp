@@ -86,9 +86,19 @@ class StringOptionParser
 
   def parse
     if @option.include?('||')
-      @option.split('||').map { |str| str.split('==')[1].strip.tr("'", '').to_sym }
+      array_of_actions_passed_to_only_or_except_option_in_controller_callback
     else
-      @option.split('==')[1].strip.tr("'", '').to_sym
+      single_action_passed_to_only_or_except_option_in_controller_callback
     end
+  end
+
+  private
+
+  def array_of_actions_passed_to_only_or_except_option_in_controller_callback
+    @option.split('||').map { |str| str.split('==')[1].strip.tr("'", '').to_sym }
+  end
+
+  def single_action_passed_to_only_or_except_option_in_controller_callback
+    @option.split('==')[1].strip.tr("'", '').to_sym
   end
 end
