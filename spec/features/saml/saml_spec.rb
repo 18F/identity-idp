@@ -494,7 +494,10 @@ feature 'saml api', devise: true do
 
         expect(current_url).to eq saml_authn_request
 
-        expect(xmldoc.phone_number.children.children.to_s).to eq(user.active_profile.phone)
+        password = Features::SessionHelper::VALID_PASSWORD
+        profile_phone = user.active_profile.decrypt_pii(password).phone
+
+        expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
       end
     end
   end

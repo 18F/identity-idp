@@ -181,16 +181,13 @@ describe User do
   end
 
   context 'when user has multiple profiles' do
-    let(:user) { create(:user, :signed_up) }
-
-    before do
-      create(:profile, :active, :verified, first_name: 'Jane', user: user)
-      create(:profile, :verified, first_name: 'Susan', user: user)
-    end
-
     describe '#active_profile' do
       it 'returns the only active profile' do
-        expect(user.active_profile.first_name).to eq 'Jane'
+        user = create(:user, :signed_up)
+        profile1 = create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+        _profile2 = create(:profile, :verified, user: user, pii: { first_name: 'Susan' })
+
+        expect(user.active_profile).to eq profile1
       end
     end
   end

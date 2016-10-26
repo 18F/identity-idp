@@ -3,12 +3,20 @@ module Idv
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
+    before_action :confirm_current_password, only: [:create]
 
     helper_method :idv_params
 
     def confirm_idv_steps_complete
       redirect_to idv_finance_path unless idv_finance_complete?
       redirect_to idv_phone_path unless idv_phone_complete?
+    end
+
+    def confirm_current_password
+      return if valid_password?
+
+      flash[:error] = t('idv.errors.incorrect_password')
+      redirect_to idv_review_path
     end
 
     def new
@@ -67,6 +75,14 @@ module Idv
       resolution = idv_agent.start(idv_session.applicant)
       idv_attempter.increment
       resolution
+    end
+
+    def valid_password?
+      current_user.valid_password?(password)
+    end
+
+    def password
+      params.fetch(:user, {})[:password].presence
     end
   end
 end

@@ -244,7 +244,13 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
-        create(:profile, :active, :verified, user: subject.current_user, phone: '+1 (202) 555-1212')
+        create(
+          :profile,
+          :active,
+          :verified,
+          user: subject.current_user,
+          pii: { phone: '+1 (202) 555-1212' }
+        )
         subject.current_user.create_direct_otp
       end
 
