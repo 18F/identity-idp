@@ -63,6 +63,10 @@ Metrics/ModuleLength:
   - spec/**/*
   - 'app/controllers/concerns/two_factor_authenticatable.rb'
 
+Rails/OutputSafety:
+  Exclude:
+  - lib/i18n_override.rb
+
 Rails/TimeZone:
   # The value `strict` means that `Time` should be used with `zone`.
   # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
