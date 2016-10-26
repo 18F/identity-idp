@@ -7,7 +7,12 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     assign(:confirmation_period, user.decorate.confirmation_period)
     render
 
-    expect(rendered).to have_content 'Please note that this confirmation link expires in 24 hours'
+    expect(rendered).to have_content(
+      t(
+        'mailer.confirmation_instructions.footer',
+        confirmation_period: user.decorate.confirmation_period
+      )
+    )
   end
 
   it 'includes a link to confirmation' do

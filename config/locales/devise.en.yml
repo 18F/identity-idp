@@ -4,8 +4,8 @@ en:
   devise:
     confirmations:
       already_confirmed: "Your email address has already been confirmed. %{action}"
-      confirmed: Your email has been confirmed!
-      confirmed_but_must_set_password: Your email has been confirmed!
+      confirmed: You have confirmed your email address
+      confirmed_but_must_set_password: You have confirmed your email address
       send_instructions: "You will receive an email with instructions for how to confirm your email address in a few minutes."
       send_paranoid_instructions: "If your email address exists in our database, you will receive an email with instructions for how to confirm your email address in a few minutes."
     failure:
@@ -26,7 +26,7 @@ en:
       password_updated:
         subject: 'Password change notification'
       account_locked:
-        subject: 'Your Login.gov account has been locked'
+        subject: 'Your login.gov account has been locked'
     omniauth_callbacks:
       failure: "Could not authenticate you due to: %{reason}."
       success: "Third party authentication successful!"
@@ -45,11 +45,11 @@ en:
       start:
         bullet_1: Please use this site to securely log in to your participating government agency.
         bullet_2: >
-          %{app} is a central login platform used by multiple U.S. government
-          agencies to make interacting with the government easier.
+          U.S. government agencies are using login.gov to make interacting with
+          the government easier.
         bullet_3: >
-          You can use your %{app} account to access all participating
-          U.S. government agencies.
+          You can use your account to sign in to all participating U.S.
+          government agencies.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your
         account will be removed. Are you sure you'd like to delete your account?

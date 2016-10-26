@@ -17,11 +17,9 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
-          "You have asked #{APP_NAME} to change the email address currently associated with your " \
-          "#{APP_NAME} Account"
-        )
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.email_changed.intro', app: APP_NAME)
+      )
     end
   end
 
@@ -39,11 +37,9 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content(
-          "You have asked #{APP_NAME} to change the password currently associated with your " \
-          "#{APP_NAME} Account"
-        )
+      expect(mail.html_part.body).to have_content(
+        t('user_mailer.password_changed.intro', app: APP_NAME)
+      )
     end
   end
 

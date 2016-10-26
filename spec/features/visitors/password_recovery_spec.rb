@@ -42,8 +42,12 @@ feature 'Password Recovery' do
     end
 
     it 'specifies how long the user has to reset the password based on Devise settings' do
-      expect(last_email.html_part.body).
-        to have_content "expires in #{Devise.reset_password_within / 3600} hours"
+      expect(last_email.html_part.body).to have_content(
+        t(
+          'mailer.reset_password.footer',
+          expires: (Devise.reset_password_within / 3600)
+        )
+      )
     end
   end
 

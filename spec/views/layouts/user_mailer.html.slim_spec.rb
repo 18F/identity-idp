@@ -22,14 +22,14 @@ describe 'layouts/user_mailer.html.slim' do
   end
 
   it 'includes a request to not reply to this messsage' do
-    expect(rendered).to have_content 'Please do not reply to this message.'
+    expect(rendered).to have_content(t('mailer.no_reply'))
   end
 
   it 'includes the support text and link' do
-    expect(rendered).
-      to have_content(
-        'For more help, please contact the login.gov Customer Contact Center via web form at'
-      )
+    expect(rendered).to have_content(t('mailer.no_reply'))
+    expect(rendered).to have_content(
+      t('mailer.help', app: APP_NAME, link: Figaro.env.support_url)
+    )
     expect(rendered).to have_link(Figaro.env.support_url, href: Figaro.env.support_url)
   end
 
