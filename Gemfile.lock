@@ -319,7 +319,7 @@ GEM
     phony_rails (0.14.4)
       activesupport (>= 3.0)
       phony (~> 2.15)
-    poltergeist (1.10.0)
+    poltergeist (1.11.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
