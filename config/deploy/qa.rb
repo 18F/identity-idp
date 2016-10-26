@@ -1,1 +1,2 @@
-server 'upaya-idp-qa.18f.gov', roles: %w(web app db)
+server 'qa.login.gov', roles: %w(web db)
+server 'worker.qa.login.gov', roles: %w(app)
