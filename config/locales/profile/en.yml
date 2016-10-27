@@ -12,4 +12,4 @@ en:
     items:
       recovery_code: Recovery code
     links:
-      regenerate_recovery_code: View
+      regenerate_recovery_code: Get a new code
