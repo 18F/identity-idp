@@ -53,7 +53,7 @@ class I18nLocaleTraverser
   end
 
   def filename
-    @file.split('/').last
+    @file.split('/').last(2).join('/')
   end
 
   def find_line_number

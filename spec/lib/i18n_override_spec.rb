@@ -9,8 +9,10 @@ describe 'i18n override' do
       localized_str = I18n.translate_with_markup('shared.usa_banner.official_site')
 
       regex = /^An official website of the United States government.+i18n-anchor/
+      file_path = '/18F/identity-idp/tree/master/config/locales/shared/en.yml'
 
       expect(localized_str).to match regex
+      expect(localized_str.scan(URI.regexp).flatten).to include(file_path)
     end
   end
 end
