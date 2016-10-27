@@ -22,7 +22,7 @@ module Users
 
     def disable
       if current_user.totp_enabled?
-        analytics.track_event(Analytics::USER_DISABLED_TOTP)
+        analytics.track_event(Analytics::TOTP_USER_DISABLED)
         create_user_event(:authenticator_disabled)
         current_user.update(otp_secret_key: nil)
         flash[:success] = t('notices.totp_disabled')

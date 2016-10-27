@@ -6,33 +6,33 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('GET Request', controller: 'confirmations', action: 'show')
+        with(Analytics::GET_REQUEST, controller: 'confirmations', action: 'show')
     end
 
     it 'tracks nil email confirmation token' do
       expect(@analytics).to receive(:track_event).
-        with('Invalid Email Confirmation Token', token: 'nil')
+        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: 'nil')
 
       get :show, confirmation_token: nil
     end
 
     it 'tracks blank email confirmation token' do
       expect(@analytics).to receive(:track_event).
-        with('Invalid Email Confirmation Token', token: '')
+        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: '')
 
       get :show, confirmation_token: ''
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
       expect(@analytics).to receive(:track_event).
-        with('Invalid Email Confirmation Token', token: "''")
+        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: "''")
 
       get :show, confirmation_token: "''"
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
       expect(@analytics).to receive(:track_event).
-        with('Invalid Email Confirmation Token', token: '""')
+        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: '""')
 
       get :show, confirmation_token: '""'
     end
@@ -41,7 +41,7 @@ describe Users::ConfirmationsController, devise: true do
       user = create(:user, confirmation_token: 'foo')
 
       expect(@analytics).to receive(:track_event).
-        with('Email Confirmation: User Already Confirmed', user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION_USER_ALREADY_CONFIRMED, user_id: user.uuid)
 
       get :show, confirmation_token: 'foo'
     end
@@ -51,7 +51,7 @@ describe Users::ConfirmationsController, devise: true do
       user.update(confirmation_token: 'foo', confirmation_sent_at: Time.current - 2.days)
 
       expect(@analytics).to receive(:track_event).
-        with('Email Confirmation: token expired', user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION_TOKEN_EXPIRED, user_id: user.uuid)
 
       get :show, confirmation_token: 'foo'
     end
@@ -65,9 +65,9 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('GET Request', controller: 'confirmations', action: 'show')
+        with(Analytics::GET_REQUEST, controller: 'confirmations', action: 'show')
       expect(@analytics).to receive(:track_event).
-        with('Email Confirmation: valid token', user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION_VALID_TOKEN, user_id: user.uuid)
 
       get :show, confirmation_token: 'foo'
     end
@@ -81,7 +81,7 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('Password Created and User Confirmed')
+        with(Analytics::PASSWORD_CREATE_USER_CONFIRMED)
 
       patch :confirm, password_form: { password: 'NewVal!dPassw0rd' }, confirmation_token: 'foo'
     end
@@ -93,7 +93,7 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('Password Creation: invalid', user_id: user.uuid)
+        with(Analytics::PASSWORD_CREATE_INVALID, user_id: user.uuid)
 
       patch :confirm, password_form: { password: 'NewVal' }, confirmation_token: 'foo'
     end
@@ -122,9 +122,9 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('GET Request', controller: 'confirmations', action: 'show')
+        with(Analytics::GET_REQUEST, controller: 'confirmations', action: 'show')
       expect(@analytics).to receive(:track_event).
-        with('Email changed and confirmed', user_id: user.uuid)
+        with(Analytics::EMAIL_CHANGED_AND_CONFIRMED, user_id: user.uuid)
 
       get :show, confirmation_token: 'foo'
     end

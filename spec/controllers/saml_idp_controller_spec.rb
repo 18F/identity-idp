@@ -212,7 +212,7 @@ describe SamlIdpController do
 
         expect(response.status).to eq(401)
         expect(@analytics).to have_received(:track_event).
-          with(:invalid_service_provider, service_provider: 'invalid_provider')
+          with(Analytics::SAML_INVALID_SERVICE_PROVIDER, service_provider: 'invalid_provider')
       end
     end
 
@@ -683,8 +683,8 @@ describe SamlIdpController do
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
 
         expect(@analytics).to receive(:track_event).
-          with('GET Request', controller: 'saml_idp', action: 'auth')
-        expect(@analytics).to receive(:track_event).with('SAML Auth', idv: true)
+          with(Analytics::GET_REQUEST, controller: 'saml_idp', action: 'auth')
+        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, idv: true)
 
         get :auth
       end
@@ -698,8 +698,8 @@ describe SamlIdpController do
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
 
         expect(@analytics).to receive(:track_event).
-          with('GET Request', controller: 'saml_idp', action: 'auth')
-        expect(@analytics).to receive(:track_event).with('SAML Auth', idv: false)
+          with(Analytics::GET_REQUEST, controller: 'saml_idp', action: 'auth')
+        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, idv: false)
 
         generate_saml_response(user)
       end

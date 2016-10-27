@@ -66,7 +66,7 @@ module Users
     def handle_successful_password_reset
       mark_profile_inactive
 
-      analytics.track_event(Analytics::PASSWORD_RESET, user_id: resource.uuid)
+      analytics.track_event(Analytics::PASSWORD_RESET_SUCCESSFUL, user_id: resource.uuid)
 
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
 
@@ -91,7 +91,7 @@ module Users
       return unless active_profile.present?
       active_profile.update!(active: false)
       analytics.track_event(
-        'Deactivated verified profile via password reset',
+        Analytics::PASSWORD_RESET_DEACTIVATED_ACCOUNT,
         user_id: resource.uuid
       )
     end

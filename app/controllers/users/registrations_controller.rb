@@ -50,7 +50,7 @@ module Users
         )
       else
         user = form.user
-        analytics.track_event(Analytics::ACCOUNT_CREATED, user_id: user.uuid)
+        analytics.track_event(Analytics::USER_REGISTRATION_ACCOUNT_CREATED, user_id: user.uuid)
         create_user_event(:account_created, user)
       end
     end

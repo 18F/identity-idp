@@ -24,7 +24,7 @@ describe Users::EditEmailController do
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
         expect(response).to render_template('devise/mailer/confirmation_instructions')
         expect(user.reload.email).to eq 'old_email@example.com'
-        expect(@analytics).to have_received(:track_event).with('User asked to change their email')
+        expect(@analytics).to have_received(:track_event).with(Analytics::EMAIL_CHANGE_REQUESTED)
       end
     end
 
@@ -54,7 +54,7 @@ describe Users::EditEmailController do
         expect(response).to render_template('user_mailer/signup_with_your_email')
         expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')
         expect(@analytics).to have_received(:track_event).
-          with('User attempted to change their email to an existing email')
+          with(Analytics::EMAIL_CHANGED_TO_EXISTING)
       end
     end
 
