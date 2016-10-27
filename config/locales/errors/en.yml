@@ -1,0 +1,23 @@
+en:
+  errors:
+    messages:
+      improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
+      weak_password: Your password is not strong enough. %{feedback}
+      already_confirmed: was already confirmed, please try signing in
+      confirmation_period_expired: >
+        You have taken longer than %{period} to confirm your email.
+        Please click "Resend confirmation instructions."
+      confirmation_invalid_token: >
+        The confirmation link you clicked on is no longer valid.  This may have been caused by
+        clicking on an old link in your email, or you may have already confirmed your account.
+      expired: has expired, please request a new one
+      not_found: not found
+      not_locked: was not locked
+      not_saved:
+        one: '1 error prohibited this %{resource} from being saved:'
+        other: '%{count} errors prohibited this %{resource} from being saved:'
+      requires_phone: requires you to enter your phone number.
+    confirm_password_incorrect: The password you provided is incorrect.
+    invalid_totp: Invalid code entered.  Please try again.
+    not_authorized: You are not authorized to perform this action.
+    invalid_authenticity_token: Oops, something went wrong. Please sign in again.

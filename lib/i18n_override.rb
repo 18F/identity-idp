@@ -67,7 +67,7 @@ class I18nLocaleTraverser
   end
 
   def i18n_files
-    Dir[Rails.root.join('config', 'locales', '*.{yml}').to_s]
+    Dir[Rails.root.join('config', 'locales', '**', '*.{yml}').to_s]
   end
 
   def traverse_file_for_key(file)

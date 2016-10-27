@@ -1,0 +1,37 @@
+en:
+  notices:
+    password_changed: Your password was successfully changed.
+    totp_configured: Authenticator app successfully configured
+    totp_disabled: Authenticator app disabled
+    log_in_consent:
+      text: By signing in, you agree to %{app}’s %{link}
+      link: Security Consent & Privacy Act Statement
+    phone_confirmation_successful: Congratulations! Your account is now more secure.
+    password_reset: >
+      You will receive an email with instructions on how to reset your password
+      in a few minutes.
+    send_code:
+      voice: You will be called with your one-time passcode.
+      sms: Your one-time passcode has been sent via text message.
+    signed_up_but_unconfirmed:
+      first_paragraph_start: We sent an email to
+      first_paragraph_end: >
+        with a link to confirm your email address. Follow the link to continue
+        creating your account.
+      no_email_sent_explanation_start: Didn’t get an email?
+    terms_of_service:
+      headline: I agree to the terms of this service
+      text: >
+        Providing your information is voluntary, and is used to help you
+        access government services. We use industry-standard monitoring and
+        security practices to protect your data. %{link}
+      link: Learn more ›
+    dap_html: >
+      <!-- We participate in the US government’s analytics program. -->
+      <!-- See the data at analytics.usa.gov. -->
+  session_expired: Please <a href=".">refresh</a> the page to log in.
+  session_timedout: >
+    For your security, we’ve ended your session due to inactivity. Please sign in again.
+  session_timeout_warning: >-
+    Your session will end in <span id="countdown">%{time_left_in_session}</span> due to inactivity.
+    If you’d like to continue using the site, please click the button below.

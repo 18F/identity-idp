@@ -30,6 +30,6 @@ module Upaya
     # Configure Browserify to use babelify to compile ES6
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
 
-    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
   end
 end

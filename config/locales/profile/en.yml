@@ -1,0 +1,15 @@
+en:
+  profile:
+    index:
+      full_name: Full name
+      address: Mailing address
+      dob: Date of birth
+      ssn: Social Security Number
+      phone: Phone number
+      email: Email address
+      password: Password
+      authentication_app: Authentication app
+    items:
+      recovery_code: Recovery code
+    links:
+      regenerate_recovery_code: View

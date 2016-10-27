@@ -1,0 +1,37 @@
+en:
+  mailer:
+    contact_request:
+      subject: Contact request
+    sent_from: Sent from %{app}
+    no_reply: Please do not reply to this message.
+    help: >
+      For more help, please contact the %{app} Customer
+      Contact Center at %{link}
+    about: About %{app}
+    privacy_policy: Privacy policy
+    email_reuse_notice:
+      subject: Confirm your email address
+    email_change_notice:
+      subject: Change your email
+    confirmation_instructions:
+      header: >
+        %{intro} To confirm your email address, please click on the link
+        below, or copy and paste the entire link into your browser.
+      link_text: Confirm this email address
+      footer: >
+        This confirmation link will expire in %{confirmation_period}. If you
+        need another link, return to login.gov.
+    reset_password:
+      header: >
+        You have asked %{app} to reset your password so you can sign in to your
+        %{app} account. Click the button to confirm your request. You can also paste the
+        link into your browser.
+      link_text: Reset your password
+      footer: >
+        This confirmation link will expire in %{expires} hours. If you need
+        another link, return to login.gov.
+    unlock_instructions:
+      header: >
+        Your account has been locked due to an excessive number of unsuccessful
+        sign in attempts.
+      body: Your account will be unlocked in 20 minutes.
