@@ -11,7 +11,7 @@ module TwoFactorAuthentication
     def create
       result = RecoveryCodeForm.new(current_user, params[:code]).submit
 
-      analytics.track_event(:recovery_code_authentication, result)
+      analytics.track_event(Analytics::RECOVERY_CODE_AUTHENTICATION, result)
 
       if result[:success?]
         handle_valid_otp

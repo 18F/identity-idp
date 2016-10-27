@@ -48,7 +48,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    analytics.track_event('Authentication Successful')
+    analytics.track_event(Analytics::AUTHENTICATION_SUCCESFUL)
 
     stored_location_for(resource) || session[:saml_request_url] || profile_path
   end
@@ -67,7 +67,7 @@ class ApplicationController < ActionController::Base
   end
 
   def invalid_auth_token
-    analytics.track_event('InvalidAuthenticityToken')
+    analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN)
     sign_out
     flash[:error] = t('errors.invalid_authenticity_token')
     redirect_to root_url
@@ -98,6 +98,6 @@ class ApplicationController < ActionController::Base
   def track_get_requests
     return unless request.get?
 
-    analytics.track_event("GET request for #{controller_name}##{action_name}")
+    analytics.track_event(Analytics::GET_REQUEST, controller: controller_name, action: action_name)
   end
 end

@@ -22,7 +22,7 @@ module Users
 
     def disable
       if current_user.totp_enabled?
-        analytics.track_event('User Disabled TOTP')
+        analytics.track_event(Analytics::USER_DISABLED_TOTP)
         create_user_event(:authenticator_disabled)
         current_user.update(otp_secret_key: nil)
         flash[:success] = t('notices.totp_disabled')
@@ -38,7 +38,7 @@ module Users
     end
 
     def process_valid_code
-      analytics.track_event('TOTP Setup: valid code')
+      analytics.track_event(Analytics::TOTP_SETUP_VALID_CODE)
       create_user_event(:authenticator_enabled)
       flash[:success] = t('notices.totp_configured')
       redirect_to profile_path
@@ -46,7 +46,7 @@ module Users
     end
 
     def process_invalid_code
-      analytics.track_event('TOTP Setup: invalid code')
+      analytics.track_event(Analytics::TOTP_SETUP_INVALID_CODE)
       flash[:error] = t('errors.invalid_totp')
       redirect_to authenticator_setup_path
     end

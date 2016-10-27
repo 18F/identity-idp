@@ -48,7 +48,7 @@ module Users
       @confirmable.confirm
       @confirmable.update(reset_requested_at: nil)
       sign_in_and_redirect_user
-      analytics.track_event('Password Created and User Confirmed')
+      analytics.track_event(Analytics::PASSWORD_CREATED_USER_CONFIRMED)
     end
 
     def process_user_with_password_errors
@@ -71,7 +71,7 @@ module Users
 
     def process_already_confirmed_user
       analytics.track_event(
-        'Email Confirmation: User Already Confirmed', user_id: @confirmable.uuid
+        Analytics::EMAIL_CONFIRMATION_USER_ALREADY_CONFIRMED, user_id: @confirmable.uuid
       )
 
       action_text = 'Please sign in.' unless user_signed_in?
@@ -91,14 +91,14 @@ module Users
     end
 
     def process_expired_confirmation_token
-      analytics.track_event('Email Confirmation: token expired', user_id: @confirmable.uuid)
+      analytics.track_event(Analytics::EMAIL_CONFIRMATION_TOKEN_EXPIRED, user_id: @confirmable.uuid)
 
       flash[:error] = resource.decorate.confirmation_period_expired_error
       render :new
     end
 
     def process_valid_confirmation_token
-      analytics.track_event('Email Confirmation: valid token', user_id: @confirmable.uuid)
+      analytics.track_event(Analytics::EMAIL_CONFIRMATION_VALID_TOKEN, user_id: @confirmable.uuid)
 
       flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
       render :show
@@ -115,7 +115,7 @@ module Users
     end
 
     def process_confirmed_user
-      analytics.track_event('Email changed and confirmed', user_id: @confirmable.uuid)
+      analytics.track_event(Analytics::EMAIL_CHANGED_AND_CONFIRMED, user_id: @confirmable.uuid)
       create_user_event(:email_changed, @confirmable)
 
       flash[:notice] = t('devise.confirmations.confirmed')
@@ -138,7 +138,7 @@ module Users
     def track_invalid_confirmation_token(token)
       token ||= 'nil'
 
-      analytics.track_event('Invalid Email Confirmation Token', token: token)
+      analytics.track_event(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: token)
     end
   end
 end

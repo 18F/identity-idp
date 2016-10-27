@@ -19,6 +19,9 @@ NilCheck:
     - TotpSetupController#new
     - TotpSetupController#valid_code?
     - user_not_found?
+TooManyConstants:
+  exclude:
+    - Analytics
 TooManyStatements:
   max_statements: 6
   exclude:

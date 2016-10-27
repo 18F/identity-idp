@@ -17,7 +17,7 @@ module Devise
 
       result = @otp_delivery_selection_form.submit(delivery_params)
 
-      analytics.track_event(:otp_delivery_selection, result)
+      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result)
 
       if result[:success?]
         handle_valid_delivery_method(delivery_params[:otp_method])

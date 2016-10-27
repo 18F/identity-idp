@@ -7,7 +7,7 @@ module Users
 
       analytics_user = User.find_by_email(downcased_email) || NonexistentUser.new
       analytics.track_event(
-        'Password Reset Request', user_id: analytics_user.uuid, role: analytics_user.role
+        Analytics::PASSWORD_RESET_REQUEST, user_id: analytics_user.uuid, role: analytics_user.role
       )
 
       redirect_to new_user_session_path, notice: t('notices.password_reset')
@@ -53,20 +53,20 @@ module Users
 
     def handle_no_user_matches_token
       analytics.track_event(
-        'Reset password: invalid token', token: params[:reset_password_token]
+        Analytics::PASSWORD_RESET_INVALID_TOKEN, token: params[:reset_password_token]
       )
       flash[:error] = t('devise.passwords.invalid_token')
     end
 
     def handle_expired_token(user)
-      analytics.track_event('Reset password: token expired', user_id: user.uuid)
+      analytics.track_event(Analytics::PASSWORD_RESET_TOKEN_EXPIRED, user_id: user.uuid)
       flash[:error] = t('devise.passwords.token_expired')
     end
 
     def handle_successful_password_reset
       mark_profile_inactive
 
-      analytics.track_event('Password reset', user_id: resource.uuid)
+      analytics.track_event(Analytics::PASSWORD_RESET, user_id: resource.uuid)
 
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
 
@@ -82,7 +82,7 @@ module Users
         return
       end
 
-      analytics.track_event('Reset password: invalid password', user_id: resource.uuid)
+      analytics.track_event(Analytics::PASSWORD_RESET_INVALID_PASSWORD, user_id: resource.uuid)
       render :edit
     end
 

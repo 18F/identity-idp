@@ -23,7 +23,7 @@ module Users
         track_registration(@register_user_email_form)
       else
         analytics.track_event(
-          'User Registration: invalid email', email: @register_user_email_form.email
+          Analytics::USER_REGISTRATION_INVALID_EMAIL, email: @register_user_email_form.email
         )
         render :new
       end
@@ -46,11 +46,11 @@ module Users
       if form.email_taken?
         existing_user = User.find_by_email(form.email)
         analytics.track_event(
-          'Registration Attempt with existing email', user_id: existing_user.uuid
+          Analytics::USER_REGISTRATION_EXISTING_EMAIL, user_id: existing_user.uuid
         )
       else
         user = form.user
-        analytics.track_event('Account Created', user_id: user.uuid)
+        analytics.track_event(Analytics::ACCOUNT_CREATED, user_id: user.uuid)
         create_user_event(:account_created, user)
       end
     end
