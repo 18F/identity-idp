@@ -26,6 +26,9 @@ en:
         access government services. We use industry-standard monitoring and
         security practices to protect your data. %{link}
       link: Learn more ›
+    use_diff_email:
+      text_html: Or, %{link}
+      link: use a different email address
     dap_html: >
       <!-- We participate in the US government’s analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
