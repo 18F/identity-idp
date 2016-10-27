@@ -1,3 +1,5 @@
+require 'session_encryptor'
+
 options = {
   key: '_upaya_session',
   redis: {
