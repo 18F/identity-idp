@@ -1,0 +1,9 @@
+en:
+  event_types:
+    account_created: Account created
+    phone_confirmed: Phone confirmed
+    phone_changed: Phone changed
+    email_changed: Email changed
+    authenticator_enabled: Authenticator app enabled
+    authenticator_disabled: Authenticator app disabled
+    authenticated_at: Authenticated at %{service_provider}

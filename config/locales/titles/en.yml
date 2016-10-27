@@ -1,0 +1,34 @@
+en:
+  titles:
+    confirmations:
+      new: Resend confirmation instructions for your account
+      show: Create a password for your account
+    contact: Contact us
+    edit_info:
+      email: Edit your email
+      password: Edit your password
+      phone: Edit your phone number
+    enter_2fa_code: Enter the secure one-time passcode
+    account_locked: Account locked
+    passwords:
+      change: Change the password for your account
+      forgot: Reset the password for your account
+      confirm: Confirm the password for your account
+    privacy_policy: Privacy
+    profile: Profile
+    recovery_code: Just in case
+    registrations:
+      new: Sign up for a account
+      start: Get started
+      verify_email: Check your email
+    totp_setup:
+      start: Set up two-factor authentication
+      new: Enter the secure one-time passcode
+    two_factor_setup: Two-factor authentication setup
+    two_factor_verification: Choose OTP delivery method
+    users:
+      edit: Editing user - %{user}
+      index: Manage users
+      show: User - %{user}
+    visitors:
+      index: Welcome

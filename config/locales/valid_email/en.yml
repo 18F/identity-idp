@@ -1,0 +1,5 @@
+en:
+  valid_email:
+    validations:
+      email:
+        invalid: Please enter a valid email in the format of user@domain.com

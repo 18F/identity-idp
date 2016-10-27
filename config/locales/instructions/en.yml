@@ -1,0 +1,33 @@
+en:
+  instructions:
+    recovery_code: >
+      You can still log in using a special recovery code if you can’t get to
+      your phone. Check your email for a link to your personal code.
+    password:
+      info:
+        lead: Your password must be at least %{min_length} characters long.
+        point_1: >
+          It can be a mix of alphanumeric and special characters and individual
+          words in a phrase.
+        point_2: >
+          Create a password that’s secure, but still easy for you to remember.
+          And don’t use the same one you use with your other online accounts, such
+          as bank, email, and social media.
+      strength:
+        intro: 'Password strength: '
+        i: Very weak
+        ii: Weak
+        iii: So-so
+        iv: Good
+        v: Great!
+    registration:
+      already_have_account: Already have account? %{link}
+      email: Pick an address to use for government communications.
+    2fa:
+      resend: Didn’t receive a code? %{link}
+      confirm_code: We sent the code to %{number}.
+      wrong_number: Entered the wrong phone number? %{link}
+      totp_intro: >
+        Please enter the code from your authenticator app.
+        If you have several accounts set up in your app, enter the code
+        corresponding to %{email} at %{app}.

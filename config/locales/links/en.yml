@@ -1,0 +1,16 @@
+en:
+  links:
+    back_to_sp: '‹ Back to %{app}'
+    create_account: Create account
+    privacy_policy: Privacy Policy
+    resend: Send again
+    sign_out: Sign out
+    sign_in: Sign in
+    my_account: My account
+    user_confirmation: Confirm this email address
+    edit: Edit
+    phone_confirmation:
+      fallback_to_sms: Send me a text message with the code instead
+      fallback_to_voice: Call me with the code instead
+    two_factor_authentication:
+      resend_code: Send a new one

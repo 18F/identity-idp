@@ -1,0 +1,33 @@
+en:
+  user_mailer:
+    email_changed:
+      intro: >
+        You have asked %{app} to change the email address currently associated
+        with your %{app} account.
+      help: >
+        If you did not change your email address, please contact the %{app}
+        Customer Contact Center at %{link}
+    password_changed:
+      intro: >
+        You have asked %{app} to change the password currently associated with
+        your %{app} account.
+      help: >
+        If you did not change your password, please contact the %{app} Customer
+        Contact Center at %{link}
+    signup_with_your_email:
+      intro: >
+        We received a request to use this email address for a %{app} account.
+        This email address is already in use. Click the button to continue signing in to
+        %{app} using this email address. You can also paste the link into your browser.
+      link_text: Go to %{app}
+      new_account: >
+        If you would like to use a different email address to sign in to %{app},
+        please create a new account with that email address.
+      reset_password: >
+        If you cannot remember your password, please follow the instructions for
+        resetting your password.
+      help: >
+        If you did not request a new account or suspect an error, please contact the
+        %{app} Customer Contact Center at %{link}
+      footer: >
+        Please be aware that this update might require your immediate attention.
