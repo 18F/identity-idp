@@ -24,11 +24,13 @@ Testing dependencies:
 #### Setting up and running the app
 
 1. Make sure you have a working development environment with all the
-  [dependencies](#dependencies) installed. On a Mac, the easiest way
+  [dependencies](#dependencies) installed. On OS X, the easiest way
   to set up a development environment is by running our [Laptop]
   script. The script will install all of this project's dependencies.
 
-1. Make sure Postgres and Redis are running. For example, on OS X:
+1. Make sure Postgres and Redis are running.
+
+  For example, if you've installed the laptop script on OS X, you can start the services like this:
 
   ```
   $ brew services start redis 
