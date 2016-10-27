@@ -1,0 +1,141 @@
+en:
+  idv:
+    form:
+      first_name: First name
+      last_name: Last name
+      dob: Date of birth
+      ssn: Social Security Number
+      tin: Individual Tax Identification Number
+      finance_unselected: Select an option above...
+      ccn: Last 8 digits of a credit card
+      mortgage: Mortgage loan account number
+      home_equity_line: Home equity line of credit account number
+      auto_loan: Auto loan account number
+      address1: Street address 1
+      address2: Street address 2 (optional)
+      city: City
+      state: State
+      zipcode: ZIP Code
+      phone: Phone
+      password: Password
+    errors:
+      duplicate_ssn: >
+        An account already exists using the information you provided.
+      fail: >
+        Sorry, we were unable to verify your identity based on the information you provided.
+      hardfail: >
+        We were unable to verify your identity at this time.
+      missing_finance: You must provide a financial account ID.
+      invalid_ccn: Credit card number should be only last 8 digits.
+      bad_dob: Your date of birth must be a valid date.
+      incorrect_password: The password you entered is not correct.
+    messages:
+      fail: >
+        Please check that the personal and financial information you provided is accurate.
+        To learn more about the information we need from you and how it’s used to verify your identity,
+        please see our troubleshooting page.
+      activated: >
+        Your identity has been verified. If you need to change your verified information,
+        please %{link}.
+      activated_link: contact us
+      hardfail: >
+        Your login.gov account can’t be used to access information with
+        participating agencies until you successfully complete this process.
+      hardfail2: >
+        You can try to complete the verification process again in %{hours} hours.
+      hardfail3: >
+        If you’re unable to verify your identity through this process there might
+        be other options available to you. Please see our troubleshooting page to learn about those options.
+      hardfail4: >
+        You can also return to the agency website that directed you here to try to sign in there
+        for the services you are attempting to access.
+      cancel: >
+        To access your information with the participating agency’s website,
+        %{app} needs to verify your identity. We need to collect some basic
+        personal information as well as some financial information from you to
+        complete this process. If you don’t have the information we need at this
+        time you can continue later.
+      cancel_link: Cancel verification
+      dupe_ssn1: >
+        If you are getting this error, you may have already created and verified
+        and account, but with a different email address.
+      dupe_ssn2: Please %{link} with the email address you originally used.
+      dupe_ssn2_link: sign out now and sign back in
+      dupe_ssn3: If you can’t remember your original login information, you can %{link}.
+      dupe_ssn3_link: try recovering it here
+      review_and_continue: Review my info and try again
+      finance:
+        intro: >
+          You are not sharing account balances or transaction details, and we
+          will never charge any fees.
+        continue: Continue
+      phone:
+        intro: >
+          To help us verify your identity, please give us a phone number that belongs
+          to you and that meets the criteria below:
+        is_not: 'is not '
+        is: 'is '
+        virtual: a google voice number, skype account or virtual phone
+        prepaid: a pay as you go phone
+        in_your_name: in your name, or your spouse’s name
+        same_as_2fa: >
+          This phone number can be the same one you used to set up your one-time
+          password as long as it meets the criteria above.
+      questions:
+        intro: Question %{number}
+      review:
+        intro: Please review your information and ensure it is correct.
+      sessions:
+        no_pii: Do not use real personal information (demo purposes only)
+    titles:
+      activated: Your identity has already been verified
+      intro: Help us identify you
+      expectations: Next, help us identify you
+      phone: Phone number of record
+      question: Answer a few questions
+      fail: We were unable to verify your identity
+      cancel: We cannot verify your identity
+      hardfail: We were unable to verify your identity
+      complete: Identity verification complete
+      review: Review and submit
+      dupe: "Error: An account may already exist"
+      session:
+        basic: First, tell us about yourself
+        finance: Next, we will check your personal information against financial records
+        phone: What is your phone number?
+        review: Review and submit
+    index:
+      subheader: To verify your identity, we’ll ask you to answer a few questions
+      section_1:
+        header: Basic information
+        subheader: We need to know some personal details
+        bullet_1: Full name
+        bullet_2: Mailing address
+        bullet_3: Date of birth
+        bullet_4_html: >
+          Social Security Number or <a href=" https://www.irs.gov/individuals/international-taxpayers/taxpayer-identification-numbers-tin#itin" target="_blank">Individual Tax Identification Number</a>
+      section_2:
+        header: Financial information
+        subheader: 'We need one of the following:'
+        bullet_1: Last 8 digits of a credit card
+        bullet_2: Auto loan account number
+        bullet_3: Mortgage loan account number
+        bullet_4: Home equity line of credit account number
+        footnote: >
+          You are not sharing any account balances or
+          transaction details, and we will never charge any fees.
+      section_3:
+        header: Phone line in your name
+        subheader: >
+          We use telephone company records to verify your
+          identity. The phone number you give us:
+        bullet_1: Be in your name, or a family member’s name
+        bullet_2_html: <strong>Not</strong> be a virtual phone, such as Google Voice or Skype
+        bullet_3_html: <strong>Not</strong> be a pay-as-you-go phone
+
+      paragraph_1: >
+        We have partnered with a trusted third party company to
+        verify this information and your identity.
+      prompt: Do you have all of this information available right now?
+      cancel_link: No, I don’t have it
+      continue_link: Yes, continue
