@@ -1,5 +1,7 @@
 import zxcvbn from 'zxcvbn';
 
+const I18n = window.LoginGov.I18n;
+
 
 // zxcvbn returns a strength score from 0 to 4
 // we map those scores to:
@@ -7,11 +9,11 @@ import zxcvbn from 'zxcvbn';
 // 2. text describing the score
 function getStrength(z) {
   const scale = {
-    0: ['pw-very-weak', 'Very weak'],
-    1: ['pw-weak', 'Weak'],
-    2: ['pw-so-so', 'So-so'],
-    3: ['pw-good', 'Good'],
-    4: ['pw-great', 'Great!'],
+    0: ['pw-very-weak', I18n.t('instructions.password.strength.i')],
+    1: ['pw-weak', I18n.t('instructions.password.strength.ii')],
+    2: ['pw-so-so', I18n.t('instructions.password.strength.iii')],
+    3: ['pw-good', I18n.t('instructions.password.strength.iv')],
+    4: ['pw-great', I18n.t('instructions.password.strength.v')],
   };
 
   // fallback if zxcvbn lookup fails / field is empty

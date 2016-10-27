@@ -1,0 +1,18 @@
+window.LoginGov = window.LoginGov || {};
+
+<% keys = [
+  'instructions.password.strength.i',
+  'instructions.password.strength.ii',
+  'instructions.password.strength.iii',
+  'instructions.password.strength.iv',
+  'instructions.password.strength.v',
+] %>
+
+window.LoginGov.I18n = {
+  strings: {},
+  t: function(key) { return this.strings[key]; }
+};
+
+<% keys.each do |key| %>
+  window.LoginGov.I18n.strings['<%= key %>'] = '<%= I18n.t(key) %>';
+<% end %>
