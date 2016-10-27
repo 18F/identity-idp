@@ -6,7 +6,7 @@ options = {
     key_prefix: "#{Figaro.env.domain_name}:session:",
     url: Figaro.env.redis_url
   },
-  serializer: :marshal
+  serializer: SessionEncryptor
 }
 
 Rails.application.config.session_store :redis_session_store, options
