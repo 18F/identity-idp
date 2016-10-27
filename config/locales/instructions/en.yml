@@ -2,7 +2,7 @@ en:
   instructions:
     recovery_code: >
       You can still log in using a special recovery code if you can’t get to
-      your phone. Check your email for a link to your personal code.
+      your phone.
     password:
       info:
         lead: Your password must be at least %{min_length} characters long.
