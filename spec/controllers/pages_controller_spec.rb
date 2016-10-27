@@ -12,7 +12,7 @@ describe PagesController do
       stub_analytics
 
       expect(@analytics).to_not receive(:track_event).
-        with('GET Request', controller: 'pages', action: 'index')
+        with(Analytics::GET_REQUEST, controller: 'pages', action: 'index')
 
       get :index
     end
@@ -22,7 +22,7 @@ describe PagesController do
 
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).with(:page_not_found, path: '/foo')
+      expect(@analytics).to receive(:track_event).with(Analytics::PAGE_NOT_FOUND, path: '/foo')
 
       get :page_not_found
     end

@@ -34,7 +34,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('OTP', context: 'authentication', success?: false)
+          with(Analytics::OTP_RESULT, context: 'authentication', success?: false)
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
         expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(false)
@@ -61,8 +61,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         stub_analytics
 
         expect(@analytics).to receive(:track_event).exactly(3).times.
-          with('OTP', context: 'authentication', success?: false)
-        expect(@analytics).to receive(:track_event).with('User reached max 2FA attempts')
+          with(Analytics::OTP_RESULT, context: 'authentication', success?: false)
+        expect(@analytics).to receive(:track_event).with(Analytics::AUTHENTICATION_MAX_2FA_ATTEMPTS)
 
         3.times { post :create, code: '12345', delivery_method: 'sms' }
       end
@@ -91,8 +91,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
       it 'tracks the valid authentication event' do
         stub_analytics
         expect(@analytics).to receive(:track_event).
-          with('OTP', context: 'authentication', success?: true)
-        expect(@analytics).to receive(:track_event).with('Authentication Successful')
+          with(Analytics::OTP_RESULT, context: 'authentication', success?: true)
+        expect(@analytics).to receive(:track_event).with(Analytics::AUTHENTICATION_SUCCESSFUL)
 
         post :create, code: subject.current_user.reload.direct_otp, delivery_method: 'sms'
       end
@@ -164,7 +164,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the update event' do
             expect(@analytics).to have_received(:track_event).
-              with('OTP', context: 'confirmation', success?: true)
+              with(Analytics::OTP_RESULT, context: 'confirmation', success?: true)
 
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
@@ -197,7 +197,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks an event' do
             expect(@analytics).to have_received(:track_event).
-              with('OTP', context: 'confirmation', success?: false)
+              with(Analytics::OTP_RESULT, context: 'confirmation', success?: false)
           end
         end
       end
@@ -225,8 +225,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the confirmation event' do
             expect(@analytics).to have_received(:track_event).
-              with('OTP', context: 'confirmation', success?: true)
-            expect(@analytics).to have_received(:track_event).with('Authentication Successful')
+              with(Analytics::OTP_RESULT, context: 'confirmation', success?: true)
+            expect(@analytics).to have_received(:track_event).
+              with(Analytics::AUTHENTICATION_SUCCESSFUL)
 
             expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
@@ -272,7 +273,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'tracks the update event' do
           expect(@analytics).to have_received(:track_event).
-            with('OTP', context: 'idv', success?: true)
+            with(Analytics::OTP_RESULT, context: 'idv', success?: true)
         end
 
         it 'updates idv session phone_confirmed_at attribute' do
@@ -320,7 +321,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'tracks an event' do
           expect(@analytics).to have_received(:track_event).
-            with('OTP', context: 'idv', success?: false)
+            with(Analytics::OTP_RESULT, context: 'idv', success?: false)
         end
       end
     end

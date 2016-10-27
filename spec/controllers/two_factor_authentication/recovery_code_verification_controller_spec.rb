@@ -28,8 +28,9 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
         analytics_hash = { success?: true }
 
         expect(@analytics).to receive(:track_event).
-          with(:recovery_code_authentication, analytics_hash).ordered
-        expect(@analytics).to receive(:track_event).with('Authentication Successful').ordered
+          with(Analytics::AUTHENTICATION_RECOVERY_CODE, analytics_hash).ordered
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::AUTHENTICATION_SUCCESSFUL).ordered
 
         post :create, code: 'foo'
       end

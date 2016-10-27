@@ -10,7 +10,7 @@ describe Users::PasswordsController, devise: true do
         get :edit, reset_password_token: 'foo'
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: invalid token', token: 'foo')
+          with(Analytics::PASSWORD_RESET_INVALID_TOKEN, token: 'foo')
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.invalid_token')
@@ -29,7 +29,7 @@ describe Users::PasswordsController, devise: true do
         get :edit, reset_password_token: 'foo'
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: token expired', user_id: user.uuid)
+          with(Analytics::PASSWORD_RESET_TOKEN_EXPIRED, user_id: user.uuid)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -68,7 +68,7 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: token expired', user_id: user.uuid)
+          with(Analytics::PASSWORD_RESET_TOKEN_EXPIRED, user_id: user.uuid)
 
         expect(response).to redirect_to new_user_password_path
         expect(flash[:error]).to eq t('devise.passwords.token_expired')
@@ -90,7 +90,7 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Reset password: invalid password', user_id: user.uuid)
+          with(Analytics::PASSWORD_RESET_INVALID_PASSWORD, user_id: user.uuid)
 
         expect(response).to render_template(:edit)
       end
@@ -114,7 +114,7 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Password reset', user_id: user.uuid)
+          with(Analytics::PASSWORD_RESET_SUCCESSFUL, user_id: user.uuid)
 
         expect(response).to redirect_to new_user_session_path
         expect(flash[:notice]).to eq t('devise.passwords.updated_not_active')
@@ -141,9 +141,9 @@ describe Users::PasswordsController, devise: true do
         put :update, password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with('Password reset', user_id: user.uuid)
+          with(Analytics::PASSWORD_RESET_SUCCESSFUL, user_id: user.uuid)
         expect(@analytics).to have_received(:track_event).
-          with('Deactivated verified profile via password reset', user_id: user.uuid)
+          with(Analytics::PASSWORD_RESET_DEACTIVATED_ACCOUNT, user_id: user.uuid)
 
         expect(user.active_profile.present?).to eq false
 
@@ -161,7 +161,7 @@ describe Users::PasswordsController, devise: true do
         allow(NonexistentUser).to receive(:new).and_return(nonexistent_user)
 
         expect(@analytics).to receive(:track_event).
-          with('Password Reset Request',
+          with(Analytics::PASSWORD_RESET_REQUEST,
                user_id: nonexistent_user.uuid, role: nonexistent_user.role)
 
         put :create, user: { email: 'nonexistent@example.com' }
@@ -176,7 +176,7 @@ describe Users::PasswordsController, devise: true do
         allow(User).to receive(:find_by_email).with('tech@example.com').and_return(tech_user)
 
         expect(@analytics).to receive(:track_event).
-          with('Password Reset Request', user_id: tech_user.uuid, role: 'tech')
+          with(Analytics::PASSWORD_RESET_REQUEST, user_id: tech_user.uuid, role: 'tech')
 
         put :create, user: { email: 'TECH@example.com' }
       end
@@ -190,7 +190,7 @@ describe Users::PasswordsController, devise: true do
         allow(User).to receive(:find_by_email).with('admin@example.com').and_return(admin)
 
         expect(@analytics).to receive(:track_event).
-          with('Password Reset Request', user_id: admin.uuid, role: 'admin')
+          with(Analytics::PASSWORD_RESET_REQUEST, user_id: admin.uuid, role: 'admin')
 
         put :create, user: { email: 'ADMIN@example.com' }
       end

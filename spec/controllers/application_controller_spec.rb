@@ -13,7 +13,7 @@ describe ApplicationController do
       expect(subject.current_user).to be_present
 
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('InvalidAuthenticityToken')
+      expect(@analytics).to receive(:track_event).with(Analytics::INVALID_AUTHENTICITY_TOKEN)
 
       get :index
 
@@ -170,7 +170,7 @@ describe ApplicationController do
         stub_analytics
 
         expect(@analytics).to receive(:track_event).
-          with('GET Request', controller: 'anonymous', action: 'index')
+          with(Analytics::GET_REQUEST, controller: 'anonymous', action: 'index')
 
         get :index
       end

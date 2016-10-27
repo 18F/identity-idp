@@ -48,11 +48,11 @@ module Users
       @confirmable.confirm
       @confirmable.update(reset_requested_at: nil)
       sign_in_and_redirect_user
-      analytics.track_event(Analytics::PASSWORD_CREATED_USER_CONFIRMED)
+      analytics.track_event(Analytics::PASSWORD_CREATE_USER_CONFIRMED)
     end
 
     def process_user_with_password_errors
-      analytics.track_event('Password Creation: invalid', user_id: @confirmable.uuid)
+      analytics.track_event(Analytics::PASSWORD_CREATE_INVALID, user_id: @confirmable.uuid)
 
       set_view_variables
       render :show

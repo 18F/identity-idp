@@ -34,7 +34,7 @@ describe Users::RegistrationsController, devise: true do
 
       it 'tracks successful user registration' do
         expect(@analytics).to have_received(:track_event).
-          with('Account Created', user_id: form.user.uuid)
+          with(Analytics::USER_REGISTRATION_ACCOUNT_CREATED, user_id: form.user.uuid)
       end
 
       it 'creates an :account_created event' do
@@ -55,7 +55,7 @@ describe Users::RegistrationsController, devise: true do
       allow(form).to receive_message_chain(:user, :email).and_return(existing_user.email)
 
       expect(@analytics).to receive(:track_event).
-        with('Registration Attempt with existing email', user_id: existing_user.uuid)
+        with(Analytics::USER_REGISTRATION_EXISTING_EMAIL, user_id: existing_user.uuid)
 
       post :create, user: { email: existing_user.email }
     end
@@ -64,7 +64,7 @@ describe Users::RegistrationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with('User Registration: invalid email', email: 'invalid@')
+        with(Analytics::USER_REGISTRATION_INVALID_EMAIL, email: 'invalid@')
 
       post :create, user: { email: 'invalid@' }
     end
