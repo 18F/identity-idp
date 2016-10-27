@@ -96,26 +96,20 @@ describe Users::PasswordsController, devise: true do
       end
     end
 
-    context 'user submits valid new password' do
+    context 'LOA1 user submits valid new password' do
       it 'redirects to sign in page' do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
         password = 'a really long passw0rd'
+        token = 'foo'
+        params = { password: password, reset_password_token: token }
 
-        params = { password: password, reset_password_token: 'foo' }
-
-        user = User.new(uuid: '123')
+        user = User.new(reset_password_token: token)
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
-        allow(user).to receive(:reset_password_token).and_return('foo')
-        allow(user).to receive(:errors).and_return({})
-        allow(user).to receive(:password=).with(password)
         allow(user).to receive(:active_profile).and_return(nil)
 
-        notifier = instance_double(EmailNotifier)
-        allow(EmailNotifier).to receive(:new).with(user).and_return(notifier)
-
-        expect(notifier).to receive(:send_password_changed_email)
+        stub_email_notifier(user)
 
         put :update, password_form: params
 
@@ -127,20 +121,22 @@ describe Users::PasswordsController, devise: true do
       end
     end
 
-    context 'user with active profile submits valid new password' do
-      let(:profile) { create(:profile, :active, :verified) }
-      let(:user) { profile.user }
-
-      it 'redirects to sign in page' do
+    context 'LOA3 user submits valid new password' do
+      it 'deactivates the active profile and redirects' do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        params = { password: 'password', reset_password_token: 'foo' }
+        password = 'a really long passw0rd'
+        token = 'foo'
+        params = { password: password, reset_password_token: token }
+
+        profile = create(:profile, :active, :verified)
+        user = profile.user
+        user.reset_password_token = token
+
+        stub_email_notifier(user)
 
         allow(User).to receive(:reset_password_by_token).with(params).and_return(user)
-        allow(user).to receive(:reset_password_token).and_return('foo')
-        allow(user).to receive(:errors).and_return({})
-        allow(user).to receive(:password=).with('password')
 
         put :update, password_form: params
 
@@ -148,7 +144,10 @@ describe Users::PasswordsController, devise: true do
           with('Password reset', user_id: user.uuid)
         expect(@analytics).to have_received(:track_event).
           with('Deactivated verified profile via password reset', user_id: user.uuid)
+
         expect(user.active_profile.present?).to eq false
+
+        expect(response).to redirect_to new_user_session_path
       end
     end
   end
@@ -196,5 +195,11 @@ describe Users::PasswordsController, devise: true do
         put :create, user: { email: 'ADMIN@example.com' }
       end
     end
+  end
+
+  def stub_email_notifier(user)
+    notifier = instance_double(EmailNotifier)
+    allow(EmailNotifier).to receive(:new).with(user).and_return(notifier)
+    expect(notifier).to receive(:send_password_changed_email)
   end
 end
