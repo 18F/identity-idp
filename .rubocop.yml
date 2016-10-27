@@ -24,6 +24,15 @@ Metrics/AbcSize:
   Exclude:
   - spec/**/*
 
+Metrics/BlockLength:
+  CountComments: false  # count full line comments?
+  Max: 25
+  Exclude:
+    - 'Rakefile'
+    - '**/*.rake'
+    - 'spec/**/*.rb'
+    - 'config/initializers/secure_headers.rb'
+
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
   Enabled: true

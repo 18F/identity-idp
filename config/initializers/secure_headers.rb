@@ -5,9 +5,9 @@ SecureHeaders::Configuration.default do |config|
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
   config.x_permitted_cross_domain_policies = 'none'
-  config.csp = {
+
+  default_csp_config = {
     default_src: ["'self'"],
-    report_only: Rails.env.development? ? true : false,
     child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: ["'self'"], # CSP 2.0 only
@@ -21,6 +21,16 @@ SecureHeaders::Configuration.default do |config|
     style_src: ["'self'"],
     base_uri: ["'self'"]
   }
+
+  if Rails.env.development?
+    config.csp = default_csp_config.merge(
+      script_src: ["'self'", "'unsafe-eval'"],
+      style_src: ["'self'", "'unsafe-inline'"]
+    )
+  else
+    config.csp = default_csp_config
+  end
+
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
     httponly: true, # mark all cookies as "HttpOnly"
@@ -30,6 +40,7 @@ SecureHeaders::Configuration.default do |config|
       lax: true # mark all cookies as SameSite=Lax.
     }
   }
+
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
   # config.hpkp = {
   #   report_only: false,
