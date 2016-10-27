@@ -169,7 +169,8 @@ describe ApplicationController do
       it 'tracks the controller name and action' do
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with('GET request for anonymous#index')
+        expect(@analytics).to receive(:track_event).
+          with('GET Request', controller: 'anonymous', action: 'index')
 
         get :index
       end

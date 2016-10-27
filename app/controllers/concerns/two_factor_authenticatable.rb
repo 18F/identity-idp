@@ -16,7 +16,7 @@ module TwoFactorAuthenticatable
   end
 
   def handle_second_factor_locked_user
-    analytics.track_event('User reached max 2FA attempts')
+    analytics.track_event(Analytics::MAX_2FA_ATTEMPTS)
 
     render 'two_factor_authentication/shared/max_login_attempts_reached'
 
@@ -113,7 +113,7 @@ module TwoFactorAuthenticatable
 
   def phone_changed
     create_user_event(:phone_changed)
-    analytics.track_event('User changed their phone number')
+    analytics.track_event(Analytics::PHONE_CHANGED)
     SmsSenderNumberChangeJob.perform_later(old_phone)
   end
 

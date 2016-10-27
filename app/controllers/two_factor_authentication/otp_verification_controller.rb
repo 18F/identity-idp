@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     def create
       result = OtpVerificationForm.new(current_user, form_params[:code].strip).submit
 
-      analytics.track_event(:"otp_#{context}", result)
+      analytics.track_event(Analytics::OTP_RESULT, result.merge(context: context))
 
       if result[:success?]
         handle_valid_otp

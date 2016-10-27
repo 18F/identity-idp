@@ -48,7 +48,7 @@ module Idv
       # do not store PII that failed.
       idv_session.profile.destroy
       idv_session.clear
-      analytics.track_event('IdV Failed')
+      analytics.track_event(Analytics::IDV_FAILED)
       if idv_attempter.exceeded?
         redirect_to idv_fail_url
       else
@@ -61,7 +61,7 @@ module Idv
       idv_session.complete_profile
       idv_session.clear
       flash[:success] = I18n.t('idv.titles.complete')
-      analytics.track_event('IdV Successful')
+      analytics.track_event(Analytics::IDV_SUCCESSFUL)
       redirect_to after_sign_in_path_for(current_user)
     end
   end

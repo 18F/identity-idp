@@ -34,9 +34,9 @@ module Users
 
     def track_email_change
       if @update_user_email_form.email_taken?
-        analytics.track_event('User attempted to change their email to an existing email')
+        analytics.track_event(Analytics::EMAIL_CHANGED_TO_EXISTING)
       else
-        analytics.track_event('User asked to change their email')
+        analytics.track_event(Analytics::EMAIL_CHANGE_REQUESTED)
       end
     end
   end

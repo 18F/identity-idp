@@ -11,7 +11,8 @@ describe PagesController do
     it 'skips the track_get_request after_action' do
       stub_analytics
 
-      expect(@analytics).to_not receive(:track_event).with('GET request for pages#index')
+      expect(@analytics).to_not receive(:track_event).
+        with('GET Request', controller: 'pages', action: 'index')
 
       get :index
     end

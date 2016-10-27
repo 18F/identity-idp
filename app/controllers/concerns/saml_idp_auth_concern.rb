@@ -21,7 +21,7 @@ module SamlIdpAuthConcern
     add_sp_metadata_to_session and return if current_service_provider.valid?
 
     analytics.track_event(
-      :invalid_service_provider,
+      Analytics::INVALID_SERVICE_PROVIDER,
       service_provider: current_service_provider.issuer
     )
 

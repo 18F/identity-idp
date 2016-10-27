@@ -33,7 +33,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         sign_in_before_2fa
 
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(:otp_authentication, success?: false)
+        expect(@analytics).to receive(:track_event).
+          with('OTP', context: 'authentication', success?: false)
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
         expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(false)
@@ -60,7 +61,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         stub_analytics
 
         expect(@analytics).to receive(:track_event).exactly(3).times.
-          with(:otp_authentication, success?: false)
+          with('OTP', context: 'authentication', success?: false)
         expect(@analytics).to receive(:track_event).with('User reached max 2FA attempts')
 
         3.times { post :create, code: '12345', delivery_method: 'sms' }
@@ -89,7 +90,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).with(:otp_authentication, success?: true)
+        expect(@analytics).to receive(:track_event).
+          with('OTP', context: 'authentication', success?: true)
         expect(@analytics).to receive(:track_event).with('Authentication Successful')
 
         post :create, code: subject.current_user.reload.direct_otp, delivery_method: 'sms'
@@ -162,7 +164,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the update event' do
             expect(@analytics).to have_received(:track_event).
-              with(:otp_confirmation, success?: true)
+              with('OTP', context: 'confirmation', success?: true)
 
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
@@ -195,7 +197,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks an event' do
             expect(@analytics).to have_received(:track_event).
-              with(:otp_confirmation, success?: false)
+              with('OTP', context: 'confirmation', success?: false)
           end
         end
       end
@@ -223,7 +225,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the confirmation event' do
             expect(@analytics).to have_received(:track_event).
-              with(:otp_confirmation, success?: true)
+              with('OTP', context: 'confirmation', success?: true)
             expect(@analytics).to have_received(:track_event).with('Authentication Successful')
 
             expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
@@ -270,7 +272,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'tracks the update event' do
           expect(@analytics).to have_received(:track_event).
-            with(:otp_idv, success?: true)
+            with('OTP', context: 'idv', success?: true)
         end
 
         it 'updates idv session phone_confirmed_at attribute' do
@@ -318,7 +320,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'tracks an event' do
           expect(@analytics).to have_received(:track_event).
-            with(:otp_idv, success?: false)
+            with('OTP', context: 'idv', success?: false)
         end
       end
     end
