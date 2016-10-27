@@ -38,7 +38,7 @@ class I18nLocaleTraverser
 
   def locale_uri
     return nil unless @file
-    base_uri = 'https://github.com/18F/identity-idp/tree/master/config/locales/'
+    base_uri = 'https://github.com/18F/identity-idp/blob/master/config/locales/'
     base_uri + filename + '#L' + find_line_number.to_s
   end
 
