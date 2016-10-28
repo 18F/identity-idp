@@ -14,6 +14,12 @@ describe 'devise/sessions/new.html.slim' do
     render
   end
 
+  it 'includes a link to log in' do
+    render
+
+    expect(rendered).to have_content(t('headings.log_in'))
+  end
+
   it 'includes a link to create a new account' do
     render
 
@@ -39,25 +45,34 @@ describe 'devise/sessions/new.html.slim' do
     it 'displays a custom header' do
       render
 
-      expect(rendered).to have_content(t('headings.log_in_branded',
-                                         app: 'Awesome Application!'))
+      expect(rendered).to have_content(
+        t('headings.log_in_branded', sp: 'Awesome Application!')
+      )
     end
 
     it 'displays a back to sp link' do
       render
 
-      expect(rendered).
-        to have_link(
-          t('links.back_to_sp', app: 'Awesome Application!'), href: @sp_return_url
-        )
+      expect(rendered).to have_link(
+        t('links.back_to_sp', sp: 'Awesome Application!'), href: @sp_return_url
+      )
     end
   end
 
   context 'when @sp_name is not set' do
-    it 'displays the normal header' do
+    before do
+      @sp_name = nil
+    end
+
+    it 'does not display the branded content' do
       render
 
-      expect(rendered).to have_content(t('headings.log_in'))
+      expect(rendered).not_to have_content(
+        t('headings.log_in_branded', sp: 'Awesome Application!')
+      )
+      expect(rendered).not_to have_link(
+        t('links.back_to_sp', sp: 'Awesome Application!')
+      )
     end
   end
 end

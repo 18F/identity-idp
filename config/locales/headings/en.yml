@@ -12,7 +12,7 @@ en:
       password: Edit your password
       phone: Edit your phone number
     log_in: Sign in
-    log_in_branded: Sign in to continue to %{app}
+    log_in_branded: Sign in to continue to %{sp}
     choose_otp_delivery: Choose delivery method
     passwords:
       change: Change your password

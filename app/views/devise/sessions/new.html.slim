@@ -1,9 +1,6 @@
 - title t('titles.visitors.index')
 
-- if @sp_name
-  h1.h3.my0 = t('headings.log_in_branded', app: @sp_name)
-- else
-  h1.h3.my0 = t('headings.log_in')
+h1.h3.my0 = decorated_session.new_session_heading
 
 = simple_form_for(resource,
                   as: resource_name,
@@ -19,7 +16,7 @@ p.my3 == t('notices.log_in_consent.text', app: APP_NAME, link: link)
 .clearfix.pt1.border-top
   - if @sp_name && @sp_return_url
     .sm-col.py1.sm-p0
-      = link_to t('links.back_to_sp', app: @sp_name), @sp_return_url,
+      = link_to decorated_session.back_to_service_provider_link, @sp_return_url,
         class: 'inline-block truncate align-bottom underline sm-maxw-190p'
   .sm-col-right
     = link_to t('headings.passwords.forgot'), new_password_path(resource_name), class: 'underline'
