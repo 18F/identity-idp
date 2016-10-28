@@ -16,4 +16,12 @@ module ApplicationHelper
       'tabindex': '0'
     )
   end
+
+  def decorated_session
+    if @sp_name.present?
+      @_decorated_session ||= ServiceProviderSessionDecorator.new(sp_name: @sp_name)
+    else
+      @_decorated_session ||= SessionDecorator.new
+    end
+  end
 end

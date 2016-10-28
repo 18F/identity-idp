@@ -19,4 +19,38 @@ describe 'devise/registrations/start.html.slim' do
     expect(rendered).
       to have_link(t('experiments.demo.get_started'), href: new_user_registration_path)
   end
+
+  context 'when @sp_name is not set' do
+    before do
+      @sp_name = nil
+    end
+
+    it 'includes sp-specific copy' do
+      render
+
+      expect(rendered).to have_content(
+        t('headings.create_account_without_sp', sp: nil)
+      )
+      expect(rendered).to have_content(
+        t('devise.registrations.start.bullet_1_without_sp', sp: nil)
+      )
+    end
+  end
+
+  context 'when @sp_name is set' do
+    before do
+      @sp_name = 'Awesome Application!'
+    end
+
+    it 'includes sp-specific copy' do
+      render
+
+      expect(rendered).to have_content(
+        t('headings.create_account_with_sp', sp: @sp_name)
+      )
+      expect(rendered).to have_content(
+        t('devise.registrations.start.bullet_1_with_sp', sp: @sp_name)
+      )
+    end
+  end
 end
