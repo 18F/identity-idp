@@ -30,6 +30,8 @@ UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
     - render_401
+    - SessionDecorator#registration_bullet_1
+    - ServiceProviderSessionDecorator#registration_bullet_1
 UnusedPrivateMethod:
   exclude:
     - ApplicationController
@@ -44,6 +46,8 @@ UtilityFunction:
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
     - SessionTimeoutWarningHelper#warning
+    - SessionDecorator#registration_heading
+    - SessionDecorator#registration_bullet_1
 'spec':
   ControlParameter:
     exclude:

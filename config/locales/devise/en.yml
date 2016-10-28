@@ -12,6 +12,7 @@ en:
       send_paranoid_instructions: >
         If your email address exists in our database, you will receive an email
         with instructions for how to confirm your email address in a few minutes.
+
     failure:
       already_authenticated: ''
       inactive: Your account is not activated yet.
@@ -22,6 +23,7 @@ en:
       timeout: Your session expired. Please sign in again to continue.
       unauthenticated: ''
       unconfirmed: You have to confirm your email address before continuing.
+
     mailer:
       confirmation_instructions:
         subject: Email confirmation instructions
@@ -31,9 +33,11 @@ en:
         subject: Password change notification
       account_locked:
         subject: Your login.gov account has been locked
+
     omniauth_callbacks:
       failure: 'Could not authenticate you due to: %{reason}.'
       success: Third party authentication successful!
+
     passwords:
       no_token: >
         You can’t access this page without coming from a password reset email.
@@ -52,11 +56,13 @@ en:
       choose_new_password: Choose a new password.
       token_expired: You have taken too long to reset your password. Please try again.
       invalid_token: The reset password token is invalid. Please try again.
+
     registrations:
       start:
-        bullet_1: >
-          Please use this site to securely log in to your participating
-          government agency.
+        bullet_1_with_sp: >
+          login.gov is providing account services to %{sp}
+        bullet_1_without_sp: >
+          login.gov provides account services for government agencies
         bullet_2: >
           U.S. government agencies are using login.gov to make interacting with
           the government easier.
@@ -91,6 +97,7 @@ en:
       updated: Account update successful!
       enabled_twofactor: Successfully enabled two-factor authentication.
       close_window: You can close this browser window once you have verified your email address.
+
     sessions:
       signed_in: ''
       signed_out: You are now signed out.

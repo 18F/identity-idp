@@ -5,7 +5,8 @@ en:
     confirmations:
       new: Resend confirmation instructions
     contact: Contact us
-    create_account: Create an account
+    create_account_with_sp: Make a login.gov account to continue to %{sp}
+    create_account_without_sp: Make a login.gov account
     edit_info:
       email: Edit your email
       password: Edit your password
