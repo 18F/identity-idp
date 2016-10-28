@@ -44,4 +44,4 @@ en:
         labels:
           password: New password
         buttons:
-          submit: Change my password
+          submit: Change password
