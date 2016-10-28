@@ -16,9 +16,16 @@ feature 'Sign Up', devise: true do
   context 'visitor can sign up and confirm a valid phone for OTP' do
     before do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      allow(SmsOtpSenderJob).to receive(:perform_later)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
       click_button t('forms.buttons.send_passcode')
+
+      expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+        code: @user.reload.direct_otp,
+        phone: '+1 (555) 555-5555',
+        otp_created_at: @user.direct_otp_sent_at.to_s
+      )
     end
 
     it 'updates phone_confirmed_at and redirects to acknowledge recovery code' do
