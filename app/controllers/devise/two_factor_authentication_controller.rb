@@ -50,7 +50,7 @@ module Devise
 
       job.perform_later(
         code: current_user.direct_otp,
-        phone: current_user.phone,
+        phone: user_session[:unconfirmed_phone] || current_user.phone,
         otp_created_at: current_user.direct_otp_sent_at.to_s
       )
     end
