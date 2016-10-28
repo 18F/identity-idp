@@ -220,19 +220,6 @@ feature 'Sign Up', devise: true do
     expect(page).to have_content(invalid_email_message)
   end
 
-  scenario 'visitor signs up with an email already in the system', email: true do
-    user = create(:user, email: 'existing_user@example.com')
-    sign_up_with('existing_user@example.com')
-
-    expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_start')
-    expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_end')
-    expect(page).
-      to have_content t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')
-    expect(page).to have_content user.email
-    expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
-    expect(last_email.html_part.body).to have_content 'This email address is already in use.'
-  end
-
   scenario 'visitor signs up but confirms with an expired token' do
     allow(Devise).to receive(:confirm_within).and_return(24.hours)
     user = create(:user, :unconfirmed)
@@ -255,19 +242,6 @@ feature 'Sign Up', devise: true do
     expect(current_path).to eq user_confirmation_path
   end
 
-  context 'confirmation instructions sent to existing user', email: true do
-    xit 'does not send an email to the existing user' do
-      user = create(:user)
-
-      visit '/'
-      click_link t('links.user_confirmation')
-      fill_in 'Email', with: user.email
-      click_button t('forms.buttons.resend_confirmation')
-
-      expect(number_of_emails_sent).to eq 0
-    end
-  end
-
   context 'confirmed user clicks confirmation link while again signed out' do
     it 'redirects to sign in page with message that user is already confirmed' do
       sign_up_and_set_password
@@ -279,6 +253,52 @@ feature 'Sign Up', devise: true do
       expect(page).
         to have_content t('devise.confirmations.already_confirmed', action: 'Please sign in.')
       expect(current_url).to eq new_user_session_url
+    end
+  end
+
+  context 'user signs up twice without confirming email' do
+    it 'sends the user the confirmation instructions email again' do
+      email = 'test@example.com'
+
+      expect { sign_up_with(email) }.
+        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect(last_email.html_part.body).to have_content(
+        t('devise.mailer.confirmation_instructions.subject')
+      )
+
+      expect { sign_up_with(email) }.
+        to change { ActionMailer::Base.deliveries.count }.by(1)
+      expect(last_email.html_part.body).to have_content(
+        t('devise.mailer.confirmation_instructions.subject')
+      )
+    end
+  end
+
+  context 'user signs up and requests confirmation email again' do
+    it 'sends the confirmation email again' do
+      sign_up_with('test@example.com')
+      click_on t('links.resend')
+      fill_in :user_email, with: 'test@example.com'
+
+      expect { click_on t('forms.buttons.resend_confirmation') }.
+        to change { ActionMailer::Base.deliveries.count }.by(1)
+
+      expect(last_email.html_part.body).to have_content(
+        t('devise.mailer.confirmation_instructions.subject')
+      )
+    end
+  end
+
+  context 'user signs up and confirms email, goes through flow again' do
+    it 'sends email saying someone tried to sign up with their email address' do
+      user = create(:user)
+
+      expect { sign_up_with(user.email) }.
+        to change { ActionMailer::Base.deliveries.count }.by(1)
+
+      expect(last_email.html_part.body).to have_content(
+        t('user_mailer.signup_with_your_email.intro', app: APP_NAME)
+      )
     end
   end
 end
