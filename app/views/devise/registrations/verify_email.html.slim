@@ -8,7 +8,10 @@
     | #{t('notices.signed_up_but_unconfirmed.first_paragraph_start')}
       <strong>#{email}</strong>
       #{t('notices.signed_up_but_unconfirmed.first_paragraph_end')}
-  p.mb2
-    | #{t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')}
-      #{link_to t('links.resend'), new_user_confirmation_path}
+  .mb2
+    p.m0
+      | #{t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')}
+        #{link_to t('links.resend'), new_user_confirmation_path}
+    - link = link_to t('notices.use_diff_email.link'), new_user_registration_path
+    p.m0 == t('notices.use_diff_email.text_html', link: link)
   p.mb2.h5.italic = t('devise.registrations.close_window')
