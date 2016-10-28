@@ -21,18 +21,4 @@ feature 'Confirm email' do
 
     expect(user.reset_requested_at).to be_nil
   end
-
-  scenario 'user goes through create account flow twice without confirming email' do
-    sign_up_with('test@example.com')
-
-    expect(last_email.html_part.body).to have_content(
-      t('devise.mailer.confirmation_instructions.subject')
-    )
-
-    sign_up_with('test@example.com')
-
-    expect(last_email.html_part.body).to have_content(
-      t('devise.mailer.confirmation_instructions.subject')
-    )
-  end
 end
