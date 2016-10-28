@@ -1,4 +1,12 @@
 class SessionDecorator
+  def nav_partial
+    'shared/nav_lite'
+  end
+
+  def new_session_heading
+    I18n.t('headings.log_in')
+  end
+
   def registration_heading
     I18n.t('headings.create_account_without_sp')
   end

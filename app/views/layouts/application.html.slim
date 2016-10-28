@@ -42,10 +42,8 @@ html lang="#{I18n.locale}"
       = render 'shared/usa_banner'
       - if signed_in?
         = render 'shared/nav_auth'
-      - elsif @sp_logo.present?
-        = render 'shared/nav_branded'
       - else
-        = render 'shared/nav_lite'
+        = render decorated_session.nav_partial
       = content_for?(:content) ? yield(:content) : yield
     = render 'shared/footer_lite'
 
