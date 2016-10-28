@@ -15,7 +15,7 @@ set :linked_files, %w(certs/saml.crt
                       config/newrelic.yml
                       keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
-set :passenger_roles, [:app, :web]
+set :passenger_roles, [:web]
 set :passenger_restart_wait, 5
 set :passenger_restart_runner, :sequence
 set :rails_env, :production
