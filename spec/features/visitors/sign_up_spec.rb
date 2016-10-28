@@ -296,7 +296,7 @@ feature 'Sign Up', devise: true do
     end
   end
 
-  context 'user signs up and confirms email, goes through flow again' do
+  context 'user signs up and sets password, tries to sign up again' do
     it 'sends email saying someone tried to sign up with their email address' do
       user = create(:user)
 
