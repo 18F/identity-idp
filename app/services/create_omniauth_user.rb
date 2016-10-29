@@ -17,10 +17,10 @@ class CreateOmniauthUser
   end
 
   def perform
-    if valid?
-      User.find_or_create_by(email: email) do |user|
-        user.update(confirmed_at: Time.current)
-      end
+    return unless valid?
+
+    User.find_or_create_by(email: email) do |user|
+      user.update(confirmed_at: Time.current)
     end
   end
 end

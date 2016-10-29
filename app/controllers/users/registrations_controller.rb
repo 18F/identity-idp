@@ -44,7 +44,7 @@ module Users
 
     def track_registration(form)
       if form.email_taken?
-        existing_user = User.find_by_email(form.email)
+        existing_user = User.find_by(email: form.email)
         analytics.track_event(
           Analytics::USER_REGISTRATION_EXISTING_EMAIL, user_id: existing_user.uuid
         )

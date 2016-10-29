@@ -17,12 +17,10 @@ describe 'user edits their account', email: true do
       'user[password]' => user.password
     )
     get_via_redirect otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
-    if user.reload.direct_otp
-      post_via_redirect(
-        login_two_factor_path(delivery_method: 'sms'),
-        'code' => user.direct_otp
-      )
-    end
+    post_via_redirect(
+      login_two_factor_path(delivery_method: 'sms'),
+      'code' => user.reload.direct_otp
+    )
   end
 
   context 'user changes email address' do

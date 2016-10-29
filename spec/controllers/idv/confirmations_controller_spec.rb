@@ -144,10 +144,12 @@ describe Idv::ConfirmationsController do
     allow(subject).to receive(:idv_session).and_return(idv_session)
   end
 
+  # rubocop:disable Rails/DynamicFindBy
   def complete_idv_session(answer_correctly)
     Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
       resolution.questions.find_by_key(ques).answer = answer_correctly ? answ : 'wrong'
       subject.idv_session.question_number += 1
     end
   end
+  # rubocop:enable Rails/DynamicFindBy
 end

@@ -173,7 +173,7 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
 
         tech_user = build_stubbed(:user, :tech_support)
-        allow(User).to receive(:find_by_email).with('tech@example.com').and_return(tech_user)
+        allow(User).to receive(:find_by).with(email: 'tech@example.com').and_return(tech_user)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_REQUEST, user_id: tech_user.uuid, role: 'tech')
@@ -187,7 +187,7 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
 
         admin = build_stubbed(:user, :admin)
-        allow(User).to receive(:find_by_email).with('admin@example.com').and_return(admin)
+        allow(User).to receive(:find_by).with(email: 'admin@example.com').and_return(admin)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_REQUEST, user_id: admin.uuid, role: 'admin')

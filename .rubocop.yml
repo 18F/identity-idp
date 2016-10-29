@@ -26,12 +26,18 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   CountComments: false  # count full line comments?
+  Enabled: true
   Max: 25
   Exclude:
     - 'Rakefile'
     - '**/*.rake'
-    - 'spec/**/*.rb'
+    - 'app/decorators/user_decorator.rb'
+    - 'app/services/omniauth_authorizer.rb'
+    - 'app/services/single_logout_handler.rb'
+    - 'config/environments/test.rb'
     - 'config/initializers/secure_headers.rb'
+    - 'config/routes.rb'
+    - 'spec/**/*.rb'
 
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
@@ -71,6 +77,14 @@ Metrics/ModuleLength:
   Exclude:
   - spec/**/*
   - 'app/controllers/concerns/two_factor_authenticatable.rb'
+
+# This is a Rails 5 feature, so it should be disabled until we upgrade
+Rails/HttpPositionalArguments:
+  Description: 'Use keyword arguments instead of positional arguments in http method calls.'
+  Enabled: false
+  Include:
+    - 'spec/**/*'
+    - 'test/**/*'
 
 Rails/OutputSafety:
   Exclude:
