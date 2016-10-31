@@ -5,18 +5,6 @@ module Test
       @settings = settings
     end
 
-    def valid_response?
-      response.is_valid? if doc.at_xpath('/samlp:Response', samlp: Saml::XML::Namespaces::PROTOCOL)
-    end
-
-    def valid_logout_response?
-      return unless doc.at_xpath('/samlp:LogoutResponse', samlp: Saml::XML::Namespaces::PROTOCOL)
-
-      doc.valid_signature?(saml_cert)
-    rescue
-      false
-    end
-
     def response
       @response ||= OneLogin::RubySaml::Response.new(
         params[:SAMLResponse],
