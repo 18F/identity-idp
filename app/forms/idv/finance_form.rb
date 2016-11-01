@@ -42,9 +42,9 @@ module Idv
     end
 
     def finance_type_valid
-      unless finance_type.present? && FINANCE_TYPES.include?(finance_type.to_sym)
-        errors.add :finance_type, I18n.t('idv.errors.missing_finance')
-      end
+      return if finance_type.present? && FINANCE_TYPES.include?(finance_type.to_sym)
+
+      errors.add :finance_type, I18n.t('idv.errors.missing_finance')
     end
 
     def clear_idv_params_finance

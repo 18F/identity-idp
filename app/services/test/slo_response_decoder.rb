@@ -10,13 +10,11 @@ module Test
     end
 
     def valid_logout_response?
-      if doc.at_xpath('/samlp:LogoutResponse', samlp: Saml::XML::Namespaces::PROTOCOL)
-        begin
-          doc.valid_signature?(saml_cert)
-        rescue
-          false
-        end
-      end
+      return unless doc.at_xpath('/samlp:LogoutResponse', samlp: Saml::XML::Namespaces::PROTOCOL)
+
+      doc.valid_signature?(saml_cert)
+    rescue
+      false
     end
 
     def response
