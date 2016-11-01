@@ -1,4 +1,8 @@
 class SessionDecorator
+  def return_to_service_provider_partial
+    'shared/null'
+  end
+
   def nav_partial
     'shared/nav_lite'
   end
