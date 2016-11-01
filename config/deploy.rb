@@ -2,7 +2,7 @@
 # GLOBAL CONFIG
 #################
 set :application, 'idp'
-set :assets_roles, [:web, :worker]
+set :assets_roles, [:app, :web]
 # set branch based on env var or ask with the default set to the current local branch
 set :branch, ENV['branch'] || ENV['BRANCH'] || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
 set :bundle_without, 'deploy development doc test'
