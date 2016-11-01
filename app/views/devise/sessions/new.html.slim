@@ -14,10 +14,7 @@ h1.h3.my0 = decorated_session.new_session_heading
 p.my3 == t('notices.log_in_consent.text', app: APP_NAME, link: link)
 
 .clearfix.pt1.border-top
-  - if @sp_name && @sp_return_url
-    .sm-col.py1.sm-p0
-      = link_to decorated_session.back_to_service_provider_link, @sp_return_url,
-        class: 'inline-block truncate align-bottom underline sm-maxw-190p'
+  = render decorated_session.return_to_service_provider_partial
   .sm-col-right
     = link_to t('headings.passwords.forgot'), new_password_path(resource_name), class: 'underline'
     span.px1.silver = '|'
