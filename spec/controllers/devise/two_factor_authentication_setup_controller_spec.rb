@@ -41,9 +41,11 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'voice', context: 'confirmation' }
+            otp_delivery_selection_form: { otp_method: 'voice' }
           )
         )
+
+        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
 
@@ -62,9 +64,11 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms', context: 'confirmation' }
+            otp_delivery_selection_form: { otp_method: 'sms' }
           )
         )
+
+        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
 
@@ -82,9 +86,11 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms', context: 'confirmation' }
+            otp_delivery_selection_form: { otp_method: 'sms' }
           )
         )
+
+        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
   end
