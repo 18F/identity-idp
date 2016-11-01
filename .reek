@@ -54,6 +54,7 @@ UtilityFunction:
     - SessionDecorator#registration_heading
     - SessionDecorator#registration_bullet_1
     - SessionDecorator#new_session_heading
+    - WorkerHealthChecker::Middleware#call
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
