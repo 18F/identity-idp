@@ -21,6 +21,7 @@ const validate = {
   },
 
   addEvents() {
+    this.form.addEventListener('change', e => validateField(e.target));
     this.form.addEventListener('submit', e => this.validateForm(e));
   },
 
