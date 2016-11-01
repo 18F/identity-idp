@@ -3,7 +3,7 @@ SimpleForm.setup do |config|
   config.boolean_label_class = nil
   config.default_form_class = 'mt3 sm-mt4'
   config.error_notification_tag = :div
-  config.error_notification_class = 'mb3 p2 h5 rounded alert alert-error'
+  config.error_notification_class = 'alert alert-error'
 
   config.wrappers :base do |b|
     b.use :html5
