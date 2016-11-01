@@ -1,36 +1,39 @@
-$alert-ico-size: 1.5rem;
+$ico-size: 1.5rem;
+$ico-offset: -10px;
 
 .alert {
+  background-color: #fff4db;
+  border-radius: $space-1;
+  color: #5b616a;
+  font-size: $sm-h6;
+  font-weight: $bold-font-weight;
+  line-height: $line-height-2;
+  margin-bottom: $space-4;
+  padding: $space-2 1.5rem;
   position: relative;
 
   &::before {
     background-image: url(image-path('alert/ico-warning.svg'));
     background-repeat: no-repeat;
     content: '';
-    height: $alert-ico-size;
-    left: -10px;
+    height: $ico-size;
+    left: $ico-offset;
     position: absolute;
-    top: -10px;
-    width: $alert-ico-size;
+    top: $ico-offset;
+    width: $ico-size;
   }
-}
-
-.alert-inner {
-  background-color: #fff4db;
-  border-radius: .5rem;
-  color: #5b616a;
 }
 
 .alert-notice,
 .alert-success {
-  &::before { background-image: url(image-path('alert/ico-check.svg')); }
+  background-color: #f0faed;
 
-  .alert-inner { background-color: #f0faed; }
+  &::before { background-image: url(image-path('alert/ico-check.svg')); }
 }
 
 .alert-error,
 .alert-alert {
-  &::before { background-image: url(image-path('alert/ico-exclamation.svg')); }
+  background-color: #fff0f2;
 
-  .alert-inner { background-color: #fff0f2; }
+  &::before { background-image: url(image-path('alert/ico-exclamation.svg')); }
 }
