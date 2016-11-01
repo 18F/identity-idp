@@ -158,8 +158,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
             )
           end
 
-          it 'clears session data' do
+          it 'resets otp session data' do
             expect(subject.user_session[:unconfirmed_phone]).to be_nil
+            expect(subject.user_session[:context]).to eq 'authentication'
           end
 
           it 'tracks the update event' do
@@ -231,6 +232,10 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
             expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
           end
+
+          it 'resets context to authentication' do
+            expect(subject.user_session[:context]).to eq 'authentication'
+          end
         end
       end
     end
@@ -266,8 +271,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
           )
         end
 
-        it 'clears session data' do
+        it 'resets otp session data' do
           expect(subject.user_session[:unconfirmed_phone]).to be_nil
+          expect(subject.user_session[:context]).to eq 'authentication'
         end
 
         it 'tracks the update event' do

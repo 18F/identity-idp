@@ -36,6 +36,9 @@ feature 'Changing authentication factor' do
       expect(current_path).to eq profile_path
       expect(SmsSenderNumberChangeJob).to have_received(:perform_later).with('+1 (202) 555-1212')
       expect(user.reload.phone).to eq '+1 (703) 555-0100'
+
+      visit login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq profile_path
     end
 
     scenario 'waiting too long to change phone number' do

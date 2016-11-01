@@ -43,6 +43,7 @@ module TwoFactorAuthenticatable
     end
 
     redirect_to after_otp_verification_confirmation_path
+    reset_otp_session_data
   end
 
   def authentication_context?
@@ -82,7 +83,6 @@ module TwoFactorAuthenticatable
 
   def handle_valid_otp_for_confirmation_context
     assign_phone
-    clear_session_data
 
     flash[:success] = t('notices.phone_confirmation_successful')
   end
@@ -132,8 +132,9 @@ module TwoFactorAuthenticatable
     end
   end
 
-  def clear_session_data
+  def reset_otp_session_data
     user_session.delete(:unconfirmed_phone)
+    user_session[:context] = 'authentication'
   end
 
   def after_otp_verification_confirmation_path
