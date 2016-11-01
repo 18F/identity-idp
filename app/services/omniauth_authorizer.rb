@@ -22,8 +22,8 @@ OmniauthAuthorizer = Struct.new(:auth_hash, :session) do
   end
 
   def find_from_hash
-    Authorization.find_by_provider_and_uid(
-      auth_hash.provider, auth_hash.extra.raw_info['uuid']
+    Authorization.find_by(
+      provider: auth_hash.provider, uid: auth_hash.extra.raw_info['uuid']
     )
   end
 

@@ -6,7 +6,7 @@ class AppSetting < ActiveRecord::Base
             presence: true, if: :boolean?
 
   def self.registrations_enabled?
-    find_by_name('RegistrationsEnabled').try(:value) == '1'
+    find_by(name: 'RegistrationsEnabled').try(:value) == '1'
   end
 
   def self.registrations_disabled?

@@ -3,6 +3,7 @@ module IdvHelper
     @_mock_idv_questions ||= Proofer::Vendor::Mock.new.build_question_set(nil)
   end
 
+  # rubocop:disable Rails/DynamicFindBy
   def complete_idv_questions_ok
     %w(city bear quest color speed).each do |answer_key|
       question = mock_idv_questions.find_by_key(answer_key)
@@ -36,6 +37,7 @@ module IdvHelper
       click_button 'Next'
     end
   end
+  # rubocop:enable Rails/DynamicFindBy
 
   def fill_out_idv_form_ok
     fill_in 'profile_first_name', with: 'Some'
