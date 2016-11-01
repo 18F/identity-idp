@@ -28,12 +28,12 @@ UserDecorator = Struct.new(:user) do
   end
 
   def first_sentence_for_confirmation_email
-    if user.reset_requested_at
-      "Your #{APP_NAME} account has been reset by a tech support representative. " \
-      "To continue, you must confirm your email address."
+    if user.reset_requested_at.present?
+      I18n.t('mailer.confirmation_instructions.first_sentence.reset_requested', app: APP_NAME)
+    elsif user.confirmed_at.present?
+      I18n.t('mailer.confirmation_instructions.first_sentence.confirmed', app: APP_NAME)
     else
-      "To #{user.confirmed_at ? 'finish updating' : 'continue creating'} your " \
-      "#{APP_NAME} account, you must confirm your email address."
+      I18n.t('mailer.confirmation_instructions.first_sentence.unconfirmed', app: APP_NAME)
     end
   end
 

@@ -32,8 +32,12 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
     render
 
-    expect(rendered).
-      to have_content "To finish updating your #{APP_NAME} Account, you must confirm your email"
+    expect(rendered).to have_content(
+      I18n.t(
+        'mailer.confirmation_instructions.first_sentence.confirmed',
+        app: APP_NAME
+      )
+    )
   end
 
   it 'mentions creating an account when user is not yet confirmed' do
@@ -42,8 +46,12 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
     render
 
-    expect(rendered).
-      to have_content "To continue creating your #{APP_NAME} Account"
+    expect(rendered).to have_content(
+      I18n.t(
+        'mailer.confirmation_instructions.first_sentence.unconfirmed',
+        app: APP_NAME
+      )
+    )
   end
 
   it 'mentions resetting the account when account has been reset by tech support' do
@@ -52,13 +60,11 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
     render
 
-    expect(rendered).
-      to have_content "Your #{APP_NAME} account has been reset by a tech support representative"
-
-    expect(rendered).
-      to_not have_content "To finish creating Your #{APP_NAME} account"
-
-    expect(rendered).
-      to_not have_content "To finish updating Your #{APP_NAME} account"
+    expect(rendered).to have_content(
+      I18n.t(
+        'mailer.confirmation_instructions.first_sentence.reset_requested',
+        app: APP_NAME
+      )
+    )
   end
 end
