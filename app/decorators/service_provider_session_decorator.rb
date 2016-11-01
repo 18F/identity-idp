@@ -3,12 +3,12 @@ class ServiceProviderSessionDecorator
     @sp_name = sp_name
   end
 
-  def nav_partial
-    'shared/nav_branded'
+  def return_to_service_provider_partial
+    'devise/sessions/return_to_sevice_provider'
   end
 
-  def back_to_service_provider_link
-    I18n.t('links.back_to_sp', sp: sp_name)
+  def nav_partial
+    'shared/nav_branded'
   end
 
   def new_session_heading
