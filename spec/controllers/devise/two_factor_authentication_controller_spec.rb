@@ -30,7 +30,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       end
 
       it 'redirects to the profile' do
-        get :index, context: 'authentication'
+        get :index
 
         expect(response).to redirect_to(profile_url)
       end
@@ -41,10 +41,11 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
       before do
         sign_in user
+        subject.user_session[:context] = 'confirmation'
       end
 
       it 'does not redirect to the profile' do
-        get :index, context: 'confirmation'
+        get :index
 
         expect(response).to_not be_redirect
       end
@@ -117,7 +118,13 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'tracks the events' do
         stub_analytics
 
-        analytics_hash = { success?: true, delivery_method: 'sms', resend?: nil, errors: [] }
+        analytics_hash = {
+          success?: true,
+          delivery_method: 'sms',
+          resend?: nil,
+          errors: [],
+          context: 'authentication'
+        }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
@@ -170,7 +177,13 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       it 'tracks the event' do
         stub_analytics
 
-        analytics_hash = { success?: true, delivery_method: 'voice', resend?: nil, errors: [] }
+        analytics_hash = {
+          success?: true,
+          delivery_method: 'voice',
+          resend?: nil,
+          errors: [],
+          context: 'authentication'
+        }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)

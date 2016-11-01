@@ -25,6 +25,7 @@ describe Users::EditPhoneController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to render_template('devise/two_factor_authentication/show')
+        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
 
@@ -56,6 +57,7 @@ describe Users::EditPhoneController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to render_template('devise/two_factor_authentication/show')
+        expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
 

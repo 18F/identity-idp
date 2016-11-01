@@ -211,6 +211,7 @@ describe Idv::ReviewController do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
         expect(response).to render_template('devise/two_factor_authentication/show')
+        expect(subject.user_session[:context]).to eq 'idv'
       end
     end
   end

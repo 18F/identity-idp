@@ -35,6 +35,12 @@ describe ReauthnRequiredController do
 
         expect(response).to redirect_to user_password_confirm_url
       end
+
+      it 'sets context to authentication' do
+        get :show
+
+        expect(controller.user_session[:context]).to eq 'authentication'
+      end
     end
   end
 end

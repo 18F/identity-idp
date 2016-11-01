@@ -188,4 +188,17 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq profile_path
     end
   end
+
+  describe 'visiting OTP delivery and verification pages after fully authenticating' do
+    it 'redirects to profile page' do
+      sign_in_and_2fa_user
+      visit login_two_factor_path(delivery_method: 'sms')
+
+      expect(current_path).to eq profile_path
+
+      visit user_two_factor_authentication_path
+
+      expect(current_path).to eq profile_path
+    end
+  end
 end

@@ -140,6 +140,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
       before do
         sign_in_as_user
         subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
+        subject.user_session[:context] = 'confirmation'
         @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
         subject.current_user.create_direct_otp
         stub_analytics
@@ -153,8 +154,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
             post(
               :create,
               code: subject.current_user.direct_otp,
-              delivery_method: 'sms',
-              context: 'confirmation'
+              delivery_method: 'sms'
             )
           end
 
@@ -172,7 +172,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         end
 
         context 'user enters an invalid code' do
-          before { post :create, code: '999', delivery_method: 'sms', context: 'confirmation' }
+          before { post :create, code: '999', delivery_method: 'sms' }
 
           it 'does not increment second_factor_attempts_count' do
             expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -214,8 +214,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
             post(
               :create,
               code: subject.current_user.direct_otp,
-              delivery_method: 'sms',
-              context: 'confirmation'
+              delivery_method: 'sms'
             )
           end
 
@@ -242,6 +241,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         idv_session = Idv::Session.new(subject.user_session, subject.current_user)
         idv_session.params = { 'phone' => '+1 (555) 555-5555' }
         subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
+        subject.user_session[:context] = 'idv'
         @previous_phone_confirmed_at = subject.current_user.phone_confirmed_at
         allow(subject).to receive(:idv_session).and_return(idv_session)
         stub_analytics
@@ -262,8 +262,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
           post(
             :create,
             code: subject.current_user.direct_otp,
-            delivery_method: 'sms',
-            context: 'idv'
+            delivery_method: 'sms'
           )
         end
 
@@ -295,7 +294,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
       end
 
       context 'user enters an invalid code' do
-        before { post :create, code: '999', delivery_method: 'sms', context: 'idv' }
+        before { post :create, code: '999', delivery_method: 'sms' }
 
         it 'does not increment second_factor_attempts_count' do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
