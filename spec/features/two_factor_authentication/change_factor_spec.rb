@@ -4,10 +4,6 @@ feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
     let!(:user) { sign_up_and_2fa }
 
-    before do
-      allow(Figaro.env).to receive(:reauthn_window).and_return(0)
-    end
-
     scenario 'editing password' do
       visit settings_password_path
       complete_2fa_confirmation
@@ -42,6 +38,28 @@ feature 'Changing authentication factor' do
       expect(user.reload.phone).to eq '+1 (703) 555-0100'
     end
 
+    scenario 'waiting too long to change phone number' do
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+
+      user = sign_in_and_2fa_user
+      old_phone = user.phone
+      visit edit_phone_path
+      update_phone_number_and_choose_sms_delivery
+      Timecop.travel(31) do
+        click_link t('forms.two_factor.try_again'), href: edit_phone_path
+        complete_2fa_confirmation_without_entering_otp
+
+        expect(SmsOtpSenderJob).to have_received(:perform_later).
+          with(
+            code: user.reload.direct_otp,
+            phone: old_phone,
+            otp_created_at: user.reload.direct_otp_sent_at.to_s
+          )
+
+        expect(page).to have_content UserDecorator.new(user).masked_two_factor_phone_number
+      end
+    end
+
     scenario 'editing email' do
       visit edit_email_path
       complete_2fa_confirmation
@@ -51,8 +69,11 @@ feature 'Changing authentication factor' do
   end
 
   def complete_2fa_confirmation
-    allow(Figaro.env).to receive(:reauthn_window).and_return(10)
+    complete_2fa_confirmation_without_entering_otp
+    click_submit_default
+  end
 
+  def complete_2fa_confirmation_without_entering_otp
     expect(current_path).to eq user_password_confirm_path
 
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
@@ -63,8 +84,6 @@ feature 'Changing authentication factor' do
     click_submit_default
 
     expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
-
-    click_submit_default
   end
 
   def update_phone_number_and_choose_sms_delivery

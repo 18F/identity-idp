@@ -24,7 +24,7 @@ module TwoFactorAuthenticatable
   end
 
   def check_already_authenticated
-    return unless params[:context] == 'authentication'
+    return unless context == 'authentication'
 
     redirect_to profile_path if user_fully_authenticated?
   end
@@ -54,7 +54,7 @@ module TwoFactorAuthenticatable
   end
 
   def context
-    params[:context].presence || 'authentication'
+    user_session[:context] || 'authentication'
   end
 
   # Method will be renamed in the next refactor.
@@ -125,7 +125,7 @@ module TwoFactorAuthenticatable
   def update_phone_attributes
     current_time = Time.current
 
-    if params[:context] == 'idv'
+    if context == 'idv'
       Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
     else
       current_user.update(phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time)
@@ -137,7 +137,7 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_verification_confirmation_path
-    if params[:context] == 'idv'
+    if context == 'idv'
       idv_questions_path
     elsif @updating_existing_number
       profile_path
@@ -154,12 +154,18 @@ module TwoFactorAuthenticatable
   end
 
   def assign_variables_for_otp_verification_show_view
-    @phone_number = user_session[:unconfirmed_phone] ||
-                    decorated_user.masked_two_factor_phone_number
+    @phone_number = display_phone_to_deliver_to
     @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-    @context = context
     @delivery_method = params[:delivery_method]
     @reenter_phone_number_path = reenter_phone_number_path
+  end
+
+  def display_phone_to_deliver_to
+    if context == 'authentication'
+      decorated_user.masked_two_factor_phone_number
+    else
+      user_session[:unconfirmed_phone]
+    end
   end
 
   def reenter_phone_number_path

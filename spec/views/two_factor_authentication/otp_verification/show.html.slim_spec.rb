@@ -37,7 +37,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         to have_link(
           t('links.two_factor_authentication.resend_code'),
           href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms',
-                                                             resend: true, context: nil })
+                                                             resend: true })
         )
     end
 
@@ -59,7 +59,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).to have_link(
           t('links.phone_confirmation.fallback_to_voice'),
-          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice', context: '' })
+          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })
         )
       end
     end
@@ -73,7 +73,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).to have_link(
           t('links.phone_confirmation.fallback_to_sms'),
-          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms', context: '' })
+          href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
         )
       end
     end

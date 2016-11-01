@@ -8,7 +8,6 @@ module Devise
       else
         @phone_number = decorated_user.masked_two_factor_phone_number
         @otp_delivery_selection_form = OtpDeliverySelectionForm.new
-        @context = params[:context]
       end
     end
 
@@ -17,7 +16,7 @@ module Devise
 
       result = @otp_delivery_selection_form.submit(delivery_params)
 
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result)
+      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.merge(context: context))
 
       if result[:success?]
         handle_valid_delivery_method(delivery_params[:otp_method])
@@ -38,9 +37,7 @@ module Devise
       resent_message = t("notices.send_code.#{method}")
       flash[:success] = resent_message if session[:code_sent].present?
       session[:code_sent] = 'true'
-      redirect_to login_two_factor_path(
-        delivery_method: method, reauthn: reauthn?, context: delivery_params[:context]
-      )
+      redirect_to login_two_factor_path(delivery_method: method, reauthn: reauthn?)
     end
 
     def send_user_otp(method)
@@ -50,13 +47,19 @@ module Devise
 
       job.perform_later(
         code: current_user.direct_otp,
-        phone: user_session[:unconfirmed_phone] || current_user.phone,
+        phone: phone_to_deliver_to,
         otp_created_at: current_user.direct_otp_sent_at.to_s
       )
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(:otp_method, :resend, :context)
+      params.require(:otp_delivery_selection_form).permit(:otp_method, :resend)
+    end
+
+    def phone_to_deliver_to
+      return current_user.phone if context == 'authentication'
+
+      user_session[:unconfirmed_phone]
     end
   end
 end
