@@ -37,5 +37,3 @@ en:
       help: >
         If you did not request a new account or suspect an error, please contact the
         %{app} Customer Contact Center at %{link}
-      footer: >
-        Please be aware that this update might require your immediate attention.
