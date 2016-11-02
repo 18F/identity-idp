@@ -8,5 +8,5 @@ en:
       about: About
       news: News
       contact: Contact
-      welcome: Welcome %{email}
+      welcome: Welcome
       my_account: My account
