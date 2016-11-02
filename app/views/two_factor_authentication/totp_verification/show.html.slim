@@ -16,10 +16,10 @@ p.mt-tiny.mb0#code-instructs = t('instructions.2fa.totp_intro_html', \
 
 hr
 p
- - sms_link = link_to t('devise.two_factor_authentication.totp_fallback.' \
-    'sms_link_text'), otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
- - voice_link = link_to t('devise.two_factor_authentication.totp_fallback.' \
-    'voice_link_text'), otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })
+  - sms_link = link_to t('devise.two_factor_authentication.totp_fallback.sms_link_text'), \
+                       otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
+  - voice_link = link_to t('devise.two_factor_authentication.totp_fallback.voice_link_text'), \
+                         otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })
 
- == t('devise.two_factor_authentication.totp_fallback.text', sms_link: sms_link,
+  == t('devise.two_factor_authentication.totp_fallback.text', sms_link: sms_link,
     voice_link: voice_link)
