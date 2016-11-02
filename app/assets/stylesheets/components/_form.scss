@@ -91,12 +91,13 @@ input::-webkit-inner-spin-button {
 .indicator {
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 50% 50%;
+  background-size: .5rem .5rem;
+  box-sizing: border-box;
   display: block;
   font-size: 65%;
-  height: 14px;
+  height: 1rem;
   left: 0;
-  line-height: 14px;
+  line-height: 1rem;
   position: absolute;
   text-align: center;
   top: .25rem;
@@ -104,7 +105,7 @@ input::-webkit-inner-spin-button {
   -ms-user-select: none;
   -webkit-user-select: none;
   user-select: none;
-  width: 14px;
+  width: 1rem;
 }
 
 .checkbox input:checked ~ .indicator,
