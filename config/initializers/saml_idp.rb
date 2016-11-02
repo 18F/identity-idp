@@ -29,8 +29,8 @@ SamlIdp.configure do |config|
   # Name ID
   config.name_id.formats =
     {
-      persistent: -> (principal) { principal.asserted_attributes[:uuid][:getter].call(principal) },
-      email_address: -> (principal) { principal.email }
+      persistent: ->(principal) { principal.asserted_attributes[:uuid][:getter].call(principal) },
+      email_address: ->(principal) { principal.email }
     }
 
   ## Technical contact ##

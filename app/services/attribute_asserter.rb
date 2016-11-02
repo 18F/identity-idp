@@ -51,11 +51,11 @@ class AttributeAsserter
   end
 
   def uuid_getter_function
-    -> (principal) { principal.decorate.active_identity_for(service_provider).uuid }
+    ->(principal) { principal.decorate.active_identity_for(service_provider).uuid }
   end
 
   def attribute_getter_function(attr)
-    -> (_principal) { decrypted_pii[attr] }
+    ->(_principal) { decrypted_pii[attr] }
   end
 
   def add_email(attrs)
