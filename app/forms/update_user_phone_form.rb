@@ -21,10 +21,12 @@ class UpdateUserPhoneForm
   end
 
   def phone_changed?
-    @phone_changed == true
+    phone_changed == true
   end
 
   private
+
+  attr_reader :phone_changed
 
   def check_phone_change(params)
     formatted_phone = params[:phone].phony_formatted(

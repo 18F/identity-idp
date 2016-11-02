@@ -22,10 +22,6 @@ class RegisterUserEmailForm
     end
   end
 
-  def email_taken?
-    @email_taken == true
-  end
-
   private
 
   def valid_form?

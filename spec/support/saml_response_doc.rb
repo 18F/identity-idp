@@ -2,6 +2,8 @@ require_relative 'saml_auth_helper'
 class SamlResponseDoc
   include SamlAuthHelper
 
+  attr_reader :original_encrypted
+
   def initialize(test_type, assertion_type, response = nil)
     @test_type = test_type
     @assertion_type = assertion_type
@@ -10,7 +12,7 @@ class SamlResponseDoc
 
   def original_encrypted?
     response_doc # trigger detection
-    @original_encrypted
+    original_encrypted
   end
 
   def xml_response
