@@ -145,13 +145,6 @@ GEM
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    coffee-rails (4.1.1)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0, < 5.1.x)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.10.0)
     colorize (0.7.7)
     concurrent-ruby (1.0.2)
     connection_pool (2.2.0)
@@ -617,7 +610,6 @@ DEPENDENCIES
   capistrano-sidekiq
   capybara-screenshot
   codeclimate-test-reporter
-  coffee-rails (~> 4.1.0)
   database_cleaner
   derailed
   devise (~> 4.1)
