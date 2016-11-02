@@ -32,10 +32,6 @@ module Test
       )
     end
 
-    def invalid_response
-      logout_request.errors.to_s
-    end
-
     private
 
     attr_reader :params, :settings
