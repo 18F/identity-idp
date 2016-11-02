@@ -45,7 +45,7 @@ module SamlIdpLogoutConcern
   end
 
   def asserted_identity
-    Identity.find_by(session_uuid: @saml_response.in_response_to.gsub(/^_/, ''))
+    Identity.includes(:user).find_by(session_uuid: @saml_response.in_response_to.gsub(/^_/, ''))
   end
 
   def logout_response_builder
