@@ -331,8 +331,6 @@ GEM
     pry-byebug (3.4.0)
       byebug (~> 9.0)
       pry (~> 0.10)
-    pundit (1.1.0)
-      activesupport (>= 3.0.0)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.4)
@@ -637,7 +635,6 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
-  pundit
   quiet_assets
   rack-attack
   rack-cors
