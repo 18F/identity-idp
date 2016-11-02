@@ -98,7 +98,7 @@ module TwoFactorAuthenticatable
   def assign_phone
     @updating_existing_number = old_phone
 
-    if @updating_existing_number
+    if @updating_existing_number && context == 'confirmation'
       phone_changed
     else
       phone_confirmed
