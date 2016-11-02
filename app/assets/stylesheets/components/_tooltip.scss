@@ -23,11 +23,11 @@
 
 .hint--top {
   &:focus::before {
-    transform: translateY($space-1);
+    transform: translateY(-8px);
   }
 
   &:focus::after {
-    transform: translateX(-50%) translateY($space-1);
+    transform: translateX(-50%) translateY(-8px);
   }
 }
 
