@@ -78,7 +78,9 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                           p == t('mailer.help',
                                                 link: link_to(Figaro.env.support_url,
                                                               Figaro.env.support_url),
-                                                app: APP_NAME)
+                                                app: link_to(APP_NAME,
+                                                             Figaro.env.mailer_domain_name,
+                                                             style: 'text-decoration: none;'))
                                         th.expander
                       table.wrapper.legal align="center"
                         tr
