@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :invalid_auth_token
 
-  helper_method :decorated_user, :reauthn?
+  helper_method :decorated_user, :reauthn?, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
   after_action :track_get_requests

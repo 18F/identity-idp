@@ -14,7 +14,8 @@ nav.bg-white
       .sm-col-right.sm-right-align
         div = t('shared.nav_auth.welcome', email: current_user.email)
         .mt-12p.h6
-          = link_to t('shared.nav_auth.my_account'), profile_path,
-            class: current_page?(profile_path) ? 'bold gray' : 'underline'
-          span.px1.silver = '|'
+          - if user_fully_authenticated?
+            = link_to t('shared.nav_auth.my_account'), profile_path,
+              class: current_page?(profile_path) ? 'bold gray' : 'underline'
+            span.px1.silver = '|'
           = link_to t('links.sign_out'), destroy_user_session_path, class: 'underline'
