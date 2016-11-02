@@ -1,12 +1,10 @@
 class ApplicationController < ActionController::Base
-  include Pundit
   include BrandedExperience
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  rescue_from Pundit::NotAuthorizedError, with: :render_401
   rescue_from ActionController::InvalidAuthenticityToken,
               with: :invalid_auth_token
 
