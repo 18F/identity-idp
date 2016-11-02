@@ -54,10 +54,6 @@ Rails.application.routes.draw do
       get '/saml' => 'saml_test#start'
       get '/saml/decode_assertion' => 'saml_test#start'
       post '/saml/decode_assertion' => 'saml_test#decode_response'
-
-      # Logout test start + return.
-      get '/saml/logout' => 'saml_test#logout'
-      post '/saml/decode_logoutresponse' => 'saml_test#decode_response'
       post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
     end
   end
