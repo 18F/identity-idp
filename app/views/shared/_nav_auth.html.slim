@@ -12,7 +12,9 @@ nav.bg-white
           = link_to t('shared.nav_auth.news'), root_path, class: 'mr3 gray'
           = link_to t('shared.nav_auth.contact'), root_path, class: 'mr3 gray'
       .sm-col-right.sm-right-align
-        div = t('shared.nav_auth.welcome', email: current_user.email)
+        = t('shared.nav_auth.welcome')
+        '
+        span.bold = current_user.email
         .mt-12p.h6
           - if user_fully_authenticated?
             = link_to t('shared.nav_auth.my_account'), profile_path,
