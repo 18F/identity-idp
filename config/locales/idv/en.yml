@@ -18,6 +18,11 @@ en:
       zipcode: ZIP Code
       phone: Phone
       password: Password
+    review:
+      full_name: Full name
+      mailing_address: Mailing address
+      dob: Date of birth
+      ssn: Social Security Number (SSN)
     errors:
       duplicate_ssn: >
         An account already exists using the information you provided.
