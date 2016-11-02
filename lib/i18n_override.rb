@@ -44,6 +44,8 @@ class I18nLocaleTraverser
 
   private
 
+  attr_reader :match_str
+
   def find_file_by_key
     i18n_files.each do |file|
       location = traverse_file_for_key(file)
@@ -100,18 +102,18 @@ class I18nLocaleTraverser
   end
 
   def match_with_value
-    @match_str + ' ' + @localized_str
+    match_str + ' ' + @localized_str
   end
 
   def match_with_single_quotes
-    @match_str + ' \'' + @localized_str
+    match_str + ' \'' + @localized_str
   end
 
   def match_with_double_quotes
-    @match_str + ' "' + @localized_str
+    match_str + ' "' + @localized_str
   end
 
   def match_with_multiline
-    @match_str + ' >' # assuming localized_str is on next line
+    match_str + ' >' # assuming localized_str is on next line
   end
 end

@@ -7,7 +7,7 @@ class RecoveryCodeForm
   def submit
     @success = valid_recovery_code?
 
-    user.update!(recovery_code: nil) if @success
+    user.update!(recovery_code: nil) if success
 
     result
   end
