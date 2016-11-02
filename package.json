@@ -24,7 +24,7 @@
     "browserify": "^13.0.0",
     "browserify-incremental": "^3.1.1",
     "pa11y": "^4.0.0",
-    "pa11y-crawl": "^0.2.3",
+    "pa11y-crawl": "^0.3.2",
     "pa11y-reporter-full-json": "^0.0.1"
   }
 }
