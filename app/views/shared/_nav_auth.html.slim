@@ -8,13 +8,13 @@ nav.bg-white
             class: 'align-bottom',
             width: 170), root_path, class: 'inline-block'
         .mt-12p.h6.sm-show.caps
-          = link_to 'About', root_path, class: 'mr3 gray'
-          = link_to 'News', root_path, class: 'mr3 gray'
-          = link_to 'Contact', root_path, class: 'mr3 gray'
+          = link_to t('shared.nav_auth.about'), root_path, class: 'mr3 gray'
+          = link_to t('shared.nav_auth.news'), root_path, class: 'mr3 gray'
+          = link_to t('shared.nav_auth.contact'), root_path, class: 'mr3 gray'
       .sm-col-right.sm-right-align
-        div Welcome <strong>#{current_user.email}</strong>
+        div = t('shared.nav_auth.welcome', email: current_user.email)
         .mt-12p.h6
-          = link_to t('links.my_account'), profile_path,
+          = link_to t('shared.nav_auth.my_account'), profile_path,
             class: current_page?(profile_path) ? 'bold gray' : 'underline'
           span.px1.silver = '|'
           = link_to t('links.sign_out'), destroy_user_session_path, class: 'underline'

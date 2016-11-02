@@ -16,4 +16,4 @@ html
           = hidden_field_tag(type, message)
           - if params.key?(:RelayState)
             = hidden_field_tag('RelayState', params[:RelayState])
-          = submit_tag 'Submit', class: 'btn btn-primary'
+          = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary'

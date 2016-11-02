@@ -1,5 +1,13 @@
 en:
   user_mailer:
+    contact_request:
+      comments_header: "Comments:"
+      comments: No comments left
+      email_or_phone: "Email or phone:"
+      'no': no
+      talk_about_experience: Talk about experience?
+      want_to_learn: Learn more?
+      'yes': yes
     email_changed:
       intro: >
         You have asked %{app} to change the email address currently associated

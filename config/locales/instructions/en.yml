@@ -27,7 +27,7 @@ en:
       resend: Didn’t receive a code? %{link}
       confirm_code: We sent the code to %{number}.
       wrong_number: Entered the wrong phone number? %{link}
-      totp_intro: >
+      totp_intro_html: >
         Please enter the code from your authenticator app.
         If you have several accounts set up in your app, enter the code
-        corresponding to %{email} at %{app}.
+        corresponding to <strong>%{email}</strong> at <strong>%{app}</strong>.
