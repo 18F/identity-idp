@@ -1,7 +1,5 @@
 en:
   headings:
-    admin:
-      index: Admin interface
     confirmations:
       new: Resend confirmation instructions
     contact: Contact us
@@ -37,7 +35,3 @@ en:
     totp_setup:
       start: Set up two-factor authentication
       new: Scan the QR code with your device
-    users:
-      edit: Edit user
-      index: Users
-      show: User details
