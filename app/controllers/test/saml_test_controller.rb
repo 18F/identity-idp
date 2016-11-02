@@ -15,9 +15,8 @@ module Test
 
     def decode_response
       res = SloResponseDecoder.new(params, test_saml_settings)
-      validity = res.valid_response? || res.valid_logout_response?
 
-      render_template_for(validity, res.response)
+      render_template_for(true, res.response)
     end
 
     # Method to handle IdP initiated logouts
@@ -26,13 +25,10 @@ module Test
 
       return decode_response if slo.response?
 
-      if slo.valid_request?
-        slo.log_event
-        redirect_to slo.slo_response
-        return
-      end
+      return unless slo.valid_request?
 
-      render_template_for(false, slo.invalid_response)
+      slo.log_event
+      redirect_to slo.slo_response
     end
 
     private
