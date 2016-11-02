@@ -29,9 +29,11 @@ module Rack
 
     # Always allow requests from localhost
     # (blacklist & throttles are skipped)
-    safelist('allow from localhost') do |req|
-      '127.0.0.1' == req.remote_ip || '::1' == req.remote_ip
-    end unless Rails.env.production?
+    unless Rails.env.production?
+      safelist('allow from localhost') do |req|
+        '127.0.0.1' == req.remote_ip || '::1' == req.remote_ip
+      end
+    end
 
     ### Throttle Spammy Clients ###
 
