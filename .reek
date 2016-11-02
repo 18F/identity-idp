@@ -13,6 +13,8 @@ IrresponsibleModule:
   enabled: false
 NilCheck:
   exclude:
+    - AdminConstraint#user_is_admin?
+    - PasswordsController#edit
     - PhoneConfirmationFlow
     - slo_not_implemented_at_sp?
     - in_slo?
@@ -52,6 +54,9 @@ UtilityFunction:
     - SessionDecorator#registration_heading
     - SessionDecorator#registration_bullet_1
     - SessionDecorator#new_session_heading
+'app/controllers':
+  InstanceVariableAssumption:
+    enabled: false
 'spec':
   ControlParameter:
     exclude:

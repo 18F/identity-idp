@@ -11,6 +11,10 @@ module FormEmailValidator
               }
   end
 
+  def email_taken?
+    @email_taken == true
+  end
+
   private
 
   def email_is_unique

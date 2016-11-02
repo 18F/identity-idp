@@ -34,14 +34,12 @@ class UpdateUserEmailForm
   end
 
   def email_changed?
-    @email_changed == true
-  end
-
-  def email_taken?
-    @email_taken == true
+    email_changed == true
   end
 
   private
+
+  attr_reader :email_changed
 
   def process_errors
     return false unless email_taken? && valid?
