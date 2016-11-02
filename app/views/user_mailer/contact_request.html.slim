@@ -1,15 +1,21 @@
 div
-  strong.mr-tiny Email or phone:
+  strong.mr-tiny = t('user_mailer.contact_request.email_or_phone')
   | #{@details['email_or_tel']}
 
 div
-  strong.mr-tiny Learn more?
-  = @details['want_learn'] ? 'yes' : 'no'
+  strong.mr-tiny = t('user_mailer.contact_request.want_to_learn')
+  - if @details['want_learn']
+    = t('user_mailer.contact_request.yes')
+  - else
+    = t('user_mailer.contact_request.no')
 
 div
-  strong.mr-tiny Talk about experience?
-  = @details['want_tell'] ? 'yes' : 'no'
+  strong.mr-tiny = t('user_mailer.contact_request.talk_about_experience')
+  - if @details['want_tell']
+    = t('user_mailer.contact_request.yes')
+  - else
+    = t('user_mailer.contact_request.no')
 
 div
-  strong.mr-tiny Comments:
-  = @details['comments'] || 'No comments left'
+  strong.mr-tiny = t('user_mailer.contact_request.comments_header')
+  = @details['comments'] || t('user_mailer.contact_request.comments')

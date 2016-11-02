@@ -16,5 +16,5 @@ html lang="#{I18n.locale}"
             .inner
               img src='/images/logo-white.svg' width='150' class='masthead-brand'
           .inner.cover
-            h1 The page you were looking for doesn't exist.
-            p You might want to double-check your link and try again. (404)
+            h1 = t('pages.page_not_found.header')
+            p = t('pages.page_not_found.body')

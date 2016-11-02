@@ -1,0 +1,14 @@
+en:
+  pages:
+    page_not_found:
+      header: The page you were looking for doesn't exist.
+      body: You might want to double-check your link and try again. (404)
+    privacy_policy:
+      privacy_act: >
+        Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+        Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+        Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+      security_consent: >
+        Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+        Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
+        Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor.
