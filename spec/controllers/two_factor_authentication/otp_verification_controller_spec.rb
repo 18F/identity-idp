@@ -146,6 +146,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
+        allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+        @previous_phone = subject.current_user.phone
       end
 
       context 'user has an existing phone number' do
@@ -167,8 +169,16 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
             expect(@analytics).to have_received(:track_event).
               with(Analytics::OTP_RESULT, context: 'confirmation', success?: true)
 
+            expect(@analytics).to have_received(:track_event).
+              with(Analytics::PHONE_CHANGE_SUCCESSFUL)
+
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
+          end
+
+          it 'sends an SMS to the old number' do
+            expect(SmsSenderNumberChangeJob).to have_received(:perform_later).
+              with(@previous_phone)
           end
         end
 
@@ -252,14 +262,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
-        create(
-          :profile,
-          :active,
-          :verified,
-          user: subject.current_user,
-          pii: { phone: '+1 (202) 555-1212' }
-        )
         subject.current_user.create_direct_otp
+        allow(SmsSenderNumberChangeJob).to receive(:perform_later)
       end
 
       context 'user enters a valid code' do
@@ -276,9 +280,18 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
           expect(subject.user_session[:context]).to eq 'authentication'
         end
 
-        it 'tracks the update event' do
+        it 'tracks the OTP verification event' do
           expect(@analytics).to have_received(:track_event).
             with(Analytics::OTP_RESULT, context: 'idv', success?: true)
+
+          expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
+        end
+
+        it 'does not track a phone change event' do
+          expect(subject).to_not have_received(:create_user_event).with(:phone_changed)
+
+          expect(@analytics).to_not have_received(:track_event).
+            with(Analytics::PHONE_CHANGE_SUCCESSFUL)
         end
 
         it 'updates idv session phone_confirmed_at attribute' do
@@ -296,6 +309,10 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'displays success flash notice' do
           expect(flash[:success]).to eq t('notices.phone_confirmation_successful')
+        end
+
+        it 'does not call SmsSenderNumberChangeJob' do
+          expect(SmsSenderNumberChangeJob).to_not have_received(:perform_later)
         end
       end
 
