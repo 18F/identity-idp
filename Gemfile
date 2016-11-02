@@ -77,7 +77,7 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'mailcatcher', require: false
   gem 'pry-byebug'
-  gem 'rspec-rails', '~> 3.3'
+  gem 'rspec-rails', '~> 3.5.2'
   gem 'slim_lint'
   gem 'thin'
 end
