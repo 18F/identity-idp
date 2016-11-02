@@ -9,4 +9,11 @@ class PagesController < ApplicationController
 
   def privacy_policy
   end
+
+  def deploy_json
+    deploy_json_path = Rails.root.join('public', 'api', 'deploy.json')
+    deploy_json = File.exist?(deploy_json_path) ? JSON.parse(File.read(deploy_json_path)) : {}
+
+    render json: deploy_json
+  end
 end
