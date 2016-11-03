@@ -25,7 +25,8 @@ set :sidekiq_queue, [:analytics, :mailers, :sms, :voice]
 set :sidekiq_monit_use_sudo, true
 set :sidekiq_user, 'ubuntu'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
-set :whenever_roles, [:app]
+set :whenever_roles, [:job_creator]
+set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
 
 #########
 # TASKS
