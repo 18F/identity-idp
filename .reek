@@ -21,6 +21,7 @@ NilCheck:
     - TotpSetupController#new
     - TotpSetupController#valid_code?
     - user_not_found?
+    - SamlIdpLogoutConcern#name_id
 TooManyConstants:
   exclude:
     - Analytics

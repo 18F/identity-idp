@@ -14,11 +14,11 @@ feature 'SP-initiated logout', devise: true do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
 
-      request = OneLogin::RubySaml::Logoutrequest.new
-      settings = sp1_saml_settings
       sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
+      request = OneLogin::RubySaml::Logoutrequest.new
       visit request.create(settings)
     end
 
@@ -78,10 +78,11 @@ feature 'SP-initiated logout', devise: true do
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
 
-      request = OneLogin::RubySaml::Logoutrequest.new
-      settings = sp2_saml_settings # sp2
       sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      settings = sp2_saml_settings # sp2
       settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
+
+      request = OneLogin::RubySaml::Logoutrequest.new
       visit request.create(settings)
     end
 
@@ -129,10 +130,11 @@ feature 'SP-initiated logout', devise: true do
       @sp2_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
-      request = OneLogin::RubySaml::Logoutrequest.new
-      settings = sp1_saml_settings
       sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+
+      request = OneLogin::RubySaml::Logoutrequest.new
       visit request.create(settings) # sp1
     end
 
@@ -167,10 +169,11 @@ feature 'SP-initiated logout', devise: true do
       @sp1_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
-      request = OneLogin::RubySaml::Logoutrequest.new
-      settings = sp2_saml_settings
       sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      settings = sp2_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
+
+      request = OneLogin::RubySaml::Logoutrequest.new
       visit request.create(settings) # sp2
     end
 
@@ -211,6 +214,38 @@ feature 'SP-initiated logout', devise: true do
       visit destroy_user_session_url
 
       expect(current_path).to eq('/')
+    end
+  end
+
+  context 'logged out of IDP' do
+    let(:user) { create(:user, :signed_up) }
+
+    context 'signed into one SP' do
+      before do
+        sign_in_and_2fa_user(user)
+        visit sp1_authnrequest
+
+        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+        settings = sp1_saml_settings
+        settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+
+        Timecop.travel(Devise.timeout_in + 1.second)
+
+        request = OneLogin::RubySaml::Logoutrequest.new
+        visit request.create(settings)
+      end
+
+      it 'deactivates the identity' do
+        expect(user.active_identities.size).to eq(0)
+      end
+
+      it 'redirects to the sp url' do
+        assertion_consumer_logout_service_url = 'http://example.com/test/saml/decode_slo_request'
+
+        click_button t('forms.buttons.submit.default')
+
+        expect(current_url).to eq(assertion_consumer_logout_service_url)
+      end
     end
   end
 end
