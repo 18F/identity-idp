@@ -70,4 +70,11 @@ describe PagesController do
       after { FileUtils.rm_rf(Rails.root.join('public', 'api')) }
     end
   end
+
+  describe '#options' do
+    it 'is blank' do
+      process :options, 'OPTIONS'
+      expect(response.body).to be_blank
+    end
+  end
 end
