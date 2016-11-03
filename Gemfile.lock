@@ -468,8 +468,8 @@ GEM
     secure_headers (3.5.0)
       useragent
     shellany (0.0.1)
-    shoulda-matchers (2.8.0)
-      activesupport (>= 3.0.0)
+    shoulda-matchers (3.1.1)
+      activesupport (>= 4.0.0)
     sidekiq (4.2.4)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
@@ -663,7 +663,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   savon
   secure_headers (~> 3.0)
-  shoulda-matchers (~> 2.8)
+  shoulda-matchers (~> 3.0)
   sidekiq
   simple_form
   sinatra

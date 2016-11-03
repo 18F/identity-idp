@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorSetupForm do
+describe TwoFactorSetupForm, type: :model do
   let(:user) { build_stubbed(:user) }
   let(:valid_phone) { '+1 (202) 202-2020' }
   subject { TwoFactorSetupForm.new(user) }

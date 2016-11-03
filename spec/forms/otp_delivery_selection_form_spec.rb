@@ -3,7 +3,14 @@ require 'rails_helper'
 describe OtpDeliverySelectionForm do
   subject { OtpDeliverySelectionForm.new }
 
-  it { is_expected.to validate_inclusion_of(:otp_method).in_array(%w(sms voice)) }
+  describe 'otp_method inclusion validation' do
+    it 'is invalid when otp_method is neither sms nor voice' do
+      [nil, '', 'foo'].each do |method|
+        subject.submit(otp_method: method)
+        expect(subject).to_not be_valid
+      end
+    end
+  end
 
   describe '#submit' do
     context 'when the form is valid' do

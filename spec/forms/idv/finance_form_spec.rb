@@ -3,14 +3,18 @@ require 'rails_helper'
 describe Idv::FinanceForm do
   subject { Idv::FinanceForm.new({}) }
 
-  it do
-    is_expected.
-      to validate_presence_of(:finance_type).with_message(t('errors.messages.blank'))
-  end
+  describe 'presence validations' do
+    it 'is invalid when required attributes are not present' do
+      valid_params = { finance_type: :ccn, finance_account: '12345678' }
 
-  it do
-    is_expected.
-      to validate_presence_of(:finance_account).with_message(t('errors.messages.blank'))
+      [:finance_type, :finance_account].each do |attr|
+        subject.submit(valid_params.merge(attr => nil))
+
+        expect(subject).to_not be_valid
+        expect(subject.errors.full_messages.first).
+          to eq "#{attr.to_s.humanize} #{t('errors.messages.blank')}"
+      end
+    end
   end
 
   describe '#submit' do

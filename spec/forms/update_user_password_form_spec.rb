@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UpdateUserPasswordForm do
+describe UpdateUserPasswordForm, type: :model do
   let(:password) { 'fancy password' }
   let(:user) { User.new(password: password) }
   subject { UpdateUserPasswordForm.new(user) }
