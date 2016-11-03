@@ -163,7 +163,7 @@ feature 'saml api', devise: true do
   end
 
   context 'visiting /api/saml/logout' do
-    context 'with authentication at a SP and session times out' do
+    context 'session timed out' do
       let(:logout_user) { create(:user, :signed_up) }
 
       before do
