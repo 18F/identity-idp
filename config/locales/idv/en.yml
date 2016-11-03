@@ -27,7 +27,7 @@ en:
       duplicate_ssn: >
         An account already exists using the information you provided.
       fail: >
-        Sorry, we were unable to verify your identity based on the information you provided.
+        Sorry, we can't verify your identity based on the information you submitted.
       hardfail: >
         We were unable to verify your identity at this time.
       missing_finance: You must provide a financial account ID.
@@ -51,7 +51,7 @@ en:
         If you still can't verify your identity, visit our troubleshooting page 
         to find answers to common questions about verification.
       hardfail4: >
-        You can also go to %{SP} for more help in accessing services.
+        You can also go to %{sp} for more help in accessing services.
       cancel: >
         To continue, %{app} needs to verify your identity. We need to collect some basic
         personal information as well as some financial information from you to
