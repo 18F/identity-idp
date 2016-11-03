@@ -7,6 +7,18 @@ GIT
       dotenv
 
 GIT
+  remote: https://github.com/18F/saml_idp.git
+  revision: 8de60fc64199bc6e56eb808e0aa9fa9180eabd7a
+  branch: master
+  specs:
+    saml_idp (0.4.0)
+      activesupport
+      builder
+      httparty
+      nokogiri (>= 1.6.2)
+      uuid
+
+GIT
   remote: https://github.com/Houdini/two_factor_authentication.git
   revision: 1d6abe30a61c849863d6ec3f6f9e44f978d7b181
   ref: 1d6abe3
@@ -438,12 +450,6 @@ GEM
     safe_yaml (1.0.4)
     safely_block (0.1.1)
       errbase
-    saml_idp (0.4.0)
-      activesupport
-      builder
-      httparty
-      nokogiri (>= 1.6.2)
-      uuid
     sass (3.4.22)
     sass-rails (5.0.6)
       railties (>= 4.0.0, < 6)
@@ -653,7 +659,7 @@ DEPENDENCIES
   rspec-rails (~> 3.5.2)
   rubocop
   ruby-saml
-  saml_idp (~> 0.4.0)
+  saml_idp!
   sass-rails (~> 5.0)
   savon
   secure_headers (~> 3.0)
