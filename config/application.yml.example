@@ -11,6 +11,10 @@
 email_from: 'no-reply@login.gov'
 idv_max_attempts: '3'
 idv_attempt_window_in_hours: '24'
+keen_master_key: 'keen_master_key'
+keen_project_id: 'keen_project_id'
+keen_read_key: 'keen_read_key'
+keen_write_key: 'keen_write_key'
 mailer_domain_name: 'http://localhost:3000'
 
 # The scores 0, 1, 2, 3 or 4 are given when the number of guesses to crack the

@@ -9,7 +9,7 @@ class Analytics
 
     Rails.logger.info("#{event}: #{attributes}")
 
-    ahoy.track(event, attributes.merge!(request_attributes))
+    analytics.perform_later(event, attributes.merge!(request_attributes))
   end
 
   private
@@ -23,8 +23,8 @@ class Analytics
     }
   end
 
-  def ahoy
-    @ahoy ||= Rails.env.test? ? FakeAhoyTracker.new : Ahoy::Tracker.new(request: request)
+  def analytics
+    @analytics ||= Rails.env.test? ? FakeKeen : PublishAnalyticsJob
   end
 
   def uuid

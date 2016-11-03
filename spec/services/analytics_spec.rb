@@ -8,19 +8,13 @@ describe Analytics do
     }
   end
 
-  let(:ahoy) { instance_double(FakeAhoyTracker) }
-
-  let(:google_analytics_options) { request_attributes.merge(anonymize_ip: true) }
-
-  before { allow(FakeAhoyTracker).to receive(:new).and_return(ahoy) }
-
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
       user = build_stubbed(:user, uuid: '123')
 
       analytics = Analytics.new(user, FakeRequest.new)
 
-      expect(ahoy).to receive(:track).
+      expect(FakeKeen).to receive(:perform_later).
         with('Trackable Event', request_attributes.merge(user_id: user.uuid))
 
       expect(Rails.logger).to receive(:info).with("Trackable Event: #{{ user_id: user.uuid }}")
@@ -34,7 +28,7 @@ describe Analytics do
 
       analytics = Analytics.new(current_user, FakeRequest.new)
 
-      expect(ahoy).to receive(:track).
+      expect(FakeKeen).to receive(:perform_later).
         with('Trackable Event', request_attributes.merge(user_id: tracked_user.uuid))
 
       expect(Rails.logger).to receive(:info).
