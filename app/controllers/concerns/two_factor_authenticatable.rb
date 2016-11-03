@@ -90,7 +90,6 @@ module TwoFactorAuthenticatable
   def handle_valid_otp_for_authentication_context
     mark_user_session_authenticated
     bypass_sign_in current_user
-    flash[:notice] = t('devise.two_factor_authentication.success') unless reauthn?
 
     current_user.update(second_factor_attempts_count: 0)
   end
