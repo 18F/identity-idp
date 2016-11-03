@@ -132,7 +132,6 @@ en:
       please_confirm: >
         Your phone number has been set. Please confirm it by entering the
         passcode below.
-      success: Two-factor authentication successful.
       two_factor_setup: Add extra protection
       totp_info: >
         Use any standards compliant authenticator app (such as Google Authenticator) to scan the QR
