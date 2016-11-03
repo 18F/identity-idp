@@ -7,11 +7,11 @@ module SamlIdpLogoutConcern
   private
 
   def slo
-    @_slo ||= SingleLogoutHandler.new(@saml_response, saml_request, current_user)
+    @_slo ||= SingleLogoutHandler.new(@saml_response, saml_request, user)
   end
 
   def handle_saml_logout_response
-    handler = LogoutResponseHandler.new(asserted_identity, user_session[:logout_response])
+    handler = LogoutResponseHandler.new(asserted_identity, slo_session[:logout_response])
 
     handler.deactivate_identity
 
@@ -39,9 +39,20 @@ module SamlIdpLogoutConcern
     generate_slo_response_and_sign_out
   end
 
+  def user
+    current_user || name_id_user
+  end
+
   def name_id_user
-    name_id = saml_request.name_id
-    Identity.includes(:user).find_by(uuid: name_id).user
+    sp_slo_identity&.user
+  end
+
+  def sp_slo_identity
+    @_sp_slo_identity ||= Identity.includes(:user).find_by(uuid: name_id)
+  end
+
+  def name_id
+    saml_request&.name_id
   end
 
   def asserted_identity
@@ -69,11 +80,11 @@ module SamlIdpLogoutConcern
 
   def prepare_saml_logout_request
     validate_saml_request
-    return if user_session[:logout_response]
+    return if slo_session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO
-    user_session[:logout_response] = logout_response_builder.signed
-    user_session[:logout_response_url] = saml_request.response_url
+    slo_session[:logout_response] = logout_response_builder.signed
+    slo_session[:logout_response_url] = saml_request.response_url
   end
 
   def finish_slo_at_idp
@@ -88,8 +99,8 @@ module SamlIdpLogoutConcern
 
   def generate_slo_response_and_sign_out
     render_template_for(
-      Base64.strict_encode64(user_session[:logout_response]),
-      user_session[:logout_response_url],
+      Base64.strict_encode64(slo_session[:logout_response]),
+      slo_session[:logout_response_url],
       'SAMLResponse'
     )
 
@@ -98,5 +109,9 @@ module SamlIdpLogoutConcern
 
   def saml_idp_config
     @saml_idp_config ||= SamlIdp.config
+  end
+
+  def slo_session
+    user_session || session
   end
 end
