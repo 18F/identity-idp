@@ -29,9 +29,9 @@ module Upaya
       allow do
         origins '*'
 
-        resource '/api/deploy.json',
+        resource '/api/deploy*',
                  headers: :any,
-                 methods: [:get]
+                 methods: [:get, :options]
       end
     end
 
