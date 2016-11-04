@@ -25,16 +25,6 @@ module Upaya
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     config.time_zone = 'UTC'
 
-    config.middleware.insert_before 0, 'Rack::Cors' do
-      allow do
-        origins '*'
-
-        resource '/api/deploy*',
-                 headers: :any,
-                 methods: [:get, :options]
-      end
-    end
-
     config.middleware.use Rack::Attack
 
     # Configure Browserify to use babelify to compile ES6
