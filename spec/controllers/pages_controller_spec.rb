@@ -43,38 +43,4 @@ describe PagesController do
       expect(response).to render_template(layout: false)
     end
   end
-
-  describe '#deploy_json' do
-    context 'when there is no deploy.json' do
-      it 'renders an empty JSON object' do
-        get :deploy_json
-        expect(response.body).to eq('{}')
-      end
-    end
-
-    context 'when there is a deploy.json' do
-      let(:deploy_json) { { 'env' => 'development' } }
-
-      before do
-        FileUtils.mkdir_p(Rails.root.join('public', 'api'))
-        File.open(Rails.root.join('public', 'api', 'deploy.json'), 'w') do |file|
-          file.puts deploy_json.to_json
-        end
-      end
-
-      it 'renders the contents of deploy.json' do
-        get :deploy_json
-        expect(JSON.parse(response.body)).to eq(deploy_json)
-      end
-
-      after { FileUtils.rm_rf(Rails.root.join('public', 'api')) }
-    end
-  end
-
-  describe '#options' do
-    it 'is blank' do
-      process :options, 'OPTIONS'
-      expect(response.body).to be_blank
-    end
-  end
 end
