@@ -13,7 +13,13 @@ describe SmsSenderNumberChangeJob do
       msg = messages.first
       expect(msg.from).to match(/(\+19999999999|\+12222222222)/)
       expect(msg.to).to eq('1234')
-      expect(msg.body).to include('You have changed the phone number')
+      expect(msg.body).to eq(
+        I18n.t(
+          'jobs.sms_sender_number_change_job.message',
+          app: APP_NAME,
+          support_url: Figaro.env.support_url
+        )
+      )
     end
   end
 end

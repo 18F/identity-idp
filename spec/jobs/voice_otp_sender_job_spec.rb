@@ -15,7 +15,7 @@ describe VoiceOtpSenderJob do
       calls = FakeVoiceCall.calls
 
       code = '1234'.scan(/\d/).join(', ')
-      message = t('voice.otp_confirmation', code: code)
+      message = t('jobs.voice_otp_sender_job.message', code: code)
       url_message = URI.escape(message)
 
       expect(calls.size).to eq(1)
