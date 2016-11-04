@@ -2,7 +2,7 @@ en:
   jobs:
     sms_sender_number_change_job:
       message: |
-        You have changed the phone number for your %{app} Account.
+        You have changed the phone number for your %{app} account.
 
         If you did not request this change, please contact %{app} at %{support_url}
     voice_otp_sender_job:
