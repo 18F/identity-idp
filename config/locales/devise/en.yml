@@ -85,18 +85,18 @@ en:
         email address. Please check your email and follow the confirm link to
         confirm your new email address.
       phone_update_needs_confirmation: >
-        Your request to update your phone number was processed successfully,
+        Your request to update your phone number was processed,
         but we need to verify your new number first. Please follow the
         instructions below. If you do not confirm your new number, we will
         keep using your old phone number.
       email_and_phone_need_confirmation: >
-        Your request to update your account was processed successfully,
+        Your request to update your account was processed,
         but we need to verify both your new number and new email. Please follow
         the instructions below to verify your new number, then check your
         email and click the confirmation link to confirm your new email address.
       updated: Account update successful!
       enabled_twofactor: Successfully enabled two-factor authentication.
-      close_window: You can close this browser window once you have verified your email address.
+      close_window: You can close this browser window once you have confirmed your email address.
 
     sessions:
       signed_in: ''
@@ -106,10 +106,10 @@ en:
       contact_administrator: Please contact your system administrator.
       header_text: Enter the passcode we sent you
       invalid_otp: >
-        Secure one-time passcode is invalid. Please try again or request a new
+        That one-time passcode is invalid. Please try again or request a new
         one-time passcode.
       invalid_recovery_code: Invalid recovery code. Please try again.
-      totp_header_text: Enter your Authenticator code
+      totp_header_text: Enter your authenticator code
       max_login_attempts_reached: >
         Your account is temporarily locked because you have entered the
         one-time passcode incorrectly too many times.
@@ -134,13 +134,13 @@ en:
         passcode below.
       two_factor_setup: Add extra protection
       totp_info: >
-        Use any standards compliant authenticator app (such as Google Authenticator) to scan the QR
-        Code below.
+        Use any authenticator app (such as Google Authenticator) to scan the QR
+        code below.
       totp_fallback:
         text: >
           If you don’t have access to your authenticator app you can choose to %{sms_link}
           or %{voice_link}.
-        sms_link_text: receive a code via SMS
+        sms_link_text: receive a code via text message
         voice_link_text: with a phone call
       user:
         new_otp_sent: A new one-time passcode has been sent.

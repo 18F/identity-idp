@@ -29,11 +29,10 @@ en:
         %{app} using this email address. You can also paste the link into your browser.
       link_text: Go to %{app}
       new_account: >
-        If you would like to use a different email address to sign in to %{app},
-        please create a new account with that email address.
+        If you would like to use a different email address with this account, you can always
+        update your address after signing in.
       reset_password: >
-        If you cannot remember your password, please follow the instructions for
-        resetting your password.
+        If you cannot remember your password, you can reset it at %{app}.
       help: >
-        If you did not request a new account or suspect an error, please contact the
-        %{app} Customer Contact Center at %{link}
+        If you did not request a new account, suspect an error, or want more help,
+        please contact the %{app} Customer Contact Center at %{link}
