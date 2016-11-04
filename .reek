@@ -81,6 +81,7 @@ UtilityFunction:
     exclude:
       - complete_idv_questions_fail
       - complete_idv_questions_ok
+      - create_sidekiq_queues
   NilCheck:
     exclude:
       - complete_idv_questions_fail
