@@ -9,7 +9,7 @@ describe Authorization do
   it { is_expected.to validate_presence_of(:uid) }
   it { is_expected.to validate_presence_of(:provider) }
 
-  it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider) }
+  it { is_expected.to validate_uniqueness_of(:uid).scoped_to(:provider).case_insensitive }
 
   it { is_expected.to be_valid }
 

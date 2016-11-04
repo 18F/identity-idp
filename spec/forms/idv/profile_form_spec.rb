@@ -18,44 +18,13 @@ describe Idv::ProfileForm do
     }
   end
 
-  it do
-    is_expected.
-      to validate_presence_of(:first_name).with_message(t('errors.messages.blank'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:last_name).with_message(t('errors.messages.blank'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:ssn).with_message(t('errors.messages.blank'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:dob).with_message(t('idv.errors.bad_dob'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:address1).with_message(t('errors.messages.blank'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:city).with_message(t('errors.messages.blank'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:state).with_message(t('errors.messages.blank'))
-  end
-
-  it do
-    is_expected.
-      to validate_presence_of(:zipcode).with_message(t('errors.messages.blank'))
+  describe 'presence validations' do
+    it 'is invalid when required attribute is not present' do
+      [:first_name, :last_name, :ssn, :dob, :address1, :city, :state, :zipcode].each do |attr|
+        subject.submit(profile_attrs.merge(attr => nil))
+        expect(subject).to_not be_valid
+      end
+    end
   end
 
   describe 'ssn uniqueness' do

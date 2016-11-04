@@ -1,8 +1,10 @@
 shared_examples 'a phone form' do
-  it do
-    is_expected.
-      to validate_presence_of(:phone).
-      with_message(t('errors.messages.improbable_phone'))
+  describe 'phone presence validation' do
+    it 'is invalid when phone is blank' do
+      subject.submit(phone: '')
+
+      expect(subject).to_not be_valid
+    end
   end
 
   describe 'phone validation' do
