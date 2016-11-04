@@ -15,10 +15,10 @@ class SmsSenderNumberChangeJob < ActiveJob::Base
   end
 
   def number_change_message
-    <<-END.strip_heredoc
-      You have changed the phone number for your #{APP_NAME} Account.
-
-      If you did not request this change, please contact #{APP_NAME} at #{Figaro.env.support_url}
-    END
+    I18n.t(
+      'jobs.sms_sender_number_change_job.message',
+      app: APP_NAME,
+      support_url: Figaro.env.support_url
+    )
   end
 end

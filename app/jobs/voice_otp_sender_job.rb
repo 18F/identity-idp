@@ -29,6 +29,6 @@ class VoiceOtpSenderJob < ActiveJob::Base
   end
 
   def otp_message(code)
-    I18n.t('voice.otp_confirmation', code: code)
+    I18n.t('jobs.voice_otp_sender_job.message', code: code)
   end
 end
