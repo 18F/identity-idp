@@ -1,25 +1,23 @@
 - title t('idv.titles.phone')
 
+h1.h3.my0 = t('idv.titles.session.phone')
+p.mt-tiny.mb0 = t('idv.messages.phone.intro')
+ul.py1.m0
+  li
+    strong= t('idv.messages.phone.is_not')
+    = t('idv.messages.phone.virtual')
+  li
+    strong= t('idv.messages.phone.is_not')
+    = t('idv.messages.phone.prepaid')
+  li
+    strong= t('idv.messages.phone.is')
+    = t('idv.messages.phone.in_your_name')
+p = t('idv.messages.phone.same_as_2fa')
+
 = simple_form_for(idv_phone_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
-  h2.heading = t('idv.titles.session.phone')
-  p.m0 = t('idv.messages.phone.intro')
-  ul.py1.m0
-    li
-      strong= t('idv.messages.phone.is_not')
-      = t('idv.messages.phone.virtual')
-    li
-      strong= t('idv.messages.phone.is_not')
-      = t('idv.messages.phone.prepaid')
-    li
-      strong= t('idv.messages.phone.is')
-      = t('idv.messages.phone.in_your_name')
-
-  p = t('idv.messages.phone.same_as_2fa')
-  .mt4.mb3
-    = f.input :phone, required: true, class: 'caps ls-05 bold'
-  .mt3
-    = f.button :submit, t('forms.buttons.submit.continue'), class: 'btn btn-primary btn-wide'
+  = f.input :phone, required: true
+  = f.button :submit, t('forms.buttons.submit.continue'), class: 'btn btn-primary btn-wide'
   .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'
 
 == javascript_include_tag 'misc/page-unload-warning'

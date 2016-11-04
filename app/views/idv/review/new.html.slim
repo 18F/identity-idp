@@ -1,8 +1,8 @@
 - title t('idv.titles.review')
 - edit_btn_cls = 'right btn btn-primary p0 w-60p h6 bg-light-blue blue regular center'
 
-h2.heading = t('idv.titles.session.review')
-p.italic = t('idv.messages.review.intro')
+h1.h3.my0 = t('idv.titles.session.review')
+p.mt-tiny.mb0 = t('idv.messages.review.intro')
 
 .mt4.mb3.p3.border.rounded
   = link_to t('links.edit'), idv_session_path, class: edit_btn_cls
@@ -34,8 +34,7 @@ p.italic = t('idv.messages.review.intro')
 = simple_form_for(current_user, url: idv_review_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.input :password, label: t('idv.form.password'), required: true
-  .mt3
-    button type='submit' class='btn btn-primary' = t('forms.buttons.submit.default')
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
   .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'
 
 == javascript_include_tag 'misc/page-unload-warning'
