@@ -1,18 +1,17 @@
 en:
   notices:
-    password_changed: Your password was successfully changed.
-    totp_configured: Authenticator app successfully configured
-    totp_disabled: Authenticator app disabled
+    password_changed: You changed your password
+    totp_configured: You have enabled an authentication app
+    totp_disabled: You disabled your authentication app
     log_in_consent:
       text: By signing in, you agree to %{app}’s %{link}
       link: Security Consent & Privacy Act Statement
-    phone_confirmation_successful: Congratulations! Your account is now more secure.
+    phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
     password_reset: >
-      You will receive an email with instructions on how to reset your password
-      in a few minutes.
+      Check your email in a few minutes for instructions on how to reset your password.
     send_code:
-      voice: You will be called with your one-time passcode.
-      sms: Your one-time passcode has been sent via text message.
+      voice: We will call you with your one-time passcode.
+      sms: We sent you a one-time passcode via text message.
     signed_up_but_unconfirmed:
       first_paragraph_start: We sent an email to
       first_paragraph_end: >
@@ -20,10 +19,10 @@ en:
         creating your account.
       no_email_sent_explanation_start: Didn’t get an email?
     terms_of_service:
-      headline: I agree to the terms of this service
+      headline: By continuing, I agree to the terms of this service
       text: >
-        Providing your information is voluntary, and is used to help you
-        access government services. We use industry-standard monitoring and
+        Providing information is voluntary. It is used to help you
+        access government services. login.gov uses industry-standard monitoring and
         security practices to protect your data. %{link}
       link: Learn more ›
     use_diff_email:
@@ -34,7 +33,7 @@ en:
       <!-- See the data at analytics.usa.gov. -->
   session_expired: Please <a href=".">refresh</a> the page to log in.
   session_timedout: >
-    For your security, we’ve ended your session due to inactivity. Please sign in again.
+    We signed you out due to inactivity for your security. Please sign in again.
   session_timeout_warning: >-
-    Your session will end in <span id="countdown">%{time_left_in_session}</span> due to inactivity.
-    If you’d like to continue using the site, please click the button below.
+    We will sign you out in <span id="countdown">%{time_left_in_session}</span> for your security.
+    If you’d like to stay signed in, please click the button below.
