@@ -10,7 +10,6 @@ feature 'Sign Up', devise: true do
     expect(page).
       to have_content t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')
     expect(page).to have_content email
-    expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
   end
 
   context 'visitor can sign up and confirm a valid phone for OTP' do
@@ -284,14 +283,15 @@ feature 'Sign Up', devise: true do
   context 'user signs up and requests confirmation email again' do
     it 'sends the confirmation email again' do
       sign_up_with('test@example.com')
-      click_on t('links.resend')
-      fill_in :user_email, with: 'test@example.com'
 
-      expect { click_on t('forms.buttons.resend_confirmation') }.
+      expect { click_on t('links.resend') }.
         to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(
         t('devise.mailer.confirmation_instructions.subject')
+      )
+      expect(page).to have_content(
+        t('notices.resend_confirmation_email.success')
       )
     end
   end

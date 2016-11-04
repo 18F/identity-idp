@@ -13,6 +13,8 @@ en:
     send_code:
       voice: You will be called with your one-time passcode.
       sms: Your one-time passcode has been sent via text message.
+    resend_confirmation_email:
+      success: Your confirmation email has been sent.
     signed_up_but_unconfirmed:
       first_paragraph_start: We sent an email to
       first_paragraph_end: >
