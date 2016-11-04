@@ -39,6 +39,7 @@ RSpec.configure do |config|
   config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
     Rack::Attack.cache.store.clear
+    stub_const('PublishAnalyticsJob', FakeKeen)
   end
 
   config.before(:each, twilio: true) do

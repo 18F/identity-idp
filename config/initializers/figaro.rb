@@ -6,6 +6,8 @@ Figaro.require_keys(
   'enable_test_routes',
   'hmac_fingerprinter_key',
   'idp_sso_target_url',
+  'keen_project_id',
+  'keen_write_key',
   'logins_per_ip_limit',
   'logins_per_ip_period',
   'min_password_score',
