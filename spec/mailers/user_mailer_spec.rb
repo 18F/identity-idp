@@ -57,7 +57,12 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).to have_content('This email address is already in use.')
+      expect(mail.html_part.body).to have_content(
+        I18n.t(
+          'user_mailer.signup_with_your_email.intro',
+          app: APP_NAME
+        )
+      )
     end
   end
 

@@ -5,8 +5,8 @@ en:
     sent_from: Sent from %{app}
     no_reply: Please do not reply to this message.
     help: >
-      For more help, please contact the %{app} Customer
-      Contact Center at %{link}
+      For more help, please contact the %{app} customer
+      contact center via web form at %{link}
     about: About %{app}
     privacy_policy: Privacy policy
     email_reuse_notice:
@@ -16,32 +16,31 @@ en:
     confirmation_instructions:
       header: >
         %{intro} To confirm your email address, please click on the link
-        below, or copy and paste the entire link into your browser.
-      link_text: Confirm this email address
+        below or copy and paste the entire link into your browser.
+      link_text: Confirm this email
       first_sentence:
         reset_requested: >
           Your %{app} account has been reset by a tech support representative.
           To continue, you must confirm your email address.
         confirmed: >
           To finish updating your %{app} account, you must confirm your email
-          address.
+          address within %{confirmation_period} of receiving this message.
         unconfirmed: >
           To continue creating your %{app} account, you must confirm your email
-          address.
+          address within %{confirmation_period} of receiving this message.
       footer: >
-        This confirmation link will expire in %{confirmation_period}. If you
-        need another link, return to login.gov.
+        Please note that this link expires in %{confirmation_period}.
     reset_password:
       header: >
-        You have asked %{app} to reset your password so you can sign in to your
-        %{app} account. Click the button to confirm your request. You can also paste the
-        link into your browser.
+        You have asked %{app} to reset your password for your %{app} account.
+        To confirm your request, please click on the link below or copy and paste
+        the entire link into your browser.
       link_text: Reset your password
       footer: >
-        This confirmation link will expire in %{expires} hours. If you need
-        another link, return to login.gov.
+        Please note that this link expires in %{expires} hours. 
     unlock_instructions:
       header: >
-        Your account has been locked due to an excessive number of unsuccessful
-        sign in attempts.
-      body: Your account will be unlocked in 20 minutes.
+        Your account has been locked due to multiple unsuccessful sign-in attempts.
+      body: >
+        Please wait 20 minutes before attempting to sign in again. If you've
+        forgotten your password, please follow the instructions to reset your password. 

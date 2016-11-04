@@ -17,22 +17,18 @@ en:
         Customer Contact Center at %{link}
     password_changed:
       intro: >
-        You have asked %{app} to change the password currently associated with
-        your %{app} account.
+        You have changed your password for your %{app} account. 
       help: >
-        If you did not change your password, please contact the %{app} Customer
-        Contact Center at %{link}
+        If you did not mean to change your password, please immediately contact
+        the %{app} customer contact center via web form at %{link}
     signup_with_your_email:
       intro: >
-        We received a request to use this email address for a %{app} account.
-        This email address is already in use. Click the button to continue signing in to
-        %{app} using this email address. You can also paste the link into your browser.
+        Your request to create a %{app} account using this email address cannot be
+        granted because this email address is already in use. If you requested this
+        change, please use the following link to log in to login.gov:
       link_text: Go to %{app}
-      new_account: >
-        If you would like to use a different email address with this account, you can always
-        update your address after signing in.
       reset_password: >
         If you cannot remember your password, you can reset it at %{app}.
       help: >
-        If you did not request a new account, suspect an error, or want more help,
-        please contact the %{app} Customer Contact Center at %{link}
+        If you did not request a new account or suspect an error, please immediately
+        contact the %{app} customer contact center via web form at %{link}

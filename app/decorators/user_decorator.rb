@@ -27,13 +27,19 @@ UserDecorator = Struct.new(:user) do
     )
   end
 
-  def first_sentence_for_confirmation_email
+  def first_sentence_for_confirmation_email # rubocop:disable MethodLength
     if user.reset_requested_at.present?
       I18n.t('mailer.confirmation_instructions.first_sentence.reset_requested', app: APP_NAME)
     elsif user.confirmed_at.present?
-      I18n.t('mailer.confirmation_instructions.first_sentence.confirmed', app: APP_NAME)
+      I18n.t(
+        'mailer.confirmation_instructions.first_sentence.confirmed',
+        app: APP_NAME, confirmation_period: confirmation_period
+      )
     else
-      I18n.t('mailer.confirmation_instructions.first_sentence.unconfirmed', app: APP_NAME)
+      I18n.t(
+        'mailer.confirmation_instructions.first_sentence.unconfirmed',
+        app: APP_NAME, confirmation_period: confirmation_period
+      )
     end
   end
 
