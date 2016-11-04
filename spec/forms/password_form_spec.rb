@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe PasswordForm do
+describe PasswordForm, type: :model do
   subject { PasswordForm.new(build_stubbed(:user)) }
 
   it_behaves_like 'password validation'
