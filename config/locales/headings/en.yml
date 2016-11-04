@@ -17,8 +17,14 @@ en:
       forgot: Forgot password
       confirm: Confirm your password
     privacy_policy:
-      security_consent: Security Consent
       privacy_act: Privacy Act Statement
+      security_practices: Our Security Practices
+      privacy_practices: Our Privacy Practices
+      authorities: Authorities
+      purpose: Purpose
+      disclosure: Disclosure
+      routine_uses: Routine Uses
+      more_information: For more information
     profile:
       profile_info: Profile information
       profile_info_tt: Why can’t I edit my profile information?
