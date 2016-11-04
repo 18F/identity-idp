@@ -1,9 +1,9 @@
 - title t('idv.titles.session.basic')
 
 - if @using_mock_vendor
-  .mt1.mb2.h6.caps.bold = t('idv.messages.sessions.no_pii')
+  .mt1.mb2.h6.caps.bold.red = t('idv.messages.sessions.no_pii')
 
-h2.pb0.heading = t('idv.titles.session.basic')
+h1.h3.my0 = t('idv.titles.session.basic')
 = simple_form_for(idv_profile_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification

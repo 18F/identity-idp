@@ -1,16 +1,13 @@
 - title t('titles.profile')
-
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
-.mt1.mb3.h6.caps.red = t('headings.profile.main')
 
 - if @decrypted_pii
-  h2.heading.mr1.inline-block
-    = t('headings.profile.profile_info')
+  h2.h3.my0.mr1.inline-block = t('headings.profile.profile_info')
   = content_tag(:span, t('headings.profile.profile_info_tt'),
     class: 'h5 blue sans-serif underline hint--top hint--no-animate',
     tabindex: 0,
     'aria-label': t('tooltips.profile_idv'))
-  .mt3.mb4
+  .mt2.mb4
     .py-12p.border-top
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.full_name')
@@ -36,8 +33,8 @@
         .sm-col.sm-col-5.px1 = t('.phone')
         .sm-col.sm-col-7.px1 = @decrypted_pii.phone
 
-h2.heading = t('headings.profile.login_info')
-.mt3.mb4
+h2.h3.my0 = t('headings.profile.login_info')
+.mt2.mb4
   .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = t('.email')
@@ -74,8 +71,8 @@ h2.heading = t('headings.profile.login_info')
         = link_to t('profile.links.regenerate_recovery_code'), \
           settings_recovery_code_url, class: btn_cls
 
-h2.heading = t('headings.profile.account_history')
-.mt3.mb2
+h2.h3.my0 = t('headings.profile.account_history')
+.mt2.mb2
   - decorated_user = current_user.decorate
   - events_len = decorated_user.recent_events.length
   - decorated_user.recent_events.each_with_index do |event, i|

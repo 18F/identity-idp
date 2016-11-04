@@ -24,7 +24,6 @@ en:
       profile_info_tt: Why can’t I edit my profile information?
       account_history: Account history
       login_info: Login information
-      main: My account
       two_factor: Two-factor authentication
     recovery_code: Make sure you can always log in, even without your phone
     registrations:
