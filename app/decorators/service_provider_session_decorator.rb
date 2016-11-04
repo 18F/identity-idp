@@ -23,6 +23,10 @@ class ServiceProviderSessionDecorator
     I18n.t('devise.registrations.start.bullet_1_with_sp', sp: sp_name)
   end
 
+  def idv_hardfail4_partial
+    'idv/hardfail4'
+  end
+
   private
 
   attr_reader :sp_name
