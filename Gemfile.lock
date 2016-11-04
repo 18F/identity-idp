@@ -349,7 +349,6 @@ GEM
     rack (1.6.4)
     rack-attack (5.0.1)
       rack
-    rack-cors (0.4.0)
     rack-mini-profiler (0.10.1)
       rack (>= 1.2.0)
     rack-protection (1.5.3)
@@ -645,7 +644,6 @@ DEPENDENCIES
   pry-byebug
   quiet_assets
   rack-attack
-  rack-cors
   rack-mini-profiler
   rack-test
   rack_session_access

@@ -61,6 +61,8 @@ namespace :deploy do
         # the #upload! method does not honor the values of #within at the moment
         # https://github.com/capistrano/sshkit/blob/master/EXAMPLES.md#upload-a-file-from-a-stream
         upload! StringIO.new(deploy.to_json), "#{current_path}/public/api/deploy.json"
+
+        execute :chmod, '+r', 'public/api/deploy.json'
       end
     end
   end
