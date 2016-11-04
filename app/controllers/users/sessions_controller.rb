@@ -45,13 +45,13 @@ module Users
     end
 
     def track_authentication_attempt(email)
-      existing_user = User.find_by(email: email.downcase)
+      user = User.find_by(email: email.downcase) || AnonymousUser.new
 
-      if existing_user
-        return analytics.track_event(Analytics::AUTHENTICATION_ATTEMPT, user_id: existing_user.uuid)
-      end
+      properties = {
+        success?: current_user.present?, user_id: user.uuid
+      }
 
-      analytics.track_event(Analytics::AUTHENTICATION_ATTEMPT_NONEXISTENT)
+      analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)
     end
 
     def cache_active_profile

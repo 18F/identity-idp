@@ -8,7 +8,7 @@ module TwoFactorAuthentication
     def create
       result = TotpVerificationForm.new(current_user, params[:code].strip).submit
 
-      analytics.track_event(Analytics::AUTHENTICATION_TOTP, result)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.merge(method: 'totp'))
 
       if result[:success?]
         handle_valid_otp
