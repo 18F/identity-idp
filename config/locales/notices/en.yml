@@ -12,12 +12,13 @@ en:
     send_code:
       voice: We will call you with your one-time passcode.
       sms: We sent you a one-time passcode via text message.
+    resend_confirmation_email:
+      success: Your confirmation email has been sent.
     signed_up_but_unconfirmed:
       first_paragraph_start: We sent an email to
       first_paragraph_end: >
         with a link to confirm your email address. Follow the link to continue
         creating your account.
-      no_email_sent_explanation_start: Didn’t get an email?
     terms_of_service:
       headline: By continuing, I agree to the terms of this service.
       text: >

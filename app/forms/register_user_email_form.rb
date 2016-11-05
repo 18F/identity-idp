@@ -12,6 +12,10 @@ class RegisterUserEmailForm
     @user ||= User.new
   end
 
+  def resend
+    'true'
+  end
+
   def submit(params)
     user.email = params[:email].downcase
 

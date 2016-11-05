@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'users/registrations/verify_email.html.slim' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
+    @register_user_email_form = RegisterUserEmailForm.new
   end
 
   it 'has a localized title' do
@@ -20,6 +21,6 @@ describe 'users/registrations/verify_email.html.slim' do
   it 'contains link to resend confirmation page' do
     render
 
-    expect(rendered).to have_link(t('links.resend'), href: new_user_confirmation_path)
+    expect(rendered).to have_button(t('forms.buttons.resend_confirmation'))
   end
 end
