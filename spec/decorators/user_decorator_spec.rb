@@ -70,7 +70,7 @@ describe UserDecorator do
         expect(user_decorator.first_sentence_for_confirmation_email).to eq(
           I18n.t(
             'mailer.confirmation_instructions.first_sentence.confirmed',
-            app: APP_NAME
+            app: APP_NAME, confirmation_period: user_decorator.confirmation_period
           )
         )
       end
@@ -84,7 +84,7 @@ describe UserDecorator do
         expect(user_decorator.first_sentence_for_confirmation_email).to eq(
           I18n.t(
             'mailer.confirmation_instructions.first_sentence.unconfirmed',
-            app: APP_NAME
+            app: APP_NAME, confirmation_period: user_decorator.confirmation_period
           )
         )
       end

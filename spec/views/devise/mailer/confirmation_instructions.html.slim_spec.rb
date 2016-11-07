@@ -35,7 +35,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.confirmed',
-        app: APP_NAME
+        app: APP_NAME, confirmation_period: user.decorate.confirmation_period
       )
     )
   end
@@ -49,7 +49,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.unconfirmed',
-        app: APP_NAME
+        app: APP_NAME, confirmation_period: user.decorate.confirmation_period
       )
     )
   end
