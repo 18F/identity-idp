@@ -25,12 +25,10 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        analytics_hash = { success?: true }
+        analytics_hash = { success?: true, method: 'recovery code' }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::AUTHENTICATION_RECOVERY_CODE, analytics_hash).ordered
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::AUTHENTICATION_SUCCESSFUL).ordered
+          with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
 
         post :create, code: 'foo'
       end

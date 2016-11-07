@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     def create
       result = OtpVerificationForm.new(current_user, form_params[:code].strip).submit
 
-      analytics.track_event(Analytics::OTP_RESULT, result.merge(context: context))
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.merge(analytics_properties))
 
       if result[:success?]
         handle_valid_otp
@@ -22,6 +22,13 @@ module TwoFactorAuthentication
 
     def form_params
       params.permit(:code)
+    end
+
+    def analytics_properties
+      {
+        context: context,
+        method: params[:delivery_method]
+      }
     end
   end
 end

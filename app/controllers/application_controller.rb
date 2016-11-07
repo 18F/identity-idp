@@ -46,8 +46,6 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(resource)
-    analytics.track_event(Analytics::AUTHENTICATION_SUCCESSFUL)
-
     stored_location_for(resource) || session[:saml_request_url] || profile_path
   end
 
