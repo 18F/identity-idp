@@ -200,7 +200,7 @@ feature 'Password Recovery' do
     fill_in 'Email', with: 'no_account_exists@gmail.com'
     click_button t('forms.buttons.reset_password')
 
-    expect(page).to have_content(t('devise.passwords.send_instructions'))
+    expect(page).to have_content(t('notices.password_reset'))
   end
 
   context 'user can reset their password' do
@@ -318,7 +318,7 @@ feature 'Password Recovery' do
     fill_in 'user_email', with: 'ThisEmailAddressShall@NeverExist.com'
     click_button t('forms.buttons.reset_password')
 
-    expect(page).to have_content t('devise.passwords.send_instructions')
+    expect(page).to have_content t('notices.password_reset')
     expect(page).not_to(have_content('not found'))
     expect(page).not_to(have_content(t('simple_form.error_notification.default_message')))
   end
@@ -331,7 +331,7 @@ feature 'Password Recovery' do
     fill_in 'user_email', with: user.email
     click_button t('forms.buttons.reset_password')
 
-    expect(page).to have_content t('devise.passwords.send_instructions')
+    expect(page).to have_content t('notices.password_reset')
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 
@@ -343,7 +343,7 @@ feature 'Password Recovery' do
     fill_in 'user_email', with: user.email
     click_button t('forms.buttons.reset_password')
 
-    expect(page).to have_content t('devise.passwords.send_instructions')
+    expect(page).to have_content t('notices.password_reset')
     expect(ActionMailer::Base.deliveries).to be_empty
   end
 end
