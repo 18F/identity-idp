@@ -7,9 +7,11 @@ class Analytics
   def track_event(event, attributes = { user_id: uuid })
     attributes[:user_id] = uuid unless attributes.key?(:user_id)
 
-    Rails.logger.info("#{event}: #{attributes}")
+    consolidated_attributes = attributes.merge!(request_attributes)
 
-    ahoy.track(event, attributes.merge!(request_attributes))
+    Rails.logger.info("#{event}: #{consolidated_attributes}")
+
+    ahoy.track(event, consolidated_attributes)
   end
 
   private
@@ -32,12 +34,8 @@ class Analytics
   end
 
   # rubocop:disable Metrics/LineLength
-  AUTHENTICATION_ATTEMPT = 'Authentication Attempt'.freeze
-  AUTHENTICATION_ATTEMPT_NONEXISTENT = 'Authentication: attempt with nonexistent user'.freeze
   AUTHENTICATION_MAX_2FA_ATTEMPTS = 'Authentication: user reached max 2FA attempts'.freeze
-  AUTHENTICATION_RECOVERY_CODE = 'Authentication: recovery code'.freeze
-  AUTHENTICATION_SUCCESSFUL = 'Authentication: successful'.freeze
-  AUTHENTICATION_TOTP = 'Authentication: TOTP'.freeze
+  EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUESTED = 'Email Change: requested'.freeze
   EMAIL_CHANGED_AND_CONFIRMED = 'Email Change: changed and confirmed'.freeze
   EMAIL_CHANGED_TO_EXISTING = 'Email Change: user attempted to change their email to an existing email'.freeze
@@ -51,7 +49,7 @@ class Analytics
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   INVALID_SERVICE_PROVIDER = 'Invalid Service Provider'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
-  OTP_RESULT = 'OTP: Result'.freeze
+  MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   PAGE_NOT_FOUND = 'Page Not Found'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATE_INVALID = 'Password Create: invalid password'.freeze

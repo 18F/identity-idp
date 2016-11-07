@@ -129,22 +129,30 @@ describe Users::SessionsController, devise: true do
   end
 
   describe 'POST /' do
-    it 'tracks the authentication for existing user' do
+    it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
 
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::AUTHENTICATION_ATTEMPT, user_id: user.uuid)
-      expect(@analytics).to receive(:track_event).with(Analytics::AUTHENTICATION_SUCCESSFUL)
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: true, user_id: user.uuid)
 
       post :create, user: { email: user.email.upcase, password: user.password }
+    end
+
+    it 'tracks the unsuccessful authentication for existing user' do
+      user = create(:user, :signed_up)
+
+      stub_analytics
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: false, user_id: user.uuid)
+
+      post :create, user: { email: user.email.upcase, password: 'invalid_password' }
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::AUTHENTICATION_ATTEMPT_NONEXISTENT)
-      expect(@analytics).to_not receive(:track_event).with(Analytics::AUTHENTICATION_SUCCESSFUL)
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: false, user_id: 'anonymous-uuid')
 
       post :create, user: { email: 'foo@example.com', password: 'password' }
     end
