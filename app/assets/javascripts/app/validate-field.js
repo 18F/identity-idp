@@ -1,21 +1,16 @@
 import 'classlist.js';
 
-
-const msgs = {
-  email: 'Please enter a valid email address.',
-  missing: 'Please fill in this field.',
-  mismatch: 'Please match the requested format.',
-};
+const I18n = window.LoginGov.I18n;
 
 function addInvalidMarkup(f) {
   f.setAttribute('aria-invalid', 'true');
   f.setAttribute('aria-describedby', `alert_${f.id}`);
 
-  if (f.validity.valueMissing) f.setCustomValidity(msgs.missing);
+  if (f.validity.valueMissing) f.setCustomValidity(I18n.t('errors.messages.missing_field'));
   else if (f.validity.typeMismatch &&
-    f.type === 'email') f.setCustomValidity(msgs.email);
+    f.type === 'email') f.setCustomValidity(I18n.t('valid_email.validations.email.invalid'));
   else if (f.validity.patternMismatch
-    || f.validity.typeMismatch) f.setCustomValidity(msgs.mismatch);
+    || f.validity.typeMismatch) f.setCustomValidity(I18n.t('errors.messages.format_mismatch'));
 
   f.insertAdjacentHTML(
     'afterend',
