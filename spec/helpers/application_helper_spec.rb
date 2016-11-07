@@ -1,6 +1,14 @@
 require 'rails_helper'
 
 describe ApplicationHelper do
+  describe '#step_cls' do
+    it 'creates CSS class based on current and active step' do
+      expect(helper.step_cls(1, 2)).to eq 'complete'
+      expect(helper.step_cls(2, 2)).to eq 'active'
+      expect(helper.step_cls(2, 1)).to be_nil
+    end
+  end
+
   describe '#tooltip' do
     it 'creates a span containing aria label with text and image' do
       tooltip_text = 'foobar'

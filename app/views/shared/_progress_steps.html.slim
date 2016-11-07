@@ -1,0 +1,8 @@
+- active ||= 0
+.mb4.progress-steps
+  div class="step #{step_cls(1, active)}"
+    span 1
+  .clearfix.steps-2-thru-n
+    - (2..6).each do |num|
+      div class="col col-5th right-align step #{step_cls(num, active)}"
+        span = num
