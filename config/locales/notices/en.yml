@@ -1,7 +1,7 @@
 en:
   notices:
     password_changed: You changed your password.
-    totp_configured: You have enabled an authentication app.
+    totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
     log_in_consent:
       text: By signing in, you agree to %{app}’s %{link}
