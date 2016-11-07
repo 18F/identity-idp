@@ -2,7 +2,6 @@ module Users
   class ConfirmationsController < Devise::ConfirmationsController
     include ValidEmailParameter
 
-    # PATCH /confirm
     def confirm
       with_unconfirmed_confirmable do
         if @password_form.submit(permitted_params)
@@ -13,7 +12,6 @@ module Users
       end
     end
 
-    # GET /resource/confirmation?confirmation_token=abcdef
     def show
       with_unconfirmed_confirmable do
         return process_user_with_confirmation_errors if @confirmable.errors.present?
