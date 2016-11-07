@@ -25,12 +25,12 @@ en:
       ssn: Social Security Number (SSN)
     errors:
       duplicate_ssn: >
-        An account already exists using the information you provided.
+        An account already exists with the information you provided.
       fail: >
         Sorry, we were unable to verify your identity based on the information you provided.
       hardfail: >
         We were unable to verify your identity at this time.
-      missing_finance: You must provide a financial account ID.
+      missing_finance: You must provide a financial account number.
       invalid_ccn: Credit card number should be only last 8 digits.
       bad_dob: Your date of birth must be a valid date.
       incorrect_password: The password you entered is not correct.
@@ -63,7 +63,7 @@ en:
       cancel_link: Cancel verification
       dupe_ssn1: >
         If you are getting this error, you may have already created and verified
-        and account, but with a different email address.
+        an account, but with a different email address.
       dupe_ssn2: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
       dupe_ssn3: If you can’t remember your original login information, you can %{link}.
@@ -80,8 +80,8 @@ en:
           to you and that meets the criteria below:
         is_not: 'is not '
         is: 'is '
-        virtual: a google voice number, skype account or virtual phone
-        prepaid: a pay as you go phone
+        virtual: a Google voice number, Skype account or virtual phone
+        prepaid: a pay-as-you-go phone
         in_your_name: in your name, or your spouse’s name
         same_as_2fa: >
           This phone number can be the same one you used to set up your one-time
