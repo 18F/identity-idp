@@ -1,6 +1,5 @@
 class PagesController < ApplicationController
   skip_after_action :track_get_requests
-  skip_before_action :verify_authenticity_token, only: [:deploy_json, :options]
 
   def page_not_found
     analytics.track_event(Analytics::PAGE_NOT_FOUND, path: request.path)
