@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/registrations/start.html.slim' do
+describe 'users/registrations/start.html.slim' do
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.registrations.start'))
 

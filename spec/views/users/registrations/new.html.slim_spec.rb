@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/registrations/new.html.slim' do
+describe 'users/registrations/new.html.slim' do
   before do
     @register_user_email_form = RegisterUserEmailForm.new
     allow(view).to receive(:controller_name).and_return('registrations')

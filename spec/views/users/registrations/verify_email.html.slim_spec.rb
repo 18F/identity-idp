@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'devise/registrations/verify_email.html.slim' do
+describe 'users/registrations/verify_email.html.slim' do
   before do
     allow(view).to receive(:email).and_return('foo@bar.com')
   end
