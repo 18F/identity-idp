@@ -7,11 +7,15 @@ module SamlIdpLogoutConcern
   private
 
   def slo
-    @_slo ||= SingleLogoutHandler.new(@saml_response, saml_request, user)
+    @_slo ||= SingleLogoutHandler.new(@saml_response, saml_request, user, session.id)
   end
 
   def handle_saml_logout_response
-    handler = LogoutResponseHandler.new(asserted_identity, slo_session[:logout_response])
+    handler = LogoutResponseHandler.new(
+      asserted_identity,
+      slo_session[:logout_response],
+      session.id
+    )
 
     handler.deactivate_identity
 
@@ -56,7 +60,10 @@ module SamlIdpLogoutConcern
   end
 
   def asserted_identity
-    Identity.includes(:user).find_by(session_uuid: @saml_response.in_response_to.gsub(/^_/, ''))
+    identity_session = Session.includes(:identity).
+                       find_by(uuid: @saml_response.in_response_to.gsub(/^_/, ''))
+    return unless identity_session
+    identity_session.identity
   end
 
   def logout_response_builder

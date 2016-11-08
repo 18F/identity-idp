@@ -6,4 +6,8 @@ IdentityDecorator = Struct.new(:identity) do
   def happened_at
     identity.last_authenticated_at
   end
+
+  def session_for(session_id)
+    identity.sessions.find_by(session_id: session_id)
+  end
 end

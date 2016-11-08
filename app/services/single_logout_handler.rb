@@ -1,6 +1,6 @@
 require 'saml_idp/logout_request_builder'
 
-SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
+SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user, :session_id) do
   def successful_saml_response?
     saml_response.present? && saml_response.success?
   end
@@ -17,7 +17,7 @@ SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
     Base64.strict_encode64(slo_request_builder(
       sp_metadata,
       identity.uuid,
-      identity.session_uuid
+      identity.decorate.session_for(session_id).uuid
     ).signed)
   end
 

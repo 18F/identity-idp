@@ -1,5 +1,5 @@
 class NullIdentity
-  def deactivate
+  def deactivate(_session_id)
     # no-op
   end
 

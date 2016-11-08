@@ -1,4 +1,4 @@
-LogoutResponseHandler = Struct.new(:identity, :response) do
+LogoutResponseHandler = Struct.new(:identity, :response, :session_id) do
   def continue_logout_with_next_identity?
     in_slo?
   end
@@ -8,11 +8,11 @@ LogoutResponseHandler = Struct.new(:identity, :response) do
   end
 
   def deactivate_identity
-    identity.deactivate
+    identity.deactivate(session_id)
   end
 
   def deactivate_last_identity
-    identity.user.last_identity.deactivate
+    identity.user.last_identity.deactivate(session_id)
   end
 
   private

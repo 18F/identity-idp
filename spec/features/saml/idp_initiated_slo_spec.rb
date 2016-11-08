@@ -59,6 +59,11 @@ feature 'IDP-initiated logout', devise: true do
       visit sp2_authnrequest
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
+
+      expect(logout_user.active_identities.count).to eq 2
+      logout_user.identities.each do |ident|
+        expect(ident.sessions.count).to eq 1
+      end
     end
 
     it 'deactivates each authenticated Identity and logs the user out' do
@@ -68,7 +73,7 @@ feature 'IDP-initiated logout', devise: true do
       click_button t('forms.buttons.submit.default') # logout request for second SP
 
       logout_user.identities.each do |ident|
-        expect(ident.session_uuid).to be_nil
+        expect(ident.sessions.any?).to eq false
       end
 
       expect(logout_user.active_identities).to be_empty

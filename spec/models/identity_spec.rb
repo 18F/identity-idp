@@ -2,24 +2,24 @@ require 'rails_helper'
 
 describe Identity do
   let(:user) { create(:user, :signed_up) }
-  let(:identity) do
-    Identity.create(
-      user_id: user.id,
-      service_provider: 'externalapp'
-    )
-  end
+  let(:identity) { create(:identity, user: user, service_provider: 'externalapp') }
   subject { identity }
 
   it { is_expected.to belong_to(:user) }
-
+  it { is_expected.to have_many(:sessions) }
   it { is_expected.to validate_presence_of(:service_provider) }
 
-  describe '.deactivate' do
-    let(:active_identity) { create(:identity, :active) }
+  describe '#deactivate' do
+    let(:session_id) { SecureRandom.uuid }
+    let(:active_identity) { create(:identity, :active, session: session_id) }
 
-    it 'sets last_authenticated_at to nil' do
-      active_identity.deactivate
-      expect(identity.last_authenticated_at).to be_nil
+    it 'destroys corresponding Session' do
+      expect(active_identity.sessions.any?).to eq true
+
+      active_identity.deactivate(session_id)
+      active_identity.reload
+
+      expect(active_identity.sessions.any?).to eq false
     end
   end
 

@@ -8,6 +8,7 @@ Figaro.require_keys(
   'idp_sso_target_url',
   'logins_per_ip_limit',
   'logins_per_ip_period',
+  'max_concurrent_sessions',
   'min_password_score',
   'otp_delivery_blocklist_bantime',
   'otp_delivery_blocklist_findtime',

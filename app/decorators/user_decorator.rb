@@ -47,6 +47,14 @@ UserDecorator = Struct.new(:user) do
     omniauthed?(session)
   end
 
+  def too_many_sessions?
+    limit = Figaro.env.max_concurrent_sessions.to_i
+    user.active_identities.each do |identity|
+      return true if identity.sessions.count >= limit
+    end
+    false
+  end
+
   def masked_two_factor_phone_number
     masked_number(user.phone)
   end

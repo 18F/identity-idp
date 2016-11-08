@@ -89,7 +89,7 @@ feature 'Sign in' do
   end
 
   context 'signed out' do
-    it 'displays session timeout modal when session times out', js: true do
+    scenario 'displays session timeout modal when session times out', js: true do
       allow(Devise).to receive(:timeout_in).and_return(0)
 
       visit root_path
@@ -97,7 +97,7 @@ feature 'Sign in' do
       expect(page).to have_css('#session-expired-msg')
     end
 
-    it 'does not display timeout modal when session not timed out', js: true do
+    scenario 'does not display timeout modal when session not timed out', js: true do
       allow(Devise).to receive(:timeout_in).and_return(60)
 
       visit root_path
@@ -114,7 +114,7 @@ feature 'Sign in' do
       ActionController::Base.allow_forgery_protection = false
     end
 
-    it 'fails to sign in the user, with CSRF error' do
+    scenario 'fails to sign in the user, with CSRF error' do
       user = sign_in_and_2fa_user
       click_link(t('links.sign_out'))
 
@@ -132,13 +132,43 @@ feature 'Sign in' do
     end
   end
 
-  describe 'session timeout configuration' do
-    it 'uses delay and warning settings whose sum is a multiple of 60' do
+  context 'session timeout configuration' do
+    scenario 'uses delay and warning settings whose sum is a multiple of 60' do
       expect((start + warning) % 60).to eq 0
     end
 
-    it 'uses frequency and warning settings whose sum is a multiple of 60' do
+    scenario 'uses frequency and warning settings whose sum is a multiple of 60' do
       expect((frequency + warning) % 60).to eq 0
     end
+  end
+
+  context 'user attempts too many concurrent sessions' do
+    scenario 'redirects to home page with error' do
+      user = user_with_2fa
+
+      Figaro.env.max_concurrent_sessions.to_i.times do |i|
+        browser_name = "browser_#{i}".to_sym
+        in_browser(browser_name) do
+          visit new_user_session_path
+          signin(user.email, user.password)
+          expect(current_path).to eq user_two_factor_authentication_path
+        end
+      end
+
+      in_browser(:over_limit) do
+        visit new_user_session_path
+        signin(user.email, user.password)
+
+        expect(current_path).to eq new_user_session_path
+        expect(page).to have_content(t('errors.messages.concurrent_sessions'))
+      end
+    end
+  end
+
+  def in_browser(name)
+    old_session = Capybara.session_name
+    Capybara.session_name = name
+    yield
+    Capybara.session_name = old_session
   end
 end

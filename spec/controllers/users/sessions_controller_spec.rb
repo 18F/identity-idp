@@ -84,6 +84,19 @@ describe Users::SessionsController, devise: true do
 
         expect(session[:pinged_at]).to_not eq(now)
       end
+
+      it 'updates Session.updated_at' do
+        user = stub_sign_in
+        IdentityLinker.new(user, Identity::LOCAL, session.id).link_identity
+
+        Timecop.travel(Time.current + 10)
+        get :active
+        Timecop.return
+
+        identity_session = Session.find_by(session_id: session.id)
+
+        expect(identity_session.updated_at).to_not eq(identity_session.created_at)
+      end
     end
 
     it 'does not track analytics event' do
@@ -130,6 +143,7 @@ describe Users::SessionsController, devise: true do
 
   describe 'POST /' do
     it 'tracks the successful authentication for existing user' do
+      stub_session_store
       user = create(:user, :signed_up)
 
       stub_analytics

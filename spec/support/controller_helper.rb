@@ -42,6 +42,14 @@ module ControllerHelper
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
+
+  def stub_session_store
+    session_store = instance_double(RedisSessionStore)
+    allow(session_store).to receive(:generate_sid).and_return('random-session-id')
+    allow(controller.session).to receive(:options).and_return({})
+    allow(controller.session).to receive(:instance_variable_get).with('@by').
+      and_return(session_store)
+  end
 end
 
 RSpec.configure do |config|

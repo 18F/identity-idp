@@ -52,7 +52,7 @@ module SamlIdpAuthConcern
   def link_identity_from_session_data
     provider = saml_request.service_provider.identifier
 
-    IdentityLinker.new(current_user, provider).link_identity
+    IdentityLinker.new(current_user, provider, session.id).link_identity
   end
 
   def identity_needs_verification?
@@ -64,7 +64,7 @@ module SamlIdpAuthConcern
   end
 
   def active_identity
-    current_user.last_identity
+    decorated_user.active_identity_for(current_service_provider)
   end
 
   def encode_authn_response(principal, opts)
@@ -95,7 +95,7 @@ module SamlIdpAuthConcern
     encode_response(
       current_user,
       authn_context_classref: requested_authn_context,
-      reference_id: active_identity.session_uuid,
+      reference_id: active_identity.decorate.session_for(session.id).uuid,
       encryption: current_service_provider.encryption_opts
     )
   end
