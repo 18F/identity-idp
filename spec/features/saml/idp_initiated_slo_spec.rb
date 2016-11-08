@@ -73,7 +73,7 @@ feature 'IDP-initiated logout', devise: true do
       click_button t('forms.buttons.submit.default') # logout request for second SP
 
       logout_user.identities.each do |ident|
-        expect(ident.sessions.any?).to eq false
+        expect(ident.sessions).to be_blank
       end
 
       expect(logout_user.active_identities).to be_empty
