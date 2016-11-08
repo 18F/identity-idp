@@ -121,8 +121,10 @@ en:
       recovery_code_fallback:
         text: Don’t have access to your phone? Use a %{link} instead.
         link: recovery code
-      otp_setup: >
-        Every time you log in, we will send you a one-time passcode via text
+      otp_phone_label: Phone number
+      otp_phone_label_info: Mobile or landline okay
+      otp_setup_html: >
+        <strong>Every time you log in,</strong> we will send you a one-time passcode via text
         message or phone call. This helps safeguard your account.
       choose_delivery_confirmation: >
         Please select how you would like to receive your confirmation code for %{phone}
@@ -149,5 +151,6 @@ en:
         confirm_with_voice: Confirm with voice call
       otp_method:
         title: How would you like to receive your passcode?
+        instruction: You can change your choice the next time you sign in
         sms: Text message (SMS)
         voice: Phone call
