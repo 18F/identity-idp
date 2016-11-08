@@ -49,16 +49,6 @@ Rails.application.configure do
   # SSL everywhre: enforced by the webserver (nginx) that terminates user SSL connections
   # config.force_ssl = true
 
-  # Use the lowest log level to ensure availability of diagnostic information
-  # when problems arise.
-  config.log_level = :info
-
-  # Prepend all log lines with the following tags.
-  # config.log_tags = [ :subdomain, :uuid ]
-
-  # Use a different logger for distributed setups.
-  # config.logger = ActiveSupport::TaggedLogging.new(SyslogLogger.new)
-
   # Use a different cache store in production.
   # config.cache_store = :mem_cache_store
 
@@ -71,9 +61,6 @@ Rails.application.configure do
 
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
-
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = ::Logger::Formatter.new
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
@@ -94,7 +81,20 @@ Rails.application.configure do
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
 
+  # Use the lowest log level to ensure availability of diagnostic information
+  # when problems arise.
+  config.log_level = :info
+
   # Enable Lograge in production for succinct logging
   config.lograge.enabled = true
-  config.lograge.custom_options = ->(event) { event.payload }
+  config.lograge.custom_options = ->(event) { event.payload.except(:params) }
+  config.lograge.ignore_actions = ['Users::SessionsController#active']
+  config.lograge.formatter = Lograge::Formatters::Json.new
+  config.logstash.type = :multi_delegator
+  config.logstash.outputs = [
+    {
+      type: :file,
+      path: 'log/production.log'
+    }
+  ]
 end

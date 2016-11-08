@@ -121,8 +121,6 @@ describe Users::SessionsController, devise: true do
       sign_in_as_user
 
       expect(@analytics).to receive(:track_event).with(Analytics::SESSION_TIMED_OUT)
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::GET_REQUEST, controller: 'sessions', action: 'timeout')
 
       get :timeout
     end

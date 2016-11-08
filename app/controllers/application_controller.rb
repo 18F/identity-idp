@@ -11,7 +11,6 @@ class ApplicationController < ActionController::Base
   helper_method :decorated_user, :reauthn?, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
-  after_action :track_get_requests
 
   layout 'card'
 
@@ -22,7 +21,7 @@ class ApplicationController < ActionController::Base
   end
 
   def append_info_to_payload(payload)
-    payload[:time] = Time.zone.now
+    payload[:user_id] = analytics_user.uuid
     payload[:user_agent] = request.user_agent
     payload[:ip] = request.remote_ip
   end
@@ -30,9 +29,11 @@ class ApplicationController < ActionController::Base
   attr_writer :analytics
 
   def analytics
-    user = current_user || AnonymousUser.new
+    @analytics ||= Analytics.new(analytics_user, request)
+  end
 
-    @analytics ||= Analytics.new(user, request)
+  def analytics_user
+    current_user || AnonymousUser.new
   end
 
   def create_user_event(event_type, user = current_user)
@@ -89,11 +90,5 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
-  end
-
-  def track_get_requests
-    return unless request.get?
-
-    analytics.track_event(Analytics::GET_REQUEST, controller: controller_name, action: action_name)
   end
 end

@@ -33,7 +33,7 @@ Testing dependencies:
   For example, if you've installed the laptop script on OS X, you can start the services like this:
 
   ```
-  $ brew services start redis 
+  $ brew services start redis
   $ brew services start postgres
   ```
 
@@ -62,6 +62,30 @@ restart the server. See the [rack_mini_profiler] gem for more details.
 
 [Laptop]: https://github.com/18F/laptop
 [rack_mini_profiler]: https://github.com/MiniProfiler/rack-mini-profiler
+
+#### Testing Analytics
+
+If you want to visualize and query the event and log data, you can install
+Elasticsearch, Logstash, and Kibana. On OS X, the easiest way is with Homebrew:
+
+```
+brew tap homebrew/services
+
+brew install elasticsearch logstash kibana
+
+brew services start elasticsearch
+brew services start kibana
+
+# Start logstash by running this command from this repo's root directory:
+logstash -f logstash.conf
+```
+
+Change the `logstash_type` entry in `config/application.yml` to `'udp`'
+and restart the Rails server (ctrl-c, then `foreman start`).
+
+When you make a request, you should now see some output in the logstash window.
+
+To explore the data with Kibana, visit http://localhost:5601
 
 #### Using Docker
 
@@ -132,7 +156,7 @@ Post a message in the Slack channel if you need help.
 
 Note: server secrets are currently manually configured. If you deploy to an
 environment, make sure to update any required configuration in application.yml
-and be sure any worker hosts are also updated. 
+and be sure any worker hosts are also updated.
 
 To restart the web server (on a web host, from /srv/idp/current)
 
