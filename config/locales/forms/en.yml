@@ -30,10 +30,10 @@ en:
     totp_setup:
       code: One-time passcode
       totp_info: >
-        To enable two-factor authentication, use the QR code provided here to
-        link your account to your authentication app.
+        To enable two-factor authentication, use the QR code provided to
+        link this account to your authentication app.
       totp_intro: >
-        To receive a one-time passode,  you may choose to use a two-factor
+        To receive a one-time passode, you may choose to use a two-factor
         authentication application to log into to your account. If so, you’ll
         need to link your login.gov account to the application you choose. Each
         time you sign in you’ll need to open the application and retrieve a code.
