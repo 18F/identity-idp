@@ -38,9 +38,3 @@ en:
       link_text: Reset your password
       footer: >
         Please note that this link expires in %{expires} hours. 
-    unlock_instructions:
-      header: >
-        Your account has been locked due to multiple unsuccessful sign-in attempts.
-      body: >
-        Please wait 20 minutes before attempting to sign in again. If you've
-        forgotten your password, please follow the instructions to reset your password. 
