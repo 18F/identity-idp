@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'Email confirmation during sign up' do
   scenario 'confirms valid email and sets valid password' do
+    reset_email
     email = 'test@example.com'
     sign_up_with(email)
     open_email(email)
