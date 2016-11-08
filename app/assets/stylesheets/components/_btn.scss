@@ -7,3 +7,25 @@
   min-width: 220px;
   text-align: center;
 }
+
+.btn-link {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: $blue;
+  font-size: $base-font-size;
+  font-weight: normal;
+  line-height: $line-height;
+  outline: none;
+  padding: 0;
+  text-decoration: underline;
+  vertical-align: baseline;
+
+  &:active,
+  &:focus,
+  &:hover, {
+    border: 0;
+    box-shadow: none;
+    text-decoration: underline;
+  }
+}

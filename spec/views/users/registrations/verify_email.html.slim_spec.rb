@@ -21,6 +21,6 @@ describe 'users/registrations/verify_email.html.slim' do
   it 'contains link to resend confirmation page' do
     render
 
-    expect(rendered).to have_button(t('forms.buttons.resend_confirmation'))
+    expect(rendered).to have_button(t('links.resend'))
   end
 end

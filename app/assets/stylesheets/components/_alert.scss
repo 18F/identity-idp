@@ -37,3 +37,5 @@ $ico-offset: -10px;
 
   &::before { background-image: url(image-path('alert/ico-exclamation.svg')); }
 }
+
+.alert-blank::before { content: none; }

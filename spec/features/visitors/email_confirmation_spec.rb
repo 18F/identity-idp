@@ -92,7 +92,7 @@ feature 'Email confirmation during sign up' do
     it 'sends the confirmation email again' do
       sign_up_with('test@example.com')
 
-      expect { click_on t('forms.buttons.resend_confirmation') }.
+      expect { click_on t('links.resend') }.
         to change { ActionMailer::Base.deliveries.count }.by(1)
 
       expect(last_email.html_part.body).to have_content(

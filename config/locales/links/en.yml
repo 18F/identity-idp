@@ -3,6 +3,7 @@ en:
     back_to_sp: '‹ Back to %{sp}'
     create_account: Create account
     privacy_policy: Privacy Policy
+    resend: Send again
     sign_out: Sign out
     sign_in: Sign in
     edit: Edit

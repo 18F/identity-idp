@@ -35,9 +35,7 @@ module Users
     protected
 
     def process_successful_creation
-      if params[:user][:resend] == 'true'
-        flash.now[:success] = t('notices.resend_confirmation_email.success')
-      end
+      @resend_confirmation = params[:user][:resend]
 
       render :verify_email, locals: { email: @register_user_email_form.user.email }
     end
