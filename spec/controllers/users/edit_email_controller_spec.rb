@@ -65,7 +65,7 @@ describe Users::EditEmailController do
         stub_sign_in(user)
         put :update, update_user_email_form: { email: 'foo' }
 
-        expect(response.body).to have_content('Please enter a valid email')
+        expect(response.body).to have_content(t('valid_email.validations.email.invalid'))
       end
     end
 

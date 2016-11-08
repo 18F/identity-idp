@@ -24,7 +24,7 @@ feature 'Sign in' do
   scenario 'user cannot sign in with invalid email', js: true do
     signin('invalid', 'foo')
 
-    expect(page).to have_content 'Please enter a valid email address.'
+    expect(page).to have_content t('valid_email.validations.email.invalid')
   end
 
   scenario 'user cannot sign in with empty password', js: true do
