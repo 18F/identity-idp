@@ -17,6 +17,8 @@ en:
         one: '1 error prohibited this %{resource} from being saved:'
         other: '%{count} errors prohibited this %{resource} from being saved:'
       requires_phone: requires you to enter your phone number.
+      missing_field: 'Please fill in this field.'
+      format_mismatch: 'Please match the requested format.'
     confirm_password_incorrect: The password you provided is incorrect.
     invalid_totp: Invalid code entered.  Please try again.
     not_authorized: You are not authorized to perform this action.
