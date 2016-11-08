@@ -14,6 +14,8 @@ class Analytics
     ahoy.track(event, consolidated_attributes)
   end
 
+  attr_writer :ahoy
+
   private
 
   attr_reader :user, :request

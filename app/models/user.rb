@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_many :ahoy_events, dependent: :destroy
 
   attr_accessor :asserted_attributes
 

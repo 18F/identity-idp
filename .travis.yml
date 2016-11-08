@@ -5,6 +5,7 @@ addons:
   apt:
     packages:
       - jq
+  postgresql: "9.4"
 cache:
   directories:
     - "travis_phantomjs"

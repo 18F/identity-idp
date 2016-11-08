@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160923195429) do
+ActiveRecord::Schema.define(version: 20161027175214) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ahoy_events", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.jsonb    "properties"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ahoy_events", ["name", "created_at"], name: "index_ahoy_events_on_name_and_created_at", using: :btree
+  add_index "ahoy_events", ["user_id", "name"], name: "index_ahoy_events_on_user_id_and_name", using: :btree
 
   create_table "app_settings", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -62,12 +73,12 @@ ActiveRecord::Schema.define(version: 20160923195429) do
   add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
 
   create_table "profiles", force: :cascade do |t|
-    t.integer  "user_id",                       null: false
-    t.boolean  "active",        default: false, null: false
+    t.integer  "user_id",                                  null: false
+    t.boolean  "active",                   default: false, null: false
     t.datetime "verified_at"
     t.datetime "activated_at"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.string   "vendor"
     t.text     "encrypted_pii"
     t.string   "ssn_signature", limit: 64
