@@ -41,7 +41,7 @@ SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
     @_identity ||= begin
       first_identity = user.first_identity
 
-      if saml_request && saml_request.issuer != first_identity.service_provider
+      if first_identity && saml_request && saml_request.issuer != first_identity.service_provider
         return first_identity
       end
       # Logout was initiated out of chronological order. Resume SLO
