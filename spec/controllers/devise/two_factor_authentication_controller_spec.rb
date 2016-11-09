@@ -128,8 +128,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::GET_REQUEST, controller: 'two_factor_authentication', action: 'send_code')
 
         get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
       end
@@ -187,8 +185,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::GET_REQUEST, controller: 'two_factor_authentication', action: 'send_code')
 
         get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
       end

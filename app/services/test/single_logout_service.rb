@@ -20,7 +20,7 @@ module Test
     end
 
     def log_event
-      Rails.logger.info "IdP initiated Logout for #{logout_request.name_id}"
+      Rails.logger.info(event: 'IdP initiated logout', identity_uuid: logout_request.name_id)
     end
 
     def slo_response

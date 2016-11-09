@@ -4,9 +4,6 @@ describe Users::ConfirmationsController, devise: true do
   describe 'Invalid email confirmation tokens' do
     before do
       stub_analytics
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::GET_REQUEST, controller: 'confirmations', action: 'show')
     end
 
     it 'tracks nil email confirmation token' do
@@ -65,8 +62,6 @@ describe Users::ConfirmationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::GET_REQUEST, controller: 'confirmations', action: 'show')
-      expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION_VALID_TOKEN, user_id: user.uuid)
 
       get :show, confirmation_token: 'foo'
@@ -121,8 +116,6 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::GET_REQUEST, controller: 'confirmations', action: 'show')
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CHANGED_AND_CONFIRMED, user_id: user.uuid)
 

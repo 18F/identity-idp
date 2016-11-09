@@ -3,7 +3,6 @@ module Users
     include ::ActionView::Helpers::DateHelper
 
     skip_before_action :session_expires_at, only: [:active]
-    skip_after_action :track_get_requests, only: [:active]
     before_action :confirm_two_factor_authenticated, only: [:update]
 
     after_action :cache_active_profile, only: [:create]
@@ -16,7 +15,7 @@ module Users
     def active
       response.headers['Etag'] = '' # clear etags to prevent caching
       session[:pinged_at] = now
-      Rails.logger.debug("alive?:#{alive?} expires_at:#{expires_at} now:#{now}")
+      Rails.logger.debug(alive?: alive?, expires_at: expires_at)
       render json: { live: alive?, timeout: expires_at }
     end
 

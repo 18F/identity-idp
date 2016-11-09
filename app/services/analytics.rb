@@ -9,9 +9,7 @@ class Analytics
 
     consolidated_attributes = attributes.merge!(request_attributes)
 
-    Rails.logger.info("#{event}: #{consolidated_attributes}")
-
-    ahoy.track(event, consolidated_attributes)
+    Rails.logger.info(consolidated_attributes.merge(event: event))
   end
 
   private
@@ -23,10 +21,6 @@ class Analytics
       user_ip: request.remote_ip,
       user_agent: request.user_agent
     }
-  end
-
-  def ahoy
-    @ahoy ||= Rails.env.test? ? FakeAhoyTracker.new : Ahoy::Tracker.new(request: request)
   end
 
   def uuid
@@ -43,7 +37,6 @@ class Analytics
   EMAIL_CONFIRMATION_TOKEN_EXPIRED = 'Email Confirmation: token expired'.freeze
   EMAIL_CONFIRMATION_USER_ALREADY_CONFIRMED = 'Email Confirmation: user already confirmed'.freeze
   EMAIL_CONFIRMATION_VALID_TOKEN = 'Email Confirmation: valid token'.freeze
-  GET_REQUEST = 'GET Request'.freeze
   IDV_FAILED = 'IdV: Failed'.freeze
   IDV_SUCCESSFUL = 'IdV: Successful'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze

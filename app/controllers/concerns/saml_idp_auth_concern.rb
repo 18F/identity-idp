@@ -45,7 +45,7 @@ module SamlIdpAuthConcern
   end
 
   def process_invalid_authn_context
-    logger.info "Invalid authn context #{requested_authn_context} requested"
+    logger.info(error: 'Invalid authn context', authn_context: requested_authn_context)
     render nothing: true, status: :bad_request
   end
 
