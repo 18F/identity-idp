@@ -7,10 +7,7 @@ feature 'Visitor signs up with email address' do
 
     expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_start')
     expect(page).to have_content t('notices.signed_up_but_unconfirmed.first_paragraph_end')
-    expect(page).
-      to have_content t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')
     expect(page).to have_content email
-    expect(page).to have_link(t('links.resend'), href: new_user_confirmation_path)
   end
 
   scenario 'visitor cannot sign up with invalid email address' do
