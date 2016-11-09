@@ -9,6 +9,7 @@ describe User do
     it { is_expected.to have_many(:identities) }
     it { is_expected.to have_many(:profiles) }
     it { is_expected.to have_many(:events) }
+    it { is_expected.to have_many(:sessions) }
   end
 
   it 'should only send one email during creation' do
@@ -136,10 +137,10 @@ describe User do
   context 'when identities are present' do
     let(:user) { create(:user, :signed_up) }
     let(:active_identity) do
-      Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
+      build(:identity, :active, session: 'some-session-id', service_provider: 'entity_id')
     end
     let(:inactive_identity) do
-      Identity.create(service_provider: 'entity_id', session_uuid: nil)
+      build(:identity, service_provider: 'entity_id')
     end
 
     describe '#active_identities' do
@@ -153,17 +154,24 @@ describe User do
 
   context 'when user has multiple identities' do
     let(:user) { create(:user, :signed_up) }
+    let(:session_id) { SecureRandom.uuid }
 
     before do
-      user.identities << Identity.create(
+      create(
+        :identity,
+        :active,
+        user: user,
         service_provider: 'first',
         last_authenticated_at: Time.current - 1.hour,
-        session_uuid: SecureRandom.uuid
+        session: session_id
       )
-      user.identities << Identity.create(
+      create(
+        :identity,
+        :active,
+        user: user,
         service_provider: 'last',
         last_authenticated_at: Time.current,
-        session_uuid: SecureRandom.uuid
+        session: session_id
       )
     end
 

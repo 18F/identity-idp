@@ -1,6 +1,7 @@
 en:
   errors:
     messages:
+      concurrent_sessions: This account is already in use. Sign out elsewhere then try signing in here again.
       improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
       weak_password: Your password is not strong enough. %{feedback}
       already_confirmed: was already confirmed, please try signing in

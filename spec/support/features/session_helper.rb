@@ -7,7 +7,7 @@ module Features
     def sign_up_with(email)
       visit new_user_registration_path
       fill_in 'Email', with: email
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
     end
 
     def signin(email, password)
@@ -25,7 +25,7 @@ module Features
       user = create(:user, :unconfirmed)
       confirm_last_user
       fill_in 'password_form_password', with: VALID_PASSWORD
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
       user
     end
 
@@ -84,7 +84,7 @@ module Features
       # Select SMS delivery
       click_button t('forms.buttons.send_passcode')
       # Enter 2FA code
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
       # Acknowledge recovery code
       click_button t('forms.buttons.submit.continue')
       user
@@ -97,6 +97,13 @@ module Features
     def enter_correct_otp_code_for_user(user)
       fill_in 'code', with: user.reload.direct_otp
       click_submit_default
+    end
+
+    def perform_in_browser(name)
+      old_session = Capybara.session_name
+      Capybara.session_name = name
+      yield
+      Capybara.session_name = old_session
     end
   end
 end

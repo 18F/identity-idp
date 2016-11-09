@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_many :sessions, through: :identities
 
   attr_accessor :asserted_attributes
 
@@ -66,16 +67,19 @@ class User < ActiveRecord::Base
   end
 
   def active_identities
-    identities.where(
-      'session_uuid IS NOT ?',
-      nil
-    ).order(
-      last_authenticated_at: :asc
-    ) || []
+    identities.
+      joins(:sessions).
+      where.not(sessions: { identity_id: nil }).
+      order(last_authenticated_at: :asc).
+      distinct || []
   end
 
   def multiple_identities?
     active_identities.size > 1
+  end
+
+  def multiple_sessions?(session_id)
+    sessions.where(session_id: session_id).size > 1
   end
 
   def active_profile

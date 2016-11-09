@@ -114,12 +114,8 @@ describe UserDecorator do
     it 'returns Identity matching ServiceProvider' do
       sp = ServiceProvider.new('http://sp.example.com')
       user = create(:user)
-      user.identities << create(
-        :identity,
-        service_provider: sp.issuer,
-        session_uuid: SecureRandom.uuid
-      )
-
+      session_id = SecureRandom.uuid
+      IdentityLinker.new(user, sp.issuer, session_id).link_identity
       user_decorator = UserDecorator.new(user)
 
       expect(user_decorator.active_identity_for(sp)).to eq user.last_identity
@@ -160,6 +156,24 @@ describe UserDecorator do
       event = create(:event, event_type: :email_changed, user: user_decorator.user)
 
       expect(user_decorator.recent_events).to eq [event.decorate, identity.decorate]
+    end
+  end
+
+  describe '#too_many_sessions?' do
+    it 'returns true when concurrency reached for any given identity' do
+      user = create(:user)
+      user_decorator = UserDecorator.new(user)
+      limit = Figaro.env.max_concurrent_sessions.to_i
+      (limit - 1).times do
+        IdentityLinker.new(user, 'some-provider', SecureRandom.uuid).link_identity
+      end
+
+      expect(user_decorator.too_many_sessions?).to eq false
+
+      IdentityLinker.new(user, 'some-provider', SecureRandom.uuid).link_identity
+      user.reload
+
+      expect(user_decorator.too_many_sessions?).to eq true
     end
   end
 end

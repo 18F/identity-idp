@@ -23,10 +23,7 @@ describe SamlIdpController do
       let(:user) { create(:user, :signed_up) }
 
       it 'finishes SLO at the IdP' do
-        user.identities << Identity.create(
-          service_provider: 'foo',
-          last_authenticated_at: Time.current
-        )
+        IdentityLinker.new(user, 'foo', session.id).link_identity
         sign_in user
 
         post :logout, SAMLResponse: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4' \
@@ -290,7 +287,7 @@ describe SamlIdpController do
         linker = instance_double(IdentityLinker)
 
         expect(IdentityLinker).to receive(:new).
-          with(controller.current_user, saml_settings.issuer).and_return(linker)
+          with(controller.current_user, saml_settings.issuer, subject.session.id).and_return(linker)
 
         expect(linker).to receive(:link_identity)
 
@@ -348,9 +345,11 @@ describe SamlIdpController do
           expect(assertion.namespace.href).to eq(Saml::XML::Namespaces::ASSERTION)
         end
 
-        it 'includes an ID attribute with a valid UUID' do
+        it 'includes a valid ID attribute' do
+          session_uuid = user.last_identity.decorate.session_for(subject.session.id).uuid
+
           expect(UUID.validate(assertion['ID'][1..-1])).to eq(true)
-          expect(assertion['ID']).to eq "_#{user.last_identity.session_uuid}"
+          expect(assertion['ID']).to eq "_#{session_uuid}"
         end
 
         it 'includes an IssueInstant attribute with a timestamp' do
@@ -459,7 +458,7 @@ describe SamlIdpController do
             expect(reference.name).to eq('Reference')
           end
 
-          it 'includes a URI attribute' do
+          it 'includes a valid URI attribute' do
             expect(UUID.validate(reference['URI'][2..-1])).to eq(true)
           end
         end

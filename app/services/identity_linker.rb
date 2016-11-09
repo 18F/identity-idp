@@ -1,25 +1,27 @@
-IdentityLinker = Struct.new(:user, :provider) do
-  attr_reader :identity
-
+IdentityLinker = Struct.new(:user, :provider, :session_id) do
   def link_identity
     find_or_create_identity
-
-    identity.update!(identity_attributes)
   end
 
   private
 
+  attr_reader :identity, :session
+
   def find_or_create_identity
-    @identity = Identity.find_or_create_by(
-      service_provider: provider,
-      user_id: user.id
-    )
+    Identity.transaction do
+      @identity = Identity.find_or_create_by!(
+        service_provider: provider,
+        user_id: user.id
+      )
+      identity.update!(last_authenticated_at: Time.current)
+      find_or_create_session
+    end
   end
 
-  def identity_attributes
-    {
-      last_authenticated_at: Time.current,
-      session_uuid: SecureRandom.uuid
-    }
+  def find_or_create_session
+    @session = Session.find_or_create_by!(
+      identity_id: identity.id,
+      session_id: session_id
+    )
   end
 end

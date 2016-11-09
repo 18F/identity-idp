@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160923195429) do
+ActiveRecord::Schema.define(version: 20161104215255) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -52,22 +52,20 @@ ActiveRecord::Schema.define(version: 20160923195429) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "session_uuid",          limit: 255
     t.string   "uuid",                              null: false
   end
 
-  add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree
   add_index "identities", ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
   add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
 
   create_table "profiles", force: :cascade do |t|
-    t.integer  "user_id",                       null: false
-    t.boolean  "active",        default: false, null: false
+    t.integer  "user_id",                                  null: false
+    t.boolean  "active",                   default: false, null: false
     t.datetime "verified_at"
     t.datetime "activated_at"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
     t.string   "vendor"
     t.text     "encrypted_pii"
     t.string   "ssn_signature", limit: 64
@@ -80,13 +78,16 @@ ActiveRecord::Schema.define(version: 20160923195429) do
   add_index "profiles", ["user_id"], name: "index_profiles_on_user_id", using: :btree
 
   create_table "sessions", force: :cascade do |t|
-    t.string   "session_id", limit: 255, null: false
-    t.text     "data"
+    t.string   "session_id",  limit: 255, null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "identity_id",             null: false
+    t.string   "uuid"
   end
 
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["identity_id"], name: "index_sessions_on_identity_id", using: :btree
+  add_index "sessions", ["session_id", "identity_id"], name: "index_sessions_on_session_id_and_identity_id", unique: true, using: :btree
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "users", force: :cascade do |t|
@@ -137,4 +138,5 @@ ActiveRecord::Schema.define(version: 20160923195429) do
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
 
   add_foreign_key "events", "users"
+  add_foreign_key "sessions", "identities"
 end

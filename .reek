@@ -67,6 +67,7 @@ UtilityFunction:
     exclude:
       - complete_2fa_confirmation
       - complete_idv_profile
+      - stub_session_store
       - stub_subject
       - stub_idv_session
       - saml_settings
