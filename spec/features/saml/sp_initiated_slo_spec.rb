@@ -196,6 +196,64 @@ feature 'SP-initiated logout', devise: true do
     end
   end
 
+  context 'with multiple SP sessions in multiple browsers' do
+    let(:user) { create(:user, :signed_up) }
+    let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
+    let(:request_xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
+
+    before do
+      perform_in_browser(:browser_one) do
+        sign_in_and_2fa_user(user)
+
+        visit sp1_authnrequest # sp1
+        @browser_one_sp1_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+
+        visit sp2_authnrequest # sp2
+        @browser_one_sp2_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+      end
+
+      perform_in_browser(:browser_two) do
+        sign_in_and_2fa_user(user)
+
+        visit sp1_authnrequest # sp1
+        @browser_two_sp1_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+
+        visit sp2_authnrequest # sp2
+        @browser_two_sp2_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+      end
+    end
+
+    it 'terminates sessions in all browsers' do
+      expect(user.active_identities.size).to eq(2)
+
+      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
+      settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+      sp1_slo_request = OneLogin::RubySaml::Logoutrequest.new
+      sp1_slo_request_url = sp1_slo_request.create(settings)
+
+      perform_in_browser(:browser_one) do
+        visit sp1_slo_request_url
+
+        expect(request_xmldoc.asserted_session_index).to eq(@browser_two_sp2_session_index)
+
+        click_submit_default
+      end
+
+      expect(user.active_identities.size).to eq(0)
+
+      perform_in_browser(:browser_two) do
+        visit sp1_slo_request_url
+
+        expect(current_path).to eq root_path
+      end
+    end
+  end
+
   context 'without SLO implemented at SP' do
     let(:logout_user) { create(:user, :signed_up) }
 
