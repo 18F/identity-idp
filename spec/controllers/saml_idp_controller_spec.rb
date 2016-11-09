@@ -682,8 +682,6 @@ describe SamlIdpController do
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::GET_REQUEST, controller: 'saml_idp', action: 'auth')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, idv: true)
 
         get :auth
@@ -697,8 +695,6 @@ describe SamlIdpController do
         stub_analytics
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::GET_REQUEST, controller: 'saml_idp', action: 'auth')
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, idv: false)
 
         generate_saml_response(user)

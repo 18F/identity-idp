@@ -26,12 +26,12 @@ describe ApplicationController do
   describe '#append_info_to_payload' do
     let(:payload) { {} }
 
-    it 'adds time, user_agent and ip to the lograge output' do
+    it 'adds user_id, user_agent and ip to the lograge output' do
       Timecop.freeze(Time.current) do
         subject.append_info_to_payload(payload)
 
-        expect(payload.keys).to eq [:time, :user_agent, :ip]
-        expect(payload.values).to eq [Time.current, request.user_agent, request.remote_ip]
+        expect(payload.keys).to eq [:user_id, :user_agent, :ip]
+        expect(payload.values).to eq ['anonymous-uuid', request.user_agent, request.remote_ip]
       end
     end
   end
@@ -145,44 +145,6 @@ describe ApplicationController do
         expect(Analytics).to receive(:new).with(user, request)
 
         controller.analytics
-      end
-    end
-  end
-
-  describe 'after_action' do
-    it 'includes the appropriate after_action' do
-      expect(subject).to have_actions(
-        :after,
-        :track_get_requests
-      )
-    end
-  end
-
-  describe '#track_get_requests' do
-    controller do
-      def index
-        render text: 'Hello'
-      end
-    end
-
-    context 'when the request is a GET request' do
-      it 'tracks the controller name and action' do
-        stub_analytics
-
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::GET_REQUEST, controller: 'anonymous', action: 'index')
-
-        get :index
-      end
-    end
-
-    context 'when the request is not a GET request' do
-      it 'does not track the controller name and action' do
-        stub_analytics
-
-        expect(@analytics).to_not receive(:track_event)
-
-        put :index
       end
     end
   end

@@ -71,8 +71,14 @@ describe 'throttling requests' do
       end
 
       it 'logs the throttle' do
-        expect(Rails.logger).to have_received(:warn).
-          with('req/ip throttle occurred for 1.2.3.4')
+        analytics_hash = {
+          discriminator: '1.2.3.4',
+          event: 'throttle',
+          type: 'req/ip',
+          user_ip: '1.2.3.4'
+        }
+
+        expect(Rails.logger).to have_received(:warn).with(analytics_hash)
       end
     end
   end
@@ -121,8 +127,7 @@ describe 'throttling requests' do
 
     context 'when the request is not a sign in attempt' do
       it 'does not throttle' do
-        expect(Rails.logger).to_not receive(:warn).
-          with('logins/ip/level_1 throttle occurred for 1.2.3.4')
+        expect(Rails.logger).to_not receive(:warn)
 
         3.times do
           get '/', {}, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
@@ -153,8 +158,14 @@ describe 'throttling requests' do
       end
 
       it 'logs the throttle' do
-        expect(Rails.logger).to have_received(:warn).
-          with('logins/ip/level_1 throttle occurred for 1.2.3.4')
+        analytics_hash = {
+          discriminator: '1.2.3.4',
+          event: 'throttle',
+          type: 'logins/ip/level_1',
+          user_ip: '1.2.3.4'
+        }
+
+        expect(Rails.logger).to have_received(:warn).with(analytics_hash)
       end
     end
   end
@@ -193,9 +204,15 @@ describe 'throttling requests' do
         )
       end
 
+      analytics_hash = {
+        discriminator: user.uuid,
+        event: 'throttle',
+        type: 'OTP delivery',
+        user_ip: '1.2.3.4'
+      }
+
       expect(last_response.status).to eq(429)
-      expect(Rails.logger).to have_received(:warn).
-        with("OTP delivery throttle occurred for #{user.uuid}")
+      expect(Rails.logger).to have_received(:warn).with(analytics_hash)
 
       delete destroy_user_session_path
 
@@ -214,9 +231,15 @@ describe 'throttling requests' do
         'REMOTE_ADDR' => '1.2.3.5'
       )
 
+      analytics_hash = {
+        discriminator: second_user_with_same_number.uuid,
+        event: 'throttle',
+        type: 'OTP delivery',
+        user_ip: '1.2.3.5'
+      }
+
       expect(last_response.status).to eq(429)
-      expect(Rails.logger).to have_received(:warn).
-        with("OTP delivery throttle occurred for #{second_user_with_same_number.uuid}")
+      expect(Rails.logger).to have_received(:warn).with(analytics_hash)
     end
 
     it 'blocks the user for bantime after maxretry phone confirmation requests' do
@@ -240,9 +263,15 @@ describe 'throttling requests' do
         )
       end
 
+      analytics_hash = {
+        discriminator: user.uuid,
+        event: 'throttle',
+        type: 'OTP delivery',
+        user_ip: '1.2.3.4'
+      }
+
       expect(last_response.status).to eq(429)
-      expect(Rails.logger).to have_received(:warn).
-        with("OTP delivery throttle occurred for #{user.uuid}")
+      expect(Rails.logger).to have_received(:warn).with(analytics_hash)
     end
 
     it 'blocks the user for bantime after maxretry idv phone confirmation requests' do
@@ -266,9 +295,15 @@ describe 'throttling requests' do
         )
       end
 
+      analytics_hash = {
+        discriminator: user.uuid,
+        event: 'throttle',
+        type: 'OTP delivery',
+        user_ip: '1.2.3.4'
+      }
+
       expect(last_response.status).to eq(429)
-      expect(Rails.logger).to have_received(:warn).
-        with("OTP delivery throttle occurred for #{user.uuid}")
+      expect(Rails.logger).to have_received(:warn).with(analytics_hash)
     end
 
     it 'uses the throttled_response for the blocklisted_response' do
