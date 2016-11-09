@@ -12,6 +12,8 @@ en:
     send_code:
       voice: We will call you with your one-time passcode.
       sms: We sent you a one-time passcode via text message.
+    resend_confirmation_email:
+      success: We have resent your confirmation email.
     signed_up_but_unconfirmed:
       first_paragraph_start: We sent an email to
       first_paragraph_end: >
