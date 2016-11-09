@@ -66,12 +66,13 @@ restart the server. See the [rack_mini_profiler] gem for more details.
 #### Testing Analytics
 
 If you want to visualize and query the event and log data, you can install
-Elasticsearch, Logstash, and Kibana. On OS X, the easiest way is with Homebrew:
+the latest versions of Elasticsearch, Logstash, and Kibana.
+On OS X, the easiest way is with Homebrew:
 
 ```
 brew tap homebrew/services
 
-brew install elasticsearch logstash kibana
+brew install elasticsearch logstash kibana # or brew upgrade if already installed
 
 brew services start elasticsearch
 brew services start kibana
@@ -81,7 +82,7 @@ logstash -f logstash.conf
 ```
 
 Change the `logstash_type` entry in `config/application.yml` to `'udp`'
-and restart the Rails server (ctrl-c, then `foreman start`).
+and restart the Rails server (ctrl-c, then `make run`).
 
 When you make a request, you should now see some output in the logstash window.
 
