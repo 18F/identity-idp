@@ -8,6 +8,6 @@ IdentityDecorator = Struct.new(:identity) do
   end
 
   def session_for(session_id)
-    identity.sessions.find_by(session_id: session_id)
+    identity.sessions.find_by(session_id: session_id) || Session.new
   end
 end

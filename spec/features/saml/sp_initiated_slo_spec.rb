@@ -72,11 +72,11 @@ feature 'SP-initiated logout', devise: true do
       visit sp1_authnrequest # sp1
 
       @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       visit sp2_authnrequest # sp2
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
       settings = sp2_saml_settings # sp2
@@ -94,7 +94,7 @@ feature 'SP-initiated logout', devise: true do
       expect(request_xmldoc.asserted_session_index).
         to eq(@sp1_asserted_session_index)
 
-      click_button t('forms.buttons.submit.default') # LogoutRequest for first SP
+      click_submit_default # LogoutRequest for first SP
 
       # SP1 logs user out and responds with success
       # User session is terminated at IdP and success
@@ -102,7 +102,7 @@ feature 'SP-initiated logout', devise: true do
       expect(response_xmldoc.logout_status_assertion).
         to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
 
-      click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP
+      click_submit_default # LogoutResponse for originating SP
 
       sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
 
@@ -124,11 +124,11 @@ feature 'SP-initiated logout', devise: true do
       visit sp1_authnrequest # sp1
 
       @sp1_session_index = response_xmldoc.response_session_index_assertion
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       visit sp2_authnrequest # sp2
       @sp2_session_index = response_xmldoc.response_session_index_assertion
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
@@ -150,6 +150,77 @@ feature 'SP-initiated logout', devise: true do
       expect(page).to have_content t('devise.failure.unauthenticated')
 
       expect(user.active_identities.size).to eq(0)
+    end
+  end
+
+  context 'with multiple SP sessions in multiple browsers' do
+    let(:user) { create(:user, :signed_up) }
+    let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
+    let(:request_xmldoc) { SamlResponseDoc.new('feature', 'request_assertion') }
+
+    before do
+      perform_in_browser(:browser_one) do
+        sign_in_and_2fa_user(user)
+
+        visit sp1_authnrequest # sp1
+        @browser_one_sp1_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+
+        visit sp2_authnrequest # sp2
+        @browser_one_sp2_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+      end
+
+      perform_in_browser(:browser_two) do
+        sign_in_and_2fa_user(user)
+
+        visit sp1_authnrequest # sp1
+        @browser_two_sp1_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+
+        visit sp2_authnrequest # sp2
+        @browser_two_sp2_session_index = response_xmldoc.response_session_index_assertion
+        click_submit_default
+      end
+    end
+
+    it 'terminates session in only one browser' do
+      expect(user.active_identities.size).to eq(2)
+      expect(user.sessions.size).to eq(4)
+
+      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
+      settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+      sp1_slo_request = OneLogin::RubySaml::Logoutrequest.new
+      sp1_slo_request_url = sp1_slo_request.create(settings)
+
+      perform_in_browser(:browser_one) do
+        visit sp1_slo_request_url
+
+        expect(request_xmldoc.asserted_session_index).to eq(@browser_one_sp2_session_index)
+
+        click_submit_default
+      end
+
+      expect(user.active_identities.size).to eq(2)
+      expect(user.sessions.size).to eq(3)
+
+      perform_in_browser(:browser_two) do
+        visit sp1_slo_request_url
+
+        expect(request_xmldoc.asserted_session_index).to eq(@browser_two_sp2_session_index)
+
+        click_submit_default
+
+        visit profile_path
+
+        expect(current_path).to eq root_path
+      end
+
+      expect(user.active_identities.size).to eq(1)
+      expect(user.active_identities.first.service_provider).to eq(sp1_saml_settings.issuer)
+      expect(user.sessions.size).to eq(1)
+      expect(user.sessions.first.uuid).to eq(@browser_one_sp1_session_index.gsub(/^_/, ''))
     end
   end
 

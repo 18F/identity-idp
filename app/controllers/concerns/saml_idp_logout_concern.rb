@@ -33,10 +33,10 @@ module SamlIdpLogoutConcern
   end
 
   def handle_saml_logout_request(resource)
-    # multiple identities present. initiate logoff at first
-    return generate_slo_request if resource.multiple_identities?
+    # multiple sessions present. initiate logoff at first
+    return generate_slo_request if resource.multiple_sessions?(session.id)
 
-    # no more active identities available. deactivate the final identity,
+    # no more active sessions available. deactivate the final identity,
     # log the user out, and send response to SP
     resource.first_identity.deactivate
 

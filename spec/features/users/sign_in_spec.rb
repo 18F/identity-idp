@@ -148,14 +148,14 @@ feature 'Sign in' do
 
       Figaro.env.max_concurrent_sessions.to_i.times do |i|
         browser_name = "browser_#{i}".to_sym
-        in_browser(browser_name) do
+        perform_in_browser(browser_name) do
           visit new_user_session_path
           signin(user.email, user.password)
           expect(current_path).to eq user_two_factor_authentication_path
         end
       end
 
-      in_browser(:over_limit) do
+      perform_in_browser(:over_limit) do
         visit new_user_session_path
         signin(user.email, user.password)
 
@@ -163,12 +163,5 @@ feature 'Sign in' do
         expect(page).to have_content(t('errors.messages.concurrent_sessions'))
       end
     end
-  end
-
-  def in_browser(name)
-    old_session = Capybara.session_name
-    Capybara.session_name = name
-    yield
-    Capybara.session_name = old_session
   end
 end

@@ -70,11 +70,16 @@ class User < ActiveRecord::Base
     identities.
       joins(:sessions).
       where.not(sessions: { identity_id: nil }).
-      order(last_authenticated_at: :asc) || []
+      order(last_authenticated_at: :asc).
+      distinct || []
   end
 
   def multiple_identities?
     active_identities.size > 1
+  end
+
+  def multiple_sessions?(session_id)
+    sessions.where(session_id: session_id).size > 1
   end
 
   def active_profile

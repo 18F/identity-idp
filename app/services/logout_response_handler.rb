@@ -20,6 +20,6 @@ LogoutResponseHandler = Struct.new(:identity, :response, :session_id) do
   def in_slo?
     user = identity.user
 
-    user.multiple_identities? || (user.active_identities.present? && response.nil?)
+    user.multiple_sessions?(session_id) || (user.active_identities.present? && response.nil?)
   end
 end
