@@ -30,6 +30,14 @@ GIT
       randexp
       rotp
 
+GIT
+  remote: https://github.com/mattheworiordan/capybara-screenshot.git
+  revision: 76bcdc0099a1400dcd7c51bb2e01887e296e582d
+  specs:
+    capybara-screenshot (1.0.14)
+      capybara (>= 1.0, < 3)
+      launchy
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -142,9 +150,6 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-screenshot (1.0.14)
-      capybara (>= 1.0, < 3)
-      launchy
     childprocess (0.5.9)
       ffi (~> 1.0, >= 1.0.11)
     choice (0.2.0)
@@ -614,7 +619,7 @@ DEPENDENCIES
   capistrano-rails
   capistrano-rbenv
   capistrano-sidekiq
-  capybara-screenshot
+  capybara-screenshot!
   codeclimate-test-reporter
   database_cleaner
   derailed

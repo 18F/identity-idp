@@ -45,6 +45,10 @@ Rails.application.configure do
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
+  if ENV.key?('RAILS_ASSET_HOST')
+    config.action_controller.asset_host = ENV['RAILS_ASSET_HOST']
+  end
+
   # Debug mode disables concatenation and preprocessing of assets.
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
