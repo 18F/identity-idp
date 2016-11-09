@@ -141,4 +141,29 @@ feature 'Sign in' do
       expect((frequency + warning) % 60).to eq 0
     end
   end
+
+  context 'user attempts too many concurrent sessions' do
+    scenario 'redirects to home page with error' do
+      user = user_with_2fa
+
+      perform_in_browser(:one) do
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq profile_path
+      end
+
+      perform_in_browser(:two) do
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq profile_path
+      end
+
+      perform_in_browser(:one) do
+        visit profile_path
+
+        expect(current_path).to eq new_user_session_path
+        expect(page).to have_content(t('devise.failure.session_limited'))
+      end
+    end
+  end
 end
