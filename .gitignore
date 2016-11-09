@@ -16,7 +16,7 @@
 .powrc
 .sass-cache
 .zeus.sock
-.DS_store
+.DS_Store
 .rspec
 .ruby-gemset
 .ruby-version
@@ -46,6 +46,7 @@ Vagrantfile
 /log/*
 /private_certs/*
 /public/system
+/public/user_flows
 /spec/tmp
 /test
 /tmp/*

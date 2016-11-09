@@ -106,7 +106,6 @@ To run all the tests:
 $ make test
 ```
 
-
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
@@ -115,6 +114,18 @@ Run security scanner
 ```
 $ make brakeman
 ```
+
+#### User flows
+
+We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view. 
+
+The local instance of the application must be running in order to serve up the assets (eg. `make run`). Then, you can specify where the assets are hosted from and generate the views with:
+
+```
+$ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
+```
+
+Then, visit http://localhost:3000/user_flows in your browser!
 
 ### Deploying
 

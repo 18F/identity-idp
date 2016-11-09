@@ -82,7 +82,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'capybara-screenshot'
+  gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
