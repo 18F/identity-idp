@@ -21,7 +21,11 @@ p = link_to confirmation_url(@resource, confirmation_token: @token), \
 table.spacer
   tbody
     tr
-      td.s30 height="30px"
+      td.s10 height="10px"
+        | &nbsp;
+table.hr
+  tr
+    th
       | &nbsp;
 
 p= t('mailer.confirmation_instructions.footer', confirmation_period: @confirmation_period)
