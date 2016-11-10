@@ -53,10 +53,11 @@ html xmlns="http://www.w3.org/1999/xhtml"
                                     h4
                                       = message.subject
                                     == yield
-                                    table.hr
-                                      tr
-                                        th
-                                          | &nbsp;
+                                    table.spacer
+                                      tbody
+                                        tr
+                                          td.s30 height="30px"
+                                            | &nbsp;
                                     p
                                       i = t('mailer.no_reply')
                                     table.spacer

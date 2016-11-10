@@ -20,9 +20,13 @@ p= link_to @root_url, @root_url, target: '_blank'
 table.spacer
   tbody
     tr
-      td.s30 height="30px"
+      td.s10 height="10px"
+        | &nbsp;
+table.hr
+  tr
+    th
       | &nbsp;
 
-p = t('.reset_password')
+p = t('.reset_password', app: APP_NAME)
 
 p == t('.help', app: APP_NAME, link: link_to(Figaro.env.support_url, Figaro.env.support_url))
