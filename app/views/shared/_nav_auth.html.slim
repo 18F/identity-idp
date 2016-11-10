@@ -18,6 +18,6 @@ nav.bg-white
         .mt-12p.h6
           - if user_fully_authenticated?
             = link_to t('shared.nav_auth.my_account'), profile_path,
-              class: current_page?(profile_path) ? 'bold gray' : 'underline'
+              class: current_page?(profile_path) ? 'bold gray text-decoration-none' : ''
             span.px1.silver = '|'
-          = link_to t('links.sign_out'), destroy_user_session_path, class: 'underline'
+          = link_to t('links.sign_out'), destroy_user_session_path

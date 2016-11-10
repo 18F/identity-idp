@@ -16,6 +16,6 @@ p.my3 == t('notices.log_in_consent.text', app: APP_NAME, link: link)
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
   .sm-col-right
-    = link_to t('headings.passwords.forgot'), new_password_path(resource_name), class: 'underline'
+    = link_to t('headings.passwords.forgot'), new_password_path(resource_name)
     span.px1.silver = '|'
-    = link_to t('links.create_account'), new_user_start_path, class: 'underline'
+    = link_to t('links.create_account'), new_user_start_path
