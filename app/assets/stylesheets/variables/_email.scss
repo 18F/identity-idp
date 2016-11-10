@@ -53,7 +53,7 @@ $block-grid-gutter: $global-gutter;
 // 4. Typography
 // -------------
 
-$global-font-color: $black;
+$global-font-color: $gray;
 $body-font-family: Arial, Helvetica, sans-serif;
 $global-font-weight: normal;
 $header-color: inherit;
@@ -81,7 +81,7 @@ $subheader-font-weight: $global-font-weight;
 $subheader-margin-top: 4px;
 $subheader-margin-bottom: 8px;
 $hr-width: $global-width;
-$hr-border: 6px solid $red;
+$hr-border: 2px solid $blue-light;
 $hr-margin: 10px auto;
 $anchor-text-decoration: none;
 $anchor-color: $primary-color;
