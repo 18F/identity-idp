@@ -3,33 +3,28 @@ module SamlIdpAuthConcern
 
   included do
     before_action :validate_saml_request, only: :auth
-    before_action :validate_service_provider, only: :auth
-    before_action :verify_authn_context, only: :auth
-    before_action :store_saml_request_in_session, only: :auth
+    before_action :validate_service_provider_and_authn_context, only: :auth
+    before_action :store_saml_request_attributes_in_session, only: :auth
     before_action :confirm_two_factor_authenticated, only: :auth
   end
 
   private
 
-  def verify_authn_context
-    return if Saml::Idp::Constants::VALID_AUTHN_CONTEXTS.include?(requested_authn_context)
-
-    process_invalid_authn_context
-  end
-
-  def validate_service_provider
-    add_sp_metadata_to_session and return if current_service_provider.valid?
-
-    analytics.track_event(
-      Analytics::SAML_INVALID_SERVICE_PROVIDER,
-      service_provider: current_service_provider.issuer
+  def validate_service_provider_and_authn_context
+    @result = SamlRequestValidator.new.call(
+      service_provider: current_service_provider,
+      authn_context: requested_authn_context
     )
 
+    return unless @result[:errors].present?
+
+    analytics.track_event(Analytics::SAML_AUTH, @result)
     render nothing: true, status: :unauthorized
   end
 
   # stores original SAMLRequest in session to continue SAML Authn flow
-  def store_saml_request_in_session
+  def store_saml_request_attributes_in_session
+    add_sp_metadata_to_session
     session[:saml_request_url] = request.original_url
   end
 
@@ -42,11 +37,6 @@ module SamlIdpAuthConcern
 
   def requested_authn_context
     @requested_authn_context ||= saml_request.requested_authn_context
-  end
-
-  def process_invalid_authn_context
-    logger.info(error: 'Invalid authn context', authn_context: requested_authn_context)
-    render nothing: true, status: :bad_request
   end
 
   def link_identity_from_session_data
