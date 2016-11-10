@@ -126,6 +126,10 @@ production:
     sp_initiated_login_url: 'https://sp.dev.login.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
+    agency: 'dev_agency'
+    friendly_name: 'Dev Agency'
+    logo: 'generic.svg'
+    return_to_sp_url: 'https://sp.dev.login.gov'
     attribute_bundle:
       - email
 
