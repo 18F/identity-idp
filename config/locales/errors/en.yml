@@ -1,6 +1,7 @@
 en:
   errors:
     messages:
+      blank: Please fill in this field.
       improbable_phone: Phone number is invalid. Please make sure you enter a 10-digit phone number.
       weak_password: Your password is not strong enough. %{feedback}
       already_confirmed: was already confirmed, please try signing in

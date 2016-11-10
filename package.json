@@ -11,9 +11,7 @@
     "npm": "~3.8.x"
   },
   "dependencies": {
-    "classlist.js": "^1.1.20150312",
     "field-kit": "^2.1.0",
-    "h5f": "^1.1.1",
     "hint.css": "^2.3.2",
     "normalize.css": "^4.2.0",
     "zxcvbn": "^4.3.0"
