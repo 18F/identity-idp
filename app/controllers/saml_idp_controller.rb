@@ -16,8 +16,7 @@ class SamlIdpController < ApplicationController
     link_identity_from_session_data
 
     needs_idv = identity_needs_verification?
-
-    analytics.track_event(Analytics::SAML_AUTH, idv: needs_idv)
+    analytics.track_event(Analytics::SAML_AUTH, @result.merge(idv: needs_idv))
 
     return redirect_to idv_url if needs_idv
 

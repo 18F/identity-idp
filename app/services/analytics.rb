@@ -55,8 +55,7 @@ class Analytics
   PASSWORD_RESET_TOKEN_EXPIRED = 'Reset password: token expired'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PHONE_CHANGE_SUCCESSFUL = 'Phone Number Change: successful'.freeze
-  SAML_AUTH = 'SAML: auth'.freeze
-  SAML_INVALID_SERVICE_PROVIDER = 'SAML: invalid service provider'.freeze
+  SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SETUP_2FA_INVALID_PHONE = '2FA setup: invalid phone number'.freeze
   SETUP_2FA_VALID_PHONE = '2FA setup: valid phone number'.freeze

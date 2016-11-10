@@ -184,20 +184,46 @@ describe SamlIdpController do
     end
 
     context 'authn_context is invalid' do
-      it 'renders nothing with a 400 error' do
+      it 'renders nothing with a 401 error' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
         saml_get_auth(invalid_authn_context_settings)
 
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(401)
         expect(response.body).to be_empty
+
+        analytics_hash = {
+          authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
+          errors: ['Unauthorized authentication context'],
+          service_provider: 'http://localhost:3000',
+          valid: false
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
       end
     end
 
     context 'authn_context is missing' do
-      it 'renders nothing with a 400 error' do
+      it 'renders nothing with a 401 error' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
         saml_get_auth(missing_authn_context_saml_settings)
 
-        expect(response.status).to eq(400)
+        expect(response.status).to eq(401)
         expect(response.body).to be_empty
+
+        analytics_hash = {
+          authn_context: nil,
+          errors: ['Unauthorized authentication context'],
+          service_provider: 'http://localhost:3000',
+          valid: false
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
       end
     end
 
@@ -211,8 +237,39 @@ describe SamlIdpController do
         generate_saml_response(user, invalid_service_provider_settings)
 
         expect(response.status).to eq(401)
+
+        analytics_hash = {
+          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          errors: ['Unauthorized Service Provider'],
+          service_provider: 'invalid_provider',
+          valid: false
+        }
+
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_INVALID_SERVICE_PROVIDER, service_provider: 'invalid_provider')
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
+
+    context 'both service provider and authn_context are invalid' do
+      it 'responds with a 401 Unauthorized error' do
+        user = create(:user, :signed_up)
+
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        generate_saml_response(user, invalid_service_provider_and_authn_context_settings)
+
+        expect(response.status).to eq(401)
+
+        analytics_hash = {
+          authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
+          errors: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
+          service_provider: 'invalid_provider',
+          valid: false
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
       end
     end
 
@@ -669,8 +726,7 @@ describe SamlIdpController do
     end
 
     def stub_auth
-      allow(controller).to receive(:validate_saml_request).and_return(true)
-      allow(controller).to receive(:verify_authn_context).and_return(true)
+      allow(controller).to receive(:validate_saml_request_and_authn_context).and_return(true)
       allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
       allow(controller).to receive(:link_identity_from_session_data).and_return(true)
     end
@@ -682,7 +738,16 @@ describe SamlIdpController do
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, idv: true)
+        analytics_hash = {
+          authn_context: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+          errors: [],
+          service_provider: 'http://localhost:3000',
+          valid: true,
+          idv: true
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
 
         get :auth
       end
@@ -695,7 +760,15 @@ describe SamlIdpController do
         stub_analytics
         allow(controller).to receive(:identity_needs_verification?).and_return(false)
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, idv: false)
+        analytics_hash = {
+          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          errors: [],
+          service_provider: 'http://localhost:3000',
+          valid: true,
+          idv: false
+        }
+
+        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
 
         generate_saml_response(user)
       end
@@ -709,9 +782,8 @@ describe SamlIdpController do
         :disable_caching,
         [:apply_secure_headers_override, only: [:auth, :logout]],
         [:validate_saml_request, only: :auth],
-        [:validate_service_provider, only: :auth],
-        [:verify_authn_context, only: :auth],
-        [:store_saml_request_in_session, only: :auth],
+        [:validate_service_provider_and_authn_context, only: :auth],
+        [:store_saml_request_attributes_in_session, only: :auth],
         [:confirm_two_factor_authenticated, only: :auth]
       )
     end
