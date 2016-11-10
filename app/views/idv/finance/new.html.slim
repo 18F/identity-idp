@@ -16,6 +16,6 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro')
   = f.input :finance_account, required: true,
     label: @finance_account_label, label_html: { class: 'js-finance-label' }
   = f.button :submit, t('idv.messages.finance.continue'), class: 'btn btn-primary btn-wide'
-  .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path, class: 'underline'
+  .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path
 
 == javascript_include_tag 'misc/page-unload-warning'

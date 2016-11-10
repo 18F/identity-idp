@@ -20,5 +20,5 @@ h1.h3.my0 = decorated_session.registration_heading
   - ab_test(:demo) do |variant, _|
     = link_to t(variant), new_user_registration_path, class: 'btn btn-primary btn-wide mb4'
 .clearfix.pt1.border-top
-  - auth_link = link_to(t('links.sign_in'), new_user_session_path, class: 'underline')
+  - auth_link = link_to t('links.sign_in'), new_user_session_path
   .sm-col-right == t('instructions.registration.already_have_account', link: auth_link)
