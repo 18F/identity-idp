@@ -255,6 +255,14 @@ feature 'Password Recovery' do
 
       expect(page).to have_content 'is too short (minimum is 8 characters)'
     end
+
+    it "does not update the user's password when password is invalid" do
+      fill_in 'New password', with: '1234'
+      click_button t('forms.passwords.edit.buttons.submit')
+
+      signin(@user.email, '1234')
+      expect(current_path).to eq new_user_session_path
+    end
   end
 
   scenario 'user takes too long to click the reset password link' do
@@ -276,30 +284,6 @@ feature 'Password Recovery' do
     expect(page).to have_content t('devise.passwords.token_expired')
 
     expect(current_path).to eq new_user_password_path
-  end
-
-  scenario 'user takes too long to reset password' do
-    user = create(:user, :signed_up)
-
-    visit new_user_password_path
-    fill_in 'Email', with: user.email
-    click_button t('forms.buttons.reset_password')
-
-    raw_reset_token, db_confirmation_token =
-      Devise.token_generator.generate(User, :reset_password_token)
-    user.update(reset_password_token: db_confirmation_token)
-
-    visit edit_user_password_path(reset_password_token: raw_reset_token)
-
-    Timecop.travel(Devise.reset_password_within + 1.minute)
-
-    fill_in 'New password', with: 'NewVal!dPassw0rd'
-    click_button t('forms.passwords.edit.buttons.submit')
-
-    expect(page).to have_content t('devise.passwords.token_expired')
-    expect(current_path).to eq new_user_password_path
-
-    Timecop.return
   end
 
   scenario 'unconfirmed user requests reset instructions', email: true do
