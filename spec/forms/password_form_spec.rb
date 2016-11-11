@@ -5,29 +5,7 @@ describe PasswordForm, type: :model do
 
   it_behaves_like 'password validation'
 
-  it "is initialized with the user's reset_password_token" do
-    user = build_stubbed(:user, reset_password_token: 'foo')
-
-    form = PasswordForm.new(user)
-
-    expect(form.reset_password_token).to eq 'foo'
-  end
-
   describe '#submit' do
-    context 'when the form is valid but the user is not valid' do
-      it 'returns false' do
-        user = build_stubbed(:user)
-        user.errors.add(:reset_password_token, 'expired')
-
-        form = PasswordForm.new(user)
-
-        password = 'valid password'
-
-        expect(form.submit(password: password)).
-          to eq false
-      end
-    end
-
     context 'when the form is invalid' do
       it 'returns false' do
         user = build_stubbed(:user)
@@ -38,10 +16,12 @@ describe PasswordForm, type: :model do
 
         expect(form.submit(password: password)).
           to eq false
+
+        expect(user.password).to_not eq password
       end
     end
 
-    context 'when both the form and user are valid' do
+    context 'when the form is valid' do
       it 'sets the user password to the submitted password' do
         user = build_stubbed(:user)
 
@@ -66,9 +46,7 @@ describe PasswordForm, type: :model do
         passwords = [user.email, 'custom!@', 'benevolent', 'custom benevolent comcast', APP_NAME]
 
         passwords.each do |password|
-          expect(form.submit(password: password)).
-            to eq false
-
+          expect(form.submit(password: password)).to eq false
           expect(form.errors.full_messages.first).to match 'not strong enough'
         end
       end

@@ -48,11 +48,9 @@ class Analytics
   PASSWORD_CREATE_INVALID = 'Password Create: invalid password'.freeze
   PASSWORD_CREATE_USER_CONFIRMED = 'Password Create: created and user confirmed'.freeze
   PASSWORD_RESET_DEACTIVATED_ACCOUNT = 'Password Reset: deactivated verified profile via password reset'.freeze
-  PASSWORD_RESET_INVALID_PASSWORD = 'Password Reset: invalid password'.freeze
-  PASSWORD_RESET_INVALID_TOKEN = 'Password Reset: invalid token'.freeze
-  PASSWORD_RESET_REQUEST = 'Password Reset: request'.freeze
-  PASSWORD_RESET_SUCCESSFUL = ''.freeze
-  PASSWORD_RESET_TOKEN_EXPIRED = 'Reset password: token expired'.freeze
+  PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
+  PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
+  PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PHONE_CHANGE_SUCCESSFUL = 'Phone Number Change: successful'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
