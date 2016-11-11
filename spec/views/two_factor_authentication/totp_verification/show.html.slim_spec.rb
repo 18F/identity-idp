@@ -8,7 +8,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
     render
 
-    expect(rendered).to have_content 'Please enter the code from your authenticator app'
+    expect(rendered).to have_content 'Enter the code from your authenticator app.'
     expect(rendered).to have_content "enter the code corresponding to #{user.email}"
   end
 
