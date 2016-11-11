@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'devise/passwords/edit.html.slim' do
   before do
     user = build_stubbed(:user, :signed_up)
-    @password_form = PasswordForm.new(user)
+    @reset_password_form = ResetPasswordForm.new(user)
   end
 
   it 'has a localized title' do
