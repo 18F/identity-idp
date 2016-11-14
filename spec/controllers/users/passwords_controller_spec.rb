@@ -87,7 +87,8 @@ describe Users::PasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: ['is too short (minimum is 8 characters)', 'token_expired'],
-          user_id: user.uuid
+          user_id: user.uuid,
+          active_profile: false
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -114,7 +115,8 @@ describe Users::PasswordsController, devise: true do
         analytics_hash = {
           success: false,
           errors: ['is too short (minimum is 8 characters)'],
-          user_id: '123'
+          user_id: '123',
+          active_profile: false
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -145,7 +147,8 @@ describe Users::PasswordsController, devise: true do
         analytics_hash = {
           success: true,
           errors: [],
-          user_id: user.uuid
+          user_id: user.uuid,
+          active_profile: false
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -179,7 +182,8 @@ describe Users::PasswordsController, devise: true do
         analytics_hash = {
           success: true,
           errors: [],
-          user_id: user.uuid
+          user_id: user.uuid,
+          active_profile: true
         }
 
         expect(@analytics).to have_received(:track_event).
