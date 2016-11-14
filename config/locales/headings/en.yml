@@ -17,13 +17,13 @@ en:
       forgot: Forget your password? #why is this here and not in links/en.yml?
       confirm: Confirm your password to continue
     privacy_policy:
-      privacy_act: Privacy Act Statement
-      security_practices: Our Security Practices #should this be in sentence case?
-      privacy_practices: Our Privacy Practices #should this be in sentence case?
+      privacy_act: Privacy Act statement
+      security_practices: Our security practices 
+      privacy_practices: Our privacy practices 
       authorities: Authorities
       purpose: Purpose
       disclosure: Disclosure
-      routine_uses: Routine Uses #should this be in sentence case?
+      routine_uses: Routine uses
       more_information: For more information
     profile:
       profile_info: Profile information
