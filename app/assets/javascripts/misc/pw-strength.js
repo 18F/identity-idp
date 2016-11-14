@@ -35,7 +35,7 @@ function getFeedback(z) {
 
 function analyzePw() {
   const input = document.querySelector(
-    '#password_form_password, #update_user_password_form_password'
+    '#password_form_password, #reset_password_form_password, #update_user_password_form_password'
   );
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');

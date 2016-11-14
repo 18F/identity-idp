@@ -9,12 +9,15 @@ FeatureEnvy:
     - append_info_to_payload
     - generate_slo_request
     - reauthn?
+    - mark_profile_inactive
 IrresponsibleModule:
   enabled: false
 NilCheck:
   exclude:
     - AdminConstraint#user_is_admin?
     - PasswordsController#edit
+    - PasswordsController#mark_profile_inactive
+    - PasswordResetTokenValidator#result
     - PhoneConfirmationFlow
     - slo_not_implemented_at_sp?
     - in_slo?
