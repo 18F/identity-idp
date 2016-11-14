@@ -4,10 +4,6 @@
 # http://en.wikipedia.org/wiki/Cron
 # Learn more: http://github.com/javan/whenever
 
-every :day, at: '3:00 am', roles: [:job_creator] do
-  rake 'clear_expired_sessions'
-end
-
 set :output, '/srv/idp/shared/log/cron.log'
 env :PATH, ENV['PATH']
 
