@@ -18,7 +18,8 @@ describe ResetPasswordForm, type: :model do
         result = {
           success: false,
           errors: ['token_expired'],
-          user_id: '123'
+          user_id: '123',
+          active_profile: false
         }
 
         expect(form.submit(password: password)).to eq result
@@ -37,7 +38,8 @@ describe ResetPasswordForm, type: :model do
         result = {
           success: false,
           errors: ['is too short (minimum is 8 characters)'],
-          user_id: '123'
+          user_id: '123',
+          active_profile: false
         }
 
         expect(form.submit(password: password)).to eq result
@@ -56,7 +58,8 @@ describe ResetPasswordForm, type: :model do
         result = {
           success: true,
           errors: [],
-          user_id: '123'
+          user_id: '123',
+          active_profile: false
         }
 
         expect(form.submit(password: password)).to eq result
@@ -75,7 +78,8 @@ describe ResetPasswordForm, type: :model do
         result = {
           success: false,
           errors: ['is too short (minimum is 8 characters)', 'token_expired'],
-          user_id: '123'
+          user_id: '123',
+          active_profile: false
         }
 
         expect(form.submit(password: password)).to eq result
@@ -100,7 +104,8 @@ describe ResetPasswordForm, type: :model do
               'Your password is not strong enough. Add another word or two. ' \
               'Uncommon words are better.'
             ],
-            user_id: nil
+            user_id: nil,
+            active_profile: false
           }
 
           expect(form.submit(password: password)).
