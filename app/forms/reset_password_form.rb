@@ -35,7 +35,8 @@ class ResetPasswordForm
     {
       success: success,
       errors: errors.messages.values.flatten,
-      user_id: user.uuid
+      user_id: user.uuid,
+      active_profile: user.active_profile.present?
     }
   end
 end
