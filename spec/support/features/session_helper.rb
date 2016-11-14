@@ -90,6 +90,14 @@ module Features
       user
     end
 
+    def sign_in_live_with_2fa(user = user_with_2fa)
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      sign_in_user(user)
+      click_submit_default
+      click_submit_default
+      user
+    end
+
     def click_submit_default
       click_button t('forms.buttons.submit.default')
     end
@@ -97,6 +105,13 @@ module Features
     def enter_correct_otp_code_for_user(user)
       fill_in 'code', with: user.reload.direct_otp
       click_submit_default
+    end
+
+    def perform_in_browser(name)
+      old_session = Capybara.session_name
+      Capybara.session_name = name
+      yield
+      Capybara.session_name = old_session
     end
   end
 end
