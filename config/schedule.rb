@@ -8,6 +8,9 @@ every :day, at: '3:00 am', roles: [:job_creator] do
   rake 'clear_expired_sessions'
 end
 
+set :output, '/srv/idp/shared/log/cron.log'
+env :PATH, ENV['PATH']
+
 require File.expand_path(File.dirname(__FILE__) + '/environment')
 
 health_check = Whenever.seconds(Figaro.env.queue_health_check_frequency_seconds.to_i, :seconds)
