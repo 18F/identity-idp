@@ -1,0 +1,50 @@
+# In order to perform scrypt calculation of password in a single
+# place for both password and PII encryption, we override
+# a few methods to build the encrypted_password via UserAccessKey
+#
+module UserAccessKeyOverrides
+  extend ActiveSupport::Concern
+
+  attr_accessor :user_access_key
+
+  def password_digest(password)
+    user_access_key = UserAccessKey.new(password, authenticatable_salt)
+    encrypted_key_maker.make(user_access_key)
+    self.encryption_key ||= user_access_key.encryption_key
+    user_access_key.encrypted_password
+  end
+
+  def valid_password?(password)
+    return false if encrypted_password.blank?
+    begin
+      unlock_user_access_key(password)
+    rescue Pii::EncryptionError => _err
+      return false
+    end
+    Devise.secure_compare(encrypted_password, user_access_key.encrypted_password)
+  end
+
+  def unlock_user_access_key(password)
+    self.user_access_key = UserAccessKey.new(password, authenticatable_salt)
+    encrypted_key_maker.unlock(user_access_key, encryption_key)
+    user_access_key
+  end
+
+  def password=(new_password)
+    if new_password.present?
+      self.password_salt = Devise.friendly_token[0, 20]
+      self.encryption_key = nil
+    end
+    super
+  end
+
+  def authenticatable_salt
+    password_salt
+  end
+
+  private
+
+  def encrypted_key_maker
+    @_key_maker ||= EncryptedKeyMaker.new
+  end
+end

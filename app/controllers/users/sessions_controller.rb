@@ -55,7 +55,7 @@ module Users
 
     def cache_active_profile
       cacher = Pii::Cacher.new(current_user, user_session)
-      cacher.save(params[:user][:password])
+      cacher.save(current_user.user_access_key)
     end
   end
 end

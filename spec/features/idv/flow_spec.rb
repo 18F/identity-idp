@@ -208,7 +208,8 @@ feature 'IdV session' do
       expect(user.reload.active_profile).to be_a(Profile)
       expect(user.active_profile.verified_at.present?).to eq true
 
-      decrypted_pii = user.active_profile.decrypt_pii(user_password)
+      user_access_key = user.unlock_user_access_key(user_password)
+      decrypted_pii = user.active_profile.decrypt_pii(user_access_key)
       expect(decrypted_pii.ssn).to eq '666661234'
     end
 
