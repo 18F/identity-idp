@@ -31,12 +31,8 @@ class Analytics
   AUTHENTICATION_MAX_2FA_ATTEMPTS = 'Authentication: user reached max 2FA attempts'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUESTED = 'Email Change: requested'.freeze
-  EMAIL_CHANGED_AND_CONFIRMED = 'Email Change: changed and confirmed'.freeze
   EMAIL_CHANGED_TO_EXISTING = 'Email Change: user attempted to change their email to an existing email'.freeze
-  EMAIL_CONFIRMATION_INVALID_TOKEN = 'Email Confirmation: invalid email confirmation token'.freeze
-  EMAIL_CONFIRMATION_TOKEN_EXPIRED = 'Email Confirmation: token expired'.freeze
-  EMAIL_CONFIRMATION_USER_ALREADY_CONFIRMED = 'Email Confirmation: user already confirmed'.freeze
-  EMAIL_CONFIRMATION_VALID_TOKEN = 'Email Confirmation: valid token'.freeze
+  EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
   IDV_FAILED = 'IdV: Failed'.freeze
   IDV_SUCCESSFUL = 'IdV: Successful'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
@@ -45,8 +41,7 @@ class Analytics
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   PAGE_NOT_FOUND = 'Page Not Found'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
-  PASSWORD_CREATE_INVALID = 'Password Create: invalid password'.freeze
-  PASSWORD_CREATE_USER_CONFIRMED = 'Password Create: created and user confirmed'.freeze
+  PASSWORD_CREATION = 'Password Creation'.freeze
   PASSWORD_RESET_DEACTIVATED_ACCOUNT = 'Password Reset: deactivated verified profile via password reset'.freeze
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
