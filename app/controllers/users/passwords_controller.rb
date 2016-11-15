@@ -28,7 +28,7 @@ module Users
 
     # PUT /resource/password
     def update
-      self.resource = token_user(user_params)
+      self.resource = user_matching_token(user_params[:reset_password_token])
 
       @reset_password_form = ResetPasswordForm.new(resource)
 
@@ -44,6 +44,14 @@ module Users
     end
 
     protected
+
+    def user_matching_token(token)
+      reset_password_token = Devise.token_generator.digest(User, :reset_password_token, token)
+
+      user = User.find_or_initialize_with_error_by(:reset_password_token, reset_password_token)
+      user.reset_password_token = token if user.reset_password_token.present?
+      user
+    end
 
     def token_user(params)
       @_token_user ||= User.with_reset_password_token(params[:reset_password_token])

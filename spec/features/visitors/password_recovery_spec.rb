@@ -263,6 +263,18 @@ feature 'Password Recovery' do
       signin(@user.email, '1234')
       expect(current_path).to eq new_user_session_path
     end
+
+    it 'allows multiple attempts with invalid password' do
+      fill_in 'New password', with: '1234'
+      click_button t('forms.passwords.edit.buttons.submit')
+
+      expect(page).to have_content 'is too short'
+
+      fill_in 'New password', with: '5678'
+      click_button t('forms.passwords.edit.buttons.submit')
+
+      expect(page).to have_content 'is too short'
+    end
   end
 
   scenario 'user takes too long to click the reset password link' do
