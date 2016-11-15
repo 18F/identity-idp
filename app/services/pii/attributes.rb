@@ -10,9 +10,9 @@ module Pii
       attrs
     end
 
-    def self.new_from_encrypted(encrypted, _password, _salt)
-      encryptor = Pii::Encryptor.new
-      decrypted = encryptor.decrypt(encrypted)
+    def self.new_from_encrypted(encrypted, user_access_key)
+      encryptor = Pii::PasswordEncryptor.new
+      decrypted = encryptor.decrypt(encrypted, user_access_key)
       new_from_json(decrypted)
     end
 
@@ -24,9 +24,9 @@ module Pii
       attrs
     end
 
-    def encrypted(_password, _salt)
-      encryptor = Pii::Encryptor.new
-      encryptor.encrypt(to_json)
+    def encrypted(user_access_key)
+      encryptor = Pii::PasswordEncryptor.new
+      encryptor.encrypt(to_json, user_access_key)
     end
   end
 end

@@ -154,5 +154,46 @@ describe Users::SessionsController, devise: true do
 
       post :create, user: { email: 'foo@example.com', password: 'password' }
     end
+
+    context 'LOA1 user' do
+      it 'hashes password exactly once' do
+        allow(FeatureManagement).to receive(:use_kms?).and_return(false)
+        encrypted_key_maker = EncryptedKeyMaker.new
+        allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
+        user = create(:user, :signed_up)
+
+        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
+        expect(encrypted_key_maker).to receive(:unlock).exactly(:once).and_call_original
+
+        post :create, user: { email: user.email.upcase, password: user.password }
+      end
+    end
+
+    context 'LOA3 user' do
+      before do
+        allow(FeatureManagement).to receive(:use_kms?).and_return(false)
+      end
+
+      it 'hashes password exactly once' do
+        encrypted_key_maker = EncryptedKeyMaker.new
+        allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
+        user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+
+        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
+        expect(encrypted_key_maker).to receive(:unlock).exactly(:once).and_call_original
+
+        post :create, user: { email: user.email.upcase, password: user.password }
+      end
+
+      it 'caches PII in the user session' do
+        user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+
+        post :create, user: { email: user.email.upcase, password: user.password }
+
+        expect(controller.user_session[:decrypted_pii]).to match '1234'
+      end
+    end
   end
 end

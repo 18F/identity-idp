@@ -45,7 +45,7 @@ module IdvSession
   def init_questions_and_profile(resolution)
     idv_session.resolution = resolution
     idv_session.question_number = 0
-    idv_session.set_applicant_profile_id(idv_session.applicant, password)
-    idv_session.cache_encrypted_pii(password)
+    idv_session.cache_applicant_profile_id(idv_session.applicant)
+    idv_session.cache_encrypted_pii(current_user.user_access_key)
   end
 end
