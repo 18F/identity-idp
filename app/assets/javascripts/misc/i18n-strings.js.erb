@@ -9,6 +9,33 @@ window.LoginGov = window.LoginGov || {};
   'instructions.password.strength.iv',
   'instructions.password.strength.v',
   'valid_email.validations.email.invalid',
+  'zxcvbn.feedback.Use a few words, avoid common phrases',
+  'zxcvbn.feedback.No need for symbols, digits, or uppercase letters',
+  'zxcvbn.feedback.Add another word or two_ Uncommon words are better_',
+  'zxcvbn.feedback.Straight rows of keys are easy to guess',
+  'zxcvbn.feedback.Short keyboard patterns are easy to guess',
+  'zxcvbn.feedback.Use a longer keyboard pattern with more turns',
+  'zxcvbn.feedback.Repeats like "aaa" are easy to guess',
+  'zxcvbn.feedback.Repeats like "abcabcabc" are only slightly harder to guess than "abc"',
+  'zxcvbn.feedback.Avoid repeated words and characters',
+  'zxcvbn.feedback.Sequences like abc or 6543 are easy to guess',
+  'zxcvbn.feedback.Avoid sequences',
+  'zxcvbn.feedback.Recent years are easy to guess',
+  'zxcvbn.feedback.Avoid recent years',
+  'zxcvbn.feedback.Avoid years that are associated with you',
+  'zxcvbn.feedback.Dates are often easy to guess',
+  'zxcvbn.feedback.Avoid dates and years that are associated with you',
+  'zxcvbn.feedback.This is a top-10 common password',
+  'zxcvbn.feedback.This is a top-100 common password',
+  'zxcvbn.feedback.This is a very common password',
+  'zxcvbn.feedback.This is similar to a commonly used password',
+  'zxcvbn.feedback.A word by itself is easy to guess',
+  'zxcvbn.feedback.Names and surnames by themselves are easy to guess',
+  'zxcvbn.feedback.Common names and surnames are easy to guess',
+  'zxcvbn.feedback.Capitalization doesn\'t help very much',
+  'zxcvbn.feedback.All-uppercase is almost as easy to guess as all-lowercase',
+  'zxcvbn.feedback.Reversed words aren\'t much harder to guess',
+  'zxcvbn.feedback.Predictable substitutions like \'@\' instead of \'a\' don\'t help very much'
 ] %>
 
 window.LoginGov.I18n = {
@@ -17,5 +44,5 @@ window.LoginGov.I18n = {
 };
 
 <% keys.each do |key| %>
-  window.LoginGov.I18n.strings['<%= key %>'] = '<%= I18n.t(key) %>';
+window.LoginGov.I18n.strings['<%= ActionController::Base.helpers.j key %>'] = '<%= ActionController::Base.helpers.j I18n.t(key) %>';
 <% end %>
