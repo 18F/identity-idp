@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Profile do
-  let(:user) { create(:user, :signed_up, password: password) }
+  let(:user) { create(:user, :signed_up, password: 'a really long sekrit') }
   let(:another_user) { create(:user, :signed_up) }
   let(:profile) { create(:profile, user: user) }
   let(:pii) do
@@ -12,7 +12,7 @@ describe Profile do
       last_name: 'Doe'
     )
   end
-  let(:password) { 'a really long sekrit' }
+  let(:user_access_key) { user.unlock_user_access_key(user.password) }
 
   it { is_expected.to belong_to(:user) }
 
@@ -20,7 +20,7 @@ describe Profile do
     it 'encrypts PII' do
       expect(profile.encrypted_pii).to be_nil
 
-      profile.encrypt_pii(password, pii)
+      profile.encrypt_pii(user_access_key, pii)
 
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Jane'
@@ -32,9 +32,9 @@ describe Profile do
     it 'decrypts PII' do
       expect(profile.encrypted_pii).to be_nil
 
-      profile.encrypt_pii(password, pii)
+      profile.encrypt_pii(user_access_key, pii)
 
-      decrypted_pii = profile.decrypt_pii(password)
+      decrypted_pii = profile.decrypt_pii(user_access_key)
 
       expect(decrypted_pii).to eq pii
     end
@@ -63,32 +63,31 @@ describe Profile do
     it 'allows multiple records per user if only one is active' do
       profile.active = true
       pii_attrs = Pii::Attributes.new_from_hash(ssn: '1234')
-      profile.encrypt_pii(password, pii_attrs)
+      profile.encrypt_pii(user_access_key, pii_attrs)
       profile.save!
       expect do
-        user.password = password
         create(:profile, pii: { ssn: '1234' }, user: user)
       end.to_not raise_error
     end
 
     it 'prevents save! via ActiveRecord uniqueness validation' do
       profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(password, pii)
+      profile.encrypt_pii(user_access_key, pii)
       profile.save!
       expect do
         another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(password, pii)
+        another_profile.encrypt_pii(user_access_key, pii)
         another_profile.save!
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'prevents save! via psql unique partial index' do
       profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(password, pii)
+      profile.encrypt_pii(user_access_key, pii)
       profile.save!
       expect do
         another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(password, pii)
+        another_profile.encrypt_pii(user_access_key, pii)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end

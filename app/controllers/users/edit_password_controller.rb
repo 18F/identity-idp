@@ -39,7 +39,8 @@ module Users
     def re_encrypt_active_profile
       active_profile = current_user.active_profile
       return unless active_profile.present?
-      active_profile.encrypt_pii(user_params[:password], current_pii)
+      user_access_key = current_user.unlock_user_access_key(user_params[:password])
+      active_profile.encrypt_pii(user_access_key, current_pii)
       active_profile.save!
     end
 

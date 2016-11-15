@@ -66,12 +66,6 @@ describe 'FeatureManagement', type: :feature do
       it 'enables the feature' do
         expect(FeatureManagement.use_kms?).to eq(true)
       end
-
-      xit 'throws exception when attempting to fetch PII signing key' do
-        expect do
-          Pii::KeyMaker.new
-        end.to raise_error RuntimeError
-      end
     end
   end
 end

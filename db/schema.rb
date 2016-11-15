@@ -116,6 +116,8 @@ ActiveRecord::Schema.define(version: 20161114195108) do
     t.integer  "idv_attempts",                              default: 0
     t.string   "recovery_code"
     t.string   "unique_session_id"
+    t.string   "password_salt"
+    t.string   "encryption_key"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

@@ -202,8 +202,8 @@ feature 'saml api', devise: true do
 
         expect(current_url).to eq saml_authn_request
 
-        password = Features::SessionHelper::VALID_PASSWORD
-        profile_phone = user.active_profile.decrypt_pii(password).phone
+        user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
+        profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
 
         expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
       end

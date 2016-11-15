@@ -287,8 +287,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
     context 'idv phone confirmation' do
       before do
-        sign_in_as_user
-        idv_session = Idv::Session.new(subject.user_session, subject.current_user)
+        user = sign_in_as_user
+        idv_session = Idv::Session.new(subject.user_session, user)
         idv_session.params = { 'phone' => '+1 (555) 555-5555' }
         subject.user_session[:unconfirmed_phone] = '+1 (555) 555-5555'
         subject.user_session[:context] = 'idv'
