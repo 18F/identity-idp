@@ -104,18 +104,22 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        params = { password: 'pass', reset_password_token: 'foo' }
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
+        user = create(
+          :user,
+          :signed_up,
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.current
+        )
 
-        user = User.new(uuid: '123')
-        allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
-        allow(user).to receive(:reset_password_period_valid?).and_return(true)
-
+        params = { password: 'short', reset_password_token: raw_reset_token }
         put :update, reset_password_form: params
 
         analytics_hash = {
           success: false,
           errors: ['is too short (minimum is 8 characters)'],
-          user_id: '123',
+          user_id: user.uuid,
           active_profile: false
         }
 
@@ -131,17 +135,20 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        password = 'a really long passw0rd'
-        token = 'foo'
-        params = { password: password, reset_password_token: token }
-
-        user = User.new(uuid: '123')
-        allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
+        user = create(
+          :user,
+          :signed_up,
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.current
+        )
         allow(user).to receive(:active_profile).and_return(nil)
-        allow(user).to receive(:reset_password_period_valid?).and_return(true)
 
         stub_email_notifier(user)
 
+        password = 'a really long passw0rd'
+        params = { password: password, reset_password_token: raw_reset_token }
         put :update, reset_password_form: params
 
         analytics_hash = {
@@ -164,18 +171,20 @@ describe Users::PasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        password = 'a really long passw0rd'
-        token = 'foo'
-        params = { password: password, reset_password_token: token }
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
 
         profile = create(:profile, :active, :verified)
         user = profile.user
-        user.reset_password_token = token
+        user.update(
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.current
+        )
 
         stub_email_notifier(user)
 
-        allow(User).to receive(:with_reset_password_token).with(token).and_return(user)
-        allow(user).to receive(:reset_password_period_valid?).and_return(true)
+        password = 'a really long passw0rd'
+        params = { password: password, reset_password_token: raw_reset_token }
 
         put :update, reset_password_form: params
 
