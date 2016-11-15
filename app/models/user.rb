@@ -16,6 +16,9 @@ class User < ActiveRecord::Base
     omniauth_providers: [:saml]
   )
 
+  # IMPORTANT this comes *after* devise() call.
+  include UserAccessKeyOverrides
+
   enum role: { user: 0, tech: 1, admin: 2 }
 
   has_one_time_password

@@ -4,6 +4,13 @@ include Features::LocalizationHelper
 include Features::MailerHelper
 
 describe Users::EditPasswordController do
+  def stub_email_notifier(user)
+    email_notifier = instance_double(EmailNotifier)
+    allow(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
+
+    expect(email_notifier).to receive(:send_password_changed_email)
+  end
+
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do
@@ -14,10 +21,7 @@ describe Users::EditPasswordController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        email_notifier = instance_double(EmailNotifier)
-        allow(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
-
-        expect(email_notifier).to receive(:send_password_changed_email)
+        stub_email_notifier(user)
 
         params = { password: 'salty new password', current_password: user.password }
         patch :update, update_user_password_form: params
@@ -29,33 +33,28 @@ describe Users::EditPasswordController do
       end
 
       it 're-encrypts PII on active profile' do
-        stub_sign_in
+        user = stub_sign_in
+        profile = build(:profile, :active, user: user, pii: { ssn: '1234' })
+        allow(user).to receive(:active_profile).and_return(profile)
 
-        user = controller.current_user
-        profile = create(:profile, :active, user: user, pii: { ssn: '1234' })
-
-        old_password = user.password
         new_password = 'salty new password'
+        old_password = user.password
+        old_user_access_key = user.unlock_user_access_key(old_password)
 
         cacher = Pii::Cacher.new(user, controller.user_session)
-        cacher.save(old_password, profile)
+        cacher.save(old_user_access_key, profile)
 
-        email_notifier = instance_double(EmailNotifier)
-        allow(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
+        stub_email_notifier(user)
 
-        expect(email_notifier).to receive(:send_password_changed_email)
-
-        params = { password: new_password, current_password: old_password }
+        params = { password: new_password, current_password: user.password }
         patch :update, update_user_password_form: params
 
-        profile.reload
+        new_user_access_key = user.unlock_user_access_key(new_password)
 
-        expect(profile.decrypt_pii(new_password)).to be_a Pii::Attributes
-        expect(profile.decrypt_pii(new_password).ssn).to eq '1234'
-
-        pending('actual encryption')
+        expect(profile.decrypt_pii(new_user_access_key)).to be_a Pii::Attributes
+        expect(profile.decrypt_pii(new_user_access_key).ssn).to eq '1234'
         expect do
-          profile.decrypt_pii(old_password)
+          profile.decrypt_pii(old_user_access_key)
         end.to raise_error Pii::EncryptionError
       end
     end

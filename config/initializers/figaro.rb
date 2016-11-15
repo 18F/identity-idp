@@ -24,6 +24,7 @@ Figaro.require_keys(
   'requests_per_ip_period',
   'saml_passphrase',
   'secret_key_base',
+  'session_encryption_key',
   'session_timeout_in_minutes',
   'support_email',
   'twilio_accounts',

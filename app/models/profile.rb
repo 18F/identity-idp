@@ -14,19 +14,13 @@ class Profile < ActiveRecord::Base
     end
   end
 
-  def decrypt_pii(password)
-    Pii::Attributes.new_from_encrypted(encrypted_pii, password, salt)
+  def decrypt_pii(user_access_key)
+    Pii::Attributes.new_from_encrypted(encrypted_pii, user_access_key)
   end
 
-  def encrypt_pii(password, pii)
+  def encrypt_pii(user_access_key, pii)
     ssn = pii.ssn
     self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
-    self.encrypted_pii = pii.encrypted(password, salt)
-  end
-
-  private
-
-  def salt
-    Pii::Fingerprinter.fingerprint(ssn_signature.to_s + user.uuid.to_s)
+    self.encrypted_pii = pii.encrypted(user_access_key)
   end
 end

@@ -31,8 +31,8 @@ module Idv
       resolution.present? && applicant.present? && resolution.success?
     end
 
-    def set_applicant_profile_id(applicant, password)
-      self.profile_id = Idv::ProfileFromApplicant.create(applicant, current_user, password).id
+    def cache_applicant_profile_id(applicant)
+      self.profile_id = Idv::ProfileFromApplicant.create(applicant, current_user).id
     end
 
     def cache_encrypted_pii(password)
@@ -74,7 +74,7 @@ module Idv
     attr_accessor :user_session, :current_user
 
     def move_pii_to_user_session
-      user_session[:encrypted_pii] = session.delete(:encrypted_pii)
+      user_session[:decrypted_pii] = session.delete(:decrypted_pii)
     end
 
     def session

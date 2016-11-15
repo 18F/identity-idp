@@ -2,10 +2,10 @@ module Idv
   class ProfileFromApplicant
     attr_reader :profile
 
-    def self.create(applicant, user, password)
+    def self.create(applicant, user)
       profile = Profile.new(user: user)
       plain_pii = pii_from_applicant(applicant)
-      profile.encrypt_pii(password, plain_pii)
+      profile.encrypt_pii(user.user_access_key, plain_pii)
       profile.save!
       profile
     end

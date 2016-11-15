@@ -13,6 +13,7 @@ AllCops:
     - 'bin/**/*'
     - 'config/initializers/devise.rb'
     - 'db/migrate/*'
+    - 'spec/services/pii/nist_encryption_spec.rb'
   TargetRubyVersion: 2.3
   UseCache: true
 
