@@ -27,7 +27,7 @@ en:
       duplicate_ssn: >
         An account already exists with the information you provided.
       fail: >
-        Sorry, we were unable to verify your identity based on the information you provided.
+        Sorry, we can't verify your identity based on the information you submitted.
       hardfail: >
         We were unable to verify your identity at this time.
       missing_finance: You must provide a financial account number.
@@ -44,19 +44,16 @@ en:
         please %{link}.
       activated_link: contact us
       hardfail: >
-        Your login.gov account can’t be used to access information with
-        participating agencies until you successfully complete this process.
+        We can't verify your identity right now.
       hardfail2: >
-        You can try to complete the verification process again in %{hours} hours.
+        You can try again in %{hours} hours.
       hardfail3: >
-        If you’re unable to verify your identity through this process there might
-        be other options available to you. Please see our troubleshooting page to learn about those options.
+        If you still can't verify your identity, visit our troubleshooting page 
+        to find answers to common questions about verification.
       hardfail4: >
-        You can also return to the agency website that directed you here to try to sign in there
-        for the services you are attempting to access.
+        You can also go to %{sp} for more help in accessing services.
       cancel: >
-        To access your information with the participating agency’s website,
-        %{app} needs to verify your identity. We need to collect some basic
+        To continue, %{app} needs to verify your identity. We need to collect some basic
         personal information as well as some financial information from you to
         complete this process. If you don’t have the information we need at this
         time you can continue later.

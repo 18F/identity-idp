@@ -18,4 +18,8 @@ class SessionDecorator
   def registration_bullet_1
     I18n.t('devise.registrations.start.bullet_1_without_sp')
   end
+
+  def idv_hardfail4_partial
+    'shared/null'
+  end
 end
