@@ -27,9 +27,15 @@ function getFeedback(z) {
   if (!z || z.score > 2) return '';
 
   const { warning, suggestions } = z.feedback;
-  if (!warning && !suggestions.length) return '';
+  function lookup(str) {
+    const strFormatted = str.replace(/\./g, '_');
+    return I18n.t(`zxcvbn.feedback.${strFormatted}`);
+  }
 
-  return warning || `${suggestions.map(function(s) { return s; }).join('; ')}`;
+  if (!warning && !suggestions.length) return '';
+  if (warning) return lookup(warning);
+
+  return `${suggestions.map(function(s) { return lookup(s); }).join('; ')}`;
 }
 
 
