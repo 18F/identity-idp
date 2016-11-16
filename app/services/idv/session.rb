@@ -3,7 +3,7 @@ module Idv
     delegate :questions, to: :resolution
 
     VALID_SESSION_ATTRIBUTES = [
-      :question_number, :resolution, :vendor, :applicant, :params, :profile_id
+      :question_number, :resolution, :vendor, :applicant, :params, :profile_id, :recovery_code
     ].freeze
 
     def initialize(user_session, current_user)
@@ -32,7 +32,9 @@ module Idv
     end
 
     def cache_applicant_profile_id(applicant)
-      self.profile_id = Idv::ProfileFromApplicant.create(applicant, current_user).id
+      profile = Idv::ProfileFromApplicant.create(applicant, current_user)
+      self.profile_id = profile.id
+      self.recovery_code = profile.recovery_code
     end
 
     def cache_encrypted_pii(password)

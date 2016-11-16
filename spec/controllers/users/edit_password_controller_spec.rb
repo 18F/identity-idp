@@ -51,6 +51,7 @@ describe Users::EditPasswordController do
 
         new_user_access_key = user.unlock_user_access_key(new_password)
 
+        expect(flash[:recovery_code]).to be_present
         expect(profile.decrypt_pii(new_user_access_key)).to be_a Pii::Attributes
         expect(profile.decrypt_pii(new_user_access_key).ssn).to eq '1234'
         expect do
