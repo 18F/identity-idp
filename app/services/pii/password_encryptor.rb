@@ -12,6 +12,7 @@ module Pii
     end
 
     def decrypt(ciphertext, user_access_key)
+      raise EncryptionError unless sane_payload?(ciphertext)
       encrypted_d, encrypted_c = split_into_segments(ciphertext)
       hash_e = if user_access_key.unlocked?
                  user_access_key.hash_e
