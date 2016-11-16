@@ -103,6 +103,15 @@ describe Profile do
     end
   end
 
+  describe '#deactivate' do
+    it 'sets active flag to false' do
+      profile = create(:profile, :active, user: user)
+      profile.deactivate
+
+      expect(profile).to_not be_active
+    end
+  end
+
   describe 'scopes' do
     describe '#active' do
       it 'returns only active Profiles' do
