@@ -39,7 +39,7 @@ en:
         Please check that the personal and financial information you provided is accurate.
         To learn more about the information we need from you and how it’s used to verify your identity,
         please see our troubleshooting page.
-      activated: >
+      activated_html: >
         Your identity has been verified. If you need to change your verified information,
         please %{link}.
       activated_link: contact us
@@ -48,7 +48,7 @@ en:
       hardfail2: >
         You can try again in %{hours} hours.
       hardfail3: >
-        If you still can't verify your identity, visit our troubleshooting page 
+        If you still can't verify your identity, visit our troubleshooting page
         to find answers to common questions about verification.
       hardfail4: >
         You can also go to %{sp} for more help in accessing services.
@@ -61,9 +61,9 @@ en:
       dupe_ssn1: >
         If you are getting this error, you may have already created and verified
         an account, but with a different email address.
-      dupe_ssn2: Please %{link} with the email address you originally used.
+      dupe_ssn2_html: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
-      dupe_ssn3: If you can’t remember your original login information, you can %{link}.
+      dupe_ssn3_html: If you can’t remember your original login information, you can %{link}.
       dupe_ssn3_link: try recovering it here
       review_and_continue: Review my info and try again
       finance:

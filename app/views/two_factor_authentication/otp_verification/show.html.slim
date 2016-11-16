@@ -8,7 +8,7 @@ p.mt-tiny.mb0#code-instructs == t('instructions.2fa.confirm_code',
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt3 sm-mt4') do
   = hidden_field_tag(:reauthn, reauthn?)
   = label_tag 'code', \
-    raw(t('simple_form.required.html')) + t('forms.two_factor.code'), \
+    t('simple_form.required.html') + t('forms.two_factor.code'), \
     class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag(:code, '', value: @code_value, required: true,

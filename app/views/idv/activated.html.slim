@@ -1,6 +1,6 @@
 - title t('idv.titles.activated')
 
 h1.h3.my0 = t('idv.titles.activated')
-- activated_link = link_to(t('idv.messages.activated_link'), Figaro.env.support_url)
-p.mt-tiny.mb0 = t('idv.messages.activated', link: activated_link).html_safe
+p.mt-tiny.mb0 = t('idv.messages.activated_html',
+                link: link_to(t('idv.messages.activated_link'), Figaro.env.support_url))
 = link_to 'Back', idv_url
