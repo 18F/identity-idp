@@ -26,6 +26,17 @@ describe Profile do
       expect(profile.encrypted_pii).to_not match 'Jane'
       expect(profile.encrypted_pii).to_not match '666'
     end
+
+    it 'generates new recovery code' do
+      expect(profile.encrypted_pii_recovery).to be_nil
+
+      initial_recovery_code = user.recovery_code
+
+      profile.encrypt_pii(user_access_key, pii)
+
+      expect(profile.encrypted_pii_recovery).to_not be_nil
+      expect(user.recovery_code).to_not eq initial_recovery_code
+    end
   end
 
   describe '#decrypt_pii' do
@@ -37,6 +48,16 @@ describe Profile do
       decrypted_pii = profile.decrypt_pii(user_access_key)
 
       expect(decrypted_pii).to eq pii
+    end
+  end
+
+  describe '#recover_pii' do
+    it 'decrypts the encrypted_pii_recovery using a recovery code' do
+      expect(profile.encrypted_pii_recovery).to be_nil
+
+      recovery_code = profile.encrypt_pii(user_access_key, pii)
+
+      expect(profile.recover_pii(recovery_code)).to eq pii
     end
   end
 

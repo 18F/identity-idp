@@ -21,5 +21,25 @@ describe TwoFactorAuthentication::RecoveryCodeController do
 
       expect(response).to redirect_to profile_path
     end
+
+    context 'LOA3 user' do
+      it 're-encrypts PII using new code' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+        user = profile.user
+        stub_sign_in(user)
+
+        generator = RecoveryCodeGenerator.new(user)
+        allow(RecoveryCodeGenerator).to receive(:new).and_return(generator)
+
+        user.unlock_user_access_key(user.password)
+        cacher = Pii::Cacher.new(user, subject.user_session)
+        cacher.save(user.user_access_key, profile)
+        allow(Pii::Cacher).to receive(:new).and_return(cacher)
+
+        expect(user.active_profile).to receive(:update!).and_call_original
+
+        get :show
+      end
+    end
   end
 end
