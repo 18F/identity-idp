@@ -14,6 +14,10 @@ class Profile < ActiveRecord::Base
     end
   end
 
+  def deactivate
+    update!(active: false)
+  end
+
   def decrypt_pii(user_access_key)
     Pii::Attributes.new_from_encrypted(encrypted_pii, user_access_key)
   end

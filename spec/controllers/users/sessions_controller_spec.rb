@@ -194,6 +194,23 @@ describe Users::SessionsController, devise: true do
 
         expect(controller.user_session[:decrypted_pii]).to match '1234'
       end
+
+      it 'deactivates profile if not de-cryptable' do
+        user = create(:user, :signed_up)
+        profile = create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
+        profile.update!(encrypted_pii: Base64.strict_encode64('nonsense'))
+
+        stub_analytics
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: true, user_id: user.uuid)
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::PROFILE_ENCRYPTION_INVALID, user_id: user.uuid)
+
+        post :create, user: { email: user.email, password: user.password }
+
+        expect(controller.user_session[:decrypted_pii]).to be_nil
+        expect(profile.reload).to_not be_active
+      end
     end
   end
 end
