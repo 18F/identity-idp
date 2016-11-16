@@ -1,6 +1,11 @@
 - title t('titles.profile')
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
+- if @recovery_code
+  p.mt-tiny.mb0 = t('idv.messages.recovery_code')
+  .mt4.mb4.py2.px3.inline-block.fs-20p.border.border-dashed.monospace = @recovery_code
+  br
+
 - if @decrypted_pii
   h2.h3.my0.mr1.inline-block = t('headings.profile.profile_info')
   = content_tag(:span, t('headings.profile.profile_info_tt'),

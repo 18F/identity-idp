@@ -19,6 +19,7 @@ module IdvSession
   end
 
   def confirm_idv_vendor_session_started
+    return if flash[:allow_confirmations_continue]
     redirect_to idv_session_path unless idv_session.proofing_started?
   end
 

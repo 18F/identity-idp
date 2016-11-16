@@ -13,6 +13,10 @@ module Idv
       end
     end
 
+    def continue
+      redirect_to after_sign_in_path_for(current_user)
+    end
+
     private
 
     def idv_questions
@@ -57,12 +61,12 @@ module Idv
     end
 
     def finish_proofing_success
+      @recovery_code = idv_session.recovery_code
       idv_attempter.reset
       idv_session.complete_profile
       idv_session.clear
-      flash[:success] = I18n.t('idv.titles.complete')
+      flash[:allow_confirmations_continue] = true
       analytics.track_event(Analytics::IDV_SUCCESSFUL)
-      redirect_to after_sign_in_path_for(current_user)
     end
   end
 end

@@ -85,6 +85,7 @@ Rails.application.routes.draw do
   get '/idv/questions' => 'idv/questions#index'
   post '/idv/questions' => 'idv/questions#create'
   get '/idv/confirmations' => 'idv/confirmations#index'
+  post '/idv/confirmations/continue' => 'idv/confirmations#continue'
   get '/idv/session' => 'idv/sessions#new'
   put '/idv/session' => 'idv/sessions#create'
   get '/idv/session/dupe' => 'idv/sessions#dupe'

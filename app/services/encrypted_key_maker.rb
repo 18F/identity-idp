@@ -7,7 +7,9 @@ class EncryptedKeyMaker
   # @return [UserAccessKey]
   #
   def make(user_access_key)
-    raise 'user_access_key must be a UserAccessKey' unless user_access_key.is_a? UserAccessKey
+    unless user_access_key.is_a? UserAccessKey
+      raise "user_access_key must be a UserAccessKey - you passed #{user_access_key}"
+    end
     if FeatureManagement.use_kms?
       make_kms(user_access_key)
     else
@@ -20,18 +22,24 @@ class EncryptedKeyMaker
   # @param encryption_key [String] stored on User model
   # @return hash_E [String]
   def unlock(user_access_key, encryption_key)
-    raise Pii::EncryptionError, 'user_access_key must be a UserAccessKey' unless
-      user_access_key.is_a? UserAccessKey
-    raise Pii::EncryptionError, 'cannot use invalid base64 encryption_key' unless
-      valid_base64_encoding?(encryption_key)
+    unless user_access_key.is_a? UserAccessKey
+      raise Pii::EncryptionError, 'user_access_key must be a UserAccessKey'
+    end
+    unless valid_base64_encoding?(encryption_key)
+      raise Pii::EncryptionError, 'cannot use invalid base64 encryption_key'
+    end
+    unlock_key(user_access_key, encryption_key)
+  end
+
+  private
+
+  def unlock_key(user_access_key, encryption_key)
     if FeatureManagement.use_kms?
       unlock_kms(user_access_key, encryption_key)
     else
       unlock_local(user_access_key, encryption_key)
     end
   end
-
-  private
 
   def build_user_access_key(user_access_key, encrypted_key)
     user_access_key.store_encrypted_key(encrypted_key)
@@ -58,8 +66,9 @@ class EncryptedKeyMaker
 
   def unlock_local(user_access_key, encryption_key)
     ciphertext = user_access_key.xor(decode(encryption_key))
-    raise Pii::EncryptionError, 'invalid base64-encoded ciphertext' unless
-      valid_base64_encoding?(ciphertext)
+    unless valid_base64_encoding?(ciphertext)
+      raise Pii::EncryptionError, 'invalid base64-encoded ciphertext'
+    end
     user_access_key.unlock(encryptor.decrypt(ciphertext, Figaro.env.password_pepper))
   end
 

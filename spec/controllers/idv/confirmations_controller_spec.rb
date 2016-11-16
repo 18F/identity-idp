@@ -67,6 +67,8 @@ describe Idv::ConfirmationsController do
           end
 
           it 'redirects to original SAML Authn request' do
+            post :continue
+
             expect(response).to redirect_to saml_authn_request
           end
 
@@ -80,6 +82,7 @@ describe Idv::ConfirmationsController do
             subject.session[:saml_request_url] = nil
             complete_idv_session(true)
             get :index
+            post :continue
           end
 
           it 'redirects to IdP profile' do

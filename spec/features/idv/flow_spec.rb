@@ -45,10 +45,14 @@ feature 'IdV session' do
       fill_in :user_password, with: user_password
       click_button t('forms.buttons.submit.default')
 
+      expect(current_url).to eq idv_confirmations_url
       expect(page).to have_content(t('idv.titles.complete'))
+
+      click_button t('forms.buttons.acknowledge_recovery_code')
+
+      expect(current_url).to eq(profile_url)
       expect(page).to have_content('Some One')
       expect(page).to have_content('123 Main St')
-      expect(current_url).to eq(profile_url)
       expect(user.reload.active_profile).to be_a(Profile)
     end
 
@@ -181,9 +185,23 @@ feature 'IdV session' do
         expect(page).to have_link t('forms.two_factor.try_again'), href: idv_phone_path
 
         enter_correct_otp_code_for_user(user)
+        click_acknowledge_recovery_code
 
         expect(current_path).to eq profile_path
       end
+    end
+
+    scenario 'recovery code presented on success' do
+      recovery_code = 'a1b2c3d4e5f6g7h8'
+
+      user = sign_in_and_2fa_user
+      visit idv_session_path
+
+      allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
+      complete_idv_profile_ok(user)
+
+      expect(page).to have_content(t('idv.titles.complete'))
+      expect(page).to have_content(t('idv.messages.recovery_code'))
     end
   end
 
@@ -204,6 +222,9 @@ feature 'IdV session' do
       complete_idv_questions_ok
 
       expect(page).to have_content(t('idv.titles.complete'))
+
+      click_acknowledge_recovery_code
+
       expect(current_url).to eq(profile_url)
       expect(user.reload.active_profile).to be_a(Profile)
       expect(user.active_profile.verified_at.present?).to eq true
