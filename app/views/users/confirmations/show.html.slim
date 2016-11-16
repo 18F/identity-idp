@@ -12,7 +12,6 @@ p.mb0
     url: confirm_path,
     method: :patch,
     html: { role: 'form', autocomplete: 'off' }) do |f|
-  = f.error_notification
   = f.input :password, required: true,
       input_html: { 'aria-describedby': 'password-description' }
   = render 'devise/shared/password_strength'
