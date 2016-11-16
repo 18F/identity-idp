@@ -199,6 +199,7 @@ feature 'saml api', devise: true do
         click_on 'Yes'
 
         complete_idv_profile_ok(user.reload)
+        click_acknowledge_recovery_code
 
         expect(current_url).to eq saml_authn_request
 

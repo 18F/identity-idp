@@ -80,4 +80,8 @@ module IdvHelper
     fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
     click_submit_default
   end
+
+  def click_acknowledge_recovery_code
+    click_button t('forms.buttons.acknowledge_recovery_code')
+  end
 end

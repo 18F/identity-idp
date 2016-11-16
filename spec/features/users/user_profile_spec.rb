@@ -35,6 +35,20 @@ feature 'User profile' do
 
       expect(current_path).to eq profile_path
     end
+
+    context 'LOA3 user' do
+      it 'generates a new recovery code' do
+        profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
+        sign_in_live_with_2fa(profile.user)
+
+        visit settings_password_path
+        fill_in 'update_user_password_form_password', with: 'this is a great sentence'
+        click_button 'Update'
+
+        expect(current_path).to eq profile_path
+        expect(page).to have_content(t('idv.messages.recovery_code'))
+      end
+    end
   end
 
   describe 'Regenerating recovery code' do

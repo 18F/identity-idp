@@ -85,6 +85,9 @@ en:
           password as long as it meets the criteria above.
       questions:
         intro: Question %{number}
+      recovery_code:
+        This is your new recovery code. Write it down and keep it in a safe place.
+        You will need it if you ever lose your password.
       review:
         intro: Please review your information and ensure it is correct.
       sessions:

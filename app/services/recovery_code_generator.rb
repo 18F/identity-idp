@@ -1,4 +1,6 @@
 class RecoveryCodeGenerator
+  attr_reader :user_access_key
+
   def initialize(user, length: 16)
     @user = user
     @length = length
@@ -6,34 +8,38 @@ class RecoveryCodeGenerator
   end
 
   def create
+    @user_access_key = make_user_access_key(raw_recovery_code)
+
     user.update!(recovery_code: hashed_code)
 
     raw_recovery_code
   end
 
   def verify(plaintext_code)
-    uak = user_access_key(plaintext_code)
+    @user_access_key = make_user_access_key(plaintext_code)
     encryption_key, encrypted_code = user.recovery_code.split(Pii::Encryptor::DELIMITER)
     begin
-      key_maker.unlock(uak, encryption_key)
+      key_maker.unlock(user_access_key, encryption_key)
     rescue Pii::EncryptionError => _err
       return false
     end
-    Devise.secure_compare(encrypted_code, uak.encrypted_password)
+    Devise.secure_compare(encrypted_code, user_access_key.encrypted_password)
   end
 
   private
 
   attr_reader :length, :user, :key_maker
 
-  def user_access_key(code)
+  def make_user_access_key(code)
     UserAccessKey.new(code, user.password_salt)
   end
 
   def hashed_code
-    uak = user_access_key(raw_recovery_code)
-    key_maker.make(uak)
-    [uak.encryption_key, uak.encrypted_password].join(Pii::Encryptor::DELIMITER)
+    key_maker.make(user_access_key)
+    [
+      user_access_key.encryption_key,
+      user_access_key.encrypted_password
+    ].join(Pii::Encryptor::DELIMITER)
   end
 
   def raw_recovery_code
