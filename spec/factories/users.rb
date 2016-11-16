@@ -21,7 +21,9 @@ FactoryGirl.define do
 
     trait :signed_up do
       with_phone
-      recovery_code '$2a$10$vOkU3l3j0aYgWbXVdwJA5.FICxwydpvPrzBuzjFZUXDnPeXkMHeLe'
+      after :build do |user|
+        user.recovery_code = RecoveryCodeGenerator.new(user).create
+      end
     end
 
     trait :unconfirmed do

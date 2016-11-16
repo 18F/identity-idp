@@ -177,7 +177,8 @@ feature 'Two Factor Authentication' do
   describe 'signing in when user does not already have recovery code' do
     # For example, when migrating users from another DB
     it 'displays recovery code and redirects to profile after acknowledging' do
-      user = create(:user, :signed_up, recovery_code: nil)
+      user = create(:user, :signed_up)
+      user.update!(recovery_code: nil)
 
       sign_in_user(user)
       click_button t('forms.buttons.submit.default')
