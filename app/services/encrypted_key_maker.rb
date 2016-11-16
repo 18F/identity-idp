@@ -58,7 +58,7 @@ class EncryptedKeyMaker
 
   def unlock_local(user_access_key, encryption_key)
     ciphertext = user_access_key.xor(decode(encryption_key))
-    raise Pii::EncryptionError, 'Invalid base64-encoded ciphertext' unless
+    raise Pii::EncryptionError, 'invalid base64-encoded ciphertext' unless
       valid_base64_encoding?(ciphertext)
     user_access_key.unlock(encryptor.decrypt(ciphertext, Figaro.env.password_pepper))
   end

@@ -18,7 +18,7 @@ module Pii
     end
 
     def decrypt(ciphertext, cek)
-      raise EncryptionError unless sane_payload?(ciphertext)
+      raise EncryptionError, 'ciphertext is invalid' unless sane_payload?(ciphertext)
       decrypt_and_test_payload(decode(ciphertext), cek)
     end
 
@@ -37,7 +37,7 @@ module Pii
       rescue OpenSSL::Cipher::CipherError => err
         raise EncryptionError, err
       end
-      raise EncryptionError unless sane_payload?(payload)
+      raise EncryptionError, 'payload is invalid' unless sane_payload?(payload)
       plaintext, fingerprint = split_into_segments(payload)
       return plaintext if Pii::Fingerprinter.verify(plaintext, fingerprint)
     end
