@@ -5,6 +5,6 @@ h1.h3.my0 = t('headings.passwords.forgot')
 = simple_form_for(resource,
                   url: user_password_path,
                   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
-  = f.error_notification
+
   = f.input :email, required: true
   = f.button :submit, t('forms.buttons.reset_password'), class: 'mt2 mb1'

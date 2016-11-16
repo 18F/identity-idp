@@ -8,7 +8,6 @@ p.mt-tiny.mb0#2fa-description
     html: { autocomplete: 'off', role: 'form' },
     method: :patch,
     url: phone_setup_path) do |f|
-  = f.error_notification
   = f.label :phone, class: 'block'
     strong.left = t('devise.two_factor_authentication.otp_phone_label')
     span.ml1.italic = t('devise.two_factor_authentication.otp_phone_label_info')

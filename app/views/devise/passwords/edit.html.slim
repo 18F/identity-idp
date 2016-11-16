@@ -7,7 +7,6 @@ h1.h3.my0 = t('headings.passwords.change')
     html: { autocomplete: 'off',
     method: :put,
     role: 'form' }) do |f|
-  = f.error_notification
   = f.input :reset_password_token, as: :hidden
   = f.full_error :reset_password_token
   = f.input :password, label: t('forms.passwords.edit.labels.password'), required: true
