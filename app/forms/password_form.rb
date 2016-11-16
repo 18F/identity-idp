@@ -11,10 +11,20 @@ class PasswordForm
 
     self.password = submitted_password
 
-    if valid?
-      user.password = submitted_password
-    else
-      false
-    end
+    @success = valid?
+
+    result
+  end
+
+  private
+
+  attr_reader :success
+
+  def result
+    {
+      success: success,
+      errors: errors.messages.values.flatten,
+      user_id: user.uuid
+    }
   end
 end
