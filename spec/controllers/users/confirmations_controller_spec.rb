@@ -7,29 +7,57 @@ describe Users::ConfirmationsController, devise: true do
     end
 
     it 'tracks nil email confirmation token' do
+      analytics_hash = {
+        success: false,
+        error: "Confirmation token can't be blank",
+        user_id: nil,
+        existing_user: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: 'nil')
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: nil
     end
 
     it 'tracks blank email confirmation token' do
+      analytics_hash = {
+        success: false,
+        error: "Confirmation token can't be blank",
+        user_id: nil,
+        existing_user: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: '')
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: ''
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
+      analytics_hash = {
+        success: false,
+        error: 'Confirmation token is invalid',
+        user_id: nil,
+        existing_user: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: "''")
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: "''"
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
+      analytics_hash = {
+        success: false,
+        error: 'Confirmation token is invalid',
+        user_id: nil,
+        existing_user: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_INVALID_TOKEN, token: '""')
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: '""'
     end
@@ -37,8 +65,15 @@ describe Users::ConfirmationsController, devise: true do
     it 'tracks already confirmed token' do
       user = create(:user, confirmation_token: 'foo')
 
+      analytics_hash = {
+        success: false,
+        error: 'Email was already confirmed, please try signing in',
+        user_id: user.uuid,
+        existing_user: true
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_USER_ALREADY_CONFIRMED, user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: 'foo'
     end
@@ -47,8 +82,15 @@ describe Users::ConfirmationsController, devise: true do
       user = create(:user, :unconfirmed)
       user.update(confirmation_token: 'foo', confirmation_sent_at: Time.current - 2.days)
 
+      analytics_hash = {
+        success: false,
+        error: 'Confirmation token has expired',
+        user_id: user.uuid,
+        existing_user: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_TOKEN_EXPIRED, user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: 'foo'
     end
@@ -61,8 +103,15 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
+      analytics_hash = {
+        success: true,
+        error: '',
+        user_id: user.uuid,
+        existing_user: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CONFIRMATION_VALID_TOKEN, user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: 'foo'
     end
@@ -71,37 +120,61 @@ describe Users::ConfirmationsController, devise: true do
   describe 'initial password creation' do
     it 'tracks a valid password event' do
       user = create(:user, :unconfirmed)
-      user.update(confirmation_token: 'foo')
+      token, = Devise.token_generator.generate(User, :confirmation_token)
+      user.update(
+        confirmation_token: token, confirmation_sent_at: Time.current
+      )
 
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::PASSWORD_CREATE_USER_CONFIRMED)
+      analytics_hash = {
+        success: true,
+        errors: [],
+        user_id: user.uuid
+      }
 
-      patch :confirm, password_form: { password: 'NewVal!dPassw0rd' }, confirmation_token: 'foo'
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::PASSWORD_CREATION, analytics_hash)
+
+      patch :confirm, password_form: { password: 'NewVal!dPassw0rd' }, confirmation_token: token
+
+      expect(user.reload.valid_password?('NewVal!dPassw0rd')).to eq true
     end
 
     it 'tracks an invalid password event' do
       user = create(:user, :unconfirmed)
-      user.update(confirmation_token: 'foo')
+      token, = Devise.token_generator.generate(User, :confirmation_token)
+      user.update(
+        confirmation_token: token, confirmation_sent_at: Time.current
+      )
 
       stub_analytics
 
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::PASSWORD_CREATE_INVALID, user_id: user.uuid)
+      analytics_hash = {
+        success: false,
+        errors: ['is too short (minimum is 8 characters)'],
+        user_id: user.uuid
+      }
 
-      patch :confirm, password_form: { password: 'NewVal' }, confirmation_token: 'foo'
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::PASSWORD_CREATION, analytics_hash)
+
+      patch :confirm, password_form: { password: 'NewVal' }, confirmation_token: token
     end
 
-    context 'user supplies invalid password' do
-      it 'calls PasswordForm#submit' do
-        form = instance_double(PasswordForm)
-        allow(PasswordForm).to receive(:new).and_return(form)
+    it 'calls PasswordForm#submit' do
+      form = instance_double(PasswordForm)
+      allow(PasswordForm).to receive(:new).and_return(form)
 
-        expect(form).to receive(:submit).with(password: 'password')
+      analytics_hash = {
+        success: true,
+        errors: []
+      }
 
-        patch :confirm, password_form: { password: 'password' }, confirmation_token: 'foo'
-      end
+      expect(form).to receive(:submit).with(password: 'password').
+        and_return(analytics_hash)
+
+      patch :confirm, password_form: { password: 'password' }, confirmation_token: 'foo'
     end
   end
 
@@ -116,8 +189,15 @@ describe Users::ConfirmationsController, devise: true do
 
       stub_analytics
 
+      analytics_hash = {
+        success: true,
+        error: '',
+        user_id: user.uuid,
+        existing_user: true
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_CHANGED_AND_CONFIRMED, user_id: user.uuid)
+        with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :show, confirmation_token: 'foo'
     end

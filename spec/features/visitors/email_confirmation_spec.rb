@@ -58,12 +58,15 @@ feature 'Email confirmation during sign up' do
   end
 
   scenario 'visitor signs up but confirms with an expired token' do
-    allow(Devise).to receive(:confirm_within).and_return(24.hours)
     user = create(:user, :unconfirmed)
-    confirm_last_user
-    user.update(confirmation_sent_at: Time.current - 2.days)
+    raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
-    visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
+    user.update(
+      confirmation_token: raw_confirmation_token,
+      confirmation_sent_at: Time.current - Devise.confirm_within - 2.days
+    )
+
+    visit user_confirmation_url(confirmation_token: raw_confirmation_token)
 
     expect(current_path).to eq user_confirmation_path
     expect(page).to have_content t(
