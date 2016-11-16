@@ -21,6 +21,7 @@ describe RecoveryCodeForm do
     context 'when the form is invalid' do
       it 'returns false for success?' do
         user = build_stubbed(:user, :signed_up)
+        RecoveryCodeGenerator.new(user).create
 
         result = RecoveryCodeForm.new(user, 'foo').submit
 
