@@ -56,14 +56,14 @@ class UserFlowFormatter < RSpec::Core::Formatters::DocumentationFormatter
   end
 
   def stop(_notification)
-    puts "Complete!\n"
+    Kernel.puts "Complete!\n"
     @html += '</pre></body></html>'
     File.open(@user_flows_html_file, 'wb') do |file|
       file.write(@html)
     end
 
-    puts 'User flows output to:'
-    puts flows_output_url
+    Kernel.puts 'User flows output to:'
+    Kernel.puts flows_output_url
   end
 
   private
