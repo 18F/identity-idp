@@ -7,3 +7,5 @@
         p.mb3 == t('session_timeout_warning', time_left_in_session: time_left_in_session)
         = link_to t('forms.buttons.continue_browsing'),
           request.original_url, class: 'btn btn-primary'
+        = link_to t('forms.buttons.sign_out'),
+          destroy_user_session_path, class: 'ml2 btn btn-outline'
