@@ -15,7 +15,7 @@ p.mt-tiny.mb0 = t('idv.messages.review.intro')
       | #{idv_params[:address2]}<br>
     | #{idv_params[:city]}, #{idv_params[:state]} #{idv_params[:zipcode]}
   .mt3.h6 = t('idv.review.dob')
-  .h4.bold #{idv_params[:dob].to_time.to_s(:date_pretty)}
+  .h4.bold #{idv_params[:dob].to_date.to_formatted_s(:long)}
   .mt3.h6 = t('idv.review.ssn')
   .h4.bold #{idv_params[:ssn]}
 
