@@ -67,12 +67,12 @@ feature 'Sign in' do
       allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
         and_return(Devise.timeout_in.to_s)
+
+      sign_in_and_2fa_user
+      visit root_path
     end
 
     scenario 'user sees warning before session times out' do
-      sign_in_and_2fa_user
-      visit root_path
-
       expect(page).to have_css('#session-timeout-msg')
 
       request_headers = page.driver.network_traffic.flat_map(&:headers).uniq
@@ -81,10 +81,19 @@ feature 'Sign in' do
       expect(request_headers).to include ajax_headers
       expect(page).to have_content('7 minutes and 59 seconds')
       expect(page).to have_content('7 minutes and 58 seconds')
+    end
 
+    scenario 'user can continue browsing' do
       find_link(t('forms.buttons.continue_browsing')).trigger('click')
 
       expect(current_path).to eq profile_path
+    end
+
+    scenario 'user has option to sign out' do
+      click_link(t('forms.buttons.sign_out'))
+
+      expect(page).to have_content t('devise.sessions.signed_out')
+      expect(current_path).to eq new_user_session_path
     end
   end
 

@@ -36,7 +36,7 @@ en:
       enter_email: Start making your account
       verify_email: Check your email
     search: Search for a user
-    session_timeout_warning: Session timeout
+    session_timeout_warning: Need more time?
     totp_setup:
       start: Set up two-factor authentication
       new: Scan the QR code with your device

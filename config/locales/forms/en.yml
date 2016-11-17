@@ -3,7 +3,8 @@ en:
     buttons:
       acknowledge_recovery_code: Continue
       continue: Continue
-      continue_browsing: Continue browsing
+      continue_browsing: Keep me signed in
+      sign_out: Sign me out
       resend_confirmation: Resend confirmation instructions
       reset_password: Send reset password instructions
       send: Send
