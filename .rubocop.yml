@@ -17,6 +17,9 @@ AllCops:
   TargetRubyVersion: 2.3
   UseCache: true
 
+Rails:
+  Enabled: true
+
 Metrics/AbcSize:
   Description: A calculated magnitude based on number of assignments, branches, and
     conditions.
