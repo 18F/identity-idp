@@ -7,6 +7,11 @@ module Users
 
     after_action :cache_active_profile, only: [:create]
 
+    def new
+      analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT)
+      super
+    end
+
     def create
       track_authentication_attempt(params[:user][:email])
       super
@@ -57,10 +62,9 @@ module Users
       cacher = Pii::Cacher.new(current_user, user_session)
       begin
         cacher.save(current_user.user_access_key)
-      rescue Pii::EncryptionError => _err
+      rescue Pii::EncryptionError => err
         current_user.active_profile.deactivate
-        properties = { user_id: current_user.uuid }
-        analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, properties)
+        analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
       end
     end
   end
