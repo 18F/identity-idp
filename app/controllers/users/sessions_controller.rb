@@ -63,7 +63,7 @@ module Users
       begin
         cacher.save(current_user.user_access_key)
       rescue Pii::EncryptionError => err
-        current_user.active_profile.deactivate
+        current_user.active_profile.deactivate(:encryption_error)
         analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
       end
     end
