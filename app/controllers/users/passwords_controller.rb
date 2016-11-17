@@ -84,7 +84,7 @@ module Users
     end
 
     def mark_profile_inactive
-      resource.active_profile&.update!(active: false)
+      resource.active_profile&.deactivate(:password_reset)
     end
 
     def user_params
