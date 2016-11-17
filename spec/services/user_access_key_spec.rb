@@ -7,6 +7,17 @@ describe UserAccessKey do
 
   subject { UserAccessKey.new(password, salt) }
 
+  describe '#cost' do
+    it 'uses explicit scrypt cost if passed to new' do
+      cost = SCrypt::Engine.calibrate(max_time: 0.2)
+      uak = UserAccessKey.new(password, salt, cost)
+
+      expect(cost).to_not eq UserAccessKey::COST
+      expect(uak.z1).to_not eq subject.z1
+      expect(uak.cost).to eq cost
+    end
+  end
+
   describe '#encrypted_password' do
     it 'is an alias for hash_f' do
       expect(subject.method(:encrypted_password)).to eq subject.method(:hash_f)
