@@ -46,3 +46,7 @@ en:
           password: New password
         buttons:
           submit: Change password
+    reactivate_profile:
+      title: Reactivate Profile
+      instructions: Provide the information below to reactivate your account.
+      submit: Reactivate Profile

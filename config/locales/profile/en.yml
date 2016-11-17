@@ -9,6 +9,10 @@ en:
       email: Email address
       password: Password
       authentication_app: Authentication app
+      reactivation:
+        title: Reactivate Profile
+        instructions: Your profile was recently deactivated due to a password reset, reactivate your profile to get your awesome PII back.
+        reactivate_button: Reactivate your profile
     items:
       recovery_code: Recovery code
     links:

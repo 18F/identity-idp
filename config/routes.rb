@@ -97,7 +97,9 @@ Rails.application.routes.draw do
   put '/idv/review' => 'idv/review#create'
 
   get '/privacy' => 'pages#privacy_policy'
-  get '/profile' => 'profile#index'
+  get '/profile' => 'profile#index', as: :profile
+  get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
+  post '/profile/reactivate' => 'users/reactivate_profile#create'
   get '/authenticator_start' => 'users/totp_setup#start'
   get '/authenticator_setup' => 'users/totp_setup#new'
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
