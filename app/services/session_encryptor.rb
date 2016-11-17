@@ -1,5 +1,12 @@
 class SessionEncryptor
-  @user_access_key = nil
+  def self.build_user_access_key
+    env = Figaro.env
+    UserAccessKey.new(env.session_encryption_key, env.password_pepper)
+  end
+
+  cattr_reader :user_access_key do
+    build_user_access_key
+  end
 
   def self.load(value)
     decrypted = encryptor.decrypt(value, user_access_key)
@@ -14,13 +21,4 @@ class SessionEncryptor
   def self.encryptor
     Pii::PasswordEncryptor.new
   end
-
-  def self.user_access_key
-    @user_access_key ||= UserAccessKey.new(env.session_encryption_key, env.password_pepper)
-  end
-
-  def self.env
-    Figaro.env
-  end
-  private_class_method :env
 end
