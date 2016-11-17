@@ -6,6 +6,13 @@
     p = t('idv.messages.recovery_code')
     .mb1.py1.px2.inline-block.fs-20p.regular.monospace.bg-white.rounded = @recovery_code
 
+- if @has_password_reset_profile
+  .mb1.p2.border.rounded
+    h2.h3.mt0 = t('profile.index.reactivation.title')
+    p = t('profile.index.reactivation.instructions')
+    = link_to(t('profile.index.reactivation.reactivate_button'),
+        reactivate_profile_path, class: 'btn btn-primary')
+
 - if @decrypted_pii
   h2.h3.my0.mr1.inline-block = t('headings.profile.profile_info')
   = content_tag(:span, t('headings.profile.profile_info_tt'),

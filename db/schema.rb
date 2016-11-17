@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20161118150204) do
     t.text     "encrypted_pii"
     t.string   "ssn_signature",          limit: 64
     t.text     "encrypted_pii_recovery"
-    t.integer  "deactivation_reason",    limit: 4,  default: 0,     null: false
+    t.integer  "deactivation_reason",    limit: 4
   end
 
   add_index "profiles", ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
