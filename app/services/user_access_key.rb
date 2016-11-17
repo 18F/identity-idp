@@ -9,7 +9,7 @@
 # Store F (User.encrypted_password) and D (User.encryption_key) in db
 
 class UserAccessKey
-  attr_accessor :encrypted_d, :salt, :z1, :z2, :random_r
+  attr_accessor :cost, :encrypted_d, :salt, :z1, :z2, :random_r
 
   # IMPORTANT! changing COST will invalidate existing password hashes.
   # You can generate a cost value with:
@@ -20,7 +20,9 @@ class UserAccessKey
 
   COST = Rails.env.test? ? SCRYPT_COST_MAX_TIME_0_DOT_01 : SCRYPT_COST_MAX_TIME_0_DOT_5
 
-  def initialize(password, salt)
+  def initialize(password, salt, cost = COST)
+    self.cost = cost
+    self.cost ||= COST
     build(password, salt)
     self.unlocked = false
     self.made = false
@@ -91,7 +93,7 @@ class UserAccessKey
   end
 
   def build(password, pw_salt)
-    self.salt = COST + OpenSSL::Digest::SHA256.hexdigest(pw_salt)
+    self.salt = cost + OpenSSL::Digest::SHA256.hexdigest(pw_salt)
     scrypted = SCrypt::Engine.hash_secret password, salt, 32
     self.z1, self.z2 = build_segments(scrypted)
     self.random_r = Pii::Cipher.random_key
