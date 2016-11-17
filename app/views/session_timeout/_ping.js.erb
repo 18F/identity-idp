@@ -52,8 +52,8 @@ function initTimer(duration) {
       minutes + ' minute' + (minutes !== 1 ? 's' : '') + ' and ';
     var displaySeconds = remainingSeconds + ' second' + (remainingSeconds !== 1 ? 's' : '');
 
-    return (displayMinutes + displaySeconds)
-  }
+    return (displayMinutes + displaySeconds);
+  };
 
   function tick() {
     countdown.innerHTML = format(timeLeft);
