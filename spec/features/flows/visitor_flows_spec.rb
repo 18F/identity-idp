@@ -7,7 +7,7 @@ feature 'Visitors requesting login.gov directly', devise: true, user_flow: true 
     end
 
     it 'loads the home page' do
-      Capybara::Screenshot.screenshot_and_save_page
+      screenshot_and_save_page
     end
 
     context 'when choosing create account' do
@@ -16,7 +16,7 @@ feature 'Visitors requesting login.gov directly', devise: true, user_flow: true 
       end
 
       it 'informs the user about login.gov' do
-        Capybara::Screenshot.screenshot_and_save_page
+        screenshot_and_save_page
       end
 
       context 'when creating account with valid email' do
@@ -25,7 +25,7 @@ feature 'Visitors requesting login.gov directly', devise: true, user_flow: true 
         end
 
         it 'notifies user to check email' do
-          Capybara::Screenshot.screenshot_and_save_page
+          screenshot_and_save_page
         end
 
         context 'when confirming email' do
@@ -34,7 +34,7 @@ feature 'Visitors requesting login.gov directly', devise: true, user_flow: true 
           end
 
           it 'prompts user to set password' do
-            Capybara::Screenshot.screenshot_and_save_page
+            screenshot_and_save_page
           end
         end
       end
@@ -45,7 +45,7 @@ feature 'Visitors requesting login.gov directly', devise: true, user_flow: true 
         end
 
         it 'informs the user to try again' do
-          Capybara::Screenshot.screenshot_and_save_page
+          screenshot_and_save_page
         end
       end
     end
