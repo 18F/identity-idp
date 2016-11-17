@@ -131,13 +131,23 @@ feature 'Sign in' do
         expect(page).to_not have_content(t('forms.buttons.submit.continue'))
 
         fill_in_credentials_and_click_sign_in(user.email, user.password)
-
         expect(page).to have_content t('errors.invalid_authenticity_token')
 
         fill_in_credentials_and_click_sign_in(user.email, user.password)
-
         expect(current_path).to eq user_two_factor_authentication_path
       end
+    end
+
+    xit 'displays the session timeout modal, does not allow the user to submit', js: true do
+      allow(Devise).to receive(:timeout_in).and_return(0)
+      user = create(:user)
+      visit root_path
+      fill_in 'Email', with: user.email
+      fill_in 'Password', with: user.password
+
+      expect(page).to have_css('#session-expired-msg')
+      page.execute_script("document.getElementById('new_user').submit();")
+      expect(page).not_to have_content t('errors.invalid_authenticity_token')
     end
   end
 
