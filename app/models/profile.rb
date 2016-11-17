@@ -8,7 +8,6 @@ class Profile < ActiveRecord::Base
   scope :verified, -> { where.not(verified_at: nil) }
 
   enum deactivation_reason: {
-    not_deactivated: 0,
     password_reset: 1,
     encryption_error: 2
   }
