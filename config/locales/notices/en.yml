@@ -33,7 +33,8 @@ en:
     dap_html: >
       <!-- We participate in the US government’s analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
-  session_expired: Please <a href=".">refresh</a> the page to log in.
+  session_expired_html: Please %{link} the page to log in.
+  session_expired_link: refresh
   session_timedout: >
     We signed you out due to inactivity. This helps keep your account safe. Please sign in again.
   session_timeout_warning: >-
