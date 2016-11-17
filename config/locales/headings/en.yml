@@ -1,39 +1,39 @@
 en:
   headings:
     confirmations:
-      new: Resend confirmation instructions
+      new: Send another confirmation email
     contact: Contact us
-    create_account_with_sp: Make a login.gov account to continue to %{sp}
-    create_account_without_sp: Make a login.gov account
+    create_account_with_sp: Create a login.gov account to continue to %{sp}
+    create_account_without_sp: Create a login.gov account
     edit_info:
-      email: Edit your email
-      password: Edit your password
-      phone: Edit your phone number
+      email: Change your email
+      password: Change your password
+      phone: Change your phone number
     log_in: Sign in
-    log_in_branded: Sign in to continue to %{sp}
-    choose_otp_delivery: Choose delivery method
+    sign_in_branded: Sign in to continue to %{sp} #question about variable names -- "_branded" vs _"w_with_SP"?
+    choose_otp_delivery: Choose how you'd like to receive a one-time passcode
     passwords:
       change: Change your password
-      forgot: Forgot password
-      confirm: Confirm your password
+      forgot: Forget your password? #why is this here and not in links/en.yml?
+      confirm: Confirm your password to continue
     privacy_policy:
-      privacy_act: Privacy Act Statement
-      security_practices: Our Security Practices
-      privacy_practices: Our Privacy Practices
+      privacy_act: Privacy Act statement
+      security_practices: Our security practices 
+      privacy_practices: Our privacy practices 
       authorities: Authorities
       purpose: Purpose
       disclosure: Disclosure
-      routine_uses: Routine Uses
+      routine_uses: Routine uses
       more_information: For more information
     profile:
       profile_info: Profile information
       profile_info_tt: Why can’t I edit my profile information?
       account_history: Account history
-      login_info: Login information
+      login_info: Account information
       two_factor: Two-factor authentication
-    recovery_code: Make sure you can always log in, even without your phone
+    recovery_code: Make sure you can always sign in
     registrations:
-      enter_email: Start making your account
+      enter_email: Start creating an account
       verify_email: Check your email
     search: Search for a user
     session_timeout_warning: Need more time?

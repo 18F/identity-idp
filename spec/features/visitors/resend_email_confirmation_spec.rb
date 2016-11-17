@@ -74,6 +74,6 @@ feature 'Visit requests confirmation instructions again during sign up' do
   end
 
   scenario 'confirmations new page has localized heading' do
-    expect(page).to have_title t('headings.confirmations.new')
+    expect(page).to have_content t('headings.confirmations.new')
   end
 end

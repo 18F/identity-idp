@@ -1,8 +1,8 @@
 en:
   instructions:
     recovery_code: >
-      You can still log in using a special recovery code if you can’t get to
-      your phone.
+      Write this recovery code down and store it someplace safe. If you can't get to your phone,
+      you can use it instead of a one-time passcode to sign in.
     password:
       info:
         lead: Your password must be at least %{min_length} characters long.
@@ -21,13 +21,13 @@ en:
         iv: Good
         v: Great!
     registration:
-      already_have_account: Already have account? %{link}
+      already_have_account: Already have an account? %{link}
       email: Pick an address to use for government communications.
     2fa:
       resend: Didn’t receive a code? %{link}
-      confirm_code: We sent the code to %{number}.
+      confirm_code: We sent it to %{number}.
       wrong_number: Entered the wrong phone number? %{link}
       totp_intro_html: >
-        Please enter the code from your authenticator app.
+        Enter the code from your authenticator app.
         If you have several accounts set up in your app, enter the code
         corresponding to <strong>%{email}</strong> at <strong>%{app}</strong>.

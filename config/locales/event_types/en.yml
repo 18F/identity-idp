@@ -6,4 +6,4 @@ en:
     email_changed: Email changed
     authenticator_enabled: Authenticator app enabled
     authenticator_disabled: Authenticator app disabled
-    authenticated_at: Authenticated at %{service_provider}
+    authenticated_at: Signed in at %{service_provider}
