@@ -12,6 +12,22 @@ describe Pii::PasswordEncryptor do
 
       expect(ciphertext).to_not match plaintext
     end
+
+    it 'only builds encrypted key once per user_access_key' do
+      uak = UserAccessKey.new(password, salt)
+
+      expect(uak.made?).to eq false
+
+      ciphertext_one = subject.encrypt(plaintext, uak)
+
+      expect(uak.made?).to eq true
+      expect(uak).to_not receive(:store_encryption_key)
+
+      ciphertext_two = subject.encrypt(plaintext, uak)
+
+      expect(ciphertext_one).to_not eq ciphertext_two
+      expect(subject.decrypt(ciphertext_one, uak)).to eq subject.decrypt(ciphertext_two, uak)
+    end
   end
 
   describe '#decrypt' do
