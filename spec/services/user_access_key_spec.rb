@@ -92,4 +92,14 @@ describe UserAccessKey do
       expect(subject.unlocked?).to eq true
     end
   end
+
+  describe '#made?' do
+    it 'returns true when #store_encrypted_key has been called' do
+      expect(subject.made?).to eq false
+
+      subject.store_encrypted_key(ciphertext)
+
+      expect(subject.made?).to eq true
+    end
+  end
 end

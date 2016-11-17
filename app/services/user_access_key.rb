@@ -21,12 +21,9 @@ class UserAccessKey
   COST = Rails.env.test? ? SCRYPT_COST_MAX_TIME_0_DOT_01 : SCRYPT_COST_MAX_TIME_0_DOT_5
 
   def initialize(password, salt)
-    factors = build(password, salt)
-    self.salt = factors[:salt]
-    self.z1 = factors[:z_one]
-    self.z2 = factors[:z_two]
-    self.random_r = factors[:random_r]
-    @unlocked = false
+    build(password, salt)
+    self.unlocked = false
+    self.made = false
   end
 
   def as_scrypt_hash
@@ -57,6 +54,7 @@ class UserAccessKey
   end
 
   def store_encrypted_key(encrypted_key)
+    self.made = true
     self.encrypted_d = xor(encrypted_key)
   end
 
@@ -65,16 +63,22 @@ class UserAccessKey
   end
 
   def unlock(random_key)
-    @unlocked = true
+    self.unlocked = true
     self.random_r = random_key
     hash_e
   end
 
   def unlocked?
-    @unlocked
+    unlocked
+  end
+
+  def made?
+    made
   end
 
   private
+
+  attr_accessor :made, :unlocked
 
   def z1_with_padding(len)
     cur_len = z1.length
@@ -86,12 +90,11 @@ class UserAccessKey
     str
   end
 
-  def build(password, salt)
-    scrypt_salt = COST + OpenSSL::Digest::SHA256.hexdigest(salt)
-    scrypted = SCrypt::Engine.hash_secret password, scrypt_salt, 32
-    segment_one, segment_two = build_segments(scrypted)
-    random_r = Pii::Cipher.random_key
-    { salt: scrypt_salt, z_one: segment_one, z_two: segment_two, random_r: random_r }
+  def build(password, pw_salt)
+    self.salt = COST + OpenSSL::Digest::SHA256.hexdigest(pw_salt)
+    scrypted = SCrypt::Engine.hash_secret password, salt, 32
+    self.z1, self.z2 = build_segments(scrypted)
+    self.random_r = Pii::Cipher.random_key
   end
 
   def build_segments(scrypted)
