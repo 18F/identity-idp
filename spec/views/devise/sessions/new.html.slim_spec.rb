@@ -33,7 +33,7 @@ describe 'devise/sessions/new.html.slim' do
     render
 
     expect(rendered).
-      to have_link(t('notices.log_in_consent.link'), href: privacy_path)
+      to have_link(t('notices.sign_in_consent.link'), href: privacy_path)
   end
 
   context 'when @sp_name is set' do
@@ -46,7 +46,7 @@ describe 'devise/sessions/new.html.slim' do
       render
 
       expect(rendered).to have_content(
-        t('headings.log_in_branded', sp: 'Awesome Application!')
+        t('headings.sign_in_branded', sp: 'Awesome Application!')
       )
     end
 
@@ -68,7 +68,7 @@ describe 'devise/sessions/new.html.slim' do
       render
 
       expect(rendered).not_to have_content(
-        t('headings.log_in_branded', sp: 'Awesome Application!')
+        t('headings.sign_in_branded', sp: 'Awesome Application!')
       )
       expect(rendered).not_to have_link(
         t('links.back_to_sp', sp: 'Awesome Application!')
