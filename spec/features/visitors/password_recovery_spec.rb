@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 feature 'Password Recovery' do
-  def reset_password_and_sign_back_in(user)
-    password = 'a really long password'
+  def reset_password_and_sign_back_in(user, password = 'a really long password')
     fill_in 'New password', with: password
     click_button t('forms.passwords.edit.buttons.submit')
     fill_in 'Email', with: user.email
@@ -270,6 +269,32 @@ feature 'Password Recovery' do
     end
   end
 
+  scenario 'LOA3 user resets password and reactivates profile with recovery code', email: true do
+    user = create(:user, :signed_up)
+
+    recovery_code = recovery_code_from_pii(user, ssn: '1234', dob: '1920-01-01')
+    password = 'some really awesome new password'
+
+    visit new_user_password_path
+    fill_in 'Email', with: user.email
+    click_button t('forms.buttons.reset_password')
+    open_last_email
+    click_email_link_matching(/reset_password_token/)
+
+    reset_password_and_sign_back_in(user, password)
+    click_submit_default
+    enter_correct_otp_code_for_user(user)
+
+    expect(page).to have_content t('profile.index.reactivation.instructions')
+    click_link t('profile.index.reactivation.reactivate_button')
+
+    fill_in 'Password', with: password
+    fill_in 'Recovery code', with: recovery_code
+    click_button t('forms.reactivate_profile.submit')
+
+    expect(page).to have_content t('idv.messages.recovery_code')
+  end
+
   scenario 'user takes too long to click the reset password link' do
     user = create(:user, :signed_up)
 
@@ -334,5 +359,15 @@ feature 'Password Recovery' do
 
     expect(page).to have_content t('notices.password_reset')
     expect(ActionMailer::Base.deliveries).to be_empty
+  end
+
+  def recovery_code_from_pii(user, pii)
+    profile = create(:profile, :active, :verified, user: user)
+    pii_attrs = Pii::Attributes.new_from_hash(pii)
+    user_access_key = user.unlock_user_access_key(user.password)
+    recovery_code = profile.encrypt_pii(user_access_key, pii_attrs)
+    profile.save!
+
+    recovery_code
   end
 end

@@ -21,7 +21,11 @@ namespace :dev do
       first_name: 'Some',
       last_name: 'One'
     )
-    profile.encrypt_pii(loa3_user.user_access_key, pii)
+    recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
     profile.activate
+
+    Kernel.puts "===="
+    Kernel.puts "email=#{loa3_user.email} recovery_code=#{recovery_code}"
+    Kernel.puts "===="
   end
 end

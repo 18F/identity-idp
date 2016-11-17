@@ -26,5 +26,23 @@ describe ProfileController do
         expect(response).to_not be_redirect
       end
     end
+
+    context 'when a profile has been deactivated by password reset' do
+      it 'renders the profile and shows a deactivation banner' do
+        user = create(
+          :user,
+          :signed_up,
+          profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })]
+        )
+        user.active_profile.deactivate(:password_reset)
+
+        sign_in user
+
+        get :index
+
+        expect(response).to_not be_redirect
+        expect(assigns(:has_password_reset_profile)).to be(true)
+      end
+    end
   end
 end
