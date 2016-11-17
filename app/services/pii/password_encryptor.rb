@@ -6,7 +6,7 @@ module Pii
     end
 
     def encrypt(plaintext, user_access_key)
-      encrypted_key_maker.make(user_access_key)
+      encrypted_key_maker.make(user_access_key) unless user_access_key.made?
       encrypted_c = cipher.encrypt(fingerprint_and_concat(plaintext), user_access_key.hash_e)
       join_segments(user_access_key.encryption_key, encrypted_c)
     end
