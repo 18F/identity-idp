@@ -10,8 +10,8 @@ h1.h3.my0 = decorated_session.new_session_heading
   = f.input :password, required: true
   = f.button :submit, t('headings.log_in'), class: 'btn-wide'
 
-- link = link_to t('notices.log_in_consent.link'), privacy_path
-p.my3 == t('notices.log_in_consent.text', app: APP_NAME, link: link)
+- link = link_to t('notices.sign_in_consent.link'), privacy_path
+p.my3 == t('notices.sign_in_consent.text', app: APP_NAME, link: link)
 
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial

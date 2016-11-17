@@ -3,7 +3,7 @@ en:
     password_changed: You changed your password.
     totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
-    log_in_consent:
+    sign_in_consent:
       text: By signing in, you agree to %{app}’s %{link}
       link: Security Consent & Privacy Act Statement.
     phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
