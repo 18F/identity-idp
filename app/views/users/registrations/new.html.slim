@@ -10,4 +10,8 @@ p.mt-tiny.mb0#email-description = t('instructions.registration.email')
   .mt1.mb-tiny.bold = t('notices.terms_of_service.headline')
   - link = link_to t('notices.terms_of_service.link'), privacy_path
   p.mb-40p == t('notices.terms_of_service.text', link: link)
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb1'
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb1 mb4'
+
+.clearfix.pt1.border-top
+  - auth_link = link_to t('links.sign_in'), new_user_session_path
+  .sm-col-right == t('instructions.registration.already_have_account', link: auth_link)
