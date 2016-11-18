@@ -26,9 +26,9 @@ Rails.application.configure do
 
   config.log_level = :info
   config.lograge.enabled = true
-  config.lograge.custom_options = ->(event) { event.payload.except(:params) }
+  config.lograge.custom_options = lambda do |event|
+    event.payload.except(:params).merge!(timestamp: event.time)
+  end
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
-  config.logstash.type = :multi_delegator
-  config.logstash.outputs = [{ type: :file, path: 'log/production.log' }]
 end

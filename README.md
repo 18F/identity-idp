@@ -84,15 +84,20 @@ brew install elasticsearch logstash kibana # or brew upgrade if already installe
 
 brew services start elasticsearch
 brew services start kibana
+```
 
-# Start logstash by running this command from this repo's root directory:
+Open `logstash.conf` (in the root of this repo), and replace `[path_to_repo]`
+with your local path to this repo, as shown by `pwd`. You cannot use the `~`
+home directory shortcut. It must be the full path, such as
+`/Users/monfresh/projects/18f/identity-idp`
+
+Start logstash by running this command from this repo's root directory:
+```
 logstash -f logstash.conf
 ```
 
-Change the `logstash_type` entry in `config/application.yml` to `'udp`'
-and restart the Rails server (ctrl-c, then `make run`).
-
-When you make a request, you should now see some output in the logstash window.
+When you trigger an event in the app (such as signing in), you should see some
+output in the logstash window.
 
 To explore the data with Kibana, visit http://localhost:5601
 
@@ -150,7 +155,7 @@ $ make brakeman
 
 #### User flows
 
-We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view. 
+We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.
 
 The local instance of the application must be running in order to serve up the assets (eg. `make run`). Then, you can specify where the assets are hosted from and generate the views with:
 

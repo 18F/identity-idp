@@ -26,6 +26,9 @@ Dir.chdir APP_ROOT do
   puts "== Copying application.yml =="
   run "cp config/application.yml.example config/application.yml"
 
+  puts "== Copying logstash.conf =="
+  run "cp logstash.conf.example logstash.conf"
+
   puts "== Copying sample certs and keys =="
   run "cp keys/saml.key.enc.example keys/saml.key.enc"
   run "cp certs/saml.crt.example certs/saml.crt"
