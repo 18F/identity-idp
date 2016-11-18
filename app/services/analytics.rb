@@ -30,15 +30,18 @@ class Analytics
   end
 
   # rubocop:disable Metrics/LineLength
-  ACCOUNT_CREATION_INTRO_VISIT = 'Account creation intro visited'.freeze
   AUTHENTICATION_MAX_2FA_ATTEMPTS = 'Authentication: user reached max 2FA attempts'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUESTED = 'Email Change: requested'.freeze
   EMAIL_CHANGED_TO_EXISTING = 'Email Change: user attempted to change their email to an existing email'.freeze
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
-  IDV_FAILED = 'IdV: Failed'.freeze
-  IDV_INTRO_VISIT = 'IdV Intro Visited'.freeze
-  IDV_SUCCESSFUL = 'IdV: Successful'.freeze
+  IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
+  IDV_FAILED = 'IdV: failed'.freeze
+  IDV_FINANCE_VISIT = 'IdV: finance visited'.freeze
+  IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
+  IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
+  IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
+  IDV_SUCCESSFUL = 'IdV: successful'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   INVALID_SERVICE_PROVIDER = 'Invalid Service Provider'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
@@ -61,8 +64,13 @@ class Analytics
   TOTP_SETUP_INVALID_CODE = 'TOTP Setup: invalid code'.freeze
   TOTP_SETUP_VALID_CODE = 'TOTP Setup: valid code'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
-  USER_REGISTRATION_ACCOUNT_CREATED = 'User Registration: Account Created'.freeze
-  USER_REGISTRATION_EXISTING_EMAIL = 'User Registration: Attempt with existing email'.freeze
+  USER_REGISTRATION_ACCOUNT_CREATED = 'User Registration: account created'.freeze
+  USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
+  USER_REGISTRATION_ENTER_PASSCODE_VISIT = 'User Registration: enter passcode visited'.freeze
+  USER_REGISTRATION_EXISTING_EMAIL = 'User Registration: attempt with existing email'.freeze
+  USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
   USER_REGISTRATION_INVALID_EMAIL = 'User Registration: invalid email'.freeze
+  USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
+  USER_REGISTRATION_RECOVERY_CODE_VISIT = 'User Registration: recovery code visited'.freeze
   # rubocop:enable Metrics/LineLength
 end

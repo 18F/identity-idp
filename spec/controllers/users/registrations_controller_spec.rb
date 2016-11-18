@@ -97,7 +97,7 @@ describe Users::RegistrationsController, devise: true do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_CREATION_INTRO_VISIT)
+        with(Analytics::USER_REGISTRATION_INTRO_VISIT)
 
       get :start
     end
