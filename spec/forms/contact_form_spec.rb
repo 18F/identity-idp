@@ -8,7 +8,7 @@ describe ContactForm do
       subject.submit(email_or_tel: nil)
 
       expect(subject).to_not be_valid
-      expect(subject.errors.full_messages.first).to eq "Email or tel can't be blank"
+      expect(subject.errors[:email_or_tel]).to eq [t('errors.messages.blank')]
     end
   end
 end
