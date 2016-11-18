@@ -8,15 +8,16 @@ class RecoveryCodeGenerator
   end
 
   def create
-    @user_access_key = make_user_access_key(raw_recovery_code)
+    salt = Devise.friendly_token[0, 20]
+    @user_access_key = make_user_access_key(raw_recovery_code, salt)
 
-    user.update!(recovery_code: hashed_code)
+    user.update!(recovery_code: hashed_code, recovery_salt: salt)
 
     raw_recovery_code
   end
 
   def verify(plaintext_code)
-    @user_access_key = make_user_access_key(plaintext_code)
+    @user_access_key = make_user_access_key(plaintext_code, user.recovery_salt)
     encryption_key, encrypted_code = user.recovery_code.split(Pii::Encryptor::DELIMITER)
     begin
       key_maker.unlock(user_access_key, encryption_key)
@@ -30,8 +31,8 @@ class RecoveryCodeGenerator
 
   attr_reader :length, :user, :key_maker
 
-  def make_user_access_key(code)
-    UserAccessKey.new(code, user.password_salt)
+  def make_user_access_key(code, salt)
+    UserAccessKey.new(code, salt)
   end
 
   def hashed_code
