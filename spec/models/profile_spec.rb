@@ -39,6 +39,20 @@ describe Profile do
     end
   end
 
+  describe '#encrypt_recovery_pii' do
+    it 'generates new recovery code' do
+      expect(profile.encrypted_pii_recovery).to be_nil
+
+      initial_recovery_code = user.recovery_code
+
+      profile.encrypt_recovery_pii(pii)
+
+      expect(profile.encrypted_pii_recovery).to_not be_nil
+      expect(user.recovery_code).to_not eq initial_recovery_code
+      expect(profile.recovery_code).to_not eq user.recovery_code
+    end
+  end
+
   describe '#decrypt_pii' do
     it 'decrypts PII' do
       expect(profile.encrypted_pii).to be_nil
