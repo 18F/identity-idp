@@ -1,4 +1,5 @@
 require 'zxcvbn'
+require "#{Rails.root}/lib/zxcvbn_tester"
 
 module FormPasswordValidator
   extend ActiveSupport::Concern
@@ -53,7 +54,9 @@ module FormPasswordValidator
   def zxcvbn_feedback
     feedback = @pass_score.feedback.values.flatten.reject(&:empty?)
 
-    feedback.join('. ').gsub(/\.\s*\./, '.')
+    feedback.map do |error|
+      I18n.t("zxcvbn.feedback.#{error.tr('.', '_')}")
+    end.join('. ').gsub(/\.\s*\./, '.')
   end
 
   def password_strength_enabled?
