@@ -23,6 +23,7 @@ Figaro.require_keys(
   'requests_per_ip_limit',
   'requests_per_ip_period',
   'saml_passphrase',
+  'scrypt_cost',
   'secret_key_base',
   'session_encryption_key',
   'session_timeout_in_minutes',

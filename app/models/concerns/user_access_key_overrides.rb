@@ -8,9 +8,14 @@ module UserAccessKeyOverrides
   attr_accessor :user_access_key
 
   def password_digest(password)
-    user_access_key = UserAccessKey.new(password, authenticatable_salt)
+    user_access_key = UserAccessKey.new(
+      password: password,
+      salt: authenticatable_salt,
+      cost: password_cost
+    )
     encrypted_key_maker.make(user_access_key)
     self.encryption_key ||= user_access_key.encryption_key
+    self.password_cost ||= user_access_key.cost
     user_access_key.encrypted_password
   end
 
@@ -25,7 +30,11 @@ module UserAccessKeyOverrides
   end
 
   def unlock_user_access_key(password)
-    self.user_access_key = UserAccessKey.new(password, authenticatable_salt)
+    self.user_access_key = UserAccessKey.new(
+      password: password,
+      salt: authenticatable_salt,
+      cost: password_cost
+    )
     encrypted_key_maker.unlock(user_access_key, encryption_key)
     user_access_key
   end
@@ -34,6 +43,7 @@ module UserAccessKeyOverrides
     if new_password.present?
       self.password_salt = Devise.friendly_token[0, 20]
       self.encryption_key = nil
+      self.password_cost = nil
     end
     super
   end

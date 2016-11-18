@@ -25,7 +25,11 @@ class Profile < ActiveRecord::Base
   end
 
   def recover_pii(recovery_code)
-    rc_user_access_key = UserAccessKey.new(recovery_code, user.recovery_salt)
+    rc_user_access_key = UserAccessKey.new(
+      password: recovery_code,
+      salt: user.recovery_salt,
+      cost: user.recovery_cost
+    )
     EncryptedKeyMaker.new.make(rc_user_access_key)
     Pii::Attributes.new_from_encrypted(encrypted_pii_recovery, rc_user_access_key)
   end

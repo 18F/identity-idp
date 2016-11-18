@@ -5,7 +5,7 @@ describe EncryptedKeyMaker do
   let(:salt) { 'mmmm salty' }
   let(:ciphered_key) { SecureRandom.random_bytes(32) }
   let(:random_R) { SecureRandom.random_bytes(32) }
-  let(:user_access_key) { UserAccessKey.new(password, salt) }
+  let(:user_access_key) { UserAccessKey.new(password: password, salt: salt) }
   let(:hash_E) { OpenSSL::Digest::SHA256.hexdigest(user_access_key.z2 + random_R) }
   let(:hash_F) { OpenSSL::Digest::SHA256.hexdigest(hash_E) }
 
