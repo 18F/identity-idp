@@ -138,7 +138,7 @@ feature 'Sign in' do
       end
     end
 
-    xit 'displays the session timeout modal, does not allow the user to submit', js: true do
+    it 'displays the session timeout modal, does not allow the user to submit', js: true do
       allow(Devise).to receive(:timeout_in).and_return(0)
       user = create(:user)
       visit root_path
@@ -146,6 +146,7 @@ feature 'Sign in' do
       fill_in 'Password', with: user.password
 
       expect(page).to have_css('#session-expired-msg')
+      expect(page).to have_css('[type=submit][disabled]')
       page.execute_script("document.getElementById('new_user').submit();")
       expect(page).not_to have_content t('errors.invalid_authenticity_token')
     end
