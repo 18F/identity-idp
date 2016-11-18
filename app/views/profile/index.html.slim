@@ -2,9 +2,9 @@
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
 - if @recovery_code
-  p.mt-tiny.mb0 = t('idv.messages.recovery_code')
-  .mt4.mb4.py2.px3.inline-block.fs-20p.border.border-dashed.monospace = @recovery_code
-  br
+  .mb4.alert.alert-warning
+    p = t('idv.messages.recovery_code')
+    .mb1.py1.px2.inline-block.fs-20p.regular.monospace.bg-white.rounded = @recovery_code
 
 - if @decrypted_pii
   h2.h3.my0.mr1.inline-block = t('headings.profile.profile_info')
