@@ -15,7 +15,7 @@ feature 'Password Recovery' do
       user = create(:user, :signed_up)
 
       visit root_path
-      click_link t('headings.passwords.forgot')
+      click_link t('links.passwords.forgot')
       fill_in 'Email', with: user.email
       click_button t('forms.buttons.reset_password')
     end

@@ -12,7 +12,7 @@ class ServiceProviderSessionDecorator
   end
 
   def new_session_heading
-    I18n.t('headings.sign_in_branded', sp: sp_name)
+    I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end
 
   def registration_heading

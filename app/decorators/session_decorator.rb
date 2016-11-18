@@ -8,7 +8,7 @@ class SessionDecorator
   end
 
   def new_session_heading
-    I18n.t('headings.log_in')
+    I18n.t('headings.sign_in_without_sp')
   end
 
   def registration_heading

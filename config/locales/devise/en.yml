@@ -142,7 +142,7 @@ en:
         Use any authenticator app to scan the QR code below.
       totp_fallback:
         text: >
-          If you can't use your authenticator app right now you can %{sms_link}
+          If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
         sms_link_text: receive a code via text message
         voice_link_text: with a phone call

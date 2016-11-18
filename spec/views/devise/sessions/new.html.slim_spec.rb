@@ -17,7 +17,7 @@ describe 'devise/sessions/new.html.slim' do
   it 'includes a link to log in' do
     render
 
-    expect(rendered).to have_content(t('headings.log_in'))
+    expect(rendered).to have_content(t('headings.sign_in_without_sp'))
   end
 
   it 'includes a link to create a new account' do
@@ -46,7 +46,7 @@ describe 'devise/sessions/new.html.slim' do
       render
 
       expect(rendered).to have_content(
-        t('headings.sign_in_branded', sp: 'Awesome Application!')
+        t('headings.sign_in_with_sp', sp: 'Awesome Application!')
       )
     end
 
@@ -68,7 +68,7 @@ describe 'devise/sessions/new.html.slim' do
       render
 
       expect(rendered).not_to have_content(
-        t('headings.sign_in_branded', sp: 'Awesome Application!')
+        t('headings.sign_in_with_sp', sp: 'Awesome Application!')
       )
       expect(rendered).not_to have_link(
         t('links.back_to_sp', sp: 'Awesome Application!')
