@@ -17,7 +17,7 @@ en:
         Customer Contact Center at %{link}
     password_changed:
       intro: >
-        You have changed your password for your %{app} account. 
+        You have changed your password for your %{app} account.
       help: >
         If you did not mean to change your password, please immediately contact
         the %{app} customer contact center via web form at %{link}

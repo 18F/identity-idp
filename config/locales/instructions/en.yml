@@ -1,7 +1,7 @@
 en:
   instructions:
     recovery_code: >
-      Write this recovery code down and store it someplace safe. If you can't get to your phone,
+      Write this recovery code down and store it someplace safe. If you can’t get to your phone,
       you can use it instead of a one-time passcode to sign in.
     password:
       info:

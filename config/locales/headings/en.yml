@@ -9,17 +9,17 @@ en:
       email: Change your email
       password: Change your password
       phone: Change your phone number
-    log_in: Sign in
-    sign_in_branded: Sign in to continue to %{sp} #question about variable names -- "_branded" vs _"w_with_SP"?
-    choose_otp_delivery: Choose how you'd like to receive a one-time passcode
+    sign_in_without_sp: Sign in
+    sign_in_with_sp: Sign in to continue to %{sp}
+    choose_otp_delivery: Choose how you’d like to receive a one-time passcode
     passwords:
       change: Change your password
-      forgot: Forget your password? #why is this here and not in links/en.yml?
+      forgot: Forgot your password?
       confirm: Confirm your password to continue
     privacy_policy:
       privacy_act: Privacy Act statement
-      security_practices: Our security practices 
-      privacy_practices: Our privacy practices 
+      security_practices: Our security practices
+      privacy_practices: Our privacy practices
       authorities: Authorities
       purpose: Purpose
       disclosure: Disclosure
