@@ -36,7 +36,7 @@ describe TwoFactorAuthentication::RecoveryCodeController do
         cacher.save(user.user_access_key, profile)
         allow(Pii::Cacher).to receive(:new).and_return(cacher)
 
-        expect(user.active_profile).to receive(:update!).and_call_original
+        expect(user.active_profile).to receive(:save!).and_call_original
 
         get :show
       end
