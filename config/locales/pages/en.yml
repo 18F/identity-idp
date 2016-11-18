@@ -1,7 +1,7 @@
 en:
   pages:
     page_not_found:
-      header: The page you were looking for doesn't exist.
+      header: The page you were looking for doesn’t exist.
       body: You might want to double-check your link and try again. (404)
     privacy_policy:
       paragraph_1: >

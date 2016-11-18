@@ -27,7 +27,7 @@ en:
       duplicate_ssn: >
         An account already exists with the information you provided.
       fail: >
-        Sorry, we can't verify your identity based on the information you submitted.
+        Sorry, we can’t verify your identity based on the information you submitted.
       hardfail: >
         We were unable to verify your identity at this time.
       missing_finance: You must provide a financial account number.
@@ -44,11 +44,11 @@ en:
         please %{link}.
       activated_link: contact us
       hardfail: >
-        We can't verify your identity right now.
+        We can’t verify your identity right now.
       hardfail2: >
         You can try again in %{hours} hours.
       hardfail3: >
-        If you still can't verify your identity, visit our troubleshooting page
+        If you still can’t verify your identity, visit our troubleshooting page
         to find answers to common questions about verification.
       hardfail4: >
         You can also go to %{sp} for more help in accessing services.
