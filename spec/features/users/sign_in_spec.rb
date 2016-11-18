@@ -147,8 +147,6 @@ feature 'Sign in' do
 
       expect(page).to have_css('#session-expired-msg')
       expect(page).to have_css('[type=submit][disabled]')
-      page.execute_script("document.getElementById('new_user').submit();")
-      expect(page).not_to have_content t('errors.invalid_authenticity_token')
     end
   end
 
