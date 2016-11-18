@@ -91,4 +91,15 @@ describe Users::RegistrationsController, devise: true do
       post :create, user: { email: 'invalid@' }
     end
   end
+
+  describe '#start' do
+    it 'tracks page visit' do
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::ACCOUNT_CREATION_INTRO_VISIT)
+
+      get :start
+    end
+  end
 end
