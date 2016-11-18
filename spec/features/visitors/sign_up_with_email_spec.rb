@@ -15,12 +15,6 @@ feature 'Visitor signs up with email address' do
     expect(page).to have_content t('valid_email.validations.email.invalid')
   end
 
-  scenario 'visitor cannot sign up with empty email address', js: true do
-    sign_up_with('')
-
-    expect(page).to have_content('Please fill in this field')
-  end
-
   scenario 'visitor cannot sign up with email with invalid domain name' do
     invalid_addresses = [
       'foo@bar.com',

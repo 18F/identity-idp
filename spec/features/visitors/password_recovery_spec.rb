@@ -188,13 +188,6 @@ feature 'Password Recovery' do
     expect(page).to have_content t('valid_email.validations.email.invalid')
   end
 
-  scenario 'user submits blank email address and has JS turned on', js: true do
-    visit new_user_password_path
-    click_button t('forms.buttons.reset_password')
-
-    expect(page).to have_content 'Please fill in this field.'
-  end
-
   scenario 'user is unable to determine if account exists' do
     visit new_user_password_path
     fill_in 'Email', with: 'no_account_exists@gmail.com'

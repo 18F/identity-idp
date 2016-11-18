@@ -3,7 +3,6 @@
 h1.h3.my0 = t('headings.contact')
 = simple_form_for(@contact_form, url: contact_path,
     html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
-  = f.error_notification
   h4.mb-tiny = t('contact.intro')
   hr.mt0.mb-12p
   .mb3
