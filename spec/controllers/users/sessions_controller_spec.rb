@@ -203,14 +203,29 @@ describe Users::SessionsController, devise: true do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: true, user_id: user.uuid)
+
+        profile_encryption_error = {
+          error: 'Unable to parse encrypted payload. ' \
+                 '#<TypeError: no implicit conversion of nil into String>'
+        }
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PROFILE_ENCRYPTION_INVALID, user_id: user.uuid)
+          with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
 
         post :create, user: { email: user.email, password: user.password }
 
         expect(controller.user_session[:decrypted_pii]).to be_nil
         expect(profile.reload).to_not be_active
       end
+    end
+  end
+
+  describe '#new' do
+    it 'tracks page visit' do
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT)
+
+      get :new
     end
   end
 end

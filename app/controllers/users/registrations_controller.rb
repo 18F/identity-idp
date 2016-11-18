@@ -6,6 +6,7 @@ module Users
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def start
+      analytics.track_event(Analytics::ACCOUNT_CREATION_INTRO_VISIT)
     end
 
     def new

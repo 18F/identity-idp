@@ -13,10 +13,15 @@ describe Analytics do
       user = build_stubbed(:user, uuid: '123')
 
       analytics = Analytics.new(user, FakeRequest.new)
-      consolidated_attributes = request_attributes.reverse_merge(user_id: user.uuid)
+
+      analytics_hash = {
+        event: 'Trackable Event',
+        properties: {},
+        user_id: user.uuid
+      }
 
       expect(Rails.logger).to receive(:info).
-        with(consolidated_attributes.merge(event: 'Trackable Event'))
+        with(analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event')
     end
@@ -26,10 +31,15 @@ describe Analytics do
       tracked_user = build_stubbed(:user, uuid: '456')
 
       analytics = Analytics.new(current_user, FakeRequest.new)
-      consolidated_attributes = request_attributes.reverse_merge(user_id: tracked_user.uuid)
+
+      analytics_hash = {
+        event: 'Trackable Event',
+        properties: {},
+        user_id: tracked_user.uuid
+      }
 
       expect(Rails.logger).to receive(:info).
-        with(consolidated_attributes.merge(event: 'Trackable Event'))
+        with(analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end
