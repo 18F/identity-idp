@@ -3,6 +3,7 @@ module Idv
     helper_method :idv_phone_form
 
     def new
+      analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
     def create

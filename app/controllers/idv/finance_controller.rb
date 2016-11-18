@@ -4,6 +4,7 @@ module Idv
 
     def new
       @finance_account_label = FinanceFormDecorator.new(idv_session.params).label_text
+      analytics.track_event(Analytics::IDV_FINANCE_VISIT)
     end
 
     def create
