@@ -25,15 +25,19 @@ class Profile < ActiveRecord::Base
   end
 
   def recover_pii(recovery_code)
-    raise 'invalid recovery code' unless recovery_code_generator.verify(recovery_code)
-    uak = recovery_code_generator.user_access_key
-    Pii::Attributes.new_from_encrypted(encrypted_pii_recovery, uak)
+    rc_user_access_key = UserAccessKey.new(recovery_code, user.recovery_salt)
+    EncryptedKeyMaker.new.make(rc_user_access_key)
+    Pii::Attributes.new_from_encrypted(encrypted_pii_recovery, rc_user_access_key)
   end
 
   def encrypt_pii(user_access_key, pii)
     ssn = pii.ssn
     self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
     self.encrypted_pii = pii.encrypted(user_access_key)
+    encrypt_recovery_pii(pii)
+  end
+
+  def encrypt_recovery_pii(pii)
     recovery_code, rc_user_access_key = generate_recovery_code
     self.encrypted_pii_recovery = pii.encrypted(rc_user_access_key)
     @recovery_code = recovery_code
