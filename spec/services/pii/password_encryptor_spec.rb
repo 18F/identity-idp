@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Pii::PasswordEncryptor do
   let(:password) { 'sekrit' }
   let(:salt) { SecureRandom.uuid }
-  let(:user_access_key) { UserAccessKey.new(password, salt) }
+  let(:user_access_key) { UserAccessKey.new(password: password, salt: salt) }
   let(:plaintext) { 'four score and seven years ago' }
 
   describe '#encrypt' do
@@ -14,7 +14,7 @@ describe Pii::PasswordEncryptor do
     end
 
     it 'only builds encrypted key once per user_access_key' do
-      uak = UserAccessKey.new(password, salt)
+      uak = UserAccessKey.new(password: password, salt: salt)
 
       expect(uak.made?).to eq false
 
@@ -39,7 +39,7 @@ describe Pii::PasswordEncryptor do
 
     it 'requires same password used for encrypt' do
       ciphertext = subject.encrypt(plaintext, user_access_key)
-      different_user_access_key = UserAccessKey.new('different password', salt)
+      different_user_access_key = UserAccessKey.new(password: 'different password', salt: salt)
 
       expect do
         subject.decrypt(ciphertext, different_user_access_key)
