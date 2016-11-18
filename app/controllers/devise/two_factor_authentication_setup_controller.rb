@@ -9,6 +9,7 @@ module Devise
     # GET /users/otp
     def index
       @two_factor_setup_form = TwoFactorSetupForm.new(resource)
+      analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 
     # PATCH /users/otp

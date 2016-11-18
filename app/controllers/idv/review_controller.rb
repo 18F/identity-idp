@@ -21,6 +21,7 @@ module Idv
 
     def new
       idv_session.params.symbolize_keys!
+      analytics.track_event(Analytics::IDV_REVIEW_VISIT)
     end
 
     def create
