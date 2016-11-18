@@ -34,7 +34,7 @@ describe 'NIST Encryption Model' do
       expect(salt.bytes.length).to eq 32
 
       # Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
-      user_access_key = UserAccessKey.new(password, salt)
+      user_access_key = UserAccessKey.new(password: password, salt: salt)
 
       expect(hex_to_bin(user_access_key.z1).length).to eq 16
       expect(hex_to_bin(user_access_key.z2).length).to eq 16
@@ -52,7 +52,7 @@ describe 'NIST Encryption Model' do
 
       password = 'a long sekrit'
       salt = SecureRandom.random_bytes(32)
-      user_access_key = UserAccessKey.new(password, salt)
+      user_access_key = UserAccessKey.new(password: password, salt: salt)
 
       # D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) ^ Z1
       # E = hash( Z2 + R )
@@ -104,7 +104,7 @@ describe 'NIST Encryption Model' do
 
       password = 'a long sekrit'
       salt = SecureRandom.random_bytes(32)
-      user_access_key = UserAccessKey.new(password, salt)
+      user_access_key = UserAccessKey.new(password: password, salt: salt)
       pii = 'some sensitive stuff'
 
       # D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) ^ Z1

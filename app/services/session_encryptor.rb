@@ -1,7 +1,7 @@
 class SessionEncryptor
   def self.build_user_access_key
     env = Figaro.env
-    UserAccessKey.new(env.session_encryption_key, env.password_pepper)
+    UserAccessKey.new(password: env.session_encryption_key, salt: env.password_pepper)
   end
 
   cattr_reader :user_access_key do

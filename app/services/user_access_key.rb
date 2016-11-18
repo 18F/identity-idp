@@ -9,18 +9,11 @@
 # Store F (User.encrypted_password) and D (User.encryption_key) in db
 
 class UserAccessKey
-  attr_accessor :encrypted_d, :salt, :z1, :z2, :random_r
+  attr_accessor :cost, :encrypted_d, :salt, :z1, :z2, :random_r
 
-  # IMPORTANT! changing COST will invalidate existing password hashes.
-  # You can generate a cost value with:
-  #  SCrypt::Engine.calibrate(max_time: n)
-  # where 'n' is e.g. 0.01 or 0.5 (as used here).
-  SCRYPT_COST_MAX_TIME_0_DOT_01 = '800$8$1$'.freeze
-  SCRYPT_COST_MAX_TIME_0_DOT_5  = '4000$8$4$'.freeze
-
-  COST = Rails.env.test? ? SCRYPT_COST_MAX_TIME_0_DOT_01 : SCRYPT_COST_MAX_TIME_0_DOT_5
-
-  def initialize(password, salt)
+  def initialize(password:, salt:, cost: nil)
+    self.cost = cost
+    self.cost ||= Figaro.env.scrypt_cost
     build(password, salt)
     self.unlocked = false
     self.made = false
@@ -91,7 +84,7 @@ class UserAccessKey
   end
 
   def build(password, pw_salt)
-    self.salt = COST + OpenSSL::Digest::SHA256.hexdigest(pw_salt)
+    self.salt = cost + OpenSSL::Digest::SHA256.hexdigest(pw_salt)
     scrypted = SCrypt::Engine.hash_secret password, salt, 32
     self.z1, self.z2 = build_segments(scrypted)
     self.random_r = Pii::Cipher.random_key

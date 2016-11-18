@@ -5,7 +5,18 @@ describe UserAccessKey do
   let(:salt) { 'NaCL' }
   let(:ciphertext) { OpenSSL::Digest::SHA256.hexdigest('foobar') }
 
-  subject { UserAccessKey.new(password, salt) }
+  subject { UserAccessKey.new(password: password, salt: salt) }
+
+  describe '#cost' do
+    it 'uses explicit scrypt cost if passed to new' do
+      cost = SCrypt::Engine.calibrate(max_time: 0.2)
+      uak = UserAccessKey.new(password: password, salt: salt, cost: cost)
+
+      expect(cost).to_not eq Figaro.env.scrypt_cost
+      expect(uak.z1).to_not eq subject.z1
+      expect(uak.cost).to eq cost
+    end
+  end
 
   describe '#encrypted_password' do
     it 'is an alias for hash_f' do
