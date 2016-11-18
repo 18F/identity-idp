@@ -59,7 +59,7 @@ describe Idv::SessionsController do
         post :create, profile: user_attrs.merge(ssn: '')
 
         expect(response).to_not redirect_to(idv_session_dupe_url)
-        expect(response.body).to match 'can&#39;t be blank'
+        expect(response.body).to match t('errors.messages.blank')
       end
 
       it 'checks for required fields' do
@@ -69,7 +69,7 @@ describe Idv::SessionsController do
         post :create, profile: partial_attrs
 
         expect(response).to render_template(:new)
-        expect(response.body).to match 'can&#39;t be blank'
+        expect(response.body).to match t('errors.messages.blank')
       end
     end
   end

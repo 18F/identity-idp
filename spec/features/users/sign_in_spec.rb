@@ -15,22 +15,16 @@ feature 'Sign in' do
     expect(page).to have_content t('devise.failure.not_found_in_database')
   end
 
-  scenario 'user cannot sign in with empty email', js: true do
+  scenario 'user cannot sign in with empty email' do
     signin('', 'foo')
 
-    expect(page).to have_content 'Please fill in this field.'
+    expect(page).to have_content t('devise.failure.invalid')
   end
 
-  scenario 'user cannot sign in with invalid email', js: true do
-    signin('invalid', 'foo')
-
-    expect(page).to have_content t('valid_email.validations.email.invalid')
-  end
-
-  scenario 'user cannot sign in with empty password', js: true do
+  scenario 'user cannot sign in with empty password' do
     signin('test@example.com', '')
 
-    expect(page).to have_content 'Please fill in this field.'
+    expect(page).to have_content t('devise.failure.invalid')
   end
 
   scenario 'user cannot sign in with wrong password' do

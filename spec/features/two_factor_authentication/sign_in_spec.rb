@@ -85,13 +85,6 @@ feature 'Two Factor Authentication' do
 
           expect(current_path).to eq user_two_factor_authentication_path
         end
-
-        it 'displays an error message if the code field is empty', js: true do
-          fill_in 'code', with: ''
-          click_button t('forms.buttons.submit.default')
-
-          expect(page).to have_content('Please fill in this field')
-        end
       end
     end
 

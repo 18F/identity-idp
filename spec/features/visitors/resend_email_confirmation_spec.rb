@@ -55,13 +55,6 @@ feature 'Visit requests confirmation instructions again during sign up' do
     end
   end
 
-  scenario 'user enters empty email with JS turned on', js: true do
-    fill_in 'Email', with: ''
-    click_button t('forms.buttons.resend_confirmation')
-
-    expect(page).to have_content 'Please fill in this field.'
-  end
-
   scenario 'user enters empty email' do
     fill_in 'Email', with: ''
     click_button t('forms.buttons.resend_confirmation')

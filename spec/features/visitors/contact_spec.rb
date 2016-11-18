@@ -16,6 +16,6 @@ feature 'Contact us' do
     fill_in 'contact_form_email_or_tel', with: ''
     click_button t('forms.buttons.send')
 
-    expect(page).to have_content t('simple_form.error_notification.default_message')
+    expect(page).to have_content t('errors.messages.blank')
   end
 end

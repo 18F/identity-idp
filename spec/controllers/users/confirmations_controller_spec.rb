@@ -9,7 +9,7 @@ describe Users::ConfirmationsController, devise: true do
     it 'tracks nil email confirmation token' do
       analytics_hash = {
         success: false,
-        error: "Confirmation token can't be blank",
+        error: 'Confirmation token Please fill in this field.',
         user_id: nil,
         existing_user: false
       }
@@ -23,7 +23,7 @@ describe Users::ConfirmationsController, devise: true do
     it 'tracks blank email confirmation token' do
       analytics_hash = {
         success: false,
-        error: "Confirmation token can't be blank",
+        error: 'Confirmation token Please fill in this field.',
         user_id: nil,
         existing_user: false
       }

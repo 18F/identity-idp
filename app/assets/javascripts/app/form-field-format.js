@@ -1,5 +1,4 @@
 import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-kit';
-import validateField from './validate-field';
 import DateFormatter from './modules/date-formatter';
 import OtpCodeFormatter from './modules/otp-code-formatter';
 import ZipCodeFormatter from './modules/zip-code-formatter';
@@ -29,14 +28,6 @@ function formatForm() {
 
       // removes focus set by field-kit bug https://github.com/square/field-kit/issues/62
       document.activeElement.blur();
-      field.setDelegate({
-        textFieldDidEndEditing(field) {
-          // prevents IE from thinking empty field has changed
-          if (field.element.value !== '') {
-            validateField(field.element);
-          }
-        },
-      });
     }
   });
 }
