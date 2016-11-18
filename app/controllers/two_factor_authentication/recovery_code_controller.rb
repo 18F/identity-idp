@@ -4,6 +4,7 @@ module TwoFactorAuthentication
 
     def show
       @code = create_new_code
+      analytics.track_event(Analytics::USER_REGISTRATION_RECOVERY_CODE_VISIT)
     end
 
     def acknowledge

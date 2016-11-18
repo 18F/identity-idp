@@ -6,12 +6,13 @@ module Users
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def start
-      analytics.track_event(Analytics::ACCOUNT_CREATION_INTRO_VISIT)
+      analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
     end
 
     def new
       ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
+      analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
     end
 
     # POST /resource

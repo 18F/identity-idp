@@ -10,6 +10,7 @@ module Idv
 
     def new
       @using_mock_vendor = idv_vendor.pick == :mock
+      analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
     def create
