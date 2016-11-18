@@ -38,4 +38,10 @@ $ico-offset: -10px;
   &::before { background-image: url(image-path('alert/ico-exclamation.svg')); }
 }
 
+.alert-warning {
+  background-color: #fff1d2;
+
+  &::before { background-image: url(image-path('alert/ico-warning.svg')); }
+}
+
 .alert-blank::before { content: none; }
