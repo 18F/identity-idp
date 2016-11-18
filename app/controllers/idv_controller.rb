@@ -4,7 +4,11 @@ class IdvController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def index
-    redirect_to idv_activated_url if current_user.active_profile.present?
+    if current_user.active_profile.present?
+      redirect_to idv_activated_url
+    else
+      analytics.track_event(Analytics::IDV_INTRO_VISIT)
+    end
   end
 
   def cancel
