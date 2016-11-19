@@ -1,0 +1,16 @@
+en:
+  links:
+    back_to_sp: '‹ Back to %{sp}'
+    create_account: Create account
+    privacy_policy: Privacy Policy
+    resend: Send again
+    sign_out: Sign out
+    sign_in: Inicia sesión
+    edit: Edit
+    passwords:
+      forgot: Forgot your password?
+    phone_confirmation:
+      fallback_to_sms: Send me a text message with the code instead
+      fallback_to_voice: Call me with the code instead
+    two_factor_authentication:
+      resend_code: Send a new one
