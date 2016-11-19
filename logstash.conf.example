@@ -1,6 +1,6 @@
 input {
   file {
-    path => "[path_to_repo]/log/events.log"
+    path => "path_to_repo/log/events.log"
   }
 }
 output {

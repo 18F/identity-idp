@@ -86,11 +86,6 @@ brew services start elasticsearch
 brew services start kibana
 ```
 
-Open `logstash.conf` (in the root of this repo), and replace `[path_to_repo]`
-with your local path to this repo, as shown by `pwd`. You cannot use the `~`
-home directory shortcut. It must be the full path, such as
-`/Users/monfresh/projects/18f/identity-idp`
-
 Start logstash by running this command from this repo's root directory:
 ```
 logstash -f logstash.conf

@@ -27,7 +27,7 @@ Dir.chdir APP_ROOT do
   run "cp config/application.yml.example config/application.yml"
 
   puts "== Copying logstash.conf =="
-  run "cp logstash.conf.example logstash.conf"
+  run "cat logstash.conf.example | sed 's/path_to_repo/#{APP_ROOT.to_s.gsub('/', '\/')}/g' > logstash.conf"
 
   puts "== Copying sample certs and keys =="
   run "cp keys/saml.key.enc.example keys/saml.key.enc"
