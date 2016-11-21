@@ -1,6 +1,3 @@
-require 'zxcvbn'
-require "#{Rails.root}/lib/zxcvbn_tester"
-
 module FormPasswordValidator
   extend ActiveSupport::Concern
 
