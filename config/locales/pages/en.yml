@@ -3,6 +3,39 @@ en:
     page_not_found:
       header: The page you were looking for doesn’t exist.
       body: You might want to double-check your link and try again. (404)
+    help:
+      creating_account:
+        confirmation_email: >
+          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
+          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem,
+          cum ne nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem
+          est ut. Pro no persius eleifend, eruditi efficiendi his ad. An quem
+          ocurreret vituperata duo.
+        confirmation_passcode: > 
+          Eu diam efficiantur quo, vis suas ubique omittantur
+          in, sensibus abhorreant argumentum ne ius. Id prima mutat has, diam
+          iriure ut nec. Eam dicit nullam cu. Ius eu meis magna vulputate, no
+          persius legimus expetenda vis. Qui adhuc nusquam mnesarchum at.
+        mobile_phone: >
+          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
+          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem,
+          cum ne nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem
+          est ut. Pro no persius eleifend, eruditi efficiendi his ad. An quem
+          ocurreret vituperata duo.
+        dont_want_to_use: 
+          paragraph_1: >
+            Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
+            abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec.
+            Eam dicit nullam cu. Ius eu meis magna vulputate, no persius legimus
+            expetenda vis. Qui adhuc nusquam mnesarchum at.
+          paragraph_2: >
+            Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
+            praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem,
+            cum ne nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem
+            est ut. Pro no persius eleifend, eruditi efficiendi his ad. An quem
+            ocurreret vituperata duo.
+      questions:
+        paragraph_1: Send an email (link to contact form) or call 1 (844) USLOGIN.
     privacy_policy:
       paragraph_1: >
         By using login.gov, you agree that you understand and consent to the

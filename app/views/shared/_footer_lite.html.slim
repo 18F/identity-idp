@@ -2,6 +2,8 @@ footer.footer.bg-navy.white
   .container.p2.h6
     .clearfix
       .sm-col = t('shared.footer_lite.gsa')
-      .sm-col-right
+      .sm-col-right.caps
+        = link_to t('links.help'), help_path,
+          class: 'white text-decoration-none mr3'
         = link_to t('links.privacy_policy'), privacy_path,
-          class: 'caps white text-decoration-none'
+          class: 'white text-decoration-none'
