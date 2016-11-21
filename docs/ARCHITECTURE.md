@@ -1,7 +1,7 @@
 ## Architecture
 
 ### High-level overview
-![Draft architecture](https://raw.githubusercontent.com/18F/identity-idp/master/docs/diagrams/draft-architecture-overview.png)
+![Draft architecture](diagrams/draft-architecture-overview.png)
 
 The current service-level architecture is comprised of Service Providers, the Government Identity Provider (login.gov), and the ability to verify identity within login.gov using various back-end systems (credit authorities, document verifications services, etc.) or delegate authentication to external Identity Providers.
 
@@ -11,11 +11,11 @@ For more details on our system security, see [SECURITY.md](SECURITY.md).
 
 
 #### Application architecture
-![Draft application architecture](https://raw.githubusercontent.com/18F/identity-idp/master/docs/diagrams/draft-application-architecture.png)
+![Draft application architecture](diagrams/draft-application-architecture.png)
 
 
 #### Entity-relationship Diagram
-![ERD](https://raw.githubusercontent.com/18F/identity-idp/master/docs/diagrams/erd.png)
+![ERD](diagrams/erd.png)
 
 
 ### SAML Profile
