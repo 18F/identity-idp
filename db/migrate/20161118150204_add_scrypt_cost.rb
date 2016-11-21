@@ -1,5 +1,8 @@
 class AddScryptCost < ActiveRecord::Migration
   class User < ActiveRecord::Base
+    def postpone_email_change?
+      false
+    end
   end
 
   def up
