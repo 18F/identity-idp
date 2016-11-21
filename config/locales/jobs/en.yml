@@ -6,10 +6,3 @@ en:
         You have changed the phone number for your %{app} account.
 
         If you did not request this change, please contact %{app} at %{support_url}
-    voice_otp_sender_job:
-      message_final: >
-        Hello! Your login.gov one time passcode is, %{code}, again, your
-        passcode is, %{code}, goodbye!
-      message_repeat: >
-        Hello! Your login.gov one time passcode is, %{code}, again, your
-        passcode is, %{code}. Press 1 to repeat your code.
