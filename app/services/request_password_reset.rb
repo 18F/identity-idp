@@ -29,6 +29,6 @@ RequestPasswordReset = Struct.new(:email) do
   end
 
   def user
-    @_user ||= User.find_by(email: email)
+    @_user ||= User.find_with_email(email)
   end
 end

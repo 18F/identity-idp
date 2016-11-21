@@ -151,7 +151,7 @@ describe UserDecorator do
 
   describe '#recent_events' do
     it 'interleaves identities and events' do
-      user_decorator = UserDecorator.new(User.new)
+      user_decorator = UserDecorator.new(build(:user))
       identity = create(
         :identity,
         last_authenticated_at: Time.zone.now - 1,

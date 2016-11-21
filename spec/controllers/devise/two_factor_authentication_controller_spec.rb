@@ -68,7 +68,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
   describe '#show' do
     context 'when resource is not fully authenticated yet' do
       before do
-        stub_sign_in_before_2fa(User.new(phone: '+1 (703) 555-1212'))
+        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
       end
 
       it 'renders the :show view' do

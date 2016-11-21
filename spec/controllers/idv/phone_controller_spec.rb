@@ -18,7 +18,7 @@ describe Idv::PhoneController do
       render_views
 
       it 'renders #new' do
-        user = User.new(phone: '+1 (415) 555-0130')
+        user = build(:user, phone: '+1 (415) 555-0130')
         stub_subject(user)
 
         put :create, idv_phone_form: { phone: '703' }
@@ -30,7 +30,7 @@ describe Idv::PhoneController do
 
     context 'when form is valid and submitted phone is same as user phone' do
       it 'redirects to review page and sets phone_confirmed_at' do
-        user = User.new(phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
         stub_subject(user)
 
         put :create, idv_phone_form: { phone: '+1 (415) 555-0130' }
@@ -47,7 +47,7 @@ describe Idv::PhoneController do
 
     context 'when form is valid and submitted phone is different from user phone' do
       it 'redirects to review page and does not set phone_confirmed_at' do
-        user = User.new(phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+        user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
         stub_subject(user)
 
         put :create, idv_phone_form: { phone: '+1 (415) 555-0160' }

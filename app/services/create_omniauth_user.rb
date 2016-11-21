@@ -19,8 +19,9 @@ class CreateOmniauthUser
   def perform
     return unless valid?
 
-    User.find_or_create_by(email: email) do |user|
-      user.update(confirmed_at: Time.current)
+    ee = EncryptedEmail.new_from_email(email)
+    User.find_or_create_by(email_fingerprint: ee.fingerprint) do |user|
+      user.update(confirmed_at: Time.current, encrypted_email: ee.encrypted)
     end
   end
 end

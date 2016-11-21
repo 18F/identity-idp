@@ -12,7 +12,7 @@ describe MfaConfirmationController do
   end
 
   describe 'PUT /reauthn' do
-    let(:user) { User.new(password: 'password') }
+    let(:user) { build(:user, password: 'password') }
 
     before do
       stub_sign_in(user)

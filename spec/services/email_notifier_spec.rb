@@ -32,7 +32,8 @@ describe EmailNotifier do
       it 'notifies the old email address of the email change' do
         user = create(:user, :signed_up)
         old_email = user.email
-        user.update!(email: 'new@example.com')
+        user.email = 'new@example.com'
+        user.save!
         user.confirm
 
         expect(UserMailer).to receive(:email_changed).with(old_email).and_return(mailer)
