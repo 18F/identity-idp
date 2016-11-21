@@ -4,7 +4,8 @@ describe Analytics do
   let(:request_attributes) do
     {
       user_ip: FakeRequest.new.remote_ip,
-      user_agent: FakeRequest.new.user_agent
+      user_agent: FakeRequest.new.user_agent,
+      host: FakeRequest.new.host
     }
   end
 
@@ -20,7 +21,7 @@ describe Analytics do
         user_id: user.uuid
       }
 
-      expect(Rails.logger).to receive(:info).
+      expect(ANALYTICS_LOGGER).to receive(:info).
         with(analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event')
@@ -38,7 +39,7 @@ describe Analytics do
         user_id: tracked_user.uuid
       }
 
-      expect(Rails.logger).to receive(:info).
+      expect(ANALYTICS_LOGGER).to receive(:info).
         with(analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
