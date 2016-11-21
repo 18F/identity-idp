@@ -49,7 +49,7 @@ module Users
     end
 
     def track_authentication_attempt(email)
-      user = User.find_by(email: email.downcase) || AnonymousUser.new
+      user = User.find_with_email(email) || AnonymousUser.new
 
       properties = {
         success?: current_user.present?, user_id: user.uuid
