@@ -2,7 +2,7 @@ $ico-size: 1.5rem;
 $ico-offset: -10px;
 
 .alert {
-  background-color: #fff4db;
+  background-color: $blue-light;
   border-radius: $space-1;
   color: #5b616a;
   font-size: $sm-h6;
@@ -13,7 +13,7 @@ $ico-offset: -10px;
   position: relative;
 
   &::before {
-    background-image: url(image-path('alert/ico-warning.svg'));
+    background-image: none;
     background-repeat: no-repeat;
     content: '';
     height: $ico-size;
@@ -39,9 +39,9 @@ $ico-offset: -10px;
 }
 
 .alert-warning {
-  background-color: #fff1d2;
+  background-color: #fff4db;
 
   &::before { background-image: url(image-path('alert/ico-warning.svg')); }
 }
 
-.alert-blank::before { content: none; }
+.alert-no-icon::before { content: none; }
