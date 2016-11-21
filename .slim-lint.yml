@@ -1,6 +1,9 @@
 linters:
   LineLength:
     max: 100
+  TagCase:
+    exclude:
+     - 'app/views/voice/otp.xml.slim'
   RuboCop:
     enabled: true
     # slim-lint ignores all of these cops by default, and we need to copy them
