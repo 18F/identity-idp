@@ -27,6 +27,7 @@
 capybara-*.html
 dump.rdb
 latest.dump
+logstash.conf
 rerun.txt
 Vagrantfile
 

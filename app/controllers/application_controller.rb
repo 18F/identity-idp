@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
     payload[:user_id] = analytics_user.uuid
     payload[:user_agent] = request.user_agent
     payload[:ip] = request.remote_ip
+    payload[:host] = request.host
   end
 
   attr_writer :analytics
