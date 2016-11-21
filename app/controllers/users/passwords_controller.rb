@@ -5,7 +5,7 @@ module Users
     def create
       RequestPasswordReset.new(downcased_email).perform
 
-      analytics_user = User.find_by(email: downcased_email) || NonexistentUser.new
+      analytics_user = User.find_with_email(downcased_email) || NonexistentUser.new
       analytics.track_event(
         Analytics::PASSWORD_RESET_EMAIL, user_id: analytics_user.uuid, role: analytics_user.role
       )

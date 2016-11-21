@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::Attempter do
-  let(:current_user) { User.new }
+  let(:current_user) { build(:user) }
   let(:subject) { Idv::Attempter.new(current_user) }
 
   describe '#window_expired?' do

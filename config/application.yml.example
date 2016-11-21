@@ -52,6 +52,8 @@ development:
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
   domain_name: 'localhost:3000'
+  email_encryption_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
+  email_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   enable_test_routes: 'true'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
@@ -89,9 +91,11 @@ production:
   aws_kms_key_id: 'change-me'
   aws_region: 'change-me'
   domain_name: 'xxx.xxx'
+  email_encryption_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
+  email_encryption_key: 'rake secret'
   enable_test_routes: 'false'
   google_analytics_key: 'UA-XXXXXXXXX-YY'
-  hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
+  hmac_fingerprinter_key: 'rake secret'
   idp_sso_target_url: 'xxx.xxx/saml/auth'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
@@ -128,6 +132,8 @@ test:
   aws_region: 'us-east-1'
   domain_name: 'www.example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
+  email_encryption_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
+  email_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   enable_test_routes: 'true'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'

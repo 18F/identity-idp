@@ -13,11 +13,13 @@ class User < ActiveRecord::Base
     :trackable,
     :two_factor_authenticatable,
     :omniauthable,
+    authentication_keys: [:email],
     omniauth_providers: [:saml]
   )
 
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
+  include UserEncryptedEmailOverrides
 
   enum role: { user: 0, tech: 1, admin: 2 }
 

@@ -27,7 +27,7 @@ module ControllerHelper
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
 
-  def stub_sign_in(user = User.new(password: VALID_PASSWORD))
+  def stub_sign_in(user = build(:user, password: VALID_PASSWORD))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
     allow(controller).to receive(:user_session).and_return(authn_at: Time.zone.now)
@@ -36,7 +36,7 @@ module ControllerHelper
     user
   end
 
-  def stub_sign_in_before_2fa(user = User.new(password: VALID_PASSWORD))
+  def stub_sign_in_before_2fa(user = build(:user, password: VALID_PASSWORD))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
     allow(controller).to receive(:current_user).and_return(user)
