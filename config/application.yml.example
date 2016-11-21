@@ -57,7 +57,6 @@ development:
   idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
-  logstash_type: 'stdout'
   newrelic_license_key: 'xxx'
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''

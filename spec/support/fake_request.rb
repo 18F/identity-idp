@@ -6,4 +6,8 @@ class FakeRequest
   def user_agent
     'special_agent'
   end
+
+  def host
+    'fake_host'
+  end
 end

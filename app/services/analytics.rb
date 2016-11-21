@@ -11,7 +11,7 @@ class Analytics
       user_id: attributes[:user_id] || uuid
     }
 
-    Rails.logger.info(analytics_hash.merge!(request_attributes))
+    ANALYTICS_LOGGER.info(analytics_hash.merge!(request_attributes))
   end
 
   private
@@ -21,7 +21,8 @@ class Analytics
   def request_attributes
     {
       user_ip: request.remote_ip,
-      user_agent: request.user_agent
+      user_agent: request.user_agent,
+      host: request.host
     }
   end
 

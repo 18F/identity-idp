@@ -19,11 +19,11 @@ Rails.application.configure do
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
   config.lograge.enabled = true
-  config.lograge.custom_options = ->(event) { event.payload.except(:params) }
+  config.lograge.custom_options = lambda do |event|
+    event.payload.except(:params).merge!(timestamp: event.time)
+  end
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
-  config.logstash.type = Figaro.env.logstash_type.to_sym
-  config.logstash.port = 5228
 
   # Bullet gem config
   config.after_initialize do
