@@ -10,7 +10,7 @@ EmailNotifier = Struct.new(:user) do
   private
 
   def email_changed?
-    changed_attributes.fetch('email', false)
+    changed_attributes.fetch('email_fingerprint', false)
   end
 
   def changed_attributes
@@ -18,6 +18,6 @@ EmailNotifier = Struct.new(:user) do
   end
 
   def old_email
-    changed_attributes['email'].first
+    EncryptedEmail.new(changed_attributes['encrypted_email'].first).decrypted
   end
 end
