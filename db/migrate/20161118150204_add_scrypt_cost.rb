@@ -1,4 +1,7 @@
 class AddScryptCost < ActiveRecord::Migration
+  class User < ActiveRecord::Base
+  end
+
   def up
     add_column :users, :password_cost, :string
     add_column :users, :recovery_cost, :string
