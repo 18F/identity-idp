@@ -17,7 +17,7 @@ describe SmsSenderNumberChangeJob do
         I18n.t(
           'jobs.sms_sender_number_change_job.message',
           app: APP_NAME,
-          support_url: 'http://localhost:3000/contact'
+          support_url: 'http://www.example.com/contact'
         )
       )
     end

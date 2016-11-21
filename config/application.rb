@@ -15,6 +15,6 @@ module Upaya
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
 
-    routes.default_url_options[:host] = Figaro.env.mailer_domain_name
+    routes.default_url_options[:host] = Figaro.env.domain_name
   end
 end
