@@ -12,6 +12,8 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   config.action_mailer.smtp_settings = JSON.parse(Figaro.env.smtp_settings).symbolize_keys
 
+  routes.default_url_options[:protocol] = 'https'
+
   config.action_mailer.default_url_options = {
     host: Figaro.env.domain_name,
     protocol: 'https'
