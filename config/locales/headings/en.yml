@@ -12,6 +12,46 @@ en:
     sign_in_without_sp: Sign in
     sign_in_with_sp: Sign in to continue to %{sp}
     choose_otp_delivery: Choose how you’d like to receive a one-time passcode
+    help:
+      creating_account:
+        title: Creating your account 
+        confirmation_email: I didn't receive a confirmation email from login.gov.
+        confirmation_passcode: I didn't receive a confirmation passcode on my phone.
+        mobile_phone: Do I need a mobile phone to use login.gov?
+        dont_want_to_use: I don't want to use login.gov to access government services.
+      verifying_account:
+        title: Verifying your account
+        what_verification: What is account verification?
+        why_verified: Why do I need a verified account?
+        how_verify: How do you verify my account?
+        what_verify: What do I need to verify my account?
+        personal_info: Why are you asking for personal information?
+        financial_info: Why are you asking for financial information?
+        ss_number: Why are you asking for my Social Security Number?
+        cant_verify: Why can't you verify my account?
+        account_not_verified: What happens if my account can't be verified?
+        phone_number: What type of phone number should I enter?
+      signing_in:
+        title: Signing into your account
+        forgot_email: I forgot which email address I used to create an account.
+        forgot_password: What do I do if my password doesn't work or I forgot it?
+        miss_passcode: What happens if I miss the phone call or the text message with my one-time passcode?
+        lose_phone: If I lose my phone, can I still sign in?
+        log_out: What happens if the system logs me out?
+        forgot_codes: I can't remember where my recovery codes are.
+      changing_settings:
+        title: Changing your settings
+        change_password: How do I change my password?
+        change_email: How do I change my email address?
+        edit_profile: Why can't I edit my profile information?
+      privacy_security:
+        title: Keeping your account private and secure
+        protect_data: How does login.gov protect my data?
+        2fa: What is two-factor authentication? (2FA)?
+        third_party: What are third-party vendors? What do they do with my information?
+        remove_saved: Can I remove a saved password or login information from my browser?
+      questions:
+        title: Still have questions?
     passwords:
       change: Change your password
       forgot: Forgot your password?

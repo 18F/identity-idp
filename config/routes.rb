@@ -96,6 +96,7 @@ Rails.application.routes.draw do
   get '/idv/review' => 'idv/review#new'
   put '/idv/review' => 'idv/review#create'
 
+  get '/help' => 'pages#help'
   get '/privacy' => 'pages#privacy_policy'
   get '/profile' => 'profile#index', as: :profile
   get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile

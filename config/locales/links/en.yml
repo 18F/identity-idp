@@ -2,6 +2,7 @@ en:
   links:
     back_to_sp: '‹ Back to %{sp}'
     create_account: Create account
+    help: Help
     privacy_policy: Privacy Policy
     resend: Send again
     sign_out: Sign out
