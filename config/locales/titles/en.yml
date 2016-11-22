@@ -10,6 +10,7 @@ en:
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time passcode
     account_locked: Account locked
+    help: Help Center
     passwords:
       change: Change the password for your account
       forgot: Reset the password for your account
