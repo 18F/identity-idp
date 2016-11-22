@@ -14,10 +14,16 @@ SecureHeaders::Configuration.default do |config|
     block_all_mixed_content: true, # CSP 2.0 only;
     connect_src: ["'self'"],
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:'],
+    img_src: ["'self'", 'data:', '*.google-analytics.com'],
     media_src: ["'self'"],
     object_src: ["'none'"],
-    script_src: ["'self'", '*.newrelic.com', '*.nr-data.net'],
+    script_src: [
+      "'self'",
+      '*.newrelic.com',
+      '*.nr-data.net',
+      'dap.digitalgov.gov',
+      '*.google-analytics.com'
+    ],
     style_src: ["'self'"],
     base_uri: ["'self'"]
   }
