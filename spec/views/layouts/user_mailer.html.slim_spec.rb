@@ -28,9 +28,9 @@ describe 'layouts/user_mailer.html.slim' do
   it 'includes the support text and link' do
     expect(rendered).to have_content(t('mailer.no_reply'))
     expect(rendered).to have_content(
-      t('mailer.help', app: APP_NAME, link: Figaro.env.support_url)
+      t('mailer.help', app: APP_NAME, link: contact_url)
     )
-    expect(rendered).to have_link(Figaro.env.support_url, href: Figaro.env.support_url)
+    expect(rendered).to have_link(contact_url, href: contact_url)
   end
 
   it 'includes placeholder link to About login.gov' do
