@@ -1,4 +1,5 @@
 class SmsSenderNumberChangeJob < ActiveJob::Base
+  include Rails.application.routes.url_helpers
   queue_as :sms
 
   def perform(phone)
@@ -18,7 +19,7 @@ class SmsSenderNumberChangeJob < ActiveJob::Base
     I18n.t(
       'jobs.sms_sender_number_change_job.message',
       app: APP_NAME,
-      support_url: Figaro.env.support_url
+      support_url: contact_url
     )
   end
 end

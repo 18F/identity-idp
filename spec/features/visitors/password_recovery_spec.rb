@@ -25,8 +25,7 @@ feature 'Password Recovery' do
     end
 
     it 'includes a link to customer service in the email' do
-      expect(last_email.html_part.body).
-        to include Figaro.env.support_url
+      expect(last_email.html_part.body).to include contact_url
     end
 
     it 'displays a localized notice' do
