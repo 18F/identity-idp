@@ -85,6 +85,7 @@ end
 
 group :test do
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
+  gem 'axe-matchers'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
