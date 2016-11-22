@@ -56,6 +56,7 @@ class UserAccessKey
   end
 
   def unlock(random_key)
+    raise Pii::EncryptionError, 'Cannot unlock with nil random_key' unless random_key.present?
     self.unlocked = true
     self.random_r = random_key
     hash_e
