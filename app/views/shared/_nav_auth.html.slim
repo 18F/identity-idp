@@ -20,4 +20,4 @@ nav.bg-white
             = link_to t('shared.nav_auth.my_account'), profile_path,
               class: current_page?(profile_path) ? 'bold gray text-decoration-none' : ''
             span.px1.silver = '|'
-          = link_to t('links.sign_out'), destroy_user_session_path
+            = link_to t('links.sign_out'), destroy_user_session_path
