@@ -37,7 +37,13 @@ module Pii
       cipher.iv = iv(unpacked_payload)
       cipher.auth_tag = tag(unpacked_payload)
       cipher.auth_data = 'PII'
+      try_decipher(unpacked_payload)
+    end
+
+    def try_decipher(unpacked_payload)
       cipher.update(ciphertext(unpacked_payload)) + cipher.final
+    rescue OpenSSL::Cipher::CipherError => err
+      raise EncryptionError, 'failed to decipher payload: ' + err.to_s
     end
 
     def unpack_payload(payload)
