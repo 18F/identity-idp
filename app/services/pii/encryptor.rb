@@ -35,7 +35,7 @@ module Pii
       begin
         payload = cipher.decrypt(payload, cek)
       rescue OpenSSL::Cipher::CipherError => err
-        raise EncryptionError, err
+        raise EncryptionError, err.inspect
       end
       raise EncryptionError, 'payload is invalid' unless sane_payload?(payload)
       plaintext, fingerprint = split_into_segments(payload)
