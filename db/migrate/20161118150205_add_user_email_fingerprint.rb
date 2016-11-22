@@ -8,12 +8,13 @@ class AddUserEmailFingerprint < ActiveRecord::Migration
     encrypt_user_emails
     change_column_null :users, :email_fingerprint, false
     change_column_null :users, :encrypted_email, false
-    remove_column :users, :email
+    remove_index :users, :email
+    rename_column :users, :email, :email_plain
+    change_column_null :users, :email_plain, true
   end
 
   def down
-    add_column :users, :email, :string
-    add_index :users, :email, unique: true
+    rename_column :users, :email_plain, :email
     decrypt_user_emails
     change_column_null :users, :email, false
     remove_column :users, :email_fingerprint
@@ -31,7 +32,8 @@ class AddUserEmailFingerprint < ActiveRecord::Migration
   def decrypt_user_emails
     User.where(email: nil).each do |user|
       ee = EncryptedEmail.new(user.encrypted_email)
-      user.update!(email: ee.decrypted)
+      escaped = ActiveRecord::Base.connection.quote(ee.decrypted)
+      execute "UPDATE users set email=#{escaped} WHERE id=#{user.id}"
     end
   end
 end
