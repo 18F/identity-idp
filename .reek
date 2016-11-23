@@ -19,6 +19,7 @@ NilCheck:
     - PasswordsController#mark_profile_inactive
     - PasswordResetTokenValidator#result
     - PhoneConfirmationFlow
+    - RegisterUserEmailForm#result
     - slo_not_implemented_at_sp?
     - in_slo?
     - TotpSetupController#new

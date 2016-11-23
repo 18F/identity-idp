@@ -47,6 +47,7 @@ class Analytics
   INVALID_SERVICE_PROVIDER = 'Invalid Service Provider'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
+  MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
   PAGE_NOT_FOUND = 'Page Not Found'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATION = 'Password Creation'.freeze
@@ -65,12 +66,9 @@ class Analytics
   TOTP_SETUP_INVALID_CODE = 'TOTP Setup: invalid code'.freeze
   TOTP_SETUP_VALID_CODE = 'TOTP Setup: valid code'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
-  USER_REGISTRATION_ACCOUNT_CREATED = 'User Registration: account created'.freeze
+  USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
   USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
-  USER_REGISTRATION_ENTER_PASSCODE_VISIT = 'User Registration: enter passcode visited'.freeze
-  USER_REGISTRATION_EXISTING_EMAIL = 'User Registration: attempt with existing email'.freeze
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
-  USER_REGISTRATION_INVALID_EMAIL = 'User Registration: invalid email'.freeze
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
   USER_REGISTRATION_RECOVERY_CODE_VISIT = 'User Registration: recovery code visited'.freeze
   # rubocop:enable Metrics/LineLength
