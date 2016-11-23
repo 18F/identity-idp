@@ -48,12 +48,6 @@ feature 'Phone confirmation during sign up' do
     it 'informs the user that the OTP code is sent to the phone' do
       expect(page).to have_content(t('instructions.2fa.confirm_code', number: '+1 (555) 555-5555'))
     end
-
-    it 'allows user to enter new number if they Sign Out before confirming' do
-      click_link(t('links.sign_out'))
-      signin(@user.reload.email, @user.password)
-      expect(current_path).to eq phone_setup_path
-    end
   end
 
   context "visitor tries to sign up with another user's phone for OTP" do
