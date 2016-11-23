@@ -20,15 +20,37 @@ class VoiceOtpSenderJob < ActiveJob::Base
     )
   end
 
-  def twimlet_url(code)
-    "https://twimlets.com/message?#{twimlet_query_string(code)}"
+  def twimlet_url(code) # rubocop:disable Metrics/MethodLength
+    repeat = message_repeat(code)
+
+    twimlet_menu(
+      repeat,
+      1 => twimlet_menu(
+        repeat,
+        1 => twimlet_menu(
+          repeat,
+          1 => twimlet_menu(repeat, 1 => twimlet_message(message_final(code)))
+        )
+      )
+    )
   end
 
-  def twimlet_query_string(code)
-    "Message%5B0%5D=#{URI.escape(otp_message(code))}"
+  def message_repeat(code)
+    I18n.t('jobs.voice_otp_sender_job.message_repeat', code: code)
   end
 
-  def otp_message(code)
-    I18n.t('jobs.voice_otp_sender_job.message', code: code)
+  def message_final(code)
+    I18n.t('jobs.voice_otp_sender_job.message_final', code: code)
+  end
+
+  def twimlet_message(message)
+    'https://twimlets.com/message?' + { Message: { 0 => message } }.to_query
+  end
+
+  def twimlet_menu(message, options)
+    'https://twimlets.com/menu?' + {
+      Message: message,
+      Options: options.to_h
+    }.to_query
   end
 end
