@@ -68,9 +68,6 @@ group :development do
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
-  gem 'spring'
-  gem 'spring-commands-rspec'
-  gem 'spring-watcher-listen'
 end
 
 group :development, :test do
