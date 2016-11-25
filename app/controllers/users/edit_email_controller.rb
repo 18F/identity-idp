@@ -9,7 +9,11 @@ module Users
     def update
       @update_user_email_form = UpdateUserEmailForm.new(current_user)
 
-      if @update_user_email_form.submit(user_params)
+      result = @update_user_email_form.submit(user_params)
+
+      analytics.track_event(Analytics::EMAIL_CHANGE_REQUEST, result)
+
+      if result[:success]
         process_updates
         bypass_sign_in current_user
       else
@@ -25,19 +29,10 @@ module Users
 
     def process_updates
       if @update_user_email_form.email_changed?
-        track_email_change
         flash[:notice] = t('devise.registrations.email_update_needs_confirmation')
       end
 
       redirect_to profile_url
-    end
-
-    def track_email_change
-      if @update_user_email_form.email_taken?
-        analytics.track_event(Analytics::EMAIL_CHANGED_TO_EXISTING)
-      else
-        analytics.track_event(Analytics::EMAIL_CHANGE_REQUESTED)
-      end
     end
   end
 end
