@@ -1,16 +1,16 @@
 const root = window.LoginGov || {};
 
-const pluralize = (word, count) => {
+function pluralize(word, count) {
   return `${word}${count !== 1 ? 's' : ''}`;
-};
+}
 
-const formatMinutes = minutes => {
+function formatMinutes(minutes) {
   if (!minutes) return 0;
 
   return `${minutes} ${pluralize('minute', minutes)}`;
-};
+}
 
-const formatSeconds = seconds => {
+function formatSeconds(seconds) {
   return `${seconds} ${pluralize('second', seconds)}`;
 };
 
