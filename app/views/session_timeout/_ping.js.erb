@@ -28,41 +28,15 @@ function success(data) {
 
   if (show_warning & !el) {
     cntnr.insertAdjacentHTML('afterbegin', warning_info);
-    initTimer(warning);
+    LoginGov.countdownTimer('#countdown', warning);
   }
+
   if (!show_warning & el) el.remove();
-  if (data.live == false) {
+  if (!data.live) {
     window.onbeforeunload = null;
     window.onunload = null;
     window.location.href = '/timeout';
   }
-}
-
-function initTimer(duration) {
-  var countdown = document.getElementById('countdown');
-  var timeLeft = duration;
-  var interval = 1000;
-
-  var format = function(milliseconds) {
-    var seconds = milliseconds / 1000;
-    var minutes = parseInt(seconds / 60, 10);
-    var remainingSeconds = parseInt(seconds % 60, 10);
-
-    var displayMinutes = minutes == 0 ? '' :
-      minutes + ' minute' + (minutes !== 1 ? 's' : '') + ' and ';
-    var displaySeconds = remainingSeconds + ' second' + (remainingSeconds !== 1 ? 's' : '');
-
-    return (displayMinutes + displaySeconds);
-  };
-
-  function tick() {
-    countdown.innerHTML = format(timeLeft);
-    if (timeLeft <= 0) return;
-    timeLeft -= interval;
-    setTimeout(tick, interval);
-  }
-
-  tick();
 }
 
 setTimeout(ping, start);

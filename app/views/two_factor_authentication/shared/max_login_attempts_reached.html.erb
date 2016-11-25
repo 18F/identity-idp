@@ -1,0 +1,17 @@
+<% title t('titles.account_locked') %>
+
+<h1 class="h3 my0">
+  <%= t('titles.account_locked') %>
+</h1>
+<p>
+  <%= t('devise.two_factor_authentication.max_login_attempts_reached') %>
+</p>
+<p>
+  <%= t('devise.two_factor_authentication.please_try_again', time_remaining: decorated_user.lockout_time_remaining_in_words).html_safe %>
+</p>
+
+<%= nonced_javascript_tag do %>
+  var test = <%= decorated_user.lockout_time_remaining %> * 1000;
+  console.log(test);
+  window.LoginGov.countdownTimer('#countdown', test);
+<% end %>

@@ -116,7 +116,7 @@ en:
       max_login_attempts_reached: >
         Your account is temporarily locked because you have entered the
         one-time passcode incorrectly too many times.
-      please_try_again: Please try again in %{time_remaining}.
+      please_try_again: Please try again in <span id="countdown">%{time_remaining}</span>.
       recovery_code_header_text: Enter your recovery code
       recovery_code_prompt: >
         You can use this recovery code once. If you still need a code after signing in, go to your
