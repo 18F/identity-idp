@@ -4,7 +4,7 @@ module TwoFactorAuthentication
 
     def show
       assign_variables_for_otp_verification_show_view
-      analytics.track_event(Analytics::USER_REGISTRATION_ENTER_PASSCODE_VISIT)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
     end
 
     def create
