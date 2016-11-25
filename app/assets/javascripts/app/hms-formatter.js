@@ -1,13 +1,26 @@
-var root = window.LoginGov || {};
+const root = window.LoginGov || {};
+
+const pluralize = (word, count) => {
+  return `${word}${count !== 1 ? 's' : ''}`;
+};
+
+const formatMinutes = minutes => {
+  if (!minutes) return 0;
+
+  return `${minutes} ${pluralize('minute', minutes)}`;
+};
+
+const formatSeconds = seconds => {
+  return `${seconds} ${pluralize('second', seconds)}`;
+};
 
 root.hmsFormatter = function(milliseconds) {
-  var seconds = milliseconds / 1000;
-  var minutes = parseInt(seconds / 60, 10);
-  var remainingSeconds = parseInt(seconds % 60, 10);
+  const seconds = milliseconds / 1000;
+  const minutes = parseInt(seconds / 60, 10);
+  const remainingSeconds = parseInt(seconds % 60, 10);
 
-  var displayMinutes = minutes == 0 ? '' :
-    minutes + ' minute' + (minutes !== 1 ? 's' : '') + ' and ';
-  var displaySeconds = remainingSeconds + ' second' + (remainingSeconds !== 1 ? 's' : '');
+  const displayMinutes = formatMinutes(minutes);
+  const displaySeconds = formatSeconds(remainingSeconds);
 
-  return (displayMinutes + displaySeconds);
+  return `${displayMinutes} and ${displaySeconds}`;
 };

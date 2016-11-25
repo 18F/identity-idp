@@ -6,7 +6,7 @@ describe 'two_factor_authentication/shared/max_login_attempts_reached.html.erb' 
       user_decorator = instance_double(UserDecorator)
       allow(view).to receive(:decorated_user).and_return(user_decorator)
       allow(user_decorator).to receive(:lockout_time_remaining_in_words).and_return('1000 years')
-      allow(user_decorator).to receive(:lockout_time_remaining).and_return(10000)
+      allow(user_decorator).to receive(:lockout_time_remaining).and_return(10_000)
 
       render
 
