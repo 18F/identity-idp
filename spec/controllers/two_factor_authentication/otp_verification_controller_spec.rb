@@ -25,6 +25,22 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         end
       end
     end
+
+    it 'tracks the page visit and context' do
+      user = build_stubbed(:user, phone: '+1 (703) 555-0100')
+      stub_sign_in_before_2fa(user)
+
+      stub_analytics
+      analytics_hash = {
+        context: 'authentication',
+        method: 'sms'
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_hash)
+
+      get :show, delivery_method: 'sms'
+    end
   end
 
   describe '#create' do

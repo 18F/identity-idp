@@ -20,16 +20,30 @@ class RegisterUserEmailForm
     user.email = params[:email].downcase
 
     if valid_form?
+      @success = true
       user.save!
     else
-      process_errors
+      @success = process_errors
     end
+
+    result
   end
 
   private
 
+  attr_reader :success
+
   def valid_form?
     valid? && !email_taken?
+  end
+
+  def result
+    {
+      success: success,
+      errors: errors.messages.values.flatten,
+      email_already_exists: email_taken?,
+      user_id: existing_user&.uuid
+    }
   end
 
   def process_errors
@@ -37,13 +51,13 @@ class RegisterUserEmailForm
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
       existing_user.send_confirmation_instructions
-      return true
+      true
     elsif email_taken?
       UserMailer.signup_with_your_email(email).deliver_later
-      return true
+      true
+    else
+      false
     end
-
-    false
   end
 
   def user_unconfirmed?
