@@ -23,7 +23,7 @@ class RegisterUserEmailForm
       @success = true
       user.save!
     else
-      process_errors
+      @success = process_errors
     end
 
     result
@@ -51,13 +51,13 @@ class RegisterUserEmailForm
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
       existing_user.send_confirmation_instructions
-      return @success = true
+      true
     elsif email_taken?
       UserMailer.signup_with_your_email(email).deliver_later
-      return @success = true
+      true
+    else
+      false
     end
-
-    @success = false
   end
 
   def user_unconfirmed?
