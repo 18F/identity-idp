@@ -24,15 +24,22 @@ class VoiceOtpSenderJob < ActiveJob::Base
     repeat = message_repeat(code)
 
     twimlet_menu(
-      repeat,
+      message_initial,
       1 => twimlet_menu(
         repeat,
         1 => twimlet_menu(
           repeat,
-          1 => twimlet_menu(repeat, 1 => twimlet_message(message_final(code)))
+          1 => twimlet_menu(
+            repeat,
+            1 => twimlet_menu(repeat, 1 => twimlet_message(message_final(code)))
+          )
         )
       )
     )
+  end
+
+  def message_initial
+    I18n.t('jobs.voice_otp_sender_job.message_initial')
   end
 
   def message_repeat(code)
