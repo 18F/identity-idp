@@ -33,8 +33,7 @@ class Analytics
   # rubocop:disable Metrics/LineLength
   AUTHENTICATION_MAX_2FA_ATTEMPTS = 'Authentication: user reached max 2FA attempts'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
-  EMAIL_CHANGE_REQUESTED = 'Email Change: requested'.freeze
-  EMAIL_CHANGED_TO_EXISTING = 'Email Change: user attempted to change their email to an existing email'.freeze
+  EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_FAILED = 'IdV: failed'.freeze

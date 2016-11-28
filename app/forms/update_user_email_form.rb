@@ -17,16 +17,16 @@ class UpdateUserEmailForm
   def submit(params)
     email = params[:email].downcase
 
-    if email != @user.email
-      @email_changed = true
-      self.email = email
-    end
+    self.email = email
 
     if valid_form?
-      @user.update(params)
+      @success = true
+      @user.update(email: email)
     else
-      process_errors
+      @success = process_errors
     end
+
+    result
   end
 
   def valid_form?
@@ -34,12 +34,12 @@ class UpdateUserEmailForm
   end
 
   def email_changed?
-    email_changed == true
+    valid? && email != @user.email
   end
 
   private
 
-  attr_reader :email_changed
+  attr_reader :email_changed, :success
 
   def process_errors
     return false unless email_taken? && valid?
@@ -47,5 +47,14 @@ class UpdateUserEmailForm
     @user.skip_confirmation_notification!
     UserMailer.signup_with_your_email(email).deliver_later
     true
+  end
+
+  def result
+    {
+      success: success,
+      errors: errors.messages.values.flatten,
+      email_already_exists: email_taken?,
+      email_changed: email_changed?
+    }
   end
 end
