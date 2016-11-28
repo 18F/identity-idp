@@ -55,6 +55,21 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_recovery_code')
       end
+
+      it 'tracks the max attempts event' do
+        properties = {
+          success?: false,
+          method: 'recovery code'
+        }
+
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).exactly(3).times.
+          with(Analytics::MULTI_FACTOR_AUTH, properties)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+
+        3.times { post :create, code: 'foo' }
+      end
     end
   end
 end

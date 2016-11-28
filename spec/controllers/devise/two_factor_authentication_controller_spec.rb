@@ -6,7 +6,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
       expect(subject).to have_actions(
         :before,
         :authenticate_user!,
-        :verify_user_is_not_second_factor_locked,
         :handle_two_factor_authentication,
         :check_already_authenticated
       )

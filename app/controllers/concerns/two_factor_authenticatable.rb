@@ -3,7 +3,6 @@ module TwoFactorAuthenticatable
 
   included do
     prepend_before_action :authenticate_user!
-    before_action :verify_user_is_not_second_factor_locked
     before_action :handle_two_factor_authentication
     before_action :check_already_authenticated
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
@@ -11,12 +10,8 @@ module TwoFactorAuthenticatable
 
   private
 
-  def verify_user_is_not_second_factor_locked
-    handle_second_factor_locked_user if decorated_user.blocked_from_entering_2fa_code?
-  end
-
   def handle_second_factor_locked_user
-    analytics.track_event(Analytics::AUTHENTICATION_MAX_2FA_ATTEMPTS)
+    analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
     render 'two_factor_authentication/shared/max_login_attempts_reached'
 
