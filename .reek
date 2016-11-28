@@ -6,6 +6,7 @@ DuplicateMethodCall:
     - Remote#command
     - Remote#extract_trailing_options
     - Remote#parse_positional_arguments
+    - WorkerHealthChecker#status
 FeatureEnvy:
   exclude:
     - track_registration
