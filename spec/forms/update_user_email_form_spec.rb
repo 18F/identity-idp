@@ -9,7 +9,14 @@ describe UpdateUserEmailForm do
     it 'is false when the submitted email is the same as the current email' do
       result = subject.submit(email: 'OLD@example.com')
 
-      expect(result).to be true
+      result_hash = {
+        success: true,
+        errors: [],
+        email_already_exists: false,
+        email_changed: false
+      }
+
+      expect(result).to eq result_hash
       expect(subject.email_changed?).to eq false
     end
   end
@@ -30,7 +37,14 @@ describe UpdateUserEmailForm do
 
         result = subject.submit(email: 'ANOTHER@example.com')
 
-        expect(result).to be true
+        result_hash = {
+          success: true,
+          errors: [],
+          email_already_exists: true,
+          email_changed: true
+        }
+
+        expect(result).to eq result_hash
         expect(subject.email_changed?).to eq true
         expect(user.unconfirmed_email).to be_nil
         expect(user.email).to eq 'old@example.com'
@@ -44,9 +58,16 @@ describe UpdateUserEmailForm do
 
         result = subject.submit(email: 'new@example.com')
 
+        result_hash = {
+          success: true,
+          errors: [],
+          email_already_exists: false,
+          email_changed: true
+        }
+
         expect(user.unconfirmed_email).to eq 'new@example.com'
         expect(user.email).to eq 'old@example.com'
-        expect(result).to be true
+        expect(result).to eq result_hash
         expect(subject.email_changed?).to eq true
       end
     end
@@ -57,16 +78,15 @@ describe UpdateUserEmailForm do
 
         result = subject.submit(email: 'TAKEN@gmail.com')
 
-        expect(result).to be true
+        result_hash = {
+          success: true,
+          errors: [],
+          email_already_exists: true,
+          email_changed: true
+        }
+
+        expect(result).to eq result_hash
         expect(subject.email).to eq 'taken@gmail.com'
-      end
-    end
-
-    context 'when email is not already taken' do
-      it 'is valid' do
-        result = subject.submit(email: 'not_taken@gmail.com')
-
-        expect(result).to be true
       end
     end
 
@@ -74,9 +94,14 @@ describe UpdateUserEmailForm do
       it 'returns false and adds errors to the form object' do
         result = subject.submit(email: 'invalid_email')
 
-        expect(result).to be false
-        expect(subject.errors[:email]).
-          to eq [t('valid_email.validations.email.invalid')]
+        result_hash = {
+          success: false,
+          errors: [t('valid_email.validations.email.invalid')],
+          email_already_exists: false,
+          email_changed: false
+        }
+
+        expect(result).to eq result_hash
       end
     end
   end
