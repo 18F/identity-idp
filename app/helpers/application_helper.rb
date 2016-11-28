@@ -7,6 +7,14 @@ module ApplicationHelper
     content_for(:card_cls) { cls }
   end
 
+  def step_class(step, active)
+    if active > step
+      'complete'
+    elsif active == step
+      'active'
+    end
+  end
+
   def tooltip(text)
     content_tag(
       :span, \

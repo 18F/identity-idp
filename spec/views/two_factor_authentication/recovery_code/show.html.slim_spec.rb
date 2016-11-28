@@ -35,4 +35,10 @@ describe 'two_factor_authentication/recovery_code/show.html.slim' do
 
     expect(rendered).to have_content 'foo'
   end
+
+  it 'displays the correct progress step' do
+    render
+
+    expect(rendered).to have_css('.step-3.active')
+  end
 end
