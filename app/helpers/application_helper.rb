@@ -7,7 +7,7 @@ module ApplicationHelper
     content_for(:card_cls) { cls }
   end
 
-  def step_cls(step, active)
+  def step_class(step, active)
     if active > step
       'complete'
     elsif active == step

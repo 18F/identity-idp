@@ -1,11 +1,11 @@
 require 'rails_helper'
 
 describe ApplicationHelper do
-  describe '#step_cls' do
+  describe '#step_class' do
     it 'creates CSS class based on current and active step' do
-      expect(helper.step_cls(1, 2)).to eq 'complete'
-      expect(helper.step_cls(2, 2)).to eq 'active'
-      expect(helper.step_cls(2, 1)).to be_nil
+      expect(helper.step_class(1, 2)).to eq 'complete'
+      expect(helper.step_class(2, 2)).to eq 'active'
+      expect(helper.step_class(2, 1)).to be_nil
     end
   end
 

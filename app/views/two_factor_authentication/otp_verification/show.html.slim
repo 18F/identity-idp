@@ -1,6 +1,6 @@
 - title t('titles.enter_2fa_code')
 
-- unless reauthn?
+- unless current_user && current_user.phone
   = render 'shared/progress_steps', active: 3
 
 h1.h3.my0 = t('devise.two_factor_authentication.header_text')
