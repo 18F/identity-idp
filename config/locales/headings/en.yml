@@ -14,7 +14,7 @@ en:
     choose_otp_delivery: Choose how you’d like to receive a one-time passcode
     help:
       creating_account:
-        title: Creating your account 
+        title: Creating your account
         confirmation_email: I didn't receive a confirmation email from login.gov.
         confirmation_passcode: I didn't receive a confirmation passcode on my phone.
         mobile_phone: Do I need a mobile phone to use login.gov?
@@ -67,7 +67,6 @@ en:
       more_information: For more information
     profile:
       profile_info: Profile information
-      profile_info_tt: Why can’t I edit my profile information?
       account_history: Account history
       login_info: Account information
       two_factor: Two-factor authentication
