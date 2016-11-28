@@ -97,6 +97,14 @@ feature 'Two Factor Authentication' do
       expect(page).to have_content(t('notices.send_code.sms'))
     end
 
+    scenario 'user does not see progress steps' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).not_to have_css('.progress-steps')
+    end
+
     scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)

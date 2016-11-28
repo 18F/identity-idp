@@ -5,6 +5,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     before do
       allow(view).to receive(:reauthn?).and_return(false)
       allow(view).to receive(:user_session).and_return({})
+      allow(view).to receive(:current_user).and_return(User.new)
       controller.request.path_parameters[:delivery_method] = 'sms'
       @delivery_method = 'sms'
     end
