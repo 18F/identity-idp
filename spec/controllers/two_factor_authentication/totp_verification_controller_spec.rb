@@ -65,7 +65,7 @@ describe TwoFactorAuthentication::TotpVerificationController, devise: true do
 
         expect(@analytics).to receive(:track_event).exactly(3).times.
           with(Analytics::MULTI_FACTOR_AUTH, success?: false, method: 'totp')
-        expect(@analytics).to receive(:track_event).with(Analytics::AUTHENTICATION_MAX_2FA_ATTEMPTS)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
         3.times { post :create, code: '12345' }
       end
