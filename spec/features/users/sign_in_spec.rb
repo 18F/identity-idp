@@ -92,16 +92,20 @@ feature 'Sign in' do
   end
 
   context 'signed out' do
-    it 'keeps the user on the current page after session times out', js: true do
+    it 'links to current page after session expires', js: true do
       allow(Devise).to receive(:timeout_in).and_return(0)
 
-      visit new_user_registration_path
+      [t('forms.buttons.continue'), t('session_expired_link')].each do |link|
+        visit new_user_registration_path
+        fill_in 'Email', with: 'test@example.com'
 
-      expect(page).to have_css('#session-expired-msg')
+        expect(page).to have_css('#session-expired-msg')
 
-      find_link(t('forms.buttons.continue')).trigger('click')
+        find_link(link).trigger('click')
 
-      expect(page).to have_current_path(new_user_registration_path)
+        expect(page).to have_field('Email', with: '')
+        expect(page).to have_current_path(new_user_registration_path)
+      end
     end
 
     it 'does not display timeout modal when session not timed out', js: true do
