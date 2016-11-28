@@ -59,7 +59,7 @@ module TwoFactorAuthenticatable
   def handle_invalid_otp(type: 'otp')
     update_invalid_user if current_user.two_factor_enabled? && context == 'authentication'
 
-    flash[:error] = t("devise.two_factor_authentication.invalid_#{type}")
+    flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
     if decorated_user.blocked_from_entering_2fa_code?
       handle_second_factor_locked_user

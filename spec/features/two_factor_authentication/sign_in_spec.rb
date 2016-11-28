@@ -140,6 +140,22 @@ feature 'Two Factor Authentication' do
         expect(current_path).to eq root_path
       end
     end
+
+    context 'user enters correct OTP after incorrect OTP' do
+      it 'does not display error message' do
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
+        click_button t('forms.buttons.submit.default')
+
+        fill_in('code', with: 'bad-code')
+        click_button t('forms.buttons.submit.default')
+        fill_in('code', with: user.reload.direct_otp)
+        click_button t('forms.buttons.submit.default')
+
+        expect(page).
+          to_not have_content t('devise.two_factor_authentication.invalid_otp')
+      end
+    end
   end
 
   describe 'when the user is TOTP enabled' do
