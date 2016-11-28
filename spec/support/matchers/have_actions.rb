@@ -4,7 +4,6 @@
 #   expect(subject).to have_actions(
 #     :before,
 #     :authenticate_scope!,
-#     :verify_user_is_not_second_factor_locked,
 #     :handle_two_factor_authentication,
 #     :check_already_authenticated
 #   )
@@ -21,7 +20,6 @@
 #   expect(subject).to have_actions(
 #     :before,
 #     :authenticate_scope!,
-#     :verify_user_is_not_second_factor_locked,
 #     :handle_two_factor_authentication,
 #     [:check_already_authenticated, only: :new]
 #   )
