@@ -14,7 +14,7 @@ function formatSeconds(seconds) {
   return `${seconds} ${pluralize('second', seconds)}`;
 }
 
-root.hmsFormatter = function(milliseconds) {
+root.msFormatter = function(milliseconds) {
   const seconds = milliseconds / 1000;
   const minutes = parseInt(seconds / 60, 10);
   const remainingSeconds = parseInt(seconds % 60, 10);

@@ -7,10 +7,10 @@ root.countdownTimer = (targetSelector, timeLeft = 0, interval = 1000) => {
   if (!countdownTarget) return;
 
   (function tick() {
-    countdownTarget.innerHTML = window.LoginGov.hmsFormatter(remaining);
+    countdownTarget.innerHTML = root.msFormatter(remaining);
 
     if (remaining <= 0) {
-      window.LoginGov.autoLogout();
+      root.autoLogout();
       return;
     }
 

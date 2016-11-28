@@ -1,6 +1,6 @@
-import 'app/autoLogout';
-import 'app/hms-formatter';
-import 'app/countdownTimer';
+import 'app/auto-logout';
+import 'app/ms-formatter';
+import 'app/countdown-timer';
 import 'app/pw-toggle';
 import 'app/form-validation';
 import 'app/form-field-format';
