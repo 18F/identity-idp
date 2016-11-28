@@ -1,4 +1,4 @@
-const root = window.LoginGov || {};
+const root = window.LoginGov = (window.LoginGov || {});
 
 function pluralize(word, count) {
   return `${word}${count !== 1 ? 's' : ''}`;
@@ -12,7 +12,7 @@ function formatMinutes(minutes) {
 
 function formatSeconds(seconds) {
   return `${seconds} ${pluralize('second', seconds)}`;
-};
+}
 
 root.hmsFormatter = function(milliseconds) {
   const seconds = milliseconds / 1000;

@@ -33,9 +33,7 @@ function success(data) {
 
   if (!show_warning & el) el.remove();
   if (!data.live) {
-    window.onbeforeunload = null;
-    window.onunload = null;
-    window.location.href = '/timeout';
+    window.LoginGov.autoLogout();
   }
 }
 
