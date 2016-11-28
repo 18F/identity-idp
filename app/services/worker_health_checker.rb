@@ -22,6 +22,24 @@ module WorkerHealthChecker
     end
   end
 
+  Status = Struct.new(:queue, :last_run_at, :healthy) do
+    alias_method :healthy?, :healthy
+  end
+
+  Summary = Struct.new(:statuses) do
+    def all_healthy?
+      statuses.all?(&:healthy)
+    end
+
+    def to_h
+      super.merge(all_healthy: all_healthy?)
+    end
+
+    def as_json(*args)
+      to_h.as_json(*args)
+    end
+  end
+
   # called on an interval to enqueues a dummy job in each queue
   # @see deploy/schedule.rb
   def enqueue_dummy_jobs
@@ -33,12 +51,22 @@ module WorkerHealthChecker
   # Called on an interval to check background queue health and report errors to NewRelic
   # @see deploy/schedule.rb
   def check
-    Sidekiq::Queue.all.map(&:name).each do |name|
-      next if healthy?(name)
-
+    statuses.reject(&:healthy?).each do |status|
       NewRelic::Agent.notice_error(
-        QueueHealthError.new("Background queue #{name} is unhealthy")
+        QueueHealthError.new("Background queue #{status.queue} is unhealthy")
       )
+    end
+  end
+
+  # @return [Summary]
+  def summary(now: Time.zone.now)
+    Summary.new(statuses(now: now))
+  end
+
+  # @return [Array<Status>]
+  def statuses(now: Time.zone.now)
+    Sidekiq::Queue.all.map(&:name).map do |name|
+      status(name, now: now)
     end
   end
 
@@ -48,13 +76,19 @@ module WorkerHealthChecker
     end
   end
 
-  # Checks that a queue has had a job run successfully recently
-  # @return [true, false]
-  def healthy?(queue_name, now: Time.zone.now)
-    queue_last_run = with_redis { |redis| redis.get(health_check_key(queue_name)) }
+  # @return [Status]
+  def status(queue_name, now: Time.zone.now)
+    last_run_value = with_redis { |redis| redis.get(health_check_key(queue_name)) }
 
-    queue_last_run.present? &&
-      (now.to_i - queue_last_run.to_i < Figaro.env.queue_health_check_dead_interval_seconds.to_i)
+    last_run_at = last_run_value && Time.zone.at(last_run_value.to_i)
+
+    Status.new(queue_name, last_run_at, healthy?(last_run_at, now: now))
+  end
+
+  # @api private
+  def healthy?(last_run_at, now: Time.zone.now)
+    last_run_at.present? &&
+      (now.to_i - last_run_at.to_i < Figaro.env.queue_health_check_dead_interval_seconds.to_i)
   end
 
   # @api private

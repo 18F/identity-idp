@@ -31,13 +31,13 @@ RSpec.describe WorkerHealthChecker do
     subject(:enqueue_dummy_jobs) { WorkerHealthChecker.enqueue_dummy_jobs }
 
     it 'queues a dummy job per queue that update health per job' do
-      expect(WorkerHealthChecker.healthy?(queue1)).to eq(false)
-      expect(WorkerHealthChecker.healthy?(queue2)).to eq(false)
+      expect(WorkerHealthChecker.status(queue1).healthy?).to eq(false)
+      expect(WorkerHealthChecker.status(queue2).healthy?).to eq(false)
 
       enqueue_dummy_jobs
 
-      expect(WorkerHealthChecker.healthy?(queue1)).to eq(true)
-      expect(WorkerHealthChecker.healthy?(queue2)).to eq(true)
+      expect(WorkerHealthChecker.status(queue1).healthy?).to eq(true)
+      expect(WorkerHealthChecker.status(queue2).healthy?).to eq(true)
     end
   end
 
@@ -81,30 +81,47 @@ RSpec.describe WorkerHealthChecker do
 
     it 'sets a key in redis' do
       expect { WorkerHealthChecker.mark_healthy!(queue, now: now) }.
-        to change { WorkerHealthChecker.healthy?(queue, now: now) }.
+        to change { WorkerHealthChecker.status(queue, now: now).healthy? }.
         from(false).to(true)
     end
   end
 
-  describe '#healthy?' do
-    let(:queue) { 'myqueue' }
+  describe '#summary' do
     let(:now) { Time.zone.now }
-    subject(:healthy?) { WorkerHealthChecker.healthy?(queue, now: now) }
+    subject(:summary) { WorkerHealthChecker.summary(now: now) }
 
-    context 'no value in redis' do
-      it { is_expected.to be(false) }
+    let(:queue1) { 'queue1' }
+    let(:queue2) { 'queue2' }
+
+    before do
+      create_sidekiq_queues(queue1, queue2)
+      WorkerHealthChecker.mark_healthy!(queue1, now: now)
     end
 
-    context 'a recent healthy timestamp in redis' do
-      before { WorkerHealthChecker.mark_healthy!(queue, now: now) }
+    it 'creates a snapshot summary of the queues' do
+      expect(summary.statuses.length).to eq(2)
 
-      it { is_expected.to be(true) }
+      queue1_status, queue2_status = summary.statuses.sort_by(&:queue)
+
+      expect(queue1_status.queue).to eq('queue1')
+      expect(queue1_status.last_run_at.to_i).to eq(now.to_i)
+      expect(queue1_status.healthy).to eq(true)
+
+      expect(queue2_status.queue).to eq('queue2')
+      expect(queue2_status.last_run_at).to be_nil
+      expect(queue2_status.healthy).to eq(false)
     end
 
-    context 'an old healthy timestamp in redis' do
-      before { WorkerHealthChecker.mark_healthy!(queue, now: now - 500) }
+    it 'is unhealthy when not all queues are healthy' do
+      expect(summary.all_healthy?).to eq(false)
+    end
 
-      it { is_expected.to be(false) }
+    context 'when all queues are healthy' do
+      before { WorkerHealthChecker.mark_healthy!(queue2, now: now) }
+
+      it 'is all healthy' do
+        expect(summary.all_healthy?).to eq(true)
+      end
     end
   end
 end
