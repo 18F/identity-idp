@@ -1,6 +1,4 @@
-const root = window.LoginGov = (window.LoginGov || {});
-
-root.autoLogout = function() {
+export default () => {
   window.onbeforeunload = null;
   window.onunload = null;
   window.location.href = '/timeout';

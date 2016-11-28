@@ -1,16 +1,17 @@
-const root = window.LoginGov = (window.LoginGov || {});
+import msFormatter from './ms-formatter';
+import autoLogout from './auto-logout';
 
-root.countdownTimer = (targetSelector, timeLeft = 0, interval = 1000) => {
+export default (targetSelector, timeLeft = 0, interval = 1000) => {
   const countdownTarget = document.querySelector(targetSelector);
   let remaining = timeLeft;
 
   if (!countdownTarget) return;
 
   (function tick() {
-    countdownTarget.innerHTML = root.msFormatter(remaining);
+    countdownTarget.innerHTML = msFormatter(remaining);
 
     if (remaining <= 0) {
-      root.autoLogout();
+      autoLogout();
       return;
     }
 

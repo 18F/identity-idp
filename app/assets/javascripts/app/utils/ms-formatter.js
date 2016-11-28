@@ -1,5 +1,3 @@
-const root = window.LoginGov = (window.LoginGov || {});
-
 function pluralize(word, count) {
   return `${word}${count !== 1 ? 's' : ''}`;
 }
@@ -14,7 +12,7 @@ function formatSeconds(seconds) {
   return `${seconds} ${pluralize('second', seconds)}`;
 }
 
-root.msFormatter = function(milliseconds) {
+export default (milliseconds) => {
   const seconds = milliseconds / 1000;
   const minutes = parseInt(seconds / 60, 10);
   const remainingSeconds = parseInt(seconds % 60, 10);

@@ -1,6 +1,4 @@
-import 'app/auto-logout';
-import 'app/ms-formatter';
-import 'app/countdown-timer';
+import 'app/utils/index';
 import 'app/pw-toggle';
 import 'app/form-validation';
 import 'app/form-field-format';
