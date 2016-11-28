@@ -6,23 +6,18 @@ describe 'shared/_nav_auth.html.slim' do
       @user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(@user)
       allow(view).to receive(:user_fully_authenticated?).and_return(true)
+      render
     end
 
     it 'contains welcome message' do
-      render
-
       expect(rendered).to have_content "Welcome #{@user.email}"
     end
 
     it 'contains link to my account' do
-      render
-
       expect(rendered).to have_link(t('shared.nav_auth.my_account'), href: profile_path)
     end
 
     it 'contains sign out link' do
-      render
-
       expect(rendered).to have_link(t('links.sign_out'), href: destroy_user_session_path)
     end
   end
@@ -32,12 +27,19 @@ describe 'shared/_nav_auth.html.slim' do
       @user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(@user)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
+      render
     end
 
     it 'does not contain link to my account' do
-      render
-
       expect(rendered).to_not have_link(t('shared.nav_auth.my_account'), href: profile_path)
+    end
+
+    it 'does not contain welcome' do
+      expect(rendered).to_not have_content(t('shared.nav_auth.welcome'))
+    end
+
+    it 'does not contain sign out link' do
+      expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
     end
   end
 end
