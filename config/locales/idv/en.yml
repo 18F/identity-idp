@@ -63,8 +63,6 @@ en:
         an account, but with a different email address.
       dupe_ssn2_html: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
-      dupe_ssn3_html: If you can’t remember your original login information, you can %{link}.
-      dupe_ssn3_link: try recovering it here
       review_and_continue: Review my info and try again
       finance:
         intro: >
