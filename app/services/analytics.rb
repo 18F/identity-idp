@@ -30,8 +30,6 @@ class Analytics
     user.uuid
   end
 
-  # rubocop:disable Metrics/LineLength
-  AUTHENTICATION_MAX_2FA_ATTEMPTS = 'Authentication: user reached max 2FA attempts'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
@@ -47,10 +45,10 @@ class Analytics
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
+  MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
   PAGE_NOT_FOUND = 'Page Not Found'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATION = 'Password Creation'.freeze
-  PASSWORD_RESET_DEACTIVATED_ACCOUNT = 'Password Reset: deactivated verified profile via password reset'.freeze
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
@@ -70,5 +68,4 @@ class Analytics
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
   USER_REGISTRATION_RECOVERY_CODE_VISIT = 'User Registration: recovery code visited'.freeze
-  # rubocop:enable Metrics/LineLength
 end

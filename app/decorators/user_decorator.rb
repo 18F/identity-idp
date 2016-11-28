@@ -70,11 +70,11 @@ UserDecorator = Struct.new(:user) do
   end
 
   def blocked_from_entering_2fa_code?
-    user.second_factor_locked_at && !blocked_from_2fa_period_expired?
+    user.second_factor_locked_at.present? && !blocked_from_2fa_period_expired?
   end
 
   def no_longer_blocked_from_entering_2fa_code?
-    user.second_factor_locked_at && blocked_from_2fa_period_expired?
+    user.second_factor_locked_at.present? && blocked_from_2fa_period_expired?
   end
 
   def should_acknowledge_recovery_code?(session)

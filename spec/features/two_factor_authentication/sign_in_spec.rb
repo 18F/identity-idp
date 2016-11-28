@@ -123,7 +123,7 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up)
         user.update(second_factor_locked_at: Time.zone.now - 1.minute)
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-        sign_in_before_2fa(user)
+        signin(user.email, user.password)
 
         expect(page).to have_content t('devise.two_factor_authentication.' \
                                        'max_login_attempts_reached')
