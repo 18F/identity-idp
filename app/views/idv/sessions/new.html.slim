@@ -1,8 +1,8 @@
 - title t('idv.titles.session.basic')
 
+= render 'shared/progress_steps', active: 4
 - if @using_mock_vendor
   .mt1.mb2.h6.caps.bold.red = t('idv.messages.sessions.no_pii')
-
 h1.h3.my0 = t('idv.titles.session.basic')
 = simple_form_for(idv_profile_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
