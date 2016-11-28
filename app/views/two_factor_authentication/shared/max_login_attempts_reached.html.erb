@@ -9,7 +9,7 @@
 </p>
 <p>
   <%= t('devise.two_factor_authentication.please_try_again',
-  time_remaining: content_tag(:span, lockout_time_in_words, id: 'countdown')) %>
+  time_remaining: content_tag(:span, lockout_time_in_words, id: 'countdown')).html_safe %>
 </p>
 
 <%= nonced_javascript_tag do %>
