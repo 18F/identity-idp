@@ -13,7 +13,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    pending 'basic info' do
+    scenario 'basic info' do
       sign_in_and_2fa_user
 
       visit '/idv/session'
@@ -31,7 +31,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    pending 'finance info' do
+    scenario 'finance info' do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
