@@ -3,7 +3,7 @@ en:
     contact_request:
       comments_header: "Comments:"
       comments: No comments left
-      email_or_phone: "Email or phone:"
+      email_or_phone: "Email address or phone number:"
       'no': no
       talk_about_experience: Talk about experience?
       want_to_learn: Learn more?
