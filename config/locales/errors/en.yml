@@ -6,7 +6,7 @@ en:
       weak_password: Your password is not strong enough. %{feedback}
       already_confirmed: was already confirmed, please try signing in
       confirmation_period_expired: >
-        You have taken longer than %{period} to confirm your email.
+        You have taken longer than %{period} to confirm your email address.
         Please click "Resend confirmation instructions."
       confirmation_invalid_token: >
         The confirmation link you clicked on is no longer valid.  This may have been caused by

@@ -5,7 +5,7 @@ en:
       show: Create a password for your account
     contact: Contact us
     edit_info:
-      email: Edit your email
+      email: Edit your email address
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time passcode
