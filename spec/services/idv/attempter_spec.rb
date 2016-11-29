@@ -4,6 +4,17 @@ describe Idv::Attempter do
   let(:current_user) { build(:user) }
   let(:subject) { Idv::Attempter.new(current_user) }
 
+  describe '#reset' do
+    it 'resets idv_attempts to zero for user' do
+      user = create(:user, idv_attempts: 3)
+      attempter = Idv::Attempter.new(user)
+
+      attempter.reset
+
+      expect(user.idv_attempts).to eq 0
+    end
+  end
+
   describe '#window_expired?' do
     context 'inside window' do
       before do
