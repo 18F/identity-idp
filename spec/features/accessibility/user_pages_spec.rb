@@ -70,14 +70,14 @@ feature 'Accessibility on pages that require authentication', :js do
     end
   end
 
-  pending 'recovery code page' do
+  scenario 'recovery code page' do
     sign_in_and_2fa_user
     visit settings_recovery_code_path
 
     expect(page).to be_accessible
   end
 
-  pending 'profile page' do
+  scenario 'profile page' do
     sign_in_and_2fa_user
 
     visit profile_path
@@ -85,7 +85,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'edit email page' do
+  scenario 'edit email page' do
     sign_in_and_2fa_user
 
     visit '/edit/email'
@@ -93,7 +93,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'edit password page' do
+  scenario 'edit password page' do
     sign_in_and_2fa_user
 
     visit '/settings/password'
@@ -101,7 +101,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'edit phone page' do
+  scenario 'edit phone page' do
     sign_in_and_2fa_user
 
     visit '/edit/phone'
@@ -109,7 +109,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'generate new recovery code page' do
+  scenario 'generate new recovery code page' do
     sign_in_and_2fa_user
 
     visit '/settings/recovery-code'
@@ -117,7 +117,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'start set up of authenticator app page' do
+  scenario 'start set up of authenticator app page' do
     sign_in_and_2fa_user
 
     visit '/authenticator_start'
@@ -125,7 +125,7 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'set up authenticator app page' do
+  scenario 'set up authenticator app page' do
     sign_in_and_2fa_user
 
     visit '/authenticator_setup'

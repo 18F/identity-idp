@@ -5,7 +5,7 @@ feature 'Accessibility on IDV pages', :js do
   describe 'IDV pages' do
     include IdvHelper
 
-    pending 'home page' do
+    scenario 'home page' do
       sign_in_and_2fa_user
 
       visit '/idv'
@@ -22,7 +22,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    pending 'cancel idv' do
+    scenario 'cancel idv' do
       sign_in_and_2fa_user
 
       visit '/idv/cancel'
@@ -43,7 +43,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    pending 'phone info' do
+    scenario 'phone info' do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
@@ -54,7 +54,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    pending 'review page' do
+    scenario 'review page' do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
@@ -67,7 +67,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    pending 'recovery code / confirmation page' do
+    scenario 'recovery code / confirmation page' do
       user = sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
