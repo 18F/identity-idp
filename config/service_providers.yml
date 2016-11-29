@@ -153,6 +153,8 @@ production:
     sp_initiated_login_url: 'https://dashboard.demo.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
 
   'https://dashboard.qa.login.gov':
     acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
@@ -160,6 +162,8 @@ production:
     sp_initiated_login_url: 'https://dashboard.qa.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
 
   'https://dashboard.dev.login.gov':
     acs_url: 'https://dashboard.dev.login.gov/users/auth/saml/callback'
@@ -167,3 +171,5 @@ production:
     sp_initiated_login_url: 'https://dashboard.dev.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
