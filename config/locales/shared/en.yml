@@ -5,8 +5,5 @@ en:
     footer_lite:
       gsa: U.S. General Services Administration
     nav_auth:
-      about: About
-      news: News
-      contact: Contact
       welcome: Welcome
       my_account: My account

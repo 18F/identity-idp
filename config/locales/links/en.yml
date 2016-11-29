@@ -2,6 +2,7 @@ en:
   links:
     back_to_sp: '‹ Back to %{sp}'
     create_account: Create account
+    contact: Contact
     help: Help
     privacy_policy: Privacy Policy
     resend: Send again
