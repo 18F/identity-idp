@@ -8,7 +8,7 @@ feature 'Accessibility on pages that do not require authentication', :js do
     expect(page).to be_accessible
   end
 
-  pending 'login / root path' do
+  scenario 'login / root path' do
     visit root_path
 
     expect(page).to be_accessible
