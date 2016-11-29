@@ -2,8 +2,8 @@ en:
   event_types:
     account_created: Account created
     phone_confirmed: Phone confirmed
-    phone_changed: Phone changed
-    email_changed: Email changed
+    phone_changed: Phone number changed
+    email_changed: Email address changed
     authenticator_enabled: Authenticator app enabled
     authenticator_disabled: Authenticator app disabled
     authenticated_at: Signed in at %{service_provider}

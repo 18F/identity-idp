@@ -12,12 +12,12 @@ en:
     email_reuse_notice:
       subject: Confirm your email address
     email_change_notice:
-      subject: Change your email
+      subject: Change your email address
     confirmation_instructions:
       header: >
         %{intro} To confirm your email address, please click on the link
         below or copy and paste the entire link into your browser.
-      link_text: Confirm this email
+      link_text: Confirm this email address
       first_sentence:
         reset_requested: >
           Your %{app} account has been reset by a tech support representative.

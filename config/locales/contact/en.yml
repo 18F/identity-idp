@@ -4,7 +4,7 @@ en:
     learn_more: Learn more about %{app}
     tell_experience: Tell you about my %{app} experience
     labels:
-      email_or_tel: Email address or telephone
+      email_or_tel: Email address or phone number
       comments: Comments
       comments_note: Optional, but very helpful
     messages:
