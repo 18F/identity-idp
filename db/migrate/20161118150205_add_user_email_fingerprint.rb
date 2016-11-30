@@ -23,9 +23,10 @@ class AddUserEmailFingerprint < ActiveRecord::Migration
   end
 
   def encrypt_user_emails
+    user_access_key = EncryptedEmail.new_user_access_key
     User.where(encrypted_email: '').each do |user|
       email_address = user.email.present? ? user.email : user.id.to_s
-      ee = EncryptedEmail.new_from_email(email_address)
+      ee = EncryptedEmail.new_from_email(email_address, user_access_key)
       # must use raw SQL here to change data during the migration transaction.
       execute "UPDATE users SET encrypted_email='#{ee.encrypted}', email_fingerprint='#{ee.fingerprint}' WHERE id=#{user.id}"
     end
