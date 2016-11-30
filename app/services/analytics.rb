@@ -41,12 +41,10 @@ class Analytics
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
   IDV_SUCCESSFUL = 'IdV: successful'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
-  INVALID_SERVICE_PROVIDER = 'Invalid Service Provider'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
-  PAGE_NOT_FOUND = 'Page Not Found'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATION = 'Password Creation'.freeze
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
