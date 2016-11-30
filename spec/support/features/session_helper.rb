@@ -86,7 +86,7 @@ module Features
       # Enter 2FA code
       click_button t('forms.buttons.submit.default')
       # Acknowledge recovery code
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
       user
     end
 

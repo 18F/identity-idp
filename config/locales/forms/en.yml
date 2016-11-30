@@ -1,7 +1,6 @@
 en:
   forms:
     buttons:
-      acknowledge_recovery_code: Continue
       continue: Continue
       continue_browsing: Keep me signed in
       sign_out: Sign me out
@@ -12,7 +11,6 @@ en:
       setup_totp: Set up authentication app
       submit:
         default: Submit
-        continue: Continue
         next: Next
         update: Update
       cancel: Cancel

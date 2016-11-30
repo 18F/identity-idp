@@ -185,7 +185,7 @@ feature 'Two Factor Authentication' do
       fill_in 'code', with: code
       click_button t('forms.buttons.submit.default')
 
-      click_button t('forms.buttons.acknowledge_recovery_code')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path
     end
@@ -201,7 +201,7 @@ feature 'Two Factor Authentication' do
       click_button t('forms.buttons.submit.default')
       fill_in 'code', with: user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
-      click_button t('forms.buttons.acknowledge_recovery_code')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path
     end
