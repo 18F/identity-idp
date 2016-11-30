@@ -11,10 +11,8 @@ p.mt-tiny.mb0#2fa-description
   - if reauthn?
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb3
-    = label_tag 'otp_method',
-      t('devise.two_factor_authentication.otp_method.title'),
-      class: 'hide block bold', id: 'otp-description'
-    div role="radiogroup" aria-labelledby="otp-description"
+    fieldset.border-white
+      legend.sr-only = t('devise.two_factor_authentication.otp_method.title')
       label.radio.mb0.mr3
         = f.radio_button :otp_method, 'sms', checked: true
         span.indicator

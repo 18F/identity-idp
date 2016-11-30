@@ -86,6 +86,7 @@ en:
         accurate. To learn more about the information we need from you and how it’s used
         to verify your identity, please see our troubleshooting page.
       finance:
+        label: Select which type of financial information you would like to provide.
         intro: >
           You are not sharing account balances or transaction details, and we
           will never charge any fees.

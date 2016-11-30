@@ -19,8 +19,9 @@ p.mt-tiny.mb0#2fa-description
       class: 'block bold'
     = label_tag 'two_factor_setup_form[otp_method]',
       t('devise.two_factor_authentication.otp_method.instruction'),
-      class: 'block', id: 'otp-description'
-    div role="radiogroup" aria-labelledby="otp-description"
+      class: 'block'
+    fieldset.border-white
+      legend.sr-only = t('devise.two_factor_authentication.otp_method.instruction')
       label.radio.mb0.mr3
         = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
           checked: true

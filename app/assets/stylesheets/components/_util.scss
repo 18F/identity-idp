@@ -14,3 +14,9 @@
   .sm-left-align { text-align: left; }
   .sm-right-align { text-align: right; }
 }
+
+.sr-only {
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 */
+  clip: rect(1px, 1px, 1px, 1px);
+}
