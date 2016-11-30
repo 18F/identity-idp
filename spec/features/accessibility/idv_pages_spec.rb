@@ -35,7 +35,7 @@ feature 'Accessibility on IDV pages', :js do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
 
       visit '/idv/finance'
 
@@ -47,7 +47,7 @@ feature 'Accessibility on IDV pages', :js do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
       fill_out_and_submit_finance_form
 
       expect(current_path).to eq idv_phone_path
@@ -58,10 +58,10 @@ feature 'Accessibility on IDV pages', :js do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
       fill_out_and_submit_finance_form
       fill_out_phone_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq idv_review_path
       expect(page).to be_accessible
@@ -71,10 +71,10 @@ feature 'Accessibility on IDV pages', :js do
       user = sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
       fill_out_and_submit_finance_form
       fill_out_phone_form_ok(user.phone)
-      click_button t('forms.buttons.submit.continue')
+      click_button t('forms.buttons.continue')
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_submit_default
 
@@ -85,7 +85,7 @@ feature 'Accessibility on IDV pages', :js do
     def fill_out_and_submit_finance_form
       find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
       fill_in :idv_finance_form_finance_account, with: '12345678'
-      click_button t('idv.messages.finance.continue')
+      click_button t('forms.buttons.continue')
     end
   end
 end
