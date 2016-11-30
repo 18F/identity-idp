@@ -21,9 +21,14 @@ module Features
       click_button t('links.sign_in')
     end
 
-    def sign_up_and_set_password
+    def sign_up
       user = create(:user, :unconfirmed)
       confirm_last_user
+      user
+    end
+
+    def sign_up_and_set_password
+      user = sign_up
       fill_in 'password_form_password', with: VALID_PASSWORD
       click_button t('forms.buttons.submit.default')
       user
@@ -69,7 +74,7 @@ module Features
     end
 
     def confirm_last_user
-      @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
+      @raw_confirmation_token = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current
