@@ -72,16 +72,16 @@ module IdvHelper
 
   def complete_idv_profile_ok(user)
     fill_out_idv_form_ok
-    click_button t('forms.buttons.submit.continue')
+    click_button t('forms.buttons.continue')
     fill_out_financial_form_ok
-    click_button t('idv.messages.finance.continue')
+    click_button t('forms.buttons.continue')
     fill_out_phone_form_ok(user.phone)
-    click_button t('forms.buttons.submit.continue')
+    click_button t('forms.buttons.continue')
     fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
     click_submit_default
   end
 
   def click_acknowledge_recovery_code
-    click_button t('forms.buttons.acknowledge_recovery_code')
+    click_button t('forms.buttons.continue')
   end
 end

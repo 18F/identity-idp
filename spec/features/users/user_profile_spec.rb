@@ -60,7 +60,7 @@ feature 'User profile' do
 
       expect(user.reload.recovery_code).to_not eq old_code
 
-      click_button t('forms.buttons.acknowledge_recovery_code')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path
     end

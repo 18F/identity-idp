@@ -130,7 +130,7 @@ feature 'Sign in' do
       click_link(t('links.sign_out'))
 
       Timecop.travel(Devise.timeout_in + 1.minute) do
-        expect(page).to_not have_content(t('forms.buttons.submit.continue'))
+        expect(page).to_not have_content(t('forms.buttons.continue'))
 
         fill_in_credentials_and_click_sign_in(user.email, user.password)
         expect(page).to have_content t('errors.invalid_authenticity_token')

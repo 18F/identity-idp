@@ -68,7 +68,6 @@ en:
         intro: >
           You are not sharing account balances or transaction details, and we
           will never charge any fees.
-        continue: Continue
       phone:
         intro: >
           To help us verify your identity, please give us a phone number that belongs
