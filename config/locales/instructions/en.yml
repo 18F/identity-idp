@@ -1,8 +1,14 @@
+---
 en:
   instructions:
-    recovery_code: >
-      Write this recovery code down and store it someplace safe. If you can’t get to your phone,
-      you can use it instead of a one-time passcode to sign in.
+    2fa:
+      confirm_code: We sent it to %{number}.
+      resend: Didn’t receive a code? %{link}
+      totp_intro_html: >
+        Enter the code from your authenticator app. If you have several accounts
+        set up in your app, enter the code corresponding to <strong>%{email}</strong> at
+        <strong>%{app}</strong>.
+      wrong_number: Entered the wrong phone number? %{link}
     password:
       info:
         lead: Your password must be at least %{min_length} characters long.
@@ -11,23 +17,18 @@ en:
           words in a phrase.
         point_2: >
           Create a password that’s secure, but still easy for you to remember.
-          And don’t use the same one you use with your other online accounts, such
-          as bank, email, and social media.
+          And don’t use the same one you use with your other online accounts, such as
+          bank, email, and social media.
       strength:
-        intro: 'Password strength: '
         i: Very weak
         ii: Weak
         iii: So-so
+        intro: 'Password strength: '
         iv: Good
         v: Great!
+    recovery_code: >
+      Write this recovery code down and store it someplace safe. If you can’t
+      get to your phone, you can use it instead of a one-time passcode to sign in.
     registration:
       already_have_account: Already have an account? %{link}
       email: Pick an address to use for government communications.
-    2fa:
-      resend: Didn’t receive a code? %{link}
-      confirm_code: We sent it to %{number}.
-      wrong_number: Entered the wrong phone number? %{link}
-      totp_intro_html: >
-        Enter the code from your authenticator app.
-        If you have several accounts set up in your app, enter the code
-        corresponding to <strong>%{email}</strong> at <strong>%{app}</strong>.
