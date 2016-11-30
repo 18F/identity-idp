@@ -1,6 +1,4 @@
-function pluralize(word, count) {
-  return `${word}${count !== 1 ? 's' : ''}`;
-}
+import pluralize from './pluralize';
 
 function formatMinutes(minutes) {
   if (!minutes) return 0;
