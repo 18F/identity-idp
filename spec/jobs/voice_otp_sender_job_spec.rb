@@ -19,17 +19,24 @@ describe VoiceOtpSenderJob do
       expect(call.to).to eq('555-5555')
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
 
-      code = '1234'.scan(/\d/).join(', ')
-      query = Rack::Utils.parse_nested_query(URI(call.url).query)
-      expect(query['Message']).to eq(t('jobs.voice_otp_sender_job.message_repeat', code: code))
+      query = extract_query_params(call.url)
+      expect(query['Message']).to eq(t('jobs.voice_otp_sender_job.message_initial'))
 
-      nested_query = query
+      code = '1234'.scan(/\d/).join(', ')
+      nested_query = extract_query_params(query['Options']['1'])
+      expect(nested_query['Message']).
+        to eq(t('jobs.voice_otp_sender_job.message_repeat', code: code))
+
       while nested_query['Options']
-        nested_url = URI(nested_query['Options']['1'])
-        nested_query = Rack::Utils.parse_nested_query(nested_url.query)
+        nested_query = extract_query_params(nested_query['Options']['1'])
       end
+
       expect(nested_query['Message']['0']).
         to eq(t('jobs.voice_otp_sender_job.message_final', code: code))
+    end
+
+    def extract_query_params(url)
+      Rack::Utils.parse_nested_query(URI(url).query)
     end
 
     it 'does not send if the OTP code is expired' do
