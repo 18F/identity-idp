@@ -1,5 +1,7 @@
 class EncryptedEmail
-  def self.build_user_access_key
+  attr_reader :user_access_key
+
+  def self.new_user_access_key
     env = Figaro.env
     UserAccessKey.new(
       password: env.email_encryption_key,
@@ -8,11 +10,7 @@ class EncryptedEmail
     )
   end
 
-  cattr_reader :user_access_key do
-    build_user_access_key
-  end
-
-  def self.new_from_email(email)
+  def self.new_from_email(email, user_access_key = new_user_access_key)
     encryptor = Pii::PasswordEncryptor.new
     encrypted_email = encryptor.encrypt(email, user_access_key)
     new(encrypted_email, email)
@@ -38,9 +36,11 @@ class EncryptedEmail
   private
 
   attr_accessor :email, :encrypted_email
+  attr_writer :user_access_key
 
   def decrypt
     encryptor = Pii::PasswordEncryptor.new
-    encryptor.decrypt(encrypted_email, self.class.user_access_key)
+    self.user_access_key = self.class.new_user_access_key
+    encryptor.decrypt(encrypted_email, user_access_key)
   end
 end

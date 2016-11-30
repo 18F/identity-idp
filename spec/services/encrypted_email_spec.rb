@@ -5,7 +5,7 @@ describe EncryptedEmail do
   let(:fingerprint) { Pii::Fingerprinter.fingerprint(email) }
   let(:encrypted_email) do
     encryptor = Pii::PasswordEncryptor.new
-    encryptor.encrypt(email, EncryptedEmail.user_access_key)
+    encryptor.encrypt(email, EncryptedEmail.new_user_access_key)
   end
 
   describe '#new' do
