@@ -1,6 +1,8 @@
 module UserEncryptedEmailOverrides
   extend ActiveSupport::Concern
 
+  attr_accessor :email_user_access_key
+
   # override some Devise methods to support our use of encrypted_email
 
   class_methods do
@@ -49,12 +51,14 @@ module UserEncryptedEmailOverrides
   def email
     return '' unless encrypted_email.present?
     @_encrypted_email ||= EncryptedEmail.new(encrypted_email)
+    self.email_user_access_key ||= @_encrypted_email.user_access_key
     @_encrypted_email.decrypted
   end
 
   def email=(email)
     if email.present?
-      @_encrypted_email = EncryptedEmail.new_from_email(email)
+      self.email_user_access_key ||= EncryptedEmail.new_user_access_key
+      @_encrypted_email = EncryptedEmail.new_from_email(email, email_user_access_key)
       self.encrypted_email = @_encrypted_email.encrypted
       self.email_fingerprint = @_encrypted_email.fingerprint
     else
