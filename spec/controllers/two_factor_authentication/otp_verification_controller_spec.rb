@@ -33,7 +33,8 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
       stub_analytics
       analytics_hash = {
         context: 'authentication',
-        method: 'sms'
+        method: 'sms',
+        confirmation_for_phone_change: false
       }
 
       expect(@analytics).to receive(:track_event).
@@ -49,8 +50,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         sign_in_before_2fa
 
         properties = {
-          context: 'authentication',
           success?: false,
+          confirmation_for_phone_change: false,
+          context: 'authentication',
           method: 'sms'
         }
 
@@ -82,8 +84,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         sign_in_before_2fa
 
         properties = {
-          context: 'authentication',
           success?: false,
+          confirmation_for_phone_change: false,
+          context: 'authentication',
           method: 'sms'
         }
 
@@ -119,8 +122,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
       it 'tracks the valid authentication event' do
         properties = {
-          context: 'authentication',
           success?: true,
+          confirmation_for_phone_change: false,
+          context: 'authentication',
           method: 'sms'
         }
 
@@ -202,17 +206,14 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the update event' do
             properties = {
-              context: 'confirmation',
               success?: true,
+              confirmation_for_phone_change: true,
+              context: 'confirmation',
               method: 'sms'
             }
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::MULTI_FACTOR_AUTH, properties)
-
-            expect(@analytics).to have_received(:track_event).
-              with(Analytics::PHONE_CHANGE_SUCCESSFUL)
-
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
           end
@@ -249,8 +250,9 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks an event' do
             properties = {
-              context: 'confirmation',
               success?: false,
+              confirmation_for_phone_change: true,
+              context: 'confirmation',
               method: 'sms'
             }
 
@@ -282,9 +284,10 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the confirmation event' do
             properties = {
-              context: 'confirmation',
               success?: true,
-              method: 'sms'
+              context: 'confirmation',
+              method: 'sms',
+              confirmation_for_phone_change: false
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -332,17 +335,21 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         end
 
         it 'tracks the OTP verification event' do
+          properties = {
+            success?: true,
+            confirmation_for_phone_change: false,
+            context: 'idv',
+            method: 'sms'
+          }
+
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH, context: 'idv', success?: true, method: 'sms')
+            with(Analytics::MULTI_FACTOR_AUTH, properties)
 
           expect(subject).to have_received(:create_user_event).with(:phone_confirmed)
         end
 
         it 'does not track a phone change event' do
           expect(subject).to_not have_received(:create_user_event).with(:phone_changed)
-
-          expect(@analytics).to_not have_received(:track_event).
-            with(Analytics::PHONE_CHANGE_SUCCESSFUL)
         end
 
         it 'updates idv session phone_confirmed_at attribute' do
@@ -393,8 +400,15 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         end
 
         it 'tracks an event' do
+          properties = {
+            success?: false,
+            confirmation_for_phone_change: false,
+            context: 'idv',
+            method: 'sms'
+          }
+
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::MULTI_FACTOR_AUTH, context: 'idv', success?: false, method: 'sms')
+            with(Analytics::MULTI_FACTOR_AUTH, properties)
         end
       end
     end
