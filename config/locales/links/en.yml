@@ -15,5 +15,6 @@ en:
     resend: Send again
     sign_in: Sign in
     sign_out: Sign out
+    cancel: Cancel
     two_factor_authentication:
       resend_code: Send a new one
