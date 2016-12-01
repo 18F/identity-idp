@@ -28,8 +28,13 @@ module TwoFactorAuthentication
     def analytics_properties
       {
         context: context,
-        method: params[:delivery_method]
+        method: params[:delivery_method],
+        confirmation_for_phone_change: confirmation_for_phone_change?
       }
+    end
+
+    def confirmation_for_phone_change?
+      context == 'confirmation' && current_user.phone.present?
     end
   end
 end

@@ -51,7 +51,6 @@ class Analytics
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
-  PHONE_CHANGE_SUCCESSFUL = 'Phone Number Change: successful'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
