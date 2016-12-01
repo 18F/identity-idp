@@ -12,7 +12,7 @@ p.mt-tiny.mb0#2fa-description
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb3
     fieldset.border-white
-      legend.sr-only = t('devise.two_factor_authentication.otp_method.title')
+      legend.hide = t('devise.two_factor_authentication.otp_method.title')
       label.radio.mb0.mr3
         = f.radio_button :otp_method, 'sms', checked: true
         span.indicator
