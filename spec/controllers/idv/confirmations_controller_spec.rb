@@ -2,12 +2,11 @@ require 'rails_helper'
 require 'proofer/vendor/mock'
 
 describe Idv::ConfirmationsController do
+  include IdvHelper
   include SamlAuthHelper
 
-  render_views
-
   let(:password) { 'sekrit phrase' }
-  let(:user) { create(:user, :signed_up, password: password, email: 'old_email@example.com') }
+  let(:user) { build_stubbed(:user, :signed_up, password: password) }
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
@@ -31,10 +30,24 @@ describe Idv::ConfirmationsController do
       stub_idv_session
     end
 
-    context 'KBV off' do
+    context 'original SAML Authn request present' do
+      let(:saml_authn_request) { sp1_authnrequest }
+
       before do
-        allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(false)
-        allow(subject.idv_session).to receive(:questions).and_return(false)
+        subject.session[:saml_request_url] = saml_authn_request
+        get :index
+      end
+
+      it 'redirects to original SAML Authn request' do
+        post :continue
+
+        expect(response).to redirect_to saml_authn_request
+      end
+    end
+
+    context 'original SAML Authn request missing' do
+      before do
+        subject.session[:saml_request_url] = nil
       end
 
       it 'cleans up PII from session' do
@@ -42,89 +55,85 @@ describe Idv::ConfirmationsController do
 
         expect(subject.idv_session.alive?).to eq false
       end
+
+      it 'activates profile' do
+        get :index
+        profile.reload
+
+        expect(profile).to be_active
+        expect(profile.verified_at).to_not be_nil
+      end
+
+      it 'resets IdV attempts' do
+        attempter = instance_double(Idv::Attempter, reset: false)
+        allow(Idv::Attempter).to receive(:new).with(user).and_return(attempter)
+
+        expect(attempter).to receive(:reset)
+
+        get :index
+      end
+
+      it 'sets recovery code instance variable' do
+        subject.idv_session.cache_applicant_profile_id(applicant)
+        code = subject.idv_session.recovery_code
+        get :index
+
+        expect(assigns(:recovery_code)).to eq(code)
+      end
+
+      it 'redirects to IdP profile after user acknowledges recovery code' do
+        post :continue
+
+        expect(response).to redirect_to(profile_path)
+      end
+
+      it 'sets flash[:allow_confirmations_continue] to true' do
+        get :index
+
+        expect(flash[:allow_confirmations_continue]).to eq true
+      end
+
+      it 'tracks final IdV event' do
+        stub_analytics
+
+        result = {
+          success: true,
+          new_phone_added: false
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::IDV_FINAL, result)
+
+        get :index
+      end
+    end
+
+    context 'user confirmed a new phone' do
+      it 'tracks that event' do
+        stub_analytics
+        subject.idv_session.params['phone_confirmed_at'] = Time.current
+
+        result = {
+          success: true,
+          new_phone_added: true
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::IDV_FINAL, result)
+
+        get :index
+      end
     end
 
     context 'KBV on' do
-      before do
+      it 'does not track final IdV event' do
         allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(true)
-      end
+        subject.session[:saml_request_url] = nil
+        stub_analytics
 
-      context 'all questions correct' do
-        context 'original SAML Authn request present' do
-          let(:saml_authn_request) { sp1_authnrequest }
+        expect(@analytics).to_not receive(:track_event)
 
-          before do
-            subject.session[:saml_request_url] = saml_authn_request
-            complete_idv_session(true)
-            get :index
-          end
-
-          it 'activates profile' do
-            profile.reload
-
-            expect(profile).to be_active
-            expect(profile.verified_at).to_not be_nil
-          end
-
-          it 'redirects to original SAML Authn request' do
-            post :continue
-
-            expect(response).to redirect_to saml_authn_request
-          end
-
-          it 'cleans up PII from session' do
-            expect(subject.idv_session.alive?).to eq false
-          end
-        end
-
-        context 'original SAML Authn request missing' do
-          before do
-            subject.session[:saml_request_url] = nil
-            complete_idv_session(true)
-            get :index
-            post :continue
-          end
-
-          it 'redirects to IdP profile' do
-            expect(response).to redirect_to(profile_path)
-          end
-        end
-      end
-
-      context 'some answers incorrect' do
-        before do
-          complete_idv_session(false)
-          get :index
-        end
-
-        it 'redirects to retry' do
-          expect(response).to redirect_to(idv_retry_url)
-        end
-
-        it 'does not save PII' do
-          expect(Profile.where(id: profile.id).count).to eq 0
-        end
-      end
-
-      context 'max attempts exceeded' do
-        before do
-          complete_idv_session(false)
-          user.idv_attempts = 3
-          user.idv_attempted_at = Time.zone.now
-          get :index
-        end
-
-        it 'redirects to fail' do
-          expect(response).to redirect_to(idv_fail_url)
-        end
-      end
-
-      context 'questions incomplete' do
-        it 'redirects to /idv/questions' do
-          get :index
-
-          expect(response).to redirect_to(idv_questions_path)
-        end
+        get :index
       end
     end
   end
@@ -138,24 +147,4 @@ describe Idv::ConfirmationsController do
       expect(response).to redirect_to(idv_session_path)
     end
   end
-
-  def stub_idv_session
-    stub_sign_in(user)
-    idv_session = Idv::Session.new(subject.user_session, user)
-    idv_session.vendor = :mock
-    idv_session.applicant = applicant
-    idv_session.resolution = resolution
-    idv_session.profile_id = profile.id
-    idv_session.question_number = 0
-    allow(subject).to receive(:idv_session).and_return(idv_session)
-  end
-
-  # rubocop:disable Rails/DynamicFindBy
-  def complete_idv_session(answer_correctly)
-    Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
-      resolution.questions.find_by_key(ques).answer = answer_correctly ? answ : 'wrong'
-      subject.idv_session.question_number += 1
-    end
-  end
-  # rubocop:enable Rails/DynamicFindBy
 end

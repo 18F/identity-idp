@@ -34,12 +34,12 @@ class Analytics
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
-  IDV_FAILED = 'IdV: failed'.freeze
+  IDV_INITIAL = 'IdV: initial resolution'.freeze
+  IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FINANCE_VISIT = 'IdV: finance visited'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
-  IDV_SUCCESSFUL = 'IdV: successful'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
