@@ -503,7 +503,7 @@ GEM
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (~> 3.0)
-    slim_lint (0.8.2)
+    slim_lint (0.8.3)
       rake (>= 10, < 12)
       rubocop (>= 0.36.0)
       slim (~> 3.0)
