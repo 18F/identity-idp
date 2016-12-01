@@ -107,13 +107,11 @@ module TwoFactorAuthenticatable
 
   def phone_changed
     create_user_event(:phone_changed)
-    analytics.track_event(Analytics::PHONE_CHANGE_SUCCESSFUL)
     SmsSenderNumberChangeJob.perform_later(old_phone)
   end
 
   def phone_confirmed
     create_user_event(:phone_confirmed)
-    analytics.track_event('User confirmed their phone number')
   end
 
   def update_phone_attributes
