@@ -9,6 +9,10 @@ describe Analytics do
     }
   end
 
+  let(:ahoy) { instance_double(FakeAhoyTracker) }
+
+  before { allow(FakeAhoyTracker).to receive(:new).and_return(ahoy) }
+
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
       user = build_stubbed(:user, uuid: '123')
@@ -16,13 +20,12 @@ describe Analytics do
       analytics = Analytics.new(user, FakeRequest.new)
 
       analytics_hash = {
-        event: 'Trackable Event',
-        properties: {},
+        event_properties: {},
         user_id: user.uuid
       }
 
-      expect(ANALYTICS_LOGGER).to receive(:info).
-        with(analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event')
     end
@@ -34,13 +37,12 @@ describe Analytics do
       analytics = Analytics.new(current_user, FakeRequest.new)
 
       analytics_hash = {
-        event: 'Trackable Event',
-        properties: {},
+        event_properties: {},
         user_id: tracked_user.uuid
       }
 
-      expect(ANALYTICS_LOGGER).to receive(:info).
-        with(analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end

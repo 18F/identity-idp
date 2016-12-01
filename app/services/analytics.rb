@@ -6,17 +6,20 @@ class Analytics
 
   def track_event(event, attributes = {})
     analytics_hash = {
-      event: event,
-      properties: attributes.except(:user_id),
+      event_properties: attributes.except(:user_id),
       user_id: attributes[:user_id] || uuid
     }
 
-    ANALYTICS_LOGGER.info(analytics_hash.merge!(request_attributes))
+    ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 
   private
 
   attr_reader :user, :request
+
+  def ahoy
+    @ahoy ||= Rails.env.test? ? FakeAhoyTracker.new : Ahoy::Tracker.new(request: request)
+  end
 
   def request_attributes
     {
