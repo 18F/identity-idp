@@ -154,8 +154,8 @@ GEM
     cliver (0.3.2)
     codeclimate-engine-rb (0.4.0)
       virtus (~> 1.0)
-    codeclimate-test-reporter (0.6.0)
-      simplecov (>= 0.7.1, < 1.0.0)
+    codeclimate-test-reporter (1.0.3)
+      simplecov
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
