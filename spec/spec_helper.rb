@@ -1,8 +1,3 @@
-if ENV['TRAVIS']
-  require 'codeclimate-test-reporter'
-  CodeClimate::TestReporter.start
-end
-
 require 'simplecov'
 SimpleCov.start 'rails' do
   add_filter '/config/'
