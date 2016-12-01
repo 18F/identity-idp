@@ -84,4 +84,24 @@ module IdvHelper
   def click_acknowledge_recovery_code
     click_button t('forms.buttons.continue')
   end
+
+  def stub_idv_session
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session.vendor = :mock
+    idv_session.applicant = applicant
+    idv_session.resolution = resolution
+    idv_session.profile_id = profile.id
+    idv_session.question_number = 0
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+  end
+
+  # rubocop:disable Rails/DynamicFindBy
+  def complete_idv_session(answer_correctly)
+    Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
+      resolution.questions.find_by_key(ques).answer = answer_correctly ? answ : 'wrong'
+      subject.idv_session.question_number += 1
+    end
+  end
+  # rubocop:enable Rails/DynamicFindBy
 end

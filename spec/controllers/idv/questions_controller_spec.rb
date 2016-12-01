@@ -1,10 +1,18 @@
 require 'rails_helper'
 
 describe Idv::QuestionsController do
-  let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
+  include IdvHelper
+  include SamlAuthHelper
+
+  let(:password) { 'sekrit phrase' }
+  let(:user) { create(:user, :signed_up, password: password, email: 'old_email@example.com') }
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
+  let(:profile) do
+    user.unlock_user_access_key(password)
+    Idv::ProfileFromApplicant.create(applicant, user)
+  end
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -16,23 +24,134 @@ describe Idv::QuestionsController do
   end
 
   context 'user has started proofing session' do
-    render_views
-
     before(:each) do
       stub_idv_session
     end
 
-    it 'retrieves next question' do
-      get :index
+    context 'KBV on' do
+      before do
+        allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(true)
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
 
-      expect(response.body).to include resolution.questions.first.display
+      context 'more questions available' do
+        render_views
+
+        it 'retrieves next question' do
+          get :index
+
+          expect(response.body).to include resolution.questions.first.display
+        end
+      end
+
+      it 'answers question and advances' do
+        post :create, answer: 'foo', question_key: resolution.questions.first.key
+
+        expect(resolution.questions.first.answer).to eq 'foo'
+        expect(response).to redirect_to(idv_questions_path)
+      end
+
+      context 'all questions correct' do
+        context 'original SAML Authn request present' do
+          let(:saml_authn_request) { sp1_authnrequest }
+
+          before do
+            subject.session[:saml_request_url] = saml_authn_request
+            complete_idv_session(true)
+            get :index
+          end
+
+          it 'redirects to confirmations path and tracks event' do
+            result = {
+              kbv_passed: true,
+              idv_attempts_exceeded: false,
+              new_phone_added: false
+            }
+
+            expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, result)
+            expect(response).to redirect_to(idv_confirmations_path)
+          end
+        end
+
+        context 'original SAML Authn request missing' do
+          before do
+            subject.session[:saml_request_url] = nil
+            complete_idv_session(true)
+            get :index
+          end
+
+          it 'redirects to confirmations path' do
+            expect(response).to redirect_to(idv_confirmations_path)
+          end
+        end
+      end
+
+      context 'some answers incorrect' do
+        before do
+          complete_idv_session(false)
+          get :index
+        end
+
+        it 'redirects to retry and tracks event' do
+          result = {
+            kbv_passed: false,
+            idv_attempts_exceeded: false,
+            new_phone_added: false
+          }
+
+          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, result)
+          expect(response).to redirect_to(idv_retry_url)
+        end
+
+        it 'does not save PII' do
+          expect(Profile.where(id: profile.id).count).to eq 0
+        end
+      end
+
+      context 'max attempts exceeded' do
+        before do
+          complete_idv_session(false)
+          user.idv_attempts = 3
+          user.idv_attempted_at = Time.zone.now
+          get :index
+        end
+
+        it 'redirects to fail and tracks event' do
+          result = {
+            kbv_passed: false,
+            idv_attempts_exceeded: true,
+            new_phone_added: false
+          }
+
+          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, result)
+          expect(response).to redirect_to(idv_fail_url)
+        end
+      end
+
+      context 'user confirmed a new phone' do
+        it 'tracks that event' do
+          subject.idv_session.params['phone_confirmed_at'] = Time.current
+          complete_idv_session(true)
+          get :index
+
+          result = {
+            kbv_passed: true,
+            idv_attempts_exceeded: false,
+            new_phone_added: true
+          }
+
+          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_FINAL, result)
+        end
+      end
     end
 
-    it 'answers question and advances' do
-      post :create, answer: 'foo', question_key: resolution.questions.first.key
+    context 'KBV is off' do
+      it 'redirects to confirmations path' do
+        get :index
 
-      expect(resolution.questions.first.answer).to eq 'foo'
-      expect(response).to redirect_to(idv_questions_path)
+        expect(response).to redirect_to(idv_confirmations_path)
+      end
     end
   end
 
@@ -44,15 +163,5 @@ describe Idv::QuestionsController do
 
       expect(response).to redirect_to(idv_session_path)
     end
-  end
-
-  def stub_idv_session
-    stub_sign_in(user)
-    subject.user_session[:idv] = {
-      vendor: :mock,
-      applicant: applicant,
-      resolution: resolution,
-      question_number: 0
-    }
   end
 end

@@ -26,10 +26,20 @@ module Idv
 
     def create
       resolution = start_idv_session
+      track_idv_event(resolution)
       process_resolution(resolution)
     end
 
     private
+
+    def track_idv_event(resolution)
+      result = {
+        success: resolution.success,
+        idv_attempts_exceeded: idv_attempter.exceeded?
+      }
+
+      analytics.track_event(Analytics::IDV_INITIAL, result)
+    end
 
     def process_resolution(resolution)
       if resolution.success
@@ -63,7 +73,7 @@ module Idv
     end
 
     def phone_confirmation_required?
-      !idv_params[:phone_confirmed_at] || idv_params[:phone] != current_user.phone
+      idv_params[:phone] != current_user.phone
     end
 
     def start_idv_session

@@ -6,11 +6,9 @@ module Idv
     before_action :confirm_idv_vendor_session_started
 
     def index
-      if idv_questions && idv_questions.any?
-        handle_kbv
-      else
-        handle_without_kbv
-      end
+      track_final_idv_event unless FeatureManagement.proofing_requires_kbv?
+
+      finish_proofing_success
     end
 
     def continue
@@ -19,45 +17,12 @@ module Idv
 
     private
 
-    def idv_questions
-      idv_session.questions
-    end
-
-    def handle_kbv
-      if idv_session.question_number >= idv_questions.count
-        submit_answers
-      else
-        redirect_to idv_questions_path
-      end
-    end
-
-    def handle_without_kbv
-      # should we do further interrogate idv_resolution?
-      # see https://github.com/18F/identity-private/issues/485
-      finish_proofing_success
-    end
-
-    def submit_answers
-      @idv_vendor = idv_session.vendor
-      resolution = idv_session.resolution
-      @confirmation = idv_agent.submit_answers(resolution.questions, resolution.session_id)
-      if @confirmation.success?
-        finish_proofing_success
-      else
-        finish_proofing_failure
-      end
-    end
-
-    def finish_proofing_failure
-      # do not store PII that failed.
-      idv_session.profile.destroy
-      idv_session.clear
-      analytics.track_event(Analytics::IDV_FAILED)
-      if idv_attempter.exceeded?
-        redirect_to idv_fail_url
-      else
-        redirect_to idv_retry_url
-      end
+    def track_final_idv_event
+      result = {
+        success: true,
+        new_phone_added: idv_session.params['phone_confirmed_at'].present?
+      }
+      analytics.track_event(Analytics::IDV_FINAL, result)
     end
 
     def finish_proofing_success
@@ -66,7 +31,6 @@ module Idv
       idv_session.complete_profile
       idv_session.clear
       flash[:allow_confirmations_continue] = true
-      analytics.track_event(Analytics::IDV_SUCCESSFUL)
     end
   end
 end
