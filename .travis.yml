@@ -41,5 +41,6 @@ sudo: false
 script:
   - make test
   - bundle exec slim-lint app/views
+  - bundle exec codeclimate-test-reporter
 services:
   - redis-server
