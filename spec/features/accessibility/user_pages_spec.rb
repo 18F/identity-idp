@@ -32,14 +32,14 @@ feature 'Accessibility on pages that require authentication', :js do
   end
 
   describe '2FA pages' do
-    pending 'phone setup page' do
+    scenario 'phone setup page' do
       sign_up_and_set_password
 
       expect(current_path).to eq(phone_setup_path)
       expect(page).to be_accessible
     end
 
-    pending 'two factor auth page' do
+    scenario 'two factor auth page' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 

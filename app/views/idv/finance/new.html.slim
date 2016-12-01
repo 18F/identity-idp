@@ -6,7 +6,8 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro')
 = simple_form_for(idv_finance_form, url: idv_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = f.error_notification
-  .mb3.js-finance-choice-cntnr
+  fieldset.mb3.js-finance-choice-cntnr.border-white
+    legend.hide = t('idv.messages.finance.label')
     = f.collection_radio_buttons(:finance_type, Idv::FinanceForm.finance_type_choices,
       :first, :last, required: true, item_wrapper_class: 'mb1', item_wrapper_tag: :div) do |r|
       = r.label(class: 'radio')
