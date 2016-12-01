@@ -28,8 +28,6 @@ before_script:
   - cp keys/saml.key.enc.example keys/saml.key.enc
   - bin/rake db:setup --trace
   - bin/rake assets:precompile
-after_script:
-  - npm run pa11y-ci
 bundler_args: "--deployment --jobs=3 --retry=3 --without deploy development doc"
 cache: bundler
 language: ruby

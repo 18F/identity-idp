@@ -24,13 +24,10 @@ lint: $(CONFIG)
 brakeman:
 	bundle exec brakeman
 
-pa11y:
-	npm run pa11y-local
-
 test: $(CONFIG)
 	bundle exec rspec
 
 run: $(CONFIG)
 	foreman start
 
-.PHONY: setup all lint run test check brakeman pa11y
+.PHONY: setup all lint run test check brakeman
