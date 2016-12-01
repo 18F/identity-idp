@@ -20,14 +20,16 @@ p.mt-tiny.mb0#2fa-description
     = label_tag 'two_factor_setup_form[otp_method]',
       t('devise.two_factor_authentication.otp_method.instruction'),
       class: 'block'
-    label.radio.mb0.mr3
-      = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
-        checked: true
-      span.indicator
-      = t('devise.two_factor_authentication.otp_method.sms')
-    label.radio.mb0
-      = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
-      span.indicator
-      = t('devise.two_factor_authentication.otp_method.voice')
+    fieldset.border-white
+      legend.hide = t('devise.two_factor_authentication.otp_method.instruction')
+      label.radio.mb0.mr3
+        = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
+          checked: true
+        span.indicator#sms-otp-description
+        = t('devise.two_factor_authentication.otp_method.sms')
+      label.radio.mb0
+        = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
+        span.indicator#voice-otp-description
+        = t('devise.two_factor_authentication.otp_method.voice')
   = f.button :submit, t('forms.buttons.send_passcode')
   p.mt3.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
