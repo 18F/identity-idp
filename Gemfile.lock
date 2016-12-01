@@ -117,7 +117,7 @@ GEM
     bummr (0.1.6)
       rainbow
       thor
-    byebug (9.0.5)
+    byebug (9.0.6)
     capistrano (3.6.1)
       airbrussh (>= 1.0.0)
       capistrano-harrow
@@ -347,7 +347,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-byebug (3.4.0)
+    pry-byebug (3.4.1)
       byebug (~> 9.0)
       pry (~> 0.10)
     public_suffix (2.0.4)
