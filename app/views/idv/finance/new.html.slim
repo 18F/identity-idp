@@ -14,8 +14,12 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro')
         = r.radio_button
         span.indicator
         = r.text
-  = f.input :finance_account, required: true,
-    label: @finance_account_label, label_html: { class: 'js-finance-label' }
+  - Idv::FinanceForm.finance_type_inputs.each do |key, label, html_options|
+    = f.input key,
+              label: label,
+              required: false,
+              wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
+              input_html: html_options
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
   .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path
 

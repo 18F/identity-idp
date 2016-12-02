@@ -3,7 +3,6 @@ module Idv
     helper_method :idv_finance_form
 
     def new
-      @finance_account_label = FinanceFormDecorator.new(idv_session.params).label_text
       analytics.track_event(Analytics::IDV_FINANCE_VISIT)
     end
 
@@ -23,7 +22,7 @@ module Idv
     end
 
     def finance_params
-      params.require(:idv_finance_form).permit(:finance_type, :finance_account)
+      params.require(:idv_finance_form).permit(:finance_type, *Idv::FinanceForm::FINANCE_TYPES)
     end
   end
 end
