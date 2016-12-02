@@ -17,7 +17,7 @@ en:
       setup_totp: Set up authentication app
       sign_out: Sign me out
       submit:
-        default: Submit
+        default: Enviar
         next: Next
         update: Update
     confirmation:
