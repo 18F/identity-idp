@@ -18,9 +18,9 @@ en:
       text: By signing in, you agree to %{app}’s %{link}
     signed_up_but_unconfirmed:
       first_paragraph_end: >
-        with a link to confirm your email address. Follow the link to continue
-        creating your account.
-      first_paragraph_start: We sent an email to
+        con un enlace para confirmar su dirección de correo electrónico. Siga el enlace para continuar
+        creando su cuenta.
+      first_paragraph_start: Enviamos un correo electrónico a
       no_email_sent_explanation_start: Didn’t get an email?
     terms_of_service:
       headline: Al continuar, acepto los términos de este servicio.
