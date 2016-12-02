@@ -23,7 +23,7 @@ en:
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t get an email?
     terms_of_service:
-      headline: Al continuar, acepto los términos de este servicio. 
+      headline: Al continuar, acepto los términos de este servicio.
       link: Learn more ›
       text: >
         Providing information is voluntary. It is used to help you access
@@ -34,8 +34,8 @@ en:
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-  session_expired_html: Please %{link} the page to log in.
-  session_expired_link: refresh
+  session_expired_html: Por favor %{link} la página para iniciar sesión.
+  session_expired_link: actualiza
   session_timedout: >
     We signed you out due to inactivity. This helps keep your account safe.
     Please sign in again.
