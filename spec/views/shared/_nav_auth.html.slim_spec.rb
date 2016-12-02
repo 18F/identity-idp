@@ -17,6 +17,10 @@ describe 'shared/_nav_auth.html.slim' do
       expect(rendered).to have_link(t('shared.nav_auth.my_account'), href: profile_path)
     end
 
+    it 'does not contain link to cancel the auth process' do
+      expect(rendered).not_to have_link(t('links.cancel'), href: destroy_user_session_path)
+    end
+
     it 'contains sign out link' do
       expect(rendered).to have_link(t('links.sign_out'), href: destroy_user_session_path)
     end
@@ -40,6 +44,10 @@ describe 'shared/_nav_auth.html.slim' do
 
     it 'does not contain sign out link' do
       expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
+    end
+
+    it 'does contain a link to cancel' do
+      expect(rendered).to have_link(t('links.cancel'), href: destroy_user_session_path)
     end
   end
 end
