@@ -43,7 +43,7 @@ describe Idv::FinanceController do
 
     context 'when form is valid' do
       it 'redirects to phone page' do
-        put :create, idv_finance_form: { finance_type: :ccn, finance_account: '12345678' }
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
         expect(response).to redirect_to idv_phone_url
 

@@ -63,7 +63,7 @@ module IdvHelper
 
   def fill_out_financial_form_ok
     find('#idv_finance_form_finance_type_ccn').set(true)
-    fill_in :idv_finance_form_finance_account, with: '12345678'
+    fill_in :idv_finance_form_ccn, with: '12345678'
   end
 
   def fill_out_phone_form_ok(phone = '415-555-0199')
