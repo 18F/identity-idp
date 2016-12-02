@@ -72,7 +72,7 @@ en:
     recovery_code: Make sure you can always sign in
     registrations:
       enter_email: Empezar a crear una cuenta
-      verify_email: Check your email
+      verify_email: Revisa su correo electrónico.
     search: Search for a user
     session_timeout_warning: Necesitas más tiempo?
     sign_in_with_sp: Sign in to continue to %{sp}
