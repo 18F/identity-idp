@@ -1,15 +1,9 @@
-function pluralize(word, count) {
-  return `${word}${count !== 1 ? 's' : ''}`;
-}
-
 function formatMinutes(minutes) {
-  if (!minutes) return 0;
-
-  return `${minutes} ${pluralize('minute', minutes)}`;
+  return minutes || 0;
 }
 
 function formatSeconds(seconds) {
-  return `${seconds} ${pluralize('second', seconds)}`;
+  return seconds < 10 ? `0{seconds}` : seconds;
 }
 
 export default (milliseconds) => {
@@ -20,5 +14,5 @@ export default (milliseconds) => {
   const displayMinutes = formatMinutes(minutes);
   const displaySeconds = formatSeconds(remainingSeconds);
 
-  return `${displayMinutes} and ${displaySeconds}`;
+  return `${displayMinutes}:${displaySeconds}`;
 };
