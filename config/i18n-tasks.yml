@@ -1,7 +1,7 @@
 # i18n-tasks finds and manages missing and unused translations: https://github.com/glebm/i18n-tasks
 
 # The "main" locale.
-base_locale: en
+base_locale: es
 ## All available locales are inferred from the data by default. Alternatively, specify them explicitly:
 # locales: [es, fr]
 ## Reporting locale, default: en. Available: en, ru.
@@ -57,7 +57,7 @@ search:
   #   - app/helpers
   #   - app/mailers
   #   - app/presenters
-    
+
 
   ## Files or `File.fnmatch` patterns to exclude from search. Some files are always excluded regardless of this setting:
   ##   %w(*.jpg *.png *.gif *.svg *.ico *.eot *.otf *.ttf *.woff *.woff2 *.pdf *.css *.sass *.scss *.less *.yml *.json)
