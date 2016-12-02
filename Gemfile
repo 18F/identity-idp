@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
-gem 'redis-session-store'
+gem 'ahoy_matey'
 gem 'american_date'
 gem 'aws-sdk-core'
 gem 'browserify-rails'
@@ -26,6 +26,7 @@ gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
 gem 'valid_email'
 gem 'rack-attack'
 gem 'readthis'
+gem 'redis-session-store'
 gem 'rqrcode'
 gem 'ruby-saml'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
