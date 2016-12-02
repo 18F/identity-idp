@@ -1,0 +1,42 @@
+---
+en:
+  notices:
+    dap_html: >
+      <!-- We participate in the US government’s analytics program. -->
+      <!-- See the data at analytics.usa.gov. -->
+    password_changed: You changed your password.
+    password_reset: >
+      Check your email in a few minutes for instructions on how to reset your password.
+    phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
+    resend_confirmation_email:
+      success: We have resent your confirmation email.
+    send_code:
+      sms: We sent you a one-time passcode via text message.
+      voice: We will call you with your one-time passcode.
+    sign_in_consent:
+      link: Security Consent & Privacy Act Statement.
+      text: By signing in, you agree to %{app}’s %{link}
+    signed_up_but_unconfirmed:
+      first_paragraph_end: >
+        with a link to confirm your email address. Follow the link to continue
+        creating your account.
+      first_paragraph_start: We sent an email to
+      no_email_sent_explanation_start: Didn’t get an email?
+    terms_of_service:
+      headline: Al continuar, acepto los términos de este servicio. 
+      link: Learn more ›
+      text: >
+        Providing information is voluntary. It is used to help you access
+        government services. login.gov uses industry-standard monitoring and security
+        practices to protect your data. %{link}
+    totp_configured: You enabled an authentication app.
+    totp_disabled: You disabled your authentication app.
+    use_diff_email:
+      link: use a different email address
+      text_html: Or, %{link}
+  session_expired_html: Please %{link} the page to log in.
+  session_expired_link: refresh
+  session_timedout: >
+    We signed you out due to inactivity. This helps keep your account safe.
+    Please sign in again.
+  session_timeout_warning: Your session will end in %{time_left_in_session} due to inactivity.
