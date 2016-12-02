@@ -541,6 +541,7 @@ GEM
     sshkit (1.11.4)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
+    staccato (0.5.1)
     sysexits (1.2.0)
     systemu (2.6.5)
     temple (0.7.7)
@@ -686,6 +687,7 @@ DEPENDENCIES
   slim-rails
   slim_lint
   split
+  staccato
   test_after_commit
   thin
   timecop

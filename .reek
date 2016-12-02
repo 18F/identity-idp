@@ -66,6 +66,7 @@ UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
     - ApplicationHelper#step_class
+    - GoogleAnalyticsJob#perform
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
     - SessionTimeoutWarningHelper#warning

@@ -11,6 +11,7 @@ class Analytics
     }
 
     ahoy.track(event, analytics_hash.merge!(request_attributes))
+    GoogleAnalyticsJob.perform_later(event_name: event) if Figaro.env.google_analytics_key.present?
   end
 
   private
