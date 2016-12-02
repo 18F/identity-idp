@@ -34,7 +34,7 @@ en:
       title: Reactivate profile
     registration:
       labels:
-        email: Email address
+        email: Dirección de correo electrónico
     totp_setup:
       code: One-time passcode
       totp_info: >
