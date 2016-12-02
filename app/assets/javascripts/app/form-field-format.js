@@ -27,7 +27,7 @@ function formatForm() {
       }
 
       // removes focus set by field-kit bug https://github.com/square/field-kit/issues/62
-      document.activeElement.blur();
+      if (el !== '.mfa') document.activeElement.blur();
     }
   });
 }

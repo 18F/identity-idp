@@ -97,6 +97,14 @@ feature 'Two Factor Authentication' do
       expect(page).to have_content(t('notices.send_code.sms'))
     end
 
+    scenario 'user does not have to focus on OTP field', js: true do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_button t('forms.buttons.submit.default')
+
+      expect(page.evaluate_script('document.activeElement.id')).to eq 'code'
+    end
+
     scenario 'user does not see progress steps' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
