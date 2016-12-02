@@ -6,6 +6,24 @@ describe PasswordForm, type: :model do
   it_behaves_like 'password validation'
 
   describe '#submit' do
+    context 'when the form is valid' do
+      it 'returns true' do
+        user = build_stubbed(:user)
+
+        form = PasswordForm.new(user)
+
+        password = 'valid password'
+
+        result = {
+          success: true,
+          errors: [],
+          user_id: user.uuid
+        }
+
+        expect(form.submit(password: password)).to eq result
+      end
+    end
+
     context 'when the form is invalid' do
       it 'returns false' do
         user = build_stubbed(:user, uuid: '123')

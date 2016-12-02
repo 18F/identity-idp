@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161118150204) do
+ActiveRecord::Schema.define(version: 20161122031010) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20161118150204) do
     t.text     "encrypted_pii"
     t.string   "ssn_signature",          limit: 64
     t.text     "encrypted_pii_recovery"
+    t.integer  "deactivation_reason"
   end
 
   add_index "profiles", ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
@@ -81,7 +82,7 @@ ActiveRecord::Schema.define(version: 20161118150204) do
   add_index "profiles", ["user_id"], name: "index_profiles_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
-    t.string   "email",                         limit: 255, default: "", null: false
+    t.string   "email_plain",                   limit: 255, default: ""
     t.string   "encrypted_password",            limit: 255, default: ""
     t.string   "reset_password_token",          limit: 255
     t.datetime "reset_password_sent_at"
@@ -116,16 +117,18 @@ ActiveRecord::Schema.define(version: 20161118150204) do
     t.datetime "idv_attempted_at"
     t.integer  "idv_attempts",                              default: 0
     t.string   "recovery_code"
-    t.string   "unique_session_id"
     t.string   "password_salt"
     t.string   "encryption_key"
+    t.string   "unique_session_id"
     t.string   "recovery_salt"
     t.string   "password_cost"
     t.string   "recovery_cost"
+    t.string   "email_fingerprint",                         default: "", null: false
+    t.text     "encrypted_email",                           default: "", null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
-  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true, using: :btree
   add_index "users", ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true, using: :btree
   add_index "users", ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

@@ -92,12 +92,20 @@ feature 'Sign in' do
   end
 
   context 'signed out' do
-    it 'displays session timeout modal when session times out', js: true do
+    it 'links to current page after session expires', js: true do
       allow(Devise).to receive(:timeout_in).and_return(0)
 
-      visit root_path
+      [t('forms.buttons.continue'), t('session_expired_link')].each do |link|
+        visit new_user_registration_path
+        fill_in 'Email', with: 'test@example.com'
 
-      expect(page).to have_css('#session-expired-msg')
+        expect(page).to have_css('#session-expired-msg')
+
+        find_link(link).trigger('click')
+
+        expect(page).to have_field('Email', with: '')
+        expect(page).to have_current_path(new_user_registration_path)
+      end
     end
 
     it 'does not display timeout modal when session not timed out', js: true do
@@ -122,7 +130,7 @@ feature 'Sign in' do
       click_link(t('links.sign_out'))
 
       Timecop.travel(Devise.timeout_in + 1.minute) do
-        expect(page).to_not have_content(t('forms.buttons.submit.continue'))
+        expect(page).to_not have_content(t('forms.buttons.continue'))
 
         fill_in_credentials_and_click_sign_in(user.email, user.password)
         expect(page).to have_content t('errors.invalid_authenticity_token')

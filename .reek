@@ -3,6 +3,10 @@ Attribute:
 DuplicateMethodCall:
   exclude:
     - needs_to_confirm_email_change?
+    - Remote#command
+    - Remote#extract_trailing_options
+    - Remote#parse_positional_arguments
+    - WorkerHealthChecker#status
 FeatureEnvy:
   exclude:
     - track_registration
@@ -12,6 +16,9 @@ FeatureEnvy:
     - mark_profile_inactive
 IrresponsibleModule:
   enabled: false
+NestedIterators:
+  exclude:
+  - Remote#build_parser
 NilCheck:
   exclude:
     - AdminConstraint#user_is_admin?
@@ -19,12 +26,14 @@ NilCheck:
     - PasswordsController#mark_profile_inactive
     - PasswordResetTokenValidator#result
     - PhoneConfirmationFlow
+    - RegisterUserEmailForm#result
     - slo_not_implemented_at_sp?
     - in_slo?
     - TotpSetupController#new
     - TotpSetupController#valid_code?
     - user_not_found?
     - SamlIdpLogoutConcern#name_id
+    - User#password_reset_profile
 TooManyConstants:
   exclude:
     - Analytics
@@ -32,6 +41,10 @@ TooManyStatements:
   max_statements: 6
   exclude:
     - Users::PhoneConfirmationController
+    - Remote#build_parser
+    - Remote#execute
+    - Remote#extract_trailing_options
+    - Remote#parse
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -52,6 +65,7 @@ UtilityFunction:
   public_methods_only: true
   exclude:
     - AnalyticsEventJob#perform
+    - ApplicationHelper#step_class
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
     - SessionTimeoutWarningHelper#warning
@@ -59,6 +73,13 @@ UtilityFunction:
     - SessionDecorator#registration_bullet_1
     - SessionDecorator#new_session_heading
     - WorkerHealthChecker::Middleware#call
+    - UserEncryptedEmailOverrides#create_fingerprint
+    - Remote#build_parser
+    - Remote#command
+    - Remote#default_config
+    - Remote#extract_trailing_options
+    - Remote#host
+    - Remote#parse_positional_arguments
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

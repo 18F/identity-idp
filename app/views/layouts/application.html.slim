@@ -50,7 +50,7 @@ html lang="#{I18n.locale}"
     = render 'shared/footer_lite'
 
   #session-timeout-cntnr
-  - if current_user
+  - if user_fully_authenticated?
     = auto_session_timeout_js
   -else
     = auto_session_expired_js
@@ -59,6 +59,4 @@ html lang="#{I18n.locale}"
     == javascript_include_tag 'misc/i18n-mode'
 
   - if Figaro.env.participate_in_dap == 'true'
-    = t('notices.dap_html')
-    - dap_source = 'https://dap.digitalgov.gov/Universal-Federated-Analytics-Min.js?agency=GSA'
-    <script async type='text/javascript' src='#{dap_source}' id='_fed_an_ua_tag'></script>
+    = render 'shared/dap_analytics'

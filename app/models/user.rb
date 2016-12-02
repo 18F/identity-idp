@@ -13,11 +13,13 @@ class User < ActiveRecord::Base
     :trackable,
     :two_factor_authenticatable,
     :omniauthable,
+    authentication_keys: [:email],
     omniauth_providers: [:saml]
   )
 
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
+  include UserEncryptedEmailOverrides
 
   enum role: { user: 0, tech: 1, admin: 2 }
 
@@ -84,6 +86,13 @@ class User < ActiveRecord::Base
 
   def active_profile
     profiles.find(&:active?)
+  end
+
+  # This user's most recently activated profile that has also been deactivated
+  # due to a password reset, or nil if there is no such profile
+  def password_reset_profile
+    profile = profiles.order(activated_at: :desc).first
+    profile if profile&.password_reset?
   end
 
   # To send emails asynchronously via ActiveJob.

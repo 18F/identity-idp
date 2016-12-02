@@ -19,14 +19,13 @@ module Users
     def create
       @register_user_email_form = RegisterUserEmailForm.new
 
-      if @register_user_email_form.submit(params[:user])
-        process_successful_creation
+      result = @register_user_email_form.submit(permitted_params)
 
-        track_registration(@register_user_email_form)
+      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result)
+
+      if result[:success]
+        process_successful_creation
       else
-        analytics.track_event(
-          Analytics::USER_REGISTRATION_INVALID_EMAIL, email: @register_user_email_form.email
-        )
         render :new
       end
     end
@@ -36,27 +35,21 @@ module Users
 
     protected
 
+    def permitted_params
+      params.require(:user).permit(:email)
+    end
+
     def process_successful_creation
+      user = @register_user_email_form.user
+      create_user_event(:account_created, user) unless @register_user_email_form.email_taken?
+
       @resend_confirmation = params[:user][:resend]
 
-      render :verify_email, locals: { email: @register_user_email_form.user.email }
+      render :verify_email, locals: { email: user.email }
     end
 
     def disable_account_creation
       redirect_to root_path if AppSetting.registrations_disabled?
-    end
-
-    def track_registration(form)
-      if form.email_taken?
-        existing_user = User.find_by(email: form.email)
-        analytics.track_event(
-          Analytics::USER_REGISTRATION_EXISTING_EMAIL, user_id: existing_user.uuid
-        )
-      else
-        user = form.user
-        analytics.track_event(Analytics::USER_REGISTRATION_ACCOUNT_CREATED, user_id: user.uuid)
-        create_user_event(:account_created, user)
-      end
     end
   end
 end

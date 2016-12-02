@@ -1,6 +1,6 @@
 - title t('titles.confirmations.show')
 
-
+= render 'shared/progress_steps', active: 2
 h1.h3.my0 = t('forms.confirmation.show_hdr')
 p.my2#password-description
   strong = t('instructions.password.info.lead', min_length: Devise.password_length.first)

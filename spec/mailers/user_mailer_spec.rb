@@ -87,11 +87,13 @@ describe UserMailer, type: :mailer do
     end
 
     it 'renders the body' do
-      expect(mail.html_part.body).
-        to have_content("Email or phone:#{details['email_or_tel']}")
+      expect(mail.html_part.body).to have_content(
+        "#{t('user_mailer.contact_request.email_or_phone')}#{details['email_or_tel']}"
+      )
 
-      expect(mail.html_part.body).
-        to have_content("Comments:#{details['comments']}")
+      expect(mail.html_part.body).to have_content(
+        "#{t('user_mailer.contact_request.comments_header')}#{details['comments']}"
+      )
     end
   end
 end

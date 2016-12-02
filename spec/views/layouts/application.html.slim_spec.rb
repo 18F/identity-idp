@@ -3,6 +3,10 @@ require 'rails_helper'
 describe 'layouts/application.html.slim' do
   include Devise::Test::ControllerHelpers
 
+  before do
+    allow(view).to receive(:user_fully_authenticated?).and_return(true)
+  end
+
   context 'when i18n mode enabled' do
     before do
       allow(FeatureManagement).to receive(:enable_i18n_mode?).and_return(true)

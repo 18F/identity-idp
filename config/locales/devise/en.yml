@@ -1,5 +1,4 @@
-# Additional translations at https://github.com/plataformatec/devise/wiki/I18n
-
+---
 en:
   devise:
     confirmations:
@@ -10,38 +9,36 @@ en:
         You will receive an email with instructions for how to confirm your
         email address in a few minutes.
       send_paranoid_instructions: >
-        You will receive an email with instructions for how to confirm your
-        email address in a few minutes.
-
+        You will receive an email with instructions for how to confirm your email
+        address in a few minutes.
     failure:
       already_authenticated: ''
       inactive: Your account is not activated yet.
       invalid: Invalid email or password.
-      locked: Your account is now locked.
       last_attempt: You have one more attempt before your account is locked.
+      locked: Your account is now locked.
       not_found_in_database: Invalid email or password.
       session_limited: >
-        Your login credentials were used in another browser.
-        Please sign in again to continue in this browser.
+        Your login credentials were used in another browser. Please sign in
+        again to continue in this browser.
       timeout: Your session expired. Please sign in again to continue.
       unauthenticated: ''
       unconfirmed: You need to confirm your email address before continuing.
-
     mailer:
-      confirmation_instructions:
-        subject: Confirm your email
-      reset_password_instructions:
-        subject: Reset your password
-      password_updated:
-        subject: Your password has been changed
       account_locked:
         subject: Your login.gov account has been locked
-
+      confirmation_instructions:
+        subject: Confirm your email
+      password_updated:
+        subject: Your password has been changed
+      reset_password_instructions:
+        subject: Reset your password
     omniauth_callbacks:
       failure: 'Could not sign you in due to: %{reason}.'
       success: Third party authentication successful!
-
     passwords:
+      choose_new_password: Choose a new password.
+      invalid_token: The reset password token is invalid. Try again.
       no_token: >
         You can’t access this page without coming from a password reset email.
         If you do come from a password reset email, please make sure you used the full
@@ -52,107 +49,97 @@ en:
       send_paranoid_instructions: >
         You will receive an email with instructions on how to reset your
         password in a few minutes.
+      token_expired: You took too long to reset your password. Try again.
       updated: Your password has been changed. You are now signed in.
       updated_not_active: >
-        Your password has been changed.
-        Please sign in with your new password.
-      choose_new_password: Choose a new password.
-      token_expired: You took too long to reset your password. Try again.
-      invalid_token: The reset password token is invalid. Try again.
-
+        Your password has been changed. Please sign in with your new password.
     registrations:
+      close_window: You can close this browser window once you have confirmed your email address.
+      destroy_confirm: >
+        Deleting your account cannot be undone. All data associated with your
+        account will be removed. Are you sure you’d like to delete your account?
+      destroyed: Your account has been successfully deleted.
+      email_and_phone_need_confirmation: >
+        Before we finish updating your account, we need to confirm both your new
+        number and new email. Please follow the instructions below to confirm your new
+        number, then check for an email from us. Follow the link in the email to confirm
+        your new email address.
+      email_update_needs_confirmation: >
+        You updated your account, but we need to confirm your new email address.
+        Check for an email from us, then follow the link in the email to confirm your
+        new address.
+      enabled_twofactor: You have enabled two-factor authentication.
+      phone_update_needs_confirmation: >
+        Your request to update your phone number was processed, but we need to
+        confirm your new number first. Please follow the instructions below. If you do
+        not confirm your new number, we will keep using your old phone number.
+      signed_up: Welcome! You have created an account.
+      signed_up_but_inactive: >
+        You have created an account. However, we could not sign you in because
+        your account is not yet activated.
+      signed_up_but_locked: >
+        You have created an account. However, we could not sign you in because
+        your account is locked.
       start:
-        bullet_1_with_sp: >
-          login.gov is providing account services to %{sp}
-        bullet_1_without_sp: >
-          login.gov provides account services for government agencies
+        bullet_1_with_sp: login.gov is providing account services to %{sp}
+        bullet_1_without_sp: login.gov provides account services for government agencies
         bullet_2: >
           U.S. government agencies are using login.gov to make interacting with
           the government easier.
         bullet_3: >
           You can use your account to sign in to all participating U.S.
           government agencies.
-      destroy_confirm: >
-        Deleting your account cannot be undone. All data associated with your
-        account will be removed. Are you sure you’d like to delete your account?
-      destroyed: Your account has been successfully deleted.
-      signed_up: Welcome! You have created an account.
-      signed_up_but_inactive: >
-        You have created an account. However, we could not sign you in
-        because your account is not yet activated.
-      signed_up_but_locked: >
-        You have created an account. However, we could not sign you in
-        because your account is locked.
-      email_update_needs_confirmation: >
-        You updated your account, but we need to confirm your new
-        email address. Check for an email from us, then follow the link in the email to
-        confirm your new address.
-      phone_update_needs_confirmation: >
-        Your request to update your phone number was processed,
-        but we need to confirm your new number first. Please follow the
-        instructions below. If you do not confirm your new number, we will
-        keep using your old phone number.
-      email_and_phone_need_confirmation: >
-        Before we finish updating your account, we need to confirm both your new number
-        and new email. Please follow the instructions below to confirm your new number, then
-        check for an email from us. Follow the link in the email to confirm your new email
-        address.
       updated: Your account has been updated!
-      enabled_twofactor: You have enabled two-factor authentication.
-      close_window: You can close this browser window once you have confirmed your email address.
-
     sessions:
+      already_signed_out: You are now signed out.
       signed_in: ''
       signed_out: You are now signed out.
-      already_signed_out: You are now signed out.
     two_factor_authentication:
+      buttons:
+        confirm_with_sms: Confirm with text message
+        confirm_with_voice: Confirm with voice call
+      choose_delivery_confirmation: >
+        How would you like to receive your confirmation passcode for %{phone}?
+      choose_otp_delivery: >
+        Please select how you would like to receive your one-time passcode for %{phone}
       contact_administrator: Please contact your system administrator.
       header_text: Enter your passcode
       invalid_otp: >
         That passcode is invalid. You can try entering it again or request a new
         one-time passcode.
       invalid_recovery_code: That recovery code is invalid.
-      totp_header_text: Enter your authenticator code
       max_login_attempts_reached: >
-        Your account is temporarily locked because you have entered the
-        one-time passcode incorrectly too many times.
-      please_try_again: Please try again in %{time_remaining}.
-      recovery_code_header_text: Enter your recovery code
-      recovery_code_prompt: >
-        You can use this recovery code once. If you still need a code after signing in, go to your
-        account settings page to get a new one.
-      recovery_code_fallback:
-        text: Don’t have access to your phone? Use a %{link} instead.
-        link: recovery code
+        Your account is temporarily locked because you have entered the one-time
+        passcode incorrectly too many times.
+      otp_method:
+        instruction: You can change your choice the next time you sign in
+        sms: Text message (SMS)
+        title: How would you like to receive your passcode?
+        voice: Phone call
       otp_phone_label: Phone number
       otp_phone_label_info: Mobile or landline okay
       otp_setup_html: >
-        <strong>Every time you log in,</strong> we will send you a one-time passcode via text
-        message or phone call. This helps safeguard your account.
-      choose_delivery_confirmation: >
-        How would you like to receive your confirmation passcode for %{phone}?
-      choose_otp_delivery: >
-        Please select how you would like to receive your one-time passcode for %{phone}
+        <strong>Every time you log in,</strong> we will send you a one-time
+        passcode via text message or phone call. This helps safeguard your account.
       otp_sms_disclaimer: Message and data rates may apply.
       please_confirm: >
-        Your phone number has been set. Confirm it by entering the
-        passcode below.
-      two_factor_setup: Add a phone number
-      totp_info: >
-        Use any authenticator app to scan the QR code below.
+        Your phone number has been set. Confirm it by entering the passcode below.
+      please_try_again_html: Please try again in %{time_remaining}.
+      recovery_code_fallback:
+        link: recovery code
+        text: Don’t have access to your phone? Use a %{link} instead.
+      recovery_code_header_text: Enter your recovery code
+      recovery_code_prompt: >
+        You can use this recovery code once. If you still need a code after
+        signing in, go to your account settings page to get a new one.
       totp_fallback:
+        sms_link_text: receive a code via text message
         text: >
           If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
-        sms_link_text: receive a code via text message
         voice_link_text: with a phone call
+      totp_header_text: Enter your authenticator code
+      totp_info: Use any authenticator app to scan the QR code below.
+      two_factor_setup: Add a phone number
       user:
         new_otp_sent: We sent you a new one-time passcode.
-      buttons:
-        confirm_with_sms: Confirm with text message
-        confirm_with_voice: Confirm with voice call
-      otp_method:
-        title: How would you like to receive your passcode?
-        instruction: You can change your choice the next time you sign in
-        sms: Text message (SMS)
-        voice: Phone call

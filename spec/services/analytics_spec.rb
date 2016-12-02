@@ -4,9 +4,14 @@ describe Analytics do
   let(:request_attributes) do
     {
       user_ip: FakeRequest.new.remote_ip,
-      user_agent: FakeRequest.new.user_agent
+      user_agent: FakeRequest.new.user_agent,
+      host: FakeRequest.new.host
     }
   end
+
+  let(:ahoy) { instance_double(FakeAhoyTracker) }
+
+  before { allow(FakeAhoyTracker).to receive(:new).and_return(ahoy) }
 
   describe '#track_event' do
     it 'identifies the user and sends the event to the backend' do
@@ -15,13 +20,12 @@ describe Analytics do
       analytics = Analytics.new(user, FakeRequest.new)
 
       analytics_hash = {
-        event: 'Trackable Event',
-        properties: {},
+        event_properties: {},
         user_id: user.uuid
       }
 
-      expect(Rails.logger).to receive(:info).
-        with(analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event')
     end
@@ -33,13 +37,12 @@ describe Analytics do
       analytics = Analytics.new(current_user, FakeRequest.new)
 
       analytics_hash = {
-        event: 'Trackable Event',
-        properties: {},
+        event_properties: {},
         user_id: tracked_user.uuid
       }
 
-      expect(Rails.logger).to receive(:info).
-        with(analytics_hash.merge(request_attributes))
+      expect(ahoy).to receive(:track).
+        with('Trackable Event', analytics_hash.merge(request_attributes))
 
       analytics.track_event('Trackable Event', user_id: tracked_user.uuid)
     end

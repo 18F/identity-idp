@@ -97,6 +97,14 @@ feature 'Two Factor Authentication' do
       expect(page).to have_content(t('notices.send_code.sms'))
     end
 
+    scenario 'user does not see progress steps' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).not_to have_css('.progress-steps')
+    end
+
     scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
@@ -123,13 +131,29 @@ feature 'Two Factor Authentication' do
         user = create(:user, :signed_up)
         user.update(second_factor_locked_at: Time.zone.now - 1.minute)
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-        sign_in_before_2fa(user)
+        signin(user.email, user.password)
 
         expect(page).to have_content t('devise.two_factor_authentication.' \
                                        'max_login_attempts_reached')
 
         visit profile_path
         expect(current_path).to eq root_path
+      end
+    end
+
+    context 'user enters correct OTP after incorrect OTP' do
+      it 'does not display error message' do
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
+        click_button t('forms.buttons.submit.default')
+
+        fill_in('code', with: 'bad-code')
+        click_button t('forms.buttons.submit.default')
+        fill_in('code', with: user.reload.direct_otp)
+        click_button t('forms.buttons.submit.default')
+
+        expect(page).
+          to_not have_content t('devise.two_factor_authentication.invalid_otp')
       end
     end
   end
@@ -161,7 +185,7 @@ feature 'Two Factor Authentication' do
       fill_in 'code', with: code
       click_button t('forms.buttons.submit.default')
 
-      click_button t('forms.buttons.acknowledge_recovery_code')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path
     end
@@ -177,7 +201,7 @@ feature 'Two Factor Authentication' do
       click_button t('forms.buttons.submit.default')
       fill_in 'code', with: user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
-      click_button t('forms.buttons.acknowledge_recovery_code')
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path
     end

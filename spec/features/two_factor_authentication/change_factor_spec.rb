@@ -48,7 +48,7 @@ feature 'Changing authentication factor' do
       old_phone = user.phone
       visit edit_phone_path
       update_phone_number_and_choose_sms_delivery
-      Timecop.travel(31) do
+      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
         click_link t('forms.two_factor.try_again'), href: edit_phone_path
         complete_2fa_confirmation_without_entering_otp
 

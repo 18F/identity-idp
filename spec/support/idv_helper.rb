@@ -72,16 +72,36 @@ module IdvHelper
 
   def complete_idv_profile_ok(user)
     fill_out_idv_form_ok
-    click_button t('forms.buttons.submit.continue')
+    click_button t('forms.buttons.continue')
     fill_out_financial_form_ok
-    click_button t('idv.messages.finance.continue')
+    click_button t('forms.buttons.continue')
     fill_out_phone_form_ok(user.phone)
-    click_button t('forms.buttons.submit.continue')
+    click_button t('forms.buttons.continue')
     fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
     click_submit_default
   end
 
   def click_acknowledge_recovery_code
-    click_button t('forms.buttons.acknowledge_recovery_code')
+    click_button t('forms.buttons.continue')
   end
+
+  def stub_idv_session
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session.vendor = :mock
+    idv_session.applicant = applicant
+    idv_session.resolution = resolution
+    idv_session.profile_id = profile.id
+    idv_session.question_number = 0
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+  end
+
+  # rubocop:disable Rails/DynamicFindBy
+  def complete_idv_session(answer_correctly)
+    Proofer::Vendor::Mock::ANSWERS.each do |ques, answ|
+      resolution.questions.find_by_key(ques).answer = answer_correctly ? answ : 'wrong'
+      subject.idv_session.question_number += 1
+    end
+  end
+  # rubocop:enable Rails/DynamicFindBy
 end

@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 gem 'rails', '~> 4.2.6'
 
-gem 'redis-session-store'
+gem 'ahoy_matey'
 gem 'american_date'
 gem 'aws-sdk-core'
 gem 'browserify-rails'
@@ -17,8 +17,6 @@ gem 'hashie'
 gem 'hiredis'
 gem 'httparty'
 gem 'lograge'
-gem 'logstash-event'
-gem 'logstash-logger'
 gem 'newrelic_rpm'
 gem 'omniauth-saml'
 gem 'phony_rails'
@@ -28,6 +26,7 @@ gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
 gem 'valid_email'
 gem 'rack-attack'
 gem 'readthis'
+gem 'redis-session-store'
 gem 'rqrcode'
 gem 'ruby-saml'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'master'
@@ -70,9 +69,6 @@ group :development do
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
-  gem 'spring'
-  gem 'spring-commands-rspec'
-  gem 'spring-watcher-listen'
 end
 
 group :development, :test do
@@ -87,6 +83,7 @@ end
 
 group :test do
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
+  gem 'axe-matchers'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'

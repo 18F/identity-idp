@@ -7,6 +7,11 @@ class Profile < ActiveRecord::Base
   scope :active, -> { where(active: true) }
   scope :verified, -> { where.not(verified_at: nil) }
 
+  enum deactivation_reason: {
+    password_reset: 1,
+    encryption_error: 2
+  }
+
   attr_reader :recovery_code
 
   def activate
@@ -16,8 +21,8 @@ class Profile < ActiveRecord::Base
     end
   end
 
-  def deactivate
-    update!(active: false)
+  def deactivate(reason)
+    update!(active: false, deactivation_reason: reason)
   end
 
   def decrypt_pii(user_access_key)

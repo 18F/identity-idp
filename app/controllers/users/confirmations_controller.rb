@@ -37,7 +37,6 @@ module Users
 
       @confirmable = User.find_or_initialize_with_error_by(:confirmation_token, token)
       @confirmable = User.confirm_by_token(token) if @confirmable.confirmed?
-
       @password_form = PasswordForm.new(@confirmable)
 
       yield
@@ -101,12 +100,12 @@ module Users
     end
 
     def process_expired_confirmation_token
-      flash[:error] = resource.decorate.confirmation_period_expired_error
+      flash.now[:error] = resource.decorate.confirmation_period_expired_error
       render :new
     end
 
     def process_invalid_confirmation_token
-      flash[:error] = t('errors.messages.confirmation_invalid_token')
+      flash.now[:error] = t('errors.messages.confirmation_invalid_token')
       render :new
     end
 

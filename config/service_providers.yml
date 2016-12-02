@@ -126,10 +126,23 @@ production:
     sp_initiated_login_url: 'https://sp.dev.login.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
-    agency: 'dev_agency'
-    friendly_name: 'Dev Agency'
+    agency: 'A Gov Agency'
+    friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
     return_to_sp_url: 'https://sp.dev.login.gov'
+    attribute_bundle:
+      - email
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-qa':
+    acs_url: 'https://sp.qa.login.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.qa.login.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.qa.login.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_rails_demo'
+    agency: 'A Gov Agency'
+    friendly_name: 'Demo SP Application'
+    logo: 'generic.svg'
+    return_to_sp_url: 'https://sp.qa.login.gov'
     attribute_bundle:
       - email
 
@@ -139,8 +152,8 @@ production:
     sp_initiated_login_url: 'https://sp.demo.login.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
-    agency: 'demo_agency'
-    friendly_name: 'Demo Agency'
+    agency: 'A Gov Agency'
+    friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
     return_to_sp_url: 'https://sp.demo.login.gov'
     attribute_bundle:
@@ -153,6 +166,8 @@ production:
     sp_initiated_login_url: 'https://dashboard.demo.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
 
   'https://dashboard.qa.login.gov':
     acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
@@ -160,6 +175,8 @@ production:
     sp_initiated_login_url: 'https://dashboard.qa.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
 
   'https://dashboard.dev.login.gov':
     acs_url: 'https://dashboard.dev.login.gov/users/auth/saml/callback'
@@ -167,3 +184,5 @@ production:
     sp_initiated_login_url: 'https://dashboard.dev.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email

@@ -23,7 +23,7 @@ describe 'two_factor_authentication/recovery_code/show.html.slim' do
     render
 
     expect(rendered).
-      to have_xpath("//input[@value='#{t('forms.buttons.acknowledge_recovery_code')}']")
+      to have_xpath("//input[@value='#{t('forms.buttons.continue')}']")
     expect(rendered).
       to have_xpath("//form[@action='#{acknowledge_recovery_code_path}']")
   end
@@ -34,5 +34,11 @@ describe 'two_factor_authentication/recovery_code/show.html.slim' do
     render
 
     expect(rendered).to have_content 'foo'
+  end
+
+  it 'displays the correct progress step' do
+    render
+
+    expect(rendered).to have_css('.step-3.active')
   end
 end

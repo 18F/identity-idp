@@ -59,6 +59,7 @@ Rails.application.routes.draw do
   end
 
   # Non-devise-controller routes. Alphabetically sorted.
+  get '/api/health/workers' => 'health#workers'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
         via: [:get, :post, :delete],
@@ -96,8 +97,11 @@ Rails.application.routes.draw do
   get '/idv/review' => 'idv/review#new'
   put '/idv/review' => 'idv/review#create'
 
+  get '/help' => 'pages#help'
   get '/privacy' => 'pages#privacy_policy'
-  get '/profile' => 'profile#index'
+  get '/profile' => 'profile#index', as: :profile
+  get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
+  post '/profile/reactivate' => 'users/reactivate_profile#create'
   get '/authenticator_start' => 'users/totp_setup#start'
   get '/authenticator_setup' => 'users/totp_setup#new'
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp

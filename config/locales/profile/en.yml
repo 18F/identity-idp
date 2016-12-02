@@ -1,14 +1,18 @@
+---
 en:
   profile:
     index:
-      full_name: Full name
       address: Mailing address
-      dob: Date of birth
-      ssn: Social Security Number
-      phone: Phone number
-      email: Email address
-      password: Password
       authentication_app: Authentication app
+      dob: Date of birth
+      email: Email address
+      full_name: Full name
+      password: Password
+      phone: Phone number
+      reactivation:
+        instructions: Your profile was recently deactivated due to a password reset, reactivate your profile to get your awesome PII back.
+        reactivate_button: Reactivate your profile
+      ssn: Social Security Number
     items:
       recovery_code: Recovery code
     links:

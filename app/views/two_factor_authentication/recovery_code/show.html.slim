@@ -1,7 +1,8 @@
 - title t('titles.recovery_code')
 
+= render 'shared/progress_steps', active: 3
 h1.h3.my0 = t('headings.recovery_code')
 p.mt-tiny.mb0 = t('instructions.recovery_code')
 .mt4.mb4.py2.px3.inline-block.fs-20p.border.border-dashed.monospace = @code
-= button_to(t('forms.buttons.acknowledge_recovery_code'), \
-  acknowledge_recovery_code_path, class: 'btn btn-primary btn-wide mb1')
+= button_to(t('forms.buttons.continue'), acknowledge_recovery_code_path,
+  class: 'btn btn-primary btn-wide mb1')

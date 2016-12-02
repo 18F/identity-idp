@@ -30,8 +30,9 @@ describe ApplicationController do
       Timecop.freeze(Time.current) do
         subject.append_info_to_payload(payload)
 
-        expect(payload.keys).to eq [:user_id, :user_agent, :ip]
-        expect(payload.values).to eq ['anonymous-uuid', request.user_agent, request.remote_ip]
+        expect(payload.keys).to eq [:user_id, :user_agent, :ip, :host]
+        expect(payload.values).
+          to eq ['anonymous-uuid', request.user_agent, request.remote_ip, request.host]
       end
     end
   end

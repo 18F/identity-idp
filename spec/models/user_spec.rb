@@ -224,4 +224,33 @@ describe User do
       expect(user.decorate).to be_a(UserDecorator)
     end
   end
+
+  describe '#password_reset_profile' do
+    let(:user) { create(:user) }
+
+    context 'with no profiles' do
+      it { expect(user.password_reset_profile).to be_nil }
+    end
+
+    context 'with an active profile' do
+      let(:active_profile) do
+        build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
+      end
+
+      before do
+        user.profiles << [
+          active_profile,
+          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' })
+        ]
+      end
+
+      it { expect(user.password_reset_profile).to be_nil }
+
+      context 'when the active profile is deactivated due to password reset' do
+        before { active_profile.deactivate(:password_reset) }
+
+        it { expect(user.password_reset_profile).to eq(active_profile) }
+      end
+    end
+  end
 end

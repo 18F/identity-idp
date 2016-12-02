@@ -141,9 +141,10 @@ describe Profile do
   describe '#deactivate' do
     it 'sets active flag to false' do
       profile = create(:profile, :active, user: user)
-      profile.deactivate
+      profile.deactivate(:password_reset)
 
       expect(profile).to_not be_active
+      expect(profile).to be_password_reset
     end
   end
 

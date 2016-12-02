@@ -4,7 +4,7 @@ module TwoFactorAuthentication
 
     def show
       assign_variables_for_otp_verification_show_view
-      analytics.track_event(Analytics::USER_REGISTRATION_ENTER_PASSCODE_VISIT)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
     end
 
     def create
@@ -28,8 +28,13 @@ module TwoFactorAuthentication
     def analytics_properties
       {
         context: context,
-        method: params[:delivery_method]
+        method: params[:delivery_method],
+        confirmation_for_phone_change: confirmation_for_phone_change?
       }
+    end
+
+    def confirmation_for_phone_change?
+      context == 'confirmation' && current_user.phone.present?
     end
   end
 end

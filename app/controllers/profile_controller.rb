@@ -7,5 +7,7 @@ class ProfileController < ApplicationController
     @decrypted_pii = cacher.fetch
     @recovery_code = flash[:recovery_code]
     flash.delete(:recovery_code)
+
+    @has_password_reset_profile = current_user.password_reset_profile.present?
   end
 end

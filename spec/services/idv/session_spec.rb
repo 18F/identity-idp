@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Idv::Session do
-  let(:user) { User.new }
+  let(:user) { build(:user) }
   let(:user_session) { {} }
 
   subject { described_class.new(user_session, user) }

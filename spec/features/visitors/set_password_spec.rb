@@ -93,7 +93,7 @@ feature 'Visitor sets password during signup' do
 
       click_button t('forms.buttons.submit.default')
 
-      expect(page).to have_content('not strong enough')
+      expect(page).to have_content t('zxcvbn.feedback.This is a top-10 common password')
     end
   end
 end

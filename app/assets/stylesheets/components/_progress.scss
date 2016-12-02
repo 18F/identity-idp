@@ -1,0 +1,67 @@
+$step-size: 24px;
+$step-border-width: 2px;
+
+.col-5th { width: (1 / 5 * 100%); }
+
+.steps-2-thru-n { margin: -$step-size 0 0 $step-size; }
+
+.step {
+  position: relative;
+  z-index: 0;
+
+  span {
+    background-color: $white;
+    border: $step-border-width solid $border-color;
+    border-radius: 50%;
+    box-sizing: border-box;
+    display: inline-block;
+    font-size: $h6;
+    font-weight: bold;
+    height: $step-size;
+    line-height: $step-size - ($step-border-width * 2);
+    text-align: center;
+    vertical-align: bottom;
+    width: $step-size;
+  }
+
+  &::after {
+    border-top: $step-border-width solid $border-color;
+    content: '';
+    left: 0;
+    position: absolute;
+    top: ($step-size - $step-border-width) / 2;
+    width: 100%;
+    z-index: -1;
+  }
+}
+
+// scss-lint:disable MergeableSelector
+.step.active {
+  span {
+    background-color: $blue;
+    border-color: $blue;
+    color: #fff;
+  }
+
+  &::after { border-color: $blue; }
+}
+
+// scss-lint:disable MergeableSelector
+.step.complete {
+  span {
+    position: relative;
+
+    &::before {
+      background-image: url(image-path('alert/ico-check.svg'));
+      background-repeat: no-repeat;
+      content: '';
+      height: $step-size;
+      left: -$step-border-width;
+      position: absolute;
+      top: -$step-border-width;
+      width: $step-size;
+    }
+  }
+
+  &::after { border-color: $green; }
+}

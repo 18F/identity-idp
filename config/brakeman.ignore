@@ -1,0 +1,16 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Command Injection",
+      "warning_code": 14,
+      "fingerprint": "b78936e578167c6d25902e399c5e624cacc6219d83cca53806a0d7f1ab8f3161",
+      "file": "lib/remote.rb",
+      "line": 69,
+      "link": "http://brakemanscanner.org/docs/warning_types/command_injection/",
+      "confidence": "Medium",
+      "note": "intentionally shelling out"
+    }
+  ],
+  "updated": "2016-11-25 13:18:43 -0500",
+  "brakeman_version": "3.4.1"
+}

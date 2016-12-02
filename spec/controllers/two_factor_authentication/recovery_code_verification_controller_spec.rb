@@ -4,7 +4,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
   describe '#create' do
     context 'when the user enters a valid recovery code' do
       before do
-        stub_sign_in_before_2fa(User.new(recovery_code: 'foo'))
+        stub_sign_in_before_2fa(build(:user, recovery_code: 'foo'))
         form = instance_double(RecoveryCodeForm)
         allow(RecoveryCodeForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
@@ -36,7 +36,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
 
     context 'when the user enters an invalid recovery code' do
       before do
-        stub_sign_in_before_2fa(User.new(phone: '+1 (703) 555-1212'))
+        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
         form = instance_double(RecoveryCodeForm)
         allow(RecoveryCodeForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
@@ -54,6 +54,21 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: tr
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_recovery_code')
+      end
+
+      it 'tracks the max attempts event' do
+        properties = {
+          success?: false,
+          method: 'recovery code'
+        }
+
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).exactly(3).times.
+          with(Analytics::MULTI_FACTOR_AUTH, properties)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
+
+        3.times { post :create, code: 'foo' }
       end
     end
   end

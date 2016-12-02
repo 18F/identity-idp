@@ -131,8 +131,14 @@ describe Users::SessionsController, devise: true do
       user = create(:user, :signed_up)
 
       stub_analytics
+      analytics_hash = {
+        success?: true,
+        user_id: user.uuid,
+        user_locked_out: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: true, user_id: user.uuid)
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
       post :create, user: { email: user.email.upcase, password: user.password }
     end
@@ -141,29 +147,62 @@ describe Users::SessionsController, devise: true do
       user = create(:user, :signed_up)
 
       stub_analytics
+      analytics_hash = {
+        success?: false,
+        user_id: user.uuid,
+        user_locked_out: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: false, user_id: user.uuid)
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
       post :create, user: { email: user.email.upcase, password: 'invalid_password' }
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics
+      analytics_hash = {
+        success?: false,
+        user_id: 'anonymous-uuid',
+        user_locked_out: false
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: false, user_id: 'anonymous-uuid')
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
       post :create, user: { email: 'foo@example.com', password: 'password' }
     end
 
+    it 'tracks unsuccessful authentication for locked out user' do
+      user = create(
+        :user,
+        :signed_up,
+        second_factor_locked_at: Time.current
+      )
+
+      stub_analytics
+      analytics_hash = {
+        success?: false,
+        user_id: user.uuid,
+        user_locked_out: true
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
+
+      post :create, user: { email: user.email.upcase, password: user.password }
+    end
+
     context 'LOA1 user' do
-      it 'hashes password exactly once' do
+      it 'hashes password exactly once, hashes email access key exactly once' do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
         encrypted_key_maker = EncryptedKeyMaker.new
         allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
 
-        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
-        expect(encrypted_key_maker).to receive(:unlock).exactly(:once).and_call_original
+        expect(UserAccessKey).to receive(:new).exactly(:twice).and_call_original
+        expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
+        expect(EncryptedEmail).to receive(:new_user_access_key).exactly(:once).and_call_original
 
         post :create, user: { email: user.email.upcase, password: user.password }
       end
@@ -174,14 +213,15 @@ describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end
 
-      it 'hashes password exactly once' do
+      it 'hashes password exactly once, hashes email access key exactly once' do
         encrypted_key_maker = EncryptedKeyMaker.new
         allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
-        expect(encrypted_key_maker).to receive(:unlock).exactly(:once).and_call_original
+        expect(UserAccessKey).to receive(:new).exactly(:twice).and_call_original
+        expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
+        expect(EncryptedEmail).to receive(:new_user_access_key).exactly(:once).and_call_original
 
         post :create, user: { email: user.email.upcase, password: user.password }
       end
@@ -201,8 +241,14 @@ describe Users::SessionsController, devise: true do
         profile.update!(encrypted_pii: Base64.strict_encode64('nonsense'))
 
         stub_analytics
+        analytics_hash = {
+          success?: true,
+          user_id: user.uuid,
+          user_locked_out: false
+        }
+
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_AND_PASSWORD_AUTH, success?: true, user_id: user.uuid)
+          with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
         profile_encryption_error = {
           error: 'Unable to parse encrypted payload. ' \

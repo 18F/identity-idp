@@ -36,31 +36,27 @@ describe Users::RegistrationsController, devise: true do
 
   describe '#create' do
     context 'when registering with a new email' do
-      let(:form) do
-        instance_double(
-          RegisterUserEmailForm, user: User.new(uuid: '123', email: 'new@example.com')
-        )
-      end
-
-      before do
+      it 'tracks successful user registration' do
         stub_analytics
 
-        allow(RegisterUserEmailForm).to receive(:new).and_return(form)
-        allow(form).to receive(:submit).with(email: 'new@example.com').and_return(true)
-        allow(form).to receive(:email_taken?).and_return(false)
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
 
         post :create, user: { email: 'new@example.com' }
-      end
 
-      it 'tracks successful user registration' do
+        user = User.find_with_email('new@example.com')
+
+        analytics_hash = {
+          success: true,
+          errors: [],
+          email_already_exists: false,
+          user_id: user.uuid
+        }
+
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::USER_REGISTRATION_ACCOUNT_CREATED, user_id: form.user.uuid)
-      end
+          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
-      it 'creates an :account_created event' do
-        expect(subject).to have_received(:create_user_event).with(:account_created, form.user)
+        expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
     end
 
@@ -69,15 +65,16 @@ describe Users::RegistrationsController, devise: true do
 
       stub_analytics
 
-      form = instance_double(RegisterUserEmailForm)
-      allow(RegisterUserEmailForm).to receive(:new).and_return(form)
-      allow(form).to receive(:submit).with(email: existing_user.email).and_return(true)
-      allow(form).to receive(:email_taken?).and_return(true)
-      allow(form).to receive(:email).and_return(existing_user.email)
-      allow(form).to receive_message_chain(:user, :email).and_return(existing_user.email)
+      analytics_hash = {
+        success: true,
+        errors: [],
+        email_already_exists: true,
+        user_id: existing_user.uuid
+      }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_EXISTING_EMAIL, user_id: existing_user.uuid)
+        with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
+      expect(subject).to_not receive(:create_user_event)
 
       post :create, user: { email: existing_user.email }
     end
@@ -85,8 +82,15 @@ describe Users::RegistrationsController, devise: true do
     it 'tracks unsuccessful user registration' do
       stub_analytics
 
+      analytics_hash = {
+        success: false,
+        errors: [t('valid_email.validations.email.invalid')],
+        email_already_exists: false,
+        user_id: nil
+      }
+
       expect(@analytics).to receive(:track_event).
-        with(Analytics::USER_REGISTRATION_INVALID_EMAIL, email: 'invalid@')
+        with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
       post :create, user: { email: 'invalid@' }
     end

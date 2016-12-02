@@ -168,12 +168,20 @@ describe Idv::ReviewController do
 
     context 'user has completed all steps' do
       before do
-        idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+        idv_session.params = user_attrs
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to questions path' do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
+        result = {
+          success: true,
+          idv_attempts_exceeded: false
+        }
+
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
         expect(response).to redirect_to idv_questions_path
       end
     end
@@ -181,11 +189,19 @@ describe Idv::ReviewController do
     context 'user attributes fail to resolve' do
       before do
         idv_session.params = user_attrs.merge(first_name: 'Bad')
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to retry' do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
+        result = {
+          success: false,
+          idv_attempts_exceeded: false
+        }
+
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
         expect(response).to redirect_to idv_retry_url
       end
 
@@ -197,6 +213,12 @@ describe Idv::ReviewController do
         it 'redirects to fail' do
           put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
+          result = {
+            success: false,
+            idv_attempts_exceeded: true
+          }
+
+          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
           expect(response).to redirect_to idv_fail_url
         end
       end
@@ -205,11 +227,19 @@ describe Idv::ReviewController do
     context 'user has entered different phone number from MFA' do
       before do
         idv_session.params = user_attrs.merge(phone: '213-555-1000')
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
       it 'redirects to phone confirmation path' do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
+        result = {
+          success: true,
+          idv_attempts_exceeded: false
+        }
+
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
         expect(response).to render_template('devise/two_factor_authentication/show')
         expect(subject.user_session[:context]).to eq 'idv'
       end

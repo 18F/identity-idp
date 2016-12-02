@@ -84,15 +84,15 @@ brew install elasticsearch logstash kibana # or brew upgrade if already installe
 
 brew services start elasticsearch
 brew services start kibana
+```
 
-# Start logstash by running this command from this repo's root directory:
+Start logstash by running this command from this repo's root directory:
+```
 logstash -f logstash.conf
 ```
 
-Change the `logstash_type` entry in `config/application.yml` to `'udp`'
-and restart the Rails server (ctrl-c, then `make run`).
-
-When you make a request, you should now see some output in the logstash window.
+When you trigger an event in the app (such as signing in), you should see some
+output in the logstash window.
 
 To explore the data with Kibana, visit http://localhost:5601
 
@@ -150,7 +150,7 @@ $ make brakeman
 
 #### User flows
 
-We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view. 
+We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.
 
 The local instance of the application must be running in order to serve up the assets (eg. `make run`). Then, you can specify where the assets are hosted from and generate the views with:
 
@@ -159,42 +159,6 @@ $ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
 ```
 
 Then, visit http://localhost:3000/user_flows in your browser!
-
-### Deploying
-
-We currently run a demo environment at https://idp.demo.login.gov.
-Core developers can deploy to those hosts with [Capistrano](http://capistranorb.com)
-using the following command:
-
-```
-$ cap <env/stage> deploy
-```
-
-You will need to provide a copy of your SSH public key and you may need to
-provide your IP address if you are not in a GSA building or on the GSA VPN.
-Post a message in the Slack channel if you need help.
-
-Note: server secrets are currently manually configured. If you deploy to an
-environment, make sure to update any required configuration in application.yml
-and be sure any worker hosts are also updated.
-
-To restart the web server (on a web host, from /srv/idp/current)
-
-```
-$ touch tmp/restart.txt
-```
-
-To get status of the background workers (on a worker host):
-
-```
-$ sudo monit status
-```
-
-To restart the background workers:
-
-```
-$ sudo monit restart sidekiq_idp_production0
-```
 
 ### Why 'Upaya'?
 

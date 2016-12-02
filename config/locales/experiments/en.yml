@@ -1,5 +1,6 @@
+---
 en:
   experiments:
     demo:
-      get_started: Get started
       create_account: Get started
+      get_started: Get started
