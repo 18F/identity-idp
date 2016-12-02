@@ -125,7 +125,7 @@ feature 'IdV session' do
 
       visit idv_finance_path
       find('#idv_finance_form_finance_type_mortgage').set(true)
-      fill_in :idv_finance_form_finance_account, with: mortgage_value
+      fill_in :idv_finance_form_mortgage, with: mortgage_value
       click_button t('forms.buttons.continue')
 
       expect(current_url).to eq idv_phone_url
@@ -134,7 +134,8 @@ feature 'IdV session' do
 
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
-      fill_in :idv_finance_form_finance_account, with: second_ccn_value
+      find('#idv_finance_form_finance_type_ccn').set(true)
+      fill_in :idv_finance_form_ccn, with: second_ccn_value
       click_button t('forms.buttons.continue')
 
       expect(page).to_not have_selector("input[value='#{first_phone_formatted}']")
@@ -166,11 +167,11 @@ feature 'IdV session' do
       fill_out_idv_form_ok
       click_button 'Continue'
 
-      expect(page).to have_content(t('idv.form.finance_unselected'))
+      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.mortgage'), visible: false)
 
       find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
 
-      expect(page).to_not have_content(t('idv.form.finance_unselected'))
+      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.mortgage'), visible: true)
       expect(page).to have_content(t('idv.form.ccn'))
     end
 

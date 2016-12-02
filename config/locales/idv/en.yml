@@ -16,7 +16,6 @@ en:
       ccn: Last 8 digits of a credit card
       city: City
       dob: Date of birth
-      finance_unselected: Select an option above...
       first_name: First name
       home_equity_line: Home equity line of credit account number
       last_name: Last name
