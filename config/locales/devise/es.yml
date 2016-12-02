@@ -65,13 +65,13 @@ en:
         bullet_1_with_sp: >
           login.gov is providing account services to %{sp}
         bullet_1_without_sp: >
-          login.gov provides account services for government agencies
+          login.gov provee servicios de cuenta para agencias gubernamentales.
         bullet_2: >
           Las agencias gubernamentales de los estados unidos están usando login.gov
           para facilitar la interacción con el gobierno.
         bullet_3: >
-          You can use your account to sign in to all participating U.S.
-          government agencies.
+          Usted puede usar su cuenta para iniciar sesión en todas las agencias gubernamentales
+          participantes de los Estados Unidos.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your
         account will be removed. Are you sure you’d like to delete your account?
