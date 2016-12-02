@@ -1,0 +1,51 @@
+---
+en:
+  forms:
+    buttons:
+      back: Back
+      cancel: Cancel
+      continue: Continuar
+      continue_browsing: Keep me signed in
+      disable: Disable
+      edit: Edit
+      enable: Enable
+      resend_confirmation: Resend confirmation instructions
+      reset_password: Send reset password instructions
+      search: Search
+      send: Send
+      send_passcode: Send passcode
+      setup_totp: Set up authentication app
+      sign_out: Sign me out
+      submit:
+        default: Submit
+        next: Next
+        update: Update
+    confirmation:
+      show_hdr: Create a strong password
+    passwords:
+      edit:
+        buttons:
+          submit: Change password
+        labels:
+          password: New password
+    reactivate_profile:
+      instructions: Provide the information below to reactivate your account.
+      submit: Reactivate profile
+      title: Reactivate profile
+    registration:
+      labels:
+        email: Email address
+    totp_setup:
+      code: One-time passcode
+      totp_info: >
+        To enable two-factor authentication, use the QR code provided to link
+        this account to your authentication app.
+      totp_intro: >
+        To receive a one-time passode, you may choose to use a two-factor
+        authentication application to log into to your account. If so, you’ll need to
+        link your login.gov account to the application you choose. Each time you sign in
+        you’ll need to open the application and retrieve a code.
+    two_factor:
+      code: One-time passcode
+      recovery_code: Recovery code
+      try_again: Try again
