@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe HealthController do
-  describe '#workers' do
+RSpec.describe Health::WorkersController do
+  describe '#index' do
     before do
       allow(controller).to receive(:worker_health_checker).
         and_return(class_double('WorkerHealthChecker',
                                 summary: WorkerHealthChecker::Summary.new(statuses)))
     end
 
-    subject(:action) { get :workers }
+    subject(:action) { get :index }
 
     let(:all_healthy) { true }
     let(:statuses) do
