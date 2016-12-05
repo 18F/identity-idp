@@ -73,8 +73,8 @@ feature 'Sign in' do
       ajax_headers = { 'name' => 'X-Requested-With', 'value' => 'XMLHttpRequest' }
 
       expect(request_headers).to include ajax_headers
-      expect(page).to have_content('7 minutes and 59 seconds')
-      expect(page).to have_content('7 minutes and 58 seconds')
+      expect(page).to have_content('7:59')
+      expect(page).to have_content('7:58')
     end
 
     scenario 'user can continue browsing' do
