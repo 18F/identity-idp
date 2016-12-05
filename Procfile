@@ -1,3 +1,3 @@
 web: bundle exec rails server
-worker: bundle exec sidekiq -q sms -q voice -q mailers -q analytics
+worker: bundle exec sidekiq --config config/sidekiq.yml
 mail: bundle exec mailcatcher -f

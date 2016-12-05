@@ -1,0 +1,6 @@
+:queues:
+  - sms
+  - voice
+  - mailers
+  - analytics
+:logfile: 'log/sidekiq.log'
