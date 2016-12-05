@@ -1,4 +1,4 @@
-p.lead = t('.intro', app: APP_NAME)
+p.lead == t('.intro', app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'))
 
 table.spacer
   tbody
@@ -10,4 +10,6 @@ table.hr
     th
       | &nbsp;
 
-p == t('.help', app: APP_NAME, link: link_to(contact_url, contact_url))
+p == t('.help',
+      app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'),
+      link: link_to(contact_url, contact_url))

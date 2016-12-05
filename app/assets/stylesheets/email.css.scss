@@ -3,6 +3,15 @@
 
 @import 'foundation-emails';
 
+.gray {
+  &:link,
+  &:visited,
+  &:hover,
+  &:active {
+    color: $gray;
+  }
+}
+
 .hr { margin: $hr-margin; }
 .lead { margin-bottom: 30px; }
 .mr-tiny { margin-right: 4px; }

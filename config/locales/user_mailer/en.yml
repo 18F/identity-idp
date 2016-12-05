@@ -28,7 +28,7 @@ en:
       intro: >
         Your request to create a %{app} account using this email address cannot
         be granted because this email address is already in use. If you requested this
-        change, please use the following link to log in to login.gov:
+        change, please use the following link to log in to %{app}:
       link_text: Go to %{app}
       reset_password: >
         If you cannot remember your password, you can reset it at %{app}.
