@@ -10,6 +10,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
 
     it 'prompts the user to log in or sign up' do
       screenshot_and_save_page
+      screenshot_and_open_image
     end
 
     context 'when choosing Create Account' do
@@ -35,7 +36,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
             @email = Faker::Internet.safe_email
             fill_in 'Email', with: @email
             click_button t('forms.buttons.submit.default')
-            @user = User.find_by(email: @email)
+            @user = User.find_with_email(@email)
           end
 
           it 'informs the user to check email' do
