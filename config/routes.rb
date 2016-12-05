@@ -59,7 +59,7 @@ Rails.application.routes.draw do
   end
 
   # Non-devise-controller routes. Alphabetically sorted.
-  get '/api/health/workers' => 'health#workers'
+  get '/api/health/workers' => 'health/workers#index'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
         via: [:get, :post, :delete],
