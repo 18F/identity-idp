@@ -17,4 +17,4 @@ p.my3 == t('notices.sign_in_consent.text', app: APP_NAME, link: link)
   = render decorated_session.return_to_service_provider_partial
   .sm-col-right.mxn1
     = link_to t('links.passwords.forgot'), new_password_path(resource_name), class: 'px1'
-    = link_to t('links.create_account'), new_user_start_path, class: 'px1 border-left border-silver'
+    = link_to t('links.create_account'), sign_up_start_path, class: 'px1 border-left border-silver'

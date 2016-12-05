@@ -6,7 +6,7 @@ feature 'Accessibility on pages that require authentication', :js do
     email = 'test@example.com'
     sign_up_with(email)
 
-    expect(current_path).to eq(user_registration_path)
+    expect(current_path).to eq(sign_up_verify_email_path)
     expect(page).to be_accessible
   end
 
