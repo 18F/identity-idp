@@ -17,11 +17,10 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
     end
 
-    it 'shows error message when password is blank' do
+    it 'does not allow the user to submit the form' do
       fill_in 'password_form_password', with: ''
-      click_button t('forms.buttons.submit.default')
 
-      expect(page).to have_content 'Please fill in this field.'
+      expect(page).to_not have_button(t('forms.buttons.submit.default'))
     end
   end
 
