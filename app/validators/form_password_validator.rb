@@ -23,19 +23,7 @@ module FormPasswordValidator
   end
 
   def password_score
-    @pass_score ||= ZXCVBN_TESTER.test(password, custom_weak_words)
-  end
-
-  def custom_weak_words
-    [user_email, split_email(user_email), APP_NAME].flatten
-  end
-
-  def user_email
-    @user_email ||= user.email
-  end
-
-  def split_email(email_address)
-    email_address.split(/[[:^word:]_]/)
+    @pass_score ||= ZXCVBN_TESTER.test(password)
   end
 
   def min_password_score
