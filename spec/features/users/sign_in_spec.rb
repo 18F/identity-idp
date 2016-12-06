@@ -132,10 +132,10 @@ feature 'Sign in' do
       Timecop.travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))
 
-        fill_in_credentials_and_click_sign_in(user.email, user.password)
+        fill_in_credentials_and_submit(user.email, user.password)
         expect(page).to have_content t('errors.invalid_authenticity_token')
 
-        fill_in_credentials_and_click_sign_in(user.email, user.password)
+        fill_in_credentials_and_submit(user.email, user.password)
         expect(current_path).to eq user_two_factor_authentication_path
       end
     end

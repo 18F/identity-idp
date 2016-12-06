@@ -4,9 +4,7 @@ feature 'Password Recovery' do
   def reset_password_and_sign_back_in(user, password = 'a really long password')
     fill_in 'New password', with: password
     click_button t('forms.passwords.edit.buttons.submit')
-    fill_in 'Email', with: user.email
-    fill_in 'user_password', with: password
-    click_button t('links.sign_in')
+    fill_in_credentials_and_submit(user.email, password)
   end
 
   context 'user can reset their password via email', email: true do

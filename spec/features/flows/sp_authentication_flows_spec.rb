@@ -102,7 +102,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
 
       context 'with valid credentials entered' do
         before do
-          fill_in_credentials_and_click_sign_in(@user.email, @user.password)
+          fill_in_credentials_and_submit(@user.email, @user.password)
         end
 
         it 'prompts for 2FA delivery method' do
