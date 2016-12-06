@@ -16,10 +16,13 @@ module Devise
     def set
       @two_factor_setup_form = TwoFactorSetupForm.new(resource)
 
-      if @two_factor_setup_form.submit(params[:two_factor_setup_form])
+      result = @two_factor_setup_form.submit(params[:two_factor_setup_form])
+
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
+
+      if result[:success]
         process_valid_form
       else
-        analytics.track_event(Analytics::SETUP_2FA_INVALID_PHONE)
         render :index
       end
     end
@@ -35,15 +38,10 @@ module Devise
     end
 
     def process_valid_form
-      update_metrics
       prompt_to_confirm_phone(
         phone: @two_factor_setup_form.phone,
         otp_method: @two_factor_setup_form.otp_method
       )
-    end
-
-    def update_metrics
-      analytics.track_event(Analytics::SETUP_2FA_VALID_PHONE)
     end
   end
 end
