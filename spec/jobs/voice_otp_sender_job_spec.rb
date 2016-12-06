@@ -18,7 +18,7 @@ describe VoiceOtpSenderJob do
       call = calls.first
       expect(call.to).to eq('555-5555')
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
-      expect(call.url).to include('code=1234')
+      expect(call.url).to include('1234')
     end
 
     it 'does not send if the OTP code is expired' do
