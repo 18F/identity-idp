@@ -27,6 +27,9 @@ brakeman:
 test: $(CONFIG)
 	bundle exec rspec
 
+fast_test: $(CONFIG)
+	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
+
 run: $(CONFIG)
 	foreman start
 
