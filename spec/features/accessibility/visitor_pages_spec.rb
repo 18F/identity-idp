@@ -21,13 +21,13 @@ feature 'Accessibility on pages that do not require authentication', :js do
   end
 
   scenario 'new user start registration page' do
-    visit new_user_start_path
+    visit sign_up_start_path
 
     expect(page).to be_accessible
   end
 
   scenario 'new user registration page' do
-    visit new_user_registration_path
+    visit sign_up_email_path
 
     expect(page).to be_accessible
   end

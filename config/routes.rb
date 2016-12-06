@@ -18,10 +18,10 @@ Rails.application.routes.draw do
     get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
     post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
 
-    post '/users' => 'users/registrations#create', as: :user_registration
-    get '/users/sign_up' => 'users/registrations#new', as: :new_user_registration
-
-    get '/start' => 'users/registrations#start', as: :new_user_start
+    get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
+    post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
+    get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
+    get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'

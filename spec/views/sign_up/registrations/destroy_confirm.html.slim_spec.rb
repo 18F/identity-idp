@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/registrations/destroy_confirm.html.slim' do
+describe 'sign_up/registrations/destroy_confirm.html.slim' do
   before do
     user = build_stubbed(:user, :signed_up)
     allow(view).to receive(:current_user).and_return(user)

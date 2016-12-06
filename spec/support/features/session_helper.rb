@@ -5,7 +5,7 @@ module Features
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
 
     def sign_up_with(email)
-      visit new_user_registration_path
+      visit sign_up_email_path
       fill_in 'Email', with: email
       click_button t('forms.buttons.submit.default')
     end

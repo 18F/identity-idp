@@ -111,7 +111,7 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(0)
 
       [t('forms.buttons.continue'), t('session_expired_link')].each do |link|
-        visit new_user_registration_path
+        visit sign_up_email_path
         fill_in 'Email', with: 'test@example.com'
 
         expect(page).to have_css('#session-expired-msg')
@@ -119,7 +119,7 @@ feature 'Sign in' do
         find_link(link).trigger('click')
 
         expect(page).to have_field('Email', with: '')
-        expect(page).to have_current_path(new_user_registration_path)
+        expect(page).to have_current_path(sign_up_email_path)
       end
     end
 

@@ -1,11 +1,11 @@
-module Users
+module SignUp
   class RegistrationsController < Devise::RegistrationsController
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
-    def start
+    def show
       analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
     end
 
@@ -15,7 +15,6 @@ module Users
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
     end
 
-    # POST /resource
     def create
       @register_user_email_form = RegisterUserEmailForm.new
 
@@ -43,9 +42,10 @@ module Users
       user = @register_user_email_form.user
       create_user_event(:account_created, user) unless @register_user_email_form.email_taken?
 
-      @resend_confirmation = params[:user][:resend]
+      resend_confirmation = params[:user][:resend]
+      session[:email] = user.email
 
-      render :verify_email, locals: { email: user.email }
+      redirect_to sign_up_verify_email_path(resend: resend_confirmation)
     end
 
     def disable_account_creation
