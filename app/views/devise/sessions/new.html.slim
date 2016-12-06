@@ -8,7 +8,7 @@ h1.h3.my0 = decorated_session.new_session_heading
                   html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true
   = f.input :password, required: true
-  = f.button :submit, t('links.sign_in'), class: 'btn-wide'
+  = f.button :submit, t('links.next'), class: 'btn-wide'
 
 - link = link_to t('notices.sign_in_consent.link'), privacy_path
 p.my3 == t('notices.sign_in_consent.text', app: APP_NAME, link: link)

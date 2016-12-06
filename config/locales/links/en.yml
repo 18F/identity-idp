@@ -6,6 +6,7 @@ en:
     create_account: Create account
     edit: Edit
     help: Help
+    next: Next
     passwords:
       forgot: Forgot your password?
     phone_confirmation:
