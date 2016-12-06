@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-include Features::MailerHelper
-include Features::LocalizationHelper
-include Features::ActiveJobHelper
+describe SignUp::RegistrationsController, devise: true do
+  include Features::MailerHelper
+  include Features::LocalizationHelper
+  include Features::ActiveJobHelper
 
-describe Users::RegistrationsController, devise: true do
   describe '#new' do
     context 'When registrations are disabled' do
       it 'prevents users from visiting sign up page' do
@@ -58,6 +58,13 @@ describe Users::RegistrationsController, devise: true do
 
         expect(subject).to have_received(:create_user_event).with(:account_created, user)
       end
+
+      it 'sets the email in the session and redirects to sign_up_verify_email_path' do
+        post :create, user: { email: 'test@test.com' }
+
+        expect(session[:email]).to eq('test@test.com')
+        expect(response).to redirect_to(sign_up_verify_email_path)
+      end
     end
 
     it 'tracks successful user registration with existing email' do
@@ -96,14 +103,14 @@ describe Users::RegistrationsController, devise: true do
     end
   end
 
-  describe '#start' do
+  describe '#show' do
     it 'tracks page visit' do
       stub_analytics
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_INTRO_VISIT)
 
-      get :start
+      get :show
     end
   end
 end

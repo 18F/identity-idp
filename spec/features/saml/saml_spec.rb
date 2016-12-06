@@ -190,7 +190,7 @@ feature 'saml api', devise: true do
 
         xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
-        visit new_user_registration_path
+        visit sign_up_email_path
 
         user = sign_up_and_2fa
 

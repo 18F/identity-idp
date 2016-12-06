@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/registrations/start.html.slim' do
+describe 'sign_up/registrations/show.html.slim' do
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.registrations.start'))
 
@@ -17,7 +17,7 @@ describe 'users/registrations/start.html.slim' do
     render
 
     expect(rendered).
-      to have_link(t('experiments.demo.get_started'), href: new_user_registration_path)
+      to have_link(t('experiments.demo.get_started'), href: sign_up_email_path)
   end
 
   context 'when @sp_name is not set' do

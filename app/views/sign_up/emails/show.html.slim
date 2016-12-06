@@ -13,12 +13,12 @@
       = image_tag(asset_url('alert/ico-thumb.svg'), height: '16', alt: '',\
         class: 'mr2 align-bottom')
       = t('notices.resend_confirmation_email.success')
-  = simple_form_for(@register_user_email_form, url: user_registration_path,
+  = simple_form_for(@register_user_email_form, url: sign_up_register_path,
     html: { class: '' }) do |f|
-    = f.input :email, as: :hidden, value: email, wrapper: false
+    = f.input :email, as: :hidden, wrapper: false
     = f.input :resend, as: :hidden, wrapper: false
     | #{t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')}
     = f.button :submit, t('links.resend'), class: 'btn-link ml-tiny'
-  - link = link_to t('notices.use_diff_email.link'), new_user_registration_path
+  - link = link_to t('notices.use_diff_email.link'), sign_up_email_path
   p.m0 == t('notices.use_diff_email.text_html', link: link)
   p.my2.h5.italic = t('devise.registrations.close_window')
