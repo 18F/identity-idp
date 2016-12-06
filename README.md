@@ -139,6 +139,11 @@ To run all the tests:
 $ make test
 ```
 
+To run a subset of tests excluding slow tests (such as accessibility specs):
+```
+$ make fast_test
+```
+
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
