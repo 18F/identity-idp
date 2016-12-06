@@ -45,6 +45,7 @@ class Analytics
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze
+  OTP_VOICE_STATUS = 'OTP: voice status change'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
