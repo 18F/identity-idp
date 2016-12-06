@@ -1,13 +1,21 @@
 require 'rails_helper'
 
-RSpec.describe VoiceController do
-  describe '#otp' do
-    subject(:action) { get :otp, code: code, repeat_count: repeat_count, format: :xml }
+RSpec.describe Voice::OtpController do
+  describe '#show' do
+    subject(:action) { get :show, code: code, repeat_count: repeat_count, format: :xml }
     let(:code) { nil }
     let(:repeat_count) { nil }
 
     context 'without a code in the URL' do
       let(:code) { nil }
+
+      it 'cannot route to the controller' do
+        expect { action }.to raise_error(ActionController::UrlGenerationError)
+      end
+    end
+
+    context 'with a blank code in the URL' do
+      let(:code) { '' }
 
       it 'renders a blank 400' do
         action
