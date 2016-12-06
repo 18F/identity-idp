@@ -113,25 +113,34 @@ feature 'Two Factor Authentication' do
       expect(page).not_to have_css('.progress-steps')
     end
 
-    scenario 'user who enters OTP incorrectly 3 times is locked out for OTP validity period' do
-      user = create(:user, :signed_up)
-      sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit.default')
+    context 'user enters OTP incorrectly 3 times', js: true do
+      it 'locks the user out and leaves user on the page during entire lockout period' do
+        allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
+        allow(Figaro.env).to receive(:session_check_delay).and_return('2')
 
-      3.times do
-        fill_in('code', with: 'bad-code')
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
         click_button t('forms.buttons.submit.default')
+
+        3.times do
+          fill_in('code', with: 'bad-code')
+          click_button t('forms.buttons.submit.default')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+        expect(page).to have_content('4 minutes and 54 seconds')
+        expect(page).to have_content('4 minutes and 53 seconds')
+
+        # let lockout period expire
+        user.update(
+          second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second)
+        )
+
+        sign_in_before_2fa(user)
+        click_button t('forms.buttons.submit.default')
+
+        expect(page).to have_content t('devise.two_factor_authentication.header_text')
       end
-
-      expect(page).to have_content t('titles.account_locked')
-
-      # let 10 minutes (otp validity period) magically pass
-      user.update(second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second))
-
-      sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit.default')
-
-      expect(page).to have_content t('devise.two_factor_authentication.header_text')
     end
 
     context 'user signs in while locked out' do
