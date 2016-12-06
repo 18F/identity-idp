@@ -60,8 +60,6 @@ describe SignUp::RegistrationsController, devise: true do
       end
 
       it 'sets the email in the session and redirects to sign_up_verify_email_path' do
-        stub_analytics
-
         post :create, user: { email: 'test@test.com' }
 
         expect(session[:email]).to eq('test@test.com')

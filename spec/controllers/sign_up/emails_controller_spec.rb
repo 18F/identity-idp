@@ -4,7 +4,6 @@ RSpec.describe SignUp::EmailsController do
   describe '#show' do
     context 'email in session' do
       it 'renders the page and deletes the email from the session' do
-        stub_analytics
         session[:email] = 'test@example.com'
 
         get :show
@@ -16,7 +15,6 @@ RSpec.describe SignUp::EmailsController do
 
     context 'no email in session' do
       it 'redirects to the new user registration path' do
-        stub_analytics
         session[:email] = nil
 
         get :show
