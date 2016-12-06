@@ -12,13 +12,13 @@ module Features
 
     def signin(email, password)
       visit new_user_session_path
-      fill_in_credentials_and_click_sign_in(email, password)
+      fill_in_credentials_and_submit(email, password)
     end
 
-    def fill_in_credentials_and_click_sign_in(email, password)
+    def fill_in_credentials_and_submit(email, password)
       fill_in 'Email', with: email
       fill_in 'Password', with: password
-      click_button t('links.sign_in')
+      click_button t('links.next')
     end
 
     def sign_up
