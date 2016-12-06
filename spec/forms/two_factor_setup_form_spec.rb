@@ -29,7 +29,7 @@ describe TwoFactorSetupForm, type: :model do
       end
 
       it 'sets otp_method to "voice"' do
-        expect(subject.otp_method).to eq(:voice)
+        expect(subject.otp_method).to eq('voice')
       end
     end
 
@@ -40,7 +40,7 @@ describe TwoFactorSetupForm, type: :model do
       end
 
       it 'sets otp_method to "sms"' do
-        expect(subject.otp_method).to eq(:sms)
+        expect(subject.otp_method).to eq('sms')
       end
     end
   end
@@ -50,41 +50,58 @@ describe TwoFactorSetupForm, type: :model do
       it 'is valid' do
         user = build_stubbed(:user, :signed_up, phone: '+1 (202) 555-1213')
         allow(User).to receive(:exists?).with(phone: user.phone).and_return(true)
+        form = TwoFactorSetupForm.new(user)
 
-        subject.phone = user.phone
+        result = {
+          success: true,
+          error: nil,
+          otp_method: 'sms'
+        }
 
-        expect(subject.valid?).to be true
+        expect(form.submit(phone: user.phone, otp_method: 'sms')).
+          to eq result
       end
     end
 
     context 'when phone is not already taken' do
       it 'is valid' do
-        subject.phone = '+1 (703) 555-1212'
+        result = {
+          success: true,
+          error: nil,
+          otp_method: 'sms'
+        }
 
-        expect(subject.valid?).to be true
+        expect(subject.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')).
+          to eq result
       end
     end
 
     context 'when phone is same as current user' do
-      before do
-        user.phone = valid_phone
-      end
-
       it 'is valid' do
-        subject.phone = user.phone
+        user = build_stubbed(:user, phone: valid_phone)
+        form = TwoFactorSetupForm.new(user)
 
-        expect(subject.valid?).to be true
+        result = {
+          success: true,
+          error: nil,
+          otp_method: 'sms'
+        }
+
+        expect(form.submit(phone: valid_phone, otp_method: 'sms')).
+          to eq result
       end
     end
 
-    context 'when phone is nil' do
+    context 'when phone is empty' do
       it 'does not add already taken errors' do
-        subject.phone = nil
-        subject.valid?
+        result = {
+          success: false,
+          error: t('errors.messages.improbable_phone'),
+          otp_method: 'sms'
+        }
 
-        expect(subject.errors[:phone].uniq).
-          to eq [t('errors.messages.improbable_phone')]
-        expect(subject.valid?).to be false
+        expect(subject.submit(phone: '', otp_method: 'sms')).
+          to eq result
       end
     end
   end

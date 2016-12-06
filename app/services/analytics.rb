@@ -48,6 +48,7 @@ class Analytics
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
+  MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATION = 'Password Creation'.freeze
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
@@ -57,8 +58,6 @@ class Analytics
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
-  SETUP_2FA_INVALID_PHONE = '2FA setup: invalid phone number'.freeze
-  SETUP_2FA_VALID_PHONE = '2FA setup: valid phone number'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   TOTP_SETUP_INVALID_CODE = 'TOTP Setup: invalid code'.freeze
   TOTP_SETUP_VALID_CODE = 'TOTP Setup: valid code'.freeze

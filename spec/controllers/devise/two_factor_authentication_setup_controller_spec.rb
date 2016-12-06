@@ -19,9 +19,16 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
       allow(subject).to receive(:authorize_otp_setup).and_return(true)
 
       stub_analytics
-      expect(@analytics).to receive(:track_event).with('2FA setup: invalid phone number')
+      result = {
+        success: false,
+        error: t('errors.messages.improbable_phone'),
+        otp_method: 'sms'
+      }
 
-      patch :set, two_factor_setup_form: { phone: '703-555-010' }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
+
+      patch :set, two_factor_setup_form: { phone: '703-555-010', otp_method: :sms }
 
       expect(response).to render_template(:index)
     end
@@ -31,7 +38,14 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
         sign_in(user)
 
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+        result = {
+          success: true,
+          error: nil,
+          otp_method: 'voice'
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
         patch(
           :set,
@@ -54,12 +68,20 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
         sign_in(user)
 
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+
+        result = {
+          success: true,
+          error: nil,
+          otp_method: 'sms'
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
         patch(
           :set,
           two_factor_setup_form: { phone: '703-555-0100',
-                                   sms: 'Confirm with text message' }
+                                   otp_method: :sms }
         )
 
         expect(response).to redirect_to(
@@ -77,11 +99,18 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
         sign_in(user)
 
         stub_analytics
-        expect(@analytics).to receive(:track_event).with('2FA setup: valid phone number')
+        result = {
+          success: true,
+          error: nil,
+          otp_method: 'sms'
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
         patch(
           :set,
-          two_factor_setup_form: { phone: '703-555-0100' }
+          two_factor_setup_form: { phone: '703-555-0100', otp_method: :sms }
         )
 
         expect(response).to redirect_to(
