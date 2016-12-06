@@ -91,6 +91,21 @@ feature 'Sign in' do
     end
   end
 
+  context 'user only signs in via email and password', js: true do
+    it 'displays the session timeout warning' do
+      allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
+      allow(Figaro.env).to receive(:session_check_delay).and_return('2')
+      allow(Figaro.env).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in.to_s)
+
+      user = create(:user, :signed_up)
+      sign_in_user(user)
+      visit user_two_factor_authentication_path
+
+      expect(page).to have_css('#session-timeout-msg')
+    end
+  end
+
   context 'signed out' do
     it 'links to current page after session expires', js: true do
       allow(Devise).to receive(:timeout_in).and_return(0)

@@ -13,9 +13,9 @@ module TwoFactorAuthenticatable
   def handle_second_factor_locked_user
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-    render 'two_factor_authentication/shared/max_login_attempts_reached'
-
     sign_out
+
+    render 'two_factor_authentication/shared/max_login_attempts_reached'
   end
 
   def check_already_authenticated

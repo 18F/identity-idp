@@ -50,7 +50,7 @@ html lang="#{I18n.locale}"
     = render 'shared/footer_lite'
 
   #session-timeout-cntnr
-  - if user_fully_authenticated?
+  - if current_user
     = auto_session_timeout_js
   -else
     = auto_session_expired_js
