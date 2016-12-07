@@ -2,9 +2,6 @@ module Users
   class TotpSetupController < ApplicationController
     before_action :confirm_two_factor_authenticated
 
-    def start
-    end
-
     def new
       user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
 

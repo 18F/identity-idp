@@ -2,9 +2,6 @@ module TwoFactorAuthentication
   class TotpVerificationController < DeviseController
     include TwoFactorAuthenticatable
 
-    def show
-    end
-
     def create
       result = TotpVerificationForm.new(current_user, params[:code].strip).submit
 
