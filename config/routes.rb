@@ -24,7 +24,7 @@ Rails.application.routes.draw do
     get '/sign_up/create_password' => 'sign_up/confirmations#show', as: :user_confirmation
     get '/sign_up/enter_email_again' => 'sign_up/confirmations#new', as: :new_user_confirmation
     post '/sign_up/register_again' => 'sign_up/confirmations#create', as: :sign_up_register_again
-    patch '/sign_up/create_password' => 'sign_up/confirmations#confirm'
+    post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
