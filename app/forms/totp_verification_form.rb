@@ -20,7 +20,7 @@ class TotpVerificationForm
 
   def result
     {
-      success?: success
+      success: success
     }
   end
 end

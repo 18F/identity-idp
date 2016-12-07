@@ -132,7 +132,7 @@ describe Users::SessionsController, devise: true do
 
       stub_analytics
       analytics_hash = {
-        success?: true,
+        success: true,
         user_id: user.uuid,
         user_locked_out: false
       }
@@ -148,7 +148,7 @@ describe Users::SessionsController, devise: true do
 
       stub_analytics
       analytics_hash = {
-        success?: false,
+        success: false,
         user_id: user.uuid,
         user_locked_out: false
       }
@@ -162,7 +162,7 @@ describe Users::SessionsController, devise: true do
     it 'tracks the authentication attempt for nonexistent user' do
       stub_analytics
       analytics_hash = {
-        success?: false,
+        success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false
       }
@@ -182,7 +182,7 @@ describe Users::SessionsController, devise: true do
 
       stub_analytics
       analytics_hash = {
-        success?: false,
+        success: false,
         user_id: user.uuid,
         user_locked_out: true
       }
@@ -242,7 +242,7 @@ describe Users::SessionsController, devise: true do
 
         stub_analytics
         analytics_hash = {
-          success?: true,
+          success: true,
           user_id: user.uuid,
           user_locked_out: false
         }

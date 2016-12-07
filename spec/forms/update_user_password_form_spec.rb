@@ -15,7 +15,7 @@ describe UpdateUserPasswordForm, type: :model do
         result = subject.submit(params)
 
         result_hash = {
-          success?: false,
+          success: false,
           errors: subject.errors.full_messages
         }
 
@@ -32,7 +32,7 @@ describe UpdateUserPasswordForm, type: :model do
         result = subject.submit(params)
 
         result_hash = {
-          success?: true,
+          success: true,
           errors: []
         }
 

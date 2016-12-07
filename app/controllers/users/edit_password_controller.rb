@@ -13,7 +13,7 @@ module Users
 
       analytics.track_event(Analytics::PASSWORD_CHANGED, result)
 
-      if result[:success?]
+      if result[:success]
         handle_success
       else
         render :edit

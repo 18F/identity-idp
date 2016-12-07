@@ -27,7 +27,7 @@ describe Users::EditPasswordController do
         patch :update, update_user_password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_CHANGED, success?: true, errors: [])
+          with(Analytics::PASSWORD_CHANGED, success: true, errors: [])
         expect(response).to redirect_to profile_url
         expect(flash[:notice]).to eq t('notices.password_changed')
       end
@@ -77,7 +77,7 @@ describe Users::EditPasswordController do
         ]
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_CHANGED, success?: false, errors: errors)
+          with(Analytics::PASSWORD_CHANGED, success: false, errors: errors)
         expect(response).to render_template(:edit)
       end
     end

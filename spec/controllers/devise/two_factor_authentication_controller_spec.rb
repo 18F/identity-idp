@@ -118,9 +118,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         stub_analytics
 
         analytics_hash = {
-          success?: true,
+          success: true,
           delivery_method: 'sms',
-          resend?: nil,
+          resend: nil,
           errors: [],
           context: 'authentication'
         }
@@ -175,9 +175,9 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         stub_analytics
 
         analytics_hash = {
-          success?: true,
+          success: true,
           delivery_method: 'voice',
-          resend?: nil,
+          resend: nil,
           errors: [],
           context: 'authentication'
         }

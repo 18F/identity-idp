@@ -10,7 +10,7 @@ describe RecoveryCodeForm do
         result = RecoveryCodeForm.new(user, raw_code).submit
 
         result_hash = {
-          success?: true
+          success: true
         }
 
         expect(result).to eq result_hash
@@ -26,7 +26,7 @@ describe RecoveryCodeForm do
         result = RecoveryCodeForm.new(user, 'foo').submit
 
         result_hash = {
-          success?: false
+          success: false
         }
 
         expect(result).to eq result_hash

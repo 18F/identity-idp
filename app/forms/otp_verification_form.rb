@@ -20,7 +20,7 @@ class OtpVerificationForm
 
   def result
     {
-      success?: success
+      success: success
     }
   end
 end

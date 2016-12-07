@@ -50,7 +50,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         sign_in_before_2fa
 
         properties = {
-          success?: false,
+          success: false,
           confirmation_for_phone_change: false,
           context: 'authentication',
           method: 'sms'
@@ -84,7 +84,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
         sign_in_before_2fa
 
         properties = {
-          success?: false,
+          success: false,
           confirmation_for_phone_change: false,
           context: 'authentication',
           method: 'sms'
@@ -122,7 +122,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
       it 'tracks the valid authentication event' do
         properties = {
-          success?: true,
+          success: true,
           confirmation_for_phone_change: false,
           context: 'authentication',
           method: 'sms'
@@ -206,7 +206,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the update event' do
             properties = {
-              success?: true,
+              success: true,
               confirmation_for_phone_change: true,
               context: 'confirmation',
               method: 'sms'
@@ -250,7 +250,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks an event' do
             properties = {
-              success?: false,
+              success: false,
               confirmation_for_phone_change: true,
               context: 'confirmation',
               method: 'sms'
@@ -284,7 +284,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
           it 'tracks the confirmation event' do
             properties = {
-              success?: true,
+              success: true,
               context: 'confirmation',
               method: 'sms',
               confirmation_for_phone_change: false
@@ -336,7 +336,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'tracks the OTP verification event' do
           properties = {
-            success?: true,
+            success: true,
             confirmation_for_phone_change: false,
             context: 'idv',
             method: 'sms'
@@ -401,7 +401,7 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
         it 'tracks an event' do
           properties = {
-            success?: false,
+            success: false,
             confirmation_for_phone_change: false,
             context: 'idv',
             method: 'sms'
