@@ -1,6 +1,4 @@
 class FakeVoiceCall
-  Call = Struct.new(:from, :to, :url)
-
   cattr_accessor :calls
   self.calls = []
 
@@ -11,6 +9,6 @@ class FakeVoiceCall
   end
 
   def create(opts = {})
-    self.class.calls << Call.new(opts[:from], opts[:to], opts[:url])
+    self.class.calls << OpenStruct.new(opts)
   end
 end

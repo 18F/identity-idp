@@ -3,9 +3,12 @@ include Features::ActiveJobHelper
 
 describe VoiceOtpSenderJob do
   describe '.perform' do
-    it 'initiates the phone call to deliver the OTP', twilio: true do
+    before do
       TwilioService.telephony_service = FakeVoiceCall
+      FakeVoiceCall.calls = []
+    end
 
+    it 'initiates the phone call to deliver the OTP', twilio: true do
       VoiceOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
@@ -21,10 +24,40 @@ describe VoiceOtpSenderJob do
       expect(call.url).to include('1234')
     end
 
+    context 'recording calls' do
+      let(:twilio_record_voice) { nil }
+
+      before do
+        expect(Figaro.env).to receive(:twilio_record_voice).and_return(twilio_record_voice)
+
+        VoiceOtpSenderJob.perform_now(
+          code: '1234',
+          phone: '555-5555',
+          otp_created_at: Time.current.to_s
+        )
+      end
+
+      context 'when twilio_record_voice is true' do
+        let(:twilio_record_voice) { 'true' }
+
+        it 'tells Twilio to record the call' do
+          call = FakeVoiceCall.calls.first
+          expect(call.record).to eq(true)
+        end
+      end
+
+      context 'when twilio_record_voice is false' do
+        let(:twilio_record_voice) { 'false' }
+
+        it 'tells Twilio to not record the call' do
+          call = FakeVoiceCall.calls.first
+          expect(call.record).to eq(false)
+        end
+      end
+    end
+
     it 'does not send if the OTP code is expired' do
       reset_job_queues
-      TwilioService.telephony_service = FakeVoiceCall
-      FakeVoiceCall.calls = []
       otp_expiration_period = Devise.direct_otp_valid_for
 
       VoiceOtpSenderJob.perform_now(
