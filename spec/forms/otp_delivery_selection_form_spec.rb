@@ -18,9 +18,9 @@ describe OtpDeliverySelectionForm do
         result = subject.submit(otp_method: 'sms', resend: true)
 
         result_hash = {
-          success?: true,
+          success: true,
           delivery_method: 'sms',
-          resend?: true,
+          resend: true,
           errors: []
         }
 
@@ -33,9 +33,9 @@ describe OtpDeliverySelectionForm do
         result = subject.submit(otp_method: 'foo')
 
         result_hash = {
-          success?: false,
+          success: false,
           delivery_method: 'foo',
-          resend?: nil,
+          resend: nil,
           errors: subject.errors.full_messages
         }
 

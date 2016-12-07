@@ -18,7 +18,7 @@ module Devise
 
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.merge(context: context))
 
-      if result[:success?]
+      if result[:success]
         handle_valid_delivery_method(delivery_params[:otp_method])
       else
         redirect_to user_two_factor_authentication_path(reauthn: reauthn?)

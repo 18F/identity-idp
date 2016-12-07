@@ -22,7 +22,7 @@ class UpdateUserPasswordForm
 
   def result
     {
-      success?: success,
+      success: success,
       errors: errors.full_messages
     }
   end
