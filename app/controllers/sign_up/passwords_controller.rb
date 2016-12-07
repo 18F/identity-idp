@@ -29,7 +29,7 @@ module SignUp
 
     def process_unsuccessful_password_creation
       @confirmation_token = params[:confirmation_token]
-      render :show
+      render 'sign_up/confirmations/show'
     end
 
     def sign_in_and_redirect_user
