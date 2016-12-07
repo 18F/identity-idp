@@ -53,7 +53,11 @@ describe Users::TotpSetupController, devise: true do
         expect(response).to redirect_to(authenticator_setup_path)
         expect(flash[:error]).to eq t('errors.invalid_totp')
         expect(subject.current_user.totp_enabled?).to be(false)
-        expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP_INVALID_CODE)
+
+        result = {
+          success: false
+        }
+        expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
       end
     end
 
@@ -74,7 +78,11 @@ describe Users::TotpSetupController, devise: true do
         expect(flash[:success]).to eq t('notices.totp_configured')
         expect(subject.current_user.totp_enabled?).to be(true)
         expect(subject.user_session[:new_totp_secret]).to be_nil
-        expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP_VALID_CODE)
+
+        result = {
+          success: true
+        }
+        expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
       end
 
       it 'creates an :authenticator_enabled event' do

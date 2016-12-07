@@ -59,8 +59,7 @@ class Analytics
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
-  TOTP_SETUP_INVALID_CODE = 'TOTP Setup: invalid code'.freeze
-  TOTP_SETUP_VALID_CODE = 'TOTP Setup: valid code'.freeze
+  TOTP_SETUP = 'TOTP Setup'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
   USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
