@@ -18,6 +18,26 @@ describe SamlIdp::Controller do
     saml_acs_url.should == requested_saml_acs_url
   end
 
+  context "SP-initiated logout" do
+    it "should respect Logout Request signed w/o embed" do
+      SamlIdp.configure do |config|
+        config.service_provider.finder = lambda do |_|
+          {
+            cert: SamlIdp::Default::X509_CERTIFICATE,
+            private_key: SamlIdp::Default::SECRET_KEY,
+            fingerprint: SamlIdp::Default::FINGERPRINT,
+            assertion_consumer_logout_service_url: 'http://foo.example.com/sp-initiated/slo'
+          }
+        end
+      end
+      request_url = URI.parse(make_sp_logout_request)
+      params.merge!(Rack::Utils.parse_nested_query(request_url.query)).symbolize_keys!
+      decode_request(params[:SAMLRequest])
+      expect(saml_request.logout_request?).to eq true
+      expect(valid_saml_request?).to eq true
+    end
+  end
+
   context "SAML Responses" do
     before(:each) do
       params[:SAMLRequest] = make_saml_request

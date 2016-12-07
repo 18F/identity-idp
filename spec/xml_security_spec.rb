@@ -48,7 +48,7 @@ module SamlIdp
       expect { document.validate("a fingerprint", false) }.to(
         raise_error(
           SamlIdp::XMLSecurity::SignedDocument::ValidationError,
-          "Certificate element missing in response (ds:X509Certificate)"
+          "Certificate element missing in response (ds:X509Certificate) and not provided in options[:cert]"
         )
       )
     end

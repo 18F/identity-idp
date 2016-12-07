@@ -19,13 +19,29 @@ module SamlRequestMacros
     request_builder.encoded
   end
 
+  def make_sp_logout_request(requested_saml_logout_url = 'https://foo.example.com/saml/logout')
+    settings = saml_settings.dup
+    settings.assertion_consumer_logout_service_url = requested_saml_logout_url
+    settings.name_identifier_value = 'some-user-id'
+    OneLogin::RubySaml::Logoutrequest.new.create(settings)
+  end
+
   def saml_settings(saml_acs_url = "https://foo.example.com/saml/consume")
     settings = OneLogin::RubySaml::Settings.new
     settings.assertion_consumer_service_url = saml_acs_url
     settings.issuer = "http://example.com/issuer"
     settings.idp_sso_target_url = "http://idp.com/saml/idp"
+    settings.idp_slo_target_url = "http://idp.com/saml/idp-slo"
     settings.idp_cert_fingerprint = SamlIdp::Default::FINGERPRINT
     settings.name_identifier_format = SamlIdp::Default::NAME_ID_FORMAT
+    settings.certificate = SamlIdp::Default::X509_CERTIFICATE
+    settings.private_key = SamlIdp::Default::SECRET_KEY
+    settings.security = {
+      embed_sign: false,
+      logout_requests_signed: true,
+      digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
+      signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
+    }
     settings
   end
 

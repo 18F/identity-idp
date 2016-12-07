@@ -43,16 +43,13 @@ module SamlIdp
         extract_signed_element_id
       end
 
-      def validate(idp_cert_fingerprint, soft = true)
-        # get cert from response
-        cert_element = REXML::XPath.first(self, "//ds:X509Certificate", { "ds"=>DSIG })
-        raise ValidationError.new("Certificate element missing in response (ds:X509Certificate)") unless cert_element
-        base64_cert  = cert_element.text
-        cert_text    = Base64.decode64(base64_cert)
-        cert         = OpenSSL::X509::Certificate.new(cert_text)
+      def validate(idp_cert_fingerprint, soft = true, options = {})
+        base64_cert = find_base64_cert(options)
+        cert_text   = Base64.decode64(base64_cert)
+        cert        = OpenSSL::X509::Certificate.new(cert_text)
 
         # check cert matches registered idp cert
-        fingerprint = fingerprint_cert(cert)
+        fingerprint = fingerprint_cert(cert, options)
         sha1_fingerprint = fingerprint_cert_sha1(cert)
         plain_idp_cert_fingerprint = idp_cert_fingerprint.gsub(/[^a-zA-Z0-9]/,"").downcase
 
@@ -60,13 +57,30 @@ module SamlIdp
           return soft ? false : (raise ValidationError.new("Fingerprint mismatch"))
         end
 
-        validate_doc(base64_cert, soft)
+        validate_doc(base64_cert, soft, options)
       end
 
-      def fingerprint_cert(cert)
-        # pick algorithm based on the doc's digest algorithm
-        ref_elem = REXML::XPath.first(self, "//ds:Reference", {"ds"=>DSIG})
-        digest_algorithm = algorithm(REXML::XPath.first(ref_elem, "//ds:DigestMethod"))
+      def validate_doc(base64_cert, soft = true, options = {})
+        if options[:get_params]
+          validate_doc_params_signature(base64_cert, soft, options[:get_params])
+        else
+          validate_doc_embedded_signature(base64_cert, soft)
+        end
+      end
+
+      private
+
+      def signature_algorithm(options)
+        if options[:get_params] && options[:get_params][:SigAlg]
+          algorithm(options[:get_params][:SigAlg])
+        else
+          ref_elem = REXML::XPath.first(self, "//ds:Reference", {"ds"=>DSIG})
+          algorithm(REXML::XPath.first(ref_elem, "//ds:DigestMethod"))
+        end
+      end
+
+      def fingerprint_cert(cert, options)
+        digest_algorithm = signature_algorithm(options)
         digest_algorithm.hexdigest(cert.to_der)
       end
 
@@ -74,9 +88,48 @@ module SamlIdp
         OpenSSL::Digest::SHA1.hexdigest(cert.to_der)
       end
 
-      def validate_doc(base64_cert, soft = true)
-        # validate references
+      def find_base64_cert(options)
+        cert_element = REXML::XPath.first(self, "//ds:X509Certificate", { "ds"=>DSIG })
+        if cert_element
+          base64_cert = cert_element.text
+        elsif options[:cert]
+          if options[:cert].is_a?(String)
+            base64_cert = options[:cert]
+          elsif options[:cert].is_a?(OpenSSL::X509::Certificate)
+            base64_cert = Base64.encode64(options[:cert].to_pem)
+          else
+            raise ValidationError.new("options[:cert] must be Base64-encoded String or OpenSSL::X509::Certificate")
+          end
+        else
+          raise ValidationError.new("Certificate element missing in response (ds:X509Certificate) and not provided in options[:cert]")
+        end
+      end
 
+      def request?
+        root.name != 'Response'
+      end
+
+      # matches RubySaml::Utils
+      def build_query(params)
+        type, data, relay_state, sig_alg = [:type, :data, :relay_state, :sig_alg].map { |k| params[k]}
+
+        url_string = "#{type}=#{CGI.escape(data)}"
+        url_string << "&RelayState=#{CGI.escape(relay_state)}" if relay_state
+        url_string << "&SigAlg=#{CGI.escape(sig_alg)}"
+      end
+
+      def validate_doc_params_signature(base64_cert, soft = true, params)
+        document_type = request? ? :SAMLRequest : :SAMLResponse
+        canon_string = build_query(
+          type: document_type,
+          data: params[document_type.to_sym],
+          relay_state: params[:RelayState],
+          sig_alg: params[:SigAlg]
+        )
+        verify_signature(base64_cert, params[:SigAlg], Base64.decode64(params[:Signature]), canon_string, soft)
+      end
+
+      def validate_doc_embedded_signature(base64_cert, soft = true)
         # check for inclusive namespaces
         inclusive_namespaces = extract_inclusive_namespaces
 
@@ -120,13 +173,15 @@ module SamlIdp
 
         base64_signature        = REXML::XPath.first(@sig_element, "//ds:SignatureValue", {"ds"=>DSIG}).text
         signature               = Base64.decode64(base64_signature)
+        sig_alg                 = REXML::XPath.first(signed_info_element, "//ds:SignatureMethod", {"ds"=>DSIG})
 
-        # get certificate object
-        cert_text               = Base64.decode64(base64_cert)
-        cert                    = OpenSSL::X509::Certificate.new(cert_text)
+        verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
+      end
 
-        # signature method
-        signature_algorithm     = algorithm(REXML::XPath.first(signed_info_element, "//ds:SignatureMethod", {"ds"=>DSIG}))
+      def verify_signature(base64_cert, sig_alg, signature, canon_string, soft)
+        cert_text           = Base64.decode64(base64_cert)
+        cert                = OpenSSL::X509::Certificate.new(cert_text)
+        signature_algorithm = algorithm(sig_alg)
 
         unless cert.public_key.verify(signature_algorithm.new, signature, canon_string)
           return soft ? false : (raise ValidationError.new("Key validation error"))
@@ -134,8 +189,6 @@ module SamlIdp
 
         return true
       end
-
-      private
 
       def digests_match?(hash, digest_value)
         hash == digest_value
@@ -157,8 +210,11 @@ module SamlIdp
       end
 
       def algorithm(element)
-        algorithm = element.attribute("Algorithm").value if element
-        algorithm = algorithm && algorithm =~ /sha(.*?)$/i && $1.to_i
+        algorithm = element
+        if algorithm.is_a?(REXML::Element)
+          algorithm = element.attribute("Algorithm").value
+        end
+        algorithm = algorithm && algorithm =~ /(rsa-)?sha(.*?)$/i && $2.to_i
         case algorithm
         when 256 then OpenSSL::Digest::SHA256
         when 384 then OpenSSL::Digest::SHA384

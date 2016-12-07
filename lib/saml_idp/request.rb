@@ -2,7 +2,7 @@ require 'saml_idp/xml_security'
 require 'saml_idp/service_provider'
 module SamlIdp
   class Request
-    def self.from_deflated_request(raw)
+    def self.from_deflated_request(raw, options = {})
       if raw
         decoded = Base64.decode64(raw)
         zstream = Zlib::Inflate.new(-Zlib::MAX_WBITS)
@@ -17,17 +17,18 @@ module SamlIdp
       else
         inflated = ""
       end
-      new(inflated)
+      new(inflated, options)
     end
 
-    attr_accessor :raw_xml
+    attr_accessor :raw_xml, :options
 
     delegate :config, to: :SamlIdp
     private :config
     delegate :xpath, to: :document
     private :xpath
 
-    def initialize(raw_xml = "")
+    def initialize(raw_xml = "", options = {})
+      self.options = options
       self.raw_xml = raw_xml
     end
 
@@ -111,7 +112,7 @@ module SamlIdp
     def valid_signature?
       # Force signatures for logout requests because there is no other
       # protection against a cross-site DoS.
-      service_provider.valid_signature?(document, logout_request?)
+      service_provider.valid_signature?(document, logout_request?, self.options)
     end
 
     def service_provider?

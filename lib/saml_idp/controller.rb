@@ -24,7 +24,7 @@ module SamlIdp
     end
 
     def decode_request(raw_saml_request)
-      self.saml_request = Request.from_deflated_request(raw_saml_request)
+      self.saml_request = Request.from_deflated_request(raw_saml_request, get_params: params)
     end
 
     def authn_context_classref
