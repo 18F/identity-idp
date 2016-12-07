@@ -47,50 +47,6 @@ describe UserDecorator do
     end
   end
 
-  describe '#first_sentence_for_confirmation_email' do
-    context 'when user.reset_requested_at is present' do
-      it 'lets the user know their account was reset by a tech rep' do
-        user = build_stubbed(:user, reset_requested_at: Time.zone.now)
-        user_decorator = UserDecorator.new(user)
-
-        expect(user_decorator.first_sentence_for_confirmation_email).to eq(
-          I18n.t(
-            'mailer.confirmation_instructions.first_sentence.reset_requested',
-            app: APP_NAME
-          )
-        )
-      end
-    end
-
-    context 'when user.reset_requested_at is nil and user is confirmed' do
-      it 'lets the user know how to finish updating their account' do
-        user = build_stubbed(:user, confirmed_at: Time.zone.now)
-        user_decorator = UserDecorator.new(user)
-
-        expect(user_decorator.first_sentence_for_confirmation_email).to eq(
-          I18n.t(
-            'mailer.confirmation_instructions.first_sentence.confirmed',
-            app: APP_NAME, confirmation_period: user_decorator.confirmation_period
-          )
-        )
-      end
-    end
-
-    context 'when user.reset_requested_at is nil and user is not confirmed' do
-      it 'lets the user know how to finish creating their account' do
-        user = build_stubbed(:user, confirmed_at: nil)
-        user_decorator = UserDecorator.new(user)
-
-        expect(user_decorator.first_sentence_for_confirmation_email).to eq(
-          I18n.t(
-            'mailer.confirmation_instructions.first_sentence.unconfirmed',
-            app: APP_NAME, confirmation_period: user_decorator.confirmation_period
-          )
-        )
-      end
-    end
-  end
-
   describe '#may_bypass_2fa?' do
     it 'returns true when the user is omniauthed' do
       user = instance_double(User)
