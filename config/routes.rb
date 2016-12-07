@@ -69,7 +69,7 @@ Rails.application.routes.draw do
         via: [:get, :post],
         as: :voice_otp,
         defaults: { format: :xml }
-  post '/api/voice/status' => 'voice/status#create'
+  post '/api/voice/status' => 'voice/status#create', as: :voice_status
 
   get '/contact' => 'contact#new', as: :contact
   post '/contact' => 'contact#create'
