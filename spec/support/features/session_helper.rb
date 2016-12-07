@@ -79,7 +79,8 @@ module Features
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current
       )
-      visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
+      visit "/sign_up/create_password?confirmation_token=#{@raw_confirmation_token}"
+      # visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
     end
 
     def sign_up_and_2fa

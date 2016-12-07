@@ -4,7 +4,7 @@
 h1.h3.my0 = t('headings.confirmations.new')
 = simple_form_for(@user,
                   as: :user,
-                  url: confirmation_path(:user),
+                  url: sign_up_register_again_url,
                   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.input :email, required: true
   = f.button :submit, t('forms.buttons.resend_confirmation'), class: 'mt2 mb1'

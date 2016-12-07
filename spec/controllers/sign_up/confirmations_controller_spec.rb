@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::ConfirmationsController, devise: true do
+describe SignUp::ConfirmationsController, devise: true do
   describe 'Invalid email confirmation tokens' do
     before do
       stub_analytics

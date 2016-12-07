@@ -1,4 +1,4 @@
-module Users
+module SignUp
   class ConfirmationsController < Devise::ConfirmationsController
     include ValidEmailParameter
 
@@ -46,10 +46,6 @@ module Users
       yield
     end
 
-    def set_view_variables
-      @confirmation_token = params[:confirmation_token]
-    end
-
     def process_successful_password_creation
       @user.confirm
       @user.update(reset_requested_at: nil, password: permitted_params[:password])
@@ -57,7 +53,7 @@ module Users
     end
 
     def process_unsuccessful_password_creation
-      set_view_variables
+      @confirmation_token = params[:confirmation_token]
       render :show
     end
 
@@ -70,7 +66,7 @@ module Users
     end
 
     def process_valid_confirmation_token
-      set_view_variables
+      @confirmation_token = params[:confirmation_token]
       flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
       render :show
     end
@@ -86,13 +82,9 @@ module Users
     def process_unsuccessful_confirmation
       return process_already_confirmed_user if @user.confirmed?
 
-      set_view_variables
-
-      if @user.confirmation_period_expired?
-        process_expired_confirmation_token
-      else
-        process_invalid_confirmation_token
-      end
+      @confirmation_token = params[:confirmation_token]
+      flash.now[:error] = unsuccessful_confirmation_error
+      render :new
     end
 
     def process_already_confirmed_user
@@ -102,23 +94,11 @@ module Users
       redirect_to user_signed_in? ? profile_path : new_user_session_url
     end
 
-    def process_expired_confirmation_token
-      flash.now[:error] = @user.decorate.confirmation_period_expired_error
-      render :new
-    end
-
-    def process_invalid_confirmation_token
-      flash.now[:error] = t('errors.messages.confirmation_invalid_token')
-      render :new
-    end
-
-    def after_confirmation_path_for(user)
-      if !user_signed_in?
-        new_user_session_url
-      elsif user.two_factor_enabled?
-        profile_path
+    def unsuccessful_confirmation_error
+      if @user.confirmation_period_expired?
+        @user.decorate.confirmation_period_expired_error
       else
-        phone_setup_url
+        t('errors.messages.confirmation_invalid_token')
       end
     end
 
@@ -131,6 +111,16 @@ module Users
     def sign_in_and_redirect_user
       sign_in @user
       redirect_to after_confirmation_path_for(@user)
+    end
+
+    def after_confirmation_path_for(user)
+      if !user_signed_in?
+        new_user_session_url
+      elsif user.two_factor_enabled?
+        profile_path
+      else
+        phone_setup_url
+      end
     end
   end
 end
