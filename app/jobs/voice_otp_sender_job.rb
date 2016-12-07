@@ -17,7 +17,8 @@ class VoiceOtpSenderJob < ActiveJob::Base
   def send_otp(twilio_service, code, phone)
     twilio_service.place_call(
       to: phone,
-      url: BasicAuthUrl.build(voice_otp_url(code: code))
+      url: BasicAuthUrl.build(voice_otp_url(code: code)),
+      record: Figaro.env.twilio_record_voice == 'true'
     )
   end
 end
