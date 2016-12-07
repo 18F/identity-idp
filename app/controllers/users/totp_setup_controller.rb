@@ -12,7 +12,11 @@ module Users
     end
 
     def confirm
-      if valid_code?
+      result = TotpSetupForm.new(current_user, new_totp_secret, params[:code].strip).submit
+
+      analytics.track_event(Analytics::TOTP_SETUP, result)
+
+      if result[:success]
         current_user.save!
         process_valid_code
       else
@@ -32,13 +36,7 @@ module Users
 
     private
 
-    def valid_code?
-      return false if new_totp_secret.nil?
-      current_user.confirm_totp_secret(new_totp_secret, params[:code].strip)
-    end
-
     def process_valid_code
-      analytics.track_event(Analytics::TOTP_SETUP_VALID_CODE)
       create_user_event(:authenticator_enabled)
       flash[:success] = t('notices.totp_configured')
       redirect_to profile_path
@@ -46,7 +44,6 @@ module Users
     end
 
     def process_invalid_code
-      analytics.track_event(Analytics::TOTP_SETUP_INVALID_CODE)
       flash[:error] = t('errors.invalid_totp')
       redirect_to authenticator_setup_path
     end
