@@ -22,9 +22,9 @@ class OtpDeliverySelectionForm
 
   def result
     {
-      success?: success,
+      success: success,
       delivery_method: otp_method,
-      resend?: resend,
+      resend: resend,
       errors: errors.full_messages
     }
   end
