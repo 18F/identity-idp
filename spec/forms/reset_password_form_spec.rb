@@ -95,15 +95,15 @@ describe ResetPasswordForm, type: :model do
 
         form = ResetPasswordForm.new(user)
 
-        passwords = [user.email, 'custom!@', 'benevolent', 'custom benevolent comcast', APP_NAME]
+        passwords = ['custom!@', 'benevolent', 'custom benevolent comcast']
 
         passwords.each do |password|
           result = {
             success: false,
-            errors: [
-              'Your password is not strong enough. Add another word or two. ' \
-              'Uncommon words are better.'
-            ],
+            errors: ['Your password is not strong enough.' \
+              ' This is similar to a commonly used password.' \
+              ' Add another word or two.' \
+              ' Uncommon words are better.'],
             user_id: nil,
             active_profile: false
           }

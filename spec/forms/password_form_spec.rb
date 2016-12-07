@@ -50,12 +50,14 @@ describe PasswordForm, type: :model do
 
         form = PasswordForm.new(user)
 
-        passwords = [user.email, 'custom!@', 'benevolent', 'custom benevolent comcast', APP_NAME]
+        passwords = ['custom!@', 'benevolent', 'custom benevolent comcast']
 
         result_hash = {
           success: false,
-          errors: ['Your password is not strong enough. Add another word or two. ' \
-            'Uncommon words are better.'],
+          errors: ['Your password is not strong enough.' \
+            ' This is similar to a commonly used password.' \
+            ' Add another word or two.' \
+            ' Uncommon words are better.'],
           user_id: '123'
         }
 
