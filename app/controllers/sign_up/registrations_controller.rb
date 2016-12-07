@@ -29,9 +29,6 @@ module SignUp
       end
     end
 
-    def destroy_confirm
-    end
-
     protected
 
     def permitted_params

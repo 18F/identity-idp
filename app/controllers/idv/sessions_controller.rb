@@ -18,9 +18,6 @@ module Idv
       submit_profile
     end
 
-    def dupe
-    end
-
     private
 
     def submit_profile
