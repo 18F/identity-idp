@@ -4,10 +4,10 @@
 @import 'foundation-emails';
 
 .gray {
-  &:link,
-  &:visited,
+  &:active,
   &:hover,
-  &:active {
+  &:link,
+  &:visited {
     color: $gray;
   }
 }

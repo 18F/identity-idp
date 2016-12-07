@@ -1,5 +1,4 @@
 include ActionView::Helpers::DateHelper
-include ActionView::Helpers::UrlHelper
 
 UserDecorator = Struct.new(:user) do
   MAX_RECENT_EVENTS = 5
@@ -26,31 +25,6 @@ UserDecorator = Struct.new(:user) do
     distance_of_time_in_words(
       current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
     )
-  end
-
-  def app_link
-    link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray')
-  end
-
-  def first_sentence_for_confirmation_email # rubocop:disable MethodLength
-    if user.reset_requested_at.present?
-      I18n.t(
-        'mailer.confirmation_instructions.first_sentence.reset_requested',
-        app: app_link
-      )
-    elsif user.confirmed_at.present?
-      I18n.t(
-        'mailer.confirmation_instructions.first_sentence.confirmed',
-        app: app_link,
-        confirmation_period: confirmation_period
-      )
-    else
-      I18n.t(
-        'mailer.confirmation_instructions.first_sentence.unconfirmed',
-        app: app_link,
-        confirmation_period: confirmation_period
-      )
-    end
   end
 
   def may_bypass_2fa?(session = {})
