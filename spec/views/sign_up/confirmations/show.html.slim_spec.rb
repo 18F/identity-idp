@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/confirmations/show.html.slim' do
+describe 'sign_up/confirmations/show.html.slim' do
   before do
     user = build_stubbed(:user, :signed_up)
     @password_form = PasswordForm.new(user)

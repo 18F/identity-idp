@@ -5,8 +5,7 @@ Rails.application.routes.draw do
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
-  devise_for :users, skip: [:sessions, :registrations], controllers: {
-    confirmations: 'users/confirmations',
+  devise_for :users, skip: [:confirmations, :sessions, :registrations], controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/passwords'
   }
@@ -22,11 +21,13 @@ Rails.application.routes.draw do
     post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
+    get '/sign_up/create_password' => 'sign_up/confirmations#show', as: :user_confirmation
+    get '/sign_up/enter_email_again' => 'sign_up/confirmations#new', as: :new_user_confirmation
+    post '/sign_up/register_again' => 'sign_up/confirmations#create', as: :sign_up_register_again
+    post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
-
-    patch '/confirm' => 'users/confirmations#confirm'
 
     get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
     patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
@@ -65,6 +66,7 @@ Rails.application.routes.draw do
         via: [:get, :post, :delete],
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
+
   match '/api/voice/otp/:code' => 'voice/otp#show',
         via: [:get, :post],
         as: :voice_otp,
