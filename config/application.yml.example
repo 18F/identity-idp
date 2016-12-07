@@ -28,16 +28,15 @@ queue_health_check_frequency_seconds: '120'
 # Must be an even number. 16 seems to be what most sites use.
 recovery_code_length: '16'
 
-# Set the number of seconds the timeout warning should occur before
-# login session is timed out.
+# Set the number of seconds before the session times out that the timeout
+# warning should appear.
+# NOTE: session_timeout_warning_seconds + session_check_delay % 60 should == 0
 session_timeout_warning_seconds: '150'
-# Set the number of seconds in which to delay the start of the
-# PeriodicalQuery() call. Make sure the sum of this value and
-# session_timeout_warning_seconds is a multiple of 60 seconds.
+# Set the number of seconds in which to delay the start of the session check.
+# NOTE: session_timeout_warning_seconds + session_check_delay % 60 should == 0
 session_check_delay: '30'
-# Set the frequency of the PeriodicalQuery() call in seconds.
-# Make sure the sum of this value and session_timeout_warning_seconds
-# is a multiple of 60 seconds.
+# Set the frequency of the session check call in seconds.
+# NOTE: session_timeout_warning_seconds + session_check_frequency % 60 should == 0
 session_check_frequency: '30'
 
 stale_session_window: '180'
