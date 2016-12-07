@@ -19,11 +19,10 @@ gem 'httparty'
 gem 'lograge'
 gem 'newrelic_rpm'
 gem 'omniauth-saml'
-gem 'phony_rails'
 gem 'pg'
+gem 'phony_rails'
 gem 'premailer-rails'
 gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
-gem 'valid_email'
 gem 'rack-attack'
 gem 'readthis'
 gem 'redis-session-store'
@@ -42,9 +41,10 @@ gem 'split', require: 'split/dashboard'
 gem 'twilio-ruby'
 gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication', ref: '1d6abe3'
 gem 'uglifier', '>= 1.3.0'
+gem 'valid_email'
 gem 'whenever', require: false
-gem 'xmlenc', '~> 0.6.4'
 gem 'xml-simple'
+gem 'xmlenc', '~> 0.6.4'
 gem 'zxcvbn-js'
 
 group :deploy do
@@ -57,10 +57,10 @@ end
 
 group :development do
   gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'brakeman', require: false
   gem 'bummr', require: false
   gem 'derailed'
-  gem 'binding_of_caller'
   gem 'guard-rspec', require: false
   gem 'overcommit', require: false
   gem 'quiet_assets'
@@ -82,16 +82,16 @@ group :development, :test do
 end
 
 group :test do
-  gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'axe-matchers'
+  gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_girl_rails'
   gem 'faker'
   gem 'poltergeist'
-  gem 'rack_session_access'
   gem 'rack-test'
+  gem 'rack_session_access'
   gem 'shoulda-matchers', '~> 3.0', require: false
   gem 'test_after_commit'
   gem 'timecop'

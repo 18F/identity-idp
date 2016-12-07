@@ -4,8 +4,7 @@ class FakeVoiceCall
   cattr_accessor :calls
   self.calls = []
 
-  def initialize(_account_sid, _auth_token)
-  end
+  def initialize(_account_sid, _auth_token); end
 
   def calls
     self
