@@ -28,36 +28,43 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
 
   it 'mentions updating an account when user has already been confirmed' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)
+    presenter = ConfirmationEmailPresenter.new(user, self)
     assign(:resource, user)
-    assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
+    assign(:first_sentence, presenter.first_sentence)
     render
 
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.confirmed',
-        app: APP_NAME, confirmation_period: user.decorate.confirmation_period
+        app: APP_NAME, confirmation_period: presenter.confirmation_period
       )
     )
+
+    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
   end
 
   it 'mentions creating an account when user is not yet confirmed' do
     user = build_stubbed(:user, confirmed_at: nil)
+    presenter = ConfirmationEmailPresenter.new(user, self)
     assign(:resource, user)
-    assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
+    assign(:first_sentence, presenter.first_sentence)
     render
 
     expect(rendered).to have_content(
       I18n.t(
         'mailer.confirmation_instructions.first_sentence.unconfirmed',
-        app: APP_NAME, confirmation_period: user.decorate.confirmation_period
+        app: APP_NAME, confirmation_period: presenter.confirmation_period
       )
     )
+
+    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
   end
 
   it 'mentions resetting the account when account has been reset by tech support' do
     user = build_stubbed(:user, reset_requested_at: Time.zone.now)
+    presenter = ConfirmationEmailPresenter.new(user, self)
     assign(:resource, user)
-    assign(:first_sentence, user.decorate.first_sentence_for_confirmation_email)
+    assign(:first_sentence, presenter.first_sentence)
     render
 
     expect(rendered).to have_content(
@@ -66,5 +73,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
         app: APP_NAME
       )
     )
+
+    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
   end
 end
