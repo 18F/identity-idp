@@ -60,6 +60,13 @@ RSpec.describe WorkerHealthChecker do
         expect(NewRelic::Agent).to_not receive(:notice_error)
         check
       end
+
+      it 'logs a message so we can audit that the job is running in our logs' do
+        expect(Rails.logger).to receive(:info).
+          with(hash_including(event: 'checking background queues'))
+
+        check
+      end
     end
 
     context 'successful jobs have run in some queues' do

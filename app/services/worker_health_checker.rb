@@ -50,6 +50,7 @@ module WorkerHealthChecker
   # Called on an interval to check background queue health and report errors to NewRelic
   # @see deploy/schedule.rb
   def check
+    Rails.logger.info(source: "#{self}.check", event: 'checking background queues')
     statuses.reject(&:healthy?).each do |status|
       NewRelic::Agent.notice_error(
         QueueHealthError.new("Background queue #{status.queue} is unhealthy")
