@@ -9,8 +9,8 @@ p.my2#password-description
 p.mb0
   = t('instructions.password.info.point_2')
 = simple_form_for(@password_form,
-    url: confirm_path,
-    method: :patch,
+    url: sign_up_create_password_path,
+    method: :post,
     html: { role: 'form', autocomplete: 'off' }) do |f|
   = f.input :password, required: true,
       input_html: { 'aria-describedby': 'password-description' }

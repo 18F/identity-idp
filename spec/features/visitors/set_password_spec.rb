@@ -8,7 +8,7 @@ feature 'Visitor sets password during signup' do
     click_button t('forms.buttons.submit.default')
 
     expect(page).to have_content t('errors.messages.blank')
-    expect(current_url).to eq confirm_url
+    expect(current_url).to eq user_confirmation_url
   end
 
   context 'password field is blank when JS is on', js: true do
@@ -81,7 +81,7 @@ feature 'Visitor sets password during signup' do
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content('characters')
-      expect(current_url).to eq confirm_url
+      expect(current_url).to eq user_confirmation_url
     end
 
     scenario 'visitor gets password help message' do

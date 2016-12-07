@@ -25,7 +25,7 @@ feature 'Email confirmation during sign up' do
     expect(user.reset_requested_at).to be_nil
   end
 
-  scenario 'user cannot access users/confirmations' do
+  scenario 'user cannot access sign_up/confirmations' do
     visit user_confirmation_path
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
@@ -51,7 +51,7 @@ feature 'Email confirmation during sign up' do
 
   scenario 'visitor signs up but confirms with an invalid token' do
     create(:user, :unconfirmed)
-    visit '/users/confirmation?confirmation_token=invalid_token'
+    visit user_confirmation_path(confirmation_token: 'invalid_token')
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
     expect(current_path).to eq user_confirmation_path
@@ -123,10 +123,11 @@ feature 'Email confirmation during sign up' do
       sign_up_and_set_password
 
       visit destroy_user_session_url
-      visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
+      visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(page).
-        to have_content t('devise.confirmations.already_confirmed', action: 'Please sign in.')
+      expect(page).to have_content(
+        t('devise.confirmations.already_confirmed', action: 'Please sign in.')
+      )
       expect(current_url).to eq new_user_session_url
     end
   end

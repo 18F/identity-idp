@@ -74,12 +74,12 @@ module Features
     end
 
     def confirm_last_user
-      @raw_confirmation_token = Devise.token_generator.generate(User, :confirmation_token)
+      @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
         confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current
       )
-      visit "/users/confirmation?confirmation_token=#{@raw_confirmation_token}"
+      visit user_confirmation_path(confirmation_token: @raw_confirmation_token)
     end
 
     def sign_up_and_2fa
