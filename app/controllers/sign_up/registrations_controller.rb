@@ -1,5 +1,5 @@
 module SignUp
-  class RegistrationsController < Devise::RegistrationsController
+  class RegistrationsController < ApplicationController
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]

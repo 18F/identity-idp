@@ -21,10 +21,10 @@ Rails.application.routes.draw do
     post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
     get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
     get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
-    get '/sign_up/create_password' => 'sign_up/confirmations#show', as: :user_confirmation
-    get '/sign_up/enter_email_again' => 'sign_up/confirmations#new', as: :new_user_confirmation
-    post '/sign_up/register_again' => 'sign_up/confirmations#create', as: :sign_up_register_again
+    get '/sign_up/enter_password' => 'sign_up/passwords#new', as: :sign_up_new_password
     post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
+    get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
+    post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create', as: :sign_up_email_resend
 
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
