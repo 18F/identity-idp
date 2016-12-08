@@ -13,7 +13,7 @@
       = image_tag(asset_url('alert/ico-thumb.svg'), height: '16', alt: '',\
         class: 'mr2 align-bottom')
       = t('notices.resend_confirmation_email.success')
-  = simple_form_for(@register_user_email_form, url: sign_up_email_resend_path,
+  = simple_form_for(@register_user_email_form, url: sign_up_register_path,
     html: { class: '' }) do |f|
     = f.input :email, as: :hidden, wrapper: false
     = f.input :resend, as: :hidden, wrapper: false
