@@ -3,7 +3,7 @@ function formatMinutes(minutes) {
 }
 
 function formatSeconds(seconds) {
-  return seconds < 10 ? `0{seconds}` : seconds;
+  return seconds < 10 ? `0${seconds}` : seconds;
 }
 
 export default (milliseconds) => {
