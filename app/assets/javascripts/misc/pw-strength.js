@@ -2,7 +2,6 @@ import zxcvbn from 'zxcvbn';
 
 const I18n = window.LoginGov.I18n;
 
-
 // zxcvbn returns a strength score from 0 to 4
 // we map those scores to:
 // 1. a CSS class to the pw strength module
@@ -38,6 +37,15 @@ function getFeedback(z) {
   return `${suggestions.map(function(s) { return lookup(s); }).join('; ')}`;
 }
 
+function disableSubmit(submitEl, score) {
+  if (!submitEl) return;
+
+  if (!score || score < 3) {
+    submitEl.setAttribute('disabled', true);
+  } else {
+    submitEl.removeAttribute('disabled');
+  }
+}
 
 function analyzePw() {
   const input = document.querySelector(
@@ -46,6 +54,9 @@ function analyzePw() {
   const pwCntnr = document.getElementById('pw-strength-cntnr');
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
+  const submit = document.querySelector('input[type="submit"]');
+
+  disableSubmit(submit);
 
   // the pw strength module is hidden by default ("hide" CSS class)
   // (so that javascript disabled browsers won't see it)
@@ -54,13 +65,13 @@ function analyzePw() {
 
   input.addEventListener('keyup', function(e) {
     const z = zxcvbn(e.target.value);
-
     const [cls, strength] = getStrength(z);
     const feedback = getFeedback(z);
-
     pwCntnr.className = cls;
     pwStrength.innerHTML = strength;
     pwFeedback.innerHTML = feedback;
+
+    disableSubmit(submit, z.score);
   });
 }
 

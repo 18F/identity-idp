@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Password Recovery' do
   def reset_password_and_sign_back_in(user, password = 'a really long password')
-    fill_in 'New password', with: password
+    fill_in t('forms.passwords.edit.labels.password'), with: password
     click_button t('forms.passwords.edit.buttons.submit')
     fill_in_credentials_and_submit(user.email, password)
   end
@@ -213,7 +213,7 @@ feature 'Password Recovery' do
 
     context 'when password form values are valid' do
       it 'changes the password, sends an email about the change, and does not sign the user in' do
-        fill_in 'New password', with: 'NewVal!dPassw0rd'
+        fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
 
         click_button t('forms.passwords.edit.buttons.submit')
 
@@ -226,43 +226,49 @@ feature 'Password Recovery' do
       end
     end
 
-    it 'displays error when password fields are empty & JS is on', js: true do
-      click_button t('forms.passwords.edit.buttons.submit')
+    context 'when password form values are invalid' do
+      it 'does not allow the user to submit until password score is good', js: true do
+        fill_in t('forms.passwords.edit.labels.password'), with: 'invalid'
+        expect(page).not_to have_button(t('forms.passwords.edit.buttons.submit'))
 
-      expect(page).to have_content 'Please fill in this field.'
-    end
+        fill_in t('forms.passwords.edit.labels.password'), with: 'password@132!'
+        expect(page).not_to have_button(t('forms.passwords.edit.buttons.submit'))
 
-    it 'displays field validation error when password fields are empty' do
-      click_button t('forms.passwords.edit.buttons.submit')
+        fill_in t('forms.passwords.edit.labels.password'), with: 'a unique and exciting zxjsahfas'
+        expect(page).to have_button(t('forms.passwords.edit.buttons.submit'))
+      end
 
-      expect(page).to have_content t('errors.messages.blank')
-    end
+      it 'displays field validation error when password fields are empty' do
+        click_button t('forms.passwords.edit.buttons.submit')
+        expect(page).to have_content t('errors.messages.blank')
+      end
 
-    it 'displays field validation error when password field is too short' do
-      fill_in 'New password', with: '1234'
-      click_button t('forms.passwords.edit.buttons.submit')
+      it 'displays field validation error when password field is too short' do
+        fill_in 'New password', with: '1234'
+        click_button t('forms.passwords.edit.buttons.submit')
 
-      expect(page).to have_content 'is too short (minimum is 8 characters)'
-    end
+        expect(page).to have_content 'is too short (minimum is 8 characters)'
+      end
 
-    it "does not update the user's password when password is invalid" do
-      fill_in 'New password', with: '1234'
-      click_button t('forms.passwords.edit.buttons.submit')
+      it "does not update the user's password when password is invalid" do
+        fill_in 'New password', with: '1234'
+        click_button t('forms.passwords.edit.buttons.submit')
 
-      signin(@user.email, '1234')
-      expect(current_path).to eq new_user_session_path
-    end
+        signin(@user.email, '1234')
+        expect(current_path).to eq new_user_session_path
+      end
 
-    it 'allows multiple attempts with invalid password' do
-      fill_in 'New password', with: '1234'
-      click_button t('forms.passwords.edit.buttons.submit')
+      it 'allows multiple attempts with invalid password' do
+        fill_in 'New password', with: '1234'
+        click_button t('forms.passwords.edit.buttons.submit')
 
-      expect(page).to have_content 'is too short'
+        expect(page).to have_content 'is too short'
 
-      fill_in 'New password', with: '5678'
-      click_button t('forms.passwords.edit.buttons.submit')
+        fill_in 'New password', with: '5678'
+        click_button t('forms.passwords.edit.buttons.submit')
 
-      expect(page).to have_content 'is too short'
+        expect(page).to have_content 'is too short'
+      end
     end
   end
 
