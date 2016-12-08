@@ -14,11 +14,15 @@ FeatureEnvy:
     - generate_slo_request
     - reauthn?
     - mark_profile_inactive
+    - EncryptedSidekiqRedis#zrem
 IrresponsibleModule:
   enabled: false
+ManualDispatch:
+  exclude:
+    - EncryptedSidekiqRedis#respond_to_missing?
 NestedIterators:
   exclude:
-  - Remote#build_parser
+    - Remote#build_parser
 NilCheck:
   exclude:
     - AdminConstraint#user_is_admin?
