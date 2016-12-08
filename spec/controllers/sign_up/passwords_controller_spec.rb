@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe SignUp::PasswordsController do
-
   describe '#create' do
     it 'tracks a valid password event' do
       user = create(:user, :unconfirmed)
