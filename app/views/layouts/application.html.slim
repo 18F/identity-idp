@@ -52,7 +52,7 @@ html lang="#{I18n.locale}"
   #session-timeout-cntnr
   - if current_user
     = auto_session_timeout_js
-  -else
+  - else
     = auto_session_expired_js
 
   - if FeatureManagement.enable_i18n_mode?
