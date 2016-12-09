@@ -2,13 +2,17 @@ module TwoFactorAuthenticatable
   extend ActiveSupport::Concern
 
   included do
-    prepend_before_action :authenticate_user!
+    before_action :authenticate_user
     before_action :handle_two_factor_authentication
     before_action :check_already_authenticated
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
   end
 
   private
+
+  def authenticate_user
+    authenticate_user!(force: true)
+  end
 
   def handle_second_factor_locked_user
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
@@ -19,10 +23,6 @@ module TwoFactorAuthenticatable
   end
 
   def check_already_authenticated
-    unless user_session
-      redirect_to new_user_session_path
-      return
-    end
     return unless context == 'authentication'
 
     redirect_to profile_path if user_fully_authenticated?

@@ -5,7 +5,7 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
         :before,
-        :authenticate_user!,
+        :authenticate_user,
         :handle_two_factor_authentication,
         :check_already_authenticated
       )
