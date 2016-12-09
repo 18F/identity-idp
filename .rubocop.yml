@@ -62,6 +62,8 @@ Metrics/LineLength:
   URISchemes:
   - http
   - https
+  Exclude:
+    - 'config/routes.rb'
 
 Metrics/MethodLength:
   Description: Avoid methods longer than 10 lines of code.
