@@ -19,6 +19,10 @@ module TwoFactorAuthenticatable
   end
 
   def check_already_authenticated
+    unless user_session
+      redirect_to new_user_session_path
+      return
+    end
     return unless context == 'authentication'
 
     redirect_to profile_path if user_fully_authenticated?

@@ -22,6 +22,16 @@ describe TwoFactorAuthentication::RecoveryCodeController do
       expect(response).to redirect_to profile_path
     end
 
+    context 'when there is no session (signed out or locked out), and the user reloads the page' do
+      it 'redirects to the home page' do
+        expect(controller.user_session).to be_nil
+
+        get :show
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
     context 'LOA3 user' do
       it 're-encrypts PII using new code' do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
