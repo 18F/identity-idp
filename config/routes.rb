@@ -15,14 +15,16 @@ Rails.application.routes.draw do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
     get '/active' => 'users/sessions#active'
-    get '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
-        as: :login_two_factor
-    post '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
-         as: :login_otp
+
     get '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#show'
     post '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#create'
     get '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#show'
     post '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#create'
+    get  '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
+         as: :login_two_factor
+    post '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
+         as: :login_otp
+
     get '/otp/send' => 'devise/two_factor_authentication#send_code'
     get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
     patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
