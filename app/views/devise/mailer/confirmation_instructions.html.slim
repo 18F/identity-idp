@@ -11,12 +11,13 @@ table.button.expanded.large.radius
               td
                 center
                   = link_to t('mailer.confirmation_instructions.link_text'), \
-                    user_confirmation_url(confirmation_token: @token), target: '_blank', \
+                    sign_up_create_email_confirmation_url(confirmation_token: @token), \
+                    target: '_blank', \
                     class: 'float-center', align: 'center'
       td.expander
 
-p = link_to user_confirmation_url(confirmation_token: @token), \
-    user_confirmation_url(confirmation_token: @token), target: '_blank'
+p = link_to sign_up_create_email_confirmation_url(confirmation_token: @token), \
+    sign_up_create_email_confirmation_url(confirmation_token: @token), target: '_blank'
 
 table.spacer
   tbody

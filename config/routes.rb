@@ -17,15 +17,6 @@ Rails.application.routes.draw do
     get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
     post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
 
-    get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
-    post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
-    get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
-    get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
-    get '/sign_up/create_password' => 'sign_up/confirmations#show', as: :user_confirmation
-    get '/sign_up/enter_email_again' => 'sign_up/confirmations#new', as: :new_user_confirmation
-    post '/sign_up/register_again' => 'sign_up/confirmations#create', as: :sign_up_register_again
-    post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
-
     get 'active'  => 'users/sessions#active'
     get 'timeout' => 'users/sessions#timeout'
 
@@ -58,6 +49,22 @@ Rails.application.routes.draw do
       post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
     end
   end
+
+  get(
+    '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
+    as: :sign_up_create_email_confirmation
+  )
+  get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
+  get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
+  get '/sign_up/enter_password' => 'sign_up/passwords#new'
+  post(
+    '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
+    as: :sign_up_create_email_resend
+  )
+  get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
+  get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
+  post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
+  post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
 
   # Non-devise-controller routes. Alphabetically sorted.
   get '/api/health/workers' => 'health/workers#index'

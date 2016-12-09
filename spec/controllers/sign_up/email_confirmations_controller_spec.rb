@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-describe SignUp::ConfirmationsController, devise: true do
-  describe 'Invalid email confirmation tokens' do
+describe SignUp::EmailConfirmationsController do
+  describe '#create' do
     before do
       stub_analytics
     end
@@ -17,7 +17,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: nil
+      get :create, confirmation_token: nil
     end
 
     it 'tracks blank email confirmation token' do
@@ -31,7 +31,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: ''
+      get :create, confirmation_token: ''
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
@@ -45,7 +45,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: "''"
+      get :create, confirmation_token: "''"
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
@@ -59,7 +59,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: '""'
+      get :create, confirmation_token: '""'
     end
 
     it 'tracks already confirmed token' do
@@ -75,7 +75,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: 'foo'
+      get :create, confirmation_token: 'foo'
     end
 
     it 'tracks expired token' do
@@ -92,7 +92,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: 'foo'
+      get :create, confirmation_token: 'foo'
     end
   end
 
@@ -113,7 +113,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: 'foo'
+      get :create, confirmation_token: 'foo'
     end
   end
 
@@ -138,7 +138,7 @@ describe SignUp::ConfirmationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :show, confirmation_token: 'foo'
+      get :create, confirmation_token: 'foo'
     end
   end
 end

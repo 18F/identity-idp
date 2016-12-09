@@ -26,35 +26,35 @@ feature 'Email confirmation during sign up' do
   end
 
   scenario 'user cannot access sign_up/confirmations' do
-    visit user_confirmation_path
+    visit sign_up_create_email_confirmation_path
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
   end
 
   scenario 'user cannot submit a blank confirmation token' do
-    visit "#{user_confirmation_path}?confirmation_token="
+    visit sign_up_create_email_confirmation_path(confirmaton_token: nil)
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
   end
 
   scenario 'user cannot submit an empty single-quoted string as a token' do
-    visit "#{user_confirmation_path}?confirmation_token=''"
+    visit sign_up_create_email_confirmation_path(confirmation_token: '')
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
   end
 
   scenario 'user cannot submit an empty double-quoted string as a token' do
-    visit "#{user_confirmation_path}?confirmation_token=%22%22"
+    visit sign_up_create_email_confirmation_path(confirmation_token: '%22%22')
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
   end
 
   scenario 'visitor signs up but confirms with an invalid token' do
     create(:user, :unconfirmed)
-    visit user_confirmation_path(confirmation_token: 'invalid_token')
+    visit sign_up_create_email_confirmation_path(confirmation_token: 'invalid_token')
 
     expect(page).to have_content t('errors.messages.confirmation_invalid_token')
-    expect(current_path).to eq user_confirmation_path
+    expect(current_path).to eq sign_up_create_email_confirmation_path
   end
 
   scenario 'visitor signs up but confirms with an expired token' do
@@ -66,9 +66,9 @@ feature 'Email confirmation during sign up' do
       confirmation_sent_at: Time.current - Devise.confirm_within - 2.days
     )
 
-    visit user_confirmation_url(confirmation_token: raw_confirmation_token)
+    visit sign_up_create_email_confirmation_url(confirmation_token: raw_confirmation_token)
 
-    expect(current_path).to eq user_confirmation_path
+    expect(current_path).to eq sign_up_create_email_confirmation_path
     expect(page).to have_content t(
       'errors.messages.confirmation_period_expired', period: '24 hours'
     )
@@ -112,7 +112,7 @@ feature 'Email confirmation during sign up' do
     it 'redirects the user to the profile' do
       sign_up_and_2fa
 
-      visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
+      visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
       expect(current_url).to eq profile_url
     end
@@ -123,7 +123,7 @@ feature 'Email confirmation during sign up' do
       sign_up_and_set_password
 
       visit destroy_user_session_url
-      visit user_confirmation_url(confirmation_token: @raw_confirmation_token)
+      visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
       expect(page).to have_content(
         t('devise.confirmations.already_confirmed', action: 'Please sign in.')

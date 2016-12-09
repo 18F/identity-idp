@@ -32,6 +32,14 @@ describe SignUp::RegistrationsController, devise: true do
       expect(subject).to receive(:ab_finished).with(:demo)
       get :new
     end
+
+    it 'cannot be viewed by signed in users' do
+      stub_sign_in
+
+      get :new
+
+      expect(response).to redirect_to profile_path
+    end
   end
 
   describe '#create' do
@@ -64,6 +72,15 @@ describe SignUp::RegistrationsController, devise: true do
 
         expect(session[:email]).to eq('test@test.com')
         expect(response).to redirect_to(sign_up_verify_email_path)
+      end
+
+      it 'cannot be accessed by signed in users' do
+        user = create(:user)
+        stub_sign_in(user)
+
+        post :create, user: { email: user.email }
+
+        expect(response).to redirect_to profile_path
       end
     end
 
@@ -111,6 +128,14 @@ describe SignUp::RegistrationsController, devise: true do
         with(Analytics::USER_REGISTRATION_INTRO_VISIT)
 
       get :show
+    end
+
+    it 'cannot be viewed by signed in users' do
+      stub_sign_in
+
+      get :show
+
+      expect(response).to redirect_to profile_path
     end
   end
 end

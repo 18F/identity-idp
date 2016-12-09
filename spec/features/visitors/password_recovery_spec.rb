@@ -69,7 +69,7 @@ feature 'Password Recovery' do
       user = create(:user, :unconfirmed)
       confirm_last_user
       reset_email
-      visit new_user_confirmation_path
+      visit sign_up_email_resend_path
       fill_in 'Email', with: user.email
       click_button t('forms.buttons.resend_confirmation')
       open_last_email
