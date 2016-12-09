@@ -89,6 +89,16 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
         end
       end
     end
+
+    context 'when there is no session (signed out or locked out), and the user reloads the page' do
+      it 'redirects to the home page' do
+        expect(controller.user_session).to be_nil
+
+        get :show
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
   end
 
   describe '#send_code' do
