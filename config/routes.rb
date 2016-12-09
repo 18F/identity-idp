@@ -14,30 +14,23 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
-    get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
-    post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
+    get '/active' => 'users/sessions#active'
 
-    get 'active'  => 'users/sessions#active'
-    get 'timeout' => 'users/sessions#timeout'
-
-    get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
-    patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
-
-    get '/otp/send' => 'devise/two_factor_authentication#send_code'
     get '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#show'
     post '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#create'
-    # rubocop:disable LineLength
     get '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#show'
     post '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#create'
-    # rubocop:enable LineLength
-    get(
-      '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
-      as: :login_two_factor
-    )
-    post(
-      '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
-      as: :login_otp
-    )
+    get  '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
+         as: :login_two_factor
+    post '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
+         as: :login_otp
+
+    get '/otp/send' => 'devise/two_factor_authentication#send_code'
+    get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
+    patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
+    get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
+    post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
+    get '/timeout' => 'users/sessions#timeout'
   end
 
   if Figaro.env.enable_test_routes == 'true'
@@ -49,22 +42,6 @@ Rails.application.routes.draw do
       post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
     end
   end
-
-  get(
-    '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
-    as: :sign_up_create_email_confirmation
-  )
-  get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
-  get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
-  get '/sign_up/enter_password' => 'sign_up/passwords#new'
-  post(
-    '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
-    as: :sign_up_create_email_resend
-  )
-  get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
-  get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
-  post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
-  post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
 
   # Non-devise-controller routes. Alphabetically sorted.
   get '/api/health/workers' => 'health/workers#index'
@@ -79,6 +56,13 @@ Rails.application.routes.draw do
         as: :voice_otp,
         defaults: { format: :xml }
 
+  post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
+
+  delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
+  get '/authenticator_setup' => 'users/totp_setup#new'
+  patch '/authenticator_setup' => 'users/totp_setup#confirm'
+  get '/authenticator_start' => 'users/totp_setup#start'
+
   get '/contact' => 'contact#new', as: :contact
   post '/contact' => 'contact#create'
 
@@ -86,39 +70,49 @@ Rails.application.routes.draw do
   match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
   get '/edit/phone' => 'users/edit_phone#edit'
   match '/edit/phone' => 'users/edit_phone#update', via: [:patch, :put]
-  get '/settings/password' => 'users/edit_password#edit'
-  patch '/settings/password' => 'users/edit_password#update'
-  get '/settings/recovery-code' => 'two_factor_authentication/recovery_code#show'
-  post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
+
+  get '/help' => 'pages#help'
 
   get '/idv' => 'idv#index'
   get '/idv/activated' => 'idv#activated'
   get '/idv/cancel' => 'idv#cancel'
-  get '/idv/fail' => 'idv#fail'
-  get '/idv/retry' => 'idv#retry'
-  get '/idv/questions' => 'idv/questions#index'
-  post '/idv/questions' => 'idv/questions#create'
   get '/idv/confirmations' => 'idv/confirmations#index'
   post '/idv/confirmations/continue' => 'idv/confirmations#continue'
-  get '/idv/session' => 'idv/sessions#new'
-  put '/idv/session' => 'idv/sessions#create'
-  get '/idv/session/dupe' => 'idv/sessions#dupe'
+  get '/idv/fail' => 'idv#fail'
   get '/idv/finance' => 'idv/finance#new'
   put '/idv/finance' => 'idv/finance#create'
   get '/idv/phone' => 'idv/phone#new'
   put '/idv/phone' => 'idv/phone#create'
+  get '/idv/questions' => 'idv/questions#index'
+  get '/idv/retry' => 'idv#retry'
   get '/idv/review' => 'idv/review#new'
   put '/idv/review' => 'idv/review#create'
+  get '/idv/session' => 'idv/sessions#new'
+  put '/idv/session' => 'idv/sessions#create'
+  get '/idv/session/dupe' => 'idv/sessions#dupe'
+  post '/idv/questions' => 'idv/questions#create'
 
-  get '/help' => 'pages#help'
   get '/privacy' => 'pages#privacy_policy'
+
   get '/profile' => 'profile#index', as: :profile
   get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
   post '/profile/reactivate' => 'users/reactivate_profile#create'
-  get '/authenticator_start' => 'users/totp_setup#start'
-  get '/authenticator_setup' => 'users/totp_setup#new'
-  delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
-  patch '/authenticator_setup' => 'users/totp_setup#confirm'
+
+  get '/settings/password' => 'users/edit_password#edit'
+  patch '/settings/password' => 'users/edit_password#update'
+  get '/settings/recovery-code' => 'two_factor_authentication/recovery_code#show'
+
+  post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
+  get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
+      as: :sign_up_create_email_confirmation
+  get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
+  get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
+  post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
+       as: :sign_up_create_email_resend
+  get '/sign_up/enter_password' => 'sign_up/passwords#new'
+  post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
+  get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
+  get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
 
   root to: 'users/sessions#new'
 
