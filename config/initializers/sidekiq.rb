@@ -1,6 +1,8 @@
 require 'encrypted_sidekiq_redis'
+require 'sidekiq_logger_formatter'
 
 Sidekiq::Logging.logger.level = Logger::WARN
+Sidekiq::Logging.logger.formatter = SidekiqLoggerFormatter.new
 
 redis_connection = proc do
   EncryptedSidekiqRedis.new(url: Figaro.env.redis_url)
