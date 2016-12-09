@@ -42,6 +42,16 @@ describe TwoFactorAuthentication::OtpVerificationController, devise: true do
 
       get :show, delivery_method: 'sms'
     end
+
+    context 'when there is no session (signed out or locked out), and the user reloads the page' do
+      it 'redirects to the home page' do
+        expect(controller.user_session).to be_nil
+
+        get :show, delivery_method: 'sms'
+
+        expect(response).to redirect_to(new_user_session_path)
+      end
+    end
   end
 
   describe '#create' do
