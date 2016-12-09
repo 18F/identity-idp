@@ -2,25 +2,25 @@ module IdvSession
   extend ActiveSupport::Concern
 
   def confirm_idv_session_started
-    redirect_to idv_session_url unless idv_session.params.present?
+    redirect_to verify_session_url unless idv_session.params.present?
   end
 
   def confirm_idv_attempts_allowed
     if idv_attempter.exceeded?
       flash[:error] = t('idv.errors.hardfail')
-      redirect_to idv_fail_url
+      redirect_to verify_fail_url
     elsif idv_attempter.reset_attempts?
       idv_attempter.reset
     end
   end
 
   def confirm_idv_needed
-    redirect_to idv_activated_url if current_user.active_profile.present?
+    redirect_to verify_activated_url if current_user.active_profile.present?
   end
 
   def confirm_idv_vendor_session_started
     return if flash[:allow_confirmations_continue]
-    redirect_to idv_session_path unless idv_session.proofing_started?
+    redirect_to verify_session_path unless idv_session.proofing_started?
   end
 
   def idv_session

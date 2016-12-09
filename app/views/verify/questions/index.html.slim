@@ -1,0 +1,14 @@
+- title t('idv.titles.question')
+
+h1.h3.my0 = t('idv.titles.question')
+.mb1.h6.caps.red = t('idv.messages.questions.intro', number: @question_sequence)
+
+= form_tag(verify_questions_path, method: 'post')
+  .mb3.h3 = @question.display
+  = hidden_field_tag('question_key', @question.key)
+  - if @question.choices.nil?
+    = render 'verify/questions/text'
+  - else
+    = render 'verify/questions/multiple_choice'
+  .mt3
+    button type="submit" class="btn btn-primary" = t('forms.buttons.submit.next')

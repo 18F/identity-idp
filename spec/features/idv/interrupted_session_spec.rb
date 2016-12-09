@@ -8,7 +8,7 @@ feature 'Interrupted IdV session' do
       allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(false)
 
       sign_in_and_2fa_user
-      visit idv_session_path
+      visit verify_session_path
     end
 
     context 'when the alert is dismissed' do
