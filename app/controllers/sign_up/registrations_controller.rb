@@ -1,8 +1,9 @@
 module SignUp
-  class RegistrationsController < Devise::RegistrationsController
+  class RegistrationsController < ApplicationController
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
+    before_action :require_no_authentication
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def show
@@ -30,6 +31,11 @@ module SignUp
     end
 
     protected
+
+    def require_no_authentication
+      return unless current_user
+      redirect_to after_sign_in_path_for(current_user)
+    end
 
     def permitted_params
       params.require(:user).permit(:email)

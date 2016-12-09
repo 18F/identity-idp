@@ -21,8 +21,8 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     render
 
     expect(rendered).to have_link(
-      'http://test.host/sign_up/create_password?confirmation_token=foo',
-      href: 'http://test.host/sign_up/create_password?confirmation_token=foo'
+      'http://test.host/sign_up/email/confirm?confirmation_token=foo',
+      href: 'http://test.host/sign_up/email/confirm?confirmation_token=foo'
     )
   end
 

@@ -8,7 +8,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
   let!(:user) { build(:user, confirmed_at: nil) }
 
   before(:each) do
-    visit new_user_confirmation_path
+    visit sign_up_email_resend_path
   end
 
   scenario 'user can resend their confirmation instructions via email' do

@@ -1,13 +1,8 @@
 module SignUp
-  class ConfirmationsController < Devise::ConfirmationsController
-    include ValidEmailParameter
+  class EmailConfirmationsController < ApplicationController
     include UnconfirmedUserConcern
 
-    def new
-      @user = User.new
-    end
-
-    def show
+    def create
       with_unconfirmed_user do
         result = EmailConfirmationTokenValidator.new(@user).submit
 
@@ -21,7 +16,7 @@ module SignUp
       end
     end
 
-    protected
+    private
 
     def process_successful_confirmation
       if !@user.confirmed?
@@ -34,7 +29,7 @@ module SignUp
     def process_valid_confirmation_token
       @confirmation_token = params[:confirmation_token]
       flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
-      render :show
+      render '/sign_up/passwords/new'
     end
 
     def process_confirmed_user
@@ -50,7 +45,7 @@ module SignUp
 
       @confirmation_token = params[:confirmation_token]
       flash.now[:error] = unsuccessful_confirmation_error
-      render :new
+      render '/sign_up/email_resend/new'
     end
 
     def process_already_confirmed_user
