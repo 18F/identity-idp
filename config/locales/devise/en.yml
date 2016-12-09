@@ -127,17 +127,20 @@ en:
       please_try_again_html: Please try again in %{time_remaining}.
       recovery_code_fallback:
         link: recovery code
-        text: Don’t have access to your phone? Use a %{link} instead.
+        text: Phone not available? Use your personal %{link} instead.
       recovery_code_header_text: Enter your recovery code
       recovery_code_prompt: >
         You can use this recovery code once. If you still need a code after
         signing in, go to your account settings page to get a new one.
+      recovery_code_help: Don't want to use a recovery code? Use
+        your %{phone} instead.
       totp_fallback:
-        sms_link_text: receive a code via text message
+        sms_link_text: text message
         text: >
-          If you can’t use your authenticator app right now you can %{sms_link}
-          or %{voice_link}.
-        voice_link_text: with a phone call
+          If you can’t use your authenticator app right now, you can get a
+          passcode  %{voice_link} or %{sms_link}.
+        voice_link_text: phone call
+      totp_name: authenticator app
       totp_header_text: Enter your authenticator code
       totp_info: Use any authenticator app to scan the QR code below.
       two_factor_setup: Add a phone number

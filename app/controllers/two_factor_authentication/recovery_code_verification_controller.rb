@@ -5,6 +5,11 @@ module TwoFactorAuthentication
 
     prepend_before_action :authenticate_scope!
 
+    def show
+      @delivery_method = 'recovery-code'
+      @delivery_method
+    end
+
     def create
       result = RecoveryCodeForm.new(current_user, params[:code]).submit
 

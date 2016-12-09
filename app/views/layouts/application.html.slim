@@ -42,7 +42,7 @@ html lang="#{I18n.locale}"
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       = render 'shared/usa_banner'
-      - if signed_in?
+      - if user_fully_authenticated?
         = render 'shared/nav_auth'
       - else
         = render decorated_session.nav_partial

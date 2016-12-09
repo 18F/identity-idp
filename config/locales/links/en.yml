@@ -10,12 +10,15 @@ en:
     passwords:
       forgot: Forgot your password?
     phone_confirmation:
-      fallback_to_sms: Send me a text message with the code instead
-      fallback_to_voice: Call me with the code instead
+      name: phone
+      auth_app: ' or %{link}'
+      voice_unavailable: If you can't take voice calls right now, you can get a passcode via %{link}
+      sms_unavailable: If you can't get text messages right now, you can get a passcode via %{link}
+      resend_code: Send a new code
+      fallback_to_sms: text message
+      fallback_to_voice: phone call
     privacy_policy: Privacy Policy
     resend: Send again
     sign_in: Sign in
     sign_out: Sign out
     cancel: Cancel
-    two_factor_authentication:
-      resend_code: Send a new one

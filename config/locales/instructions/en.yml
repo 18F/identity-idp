@@ -2,11 +2,11 @@
 en:
   instructions:
     2fa:
-      confirm_code: We sent it to %{number}.
-      resend: Didn’t receive a code? %{link}
+      confirm_code_voice: We just called you at %{number} with the code.
+      confirm_code_sms: We sent it in a text message to %{number}.
       totp_intro_html: >
-        Enter the code from your authenticator app. If you have several accounts
-        set up in your app, enter the code corresponding to <strong>%{email}</strong> at
+        It should be in your authenticator app. If you have several accounts
+        set up, look for the one corresponding to <strong>%{email}</strong> at
         <strong>%{app}</strong>.
       wrong_number: Entered the wrong phone number? %{link}
     password:
