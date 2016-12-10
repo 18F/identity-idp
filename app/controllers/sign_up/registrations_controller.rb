@@ -4,6 +4,7 @@ module SignUp
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
+    before_action :skip_session_expiration, only: [:show]
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def show

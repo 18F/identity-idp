@@ -11,6 +11,13 @@ module SessionTimeoutWarningHelper
     (Figaro.env.session_timeout_warning_seconds || 30).to_i
   end
 
+  def timeout_refresh_url
+    URI(request.original_url).tap do |url|
+      query = Rack::Utils.parse_nested_query(url.query).with_indifferent_access
+      url.query = query.merge(timeout: true).to_query
+    end.to_s.html_safe # rubocop:disable Rails/OutputSafety
+  end
+
   def auto_session_timeout_js
     nonced_javascript_tag do
       render partial: 'session_timeout/ping',
@@ -25,6 +32,8 @@ module SessionTimeoutWarningHelper
   end
 
   def auto_session_expired_js
+    return if @skip_session_expiration
+
     session_timeout_in = Devise.timeout_in
     nonced_javascript_tag do
       render(

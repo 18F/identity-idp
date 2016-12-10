@@ -109,27 +109,23 @@ feature 'Sign in' do
   end
 
   context 'signed out' do
-    it 'links to current page after session expires', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(0)
+    it 'refreshes the current page after session expires', js: true do
+      allow(Devise).to receive(:timeout_in).and_return(1)
 
-      [t('forms.buttons.continue'), t('session_expired_link')].each do |link|
-        visit sign_up_email_path
-        fill_in 'Email', with: 'test@example.com'
+      visit sign_up_email_path
+      fill_in 'Email', with: 'test@example.com'
 
-        expect(page).to have_css('#session-expired-msg')
+      expect(page).to have_content(t('notices.session_cleared'))
 
-        find_link(link).trigger('click')
-
-        expect(page).to have_field('Email', with: '')
-        expect(page).to have_current_path(sign_up_email_path)
-      end
+      expect(page).to have_field('Email', with: '')
+      expect(page).to have_current_path(sign_up_email_path(timeout: true))
     end
 
-    it 'does not display timeout modal when session not timed out', js: true do
+    it 'does not refresh the page after the session expires', js: true do
       allow(Devise).to receive(:timeout_in).and_return(60)
 
       visit root_path
-      expect(page).not_to have_css('#session-expired-msg')
+      expect(page).to_not have_content(t('notices.session_cleared'))
     end
   end
 
@@ -157,15 +153,16 @@ feature 'Sign in' do
       end
     end
 
-    it 'displays the session timeout modal, does not allow the user to submit', js: true do
-      allow(Devise).to receive(:timeout_in).and_return(0)
+    it 'refreshes the page (which clears the form) and notifies the user', js: true do
+      allow(Devise).to receive(:timeout_in).and_return(1)
       user = create(:user)
       visit root_path
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
 
-      expect(page).to have_css('#session-expired-msg')
-      expect(page).to have_css('[type=submit][disabled]')
+      expect(page).to have_content(t('notices.session_cleared'))
+      expect(find_field('Email').value).to be_blank
+      expect(find_field('Password').value).to be_blank
     end
   end
 
