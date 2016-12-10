@@ -52,6 +52,7 @@ TooManyStatements:
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
+    - ApplicationController
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

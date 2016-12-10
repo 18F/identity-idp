@@ -26,6 +26,7 @@ en:
         message_html: >
           For your security, in %{time_left_in_session} we will automatically
           cancel your sign in.
+    session_cleared: We cleared your information for your security.
     sign_in_consent:
       link: Security Consent & Privacy Act Statement.
       text: By signing in, you agree to %{app}’s %{link}
@@ -47,8 +48,6 @@ en:
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-  session_expired_html: Please %{link} the page to log in.
-  session_expired_link: refresh
   session_timedout: >
     We signed you out. For your security, %{app} automatically ends your session
     when you haven’t moved to a new page for %{minutes} minutes.
