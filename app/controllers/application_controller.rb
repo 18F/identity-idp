@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
     session[:pinged_at] ||= now
+
+    flash.now[:timeout] = t('session_cleared') if request.query_parameters[:timeout]
   end
 
   def append_info_to_payload(payload)

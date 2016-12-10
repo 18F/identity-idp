@@ -34,8 +34,7 @@ en:
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-  session_expired_html: Please %{link} the page to log in.
-  session_expired_link: refresh
   session_timedout: >
     We signed you out. For your security, %{app} automatically ends your session when you’re idle or
     haven’t typed anything within %{minutes} minutes.
+  session_cleared: We cleared your information for your security.

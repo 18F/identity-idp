@@ -5,6 +5,7 @@ describe 'layouts/application.html.slim' do
 
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
+    allow(view.request).to receive(:original_url).and_return('http://test.host/foobar')
   end
 
   context 'when i18n mode enabled' do
