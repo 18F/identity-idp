@@ -37,6 +37,6 @@ en:
   session_expired_html: Please %{link} the page to log in.
   session_expired_link: refresh
   session_timedout: >
-    We signed you out due to inactivity. This helps keep your account safe.
-    Please sign in again.
+    We signed you out. For your security, %{app} automatically ends your session
+    when you haven’t moved to a new page for %{minutes} minutes.
   session_timeout_warning: Your session will end in %{time_left_in_session} due to inactivity.
