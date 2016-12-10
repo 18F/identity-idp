@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
     session[:pinged_at] ||= now
+
+    flash.now[:timeout] = t('notices.session_cleared') if request.query_parameters[:timeout]
   end
 
   def append_info_to_payload(payload)
@@ -91,5 +93,9 @@ class ApplicationController < ActionController::Base
 
   def prompt_to_enter_otp
     redirect_to user_two_factor_authentication_url
+  end
+
+  def skip_session_expiration
+    @skip_session_expiration = true
   end
 end

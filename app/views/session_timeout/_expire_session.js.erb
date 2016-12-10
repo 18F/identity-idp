@@ -1,14 +1,7 @@
 var sessionTimeoutIn = <%= session_timeout_in %> * 1000;
-var modal = "<%= j render('session_timeout/expired') %>";
 
-function displaySessionTimeoutModal() {
-  var inputs = document.querySelectorAll('input[type="submit"]'), i;
-  for (i = 0; i < inputs.length; ++i) {
-    inputs[i].disabled = true;
-  }
-
-  var container = document.getElementById('session-timeout-cntnr');
-  container.insertAdjacentHTML('afterbegin', modal);
+function refreshPage() {
+  document.location = "<%= j timeout_refresh_url %>";
 }
 
-setTimeout(displaySessionTimeoutModal, sessionTimeoutIn);
+setTimeout(refreshPage, sessionTimeoutIn);
