@@ -35,10 +35,7 @@ h1.h3.my0 = t('idv.titles.session.basic')
     .mt0.mb3.pb-tiny.border-bottom.border-teal
       | #{t('profile.index.ssn')}#{tooltip(t('tooltips.placeholder'))}
     = f.input :ssn, label: t('idv.form.ssn'), required: true, pattern: '^\d{3}-?\d{2}-?\d{4}$',
-      input_html: { class: 'ssn', value: idv_profile_form.ssn },
-      hint: content_tag(:span, t('idv.form.tin'),
-      class: 'mt1 h5 blue sans-serif underline hint--top',
-      tabindex: 0, 'aria-label': t('tooltips.placeholder'))
+      input_html: { class: 'ssn', value: idv_profile_form.ssn }
   .mt5
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
     .mt1 = link_to t('idv.messages.cancel_link'), idv_cancel_path

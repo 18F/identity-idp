@@ -24,7 +24,6 @@ en:
       phone: Phone
       ssn: Social Security Number
       state: State
-      tin: Individual Tax Identification Number
       zipcode: ZIP Code
     index:
       cancel_link: No, I don’t have it
@@ -37,10 +36,7 @@ en:
         bullet_1: Full name
         bullet_2: Mailing address
         bullet_3: Date of birth
-        bullet_4_html: >
-          Social Security Number or <a href="
-          https://www.irs.gov/individuals/international-taxpayers/taxpayer-identification-numbers-tin#itin"
-          target="_blank">Individual Tax Identification Number</a>
+        bullet_4: Social Security Number
         header: Basic information
         subheader: We need to know some personal details
       section_2:
