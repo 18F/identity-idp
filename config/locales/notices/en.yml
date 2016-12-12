@@ -10,9 +10,6 @@ en:
     phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
     resend_confirmation_email:
       success: We have resent your confirmation email.
-    send_code:
-      sms: We sent you a one-time passcode via text message.
-      voice: We will call you with your one-time passcode.
     sign_in_consent:
       link: Security Consent & Privacy Act Statement.
       text: By signing in, you agree to %{app}’s %{link}

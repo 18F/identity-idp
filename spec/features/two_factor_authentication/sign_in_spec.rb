@@ -92,9 +92,10 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       click_button t('forms.buttons.submit.default')
-      click_link t('links.two_factor_authentication.resend_code')
+      click_link t('links.phone_confirmation.resend_code')
 
-      expect(page).to have_content(t('notices.send_code.sms'))
+      expect(page).to have_content(t('instructions.2fa.confirm_code_sms',
+                                     number: '***-***-1212'))
     end
 
     scenario 'user does not have to focus on OTP field', js: true do

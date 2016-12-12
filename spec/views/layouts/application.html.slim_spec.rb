@@ -5,6 +5,7 @@ describe 'layouts/application.html.slim' do
 
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
+    allow(view).to receive(:current_user).and_return(User.new)
   end
 
   context 'when i18n mode enabled' do

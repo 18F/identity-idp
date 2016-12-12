@@ -28,7 +28,7 @@ feature 'Phone confirmation during sign up' do
     end
 
     it 'allows user to resend confirmation code' do
-      click_link t('links.two_factor_authentication.resend_code')
+      click_link t('links.phone_confirmation.resend_code')
 
       expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
     end
@@ -46,7 +46,8 @@ feature 'Phone confirmation during sign up' do
     end
 
     it 'informs the user that the OTP code is sent to the phone' do
-      expect(page).to have_content(t('instructions.2fa.confirm_code', number: '+1 (555) 555-5555'))
+      expect(page).to have_content(t('instructions.2fa.confirm_code_sms',
+                                     number: '+1 (555) 555-5555'))
     end
   end
 
@@ -60,7 +61,8 @@ feature 'Phone confirmation during sign up' do
 
     it 'pretends the phone is valid and prompts to confirm the number' do
       expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
-      expect(page).to have_content(t('instructions.2fa.confirm_code', number: '+1 (202) 555-1212'))
+      expect(page).to have_content(t('instructions.2fa.confirm_code_sms',
+                                     number: '+1 (202) 555-1212'))
     end
 
     it 'does not confirm the new number with an invalid code' do

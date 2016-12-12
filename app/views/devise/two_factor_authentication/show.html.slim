@@ -7,7 +7,7 @@ p.mt2.mb0#2fa-description
 = simple_form_for(@otp_delivery_selection_form,
     url: otp_send_path,
     method: :get,
-    role: 'form', html: {class: 'mt2 sm-mt2'}) do |f|
+    role: 'form', html: { class: 'mt2 sm-mt2' }) do |f|
   - if reauthn?
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb2

@@ -5,10 +5,10 @@
 
 h1.h3.my0 = t('devise.two_factor_authentication.header_text')
 
-p.mt-tiny.mb0#code-instructs
+p.mt2.mb0#code-instructs
   = phone_confirmation_instructions
 
-= form_tag(:login_otp, method: :post, role: 'form', class: 'mt3 sm-mt4') do
+= form_tag(:login_otp, method: :post, role: 'form', class: 'mt2 sm-mt3') do
   = hidden_field_tag(:reauthn, reauthn?)
   = label_tag 'code', \
     t('simple_form.required.html') + t('forms.two_factor.code'), \
