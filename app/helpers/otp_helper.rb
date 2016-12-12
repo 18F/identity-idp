@@ -30,7 +30,7 @@ module OtpHelper
   private
 
   def totp_option_link
-    t('links.phone_confirmation.auth_app', link: authenticator_link) if !current_user.totp_enabled?
+    t('links.phone_confirmation.auth_app', link: authenticator_link) if current_user.totp_enabled?
   end
 
   def phone_fallback_link

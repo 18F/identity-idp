@@ -13,11 +13,11 @@ p.mt2.mb0#2fa-description
   .mb2
     fieldset.border-none.mxn2
       legend.hide = t('devise.two_factor_authentication.otp_method.title')
-      label.radio.mb2.mr3
+      label.radio.mb2.mr3.block
         = f.radio_button :otp_method, 'sms', checked: true
         span.indicator
         = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio.mb0
+      label.radio.mb0.block
         = f.radio_button :otp_method, 'voice'
         span.indicator
         = t('devise.two_factor_authentication.otp_method.voice')

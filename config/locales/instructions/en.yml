@@ -2,7 +2,7 @@
 en:
   instructions:
     2fa:
-      confirm_code_voice: We just called you at %{number} with the code.
+      confirm_code_voice: We are calling you at %{number} with the code.
       confirm_code_sms: We sent it in a text message to %{number}.
       totp_intro_html: >
         It should be in your authenticator app. If you have several accounts

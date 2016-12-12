@@ -34,8 +34,6 @@ module Devise
 
     def handle_valid_delivery_method(method)
       send_user_otp(method)
-      resent_message = t("notices.send_code.#{method}")
-      flash[:success] = resent_message if session[:code_sent].present?
       session[:code_sent] = 'true'
       redirect_to login_two_factor_path(delivery_method: method, reauthn: reauthn?)
     end
