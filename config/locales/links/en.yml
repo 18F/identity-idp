@@ -17,6 +17,7 @@ en:
       resend_code: Send a new code
       fallback_to_sms: text message
       fallback_to_voice: phone call
+    totp_confirmation: You can also get a passcode via %{link}.
     privacy_policy: Privacy Policy
     resend: Send again
     sign_in: Sign in

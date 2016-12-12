@@ -1,7 +1,7 @@
 ---
 en:
   headings:
-    choose_otp_delivery: Choose how you’d like to receive a one-time passcode
+    choose_otp_delivery: Choose how you’d like to receive a passcode
     confirmations:
       new: Send another confirmation email
     contact: Contact us

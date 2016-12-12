@@ -2,18 +2,18 @@
 
 
 h1.h3.my0 = t('headings.choose_otp_delivery')
-p.mt-tiny.mb0#2fa-description
+p.mt2.mb0#2fa-description
   = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
 = simple_form_for(@otp_delivery_selection_form,
     url: otp_send_path,
     method: :get,
-    role: 'form', class: 'mt3 sm-mt4') do |f|
+    role: 'form', html: {class: 'mt2 sm-mt2'}) do |f|
   - if reauthn?
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
-  .mb3
-    fieldset.border-none
+  .mb2
+    fieldset.border-none.mxn2
       legend.hide = t('devise.two_factor_authentication.otp_method.title')
-      label.radio.mb0.mr3
+      label.radio.mb2.mr3
         = f.radio_button :otp_method, 'sms', checked: true
         span.indicator
         = t('devise.two_factor_authentication.otp_method.sms')
@@ -21,13 +21,16 @@ p.mt-tiny.mb0#2fa-description
         = f.radio_button :otp_method, 'voice'
         span.indicator
         = t('devise.two_factor_authentication.otp_method.voice')
+
+  p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
 
-- link = link_to(t('devise.two_factor_authentication.recovery_code_fallback.link'),
-  login_two_factor_recovery_code_path)
+- if current_user.totp_enabled?
+  .mt3
+    p == t('links.totp_confirmation', link: authenticator_link)
 
 .mt3
-  p.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
-  p.mb1.italic == t('devise.two_factor_authentication.recovery_code_fallback.text', link: link)
+  p.mb3 == t('devise.two_factor_authentication.recovery_code_fallback.text',
+             link: recovery_code_fallback_link)
 
 = render 'shared/cancel'

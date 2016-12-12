@@ -167,8 +167,7 @@ module TwoFactorAuthenticatable
   end
 
   def resend_otp_code_path
-    otp_send_path(otp_delivery_selection_form:
-    {
+    otp_send_path(otp_delivery_selection_form: {
       otp_method: @delivery_method,
       resend: true
     })

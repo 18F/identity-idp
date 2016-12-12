@@ -12,18 +12,25 @@ module OtpHelper
     when 'sms'
       "#{voice_fallback_link}#{totp_option_link}."
     when 'voice'
-      "#{sms_fallback_link}#{get_totp_option_link}."
+      "#{sms_fallback_link}#{totp_option_link}."
     when 'recovery-code'
       t('devise.two_factor_authentication.recovery_code_help', phone: phone_fallback_link)
     end
   end
 
+  def authenticator_link
+    link_to(t('devise.two_factor_authentication.totp_name'), login_two_factor_authenticator_path)
+  end
+
+  def recovery_code_fallback_link
+    link_to(t('devise.two_factor_authentication.recovery_code_fallback.link'),
+            login_two_factor_recovery_code_path)
+  end
+
   private
 
   def totp_option_link
-    auth_app_path = link_to(t('devise.two_factor_authentication.totp_name'),
-                            login_two_factor_authenticator_path)
-    t('links.phone_confirmation.auth_app', link: auth_app_path) if current_user.totp_enabled?
+    t('links.phone_confirmation.auth_app', link: authenticator_link) if !current_user.totp_enabled?
   end
 
   def phone_fallback_link

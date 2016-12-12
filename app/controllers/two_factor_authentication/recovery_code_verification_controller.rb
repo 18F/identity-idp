@@ -7,7 +7,6 @@ module TwoFactorAuthentication
 
     def show
       @delivery_method = 'recovery-code'
-      @delivery_method
     end
 
     def create
