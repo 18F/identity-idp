@@ -80,7 +80,7 @@ feature 'Changing authentication factor' do
     expect(current_path).to eq user_password_confirm_path
 
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
-    click_button t('headings.passwords.confirm')
+    click_button t('forms.buttons.continue')
 
     expect(current_path).to eq user_two_factor_authentication_path
 

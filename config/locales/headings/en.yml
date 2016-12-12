@@ -53,7 +53,7 @@ en:
         why_verified: Why do I need a verified account?
     passwords:
       change: Change your password
-      confirm: Confirm your password to continue
+      confirm: Confirm your current password to continue
       forgot: Forgot your password?
     privacy_policy:
       authorities: Authorities
