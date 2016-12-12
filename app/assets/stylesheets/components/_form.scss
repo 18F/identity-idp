@@ -3,8 +3,7 @@ $radio-checkbox-space: 1.5rem;
 @media #{$breakpoint-sm} {
   input,
   select,
-  textarea,
-  fieldset {
+  textarea {
     font-size: $form-field-font-size-sm;
   }
 }
