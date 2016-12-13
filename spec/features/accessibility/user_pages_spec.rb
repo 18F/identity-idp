@@ -72,7 +72,7 @@ feature 'Accessibility on pages that require authentication', :js do
 
   scenario 'recovery code page' do
     sign_in_and_2fa_user
-    visit settings_recovery_code_path
+    visit manage_recovery_code_path
 
     expect(page).to be_accessible
   end
@@ -88,7 +88,7 @@ feature 'Accessibility on pages that require authentication', :js do
   scenario 'edit email page' do
     sign_in_and_2fa_user
 
-    visit '/edit/email'
+    visit manage_email_path
 
     expect(page).to be_accessible
   end
@@ -96,7 +96,7 @@ feature 'Accessibility on pages that require authentication', :js do
   scenario 'edit password page' do
     sign_in_and_2fa_user
 
-    visit '/settings/password'
+    visit manage_password_path
 
     expect(page).to be_accessible
   end
@@ -104,7 +104,7 @@ feature 'Accessibility on pages that require authentication', :js do
   scenario 'edit phone page' do
     sign_in_and_2fa_user
 
-    visit '/edit/phone'
+    visit manage_phone_path
 
     expect(page).to be_accessible
   end
@@ -112,7 +112,7 @@ feature 'Accessibility on pages that require authentication', :js do
   scenario 'generate new recovery code page' do
     sign_in_and_2fa_user
 
-    visit '/settings/recovery-code'
+    visit manage_recovery_code_path
 
     expect(page).to be_accessible
   end

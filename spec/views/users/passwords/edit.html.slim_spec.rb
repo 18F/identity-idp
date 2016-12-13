@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'users/edit_password/edit.html.slim' do
+describe 'users/passwords/edit.html.slim' do
   before do
     user = User.new
     allow(view).to receive(:current_user).and_return(user)

@@ -170,7 +170,7 @@ module TwoFactorAuthenticatable
     if context == 'idv'
       verify_phone_path
     elsif current_user.phone.present?
-      edit_phone_path
+      manage_phone_path
     else
       phone_setup_path
     end

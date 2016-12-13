@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::RecoveryCodeController do
+describe Users::RecoveryCodesController do
   describe '#show' do
     it 'tracks an analytics event' do
       stub_analytics

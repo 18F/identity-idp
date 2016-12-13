@@ -50,12 +50,12 @@ h2.h3.my0 = t('headings.profile.login_info')
       .sm-col.sm-col-5.px1 = t('.email')
       .sm-col.sm-col-5.px1.truncate = current_user.email
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to t('forms.buttons.edit'), edit_email_path, class: btn_cls
+        = link_to t('forms.buttons.edit'), manage_email_path, class: btn_cls
   .py-12p.border-top.border-bottom
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = t('.password')
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to t('forms.buttons.edit'), settings_password_path, class: btn_cls
+        = link_to t('forms.buttons.edit'), manage_password_path, class: btn_cls
   .mt3.mb1.h6.bold.caps.ls-0
     | #{t('headings.profile.two_factor')}#{tooltip(t('tooltips.two_factor'))}
   .py-12p.border-top
@@ -63,7 +63,7 @@ h2.h3.my0 = t('headings.profile.login_info')
       .sm-col.sm-col-5.px1 = t('.phone')
       .sm-col.sm-col-5.px1 = current_user.phone
       .sm-col.sm-col-2.px1.sm-right-align
-        = link_to t('forms.buttons.edit'), edit_phone_path, class: btn_cls
+        = link_to t('forms.buttons.edit'), manage_phone_path, class: btn_cls
   .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = t('.authentication_app')
@@ -79,7 +79,7 @@ h2.h3.my0 = t('headings.profile.login_info')
       .sm-col.sm-col-10.px1 =  t('profile.items.recovery_code')
       .sm-col.sm-col-2.px1.sm-right-align
         = link_to t('profile.links.regenerate_recovery_code'), \
-          settings_recovery_code_url, class: btn_cls
+          manage_recovery_code_path, class: btn_cls
 
 h2.h3.my0 = t('headings.profile.account_history')
 .mt2.mb2

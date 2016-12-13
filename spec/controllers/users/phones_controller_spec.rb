@@ -3,7 +3,7 @@ require 'rails_helper'
 include Features::MailerHelper
 include Features::LocalizationHelper
 
-describe Users::EditPhoneController do
+describe Users::PhonesController do
   describe '#phone' do
     let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1234') }
     let(:second_user) { create(:user, :signed_up, phone: '+1 (202) 555-5678') }
