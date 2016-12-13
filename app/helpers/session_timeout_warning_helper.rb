@@ -72,10 +72,7 @@ module SessionTimeoutWarningHelper
     end
   end
 
-  PartiallySignedInModal = Struct.new(:time_left_in_session) do
-    include ActionView::Helpers::TagHelper
-    include ActionView::Helpers::TranslationHelper
-
+  class PartiallySignedInModal < FullySignedInModal
     def message
       t('notices.timeout_warning.partially_signed_in.message_html',
         time_left_in_session: content_tag(:span, time_left_in_session, id: 'countdown'))
