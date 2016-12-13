@@ -8,8 +8,8 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
     render
 
-    expect(rendered).to have_content 'Enter the code from your authenticator app.'
-    expect(rendered).to have_content "enter the code corresponding to #{user.email}"
+    expect(rendered).to have_content(t('devise.two_factor_authentication.totp_header_text'))
+    expect(rendered).to have_content "look for the one corresponding to #{user.email} at login.gov"
   end
 
   it 'allows the user to fallback to SMS and voice' do

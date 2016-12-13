@@ -17,5 +17,3 @@ nav.bg-white
                 class: current_page?(profile_path) ? 'px1 bold gray text-decoration-none' : 'px1'
               = link_to t('links.sign_out'), destroy_user_session_path,
                 class: 'px1 border-left border-silver'
-        - else
-          = link_to t('links.cancel'), destroy_user_session_path

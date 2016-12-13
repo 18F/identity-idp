@@ -148,15 +148,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           expect(flash[:success]).to eq nil
         end
       end
-
-      context 'multiple requests' do
-        it 'notifies the user of OTP transmission via flash message' do
-          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
-          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
-
-          expect(flash[:success]).to eq t('notices.send_code.sms')
-        end
-      end
     end
 
     context 'when selecting voice OTP delivery' do
@@ -203,15 +194,6 @@ describe Devise::TwoFactorAuthenticationController, devise: true do
           get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
 
           expect(flash[:success]).to eq nil
-        end
-      end
-
-      context 'multiple requests' do
-        it 'notifies the user of OTP transmission via flash message' do
-          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
-          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
-
-          expect(flash[:success]).to eq t('notices.send_code.voice')
         end
       end
     end

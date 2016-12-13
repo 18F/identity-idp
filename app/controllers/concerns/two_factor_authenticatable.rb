@@ -156,6 +156,7 @@ module TwoFactorAuthenticatable
     @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
     @delivery_method = params[:delivery_method]
     @reenter_phone_number_path = reenter_phone_number_path
+    @resend_otp_code_path = resend_otp_code_path
   end
 
   def display_phone_to_deliver_to
@@ -164,6 +165,13 @@ module TwoFactorAuthenticatable
     else
       user_session[:unconfirmed_phone]
     end
+  end
+
+  def resend_otp_code_path
+    otp_send_path(otp_delivery_selection_form: {
+                    otp_method: @delivery_method,
+                    resend: true
+                  })
   end
 
   def reenter_phone_number_path
