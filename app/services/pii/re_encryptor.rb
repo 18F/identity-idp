@@ -8,7 +8,6 @@ module Pii
     def perform
       profile.encrypt_recovery_pii(pii_attributes)
       profile.save!
-      profile.recovery_code
     end
 
     private
