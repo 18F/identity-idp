@@ -18,7 +18,7 @@ class SamlIdpController < ApplicationController
     needs_idv = identity_needs_verification?
     analytics.track_event(Analytics::SAML_AUTH, @result.merge(idv: needs_idv))
 
-    return redirect_to idv_url if needs_idv
+    return redirect_to verify_url if needs_idv
 
     delete_branded_experience
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')

@@ -8,7 +8,7 @@ feature 'IdV session' do
   context 'landing page' do
     before do
       sign_in_and_2fa_user
-      visit idv_path
+      visit verify_path
     end
 
     scenario 'decline to verify identity' do
@@ -32,7 +32,7 @@ feature 'IdV session' do
     scenario 'skips KBV' do
       user = sign_in_and_2fa_user
 
-      visit idv_session_path
+      visit verify_session_path
 
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
@@ -45,7 +45,7 @@ feature 'IdV session' do
       fill_in :user_password, with: user_password
       click_button t('forms.buttons.submit.default')
 
-      expect(current_url).to eq idv_confirmations_url
+      expect(current_url).to eq verify_confirmations_url
       expect(page).to have_content(t('idv.titles.complete'))
       click_acknowledge_recovery_code
 
@@ -59,7 +59,7 @@ feature 'IdV session' do
       user = sign_in_and_2fa_user
 
       2.times do
-        visit idv_session_path
+        visit verify_session_path
         complete_idv_profile_fail(user)
 
         expect(page).to have_content(t('idv.titles.fail'))
@@ -71,15 +71,15 @@ feature 'IdV session' do
       visit destroy_user_session_url
       sign_in_and_2fa_user(user)
 
-      visit idv_session_path
+      visit verify_session_path
       complete_idv_profile_fail(user)
 
       expect(page).to have_content(t('idv.titles.hardfail'))
 
-      visit idv_session_path
+      visit verify_session_path
 
       expect(page).to have_content(t('idv.errors.hardfail'))
-      expect(current_url).to eq idv_fail_url
+      expect(current_url).to eq verify_fail_url
 
       user.reload
       expect(user.idv_attempted_at).to_not be_nil
@@ -88,7 +88,7 @@ feature 'IdV session' do
     scenario 'steps are re-entrant and sticky' do
       _user = sign_in_and_2fa_user
 
-      visit idv_session_path
+      visit verify_session_path
 
       first_ssn_value = '666661234'
       second_ssn_value = '666669876'
@@ -110,27 +110,27 @@ feature 'IdV session' do
       fill_out_financial_form_ok
       click_button t('forms.buttons.continue')
 
-      visit idv_session_path
+      visit verify_session_path
 
       expect(page).to have_selector("input[value='#{first_ssn_value}']")
 
       fill_in 'profile_ssn', with: second_ssn_value
       click_button t('forms.buttons.continue')
 
-      expect(current_url).to eq idv_finance_url
+      expect(current_url).to eq verify_finance_url
       expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_selector("input[value='#{first_ccn_value}']")
 
       click_button t('forms.buttons.continue')
 
-      visit idv_finance_path
+      visit verify_finance_path
       find('#idv_finance_form_finance_type_mortgage').set(true)
       fill_in :idv_finance_form_mortgage, with: mortgage_value
       click_button t('forms.buttons.continue')
 
-      expect(current_url).to eq idv_phone_url
+      expect(current_url).to eq verify_phone_url
 
-      visit idv_finance_path
+      visit verify_finance_path
 
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
@@ -142,7 +142,7 @@ feature 'IdV session' do
 
       fill_out_phone_form_ok(first_phone_value)
       click_button t('forms.buttons.continue')
-      visit idv_phone_path
+      visit verify_phone_path
 
       expect(page).to have_selector("input[value='#{first_phone_formatted}']")
 
@@ -162,7 +162,7 @@ feature 'IdV session' do
     scenario 'clicking finance option changes input label', js: true do
       _user = sign_in_and_2fa_user
 
-      visit idv_session_path
+      visit verify_session_path
 
       fill_out_idv_form_ok
       click_button 'Continue'
@@ -178,11 +178,11 @@ feature 'IdV session' do
     context 'Idv phone and user phone are different' do
       it 'prompts to confirm phone' do
         user = sign_in_and_2fa_user
-        visit idv_session_path
+        visit verify_session_path
 
         complete_idv_profile_with_phone('416-555-0190')
 
-        expect(page).to have_link t('forms.two_factor.try_again'), href: idv_phone_path
+        expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
         expect(page).not_to have_css('.progress-steps')
 
         enter_correct_otp_code_for_user(user)
@@ -196,7 +196,7 @@ feature 'IdV session' do
       recovery_code = 'a1b2c3d4e5f6g7h8'
 
       user = sign_in_and_2fa_user
-      visit idv_session_path
+      visit verify_session_path
 
       allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
       complete_idv_profile_ok(user)
@@ -214,7 +214,7 @@ feature 'IdV session' do
     scenario 'KBV with all answers correct' do
       user = sign_in_and_2fa_user
 
-      visit idv_session_path
+      visit verify_session_path
       expect(page).to have_content(t('idv.form.first_name'))
 
       complete_idv_profile_ok(user)
@@ -238,14 +238,14 @@ feature 'IdV session' do
     scenario 'KBV with some incorrect answers' do
       user = sign_in_and_2fa_user
 
-      visit idv_session_path
+      visit verify_session_path
       expect(page).to have_content(t('idv.form.first_name'))
 
       complete_idv_profile_ok(user)
       expect(page).to have_content('Where did you live')
 
       complete_idv_questions_fail
-      expect(current_path).to eq idv_retry_path
+      expect(current_path).to eq verify_retry_path
       expect(page).to have_content(t('idv.titles.fail'))
       expect(page).to have_content(t('idv.errors.fail'))
     end
@@ -253,7 +253,7 @@ feature 'IdV session' do
     scenario 'un-resolvable PII' do
       sign_in_and_2fa_user
 
-      visit idv_session_path
+      visit verify_session_path
       expect(page).to have_content(t('idv.form.first_name'))
 
       fill_out_idv_form_fail
@@ -266,7 +266,7 @@ feature 'IdV session' do
       click_button t('forms.buttons.submit.default')
 
       expect(page).to have_content(t('idv.titles.fail'))
-      expect(current_path).to eq idv_retry_path
+      expect(current_path).to eq verify_retry_path
     end
   end
 
