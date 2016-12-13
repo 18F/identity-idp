@@ -139,7 +139,8 @@ module TwoFactorAuthenticatable
     elsif @updating_existing_number
       profile_path
     elsif decorated_user.should_acknowledge_recovery_code?(session)
-      settings_recovery_code_url
+      user_session[:first_time_recovery_code_view] = 'true'
+      sign_up_recovery_code_path
     else
       after_sign_in_path_for(current_user)
     end

@@ -56,6 +56,7 @@ class Analytics
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
+  PROFILE_RECOVERY_CODE_CREATE = 'Profile: Created new recovery code'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
