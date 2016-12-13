@@ -2,6 +2,15 @@ require 'rails_helper'
 
 describe TwoFactorAuthentication::RecoveryCodeController do
   describe '#show' do
+    it 'tracks an analytics event' do
+      stub_analytics
+      stub_sign_in
+
+      expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_RECOVERY_CODE_CREATE)
+
+      get :show
+    end
+
     it 'generates a new recovery code' do
       stub_sign_in
       generator = instance_double(RecoveryCodeGenerator)
