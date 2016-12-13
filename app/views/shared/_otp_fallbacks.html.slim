@@ -1,6 +1,5 @@
-p.mt2 == alternative_2fa_links
+p.mt2 == fallback_2fa_links
 
 - unless @delivery_method == 'recovery-code'
   p == t('devise.two_factor_authentication.recovery_code_fallback.text',
-       link: link_to(t('devise.two_factor_authentication.recovery_code_fallback.link'),
-       login_two_factor_recovery_code_path))
+       link: recovery_code_fallback_link)

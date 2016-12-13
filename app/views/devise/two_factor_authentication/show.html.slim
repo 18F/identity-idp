@@ -27,10 +27,9 @@ p.mt2.mb0#2fa-description
 
 - if current_user.totp_enabled?
   .mt3
-    p == t('links.totp_confirmation', link: authenticator_link)
+    p == t('links.totp_option', link: authenticator_link)
 
 .mt3
-  p.mb3 == t('devise.two_factor_authentication.recovery_code_fallback.text',
-             link: recovery_code_fallback_link)
+  = render 'shared/otp_fallbacks'
 
 = render 'shared/cancel'

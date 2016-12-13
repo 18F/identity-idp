@@ -97,6 +97,11 @@ ignore_unused:
   - 'experiments.*'
   - 'event_types.*'
   - 'zxcvbn.*'
+  # HI! These are incorrectly reported as being unused. If they ever get removed,
+  # make sure to delete them from here
+  - 'links.phone_confirmation.fallback_to_sms'
+  - 'links.phone_confirmation.fallback_to_voice'
+  ##
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'

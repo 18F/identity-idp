@@ -7,7 +7,7 @@ module OtpHelper
     end
   end
 
-  def alternative_2fa_links
+  def fallback_2fa_links
     case @delivery_method
     when 'sms'
       "#{voice_fallback_link}#{totp_option_link}."
@@ -15,6 +15,8 @@ module OtpHelper
       "#{sms_fallback_link}#{totp_option_link}."
     when 'recovery-code'
       t('devise.two_factor_authentication.recovery_code_help', phone: phone_fallback_link)
+    else
+      ''
     end
   end
 
