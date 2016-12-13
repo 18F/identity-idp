@@ -31,10 +31,9 @@ module Users
     end
 
     def timeout
-      if sign_out
-        analytics.track_event(Analytics::SESSION_TIMED_OUT)
-        flash[:timeout] = t('session_timedout')
-      end
+      analytics.track_event(Analytics::SESSION_TIMED_OUT)
+      sign_out
+      flash[:timeout] = t('session_timedout')
       redirect_to root_url
     end
 
