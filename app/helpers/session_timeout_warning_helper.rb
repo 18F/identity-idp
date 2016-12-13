@@ -18,7 +18,8 @@ module SessionTimeoutWarningHelper
              locals: {
                warning: warning,
                start: start,
-               frequency: frequency
+               frequency: frequency,
+               modal: modal
              }
     end
   end
@@ -36,6 +37,14 @@ module SessionTimeoutWarningHelper
 
   def time_left_in_session
     distance_of_time_in_words(warning)
+  end
+
+  def modal
+    if user_fully_authenticated?
+      FullySignedInModalPresenter.new(time_left_in_session)
+    else
+      PartiallySignedInModalPresenter.new(time_left_in_session)
+    end
   end
 end
 
