@@ -194,7 +194,7 @@ feature 'saml api', devise: true do
 
         user = sign_up_and_2fa
 
-        expect(current_url).to eq idv_url
+        expect(current_path).to eq verify_path
 
         click_on 'Yes'
 

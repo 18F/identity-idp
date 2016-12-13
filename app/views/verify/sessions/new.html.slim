@@ -1,0 +1,43 @@
+- title t('idv.titles.session.basic')
+
+= render 'shared/progress_steps', active: 4
+- if @using_mock_vendor
+  .mt1.mb2.h6.caps.bold.red = t('idv.messages.sessions.no_pii')
+h1.h3.my0 = t('idv.titles.session.basic')
+= simple_form_for(idv_profile_form, url: verify_session_path,
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.error_notification
+  .mb5
+    .mb3.pb-tiny.border-bottom.border-teal = t('profile.index.full_name')
+    = f.input :first_name, label: t('idv.form.first_name'), required: true
+    = f.input :last_name, label: t('idv.form.last_name'), required: true
+  .mb4
+    .mb3.pb-tiny.border-bottom.border-teal = t('profile.index.address')
+    = f.input :address1, label: t('idv.form.address1'), required: true
+    = f.input :address2, label: t('idv.form.address2')
+    = f.input :city, label: t('idv.form.city'), required: true
+    .clearfix.mxn1
+      .sm-col.sm-col-6.px1
+        = f.input :state, collection: us_states_territories,
+          label: t('idv.form.state'), required: true
+      .sm-col.sm-col-4.px1
+        = f.input :zipcode, label: t('idv.form.zipcode'), required: true,
+          pattern: '(\d{5}([\-]\d{4})?)',
+          input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
+  .mb4
+    .mt0.mb3.pb-tiny.border-bottom.border-teal = t('profile.index.dob')
+    = f.input :dob, label: t('idv.form.dob'), required: true,
+      pattern: '(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}',
+      input_html: { class: 'dob', value: idv_profile_form.dob,
+        'aria-describedby': 'dob-instructs' }
+    #dob-instructs.hide Must be in mm/dd/yyyy format
+  .mb4
+    .mt0.mb3.pb-tiny.border-bottom.border-teal
+      | #{t('profile.index.ssn')}#{tooltip(t('tooltips.placeholder'))}
+    = f.input :ssn, label: t('idv.form.ssn'), required: true, pattern: '^\d{3}-?\d{2}-?\d{4}$',
+      input_html: { class: 'ssn', value: idv_profile_form.ssn }
+  .mt5
+    button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
+    .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path
+
+== javascript_include_tag 'misc/page-unload-warning'

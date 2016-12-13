@@ -24,7 +24,7 @@ class ServiceProviderSessionDecorator
   end
 
   def idv_hardfail4_partial
-    'idv/hardfail4'
+    'verify/hardfail4'
   end
 
   private
