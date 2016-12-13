@@ -12,10 +12,10 @@ module SessionTimeoutWarningHelper
   end
 
   def timeout_refresh_url
-    url = URI(request.original_url)
-    query = Rack::Utils.parse_nested_query(url.query).with_indifferent_access
-    url.query = query.merge(timeout: true).to_query
-    url.to_s.html_safe
+    URI(request.original_url).tap do |url|
+      query = Rack::Utils.parse_nested_query(url.query).with_indifferent_access
+      url.query = query.merge(timeout: true).to_query
+    end.to_s
   end
 
   def auto_session_timeout_js
