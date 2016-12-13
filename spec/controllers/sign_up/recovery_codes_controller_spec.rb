@@ -18,8 +18,8 @@ describe SignUp::RecoveryCodesController do
       stub_sign_in
       subject.user_session[:first_time_recovery_code_view] = 'true'
 
-      expect(get :show).not_to redirect_to(profile_path)
-      expect(get :show).to redirect_to(profile_path)
+      expect(get(:show)).not_to redirect_to(profile_path)
+      expect(get(:show)).to redirect_to(profile_path)
     end
   end
 
