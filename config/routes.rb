@@ -55,6 +55,7 @@ Rails.application.routes.draw do
         via: [:get, :post],
         as: :voice_otp,
         defaults: { format: :xml }
+  post '/api/voice/status' => 'voice/status#create', as: :voice_status
 
   post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
 
