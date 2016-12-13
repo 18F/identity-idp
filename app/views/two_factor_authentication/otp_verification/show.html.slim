@@ -19,7 +19,7 @@ p.mt2.mb0#code-instructs
       'aria-describedby': 'code-instructs')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
-  p.mb1.fs-14p
+  p.mb1.h5
     = link_to(t('links.phone_confirmation.resend_code'), @resend_otp_code_path)
 
   - if user_session[:unconfirmed_phone]
