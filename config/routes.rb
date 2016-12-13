@@ -56,8 +56,6 @@ Rails.application.routes.draw do
         as: :voice_otp,
         defaults: { format: :xml }
 
-  post '/acknowledge_recovery_code' => 'two_factor_authentication/recovery_code#acknowledge'
-
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
   get '/authenticator_setup' => 'users/totp_setup#new'
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
@@ -100,7 +98,9 @@ Rails.application.routes.draw do
 
   get '/settings/password' => 'users/edit_password#edit'
   patch '/settings/password' => 'users/edit_password#update'
-  get '/settings/recovery-code' => 'two_factor_authentication/recovery_code#show'
+  get '/settings/recovery_code' => 'two_factor_authentication/recovery_code#show'
+  get '/sign_up/recovery_code' => 'sign_up/recovery_codes#show'
+  post '/sign_up/recovery_code' => 'sign_up/recovery_codes#update'
 
   post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
   get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',

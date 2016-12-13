@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/recovery_code/show.html.slim' do
+describe 'sign_up/recovery_codes/show.html.slim' do
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.recovery_code'))
 
@@ -25,7 +25,7 @@ describe 'two_factor_authentication/recovery_code/show.html.slim' do
     expect(rendered).
       to have_xpath("//input[@value='#{t('forms.buttons.continue')}']")
     expect(rendered).
-      to have_xpath("//form[@action='#{acknowledge_recovery_code_path}']")
+      to have_xpath("//form[@action='#{sign_up_recovery_code_path}']")
   end
 
   it 'displays the recovery code' do

@@ -13,15 +13,6 @@ describe TwoFactorAuthentication::RecoveryCodeController do
       get :show
     end
 
-    it 'redirects to the profile page' do
-      stub_sign_in
-      subject.current_user.recovery_code = 'foo'
-
-      post :acknowledge
-
-      expect(response).to redirect_to profile_path
-    end
-
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
         expect(controller.user_session).to be_nil
