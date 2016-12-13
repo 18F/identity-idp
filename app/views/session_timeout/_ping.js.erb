@@ -1,7 +1,7 @@
 var frequency = <%= frequency %> * 1000;
 var warning = <%= warning %> * 1000;
 var start = <%= start %> * 1000;
-var warning_info = "<%= j render('session_timeout/warning') %>";
+var warning_info = "<%= j render('session_timeout/warning', locals: { modal: modal }) %>";
 
 function ping() {
   var request = new XMLHttpRequest();

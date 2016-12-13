@@ -13,6 +13,19 @@ en:
     send_code:
       sms: We sent you a one-time passcode via text message.
       voice: We will call you with your one-time passcode.
+    timeout_warning:
+      signed_in:
+        continue: Keep me signed in
+        sign_out: Sign me out now
+        message_html: >
+          For your security, in %{time_left_in_session} we will automatically
+          sign you out unless you tell us to keep you signed in.
+      partially_signed_in:
+        continue: Continue signing in
+        sign_out: Cancel signing in
+        message_html: >
+          For your security, in %{time_left_in_session} we will automatically
+          cancel your sign in.
     sign_in_consent:
       link: Security Consent & Privacy Act Statement.
       text: By signing in, you agree to %{app}’s %{link}
@@ -39,4 +52,3 @@ en:
   session_timedout: >
     We signed you out. For your security, %{app} automatically ends your session
     when you haven’t moved to a new page for %{minutes} minutes.
-  session_timeout_warning: Your session will end in %{time_left_in_session} due to inactivity.
