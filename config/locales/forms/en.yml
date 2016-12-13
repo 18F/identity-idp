@@ -5,7 +5,6 @@ en:
       back: Back
       cancel: Cancel
       continue: Continue
-      continue_browsing: Keep me signed in
       disable: Disable
       edit: Edit
       enable: Enable
@@ -15,7 +14,6 @@ en:
       send: Send
       send_passcode: Send passcode
       setup_totp: Set up authentication app
-      sign_out: Sign me out
       submit:
         default: Submit
         next: Next

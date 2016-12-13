@@ -78,13 +78,13 @@ feature 'Sign in' do
     end
 
     scenario 'user can continue browsing' do
-      find_link(t('forms.buttons.continue_browsing')).trigger('click')
+      find_link(t('notices.timeout_warning.signed_in.continue')).trigger('click')
 
       expect(current_path).to eq profile_path
     end
 
     scenario 'user has option to sign out' do
-      click_link(t('forms.buttons.sign_out'))
+      click_link(t('notices.timeout_warning.signed_in.sign_out'))
 
       expect(page).to have_content t('devise.sessions.signed_out')
       expect(current_path).to eq new_user_session_path
@@ -92,7 +92,7 @@ feature 'Sign in' do
   end
 
   context 'user only signs in via email and password', js: true do
-    it 'displays the session timeout warning' do
+    it 'displays the session timeout warning with partially signed in copy' do
       allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
       allow(Figaro.env).to receive(:session_check_delay).and_return('2')
       allow(Figaro.env).to receive(:session_timeout_warning_seconds).
@@ -103,6 +103,8 @@ feature 'Sign in' do
       visit user_two_factor_authentication_path
 
       expect(page).to have_css('#session-timeout-msg')
+      expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.continue'))
+      expect(page).to have_content(t('notices.timeout_warning.partially_signed_in.sign_out'))
     end
   end
 
