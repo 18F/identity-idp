@@ -12,19 +12,19 @@ en:
     email_changed:
       help: >
         If you did not change your email address, please contact the %{app}
-        Customer Contact Center at %{link}
+        Customer Contact Center at %{link}.
       intro: >
         You have asked %{app} to change the email address currently associated
-        with your %{app} account.
+        with your account.
     password_changed:
       help: >
         If you did not mean to change your password, please immediately contact
-        the %{app} customer contact center via web form at %{link}
+        the %{app} customer contact center via web form at %{link}.
       intro: You have changed your password for your %{app} account.
     signup_with_your_email:
       help: >
         If you did not request a new account or suspect an error, please
-        immediately contact the %{app} customer contact center via web form at %{link}
+        immediately contact the %{app} customer contact center via web form at %{link}.
       intro: >
         Your request to create a %{app} account using this email address cannot
         be granted because this email address is already in use. If you requested this

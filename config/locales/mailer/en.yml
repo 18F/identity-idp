@@ -26,14 +26,14 @@ en:
       subject: Confirm your email address
     help: >
       For more help, please contact the %{app} customer contact center via web
-      form at %{link}
+      form at %{link}.
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
     reset_password:
       footer: >
         Please note that this link expires in %{expires} hours.
       header: >
-        You have asked %{app} to reset your password for your %{app} account. To
+        You have asked %{app} to reset your password for your account. To
         confirm your request, please click on the link below or copy and paste the
         entire link into your browser.
       link_text: Reset your password
