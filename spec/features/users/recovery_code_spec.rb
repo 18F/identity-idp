@@ -1,12 +1,6 @@
 require 'rails_helper'
 
 feature 'View recovery code during sign up flow' do
-  scenario 'user can view recovery code' do
-    sign_up_and_view_recovery_code
-
-    expect(current_path).to eq('/sign_up/recovery_code')
-  end
-
   scenario 'user refreshes recovery code page' do
     sign_up_and_view_recovery_code
 
