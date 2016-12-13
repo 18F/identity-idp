@@ -104,7 +104,7 @@ describe Users::SessionsController, devise: true do
 
       get :timeout
 
-      expect(flash[:timeout]).to eq t('session_timedout')
+      expect(flash[:timeout]).to eq t('session_timedout', app: 'login.gov', minutes: 8)
       expect(subject.current_user).to be_nil
     end
 

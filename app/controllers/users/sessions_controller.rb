@@ -33,7 +33,9 @@ module Users
     def timeout
       analytics.track_event(Analytics::SESSION_TIMED_OUT)
       sign_out
-      flash[:timeout] = t('session_timedout')
+      flash[:timeout] = t('session_timedout',
+                          app: APP_NAME,
+                          minutes: Figaro.env.session_timeout_in_minutes)
       redirect_to root_url
     end
 
