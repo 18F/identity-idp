@@ -7,7 +7,10 @@ describe 'devise/two_factor_authentication/show.html.slim' do
     before do
       @otp_delivery_selection_form = OtpDeliverySelectionForm.new
       allow(view).to receive(:reauthn?).and_return(false)
+      allow(view).to receive(:current_user).and_return(user)
     end
+
+    it_behaves_like 'an otp form'
 
     it 'has a localized heading' do
       render
@@ -16,7 +19,6 @@ describe 'devise/two_factor_authentication/show.html.slim' do
     end
 
     it 'allows the user to select OTP delivery method' do
-      allow(view).to receive(:current_user).and_return(user)
       render
 
       expect(rendered).to have_content t('devise.two_factor_authentication.otp_method.sms')
@@ -24,7 +26,6 @@ describe 'devise/two_factor_authentication/show.html.slim' do
     end
 
     it 'informs the user that an OTP will be sent to their number' do
-      allow(view).to receive(:current_user).and_return(user)
       @phone_number = '***-***-1234'
 
       render
