@@ -1,13 +1,13 @@
 import msFormatter from './ms-formatter';
 
-export default (targetSelector, timeLeft = 0, interval = 1000) => {
-  const countdownTarget = document.querySelector(targetSelector);
+export default (el, timeLeft = 0, interval = 1000) => {
   let remaining = timeLeft;
 
-  if (!countdownTarget) return;
+  if (!el || !('innerHTML' in el)) return;
 
   (function tick() {
-    countdownTarget.innerHTML = msFormatter(remaining);
+    /* eslint-disable no-param-reassign */
+    el.innerHTML = msFormatter(remaining);
 
     if (remaining <= 0) {
       return;
