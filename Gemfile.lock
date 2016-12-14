@@ -171,6 +171,10 @@ GEM
     coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
+    coffee-script (2.4.1)
+      coffee-script-source
+      execjs
+    coffee-script-source (1.11.1)
     concurrent-ruby (1.0.2)
     connection_pool (2.2.1)
     crack (0.4.3)
@@ -544,6 +548,10 @@ GEM
       net-ssh (>= 2.8.0)
     sysexits (1.2.0)
     systemu (2.6.5)
+    teaspoon (1.1.5)
+      railties (>= 3.2.5, < 6)
+    teaspoon-mocha (2.3.3)
+      teaspoon (>= 1.0.0)
     temple (0.7.7)
     term-ansicolor (1.4.0)
       tins (~> 1.0)
@@ -633,6 +641,7 @@ DEPENDENCIES
   capistrano-sidekiq
   capybara-screenshot!
   codeclimate-test-reporter
+  coffee-script
   database_cleaner
   derailed
   devise (~> 4.1)
@@ -689,6 +698,7 @@ DEPENDENCIES
   slim-rails
   slim_lint
   split
+  teaspoon-mocha
   test_after_commit
   thin
   timecop

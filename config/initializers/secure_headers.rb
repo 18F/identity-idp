@@ -28,9 +28,9 @@ SecureHeaders::Configuration.default do |config|
     base_uri: ["'self'"]
   }
 
-  if Rails.env.development?
+  if !Rails.env.production?
     config.csp = default_csp_config.merge(
-      script_src: ["'self'", "'unsafe-eval'"],
+      script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
       style_src: ["'self'", "'unsafe-inline'"]
     )
   else

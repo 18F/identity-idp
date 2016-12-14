@@ -80,6 +80,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.5.2'
   gem 'slim_lint'
+  gem 'teaspoon-mocha'
   gem 'thin'
 end
 
@@ -87,6 +88,7 @@ group :test do
   gem 'axe-matchers'
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'codeclimate-test-reporter', require: false
+  gem 'coffee-script'
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_girl_rails'
