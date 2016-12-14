@@ -28,7 +28,7 @@ function success(data) {
 
   if (show_warning & !el) {
     cntnr.insertAdjacentHTML('afterbegin', warning_info);
-    window.LoginGov.countdownTimer('#countdown', warning);
+    window.LoginGov.countdownTimer(document.getElementById('countdown'), warning);
   }
 
   if (!show_warning & el) el.remove();

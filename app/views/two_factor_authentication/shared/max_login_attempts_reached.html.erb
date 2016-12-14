@@ -14,5 +14,5 @@
 
 <%= nonced_javascript_tag do %>
   var test = <%= decorated_user.lockout_time_remaining %> * 1000;
-  window.LoginGov.countdownTimer('#countdown', test);
+  window.LoginGov.countdownTimer(document.getElementById('countdown'), test);
 <% end %>
