@@ -2,7 +2,7 @@ class MfaConfirmationController < ApplicationController
   before_action :confirm_two_factor_authenticated
 
   def new
-    session[:password_attempts] = 0 unless session[:password_attempts]
+    session[:password_attempts] ||= 0
   end
 
   def create
