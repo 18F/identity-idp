@@ -174,7 +174,7 @@ We have an automated tool for generating user flows using real views generated f
 The local instance of the application must be running in order to serve up the assets (eg. `make run`). Then, you can specify where the assets are hosted from and generate the views with:
 
 ```
-$ rake spec:user_flows
+$ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
 ```
 
 Then, visit http://localhost:3000/user_flows in your browser!
