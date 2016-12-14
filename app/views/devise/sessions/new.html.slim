@@ -10,7 +10,7 @@ h1.h3.my0 = decorated_session.new_session_heading
   = f.input :password, required: true
   = f.button :submit, t('links.next'), class: 'btn-wide'
 
-- link = link_to t('notices.sign_in_consent.link'), privacy_path
+- link = link_to t('notices.sign_in_consent.link'), privacy_path, target: '_blank'
 p.my3 == t('notices.sign_in_consent.text', app: APP_NAME, link: link)
 
 .clearfix.pt1.border-top
