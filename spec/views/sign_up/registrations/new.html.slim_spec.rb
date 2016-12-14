@@ -17,6 +17,8 @@ describe 'sign_up/registrations/new.html.slim' do
 
     expect(rendered).
       to have_link(t('notices.terms_of_service.link'), href: privacy_path)
+
+    expect(rendered).to have_selector("a[href='#{privacy_path}'][target='_blank']")
   end
 
   it 'sets form autocomplete to off' do
