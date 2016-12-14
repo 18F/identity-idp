@@ -64,6 +64,8 @@ Rails.application.routes.draw do
   get '/contact' => 'contact#new', as: :contact
   post '/contact' => 'contact#create'
 
+  get '/forgot_password' => 'forgot_password#show'
+
   get '/help' => 'pages#help'
 
   get '/manage/email' => 'users/emails#edit'

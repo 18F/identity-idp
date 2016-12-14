@@ -1,16 +1,20 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
-    include ValidEmailParameter
+    def new
+      @password_reset_email_form = PasswordResetEmailForm.new('')
+    end
 
     def create
-      RequestPasswordReset.new(downcased_email).perform
+      @password_reset_email_form = PasswordResetEmailForm.new(downcased_email)
+      result = @password_reset_email_form.submit
 
-      analytics_user = User.find_with_email(downcased_email) || NonexistentUser.new
-      analytics.track_event(
-        Analytics::PASSWORD_RESET_EMAIL, user_id: analytics_user.uuid, role: analytics_user.role
-      )
+      analytics.track_event(Analytics::PASSWORD_RESET_EMAIL, result)
 
-      redirect_to new_user_session_path, notice: t('notices.password_reset')
+      if result[:success]
+        handle_valid_email
+      else
+        handle_invalid_email
+      end
     end
 
     def edit
@@ -45,6 +49,19 @@ module Users
 
     protected
 
+    def handle_valid_email
+      RequestPasswordReset.new(downcased_email).perform
+
+      session[:email] = downcased_email
+      resend_confirmation = params[:password_reset_email_form][:resend]
+
+      redirect_to forgot_password_path(resend: resend_confirmation)
+    end
+
+    def handle_invalid_email
+      render :new
+    end
+
     def user_matching_token(token)
       reset_password_token = Devise.token_generator.digest(User, :reset_password_token, token)
 
@@ -62,7 +79,7 @@ module Users
     end
 
     def handle_successful_password_reset
-      resource.update(password: user_params[:password])
+      resource.update(password: user_params[:password], confirmed_at: Time.current)
 
       mark_profile_inactive
 
@@ -93,7 +110,7 @@ module Users
     end
 
     def downcased_email
-      params[:user][:email].downcase
+      params[:password_reset_email_form][:email].downcase
     end
   end
 end

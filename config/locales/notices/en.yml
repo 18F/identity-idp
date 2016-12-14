@@ -4,9 +4,17 @@ en:
     dap_html: >
       <!-- We participate in the US government’s analytics program. -->
       <!-- See the data at analytics.usa.gov. -->
+    forgot_password:
+      use_diff_email:
+        link: create a new account
+        text_html: Or, %{link} using a different email address.
+      first_paragraph_end: >
+        with a link to reset your password. Follow the link to continue
+        resetting your password.
+      first_paragraph_start: We sent an email to
+      no_email_sent_explanation_start: Didn’t get an email?
+      resend_email_success: We have resent your password reset email.
     password_changed: You changed your password.
-    password_reset: >
-      Check your email in a few minutes for instructions on how to reset your password.
     phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
     resend_confirmation_email:
       success: We have resent your confirmation email.
