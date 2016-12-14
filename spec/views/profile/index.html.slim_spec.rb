@@ -38,7 +38,7 @@ describe 'profile/index.html.slim' do
       render
 
       expect(rendered).to have_xpath("//input[@value='Disable']")
-      expect(rendered).not_to have_link('Enable', href: authenticator_start_url)
+      expect(rendered).not_to have_link('Enable', href: authenticator_start_path)
     end
   end
 
@@ -50,7 +50,7 @@ describe 'profile/index.html.slim' do
 
     expect(rendered).to have_content t('profile.items.recovery_code')
     expect(rendered).
-      to have_link(t('profile.links.regenerate_recovery_code'), href: settings_recovery_code_url)
+      to have_link(t('profile.links.regenerate_recovery_code'), href: manage_recovery_code_path)
   end
 
   it 'contains account history' do

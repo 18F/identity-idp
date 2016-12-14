@@ -26,7 +26,7 @@ describe 'user edits their account', email: true do
   context 'user changes email address' do
     before do
       sign_in_as_a_valid_user
-      put_via_redirect edit_email_path, update_user_email_form: { email: 'new_email@example.com' }
+      put_via_redirect manage_email_path, update_user_email_form: { email: 'new_email@example.com' }
     end
 
     it 'displays a notice informing the user their email has been confirmed when user confirms' do

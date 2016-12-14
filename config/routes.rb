@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   # authentication failure.
   devise_for :users, skip: [:confirmations, :sessions, :registrations], controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
-    passwords: 'users/passwords'
+    passwords: 'users/reset_passwords'
   }
 
   # Additional device controller routes.
@@ -64,12 +64,35 @@ Rails.application.routes.draw do
   get '/contact' => 'contact#new', as: :contact
   post '/contact' => 'contact#create'
 
-  get '/edit/email' => 'users/edit_email#edit'
-  match '/edit/email' => 'users/edit_email#update', via: [:patch, :put]
-  get '/edit/phone' => 'users/edit_phone#edit'
-  match '/edit/phone' => 'users/edit_phone#update', via: [:patch, :put]
-
   get '/help' => 'pages#help'
+
+  get '/manage/email' => 'users/emails#edit'
+  match '/manage/email' => 'users/emails#update', via: [:patch, :put]
+  get '/manage/password' => 'users/passwords#edit'
+  patch '/manage/password' => 'users/passwords#update'
+  get '/manage/phone' => 'users/phones#edit'
+  match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
+  get '/manage/recovery_code' => 'users/recovery_codes#show'
+
+  get '/privacy' => 'pages#privacy_policy'
+
+  get '/profile' => 'profile#index', as: :profile
+  get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
+  post '/profile/reactivate' => 'users/reactivate_profile#create'
+
+  post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
+  get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
+      as: :sign_up_create_email_confirmation
+  get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
+  get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
+  post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
+       as: :sign_up_create_email_resend
+  get '/sign_up/enter_password' => 'sign_up/passwords#new'
+  get '/sign_up/recovery_code' => 'sign_up/recovery_codes#show'
+  post '/sign_up/recovery_code' => 'sign_up/recovery_codes#update'
+  post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
+  get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
+  get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
 
   get '/verify' => 'verify#index'
   get '/verify/activated' => 'verify#activated'
@@ -89,30 +112,6 @@ Rails.application.routes.draw do
   put '/verify/session' => 'verify/sessions#create'
   get '/verify/session/dupe' => 'verify/sessions#dupe'
   post '/verify/questions' => 'verify/questions#create'
-
-  get '/privacy' => 'pages#privacy_policy'
-
-  get '/profile' => 'profile#index', as: :profile
-  get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
-  post '/profile/reactivate' => 'users/reactivate_profile#create'
-
-  get '/settings/password' => 'users/edit_password#edit'
-  patch '/settings/password' => 'users/edit_password#update'
-  get '/settings/recovery_code' => 'two_factor_authentication/recovery_code#show'
-  get '/sign_up/recovery_code' => 'sign_up/recovery_codes#show'
-  post '/sign_up/recovery_code' => 'sign_up/recovery_codes#update'
-
-  post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
-  get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
-      as: :sign_up_create_email_confirmation
-  get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
-  get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
-  post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
-       as: :sign_up_create_email_resend
-  get '/sign_up/enter_password' => 'sign_up/passwords#new'
-  post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
-  get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
-  get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
 
   root to: 'users/sessions#new'
 
