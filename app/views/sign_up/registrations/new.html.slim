@@ -9,7 +9,7 @@ p.mt-tiny.mb0#email-description = t('instructions.registration.email')
   = f.input :email, label: t('forms.registration.labels.email'), required: true,
             input_html: { 'aria-describedby' => 'email-description' }
   .mt1.mb-tiny.bold = t('notices.terms_of_service.headline')
-  - link = link_to t('notices.terms_of_service.link'), privacy_path
+  - link = link_to t('notices.terms_of_service.link'), privacy_path, target: '_blank'
   p.mb-40p == t('notices.terms_of_service.text', link: link)
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb4'
 
