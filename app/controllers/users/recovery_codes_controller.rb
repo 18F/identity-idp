@@ -1,5 +1,5 @@
-module TwoFactorAuthentication
-  class RecoveryCodeController < ApplicationController
+module Users
+  class RecoveryCodesController < ApplicationController
     include RecoveryCodeConcern
 
     before_action :confirm_two_factor_authenticated

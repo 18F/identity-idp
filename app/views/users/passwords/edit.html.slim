@@ -4,7 +4,7 @@
 h1.h3.my0 = t('headings.edit_info.password')
 p.mt-tiny.mb0#password-description
   = t('instructions.password.info.lead', min_length: Devise.password_length.first)
-= simple_form_for(@update_user_password_form, url: settings_password_path,
+= simple_form_for(@update_user_password_form, url: manage_password_path,
     html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
   = f.input :password, label: t('forms.passwords.edit.labels.password'), required: true,
             input_html: { 'aria-describedby': 'password-description' }

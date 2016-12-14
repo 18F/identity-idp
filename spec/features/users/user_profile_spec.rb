@@ -18,7 +18,7 @@ feature 'User profile' do
   describe 'Editing the password' do
     it 'includes the password strength indicator when JS is on', js: true do
       sign_in_and_2fa_user
-      click_link 'Edit', href: settings_password_path
+      click_link 'Edit', href: manage_password_path
 
       expect(page).to_not have_css('#pw-strength-cntnr.hide')
       expect(page).to have_content '...'
@@ -41,7 +41,7 @@ feature 'User profile' do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         sign_in_live_with_2fa(profile.user)
 
-        visit settings_password_path
+        visit manage_password_path
         fill_in 'update_user_password_form_password', with: 'this is a great sentence'
         click_button 'Update'
 

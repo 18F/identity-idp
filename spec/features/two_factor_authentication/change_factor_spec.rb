@@ -5,10 +5,10 @@ feature 'Changing authentication factor' do
     let!(:user) { sign_up_and_2fa }
 
     scenario 'editing password' do
-      visit settings_password_path
+      visit manage_password_path
       complete_2fa_confirmation
 
-      expect(current_path).to eq settings_password_path
+      expect(current_path).to eq manage_password_path
     end
 
     scenario 'editing phone number' do
@@ -16,18 +16,18 @@ feature 'Changing authentication factor' do
 
       @previous_phone_confirmed_at = user.reload.phone_confirmed_at
 
-      visit edit_phone_path
+      visit manage_phone_path
       complete_2fa_confirmation
 
       update_phone_number_and_choose_sms_delivery
 
-      expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
+      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 
       enter_incorrect_otp_code
 
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
       expect(user.reload.phone).to_not eq '+1 (703) 555-0100'
-      expect(page).to have_link t('forms.two_factor.try_again'), href: edit_phone_path
+      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 
       enter_correct_otp_code_for_user(user)
 
@@ -46,10 +46,10 @@ feature 'Changing authentication factor' do
 
       user = sign_in_and_2fa_user
       old_phone = user.phone
-      visit edit_phone_path
+      visit manage_phone_path
       update_phone_number_and_choose_sms_delivery
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-        click_link t('forms.two_factor.try_again'), href: edit_phone_path
+        click_link t('forms.two_factor.try_again'), href: manage_phone_path
         complete_2fa_confirmation_without_entering_otp
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).
@@ -64,10 +64,10 @@ feature 'Changing authentication factor' do
     end
 
     scenario 'editing email' do
-      visit edit_email_path
+      visit manage_email_path
       complete_2fa_confirmation
 
-      expect(current_path).to eq edit_email_path
+      expect(current_path).to eq manage_email_path
     end
   end
 

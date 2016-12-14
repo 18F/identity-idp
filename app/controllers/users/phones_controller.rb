@@ -1,5 +1,5 @@
 module Users
-  class EditPhoneController < ReauthnRequiredController
+  class PhonesController < ReauthnRequiredController
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated
