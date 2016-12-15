@@ -64,5 +64,13 @@ feature 'User profile' do
 
       expect(current_path).to eq profile_path
     end
+
+    it 'does not display progress bar' do
+      sign_in_and_2fa_user
+
+      click_link t('profile.links.regenerate_recovery_code')
+
+      expect(page).to_not have_css('.step-3.active')
+    end
   end
 end
