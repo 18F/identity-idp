@@ -18,6 +18,9 @@ describe SignUp::EmailConfirmationsController do
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :create, confirmation_token: nil
+
+      expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      expect(response).to redirect_to sign_up_email_resend_path
     end
 
     it 'tracks blank email confirmation token' do
@@ -32,6 +35,9 @@ describe SignUp::EmailConfirmationsController do
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :create, confirmation_token: ''
+
+      expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      expect(response).to redirect_to sign_up_email_resend_path
     end
 
     it 'tracks confirmation token as a single-quoted empty string' do
@@ -46,6 +52,9 @@ describe SignUp::EmailConfirmationsController do
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :create, confirmation_token: "''"
+
+      expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      expect(response).to redirect_to sign_up_email_resend_path
     end
 
     it 'tracks confirmation token as a double-quoted empty string' do
@@ -60,6 +69,9 @@ describe SignUp::EmailConfirmationsController do
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :create, confirmation_token: '""'
+
+      expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
+      expect(response).to redirect_to sign_up_email_resend_path
     end
 
     it 'tracks already confirmed token' do
@@ -93,6 +105,10 @@ describe SignUp::EmailConfirmationsController do
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
       get :create, confirmation_token: 'foo'
+
+      expect(flash[:error]).
+        to eq t('errors.messages.confirmation_period_expired', period: '24 hours')
+      expect(response).to redirect_to sign_up_email_resend_path
     end
   end
 
