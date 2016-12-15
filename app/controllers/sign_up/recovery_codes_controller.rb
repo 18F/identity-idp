@@ -3,7 +3,7 @@ module SignUp
     include RecoveryCodeConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_has_not_already_viewed_recovery_code
+    before_action :confirm_has_not_already_viewed_recovery_code, only: [:show]
 
     def show
       if user_session.delete(:first_time_recovery_code_view).present?
@@ -15,7 +15,7 @@ module SignUp
     end
 
     def update
-      redirect_to after_sign_in_path_for(current_user)
+      redirect_to(session[:saml_request_url] || profile_path)
     end
 
     private

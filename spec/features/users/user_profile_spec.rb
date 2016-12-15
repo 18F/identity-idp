@@ -50,27 +50,4 @@ feature 'User profile' do
       end
     end
   end
-
-  describe 'Regenerating recovery code' do
-    it 'displays new code and takes user back to profile page after continuing' do
-      user = sign_in_and_2fa_user
-      old_code = user.recovery_code
-
-      click_link t('profile.links.regenerate_recovery_code')
-
-      expect(user.reload.recovery_code).to_not eq old_code
-
-      click_button t('forms.buttons.continue')
-
-      expect(current_path).to eq profile_path
-    end
-
-    it 'does not display progress bar' do
-      sign_in_and_2fa_user
-
-      click_link t('profile.links.regenerate_recovery_code')
-
-      expect(page).to_not have_css('.step-3.active')
-    end
-  end
 end

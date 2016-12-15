@@ -1,18 +1,61 @@
 require 'rails_helper'
 
-feature 'View recovery code during sign up flow' do
-  scenario 'user sees progress bar on recovery code page' do
-    sign_up_and_view_recovery_code
+feature 'View recovery code' do
+  context 'during sign up' do
+    scenario 'user sees progress bar on recovery code page' do
+      sign_up_and_view_recovery_code
 
-    expect(page).to have_css('.step-3.active')
+      expect(page).to have_css('.step-3.active')
+    end
+
+    scenario 'user refreshes recovery code page' do
+      sign_up_and_view_recovery_code
+
+      visit sign_up_recovery_code_path
+
+      expect(current_path).to eq(profile_path)
+    end
   end
 
-  scenario 'user refreshes recovery code page' do
-    sign_up_and_view_recovery_code
+  context 'after sign up' do
+    scenario 'does not display progress bar' do
+      sign_in_and_2fa_user
 
-    visit sign_up_recovery_code_path
+      click_link t('profile.links.regenerate_recovery_code')
 
-    expect(current_path).to eq(profile_path)
+      expect(page).to_not have_css('.step-3.active')
+    end
+
+    context 'regenerating recovery code' do
+      scenario 'displays new code and returns user to profile page' do
+        user = sign_in_and_2fa_user
+        old_code = user.recovery_code
+
+        click_link t('profile.links.regenerate_recovery_code')
+
+        expect(user.reload.recovery_code).to_not eq old_code
+
+        click_button t('forms.buttons.continue')
+
+        expect(current_path).to eq profile_path
+      end
+    end
+
+    context 'regenerating new code after canceling edit password action' do
+      scenario 'displays new code and returns user to profile page' do
+        Timecop.freeze do
+          sign_in_and_2fa_user
+
+          Timecop.travel(1.minute)
+          first(:link, t('forms.buttons.edit')).click
+          click_on(t('forms.buttons.cancel'))
+          click_on(t('profile.links.regenerate_recovery_code'))
+          click_on(t('forms.buttons.continue'))
+
+          expect(current_path).to eq(profile_path)
+        end
+      end
+    end
   end
 
   def sign_up_and_view_recovery_code
