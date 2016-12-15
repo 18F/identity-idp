@@ -5,7 +5,7 @@ feature 'View recovery code during sign up flow' do
     sign_up_and_view_recovery_code
 
     expect(page).to have_css('.step-3.active')
-  end  
+  end
 
   scenario 'user refreshes recovery code page' do
     sign_up_and_view_recovery_code

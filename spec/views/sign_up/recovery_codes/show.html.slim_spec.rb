@@ -36,7 +36,7 @@ describe 'sign_up/recovery_codes/show.html.slim' do
     expect(rendered).to have_content 'foo'
   end
 
-  it 'displays the correct progress step' do
+  it 'displays the correct progress step when @show_progress_bar is true' do
     @show_progress_bar = true
 
     render
