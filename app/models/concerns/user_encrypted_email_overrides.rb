@@ -50,14 +50,14 @@ module UserEncryptedEmailOverrides
 
   def email
     return '' unless encrypted_email.present?
-    @_encrypted_email ||= EncryptedEmail.new(encrypted_email)
+    @_encrypted_email ||= EncryptedEmail.new(encrypted_email, cost: email_encryption_cost)
     self.email_user_access_key ||= @_encrypted_email.user_access_key
     @_encrypted_email.decrypted
   end
 
   def email=(email)
     if email.present?
-      self.email_user_access_key ||= EncryptedEmail.new_user_access_key
+      self.email_user_access_key ||= EncryptedEmail.new_user_access_key(cost: email_encryption_cost)
       @_encrypted_email = EncryptedEmail.new_from_email(email, email_user_access_key)
       self.encrypted_email = @_encrypted_email.encrypted
       self.email_fingerprint = @_encrypted_email.fingerprint

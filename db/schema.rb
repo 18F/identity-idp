@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161122160523) do
+ActiveRecord::Schema.define(version: 20161214221229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(version: 20161122160523) do
     t.string   "recovery_cost"
     t.string   "email_fingerprint",                         default: "", null: false
     t.text     "encrypted_email",                           default: "", null: false
+    t.string   "email_encryption_cost"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
