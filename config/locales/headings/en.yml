@@ -10,7 +10,7 @@ en:
     edit_info:
       email: Change your email
       password: Change your password
-      phone: Change your phone number
+      phone: Enter your new phone number
     help:
       changing_settings:
         change_email: How do I change my email address?

@@ -91,7 +91,7 @@ feature 'Changing authentication factor' do
 
   def update_phone_number_and_choose_sms_delivery
     fill_in 'update_user_phone_form[phone]', with: '703-555-0100'
-    click_button t('forms.buttons.submit.update')
+    click_button t('forms.buttons.submit.confirm_change')
     click_submit_default
   end
 
