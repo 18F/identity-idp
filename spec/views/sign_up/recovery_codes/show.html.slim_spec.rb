@@ -37,6 +37,8 @@ describe 'sign_up/recovery_codes/show.html.slim' do
   end
 
   it 'displays the correct progress step' do
+    @show_progress_bar = true
+
     render
 
     expect(rendered).to have_css('.step-3.active')

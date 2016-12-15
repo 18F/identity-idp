@@ -1,6 +1,7 @@
 - title t('titles.recovery_code')
 
-= render 'shared/progress_steps', active: 3
+- if @show_progress_bar
+  = render 'shared/progress_steps', active: 3
 h1.h3.my0 = t('headings.recovery_code')
 p.mt-tiny.mb0 = t('instructions.recovery_code')
 .mt4.mb4.py2.px3.inline-block.fs-20p.border.border-dashed.monospace = @code

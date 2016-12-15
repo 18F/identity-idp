@@ -6,7 +6,11 @@ module SignUp
     before_action :confirm_has_not_already_viewed_recovery_code
 
     def show
-      user_session.delete(:first_time_recovery_code_view)
+      if user_session[:first_time_recovery_code_view].present?
+        @show_progress_bar = true
+        user_session.delete(:first_time_recovery_code_view)
+      end
+
       @code = create_new_code
       analytics.track_event(Analytics::USER_REGISTRATION_RECOVERY_CODE_VISIT)
     end
