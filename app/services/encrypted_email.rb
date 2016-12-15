@@ -1,24 +1,24 @@
 class EncryptedEmail
-  attr_reader :user_access_key
+  attr_accessor :user_access_key
 
-  def self.new_user_access_key
+  def self.new_user_access_key(cost: nil, key: nil)
     env = Figaro.env
-    UserAccessKey.new(
-      password: env.email_encryption_key,
-      salt: env.password_pepper,
-      cost: env.email_encryption_cost
-    )
+    key ||= env.email_encryption_key
+    cost ||= env.email_encryption_cost
+    UserAccessKey.new(password: key, salt: key, cost: cost)
   end
 
   def self.new_from_email(email, user_access_key = new_user_access_key)
     encryptor = Pii::PasswordEncryptor.new
     encrypted_email = encryptor.encrypt(email, user_access_key)
-    new(encrypted_email, email)
+    ee = new(encrypted_email, email: email)
+    ee.user_access_key = user_access_key
+    ee
   end
 
-  def initialize(encrypted_email, email = nil)
+  def initialize(encrypted_email, email: nil, cost: nil)
     self.encrypted_email = encrypted_email
-    self.email = email.present? ? email : decrypt
+    self.email = email.present? ? email : decrypt(cost)
   end
 
   def encrypted
@@ -33,14 +33,35 @@ class EncryptedEmail
     Pii::Fingerprinter.fingerprint(email)
   end
 
+  def stale?
+    user_access_key.salt != current_salt
+  end
+
   private
 
   attr_accessor :email, :encrypted_email
-  attr_writer :user_access_key
 
-  def decrypt
+  def current_salt
+    user_access_key.cost + OpenSSL::Digest::SHA256.hexdigest(Figaro.env.email_encryption_key)
+  end
+
+  def decrypt(cost)
     encryptor = Pii::PasswordEncryptor.new
-    self.user_access_key = self.class.new_user_access_key
+    encryption_keys.each do |key|
+      email = try_decrypt(encryptor, key, cost) or next
+      return email
+    end
+    raise Pii::EncryptionError, 'unable to decrypt email with any key'
+  end
+
+  def try_decrypt(encryptor, key, cost)
+    self.user_access_key = self.class.new_user_access_key(cost: cost, key: key)
     encryptor.decrypt(encrypted_email, user_access_key)
+  rescue Pii::EncryptionError => _err
+    nil
+  end
+
+  def encryption_keys
+    [Figaro.env.email_encryption_key] + KeyRotator::Utils.old_keys(:email_encryption_key_queue)
   end
 end

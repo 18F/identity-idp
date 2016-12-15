@@ -675,6 +675,7 @@ DEPENDENCIES
   rqrcode
   rspec-rails (~> 3.5.2)
   rubocop
+  ruby-progressbar
   ruby-saml
   saml_idp!
   sass-rails (~> 5.0)
