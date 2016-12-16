@@ -1,9 +1,12 @@
 module KeyRotator
   class HmacFingerprinter
-    def rotate(user, pii_attributes)
+    def rotate(user:, pii_attributes: nil, profile: nil)
       User.transaction do
         rotate_email_fingerprint(user)
-        rotate_ssn_signature(user.active_profile, pii_attributes)
+        if pii_attributes
+          profile ||= user.active_profile
+          rotate_ssn_signature(profile, pii_attributes)
+        end
       end
     end
 
@@ -15,7 +18,8 @@ module KeyRotator
     end
 
     def rotate_ssn_signature(profile, pii_attributes)
-      profile.update_columns(ssn_signature: Pii::Fingerprinter.fingerprint(pii_attributes.ssn))
+      signature = Pii::Fingerprinter.fingerprint(pii_attributes.ssn.to_s)
+      profile.update_columns(ssn_signature: signature)
     end
   end
 end

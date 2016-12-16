@@ -12,15 +12,23 @@ describe KeyRotator::HmacFingerprinter do
       old_ssn_signature = profile.ssn_signature
       old_email_fingerprint = user.email_fingerprint
 
-      old_hmac_key = Figaro.env.hmac_fingerprinter_key
-      allow(Figaro.env).to receive(:hmac_fingerprinter_key_queue).and_return(
-        "[\"#{old_hmac_key}\"]"
-      )
-      allow(Figaro.env).to receive(:hmac_fingerprinter_key).and_return('a-new-key')
+      rotate_hmac_key
 
-      rotator.rotate(user, pii_attributes)
+      rotator.rotate(user: user, pii_attributes: pii_attributes)
 
       expect(user.active_profile.ssn_signature).to_not eq old_ssn_signature
+      expect(user.email_fingerprint).to_not eq old_email_fingerprint
+    end
+
+    it 'changes email fingerprint if no active profile' do
+      rotator = described_class.new
+      user = create(:user)
+      old_email_fingerprint = user.email_fingerprint
+
+      rotate_hmac_key
+
+      rotator.rotate(user: user)
+
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
     end
   end
