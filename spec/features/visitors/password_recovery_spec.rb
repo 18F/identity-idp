@@ -14,7 +14,7 @@ feature 'Password Recovery' do
       visit root_path
       click_link t('links.passwords.forgot')
       fill_in 'Email', with: user.email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
     end
 
     it 'uses a relevant email subject' do
@@ -54,7 +54,7 @@ feature 'Password Recovery' do
       reset_email
       visit new_user_password_path
       fill_in 'Email', with: user.email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
       open_last_email
       click_email_link_matching(/confirmation_token/)
     end
@@ -86,7 +86,7 @@ feature 'Password Recovery' do
       @user = create(:user)
       visit new_user_password_path
       fill_in 'Email', with: @user.email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
       open_last_email
       click_email_link_matching(/reset_password_token/)
     end
@@ -110,7 +110,7 @@ feature 'Password Recovery' do
       user = create(:user)
       visit new_user_password_path
       fill_in 'Email', with: user.email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
       visit edit_user_password_path(reset_password_token: 'invalid_token')
     end
 
@@ -128,7 +128,7 @@ feature 'Password Recovery' do
       @user = create(:user, :signed_up)
       visit new_user_password_path
       fill_in 'Email', with: @user.email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
       open_last_email
       click_email_link_matching(/reset_password_token/)
     end
@@ -154,7 +154,7 @@ feature 'Password Recovery' do
 
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
@@ -171,7 +171,7 @@ feature 'Password Recovery' do
 
     invalid_addresses.each do |email|
       fill_in 'Email', with: email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content t('valid_email.validations.email.invalid')
     end
@@ -179,7 +179,7 @@ feature 'Password Recovery' do
 
   scenario 'user submits blank email address' do
     visit new_user_password_path
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
   end
@@ -187,7 +187,7 @@ feature 'Password Recovery' do
   scenario 'user is unable to determine if account exists' do
     visit new_user_password_path
     fill_in 'Email', with: 'no_account_exists@gmail.com'
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content(t('notices.password_reset'))
   end
@@ -198,7 +198,7 @@ feature 'Password Recovery' do
 
       visit new_user_password_path
       fill_in 'Email', with: @user.email
-      click_button t('forms.buttons.reset_password')
+      click_button t('forms.buttons.continue')
 
       raw_reset_token, db_confirmation_token =
         Devise.token_generator.generate(User, :reset_password_token)
@@ -280,7 +280,7 @@ feature 'Password Recovery' do
 
     visit new_user_password_path
     fill_in 'Email', with: user.email
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
     open_last_email
     click_email_link_matching(/reset_password_token/)
 
@@ -303,7 +303,7 @@ feature 'Password Recovery' do
 
     visit new_user_password_path
     fill_in 'Email', with: user.email
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     user.reset_password_sent_at =
       Time.zone.now - Devise.reset_password_within - 1.hour
@@ -324,7 +324,7 @@ feature 'Password Recovery' do
 
     visit new_user_password_path
     fill_in 'Email', with: user.email
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     expect(last_email.subject).
       to eq t('devise.mailer.confirmation_instructions.subject')
@@ -333,7 +333,7 @@ feature 'Password Recovery' do
   scenario 'user enters non-existent email address into password reset form' do
     visit new_user_password_path
     fill_in 'user_email', with: 'ThisEmailAddressShall@NeverExist.com'
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content t('notices.password_reset')
     expect(page).not_to(have_content('not found'))
@@ -346,7 +346,7 @@ feature 'Password Recovery' do
 
     visit new_user_password_path
     fill_in 'user_email', with: user.email
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content t('notices.password_reset')
     expect(ActionMailer::Base.deliveries).to be_empty
@@ -358,7 +358,7 @@ feature 'Password Recovery' do
 
     visit new_user_password_path
     fill_in 'user_email', with: user.email
-    click_button t('forms.buttons.reset_password')
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content t('notices.password_reset')
     expect(ActionMailer::Base.deliveries).to be_empty
