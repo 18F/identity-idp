@@ -1,9 +1,12 @@
 - title t('titles.passwords.forgot')
 
 h1.h3.my0 = t('headings.passwords.forgot')
+p.mt-tiny.mb0#email-description
+  = t('instructions.password.forgot')
 = simple_form_for(resource,
                   url: user_password_path,
                   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
 
-  = f.input :email, required: true
-  = f.button :submit, t('forms.buttons.reset_password'), class: 'mt2 mb1'
+  = f.input :email, required: true, input_html: { 'aria-describedby': 'email-description' }
+  = f.button :submit, t('forms.buttons.continue'), class: 'mt2'
+.mt1 = link_to t('forms.buttons.cancel'), new_user_session_path
