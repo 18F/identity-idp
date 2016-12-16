@@ -151,11 +151,22 @@ module TwoFactorAuthenticatable
     user_session[:authn_at] = Time.zone.now
   end
 
-  def assign_variables_for_otp_verification_show_view
-    @phone_number = display_phone_to_deliver_to
-    @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-    @delivery_method = params[:delivery_method]
-    @reenter_phone_number_path = reenter_phone_number_path
+  def otp_phone_view_data
+    delivery_method = params[:delivery_method]
+
+    {
+      phone_number: display_phone_to_deliver_to,
+      code_value: FeatureManagement.prefill_otp_codes? ? current_user.direct_otp : nil,
+      delivery_method: delivery_method,
+      reenter_phone_number_path: reenter_phone_number_path,
+      resend_code_path: resend_code_path(delivery_method),
+      totp_enabled: current_user.totp_enabled?,
+      unconfirmed_phone: user_session[:unconfirmed_phone]
+    }
+  end
+
+  def resend_code_path(delivery_method)
+    otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method, resend: true })
   end
 
   def display_phone_to_deliver_to
@@ -174,5 +185,9 @@ module TwoFactorAuthenticatable
     else
       phone_setup_path
     end
+  end
+
+  def presenter_for(otp_code_method, data_model)
+    TwoFactorAuthCode.const_get("#{otp_code_method}_delivery_presenter".classify).new(data_model)
   end
 end

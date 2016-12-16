@@ -101,7 +101,7 @@ en:
       choose_delivery_confirmation: >
         How would you like to receive your confirmation passcode for %{phone}?
       choose_otp_delivery: >
-        Please select how you would like to receive your one-time passcode for %{phone}
+        We will send it to %{phone} immediately. Message and data rates may apply.
       contact_administrator: Please contact your system administrator.
       header_text: Enter your passcode
       invalid_otp: >
@@ -126,8 +126,8 @@ en:
         Your phone number has been set. Confirm it by entering the passcode below.
       please_try_again_html: Please try again in %{time_remaining}.
       recovery_code_fallback:
-        link: recovery code
-        text: Don’t have access to your phone? Use a %{link} instead.
+        link: personal recovery code
+        text: Phone not available? Use your %{link}.
       recovery_code_header_text: Enter your recovery code
       recovery_code_prompt: >
         You can use this recovery code once. If you still need a code after

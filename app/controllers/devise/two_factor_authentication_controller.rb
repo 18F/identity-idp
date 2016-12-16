@@ -6,8 +6,8 @@ module Devise
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_path
       else
-        @phone_number = decorated_user.masked_two_factor_phone_number
         @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+        @presenter = presenter_for('otp', otp_phone_view_data)
       end
     end
 
