@@ -19,12 +19,12 @@ p.mt-tiny.mb0#2fa-description
       class: 'block bold'
     fieldset.border-none
       legend.hide = t('devise.two_factor_authentication.otp_method.instruction')
-      label.radio.mb0.mr3
+      label.radio.mb2.block
         = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
           checked: true
         span.indicator#sms-otp-description
         = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio.mb0
+      label.radio.mb0.block
         = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
         span.indicator#voice-otp-description
         = t('devise.two_factor_authentication.otp_method.voice')
