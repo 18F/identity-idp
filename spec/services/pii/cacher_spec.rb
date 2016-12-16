@@ -33,6 +33,21 @@ describe Pii::Cacher do
       expect(decrypted_pii[:ssn]).to eq '5678'
       expect(user_session[:decrypted_pii]).to eq decrypted_pii_json
     end
+
+    it 'updates fingerprints when keys are rotated' do
+      old_ssn_signature = profile.ssn_signature
+      old_email_fingerprint = user.email_fingerprint
+      old_encrypted_email = user.encrypted_email
+
+      rotate_all_keys
+
+      subject.save(user_access_key)
+      profile.reload
+
+      expect(user.email_fingerprint).to_not eq old_email_fingerprint
+      expect(user.encrypted_email).to_not eq old_encrypted_email
+      expect(profile.ssn_signature).to_not eq old_ssn_signature
+    end
   end
 
   describe '#fetch' do

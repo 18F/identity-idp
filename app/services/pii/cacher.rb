@@ -12,8 +12,12 @@ module Pii
     end
 
     def save(user_access_key, profile = user.active_profile)
-      return unless profile
-      user_session[:decrypted_pii] = profile.decrypt_pii(user_access_key).to_json
+      if profile
+        user_session[:decrypted_pii] = profile.decrypt_pii(user_access_key).to_json
+      end
+      rotate_fingerprints(profile) if stale_fingerprints?(profile)
+      rotate_encrypted_email if user.stale_encrypted_email?
+      user_session[:decrypted_pii]
     end
 
     def fetch
@@ -25,5 +29,32 @@ module Pii
     private
 
     attr_reader :user, :user_session
+
+    def rotate_fingerprints(profile)
+      KeyRotator::HmacFingerprinter.new.rotate(
+        user: user,
+        profile: profile,
+        pii_attributes: fetch
+      )
+    end
+
+    def rotate_encrypted_email
+      KeyRotator::EmailEncryption.new.rotate(user)
+    end
+
+    def stale_fingerprints?(profile)
+      stale_email_fingerprint? || stale_ssn_signature?(profile)
+    end
+
+    def stale_email_fingerprint?
+      Pii::Fingerprinter.stale?(user.email.downcase, user.email_fingerprint)
+    end
+
+    def stale_ssn_signature?(profile)
+      return false unless profile
+      decrypted_pii = fetch
+      return false unless decrypted_pii
+      Pii::Fingerprinter.stale?(decrypted_pii.ssn, profile.ssn_signature)
+    end
   end
 end
