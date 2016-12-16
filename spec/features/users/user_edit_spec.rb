@@ -16,7 +16,7 @@ feature 'User edit' do
 
     visit manage_phone_path
     fill_in 'Phone', with: ''
-    click_button 'Update'
+    click_button t('forms.buttons.submit.confirm_change')
 
     expect(page).to have_content t('errors.messages.improbable_phone')
   end
