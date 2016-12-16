@@ -2,6 +2,7 @@ Attribute:
   enabled: false
 DuplicateMethodCall:
   exclude:
+    - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - Remote#command
     - Remote#extract_trailing_options
