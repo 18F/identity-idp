@@ -10,6 +10,8 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       @delivery_method = 'sms'
     end
 
+    it_behaves_like 'an otp form'
+
     it 'has a localized title' do
       expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
 
