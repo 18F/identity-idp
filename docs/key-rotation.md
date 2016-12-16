@@ -29,7 +29,7 @@ Applicable keys under this scenario:
 * `saml_passphrase`
 * `session_encryption_key`
 
-## No user action required
+## Affects long-term storage
 
 An example is `email_encryption_key`. This key can be changed, and the old key added
 to the `email_encryption_key_queue`. The next time the user signs in,
@@ -41,14 +41,9 @@ Applicable keys under this scenario:
 * `email_encryption_key`
 * `hmac_fingerprinter_key`
 
-## New recovery code required
+## Affects local key encryption
 
-An example is `password_pepper`. When this value is changed, it affects password encryption
-and thus any encrypted PII stored on a `Profile`. Changing the PII encryption will generate
-a new recovery code, so some user interaction is required. Therefore this kind of change
-should prompt the user at sign in and is not automatic. Of course, if the user changes
-or resets their password, that action will have the same effect.
-
-Applicable keys under this scenario:
-
-* `password_pepper`
+When using a HSM like AWS KMS, key rotation is handled by the service so there is nothing
+to do. However in local development or when `use_kms?` feature is off,
+the `password_pepper` is used to encrypt PII keys. Changing `password_pepper` will invalidate
+any existing encrypted PII and render it non-decryptable.
