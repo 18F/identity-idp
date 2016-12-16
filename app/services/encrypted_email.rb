@@ -30,7 +30,7 @@ class EncryptedEmail
   end
 
   def fingerprint
-    Pii::Fingerprinter.fingerprint(email)
+    Pii::Fingerprinter.fingerprint(email.downcase)
   end
 
   def stale?

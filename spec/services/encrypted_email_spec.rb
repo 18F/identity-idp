@@ -18,11 +18,10 @@ describe EncryptedEmail do
     end
 
     it 'automatically decrypts using old key' do
-      allow(Figaro.env).to receive(:email_encryption_key_queue).and_return('["some-old-key"]')
-      old_uak = EncryptedEmail.new_user_access_key(key: 'some-old-key')
-      ee = EncryptedEmail.new_from_email(email, old_uak)
+      encrypted_with_old_key = encrypted_email
+      rotate_email_encryption_key
 
-      expect(EncryptedEmail.new(ee.encrypted).decrypted).to eq email
+      expect(EncryptedEmail.new(encrypted_with_old_key).decrypted).to eq email
     end
   end
 
@@ -41,11 +40,10 @@ describe EncryptedEmail do
 
   describe '#stale?' do
     it 'returns true when email was encrypted with old key' do
-      allow(Figaro.env).to receive(:email_encryption_key_queue).and_return('["some-old-key"]')
-      old_uak = EncryptedEmail.new_user_access_key(key: 'some-old-key')
-      ee = EncryptedEmail.new_from_email(email, old_uak)
+      encrypted_with_old_key = encrypted_email
+      rotate_email_encryption_key
 
-      expect(ee.stale?).to eq true
+      expect(EncryptedEmail.new(encrypted_with_old_key).stale?).to eq true
     end
 
     it 'returns false when email was encrypted with current key' do

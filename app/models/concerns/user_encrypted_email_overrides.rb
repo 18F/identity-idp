@@ -66,4 +66,9 @@ module UserEncryptedEmailOverrides
       self.email_fingerprint = ''
     end
   end
+
+  def stale_encrypted_email?
+    return false unless email.present?
+    @_encrypted_email.stale?
+  end
 end
