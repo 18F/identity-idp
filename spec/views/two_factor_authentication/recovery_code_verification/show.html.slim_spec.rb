@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe 'two_factor_authentication/recovery_code_verification/show.html.slim' do
+  it_behaves_like 'an otp form'
+
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
 
