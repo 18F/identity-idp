@@ -43,17 +43,15 @@ feature 'View recovery code' do
 
     context 'regenerating new code after canceling edit password action' do
       scenario 'displays new code and returns user to profile page' do
-        Timecop.freeze do
-          sign_in_and_2fa_user
+        allow(Figaro.env).to receive(:reauthn_window).and_return('0')
 
-          Timecop.travel(1.minute)
-          first(:link, t('forms.buttons.edit')).click
-          click_on(t('forms.buttons.cancel'))
-          click_on(t('profile.links.regenerate_recovery_code'))
-          click_on(t('forms.buttons.continue'))
+        sign_in_and_2fa_user
+        first(:link, t('forms.buttons.edit')).click
+        click_on(t('forms.buttons.cancel'))
+        click_on(t('profile.links.regenerate_recovery_code'))
+        click_on(t('forms.buttons.continue'))
 
-          expect(current_path).to eq(profile_path)
-        end
+        expect(current_path).to eq(profile_path)
       end
     end
   end
