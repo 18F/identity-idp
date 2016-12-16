@@ -7,17 +7,17 @@ p.mt-tiny.mb0#2fa-description
 = simple_form_for(@otp_delivery_selection_form,
     url: otp_send_path,
     method: :get,
-    role: 'form', class: 'mt3 sm-mt4') do |f|
+    role: 'form', html: { class: 'mt2 sm-mt3' }) do |f|
   - if reauthn?
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb3
     fieldset.border-none
       legend.hide = t('devise.two_factor_authentication.otp_method.title')
-      label.radio.mb0.mr3
+      label.radio.mb2.block
         = f.radio_button :otp_method, 'sms', checked: true
         span.indicator
         = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio.mb0
+      label.radio.mb0.block
         = f.radio_button :otp_method, 'voice'
         span.indicator
         = t('devise.two_factor_authentication.otp_method.voice')
