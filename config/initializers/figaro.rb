@@ -15,6 +15,7 @@ Figaro.require_keys(
   'otp_delivery_blocklist_findtime',
   'otp_delivery_blocklist_maxretry',
   'otp_valid_for',
+  'password_max_attempts',
   'password_pepper',
   'password_strength_enabled',
   'queue_health_check_dead_interval_seconds',

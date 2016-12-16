@@ -19,6 +19,8 @@ mailer_domain_name: 'http://localhost:3000'
 # https://github.com/dropbox/zxcvbn#usage
 min_password_score: '3'
 
+password_max_attempts: '3'
+
 # If a queue does not have a healthy job after this many seconds, report it as unhealthy
 queue_health_check_dead_interval_seconds: '240'
 
