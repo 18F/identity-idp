@@ -11,7 +11,6 @@ Devise.setup do |config|
   config.mailer_sender = email_with_name(Figaro.env.email_from, Figaro.env.email_from)
   config.paranoid = true
   config.password_length = 8..128
-  config.pepper = Figaro.env.password_pepper
   config.reconfirmable = true
   config.reset_password_within = 6.hours
   config.secret_key = Figaro.env.secret_key_base
