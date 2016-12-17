@@ -27,7 +27,8 @@ class PasswordResetEmailForm
       success: success,
       errors: errors.messages.values.flatten,
       user_id: user.uuid,
-      role: user.role
+      role: user.role,
+      confirmed: user.confirmed?
     }
   end
 

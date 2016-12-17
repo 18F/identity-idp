@@ -72,7 +72,6 @@ es:
     recovery_code: NOT TRANSLATED YET
     registrations:
       enter_email: NOT TRANSLATED YET
-      verify_email: NOT TRANSLATED YET
     search: NOT TRANSLATED YET
     session_timeout_warning: NOT TRANSLATED YET
     sign_in_with_sp: NOT TRANSLATED YET
@@ -80,3 +79,4 @@ es:
     totp_setup:
       new: NOT TRANSLATED YET
       start: NOT TRANSLATED YET
+    verify_email: NOT TRANSLATED YET

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'forgot_password/show.html.slim' do
   before do
-    allow(view).to receive(:email).and_return('foo@bar.com')
+    @email = 'foo@bar.com'
     @password_reset_email_form = PasswordResetEmailForm.new('foo@bar.com')
   end
 

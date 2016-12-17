@@ -79,7 +79,7 @@ module Users
     end
 
     def handle_successful_password_reset
-      resource.update(password: user_params[:password], confirmed_at: Time.current)
+      update_user
 
       mark_profile_inactive
 
@@ -98,6 +98,11 @@ module Users
       end
 
       render :edit
+    end
+
+    def update_user
+      resource.update(confirmed_at: Time.current) unless resource.confirmed?
+      resource.update(password: user_params[:password])
     end
 
     def mark_profile_inactive
