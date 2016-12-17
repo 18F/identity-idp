@@ -1,0 +1,6 @@
+---
+en:
+  experiments:
+    demo:
+      create_account: Empezar
+      get_started: Empezar  
