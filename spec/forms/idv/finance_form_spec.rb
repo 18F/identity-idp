@@ -62,11 +62,10 @@ describe Idv::FinanceForm do
 
         finance_types.each do |type|
           next if type == :ccn
-          symbolized_type = type.to_sym
-          params = { symbolized_type => '1234567', finance_type: symbolized_type }
+          params = { type => '1234567', finance_type: type }
 
           expect(subject.submit(params)).to eq false
-          expect(subject.errors[symbolized_type]).to eq(
+          expect(subject.errors[type]).to eq(
             [t('idv.errors.finance_number_length')]
           )
         end
