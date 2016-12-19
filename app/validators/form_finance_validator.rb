@@ -1,8 +1,8 @@
 module FormFinanceValidator
   extend ActiveSupport::Concern
 
-  VALID_MINIMUM_LENGTH = '8'.freeze
-  VALID_MAXIMUM_LENGTH = '30'.freeze
+  VALID_MINIMUM_LENGTH = 8
+  VALID_MAXIMUM_LENGTH = 30
 
   included do
     attr_reader :params
@@ -56,6 +56,6 @@ module FormFinanceValidator
   end
 
   def valid_range
-    VALID_MINIMUM_LENGTH.to_i..VALID_MAXIMUM_LENGTH.to_i
+    VALID_MINIMUM_LENGTH..VALID_MAXIMUM_LENGTH
   end
 end
