@@ -6,7 +6,10 @@ module Idv
     FINANCE_TYPES = [:ccn, :mortgage, :home_equity_line, :auto_loan].freeze
 
     FINANCE_HTML_OPTIONS = {
-      ccn: { maxlength: 8 }
+      ccn: { maxlength: 8 },
+      mortgage: { minlength: 8 },
+      home_equity_line: { minlength: 8 },
+      auto_loan: { minlength: 8 }
     }.freeze
 
     attr_reader :idv_params, :finance_type, *FINANCE_TYPES
