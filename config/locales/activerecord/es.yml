@@ -1,0 +1,9 @@
+es:
+  activerecord:
+    errors:
+      models:
+        app_setting:
+          attributes:
+            value:
+              cannot_disable_2fa_in_prod: NOT TRANSLATED YET
+              invalid: NOT TRANSLATED YET

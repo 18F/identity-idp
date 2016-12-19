@@ -1,0 +1,26 @@
+---
+es:
+  mailer:
+    about: NOT TRANSLATED YET
+    confirmation_instructions:
+      first_sentence:
+        confirmed: NOT TRANSLATED YET
+        reset_requested: NOT TRANSLATED YET
+        unconfirmed: NOT TRANSLATED YET
+      footer: NOT TRANSLATED YET
+      header: NOT TRANSLATED YET
+      link_text: NOT TRANSLATED YET
+    contact_request:
+      subject: NOT TRANSLATED YET
+    email_change_notice:
+      subject: NOT TRANSLATED YET
+    email_reuse_notice:
+      subject: NOT TRANSLATED YET
+    help: NOT TRANSLATED YET
+    no_reply: NOT TRANSLATED YET
+    privacy_policy: NOT TRANSLATED YET
+    reset_password:
+      footer: NOT TRANSLATED YET
+      header: NOT TRANSLATED YET
+      link_text: NOT TRANSLATED YET
+    sent_from: NOT TRANSLATED YET

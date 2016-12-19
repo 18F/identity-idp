@@ -1,0 +1,39 @@
+---
+es:
+  notices:
+    dap_html: NOT TRANSLATED YET
+    password_changed: NOT TRANSLATED YET
+    password_reset: NOT TRANSLATED YET
+    phone_confirmation_successful: NOT TRANSLATED YET
+    resend_confirmation_email:
+      success: NOT TRANSLATED YET
+    send_code:
+      sms: NOT TRANSLATED YET
+      voice: NOT TRANSLATED YET
+    timeout_warning:
+      signed_in:
+        continue: NOT TRANSLATED YET
+        sign_out: NOT TRANSLATED YET
+        message_html: NOT TRANSLATED YET
+      partially_signed_in:
+        continue: NOT TRANSLATED YET
+        sign_out: NOT TRANSLATED YET
+        message_html: NOT TRANSLATED YET
+    session_cleared: NOT TRANSLATED YET
+    sign_in_consent:
+      link: NOT TRANSLATED YET
+      text: NOT TRANSLATED YET
+    signed_up_but_unconfirmed:
+      first_paragraph_end: NOT TRANSLATED YET
+      first_paragraph_start: NOT TRANSLATED YET
+      no_email_sent_explanation_start: NOT TRANSLATED YET
+    terms_of_service:
+      headline: NOT TRANSLATED YET
+      link: NOT TRANSLATED YET
+      text: NOT TRANSLATED YET
+    totp_configured: NOT TRANSLATED YET
+    totp_disabled: NOT TRANSLATED YET
+    use_diff_email:
+      link: NOT TRANSLATED YET
+      text_html: NOT TRANSLATED YET
+  session_timedout: NOT TRANSLATED YET

@@ -1,0 +1,7 @@
+es:
+  users:
+    totp_setup:
+      new:
+        qr_img_alt: NOT TRANSLATED YET
+      start:
+        app_img_alt: NOT TRANSLATED YET

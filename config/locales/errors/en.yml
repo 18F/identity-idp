@@ -4,6 +4,9 @@ en:
     confirm_password_incorrect: The password you provided is incorrect.
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
     invalid_totp: Invalid code entered.  Please try again.
+    max_password_attempts_reached: >
+      We signed you out due to failing to provide your correct password. If you
+      forgot your password, click on the "Forgot your password?" link below.
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
@@ -29,7 +32,3 @@ en:
       requires_phone: requires you to enter your phone number.
       weak_password: Your password is not strong enough. %{feedback}
     not_authorized: You are not authorized to perform this action.
-    max_password_attempts_reached: >
-      We signed you out due to failing to provide your correct password.
-      If you forgot your password, click on the "Forgot your password?" link
-      below.

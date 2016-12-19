@@ -1,0 +1,25 @@
+---
+es:
+  instructions:
+    2fa:
+      confirm_code: NOT TRANSLATED YET
+      resend: NOT TRANSLATED YET
+      totp_intro_html: NOT TRANSLATED YET
+      wrong_number: NOT TRANSLATED YET
+    password:
+      forgot: NOT TRANSLATED YET
+      info:
+        lead: NOT TRANSLATED YET
+        point_1: NOT TRANSLATED YET
+        point_2: NOT TRANSLATED YET
+      strength:
+        i: NOT TRANSLATED YET
+        ii: NOT TRANSLATED YET
+        iii: NOT TRANSLATED YET
+        intro: NOT TRANSLATED YET
+        iv: NOT TRANSLATED YET
+        v: NOT TRANSLATED YET
+    recovery_code: NOT TRANSLATED YET
+    registration:
+      already_have_account: NOT TRANSLATED YET
+      email: NOT TRANSLATED YET

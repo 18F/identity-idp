@@ -1,0 +1,5 @@
+es:
+  valid_email:
+    validations:
+      email:
+        invalid: NOT TRANSLATED YET
