@@ -37,28 +37,28 @@ en:
         bullet_2: Mailing address
         bullet_3: Date of birth
         bullet_4: Social Security Number
-        header: Basic information
-        subheader: We need to know some personal details
+        header: Personal information
+        subheader: 'We’ll start with some personal details like your:'
       section_2:
         bullet_1: Last 8 digits of a credit card
         bullet_2: Auto loan account number
         bullet_3: Mortgage loan account number
         bullet_4: Home equity line of credit account number
         footnote: >
-          You are not sharing any account balances or transaction details, and
-          we will never charge any fees.
+          You will never be charged any money and are not sharing any account balances or other
+          financial information with us. We only check the account number to help verify you.
         header: Financial information
-        subheader: 'We need one of the following:'
+        subheader: 'We need one of the following financial account numbers:'
       section_3:
-        bullet_1: Be in your name, or a family member’s name
+        bullet_1: Be in your name or the name of someone in your household
         bullet_2_html: >
-          <strong>Not</strong> be a virtual phone, such as Google Voice or Skype
+          <strong>Not</strong> be a virtual phone, like Google Voice or Skype
         bullet_3_html: >
           <strong>Not</strong> be a pay-as-you-go phone
         header: Phone line in your name
         subheader: >
           We use telephone company records to verify your identity. The phone
-          number you give us:
+          number you give us should:
       subheader: To verify your identity, we’ll ask you to answer a few questions
     messages:
       activated_html: >
@@ -92,7 +92,7 @@ en:
         to find answers to common questions about verification.
       hardfail4: You can also go to %{sp} for more help in accessing services.
       phone:
-        in_your_name: in your name, or your spouse’s name
+        in_your_name: in your name or the name of someone in your household
         intro: >
           To help us verify your identity, please give us a phone number that
           belongs to you and that meets the criteria below:
@@ -102,7 +102,7 @@ en:
         same_as_2fa: >
           This phone number can be the same one you used to set up your one-time
           password as long as it meets the criteria above.
-        virtual: a Google voice number, Skype account or virtual phone
+        virtual: a virtual phone, like Google Voice or Skype
       questions:
         intro: Question %{number}
       recovery_code: >
