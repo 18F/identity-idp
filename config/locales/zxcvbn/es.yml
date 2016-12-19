@@ -1,0 +1,31 @@
+---
+es:
+  zxcvbn:
+    feedback:
+      "A word by itself is easy to guess": NOT TRANSLATED YET
+      "Add another word or two_ Uncommon words are better_": NOT TRANSLATED YET
+      "All-uppercase is almost as easy to guess as all-lowercase": NOT TRANSLATED YET
+      "Avoid dates and years that are associated with you": NOT TRANSLATED YET
+      "Avoid recent years": NOT TRANSLATED YET
+      "Avoid repeated words and characters": NOT TRANSLATED YET
+      "Avoid sequences": NOT TRANSLATED YET
+      "Avoid years that are associated with you": NOT TRANSLATED YET
+      "Capitalization doesn't help very much": NOT TRANSLATED YET
+      "Common names and surnames are easy to guess": NOT TRANSLATED YET
+      "Dates are often easy to guess": NOT TRANSLATED YET
+      "Names and surnames by themselves are easy to guess": NOT TRANSLATED YET
+      "No need for symbols, digits, or uppercase letters": NOT TRANSLATED YET
+      "Predictable substitutions like '@' instead of 'a' don't help very much": NOT TRANSLATED YET
+      "Recent years are easy to guess": NOT TRANSLATED YET
+      "Repeats like \"aaa\" are easy to guess": NOT TRANSLATED YET
+      "Repeats like \"abcabcabc\" are only slightly harder to guess than \"abc\"": NOT TRANSLATED YET
+      "Reversed words aren't much harder to guess": NOT TRANSLATED YET
+      "Sequences like abc or 6543 are easy to guess": NOT TRANSLATED YET
+      "Short keyboard patterns are easy to guess": NOT TRANSLATED YET
+      "Straight rows of keys are easy to guess": NOT TRANSLATED YET
+      "This is a top-10 common password": NOT TRANSLATED YET
+      "This is a top-100 common password": NOT TRANSLATED YET
+      "This is a very common password": NOT TRANSLATED YET
+      "This is similar to a commonly used password": NOT TRANSLATED YET
+      "Use a few words, avoid common phrases": NOT TRANSLATED YET
+      "Use a longer keyboard pattern with more turns": NOT TRANSLATED YET

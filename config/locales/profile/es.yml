@@ -1,0 +1,19 @@
+---
+es:
+  profile:
+    index:
+      address: NOT TRANSLATED YET
+      authentication_app: NOT TRANSLATED YET
+      dob: NOT TRANSLATED YET
+      email: NOT TRANSLATED YET
+      full_name: NOT TRANSLATED YET
+      password: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+      reactivation:
+        instructions: NOT TRANSLATED YET
+        reactivate_button: NOT TRANSLATED YET
+      ssn: NOT TRANSLATED YET
+    items:
+      recovery_code: NOT TRANSLATED YET
+    links:
+      regenerate_recovery_code: NOT TRANSLATED YET

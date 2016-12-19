@@ -1,0 +1,98 @@
+---
+es:
+  devise:
+    confirmations:
+      already_confirmed: NOT TRANSLATED YET
+      confirmed: NOT TRANSLATED YET
+      confirmed_but_must_set_password: NOT TRANSLATED YET
+      send_instructions: NOT TRANSLATED YET
+      send_paranoid_instructions: NOT TRANSLATED YET
+    failure:
+      already_authenticated: ''
+      inactive: NOT TRANSLATED YET
+      invalid: NOT TRANSLATED YET
+      last_attempt: NOT TRANSLATED YET
+      locked: NOT TRANSLATED YET
+      not_found_in_database: NOT TRANSLATED YET
+      session_limited: NOT TRANSLATED YET
+      timeout: NOT TRANSLATED YET
+      unauthenticated: ''
+      unconfirmed: NOT TRANSLATED YET
+    mailer:
+      account_locked:
+        subject: NOT TRANSLATED YET
+      confirmation_instructions:
+        subject: NOT TRANSLATED YET
+      password_updated:
+        subject: NOT TRANSLATED YET
+      reset_password_instructions:
+        subject: NOT TRANSLATED YET
+    omniauth_callbacks:
+      failure: NOT TRANSLATED YET
+      success: NOT TRANSLATED YET
+    passwords:
+      choose_new_password: NOT TRANSLATED YET
+      invalid_token: NOT TRANSLATED YET
+      no_token: NOT TRANSLATED YET
+      send_instructions: NOT TRANSLATED YET
+      send_paranoid_instructions: NOT TRANSLATED YET
+      token_expired: NOT TRANSLATED YET
+      updated: NOT TRANSLATED YET
+      updated_not_active: NOT TRANSLATED YET
+    registrations:
+      close_window: NOT TRANSLATED YET
+      destroy_confirm: NOT TRANSLATED YET
+      destroyed: NOT TRANSLATED YET
+      email_and_phone_need_confirmation: NOT TRANSLATED YET
+      email_update_needs_confirmation: NOT TRANSLATED YET
+      enabled_twofactor: NOT TRANSLATED YET
+      phone_update_needs_confirmation: NOT TRANSLATED YET
+      signed_up: NOT TRANSLATED YET
+      signed_up_but_inactive: NOT TRANSLATED YET
+      signed_up_but_locked: NOT TRANSLATED YET
+      start:
+        bullet_1_with_sp: NOT TRANSLATED YET
+        bullet_1_without_sp: NOT TRANSLATED YET
+        bullet_2: NOT TRANSLATED YET
+        bullet_3: NOT TRANSLATED YET
+      updated: NOT TRANSLATED YET
+    sessions:
+      already_signed_out: NOT TRANSLATED YET
+      signed_in: ''
+      signed_out: NOT TRANSLATED YET
+    two_factor_authentication:
+      buttons:
+        confirm_with_sms: NOT TRANSLATED YET
+        confirm_with_voice: NOT TRANSLATED YET
+      choose_delivery_confirmation: NOT TRANSLATED YET
+      choose_otp_delivery: NOT TRANSLATED YET
+      contact_administrator: NOT TRANSLATED YET
+      header_text: NOT TRANSLATED YET
+      invalid_otp: NOT TRANSLATED YET
+      invalid_recovery_code: NOT TRANSLATED YET
+      max_login_attempts_reached: NOT TRANSLATED YET
+      otp_method:
+        instruction: NOT TRANSLATED YET
+        sms: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+        voice: NOT TRANSLATED YET
+      otp_phone_label: NOT TRANSLATED YET
+      otp_phone_label_info: NOT TRANSLATED YET
+      otp_setup_html: NOT TRANSLATED YET
+      otp_sms_disclaimer: NOT TRANSLATED YET
+      please_confirm: NOT TRANSLATED YET
+      please_try_again_html: NOT TRANSLATED YET
+      recovery_code_fallback:
+        link: NOT TRANSLATED YET
+        text: NOT TRANSLATED YET
+      recovery_code_header_text: NOT TRANSLATED YET
+      recovery_code_prompt: NOT TRANSLATED YET
+      totp_fallback:
+        sms_link_text: NOT TRANSLATED YET
+        text: NOT TRANSLATED YET
+        voice_link_text: NOT TRANSLATED YET
+      totp_header_text: NOT TRANSLATED YET
+      totp_info: NOT TRANSLATED YET
+      two_factor_setup: NOT TRANSLATED YET
+      user:
+        new_otp_sent: NOT TRANSLATED YET
