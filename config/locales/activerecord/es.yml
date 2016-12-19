@@ -5,5 +5,5 @@ es:
         app_setting:
           attributes:
             value:
-              cannot_disable_2fa_in_prod: NOT TRANSLATED YET
-              invalid: NOT TRANSLATED YET
+              cannot_disable_2fa_in_prod: La autenticación de dos factores no se puede desactivar en la producción
+              invalid: El valor tiene que ser '1' o '0'
