@@ -1,12 +1,12 @@
 ---
 es:
   contact:
-    intro: NOT TRANSLATED YET
+    intro: Yo quiero...
     labels:
-      comments: NOT TRANSLATED YET
-      comments_note: NOT TRANSLATED YET
-      email_or_tel: NOT TRANSLATED YET
-    learn_more: NOT TRANSLATED YET
+      comments: Comentarios
+      comments_note: Opcional, pero muy útil
+      email_or_tel: Dirección de correo electrónico o número de teléfono
+    learn_more: Aprender más acerca de %{app}
     messages:
-      thanks: NOT TRANSLATED YET
-    tell_experience: NOT TRANSLATED YET
+      thanks: ¡Gracias! Estaremos en contacto pronto
+    tell_experience: Decirle acerca de mi experiencia con %{app}
