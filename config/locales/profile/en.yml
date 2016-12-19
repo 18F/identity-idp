@@ -2,7 +2,7 @@
 en:
   profile:
     index:
-      address: Mailing address
+      address: Current address
       authentication_app: Authentication app
       dob: Date of birth
       email: Email address
