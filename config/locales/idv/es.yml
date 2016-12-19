@@ -1,0 +1,108 @@
+---
+es:
+  idv:
+    errors:
+      bad_dob: NOT TRANSLATED YET
+      duplicate_ssn: NOT TRANSLATED YET
+      fail: NOT TRANSLATED YET
+      hardfail: NOT TRANSLATED YET
+      incorrect_password: NOT TRANSLATED YET
+      invalid_ccn: NOT TRANSLATED YET
+      missing_finance: NOT TRANSLATED YET
+    form:
+      address1: NOT TRANSLATED YET
+      address2: NOT TRANSLATED YET
+      auto_loan: NOT TRANSLATED YET
+      ccn: NOT TRANSLATED YET
+      city: NOT TRANSLATED YET
+      dob: NOT TRANSLATED YET
+      first_name: NOT TRANSLATED YET
+      home_equity_line: NOT TRANSLATED YET
+      last_name: NOT TRANSLATED YET
+      mortgage: NOT TRANSLATED YET
+      password: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+      ssn: NOT TRANSLATED YET
+      state: NOT TRANSLATED YET
+      zipcode: NOT TRANSLATED YET
+    index:
+      cancel_link: NOT TRANSLATED YET
+      continue_link: NOT TRANSLATED YET
+      paragraph_1: NOT TRANSLATED YET
+      prompt: NOT TRANSLATED YET
+      section_1:
+        bullet_1: NOT TRANSLATED YET
+        bullet_2: NOT TRANSLATED YET
+        bullet_3: NOT TRANSLATED YET
+        bullet_4: NOT TRANSLATED YET
+        header: NOT TRANSLATED YET
+        subheader: NOT TRANSLATED YET
+      section_2:
+        bullet_1: NOT TRANSLATED YET
+        bullet_2: NOT TRANSLATED YET
+        bullet_3: NOT TRANSLATED YET
+        bullet_4: NOT TRANSLATED YET
+        footnote: NOT TRANSLATED YET
+        header: NOT TRANSLATED YET
+        subheader: NOT TRANSLATED YET
+      section_3:
+        bullet_1: NOT TRANSLATED YET
+        bullet_2_html: NOT TRANSLATED YET
+        bullet_3_html: NOT TRANSLATED YET
+        header: NOT TRANSLATED YET
+        subheader: NOT TRANSLATED YET
+      subheader: NOT TRANSLATED YET
+    messages:
+      activated_html: NOT TRANSLATED YET
+      activated_link: contact us
+      cancel: NOT TRANSLATED YET
+      cancel_link: NOT TRANSLATED YET
+      dupe_ssn1: NOT TRANSLATED YET
+      dupe_ssn2_html: NOT TRANSLATED YET
+      dupe_ssn2_link: NOT TRANSLATED YET
+      fail: NOT TRANSLATED YET
+      finance:
+        label: NOT TRANSLATED YET
+        intro: NOT TRANSLATED YET
+      hardfail: NOT TRANSLATED YET
+      hardfail2: NOT TRANSLATED YET
+      hardfail3: NOT TRANSLATED YET
+      hardfail4: NOT TRANSLATED YET
+      phone:
+        in_your_name: NOT TRANSLATED YET
+        intro: NOT TRANSLATED YET
+        is: NOT TRANSLATED YET
+        is_not: NOT TRANSLATED YET
+        prepaid: NOT TRANSLATED YET
+        same_as_2fa: NOT TRANSLATED YET
+        virtual: NOT TRANSLATED YET
+      questions:
+        intro: NOT TRANSLATED YET
+      recovery_code: NOT TRANSLATED YET
+      review:
+        intro: NOT TRANSLATED YET
+      review_and_continue: NOT TRANSLATED YET
+      sessions:
+        no_pii: NOT TRANSLATED YET
+    review:
+      dob: NOT TRANSLATED YET
+      full_name: NOT TRANSLATED YET
+      mailing_address: NOT TRANSLATED YET
+      ssn: NOT TRANSLATED YET
+    titles:
+      activated: NOT TRANSLATED YET
+      cancel: NOT TRANSLATED YET
+      complete: NOT TRANSLATED YET
+      dupe: NOT TRANSLATED YET
+      expectations: NOT TRANSLATED YET
+      fail: NOT TRANSLATED YET
+      hardfail: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+      question: NOT TRANSLATED YET
+      review: NOT TRANSLATED YET
+      session:
+        basic: NOT TRANSLATED YET
+        finance: NOT TRANSLATED YET
+        phone: NOT TRANSLATED YET
+        review: NOT TRANSLATED YET

@@ -1,0 +1,43 @@
+---
+es:
+  forms:
+    buttons:
+      back: NOT TRANSLATED YET
+      cancel: NOT TRANSLATED YET
+      continue: NOT TRANSLATED YET
+      disable: NOT TRANSLATED YET
+      edit: NOT TRANSLATED YET
+      enable: NOT TRANSLATED YET
+      resend_confirmation: NOT TRANSLATED YET
+      search: NOT TRANSLATED YET
+      send: NOT TRANSLATED YET
+      send_passcode: NOT TRANSLATED YET
+      setup_totp: NOT TRANSLATED YET
+      submit:
+        confirm_change: NOT TRANSLATED YET
+        default: NOT TRANSLATED YET
+        next: NOT TRANSLATED YET
+        update: NOT TRANSLATED YET
+    confirmation:
+      show_hdr: NOT TRANSLATED YET
+    passwords:
+      edit:
+        buttons:
+          submit: NOT TRANSLATED YET
+        labels:
+          password: NOT TRANSLATED YET
+    reactivate_profile:
+      instructions: NOT TRANSLATED YET
+      submit: NOT TRANSLATED YET
+      title: NOT TRANSLATED YET
+    registration:
+      labels:
+        email: NOT TRANSLATED YET
+    totp_setup:
+      code: NOT TRANSLATED YET
+      totp_info: NOT TRANSLATED YET
+      totp_intro: NOT TRANSLATED YET
+    two_factor:
+      code: NOT TRANSLATED YET
+      recovery_code: NOT TRANSLATED YET
+      try_again: NOT TRANSLATED YET

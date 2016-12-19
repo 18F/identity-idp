@@ -1,0 +1,50 @@
+---
+es:
+  pages:
+    help:
+      creating_account:
+        confirmation_email: >
+          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
+          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
+          nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
+          persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
+        confirmation_passcode: >
+          Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
+          abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec. Eam dicit
+          nullam cu. Ius eu meis magna vulputate, no persius legimus expetenda vis. Qui
+          adhuc nusquam mnesarchum at.
+        dont_want_to_use:
+          paragraph_1: >
+            Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
+            abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec. Eam dicit
+            nullam cu. Ius eu meis magna vulputate, no persius legimus expetenda vis. Qui
+            adhuc nusquam mnesarchum at.
+          paragraph_2: >
+            Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
+            praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
+            nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
+            persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
+        mobile_phone: >
+          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
+          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
+          nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
+          persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
+      questions:
+        paragraph_1: NOT TRANSLATED YET
+    page_not_found:
+      body: NOT TRANSLATED YET
+      header: NOT TRANSLATED YET
+    privacy_policy:
+      contact_form_link: NOT TRANSLATED YET
+      e_government_link: NOT TRANSLATED YET
+      paragraph_1: NOT TRANSLATED YET
+      paragraph_10_html: NOT TRANSLATED YET
+      paragraph_2: NOT TRANSLATED YET
+      paragraph_3: NOT TRANSLATED YET
+      paragraph_4: NOT TRANSLATED YET
+      paragraph_5: NOT TRANSLATED YET
+      paragraph_6_html: NOT TRANSLATED YET
+      paragraph_7: NOT TRANSLATED YET
+      paragraph_8: NOT TRANSLATED YET
+      paragraph_9_html: NOT TRANSLATED YET
+      systems_of_record_notices: NOT TRANSLATED YET

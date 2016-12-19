@@ -1,0 +1,82 @@
+---
+es:
+  headings:
+    choose_otp_delivery: NOT TRANSLATED YET
+    confirmations:
+      new: NOT TRANSLATED YET
+    contact: NOT TRANSLATED YET
+    create_account_with_sp: NOT TRANSLATED YET
+    create_account_without_sp: NOT TRANSLATED YET
+    edit_info:
+      email: NOT TRANSLATED YET
+      password: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+    help:
+      changing_settings:
+        change_email: NOT TRANSLATED YET
+        change_password: NOT TRANSLATED YET
+        edit_profile: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      creating_account:
+        confirmation_email: NOT TRANSLATED YET
+        confirmation_passcode: NOT TRANSLATED YET
+        dont_want_to_use: NOT TRANSLATED YET
+        mobile_phone: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      privacy_security:
+        2fa: NOT TRANSLATED YET
+        protect_data: NOT TRANSLATED YET
+        remove_saved: NOT TRANSLATED YET
+        third_party: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      questions:
+        title: NOT TRANSLATED YET
+      signing_in:
+        forgot_codes: NOT TRANSLATED YET
+        forgot_email: NOT TRANSLATED YET
+        forgot_password: NOT TRANSLATED YET
+        log_out: NOT TRANSLATED YET
+        lose_phone: NOT TRANSLATED YET
+        miss_passcode: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      verifying_account:
+        account_not_verified: NOT TRANSLATED YET
+        cant_verify: NOT TRANSLATED YET
+        financial_info: NOT TRANSLATED YET
+        how_verify: NOT TRANSLATED YET
+        personal_info: NOT TRANSLATED YET
+        phone_number: NOT TRANSLATED YET
+        ss_number: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+        what_verification: NOT TRANSLATED YET
+        what_verify: NOT TRANSLATED YET
+        why_verified: NOT TRANSLATED YET
+    passwords:
+      change: NOT TRANSLATED YET
+      confirm: NOT TRANSLATED YET
+      forgot: NOT TRANSLATED YET
+    privacy_policy:
+      authorities: NOT TRANSLATED YET
+      disclosure: NOT TRANSLATED YET
+      more_information: NOT TRANSLATED YET
+      privacy_act: NOT TRANSLATED YET
+      privacy_practices: NOT TRANSLATED YET
+      purpose: NOT TRANSLATED YET
+      routine_uses: NOT TRANSLATED YET
+      security_practices: NOT TRANSLATED YET
+    profile:
+      account_history: NOT TRANSLATED YET
+      login_info: NOT TRANSLATED YET
+      profile_info: NOT TRANSLATED YET
+      two_factor: NOT TRANSLATED YET
+    recovery_code: NOT TRANSLATED YET
+    registrations:
+      enter_email: NOT TRANSLATED YET
+      verify_email: NOT TRANSLATED YET
+    search: NOT TRANSLATED YET
+    session_timeout_warning: NOT TRANSLATED YET
+    sign_in_with_sp: NOT TRANSLATED YET
+    sign_in_without_sp: NOT TRANSLATED YET
+    totp_setup:
+      new: NOT TRANSLATED YET
+      start: NOT TRANSLATED YET

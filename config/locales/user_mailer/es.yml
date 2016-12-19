@@ -1,0 +1,22 @@
+---
+es:
+  user_mailer:
+    contact_request:
+      comments: NOT TRANSLATED YET
+      comments_header: NOT TRANSLATED YET
+      email_or_phone: NOT TRANSLATED YET
+      'no': NOT TRANSLATED YET
+      talk_about_experience: NOT TRANSLATED YET
+      want_to_learn: NOT TRANSLATED YET
+      'yes': NOT TRANSLATED YET
+    email_changed:
+      help: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+    password_changed:
+      help: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+    signup_with_your_email:
+      help: NOT TRANSLATED YET
+      intro: NOT TRANSLATED YET
+      link_text: NOT TRANSLATED YET
+      reset_password: NOT TRANSLATED YET

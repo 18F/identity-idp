@@ -1,0 +1,33 @@
+---
+es:
+  titles:
+    account_locked: NOT TRANSLATED YET
+    confirmations:
+      new: NOT TRANSLATED YET
+      show: NOT TRANSLATED YET
+    contact: NOT TRANSLATED YET
+    edit_info:
+      email: NOT TRANSLATED YET
+      password: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+    enter_2fa_code: NOT TRANSLATED YET
+    help: NOT TRANSLATED YET
+    passwords:
+      change: NOT TRANSLATED YET
+      confirm: NOT TRANSLATED YET
+      forgot: NOT TRANSLATED YET
+    privacy_policy: NOT TRANSLATED YET
+    profile: NOT TRANSLATED YET
+    reactivate_profile: NOT TRANSLATED YET
+    recovery_code: NOT TRANSLATED YET
+    registrations:
+      new: NOT TRANSLATED YET
+      start: NOT TRANSLATED YET
+      verify_email: NOT TRANSLATED YET
+    totp_setup:
+      new: NOT TRANSLATED YET
+      start: NOT TRANSLATED YET
+    two_factor_setup: NOT TRANSLATED YET
+    two_factor_verification: NOT TRANSLATED YET
+    visitors:
+      index: NOT TRANSLATED YET

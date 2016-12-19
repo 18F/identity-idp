@@ -1,0 +1,10 @@
+---
+es:
+  event_types:
+    account_created: NOT TRANSLATED YET
+    authenticated_at: NOT TRANSLATED YET
+    authenticator_disabled: NOT TRANSLATED YET
+    authenticator_enabled: NOT TRANSLATED YET
+    email_changed: NOT TRANSLATED YET
+    phone_changed: NOT TRANSLATED YET
+    phone_confirmed: NOT TRANSLATED YET

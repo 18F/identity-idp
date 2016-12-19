@@ -1,0 +1,11 @@
+---
+es:
+  simple_form:
+    error_notification:
+      default_message: NOT TRANSLATED YET
+    'no': NOT TRANSLATED YET
+    required:
+      html: NOT TRANSLATED YET
+      mark: "*"
+      text: NOT TRANSLATED YET
+    'yes': NOT TRANSLATED YET

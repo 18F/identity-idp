@@ -1,0 +1,27 @@
+---
+es:
+  errors:
+    confirm_password_incorrect: NOT TRANSLATED YET
+    invalid_authenticity_token: NOT TRANSLATED YET
+    invalid_totp: NOT TRANSLATED YET
+    max_password_attempts_reached: >
+    messages:
+      already_confirmed: NOT TRANSLATED YET
+      blank: NOT TRANSLATED YET
+      confirmation_invalid_token: NOT TRANSLATED YET
+      confirmation_period_expired: NOT TRANSLATED YET
+      expired: NOT TRANSLATED YET
+      format_mismatch: NOT TRANSLATED YET
+      improbable_phone: NOT TRANSLATED YET
+      missing_field: NOT TRANSLATED YET
+      no_password_reset_profile: NOT TRANSLATED YET
+      not_found: NOT TRANSLATED YET
+      not_locked: NOT TRANSLATED YET
+      not_saved:
+        one: NOT TRANSLATED YET
+        other: NOT TRANSLATED YET
+      password_incorrect: NOT TRANSLATED YET
+      recovery_code_incorrect: NOT TRANSLATED YET
+      requires_phone: NOT TRANSLATED YET
+      weak_password: NOT TRANSLATED YET
+    not_authorized: NOT TRANSLATED YET

@@ -1,0 +1,6 @@
+es:
+  saml_idp:
+    shared:
+      saml_post_binding:
+        heading: NOT TRANSLATED YET
+        no_js: NOT TRANSLATED YET
