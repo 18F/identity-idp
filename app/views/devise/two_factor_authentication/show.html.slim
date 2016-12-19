@@ -2,7 +2,7 @@
 
 
 h1.h3.my0 = @presenter.header
-p.mt-tiny.mb0#2fa-description == @presenter.help_text
+p.mt-tiny.mb0#2fa-description = @presenter.help_text
 
 = simple_form_for(@otp_delivery_selection_form,
     url: otp_send_path,

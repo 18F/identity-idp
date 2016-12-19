@@ -27,13 +27,13 @@ module TwoFactorAuthCode
     end
 
     def sms_link
-      content_tag(:a, t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
-                  href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' }))
+      link_to(t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
+              otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' }))
     end
 
     def voice_link
-      content_tag(:a, t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
-                  href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
+      link_to(t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+              otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
     end
   end
 end

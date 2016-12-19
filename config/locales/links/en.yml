@@ -10,19 +10,19 @@ en:
     passwords:
       forgot: Forgot your password?
     phone_confirmation:
-      auth_app_fallback: ' or %{link}.'
-      fallback_to_sms: Send me a text message with the code instead
-      fallback_to_voice: If you can't get text message right now, you can get a passcode via %{link}
-      fallback_to_totp: You can also get a passcode via %{link}
+      auth_app_fallback_html: ' or %{link}.'
+      fallback_to_sms_html: Send me a text message with the code instead
+      fallback_to_voice_html: If you can't get text message right now, you can get a passcode via %{link}
+      fallback_to_totp_html: You can also get a passcode via %{link}
     privacy_policy: Privacy Policy
     resend: Send again
     sign_in: Sign in
     sign_out: Sign out
     cancel: Cancel
     two_factor_authentication:
-      app: authentication app
-      voice: phone call
-      sms: text message
+      app_html: authentication app
+      voice_html: phone call
+      sms_html: text message
       resend_code:
-        sms: Get another text message.
-        voice: Get another phone call.
+        sms_html: Get another text message
+        voice_html: Get another phone call

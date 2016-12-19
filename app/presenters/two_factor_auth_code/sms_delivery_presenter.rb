@@ -12,7 +12,7 @@ module TwoFactorAuthCode
     end
 
     def help_text
-      t("instructions.2fa.#{delivery_method}.confirm_code",
+      t("instructions.2fa.#{delivery_method}.confirm_code_html",
         number: phone_number_tag(phone_number),
         resend_code_link: resend_code_tag)
     end
@@ -28,13 +28,13 @@ module TwoFactorAuthCode
     private
 
     def otp_fallback_options
-      "#{phone_fallback_link(delivery_method)}#{auth_app_fallback_link(totp_enabled)}"
+      auth_app = totp_enabled ? auth_app_fallback_link : empty
+
+      safe_join([phone_fallback_link(delivery_method), auth_app])
     end
 
     def resend_code_tag
-      content_tag(:a,
-                  t('links.two_factor_authentication.resend_code.sms'),
-                  href: resend_code_path)
+      link_to(t('links.two_factor_authentication.resend_code.sms_html'), resend_code_path)
     end
   end
 end

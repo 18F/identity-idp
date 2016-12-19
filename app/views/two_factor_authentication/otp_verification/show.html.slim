@@ -4,7 +4,7 @@
   = render 'shared/progress_steps', active: 3
 
 h1.h3.my0 = @presenter.header
-p.mt-tiny.mb0#code-instructs == @presenter.help_text
+p.mt-tiny.mb0#code-instructs = @presenter.help_text
 
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt3 sm-mt4') do
   = hidden_field_tag(:reauthn, reauthn?)

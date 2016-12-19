@@ -11,7 +11,7 @@ module TwoFactorAuthCode
     end
 
     def help_text
-      t('devise.two_factor_authentication.choose_otp_delivery',
+      t('devise.two_factor_authentication.choose_otp_delivery_html',
         phone: phone_number_tag(phone_number))
     end
 

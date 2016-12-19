@@ -7,14 +7,14 @@ module TwoFactorAuthCode
                           'voice'
                         end
 
-      t(fallback_instructions(fallback_method),
+      t(fallback_instructions(delivery_method),
         link: phone_link_tag(fallback_method))
     end
 
     def update_phone_link(unconfirmed_phone, update_number_path)
       return unless unconfirmed_phone
 
-      link = content_tag(:a, t('forms.two_factor.try_again'), href: update_number_path)
+      link = link_to(t('forms.two_factor.try_again_html'), update_number_path)
       t('instructions.2fa.wrong_number', link: link)
     end
 
@@ -25,13 +25,13 @@ module TwoFactorAuthCode
     def phone_link_tag(delivery_method)
       send_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
 
-      content_tag(:a, t("links.two_factor_authentication.#{delivery_method}"), href: send_path)
+      link_to(t("links.two_factor_authentication.#{delivery_method}_html"), send_path)
     end
 
     private
 
     def fallback_instructions(method)
-      "instructions.2fa.#{method}.fallback"
+      "instructions.2fa.#{method}.fallback_html"
     end
   end
 end
