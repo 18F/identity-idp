@@ -21,9 +21,7 @@ namespace :dev do
     recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
     profile.activate
 
-    Kernel.puts "===="
-    Kernel.puts "email=#{loa3_user.email} recovery_code=#{recovery_code}"
-    Kernel.puts "===="
+    Rails.logger.warn "email=#{loa3_user.email} recovery_code=#{recovery_code}"
   end
 
   # protip: set EMAIL_ENCRYPTION_COST and SCRYPT_COST env vars to '800$8$1$'
