@@ -5,6 +5,7 @@ en:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
       fail: Sorry, we can’t verify your identity based on the information you submitted.
+      finance_number_length: Number must be between %{minimum} and %{maximum} digits.
       hardfail: We were unable to verify your identity at this time.
       incorrect_password: The password you entered is not correct.
       invalid_ccn: Credit card number should be only last 8 digits.
