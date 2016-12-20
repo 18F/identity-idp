@@ -181,7 +181,7 @@ feature 'IdV session' do
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       find('#idv_finance_form_finance_type_mortgage').set(true)
-      short_value = "1" * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
+      short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
 
       fill_in :idv_finance_form_mortgage, with: short_value
       click_button t('forms.buttons.continue')

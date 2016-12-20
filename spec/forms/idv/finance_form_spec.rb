@@ -59,20 +59,18 @@ describe Idv::FinanceForm do
     context 'any non-ccn financial value is less than the minimum allowed digits' do
       it 'fails' do
         finance_types = Idv::FinanceForm::FINANCE_TYPES
-        short_value = "1" * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
+        short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
 
         finance_types.each do |type|
           next if type == :ccn
           params = { type => short_value, finance_type: type }
 
           expect(subject.submit(params)).to eq false
-          expect(subject.errors[type]).to eq([
-            t(
-              'idv.errors.finance_number_length',
-              minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-              maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
-            )
-          ])
+          expect(subject.errors[type]).to eq([t(
+            'idv.errors.finance_number_length',
+            minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+            maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+          )])
         end
       end
     end
@@ -80,7 +78,7 @@ describe Idv::FinanceForm do
     context 'any non-ccn financial value is over the max allowed digits' do
       it 'fails' do
         finance_types = Idv::FinanceForm::FINANCE_TYPES
-        long_value = "1" * (FormFinanceValidator::VALID_MAXIMUM_LENGTH + 1)
+        long_value = '1' * (FormFinanceValidator::VALID_MAXIMUM_LENGTH + 1)
 
         finance_types.each do |type|
           next if type == :ccn
@@ -91,13 +89,11 @@ describe Idv::FinanceForm do
           }
 
           expect(subject.submit(params)).to eq false
-          expect(subject.errors[symbolized_type]).to eq([
-            t(
-              'idv.errors.finance_number_length',
-              minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-              maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
-            )
-          ])
+          expect(subject.errors[symbolized_type]).to eq([t(
+            'idv.errors.finance_number_length',
+            minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+            maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+          )])
         end
       end
     end
