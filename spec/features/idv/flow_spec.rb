@@ -195,6 +195,20 @@ feature 'IdV session' do
       )
     end
 
+    scenario 'credit card field only allows numbers', js: true do
+      _user = sign_in_and_2fa_user
+
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_button 'Continue'
+
+      find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
+      find('#idv_finance_form_ccn').native.send_keys('abcd1234')
+
+      expect(find('#idv_finance_form_ccn').value).to eq '1234'
+    end
+
     context 'Idv phone and user phone are different' do
       it 'prompts to confirm phone' do
         user = sign_in_and_2fa_user

@@ -19,7 +19,8 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro')
               label: label,
               required: false,
               wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
-              input_html: html_options
+              input_html: html_options,
+              pattern: '[0-9]*'
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
   .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path
 
