@@ -5,6 +5,7 @@ es:
       bad_dob: NOT TRANSLATED YET
       duplicate_ssn: NOT TRANSLATED YET
       fail: NOT TRANSLATED YET
+      finance_number_length: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       incorrect_password: NOT TRANSLATED YET
       invalid_ccn: NOT TRANSLATED YET
