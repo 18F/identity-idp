@@ -3,12 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     def show
-      data_model = {
-        delivery_method: 'totp',
-        user: current_user
-      }
-
-      @presenter = presenter_for(data_model[:delivery_method], data_model)
+      @presenter = presenter_for(delivery_method, otp_view_data(delivery_method))
     end
 
     def create

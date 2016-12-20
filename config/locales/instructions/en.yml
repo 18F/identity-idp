@@ -16,9 +16,7 @@ en:
         confirm_code_html: Enter the code from your authenticator app. If you have several accounts
           set up in your app, enter the code corresponding to %{email} at
           %{app}.
-
-      resend_html: Didn’t receive a code? %{link}
-      wrong_number: Entered the wrong phone number? %{link}
+      wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: >
         If you don’t know your current password, you can reset it. Type the email address

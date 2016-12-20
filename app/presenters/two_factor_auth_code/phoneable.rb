@@ -11,11 +11,11 @@ module TwoFactorAuthCode
         link: phone_link_tag(fallback_method))
     end
 
-    def update_phone_link(unconfirmed_phone, update_number_path)
+    def update_phone_link(update_number_path)
       return unless unconfirmed_phone
 
       link = link_to(t('forms.two_factor.try_again_html'), update_number_path)
-      t('instructions.2fa.wrong_number', link: link)
+      t('instructions.2fa.wrong_number_html', link: link)
     end
 
     def phone_number_tag(phone_number)
@@ -26,6 +26,10 @@ module TwoFactorAuthCode
       send_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
 
       link_to(t("links.two_factor_authentication.#{delivery_method}_html"), send_path)
+    end
+
+    def resend_code_path
+      otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method, resend: true })
     end
 
     private

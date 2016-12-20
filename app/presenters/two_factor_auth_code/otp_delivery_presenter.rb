@@ -18,7 +18,7 @@ module TwoFactorAuthCode
     def fallback_links
       [
         recovery_code_link,
-        update_phone_link(unconfirmed_phone, reenter_phone_number_path)
+        update_phone_link(reenter_phone_number_path)
       ].compact
     end
   end

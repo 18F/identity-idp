@@ -2,14 +2,14 @@ module TwoFactorAuthCode
   class GenericDeliveryModePresenter
     include ActionView::Helpers::TagHelper
     include ActionView::Helpers::TranslationHelper
-
     include Rails.application.routes.url_helpers
 
+    attr_reader :phone_number, :code_value, :delivery_method, :reenter_phone_number_path,
+                :totp_enabled, :unconfirmed_phone, :unconfirmed_user, :user_email
 
     def initialize(data_model)
       data_model.each do |key, value|
         instance_variable_set("@#{key}", value)
-        self.class.send(:attr_reader, key.to_sym)
       end
     end
 
@@ -21,23 +21,22 @@ module TwoFactorAuthCode
       raise NotImplementedError
     end
 
-    def authentication_fallback
-      raise NotImplementedError
-    end
-
     def fallback_options_links
       raise NotImplementedError
     end
 
     def recovery_code_link
-      t('devise.two_factor_authentication.recovery_code_fallback.text_html', link: recovery_code_tag)
+      return if unconfirmed_user
+
+      t('devise.two_factor_authentication.recovery_code_fallback.text_html',
+        link: recovery_code_tag)
     end
 
     private
 
-    def link_to(name, url, options = {})
+    def link_to(text, url, options = {})
       href = { href: url }
-      content_tag(:a, name, options.merge(href))
+      content_tag(:a, text, options.merge(href))
     end
 
     def recovery_code_tag

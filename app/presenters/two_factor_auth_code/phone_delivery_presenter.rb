@@ -1,5 +1,5 @@
 module TwoFactorAuthCode
-  class SmsDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryModePresenter
+  class PhoneDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryModePresenter
     include TwoFactorAuthCode::Totpable
     include TwoFactorAuthCode::Phoneable
 
@@ -14,13 +14,13 @@ module TwoFactorAuthCode
     def help_text
       t("instructions.2fa.#{delivery_method}.confirm_code_html",
         number: phone_number_tag(phone_number),
-        resend_code_link: resend_code_tag)
+        resend_code_link: resend_code_link)
     end
 
     def fallback_links
       [
         otp_fallback_options,
-        update_phone_link(unconfirmed_phone, reenter_phone_number_path),
+        update_phone_link(reenter_phone_number_path),
         recovery_code_link
       ].compact
     end
@@ -33,8 +33,9 @@ module TwoFactorAuthCode
       safe_join([phone_fallback_link(delivery_method), auth_app])
     end
 
-    def resend_code_tag
-      link_to(t('links.two_factor_authentication.resend_code.sms_html'), resend_code_path)
+    def resend_code_link
+      link_to(t("links.two_factor_authentication.resend_code.#{delivery_method}_html"),
+              resend_code_path)
     end
   end
 end

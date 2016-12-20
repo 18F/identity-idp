@@ -1,6 +1,18 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::TotpVerificationController, devise: true do
+  describe '#show' do
+    it 'creates a presenter' do
+      sign_in_before_2fa
+      @secret = subject.current_user.generate_totp_secret
+      subject.current_user.otp_secret_key = @secret
+
+      get :show
+
+      expect(assigns(:presenter).user_email).to be_present
+    end
+  end
+
   describe '#create' do
     context 'when the user enters a valid TOTP' do
       before do
@@ -44,6 +56,10 @@ describe TwoFactorAuthentication::TotpVerificationController, devise: true do
 
       it 'increments second_factor_attempts_count' do
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+      end
+
+      it 'repopulates the present correctly' do
+        expect(assigns(:presenter).user_email).to be_present
       end
 
       it 're-renders the TOTP entry screen' do

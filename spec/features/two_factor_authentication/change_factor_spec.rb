@@ -21,13 +21,13 @@ feature 'Changing authentication factor' do
 
       update_phone_number_and_choose_sms_delivery
 
-      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
+      expect(page).to have_link t('forms.two_factor.try_again_html'), href: manage_phone_path
 
       enter_incorrect_otp_code
 
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
       expect(user.reload.phone).to_not eq '+1 (703) 555-0100'
-      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
+      expect(page).to have_link t('forms.two_factor.try_again_html'), href: manage_phone_path
 
       enter_correct_otp_code_for_user(user)
 
@@ -48,8 +48,9 @@ feature 'Changing authentication factor' do
       old_phone = user.phone
       visit manage_phone_path
       update_phone_number_and_choose_sms_delivery
+
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-        click_link t('forms.two_factor.try_again'), href: manage_phone_path
+        click_link t('forms.two_factor.try_again_html'), href: manage_phone_path
         complete_2fa_confirmation_without_entering_otp
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).
