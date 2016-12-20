@@ -1,6 +1,7 @@
 module FormFinanceValidator
   extend ActiveSupport::Concern
 
+  VALID_CCN_LENGTH = 8
   VALID_MINIMUM_LENGTH = 8
   VALID_MAXIMUM_LENGTH = 30
 

@@ -7,8 +7,8 @@ module Idv
 
     FINANCE_HTML_OPTIONS = {
       ccn: {
-        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MINIMUM_LENGTH
+        minlength: FormFinanceValidator::VALID_CCN_LENGTH,
+        maxlength: FormFinanceValidator::VALID_CCN_LENGTH
       },
       mortgage: {
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
