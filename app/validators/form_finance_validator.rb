@@ -48,7 +48,14 @@ module FormFinanceValidator
   def validate_finance_value_length
     return if finance_value.blank?
     return if valid_range.include?(finance_value.length)
-    errors.add finance_type, I18n.t('idv.errors.finance_number_length')
+    errors.add(
+      finance_type,
+      I18n.t(
+        'idv.errors.finance_number_length',
+        minimum: VALID_MINIMUM_LENGTH,
+        maximum: VALID_MAXIMUM_LENGTH
+      )
+    )
   end
 
   def finance_value
