@@ -16,13 +16,13 @@ Rails.application.routes.draw do
     post '/' => 'users/sessions#create', as: :user_session
     get '/active' => 'users/sessions#active'
 
-    get '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#show'
-    post '/login/two-factor/authenticator' => 'two_factor_authentication/totp_verification#create'
-    get '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#show'
-    post '/login/two-factor/recovery-code' => 'two_factor_authentication/recovery_code_verification#create'
-    get  '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
+    get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
+    post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
+    get '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#show'
+    post '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#create'
+    get  '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
          as: :login_two_factor
-    post '/login/two-factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
+    post '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
          as: :login_otp
 
     get '/otp/send' => 'devise/two_factor_authentication#send_code'

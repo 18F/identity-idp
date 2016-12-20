@@ -182,13 +182,13 @@ feature 'Two Factor Authentication' do
 
       click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
 
-      expect(current_path).to eq '/login/two-factor/sms'
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
 
       visit login_two_factor_authenticator_path
 
       click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
 
-      expect(current_path).to eq '/login/two-factor/voice'
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
     end
   end
 
