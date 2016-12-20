@@ -165,7 +165,7 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button 'Continue'
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.mortgage'), visible: false)
 
@@ -173,6 +173,26 @@ feature 'IdV session' do
 
       expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.mortgage'), visible: true)
       expect(page).to have_content(t('idv.form.ccn'))
+    end
+
+    scenario 'enters invalid finance value' do
+      _user = sign_in_and_2fa_user
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_button t('forms.buttons.continue')
+      find('#idv_finance_form_finance_type_mortgage').set(true)
+      short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
+
+      fill_in :idv_finance_form_mortgage, with: short_value
+      click_button t('forms.buttons.continue')
+
+      expect(page).to have_content(
+        t(
+          'idv.errors.finance_number_length',
+          minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+          maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+        )
+      )
     end
 
     context 'Idv phone and user phone are different' do
