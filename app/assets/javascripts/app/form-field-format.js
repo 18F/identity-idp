@@ -32,13 +32,6 @@ function formatForm() {
 
       // removes focus set by field-kit bug https://github.com/square/field-kit/issues/62
       if (el !== '.mfa') document.activeElement.blur();
-
-      // max lengths
-      if (el === '.mfa') {
-        field.formatter().maximumLength = 6;
-      } else if (el === '.ccn') {
-        field.formatter().maximumLength = 8;
-      }
     }
   });
 }
