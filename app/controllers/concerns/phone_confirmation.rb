@@ -14,6 +14,6 @@ module PhoneConfirmation
   def prompt_to_choose_delivery_method
     @phone_number = user_session[:unconfirmed_phone]
     @otp_delivery_selection_form = OtpDeliverySelectionForm.new
-    render 'devise/two_factor_authentication/show'
+    render 'users/two_factor_authentication/show'
   end
 end

@@ -1,12 +1,11 @@
 require 'rails_helper'
 
-describe Devise::TwoFactorAuthenticationController, devise: true do
+describe Users::TwoFactorAuthenticationController do
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
         :before,
         :authenticate_user,
-        :handle_two_factor_authentication,
         :check_already_authenticated
       )
     end

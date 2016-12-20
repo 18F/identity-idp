@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::RecoveryCodeVerificationController, devise: true do
+describe TwoFactorAuthentication::RecoveryCodeVerificationController do
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do

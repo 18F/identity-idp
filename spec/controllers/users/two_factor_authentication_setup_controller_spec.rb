@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Devise::TwoFactorAuthenticationSetupController, devise: true do
+describe Users::TwoFactorAuthenticationSetupController do
   describe 'GET index' do
     context 'when signed out' do
       it 'redirects to sign in page' do
@@ -15,7 +15,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
     let(:user) { create(:user) }
 
     it 'tracks an event when the number is invalid' do
-      allow(subject).to receive(:authenticate_scope!).and_return(true)
+      allow(subject).to receive(:authenticate_user).and_return(true)
       allow(subject).to receive(:authorize_otp_setup).and_return(true)
 
       stub_analytics
@@ -128,7 +128,7 @@ describe Devise::TwoFactorAuthenticationSetupController, devise: true do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(
         :before,
-        :authenticate_scope!,
+        :authenticate_user,
         :authorize_otp_setup
       )
     end
