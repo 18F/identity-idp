@@ -6,10 +6,22 @@ module Idv
     FINANCE_TYPES = [:ccn, :mortgage, :home_equity_line, :auto_loan].freeze
 
     FINANCE_HTML_OPTIONS = {
-      ccn: { maxlength: 8 },
-      mortgage: { minlength: 8 },
-      home_equity_line: { minlength: 8 },
-      auto_loan: { minlength: 8 }
+      ccn: {
+        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+        maxlength: FormFinanceValidator::VALID_MINIMUM_LENGTH
+      },
+      mortgage: {
+        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+      },
+      home_equity_line: {
+        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+      },
+      auto_loan: {
+        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
+        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+      }
     }.freeze
 
     attr_reader :idv_params, :finance_type, *FINANCE_TYPES
