@@ -1,14 +1,20 @@
 require 'rails_helper'
 
 describe RecoveryCodeGenerator do
-  let(:recovery_code) { 'a1b2c3d4e5f6g7h8' }
+  let(:recovery_code) { 'four score and seven years' }
+
+  def stub_random_phrase
+    random_phrase = instance_double(RandomPhrase)
+    allow(random_phrase).to receive(:to_s).and_return(recovery_code)
+    allow(RandomPhrase).to receive(:new).and_return(random_phrase)
+  end
 
   describe '#create' do
     it 'returns the raw recovery code' do
       user = create(:user)
       generator = RecoveryCodeGenerator.new(user)
 
-      allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
+      stub_random_phrase
 
       expect(generator.create).to eq recovery_code
     end
@@ -17,18 +23,18 @@ describe RecoveryCodeGenerator do
       user = create(:user)
       generator = RecoveryCodeGenerator.new(user)
 
-      allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
+      stub_random_phrase
 
       generator.create
 
       expect(user.recovery_code).to_not eq recovery_code
     end
 
-    it 'generates an alphanumeric string of length 16 by default' do
+    it 'generates a phrase of 5 words by default' do
       user = create(:user)
       generator = RecoveryCodeGenerator.new(user)
 
-      expect(generator.create).to match(/\A[a-zA-Z0-9]{16}\z/)
+      expect(generator.create).to match(/\A(\w+\ ){4}\w+\z/)
     end
 
     it 'allows length to be configured via ENV var' do
@@ -36,13 +42,13 @@ describe RecoveryCodeGenerator do
       allow(Figaro.env).to receive(:recovery_code_length).and_return('14')
       generator = RecoveryCodeGenerator.new(user)
 
-      expect(generator.create).to match(/\A[a-zA-Z0-9]{14}\z/)
+      expect(generator.create).to match(/\A(\w+\ ){13}\w+\z/)
     end
   end
 
   describe '#verify' do
     before do
-      allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
+      stub_random_phrase
     end
 
     it 'returns false for the wrong code' do
