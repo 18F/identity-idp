@@ -60,7 +60,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'user is unconfirmed' do
       it 'does not provide an option to use a recovery code' do
-        unconfirmed_data = presenter_data.merge(unconfirmed_user: true)
+        unconfirmed_data = presenter_data.merge(recovery_code_unavailable: true)
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(unconfirmed_data)
         render

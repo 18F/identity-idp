@@ -12,8 +12,15 @@ module PhoneConfirmation
   end
 
   def prompt_to_choose_delivery_method
-    @phone_number = user_session[:unconfirmed_phone]
+    phone_number = user_session[:unconfirmed_phone]
     @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+
+    @presenter = TwoFactorAuthCode::OtpDeliveryPresenter.new(
+      reenter_phone_number_path: manage_phone_path,
+      phone_number: phone_number,
+      unconfirmed_phone: phone_number && confirmation_context?,
+      recovery_code_unavailable: idv_or_confirmation_context?
+    )
     render 'users/two_factor_authentication/show'
   end
 end
