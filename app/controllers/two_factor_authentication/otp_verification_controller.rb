@@ -3,8 +3,10 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     def show
-      assign_variables_for_otp_verification_show_view
+      delivery_method = params[:delivery_method]
+
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
+      @presenter = presenter_for(delivery_method, otp_view_data(delivery_method))
     end
 
     def create

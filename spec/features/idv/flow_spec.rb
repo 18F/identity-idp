@@ -202,7 +202,7 @@ feature 'IdV session' do
 
         complete_idv_profile_with_phone('416-555-0190')
 
-        expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
+        expect(page).to have_link t('forms.two_factor.try_again_html'), href: verify_phone_path
         expect(page).not_to have_css('.progress-steps')
 
         enter_correct_otp_code_for_user(user)

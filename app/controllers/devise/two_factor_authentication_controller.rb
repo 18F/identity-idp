@@ -6,14 +6,13 @@ module Devise
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_path
       else
-        @phone_number = decorated_user.masked_two_factor_phone_number
         @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+        @presenter = presenter_for('otp', otp_view_data(params[:delivery_method]))
       end
     end
 
     def send_code
       @otp_delivery_selection_form = OtpDeliverySelectionForm.new
-
       result = @otp_delivery_selection_form.submit(delivery_params)
 
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.merge(context: context))

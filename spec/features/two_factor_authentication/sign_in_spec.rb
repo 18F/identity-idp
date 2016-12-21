@@ -92,7 +92,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       click_button t('forms.buttons.submit.default')
-      click_link t('links.two_factor_authentication.resend_code')
+      click_link t('links.two_factor_authentication.resend_code.sms_html')
 
       expect(page).to have_content(t('notices.send_code.sms'))
     end
@@ -180,13 +180,13 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up, otp_secret_key: 'foo')
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
+      click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text_html')
 
       expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
 
       visit login_two_factor_authenticator_path
 
-      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
+      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text_html')
 
       expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
     end
@@ -198,7 +198,7 @@ feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
 
       code = RecoveryCodeGenerator.new(user).create
-      click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
+      click_link t('devise.two_factor_authentication.recovery_code_fallback.link_html')
       fill_in 'code', with: code
       click_button t('forms.buttons.submit.default')
 
