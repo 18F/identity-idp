@@ -1,0 +1,28 @@
+module UserSessionContext
+  DEFAULT_CONTEXT = 'authentication'.freeze
+
+  def context
+    user_session[:context] || DEFAULT_CONTEXT
+  end
+
+  # TODO: Figure out better names for this and the method below
+  def initial_authentication_context?
+    context == DEFAULT_CONTEXT
+  end
+
+  def authentication_context?
+    context == DEFAULT_CONTEXT || context == 'reauthentication'
+  end
+
+  def confirmation_context?
+    context == 'confirmation'
+  end
+
+  def idv_context?
+    context == 'idv'
+  end
+
+  def idv_or_confirmation_context?
+    confirmation_context? || idv_context?
+  end
+end

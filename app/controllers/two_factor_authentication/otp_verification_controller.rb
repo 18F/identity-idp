@@ -36,7 +36,7 @@ module TwoFactorAuthentication
     end
 
     def confirmation_for_phone_change?
-      context == 'confirmation' && current_user.phone.present?
+      confirmation_context? && current_user.phone.present?
     end
   end
 end

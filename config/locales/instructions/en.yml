@@ -16,6 +16,10 @@ en:
           %{resend_code_link}
         fallback_html: If you can't take a phone call right now, you can get a passcode
           via %{link}
+      authenticator:
+        confirm_code_html: Enter the code from your authenticator app. If you have several accounts
+          set up in your app, enter the code corresponding to %{email} at
+          %{app}.
       wrong_number_html: Entered the wrong phone number? %{link}
     forgot_password:
       close_window: You can close this browser window once you have reset your password.

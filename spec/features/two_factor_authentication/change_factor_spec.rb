@@ -21,7 +21,12 @@ feature 'Changing authentication factor' do
       visit manage_phone_path
       complete_2fa_confirmation
 
-      update_phone_number_and_choose_sms_delivery
+      update_phone_number
+      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
+      expect(page).not_to have_content(
+        t('devise.two_factor_authentication.recovery_code_fallback.text_html')
+      )
+      choose_sms_delivery
 
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 
@@ -49,7 +54,9 @@ feature 'Changing authentication factor' do
       user = sign_in_and_2fa_user
       old_phone = user.phone
       visit manage_phone_path
-      update_phone_number_and_choose_sms_delivery
+      update_phone_number
+      choose_sms_delivery
+
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
         click_link t('forms.two_factor.try_again'), href: manage_phone_path
         complete_2fa_confirmation_without_entering_otp
@@ -62,6 +69,7 @@ feature 'Changing authentication factor' do
           )
 
         expect(page).to have_content UserDecorator.new(user).masked_two_factor_phone_number
+        expect(page).not_to have_link t('forms.two_factor.try_again')
       end
     end
 
@@ -143,10 +151,9 @@ feature 'Changing authentication factor' do
     expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
   end
 
-  def update_phone_number_and_choose_sms_delivery
+  def update_phone_number
     fill_in 'update_user_phone_form[phone]', with: '703-555-0100'
     click_button t('forms.buttons.submit.confirm_change')
-    click_submit_default
   end
 
   def enter_incorrect_otp_code
@@ -161,6 +168,10 @@ feature 'Changing authentication factor' do
     expect(current_path).to eq login_two_factor_authenticator_path
 
     fill_in 'code', with: generate_totp_code(@secret)
+    click_submit_default
+  end
+
+  def choose_sms_delivery
     click_submit_default
   end
 end
