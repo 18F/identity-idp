@@ -8,7 +8,6 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
   it 'is an abstract presenter with methods that should be implemented' do
     presenter = presenter_with
 
-
     %w(header help_text fallback_links).each do |m|
       expect do
         presenter.send(m.to_sym)
@@ -23,8 +22,6 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
       it 'returns without providing the option to use a recovery code' do
         expect(presenter.recovery_code_link).to be_nil
       end
-
-      # TODO add confirmed user branch
     end
 
     context 'with confirmed user' do

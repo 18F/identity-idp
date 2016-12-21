@@ -9,6 +9,7 @@ module TwoFactorAuthenticatable
   end
 
   DELIVERY_METHOD_MAP = {
+    authenticator: 'authenticator',
     sms: 'phone',
     voice: 'phone'
   }.freeze
@@ -82,7 +83,7 @@ module TwoFactorAuthenticatable
   end
 
   def render_show_after_invalid
-    @presenter = presenter_for(delivery_method, otp_phone_view_data)
+    @presenter = presenter_for(delivery_method)
     render :show
   end
 
@@ -164,14 +165,20 @@ module TwoFactorAuthenticatable
     user_session[:authn_at] = Time.zone.now
   end
 
+  def direct_otp_code
+    current_user.direct_otp if FeatureManagement.prefill_otp_codes?
+  end
+
   def otp_phone_view_data
     {
       phone_number: display_phone_to_deliver_to,
-      code_value: FeatureManagement.prefill_otp_codes? ? current_user.direct_otp : nil,
+      code_value: direct_otp_code,
       delivery_method: delivery_method,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: user_session[:unconfirmed_phone],
-      unconfirmed_user: !current_user.recovery_code.present?
+      unconfirmed_user: !current_user.recovery_code.present?,
+      totp_enabled: current_user.totp_enabled?,
+      user_email: current_user.email
     }
   end
 
@@ -193,9 +200,9 @@ module TwoFactorAuthenticatable
     end
   end
 
-  def presenter_for(otp_code_method, data_model)
+  def presenter_for(otp_code_method)
     type = DELIVERY_METHOD_MAP[otp_code_method.to_sym]
     return unless type
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(data_model)
+    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(otp_phone_view_data)
   end
 end

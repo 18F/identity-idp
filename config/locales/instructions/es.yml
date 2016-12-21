@@ -2,16 +2,16 @@
 es:
   instructions:
     2fa:
+      authenticator:
+        confirm_code_html: Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
+          configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
+          <strong>%{app}</strong>.
       sms:
         confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código? %{link}.
         fallback_html: NOT TRANSLATED YET
       voice:
         confirm_code_html: NOT TRANSLATED YET
         fallback_html: NOT TRANSLATED YET
-      totp_intro_html:
-        Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
-        configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
-        <strong>%{app}</strong>.
       wrong_number_html: ¿Ha ingresado el número de teléfono equivocado? %{link}
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.

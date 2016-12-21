@@ -18,14 +18,8 @@ module TwoFactorAuthCode
       t('instructions.2fa.wrong_number_html', link: link)
     end
 
-    def phone_number_tag(phone_number)
+    def phone_number_tag
       content_tag(:strong, phone_number)
-    end
-
-    def phone_link_tag(delivery_method)
-      send_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
-
-      link_to(t("links.two_factor_authentication.#{delivery_method}"), send_path)
     end
 
     def resend_code_path
@@ -39,8 +33,8 @@ module TwoFactorAuthCode
     end
 
     def phone_link_tag(delivery_method)
-      resend_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
-      link_to(t("links.two_factor_authentication.#{delivery_method}"), resend_path)
+      send_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
+      link_to(t("links.two_factor_authentication.#{delivery_method}"), send_path)
     end
   end
 end
