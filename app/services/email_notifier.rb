@@ -18,6 +18,6 @@ EmailNotifier = Struct.new(:user) do
   end
 
   def old_email
-    EncryptedEmail.new(changed_attributes['encrypted_email'].first).decrypted
+    EncryptedAttribute.new(changed_attributes['encrypted_email'].first).decrypted
   end
 end

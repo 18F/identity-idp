@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161214221229) do
+ActiveRecord::Schema.define(version: 20161219225847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,7 +100,7 @@ ActiveRecord::Schema.define(version: 20161214221229) do
     t.integer  "role"
     t.string   "otp_secret_key",                limit: 255
     t.integer  "second_factor_attempts_count",              default: 0
-    t.string   "phone",                         limit: 255
+    t.string   "phone_plain",                   limit: 255
     t.string   "uuid",                          limit: 255,              null: false
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
@@ -124,7 +124,8 @@ ActiveRecord::Schema.define(version: 20161214221229) do
     t.string   "recovery_cost"
     t.string   "email_fingerprint",                         default: "", null: false
     t.text     "encrypted_email",                           default: "", null: false
-    t.string   "email_encryption_cost"
+    t.string   "attribute_cost"
+    t.text     "encrypted_phone"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

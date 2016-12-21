@@ -3,7 +3,7 @@ namespace :dev do
   task prime: 'db:setup' do
     pw = 'salty pickles'
     %w(test1@test.com test2@test.com).each_with_index do |email, index|
-      ee = EncryptedEmail.new_from_email(email)
+      ee = EncryptedAttribute.new_from_decrypted(email)
       User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
         setup_user(user, ee: ee, pw: pw, num: index)
       end
@@ -53,7 +53,7 @@ namespace :dev do
 
       while (num_created < num_users) do
         email_addr = "testuser#{num_created}@example.com"
-        ee = EncryptedEmail.new_from_email(email_addr)
+        ee = EncryptedAttribute.new_from_decrypted(email_addr)
         User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
           setup_user(user, ee: ee, pw: pw, num: num_created)
         end
