@@ -1,6 +1,10 @@
 module Pii
   class Fingerprinter
-    def self.fingerprint(text, key = Figaro.env.hmac_fingerprinter_key)
+    def self.current_key
+      Figaro.env.hmac_fingerprinter_key
+    end
+
+    def self.fingerprint(text, key = current_key)
       digest = OpenSSL::Digest::SHA256.new
       OpenSSL::HMAC.hexdigest(digest, key, text)
     end

@@ -45,8 +45,8 @@ module Idv
       end
     end
 
-    def ssn_signature
-      Pii::Fingerprinter.fingerprint(ssn) if ssn
+    def ssn_signature(key = Pii::Fingerprinter.current_key)
+      Pii::Fingerprinter.fingerprint(ssn, key) if ssn
     end
 
     def ssn_is_unique
@@ -54,7 +54,19 @@ module Idv
     end
 
     def ssn_is_duplicate?
-      Profile.where.not(user_id: @user.id).where(ssn_signature: ssn_signature).any?
+      return true if any_matching_ssn_signatures?(ssn_signature)
+      return true if ssn_is_duplicate_with_old_key?
+    end
+
+    def ssn_is_duplicate_with_old_key?
+      signatures = KeyRotator::Utils.old_keys(:hmac_fingerprinter_key_queue).map do |key|
+        ssn_signature(key)
+      end
+      any_matching_ssn_signatures?(signatures)
+    end
+
+    def any_matching_ssn_signatures?(signatures)
+      Profile.where.not(user_id: @user.id).where(ssn_signature: signatures).any?
     end
 
     def dob_is_sane

@@ -36,11 +36,29 @@ describe Idv::ProfileForm do
         expect(subject.submit(profile_attrs.merge(ssn: '1234'))).to eq false
         expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
       end
+
+      it 'recognizes fingerprint regardless of HMAC key age' do
+        diff_user = create(:user)
+        create(:profile, pii: { ssn: '1234' }, user: diff_user)
+
+        rotate_hmac_key
+
+        expect(subject.submit(profile_attrs.merge(ssn: '1234'))).to eq false
+        expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
+      end
     end
 
     context 'when ssn is already taken by same profile' do
       it 'is valid' do
         create(:profile, pii: { ssn: '1234' }, user: user)
+
+        expect(subject.submit(profile_attrs.merge(ssn: '1234'))).to eq true
+      end
+
+      it 'recognizes fingerprint regardless of HMAC key age' do
+        create(:profile, pii: { ssn: '1234' }, user: user)
+
+        rotate_hmac_key
 
         expect(subject.submit(profile_attrs.merge(ssn: '1234'))).to eq true
       end
