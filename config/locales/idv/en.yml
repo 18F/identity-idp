@@ -23,7 +23,7 @@ en:
       mortgage: Mortgage loan account number
       password: Password
       phone: Phone
-      ssn: Social Security Number
+      ssn_label_html: Social Security Number %{tooltip}
       state: State
       zipcode: ZIP Code
     index:
