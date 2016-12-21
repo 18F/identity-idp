@@ -1,12 +1,14 @@
 ---
 en:
   tooltips:
-    placeholder: This is a placeholder tooltip.
     profile_idv: >
       If your account has been verified that means you have successfully proven
       your identity. If you’d like to change any your personal information listed
       here, you’ll have to go through the verification process again.
     profile_info: Why can’t I edit my profile information?
+    ssn: >
+      We ask for your Social Security number to help prove your identity. Some
+      agencies we work with may need it to access your records.
     two_factor: >
       Two-factor authentication makes signing in more secure by requiring a
       mobile device as well as a password.
