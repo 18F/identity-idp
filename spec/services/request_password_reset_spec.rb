@@ -13,7 +13,7 @@ describe RequestPasswordReset do
     end
 
     context 'when the user is an admin' do
-      it 'does not send any emails' do
+      it 'does not send any emails, to prevent password recovery via email for privileged users' do
         user = build_stubbed(:user, :admin)
 
         allow(User).to receive(:find_with_email).with(user.email).and_return(user)
@@ -25,7 +25,7 @@ describe RequestPasswordReset do
     end
 
     context 'when the user is a tech support person' do
-      it 'does not send any emails' do
+      it 'does not send any emails, to prevent password recovery via email for privileged users' do
         user = build_stubbed(:user, :tech_support)
 
         allow(User).to receive(:find_with_email).with(user.email).and_return(user)

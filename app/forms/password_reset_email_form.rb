@@ -2,10 +2,10 @@ class PasswordResetEmailForm
   include ActiveModel::Model
   include FormEmailValidator
 
-  attr_accessor :email
+  attr_reader :email
 
   def initialize(email)
-    self.email = email
+    @email = email
   end
 
   def resend

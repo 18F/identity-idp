@@ -48,7 +48,7 @@ feature 'Password Recovery' do
 
       expect(current_path).to eq edit_user_password_path
 
-      fill_in 'New password', with: 'NewVal!dPassw0rd'
+      fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
       click_button t('forms.passwords.edit.buttons.submit')
 
       expect(current_path).to eq new_user_session_path

@@ -256,7 +256,8 @@ describe Users::ResetPasswordsController, devise: true do
 
   describe '#create' do
     context 'no user matches email' do
-      it 'tracks event using anonymous user' do
+      it 'redirects to forgot_password_path to prevent revealing account existence ' \
+        'and tracks event using nonexistent user' do
         stub_analytics
 
         analytics_hash = {
