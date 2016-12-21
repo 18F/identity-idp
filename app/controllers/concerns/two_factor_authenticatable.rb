@@ -11,7 +11,8 @@ module TwoFactorAuthenticatable
   DELIVERY_METHOD_MAP = {
     authenticator: 'authenticator',
     sms: 'phone',
-    voice: 'phone'
+    voice: 'phone',
+    two_factor_authentication: 'otp'
   }.freeze
 
   private
@@ -29,7 +30,7 @@ module TwoFactorAuthenticatable
   end
 
   def check_already_authenticated
-    return unless context == 'authentication'
+    return unless initial_authentication_context?
 
     redirect_to profile_path if user_fully_authenticated?
   end
@@ -43,24 +44,12 @@ module TwoFactorAuthenticatable
   def handle_valid_otp
     if authentication_context?
       handle_valid_otp_for_authentication_context
-    elsif confirmation_context?
+    elsif idv_or_confirmation_context?
       handle_valid_otp_for_confirmation_context
     end
 
     redirect_to after_otp_verification_confirmation_path
     reset_otp_session_data
-  end
-
-  def authentication_context?
-    context == 'authentication' || context == 'reauthentication'
-  end
-
-  def confirmation_context?
-    context == 'confirmation' || context == 'idv'
-  end
-
-  def context
-    user_session[:context] || 'authentication'
   end
 
   def delivery_method
@@ -110,7 +99,7 @@ module TwoFactorAuthenticatable
   def assign_phone
     @updating_existing_number = old_phone
 
-    if @updating_existing_number && context == 'confirmation'
+    if @updating_existing_number && confirmation_context?
       phone_changed
     else
       phone_confirmed
@@ -135,7 +124,7 @@ module TwoFactorAuthenticatable
   def update_phone_attributes
     current_time = Time.current
 
-    if context == 'idv'
+    if idv_context?
       Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
     else
       current_user.update(phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time)
@@ -148,7 +137,7 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_verification_confirmation_path
-    if context == 'idv'
+    if idv_context?
       verify_confirmations_path
     elsif @updating_existing_number
       profile_path
@@ -169,16 +158,40 @@ module TwoFactorAuthenticatable
     current_user.direct_otp if FeatureManagement.prefill_otp_codes?
   end
 
-  def otp_phone_view_data
+  def recovery_code_unavailable?
+    idv_or_confirmation_context? || !current_user.recovery_code.present?
+  end
+
+  def unconfirmed_phone?
+    user_session[:unconfirmed_phone] && idv_or_confirmation_context?
+  end
+
+  def phone_view_data
     {
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       delivery_method: delivery_method,
       reenter_phone_number_path: reenter_phone_number_path,
-      unconfirmed_phone: user_session[:unconfirmed_phone],
-      unconfirmed_user: !current_user.recovery_code.present?,
-      totp_enabled: current_user.totp_enabled?,
-      user_email: current_user.email
+      unconfirmed_phone: unconfirmed_phone?,
+      recovery_code_unavailable: recovery_code_unavailable?,
+      totp_enabled: current_user.totp_enabled?
+    }
+  end
+
+  def authenticator_view_data
+    {
+      delivery_method: delivery_method,
+      user_email: current_user.email,
+      recovery_code_unavailable: recovery_code_unavailable?
+    }
+  end
+
+  def otp_view_data
+    {
+      reenter_phone_number_path: reenter_phone_number_path,
+      phone_number: display_phone_to_deliver_to,
+      unconfirmed_phone: unconfirmed_phone?,
+      recovery_code_unavailable: recovery_code_unavailable?
     }
   end
 
@@ -191,7 +204,7 @@ module TwoFactorAuthenticatable
   end
 
   def reenter_phone_number_path
-    if context == 'idv'
+    if idv_context?
       verify_phone_path
     elsif current_user.phone.present?
       manage_phone_path
@@ -202,7 +215,11 @@ module TwoFactorAuthenticatable
 
   def presenter_for(otp_code_method)
     type = DELIVERY_METHOD_MAP[otp_code_method.to_sym]
+
     return unless type
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(otp_phone_view_data)
+
+    data = send("#{type}_view_data".to_sym)
+
+    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(data)
   end
 end

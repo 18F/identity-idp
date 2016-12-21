@@ -5,7 +5,7 @@ module TwoFactorAuthCode
     include Rails.application.routes.url_helpers
 
     attr_reader :phone_number, :code_value, :delivery_method, :reenter_phone_number_path,
-                :totp_enabled, :unconfirmed_phone, :unconfirmed_user, :user_email
+                :totp_enabled, :unconfirmed_phone, :recovery_code_unavailable, :user_email
 
     def initialize(data_model)
       data_model.each do |key, value|
@@ -26,7 +26,7 @@ module TwoFactorAuthCode
     end
 
     def recovery_code_link
-      return if unconfirmed_user
+      return if recovery_code_unavailable
 
       t("#{recovery_code_key}.text_html",
         link: recovery_code_tag)
