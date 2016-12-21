@@ -7,8 +7,8 @@ module Users
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_path
       else
-        @phone_number = decorated_user.masked_two_factor_phone_number
         @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+        @presenter = presenter_for(delivery_method)
       end
     end
 

@@ -100,7 +100,7 @@ es:
         confirm_with_voice: Confirmar con llamada de voz
       choose_delivery_confirmation:
         ¿Cómo le gustaría recibir su código de confirmación para %{phone}?
-      choose_otp_delivery:
+      choose_otp_delivery_html:
         Selecciona cómo deseas recibir su código de acceso único para %{phone}.
       contact_administrator: Por favor, póngase en contacto con el administrador del sistema.
       header_text: Ingrese su contraseña.
