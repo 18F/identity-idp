@@ -2,13 +2,21 @@
 en:
   instructions:
     2fa:
-      confirm_code: We sent it to %{number}.
-      resend: Didn’t receive a code? %{link}
+      sms:
+        confirm_code_html: We sent it in a text message to %{number}. Need another code?
+          %{resend_code_link}. Message rates may apply.
+        fallback_html: If you can't get text messages right now, you can get a passcode
+          via %{link}
+      voice:
+        confirm_code_html: We just called you at %{number}. Want us to call you again?
+          %{resend_code_link}
+        fallback_html: If you can't take a phone call right now, you can get a passcode
+          via %{link}
       totp_intro_html: >
         Enter the code from your authenticator app. If you have several accounts
         set up in your app, enter the code corresponding to <strong>%{email}</strong> at
         <strong>%{app}</strong>.
-      wrong_number: Entered the wrong phone number? %{link}
+      wrong_number_html: Entered the wrong phone number? %{link}
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
     password:

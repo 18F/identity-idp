@@ -2,10 +2,14 @@
 es:
   instructions:
     2fa:
-      confirm_code: NOT TRANSLATED YET
-      resend: NOT TRANSLATED YET
-      totp_intro_html: NOT TRANSLATED YET
-      wrong_number: NOT TRANSLATED YET
+      sms:
+        confirm_code_html: NOT TRANSLATED YET
+        fallback_html: NOT TRANSLATED YET
+      voice:
+        confirm_code_html: NOT TRANSLATED YET
+        fallback_html: NOT TRANSLATED YET
+      totp_intro_html: NOT TRANSLATED YE
+      wrong_number_html: NOT TRANSLATED YET
     forgot_password:
       close_window: NOT TRANSLATED YET
     password:

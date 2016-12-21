@@ -92,7 +92,7 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       click_button t('forms.buttons.submit.default')
-      click_link t('links.two_factor_authentication.resend_code')
+      click_link t('links.two_factor_authentication.resend_code.sms')
 
       expect(page).to have_content(t('notices.send_code.sms'))
     end
