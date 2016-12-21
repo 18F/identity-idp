@@ -23,7 +23,7 @@ es:
       mortgage: NOT TRANSLATED YET
       password: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
-      ssn: NOT TRANSLATED YET
+      ssn_label_html: NOT TRANSLATED YET
       state: NOT TRANSLATED YET
       zipcode: NOT TRANSLATED YET
     index:
