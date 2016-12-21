@@ -13,7 +13,7 @@ module KeyRotator
     private
 
     def rotate_email_fingerprint(user)
-      ee = EncryptedEmail.new_from_email(user.email)
+      ee = EncryptedAttribute.new_from_decrypted(user.email)
       user.update_columns(email_fingerprint: ee.fingerprint)
     end
 

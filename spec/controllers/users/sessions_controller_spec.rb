@@ -199,7 +199,7 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'LOA1 user' do
-      it 'hashes password exactly once, hashes email access key exactly once' do
+      it 'hashes password exactly once, hashes attribute access key exactly once' do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
         encrypted_key_maker = EncryptedKeyMaker.new
         allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
@@ -207,7 +207,7 @@ describe Users::SessionsController, devise: true do
 
         expect(UserAccessKey).to receive(:new).exactly(:twice).and_call_original
         expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedEmail).to receive(:new_user_access_key).exactly(:once).and_call_original
+        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
 
         post :create, user: { email: user.email.upcase, password: user.password }
       end
@@ -218,7 +218,7 @@ describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end
 
-      it 'hashes password exactly once, hashes email access key exactly once' do
+      it 'hashes password exactly once, hashes attribute access key exactly once' do
         encrypted_key_maker = EncryptedKeyMaker.new
         allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
@@ -226,7 +226,7 @@ describe Users::SessionsController, devise: true do
 
         expect(UserAccessKey).to receive(:new).exactly(:twice).and_call_original
         expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedEmail).to receive(:new_user_access_key).exactly(:once).and_call_original
+        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
 
         post :create, user: { email: user.email.upcase, password: user.password }
       end

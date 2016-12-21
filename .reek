@@ -79,7 +79,7 @@ UtilityFunction:
     - SessionDecorator#registration_bullet_1
     - SessionDecorator#new_session_heading
     - WorkerHealthChecker::Middleware#call
-    - UserEncryptedEmailOverrides#create_fingerprint
+    - UserEncryptedAttributeOverrides#create_fingerprint
     - Remote#build_parser
     - Remote#command
     - Remote#default_config

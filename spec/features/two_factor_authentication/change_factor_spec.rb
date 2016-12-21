@@ -15,6 +15,8 @@ feature 'Changing authentication factor' do
       allow(SmsSenderNumberChangeJob).to receive(:perform_later)
 
       @previous_phone_confirmed_at = user.reload.phone_confirmed_at
+      previous_phone = user.phone
+      new_phone = '+1 (703) 555-0100'
 
       visit manage_phone_path
       complete_2fa_confirmation
@@ -26,15 +28,15 @@ feature 'Changing authentication factor' do
       enter_incorrect_otp_code
 
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
-      expect(user.reload.phone).to_not eq '+1 (703) 555-0100'
+      expect(user.reload.phone).to_not eq new_phone
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
 
       enter_correct_otp_code_for_user(user)
 
       expect(page).to have_content t('notices.phone_confirmation_successful')
       expect(current_path).to eq profile_path
-      expect(SmsSenderNumberChangeJob).to have_received(:perform_later).with('+1 (202) 555-1212')
-      expect(user.reload.phone).to eq '+1 (703) 555-0100'
+      expect(SmsSenderNumberChangeJob).to have_received(:perform_later).with(previous_phone)
+      expect(page).to have_content new_phone
       expect(user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
 
       visit login_two_factor_path(delivery_method: 'sms')

@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
 
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
-  include UserEncryptedEmailOverrides
+  include UserEncryptedAttributeOverrides
 
   enum role: { user: 0, tech: 1, admin: 2 }
 
