@@ -12,7 +12,7 @@ p.mt-tiny.mb0#2fa-description
     strong.left = t('devise.two_factor_authentication.otp_phone_label')
     span.ml1.italic = t('devise.two_factor_authentication.otp_phone_label_info')
     = f.input :phone, as: :tel, label: false, required: true,
-        input_html: { 'aria-describedby' => '2fa-description' }
+        input_html: { 'aria-describedby' => '2fa-description', class: 'phone' }
   .mb3
     = label_tag 'two_factor_setup_form[otp_method]',
       t('devise.two_factor_authentication.otp_method.title'),

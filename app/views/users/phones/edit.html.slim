@@ -4,7 +4,7 @@
 h1.h3.my0 = t('headings.edit_info.phone')
 = simple_form_for(@update_user_phone_form, url: manage_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
-  = f.input :phone, as: :tel, required: true, input_html: { value: nil },
+  = f.input :phone, as: :tel, required: true, input_html: { class: 'phone', value: nil },
     label: t('profile.index.phone')
   = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'mt2'
 .mt1 = link_to t('forms.buttons.cancel'), profile_path

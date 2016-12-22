@@ -26,6 +26,7 @@ en:
       last_name: Last name
       mortgage: Mortgage loan account number
       password: Password
+      personal_details: Personal details
       phone: Phone
       ssn_label_html: Social Security Number %{tooltip}
       state: State

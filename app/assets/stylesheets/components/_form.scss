@@ -23,7 +23,7 @@ textarea {
   font-weight: $bold-font-weight;
 
   &[type=number],
-  &[type=tel] {
+  &.phone {
     font-family: $monospace-font-family;
   }
 }
