@@ -17,6 +17,7 @@
     class: 'h5 blue sans-serif underline hint--top hint--no-animate',
     tabindex: 0,
     'aria-label': t('tooltips.profile_idv'))
+  = render partial: current_user.decorate.verified_account_partial
   .mt2.mb4
     .py-12p.border-top
       .clearfix.mxn1
@@ -43,7 +44,9 @@
         .sm-col.sm-col-5.px1 = t('.phone')
         .sm-col.sm-col-7.px1 = @decrypted_pii.phone
 
-h2.h3.my0 = t('headings.profile.login_info')
+h2.h3.my0
+  = t('headings.profile.login_info')
+  = render partial: current_user.decorate.basic_account_partial
 .mt2.mb4
   .py-12p.border-top
     .clearfix.mxn1
