@@ -1,7 +1,7 @@
 class RecoveryCodeGenerator
   attr_reader :user_access_key
 
-  def initialize(user, length: 16)
+  def initialize(user, length: 5)
     @user = user
     @length = length
     @key_maker = EncryptedKeyMaker.new
@@ -44,7 +44,7 @@ class RecoveryCodeGenerator
   end
 
   def raw_recovery_code
-    @raw_recovery_code ||= SecureRandom.hex(recovery_code_length / 2)
+    @raw_recovery_code ||= RandomPhrase.new(recovery_code_length).to_s
   end
 
   def recovery_code_length

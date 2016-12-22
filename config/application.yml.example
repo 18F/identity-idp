@@ -27,8 +27,8 @@ queue_health_check_dead_interval_seconds: '240'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '120'
 
-# Must be an even number. 16 seems to be what most sites use.
-recovery_code_length: '16'
+# The number of words in the recovery code phrase
+recovery_code_length: '5'
 
 # Set the number of seconds before the session times out that the timeout
 # warning should appear.
