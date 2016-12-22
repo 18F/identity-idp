@@ -10,6 +10,10 @@ en:
       incorrect_password: The password you entered is not correct.
       invalid_ccn: Credit card number should be only last 8 digits.
       missing_finance: You must provide a financial account number.
+      pattern_mismatch:
+        dob: Your date of birth must be entered in as mm/dd/yyyy
+        ssn: 'Your Social Security Number must be entered in as ###-##-####'
+        zipcode: 'Your zipcode must be entered in as #####-####'
     form:
       address1: Street address 1
       address2: Street address 2 (optional)

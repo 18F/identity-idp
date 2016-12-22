@@ -84,6 +84,7 @@ search:
 
 ## Do not consider these keys missing:
 ignore_missing:
+  - 'idv.errors.pattern_mismatch.*'
   - 'zxcvbn.*'
 # - 'errors.messages.{accepted,blank,invalid,too_short,too_long}'
 # - '{devise,simple_form}.*'
@@ -96,6 +97,7 @@ ignore_unused:
   - 'errors.not_authorized'
   - 'experiments.*'
   - 'event_types.*'
+  - 'idv.errors.pattern_mismatch.*'
   - 'zxcvbn.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
