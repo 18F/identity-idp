@@ -35,8 +35,12 @@ UserDecorator = Struct.new(:user) do
     masked_number(user.phone)
   end
 
+  def identity_verified?
+    user.active_profile.present?
+  end
+
   def identity_not_verified?
-    !user.active_profile.present?
+    !identity_verified?
   end
 
   def active_identity_for(service_provider)
@@ -69,6 +73,22 @@ UserDecorator = Struct.new(:user) do
     events = user.events.order('updated_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
     identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
     (events + identities).sort { |thing_a, thing_b| thing_b.happened_at <=> thing_a.happened_at }
+  end
+
+  def verified_account_partial
+    if identity_verified?
+      'profile/verified_account_badge'
+    else
+      'shared/null'
+    end
+  end
+
+  def basic_account_partial
+    if identity_not_verified?
+      'profile/basic_account_badge'
+    else
+      'shared/null'
+    end
   end
 
   private

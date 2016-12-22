@@ -66,9 +66,11 @@ en:
       security_practices: Our security practices
     profile:
       account_history: Account history
+      basic_account: Basic Account
       login_info: Account information
       profile_info: Profile information
       two_factor: Two-factor authentication
+      verified_account: Verified Account
     recovery_code: Make sure you can always sign in
     registrations:
       enter_email: Start creating an account
