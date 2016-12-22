@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const input = document.querySelector(`.${f}`);
       if (input) {
         input.addEventListener('input', () => {
-          if (input.validity.patternMismatch){
-            input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${f}`)); 
+          if (input.validity.patternMismatch) {
+            input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${f}`));
           } else {
             input.setCustomValidity('');
           }
