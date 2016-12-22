@@ -1,9 +1,9 @@
 module TwoFactorAuthentication
-  class RecoveryCodeVerificationController < DeviseController
-    include ScopeAuthenticator
+  class RecoveryCodeVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    prepend_before_action :authenticate_scope!
+    prepend_before_action :authenticate_user
+    skip_before_action :handle_two_factor_authentication
 
     def create
       result = RecoveryCodeForm.new(current_user, params[:code]).submit

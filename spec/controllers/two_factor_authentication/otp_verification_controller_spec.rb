@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::OtpVerificationController, devise: true do
+describe TwoFactorAuthentication::OtpVerificationController do
   describe '#show' do
     context 'when resource is not fully authenticated yet' do
       before do

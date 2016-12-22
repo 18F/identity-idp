@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
-  devise_for :users, skip: [:confirmations, :sessions, :registrations], controllers: {
+  devise_for :users, skip: [:confirmations, :sessions, :registrations, :two_factor_authentication], controllers: {
     omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/reset_passwords'
   }
@@ -25,9 +25,6 @@ Rails.application.routes.draw do
     post '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
          as: :login_otp
 
-    get '/otp/send' => 'devise/two_factor_authentication#send_code'
-    get '/phone_setup' => 'devise/two_factor_authentication_setup#index'
-    patch '/phone_setup' => 'devise/two_factor_authentication_setup#set'
     get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
     post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
     get '/timeout' => 'users/sessions#timeout'
@@ -75,6 +72,12 @@ Rails.application.routes.draw do
   get '/manage/phone' => 'users/phones#edit'
   match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
   get '/manage/recovery_code' => 'users/recovery_codes#show'
+
+  get '/otp/send' => 'users/two_factor_authentication#send_code'
+  get '/phone_setup' => 'users/two_factor_authentication_setup#index'
+  patch '/phone_setup' => 'users/two_factor_authentication_setup#set'
+  get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
+      as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
 
   get '/privacy' => 'pages#privacy_policy'
 

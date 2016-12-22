@@ -240,7 +240,7 @@ describe Verify::ReviewController do
         }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
-        expect(response).to render_template('devise/two_factor_authentication/show')
+        expect(response).to render_template('users/two_factor_authentication/show')
         expect(subject.user_session[:context]).to eq 'idv'
       end
     end
