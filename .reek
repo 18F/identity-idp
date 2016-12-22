@@ -42,6 +42,7 @@ NilCheck:
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
+    - VerifyController
 TooManyConstants:
   exclude:
     - Analytics
