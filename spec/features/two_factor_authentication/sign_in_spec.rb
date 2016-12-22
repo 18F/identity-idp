@@ -201,7 +201,6 @@ feature 'Two Factor Authentication' do
       click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
       fill_in 'code', with: code
       click_button t('forms.buttons.submit.default')
-
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path

@@ -1,6 +1,8 @@
 module TwoFactorAuthentication
-  class OtpVerificationController < DeviseController
+  class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+
+    skip_before_action :handle_two_factor_authentication
 
     def show
       assign_variables_for_otp_verification_show_view

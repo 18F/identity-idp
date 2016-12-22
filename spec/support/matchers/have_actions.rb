@@ -3,7 +3,7 @@
 # it 'includes the appropriate before_actions' do
 #   expect(subject).to have_actions(
 #     :before,
-#     :authenticate_scope!,
+#     :authenticate_user,
 #     :handle_two_factor_authentication,
 #     :check_already_authenticated
 #   )
@@ -19,7 +19,7 @@
 # it 'includes the appropriate before_actions' do
 #   expect(subject).to have_actions(
 #     :before,
-#     :authenticate_scope!,
+#     :authenticate_user,
 #     :handle_two_factor_authentication,
 #     [:check_already_authenticated, only: :new]
 #   )
