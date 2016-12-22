@@ -23,11 +23,11 @@ en:
     registrations:
       new: Sign up for a account
       start: Get started
-      verify_email: Check your email
     totp_setup:
       new: Enter the secure one-time passcode
       start: Set up two-factor authentication
     two_factor_setup: Two-factor authentication setup
     two_factor_verification: Choose OTP delivery method
+    verify_email: Check your email
     visitors:
       index: Welcome

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'devise/passwords/new.html.slim' do
   before do
-    allow(view).to receive(:resource).and_return(User.new)
+    @password_reset_email_form = PasswordResetEmailForm.new('')
   end
 
   it 'has a localized title' do

@@ -72,7 +72,6 @@ en:
     recovery_code: Make sure you can always sign in
     registrations:
       enter_email: Start creating an account
-      verify_email: Check your email
     search: Search for a user
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
@@ -80,3 +79,4 @@ en:
     totp_setup:
       new: Scan the QR code with your device
       start: Set up two-factor authentication
+    verify_email: Check your email

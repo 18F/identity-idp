@@ -9,6 +9,8 @@ en:
         set up in your app, enter the code corresponding to <strong>%{email}</strong> at
         <strong>%{app}</strong>.
       wrong_number: Entered the wrong phone number? %{link}
+    forgot_password:
+      close_window: You can close this browser window once you have reset your password.
     password:
       forgot: >
         If you don’t know your current password, you can reset it. Type the email address
