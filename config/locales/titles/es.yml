@@ -23,11 +23,11 @@ es:
     registrations:
       new: NOT TRANSLATED YET
       start: NOT TRANSLATED YET
-      verify_email: NOT TRANSLATED YET
     totp_setup:
       new: NOT TRANSLATED YET
       start: NOT TRANSLATED YET
     two_factor_setup: NOT TRANSLATED YET
     two_factor_verification: NOT TRANSLATED YET
+    verify_email: NOT TRANSLATED YET
     visitors:
       index: NOT TRANSLATED YET

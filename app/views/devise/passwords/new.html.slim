@@ -3,7 +3,7 @@
 h1.h3.my0 = t('headings.passwords.forgot')
 p.mt-tiny.mb0#email-description
   = t('instructions.password.forgot')
-= simple_form_for(resource,
+= simple_form_for(@password_reset_email_form,
                   url: user_password_path,
                   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
 

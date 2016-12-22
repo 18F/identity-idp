@@ -39,6 +39,9 @@ NilCheck:
     - user_not_found?
     - SamlIdpLogoutConcern#name_id
     - User#password_reset_profile
+RepeatedConditional:
+  exclude:
+    - Users::ResetPasswordsController
 TooManyConstants:
   exclude:
     - Analytics

@@ -6,6 +6,8 @@ es:
       resend: NOT TRANSLATED YET
       totp_intro_html: NOT TRANSLATED YET
       wrong_number: NOT TRANSLATED YET
+    forgot_password:
+      close_window: NOT TRANSLATED YET
     password:
       forgot: NOT TRANSLATED YET
       info:

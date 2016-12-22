@@ -6,4 +6,8 @@ class NonexistentUser
   def role
     'nonexistent'
   end
+
+  def confirmed?
+    false
+  end
 end
