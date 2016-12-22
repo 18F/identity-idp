@@ -235,4 +235,13 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq profile_path
     end
   end
+
+  describe 'clicking the logo image during 2fa process' do
+    it 'returns them to the home page' do
+      user = build_stubbed(:user, :signed_up)
+      sign_in_user(user)
+      find("img[alt='login.gov']").click
+      expect(current_path).to eq root_path
+    end
+  end
 end

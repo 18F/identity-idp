@@ -3,7 +3,9 @@ module Users
     include ::ActionView::Helpers::DateHelper
 
     skip_before_action :session_expires_at, only: [:active]
+    skip_before_action :require_no_authentication, only: [:new]
     before_action :confirm_two_factor_authenticated, only: [:update]
+    before_action :check_user_needs_redirect, only: [:new]
 
     def new
       analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT)
@@ -40,6 +42,14 @@ module Users
     end
 
     private
+
+    def check_user_needs_redirect
+      if user_fully_authenticated?
+        redirect_to after_sign_in_path_for(current_user)
+      elsif current_user
+        sign_out
+      end
+    end
 
     def now
       @_now ||= Time.zone.now
