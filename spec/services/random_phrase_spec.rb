@@ -16,4 +16,12 @@ describe RandomPhrase do
       expect(phrase.to_s).to match(/\A(\w+) (\w+) (\w+)\z/)
     end
   end
+
+  describe '#dictionary' do
+    it 'has only words that match \w+' do
+      RandomPhrase.dictionary.each do |word|
+        expect(word).to match(/\A(\w+)\z/)
+      end
+    end
+  end
 end
