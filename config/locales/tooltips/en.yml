@@ -12,3 +12,7 @@ en:
     two_factor: >
       Two-factor authentication makes signing in more secure by requiring a
       mobile device as well as a password.
+    verified_account: >
+      For your security, some government agencies require customer accounts to
+      be verified using Personally Identifiable Information (PII) such as
+      Social Security Number and proof of address.

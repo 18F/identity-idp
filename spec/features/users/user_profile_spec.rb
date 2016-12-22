@@ -1,6 +1,29 @@
 require 'rails_helper'
 
 feature 'User profile' do
+  context 'account status badges' do
+    before do
+      sign_in_live_with_2fa(profile.user)
+    end
+
+    context 'LOA1 account' do
+      let(:profile) { create(:profile) }
+
+      it 'shows a "Basic Account" badge with a tooltip' do
+        expect(page).to have_content(t('headings.profile.basic_account'))
+        expect(page).to have_css("[aria-label='#{t('tooltips.verified_account')}']")
+      end
+    end
+
+    context 'LOA3 account' do
+      let(:profile) { create(:profile, :active, :verified, pii: { ssn: '111', dob: '1920-01-01' }) }
+
+      it 'shows a "Verified Account" badge with no tooltip' do
+        expect(page).to have_content(t('headings.profile.verified_account'))
+      end
+    end
+  end
+
   context 'user clicks the delete account button' do
     xit 'deletes the account and signs the user out with a flash message' do
       pending 'temporarily disabled until we figure out the MBUN to SSN mapping'

@@ -66,9 +66,11 @@ es:
       security_practices: NOT TRANSLATED YET
     profile:
       account_history: NOT TRANSLATED YET
+      basic_account: NOT TRANSLATED YET
       login_info: NOT TRANSLATED YET
       profile_info: NOT TRANSLATED YET
       two_factor: NOT TRANSLATED YET
+      verified_account: NOT TRANSLATED YET
     recovery_code: NOT TRANSLATED YET
     registrations:
       enter_email: NOT TRANSLATED YET
