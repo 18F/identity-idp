@@ -10,6 +10,10 @@ es:
       incorrect_password: NOT TRANSLATED YET
       invalid_ccn: NOT TRANSLATED YET
       missing_finance: NOT TRANSLATED YET
+      pattern_mismatch:
+        dob: NOT TRANSLATED YET
+        ssn: NOT TRANSLATED YET
+        zipcode: NOT TRANSLATED YET
     form:
       address1: NOT TRANSLATED YET
       address2: NOT TRANSLATED YET
