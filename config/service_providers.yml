@@ -161,6 +161,38 @@ production:
     attribute_bundle:
       - email
 
+# Micro-purchase
+  'urn:gov:gsa:saml:2.0.profiles:sp:sso:micropurchase-staging':
+    acs_url: 'https://micropurchase-staging.18f.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://micropurchase-staging.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://micropurchase-staging.18f.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    friendly_name: 'Micro-purchase Staging'
+    logo: 'generic.svg'
+    return_to_sp_url: 'https://micropurchase-staging.gov'
+    attribute_bundle:
+      - email
+      - first_name
+      - last_name
+
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase':
+    acs_url: 'https://micropurchase.18f.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://micropurchase.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://micropurchase.18f.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    friendly_name: 'Micro-purchase Prod'
+    logo: 'generic.svg'
+    return_to_sp_url: 'https://micropurchase.18f.gov'
+    attribute_bundle:
+      - email
+      - first_name
+      - last_name
+
   # Dashboard
   'https://dashboard.demo.login.gov':
     acs_url: 'https://dashboard.demo.login.gov/users/auth/saml/callback'
