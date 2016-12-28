@@ -12,7 +12,7 @@ p.mt-tiny.mb0#code-instructs = t('instructions.2fa.totp_intro_html', \
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag :code, '', required: true, autofocus: true,
       pattern: '[0-9]*', class: 'col-12 field monospace mfa',
-      'aria-describedby': 'code-instructs'
+      'aria-describedby': 'code-instructs', maxlength: Devise.otp_length
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
 .mt3.mb1

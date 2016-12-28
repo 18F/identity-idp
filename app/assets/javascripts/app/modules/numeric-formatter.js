@@ -2,13 +2,11 @@ import { Formatter } from 'field-kit';
 
 
 const DIGITS_PATTERN = /^\d*$/;
-const maxLength = 6;
 
 
-class OtpCodeFormatter extends Formatter {
+class NumericFormatter extends Formatter {
   constructor() {
     super();
-    this.maximumLength = maxLength;
   }
 
   isChangeValid(change, error) {
@@ -20,4 +18,4 @@ class OtpCodeFormatter extends Formatter {
 }
 
 
-export default OtpCodeFormatter;
+export default NumericFormatter;

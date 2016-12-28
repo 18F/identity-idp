@@ -1,16 +1,20 @@
 import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-kit';
 import DateFormatter from './modules/date-formatter';
-import OtpCodeFormatter from './modules/otp-code-formatter';
+import NumericFormatter from './modules/numeric-formatter';
 import ZipCodeFormatter from './modules/zip-code-formatter';
 
 
 function formatForm() {
   const formats = [
+    ['.auto_loan', new NumericFormatter()],
+    ['.ccn', new NumericFormatter()],
     ['.dob', new DateFormatter()],
-    ['[type=tel]', new PhoneFormatter()],
+    ['.home_equity_line', new NumericFormatter()],
+    ['.mfa', new NumericFormatter()],
+    ['.mortgage', new NumericFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
+    ['[type=tel]', new PhoneFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
-    ['.mfa', new OtpCodeFormatter()],
   ];
 
   formats.forEach(function(f) {
