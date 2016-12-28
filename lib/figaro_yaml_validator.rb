@@ -1,6 +1,6 @@
 class FigaroYamlValidator
   FILE_PATH = File.join(Rails.root, 'config', 'application.yml')
-  FIGARO_YAML = YAML.load(IO.read(FILE_PATH))
+  FIGARO_YAML = File.exist?(FILE_PATH) ? YAML.load(IO.read(FILE_PATH)) : {}
 
   def validate(yaml_data = FIGARO_YAML)
     bad_keys = []
