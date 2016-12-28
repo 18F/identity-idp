@@ -7,18 +7,26 @@ module Idv
 
     FINANCE_HTML_OPTIONS = {
       ccn: {
+        class: 'ccn',
+        pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_CCN_LENGTH,
         maxlength: FormFinanceValidator::VALID_CCN_LENGTH
       },
       mortgage: {
+        class: 'mortgage',
+        pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
         maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
       },
       home_equity_line: {
+        class: 'home_equity_line',
+        pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
         maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
       },
       auto_loan: {
+        class: 'auto_loan',
+        pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
         maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
       }

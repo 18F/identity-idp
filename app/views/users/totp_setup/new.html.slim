@@ -9,6 +9,6 @@ p.mt-tiny.mb0 = t('forms.totp_setup.totp_info')
   = label_tag 'code', t('forms.totp_setup.code'), class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag :code, '', required: true, pattern: '[0-9]*',
-      class: 'block col-12 field monospace mfa'
+      class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 .mt1 = link_to t('forms.buttons.cancel'), profile_path
