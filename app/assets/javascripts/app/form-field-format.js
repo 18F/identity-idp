@@ -12,8 +12,8 @@ function formatForm() {
     ['.home_equity_line', new NumericFormatter()],
     ['.mfa', new NumericFormatter()],
     ['.mortgage', new NumericFormatter()],
+    ['.phone', new PhoneFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
-    ['[type=tel]', new PhoneFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
   ];
 
