@@ -1,4 +1,4 @@
-require File.expand_path('../../../lib/figaro_yaml_validator', __FILE__)
+require File.join(Rails.root, 'lib', 'config_validator')
 
 Figaro.require_keys(
   'allow_third_party_auth',
@@ -38,4 +38,4 @@ Figaro.require_keys(
   'valid_service_providers'
 )
 
-FigaroYamlValidator.new.validate
+ConfigValidator.new.validate
