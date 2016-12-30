@@ -23,6 +23,14 @@ describe EncryptedAttribute do
 
       expect(EncryptedAttribute.new(encrypted_with_old_key).decrypted).to eq email
     end
+
+    it 'raises an error if unable to decrypt with any keys' do
+      encrypted_with_old_key = encrypted_email
+      rotate_attribute_encryption_key_with_invalid_queue
+
+      expect { EncryptedAttribute.new(encrypted_with_old_key) }.
+        to raise_error Pii::EncryptionError, 'unable to decrypt attribute with any key'
+    end
   end
 
   describe '#new_from_decrypted' do
