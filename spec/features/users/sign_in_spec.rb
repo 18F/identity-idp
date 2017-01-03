@@ -200,4 +200,25 @@ feature 'Sign in' do
       end
     end
   end
+
+  context 'attribute_encryption_key is changed but queue does not contain any previous keys' do
+    it 'allows the user to sign back in' do
+      email = 'test@example.com'
+      password = 'salty pickles'
+
+      sign_up_and_2fa_as_a_user_would(email, password)
+      visit destroy_user_session_path
+
+      user = User.find_with_email(email)
+      encrypted_email = user.encrypted_email
+
+      rotate_attribute_encryption_key_with_invalid_queue
+
+      expect { signin(email, password) }.
+        to raise_error Pii::EncryptionError, 'unable to decrypt attribute with any key'
+
+      user = User.find_with_email(email)
+      expect(user.encrypted_email).to eq encrypted_email
+    end
+  end
 end

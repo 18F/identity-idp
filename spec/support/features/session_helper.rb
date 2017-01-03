@@ -120,5 +120,19 @@ module Features
       yield
       Capybara.session_name = old_session
     end
+
+    def sign_up_and_2fa_as_a_user_would(email, password)
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      sign_up_with(email)
+      open_email(email)
+      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+      fill_in 'password_form_password', with: password
+      click_button t('forms.buttons.submit.default')
+      fill_in 'Phone', with: '202-555-1212'
+      click_button t('forms.buttons.send_passcode')
+      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
+    end
   end
 end
