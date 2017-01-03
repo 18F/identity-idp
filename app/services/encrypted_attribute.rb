@@ -41,9 +41,7 @@ class EncryptedAttribute
     encryptor = Pii::PasswordEncryptor.new
     decrypted = try_decrypt_with_uak(encryptor) if user_access_key.present?
     return decrypted if decrypted
-    decrypted = try_decrypt_with_all_keys(encryptor, cost)
-    return decrypted if decrypted
-    raise Pii::EncryptionError, 'unable to decrypt attribute with any key'
+    try_decrypt_with_all_keys(encryptor, cost)
   end
 
   def try_decrypt(encryptor, key, cost)
@@ -58,6 +56,8 @@ class EncryptedAttribute
       decrypted = try_decrypt(encryptor, key, cost) or next
       return decrypted
     end
+
+    raise Pii::EncryptionError, 'unable to decrypt attribute with any key'
   end
 
   def try_decrypt_with_uak(encryptor)
