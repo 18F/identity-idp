@@ -41,11 +41,13 @@ namespace :dev do
     pw = 'salty pickles'
     num_users = (ENV['NUM_USERS'] || 100).to_i
     num_created = 0
-    progress = ProgressBar.create(
-      title: 'Users',
-      total: num_users,
-      format: '%t: |%B| %j%% [%a / %e]'
-    )
+    unless ENV['PROGRESS'] == 'no'
+      progress = ProgressBar.create(
+        title: 'Users',
+        total: num_users,
+        format: '%t: |%B| %j%% [%a / %e]'
+      )
+    end
 
     User.transaction do
 
@@ -58,6 +60,7 @@ namespace :dev do
 
         if ENV['VERIFIED']
           user = User.find_by(email_fingerprint: ee.fingerprint)
+          user.unlock_user_access_key(pw)
           profile = Profile.new(user: user)
           pii = Pii::Attributes.new_from_hash(
             first_name: 'Test',
@@ -65,14 +68,14 @@ namespace :dev do
             dob: '1970-05-01',
             ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
           )
-          recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
+          recovery_code = profile.encrypt_pii(user.user_access_key, pii)
           profile.activate
 
           Rails.logger.warn "email=#{email_addr} recovery_code=#{recovery_code}"
         end
 
         num_created += 1
-        progress.increment
+        progress.increment if progress
       end
     end
   end
