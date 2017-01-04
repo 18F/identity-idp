@@ -7,6 +7,8 @@ p.mt-tiny.mb0#code-instructs = t('instructions.2fa.totp_intro_html', \
       app: APP_NAME)
 
 = form_tag(:login_two_factor_authenticator, method: :post, role: 'form', class: 'mt3 sm-mt4') do
+  - if reauthn?
+    = hidden_field_tag 'reauthn', 'true'
   = label_tag 'code', t('simple_form.required.html') + t('forms.two_factor.code'),
     class: 'block bold'
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
