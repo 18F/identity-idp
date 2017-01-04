@@ -73,6 +73,33 @@ feature 'Changing authentication factor' do
     end
   end
 
+  context 'user has authenticator app enabled' do
+    it 'allows them to change their email, password, or phone' do
+      sign_in_with_totp_enabled_user
+
+      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+        visit manage_email_path
+        submit_current_password_and_totp
+
+        expect(current_path).to eq manage_email_path
+      end
+
+      Timecop.travel(Figaro.env.reauthn_window.to_i * 3) do
+        visit manage_password_path
+        submit_current_password_and_totp
+
+        expect(current_path).to eq manage_password_path
+      end
+
+      Timecop.travel(Figaro.env.reauthn_window.to_i * 4) do
+        visit manage_phone_path
+        submit_current_password_and_totp
+
+        expect(current_path).to eq manage_phone_path
+      end
+    end
+  end
+
   def complete_2fa_confirmation
     complete_2fa_confirmation_without_entering_otp
     click_submit_default
@@ -99,6 +126,16 @@ feature 'Changing authentication factor' do
 
   def enter_incorrect_otp_code
     fill_in 'code', with: '12345'
+    click_submit_default
+  end
+
+  def submit_current_password_and_totp
+    fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
+    click_button t('forms.buttons.continue')
+
+    expect(current_path).to eq login_two_factor_authenticator_path
+
+    fill_in 'code', with: generate_totp_code(@secret)
     click_submit_default
   end
 end
