@@ -21,6 +21,19 @@ describe SignUp::RecoveryCodesController do
       expect(get(:show)).not_to redirect_to(profile_path)
       expect(get(:show)).to redirect_to(profile_path)
     end
+
+    it 're-encrypts PII with new code if active profile exists' do
+      user = stub_sign_in
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234' }, user: user)
+      subject.user_session[:decrypted_pii] = { ssn: '1234' }.to_json
+      subject.user_session[:first_time_recovery_code_view] = 'true'
+
+      old_encrypted_pii = profile.encrypted_pii_recovery
+
+      get :show
+
+      expect(profile.reload.encrypted_pii_recovery).to_not eq old_encrypted_pii
+    end
   end
 
   describe '#update' do
