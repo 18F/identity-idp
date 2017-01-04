@@ -127,7 +127,7 @@ module Features
       sign_up_with(email)
       open_email(email)
       visit_in_email(t('mailer.confirmation_instructions.link_text'))
-      fill_in 'password_form_password', with: password
+      find('#password_form_password').set(password)
       click_button t('forms.buttons.submit.default')
       fill_in 'Phone', with: '202-555-1212'
       click_button t('forms.buttons.send_passcode')
