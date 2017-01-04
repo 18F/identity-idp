@@ -128,8 +128,7 @@ feature 'Two Factor Authentication' do
         end
 
         expect(page).to have_content t('titles.account_locked')
-        expect(page).to have_content('4:54')
-        expect(page).to have_content('4:53')
+        expect(page).to have_content(/4:5\d/)
 
         # let lockout period expire
         user.update(
