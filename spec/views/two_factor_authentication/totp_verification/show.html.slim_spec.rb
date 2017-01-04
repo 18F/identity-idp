@@ -5,6 +5,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
+    allow(view).to receive(:reauthn?).and_return(false)
     render
   end
 

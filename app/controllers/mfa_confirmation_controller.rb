@@ -20,7 +20,11 @@ class MfaConfirmationController < ApplicationController
   end
 
   def handle_valid_password
-    redirect_to user_two_factor_authentication_path(reauthn: true)
+    if current_user.totp_enabled?
+      redirect_to login_two_factor_authenticator_path(reauthn: true)
+    else
+      redirect_to user_two_factor_authentication_path(reauthn: true)
+    end
     session[:password_attempts] = 0
   end
 
