@@ -4,6 +4,7 @@ module Idv
     include FormFinanceValidator
 
     FINANCE_TYPES = [:ccn, :mortgage, :home_equity_line, :auto_loan].freeze
+    FINANCE_OTHER_TYPES = FINANCE_TYPES - [:ccn]
 
     FINANCE_HTML_OPTIONS = {
       ccn: {
@@ -32,7 +33,7 @@ module Idv
       }
     }.freeze
 
-    attr_reader :idv_params, :finance_type, *FINANCE_TYPES
+    attr_reader :idv_params, :finance_type, :blank, *FINANCE_TYPES
 
     def initialize(idv_params)
       @idv_params = idv_params
@@ -50,12 +51,18 @@ module Idv
       true
     end
 
-    def self.finance_type_choices
-      FINANCE_TYPES.map { |choice| [choice, I18n.t("idv.form.#{choice}")] }
+    def self.finance_other_type_choices
+      FINANCE_OTHER_TYPES.map { |choice| [choice, I18n.t("idv.form.#{choice}")] }
     end
 
-    def self.finance_type_inputs
-      FINANCE_TYPES.map do |choice|
+    def self.ccn_inputs
+      [
+        [:ccn, I18n.t('idv.form.ccn'), FINANCE_HTML_OPTIONS.fetch(:ccn, {})]
+      ]
+    end
+
+    def self.finance_other_type_inputs
+      FINANCE_OTHER_TYPES.map do |choice|
         [choice, I18n.t("idv.form.#{choice}"), FINANCE_HTML_OPTIONS.fetch(choice, {})]
       end
     end
