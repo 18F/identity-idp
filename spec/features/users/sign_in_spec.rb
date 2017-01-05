@@ -206,8 +206,7 @@ feature 'Sign in' do
       email = 'test@example.com'
       password = 'salty pickles'
 
-      sign_up_and_2fa_as_a_user_would(email, password)
-      visit destroy_user_session_path
+      create(:user, :signed_up, email: email, password: password)
 
       user = User.find_with_email(email)
       encrypted_email = user.encrypted_email
