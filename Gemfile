@@ -21,6 +21,7 @@ gem 'hiredis'
 gem 'httparty'
 gem 'lograge'
 gem 'newrelic_rpm'
+gem 'nokogiri' # required for premailer-rails
 gem 'omniauth-saml'
 gem 'pg'
 gem 'phony_rails'
