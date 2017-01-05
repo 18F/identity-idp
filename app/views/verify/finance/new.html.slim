@@ -6,21 +6,16 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro')
 = simple_form_for(idv_finance_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = f.error_notification
-  fieldset.mb3.js-finance-choice-cntnr.border-none
-    legend.hide = t('idv.messages.finance.label')
-    = f.collection_radio_buttons(:finance_type, Idv::FinanceForm.finance_type_choices,
-      :first, :last, required: true, item_wrapper_class: 'mb1', item_wrapper_tag: :div) do |r|
-      = r.label(class: 'radio')
-        = r.radio_button
-        span.indicator
-        = r.text
-  - Idv::FinanceForm.finance_type_inputs.each do |key, label, html_options|
+  = hidden_field_tag 'idv_finance_form[finance_type]', :ccn
+  - Idv::FinanceForm.ccn_inputs.each do |key, label, html_options|
     = f.input key,
               label: label,
               required: false,
-              wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
+              wrapper_html: { data: { type: key } },
               input_html: html_options
+
+  p
+    = link_to t('idv.form.use_financial_account'), verify_finance_other_path
+
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
   .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path
-
-== javascript_include_tag 'misc/page-unload-warning'

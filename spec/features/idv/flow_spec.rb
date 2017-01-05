@@ -85,7 +85,7 @@ feature 'IdV session' do
       expect(user.idv_attempted_at).to_not be_nil
     end
 
-    scenario 'steps are re-entrant and sticky' do
+    scenario 'steps are re-entrant and sticky', js: true do
       _user = sign_in_and_2fa_user
 
       visit verify_session_path
@@ -117,24 +117,26 @@ feature 'IdV session' do
       fill_in 'profile_ssn', with: second_ssn_value
       click_button t('forms.buttons.continue')
 
-      expect(current_url).to eq verify_finance_url
+      expect(current_path).to eq verify_finance_path
       expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_selector("input[value='#{first_ccn_value}']")
 
       click_button t('forms.buttons.continue')
 
       visit verify_finance_path
-      find('#idv_finance_form_finance_type_mortgage').set(true)
+
+      click_link t('idv.form.use_financial_account')
+      select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
       fill_in :idv_finance_form_mortgage, with: mortgage_value
       click_button t('forms.buttons.continue')
 
-      expect(current_url).to eq verify_phone_url
+      expect(current_path).to eq verify_phone_path
 
-      visit verify_finance_path
+      visit verify_finance_other_path
 
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
-      find('#idv_finance_form_finance_type_ccn').set(true)
+      click_link t('idv.form.use_ccn')
       fill_in :idv_finance_form_ccn, with: second_ccn_value
       click_button t('forms.buttons.continue')
 
@@ -167,22 +169,28 @@ feature 'IdV session' do
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
 
-      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.mortgage'), visible: false)
+      expect(page).to_not have_css('.js-finance-wrapper', text: t('idv.form.mortgage'))
 
-      find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
+      click_link t('idv.form.use_financial_account')
 
-      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.mortgage'), visible: true)
-      expect(page).to have_content(t('idv.form.ccn'))
+      expect(page).to_not have_content(t('idv.form.ccn'))
+      expect(page).to have_css('input[type=submit][disabled]')
+      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.auto_loan'), visible: false)
+
+      select t('idv.form.auto_loan'), from: 'idv_finance_form_finance_type'
+
+      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.auto_loan'), visible: true)
     end
 
-    scenario 'enters invalid finance value' do
+    scenario 'enters invalid finance value', js: true do
       _user = sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
-      find('#idv_finance_form_finance_type_mortgage').set(true)
-      short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
+      click_link t('idv.form.use_financial_account')
 
+      select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
+      short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
       fill_in :idv_finance_form_mortgage, with: short_value
       click_button t('forms.buttons.continue')
 
@@ -203,7 +211,6 @@ feature 'IdV session' do
       fill_out_idv_form_ok
       click_button 'Continue'
 
-      find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
       find('#idv_finance_form_ccn').native.send_keys('abcd1234')
 
       expect(find('#idv_finance_form_ccn').value).to eq '1234'

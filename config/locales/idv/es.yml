@@ -28,8 +28,11 @@ es:
       password: NOT TRANSLATED YET
       personal_details: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
+      select_financial_account: NOT TRANSLATED YET
       ssn_label_html: NOT TRANSLATED YET
       state: NOT TRANSLATED YET
+      use_ccn: NOT TRANSLATED YET
+      use_financial_account: NOT TRANSLATED YET
       zipcode: NOT TRANSLATED YET
     index:
       cancel_link: NOT TRANSLATED YET
