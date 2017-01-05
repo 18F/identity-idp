@@ -90,8 +90,8 @@ feature 'IdV session' do
 
       visit verify_session_path
 
-      first_ssn_value = '666661234'
-      second_ssn_value = '666669876'
+      first_ssn_value = '666-66-1234'
+      second_ssn_value = '666-66-9876'
       first_ccn_value = '12345678'
       second_ccn_value = '99998888'
       mortgage_value = '99990000'
@@ -266,7 +266,7 @@ feature 'IdV session' do
 
       user_access_key = user.unlock_user_access_key(user_password)
       decrypted_pii = user.active_profile.decrypt_pii(user_access_key)
-      expect(decrypted_pii.ssn).to eq '666661234'
+      expect(decrypted_pii.ssn).to eq '666-66-1234'
     end
 
     scenario 'KBV with some incorrect answers' do
