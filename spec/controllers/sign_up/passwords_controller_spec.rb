@@ -22,7 +22,10 @@ describe SignUp::PasswordsController do
 
       post :create, password_form: { password: 'NewVal!dPassw0rd' }, confirmation_token: token
 
-      expect(user.reload.valid_password?('NewVal!dPassw0rd')).to eq true
+      user.reload
+      expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
+      expect(user.confirmed?).to eq true
+      expect(user.reset_requested_at).to be_nil
     end
 
     it 'tracks an invalid password event' do

@@ -44,8 +44,8 @@ module SignUp
       return process_already_confirmed_user if @user.confirmed?
 
       @confirmation_token = params[:confirmation_token]
-      flash.now[:error] = unsuccessful_confirmation_error
-      render '/sign_up/email_resend/new'
+      flash[:error] = unsuccessful_confirmation_error
+      redirect_to sign_up_email_resend_path
     end
 
     def process_already_confirmed_user

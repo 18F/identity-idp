@@ -19,12 +19,6 @@ feature 'Visit requests confirmation instructions again during sign up' do
     expect(unread_emails_for(user.email)).to be_present
   end
 
-  scenario 'user is unable to determine if account exists' do
-    fill_in 'Email', with: 'no_account_exists@example.com'
-    click_button t('forms.buttons.resend_confirmation')
-    expect(page).to have_content t('devise.confirmations.send_paranoid_instructions')
-  end
-
   scenario 'user enters email with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
@@ -60,13 +54,5 @@ feature 'Visit requests confirmation instructions again during sign up' do
     click_button t('forms.buttons.resend_confirmation')
 
     expect(page).to have_content t('valid_email.validations.email.invalid')
-  end
-
-  scenario 'confirmations new page has localized title' do
-    expect(page).to have_title t('titles.confirmations.new')
-  end
-
-  scenario 'confirmations new page has localized heading' do
-    expect(page).to have_content t('headings.confirmations.new')
   end
 end
