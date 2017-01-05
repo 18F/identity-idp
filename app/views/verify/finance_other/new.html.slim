@@ -1,0 +1,34 @@
+- title t('idv.titles.session.finance')
+
+= render 'shared/progress_steps', active: 5
+h1.h3.my0 = t('idv.titles.session.finance')
+p.mt-tiny.mb0 = t('idv.messages.finance.intro')
+= simple_form_for(idv_finance_form, url: verify_finance_path,
+    html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
+  = f.error_notification
+  fieldset.mb3.border-none
+    legend.hide = t('idv.messages.finance.label')
+    = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,
+      :first, :last,
+      { include_blank: t('idv.form.select_financial_account') },
+      class: 'js-finance-choice-select')
+  = f.input :blank,
+            label: t('idv.form.select_financial_account'),
+            disabled: true,
+            wrapper_html: { class: 'js-finance-wrapper', data: { type: :blank } }
+  - Idv::FinanceForm.finance_other_type_inputs.each do |key, label, html_options|
+    = f.input key,
+              label: label,
+              required: false,
+              wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
+              input_html: html_options
+
+  p
+    = link_to t('idv.form.use_ccn'), verify_finance_path
+
+  = f.button :submit,
+             t('forms.buttons.continue'),
+             disabled: true,
+             class: 'btn btn-primary btn-wide js-finance-submit'
+
+  .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path

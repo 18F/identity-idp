@@ -107,6 +107,7 @@ Rails.application.routes.draw do
   get '/verify/fail' => 'verify#fail'
   get '/verify/finance' => 'verify/finance#new'
   put '/verify/finance' => 'verify/finance#create'
+  get '/verify/finance/other' => 'verify/finance_other#new'
   get '/verify/phone' => 'verify/phone#new'
   put '/verify/phone' => 'verify/phone#create'
   get '/verify/questions' => 'verify/questions#index'

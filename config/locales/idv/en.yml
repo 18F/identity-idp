@@ -28,8 +28,11 @@ en:
       password: Password
       personal_details: Personal details
       phone: Phone
+      select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State
+      use_ccn: Provide credit card number
+      use_financial_account: Provide financial account number
       zipcode: ZIP Code
     index:
       cancel_link: No, I don’t have it
