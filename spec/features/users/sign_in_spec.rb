@@ -202,7 +202,7 @@ feature 'Sign in' do
   end
 
   context 'attribute_encryption_key is changed but queue does not contain any previous keys' do
-    it 'allows the user to sign back in' do
+    it 'throws an exception and does not overwrite User email' do
       email = 'test@example.com'
       password = 'salty pickles'
 
