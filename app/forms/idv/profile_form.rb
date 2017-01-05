@@ -11,6 +11,15 @@ module Idv
 
     validate :ssn_is_unique, :dob_is_sane
 
+    validates_format_of :zipcode,
+                        with: /\A\d{5}(-?\d{4})?\z/,
+                        message: I18n.t('idv.errors.pattern_mismatch.zipcode'),
+                        allow_blank: true
+    validates_format_of :ssn,
+                        with: /\A\d{3}-?\d{2}-?\d{4}\z/,
+                        message: I18n.t('idv.errors.pattern_mismatch.ssn'),
+                        allow_blank: true
+
     delegate :user_id, :first_name, :last_name, :phone, :email, :dob, :ssn, :address1,
              :address2, :city, :state, :zipcode, to: :pii_attributes
 
