@@ -4,7 +4,7 @@ class ResendEmailConfirmationForm
 
   attr_reader :email
 
-  def initialize(email)
+  def initialize(email = nil)
     @email = email
   end
 
@@ -32,6 +32,6 @@ class ResendEmailConfirmationForm
   end
 
   def user
-    @_user ||= User.find_with_email(email) || NonexistentUser.new
+    @_user ||= (email.presence && User.find_with_email(email)) || NonexistentUser.new
   end
 end

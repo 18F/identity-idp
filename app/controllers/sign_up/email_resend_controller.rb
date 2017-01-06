@@ -4,14 +4,14 @@ module SignUp
 
     def new
       @user = User.new
-      @resend_email_confirmation_form = ResendEmailConfirmationForm.new('')
+      @resend_email_confirmation_form = ResendEmailConfirmationForm.new
     end
 
     def create
       @resend_email_confirmation_form = ResendEmailConfirmationForm.new(downcased_email)
       result = @resend_email_confirmation_form.submit
 
-      analytics.track_event(Analytics::RESEND_EMAIL_CONFIRMATION, result)
+      analytics.track_event(Analytics::EMAIL_CONFIRMATION_RESEND, result)
 
       if result[:success]
         handle_valid_email

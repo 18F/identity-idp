@@ -36,6 +36,7 @@ class Analytics
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
+  EMAIL_CONFIRMATION_RESEND = 'Email Confirmation requested due to invalid token'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_INITIAL = 'IdV: initial resolution'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
@@ -58,7 +59,6 @@ class Analytics
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_RECOVERY_CODE_CREATE = 'Profile: Created new recovery code'.freeze
-  RESEND_EMAIL_CONFIRMATION = 'Email Confirmation requested due to invalid token'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
