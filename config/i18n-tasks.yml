@@ -98,6 +98,7 @@ ignore_unused:
   - 'experiments.*'
   - 'event_types.*'
   - 'idv.errors.pattern_mismatch.*'
+  - 'valid_email.validations.email.invalid'
   - 'zxcvbn.*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
