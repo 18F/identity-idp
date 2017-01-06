@@ -26,7 +26,7 @@ es:
       not_locked: no estaba bloqueado
       not_saved:
         one: '1 error prohibió este %{resource} de ser guardado:'
-        other: "%{Count} errores prohibieron este %{resource} de ser guardado:"
+        other: "%{count} errores prohibieron este %{resource} de ser guardado:"
       password_incorrect: La contraseña es incorrecta
       recovery_code_incorrect: El código de recuperación es incorrecto
       requires_phone: requiere que ingrese su número de teléfono.
