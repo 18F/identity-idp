@@ -120,5 +120,14 @@ module Features
       yield
       Capybara.session_name = old_session
     end
+
+    def sign_in_with_totp_enabled_user
+      user = create(:user, :signed_up, password: VALID_PASSWORD)
+      @secret = user.generate_totp_secret
+      user.update(otp_secret_key: @secret)
+      sign_in_user(user)
+      fill_in 'code', with: generate_totp_code(@secret)
+      click_submit_default
+    end
   end
 end

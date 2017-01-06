@@ -39,6 +39,26 @@ describe Verify::FinanceController do
           expect(subject.idv_session.params).to be_empty
         end
       end
+
+      context 'when finance_type is ccn' do
+        it 'renders verify/finance/new with error' do
+          put :create, idv_finance_form: { finance_type: 'ccn', finance_account: 'abc' }
+
+          expect(response).to render_template :new
+          expect(subject.idv_session.params).to be_empty
+        end
+      end
+
+      %w(mortgage auto_loan home_equity_line).each do |finance_type|
+        context "when finance_type is #{finance_type}" do
+          it 'renders verify/finance_other/new with error' do
+            put :create, idv_finance_form: { finance_type: finance_type, finance_account: 'abc' }
+
+            expect(response).to render_template :new
+            expect(subject.idv_session.params).to be_empty
+          end
+        end
+      end
     end
 
     context 'when form is valid' do

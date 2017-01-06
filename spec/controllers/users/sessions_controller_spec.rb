@@ -199,7 +199,7 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'LOA1 user' do
-      it 'hashes password exactly once, hashes email access key exactly once' do
+      it 'hashes password exactly once, hashes attribute access key exactly once' do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
         encrypted_key_maker = EncryptedKeyMaker.new
         allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
@@ -207,7 +207,7 @@ describe Users::SessionsController, devise: true do
 
         expect(UserAccessKey).to receive(:new).exactly(:twice).and_call_original
         expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedEmail).to receive(:new_user_access_key).exactly(:once).and_call_original
+        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
 
         post :create, user: { email: user.email.upcase, password: user.password }
       end
@@ -218,7 +218,7 @@ describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end
 
-      it 'hashes password exactly once, hashes email access key exactly once' do
+      it 'hashes password exactly once, hashes attribute access key exactly once' do
         encrypted_key_maker = EncryptedKeyMaker.new
         allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
@@ -226,7 +226,7 @@ describe Users::SessionsController, devise: true do
 
         expect(UserAccessKey).to receive(:new).exactly(:twice).and_call_original
         expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedEmail).to receive(:new_user_access_key).exactly(:once).and_call_original
+        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
 
         post :create, user: { email: user.email.upcase, password: user.password }
       end
@@ -271,12 +271,41 @@ describe Users::SessionsController, devise: true do
   end
 
   describe '#new' do
-    it 'tracks page visit' do
-      stub_analytics
+    context 'with fully authenticated user' do
+      it 'redirects to the profile page' do
+        stub_sign_in
+        subject.session[:logged_in] = true
+        get :new
 
-      expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT)
+        expect(response).to redirect_to profile_path
+        expect(subject.session[:logged_in]).to be true
+      end
+    end
 
-      get :new
+    context 'with current user' do
+      it 'logs the user out' do
+        stub_sign_in_before_2fa
+        subject.session[:logged_in] = true
+        get :new
+
+        expect(request.path).to eq root_path
+        expect(subject.session[:logged_in]).to be_nil
+      end
+    end
+
+    context 'with a new user' do
+      it 'renders the new template' do
+        get :new
+        expect(response).to render_template(:new)
+      end
+
+      it 'tracks page visit' do
+        stub_analytics
+
+        expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT)
+
+        get :new
+      end
     end
   end
 end

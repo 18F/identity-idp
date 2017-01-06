@@ -83,7 +83,6 @@ feature 'Accessibility on IDV pages', :js do
     end
 
     def fill_out_and_submit_finance_form
-      find('#idv_finance_form_finance_type_ccn', visible: false).trigger('click')
       fill_in :idv_finance_form_ccn, with: '12345678'
       click_button t('forms.buttons.continue')
     end

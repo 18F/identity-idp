@@ -7,32 +7,27 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  function showInput(radio) {
+  function showInput(name) {
     const inputWrappers = document.querySelectorAll('.js-finance-wrapper');
     hideAll(inputWrappers);
 
-    const financeType = radio.value;
-    const inputWrapperToShow = document.querySelector(`[data-type="${financeType}"]`);
-    inputWrapperToShow.classList.remove('hide');
+    const inputWrapperToShow = document.querySelector(`[data-type="${name}"]`);
+    if (inputWrapperToShow) {
+      inputWrapperToShow.classList.remove('hide');
+    }
   }
 
-  const financeCntnr = document.querySelector('.js-finance-choice-cntnr');
+  const financeSelect = document.querySelector('.js-finance-choice-select');
+  const submitButton = document.querySelector('.js-finance-submit');
 
-  if (financeCntnr) {
+  if (financeSelect) {
     const inputWrappers = document.querySelectorAll('.js-finance-wrapper');
     hideAll(inputWrappers);
+    showInput('blank');
 
-    const currentRadio = financeCntnr.querySelector('input[type="radio"][checked]');
-    const radios = financeCntnr.querySelectorAll('input[type="radio"]');
-
-    showInput(currentRadio || radios[0]);
-
-    Array.prototype.forEach.call(radios, (el) => {
-      el.addEventListener('change', () => {
-        if (el.checked) {
-          showInput(el);
-        }
-      });
+    financeSelect.addEventListener('change', () => {
+      showInput(financeSelect.value || 'blank');
+      submitButton.disabled = !financeSelect.value;
     });
   }
 });

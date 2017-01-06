@@ -10,6 +10,10 @@ en:
       incorrect_password: The password you entered is not correct.
       invalid_ccn: Credit card number should be only last 8 digits.
       missing_finance: You must provide a financial account number.
+      pattern_mismatch:
+        dob: Your date of birth must be entered in as mm/dd/yyyy
+        ssn: 'Your Social Security Number must be entered in as ###-##-####'
+        zipcode: 'Your zipcode must be entered in as #####-####'
     form:
       address1: Street address 1
       address2: Street address 2 (optional)
@@ -22,9 +26,13 @@ en:
       last_name: Last name
       mortgage: Mortgage loan account number
       password: Password
+      personal_details: Personal details
       phone: Phone
+      select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State
+      use_ccn: Provide credit card number
+      use_financial_account: Provide financial account number
       zipcode: ZIP Code
     index:
       cancel_link: No, I don’t have it

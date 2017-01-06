@@ -39,7 +39,8 @@ class Analytics
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_INITIAL = 'IdV: initial resolution'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
-  IDV_FINANCE_VISIT = 'IdV: finance visited'.freeze
+  IDV_FINANCE_CCN_VISIT = 'IdV: finance ccn visited'.freeze
+  IDV_FINANCE_OTHER_VISIT = 'IdV: finance other visited'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze

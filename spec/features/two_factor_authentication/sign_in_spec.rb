@@ -128,8 +128,7 @@ feature 'Two Factor Authentication' do
         end
 
         expect(page).to have_content t('titles.account_locked')
-        expect(page).to have_content('4:54')
-        expect(page).to have_content('4:53')
+        expect(page).to have_content(/4:5\d/)
 
         # let lockout period expire
         user.update(
@@ -201,7 +200,6 @@ feature 'Two Factor Authentication' do
       click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
       fill_in 'code', with: code
       click_button t('forms.buttons.submit.default')
-
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq profile_path
@@ -234,6 +232,15 @@ feature 'Two Factor Authentication' do
       visit user_two_factor_authentication_path
 
       expect(current_path).to eq profile_path
+    end
+  end
+
+  describe 'clicking the logo image during 2fa process' do
+    it 'returns them to the home page' do
+      user = build_stubbed(:user, :signed_up)
+      sign_in_user(user)
+      find("img[alt='login.gov']").click
+      expect(current_path).to eq root_path
     end
   end
 end

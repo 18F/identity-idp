@@ -66,13 +66,14 @@ es:
       security_practices: NOT TRANSLATED YET
     profile:
       account_history: NOT TRANSLATED YET
+      basic_account: NOT TRANSLATED YET
       login_info: NOT TRANSLATED YET
       profile_info: NOT TRANSLATED YET
       two_factor: NOT TRANSLATED YET
+      verified_account: NOT TRANSLATED YET
     recovery_code: NOT TRANSLATED YET
     registrations:
       enter_email: NOT TRANSLATED YET
-      verify_email: NOT TRANSLATED YET
     search: NOT TRANSLATED YET
     session_timeout_warning: NOT TRANSLATED YET
     sign_in_with_sp: NOT TRANSLATED YET
@@ -80,3 +81,4 @@ es:
     totp_setup:
       new: NOT TRANSLATED YET
       start: NOT TRANSLATED YET
+    verify_email: NOT TRANSLATED YET

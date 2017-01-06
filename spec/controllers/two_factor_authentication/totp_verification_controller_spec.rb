@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::TotpVerificationController, devise: true do
+describe TwoFactorAuthentication::TotpVerificationController do
   describe '#create' do
     context 'when the user enters a valid TOTP' do
       before do

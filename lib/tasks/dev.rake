@@ -3,7 +3,7 @@ namespace :dev do
   task prime: 'db:setup' do
     pw = 'salty pickles'
     %w(test1@test.com test2@test.com).each_with_index do |email, index|
-      ee = EncryptedEmail.new_from_email(email)
+      ee = EncryptedAttribute.new_from_decrypted(email)
       User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
         setup_user(user, ee: ee, pw: pw, num: index)
       end
@@ -21,9 +21,7 @@ namespace :dev do
     recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
     profile.activate
 
-    Kernel.puts "===="
-    Kernel.puts "email=#{loa3_user.email} recovery_code=#{recovery_code}"
-    Kernel.puts "===="
+    Rails.logger.warn "email=#{loa3_user.email} recovery_code=#{recovery_code}"
   end
 
   # protip: set EMAIL_ENCRYPTION_COST and SCRYPT_COST env vars to '800$8$1$'
@@ -43,23 +41,26 @@ namespace :dev do
     pw = 'salty pickles'
     num_users = (ENV['NUM_USERS'] || 100).to_i
     num_created = 0
-    progress = ProgressBar.create(
-      title: 'Users',
-      total: num_users,
-      format: '%t: |%B| %j%% [%a / %e]'
-    )
+    unless ENV['PROGRESS'] == 'no'
+      progress = ProgressBar.create(
+        title: 'Users',
+        total: num_users,
+        format: '%t: |%B| %j%% [%a / %e]'
+      )
+    end
 
     User.transaction do
 
       while (num_created < num_users) do
         email_addr = "testuser#{num_created}@example.com"
-        ee = EncryptedEmail.new_from_email(email_addr)
+        ee = EncryptedAttribute.new_from_decrypted(email_addr)
         User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
           setup_user(user, ee: ee, pw: pw, num: num_created)
         end
 
         if ENV['VERIFIED']
           user = User.find_by(email_fingerprint: ee.fingerprint)
+          user.unlock_user_access_key(pw)
           profile = Profile.new(user: user)
           pii = Pii::Attributes.new_from_hash(
             first_name: 'Test',
@@ -67,14 +68,14 @@ namespace :dev do
             dob: '1970-05-01',
             ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
           )
-          recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
+          recovery_code = profile.encrypt_pii(user.user_access_key, pii)
           profile.activate
 
           Rails.logger.warn "email=#{email_addr} recovery_code=#{recovery_code}"
         end
 
         num_created += 1
-        progress.increment
+        progress.increment if progress
       end
     end
   end

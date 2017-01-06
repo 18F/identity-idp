@@ -8,14 +8,11 @@ nav.bg-white
             class: 'align-bottom',
             width: 170), root_path, class: 'inline-block'
       .sm-col-right.sm-right-align
-        - if user_fully_authenticated?
-            = t('shared.nav_auth.welcome')
-            '
-            span.bold = current_user.email
-            .mt-12p.h6.mxn1
-              = link_to t('shared.nav_auth.my_account'), profile_path,
-                class: current_page?(profile_path) ? 'px1 bold gray text-decoration-none' : 'px1'
-              = link_to t('links.sign_out'), destroy_user_session_path,
-                class: 'px1 border-left border-silver'
-        - else
-          = link_to t('links.cancel'), destroy_user_session_path
+        = t('shared.nav_auth.welcome')
+        '
+        span.bold = current_user.email
+        .mt-12p.h6.mxn1
+          = link_to t('shared.nav_auth.my_account'), profile_path,
+            class: current_page?(profile_path) ? 'px1 bold gray text-decoration-none' : 'px1'
+          = link_to t('links.sign_out'), destroy_user_session_path,
+            class: 'px1 border-left border-silver'

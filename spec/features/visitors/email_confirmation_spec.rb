@@ -19,61 +19,6 @@ feature 'Email confirmation during sign up' do
     expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')
   end
 
-  scenario 'it sets reset_requested_at to nil after password confirmation' do
-    user = sign_up_and_set_password
-
-    expect(user.reset_requested_at).to be_nil
-  end
-
-  scenario 'user cannot access sign_up/confirmations' do
-    visit sign_up_create_email_confirmation_path
-
-    expect(page).to have_content t('errors.messages.confirmation_invalid_token')
-  end
-
-  scenario 'user cannot submit a blank confirmation token' do
-    visit sign_up_create_email_confirmation_path(confirmaton_token: nil)
-
-    expect(page).to have_content t('errors.messages.confirmation_invalid_token')
-  end
-
-  scenario 'user cannot submit an empty single-quoted string as a token' do
-    visit sign_up_create_email_confirmation_path(confirmation_token: '')
-
-    expect(page).to have_content t('errors.messages.confirmation_invalid_token')
-  end
-
-  scenario 'user cannot submit an empty double-quoted string as a token' do
-    visit sign_up_create_email_confirmation_path(confirmation_token: '%22%22')
-
-    expect(page).to have_content t('errors.messages.confirmation_invalid_token')
-  end
-
-  scenario 'visitor signs up but confirms with an invalid token' do
-    create(:user, :unconfirmed)
-    visit sign_up_create_email_confirmation_path(confirmation_token: 'invalid_token')
-
-    expect(page).to have_content t('errors.messages.confirmation_invalid_token')
-    expect(current_path).to eq sign_up_create_email_confirmation_path
-  end
-
-  scenario 'visitor signs up but confirms with an expired token' do
-    user = create(:user, :unconfirmed)
-    raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
-
-    user.update(
-      confirmation_token: raw_confirmation_token,
-      confirmation_sent_at: Time.current - Devise.confirm_within - 2.days
-    )
-
-    visit sign_up_create_email_confirmation_url(confirmation_token: raw_confirmation_token)
-
-    expect(current_path).to eq sign_up_create_email_confirmation_path
-    expect(page).to have_content t(
-      'errors.messages.confirmation_period_expired', period: '24 hours'
-    )
-  end
-
   context 'user signs up twice without confirming email' do
     it 'sends the user the confirmation email again' do
       email = 'test@example.com'

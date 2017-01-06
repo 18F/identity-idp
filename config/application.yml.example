@@ -27,8 +27,8 @@ queue_health_check_dead_interval_seconds: '240'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '120'
 
-# Must be an even number. 16 seems to be what most sites use.
-recovery_code_length: '16'
+# The number of words in the recovery code phrase
+recovery_code_length: '5'
 
 # Set the number of seconds before the session times out that the timeout
 # warning should appear.
@@ -49,12 +49,12 @@ valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://id
 
 development:
   allow_third_party_auth: 'true'
+  attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
+  attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
+  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
   domain_name: 'localhost:3000'
-  email_encryption_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
-  email_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  email_encryption_key_queue: '["old-key-one", "old-key-two"]'
   enable_test_routes: 'true'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
@@ -91,17 +91,17 @@ development:
 
 production:
   allow_third_party_auth: 'true'
+  attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
+  attribute_encryption_key: 'generate via `rake secret`'
+  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'change-me'
   aws_region: 'change-me'
-  domain_name: 'xxx.xxx'
-  email_encryption_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
-  email_encryption_key: 'rake secret'
-  email_encryption_key_queue: '["old-key-one", "old-key-two"]'
+  domain_name: 'example.com'
   enable_test_routes: 'false'
   google_analytics_key: 'UA-XXXXXXXXX-YY'
-  hmac_fingerprinter_key: 'rake secret'
+  hmac_fingerprinter_key: 'generate via `rake secret`'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
-  idp_sso_target_url: 'xxx.xxx/saml/auth'
+  idp_sso_target_url: 'example.com/saml/auth'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
   newrelic_license_key: 'xxx'
@@ -112,7 +112,7 @@ production:
   otp_delivery_blocklist_maxretry: '3'
   otp_valid_for: '5'
   participate_in_dap: 'false'
-  password_pepper: 'rake secret'
+  password_pepper: 'generate via `rake secret`'
   password_strength_enabled: 'true'
   proxy_addr: '123.456.789'
   proxy_port: '80'
@@ -122,8 +122,8 @@ production:
   requests_per_ip_period: '300'
   saml_passphrase: 'trust-but-verify'
   scrypt_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
-  secret_key_base: 'rake secret'
-  session_encryption_key: 'rake secret'
+  secret_key_base: 'generate via `rake secret`'
+  session_encryption_key: 'generate via `rake secret`'
   session_timeout_in_minutes: '8'
   smtp_settings: '{"address":"smtp.mandrillapp.com", "port":587, "authentication":"login", "enable_starttls_auto":true, "user_name":"user@gmail.com","password":"xxx"}'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
@@ -134,13 +134,13 @@ production:
 
 test:
   allow_third_party_auth: 'true'
+  attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
+  attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
+  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
   domain_name: 'www.example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
-  email_encryption_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
-  email_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  email_encryption_key_queue: '["old-key-one", "old-key-two"]'
   enable_test_routes: 'true'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'

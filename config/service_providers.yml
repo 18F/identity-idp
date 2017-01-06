@@ -79,6 +79,8 @@ development:
     sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
 
 production:
   'https://idp.dev.login.gov':

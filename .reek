@@ -39,6 +39,10 @@ NilCheck:
     - user_not_found?
     - SamlIdpLogoutConcern#name_id
     - User#password_reset_profile
+RepeatedConditional:
+  exclude:
+    - Users::ResetPasswordsController
+    - VerifyController
 TooManyConstants:
   exclude:
     - Analytics
@@ -79,7 +83,7 @@ UtilityFunction:
     - SessionDecorator#registration_bullet_1
     - SessionDecorator#new_session_heading
     - WorkerHealthChecker::Middleware#call
-    - UserEncryptedEmailOverrides#create_fingerprint
+    - UserEncryptedAttributeOverrides#create_fingerprint
     - Remote#build_parser
     - Remote#command
     - Remote#default_config
@@ -102,6 +106,9 @@ UtilityFunction:
       - saml_settings
       - sign_up_and_2fa
       - raw_xml_response
+      - rotate_attribute_encryption_key
+      - rotate_attribute_encryption_key_with_invalid_queue
+      - rotate_hmac_key
       - sign_in_user
       - stub_auth
       - stub_sign_in

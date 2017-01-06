@@ -12,21 +12,17 @@ feature 'Accessibility on pages that require authentication', :js do
 
   describe 'user confirmation page' do
     scenario 'valid confirmation token' do
-      email = 'test@example.com'
-      sign_up_with(email)
-      open_email(email)
-      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+      create(:user, :unconfirmed)
+      confirm_last_user
 
       expect(current_path).to eq(sign_up_create_email_confirmation_path)
       expect(page).to be_accessible
     end
 
     scenario 'invalid confirmation token' do
-      email = 'test@example.com'
-      sign_up_with(email)
       visit sign_up_create_email_confirmation_path(confirmation_token: '123456')
 
-      expect(current_path).to eq(sign_up_create_email_confirmation_path)
+      expect(current_path).to eq(sign_up_email_resend_path)
       expect(page).to be_accessible
     end
   end

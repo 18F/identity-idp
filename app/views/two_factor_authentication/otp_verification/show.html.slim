@@ -15,7 +15,7 @@ p.mt-tiny.mb0#code-instructs == t('instructions.2fa.confirm_code',
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag(:code, '', value: @code_value, required: true,
       autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
-      'aria-describedby': 'code-instructs')
+      'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length)
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
 - resend_uri = otp_send_path(otp_delivery_selection_form: { otp_method: @delivery_method,

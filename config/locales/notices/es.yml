@@ -2,8 +2,16 @@
 es:
   notices:
     dap_html: NOT TRANSLATED YET
+    forgot_password:
+      use_diff_email:
+        link: NOT TRANSLATED YET
+        text_html: NOT TRANSLATED YET
+      first_paragraph_end: >
+        NOT TRANSLATED YET
+      first_paragraph_start: NOT TRANSLATED YET
+      no_email_sent_explanation_start: NOT TRANSLATED YET
+      resend_email_success: NOT TRANSLATED YET
     password_changed: NOT TRANSLATED YET
-    password_reset: NOT TRANSLATED YET
     phone_confirmation_successful: NOT TRANSLATED YET
     resend_confirmation_email:
       success: NOT TRANSLATED YET

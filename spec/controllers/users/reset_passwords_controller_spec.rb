@@ -88,7 +88,8 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: ['is too short (minimum is 8 characters)', 'token_expired'],
           user_id: user.uuid,
-          active_profile: false
+          active_profile: false,
+          confirmed: true
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -120,7 +121,8 @@ describe Users::ResetPasswordsController, devise: true do
           success: false,
           errors: ['is too short (minimum is 8 characters)'],
           user_id: user.uuid,
-          active_profile: false
+          active_profile: false,
+          confirmed: true
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -137,32 +139,39 @@ describe Users::ResetPasswordsController, devise: true do
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
-        user = create(
-          :user,
-          :signed_up,
-          reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
-        )
-        allow(user).to receive(:active_profile).and_return(nil)
 
-        stub_email_notifier(user)
+        Timecop.freeze(Time.current) do
+          user = create(
+            :user,
+            :signed_up,
+            reset_password_token: db_confirmation_token,
+            reset_password_sent_at: Time.current
+          )
+          old_confirmed_at = user.reload.confirmed_at
+          allow(user).to receive(:active_profile).and_return(nil)
 
-        password = 'a really long passw0rd'
-        params = { password: password, reset_password_token: raw_reset_token }
-        put :update, reset_password_form: params
+          stub_email_notifier(user)
 
-        analytics_hash = {
-          success: true,
-          errors: [],
-          user_id: user.uuid,
-          active_profile: false
-        }
+          password = 'a really long passw0rd'
+          params = { password: password, reset_password_token: raw_reset_token }
 
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+          put :update, reset_password_form: params
 
-        expect(response).to redirect_to new_user_session_path
-        expect(flash[:notice]).to eq t('devise.passwords.updated_not_active')
+          analytics_hash = {
+            success: true,
+            errors: [],
+            user_id: user.uuid,
+            active_profile: false,
+            confirmed: true
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+
+          expect(response).to redirect_to new_user_session_path
+          expect(flash[:notice]).to eq t('devise.passwords.updated_not_active')
+          expect(user.reload.confirmed_at).to eq old_confirmed_at
+        end
       end
     end
 
@@ -192,7 +201,8 @@ describe Users::ResetPasswordsController, devise: true do
           success: true,
           errors: [],
           user_id: user.uuid,
-          active_profile: true
+          active_profile: true,
+          confirmed: true
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -203,21 +213,68 @@ describe Users::ResetPasswordsController, devise: true do
         expect(response).to redirect_to new_user_session_path
       end
     end
+
+    context 'unconfirmed user submits valid new password' do
+      it 'confirms the user' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
+
+        user = create(
+          :user,
+          :unconfirmed,
+          reset_password_token: db_confirmation_token,
+          reset_password_sent_at: Time.current
+        )
+
+        stub_email_notifier(user)
+
+        password = 'a really long passw0rd'
+        params = { password: password, reset_password_token: raw_reset_token }
+
+        put :update, reset_password_form: params
+
+        analytics_hash = {
+          success: true,
+          errors: [],
+          user_id: user.uuid,
+          active_profile: false,
+          confirmed: false
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+
+        expect(user.reload.confirmed?).to eq true
+
+        expect(response).to redirect_to new_user_session_path
+      end
+    end
   end
 
   describe '#create' do
     context 'no user matches email' do
-      it 'tracks event using anonymous user' do
+      it 'redirects to forgot_password_path to prevent revealing account existence ' \
+        'and tracks event using nonexistent user' do
         stub_analytics
 
-        nonexistent_user = instance_double(NonexistentUser, uuid: '123', role: 'nonexistent')
-        allow(NonexistentUser).to receive(:new).and_return(nonexistent_user)
+        analytics_hash = {
+          success: true,
+          errors: [],
+          user_id: 'nonexistent-uuid',
+          role: 'nonexistent',
+          confirmed: false
+        }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL,
-               user_id: nonexistent_user.uuid, role: nonexistent_user.role)
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        put :create, user: { email: 'nonexistent@example.com' }
+        expect { put :create, password_reset_email_form: { email: 'nonexistent@example.com' } }.
+          to_not change { ActionMailer::Base.deliveries.count }
+
+        expect(response).to redirect_to forgot_password_path
       end
     end
 
@@ -226,13 +283,23 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
 
         tech_user = build_stubbed(:user, :tech_support)
-        fingerprint = Pii::Fingerprinter.fingerprint('tech@example.com')
-        allow(User).to receive(:find_by).with(email_fingerprint: fingerprint).and_return(tech_user)
+        allow(User).to receive(:find_with_email).with(tech_user.email).and_return(tech_user)
+
+        analytics_hash = {
+          success: true,
+          errors: [],
+          user_id: tech_user.uuid,
+          role: 'tech',
+          confirmed: true
+        }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, user_id: tech_user.uuid, role: 'tech')
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        put :create, user: { email: 'TECH@example.com' }
+        expect { put :create, password_reset_email_form: { email: tech_user.email } }.
+          to change { ActionMailer::Base.deliveries.count }.by(0)
+
+        expect(response).to redirect_to forgot_password_path
       end
     end
 
@@ -241,13 +308,102 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
 
         admin = build_stubbed(:user, :admin)
-        fingerprint = Pii::Fingerprinter.fingerprint('admin@example.com')
-        allow(User).to receive(:find_by).with(email_fingerprint: fingerprint).and_return(admin)
+        allow(User).to receive(:find_with_email).with(admin.email).and_return(admin)
+
+        analytics_hash = {
+          success: true,
+          errors: [],
+          user_id: admin.uuid,
+          role: 'admin',
+          confirmed: true
+        }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::PASSWORD_RESET_EMAIL, user_id: admin.uuid, role: 'admin')
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        put :create, user: { email: 'ADMIN@example.com' }
+        expect { put :create, password_reset_email_form: { email: admin.email } }.
+          to change { ActionMailer::Base.deliveries.count }.by(0)
+
+        expect(response).to redirect_to forgot_password_path
+      end
+    end
+
+    context 'user exists' do
+      it 'sends password reset email to user and tracks event' do
+        stub_analytics
+
+        user = build(:user, :signed_up, role: :user)
+        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
+
+        analytics_hash = {
+          success: true,
+          errors: [],
+          user_id: user.uuid,
+          role: 'user',
+          confirmed: true
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+
+        expect { put :create, password_reset_email_form: { email: user.email } }.
+          to change { ActionMailer::Base.deliveries.count }.by(1)
+
+        expect(response).to redirect_to forgot_password_path
+      end
+    end
+
+    context 'user exists but is unconfirmed' do
+      it 'sends password reset email to user and tracks event' do
+        stub_analytics
+
+        user = create(:user, :unconfirmed, role: :user)
+
+        analytics_hash = {
+          success: true,
+          errors: [],
+          user_id: user.uuid,
+          role: 'user',
+          confirmed: false
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+
+        expect { put :create, password_reset_email_form: { email: user.email } }.
+          to change { ActionMailer::Base.deliveries.count }.by(1)
+
+        expect(ActionMailer::Base.deliveries.last.subject).
+          to eq t('devise.mailer.reset_password_instructions.subject')
+
+        expect(response).to redirect_to forgot_password_path
+      end
+    end
+
+    context 'email is invalid' do
+      it 'displays an error and tracks event' do
+        form = instance_double(PasswordResetEmailForm)
+        expect(PasswordResetEmailForm).to receive(:new).with('foo').and_return(form)
+
+        stub_analytics
+
+        analytics_hash = {
+          success: false,
+          errors: [t('valid_email.validations.email.invalid')],
+          user_id: 'nonexistent-uuid',
+          role: 'nonexistent',
+          confirmed: false
+        }
+
+        expect(form).to receive(:submit).and_return(analytics_hash)
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
+
+        expect { put :create, password_reset_email_form: { email: 'foo' } }.
+          to change { ActionMailer::Base.deliveries.count }.by(0)
+
+        expect(response).to render_template :new
       end
     end
   end

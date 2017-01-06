@@ -2,11 +2,11 @@ namespace :rotate do
 
   # benchmark: 100k updates in 00:28:35 with cost '800$8$1$'
   # e.g.
-  #  bundle exec rake rotate:email_encryption_key EMAIL_ENCRYPTION_COST='800$8$1$'
+  #  bundle exec rake rotate:email_encryption_key ATTRIBUTE_COST='800$8$1$'
   #
-  desc 'email encryption key'
-  task email_encryption_key: :environment do
-    rotator = KeyRotator::EmailEncryption.new
+  desc 'attribute encryption key'
+  task attribute_encryption_key: :environment do
+    rotator = KeyRotator::AttributeEncryption.new
     num_users = User.count
     progress = new_progress_bar('Users', num_users)
 
@@ -14,7 +14,7 @@ namespace :rotate do
       User.transaction do
         users.each do |user|
           rotator.rotate(user)
-          progress.inc
+          progress.increment
         end
       end
     end

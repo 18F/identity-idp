@@ -6,6 +6,7 @@ describe 'layouts/application.html.slim' do
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view.request).to receive(:original_url).and_return('http://test.host/foobar')
+    allow(view).to receive(:current_user).and_return(User.new)
   end
 
   context 'when i18n mode enabled' do
@@ -38,6 +39,8 @@ describe 'layouts/application.html.slim' do
 
   context 'session expiration' do
     it 'renders a javascript page refresh' do
+      allow(view).to receive(:user_fully_authenticated?).and_return(false)
+      allow(view).to receive(:current_user).and_return(false)
       render
 
       expect(view).to render_template(partial: 'session_timeout/_expire_session')
@@ -52,5 +55,20 @@ describe 'layouts/application.html.slim' do
         expect(view).to_not render_template(partial: 'session_timeout/_expire_session')
       end
     end
+  end
+
+  it 'displays the navbar component when user is fully authenticated' do
+    render
+    expect(rendered).to have_xpath('//nav[@class="bg-white"]')
+  end
+
+  it 'displays only the logo when user is not fully authenticated' do
+    allow(view).to receive(:user_fully_authenticated?).and_return(false)
+    render
+
+    expect(rendered).to have_xpath('//nav[contains(@class, "bg-light-blue")]')
+    expect(rendered).to_not have_link(t('shared.nav_auth.my_account'), href: profile_path)
+    expect(rendered).to_not have_content(t('shared.nav_auth.welcome'))
+    expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
   end
 end
