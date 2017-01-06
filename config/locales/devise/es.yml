@@ -120,7 +120,7 @@ es:
       otp_setup_html:
         <strong>Cada vez que inicies sesión, </strong> le enviaremos un código de acceso único
         a través de un mensaje de texto o una llamada telefónica. Esto ayuda a proteger su cuenta.
-      otp_sms_disclaimer: NOT TRANSLATED YET
+      otp_sms_disclaimer: Se pueden aplicar tarifas de mensajes y datos.
       please_confirm:
         Se ha establecido el número de teléfono. Confírmelo introduciendo el código de acceso siguiente.
       please_try_again_html: Inténtalo de nuevo en %{time_remaining}.
