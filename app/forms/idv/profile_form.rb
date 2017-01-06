@@ -39,13 +39,16 @@ module Idv
     def submit(params)
       params.each { |key, val| pii_attributes[key] = val }
       profile.ssn_signature = ssn_signature
-      valid?
+      @success = valid?
+      result
     end
 
     private
 
     attr_writer :first_name, :last_name, :phone, :email, :dob, :ssn, :address1,
                 :address2, :city, :state, :zipcode
+
+    attr_reader :success
 
     def initialize_params(params)
       params.each do |key, value|
@@ -94,6 +97,13 @@ module Idv
       Date.parse(dob.to_s)
     rescue
       nil
+    end
+
+    def result
+      {
+        success: success,
+        errors: errors.messages
+      }
     end
   end
 end

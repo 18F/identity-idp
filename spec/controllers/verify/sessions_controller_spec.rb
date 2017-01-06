@@ -46,10 +46,19 @@ describe Verify::SessionsController do
         expect(response.body).to include t('idv.form.first_name')
       end
 
-      it 'redirects to custom error on duplicate SSN' do
-        create(:profile, pii: { ssn: '1234' })
+      it 'redirects to custom error on duplicate SSN and tracks event' do
+        create(:profile, pii: { ssn: '123456789' })
+        stub_analytics
 
-        post :create, profile: user_attrs.merge(ssn: '1234')
+        result = {
+          success: false,
+          errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+
+        post :create, profile: user_attrs.merge(ssn: '123456789')
 
         expect(response).to redirect_to(verify_session_dupe_path)
         expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
