@@ -170,7 +170,6 @@ production:
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
     friendly_name: 'Micro-purchase Staging'
-    logo: 'generic.svg'
     return_to_sp_url: 'https://micropurchase-staging.gov'
     attribute_bundle:
       - email
@@ -186,7 +185,6 @@ production:
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
     friendly_name: 'Micro-purchase Prod'
-    logo: 'generic.svg'
     return_to_sp_url: 'https://micropurchase.18f.gov'
     attribute_bundle:
       - email
