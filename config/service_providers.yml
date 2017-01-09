@@ -184,7 +184,7 @@ production:
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
-    friendly_name: 'Micro-purchase Prod'
+    friendly_name: 'Micro-purchase'
     return_to_sp_url: 'https://micropurchase.18f.gov'
     attribute_bundle:
       - email
