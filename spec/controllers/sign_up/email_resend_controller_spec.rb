@@ -3,28 +3,86 @@ require 'rails_helper'
 RSpec.describe SignUp::EmailResendController do
   describe '#create' do
     context 'user exists and is not confirmed' do
-      it 'sends confirmation email to user and redirects to root' do
+      it 'sends confirmation email to user and redirects to sign_up_verify_email_path' do
         user = create(:user, :unconfirmed)
+        user_params = { resend_email_confirmation_form: { email: user.email } }
 
-        user_params = { user: { email: user.email } }
+        stub_analytics
+        result = {
+          success: true,
+          errors: [],
+          user_id: user.uuid,
+          confirmed: false
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
 
         expect { post :create, user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
-        expect(response).to redirect_to root_url
-        expect(flash[:notice]).to eq t('devise.confirmations.send_paranoid_instructions')
+        expect(response).to redirect_to sign_up_verify_email_path
       end
     end
 
     context 'user does not exist' do
+      before do
+        @user_params = { resend_email_confirmation_form: { email: 'nonexistent@test.com' } }
+      end
+
       it 'does not send an email and displays the same message as if the user existed' do
-        user_params = { user: { email: 'nonexistent@test.com' } }
+        expect { post :create, @user_params }.
+          to change { ActionMailer::Base.deliveries.count }.by(0)
+
+        expect(response).to redirect_to sign_up_verify_email_path
+      end
+
+      it 'tracks event with nonexistent user' do
+        stub_analytics
+        result = {
+          success: true,
+          errors: [],
+          user_id: 'nonexistent-uuid',
+          confirmed: false
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
+
+        post :create, @user_params
+      end
+    end
+
+    context 'user exists and is confirmed' do
+      it 'does not send confirmation email to user and redirects to sign_up_verify_email_path' do
+        user = create(:user)
+        user_params = { resend_email_confirmation_form: { email: user.email } }
+
+        stub_analytics
+        result = {
+          success: true,
+          errors: [],
+          user_id: user.uuid,
+          confirmed: true
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
 
         expect { post :create, user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
-        expect(response).to redirect_to root_url
-        expect(flash[:notice]).to eq t('devise.confirmations.send_paranoid_instructions')
+        expect(response).to redirect_to sign_up_verify_email_path
+      end
+    end
+
+    context 'email is invalid' do
+      it 'renders new' do
+        user_params = { resend_email_confirmation_form: { email: 'a@b.' } }
+
+        post :create, user_params
+
+        expect(response).to render_template(:new)
       end
     end
   end

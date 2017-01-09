@@ -3,6 +3,7 @@ require 'rails_helper'
 describe 'sign_up/email_resend/new.html.slim' do
   before do
     @user = User.new
+    @resend_email_confirmation_form = ResendEmailConfirmationForm.new
   end
 
   it 'has a localized title' do
