@@ -253,4 +253,20 @@ describe User do
       end
     end
   end
+
+  describe 'encrypted attributes' do
+    context 'input is MixEd CaSe with whitespace' do
+      it 'normalizes email' do
+        user = create(:user, email: 'FoO@example.org    ')
+
+        expect(user.email).to eq 'foo@example.org'
+      end
+
+      it 'normalizes phone' do
+        user = create(:user, phone: '  555 555 5555    ')
+
+        expect(user.phone).to eq '555 555 5555'
+      end
+    end
+  end
 end
