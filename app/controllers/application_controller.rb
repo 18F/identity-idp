@@ -18,8 +18,7 @@ class ApplicationController < ActionController::Base
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
     session[:pinged_at] ||= now
-
-    flash.now[:timeout] = t('notices.session_cleared') if request.query_parameters[:timeout]
+    redirect_on_timeout
   end
 
   def append_info_to_payload(payload)
@@ -44,6 +43,13 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def redirect_on_timeout
+    request_params = request.query_parameters
+    return unless request_params[:timeout]
+    flash[:timeout] = t('notices.session_cleared')
+    redirect_to url_for(request_params.except(:timeout))
+  end
 
   def decorated_user
     @_decorated_user ||= current_user.decorate
