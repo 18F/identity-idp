@@ -1,5 +1,7 @@
 module Verify
   class FinanceController < StepController
+    before_action :confirm_step_needed
+
     helper_method :idv_finance_form
 
     def new
@@ -7,8 +9,7 @@ module Verify
     end
 
     def create
-      if idv_finance_form.submit(finance_params)
-        idv_session.params = idv_finance_form.idv_params
+      if step.complete
         redirect_to verify_phone_url
       else
         render_form
@@ -17,8 +18,25 @@ module Verify
 
     private
 
+    def step
+      @_step ||= Idv::FinancialsStep.new(
+        idv_form: idv_finance_form,
+        idv_session: idv_session,
+        analytics: analytics,
+        params: step_params
+      )
+    end
+
+    def step_params
+      params.require(:idv_finance_form).permit(:finance_type, *Idv::FinanceForm::FINANCE_TYPES)
+    end
+
+    def confirm_step_needed
+      redirect_to verify_phone_path if idv_session.financials_confirmation.try(:success?)
+    end
+
     def render_form
-      if finance_params[:finance_type] == 'ccn'
+      if step_params[:finance_type] == 'ccn'
         render :new
       else
         render 'verify/finance_other/new'
@@ -27,10 +45,6 @@ module Verify
 
     def idv_finance_form
       @_idv_finance_form ||= Idv::FinanceForm.new(idv_session.params)
-    end
-
-    def finance_params
-      params.require(:idv_finance_form).permit(:finance_type, *Idv::FinanceForm::FINANCE_TYPES)
     end
   end
 end
