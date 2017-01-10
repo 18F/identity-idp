@@ -60,6 +60,20 @@ development:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
+    acs_url: 'http://localhost:3000/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
+    sp_initiated_login_url: 'http://localhost:3000/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    friendly_name: 'Micro-purchase Dev'
+    return_to_sp_url: 'http://localhost:3000'
+    attribute_bundle:
+      - email
+      - first_name
+      - last_name
+
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
     acs_url: 'http://localhost:3003/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
@@ -175,7 +189,6 @@ production:
       - email
       - first_name
       - last_name
-
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-production':
     acs_url: 'https://micropurchase.18f.gov/auth/saml/callback'
