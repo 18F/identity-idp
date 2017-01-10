@@ -39,13 +39,12 @@ module IdvSession
     @_agent ||= Proofer::Agent.new(
       applicant: idv_session.applicant,
       vendor: (idv_session.vendor || idv_vendor.pick),
-      kbv: FeatureManagement.proofing_requires_kbv?
+      kbv: false
     )
   end
 
-  def init_questions_and_profile(resolution)
+  def init_profile(resolution)
     idv_session.resolution = resolution
-    idv_session.question_number = 0
     idv_session.cache_applicant_profile_id(idv_session.applicant)
     idv_session.cache_encrypted_pii(current_user.user_access_key)
   end

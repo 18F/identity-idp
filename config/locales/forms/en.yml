@@ -16,7 +16,6 @@ en:
       submit:
         confirm_change: Confirm change
         default: Submit
-        next: Next
         update: Update
     confirmation:
       show_hdr: Create a strong password

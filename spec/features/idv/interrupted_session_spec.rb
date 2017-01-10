@@ -5,8 +5,6 @@ feature 'Interrupted IdV session' do
 
   describe 'Closing the browser while on the first form', js: true do
     before do
-      allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(false)
-
       sign_in_and_2fa_user
       visit verify_session_path
     end

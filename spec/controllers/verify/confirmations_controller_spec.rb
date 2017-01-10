@@ -124,18 +124,6 @@ describe Verify::ConfirmationsController do
         get :index
       end
     end
-
-    context 'KBV on' do
-      it 'does not track final IdV event' do
-        allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(true)
-        subject.session[:saml_request_url] = nil
-        stub_analytics
-
-        expect(@analytics).to_not receive(:track_event)
-
-        get :index
-      end
-    end
   end
 
   context 'IdV session not yet started' do
