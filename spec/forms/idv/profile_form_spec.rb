@@ -34,7 +34,12 @@ describe Idv::ProfileForm do
         diff_user = create(:user)
         create(:profile, pii: { ssn: ssn }, user: diff_user)
 
-        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq false
+        result = {
+          success: false,
+          errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+        }
+
+        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
         expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
       end
 
@@ -44,7 +49,12 @@ describe Idv::ProfileForm do
 
         rotate_hmac_key
 
-        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq false
+        result = {
+          success: false,
+          errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+        }
+
+        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
         expect(subject.errors[:ssn]).to eq [t('idv.errors.duplicate_ssn')]
       end
     end
@@ -53,7 +63,12 @@ describe Idv::ProfileForm do
       it 'is valid' do
         create(:profile, pii: { ssn: ssn }, user: user)
 
-        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq true
+        result = {
+          success: true,
+          errors: {}
+        }
+
+        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
       end
 
       it 'recognizes fingerprint regardless of HMAC key age' do
@@ -61,7 +76,12 @@ describe Idv::ProfileForm do
 
         rotate_hmac_key
 
-        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq true
+        result = {
+          success: true,
+          errors: {}
+        }
+
+        expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
       end
     end
   end
@@ -69,16 +89,26 @@ describe Idv::ProfileForm do
   describe 'dob validity' do
     context 'when dob is not parse-able' do
       it 'is invalid' do
-        expect(subject.submit(profile_attrs.merge(dob: '00000000'))).to eq false
+        result = {
+          success: false,
+          errors: { dob: [t('idv.errors.bad_dob')] }
+        }
+
+        expect(subject.submit(profile_attrs.merge(dob: '00000000'))).to eq result
         expect(subject.errors[:dob]).to eq [t('idv.errors.bad_dob')]
       end
     end
 
     context 'when dob is in the future' do
       it 'is invalid' do
+        result = {
+          success: false,
+          errors: { dob: [t('idv.errors.bad_dob')] }
+        }
+
         expect(
           subject.submit(profile_attrs.merge(dob: (Time.zone.today + 1).strftime('%Y-%m-%d')))
-        ).to eq false
+        ).to eq result
         expect(subject.errors[:dob]).to eq [t('idv.errors.bad_dob')]
       end
     end
@@ -86,10 +116,15 @@ describe Idv::ProfileForm do
 
   describe 'zipcode validity' do
     it 'accepts 9 numbers with optional `-` delimiting the 5th and 6th position' do
+      result = {
+        success: true,
+        errors: {}
+      }
+
       %w(12345 123454567 12345-1234).each do |valid_zip|
         expect(
           subject.submit(profile_attrs.merge(zipcode: valid_zip))
-        ).to eq true
+        ).to eq result
       end
     end
 
@@ -103,10 +138,15 @@ describe Idv::ProfileForm do
 
   describe 'ssn validity' do
     it 'accepts 9 numbers with optional `-` delimiters' do
+      result = {
+        success: true,
+        errors: {}
+      }
+
       %w(123411111 123-11-1123).each do |valid_ssn|
         expect(
           subject.submit(profile_attrs.merge(ssn: valid_ssn))
-        ).to eq true
+        ).to eq result
       end
     end
 
@@ -120,11 +160,28 @@ describe Idv::ProfileForm do
 
   describe '#submit' do
     it 'returns true on success' do
-      expect(subject.submit(profile_attrs)).to eq true
+      result = {
+        success: true,
+        errors: {}
+      }
+
+      expect(subject.submit(profile_attrs)).to eq result
     end
 
     it 'returns false on failure' do
-      expect(subject.submit(ssn: ssn, first_name: 'Joe')).to eq false
+      result = {
+        success: false,
+        errors: {
+          last_name: [t('errors.messages.missing_field')],
+          dob: [t('idv.errors.bad_dob')],
+          address1: [t('errors.messages.missing_field')],
+          city: [t('errors.messages.missing_field')],
+          state: [t('errors.messages.missing_field')],
+          zipcode: [t('errors.messages.missing_field')]
+        }
+      }
+
+      expect(subject.submit(ssn: ssn, first_name: 'Joe')).to eq result
     end
   end
 end
