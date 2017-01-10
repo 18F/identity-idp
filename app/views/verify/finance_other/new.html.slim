@@ -5,10 +5,11 @@ h1.h3.my0 = t('idv.titles.session.finance')
 p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
 = simple_form_for(idv_finance_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
-  = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,
-    :first, :last,
-    { include_blank: t('idv.form.select_financial_account') },
-    class: 'col-12 mb2 js-finance-choice-select')
+  .select-alt.mb2
+    = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,
+      :first, :last,
+      { include_blank: t('idv.form.select_financial_account') },
+      class: 'col-12 field js-finance-choice-select')
   .clearfix.mxn1
     .col.col-12.sm-col-8.px1
       = f.input :blank,
@@ -29,10 +30,11 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
                  disabled: true,
                  class: 'col-12 mb3 js-finance-submit'
 
-- no_account_link = link_to t('idv.form.use_ccn'), verify_finance_path
-
 .mb-tiny.bold = t('idv.messages.finance.no_account')
-p.mb3 = t('idv.messages.finance.no_account_info_html', link: no_account_link)
+p.mb3
+  = t('idv.messages.finance.no_account_info')
+  '
+  = link_to t('idv.form.use_ccn'), verify_finance_path
 
 .pt1.border-top
   = link_to t('idv.messages.cancel_link'), verify_cancel_path

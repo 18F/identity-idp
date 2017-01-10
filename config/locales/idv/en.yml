@@ -98,11 +98,11 @@ en:
           Help us verify your identity by providing an auto loan, mortgage, or home equity loan
           number.
         no_ccn: Don't have a credit card handy?
-        no_ccn_info_html: You can also veridy with an auto loan, mortgage, or home equity loan
-          number. %{link}
+        no_ccn_info: You can also verify with an auto loan, mortgage, or home equity loan
+          number.
         no_account: Want to use a credit card instead?
-        no_account_info_html: Help us verify your identity by providing the last 8 digits of your
-          credit card. %{link}
+        no_account_info: Help us verify your identity by providing the last 8 digits of your
+          credit card.
       hardfail: We can’t verify your identity right now.
       hardfail2: You can try again in %{hours} hours.
       hardfail3: >

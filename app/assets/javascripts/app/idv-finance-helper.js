@@ -7,6 +7,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function removeError() {
+    const errorMessage = document.querySelector('.error-message');
+
+    if (errorMessage) {
+      errorMessage.parentNode.classList.remove('has-error');
+      errorMessage.parentNode.removeChild(errorMessage);
+    }
+  }
+
   function showInput(name) {
     const inputWrappers = document.querySelectorAll('.js-finance-wrapper');
     hideAll(inputWrappers);
@@ -23,9 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
   if (financeSelect) {
     const inputWrappers = document.querySelectorAll('.js-finance-wrapper');
     hideAll(inputWrappers);
-    showInput('blank');
+
+    showInput(financeSelect.value || 'blank');
+    submitButton.disabled = !financeSelect.value;
 
     financeSelect.addEventListener('change', () => {
+      removeError();
       showInput(financeSelect.value || 'blank');
       submitButton.disabled = !financeSelect.value;
     });

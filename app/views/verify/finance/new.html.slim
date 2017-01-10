@@ -20,10 +20,11 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro_ccn')
     .col.col-12.sm-col-4.px1
       = f.button :submit, t('forms.buttons.continue'), class: 'col-12 mb3'
 
-- no_ccn_link = link_to t('idv.form.use_financial_account'), verify_finance_other_path
-
 .mb-tiny.bold = t('idv.messages.finance.no_ccn')
-p.mb3 = t('idv.messages.finance.no_ccn_info_html', link: no_ccn_link)
+p.mb3
+  = t('idv.messages.finance.no_ccn_info')
+  '
+  = link_to t('idv.form.use_financial_account'), verify_finance_other_path
 
 .pt1.border-top
   = link_to t('idv.messages.cancel_link'), verify_cancel_path
