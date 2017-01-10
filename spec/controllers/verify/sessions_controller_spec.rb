@@ -34,52 +34,46 @@ describe Verify::SessionsController do
       stub_sign_in(user)
     end
 
-    context 'KBV on' do
-      before do
-        allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(true)
-      end
+    it 'starts new proofing session' do
+      get :new
 
-      it 'starts new proofing session' do
-        get :new
+      expect(response.status).to eq 200
+      expect(response.body).to include t('idv.form.first_name')
+    end
 
-        expect(response.status).to eq 200
-        expect(response.body).to include t('idv.form.first_name')
-      end
+    it 'redirects to custom error on duplicate SSN and tracks event' do
+      create(:profile, pii: { ssn: '123456789' })
+      stub_analytics
 
-      it 'redirects to custom error on duplicate SSN and tracks event' do
-        create(:profile, pii: { ssn: '123456789' })
-        stub_analytics
+      result = {
+        success: false,
+        errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+      }
 
-        result = {
-          success: false,
-          errors: { ssn: [t('idv.errors.duplicate_ssn')] }
-        }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+      post :create, profile: user_attrs.merge(ssn: '123456789')
 
-        post :create, profile: user_attrs.merge(ssn: '123456789')
+      expect(response).to redirect_to(verify_session_dupe_path)
+      expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
+    end
 
-        expect(response).to redirect_to(verify_session_dupe_path)
-        expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
-      end
+    it 'shows normal form with error on empty SSN' do
+      post :create, profile: user_attrs.merge(ssn: '')
 
-      it 'shows normal form with error on empty SSN' do
-        post :create, profile: user_attrs.merge(ssn: '')
+      expect(response).to_not redirect_to(verify_session_dupe_path)
+      expect(response.body).to match t('errors.messages.blank')
+    end
 
-        expect(response).to_not redirect_to(verify_session_dupe_path)
-        expect(response.body).to match t('errors.messages.blank')
-      end
+    it 'checks for required fields' do
+      partial_attrs = user_attrs.dup
+      partial_attrs.delete :first_name
 
-      it 'checks for required fields' do
-        partial_attrs = user_attrs.dup
-        partial_attrs.delete :first_name
+      post :create, profile: partial_attrs
 
-        post :create, profile: partial_attrs
-
-        expect(response).to render_template(:new)
-        expect(response.body).to match t('errors.messages.blank')
-      end
+      expect(response).to render_template(:new)
+      expect(response.body).to match t('errors.messages.blank')
     end
   end
 end

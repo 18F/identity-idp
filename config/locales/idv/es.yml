@@ -85,8 +85,6 @@ es:
         prepaid: NOT TRANSLATED YET
         same_as_2fa: NOT TRANSLATED YET
         virtual: NOT TRANSLATED YET
-      questions:
-        intro: NOT TRANSLATED YET
       recovery_code: NOT TRANSLATED YET
       review:
         intro: NOT TRANSLATED YET
@@ -108,7 +106,6 @@ es:
       hardfail: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
-      question: NOT TRANSLATED YET
       review: NOT TRANSLATED YET
       session:
         basic: NOT TRANSLATED YET
