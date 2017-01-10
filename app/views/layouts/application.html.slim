@@ -25,12 +25,12 @@ html lang="#{I18n.locale}"
     link rel='mask-icon' href='/safari-pinned-tab.svg' color='#e21c3d'
     meta name='theme-color' content='#ffffff'
 
-    <!--[if lt IE 10]>
+    <!--[if IE 9]>
       = stylesheet_link_tag 'ie9.css', media: 'all'
-    <!--[elseif lt IE 9]>
-      <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
-      = stylesheet_link_tag 'ie8.css', media: 'all'
-      <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+      = render 'shared/ie_fallbacks'
     <![endif]-->
 
     - if Figaro.env.google_analytics_key.present?
