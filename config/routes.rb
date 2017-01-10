@@ -110,14 +110,12 @@ Rails.application.routes.draw do
   get '/verify/finance/other' => 'verify/finance_other#new'
   get '/verify/phone' => 'verify/phone#new'
   put '/verify/phone' => 'verify/phone#create'
-  get '/verify/questions' => 'verify/questions#index'
   get '/verify/retry' => 'verify#retry'
   get '/verify/review' => 'verify/review#new'
   put '/verify/review' => 'verify/review#create'
   get '/verify/session' => 'verify/sessions#new'
   put '/verify/session' => 'verify/sessions#create'
   get '/verify/session/dupe' => 'verify/sessions#dupe'
-  post '/verify/questions' => 'verify/questions#create'
 
   root to: 'users/sessions#new'
 

@@ -43,7 +43,7 @@ module Verify
 
     def process_resolution(resolution)
       if resolution.success
-        init_questions_and_profile(resolution)
+        init_profile(resolution)
         redirect_on_success
       elsif idv_attempter.exceeded?
         redirect_to verify_fail_path
@@ -64,7 +64,7 @@ module Verify
       if phone_confirmation_required?
         prompt_to_confirm_phone(phone: idv_params[:phone], otp_method: nil, context: 'idv')
       else
-        redirect_to verify_questions_path
+        redirect_to verify_confirmations_path
       end
     end
 

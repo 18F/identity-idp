@@ -6,7 +6,7 @@ module Verify
     before_action :confirm_idv_vendor_session_started
 
     def index
-      track_final_idv_event unless FeatureManagement.proofing_requires_kbv?
+      track_final_idv_event
 
       finish_proofing_success
     end

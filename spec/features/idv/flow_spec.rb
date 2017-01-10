@@ -24,12 +24,8 @@ feature 'IdV session' do
     end
   end
 
-  context 'KBV off' do
-    before do
-      allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(false)
-    end
-
-    scenario 'skips KBV' do
+  context 'verification session' do
+    scenario 'normal flow' do
       user = sign_in_and_2fa_user
 
       visit verify_session_path
@@ -244,70 +240,6 @@ feature 'IdV session' do
 
       expect(page).to have_content(t('idv.titles.complete'))
       expect(page).to have_content(t('idv.messages.recovery_code'))
-    end
-  end
-
-  context 'KBV on' do
-    before do
-      allow(FeatureManagement).to receive(:proofing_requires_kbv?).and_return(true)
-    end
-
-    scenario 'KBV with all answers correct' do
-      user = sign_in_and_2fa_user
-
-      visit verify_session_path
-      expect(page).to have_content(t('idv.form.first_name'))
-
-      complete_idv_profile_ok(user)
-      expect(page).to have_content('Where did you live')
-
-      complete_idv_questions_ok
-
-      expect(page).to have_content(t('idv.titles.complete'))
-
-      click_acknowledge_recovery_code
-
-      expect(current_url).to eq(profile_url)
-      expect(user.reload.active_profile).to be_a(Profile)
-      expect(user.active_profile.verified_at.present?).to eq true
-
-      user_access_key = user.unlock_user_access_key(user_password)
-      decrypted_pii = user.active_profile.decrypt_pii(user_access_key)
-      expect(decrypted_pii.ssn).to eq '666-66-1234'
-    end
-
-    scenario 'KBV with some incorrect answers' do
-      user = sign_in_and_2fa_user
-
-      visit verify_session_path
-      expect(page).to have_content(t('idv.form.first_name'))
-
-      complete_idv_profile_ok(user)
-      expect(page).to have_content('Where did you live')
-
-      complete_idv_questions_fail
-      expect(current_path).to eq verify_retry_path
-      expect(page).to have_content(t('idv.titles.fail'))
-      expect(page).to have_content(t('idv.errors.fail'))
-    end
-
-    scenario 'un-resolvable PII' do
-      sign_in_and_2fa_user
-
-      visit verify_session_path
-      expect(page).to have_content(t('idv.form.first_name'))
-
-      fill_out_idv_form_fail
-      click_button t('forms.buttons.continue')
-      fill_out_financial_form_ok
-      click_button t('forms.buttons.continue')
-      fill_out_phone_form_ok
-      click_button t('forms.buttons.continue')
-      fill_in :user_password, with: user_password
-      click_button t('forms.buttons.submit.default')
-
-      expect(page).to have_content(t('idv.titles.fail'))
-      expect(current_path).to eq verify_retry_path
     end
   end
 

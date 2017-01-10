@@ -135,7 +135,7 @@ module TwoFactorAuthenticatable
 
   def after_otp_verification_confirmation_path
     if context == 'idv'
-      verify_questions_path
+      verify_confirmations_path
     elsif @updating_existing_number
       profile_path
     elsif decorated_user.should_acknowledge_recovery_code?(session)
