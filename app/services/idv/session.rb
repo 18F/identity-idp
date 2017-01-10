@@ -1,9 +1,7 @@
 module Idv
   class Session
-    delegate :questions, to: :resolution
-
     VALID_SESSION_ATTRIBUTES = [
-      :question_number, :resolution, :vendor, :applicant, :params, :profile_id, :recovery_code
+      :resolution, :vendor, :applicant, :params, :profile_id, :recovery_code
     ].freeze
 
     def initialize(user_session, current_user)
@@ -64,11 +62,6 @@ module Idv
 
     def alive?
       session.present?
-    end
-
-    def answer_next_question(question_number, answer)
-      questions[question_number].answer = answer
-      self.question_number += 1
     end
 
     private

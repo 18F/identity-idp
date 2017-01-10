@@ -173,7 +173,7 @@ describe Verify::ReviewController do
         allow(@analytics).to receive(:track_event)
       end
 
-      it 'redirects to questions path' do
+      it 'redirects to confirmation path' do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
         result = {
@@ -182,7 +182,7 @@ describe Verify::ReviewController do
         }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
-        expect(response).to redirect_to verify_questions_path
+        expect(response).to redirect_to verify_confirmations_path
       end
     end
 
