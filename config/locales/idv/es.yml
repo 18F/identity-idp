@@ -71,8 +71,13 @@ es:
       dupe_ssn2_link: NOT TRANSLATED YET
       fail: NOT TRANSLATED YET
       finance:
-        label: NOT TRANSLATED YET
-        intro: NOT TRANSLATED YET
+        hint: NOT TRANSLATED YET
+        intro_ccn: NOT TRANSLATED YET
+        intro_account: NOT TRANSLATED YET
+        no_ccn: NOT TRANSLATED YET
+        no_ccn_info: NOT TRANSLATED YET
+        no_account: NOT TRANSLATED YET
+        no_account_info: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       hardfail2: NOT TRANSLATED YET
       hardfail3: NOT TRANSLATED YET

@@ -31,8 +31,8 @@ en:
       select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State
-      use_ccn: Provide credit card number
-      use_financial_account: Provide financial account number
+      use_ccn: Provide credit card number >
+      use_financial_account: Enter one of these here >
       zipcode: ZIP Code
     index:
       cancel_link: No, I don’t have it
@@ -90,10 +90,19 @@ en:
         accurate. To learn more about the information we need from you and how it’s used
         to verify your identity, please see our troubleshooting page.
       finance:
-        label: Select which type of financial information you would like to provide.
-        intro: >
-          You are not sharing account balances or transaction details, and we
-          will never charge any fees.
+        hint: "You can use Mastercard, Visa, Diner's Club, or JCB."
+        intro_ccn: >
+          Help us verify your identity by providing the last 8 digits of one of your
+          credit cards.
+        intro_account: >
+          Help us verify your identity by providing an auto loan, mortgage, or home equity loan
+          number.
+        no_ccn: Don't have a credit card handy?
+        no_ccn_info: You can also verify with an auto loan, mortgage, or home equity loan
+          number.
+        no_account: Want to use a credit card instead?
+        no_account_info: Help us verify your identity by providing the last 8 digits of your
+          credit card.
       hardfail: We can’t verify your identity right now.
       hardfail2: You can try again in %{hours} hours.
       hardfail3: >
@@ -138,6 +147,6 @@ en:
       review: Review and submit
       session:
         basic: First, tell us about yourself
-        finance: Next, we will check your personal information against financial records
+        finance: Provide a financial account number
         phone: What is your phone number?
         review: Review and submit
