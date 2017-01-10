@@ -112,13 +112,12 @@ feature 'Sign in' do
     it 'refreshes the current page after session expires', js: true do
       allow(Devise).to receive(:timeout_in).and_return(1)
 
-      visit sign_up_email_path
+      visit sign_up_email_path(foo: 'bar')
       fill_in 'Email', with: 'test@example.com'
 
       expect(page).to have_content(t('notices.session_cleared'))
-
       expect(page).to have_field('Email', with: '')
-      expect(page).to have_current_path(sign_up_email_path(timeout: true))
+      expect(current_url).to match Regexp.escape(sign_up_email_path(foo: 'bar'))
     end
 
     it 'does not refresh the page after the session expires', js: true do
