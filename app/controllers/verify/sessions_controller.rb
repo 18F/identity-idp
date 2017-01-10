@@ -21,7 +21,10 @@ module Verify
     private
 
     def submit_profile
-      if idv_profile_form.submit(profile_params)
+      result = idv_profile_form.submit(profile_params)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+
+      if result[:success]
         redirect_to verify_finance_path
       elsif duplicate_ssn_error?
         flash[:error] = dupe_ssn_msg

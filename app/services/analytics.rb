@@ -38,6 +38,7 @@ class Analytics
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
   EMAIL_CONFIRMATION_RESEND = 'Email Confirmation requested due to invalid token'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
+  IDV_BASIC_INFO_SUBMITTED = 'IdV: basic info submitted'.freeze
   IDV_INITIAL = 'IdV: initial resolution'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FINANCE_CCN_VISIT = 'IdV: finance ccn visited'.freeze
