@@ -60,6 +60,18 @@ development:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
+    acs_url: 'http://localhost:3000/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
+    sp_initiated_login_url: 'http://localhost:3000/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    friendly_name: 'Micro-purchase Dev'
+    return_to_sp_url: 'http://localhost:3000'
+    attribute_bundle:
+      - email
+
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
     acs_url: 'http://localhost:3003/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3003/auth/saml/logout'
@@ -158,6 +170,31 @@ production:
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
     return_to_sp_url: 'https://sp.demo.login.gov'
+    attribute_bundle:
+      - email
+
+# Micro-purchase
+  'urn:gov:gsa:saml:2.0.profiles:sp:sso:micropurchase-staging':
+    acs_url: 'https://micropurchase-staging.18f.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://micropurchase-staging.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://micropurchase-staging.18f.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    friendly_name: 'Micro-purchase Staging'
+    return_to_sp_url: 'https://micropurchase-staging.gov'
+    attribute_bundle:
+      - email
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-production':
+    acs_url: 'https://micropurchase.18f.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://micropurchase.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://micropurchase.18f.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_micropurchase'
+    agency: 'TTS Acquisition'
+    friendly_name: 'Micro-purchase'
+    return_to_sp_url: 'https://micropurchase.18f.gov'
     attribute_bundle:
       - email
 
