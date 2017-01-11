@@ -2,11 +2,6 @@ class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
 
-  VALID_ACR_VALUES = [
-    Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-    Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-  ].freeze
-
   attr_reader :acr_values,
               :client_id,
               :nonce,
@@ -70,7 +65,7 @@ class OpenidConnectAuthorizeForm
 
   def parse_acr_values(acr_values)
     return [] if acr_values.blank?
-    acr_values.split(' ').compact & VALID_ACR_VALUES
+    acr_values.split(' ').compact & Saml::Idp::Constants::VALID_AUTHN_CONTEXTS
   end
 
   def validate_acr_values
