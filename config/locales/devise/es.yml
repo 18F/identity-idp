@@ -2,97 +2,144 @@
 es:
   devise:
     confirmations:
-      already_confirmed: NOT TRANSLATED YET
-      confirmed: NOT TRANSLATED YET
-      confirmed_but_must_set_password: NOT TRANSLATED YET
-      send_instructions: NOT TRANSLATED YET
-      send_paranoid_instructions: NOT TRANSLATED YET
+      already_confirmed: Su dirección de correo electrónico ya ha sido confirmada. %{acción}
+      confirmed: Ha confirmado tu dirección de correo electrónico
+      confirmed_but_must_set_password: Ha confirmado tu dirección de correo electrónico
+      send_instructions:
+        Recibirá un correo electrónico con instrucciones para confirmar su
+        dirección de correo electrónico en pocos minutos.
+      send_paranoid_instructions:
+        Recibirá un correo electrónico con instrucciones para confirmar su
+        dirección de correo electrónico en pocos minutos.
     failure:
       already_authenticated: ''
-      inactive: NOT TRANSLATED YET
-      invalid: NOT TRANSLATED YET
-      last_attempt: NOT TRANSLATED YET
-      locked: NOT TRANSLATED YET
-      not_found_in_database: NOT TRANSLATED YET
-      session_limited: NOT TRANSLATED YET
-      timeout: NOT TRANSLATED YET
+      inactive: Su cuenta aún no está activada.
+      invalid: Dirección de correo electrónico o contraseña no válidos.
+      last_attempt: Tiene un intento más antes de que su cuenta esté bloqueada.
+      locked: Su cuenta está bloqueada.
+      not_found_in_database: Dirección de correo electrónico o contraseña no válidos.
+      session_limited:
+        Sus credenciales de inicio de sesión se utilizaron en otro navegador. Inicia sesión
+        de nuevo para continuar en este navegador.
+      timeout: Su sesión ha caducado. Vuelva a iniciar sesión para continuar.
       unauthenticated: ''
-      unconfirmed: NOT TRANSLATED YET
+      unconfirmed: Necesita confirmar su dirección de correo electrónico antes de continuar.
     mailer:
       account_locked:
-        subject: NOT TRANSLATED YET
+        subject: Su cuenta de login.gov ha sido bloqueada.
       confirmation_instructions:
-        subject: NOT TRANSLATED YET
+        subject: Confirme su email
       password_updated:
-        subject: NOT TRANSLATED YET
+        subject: Su contraseña ha sido cambiada.
       reset_password_instructions:
-        subject: NOT TRANSLATED YET
+        subject: Restablecer su contraseña.
     omniauth_callbacks:
-      failure: NOT TRANSLATED YET
-      success: NOT TRANSLATED YET
+      failure: 'No se pudo iniciar sesión debido a: %{razon}.'
+      success: Autenticación con éxito!
     passwords:
-      choose_new_password: NOT TRANSLATED YET
-      invalid_token: NOT TRANSLATED YET
-      no_token: NOT TRANSLATED YET
-      send_instructions: NOT TRANSLATED YET
-      send_paranoid_instructions: NOT TRANSLATED YET
-      token_expired: NOT TRANSLATED YET
-      updated: NOT TRANSLATED YET
-      updated_not_active: NOT TRANSLATED YET
+      choose_new_password: Elija una contraseña nueva.
+      invalid_token: El token de contraseña de restablecimiento no es válido. Inténtalo de nuevo.
+      no_token:
+        No puede acceder a esta página sin proceder de un correo electrónico de restablecimiento de contraseña.
+        Si procede de un correo electrónico de restablecimiento de contraseña, asegúrese de utilizar el
+        enlace proporcionado.
+      send_instructions:
+        Recibirá un correo electrónico con instrucciones sobre cómo restablecer su
+        contraseña en pocos minutos.
+      send_paranoid_instructions:
+        Recibirá un correo electrónico con instrucciones sobre cómo restablecer su
+        contraseña en pocos minutos.
+      token_expired: Ha tardado demasiado en restablecer su contraseña. Inténtalo de nuevo.
+      updated: Su contraseña ha sido cambiada. Ahora ha iniciado sesión.
+      updated_not_active:
+        Su contraseña ha sido cambiada. Inicia sesión con su nueva contraseña.
     registrations:
-      close_window: NOT TRANSLATED YET
-      destroy_confirm: NOT TRANSLATED YET
-      destroyed: NOT TRANSLATED YET
-      email_and_phone_need_confirmation: NOT TRANSLATED YET
-      email_update_needs_confirmation: NOT TRANSLATED YET
-      enabled_twofactor: NOT TRANSLATED YET
-      phone_update_needs_confirmation: NOT TRANSLATED YET
-      signed_up: NOT TRANSLATED YET
-      signed_up_but_inactive: NOT TRANSLATED YET
-      signed_up_but_locked: NOT TRANSLATED YET
+      close_window: Puede cerrar esta ventana del navegador una vez que haya confirmado su dirección de correo electrónico.
+      destroy_confirm:
+        No se puede deshacer la eliminación de su cuenta. Todos los datos asociados a su
+        suenta se eliminará. ¿Seguro que desea eliminar su cuenta?
+      destroyed: Su cuenta se ha eliminado exitosamente.
+      email_and_phone_need_confirmation:
+        Antes de terminar de actualizar su cuenta, debemos confirmar su nuevo
+        número y el nuevo correo electrónico. Siga las instrucciones a continuación para confirmar su nuevo
+        número y, a continuación, compruebe si hay un correo electrónico de nosotros. Siga el enlace en el correo electrónico para confirmar su
+        nueva dirección de correo electrónico.
+      email_update_needs_confirmation:
+        Has actualizado su cuenta, pero debemos confirmar su nueva dirección de correo electrónico.
+        Busque un correo electrónico de nosotros, luego siga el enlace en el correo electrónico para confirmar su
+        nueva dirección.
+      enabled_twofactor: Ha habilitado la autenticación de dos factores.
+      phone_update_needs_confirmation:
+        Su solicitud para actualizar su número de teléfono fue procesada, pero necesitamos
+        confirmar primero su número nuevo. Por favor, siga las siguientes instrucciones. Si no
+        confirma su nuevo número, seguiremos usando su número de teléfono antiguo.
+      signed_up: ¡Bienvenido! Ha creado una cuenta.
+      signed_up_but_inactive:
+        Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
+        su cuenta aún no está activada.
+      signed_up_but_locked:
+        Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
+        su cuenta está bloqueada.
       start:
-        bullet_1_with_sp: NOT TRANSLATED YET
-        bullet_1_without_sp: NOT TRANSLATED YET
-        bullet_2: NOT TRANSLATED YET
-        bullet_3: NOT TRANSLATED YET
-      updated: NOT TRANSLATED YET
+        bullet_1_with_sp: login.gov provee servicios de cuenta a %{sp}
+        bullet_1_without_sp: login.gov provee servicios de cuenta para agencias gubernamentales
+        bullet_2:
+          Las agencias gubernamentales de los Estados Unidos están usando login.gov para interactuar con
+          el gobierno más fácil.
+        bullet_3:
+          Puede usar su cuenta para iniciar sesión en todas las agencias gubernamentales
+          participantes de los Estados Unidos.
+      updated: ¡Su cuenta ha sido actualizada!
     sessions:
-      already_signed_out: NOT TRANSLATED YET
+      already_signed_out: Ahora se ha cerrado la sesión.
       signed_in: ''
-      signed_out: NOT TRANSLATED YET
+      signed_out: Ahora se ha cerrado la sesión.
     two_factor_authentication:
       buttons:
-        confirm_with_sms: NOT TRANSLATED YET
-        confirm_with_voice: NOT TRANSLATED YET
-      choose_delivery_confirmation: NOT TRANSLATED YET
-      choose_otp_delivery: NOT TRANSLATED YET
-      contact_administrator: NOT TRANSLATED YET
-      header_text: NOT TRANSLATED YET
-      invalid_otp: NOT TRANSLATED YET
-      invalid_recovery_code: NOT TRANSLATED YET
-      max_login_attempts_reached: NOT TRANSLATED YET
+        confirm_with_sms: Confirmar con mensaje de texto
+        confirm_with_voice: Confirmar con llamada de voz
+      choose_delivery_confirmation:
+        ¿Cómo le gustaría recibir su código de confirmación para %{phone}?
+      choose_otp_delivery:
+        Selecciona cómo deseas recibir su código de acceso único para %{phone}.
+      contact_administrator: Por favor, póngase en contacto con el administrador del sistema.
+      header_text: Ingrese su contraseña.
+      invalid_otp:
+        Esa contraseña no es válida. Puede intentar volver a ingresarlo o solicitar una nueva
+        Código de acceso único.
+      invalid_recovery_code: Ese código de recuperación no es válido.
+      max_login_attempts_reached:
+        Su cuenta está bloqueada temporalmente porque ha ingresado el código de acceso único
+        de forma incorrecta demasiadas veces.
       otp_method:
-        instruction: NOT TRANSLATED YET
-        sms: NOT TRANSLATED YET
-        title: NOT TRANSLATED YET
-        voice: NOT TRANSLATED YET
-      otp_phone_label: NOT TRANSLATED YET
-      otp_phone_label_info: NOT TRANSLATED YET
-      otp_setup_html: NOT TRANSLATED YET
-      otp_sms_disclaimer: NOT TRANSLATED YET
-      please_confirm: NOT TRANSLATED YET
-      please_try_again_html: NOT TRANSLATED YET
+        instruction: Puede cambiar su elección la próxima vez que inicie sesión.
+        sms: Mensaje de texto (SMS)
+        title: ¿Cómo le gustaría recibir su código de acceso?
+        voice: Llamada telefónica
+      otp_phone_label: Número de teléfono
+      otp_phone_label_info: Móvil o teléfono fijo está bien
+      otp_setup_html:
+        <strong>Cada vez que inicies sesión, </strong> le enviaremos un código de acceso único
+        a través de un mensaje de texto o una llamada telefónica. Esto ayuda a proteger su cuenta.
+      otp_sms_disclaimer: Se pueden aplicar tarifas de mensajes y datos.
+      please_confirm:
+        Se ha establecido el número de teléfono. Confírmelo introduciendo el código de acceso siguiente.
+      please_try_again_html: Inténtalo de nuevo en %{time_remaining}.
       recovery_code_fallback:
-        link: NOT TRANSLATED YET
-        text: NOT TRANSLATED YET
-      recovery_code_header_text: NOT TRANSLATED YET
-      recovery_code_prompt: NOT TRANSLATED YET
+        link: código de recuperación
+        text: ¿No tiene acceso a su teléfono? Use un %{link} en su lugar.
+      recovery_code_header_text: Ingrese su código de recuperación.
+      recovery_code_prompt: >
+        Puede usar este código de recuperación una vez. Si todavía necesita un código después de
+        iniciar sesión, vaya a la página de configuración de su cuenta para obtener una nueva.
       totp_fallback:
-        sms_link_text: NOT TRANSLATED YET
-        text: NOT TRANSLATED YET
-        voice_link_text: NOT TRANSLATED YET
-      totp_header_text: NOT TRANSLATED YET
-      totp_info: NOT TRANSLATED YET
-      two_factor_setup: NOT TRANSLATED YET
+        sms_link_text: Recibir un código por mensaje de texto
+        text: >
+          Si no puede usar su aplicación de autenticador ahora, puede %{sms_link}
+          O %{voice_link}.
+        voice_link_text: con una llamada telefónica
+      totp_header_text: Ingrese su código de autenticador
+      totp_info: Use cualquier aplicación de autenticador para escanear el código de QR que aparece a continuación.
+      two_factor_setup: Agregar un número de teléfono
       user:
-        new_otp_sent: NOT TRANSLATED YET
+        new_otp_sent: Le enviaremos un nuevo código de acceso único.

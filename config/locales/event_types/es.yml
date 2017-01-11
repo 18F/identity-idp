@@ -1,10 +1,10 @@
 ---
 es:
   event_types:
-    account_created: NOT TRANSLATED YET
-    authenticated_at: NOT TRANSLATED YET
-    authenticator_disabled: NOT TRANSLATED YET
-    authenticator_enabled: NOT TRANSLATED YET
-    email_changed: NOT TRANSLATED YET
-    phone_changed: NOT TRANSLATED YET
-    phone_confirmed: NOT TRANSLATED YET
+    account_created: Cuenta creada
+    authenticated_at: Se ha iniciado sesión en %{service_provider}
+    authenticator_disabled: La aplicación de autenticador está inhabilitada
+    authenticator_enabled: Aplicación de autenticador activada
+    email_changed: Dirección de correo electrónico cambiada
+    phone_changed: Número de teléfono cambiado
+    phone_confirmed: Teléfono confirmado
