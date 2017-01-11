@@ -8,6 +8,7 @@ module Verify
     before_action :confirm_step_needed
 
     helper_method :idv_profile_form
+    helper_method :step
 
     def new
       @using_mock_vendor = idv_vendor.pick == :mock
