@@ -85,7 +85,7 @@ development:
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'true'
   use_kms: 'false'
-  valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov"]'
+  valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase"]'
   enable_i18n_mode: 'false'
 
 production:
@@ -128,7 +128,7 @@ production:
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'false'
   use_kms: 'false'
-  valid_service_providers: '["https://upaya-dev.18f.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo", "https://dashboard.demo.login.gov", "https://dashboard.qa.login.gov", "https://dashboard.dev.login.gov"]'
+  valid_service_providers: '["https://upaya-dev.18f.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo", "https://dashboard.demo.login.gov", "https://dashboard.qa.login.gov", "https://dashboard.dev.login.gov", "urn:gov:gsa:saml:2.0.profiles:sp:sso:micropurchase-staging", "urn:gov:gsa:saml:2.0.profiles:sp:sso:micropurchase-production"]'
   enable_i18n_mode: 'false'
 
 test:
