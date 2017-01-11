@@ -1,84 +1,84 @@
 ---
 es:
   headings:
-    choose_otp_delivery: NOT TRANSLATED YET
+    choose_otp_delivery: Elija cómo desea recibir un código de acceso único
     confirmations:
-      new: NOT TRANSLATED YET
-    contact: NOT TRANSLATED YET
-    create_account_with_sp: NOT TRANSLATED YET
-    create_account_without_sp: NOT TRANSLATED YET
+      new: Enviar otro correo electrónico de confirmación
+    contact: Contáctenos
+    create_account_with_sp: Crear una cuenta de login.gov para continuar con %{sp}
+    create_account_without_sp: Crear una cuenta de login.gov
     edit_info:
-      email: NOT TRANSLATED YET
-      password: NOT TRANSLATED YET
-      phone: NOT TRANSLATED YET
+      email: Cambiar su correo electrónico
+      password: Cambiar su contraseña
+      phone: Ingresar su nuevo número de teléfono
     help:
       changing_settings:
-        change_email: NOT TRANSLATED YET
-        change_password: NOT TRANSLATED YET
-        edit_profile: NOT TRANSLATED YET
-        title: NOT TRANSLATED YET
+        change_email: ¿Cómo puedo cambiar mi dirección de correo electrónico?
+        change_password: ¿Como puedo cambiar mi contraseña?
+        edit_profile: ¿Por qué no puedo editar la información de mi perfil?
+        title: Cambiar la configuración
       creating_account:
-        confirmation_email: NOT TRANSLATED YET
-        confirmation_passcode: NOT TRANSLATED YET
-        dont_want_to_use: NOT TRANSLATED YET
-        mobile_phone: NOT TRANSLATED YET
-        title: NOT TRANSLATED YET
+        confirmation_email: No recibí un correo electrónico de confirmación de login.gov.
+        confirmation_passcode: No recibí una contraseña de confirmación en mi teléfono.
+        dont_want_to_use: No quiero usar login.gov para acceder a los servicios gubernamentales.
+        mobile_phone: ¿Necesito un teléfono móvil para usar login.gov?
+        title: Creando su cuenta
       privacy_security:
-        2fa: NOT TRANSLATED YET
-        protect_data: NOT TRANSLATED YET
-        remove_saved: NOT TRANSLATED YET
-        third_party: NOT TRANSLATED YET
-        title: NOT TRANSLATED YET
+        2fa: ¿Qué es la autenticación de dos factores? (2FA)?
+        protect_data: ¿Cómo protege login.gov mis datos?
+        remove_saved: Puedo eliminar una contraseña guardada o información de inicio de sesión de mi navegador?
+        third_party: ¿Qué son los terceros vendedores? ¿Qué hacen con mi información?
+        title: Mantener su cuenta privada y segura
       questions:
-        title: NOT TRANSLATED YET
+        title: ¿Todavía tiene preguntas?
       signing_in:
-        forgot_codes: NOT TRANSLATED YET
-        forgot_email: NOT TRANSLATED YET
-        forgot_password: NOT TRANSLATED YET
-        log_out: NOT TRANSLATED YET
-        lose_phone: NOT TRANSLATED YET
-        miss_passcode: NOT TRANSLATED YET
-        title: NOT TRANSLATED YET
+        forgot_codes: No recuerdo dónde están mis códigos de recuperación.
+        forgot_email: Olvidé la dirección de correo electrónico que utilizé para crear una cuenta.
+        forgot_password: ¿Qué hago si mi contraseña no funciona o la olvido?
+        log_out: ¿Qué pasa si el sistema me desconecta?
+        lose_phone: Si pierdo mi teléfono, puedo iniciar sesión?
+        miss_passcode: ¿Qué pasa si pierdo la llamada telefónica o el mensaje de texto con mi código de acceso único?
+        title: Iniciar sesión en su cuenta
       verifying_account:
-        account_not_verified: NOT TRANSLATED YET
-        cant_verify: NOT TRANSLATED YET
-        financial_info: NOT TRANSLATED YET
-        how_verify: NOT TRANSLATED YET
-        personal_info: NOT TRANSLATED YET
-        phone_number: NOT TRANSLATED YET
-        ss_number: NOT TRANSLATED YET
-        title: NOT TRANSLATED YET
-        what_verification: NOT TRANSLATED YET
-        what_verify: NOT TRANSLATED YET
-        why_verified: NOT TRANSLATED YET
+        account_not_verified: ¿Qué ocurre si no se puede verificar mi cuenta?
+        cant_verify: ¿Por qué no puede verificar mi cuenta?
+        financial_info: ¿Por qué está pidiendo información financiera?
+        how_verify: ¿Cómo verifica mi cuenta?
+        personal_info: ¿Por qué solicita información personal?
+        phone_number: ¿Qué tipo de número de teléfono debo ingresar?
+        ss_number: ¿Por qué está pidiendo mi número de seguridad social?
+        title: Verificando su cuenta
+        what_verification: ¿Qué es la verificación de cuenta?
+        what_verify: ¿Qué necesito para verificar mi cuenta?
+        why_verified: ¿Por qué necesito una cuenta verificada?
     passwords:
-      change: NOT TRANSLATED YET
-      confirm: NOT TRANSLATED YET
-      forgot: NOT TRANSLATED YET
+      change: Cambiar su contraseña
+      confirm: Confirme la contraseña actual para continuar
+      forgot: ¿Olvidó su contraseña?
     privacy_policy:
-      authorities: NOT TRANSLATED YET
-      disclosure: NOT TRANSLATED YET
-      more_information: NOT TRANSLATED YET
-      privacy_act: NOT TRANSLATED YET
-      privacy_practices: NOT TRANSLATED YET
-      purpose: NOT TRANSLATED YET
-      routine_uses: NOT TRANSLATED YET
-      security_practices: NOT TRANSLATED YET
+      authorities: Autoridades
+      disclosure: Revelación
+      more_information: Para más información
+      privacy_act: Declaración de la Ley de Privacidad
+      privacy_practices: Nuestras prácticas de privacidad
+      purpose: Propósito
+      routine_uses: Usos de rutina
+      security_practices: Nuestras prácticas de seguridad
     profile:
-      account_history: NOT TRANSLATED YET
-      basic_account: NOT TRANSLATED YET
-      login_info: NOT TRANSLATED YET
-      profile_info: NOT TRANSLATED YET
-      two_factor: NOT TRANSLATED YET
-      verified_account: NOT TRANSLATED YET
-    recovery_code: NOT TRANSLATED YET
+      account_history: La historia de la cuenta
+      basic_account: Cuenta básica
+      login_info: Información de la cuenta
+      profile_info: Información del perfil
+      two_factor: Autenticación de dos factores
+      verified_account: Cuenta verificada
+    recovery_code: Asegúrese de que siempre puede iniciar sesión
     registrations:
-      enter_email: NOT TRANSLATED YET
-    search: NOT TRANSLATED YET
-    session_timeout_warning: NOT TRANSLATED YET
-    sign_in_with_sp: NOT TRANSLATED YET
-    sign_in_without_sp: NOT TRANSLATED YET
+      enter_email: Empezar a crear una cuenta
+    search: Buscar un usuario
+    session_timeout_warning: ¿Necesita mas tiempo?
+    sign_in_with_sp: Iniciar sesión para continuar con %{sp}
+    sign_in_without_sp: Iniciar sesión
     totp_setup:
-      new: NOT TRANSLATED YET
-      start: NOT TRANSLATED YET
-    verify_email: NOT TRANSLATED YET
+      new: Escanear el código QR con su dispositivo
+      start: Configurar la autenticación de dos factores
+    verify_email: Revisar su correo electrónico
