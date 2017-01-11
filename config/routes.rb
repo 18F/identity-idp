@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   end
 
   # Non-devise-controller routes. Alphabetically sorted.
+  get '/.well-known/openid-configuration' => 'openid_connect/configuration#index'
   get '/api/health/workers' => 'health/workers#index'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
