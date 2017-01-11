@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161219225847) do
+ActiveRecord::Schema.define(version: 20170111142846) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20161219225847) do
     t.datetime "updated_at"
     t.string   "session_uuid",          limit: 255
     t.string   "uuid",                              null: false
+    t.string   "nonce"
   end
 
   add_index "identities", ["session_uuid"], name: "index_identities_on_session_uuid", unique: true, using: :btree

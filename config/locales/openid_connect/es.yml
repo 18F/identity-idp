@@ -1,0 +1,12 @@
+es:
+  openid_connect:
+    authorization:
+      index:
+        allow: NOT TRANSLATED YET
+        allow_prompt: NOT TRANSLATED YET
+        decline: NOT TRANSLATED YET
+      errors:
+        bad_client_id: NOT TRANSLATED YET
+        no_valid_acr_values: NOT TRANSLATED YET
+        redirect_uri_invalid: NOT TRANSLATED YET
+        redirect_uri_no_match: NOT TRANSLATED YET
