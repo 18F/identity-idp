@@ -1,10 +1,10 @@
 IdentityLinker = Struct.new(:user, :provider) do
   attr_reader :identity
 
-  def link_identity
+  def link_identity(nonce: nil, session_uuid: nil)
     find_or_create_identity
 
-    identity.update!(identity_attributes)
+    identity.update!(identity_attributes(nonce: nonce, session_uuid: session_uuid))
   end
 
   private
@@ -16,10 +16,12 @@ IdentityLinker = Struct.new(:user, :provider) do
     )
   end
 
-  def identity_attributes
+  def identity_attributes(nonce: nil, session_uuid: nil)
+    session_uuid ||= SecureRandom.uuid
     {
       last_authenticated_at: Time.current,
-      session_uuid: SecureRandom.uuid
+      session_uuid: session_uuid,
+      nonce: nonce
     }
   end
 end

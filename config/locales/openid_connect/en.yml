@@ -1,0 +1,12 @@
+en:
+  openid_connect:
+    authorization:
+      index:
+        allow: Allow
+        allow_prompt: Allow app?
+        decline: Decline
+      errors:
+        bad_client_id: Bad client_id
+        no_valid_acr_values: No acceptable acr_values found
+        redirect_uri_invalid: redirect_uri is invalid
+        redirect_uri_no_match: redirect_uri does not match registered redirect_uri
