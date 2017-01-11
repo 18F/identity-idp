@@ -30,15 +30,18 @@ module Idv
       attempter.increment
     end
 
-    def track_event
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, form_result)
-      track_vendor_event if idv_session.resolution
+    def vendor_errors
+      idv_session.resolution.try(:errors)
     end
 
-    def track_vendor_event
-      result = { success: complete?, idv_attempts_exceeded: attempts_exceeded? }
+    def track_event
+      result = {
+        success: complete?,
+        idv_attempts_exceeded: attempts_exceeded?,
+        errors: errors
+      }
 
-      analytics.track_event(Analytics::IDV_INITIAL, result)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
     end
   end
 end

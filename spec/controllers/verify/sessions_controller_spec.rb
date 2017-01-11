@@ -87,6 +87,7 @@ describe Verify::SessionsController do
 
           result = {
             success: false,
+            idv_attempts_exceeded: false,
             errors: { ssn: [t('idv.errors.duplicate_ssn')] }
           }
 
@@ -135,10 +136,14 @@ describe Verify::SessionsController do
 
           result = {
             success: false,
-            idv_attempts_exceeded: false
+            idv_attempts_exceeded: false,
+            errors: {
+              first_name: ['Unverified first name.']
+            }
           }
 
-          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
         end
       end
 
@@ -159,10 +164,12 @@ describe Verify::SessionsController do
 
           result = {
             success: true,
-            idv_attempts_exceeded: false
+            idv_attempts_exceeded: false,
+            errors: {}
           }
 
-          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
         end
       end
 
@@ -180,7 +187,8 @@ describe Verify::SessionsController do
             idv_attempts_exceeded: true
           }
 
-          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_INITIAL, result)
           expect(response).to redirect_to verify_fail_url
         end
       end

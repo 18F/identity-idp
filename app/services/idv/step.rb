@@ -26,8 +26,25 @@ module Idv
       self.form_result = idv_form.submit(params)
     end
 
+    def errors
+      errors = idv_form.errors.messages.dup
+      return errors unless vendor_errors
+      merge_vendor_errors(errors)
+    end
+
+    def merge_vendor_errors(errors)
+      vendor_errors.each_with_object(errors) do |(key, value), errs|
+        value = [value] unless value.is_a?(Array)
+        errs[key] = value
+      end
+    end
+
     def confirm
       raise NotImplementedError "Must implement confirm method for #{self}"
+    end
+
+    def confirmation_errors
+      raise NotImplementedError "Must implement confirmation_errors method for #{self}"
     end
 
     def track_event

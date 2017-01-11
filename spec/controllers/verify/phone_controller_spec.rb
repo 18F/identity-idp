@@ -3,6 +3,7 @@ include Features::LocalizationHelper
 
 describe Verify::PhoneController do
   let(:good_phone) { '+1 (555) 555-0000' }
+  let(:bad_phone) { '+1 (555) 555-5555' }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -34,6 +35,8 @@ describe Verify::PhoneController do
       before do
         user = build(:user, phone: '+1 (415) 555-0130')
         stub_subject(user)
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
       end
 
       it 'renders #new' do
@@ -43,30 +46,54 @@ describe Verify::PhoneController do
         expect(subject.idv_session.params).to be_empty
       end
 
-      it 'creates analytics event' do
+      it 'tracks form error' do
+        put :create, idv_phone_form: { phone: '703' }
+
+        result = {
+          success: false,
+          errors: {
+            phone: [invalid_phone_message]
+          }
+        }
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_PHONE_CONFIRMATION, result
+        )
+        expect(subject.idv_session.phone_confirmation).to be_nil
+      end
+    end
+
+    context 'when form is valid' do
+      before do
         stub_analytics
         allow(@analytics).to receive(:track_event)
+      end
 
-        put :create, idv_phone_form: { phone: '555 555 5555' }
+      it 'tracks event with valid phone' do
+        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+        stub_subject(user)
 
-        result = { success: false }
+        put :create, idv_phone_form: { phone: good_phone }
+
+        result = { success: true, errors: {} }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION, result
         )
       end
-    end
 
-    context 'when form is valid' do
-      it 'creates analytics event' do
-        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+      it 'tracks event with invalid phone' do
+        user = build(:user, phone: bad_phone, phone_confirmed_at: Time.zone.now)
         stub_subject(user)
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
 
-        put :create, idv_phone_form: { phone: good_phone }
+        put :create, idv_phone_form: { phone: bad_phone }
 
-        result = { success: true }
+        result = {
+          success: false,
+          errors: {
+            phone: ['The phone number could not be verified.']
+          }
+        }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION, result

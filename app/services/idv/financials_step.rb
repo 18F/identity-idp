@@ -14,11 +14,13 @@ module Idv
     end
 
     def track_event
-      result = {
-        success: complete?
-      }
+      result = { success: complete?, errors: errors }
 
       analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result)
+    end
+
+    def vendor_errors
+      idv_session.financials_confirmation.try(:errors)
     end
 
     def financials

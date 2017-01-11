@@ -75,7 +75,7 @@ describe Verify::FinanceController do
 
         put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-        result = { success: true }
+        result = { success: true, errors: {} }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_FINANCE_CONFIRMATION, result
@@ -99,6 +99,59 @@ describe Verify::FinanceController do
 
           expect(response).to render_template :new
         end
+      end
+    end
+  end
+
+  describe 'analytics' do
+    before do
+      stub_subject
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+    end
+
+    context 'when form is valid and CCN passes vendor validation' do
+      it 'tracks the successful submission with no errors' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+
+        result = {
+          success: true,
+          errors: {}
+        }
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_FINANCE_CONFIRMATION, result
+        )
+      end
+    end
+
+    context 'when the form is valid but the CCN does not pass vendor validation' do
+      it 'tracks the vendor error' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
+
+        result = {
+          success: false,
+          errors: { ccn: ['The ccn could not be verified.'] }
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
+      end
+    end
+
+    context 'when the form is invalid' do
+      it 'tracks the form errors and does not make a vendor API call' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '123' }
+
+        result = {
+          success: false,
+          errors: { ccn: ['Credit card number should be only last 8 digits.'] }
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
+
+        expect(subject.idv_session.financials_confirmation).to be_nil
       end
     end
   end

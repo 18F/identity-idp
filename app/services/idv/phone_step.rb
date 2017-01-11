@@ -14,15 +14,17 @@ module Idv
       idv_session.phone_confirmation.success?
     end
 
+    def vendor_errors
+      idv_session.phone_confirmation.try(:errors)
+    end
+
     def update_idv_session
       idv_session.params = idv_form.idv_params
       idv_session.applicant.phone = idv_form.phone
     end
 
     def track_event
-      result = {
-        success: complete?
-      }
+      result = { success: complete?, errors: errors }
 
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION, result)
     end
