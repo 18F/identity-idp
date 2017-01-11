@@ -65,11 +65,11 @@ describe Verify::SessionsController do
           get :new
 
           result = {
-            success: false,
-            idv_attempts_exceeded: true
+            request_path: verify_session_path
           }
 
-          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
           expect(response).to redirect_to verify_fail_url
         end
       end
@@ -183,12 +183,11 @@ describe Verify::SessionsController do
           post :create, profile: user_attrs
 
           result = {
-            success: false,
-            idv_attempts_exceeded: true
+            request_path: verify_session_path
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::IDV_INITIAL, result)
+            with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
           expect(response).to redirect_to verify_fail_url
         end
       end

@@ -8,7 +8,7 @@ module IdvSession
   def confirm_idv_attempts_allowed
     if idv_attempter.exceeded?
       flash[:error] = t('idv.errors.hardfail')
-      analytics.track_event(Analytics::IDV_INITIAL, success: false, idv_attempts_exceeded: true)
+      analytics.track_event(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, request_path: request.path)
       redirect_to verify_fail_url
     elsif idv_attempter.reset_attempts?
       idv_attempter.reset
