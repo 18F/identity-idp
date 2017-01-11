@@ -13,3 +13,8 @@ es:
     token:
       errors:
         invalid_code: NOT TRANSLATED YET
+    user_info:
+      errors:
+        no_authorization: NOT TRANSLATED YET
+        malformed_authorization: NOT TRANSLATED YET
+        not_found: NOT TRANSLATED YET
