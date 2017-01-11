@@ -24,6 +24,16 @@ class ServiceProvider
     VALID_SERVICE_PROVIDERS.include?(issuer)
   end
 
+  def ssl_cert
+    @ssl_cert ||= begin
+      sp_cert = sp_attributes[:cert]
+      return if sp_cert.blank?
+
+      cert_file = File.read(Rails.root.join("certs/sp/#{sp_cert}.crt"))
+      OpenSSL::X509::Certificate.new(cert_file)
+    end
+  end
+
   private
 
   def sp_attributes
@@ -32,19 +42,6 @@ class ServiceProvider
 
   def config
     ServiceProviderConfig.new(issuer: issuer)
-  end
-
-  def ssl_cert
-    @ssl_cert ||= begin
-      sp_cert = sp_attributes[:cert]
-      return if sp_cert.blank?
-
-      cert_dir = "#{Rails.root}/certs/sp/"
-
-      cert_file = File.read("#{cert_dir}#{sp_cert}.crt")
-
-      OpenSSL::X509::Certificate.new(cert_file)
-    end
   end
 
   def fingerprint

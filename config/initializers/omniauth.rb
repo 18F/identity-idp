@@ -10,10 +10,7 @@ DEFAULT_OPTIONS = {
   name_identifier_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
   allowed_clock_drift: 60.seconds,
   certificate: File.read("#{Rails.root}/certs/sp/saml_test_sp.crt"),
-  private_key: OpenSSL::PKey::RSA.new(
-    File.read(Rails.root + 'keys/saml.key.enc'),
-    Figaro.env.saml_passphrase
-  ).to_pem,
+  private_key: RequestKeyManager.private_key.to_pem,
   assertion_consumer_service_url: "https://#{Figaro.env.domain_name}/users/auth/saml/callback",
   assertion_consumer_service_binding: 'urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST',
   authn_context: 'http://idmanagement.gov/ns/assurance/loa/2',

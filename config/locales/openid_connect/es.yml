@@ -10,3 +10,6 @@ es:
         no_valid_acr_values: NOT TRANSLATED YET
         redirect_uri_invalid: NOT TRANSLATED YET
         redirect_uri_no_match: NOT TRANSLATED YET
+    token:
+      errors:
+        invalid_code: NOT TRANSLATED YET
