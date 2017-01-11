@@ -40,6 +40,7 @@ test:
 
   'urn:gov:gsa:openidconnect:test':
     redirect_uri: 'gov.gsa.openidconnect.test://result'
+    cert: 'saml_test_sp'
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
