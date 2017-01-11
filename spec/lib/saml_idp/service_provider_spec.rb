@@ -4,9 +4,9 @@ module SamlIdp
     subject { described_class.new attributes }
     let(:attributes) { {} }
 
-    it { should respond_to :fingerprint }
-    it { should respond_to :metadata_url }
-    it { should_not be_valid }
+    it { is_expected.to respond_to :fingerprint }
+    it { is_expected.to respond_to :metadata_url }
+    it { is_expected.not_to be_valid }
 
     describe "with attributes" do
       let(:attributes) { { fingerprint: fingerprint, metadata_url: metadata_url } }
@@ -14,14 +14,14 @@ module SamlIdp
       let(:metadata_url) { "http://localhost:3000/metadata" }
 
       it "has a valid fingerprint" do
-        subject.fingerprint.should == fingerprint
+        expect(subject.fingerprint).to eq(fingerprint)
       end
 
       it "has a valid metadata_url" do
-        subject.metadata_url.should == metadata_url
+        expect(subject.metadata_url).to eq(metadata_url)
       end
 
-      it { should be_valid }
+      it { is_expected.to be_valid }
     end
   end
 end

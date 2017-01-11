@@ -12,19 +12,19 @@ module SamlIdp
     let(:values) { nil }
 
     it "has a valid name" do
-      subject.name.should be_nil
+      expect(subject.name).to be_nil
     end
 
     it "has a valid friendly_name" do
-      subject.friendly_name.should be_nil
+      expect(subject.friendly_name).to be_nil
     end
 
     it "has a valid name_format" do
-      subject.name_format.should == Saml::XML::Namespaces::Formats::Attr::URI
+      expect(subject.name_format).to eq(Saml::XML::Namespaces::Formats::Attr::URI)
     end
 
     it "has a valid values" do
-      subject.values.should == []
+      expect(subject.values).to eq([])
     end
 
     describe "with values set" do
@@ -34,19 +34,19 @@ module SamlIdp
       let(:values) { :val }
 
       it "has a valid name" do
-        subject.name.should == name
+        expect(subject.name).to eq(name)
       end
 
       it "has a valid friendly_name" do
-        subject.friendly_name.should == friendly_name
+        expect(subject.friendly_name).to eq(friendly_name)
       end
 
       it "has a valid name_format" do
-        subject.name_format.should == name_format
+        expect(subject.name_format).to eq(name_format)
       end
 
       it "has a valid values" do
-        subject.values.should == [values]
+        expect(subject.values).to eq([values])
       end
     end
   end

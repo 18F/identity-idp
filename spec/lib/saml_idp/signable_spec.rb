@@ -70,7 +70,7 @@ module SamlIdp
     end
 
     it "has a valid signed" do
-      subject.signed.should match all_regex
+      expect(subject.signed).to match all_regex
     end
 
   end

@@ -9,8 +9,8 @@ feature 'IdpController' do
     fill_in 'Password', :with => "okidoki"
     click_button 'Sign in'
     click_button 'Submit'   # simulating onload
-    current_url.should == 'http://foo.example.com/saml/consume'
-    page.should have_content "foo@example.com"
+    expect(current_url).to eq('http://foo.example.com/saml/consume')
+    expect(page).to have_content "foo@example.com"
   end
 
 end

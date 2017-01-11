@@ -7,7 +7,7 @@ module SamlIdp
     let(:base64cert) { document.elements["//ds:X509Certificate"].text }
 
     it "it run validate without throwing NS related exceptions" do
-      document.validate_doc(base64cert, true).should be_falsey
+      expect(document.validate_doc(base64cert, true)).to be_falsey
     end
 
     it "it run validate with throwing NS related exceptions" do
@@ -57,22 +57,22 @@ module SamlIdp
   describe "Algorithms" do
     it "validate using SHA1" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha1, false))
-      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_truthy
+      expect(document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72")).to be_truthy
     end
 
     it "validate using SHA256" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha256, false))
-      document.validate("28:74:9B:E8:1F:E8:10:9C:A8:7C:A9:C3:E3:C5:01:6C:92:1C:B4:BA").should be_truthy
+      expect(document.validate("28:74:9B:E8:1F:E8:10:9C:A8:7C:A9:C3:E3:C5:01:6C:92:1C:B4:BA")).to be_truthy
     end
 
     it "validate using SHA384" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha384, false))
-      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_truthy
+      expect(document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72")).to be_truthy
     end
 
     it "validate using SHA512" do
       document = XMLSecurity::SignedDocument.new(fixture(:adfs_response_sha512, false))
-      document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72").should be_truthy
+      expect(document.validate("F1:3C:6B:80:90:5A:03:0E:6C:91:3E:5D:15:FA:DD:B0:16:45:48:72")).to be_truthy
     end
   end
 
@@ -83,7 +83,7 @@ module SamlIdp
         document = XMLSecurity::SignedDocument.new(response)
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
-        inclusive_namespaces.should == %w[xs]
+        expect(inclusive_namespaces).to eq(%w[xs])
       end
 
       it "support implicit namespace resolution for exclusive canonicalization" do
@@ -91,7 +91,7 @@ module SamlIdp
         document = XMLSecurity::SignedDocument.new(response)
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
-        inclusive_namespaces.should == %w[#default saml ds xs xsi]
+        expect(inclusive_namespaces).to eq(%w[#default saml ds xs xsi])
       end
 
       it "return an empty list when inclusive namespace element is missing" do
@@ -101,7 +101,7 @@ module SamlIdp
         document = XMLSecurity::SignedDocument.new(response)
         inclusive_namespaces = document.send(:extract_inclusive_namespaces)
 
-        inclusive_namespaces.should be_empty
+        expect(inclusive_namespaces).to be_empty
       end
     end
 
@@ -116,20 +116,20 @@ module SamlIdp
 
       it "be able to validate a good response" do
         Timecop.freeze Time.parse('2012-11-28 17:55:00 UTC') do
-          response.stub(:validate_subject_confirmation).and_return(true)
-          response.should be_is_valid
+          allow(response).to receive(:validate_subject_confirmation).and_return(true)
+          expect(response).to be_is_valid
         end
       end
 
       it "fail before response is valid" do
         Timecop.freeze Time.parse('2012-11-20 17:55:00 UTC') do
-          response.should_not be_is_valid
+          expect(response).not_to be_is_valid
         end
       end
 
       it "fail after response expires" do
         Timecop.freeze Time.parse('2012-11-30 17:55:00 UTC') do
-          response.should_not be_is_valid
+          expect(response).not_to be_is_valid
         end
       end
     end

@@ -34,4 +34,6 @@ RailsApp::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  config.eager_load = false
 end

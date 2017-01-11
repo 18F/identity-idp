@@ -9,11 +9,11 @@ module SamlIdp
       end
 
       it "finds algorithm class" do
-        algorithm.should == OpenSSL::Digest::SHA256
+        expect(algorithm).to eq(OpenSSL::Digest::SHA256)
       end
 
       it "finds the name" do
-        algorithm_name.should == "sha256"
+        expect(algorithm_name).to eq("sha256")
       end
     end
 
@@ -23,11 +23,11 @@ module SamlIdp
       end
 
       it "finds algorithm class" do
-        algorithm.should == OpenSSL::Digest::SHA512
+        expect(algorithm).to eq(OpenSSL::Digest::SHA512)
       end
 
       it "finds the name" do
-        algorithm_name.should == "sha512"
+        expect(algorithm_name).to eq("sha512")
       end
     end
 
@@ -37,11 +37,11 @@ module SamlIdp
       end
 
       it "finds algorithm class" do
-        algorithm.should == OpenSSL::Digest::SHA1
+        expect(algorithm).to eq(OpenSSL::Digest::SHA1)
       end
 
       it "finds the name" do
-        algorithm_name.should == "sha1"
+        expect(algorithm_name).to eq("sha1")
       end
     end
   end

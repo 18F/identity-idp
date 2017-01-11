@@ -9,12 +9,12 @@ module SamlIdp
       subject { described_class.from_deflated_request deflated_request }
 
       it "inflates" do
-        subject.request_id.should == "_af43d1a0-e111-0130-661a-3c0754403fdb"
+        expect(subject.request_id).to eq("_af43d1a0-e111-0130-661a-3c0754403fdb")
       end
 
       it "handles invalid SAML" do
         req = described_class.from_deflated_request "bang!"
-        req.valid?.should == false
+        expect(req.valid?).to eq(false)
       end
     end
 
@@ -22,51 +22,51 @@ module SamlIdp
       subject { described_class.new raw_authn_request }
 
       it "has a valid request_id" do
-        subject.request_id.should == "_af43d1a0-e111-0130-661a-3c0754403fdb"
+        expect(subject.request_id).to eq("_af43d1a0-e111-0130-661a-3c0754403fdb")
       end
 
       it "has a valid acs_url" do
-        subject.acs_url.should == "http://localhost:3000/saml/consume"
+        expect(subject.acs_url).to eq("http://localhost:3000/saml/consume")
       end
 
       it "has a valid service_provider" do
-        subject.service_provider.should be_a ServiceProvider
+        expect(subject.service_provider).to be_a ServiceProvider
       end
 
       it "has a valid service_provider" do
-        subject.service_provider.should be_truthy
+        expect(subject.service_provider).to be_truthy
       end
 
       it "has a valid issuer" do
-        subject.issuer.should == "localhost:3000"
+        expect(subject.issuer).to eq("localhost:3000")
       end
 
       it "has a valid valid_signature" do
-        subject.valid_signature?.should be_truthy
+        expect(subject.valid_signature?).to be_truthy
       end
 
       it "should return acs_url for response_url" do
-        subject.response_url.should == subject.acs_url
+        expect(subject.response_url).to eq(subject.acs_url)
       end
 
       it "is a authn request" do
-        subject.authn_request?.should == true
+        expect(subject.authn_request?).to eq(true)
       end
 
       it "fetches internal request" do
-        subject.request['ID'].should == subject.request_id
+        expect(subject.request['ID']).to eq(subject.request_id)
       end
 
       it "has a valid authn context" do
-        subject.requested_authn_context.should == "urn:oasis:names:tc:SAML:2.0:ac:classes:Password"
+        expect(subject.requested_authn_context).to eq("urn:oasis:names:tc:SAML:2.0:ac:classes:Password")
       end
 
       it "does not permit empty issuer" do
         raw_req = raw_authn_request.gsub('localhost:3000', '')
         authn_request = described_class.new raw_req
-        authn_request.issuer.should_not == ''
-        authn_request.issuer.should == nil
-        authn_request.valid?.should == false
+        expect(authn_request.issuer).not_to eq('')
+        expect(authn_request.issuer).to eq(nil)
+        expect(authn_request.valid?).to eq(false)
       end
     end
 
@@ -76,31 +76,31 @@ module SamlIdp
       subject { described_class.new raw_logout_request }
 
       it "has a valid request_id" do
-        subject.request_id.should == '_some_response_id'
+        expect(subject.request_id).to eq('_some_response_id')
       end
 
       it "should be flagged as a logout_request" do
-        subject.logout_request?.should == true
+        expect(subject.logout_request?).to eq(true)
       end
 
       it "should have a valid name_id" do
-        subject.name_id.should == 'some_name_id'
+        expect(subject.name_id).to eq('some_name_id')
       end
 
       it "should have a session index" do
-        subject.session_index.should == 'abc123index'
+        expect(subject.session_index).to eq('abc123index')
       end
 
       it "should have a valid issuer" do
-        subject.issuer.should == 'http://example.com'
+        expect(subject.issuer).to eq('http://example.com')
       end
 
       it "fetches internal request" do
-        subject.request['ID'].should == subject.request_id
+        expect(subject.request['ID']).to eq(subject.request_id)
       end
 
       it "should return logout_url for response_url" do
-        subject.response_url.should == subject.logout_url
+        expect(subject.response_url).to eq(subject.logout_url)
       end
     end
   end

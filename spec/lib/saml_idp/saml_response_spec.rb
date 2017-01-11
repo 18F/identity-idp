@@ -51,18 +51,18 @@ module SamlIdp
     }
 
     it "has a valid build" do
-      subject.build.should be_present
+      expect(subject.build).to be_present
     end
 
     it "builds encrypted" do
-      subject_encrypted.build.should_not match(audience_uri)
+      expect(subject_encrypted.build).not_to match(audience_uri)
       encoded_xml = subject_encrypted.build
       resp_settings = saml_settings(saml_acs_url)
       resp_settings.private_key = Default::SECRET_KEY
       resp_settings.issuer = audience_uri
       saml_resp = OneLogin::RubySaml::Response.new(encoded_xml, settings: resp_settings)
       saml_resp.soft = false
-      saml_resp.is_valid?.should == true
+      expect(saml_resp.is_valid?).to eq(true)
     end
   end
 end
