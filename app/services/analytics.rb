@@ -58,6 +58,7 @@ class Analytics
   OPENID_CONNECT_ALLOW = 'OpenID Connect: allow app'.freeze
   OPENID_CONNECT_DECLINE = 'OpenID Connect: decline app'.freeze
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'.freeze
+  OPENID_CONNECT_TOKEN = 'OpenID Connect: token'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATION = 'Password Creation'.freeze
   PASSWORD_MAX_ATTEMPTS = 'Password Max Attempts Reached'.freeze
