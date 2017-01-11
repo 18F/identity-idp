@@ -73,6 +73,12 @@ Rails.application.routes.draw do
   match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
   get '/manage/recovery_code' => 'users/recovery_codes#show'
 
+  get '/openid_connect/authorize' => 'openid_connect/authorization#index'
+  post '/openid_connect/authorize' => 'openid_connect/authorization#create',
+       as: :openid_connect_allow
+  delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
+         as: :openid_connect_deny
+
   get '/otp/send' => 'users/two_factor_authentication#send_code'
   get '/phone_setup' => 'users/two_factor_authentication_setup#index'
   patch '/phone_setup' => 'users/two_factor_authentication_setup#set'

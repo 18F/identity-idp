@@ -62,7 +62,7 @@ end
 SecureHeaders::Configuration.override(:saml) do |config|
   provider_attributes = SERVICE_PROVIDERS.values
 
-  acs_urls = provider_attributes.map { |hash| hash['acs_url'] }
+  acs_urls = provider_attributes.map { |hash| hash['acs_url'] }.compact
 
   whitelisted_domains = acs_urls.map { |url| url.split('//')[1].split('/')[0] }
 

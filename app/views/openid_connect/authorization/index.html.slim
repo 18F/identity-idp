@@ -1,0 +1,13 @@
+p = t('openid_connect.authorization.index.allow_prompt')
+
+
+= button_to t('openid_connect.authorization.index.allow'),
+            openid_connect_allow_path,
+            params: @authorize_form.params,
+            class: 'btn btn-primary btn-wide'
+
+= button_to t('openid_connect.authorization.index.decline'),
+            openid_connect_deny_path,
+            method: :delete,
+            params: @authorize_form.params,
+            class: 'btn btn-outline btn-wide'

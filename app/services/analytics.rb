@@ -55,6 +55,9 @@ class Analytics
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
   MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'.freeze
+  OPENID_CONNECT_ALLOW = 'OpenID Connect: allow app'.freeze
+  OPENID_CONNECT_DECLINE = 'OpenID Connect: decline app'.freeze
+  OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'.freeze
   PASSWORD_CHANGED = 'Password Changed'.freeze
   PASSWORD_CREATION = 'Password Creation'.freeze
   PASSWORD_MAX_ATTEMPTS = 'Password Max Attempts Reached'.freeze
