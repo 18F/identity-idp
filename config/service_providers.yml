@@ -71,8 +71,6 @@ development:
     return_to_sp_url: 'http://localhost:3000'
     attribute_bundle:
       - email
-      - first_name
-      - last_name
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails':
     acs_url: 'http://localhost:3003/auth/saml/callback'
@@ -187,8 +185,6 @@ production:
     return_to_sp_url: 'https://micropurchase-staging.gov'
     attribute_bundle:
       - email
-      - first_name
-      - last_name
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-production':
     acs_url: 'https://micropurchase.18f.gov/auth/saml/callback'
@@ -201,8 +197,6 @@ production:
     return_to_sp_url: 'https://micropurchase.18f.gov'
     attribute_bundle:
       - email
-      - first_name
-      - last_name
 
   # Dashboard
   'https://dashboard.demo.login.gov':
