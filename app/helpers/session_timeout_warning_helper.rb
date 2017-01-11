@@ -12,10 +12,10 @@ module SessionTimeoutWarningHelper
   end
 
   def timeout_refresh_url
-    URI(request.original_url).tap do |url|
-      query = Rack::Utils.parse_nested_query(url.query).with_indifferent_access
-      url.query = query.merge(timeout: true).to_query
-    end.to_s.html_safe # rubocop:disable Rails/OutputSafety
+    URIService.add_params(
+      request.original_url,
+      timeout: true
+    ).html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def auto_session_timeout_js

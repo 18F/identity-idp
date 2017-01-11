@@ -85,7 +85,7 @@ development:
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'true'
   use_kms: 'false'
-  valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase"]'
+  valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase", "urn:gov:gsa:openidconnect:development"]'
   enable_i18n_mode: 'false'
 
 production:
@@ -166,5 +166,5 @@ test:
   twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
   twilio_record_voice: 'true'
   use_kms: 'false'
-  valid_service_providers: '["http://localhost:3000", "https://rp1.serviceprovider.com/auth/saml/metadata", "https://rp2.serviceprovider.com/auth/saml/metadata", "http://test.host"]'
+  valid_service_providers: '["http://localhost:3000", "https://rp1.serviceprovider.com/auth/saml/metadata", "https://rp2.serviceprovider.com/auth/saml/metadata", "http://test.host", "urn:gov:gsa:openidconnect:test"]'
   enable_i18n_mode: 'false'

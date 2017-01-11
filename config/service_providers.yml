@@ -38,6 +38,9 @@ test:
     metadata_url: 'http://test.host/test/saml/metadata'
     sp_initiated_login_url: 'http://test.host/test/saml'
 
+  'urn:gov:gsa:openidconnect:test':
+    redirect_uri: 'gov.gsa.openidconnect.test://result'
+
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     metadata_url: 'http://localhost:3000/test/saml/metadata'
@@ -94,6 +97,9 @@ development:
     cert: 'identity_dashboard_cert'
     attribute_bundle:
       - email
+
+  'urn:gov:gsa:openidconnect:development':
+    redirect_uri: 'gov.gsa.openidconnect.development://result'
 
 production:
   'https://idp.dev.login.gov':
