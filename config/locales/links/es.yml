@@ -1,21 +1,22 @@
 ---
 es:
   links:
-    back_to_sp: NOT TRANSLATED YET
-    contact: NOT TRANSLATED YET
-    create_account: NOT TRANSLATED YET
-    edit: NOT TRANSLATED YET
-    help: NOT TRANSLATED YET
-    next: NOT TRANSLATED YET
+    back_to_sp: "‹ Volver a %{sp}"
+    contact: Contactar
+    create_account: Crear cuenta
+    edit: Editar
+    help: Ayuda
+    next: Siguiente
     passwords:
-      forgot: NOT TRANSLATED YET
+      forgot: ¿Olvidó su contraseña?
     phone_confirmation:
-      fallback_to_sms: NOT TRANSLATED YET
-      fallback_to_voice: NOT TRANSLATED YET
-    privacy_policy: NOT TRANSLATED YET
-    resend: NOT TRANSLATED YET
-    sign_in: NOT TRANSLATED YET
-    sign_out: NOT TRANSLATED YET
-    cancel: NOT TRANSLATED YET
+      fallback_to_sms: Envíame un mensaje de texto con el código en su lugar
+      fallback_to_voice: Llámame con el código en su lugar
+    privacy_policy: Política de privacidad
+    resend: Enviar de nuevo
+    sign_in: Iniciar sesión
+    sign_out: Cerrar sesión
+    cancel: Cancelar
     two_factor_authentication:
-      resend_code: NOT TRANSLATED YET
+      resend_code: Enviar un nuevo
+      
