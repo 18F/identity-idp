@@ -129,9 +129,7 @@ Email messages will be visible in MailCatcher at `http://localhost:1080/`.
 
 If you would like to run the application on a different port:
 
-* Add a `.env` file locally
-* Set the `PORT` key to your desired port value in `.env`
-* Change the numbers for `mailer_domain_name` and `domain_name` in `config/application.yml`
+* Change the port number for `mailer_domain_name` and `domain_name` in `config/application.yml`
 * Run the app on your desired port like `make run PORT=1234`
 
 ### Running Tests
