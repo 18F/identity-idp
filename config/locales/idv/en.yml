@@ -35,7 +35,6 @@ en:
       use_financial_account: Enter one of these here >
       zipcode: ZIP Code
     index:
-      cancel_link: No, I don’t have it
       continue_link: Yes, continue
       paragraph_1: >
         We have partnered with a trusted third party company to verify this
@@ -79,7 +78,6 @@ en:
         some basic personal information as well as some financial information from you
         to complete this process. If you don’t have the information we need at this time
         you can continue later.
-      cancel_link: Cancel verification
       dupe_ssn1: >
         If you are getting this error, you may have already created and verified
         an account, but with a different email address.

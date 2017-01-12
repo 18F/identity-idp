@@ -35,7 +35,6 @@ es:
       use_financial_account: NOT TRANSLATED YET
       zipcode: NOT TRANSLATED YET
     index:
-      cancel_link: NOT TRANSLATED YET
       continue_link: NOT TRANSLATED YET
       paragraph_1: NOT TRANSLATED YET
       prompt: NOT TRANSLATED YET
@@ -65,7 +64,6 @@ es:
       activated_html: NOT TRANSLATED YET
       activated_link: contact us
       cancel: NOT TRANSLATED YET
-      cancel_link: NOT TRANSLATED YET
       dupe_ssn1: NOT TRANSLATED YET
       dupe_ssn2_html: NOT TRANSLATED YET
       dupe_ssn2_link: NOT TRANSLATED YET
