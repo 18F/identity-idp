@@ -24,7 +24,14 @@ describe Verify::ReviewController do
       ccn: '12345678'
     }
   end
-  let(:idv_session) { Idv::Session.new(subject.user_session, user) }
+  let(:idv_session) do
+    idv_session = Idv::Session.new(subject.user_session, user)
+    happy_args = { success: true, session_id: 'some-id' }
+    idv_session.resolution = Proofer::Resolution.new happy_args
+    idv_session.phone_confirmation = Proofer::Confirmation.new happy_args
+    idv_session.financials_confirmation = Proofer::Confirmation.new happy_args
+    idv_session
+  end
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -52,12 +59,14 @@ describe Verify::ReviewController do
       routes.draw do
         get 'show' => 'verify/review#show'
       end
+      idv_session.params = user_attrs
       allow(subject).to receive(:idv_session).and_return(idv_session)
+      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
     context 'user has missed phone step' do
       before do
-        idv_session.params = user_attrs.reject { |key| key == :phone }
+        idv_session.phone_confirmation.success = false
       end
 
       it 'redirects to phone step' do
@@ -69,7 +78,7 @@ describe Verify::ReviewController do
 
     context 'user has missed finance step' do
       before do
-        idv_session.params = user_attrs.reject { |key| key == :ccn }
+        idv_session.financials_confirmation.success = false
       end
 
       it 'redirects to finance step' do
@@ -169,6 +178,7 @@ describe Verify::ReviewController do
     context 'user has completed all steps' do
       before do
         idv_session.params = user_attrs
+        idv_session.applicant = idv_session.applicant_from_params
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
@@ -176,57 +186,15 @@ describe Verify::ReviewController do
       it 'redirects to confirmation path' do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
-        result = {
-          success: true,
-          idv_attempts_exceeded: false
-        }
-
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
         expect(response).to redirect_to verify_confirmations_path
-      end
-    end
-
-    context 'user attributes fail to resolve' do
-      before do
-        idv_session.params = user_attrs.merge(first_name: 'Bad')
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-      end
-
-      it 'redirects to retry' do
-        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
-
-        result = {
-          success: false,
-          idv_attempts_exceeded: false
-        }
-
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
-        expect(response).to redirect_to verify_retry_url
-      end
-
-      context 'max attempts exceeded' do
-        before do
-          user.idv_attempts = 3
-        end
-
-        it 'redirects to fail' do
-          put :create, user: { password: ControllerHelper::VALID_PASSWORD }
-
-          result = {
-            success: false,
-            idv_attempts_exceeded: true
-          }
-
-          expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
-          expect(response).to redirect_to verify_fail_url
-        end
       end
     end
 
     context 'user has entered different phone number from MFA' do
       before do
         idv_session.params = user_attrs.merge(phone: '213-555-1000')
+        idv_session.applicant = idv_session.applicant_from_params
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
@@ -234,12 +202,7 @@ describe Verify::ReviewController do
       it 'redirects to phone confirmation path' do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
-        result = {
-          success: true,
-          idv_attempts_exceeded: false
-        }
-
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_INITIAL, result)
+        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
         expect(response).to render_template('users/two_factor_authentication/show')
         expect(subject.user_session[:context]).to eq 'idv'
       end

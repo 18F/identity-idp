@@ -6,7 +6,7 @@ describe Verify::SessionsController do
     {
       first_name: 'Some',
       last_name: 'One',
-      ssn: '666661234',
+      ssn: '666-66-1234',
       dob: '19720329',
       address1: '123 Main St',
       address2: '',
@@ -15,6 +15,7 @@ describe Verify::SessionsController do
       zipcode: '66044'
     }
   end
+  let(:idv_session) { Idv::Session.new(subject.user_session, user) }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -22,7 +23,8 @@ describe Verify::SessionsController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_attempts_allowed,
-        :confirm_idv_needed
+        :confirm_idv_needed,
+        :confirm_step_needed
       )
     end
   end
@@ -32,48 +34,163 @@ describe Verify::SessionsController do
 
     before do
       stub_sign_in(user)
-    end
-
-    it 'starts new proofing session' do
-      get :new
-
-      expect(response.status).to eq 200
-      expect(response.body).to include t('idv.form.first_name')
-    end
-
-    it 'redirects to custom error on duplicate SSN and tracks event' do
-      create(:profile, pii: { ssn: '123456789' })
+      allow(subject).to receive(:idv_session).and_return(idv_session)
       stub_analytics
-
-      result = {
-        success: false,
-        errors: { ssn: [t('idv.errors.duplicate_ssn')] }
-      }
-
-      expect(@analytics).to receive(:track_event).
-        with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
-
-      post :create, profile: user_attrs.merge(ssn: '123456789')
-
-      expect(response).to redirect_to(verify_session_dupe_path)
-      expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
+      allow(@analytics).to receive(:track_event)
     end
 
-    it 'shows normal form with error on empty SSN' do
-      post :create, profile: user_attrs.merge(ssn: '')
+    describe '#new' do
+      it 'starts new proofing session' do
+        get :new
 
-      expect(response).to_not redirect_to(verify_session_dupe_path)
-      expect(response.body).to match t('errors.messages.blank')
+        expect(response.status).to eq 200
+        expect(response.body).to include t('idv.form.first_name')
+      end
+
+      it 'redirects if step is complete' do
+        idv_session.resolution = Proofer::Resolution.new success: true
+
+        get :new
+
+        expect(response).to redirect_to verify_finance_path
+      end
+
+      context 'max attempts exceeded' do
+        before do
+          user.idv_attempts = 3
+          user.idv_attempted_at = Time.zone.now
+        end
+
+        it 'redirects to fail' do
+          get :new
+
+          result = {
+            request_path: verify_session_path
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
+          expect(response).to redirect_to verify_fail_url
+        end
+      end
     end
 
-    it 'checks for required fields' do
-      partial_attrs = user_attrs.dup
-      partial_attrs.delete :first_name
+    describe '#create' do
+      before do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+      end
 
-      post :create, profile: partial_attrs
+      context 'existing SSN' do
+        it 'redirects to custom error' do
+          create(:profile, pii: { ssn: '666-66-1234' })
 
-      expect(response).to render_template(:new)
-      expect(response.body).to match t('errors.messages.blank')
+          result = {
+            success: false,
+            idv_attempts_exceeded: false,
+            errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+          }
+
+          expect(@analytics).to receive(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+
+          post :create, profile: user_attrs.merge(ssn: '666-66-1234')
+
+          expect(response).to redirect_to(verify_session_dupe_path)
+          expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
+        end
+      end
+
+      context 'empty SSN' do
+        it 'shows normal form with error' do
+          post :create, profile: user_attrs.merge(ssn: '')
+
+          expect(response).to_not redirect_to(verify_session_dupe_path)
+          expect(response.body).to match t('errors.messages.blank')
+        end
+      end
+
+      context 'missing fields' do
+        it 'checks for required fields' do
+          partial_attrs = user_attrs.dup
+          partial_attrs.delete :first_name
+
+          post :create, profile: partial_attrs
+
+          expect(response).to render_template(:new)
+          expect(response.body).to match t('errors.messages.blank')
+        end
+      end
+
+      context 'un-resolvable attributes' do
+        let(:bad_attrs) { user_attrs.dup.merge(first_name: 'Bad') }
+
+        it 're-renders form' do
+          post :create, profile: bad_attrs
+
+          expect(response).to render_template(:new)
+        end
+
+        it 'creates analytics event' do
+          post :create, profile: bad_attrs
+
+          result = {
+            success: false,
+            idv_attempts_exceeded: false,
+            errors: {
+              first_name: ['Unverified first name.']
+            }
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+        end
+      end
+
+      context 'success' do
+        it 'creates vendor artifacts' do
+          post :create, profile: user_attrs
+
+          resolution = idv_session.resolution
+          expect(resolution).to be_a Proofer::Resolution
+          expect(resolution.success).to eq true
+
+          applicant = idv_session.applicant
+          expect(applicant).to be_a Proofer::Applicant
+        end
+
+        it 'creates analytics event' do
+          post :create, profile: user_attrs
+
+          result = {
+            success: true,
+            idv_attempts_exceeded: false,
+            errors: {}
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+        end
+      end
+
+      context 'max attempts exceeded' do
+        before do
+          user.idv_attempts = 3
+          user.idv_attempted_at = Time.zone.now
+        end
+
+        it 'redirects to fail' do
+          post :create, profile: user_attrs
+
+          result = {
+            request_path: verify_session_path
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
+          expect(response).to redirect_to verify_fail_url
+        end
+      end
     end
   end
 end
