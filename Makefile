@@ -5,6 +5,7 @@
 # bin/ directory.
 
 CONFIG = config/application.yml
+PORT ?= 3000
 
 all: check
 
@@ -31,6 +32,6 @@ fast_test: $(CONFIG)
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 run: $(CONFIG)
-	foreman start
+	foreman start -p $(PORT)
 
 .PHONY: setup all lint run test check brakeman
