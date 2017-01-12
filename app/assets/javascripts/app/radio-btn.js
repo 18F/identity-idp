@@ -1,26 +1,25 @@
 import 'classlist.js';
 
-function clearRadioBtn(name) {
+function clearHighlight(name) {
   const radioGroup = document.querySelectorAll(`input[name='${name}']`);
 
-  for (let i = 0; i < radioGroup.length; i++) {
-    radioGroup[i].parentNode.parentNode.classList.remove('bg-light-blue');
-  }
+  Array.prototype.forEach.call(radioGroup, (radio) => {
+    radio.parentNode.parentNode.classList.remove('bg-light-blue');
+  });
 }
 
-function radioBtn() {
+function highlightRadioBtn() {
   const radios = document.querySelectorAll('.radio-btn input[type=radio]');
 
   if (radios) {
-    for (let i = 0; i < radios.length; i++) {
-      let radio = radios[i];
+    Array.prototype.forEach.call(radios, (radio) => {
       const label = radio.parentNode.parentNode;
       const name = radio.getAttribute('name');
 
       if (radio.checked) label.classList.add('bg-light-blue');
 
       radio.addEventListener('change', function() {
-        clearRadioBtn(name);
+        clearHighlight(name);
         if (radio.checked) label.classList.add('bg-light-blue');
       });
 
@@ -31,9 +30,9 @@ function radioBtn() {
       radio.addEventListener('blur', function() {
         label.classList.remove('is-focused');
       });
-    }
+    });
   }
 }
 
 
-document.addEventListener('DOMContentLoaded', radioBtn);
+document.addEventListener('DOMContentLoaded', highlightRadioBtn);
