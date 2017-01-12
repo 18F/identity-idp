@@ -1,9 +1,21 @@
 module Idv
   class FinancialsValidator < VendorValidator
-    def validate
-      session_id = idv_session.resolution.session_id
-      idv_session.financials_confirmation = idv_agent.submit_financials(vendor_params, session_id)
-      idv_session.financials_confirmation.success?
+    def success?
+      result.success?
+    end
+
+    def errors
+      result.errors
+    end
+
+    private
+
+    def result
+      @_result ||= idv_agent.submit_financials(vendor_params, session_id)
+    end
+
+    def session_id
+      idv_session.resolution.session_id
     end
   end
 end
