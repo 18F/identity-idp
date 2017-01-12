@@ -1,6 +1,8 @@
 # abstract base class for Idv Steps
 module Idv
   class Step
+    include VendorValidated
+
     def initialize(analytics:, idv_form:, idv_session:, params:)
       @idv_form = idv_form
       @idv_session = idv_session
@@ -9,9 +11,17 @@ module Idv
     end
 
     def complete
-      confirm if validate(params)
+      form_valid? && vendor_valid?
       track_event
       complete?
+    end
+
+    def form_valid?
+      form_validate(params)
+    end
+
+    def vendor_valid?
+      vendor_validate
     end
 
     def complete?
@@ -22,7 +32,7 @@ module Idv
 
     attr_accessor :analytics, :idv_form, :idv_session, :params, :form_result
 
-    def validate(params)
+    def form_validate(params)
       self.form_result = idv_form.submit(params)
     end
 
@@ -39,27 +49,20 @@ module Idv
       end
     end
 
-    def confirm
-      raise NotImplementedError "Must implement confirm method for #{self}"
+    def vendor_validator
+      vendor_validator_class.new(idv_session: idv_session, vendor_params: vendor_params)
     end
 
-    def confirmation_errors
-      raise NotImplementedError "Must implement confirmation_errors method for #{self}"
+    def analytics_event
+      raise NotImplementedError "Must implement analytics_event for #{self}"
+    end
+
+    def analytics_result
+      { success: complete?, errors: errors }
     end
 
     def track_event
-      raise NotImplementedError "Must implement track_event for #{self}"
-    end
-
-    def idv_vendor
-      @_idv_vendor ||= Idv::Vendor.new
-    end
-
-    def idv_agent
-      @_agent ||= Idv::Agent.new(
-        applicant: idv_session.applicant,
-        vendor: (idv_session.vendor || idv_vendor.pick)
-      )
+      analytics.track_event(analytics_event, analytics_result)
     end
   end
 end

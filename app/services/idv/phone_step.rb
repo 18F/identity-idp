@@ -6,12 +6,18 @@ module Idv
 
     private
 
-    def confirm
-      phone_number = idv_form.phone
-      session_id = idv_session.resolution.session_id
-      idv_session.phone_confirmation = idv_agent.submit_phone(phone_number, session_id)
+    def vendor_validator_class
+      Idv::PhoneValidator
+    end
+
+    def vendor_params
+      idv_form.phone
+    end
+
+    def vendor_validate
+      result = vendor_validator.validate
       update_idv_session if complete?
-      idv_session.phone_confirmation.success?
+      result
     end
 
     def vendor_errors
@@ -23,10 +29,8 @@ module Idv
       idv_session.applicant.phone = idv_form.phone
     end
 
-    def track_event
-      result = { success: complete?, errors: errors }
-
-      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION, result)
+    def analytics_event
+      Analytics::IDV_PHONE_CONFIRMATION
     end
   end
 end

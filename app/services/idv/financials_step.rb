@@ -6,24 +6,25 @@ module Idv
 
     private
 
-    def confirm
-      session_id = idv_session.resolution.session_id
-      idv_session.financials_confirmation = idv_agent.submit_financials(financials, session_id)
+    def vendor_validate
+      result = vendor_validator.validate
       idv_session.params = idv_form.idv_params if complete?
-      idv_session.financials_confirmation.success?
+      result
     end
 
-    def track_event
-      result = { success: complete?, errors: errors }
+    def vendor_validator_class
+      Idv::FinancialsValidator
+    end
 
-      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result)
+    def analytics_event
+      Analytics::IDV_FINANCE_CONFIRMATION
     end
 
     def vendor_errors
       idv_session.financials_confirmation.try(:errors)
     end
 
-    def financials
+    def vendor_params
       finance_type = idv_form.finance_type
       { finance_type => idv_form.idv_params[finance_type] }
     end

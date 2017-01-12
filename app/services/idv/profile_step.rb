@@ -7,8 +7,7 @@ module Idv
     def complete
       return if attempts_exceeded?
       idv_session.params.merge!(params)
-      validate(params)
-      confirm if form_result[:success]
+      vendor_validate if form_validate(params)[:success]
       track_event
       complete?
     end
@@ -23,25 +22,34 @@ module Idv
       @_idv_attempter ||= Idv::Attempter.new(idv_form.user)
     end
 
-    def confirm
-      idv_session.applicant = idv_session.applicant_from_params
-      idv_session.vendor = idv_agent.vendor
-      idv_session.resolution = idv_agent.start(idv_session.applicant)
+    def vendor_params
+      idv_session.applicant_from_params
+    end
+
+    def vendor_validate
+      result = vendor_validator.validate
       attempter.increment
+      result
+    end
+
+    def vendor_validator_class
+      Idv::ProfileValidator
     end
 
     def vendor_errors
       idv_session.resolution.try(:errors)
     end
 
-    def track_event
-      result = {
+    def analytics_result
+      {
         success: complete?,
         idv_attempts_exceeded: attempts_exceeded?,
         errors: errors
       }
+    end
 
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+    def analytics_event
+      Analytics::IDV_BASIC_INFO_SUBMITTED
     end
   end
 end
