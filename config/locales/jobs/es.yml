@@ -2,4 +2,7 @@
 es:
   jobs:
     sms_sender_number_change_job:
-      message: NOT TRANSLATED YET
+      message: |
+        Ha cambiado el número de teléfono de su cuenta de %{app}.
+
+        Si no solicitó este cambio, póngase en contacto con %{app} en %{support_url}
