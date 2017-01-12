@@ -39,12 +39,15 @@ class Analytics
   EMAIL_CONFIRMATION_RESEND = 'Email Confirmation requested due to invalid token'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED = 'IdV: basic info submitted'.freeze
-  IDV_INITIAL = 'IdV: initial resolution'.freeze
+  IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_FINANCE_CCN_VISIT = 'IdV: finance ccn visited'.freeze
+  IDV_FINANCE_CONFIRMATION = 'IdV: finance confirmation'.freeze
   IDV_FINANCE_OTHER_VISIT = 'IdV: finance other visited'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
+  IDV_PHONE_CONFIRMATION = 'IdV: phone confirmation'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
+  IDV_REVIEW_COMPLETE = 'IdV: review complete'.freeze
   IDV_REVIEW_VISIT = 'IdV: review info visited'.freeze
   INVALID_AUTHENTICITY_TOKEN = 'Invalid Authenticity Token'.freeze
   OTP_DELIVERY_SELECTION = 'OTP: Delivery Selection'.freeze

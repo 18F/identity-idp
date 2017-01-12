@@ -2,6 +2,8 @@ module Idv
   class ProfileForm
     include ActiveModel::Model
 
+    attr_reader :user
+
     def self.model_name
       ActiveModel::Name.new(self, nil, 'Profile')
     end
