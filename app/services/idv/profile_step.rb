@@ -5,7 +5,7 @@ module Idv
     end
 
     def complete
-      return if attempts_exceeded?
+      return track_event if attempts_exceeded?
       idv_session.params.merge!(params)
       vendor_validate if form_validate(params)[:success]
       track_event

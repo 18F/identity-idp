@@ -19,12 +19,20 @@ describe Idv::ProfileStep do
   end
 
   def build_step(params)
+    @analytics = FakeAnalytics.new
+    allow(@analytics).to receive(:track_event)
+
     described_class.new(
       idv_form: idv_profile_form,
       idv_session: idv_session,
-      analytics: FakeAnalytics.new,
+      analytics: @analytics,
       params: params
     )
+  end
+
+  def expect_analytics_result(result)
+    expect(@analytics).to have_received(:track_event).
+      with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
   end
 
   describe '#complete' do
@@ -33,6 +41,14 @@ describe Idv::ProfileStep do
 
       expect(step.complete).to eq true
       expect(step.complete?).to eq true
+
+      result = {
+        success: true,
+        idv_attempts_exceeded: false,
+        errors: {}
+      }
+
+      expect_analytics_result(result)
     end
 
     it 'fails with invalid SSN' do
@@ -40,6 +56,16 @@ describe Idv::ProfileStep do
 
       expect(step.complete).to eq false
       expect(step.complete?).to eq false
+
+      result = {
+        success: false,
+        idv_attempts_exceeded: false,
+        errors: {
+          ssn: ['Unverified SSN.']
+        }
+      }
+
+      expect_analytics_result(result)
     end
 
     it 'fails with invalid first name' do
@@ -47,20 +73,35 @@ describe Idv::ProfileStep do
 
       expect(step.complete).to eq false
       expect(step.complete?).to eq false
+
+      result = {
+        success: false,
+        idv_attempts_exceeded: false,
+        errors: {
+          first_name: ['Unverified first name.']
+        }
+      }
+
+      expect_analytics_result(result)
     end
   end
 
   describe '#attempts_exceeded?' do
     it 'tracks resolution attempts' do
-      step = build_step(user_attrs)
-
-      expect(step.attempts_exceeded?).to eq false
-
       user.idv_attempts = 3
       user.idv_attempted_at = Time.zone.now
-      step = build_step(profile: user_attrs)
+      step = build_step(user_attrs)
 
+      step.complete
       expect(step.attempts_exceeded?).to eq true
+
+      result = {
+        success: false,
+        idv_attempts_exceeded: true,
+        errors: {}
+      }
+
+      expect_analytics_result(result)
     end
   end
 end
