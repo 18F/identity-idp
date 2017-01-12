@@ -5,8 +5,10 @@ module Verify
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
+    before_action :confirm_step_needed
 
     helper_method :idv_profile_form
+    helper_method :step
 
     def new
       @using_mock_vendor = idv_vendor.pick == :mock
@@ -14,24 +16,35 @@ module Verify
     end
 
     def create
-      idv_session.params.merge!(profile_params)
-      submit_profile
+      process_step
     end
 
     private
 
-    def submit_profile
-      result = idv_profile_form.submit(profile_params)
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
-
-      if result[:success]
+    def process_step
+      if step.complete
         redirect_to verify_finance_path
+      elsif step.attempts_exceeded?
+        redirect_to verify_fail_path
       elsif duplicate_ssn_error?
         flash[:error] = dupe_ssn_msg
         redirect_to verify_session_dupe_path
       else
         render :new
       end
+    end
+
+    def step
+      @_step ||= Idv::ProfileStep.new(
+        idv_form: idv_profile_form,
+        idv_session: idv_session,
+        analytics: analytics,
+        params: profile_params
+      )
+    end
+
+    def confirm_step_needed
+      redirect_to verify_finance_path if idv_session.resolution.try(:success?)
     end
 
     def duplicate_ssn_error?

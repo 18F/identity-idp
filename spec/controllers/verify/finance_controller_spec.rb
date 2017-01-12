@@ -12,13 +12,20 @@ describe Verify::FinanceController do
     end
   end
 
+  describe '#new' do
+    it 'redirects to review when step is complete' do
+      stub_subject
+      subject.idv_session.financials_confirmation = Proofer::Confirmation.new success: true
+
+      get :new
+
+      expect(response).to redirect_to verify_phone_path
+    end
+  end
+
   describe '#create' do
     before do
-      user = stub_sign_in
-      idv_session = Idv::Session.new(subject.user_session, user)
-      allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-      allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-      allow(subject).to receive(:idv_session).and_return(idv_session)
+      stub_subject
     end
 
     context 'when form is invalid' do
@@ -62,16 +69,101 @@ describe Verify::FinanceController do
     end
 
     context 'when form is valid' do
-      it 'redirects to phone page' do
+      it 'creates analytics event' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
         put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-        expect(response).to redirect_to verify_phone_url
+        result = { success: true, errors: {} }
 
-        expected_params = {
-          ccn: '12345678'
-        }
-        expect(subject.idv_session.params).to eq expected_params
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_FINANCE_CONFIRMATION, result
+        )
+      end
+
+      context 'when CCN is confirmed' do
+        it 'redirects to phone page' do
+          put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+
+          expect(response).to redirect_to verify_phone_url
+
+          expected_params = { ccn: '12345678' }
+          expect(subject.idv_session.params).to eq expected_params
+        end
+      end
+
+      context 'when CCN is not confirmed' do
+        it 'renders #new with error' do
+          put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
+
+          expect(response).to render_template :new
+        end
       end
     end
+  end
+
+  describe 'analytics' do
+    before do
+      stub_subject
+      stub_analytics
+      allow(@analytics).to receive(:track_event)
+    end
+
+    context 'when form is valid and CCN passes vendor validation' do
+      it 'tracks the successful submission with no errors' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+
+        result = {
+          success: true,
+          errors: {}
+        }
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_FINANCE_CONFIRMATION, result
+        )
+      end
+    end
+
+    context 'when the form is valid but the CCN does not pass vendor validation' do
+      it 'tracks the vendor error' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
+
+        result = {
+          success: false,
+          errors: { ccn: ['The ccn could not be verified.'] }
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
+      end
+    end
+
+    context 'when the form is invalid' do
+      it 'tracks the form errors and does not make a vendor API call' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '123' }
+
+        result = {
+          success: false,
+          errors: { ccn: ['Credit card number should be only last 8 digits.'] }
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
+
+        expect(subject.idv_session.financials_confirmation).to be_nil
+      end
+    end
+  end
+
+  def stub_subject
+    user = stub_sign_in
+    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session.resolution = Proofer::Resolution.new success: true, session_id: 'some-id'
+    idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
+    idv_session.vendor = subject.idv_vendor.pick
+    allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+    allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
+    allow(subject).to receive(:idv_session).and_return(idv_session)
   end
 end

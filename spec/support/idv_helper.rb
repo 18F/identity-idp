@@ -29,13 +29,21 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: phone
   end
 
+  def fill_out_phone_form_fail
+    fill_in :idv_phone_form_phone, with: '(555) 555-5555'
+  end
+
+  def click_idv_continue
+    click_button t('forms.buttons.continue')
+  end
+
   def complete_idv_profile_ok(user)
     fill_out_idv_form_ok
-    click_button t('forms.buttons.continue')
+    click_idv_continue
     fill_out_financial_form_ok
-    click_button t('forms.buttons.continue')
+    click_idv_continue
     fill_out_phone_form_ok(user.phone)
-    click_button t('forms.buttons.continue')
+    click_idv_continue
     fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
     click_submit_default
   end

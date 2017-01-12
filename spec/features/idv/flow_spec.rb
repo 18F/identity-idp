@@ -56,9 +56,9 @@ feature 'IdV session' do
 
       2.times do
         visit verify_session_path
-        complete_idv_profile_fail(user)
+        complete_idv_profile_fail
 
-        expect(page).to have_content(t('idv.titles.fail'))
+        expect(current_path).to eq verify_session_path
       end
 
       user.reload
@@ -68,7 +68,7 @@ feature 'IdV session' do
       sign_in_and_2fa_user(user)
 
       visit verify_session_path
-      complete_idv_profile_fail(user)
+      complete_idv_profile_fail
 
       expect(page).to have_content(t('idv.titles.hardfail'))
 
@@ -81,80 +81,96 @@ feature 'IdV session' do
       expect(user.idv_attempted_at).to_not be_nil
     end
 
-    scenario 'steps are re-entrant and sticky', js: true do
+    scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
       _user = sign_in_and_2fa_user
 
       visit verify_session_path
 
-      first_ssn_value = '666-66-1234'
-      second_ssn_value = '666-66-9876'
-      first_ccn_value = '12345678'
-      second_ccn_value = '99998888'
-      mortgage_value = '99990000'
-      first_phone_value = '415-555-0199'
-      first_phone_formatted = '+1 (415) 555-0199'
-      second_phone_value = '456-789-0000'
-      second_phone_formatted = '+1 (456) 789-0000'
+      first_ssn_value = '666-66-6666'
+      second_ssn_value = '666-66-1234'
+      first_ccn_value = '00000000'
+      second_ccn_value = '12345678'
+      mortgage_value = '00000000'
+      good_phone_value = '415-555-9999'
+      good_phone_formatted = '+1 (415) 555-9999'
+      bad_phone_formatted = '+1 (555) 555-5555'
 
+      # we start with blank form
       expect(page).to_not have_selector("input[value='#{first_ssn_value}']")
 
-      fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      fill_out_idv_form_fail
+      click_idv_continue
 
+      # failure reloads the form
+      expect(current_path).to eq verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+
+      # success advances to next step
+      expect(current_path).to eq verify_finance_path
+
+      # we start with blank form
       expect(page).to_not have_selector("input[value='#{first_ccn_value}']")
 
-      fill_out_financial_form_ok
-      click_button t('forms.buttons.continue')
+      fill_in :idv_finance_form_ccn, with: first_ccn_value
+      click_idv_continue
 
+      # failure reloads the form
+      expect(current_path).to eq verify_finance_path
+
+      # can't go "back" to a successful step
       visit verify_session_path
 
-      expect(page).to have_selector("input[value='#{first_ssn_value}']")
-
-      fill_in 'profile_ssn', with: second_ssn_value
-      click_button t('forms.buttons.continue')
-
       expect(current_path).to eq verify_finance_path
+
+      # re-entering a failed step is sticky
       expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_selector("input[value='#{first_ccn_value}']")
 
-      click_button t('forms.buttons.continue')
-
-      visit verify_finance_path
-
+      # try again, but with different finance type
       click_link t('idv.form.use_financial_account')
+
+      expect(current_path).to eq verify_finance_other_path
+
       select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
       fill_in :idv_finance_form_mortgage, with: mortgage_value
-      click_button t('forms.buttons.continue')
+      click_idv_continue
 
-      expect(current_path).to eq verify_phone_path
-
-      visit verify_finance_other_path
-
+      # failure reloads the same sticky form (different path)
+      expect(current_path).to eq verify_finance_path
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
+      # try again with CCN
       click_link t('idv.form.use_ccn')
       fill_in :idv_finance_form_ccn, with: second_ccn_value
-      click_button t('forms.buttons.continue')
+      click_idv_continue
 
-      expect(page).to_not have_selector("input[value='#{first_phone_formatted}']")
+      # success advances to next step
+      expect(current_path).to eq verify_phone_path
 
-      fill_out_phone_form_ok(first_phone_value)
-      click_button t('forms.buttons.continue')
-      visit verify_phone_path
+      # we start with blank form
+      expect(page).to_not have_selector("input[value='#{bad_phone_formatted}']")
 
-      expect(page).to have_selector("input[value='#{first_phone_formatted}']")
+      fill_out_phone_form_fail
+      click_idv_continue
 
-      fill_out_phone_form_ok(second_phone_value)
-      click_button t('forms.buttons.continue')
+      # failure reloads the same sticky form
+      expect(current_path).to eq verify_phone_path
+      expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
 
+      fill_out_phone_form_ok(good_phone_value)
+      click_idv_continue
+
+      # success advances to next step
       expect(page).to have_content(t('idv.titles.review'))
       expect(page).to have_content(second_ssn_value)
       expect(page).to_not have_content(first_ssn_value)
       expect(page).to have_content(second_ccn_value)
       expect(page).to_not have_content(mortgage_value)
       expect(page).to_not have_content(first_ccn_value)
-      expect(page).to have_content(second_phone_formatted)
-      expect(page).to_not have_content(first_phone_formatted)
+      expect(page).to have_content(good_phone_formatted)
+      expect(page).to_not have_content(bad_phone_formatted)
     end
 
     scenario 'clicking finance option changes input label', js: true do
@@ -214,10 +230,15 @@ feature 'IdV session' do
 
     context 'Idv phone and user phone are different' do
       it 'prompts to confirm phone' do
-        user = sign_in_and_2fa_user
+        user = create(
+          :user, :signed_up,
+          phone: '+1 (416) 555-0190',
+          password: Features::SessionHelper::VALID_PASSWORD
+        )
+        sign_in_and_2fa_user(user)
         visit verify_session_path
 
-        complete_idv_profile_with_phone('416-555-0190')
+        complete_idv_profile_with_phone('555-555-0000')
 
         expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
         expect(page).not_to have_css('.progress-steps')
@@ -243,15 +264,9 @@ feature 'IdV session' do
     end
   end
 
-  def complete_idv_profile_fail(user)
+  def complete_idv_profile_fail
     fill_out_idv_form_fail
     click_button 'Continue'
-    fill_out_financial_form_ok
-    click_button t('forms.buttons.continue')
-    fill_out_phone_form_ok(user.phone)
-    click_button 'Continue'
-    fill_in :user_password, with: user_password
-    click_button 'Submit'
   end
 
   def complete_idv_profile_with_phone(phone)
