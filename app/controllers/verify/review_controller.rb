@@ -45,6 +45,11 @@ module Verify
       idv_session.phone_confirmation.try(:success?)
     end
 
+    def init_profile
+      idv_session.cache_applicant_profile_id(idv_session.applicant)
+      idv_session.cache_encrypted_pii(current_user.user_access_key)
+    end
+
     def redirect_to_next_step
       if phone_confirmation_required?
         prompt_to_confirm_phone(phone: idv_params[:phone], otp_method: nil, context: 'idv')

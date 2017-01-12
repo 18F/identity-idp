@@ -35,9 +35,4 @@ module IdvSession
   def idv_attempter
     @_idv_attempter ||= Idv::Attempter.new(current_user)
   end
-
-  def init_profile
-    idv_session.cache_applicant_profile_id(idv_session.applicant)
-    idv_session.cache_encrypted_pii(current_user.user_access_key)
-  end
 end
