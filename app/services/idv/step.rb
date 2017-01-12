@@ -10,18 +10,12 @@ module Idv
       @params = params
     end
 
-    def complete
-      form_valid? && vendor_valid?
-      track_event
-      complete?
-    end
-
     def form_valid?
-      form_validate(params)
+      idv_form.submit(params)
     end
 
     def vendor_valid?
-      vendor_validate
+      vendor_validator.success?
     end
 
     def complete?
@@ -30,11 +24,8 @@ module Idv
 
     private
 
-    attr_accessor :analytics, :idv_form, :idv_session, :params, :form_result
-
-    def form_validate(params)
-      self.form_result = idv_form.submit(params)
-    end
+    attr_accessor :analytics, :idv_form, :idv_session, :params
+    attr_reader :success
 
     def errors
       errors = idv_form.errors.messages.dup
@@ -57,12 +48,8 @@ module Idv
       raise NotImplementedError "Must implement analytics_event for #{self}"
     end
 
-    def analytics_result
-      { success: complete?, errors: errors }
-    end
-
-    def track_event
-      analytics.track_event(analytics_event, analytics_result)
+    def result
+      { success: success, errors: errors }
     end
   end
 end

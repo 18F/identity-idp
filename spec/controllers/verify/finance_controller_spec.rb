@@ -15,7 +15,7 @@ describe Verify::FinanceController do
   describe '#new' do
     it 'redirects to review when step is complete' do
       stub_subject
-      subject.idv_session.financials_confirmation = Proofer::Confirmation.new success: true
+      subject.idv_session.financials_confirmation = true
 
       get :new
 
@@ -151,7 +151,7 @@ describe Verify::FinanceController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::IDV_FINANCE_CONFIRMATION, result)
 
-        expect(subject.idv_session.financials_confirmation).to be_nil
+        expect(subject.idv_session.financials_confirmation).to eq false
       end
     end
   end
