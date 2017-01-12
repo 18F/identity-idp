@@ -1,5 +1,7 @@
 module Verify
   class PhoneController < StepController
+    before_action :confirm_step_needed
+
     helper_method :idv_phone_form
 
     def new
@@ -7,9 +9,8 @@ module Verify
     end
 
     def create
-      if idv_phone_form.submit(phone_params)
+      if step.complete
         redirect_to verify_review_url
-        idv_session.params = idv_phone_form.idv_params
       else
         render :new
       end
@@ -17,12 +18,25 @@ module Verify
 
     private
 
-    def idv_phone_form
-      @_idv_phone_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
+    def step
+      @_step ||= Idv::PhoneStep.new(
+        idv_form: idv_phone_form,
+        idv_session: idv_session,
+        analytics: analytics,
+        params: step_params
+      )
     end
 
-    def phone_params
+    def step_params
       params.require(:idv_phone_form).permit(:phone)
+    end
+
+    def confirm_step_needed
+      redirect_to verify_review_path if idv_session.phone_confirmation.try(:success?)
+    end
+
+    def idv_phone_form
+      @_idv_phone_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
     end
   end
 end

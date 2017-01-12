@@ -8,6 +8,7 @@ module IdvSession
   def confirm_idv_attempts_allowed
     if idv_attempter.exceeded?
       flash[:error] = t('idv.errors.hardfail')
+      analytics.track_event(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, request_path: request.path)
       redirect_to verify_fail_url
     elsif idv_attempter.reset_attempts?
       idv_attempter.reset
@@ -33,19 +34,5 @@ module IdvSession
 
   def idv_attempter
     @_idv_attempter ||= Idv::Attempter.new(current_user)
-  end
-
-  def idv_agent
-    @_agent ||= Proofer::Agent.new(
-      applicant: idv_session.applicant,
-      vendor: (idv_session.vendor || idv_vendor.pick),
-      kbv: false
-    )
-  end
-
-  def init_profile(resolution)
-    idv_session.resolution = resolution
-    idv_session.cache_applicant_profile_id(idv_session.applicant)
-    idv_session.cache_encrypted_pii(current_user.user_access_key)
   end
 end

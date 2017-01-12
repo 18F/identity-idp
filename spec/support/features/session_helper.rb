@@ -70,7 +70,7 @@ module Features
     end
 
     def user_with_2fa
-      create(:user, :signed_up, phone: '+1 (555) 555-5556', password: VALID_PASSWORD)
+      create(:user, :signed_up, phone: '+1 (555) 555-0000', password: VALID_PASSWORD)
     end
 
     def confirm_last_user
