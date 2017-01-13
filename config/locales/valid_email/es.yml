@@ -2,4 +2,4 @@ es:
   valid_email:
     validations:
       email:
-        invalid: NOT TRANSLATED YET
+        invalid: El formato de dirección de correo electrónico o el dominio ingresado no es válido. Corrija la dirección y vuelva a ingresarla.
