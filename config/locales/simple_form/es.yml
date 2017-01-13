@@ -2,10 +2,10 @@
 es:
   simple_form:
     error_notification:
-      default_message: NOT TRANSLATED YET
-    'no': NOT TRANSLATED YET
+      default_message: 'Por favor revise los siguientes problemas:'
+    'no': 'No'
     required:
-      html: NOT TRANSLATED YET
+      html: '<abbr title="required" class="red display-none">*</abbr> '
       mark: "*"
-      text: NOT TRANSLATED YET
-    'yes': NOT TRANSLATED YET
+      text: Este campo es requerido
+    'yes': 'Sí'
