@@ -11,25 +11,21 @@ p.mt-tiny.mb0#2fa-description
   = f.label :phone, class: 'block'
     strong.left = t('devise.two_factor_authentication.otp_phone_label')
     span.ml1.italic = t('devise.two_factor_authentication.otp_phone_label_info')
-    = f.input :phone, as: :tel, label: false, required: true,
-        input_html: { 'aria-describedby' => '2fa-description', class: 'phone' }
+  = f.input :phone, as: :tel, label: false, required: true,
+      input_html: { 'aria-describedby' => '2fa-description', class: 'phone sm-col-8 mb4' }
   .mb3
-    = label_tag 'two_factor_setup_form[otp_method]',
-      t('devise.two_factor_authentication.otp_method.title'),
-      class: 'block bold'
-    fieldset.border-none
-      legend.hide = t('devise.two_factor_authentication.otp_method.instruction')
-      label.radio.mb2.block
-        = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
-          checked: true
-        span.indicator#sms-otp-description
-        = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio.mb0.block
-        = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
-        span.indicator#voice-otp-description
-        = t('devise.two_factor_authentication.otp_method.voice')
-    = label_tag 'two_factor_setup_form[otp_method]',
-      t('devise.two_factor_authentication.otp_method.instruction'),
-      class: 'block'
+    h2.h4 = t('devise.two_factor_authentication.otp_method.title')
+    fieldset.p0.border-none
+      legend.mb2 = t('devise.two_factor_authentication.otp_method.instruction')
+      label.radio-btn.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
+        .radio
+          = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
+            checked: true
+          span.indicator
+          = t('devise.two_factor_authentication.otp_method.sms')
+      label.radio-btn.col-12.sm-col-5
+        .radio
+          = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
+          span.indicator
+          = t('devise.two_factor_authentication.otp_method.voice')
   = f.button :submit, t('forms.buttons.send_passcode')
-  p.mt3.mb1.italic = t('devise.two_factor_authentication.otp_sms_disclaimer')
