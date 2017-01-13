@@ -34,4 +34,4 @@ h1.h3.my0 = t('idv.titles.expectations')
 p.mb3 = t('idv.index.paragraph_1')
 p.mb3.bold = t('idv.index.prompt')
 = link_to t('idv.index.continue_link'), verify_session_path, class: 'btn btn-primary btn-wide'
-.mt1 = link_to t('idv.index.cancel_link'), verify_cancel_path
+= render 'shared/cancel', link: verify_cancel_path

@@ -7,4 +7,4 @@ p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro')
 .mt3.sm-mt4.mb1
   = link_to t('forms.buttons.setup_totp'), authenticator_setup_url, \
     class: 'btn btn-primary'
-.mt1 = link_to t('forms.buttons.cancel'), profile_path
+= render 'shared/cancel', link: profile_path

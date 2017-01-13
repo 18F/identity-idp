@@ -35,6 +35,6 @@ p.mt-tiny.mb0 = t('idv.messages.review.intro')
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.input :password, label: t('idv.form.password'), required: true
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
-  .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path
+= render 'shared/cancel', link: verify_cancel_path
 
 == javascript_include_tag 'misc/page-unload-warning'

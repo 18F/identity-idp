@@ -47,7 +47,7 @@ feature 'View recovery code' do
 
         sign_in_and_2fa_user
         first(:link, t('forms.buttons.edit')).click
-        click_on(t('forms.buttons.cancel'))
+        click_on(t('links.cancel'))
         click_on(t('profile.links.regenerate_recovery_code'))
         click_on(t('forms.buttons.continue'))
 

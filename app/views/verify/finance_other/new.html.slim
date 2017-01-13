@@ -36,5 +36,4 @@ p.mb3
   '
   = link_to t('idv.form.use_ccn'), verify_finance_path
 
-.pt1.border-top
-  = link_to t('idv.messages.cancel_link'), verify_cancel_path
+= render 'shared/cancel', link: verify_cancel_path
