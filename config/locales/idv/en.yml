@@ -21,6 +21,7 @@ en:
       ccn: Last 8 digits of a credit card
       city: City
       dob: Date of birth
+      dob_hint: 'example: 07/04/1999'
       first_name: First name
       home_equity_line: Home equity line of credit account number
       last_name: Last name
