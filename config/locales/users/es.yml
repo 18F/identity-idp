@@ -2,6 +2,6 @@ es:
   users:
     totp_setup:
       new:
-        qr_img_alt: NOT TRANSLATED YET
+        qr_img_alt: Código de QR para la aplicación de autenticación
       start:
-        app_img_alt: NOT TRANSLATED YET
+        app_img_alt: Aplicación de autenticación
