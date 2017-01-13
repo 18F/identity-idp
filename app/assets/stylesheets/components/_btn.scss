@@ -2,6 +2,10 @@
   .btn { font-size: $button-font-size-sm; }
 }
 
+.btn-primary {
+  border-radius: $border-radius-lg;
+}
+
 .btn-wide {
   box-sizing: border-box;
   min-width: 220px;

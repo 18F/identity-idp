@@ -11,16 +11,18 @@ p.mt-tiny.mb0#2fa-description
   - if reauthn?
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb3
-    fieldset.border-none
+    fieldset.p0.border-none
       legend.hide = t('devise.two_factor_authentication.otp_method.title')
-      label.radio.mb2.block
-        = f.radio_button :otp_method, 'sms', checked: true
-        span.indicator
-        = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio.mb0.block
-        = f.radio_button :otp_method, 'voice'
-        span.indicator
-        = t('devise.two_factor_authentication.otp_method.voice')
+      label.radio-btn.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
+        .radio
+          = f.radio_button :otp_method, 'sms', checked: true
+          span.indicator
+          = t('devise.two_factor_authentication.otp_method.sms')
+      label.radio-btn.col-12.sm-col-5
+        .radio
+          = f.radio_button :otp_method, 'voice'
+          span.indicator
+          = t('devise.two_factor_authentication.otp_method.voice')
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
 
 - link = link_to(t('devise.two_factor_authentication.recovery_code_fallback.link'),
