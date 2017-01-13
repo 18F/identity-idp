@@ -6,4 +6,4 @@ h1.h3.my0 = t('headings.passwords.confirm')
                   html: { autocomplete: 'off', role: 'form', method: 'post' }) do |f|
   = f.input :password, required: true
   = f.button :submit, t('forms.buttons.continue'), class: 'btn-wide mt2'
-  .mt1 = link_to t('forms.buttons.cancel'), profile_path
+= render 'shared/cancel', link: profile_path

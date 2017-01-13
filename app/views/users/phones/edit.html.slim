@@ -7,4 +7,4 @@ h1.h3.my0 = t('headings.edit_info.phone')
   = f.input :phone, as: :tel, required: true, input_html: { class: 'phone', value: nil },
     label: t('profile.index.phone')
   = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'mt2'
-.mt1 = link_to t('forms.buttons.cancel'), profile_path
+= render 'shared/cancel', link: profile_path

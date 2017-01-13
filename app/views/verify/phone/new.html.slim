@@ -19,6 +19,6 @@ p = t('idv.messages.phone.same_as_2fa')
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.input :phone, required: true
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
-  .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path
+= render 'shared/cancel', link: verify_cancel_path
 
 == javascript_include_tag 'misc/page-unload-warning'

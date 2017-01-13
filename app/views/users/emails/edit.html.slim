@@ -7,4 +7,4 @@ h1.h3.my0 = t('headings.edit_info.email')
   = f.error_notification
   = f.input :email, required: true
   = f.button :submit, t('forms.buttons.submit.update'), class: 'mt2'
-.mt1 = link_to t('forms.buttons.cancel'), profile_path
+= render 'shared/cancel', link: profile_path

@@ -3,7 +3,6 @@ en:
   forms:
     buttons:
       back: Back
-      cancel: Cancel
       continue: Continue
       disable: Disable
       edit: Edit

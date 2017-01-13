@@ -11,4 +11,4 @@ p.mt-tiny.mb0 = t('devise.two_factor_authentication.recovery_code_prompt')
     = block_text_field_tag :code, '', required: true
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary mt2'
 
-= render 'shared/cancel'
+= render 'shared/cancel', link: destroy_user_session_path

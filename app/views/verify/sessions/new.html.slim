@@ -43,6 +43,6 @@ h1.h3.my0 = t('idv.titles.session.basic')
       input_html: { class: 'ssn', value: idv_profile_form.ssn }
   .mt5
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
-    .mt1 = link_to t('idv.messages.cancel_link'), verify_cancel_path
+= render 'shared/cancel', link: verify_cancel_path
 
 == javascript_include_tag 'misc/page-unload-warning'
