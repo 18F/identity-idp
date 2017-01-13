@@ -26,4 +26,4 @@ p.mt-tiny.mb0#code-instructs = t('instructions.2fa.totp_intro_html', \
   == t('devise.two_factor_authentication.totp_fallback.text', sms_link: sms_link,
     voice_link: voice_link)
 
-= render 'shared/cancel'
+= render 'shared/cancel', link: destroy_user_session_path

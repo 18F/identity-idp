@@ -30,4 +30,4 @@ p.mt-tiny.mb0#code-instructs == t('instructions.2fa.confirm_code',
     - update_number_link = link_to(t('forms.two_factor.try_again'), @reenter_phone_number_path)
     p.mb1 == t('instructions.2fa.wrong_number', link: update_number_link)
 
-= render 'shared/cancel'
+= render 'shared/cancel', link: destroy_user_session_path
