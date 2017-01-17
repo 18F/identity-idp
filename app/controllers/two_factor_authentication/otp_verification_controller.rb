@@ -5,8 +5,8 @@ module TwoFactorAuthentication
     skip_before_action :handle_two_factor_authentication
 
     def show
-      assign_variables_for_otp_verification_show_view
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
+      @presenter = presenter_for(params[:delivery_method], otp_phone_view_data)
     end
 
     def create
