@@ -7,3 +7,4 @@ en:
         app_img_alt: Authentication App
     recovery_code:
       get_another: Get another code
+      print: Print this page

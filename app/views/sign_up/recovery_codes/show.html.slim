@@ -12,7 +12,7 @@ p.mt-tiny.mb0 = t('instructions.recovery_code')
   = link_to t('users.recovery_code.get_another'), manage_recovery_code_path(resend: true),
     class: 'radio-btn inline-block ico ico-refresh text-decoration-none'
 
-  = link_to 'Print this page', '#',
+  = link_to t('users.recovery_code.print'), '#',
     data: { print: true },
     class: 'ml2 radio-btn inline-block ico ico-print text-decoration-none'
 

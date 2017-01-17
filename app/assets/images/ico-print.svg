@@ -1,16 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="15px" height="15px" viewBox="0 0 15 15" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
-    <title>ico-print</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" font-size="16" font-family="FontAwesome" font-weight="normal">
-        <g id="Page-/-Personal-key" transform="translate(-602.000000, -705.000000)" fill="#0071BB">
-            <g id="Group" transform="translate(416.000000, 692.000000)">
-                <text id="print-ico">
-                    <tspan x="186" y="26"></tspan>
-                </text>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 22 20"><defs><style>.cls-1{fill:#0071bb;}</style></defs><title>printer</title><path class="cls-1" d="M22,16.25a.43.43,0,0,1-.42.42h-3v2.08A1.26,1.26,0,0,1,17.35,20H4.65a1.26,1.26,0,0,1-1.27-1.25V16.67h-3A.43.43,0,0,1,0,16.25V10.83a2.54,2.54,0,0,1,2.54-2.5h.85V1.25A1.26,1.26,0,0,1,4.65,0h8.88a3.53,3.53,0,0,1,2.17.89l2,2A3.42,3.42,0,0,1,18.62,5V8.33h.85A2.54,2.54,0,0,1,22,10.83ZM16.92,10V5H14.81a1.26,1.26,0,0,1-1.27-1.25V1.67H5.08V10Zm0,8.33V15H5.08v3.33ZM19.46,10a.83.83,0,1,0,.85.83A.85.85,0,0,0,19.46,10Z"/></svg>
