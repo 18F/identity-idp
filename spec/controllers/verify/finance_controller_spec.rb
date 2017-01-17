@@ -141,7 +141,7 @@ describe Verify::FinanceController do
 
     context 'when the form is invalid' do
       it 'tracks the form errors and does not make a vendor API call' do
-        expect(Idv::FinancialsValidator).to_not receive(:new)
+        allow(Idv::FinancialsValidator).to receive(:new)
 
         put :create, idv_finance_form: { finance_type: :ccn, ccn: '123' }
 
@@ -152,8 +152,8 @@ describe Verify::FinanceController do
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::IDV_FINANCE_CONFIRMATION, result)
-
         expect(subject.idv_session.financials_confirmation).to eq false
+        expect(Idv::FinancialsValidator).to_not have_received(:new)
       end
     end
   end

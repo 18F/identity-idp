@@ -33,9 +33,11 @@ describe Idv::FinancialsValidator do
     it 'returns Proofer::Confirmation#success?' do
       stub_agent_calls
 
-      expect(confirmation).to receive(:success?).and_return('yay!')
+      success_string = 'true'
 
-      expect(subject.success?).to eq 'yay!'
+      expect(confirmation).to receive(:success?).and_return(success_string)
+
+      expect(subject.success?).to eq success_string
     end
   end
 
@@ -43,9 +45,11 @@ describe Idv::FinancialsValidator do
     it 'returns Proofer::Confirmation#errors' do
       stub_agent_calls
 
-      expect(confirmation).to receive(:errors).and_return('foobar')
+      error_string = 'mucho errors'
 
-      expect(subject.errors).to eq 'foobar'
+      expect(confirmation).to receive(:errors).and_return(error_string)
+
+      expect(subject.errors).to eq error_string
     end
   end
 end
