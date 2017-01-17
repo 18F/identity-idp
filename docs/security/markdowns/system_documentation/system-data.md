@@ -74,7 +74,7 @@ Aaron Snow | Authorizing Official | 18F/GSA | 1800 F Street, NW Washington DC 20
 # Other Designated Contacts
 Name | Title | Organization | Address | Phone Number | Email Address
 ---  | ---   | ---          | ---     | ---          | ---
-Amos Stone  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 805-500-8050| amos.stone [at] gsa.gov
+Amos Stone  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 202-317-0125| amos.stone [at] gsa.gov
 Mossadeq Zia  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 202-256-2063| mossadeq.zia [at] gsa.gov
 
 # Assignment of Security Responsibility
