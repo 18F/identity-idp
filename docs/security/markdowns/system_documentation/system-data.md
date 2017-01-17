@@ -1,14 +1,14 @@
 # Identity Platform as a Service (Login.Gov)
 This System Security Plan provides an overview of the security requirements for the Login.gov as ruby based OSS Identity Management Platform as a Service (Login.gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the login.gov information system.  
 
-The security safeguards implemented for the Login.gov system meet the policy and control requirements set forth in this System Security Plan (SSP).  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.  
+The security safeguards implemented for the Login.gov system meet the policy and control requirements set forth in this System Security Plan (SSP).  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.
 
 Unique Identifier | Information System Name | Information System Abbreviation
 --- | --- | ---
 Login.gov | Federal Identity  as a Service | LOGIN.GOV
-This System Security Plan provides an overview of the security requirements for the consumer identity platform (Login.gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the Cloud.Gov information system.  
+This System Security Plan provides an overview of the security requirements for the consumer identity platform (Login.gov) and describes the controls in place or planned for implementation to provide a level of security appropriate for the information to be transmitted, processed or stored by the system.  Information security is vital to our critical infrastructure and its effective performance and protection is a key component of our national security program.  Proper management of information technology systems is essential to ensure the confidentiality, integrity and availability of the data transmitted, processed or stored by the Cloud.Gov information system.
 
-The security safeguards implemented for the Login.Gov system meet the policy and control requirements set forth in this System Security Plan.  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.  
+The security safeguards implemented for the Login.Gov system meet the policy and control requirements set forth in this System Security Plan.  All systems are subject to monitoring consistent with applicable laws, regulations, agency policies, procedures and practices.
 
 Unique Identifier | Information System Name | Information System Abbreviation
 --- | --- | ---
@@ -40,7 +40,7 @@ The following tables identify the information types that are input, stored, proc
 |-----------------|-------------------|-----------|-------------|
 |C.3.5.1 System Development           |Low        | Moderate    | Low
 |C.3.5.2 life-cycle/Change Management |Low        | Moderate    | Low
-|C.3.5.3 System Maintenance           |Low        | Moderate    | Low      
+|C.3.5.3 System Maintenance           |Low        | Moderate    | Low
 |C.3.5.4 Infrastructure Maintenance   |Low        | Low         | Low
 
 # E-Authentication Determination
@@ -74,8 +74,8 @@ Aaron Snow | Authorizing Official | 18F/GSA | 1800 F Street, NW Washington DC 20
 # Other Designated Contacts
 Name | Title | Organization | Address | Phone Number | Email Address
 ---  | ---   | ---          | ---     | ---          | ---
-Amos Stone  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 805-500-8050| amos@gsa.gov [at] gsa.gov  
-Mossadeq Zia  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 202-256-2063| mossadeq.zia [at] gsa.gov  
+Amos Stone  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 202-317-0125| amos.stone [at] gsa.gov
+Mossadeq Zia  | Innovation Specialist |18F/GSA| 1800 F Street, NW Washington DC 20405| 202-256-2063| mossadeq.zia [at] gsa.gov
 
 # Assignment of Security Responsibility
 Name | Title | Organization | Address | Phone Number | Email Address
@@ -127,7 +127,7 @@ X |**Public** | Cloud services and infrastructure supporting multiple organizati
 |Hybrid| Explain: (e.g., cloud services and infrastructure that provides private cloud for secured applications and data where required and public cloud for other applications and data)
 
 # Leveraged Authorizations
-The Login.gov information system plans to leverage a pre-existing Provisional Authorization.  Provisional Authorizations leveraged by this AWS FedRAMP ATO (issued by the HHS are noted in the table that follows.  
+The Login.gov information system plans to leverage a pre-existing Provisional Authorization.  Provisional Authorizations leveraged by this AWS FedRAMP ATO (issued by the HHS are noted in the table that follows.
 
 Information System Name | Service Provider Owner | Date Granted
 --- | --- | ---
