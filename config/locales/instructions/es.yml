@@ -3,29 +3,41 @@ es:
   instructions:
     2fa:
       sms:
-        confirm_code_html: NOT TRANSLATED YET
+        confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código? %{link}.
         fallback_html: NOT TRANSLATED YET
       voice:
         confirm_code_html: NOT TRANSLATED YET
         fallback_html: NOT TRANSLATED YET
-      totp_intro_html: NOT TRANSLATED YE
-      wrong_number_html: NOT TRANSLATED YET
+      totp_intro_html:
+        Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
+        configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
+        <strong>%{app}</strong>.
+      wrong_number_html: ¿Ha ingresado el número de teléfono equivocado? %{link}
     forgot_password:
-      close_window: NOT TRANSLATED YET
+      close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
     password:
-      forgot: NOT TRANSLATED YET
+      forgot: >
+        Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
+        asociada a su cuenta para recibir más instrucciones en la pantalla.
       info:
-        lead: NOT TRANSLATED YET
-        point_1: NOT TRANSLATED YET
-        point_2: NOT TRANSLATED YET
+        lead: Su contraseña debe tener al menos %{min_length} caracteres.
+        point_1: >
+          Puede ser una mezcla de caracteres alfanuméricos y especiales y
+          palabras individuales en una frase.
+        point_2: >
+          Cree una contraseña segura, pero fácil de recordar.
+          No use el mismo que utiliza con otras cuentas en línea, como
+          bancos, correo electrónico y medios sociales.
       strength:
-        i: NOT TRANSLATED YET
-        ii: NOT TRANSLATED YET
-        iii: NOT TRANSLATED YET
-        intro: NOT TRANSLATED YET
-        iv: NOT TRANSLATED YET
-        v: NOT TRANSLATED YET
-    recovery_code: NOT TRANSLATED YET
+        i: Muy débil
+        ii: Débil
+        iii: Más o menos
+        intro: 'Seguridad de la contraseña: '
+        iv: Bueno
+        v: Muy bueno!
+    recovery_code: >
+      Escriba este código de recuperación y guárdelo en algún lugar seguro. Si no puede
+      acceder a su teléfono, puede usarlo en lugar de un código de acceso único para iniciar sesión.
     registration:
-      already_have_account: NOT TRANSLATED YET
-      email: NOT TRANSLATED YET
+      already_have_account: ¿Ya tiene una cuenta? %{link}
+      email: Elija una dirección para usar en las comunicaciones del gobierno.
