@@ -8,6 +8,11 @@ module TwoFactorAuthenticatable
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
   end
 
+  DELIVERY_METHOD_MAP = {
+    sms: 'phone',
+    voice: 'phone'
+  }.freeze
+
   private
 
   def authenticate_user
@@ -57,6 +62,10 @@ module TwoFactorAuthenticatable
     user_session[:context] || 'authentication'
   end
 
+  def delivery_method
+    params[:delivery_method] || request.path.split('/').last
+  end
+
   # Method will be renamed in the next refactor.
   # You can pass in any "type" with a corresponding I18n key in
   # devise.two_factor_authentication.invalid_#{type}
@@ -68,9 +77,13 @@ module TwoFactorAuthenticatable
     if decorated_user.blocked_from_entering_2fa_code?
       handle_second_factor_locked_user
     else
-      assign_variables_for_otp_verification_show_view
-      render :show
+      render_show_after_invalid
     end
+  end
+
+  def render_show_after_invalid
+    @presenter = presenter_for(delivery_method, otp_phone_view_data)
+    render :show
   end
 
   def update_invalid_user
@@ -151,11 +164,15 @@ module TwoFactorAuthenticatable
     user_session[:authn_at] = Time.zone.now
   end
 
-  def assign_variables_for_otp_verification_show_view
-    @phone_number = display_phone_to_deliver_to
-    @code_value = current_user.direct_otp if FeatureManagement.prefill_otp_codes?
-    @delivery_method = params[:delivery_method]
-    @reenter_phone_number_path = reenter_phone_number_path
+  def otp_phone_view_data
+    {
+      phone_number: display_phone_to_deliver_to,
+      code_value: FeatureManagement.prefill_otp_codes? ? current_user.direct_otp : nil,
+      delivery_method: delivery_method,
+      reenter_phone_number_path: reenter_phone_number_path,
+      unconfirmed_phone: user_session[:unconfirmed_phone],
+      unconfirmed_user: !current_user.recovery_code.present?
+    }
   end
 
   def display_phone_to_deliver_to
@@ -174,5 +191,11 @@ module TwoFactorAuthenticatable
     else
       phone_setup_path
     end
+  end
+
+  def presenter_for(otp_code_method, data_model)
+    type = DELIVERY_METHOD_MAP[otp_code_method.to_sym]
+    return unless type
+    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(data_model)
   end
 end

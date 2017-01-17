@@ -127,7 +127,7 @@ en:
       please_try_again_html: Please try again in %{time_remaining}.
       recovery_code_fallback:
         link: recovery code
-        text: Don’t have access to your phone? Use a %{link} instead.
+        text_html: Don’t have access to your phone? Use a %{link} instead.
       recovery_code_header_text: Enter your recovery code
       recovery_code_prompt: >
         You can use this recovery code once. If you still need a code after

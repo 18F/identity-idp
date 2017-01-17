@@ -8,11 +8,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       context 'when FeatureManagement.prefill_otp_codes? is true' do
-        it 'sets @code_value to correct OTP value' do
+        it 'sets code_value on presenter to correct OTP value' do
+          presenter_data = attributes_for(:generic_otp_presenter)
+          TwoFactorAuthCode::PhoneDeliveryPresenter.new(presenter_data)
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
           get :show, delivery_method: 'sms'
 
-          expect(assigns(:code_value)).to eq(subject.current_user.direct_otp)
+          expect(assigns(:presenter).code_value).to eq(subject.current_user.direct_otp)
         end
       end
 
