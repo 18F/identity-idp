@@ -10,13 +10,18 @@ es:
     passwords:
       forgot: ¿Olvidó su contraseña?
     phone_confirmation:
-      fallback_to_sms: Envíame un mensaje de texto con el código en su lugar
-      fallback_to_voice: Llámame con el código en su lugar
+      auth_app_fallback_html: NOT TRANSLATED YET
+      fallback_to_sms_html: Envíame un mensaje de texto con el código en su lugar
+      fallback_to_voice_html: Llámame con el código en su lugar
     privacy_policy: Política de privacidad
     resend: Enviar de nuevo
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     cancel: Cancelar
     two_factor_authentication:
-      resend_code: Enviar un nuevo
-      
+      app: NOT TRANSLATED YET
+      voice: NOT TRANSLATED YET
+      sms: NOT TRANSLATED YET
+      resend_code:
+        sms: NOT TRANSLATED YET
+        voice: NOT TRANSLATED YET

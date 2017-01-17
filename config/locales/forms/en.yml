@@ -44,4 +44,4 @@ en:
     two_factor:
       code: One-time passcode
       recovery_code: Recovery code
-      try_again: Try again
+      try_again: Use Another
