@@ -162,6 +162,10 @@ describe SamlIdpController do
           node_value = xmldoc.attribute_value_for(attr)
           expect(node_value).to eq(pii[attr])
         end
+
+        expect(xmldoc.attribute_value_for('verified_at')).to eq(
+          user.active_profile.verified_at.iso8601
+        )
       end
     end
 

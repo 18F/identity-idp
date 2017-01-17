@@ -50,7 +50,7 @@ describe AttributeAsserter do
 
         it 'includes all requested attributes + uuid' do
           expect(user.asserted_attributes.keys).
-            to eq([:uuid, :email, :phone, :first_name])
+            to eq([:uuid, :email, :phone, :first_name, :verified_at])
         end
 
         it 'creates getter function' do
@@ -71,8 +71,8 @@ describe AttributeAsserter do
         end
 
         context 'authn request does not specify bundle' do
-          it 'only returns uuid' do
-            expect(user.asserted_attributes.keys).to eq [:uuid]
+          it 'only returns uuid and verified_at' do
+            expect(user.asserted_attributes.keys).to eq [:uuid, :verified_at]
           end
         end
 
@@ -83,7 +83,7 @@ describe AttributeAsserter do
 
           it 'uses authn request bundle' do
             expect(user.asserted_attributes.keys).
-              to eq([:uuid, :email, :first_name, :last_name, :ssn, :phone])
+              to eq([:uuid, :email, :first_name, :last_name, :ssn, :phone, :verified_at])
           end
         end
       end
@@ -95,8 +95,8 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'contains UUID only' do
-          expect(user.asserted_attributes.keys).to eq([:uuid])
+        it 'contains uuid and verified_at only' do
+          expect(user.asserted_attributes.keys).to eq([:uuid, :verified_at])
         end
       end
 
@@ -109,7 +109,7 @@ describe AttributeAsserter do
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq([:uuid, :email])
+          expect(user.asserted_attributes.keys).to eq([:uuid, :email, :verified_at])
         end
       end
     end
@@ -132,7 +132,7 @@ describe AttributeAsserter do
           subject.build
         end
 
-        it 'only includes uuid + email' do
+        it 'only includes uuid + email (no verified_at)' do
           expect(user.asserted_attributes.keys).to eq [:uuid, :email]
         end
 
