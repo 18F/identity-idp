@@ -48,10 +48,15 @@ class AttributeAsserter
       next unless VALID_ATTRIBUTES.include? attr
       attrs[attr] = { getter: attribute_getter_function(attr) }
     end
+    attrs[:verified_at] = { getter: verified_at_getter_function }
   end
 
   def uuid_getter_function
     ->(principal) { principal.decorate.active_identity_for(service_provider).uuid }
+  end
+
+  def verified_at_getter_function
+    ->(principal) { principal.active_profile.verified_at.iso8601 }
   end
 
   def attribute_getter_function(attr)
