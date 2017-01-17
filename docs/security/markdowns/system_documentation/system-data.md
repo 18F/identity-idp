@@ -127,7 +127,7 @@ X |**Public** | Cloud services and infrastructure supporting multiple organizati
 |Hybrid| Explain: (e.g., cloud services and infrastructure that provides private cloud for secured applications and data where required and public cloud for other applications and data)
 
 # Leveraged Authorizations
-The Login.gov information system plans to leverage a pre-existing Provisional Authorization.  Provisional Authorizations leveraged by this AWS FedRAMP ATO (issued by the HHS are noted in the table that follows.  
+The Login.gov information system plans to leverage a pre-existing Provisional Authorization.  Provisional Authorizations leveraged by this AWS FedRAMP ATO (issued by the HHS are noted in the table that follows.
 
 Information System Name | Service Provider Owner | Date Granted
 --- | --- | ---
