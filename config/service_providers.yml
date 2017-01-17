@@ -67,6 +67,7 @@ development:
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
+    logo: '18f.svg'
     friendly_name: 'Micro-purchase Dev'
     return_to_sp_url: 'http://localhost:3000'
     attribute_bundle:
@@ -180,6 +181,7 @@ production:
     sp_initiated_login_url: 'https://micropurchase-staging.18f.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
+    logo: '18f.svg'
     agency: 'TTS Acquisition'
     friendly_name: 'Micro-purchase Staging'
     return_to_sp_url: 'https://micropurchase-staging.gov'
@@ -193,6 +195,7 @@ production:
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
+    logo: '18f.svg'
     friendly_name: 'Micro-purchase'
     return_to_sp_url: 'https://micropurchase.18f.gov'
     attribute_bundle:
