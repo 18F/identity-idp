@@ -196,20 +196,20 @@ production:
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-staging':
     acs_url: 'https://micropurchase-staging.18f.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://micropurchase-staging.gov/auth/saml/logout'
+    assertion_consumer_logout_service_url: 'https://micropurchase-staging.18f.gov/auth/saml/logout'
     sp_initiated_login_url: 'https://micropurchase-staging.18f.gov/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     logo: '18f.svg'
     agency: 'TTS Acquisition'
     friendly_name: 'Micro-purchase Staging'
-    return_to_sp_url: 'https://micropurchase-staging.gov'
+    return_to_sp_url: 'https://micropurchase-staging.18f.gov'
     attribute_bundle:
       - email
 
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-production':
     acs_url: 'https://micropurchase.18f.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://micropurchase.gov/auth/saml/logout'
+    assertion_consumer_logout_service_url: 'https://micropurchase.18f.gov/auth/saml/logout'
     sp_initiated_login_url: 'https://micropurchase.18f.gov/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
