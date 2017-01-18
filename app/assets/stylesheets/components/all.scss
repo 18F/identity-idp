@@ -21,3 +21,24 @@
 @import 'space-addon';
 @import 'space-misc';
 @import 'typography';
+
+
+[aria-expanded="true"] {
+  .accordion-header {
+    background-image: url(image_path('minus.svg'));
+  }
+}
+
+[aria-expanded="false"] {
+  .accordion-header {
+    background-image: url(image_path('plus.svg'));
+  }
+}
+.accordion-header {
+  position: relative;
+  background-size: $h4;
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-color: $aqua;
+  cursor: pointer;
+}

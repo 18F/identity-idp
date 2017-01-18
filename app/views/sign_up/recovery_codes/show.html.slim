@@ -16,5 +16,16 @@ p.mt-tiny.mb0 = t('instructions.recovery_code')
     data: { print: true },
     class: 'ml2 radio-btn inline-block ico ico-print text-decoration-none'
 
+.mb4.col-12.border.br-md.border-aqua.color-aqua.fs-16p.accordion(aria-expanded='false' aria-controls='recovery-code-info')
+  .accordion-header.p1#recovery-code-info
+    = t('users.recovery_code.info_header')
+  .clearfix(aria-hidden='true')
+    ul.list-reset.p1
+      - t('users.recovery_code.info_items').each do |item|
+        li.pb1
+          = item
+    .right.btn.h4(aria-controls='recovery-code-info')
+      = t('users.recovery_code.close')
+
 = button_to(t('forms.buttons.continue'), sign_up_recovery_code_path,
   class: 'btn btn-primary btn-wide mb1')
