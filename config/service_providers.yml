@@ -187,6 +187,7 @@ production:
     sp_initiated_login_url: 'http://localhost:3000/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
+    logo: '18f.svg'
     agency: 'TTS Acquisition'
     friendly_name: 'Micro-purchase Dev'
     return_to_sp_url: 'http://localhost:3000'
