@@ -5,3 +5,5 @@ en:
         qr_img_alt: QR Code for Authenticator App
       start:
         app_img_alt: Authentication App
+    recovery_code:
+      get_another: Get another code

@@ -18,6 +18,7 @@ es:
     send_code:
       sms: NOT TRANSLATED YET
       voice: NOT TRANSLATED YET
+      recovery_code: NOT TRANSLATED YET
     timeout_warning:
       signed_in:
         continue: NOT TRANSLATED YET
