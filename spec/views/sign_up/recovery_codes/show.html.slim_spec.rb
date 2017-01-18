@@ -43,4 +43,12 @@ describe 'sign_up/recovery_codes/show.html.slim' do
 
     expect(rendered).to have_css('.step-3.active')
   end
+
+  it 'displays a button to refresh the recovery code' do
+    render
+    expect(rendered).to have_link(
+      t('users.recovery_code.get_another'),
+      manage_recovery_code_path(resend: true)
+    )
+  end
 end

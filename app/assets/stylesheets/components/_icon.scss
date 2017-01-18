@@ -1,0 +1,10 @@
+.ico {
+  background-position: 1rem center;
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  padding-left: 2.5rem;
+
+  &-refresh {
+    background-image: url(image-path('ico-refresh.svg'));
+  }
+}

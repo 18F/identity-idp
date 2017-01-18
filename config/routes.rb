@@ -71,7 +71,7 @@ Rails.application.routes.draw do
   patch '/manage/password' => 'users/passwords#update'
   get '/manage/phone' => 'users/phones#edit'
   match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
-  get '/manage/recovery_code' => 'users/recovery_codes#show'
+  get '/manage/recovery_code' => 'users/recovery_codes#show', as: :manage_recovery_code
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   post '/openid_connect/authorize' => 'openid_connect/authorization#create',
