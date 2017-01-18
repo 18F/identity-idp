@@ -18,8 +18,8 @@ SimpleForm.setup do |config|
     b.optional :min_max
     b.optional :readonly
     b.use :label, class: 'bold'
+    b.use :hint,  wrap_with: { tag: 'div', class: 'italic' }
     b.use :input, class: 'block col-12 field'
-    b.use :hint,  wrap_with: { tag: 'div' }
     b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 red error-message' }
   end
 
