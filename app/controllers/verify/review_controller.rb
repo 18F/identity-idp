@@ -38,7 +38,7 @@ module Verify
     end
 
     def idv_finance_complete?
-      idv_session.financials_confirmation.try(:success?)
+      idv_session.financials_confirmation == true
     end
 
     def idv_phone_complete?

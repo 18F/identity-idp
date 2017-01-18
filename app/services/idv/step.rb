@@ -3,7 +3,7 @@ module Idv
   class Step
     include VendorValidated
 
-    def initialize(analytics:, idv_form:, idv_session:, params:)
+    def initialize(analytics: nil, idv_form:, idv_session:, params:)
       @idv_form = idv_form
       @idv_session = idv_session
       @analytics = analytics
@@ -33,7 +33,7 @@ module Idv
     attr_accessor :analytics, :idv_form, :idv_session, :params, :form_result
 
     def form_validate(params)
-      self.form_result = idv_form.submit(params)
+      @form_result ||= idv_form.submit(params)
     end
 
     def errors
