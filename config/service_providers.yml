@@ -66,7 +66,7 @@ development:
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
     acs_url: 'http://localhost:3000/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
-    sp_initiated_login_url: 'http://localhost:3000/login'
+    sp_initiated_login_url: 'http://localhost:3000/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
@@ -184,9 +184,10 @@ production:
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
     acs_url: 'http://localhost:3000/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3000/auth/saml/logout'
-    sp_initiated_login_url: 'http://localhost:3000/login'
+    sp_initiated_login_url: 'http://localhost:3000/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
+    logo: '18f.svg'
     agency: 'TTS Acquisition'
     friendly_name: 'Micro-purchase Dev'
     return_to_sp_url: 'http://localhost:3000'
@@ -196,7 +197,7 @@ production:
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-staging':
     acs_url: 'https://micropurchase-staging.18f.gov/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://micropurchase-staging.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://micropurchase-staging.18f.gov/login'
+    sp_initiated_login_url: 'https://micropurchase-staging.18f.gov/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     logo: '18f.svg'
@@ -209,7 +210,7 @@ production:
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:micropurchase-production':
     acs_url: 'https://micropurchase.18f.gov/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://micropurchase.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://micropurchase.18f.gov/login'
+    sp_initiated_login_url: 'https://micropurchase.18f.gov/admin/sign_in'
     block_encryption: 'aes256-cbc'
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
