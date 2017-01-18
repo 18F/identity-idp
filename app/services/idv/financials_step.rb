@@ -1,32 +1,44 @@
 module Idv
   class FinancialsStep < Step
-    def complete?
-      idv_form.finance_type && idv_session.financials_confirmation.try(:success?) ? true : false
+    def submit
+      if complete?
+        @success = true
+        idv_session.financials_confirmation = true
+        idv_session.params = idv_form.idv_params
+      else
+        @success = false
+        idv_session.financials_confirmation = false
+      end
+
+      result
     end
 
     private
 
-    def vendor_validate
-      result = vendor_validator.validate
-      idv_session.params = idv_form.idv_params if complete?
-      result
+    attr_reader :success
+
+    def complete?
+      form_valid? && vendor_validator.success?
     end
 
     def vendor_validator_class
       Idv::FinancialsValidator
     end
 
-    def analytics_event
-      Analytics::IDV_FINANCE_CONFIRMATION
-    end
-
     def vendor_errors
-      idv_session.financials_confirmation.try(:errors)
+      vendor_validator.errors if form_valid?
     end
 
     def vendor_params
       finance_type = idv_form.finance_type
       { finance_type => idv_form.idv_params[finance_type] }
+    end
+
+    def result
+      {
+        success: success,
+        errors: errors
+      }
     end
   end
 end
