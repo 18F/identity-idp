@@ -21,6 +21,7 @@ en:
     send_code:
       sms: We sent you a one-time passcode via text message.
       voice: We will call you with your one-time passcode.
+      recovery_code: You've got a new recovery code.
     timeout_warning:
       signed_in:
         continue: Keep me signed in

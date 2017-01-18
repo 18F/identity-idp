@@ -41,6 +41,20 @@ feature 'View recovery code' do
       end
     end
 
+    context 'regenerating recovery code with `Get another code` button' do
+      scenario 'displays a flash message and a new code' do
+        user = sign_in_and_2fa_user
+
+        click_link t('profile.links.regenerate_recovery_code')
+        old_code = user.reload.recovery_code
+
+        click_link t('users.recovery_code.get_another')
+
+        expect(user.reload.recovery_code).to_not eq old_code
+        expect(page).to have_content t('notices.send_code.recovery_code')
+      end
+    end
+
     context 'regenerating new code after canceling edit password action' do
       scenario 'displays new code and returns user to profile page' do
         allow(Figaro.env).to receive(:reauthn_window).and_return('0')

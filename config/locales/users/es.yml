@@ -5,3 +5,5 @@ es:
         qr_img_alt: Código de QR para la aplicación de autenticación
       start:
         app_img_alt: Aplicación de autenticación
+    recovery_code:
+      get_another: NOT TRANSLATED YET
