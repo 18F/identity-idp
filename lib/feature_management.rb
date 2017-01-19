@@ -24,4 +24,8 @@ class FeatureManagement
   def self.use_kms?
     Figaro.env.use_kms == 'true'
   end
+
+  def self.use_dashboard_service_providers?
+    Figaro.env.use_dashboard_service_providers == 'true'
+  end
 end
