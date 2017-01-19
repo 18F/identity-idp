@@ -9,7 +9,10 @@ module Verify
     end
 
     def create
-      if step.complete
+      result = step.submit
+      analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION, result.to_h)
+
+      if result.success?
         redirect_to verify_review_url
       else
         render :new
@@ -32,7 +35,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_review_path if idv_session.phone_confirmation.try(:success?)
+      redirect_to verify_review_path if idv_session.phone_confirmation == true
     end
 
     def idv_phone_form
