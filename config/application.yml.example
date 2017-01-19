@@ -44,7 +44,8 @@ session_check_frequency: '30'
 stale_session_window: '180'
 
 support_email: 'hello@login.gov'
-
+use_dashboard_service_providers: 'false'
+dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
 development:
@@ -54,6 +55,7 @@ development:
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
+  dashboard_url: 'http://localhost:3001/api/service_providers'
   domain_name: 'localhost:3000'
   enable_test_routes: 'true'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
@@ -84,6 +86,7 @@ development:
   telephony_disabled: 'true'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'true'
+  use_dashboard_service_providers: 'true'
   use_kms: 'false'
   valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase", "urn:gov:gsa:openidconnect:development"]'
   enable_i18n_mode: 'false'

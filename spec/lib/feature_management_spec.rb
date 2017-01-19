@@ -68,4 +68,26 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '#use_dashboard_service_providers?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.use_dashboard_service_providers?).to eq(true)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('false')
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.use_dashboard_service_providers?).to eq(false)
+      end
+    end
+  end
 end
