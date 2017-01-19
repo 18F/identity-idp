@@ -42,7 +42,7 @@ module Verify
     end
 
     def idv_phone_complete?
-      idv_session.phone_confirmation.try(:success?)
+      idv_session.phone_confirmation == true
     end
 
     def init_profile

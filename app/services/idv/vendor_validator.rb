@@ -1,6 +1,7 @@
 # abstract base class for proofing vendor validation
 module Idv
   class VendorValidator
+    delegate :success?, :errors, to: :result
     attr_reader :idv_session, :vendor_params
 
     def initialize(idv_session:, vendor_params:)

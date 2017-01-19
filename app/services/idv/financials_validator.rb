@@ -1,7 +1,5 @@
 module Idv
   class FinancialsValidator < VendorValidator
-    delegate :success?, :errors, to: :result
-
     private
 
     def result

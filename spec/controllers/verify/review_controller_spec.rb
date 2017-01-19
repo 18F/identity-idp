@@ -28,7 +28,7 @@ describe Verify::ReviewController do
     idv_session = Idv::Session.new(subject.user_session, user)
     happy_args = { success: true, session_id: 'some-id' }
     idv_session.resolution = Proofer::Resolution.new happy_args
-    idv_session.phone_confirmation = Proofer::Confirmation.new happy_args
+    idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
     idv_session
   end
@@ -66,7 +66,7 @@ describe Verify::ReviewController do
 
     context 'user has missed phone step' do
       before do
-        idv_session.phone_confirmation.success = false
+        idv_session.phone_confirmation = false
       end
 
       it 'redirects to phone step' do
