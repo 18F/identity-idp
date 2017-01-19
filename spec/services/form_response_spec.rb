@@ -1,6 +1,17 @@
 require 'rails_helper'
 
 describe FormResponse do
+  describe '.new' do
+    it 'raises an error if errors is not a Hash' do
+      errors = ['bar', [{ foo: 'bar' }], ['foobar']]
+
+      errors.each do |error|
+        expect { FormResponse.new(success: true, errors: error) }.
+          to raise_error NoMethodError
+      end
+    end
+  end
+
   describe '#success?' do
     context 'when the success argument is true' do
       it 'returns true' do
