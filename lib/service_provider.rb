@@ -29,8 +29,11 @@ class ServiceProvider
       sp_cert = sp_attributes[:cert]
       return if sp_cert.blank?
 
-      cert_file = File.read(Rails.root.join("certs/sp/#{sp_cert}.crt"))
-      OpenSSL::X509::Certificate.new(cert_file)
+      cert_file = Rails.root.join("certs/sp/#{sp_cert}.crt")
+
+      return OpenSSL::X509::Certificate.new(sp_cert) unless File.exist?(cert_file)
+
+      OpenSSL::X509::Certificate.new(File.read(cert_file))
     end
   end
 
