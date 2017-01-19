@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :identity do
+    uuid { SecureRandom.uuid }
     service_provider 'https://serviceprovider.com'
   end
 
