@@ -1,0 +1,9 @@
+@media only print {
+  nav,
+  footer,
+  .btn,
+  .radio-btn,
+  .ico {
+    display: none;
+  }
+}

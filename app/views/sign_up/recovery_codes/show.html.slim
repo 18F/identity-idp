@@ -4,11 +4,17 @@
   = render 'shared/progress_steps', active: 3
 h1.h3.my0 = t('headings.recovery_code')
 p.mt-tiny.mb0 = t('instructions.recovery_code')
-.mt4.mb4.py2.px3.inline-block.fs-20p.border.border-dashed.monospace
+
+.col-12.border-box.mt4.mb3.py2.px3.inline-block.fs-20p.border.border-dashed.monospace#recovery-code
   = @code
+
 .mb3.right-align
   = link_to t('users.recovery_code.get_another'), manage_recovery_code_path(resend: true),
     class: 'radio-btn inline-block ico ico-refresh text-decoration-none'
+
+  = link_to t('users.recovery_code.print'), '#',
+    data: { print: true },
+    class: 'ml2 radio-btn inline-block ico ico-print text-decoration-none'
 
 = button_to(t('forms.buttons.continue'), sign_up_recovery_code_path,
   class: 'btn btn-primary btn-wide mb1')
