@@ -20,7 +20,7 @@ describe Verify::PhoneController do
     it 'redirects to review when step is complete' do
       user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
       stub_subject(user)
-      subject.idv_session.phone_confirmation = Proofer::Confirmation.new success: true
+      subject.idv_session.phone_confirmation = true
 
       get :new
 
@@ -46,7 +46,9 @@ describe Verify::PhoneController do
         expect(subject.idv_session.params).to be_empty
       end
 
-      it 'tracks form error' do
+      it 'tracks form error and does not make a vendor API call' do
+        allow(Idv::PhoneValidator).to receive(:new)
+
         put :create, idv_phone_form: { phone: '703' }
 
         result = {
@@ -59,7 +61,8 @@ describe Verify::PhoneController do
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION, result
         )
-        expect(subject.idv_session.phone_confirmation).to be_nil
+        expect(subject.idv_session.phone_confirmation).to eq false
+        expect(Idv::PhoneValidator).to_not have_received(:new)
       end
     end
 
