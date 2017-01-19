@@ -13,3 +13,8 @@ en:
     token:
       errors:
         invalid_code: invalid code
+    user_info:
+      errors:
+        no_authorization: No Authorization header provided
+        malformed_authorization: Malformed Authorization header
+        not_found: Could not find authorization for the contents of the provided id_token

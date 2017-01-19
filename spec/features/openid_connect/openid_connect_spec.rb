@@ -53,13 +53,23 @@ feature 'OpenID Connect' do
       id_token = token_response[:id_token]
       expect(id_token).to be_present
 
-      decoded_id_token, _headers = JWT.decode(id_token, sp_public_key, true, algorithm: 'RS256')
-      decoded_id_token = decoded_id_token.with_indifferent_access
-      expect(decoded_id_token[:sub]).to be_present
+      decoded_id_token, _headers = JWT.decode(
+        id_token, sp_public_key, true, algorithm: 'RS256'
+      ).map(&:with_indifferent_access)
+
+      sub = decoded_id_token[:sub]
+      expect(sub).to be_present
       expect(decoded_id_token[:nonce]).to eq(nonce)
       expect(decoded_id_token[:aud]).to eq(client_id)
       # expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:iss]).to eq(root_url)
+
+      page.driver.get openid_connect_userinfo_path,
+                      {},
+                      'HTTP_AUTHORIZATION' => "Bearer #{id_token}"
+
+      userinfo_response = JSON.parse(page.body).with_indifferent_access
+      expect(userinfo_response[:sub]).to eq(sub)
     end
   end
 

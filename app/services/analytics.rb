@@ -56,6 +56,7 @@ class Analytics
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
   MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'.freeze
   OPENID_CONNECT_ALLOW = 'OpenID Connect: allow app'.freeze
+  OPENID_CONNECT_BEARER_TOKEN = 'OpenID Connect: bearer token authentication'.freeze
   OPENID_CONNECT_DECLINE = 'OpenID Connect: decline app'.freeze
   OPENID_CONNECT_REQUEST_AUTHORIZATION = 'OpenID Connect: authorization request'.freeze
   OPENID_CONNECT_TOKEN = 'OpenID Connect: token'.freeze
