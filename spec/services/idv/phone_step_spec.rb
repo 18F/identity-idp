@@ -14,81 +14,51 @@ describe Idv::PhoneStep do
   let(:idv_phone_form) { Idv::PhoneForm.new(idv_session.params, user) }
 
   def build_step(params)
-    @analytics = FakeAnalytics.new
-    allow(@analytics).to receive(:track_event)
-
     described_class.new(
       idv_form: idv_phone_form,
       idv_session: idv_session,
-      analytics: @analytics,
       params: params
     )
   end
 
-  def expect_analytics_result(result)
-    expect(@analytics).to have_received(:track_event).with(
-      Analytics::IDV_PHONE_CONFIRMATION, result
-    )
-  end
-
-  describe '#complete' do
+  describe '#submit' do
     it 'returns false for invalid-looking phone' do
       step = build_step(phone: '555')
 
-      expect(step.complete).to eq false
+      errors = { phone: [invalid_phone_message] }
 
-      result = {
-        success: false,
-        errors: {
-          phone: [invalid_phone_message]
-        }
-      }
+      result = instance_double(FormResponse)
 
-      expect_analytics_result(result)
+      expect(FormResponse).to receive(:new).
+        with(success: false, errors: errors).and_return(result)
+      expect(step.submit).to eq result
+      expect(idv_session.phone_confirmation).to eq false
     end
 
     it 'returns true for mock-happy phone' do
       step = build_step(phone: '555-555-0000')
 
-      expect(step.complete).to eq true
+      result = instance_double(FormResponse)
 
-      result = {
-        success: true,
-        errors: {}
-      }
-
-      expect_analytics_result(result)
+      expect(FormResponse).to receive(:new).with(success: true, errors: {}).
+        and_return(result)
+      expect(step.submit).to eq result
+      expect(idv_session.phone_confirmation).to eq true
+      expect(idv_session.params).to eq idv_phone_form.idv_params
+      expect(idv_session.applicant.phone).to eq idv_phone_form.phone
     end
 
     it 'returns false for mock-sad phone' do
       step = build_step(phone: '555-555-5555')
 
-      expect(step.complete).to eq false
+      errors = { phone: ['The phone number could not be verified.'] }
 
-      result = {
-        success: false,
-        errors: {
-          phone: ['The phone number could not be verified.']
-        }
-      }
+      result = instance_double(FormResponse)
 
-      expect_analytics_result(result)
-    end
-  end
-
-  describe '#complete?' do
-    it 'returns true for mock-happy phone' do
-      step = build_step(phone: '555-555-0000')
-      step.complete
-
-      expect(step.complete?).to eq true
-    end
-
-    it 'returns false for mock-sad phone' do
-      step = build_step(phone: '555-555-5555')
-      step.complete
-
-      expect(step.complete?).to eq false
+      expect(FormResponse).to receive(:new).
+        with(success: false, errors: errors).and_return(result)
+      expect(step.submit).to eq result
+      expect(idv_session.phone_confirmation).to eq false
     end
   end
 end
