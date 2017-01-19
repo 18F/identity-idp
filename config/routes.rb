@@ -81,6 +81,8 @@ Rails.application.routes.draw do
 
   post '/openid_connect/token' => 'openid_connect/token#create'
 
+  get '/openid_connect/userinfo' => 'openid_connect/user_info#show'
+
   get '/otp/send' => 'users/two_factor_authentication#send_code'
   get '/phone_setup' => 'users/two_factor_authentication_setup#index'
   patch '/phone_setup' => 'users/two_factor_authentication_setup#set'

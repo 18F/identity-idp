@@ -55,7 +55,7 @@ class OpenidConnectTokenForm
     service_provider = ServiceProvider.new(client_id)
 
     JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
-               algorithm: 'RS256',
+               algorithm: 'RS256', verify_iat: true,
                iss: client_id, verify_iss: true,
                sub: client_id, verify_sub: true,
                aud: openid_connect_token_url, verify_aud: true)
