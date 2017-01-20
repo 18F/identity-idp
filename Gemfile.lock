@@ -145,7 +145,7 @@ GEM
     capistrano-rails (1.2.2)
       capistrano (~> 3.1)
       capistrano-bundler (~> 1.1)
-    capistrano-rbenv (2.0.4)
+    capistrano-rbenv (2.1.0)
       capistrano (~> 3.1)
       sshkit (~> 1.3)
     capistrano-sidekiq (0.10.0)
