@@ -175,7 +175,7 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.11.1)
-    concurrent-ruby (1.0.2)
+    concurrent-ruby (1.0.4)
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
@@ -496,7 +496,7 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
-    sidekiq (4.2.7)
+    sidekiq (4.2.9)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
