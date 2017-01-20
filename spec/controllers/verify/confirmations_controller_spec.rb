@@ -6,7 +6,7 @@ describe Verify::ConfirmationsController do
   include SamlAuthHelper
 
   let(:password) { 'sekrit phrase' }
-  let(:user) { build_stubbed(:user, :signed_up, password: password) }
+  let(:user) { create(:user, :signed_up, password: password) }
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
