@@ -20,8 +20,12 @@ describe RecoveryCodeForm do
 
     context 'when the form is invalid' do
       it 'returns false for success?' do
-        user = build_stubbed(:user, :signed_up)
-        RecoveryCodeGenerator.new(user).create
+        user = build_stubbed(:user, :signed_up, recovery_code: 'code')
+
+        generator = instance_double(RecoveryCodeGenerator)
+        allow(RecoveryCodeGenerator).to receive(:new).with(user).
+          and_return(generator)
+        allow(generator).to receive(:verify).with('foo').and_return(false)
 
         result = RecoveryCodeForm.new(user, 'foo').submit
 
