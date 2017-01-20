@@ -3,8 +3,8 @@ require 'rails_helper'
 describe Pii::ReEncryptor do
   describe '#perform' do
     it 're-encrypts PII using new code' do
-      profile = build_stubbed(:profile, :active, :verified, pii: { ssn: '1234' })
-      user = build_stubbed(:user, profiles: [profile])
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
+      user = create(:user, profiles: [profile])
       user_session = {
         decrypted_pii: { ssn: '1234' }.to_json
       }
