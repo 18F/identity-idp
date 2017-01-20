@@ -151,7 +151,7 @@ GEM
     capistrano-sidekiq (0.10.0)
       capistrano
       sidekiq (>= 3.4)
-    capybara (2.10.1)
+    capybara (2.11.0)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -351,7 +351,7 @@ GEM
     phony_rails (0.14.4)
       activesupport (>= 3.0)
       phony (~> 2.15)
-    poltergeist (1.11.0)
+    poltergeist (1.12.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
@@ -369,7 +369,7 @@ GEM
     pry-byebug (3.4.1)
       byebug (~> 9.0)
       pry (~> 0.10)
-    public_suffix (2.0.4)
+    public_suffix (2.0.5)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.6.5)
