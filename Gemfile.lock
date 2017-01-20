@@ -420,7 +420,7 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.7)
       ffi (>= 0.5.0)
-    readthis (2.0.1)
+    readthis (2.0.2)
       connection_pool (~> 2.1)
       redis (~> 3.0)
     redis (3.3.2)
