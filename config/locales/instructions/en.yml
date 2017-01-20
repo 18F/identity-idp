@@ -39,9 +39,10 @@ en:
         intro: 'Password strength: '
         iv: Good
         v: Great!
-    recovery_code: >
-      Write this recovery code down and store it someplace safe. If you can’t
-      get to your phone, you can use it instead of a one-time passcode to sign in.
+    recovery_code_html: >
+      This is the to regain access to your account if you lose your password or
+      phone. %{accent}
+    recovery_code_accent: Write it down or print it out.
     registration:
       already_have_account: Already have an account? %{link}
       email: Pick an address to use for government communications.

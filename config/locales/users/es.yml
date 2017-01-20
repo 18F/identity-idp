@@ -6,5 +6,7 @@ es:
       start:
         app_img_alt: Aplicación de autenticación
     recovery_code:
+      header: NOT TRANSLATED YET
+      generated_on_html: NO TRANSLATED YET
       get_another: NOT TRANSLATED YET
       print: NOT TRANSLATED YET
