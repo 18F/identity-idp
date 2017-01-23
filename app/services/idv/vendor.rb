@@ -16,5 +16,19 @@ module Idv
     def available
       @_vendors ||= Figaro.env.proofing_vendors.split(/\W+/).map(&:to_sym)
     end
+
+    def upcase_env_vars
+      available.each do |vendor|
+        upcase_env_var(vendor)
+      end
+    end
+
+    private
+
+    def upcase_env_var(vendor)
+      ENV.keys.grep(/^#{vendor}_/).each do |env_var_name|
+        ENV[env_var_name.upcase] = ENV[env_var_name]
+      end
+    end
   end
 end
