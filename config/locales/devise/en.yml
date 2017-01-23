@@ -134,7 +134,7 @@ en:
         signing in, go to your account settings page to get a new one.
       totp_fallback:
         sms_link_text: receive a code via text message
-        text: >
+        text_html: >
           If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
         voice_link_text: with a phone call

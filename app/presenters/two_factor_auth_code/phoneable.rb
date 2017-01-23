@@ -15,7 +15,6 @@ module TwoFactorAuthCode
       return unless unconfirmed_phone
 
       link = link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
-
       t('instructions.2fa.wrong_number_html', link: link)
     end
 
@@ -24,7 +23,7 @@ module TwoFactorAuthCode
     end
 
     def resend_code_path
-      otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method }, resend: true)
+      otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method, resend: true })
     end
 
     private
@@ -34,8 +33,8 @@ module TwoFactorAuthCode
     end
 
     def phone_link_tag(delivery_method)
-      resend_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
-      link_to(t("links.two_factor_authentication.#{delivery_method}"), resend_path)
+      send_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
+      link_to(t("links.two_factor_authentication.#{delivery_method}"), send_path)
     end
   end
 end

@@ -4,6 +4,10 @@ module TwoFactorAuthentication
 
     skip_before_action :handle_two_factor_authentication
 
+    def show
+      @presenter = presenter_for(delivery_method)
+    end
+
     def create
       result = TotpVerificationForm.new(current_user, params[:code].strip).submit
 

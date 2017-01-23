@@ -134,7 +134,7 @@ es:
         iniciar sesión, vaya a la página de configuración de su cuenta para obtener una nueva.
       totp_fallback:
         sms_link_text: Recibir un código por mensaje de texto
-        text: >
+        text_html: >
           Si no puede usar su aplicación de autenticador ahora, puede %{sms_link}
           O %{voice_link}.
         voice_link_text: con una llamada telefónica
