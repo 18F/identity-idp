@@ -15,8 +15,8 @@ es:
           correo electrónico dentro de %{confirmation_period} de recibir este mensaje.
       footer: Tome en cuenta que este enlace expira en %{período de confirmación}.
       header: >
-          %{intro} Para confirmar su dirección de correo electrónico, haga clic en el enlace abajo
-          o puede copiar y pegar el enlace completo en su navegador.
+        %{intro} Para confirmar su dirección de correo electrónico, haga clic en el enlace abajo
+        o puede copiar y pegar el enlace completo en su navegador.
       link_text: Confirmar esta dirección de correo electrónico
     contact_request:
       subject: Solicitud de contacto
@@ -36,4 +36,4 @@ es:
         Ha solicitado que restablezca la contraseña de su cuenta. Para confirmar
         su solicitud, haga clic en el enlace abajo o puede copiar y pegar el enlace completo en su navegador.
       link_text: Restablecer su contraseña
-  sent_from: Enviado desde %{app}
+    sent_from: Enviado desde %{app}
