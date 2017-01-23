@@ -1,3 +1,4 @@
+import 'app/components/index';
 import 'app/utils/index';
 import 'app/pw-toggle';
 import 'app/form-validation';

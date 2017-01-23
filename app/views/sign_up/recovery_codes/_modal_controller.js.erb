@@ -1,0 +1,17 @@
+var modalSelector = '#personal-key-confirm';
+var modal = new LoginGov.Modal({el: modalSelector });
+
+var formEl = document.getElementById('confirm-key');
+var successRedirectPath = "<%= sign_up_recovery_code_path %>";
+
+var modalTrigger = document.querySelector('[data-toggle="modal"]');
+
+modalTrigger.addEventListener('click', function() {
+  modal.show();
+});
+
+formEl.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  console.log(event.target);
+});

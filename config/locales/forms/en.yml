@@ -30,6 +30,9 @@ en:
       instructions: Provide the information below to reactivate your account.
       submit: Reactivate profile
       title: Reactivate profile
+    recovery_code:
+      title: Enter your personal key
+      instructions: Please confirm you have a copy of your personal key by entering it below.
     registration:
       labels:
         email: Email address

@@ -1,0 +1,20 @@
+#personal-key-confirm.hide
+  .modal-cntnr
+    .px2.py4.modal-inner
+      .mx-auto.p5.cntnr-skinny.border-box.bg-white.rounded.relative.rounded-lg
+        h3.mt0.mb2 = t('forms.recovery_code.title')
+        p.mb3 = t('forms.recovery_code.instructions')
+        
+        form#confirm-key
+          - code.split(' ').each_with_index do |word, index|
+            div.border.border-dashed.mb2
+              input(name="input-#{index}" type='text' class='col-12 field monospace mfa')
+          end
+          
+          input type="submit" value=t('forms.buttons.continue') class='btn btn-primary'
+          = link_to t('forms.buttons.back'), '#',
+            class: 'ml2 btn btn-outline rounded-lg',
+            data_target: 'recovery-code-confirm',
+            data_close: 'modal-cntnr'
+
+= modal_controller_js

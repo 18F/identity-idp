@@ -25,5 +25,8 @@ p.mt-tiny.mb0
       = image_tag(asset_url('up-carat-thin.svg'), width: 16, class: 'mr1')
       = t('users.recovery_code.close')
 
-= button_to(t('forms.buttons.continue'), sign_up_recovery_code_path,
-  class: 'btn btn-primary btn-wide mb1')
+button(class='btn btn-primary btn-wide mb1' data-toggle='modal')
+  = t('forms.buttons.continue')
+    
+= render 'sign_up/recovery_codes/confirmation_modal', code: @code
+= modal_controller_js
