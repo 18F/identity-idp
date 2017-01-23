@@ -1,8 +1,13 @@
 require 'rails_helper'
 
+def presenter_with(arguments = {})
+  TwoFactorAuthCode::GenericDeliveryPresenter.new(arguments)
+end
+
 describe TwoFactorAuthCode::GenericDeliveryPresenter do
-  let(:presenter) { TwoFactorAuthCode::GenericDeliveryPresenter.new({}) }
   it 'is an abstract presenter with methods that should be implemented' do
+    presenter = presenter_with
+
     %w(header help_text fallback_links).each do |m|
       expect do
         presenter.send(m.to_sym)
@@ -11,8 +16,20 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
   end
 
   describe '#recovery_code_link' do
-    it 'defines a public method that creates a recovery code link' do
-      expect(presenter).to respond_to(:recovery_code_link)
+    context 'with unconfirmed user' do
+      presenter = presenter_with(unconfirmed_user: true)
+
+      it 'returns without providing the option to use a recovery code' do
+        expect(presenter.recovery_code_link).to be_nil
+      end
+    end
+
+    context 'with confirmed user' do
+      presenter = presenter_with(unconfirmed_user: false)
+
+      it 'returns a recovery code link' do
+        expect(presenter.recovery_code_link).not_to be_nil
+      end
     end
   end
 end

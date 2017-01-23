@@ -1,10 +1,8 @@
 - title t('titles.enter_2fa_code')
 
 
-h1.h3.my0 = t('devise.two_factor_authentication.totp_header_text')
-p.mt-tiny.mb0#code-instructs = t('instructions.2fa.totp_intro_html', \
-      email: current_user.email,
-      app: APP_NAME)
+h1.h3.my0 = @presenter.header
+p.mt-tiny.mb0#code-instructs = @presenter.help_text
 
 = form_tag(:login_two_factor_authenticator, method: :post, role: 'form', class: 'mt3 sm-mt4') do
   - if reauthn?
@@ -17,13 +15,5 @@ p.mt-tiny.mb0#code-instructs = t('instructions.2fa.totp_intro_html', \
       'aria-describedby': 'code-instructs', maxlength: Devise.otp_length
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
-.mt3.mb1
-  - sms_link = link_to t('devise.two_factor_authentication.totp_fallback.sms_link_text'), \
-                       otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
-  - voice_link = link_to t('devise.two_factor_authentication.totp_fallback.voice_link_text'), \
-                         otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })
-
-  == t('devise.two_factor_authentication.totp_fallback.text', sms_link: sms_link,
-    voice_link: voice_link)
-
+= render 'shared/fallback_links', presenter: @presenter
 = render 'shared/cancel', link: destroy_user_session_path

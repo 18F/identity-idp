@@ -24,4 +24,4 @@ en:
       sms: text message
       resend_code:
         sms: Get another text message
-        voice: Get another phone call.
+        voice: Get another phone call
