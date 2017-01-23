@@ -72,6 +72,29 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       end
     end
 
+    context 'when totp is not enabled' do
+      it 'does not allow user to sign in using an authenticator app' do
+        render
+
+        expect(rendered).not_to have_link(
+          t('links.two_factor_authentication.app'), href: login_two_factor_authenticator_path
+        )
+      end
+    end
+
+    context 'when totp is enabled' do
+      it 'allows user to sign in using an authenticator app' do
+        totp_data = presenter_data.merge(totp_enabled: true)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(totp_data)
+
+        render
+
+        expect(rendered).to have_link(
+          t('links.two_factor_authentication.app'), href: login_two_factor_authenticator_path
+        )
+      end
+    end
+
     context 'when @code_value is set' do
       it 'pre-populates the form field' do
         render
@@ -87,8 +110,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         resend_path = otp_send_path(otp_delivery_selection_form: {
-                                      otp_method: delivery_method
-                                    }, resend: true)
+                                      otp_method: delivery_method,
+                                      resend: true
+                                    })
 
         expect(rendered).to have_link(
           t("links.two_factor_authentication.resend_code.#{delivery_method}"),
@@ -140,8 +164,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         resend_path = otp_send_path(otp_delivery_selection_form: {
-                                      otp_method: delivery_method
-                                    }, resend: true)
+                                      otp_method: delivery_method,
+                                      resend: true
+                                    })
 
         expect(rendered).to have_link(
           t("links.two_factor_authentication.resend_code.#{delivery_method}"),
