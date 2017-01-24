@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   helper_method :decorated_user, :reauthn?, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
+  before_action :set_locale
 
   layout 'card'
 
@@ -103,5 +104,9 @@ class ApplicationController < ActionController::Base
 
   def skip_session_expiration
     @skip_session_expiration = true
+  end
+
+  def set_locale
+    I18n.locale = params[:locale] || I18n.default_locale
   end
 end

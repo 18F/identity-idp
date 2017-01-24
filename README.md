@@ -132,6 +132,11 @@ If you would like to run the application on a different port:
 * Change the port number for `mailer_domain_name` and `domain_name` in `config/application.yml`
 * Run the app on your desired port like `make run PORT=1234`
 
+If you would like to see the Spanish translations on a particular page, add
+`?locale=es` to the end of the URL, such as `http://localhost:3000/?locale=es`.
+Currently, you'll need to add `?locale=es` to each URL manually. We are working
+on a more robust and user-friendly way to switch between locales.
+
 ### Running Tests
 
 Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running
