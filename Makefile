@@ -21,6 +21,8 @@ lint: $(CONFIG)
 	bundle exec slim-lint app/views
 	@echo "--- reek ---"
 	bundle exec reek
+	@echo "--- fasterer ---"
+	bundle exec fasterer
 
 brakeman:
 	bundle exec brakeman

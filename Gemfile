@@ -65,6 +65,7 @@ group :development do
   gem 'brakeman', require: false
   gem 'bummr', require: false
   gem 'derailed'
+  gem 'fasterer', require: false
   gem 'guard-rspec', require: false
   gem 'overcommit', require: false
   gem 'quiet_assets'
