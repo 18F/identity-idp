@@ -14,7 +14,8 @@ describe TwoFactorAuthCode::Totpable do
 
     context 'when totp option is enabled' do
       let(:presenter) do
-        data = attributes_for(:generic_otp_presenter).merge!(totp_enabled: true)
+        data = attributes_for(:generic_otp_presenter)
+        data[:totp_enabled] = true
         TwoFactorAuthCode::PhoneDeliveryPresenter.new(data)
       end
 

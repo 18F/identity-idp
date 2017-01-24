@@ -16,9 +16,7 @@ class ConfigValidator
   end
 
   def warning(bad_keys)
-    <<~HEREDOC
-      You have invalid values for #{bad_keys.uniq.to_sentence} in
-      config/application.yml. Please change them to true or false
-    HEREDOC
+    "You have invalid values for #{bad_keys.uniq.to_sentence} in " \
+    "config/application.yml. Please change them to true or false."
   end
 end

@@ -20,7 +20,8 @@ Rails.application.configure do
 
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
-    event.payload.except(:params).merge!(timestamp: event.time)
+    event.payload[:timestamp] = event.time
+    event.payload.except(:params)
   end
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new

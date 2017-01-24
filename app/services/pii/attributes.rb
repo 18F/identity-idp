@@ -20,7 +20,7 @@ module Pii
       attrs = new
       return attrs unless pii_json.present?
       pii = JSON.parse(pii_json, symbolize_names: true)
-      pii.keys.each { |attr| attrs[attr] = pii[attr] }
+      pii.each_key { |attr| attrs[attr] = pii[attr] }
       attrs
     end
 
