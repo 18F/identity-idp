@@ -1,0 +1,6 @@
+speedups:
+  # Disabled because argument is actually faster.
+  # See https://github.com/DamirSvrtan/fasterer/issues/37
+  fetch_with_argument_vs_block: false
+  # In UserDecorator#recent_events, sort is faster
+  sort_vs_sort_by: false

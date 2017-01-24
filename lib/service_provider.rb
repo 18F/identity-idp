@@ -8,7 +8,8 @@ class ServiceProvider
   end
 
   def metadata
-    sp_attributes.merge!(fingerprint: fingerprint)
+    sp_attributes[:fingerprint] = fingerprint
+    sp_attributes
   end
 
   def encryption_opts
