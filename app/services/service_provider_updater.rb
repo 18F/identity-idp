@@ -4,10 +4,8 @@ class ServiceProviderUpdater
       service_provider = HashWithIndifferentAccess.new(service_provider)
       issuer = service_provider['issuer']
       SERVICE_PROVIDERS[issuer] = service_provider
-
       VALID_SERVICE_PROVIDERS << issuer
     end
-    SecureHeadersWhitelister.new.run
   end
 
   private

@@ -49,6 +49,8 @@ Rails.application.routes.draw do
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
 
+  post '/api/service_provider' => 'service_provider#update'
+
   match '/api/voice/otp/:code' => 'voice/otp#show',
         via: [:get, :post],
         as: :voice_otp,
