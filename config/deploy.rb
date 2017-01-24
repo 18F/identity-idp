@@ -67,8 +67,16 @@ namespace :deploy do
     end
   end
 
+  desc 'Modify permissions on /srv/idp'
+  task :mod_perms do
+    on roles(:web), in: :parallel do
+      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to
+    end
+  end
+
   before 'assets:precompile', :browserify
   after 'deploy:updated', 'newrelic:notice_deployment'
   after 'deploy:log_revision', :deploy_json
+  after :deploy, 'deploy:mod_perms'
 end
 # rubocop:enable Metrics/BlockLength
