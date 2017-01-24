@@ -162,6 +162,52 @@ feature 'saml api', devise: true do
     end
   end
 
+  context 'dashboard' do
+    let(:fake_dashboard_url) { 'http://dashboard.example.org' }
+    let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
+    let(:dashboard_service_providers) do
+      [
+        {
+          issuer: dashboard_sp_issuer,
+          acs_url: 'http://sp.example.org/saml/login',
+          cert: saml_test_sp_cert
+        }
+      ]
+    end
+
+    context 'use_dashboard_service_providers true' do
+      before do
+        allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
+        allow(Figaro.env).to receive(:dashboard_url).and_return(fake_dashboard_url)
+        stub_request(:get, fake_dashboard_url).to_return(
+          status: 200,
+          body: dashboard_service_providers.to_json
+        )
+        SERVICE_PROVIDERS.delete dashboard_sp_issuer
+        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
+      end
+
+      after do
+        SERVICE_PROVIDERS.delete dashboard_sp_issuer
+        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
+      end
+
+      it 'updates global variables' do
+        page.driver.post '/api/service_provider'
+
+        expect(page.status_code).to eq 200
+
+        sign_in_and_2fa_user(user)
+        visit '/test/saml'
+
+        csp = page.response_headers['Content-Security-Policy']
+
+        expect(csp).
+          to include('form-action \'self\' localhost:3000 example.com test.host sp.example.org')
+      end
+    end
+  end
+
   context 'visiting /api/saml/logout' do
     context 'session timed out' do
       let(:logout_user) { create(:user, :signed_up) }
