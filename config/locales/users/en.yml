@@ -8,7 +8,7 @@ en:
     recovery_code:
       header: Your personal key
       generated_on_html: Generated on %{date}
-      get_another: Get another code
+      get_another: Get another key
       print: Print this page
       help_text_header: Why do I need to store my new key on paper?
       help_text: |
