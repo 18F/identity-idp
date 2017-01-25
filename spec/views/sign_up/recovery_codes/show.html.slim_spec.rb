@@ -1,17 +1,35 @@
 require 'rails_helper'
 
 describe 'sign_up/recovery_codes/show.html.slim' do
+  before do
+    @code = 'foo bar'
+  end
+
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.recovery_code'))
     render
   end
 
-  it 'displays the recovery code' do
-    @code = 'foo'
+  context 'recovery code block' do
+    before do
+      render
+    end
 
-    render
+    it 'displays the recovery code' do
+      expect(rendered).to have_content 'foo'
+      expect(rendered).to have_content 'bar'
+    end
 
-    expect(rendered).to have_content 'foo'
+    it 'displays the recovery code subheader' do
+      expect(rendered).to have_content t('users.recovery_code.header')
+    end
+
+    it 'displays the date the code was generated' do
+      expect(rendered).to have_content(
+        t('users.recovery_code.generated_on_html',
+          date: I18n.l(Time.zone.today, format: '%B %d, %Y'))
+      )
+    end
   end
 
   it 'displays the correct progress step when @show_progress_bar is true' do
@@ -29,7 +47,10 @@ describe 'sign_up/recovery_codes/show.html.slim' do
 
   it 'informs the user of importance of keeping the recovery code in a safe place' do
     render
-    expect(rendered).to have_content t('instructions.recovery_code')
+    expect(rendered).to have_content(
+      t('instructions.recovery_code_html',
+        accent: t('instructions.recovery_code_accent'))
+    )
   end
 
   it 'contains link to continue authenticating' do
