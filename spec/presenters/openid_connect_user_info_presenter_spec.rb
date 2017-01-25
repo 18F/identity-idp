@@ -40,20 +40,24 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           send(:set_session, {}, session_uuid, session_data, expire_after: 5.minutes.to_i)
       end
 
-      it 'returns loa3 attributes' do
-        aggregate_failures do
-          expect(user_info[:given_name]).to eq('John')
-          expect(user_info[:middle_name]).to eq('Jones')
-          expect(user_info[:family_name]).to eq('Smith')
-          expect(user_info[:birthdate]).to eq('1970-01-01')
-          expect(user_info[:postal_code]).to eq('12345')
+      context 'when the identity has loa3 access' do
+        before { identity.ial = 3 }
+
+        it 'returns loa3 attributes' do
+          aggregate_failures do
+            expect(user_info[:given_name]).to eq('John')
+            expect(user_info[:middle_name]).to eq('Jones')
+            expect(user_info[:family_name]).to eq('Smith')
+            expect(user_info[:birthdate]).to eq('1970-01-01')
+            expect(user_info[:postal_code]).to eq('12345')
+          end
         end
       end
 
       context 'when the identity only has loa1 access' do
-        it 'does not return loa3 attributes' do
-          pending 'loa1/loa3 access controls'
+        before { identity.ial = 1 }
 
+        it 'does not return loa3 attributes' do
           aggregate_failures do
             expect(user_info[:given_name]).to eq(nil)
             expect(user_info[:family_name]).to eq(nil)

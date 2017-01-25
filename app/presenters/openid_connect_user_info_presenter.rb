@@ -20,7 +20,6 @@ class OpenidConnectUserInfoPresenter
 
   private
 
-  # TODO: only return loa1 attributes for loa1 sessions
   def loa3_attributes
     {
       given_name: loa3_data.first_name,
@@ -34,9 +33,17 @@ class OpenidConnectUserInfoPresenter
 
   def loa3_data
     @loa3_data ||= begin
-      session = session_store.send(:load_session_from_redis, identity.session_uuid) || {}
-      Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+      if loa3_session?
+        session = session_store.send(:load_session_from_redis, identity.session_uuid) || {}
+        Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+      else
+        Pii::Attributes.new_from_hash({})
+      end
     end
+  end
+
+  def loa3_session?
+    identity.ial == 3
   end
 
   def session_store

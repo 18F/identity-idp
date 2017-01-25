@@ -22,7 +22,7 @@ describe IdentityLinker do
 
       expect(last_identity.session_uuid).to match(/.{8}-.{4}-.{4}-.{4}-.{12}/)
       expect(last_identity.last_authenticated_at).to be_present
-      expect(identity_attributes).to eq new_attributes
+      expect(identity_attributes).to include new_attributes
     end
 
     it 'can take an optional nonce and session_uuid to specify attributes' do
