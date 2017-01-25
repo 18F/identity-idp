@@ -92,6 +92,15 @@ describe UserMailer, type: :mailer do
       )
 
       expect(mail.html_part.body).to have_content(
+        "#{t('user_mailer.contact_request.want_to_learn')}#{t('user_mailer.contact_request.yes')}"
+      )
+
+      expect(mail.html_part.body).to have_content(
+        "#{t('user_mailer.contact_request.talk_about_experience')}" \
+        "#{t('user_mailer.contact_request.no')}"
+      )
+
+      expect(mail.html_part.body).to have_content(
         "#{t('user_mailer.contact_request.comments_header')}#{details['comments']}"
       )
     end
