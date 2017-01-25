@@ -73,7 +73,7 @@ describe 'sign_up/recovery_codes/show.html.slim' do
     render
     expect(rendered).to have_link(
       t('users.recovery_code.get_another'),
-      manage_recovery_code_path(resend: true)
+      href: manage_recovery_code_path(resend: true)
     )
   end
 end

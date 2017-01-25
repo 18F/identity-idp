@@ -2,6 +2,18 @@
   .btn { font-size: $button-font-size-sm; }
 }
 
+%btn-basic {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  color: $blue;
+  font-size: $base-font-size;
+  font-weight: normal;
+  line-height: $line-height;
+  outline: none;
+  padding: 0;
+}
+
 .btn-primary {
   border-radius: $border-radius-lg;
 }
@@ -12,16 +24,13 @@
   text-align: center;
 }
 
+.btn-transparent {
+  @extend %btn-basic;
+  cursor: pointer;
+}
+
 .btn-link {
-  background: transparent;
-  border: 0;
-  box-shadow: none;
-  color: $blue;
-  font-size: $base-font-size;
-  font-weight: normal;
-  line-height: $line-height;
-  outline: none;
-  padding: 0;
+  @extend %btn-basic;
   text-decoration: underline;
   vertical-align: baseline;
 
