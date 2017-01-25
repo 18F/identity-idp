@@ -179,6 +179,25 @@ $ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
 
 Then, visit http://localhost:3000/user_flows in your browser!
 
+### Proofing vendors
+
+Some proofing vendor code is located in private Github repositories because of NDAs. You can still use it
+in your local development environment if you have access to the private repository.
+
+Example:
+
+#### Check out the private repository for `somevendorname`
+
+```
+$ cd vendor
+$ git clone git@github.com:18F/identity-somevendorname-api-client-gem.git somevendorname
+```
+
+#### Add the vendor configuration
+
+Add appropriate vendor environment variables to `config/application.yml` -- see a member of the
+login.gov team for credentials and other values.
+
 ### Why 'Upaya'?
 
 "skill in means" https://en.wikipedia.org/wiki/Upaya
