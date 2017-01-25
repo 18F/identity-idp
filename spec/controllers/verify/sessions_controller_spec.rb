@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe Verify::SessionsController do
+  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:user_attrs) do
     {
@@ -57,7 +58,7 @@ describe Verify::SessionsController do
 
       context 'max attempts exceeded' do
         before do
-          user.idv_attempts = 3
+          user.idv_attempts = max_attempts
           user.idv_attempted_at = Time.zone.now
         end
 
@@ -175,7 +176,7 @@ describe Verify::SessionsController do
 
       context 'max attempts exceeded' do
         before do
-          user.idv_attempts = 3
+          user.idv_attempts = max_attempts
           user.idv_attempted_at = Time.zone.now
         end
 
@@ -189,6 +190,20 @@ describe Verify::SessionsController do
           expect(@analytics).to have_received(:track_event).
             with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
           expect(response).to redirect_to verify_fail_url
+        end
+      end
+
+      context 'attempt window has expired, previous attempts == max-1' do
+        before do
+          user.idv_attempts = max_attempts - 1
+          user.idv_attempted_at = Time.zone.now - 2.days
+        end
+
+        it 'allows and resets attempt counter' do
+          post :create, profile: user_attrs
+
+          expect(response).to redirect_to verify_finance_path
+          expect(user.idv_attempts).to eq 1
         end
       end
     end

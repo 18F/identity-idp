@@ -37,7 +37,7 @@ module Idv
     end
 
     def reset_attempts?
-      attempts >= idv_max_attempts && window_expired?
+      window_expired?
     end
 
     private

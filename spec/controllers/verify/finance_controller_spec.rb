@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe Verify::FinanceController do
+  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
+
   describe 'before_actions' do
     it 'includes authentication before_action' do
       expect(subject).to have_actions(
@@ -98,6 +100,23 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
 
           expect(response).to render_template :new
+        end
+      end
+
+      context 'attempt window has expired, previous attempts == max-1' do
+        let(:two_days_ago) { Time.zone.now - 2.days }
+
+        before do
+          subject.current_user.idv_attempts = max_attempts - 1
+          subject.current_user.idv_attempted_at = two_days_ago
+        end
+
+        it 'allows and does not affect attempt counter' do
+          put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+
+          expect(response).to redirect_to verify_phone_path
+          expect(subject.current_user.idv_attempts).to eq(max_attempts - 1)
+          expect(subject.current_user.idv_attempted_at).to eq two_days_ago
         end
       end
     end
