@@ -6,5 +6,7 @@ en:
       start:
         app_img_alt: Authentication App
     recovery_code:
+      header: Your personal key
+      generated_on_html: Generated on %{date}
       get_another: Get another code
       print: Print this page
