@@ -61,7 +61,7 @@ feature 'OpenID Connect' do
       expect(sub).to be_present
       expect(decoded_id_token[:nonce]).to eq(nonce)
       expect(decoded_id_token[:aud]).to eq(client_id)
-      # expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:iss]).to eq(root_url)
 
       page.driver.get openid_connect_userinfo_path,

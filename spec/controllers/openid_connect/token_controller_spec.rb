@@ -31,7 +31,7 @@ RSpec.describe OpenidConnect::TokenController do
     end
 
     before do
-      IdentityLinker.new(user, client_id).link_identity(session_uuid: code)
+      IdentityLinker.new(user, client_id).link_identity(session_uuid: code, ial: 1)
     end
 
     context 'with valid params' do

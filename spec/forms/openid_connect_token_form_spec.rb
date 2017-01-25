@@ -37,7 +37,7 @@ RSpec.describe OpenidConnectTokenForm do
   let(:user) { create(:user) }
 
   before do
-    IdentityLinker.new(user, client_id).link_identity(nonce: nonce, session_uuid: code)
+    IdentityLinker.new(user, client_id).link_identity(nonce: nonce, session_uuid: code, ial: 1)
   end
 
   describe '#valid?' do

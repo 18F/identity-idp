@@ -4,7 +4,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:params) do
     {
-      acr_values: 'http://idmanagement.gov/ns/assurance/loa/1',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       client_id: client_id,
       nonce:  SecureRandom.hex,
       prompt: 'select_account',
@@ -19,8 +19,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
     subject(:action) { get :index, params }
 
     context 'user is signed in' do
+      let(:user) { create(:user, :signed_up) }
       before do
-        user = create(:user, :signed_up)
         stub_sign_in user
       end
 
@@ -39,6 +39,26 @@ RSpec.describe OpenidConnect::AuthorizationController do
                  errors: {})
 
           action
+        end
+
+        context 'with loa3 requested' do
+          before { params[:acr_values] = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+
+          context 'account is already verified' do
+            let(:user) { create(:profile, :active, :verified).user }
+
+            it 'renders the approve/deny form' do
+              action
+              expect(controller).to render_template('openid_connect/authorization/index')
+            end
+          end
+
+          context 'account is not already verified' do
+            it 'redirects to have the user verify their account' do
+              action
+              expect(controller).to redirect_to(verify_url)
+            end
+          end
         end
       end
 
