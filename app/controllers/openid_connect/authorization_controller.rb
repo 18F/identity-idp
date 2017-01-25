@@ -5,6 +5,8 @@ module OpenidConnect
     def index
       @authorize_form = OpenidConnectAuthorizeForm.new(params)
 
+      return redirect_to verify_url if identity_needs_verification?
+
       success = @authorize_form.valid?
       analytics.track_event(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                             success: success,
@@ -32,6 +34,12 @@ module OpenidConnect
       analytics.track_event(Analytics::OPENID_CONNECT_DECLINE, client_id: @authorize_form.client_id)
 
       render nothing: true # TODO: should we try to redirect back with an error?
+    end
+
+    private
+
+    def identity_needs_verification?
+      @authorize_form.loa3_requested? && decorated_user.identity_not_verified?
     end
   end
 end

@@ -12,7 +12,7 @@ class IdTokenBuilder
       iss: root_url,
       aud: identity.service_provider,
       sub: identity.uuid,
-      acr: '', # TODO: the ACR from the request
+      acr: acr,
       nonce: identity.nonce,
       jti: '', # a unique identifier for the token which can be used to prevent reuse of the token
     }.merge(id_token_timestamp_values)
@@ -30,5 +30,17 @@ class IdTokenBuilder
       iat: now,
       nbf: now
     }
+  end
+
+  def acr
+    ial = identity.ial
+    case ial
+    when 1
+      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+    when 3
+      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+    else
+      raise "Unknown ial #{ial}"
+    end
   end
 end
