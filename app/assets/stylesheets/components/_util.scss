@@ -6,6 +6,8 @@
 
 .no-hover-decoration:hover { text-decoration: none; }
 
+.invisible { visibility: hidden; }
+
 @media #{$breakpoint-sm} {
   .sm-maxw-190p { max-width: 190px; }
 
