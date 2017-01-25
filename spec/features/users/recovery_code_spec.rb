@@ -68,6 +68,43 @@ feature 'View recovery code' do
         expect(current_path).to eq(profile_path)
       end
     end
+
+    context 'informational text' do
+      let(:accordion_selector) { generate_class_selector('accordion') }
+      let(:content_selector) { generate_class_selector('accordion-content') }
+
+      before do
+        sign_in_and_2fa_user
+        click_link t('profile.links.regenerate_recovery_code')
+      end
+
+      scenario 'it displays the recovery code info header' do
+        expect(page).to have_content(t('users.recovery_code.help_text_header'))
+      end
+
+      context 'with javascript disabled' do
+        scenario 'content is visible by default' do
+          expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='true']")
+          expect(page).to have_xpath("//#{content_selector}[@aria-hidden='false']")
+          expect(page).to have_content(t('users.recovery_code.help_text'))
+        end
+      end
+
+      context 'with javascript enabled', js: true do
+        scenario 'content is hidden by default' do
+          expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='false']")
+          expect(page).not_to have_content(t('users.recovery_code.help_text'))
+
+          page.find('.accordion-header').click
+          expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='true']")
+          expect(page).to have_content(t('users.recovery_code.help_text'))
+        end
+      end
+    end
+  end
+
+  def generate_class_selector(klass)
+    "*[contains(concat(' ', normalize-space(@class), ' '), ' #{klass} ')]"
   end
 
   def sign_up_and_view_recovery_code
