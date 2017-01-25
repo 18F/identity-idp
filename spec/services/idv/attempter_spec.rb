@@ -3,6 +3,7 @@ require 'rails_helper'
 describe Idv::Attempter do
   let(:current_user) { build(:user) }
   let(:subject) { Idv::Attempter.new(current_user) }
+  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
 
   describe '#reset' do
     it 'resets idv_attempts to zero for user' do
@@ -62,7 +63,7 @@ describe Idv::Attempter do
 
     context 'max attempts exceeded' do
       before do
-        current_user.idv_attempts = 3
+        current_user.idv_attempts = max_attempts
       end
 
       context 'inside the window' do
