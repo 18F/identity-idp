@@ -2,6 +2,7 @@ require 'rails_helper'
 include Features::LocalizationHelper
 
 describe Verify::PhoneController do
+  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
   let(:good_phone) { '+1 (555) 555-0000' }
   let(:bad_phone) { '+1 (555) 555-5555' }
 
@@ -133,6 +134,25 @@ describe Verify::PhoneController do
             phone: good_phone
           }
           expect(subject.idv_session.params).to eq expected_params
+        end
+      end
+
+      context 'attempt window has expired, previous attempts == max-1' do
+        let(:two_days_ago) { Time.zone.now - 2.days }
+        let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+
+        before do
+          stub_subject(user)
+          user.idv_attempts = max_attempts - 1
+          user.idv_attempted_at = two_days_ago
+        end
+
+        it 'allows and does not affect attempt counter' do
+          put :create, idv_phone_form: { phone: good_phone }
+
+          expect(response).to redirect_to verify_review_path
+          expect(user.idv_attempts).to eq(max_attempts - 1)
+          expect(user.idv_attempted_at).to eq two_days_ago
         end
       end
     end
