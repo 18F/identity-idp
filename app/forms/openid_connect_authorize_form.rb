@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
@@ -61,6 +62,10 @@ class OpenidConnectAuthorizeForm
     }
   end
 
+  def loa3_requested?
+    ial == 3
+  end
+
   private
 
   def parse_acr_values(acr_values)
@@ -97,7 +102,20 @@ class OpenidConnectAuthorizeForm
 
   def link_identity_to_client_id(current_user, rails_session_id)
     identity_linker = IdentityLinker.new(current_user, client_id)
-    identity_linker.link_identity(nonce: nonce, session_uuid: rails_session_id)
+    identity_linker.link_identity(
+      nonce: nonce,
+      session_uuid: rails_session_id,
+      ial: ial
+    )
+  end
+
+  def ial
+    case acr_values.sort.max
+    when Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+      1
+    when Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      3
+    end
   end
 
   def success_redirect_uri(rails_session_id)
@@ -117,3 +135,4 @@ class OpenidConnectAuthorizeForm
     @_service_provider ||= ServiceProvider.new(client_id)
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -49,6 +49,13 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(identity.session_uuid).to eq(rails_session_id)
         expect(identity.nonce).to eq(nonce)
       end
+
+      it 'sets the max ial/loa from the request on the identity' do
+        result
+
+        identity = user.identities.where(service_provider: client_id).first
+        expect(identity.ial).to eq(3)
+      end
     end
 
     context 'with invalid params' do
@@ -144,6 +151,28 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     it 'is parsed into an array of valid ACR values' do
       expect(form.acr_values).to eq(%w(http://idmanagement.gov/ns/assurance/loa/1))
+    end
+  end
+
+  describe '#loa3_requested?' do
+    subject(:loa3_requested?) { form.loa3_requested? }
+    context 'with loa1' do
+      let(:acr_values) { Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF }
+      it { expect(loa3_requested?).to eq(false) }
+    end
+
+    context 'with loa3' do
+      let(:acr_values) { Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF }
+      it { expect(loa3_requested?).to eq(true) }
+    end
+
+    context 'with loa1 and loa3' do
+      it { expect(loa3_requested?).to eq(true) }
+    end
+
+    context 'with a malformed loa' do
+      let(:acr_values) { 'foobarbaz' }
+      it { expect(loa3_requested?).to eq(false) }
     end
   end
 

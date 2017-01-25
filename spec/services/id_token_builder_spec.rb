@@ -6,7 +6,8 @@ RSpec.describe IdTokenBuilder do
   let(:identity) do
     build(:identity,
           nonce: SecureRandom.hex,
-          uuid: SecureRandom.uuid)
+          uuid: SecureRandom.uuid,
+          ial: 3)
   end
 
   subject(:builder) { IdTokenBuilder.new(identity) }
@@ -42,9 +43,7 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the acr to the request acr' do
-      pending 'actually setting the acr value'
-
-      expect(decoded_payload[:acr]).to_not eq('')
+      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
     end
 
     it 'sets the jti to something meaningful' do
