@@ -20,5 +20,3 @@ p = t('idv.messages.phone.same_as_2fa')
   = f.input :phone, required: true
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
 = render 'shared/cancel', link: verify_cancel_path
-
-== javascript_include_tag 'misc/page-unload-warning'
