@@ -40,11 +40,17 @@ module Idv
       idv_session.resolution.try(:errors)
     end
 
+    def vendor_reasons
+      resolution = idv_session.resolution
+      resolution.vendor_resp.reasons if resolution
+    end
+
     def analytics_result
       {
         success: complete?,
         idv_attempts_exceeded: attempts_exceeded?,
-        errors: errors
+        errors: errors,
+        vendor: { reasons: vendor_reasons }
       }
     end
 

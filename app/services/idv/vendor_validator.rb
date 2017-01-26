@@ -9,6 +9,10 @@ module Idv
       @vendor_params = vendor_params
     end
 
+    def reasons
+      result.vendor_resp.reasons
+    end
+
     def validate
       raise NotImplementedError "Must implement validate for #{self}"
     end
