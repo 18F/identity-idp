@@ -33,4 +33,4 @@ RUN bundle install --without deployment deploy --jobs 20 --retry 5
 COPY . /upaya
 
 EXPOSE 3000
-CMD ["rails", "server", "-b", "0.0.0.0"]
+CMD ["rackup", "config.ru", "--host", "0.0.0.0", "--port", "3000"]
