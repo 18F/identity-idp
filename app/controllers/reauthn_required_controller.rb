@@ -6,7 +6,7 @@ class ReauthnRequiredController < ApplicationController
     return unless user_signed_in?
     return if recently_authenticated?
     store_location_for(:user, request.url)
-    user_session[:context] = 'authentication'
+    user_session[:context] = 'reauthentication'
     redirect_to user_password_confirm_url
   end
 

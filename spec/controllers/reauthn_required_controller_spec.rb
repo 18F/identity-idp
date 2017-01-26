@@ -39,7 +39,7 @@ describe ReauthnRequiredController do
       it 'sets context to authentication' do
         get :show
 
-        expect(controller.user_session[:context]).to eq 'authentication'
+        expect(controller.user_session[:context]).to eq 'reauthentication'
       end
     end
   end
