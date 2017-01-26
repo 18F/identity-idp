@@ -34,18 +34,17 @@
 .hint--no-animate {
   &::before,
   &::after {
-    display: none;
+    visibility: hidden;
   }
 
   &:focus::before,
   &:focus::after,
   &:hover::before,
   &:hover::after {
-    display: block;
+    visibility: visible;
   }
 }
 
 .img-tooltip {
   vertical-align: middle;
 }
-

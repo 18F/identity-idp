@@ -1,14 +1,14 @@
 module TwoFactorAuthCode
   class AuthenticatorDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
     def header
-      t('devise.two_factor_authentication.header_text')
+      t('devise.two_factor_authentication.totp_header_text')
     end
 
     def help_text
       t("instructions.2fa.#{delivery_method}.confirm_code_html",
         email: content_tag(:strong, user_email),
         app: content_tag(:strong, APP_NAME),
-        tooltip: tooltip(t('tooltips.authentication_app')))
+        tooltip: view.tooltip(t('tooltips.authentication_app')))
     end
 
     def fallback_links

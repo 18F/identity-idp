@@ -13,7 +13,8 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:reauthn?).and_return(false)
 
-    @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(presenter_data)
+    @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
+                 new(presenter_data, ApplicationController.new.view_context)
 
     render
   end
@@ -21,19 +22,11 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   it_behaves_like 'an otp form'
 
   it 'shows the correct header' do
-    expect(rendered).to have_content t('devise.two_factor_authentication.header_text')
+    expect(rendered).to have_content t('devise.two_factor_authentication.totp_header_text')
   end
 
   it 'shows the correct help text' do
-    expect(rendered).to have_content(
-      t('instructions.2fa.authenticator.confirm_code_html',
-        email: user.email,
-        app: APP_NAME)
-    )
-  end
-
-  it 'prompts to enter code from app' do
-    expect(rendered).to have_content t('devise.two_factor_authentication.totp_header_text')
+    expect(rendered).to have_content 'Enter the code from your authenticator app.'
     expect(rendered).to have_content "enter the code corresponding to #{user.email}"
   end
 
