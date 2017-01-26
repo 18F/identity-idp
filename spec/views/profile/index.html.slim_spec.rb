@@ -37,8 +37,8 @@ describe 'profile/index.html.slim' do
 
       render
 
-      expect(rendered).to have_xpath("//input[@value='Disable']")
-      expect(rendered).not_to have_link('Enable', href: authenticator_start_path)
+      expect(rendered).to have_button t('forms.buttons.disable')
+      expect(rendered).not_to have_link(t('forms.buttons.enable'), href: authenticator_start_path)
     end
   end
 
