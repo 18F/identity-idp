@@ -65,6 +65,31 @@ feature 'Changing authentication factor' do
       end
     end
 
+    context 'resending OTP code to old phone' do
+      it 'resends OTP and prompts user to enter their code' do
+        allow(SmsOtpSenderJob).to receive(:perform_later)
+
+        user = sign_in_and_2fa_user
+        old_phone = user.phone
+
+        Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+          visit manage_phone_path
+          complete_2fa_confirmation_without_entering_otp
+          click_link t('links.two_factor_authentication.resend_code.sms')
+
+          expect(SmsOtpSenderJob).to have_received(:perform_later).
+            with(
+              code: user.reload.direct_otp,
+              phone: old_phone,
+              otp_created_at: user.reload.direct_otp_sent_at.to_s
+            )
+
+          expect(current_path).
+            to eq login_two_factor_path(delivery_method: 'sms')
+        end
+      end
+    end
+
     scenario 'editing email' do
       visit manage_email_path
       complete_2fa_confirmation

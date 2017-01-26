@@ -52,7 +52,7 @@ module TwoFactorAuthenticatable
   end
 
   def authentication_context?
-    context == 'authentication'
+    context == 'authentication' || context == 'reauthentication'
   end
 
   def confirmation_context?
@@ -71,7 +71,7 @@ module TwoFactorAuthenticatable
   # You can pass in any "type" with a corresponding I18n key in
   # devise.two_factor_authentication.invalid_#{type}
   def handle_invalid_otp(type: 'otp')
-    update_invalid_user if current_user.two_factor_enabled? && context == 'authentication'
+    update_invalid_user if current_user.two_factor_enabled? && authentication_context?
 
     flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
@@ -183,7 +183,7 @@ module TwoFactorAuthenticatable
   end
 
   def display_phone_to_deliver_to
-    if context == 'authentication'
+    if authentication_context?
       decorated_user.masked_two_factor_phone_number
     else
       user_session[:unconfirmed_phone]
