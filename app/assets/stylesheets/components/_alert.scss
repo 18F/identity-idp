@@ -5,8 +5,7 @@ $ico-offset: -10px;
   background-color: $blue-light;
   border-radius: $space-1;
   color: #5b616a;
-  font-size: $sm-h6;
-  font-weight: $bold-font-weight;
+  font-size: 1rem;
   line-height: $line-height-2;
   margin-bottom: $space-4;
   padding: $space-2 1.5rem;
@@ -26,22 +25,22 @@ $ico-offset: -10px;
 
 .alert-notice,
 .alert-success {
-  background-color: #f0faed;
+  background-color: #ebfcef;
 
-  &::before { background-image: url(image-path('alert/ico-check.svg')); }
+  &::before { background-image: url(image-path('alert/success.svg')); }
 }
 
 .alert-error,
 .alert-alert {
-  background-color: #fff0f2;
+  background-color: #fff0f3;
 
-  &::before { background-image: url(image-path('alert/ico-exclamation.svg')); }
+  &::before { background-image: url(image-path('alert/error.svg')); }
 }
 
 .alert-warning {
-  background-color: #fff4db;
+  background-color: #fffccf;
 
-  &::before { background-image: url(image-path('alert/ico-warning.svg')); }
+  &::before { background-image: url(image-path('alert/warning.svg')); }
 }
 
 .alert-no-icon::before { content: none; }
