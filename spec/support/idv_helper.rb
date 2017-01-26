@@ -48,10 +48,6 @@ module IdvHelper
     click_submit_default
   end
 
-  def click_acknowledge_recovery_code
-    click_button t('forms.buttons.continue')
-  end
-
   def stub_idv_session
     stub_sign_in(user)
     idv_session = Idv::Session.new(subject.user_session, user)
