@@ -58,7 +58,7 @@ module Idv
     end
 
     def analytics_result
-      { success: complete?, errors: errors }
+      { success: complete?, errors: errors, vendor: { reasons: vendor_reasons } }
     end
 
     def track_event
