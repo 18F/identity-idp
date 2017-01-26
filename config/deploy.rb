@@ -77,6 +77,6 @@ namespace :deploy do
   before 'assets:precompile', :browserify
   after 'deploy:updated', 'newrelic:notice_deployment'
   after 'deploy:log_revision', :deploy_json
-  after :deploy, 'deploy:mod_perms'
+  after 'deploy', 'deploy:mod_perms'
 end
 # rubocop:enable Metrics/BlockLength
