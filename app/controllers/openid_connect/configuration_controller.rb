@@ -26,7 +26,7 @@ module OpenidConnect
     def crypto_configuration
       {
         id_token_signing_alg_values_supported: %w(RS256),
-        token_endpoint_auth_methods_supported: %w(private_key_jwt),
+        token_endpoint_auth_methods_supported: %w(client_secret_post),
         token_endpoint_auth_signing_alg_values_supported: %w(RS256)
       }
     end

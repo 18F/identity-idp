@@ -21,7 +21,7 @@ RSpec.describe OpenidConnect::ConfigurationController do
         expect(json_response[:acr_values_supported]).to match_array(expected_loa)
         expect(json_response[:subject_types_supported]).to eq(%w(pairwise))
         expect(json_response[:id_token_signing_alg_values_supported]).to eq(%w(RS256))
-        expect(json_response[:token_endpoint_auth_methods_supported]).to eq(%w(private_key_jwt))
+        expect(json_response[:token_endpoint_auth_methods_supported]).to eq(%w(client_secret_post))
         expect(json_response[:token_endpoint_auth_signing_alg_values_supported]).to eq(%w(RS256))
       end
     end

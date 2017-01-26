@@ -9,30 +9,20 @@ RSpec.describe OpenidConnectTokenForm do
     {
       grant_type: grant_type,
       code: code,
-      client_assertion_type: client_assertion_type,
-      client_assertion: client_assertion
+      client_id: client_id,
+      client_secret: client_secret,
+      redirect_uri: redirect_uri
     }
   end
 
   let(:grant_type) { 'authorization_code' }
   let(:code) { SecureRandom.hex }
-  let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
-  let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
 
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:nonce) { SecureRandom.hex }
-  let(:jwt_payload) do
-    {
-      iss: client_id,
-      sub: client_id,
-      aud: openid_connect_token_url,
-      jti: SecureRandom.hex,
-      exp: 5.minutes.from_now.to_i
-    }
-  end
-
-  let(:client_private_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys/saml_test_sp.key').read) }
-  let(:server_public_key) { RequestKeyManager.private_key.public_key }
+  let(:service_provider) { ServiceProvider.new(client_id) }
+  let(:client_secret) { service_provider.metadata[:client_secret] }
+  let(:redirect_uri) { service_provider.metadata[:redirect_uri] }
 
   let(:user) { create(:user) }
 
@@ -64,61 +54,6 @@ RSpec.describe OpenidConnectTokenForm do
         expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
       end
     end
-
-    context 'with a bad client_assertion_type' do
-      let(:grant_type) { 'wrong' }
-
-      it { expect(valid?).to eq(false) }
-    end
-
-    context 'with a bad client_assertion' do
-      context 'with a bad issuer' do
-        before { jwt_payload[:iss] = 'wrong' }
-
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).
-            to include("Invalid issuer. Expected #{client_id}, received wrong")
-        end
-      end
-
-      context 'with a bad subject' do
-        before { jwt_payload[:sub] = 'wrong' }
-
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).
-            to include("Invalid subject. Expected #{client_id}, received wrong")
-        end
-      end
-
-      context 'with a bad audience' do
-        before { jwt_payload[:exp] = 5.minutes.ago.to_i }
-
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).to include('Signature has expired')
-        end
-      end
-
-      context 'with an already expired assertion' do
-        before { jwt_payload[:exp] = 5.minutes.ago.to_i }
-
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).to include('Signature has expired')
-        end
-      end
-
-      context 'signed by the wrong key' do
-        let(:client_private_key) { OpenSSL::PKey::RSA.new(2048) }
-
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).to include('Signature verification raised')
-        end
-      end
-    end
   end
 
   describe '#submit' do
@@ -142,15 +77,12 @@ RSpec.describe OpenidConnectTokenForm do
         expect(result[:success]).to eq(false)
         expect(result[:errors]).to be_present
       end
-
-      it 'has a nil client_id when there is insufficient data' do
-        expect(result).to include(client_id: nil)
-      end
     end
   end
 
   describe '#response' do
     subject(:response) { form.response }
+    let(:server_public_key) { RequestKeyManager.private_key.public_key }
 
     context 'with valid params' do
       before do
