@@ -2,17 +2,16 @@
 
 
 h1.h3.my0 = t('headings.choose_otp_delivery')
-p.mt-tiny.mb0#2fa-description
-  = t('devise.two_factor_authentication.choose_otp_delivery', phone: @phone_number)
 = simple_form_for(@otp_delivery_selection_form,
     url: otp_send_path,
     method: :get,
-    role: 'form', html: { class: 'mt2 sm-mt3' }) do |f|
+    role: 'form', html: { class: 'mt0' }) do |f|
   - if reauthn?
     = f.input :reauthn, as: :hidden, input_html: { value: 'true' }
   .mb3
-    fieldset.p0.border-none
-      legend.hide = t('devise.two_factor_authentication.otp_method.title')
+    fieldset.m0.p0.border-none
+      legend.mt-tiny.mb2.sm-mb3 = t('devise.two_factor_authentication.choose_otp_delivery',
+                                    phone: @phone_number)
       label.radio-btn.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
         .radio
           = f.radio_button :otp_method, 'sms', checked: true
