@@ -58,7 +58,7 @@ module Users
     end
 
     def phone_to_deliver_to
-      return current_user.phone if context == 'authentication'
+      return current_user.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
     end
