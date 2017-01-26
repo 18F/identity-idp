@@ -29,6 +29,10 @@ module Idv
       vendor_validator.errors if form_valid?
     end
 
+    def vendor_reasons
+      vendor_validator.reasons if form_valid?
+    end
+
     def vendor_params
       finance_type = idv_form.finance_type
       { finance_type => idv_form.idv_params[finance_type] }
@@ -37,7 +41,8 @@ module Idv
     def result
       {
         success: success,
-        errors: errors
+        errors: errors,
+        vendor: { reasons: vendor_reasons }
       }
     end
   end

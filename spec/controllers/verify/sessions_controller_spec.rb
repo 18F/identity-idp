@@ -89,7 +89,8 @@ describe Verify::SessionsController do
           result = {
             success: false,
             idv_attempts_exceeded: false,
-            errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+            errors: { ssn: [t('idv.errors.duplicate_ssn')] },
+            vendor: { reasons: nil }
           }
 
           expect(@analytics).to receive(:track_event).
@@ -140,7 +141,8 @@ describe Verify::SessionsController do
             idv_attempts_exceeded: false,
             errors: {
               first_name: ['Unverified first name.']
-            }
+            },
+            vendor: { reasons: ['The name was suspicious'] }
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -166,7 +168,8 @@ describe Verify::SessionsController do
           result = {
             success: true,
             idv_attempts_exceeded: false,
-            errors: {}
+            errors: {},
+            vendor: { reasons: ['Everything looks good'] }
           }
 
           expect(@analytics).to have_received(:track_event).

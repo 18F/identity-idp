@@ -45,7 +45,8 @@ describe Idv::ProfileStep do
       result = {
         success: true,
         idv_attempts_exceeded: false,
-        errors: {}
+        errors: {},
+        vendor: { reasons: ['Everything looks good'] }
       }
 
       expect_analytics_result(result)
@@ -62,7 +63,8 @@ describe Idv::ProfileStep do
         idv_attempts_exceeded: false,
         errors: {
           ssn: ['Unverified SSN.']
-        }
+        },
+        vendor: { reasons: ['The SSN was suspicious'] }
       }
 
       expect_analytics_result(result)
@@ -79,7 +81,8 @@ describe Idv::ProfileStep do
         idv_attempts_exceeded: false,
         errors: {
           first_name: ['Unverified first name.']
-        }
+        },
+        vendor: { reasons: ['The name was suspicious'] }
       }
 
       expect_analytics_result(result)
@@ -98,7 +101,8 @@ describe Idv::ProfileStep do
       result = {
         success: false,
         idv_attempts_exceeded: true,
-        errors: {}
+        errors: {},
+        vendor: { reasons: nil }
       }
 
       expect_analytics_result(result)

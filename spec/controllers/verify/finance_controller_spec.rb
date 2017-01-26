@@ -77,7 +77,7 @@ describe Verify::FinanceController do
 
         put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-        result = { success: true, errors: {} }
+        result = { success: true, errors: {}, vendor: { reasons: ['Good number'] } }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_FINANCE_CONFIRMATION, result
@@ -135,7 +135,8 @@ describe Verify::FinanceController do
 
         result = {
           success: true,
-          errors: {}
+          errors: {},
+          vendor: { reasons: ['Good number'] }
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -150,7 +151,8 @@ describe Verify::FinanceController do
 
         result = {
           success: false,
-          errors: { ccn: ['The ccn could not be verified.'] }
+          errors: { ccn: ['The ccn could not be verified.'] },
+          vendor: { reasons: ['Bad number'] }
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -166,7 +168,8 @@ describe Verify::FinanceController do
 
         result = {
           success: false,
-          errors: { ccn: ['Credit card number should be only last 8 digits.'] }
+          errors: { ccn: ['Credit card number should be only last 8 digits.'] },
+          vendor: { reasons: nil }
         }
 
         expect(@analytics).to have_received(:track_event).

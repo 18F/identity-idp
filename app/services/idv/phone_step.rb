@@ -28,6 +28,10 @@ module Idv
       vendor_validator.errors if form_valid?
     end
 
+    def vendor_reasons
+      vendor_validator.reasons if form_valid?
+    end
+
     def update_idv_session
       idv_session.phone_confirmation = true
       idv_session.params = idv_form.idv_params
