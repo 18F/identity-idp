@@ -42,7 +42,7 @@ feature 'IdV session' do
       click_button t('forms.buttons.submit.default')
 
       expect(current_url).to eq verify_confirmations_url
-      expect(page).to have_content(t('idv.titles.complete'))
+      expect(page).to have_content(t('headings.recovery_code'))
       click_acknowledge_recovery_code
 
       expect(current_url).to eq(profile_url)
@@ -262,7 +262,7 @@ feature 'IdV session' do
       end
 
       scenario 'recovery code presented on success' do
-        expect(page).to have_content(t('idv.titles.complete'))
+        expect(page).to have_content(t('headings.recovery_code'))
       end
 
       it_behaves_like 'recovery code page'

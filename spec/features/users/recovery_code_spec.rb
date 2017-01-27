@@ -61,7 +61,7 @@ feature 'View recovery code' do
         click_link t('profile.links.regenerate_recovery_code')
       end
 
-      it_behaves_like 'recovery code page', @user
+      it_behaves_like 'recovery code page'
     end
   end
 end
