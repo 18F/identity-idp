@@ -17,4 +17,4 @@ en:
       errors:
         no_authorization: No Authorization header provided
         malformed_authorization: Malformed Authorization header
-        not_found: Could not find authorization for the contents of the provided id_token
+        not_found: Could not find authorization for the contents of the provided access_token or it may have expired

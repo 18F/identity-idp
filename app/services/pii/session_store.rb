@@ -35,6 +35,12 @@ module Pii
         send(:set_session, {}, session_uuid, session_data, expire_after: expiration.to_i)
     end
 
+    # @api private
+    # Only used for convenience in tests
+    def destroy
+      session_store.send(:destroy_session_from_sid, session_uuid)
+    end
+
     private
 
     def session_store
