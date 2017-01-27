@@ -4,7 +4,7 @@ en:
     buttons:
       back: Back
       continue: Continue
-      continue_to: Continue to %{url}
+      continue_to: Continue to %{sp}
       disable: Disable
       edit: Edit
       enable: Enable
