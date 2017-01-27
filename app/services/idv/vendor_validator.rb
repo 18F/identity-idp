@@ -13,10 +13,6 @@ module Idv
       result.vendor_resp.reasons
     end
 
-    def validate
-      raise NotImplementedError "Must implement validate for #{self}"
-    end
-
     private
 
     def idv_vendor

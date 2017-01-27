@@ -16,44 +16,39 @@ module Verify
     end
 
     def create
-      process_step
+      result = step.submit
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result.to_h)
+
+      if result.success?
+        redirect_to verify_finance_path
+      else
+        process_failure
+      end
     end
 
     private
 
-    def process_step
-      if step.complete
-        redirect_to verify_finance_path
-      elsif step.attempts_exceeded?
+    def step
+      @_step ||= Idv::ProfileStep.new(
+        idv_form: idv_profile_form,
+        idv_session: idv_session,
+        params: profile_params
+      )
+    end
+
+    def process_failure
+      if step.attempts_exceeded?
         redirect_to verify_fail_path
-      elsif duplicate_ssn_error?
-        flash[:error] = dupe_ssn_msg
+      elsif step.duplicate_ssn?
+        flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
         render :new
       end
     end
 
-    def step
-      @_step ||= Idv::ProfileStep.new(
-        idv_form: idv_profile_form,
-        idv_session: idv_session,
-        analytics: analytics,
-        params: profile_params
-      )
-    end
-
     def confirm_step_needed
-      redirect_to verify_finance_path if idv_session.resolution.try(:success?)
-    end
-
-    def duplicate_ssn_error?
-      form_errors = idv_profile_form.errors
-      form_errors.include?(:ssn) && form_errors[:ssn].include?(dupe_ssn_msg)
-    end
-
-    def dupe_ssn_msg
-      I18n.t('idv.errors.duplicate_ssn')
+      redirect_to verify_finance_path if idv_session.profile_confirmation == true
     end
 
     def idv_profile_form

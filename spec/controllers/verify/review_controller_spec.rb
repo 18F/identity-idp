@@ -26,8 +26,7 @@ describe Verify::ReviewController do
   end
   let(:idv_session) do
     idv_session = Idv::Session.new(subject.user_session, user)
-    happy_args = { success: true, session_id: 'some-id' }
-    idv_session.resolution = Proofer::Resolution.new happy_args
+    idv_session.profile_confirmation = true
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
     idv_session
