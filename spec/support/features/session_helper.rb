@@ -10,6 +10,16 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def sign_up_and_2fa_loa1_user
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      user = sign_up_and_set_password
+      fill_in 'Phone', with: '202-555-1212'
+      select_sms_delivery
+      enter_2fa_code
+      click_acknowledge_recovery_code
+      user
+    end
+
     def signin(email, password)
       visit new_user_session_path
       fill_in_credentials_and_submit(email, password)
@@ -84,17 +94,12 @@ module Features
       )
     end
 
-    def sign_up_and_2fa
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      user = sign_up_and_set_password
-      fill_in 'Phone', with: '202-555-1212'
-      # Select SMS delivery
+    def select_sms_delivery
       click_button t('forms.buttons.send_passcode')
-      # Enter 2FA code
+    end
+
+    def enter_2fa_code
       click_button t('forms.buttons.submit.default')
-      # Acknowledge recovery code
-      click_button t('forms.buttons.continue')
-      user
     end
 
     def sign_in_live_with_2fa(user = user_with_2fa)
@@ -128,6 +133,10 @@ module Features
       sign_in_user(user)
       fill_in 'code', with: generate_totp_code(@secret)
       click_submit_default
+    end
+
+    def click_acknowledge_recovery_code
+      click_button t('forms.buttons.continue')
     end
   end
 end
