@@ -34,8 +34,7 @@ class OpenidConnectUserInfoPresenter
   def loa3_data
     @loa3_data ||= begin
       if loa3_session?
-        session = session_store.send(:load_session_from_redis, identity.session_uuid) || {}
-        Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+        Pii::SessionStore.new(identity.session_uuid).load
       else
         Pii::Attributes.new_from_hash({})
       end

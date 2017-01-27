@@ -3,8 +3,9 @@ class IdTokenBuilder
 
   attr_reader :identity
 
-  def initialize(identity)
+  def initialize(identity, custom_expiration: nil)
     @identity = identity
+    @custom_expiration = custom_expiration
   end
 
   def id_token
@@ -25,8 +26,7 @@ class IdTokenBuilder
   def id_token_timestamp_values
     now = Time.zone.now.to_i
     {
-      # TODO: match expiration to Rails session expiration
-      exp: (now + 10.minutes.to_i),
+      exp: @custom_expiration || expires,
       iat: now,
       nbf: now
     }
@@ -42,5 +42,10 @@ class IdTokenBuilder
     else
       raise "Unknown ial #{ial}"
     end
+  end
+
+  def expires
+    ttl = Pii::SessionStore.new(identity.session_uuid).ttl
+    Time.zone.now.to_i + ttl
   end
 end
