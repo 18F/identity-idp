@@ -12,14 +12,14 @@ module OpenidConnect
     private
 
     def authenticate_identity_via_bearer_token
-      verifier = IdTokenVerifier.new(request.env['HTTP_AUTHORIZATION'])
+      verifier = AccessTokenVerifier.new(request.env['HTTP_AUTHORIZATION'])
       response = verifier.submit
       analytics.track_event(Analytics::OPENID_CONNECT_BEARER_TOKEN, response.to_h)
 
       if response.success?
         @current_identity = verifier.identity
       else
-        render json: { error: verifier.errors[:id_token].join(' ') },
+        render json: { error: verifier.errors[:access_token].join(' ') },
                status: :unauthorized
       end
     end

@@ -157,7 +157,7 @@ RSpec.describe OpenidConnectTokenForm do
         Pii::SessionStore.new(code).put({}, 5.minutes.to_i)
       end
 
-      it 'has a properly-encoded id_token' do
+      it 'has a properly-encoded id_token with an expiration that matches the expires_in' do
         id_token = response[:id_token]
 
         payload, _head = JWT.decode(id_token, server_public_key, true,
@@ -166,6 +166,16 @@ RSpec.describe OpenidConnectTokenForm do
                                     aud: client_id, verify_aud: true).map(&:with_indifferent_access)
 
         expect(payload[:nonce]).to eq(nonce)
+
+        expect(response[:expires_in]).to eq(payload[:exp] - Time.zone.now.to_i)
+      end
+
+      it 'has an access_token' do
+        expect(response[:access_token]).to eq(user.identities.last.access_token)
+      end
+
+      it 'specifies its token type' do
+        expect(response[:token_type]).to eq('Bearer')
       end
     end
 
