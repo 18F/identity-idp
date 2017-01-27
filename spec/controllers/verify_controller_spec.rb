@@ -12,7 +12,7 @@ describe VerifyController do
     end
 
     it 'does not track page visit if profile is active' do
-      profile = create(:profile, :active)
+      profile = create(:profile, :active, :verified)
 
       stub_sign_in(profile.user)
       stub_analytics
@@ -26,7 +26,7 @@ describe VerifyController do
   describe '#activated' do
     context 'user has an active profile' do
       it 'allows direct access' do
-        profile = create(:profile, :active)
+        profile = create(:profile, :active, :verified)
 
         stub_sign_in(profile.user)
 
@@ -50,7 +50,7 @@ describe VerifyController do
   describe '#cancel' do
     context 'user has an active profile' do
       it 'does not allow direct access and redirects to activated url' do
-        profile = create(:profile, :active)
+        profile = create(:profile, :active, :verified)
 
         stub_sign_in(profile.user)
 
@@ -74,7 +74,7 @@ describe VerifyController do
   describe '#fail' do
     context 'user has an active profile' do
       it 'does not allow direct access and redirects to activated url' do
-        profile = create(:profile, :active)
+        profile = create(:profile, :active, :verified)
 
         stub_sign_in(profile.user)
 
@@ -112,7 +112,7 @@ describe VerifyController do
   describe '#retry' do
     context 'user has an active profile' do
       it 'does not allow direct access and redirects to activated url' do
-        profile = create(:profile, :active)
+        profile = create(:profile, :active, :verified)
 
         stub_sign_in(profile.user)
 
