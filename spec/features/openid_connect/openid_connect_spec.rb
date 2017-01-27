@@ -64,9 +64,12 @@ feature 'OpenID Connect' do
       expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:iss]).to eq(root_url)
 
+      access_token = token_response[:access_token]
+      expect(access_token).to be_present
+
       page.driver.get openid_connect_userinfo_path,
                       {},
-                      'HTTP_AUTHORIZATION' => "Bearer #{id_token}"
+                      'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
       userinfo_response = JSON.parse(page.body).with_indifferent_access
       expect(userinfo_response[:sub]).to eq(sub)
