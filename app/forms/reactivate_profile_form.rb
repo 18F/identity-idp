@@ -55,7 +55,7 @@ class ReactivateProfileForm
   end
 
   def validate_recovery_code
-    return if recovery_code.blank? || valid_recovery_code?
+    return if recovery_code.blank? || (valid_recovery_code? && recovery_code_decrypts?)
     errors.add :recovery_code, :recovery_code_incorrect
   end
 
@@ -66,6 +66,12 @@ class ReactivateProfileForm
 
   def valid_password?
     user.valid_password?(password)
+  end
+
+  def recovery_code_decrypts?
+    decrypted_pii.present?
+  rescue Pii::EncryptionError => _err
+    false
   end
 
   def valid_recovery_code?

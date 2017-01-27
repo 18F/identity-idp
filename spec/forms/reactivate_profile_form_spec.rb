@@ -16,10 +16,12 @@ describe ReactivateProfileForm do
     let(:recovery_code) { '123' }
     let(:valid_recovery_code?) { true }
     let(:valid_password?) { true }
+    let(:recovery_code_decrypts?) { true }
 
     before do
       allow(form).to receive(:valid_password?).and_return(valid_password?)
       allow(form).to receive(:valid_recovery_code?).and_return(valid_recovery_code?)
+      allow(form).to receive(:recovery_code_decrypts?).and_return(recovery_code_decrypts?)
     end
 
     context 'when required attributes are not present' do
