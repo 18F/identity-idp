@@ -225,30 +225,69 @@ feature 'Password Recovery' do
     end
   end
 
-  scenario 'LOA3 user resets password and reactivates profile with recovery code', email: true do
-    user = create(:user, :signed_up)
+  context 'LOA3 user' do
+    let(:user) { create(:user, :signed_up) }
+    let(:new_password) { 'some really awesome new password' }
+    let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01' } }
 
-    recovery_code = recovery_code_from_pii(user, ssn: '1234', dob: '1920-01-01')
-    password = 'some really awesome new password'
+    scenario 'resets password and reactivates profile with recovery code', email: true do
+      recovery_code = recovery_code_from_pii(user, pii)
 
-    visit new_user_password_path
-    fill_in 'Email', with: user.email
-    click_button t('forms.buttons.continue')
-    open_last_email
-    click_email_link_matching(/reset_password_token/)
+      visit new_user_password_path
+      fill_in 'Email', with: user.email
+      click_button t('forms.buttons.continue')
+      open_last_email
+      click_email_link_matching(/reset_password_token/)
 
-    reset_password_and_sign_back_in(user, password)
-    click_submit_default
-    enter_correct_otp_code_for_user(user)
+      reset_password_and_sign_back_in(user, new_password)
+      click_submit_default
+      enter_correct_otp_code_for_user(user)
 
-    expect(page).to have_content t('profile.index.reactivation.instructions')
-    click_link t('profile.index.reactivation.reactivate_button')
+      expect(page).to have_content t('profile.index.reactivation.instructions')
+      click_link t('profile.index.reactivation.reactivate_button')
 
-    fill_in 'Password', with: password
-    fill_in 'Recovery code', with: recovery_code
-    click_button t('forms.reactivate_profile.submit')
+      fill_in 'Password', with: new_password
+      fill_in 'Recovery code', with: recovery_code
+      click_button t('forms.reactivate_profile.submit')
 
-    expect(page).to have_content t('idv.messages.recovery_code')
+      expect(page).to have_content t('idv.messages.recovery_code')
+    end
+
+    scenario 'resets password, makes recovery code, attempts reactivate profile', email: true do
+      _recovery_code = recovery_code_from_pii(user, pii)
+
+      visit new_user_password_path
+      fill_in 'Email', with: user.email
+      click_button t('forms.buttons.continue')
+      open_last_email
+      click_email_link_matching(/reset_password_token/)
+
+      reset_password_and_sign_back_in(user, new_password)
+      click_submit_default
+      enter_correct_otp_code_for_user(user)
+
+      expect(page).to have_content t('profile.index.reactivation.instructions')
+
+      visit manage_recovery_code_path
+
+      new_recovery_code_words = []
+      page.all(:css, 'p[data-recovery="word"]').each do |node|
+        new_recovery_code_words << node.text
+      end
+      new_recovery_code = new_recovery_code_words.join(' ')
+
+      click_on(t('forms.buttons.continue'))
+
+      expect(page).to have_content t('profile.index.reactivation.instructions')
+
+      click_link t('profile.index.reactivation.reactivate_button')
+
+      fill_in 'Password', with: new_password
+      fill_in 'Recovery code', with: new_recovery_code
+      click_button t('forms.reactivate_profile.submit')
+
+      expect(page).to have_content t('errors.messages.recovery_code_incorrect')
+    end
   end
 
   scenario 'user takes too long to click the reset password link' do
