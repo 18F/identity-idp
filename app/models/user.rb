@@ -85,7 +85,7 @@ class User < ActiveRecord::Base
   end
 
   def active_profile
-    profiles.find(&:active?)
+    @_active_profile ||= profiles.verified.find(&:active?)
   end
 
   # This user's most recently activated profile that has also been deactivated
