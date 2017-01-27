@@ -168,6 +168,19 @@ production:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-int':
+    acs_url: 'https://sp.int.login.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.int.login.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.int.login.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_rails_demo'
+    agency: 'A Gov Agency'
+    friendly_name: 'Demo SP Application'
+    logo: 'generic.svg'
+    return_to_sp_url: 'https://sp.int.login.gov'
+    attribute_bundle:
+      - email
+
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
     acs_url: 'https://sp.demo.login.gov/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://sp.demo.login.gov/auth/saml/logout'
