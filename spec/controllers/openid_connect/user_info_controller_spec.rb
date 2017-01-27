@@ -21,7 +21,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::OPENID_CONNECT_BEARER_TOKEN,
-               success: false, errors: hash_including(:id_token))
+               success: false, errors: hash_including(:access_token))
 
         action
       end
@@ -41,7 +41,7 @@ RSpec.describe OpenidConnect::UserInfoController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::OPENID_CONNECT_BEARER_TOKEN,
-               success: false, errors: hash_including(:id_token))
+               success: false, errors: hash_including(:access_token))
 
         action
       end
@@ -60,22 +60,22 @@ RSpec.describe OpenidConnect::UserInfoController do
         stub_analytics
         expect(@analytics).to receive(:track_event).
           with(Analytics::OPENID_CONNECT_BEARER_TOKEN,
-               success: false, errors: hash_including(:id_token))
+               success: false, errors: hash_including(:access_token))
 
         action
       end
     end
 
     context 'with a valid bearer token' do
-      let(:authorization_header) { "Bearer #{id_token}" }
-      let(:id_token) { SecureRandom.hex }
+      let(:authorization_header) { "Bearer #{access_token}" }
+      let(:access_token) { SecureRandom.hex }
       let(:identity) { build(:identity, user: build(:user)) }
 
       before do
-        fake_verifier = instance_double(IdTokenVerifier,
+        fake_verifier = instance_double(AccessTokenVerifier,
                                         identity: identity,
                                         submit: FormResponse.new(success: true, errors: {}))
-        expect(IdTokenVerifier).to receive(:new).
+        expect(AccessTokenVerifier).to receive(:new).
           with(authorization_header).and_return(fake_verifier)
       end
 

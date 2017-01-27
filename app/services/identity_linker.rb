@@ -22,7 +22,8 @@ IdentityLinker = Struct.new(:user, :provider) do
       last_authenticated_at: Time.current,
       session_uuid: session_uuid,
       nonce: nonce,
-      ial: ial
+      ial: ial,
+      access_token: SecureRandom.urlsafe_base64
     }
   end
 end
