@@ -154,7 +154,7 @@ describe UserDecorator do
       end
 
       context 'with a verified account' do
-        let(:user) { build(:user, profiles: [verified_profile]) }
+        let(:user) { create(:user, profiles: [verified_profile]) }
 
         it { expect(partial).to eq('profile/verified_account_badge') }
       end
@@ -170,7 +170,7 @@ describe UserDecorator do
       end
 
       context 'with a verified account' do
-        let(:user) { build(:user, profiles: [verified_profile]) }
+        let(:user) { create(:user, profiles: [verified_profile]) }
 
         it { expect(partial).to eq('shared/null') }
       end
