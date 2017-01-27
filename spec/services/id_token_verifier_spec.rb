@@ -66,7 +66,9 @@ RSpec.describe IdTokenVerifier do
   describe '#identity' do
     context 'with a valid id_token' do
       before { identity.save! }
-      let(:id_token) { IdTokenBuilder.new(identity).id_token }
+      let(:id_token) do
+        IdTokenBuilder.new(identity, custom_expiration: 10.minutes.from_now.to_i).id_token
+      end
 
       it 'returns the identity record' do
         expect(verifier.identity).to eq(identity)

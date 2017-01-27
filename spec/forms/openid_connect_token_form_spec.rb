@@ -153,6 +153,10 @@ RSpec.describe OpenidConnectTokenForm do
     subject(:response) { form.response }
 
     context 'with valid params' do
+      before do
+        Pii::SessionStore.new(code).put({}, 5.minutes.to_i)
+      end
+
       it 'has a properly-encoded id_token' do
         id_token = response[:id_token]
 

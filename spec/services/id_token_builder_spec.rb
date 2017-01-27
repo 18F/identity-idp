@@ -10,7 +10,8 @@ RSpec.describe IdTokenBuilder do
           ial: 3)
   end
 
-  subject(:builder) { IdTokenBuilder.new(identity) }
+  let(:custom_expiration) { 5.minutes.from_now.to_i }
+  subject(:builder) { IdTokenBuilder.new(identity, custom_expiration: custom_expiration) }
 
   describe '#id_token' do
     subject(:id_token) { Timecop.freeze(now) { builder.id_token } }
@@ -52,8 +53,15 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:jti]).to_not eq('')
     end
 
-    it 'sets the expiration to something in the future' do
-      expect(Time.zone.at(decoded_payload[:exp])).to be > now
+    context 'without a custom_expiration' do
+      let(:custom_expiration) { nil }
+      let(:expiration) { 100 }
+
+      before { Pii::SessionStore.new(identity.session_uuid).put(nil, expiration) }
+
+      it 'sets the expiration to the ttl of the session key in redis' do
+        expect(decoded_payload[:exp]).to eq(now.to_i + expiration)
+      end
     end
 
     it 'sets the issued-at to now' do
