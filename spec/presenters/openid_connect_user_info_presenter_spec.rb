@@ -21,23 +21,18 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     end
 
     context 'when there is decrypted loa3 session data in redis' do
-      let(:session_data) do
+      let(:pii) do
         {
-          'warden.user.user.session' => {
-            decrypted_pii: {
-              first_name: 'John',
-              middle_name: 'Jones',
-              last_name: 'Smith',
-              dob: '1970-01-01',
-              zipcode: '12345'
-            }.to_json
-          }
+          first_name: 'John',
+          middle_name: 'Jones',
+          last_name: 'Smith',
+          dob: '1970-01-01',
+          zipcode: '12345'
         }
       end
 
       before do
-        presenter.send(:session_store).
-          send(:set_session, {}, session_uuid, session_data, expire_after: 5.minutes.to_i)
+        Pii::SessionStore.new(session_uuid).put(pii, 5.minutes.to_i)
       end
 
       context 'when the identity has loa3 access' do
