@@ -231,6 +231,15 @@ production:
     attribute_bundle:
       - email
 
+  'https://dashboard.int.login.gov':
+    acs_url: 'https://dashboard.int.login.gov/users/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://dashboard.int.login.gov/users/auth/saml/logout'
+    sp_initiated_login_url: 'https://dashboard.int.login.gov/users/auth/saml'
+    block_encryption: 'aes256-cbc'
+    cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
+
   'https://dashboard.qa.login.gov':
     acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://dashboard.qa.login.gov/users/auth/saml/logout'
