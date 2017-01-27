@@ -3,7 +3,7 @@ require 'rails_helper'
 include SamlAuthHelper
 include IdvHelper
 
-feature 'IDP-initiated logout', devise: true do
+feature 'IDP-initiated logout' do
   let(:user) { create(:user, :signed_up) }
 
   context 'when logged in to single SP' do

@@ -83,25 +83,45 @@ describe UserDecorator do
   end
 
   describe '#should_acknowledge_recovery_code?' do
-    it 'returns true when the user has no recovery code and is not omniauthed' do
-      user_decorator = UserDecorator.new(User.new)
-      session = { omniauthed: false }
+    context 'user has no recovery code and is not omniauthed' do
+      context 'service provider with loa1' do
+        it 'returns true' do
+          user_decorator = UserDecorator.new(User.new)
+          session = { omniauthed: false, sp: { loa3: false } }
 
-      expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
-    end
+          expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+        end
+      end
 
-    it 'returns false when the user has a recovery code' do
-      user_decorator = UserDecorator.new(User.new(recovery_code: 'foo'))
-      session = { omniauthed: false }
+      context 'no service provider' do
+        it 'returns true' do
+          user_decorator = UserDecorator.new(User.new)
+          session = { omniauthed: false }
 
-      expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
-    end
+          expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+        end
+      end
 
-    it 'returns false when the user is omniauthed' do
-      user_decorator = UserDecorator.new(User.new)
-      session = { omniauthed: true }
+      it 'returns false when the user has a recovery code' do
+        user_decorator = UserDecorator.new(User.new(recovery_code: 'foo'))
+        session = {}
 
-      expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+      end
+
+      it 'returns false when the user is omniauthed' do
+        user_decorator = UserDecorator.new(User.new)
+        session = { omniauthed: true }
+
+        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+      end
+
+      it 'returns false if the user is loa3' do
+        user_decorator = UserDecorator.new(User.new)
+        session = { omniauthed: false, sp: { loa3: true } }
+
+        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+      end
     end
   end
 

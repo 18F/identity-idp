@@ -2,7 +2,7 @@ require 'rails_helper'
 
 feature 'Changing authentication factor' do
   describe 'requires re-authenticating' do
-    let!(:user) { sign_up_and_2fa }
+    let!(:user) { sign_up_and_2fa_loa1_user }
 
     scenario 'editing password' do
       visit manage_password_path
