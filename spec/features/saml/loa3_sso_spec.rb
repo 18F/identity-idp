@@ -7,11 +7,13 @@ feature 'LOA3 Single Sign On' do
   context 'First time registration' do
     it 'redirects to original SAML Authn Request after IdV is complete' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-      visit saml_authn_request
-
+      issuer_url = 'http://localhost:3000'
+      settings = saml_settings
+      settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      saml_authn_request = auth_request.create(settings)
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
+      visit saml_authn_request
       visit sign_up_email_path
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
@@ -22,7 +24,7 @@ feature 'LOA3 Single Sign On' do
       click_on 'Yes'
       complete_idv_profile_ok(user.reload)
       click_acknowledge_recovery_code
-
+      click_on I18n.t('forms.buttons.continue_to', url: issuer_url)
       expect(current_url).to eq saml_authn_request
 
       user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)

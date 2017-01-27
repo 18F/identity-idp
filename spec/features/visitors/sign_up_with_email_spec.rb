@@ -35,7 +35,7 @@ feature 'Visitor signs up with email address' do
   end
 
   context 'user signs up and sets password, tries to sign up again' do
-    it 'sends email saying someone tried to sign up with their email address' do
+    scenario 'sends email saying someone tried to sign up with their email address' do
       user = create(:user)
 
       expect { sign_up_with(user.email) }.
@@ -45,5 +45,12 @@ feature 'Visitor signs up with email address' do
         t('user_mailer.signup_with_your_email.intro', app: APP_NAME)
       )
     end
+  end
+
+  scenario 'taken to profile page after sign up flow complete' do
+    visit sign_up_email_path
+    sign_up_and_2fa_loa1_user
+
+    expect(current_path).to eq profile_path
   end
 end
