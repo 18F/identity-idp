@@ -42,15 +42,39 @@ describe 'profile/index.html.slim' do
     end
   end
 
-  it 'contains a recovery code section' do
-    user = User.new
-    allow(view).to receive(:current_user).and_return(user)
+  context 'when has_password_reset_profile is false' do
+    before do
+      assign(:has_password_reset_profile, false)
+    end
 
-    render
+    it 'contains a recovery code section' do
+      user = User.new
+      allow(view).to receive(:current_user).and_return(user)
 
-    expect(rendered).to have_content t('profile.items.recovery_code')
-    expect(rendered).
-      to have_link(t('profile.links.regenerate_recovery_code'), href: manage_recovery_code_path)
+      render
+
+      expect(rendered).to have_content t('profile.items.recovery_code')
+      expect(rendered).
+        to have_link(t('profile.links.regenerate_recovery_code'), href: manage_recovery_code_path)
+    end
+  end
+
+  context 'when has_password_reset_profile is true' do
+    before do
+      assign(:has_password_reset_profile, true)
+    end
+
+    it 'lacks a recovery code section' do
+      user = User.new
+      allow(view).to receive(:current_user).and_return(user)
+
+      render
+
+      expect(rendered).to_not have_content t('profile.items.recovery_code')
+      expect(rendered).to_not have_link(
+        t('profile.links.regenerate_recovery_code'), href: manage_recovery_code_path
+      )
+    end
   end
 
   it 'contains account history' do
