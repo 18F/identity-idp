@@ -7,7 +7,7 @@
     = t('users.recovery_code.header')
   .navy.monospace
     - code.split(' ').each do |word|
-      p.bold.mb0.h3 data-recovery='word'
+      p.bold.mb0.h3(data-recovery="#{word}")
         = word
 
   .left.h5.mt2

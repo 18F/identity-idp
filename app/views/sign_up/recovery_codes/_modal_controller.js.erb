@@ -5,13 +5,27 @@ var formEl = document.getElementById('confirm-key');
 var successRedirectPath = "<%= sign_up_recovery_code_path %>";
 
 var modalTrigger = document.querySelector('[data-toggle="modal"]');
+var modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]')
 
-modalTrigger.addEventListener('click', function() {
+var recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
+
+function show() {
   modal.show();
-});
+}
+
+function hide() {
+  modal.hide();
+}
+
+modalTrigger.addEventListener('click', show);
+modalDismiss.addEventListener('click', hide);
 
 formEl.addEventListener('submit', function(event) {
   event.preventDefault();
-
+  window.f = event.target
   console.log(event.target);
+  [].slice.call(event.target.elements).forEach(function(element) {
+    if (element)
+  });
+//  window.location = successRedirectPath;
 });

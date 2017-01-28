@@ -1,5 +1,5 @@
-module RecoveryCodeHelpers
-  def modal_controller_js
+module RecoveryCodeHelper
+  def recovery_code_modal_controller_js
     nonced_javascript_tag do
       render(
         partial: 'sign_up/recovery_codes/modal_controller',
@@ -12,4 +12,4 @@ module RecoveryCodeHelpers
   end
 end
 
-ActionView::Base.send :include, RecoveryCodeHelpers
+ActionView::Base.send :include, RecoveryCodeHelper

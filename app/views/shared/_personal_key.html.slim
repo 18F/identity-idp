@@ -28,5 +28,5 @@ p.mt-tiny.mb0
 button(class='btn btn-primary btn-wide mb1' data-toggle='modal')
   = t('forms.buttons.continue')
     
-= render 'sign_up/recovery_codes/confirmation_modal', code: @code
-= modal_controller_js
+= render 'sign_up/recovery_codes/confirmation_modal', code: codec
+= recovery_code_modal_controller_js

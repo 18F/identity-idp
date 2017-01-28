@@ -8,13 +8,9 @@
         form#confirm-key
           - code.split(' ').each_with_index do |word, index|
             div.border.border-dashed.mb2
-              input(name="input-#{index}" type='text' class='col-12 field monospace mfa')
+              input(name="recovery-#{index}" type='text' class='col-12 field monospace mfa')
           end
           
           input type="submit" value=t('forms.buttons.continue') class='btn btn-primary'
-          = link_to t('forms.buttons.back'), '#',
-            class: 'ml2 btn btn-outline rounded-lg',
-            data_target: 'recovery-code-confirm',
-            data_close: 'modal-cntnr'
-
-= modal_controller_js
+          button.ml2.btn.btn-outline.rounded-lg(data-dismiss='personal-key-confirm' type='button')
+            = t('forms.buttons.back')
