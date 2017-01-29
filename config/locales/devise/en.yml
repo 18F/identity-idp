@@ -138,7 +138,7 @@ en:
           If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
         voice_link_text: with a phone call
-      totp_header_text: Enter your authenticator code
+      totp_header_text: Enter your authentication app code
       totp_info: Use any authenticator app to scan the QR code below.
       two_factor_setup: Add a phone number
       user:
