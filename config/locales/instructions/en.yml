@@ -40,7 +40,7 @@ en:
         iv: Good
         v: Great!
     recovery_code_html: >
-      This is the to regain access to your account if you lose your password or
+      This is the only way to regain access to your account if you lose your password or
       phone. %{accent}
     recovery_code_accent: Write it down or print it out.
     registration:
