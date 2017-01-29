@@ -16,3 +16,6 @@ en:
       For your security, some government agencies require customer accounts to
       be verified using Personally Identifiable Information (PII) such as
       Social Security Number and proof of address.
+    authentication_app: An authentication application is a mobile security app
+      that generates security codes even if you don't have an Internet connection
+      or cellular service.
