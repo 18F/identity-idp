@@ -5,12 +5,14 @@ module TwoFactorAuthCode
     include Rails.application.routes.url_helpers
 
     attr_reader :phone_number, :code_value, :delivery_method, :reenter_phone_number_path,
-                :totp_enabled, :unconfirmed_phone, :recovery_code_unavailable, :user_email
+                :totp_enabled, :unconfirmed_phone, :recovery_code_unavailable, :user_email, :view
 
-    def initialize(data_model)
+    def initialize(data_model, view = nil)
       data_model.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
+
+      @view = view
     end
 
     def header
