@@ -1,17 +1,50 @@
-.modal-cntnr {
-  background-color: rgba(91, 97, 106, .9);
-  display: table;
-  height: 100%;
-  left: 0;
-  min-height: 100%;
+.modal-open {
+  overflow: hidden;
+
+  .modal {
+    overflow-x: hidden;
+    overflow-y: scroll;
+  }
+}
+
+.modal {
   position: fixed;
   top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  outline: 0;
+  display: block;
+}
+
+// IE the backdrop
+.modal-cntnr {
+  height: 100%;
   width: 100%;
+  background-color: rgba(91, 97, 106, .9);
+  display: table;
+  left: 0;
+  position: fixed;
+  top: 0;
 }
 
 .modal-inner {
-  display: table-cell;
-  vertical-align: top;
+  position: relative;
+  display: block;
+
+  &:before {
+    position: absolute;
+    content: '';
+    top: -25px;
+    left: 45%;
+    background-image: url(image-path('p-key.svg'));
+
+    background-repeat: no-repeat;
+    height: 60px;
+    width: 60px;
+
+  }
 }
 
 @media #{$breakpoint-sm} {

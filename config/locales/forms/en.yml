@@ -33,6 +33,7 @@ en:
     recovery_code:
       title: Enter your personal key
       instructions: Please confirm you have a copy of your personal key by entering it below.
+      confirmation_label: Personal key word %{number}
     registration:
       labels:
         email: Email address

@@ -31,15 +31,19 @@ class Modal {
     this.shown = true;
     el.classList.remove(STATES.HIDE);
 
+    document.body.classList.add('modal-open');
+
     const emitShow = new Event(STATES.SHOW);
     el.dispatchEvent(emitShow);
   }
 
   hide(target) {
     const el = target || this.el;
-    this.shown = false;
 
+    this.shown = false;
     el.classList.add(STATES.HIDE);
+
+    document.body.classList.remove('modal-open');
 
     const emitHide = new Event(STATES.HIDE);
     el.dispatchEvent(emitHide);
