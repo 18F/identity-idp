@@ -1,6 +1,5 @@
 - title t('titles.registrations.new')
 
-= render 'shared/progress_steps', active: 1
 h1.h3.my0 = t('headings.registrations.enter_email')
 p.mt-tiny.mb0#email-description = t('instructions.registration.email')
 = simple_form_for(@register_user_email_form,

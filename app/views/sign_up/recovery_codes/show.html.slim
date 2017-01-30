@@ -1,6 +1,3 @@
 - title t('titles.recovery_code')
 
-- if @show_progress_bar
-  = render 'shared/progress_steps', active: 3
-
 = render 'shared/personal_key', code: @code
