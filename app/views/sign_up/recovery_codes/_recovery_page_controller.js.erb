@@ -1,0 +1,59 @@
+var modalSelector = '#personal-key-confirm';
+var modal = new LoginGov.Modal({el: modalSelector });
+
+var formEl = document.getElementById('confirm-key');
+var successRedirectPath = "<%= sign_up_recovery_code_path %>";
+
+var modalTrigger = document.querySelector('[data-toggle="modal"]');
+var modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]')
+
+var recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
+var attempts = 0;
+
+function show() {
+  if (attempts < 3) {
+    modal.show();
+  } else {
+    redirectToProfile();
+  }
+}
+
+function hide() {
+  modal.hide();
+}
+
+function redirectToProfile() {
+  window.location = successRedirectPath;
+}
+
+modalTrigger.addEventListener('click', show);
+modalDismiss.addEventListener('click', hide);
+
+formEl.addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  var inputs = [].slice.call(event.target.elements).filter(function(element) {
+    return element.type === 'text';
+  });
+
+  var invalidMatches = inputs.reduce(function(accumulator, input, index) {
+    var value = input.value;
+
+    if (input.value === recoveryWords[index]) {
+      return accumulator;
+    }
+
+    input.setCustomValidity('Personal key word does not match.');
+    accumulator.push(value);
+
+    return accumulator;
+  }, []);
+
+  // a success
+  if (!invalidMatches.length) {
+    redirectToProfile();
+  } else {
+    attempts += 1;
+    console.log('not a match');
+  }
+});
