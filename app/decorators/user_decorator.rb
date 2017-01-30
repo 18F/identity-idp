@@ -64,8 +64,7 @@ UserDecorator = Struct.new(:user) do
   def should_acknowledge_recovery_code?(session)
     sp_session = session[:sp]
 
-    user.recovery_code.blank? &&
-      (sp_session.blank? || sp_session[:loa3] == false)
+    user.recovery_code.blank? && (sp_session.blank? || sp_session[:loa3] == false)
   end
 
   def recent_events
