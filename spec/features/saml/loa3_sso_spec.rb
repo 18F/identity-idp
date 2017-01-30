@@ -20,7 +20,7 @@ feature 'LOA3 Single Sign On' do
       expect(current_path).to eq verify_path
       click_on 'Yes'
       complete_idv_profile_ok(user.reload)
-      click_acknowledge_recovery_code
+      click_acknowledge_recovery_code(user.reload.recovery_code)
 
       expect(page).to have_content t('titles.loa3_verified.true', app: APP_NAME)
       click_on I18n.t('forms.buttons.continue_to', sp: @sp_name)

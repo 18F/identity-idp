@@ -35,7 +35,7 @@ feature 'View recovery code' do
       scenario 'displays new code' do
         allow(Figaro.env).to receive(:reauthn_window).and_return('0')
 
-        sign_in_and_2fa_user
+        user = sign_in_and_2fa_user
 
         old_code = user.recovery_code
 

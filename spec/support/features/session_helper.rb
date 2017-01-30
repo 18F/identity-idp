@@ -135,8 +135,23 @@ module Features
       click_submit_default
     end
 
+    def acknowledge_and_confirm_recovery_code(code = [])
+      code_words = code.split(' ')
+      button_text = t('forms.buttons.continue')
+
+      click_on button_text, class: 'recovery-code-continue'
+
+      fill_in 'recovery-0', with: code_words[0]
+      fill_in 'recovery-1', with: code_words[1]
+      fill_in 'recovery-2', with: code_words[2]
+      fill_in 'recovery-3', with: code_words[3]
+      fill_in 'recovery-4', with: code_words[4]
+
+      click_on button_text, class: 'recovery-code-confirm'
+    end
+
     def click_acknowledge_recovery_code
-      click_button t('forms.buttons.continue')
+      click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
     end
   end
 end

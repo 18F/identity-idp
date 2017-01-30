@@ -253,7 +253,8 @@ feature 'Password Recovery' do
       expect(page).to have_content t('idv.messages.recovery_code')
     end
 
-    scenario 'resets password, makes recovery code, attempts reactivate profile', email: true do
+    scenario 'resets password, makes recovery code, attempts reactivate profile',
+             email: true, js: true do
       _recovery_code = recovery_code_from_pii(user, pii)
 
       visit new_user_password_path
@@ -271,12 +272,13 @@ feature 'Password Recovery' do
       visit manage_recovery_code_path
 
       new_recovery_code_words = []
-      page.all(:css, 'p[data-recovery="word"]').each do |node|
+      page.all(:css, 'p[data-recovery]').each do |node|
         new_recovery_code_words << node.text
       end
+
       new_recovery_code = new_recovery_code_words.join(' ')
 
-      click_on(t('forms.buttons.continue'))
+      acknowledge_and_confirm_recovery_code(new_recovery_code)
 
       expect(page).to have_content t('profile.index.reactivation.instructions')
 

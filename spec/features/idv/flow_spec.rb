@@ -44,7 +44,7 @@ feature 'IdV session' do
 
       expect(current_url).to eq verify_confirmations_url
       expect(page).to have_content(t('headings.recovery_code'))
-      click_acknowledge_recovery_code
+      click_acknowledge_recovery_code(user.recovery_code)
 
       expect(current_url).to eq(profile_url)
       expect(page).to have_content('Some One')
@@ -282,7 +282,7 @@ feature 'IdV session' do
         expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
 
         enter_correct_otp_code_for_user(user)
-        click_acknowledge_recovery_code
+        click_acknowledge_recovery_code(user.recovery_code)
 
         expect(current_path).to eq profile_path
       end

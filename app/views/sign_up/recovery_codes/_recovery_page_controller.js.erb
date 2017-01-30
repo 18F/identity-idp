@@ -10,7 +10,9 @@ var modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]
 var recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
 var attempts = 0;
 
-function show() {
+function show(event) {
+  event.preventDefault();
+
   if (attempts < 3) {
     modal.show();
   } else {
@@ -32,6 +34,10 @@ modalDismiss.addEventListener('click', hide);
 formEl.addEventListener('submit', function(event) {
   event.preventDefault();
 
+  if (attempts === 3) {
+    redirectToProfile();
+  }
+
   var inputs = [].slice.call(event.target.elements).filter(function(element) {
     return element.type === 'text';
   });
@@ -39,11 +45,10 @@ formEl.addEventListener('submit', function(event) {
   var invalidMatches = inputs.reduce(function(accumulator, input, index) {
     var value = input.value;
 
-    if (input.value === recoveryWords[index]) {
+    if (input.value === recoveryWords[index].getAttribute('data-recovery')) {
       return accumulator;
     }
 
-    input.setCustomValidity('Personal key word does not match.');
     accumulator.push(value);
 
     return accumulator;
@@ -54,6 +59,5 @@ formEl.addEventListener('submit', function(event) {
     redirectToProfile();
   } else {
     attempts += 1;
-    console.log('not a match');
   }
 });

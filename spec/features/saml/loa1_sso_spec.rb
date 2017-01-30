@@ -9,11 +9,11 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      sign_up_and_set_password
+      user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
       select_sms_delivery
       enter_2fa_code
-      click_acknowledge_recovery_code
+      click_acknowledge_recovery_code(user.reload.recovery_code)
 
       expect(page).to have_content t('titles.loa3_verified.false', app: APP_NAME)
       click_on I18n.t('forms.buttons.continue_to', sp: @sp_name)

@@ -7,13 +7,12 @@
 
       form#confirm-key
         - code.split(' ').each_with_index do |_, index|
-          label(for="recovery-#{index}")
-            = t('forms.recovery_code.confirmation_label', number: index + 1)
           .border.border-dashed.mb2
-            input(name="recovery-#{index}" type='text' class='col-12 field monospace')
+            input(name="recovery-#{index}" type='text' class='col-12 field monospace'
+                  aria-label="#{t('forms.recovery_code.confirmation_label', number: index + 1)}")
         end
 
-        button(type='submit' class='btn btn-primary')
+        button(type='submit' class='btn btn-primary recovery-code-confirm')
           = t('forms.buttons.continue')
         button.ml2.btn.btn-outline.rounded-lg(data-dismiss='personal-key-confirm' type='button')
           = t('forms.buttons.back')

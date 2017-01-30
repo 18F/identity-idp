@@ -8,42 +8,40 @@
 }
 
 .modal {
-  position: fixed;
-  top: 0;
-  right: 0;
   bottom: 0;
-  left: 0;
-  overflow: hidden;
-  outline: 0;
   display: block;
+  left: 0;
+  outline: 0;
+  overflow: hidden;
+  position: fixed;
+  right: 0;
+  top: 0;
 }
 
 // IE the backdrop
 .modal-cntnr {
-  height: 100%;
-  width: 100%;
   background-color: rgba(91, 97, 106, .9);
   display: table;
   left: 0;
+  height: 100%;
+  width: 100%;
   position: fixed;
   top: 0;
 }
 
 .modal-inner {
-  position: relative;
   display: block;
+  position: relative;
 
-  &:before {
-    position: absolute;
-    content: '';
-    top: -25px;
-    left: 45%;
+  &.key-badge:before {
     background-image: url(image-path('p-key.svg'));
-
     background-repeat: no-repeat;
+    content: '';
     height: 60px;
+    left: 45%;
+    position: absolute;
+    top: -25px;
     width: 60px;
-
   }
 }
 
