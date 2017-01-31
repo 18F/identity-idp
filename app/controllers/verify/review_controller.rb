@@ -34,7 +34,7 @@ module Verify
     private
 
     def idv_profile_complete?
-      idv_session.resolution.try(:success?)
+      idv_session.profile_confirmation == true
     end
 
     def idv_finance_complete?
