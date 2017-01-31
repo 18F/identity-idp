@@ -7,9 +7,7 @@ feature 'LOA3 Single Sign On' do
   context 'First time registration' do
     it 'redirects to original SAML Authn Request after IdV is complete' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      settings = saml_settings
-      settings.authn_context = Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-      saml_authn_request = auth_request.create(settings)
+      saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
       visit saml_authn_request
