@@ -5,7 +5,7 @@ describe SignUp::CompletionsController do
     it 'tracks page visit' do
       stub_sign_in
       stub_analytics
-      allow(@analytics).to receive(:track_event).with(Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT, { loa3: nil, service_provider_name: nil })
+      allow(@analytics).to receive(:track_event)
 
       get :show
 
@@ -18,7 +18,7 @@ describe SignUp::CompletionsController do
       stub_sign_in
       stub_analytics
       session[:saml_request_url] = 'www.example.com'
-      allow(@analytics).to receive(:track_event).with(Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE, { loa3: nil, service_provider_name: nil })
+      allow(@analytics).to receive(:track_event)
 
       patch :update
 
