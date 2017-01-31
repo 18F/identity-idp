@@ -9,7 +9,10 @@ describe SignUp::CompletionsController do
 
       get :show
 
-      expect(@analytics).to have_received(:track_event).with(Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT, { loa3: nil, service_provider_name: nil })
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+        { loa3: nil, service_provider_name: nil }
+      )
     end
   end
 
@@ -22,7 +25,10 @@ describe SignUp::CompletionsController do
 
       patch :update
 
-      expect(@analytics).to have_received(:track_event).with(Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE, { loa3: nil, service_provider_name: nil })
+      expect(@analytics).to have_received(:track_event).with(
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
+        { loa3: nil, service_provider_name: nil }
+      )
     end
   end
 end
