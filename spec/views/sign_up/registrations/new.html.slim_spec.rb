@@ -26,10 +26,4 @@ describe 'sign_up/registrations/new.html.slim' do
 
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
-
-  it 'displays the correct progress step' do
-    render
-
-    expect(rendered).to have_css('.step-1.active')
-  end
 end
