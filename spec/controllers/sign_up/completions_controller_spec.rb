@@ -4,6 +4,7 @@ describe SignUp::CompletionsController do
   describe '#show' do
     it 'tracks page visit' do
       stub_sign_in
+      subject.session[:sp] = {}
       stub_analytics
       allow(@analytics).to receive(:track_event)
 
@@ -13,6 +14,22 @@ describe SignUp::CompletionsController do
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
         { loa3: nil, service_provider_name: nil }
       )
+    end
+
+    it 'requires user to be logged in' do
+      subject.session[:sp] = {}
+      get :show
+
+      expect(response).to redirect_to(new_user_session_url)
+    end
+
+    it 'requires service provider info in session' do
+      stub_sign_in
+      subject.session[:sp] = nil
+
+      get :show
+
+      expect(response).to redirect_to(new_user_session_url)
     end
   end
 
