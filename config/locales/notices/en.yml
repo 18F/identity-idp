@@ -12,7 +12,7 @@ en:
         with a link to reset your password. Follow the link to continue
         resetting your password.
       first_paragraph_start: We sent an email to
-      no_email_sent_explanation_start: Didn’t get an email?
+      no_email_sent_explanation_start: Didn’t receive an email?
       resend_email_success: We have resent your password reset email.
     password_changed: You changed your password.
     phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
