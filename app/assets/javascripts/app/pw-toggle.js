@@ -1,3 +1,5 @@
+const I18n = window.LoginGov.I18n;
+
 function togglePw() {
   const inputs = document.querySelectorAll('input[type="password"]');
 
@@ -8,11 +10,13 @@ function togglePw() {
       input.parentNode.className += ' relative';
 
       const el = `
-        <div class="top-0 right-0 absolute">
-          <label class="checkbox" for="pw-toggle-${i}">
-            <input id="pw-toggle-${i}" type="checkbox">
-            <span class="indicator"></span>
-            Show password
+        <div class="top-n24 right-0 absolute">
+          <label class="btn-border" for="pw-toggle-${i}">
+            <div class="checkbox">
+              <input id="pw-toggle-${i}" type="checkbox">
+              <span class="indicator"></span>
+              ${I18n.t('forms.passwords.show')}
+            </div>
           </label>
         </div>`;
       input.insertAdjacentHTML('afterend', el);
