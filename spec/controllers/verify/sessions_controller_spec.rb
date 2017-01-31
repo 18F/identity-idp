@@ -49,7 +49,7 @@ describe Verify::SessionsController do
       end
 
       it 'redirects if step is complete' do
-        idv_session.resolution = Proofer::Resolution.new success: true
+        idv_session.profile_confirmation = true
 
         get :new
 
@@ -151,17 +151,6 @@ describe Verify::SessionsController do
       end
 
       context 'success' do
-        it 'creates vendor artifacts' do
-          post :create, profile: user_attrs
-
-          resolution = idv_session.resolution
-          expect(resolution).to be_a Proofer::Resolution
-          expect(resolution.success).to eq true
-
-          applicant = idv_session.applicant
-          expect(applicant).to be_a Proofer::Applicant
-        end
-
         it 'creates analytics event' do
           post :create, profile: user_attrs
 

@@ -18,15 +18,11 @@ module Idv
     attr_reader :success
 
     def complete?
-      form_valid? && vendor_validator.success?
+      form_valid? && vendor_validation_passed?
     end
 
     def vendor_validator_class
       Idv::FinancialsValidator
-    end
-
-    def vendor_errors
-      vendor_validator.errors if form_valid?
     end
 
     def vendor_reasons

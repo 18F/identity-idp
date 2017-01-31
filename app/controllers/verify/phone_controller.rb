@@ -25,7 +25,6 @@ module Verify
       @_step ||= Idv::PhoneStep.new(
         idv_form: idv_phone_form,
         idv_session: idv_session,
-        analytics: analytics,
         params: step_params
       )
     end

@@ -1,8 +1,15 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = [
-      :resolution, :vendor, :applicant, :params, :profile_id, :recovery_code,
-      :financials_confirmation, :phone_confirmation
+      :applicant,
+      :financials_confirmation,
+      :params,
+      :phone_confirmation,
+      :profile_confirmation,
+      :profile_id,
+      :recovery_code,
+      :resolution,
+      :vendor
     ].freeze
 
     def initialize(user_session, current_user)
