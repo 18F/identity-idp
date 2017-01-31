@@ -271,3 +271,20 @@ production:
     cert: 'identity_dashboard_cert'
     attribute_bundle:
       - email
+
+  # DHS / CBP / HRM
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:DHS:CBP-HRM-DEV':
+    acs_url: 'https://uxvnwg001a5418.sat.cbp.dhs.gov:9002/hrm-services/saml/SSO'
+    assertion_consumer_logout_service_url: 'https://uxvnwg001a5418.sat.cbp.dhs.gov:9002/hrm-services/saml/logout'
+    sp_initiated_login_url: 'https://uxvnwg001a5418.sat.cbp.dhs.gov:9002/hrm-services/saml/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'dhs-cbp-hrm-dev'
+    agency: 'DHS'
+    logo: 'cbp.png'
+    friendly_name: 'CBP Jobs - DEV'
+    return_to_sp_url: 'https://uxvnwg001a5418.sat.cbp.dhs.gov:9002/hrm'
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
