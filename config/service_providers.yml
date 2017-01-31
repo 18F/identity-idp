@@ -101,6 +101,7 @@ development:
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uri: 'gov.gsa.openidconnect.development://result'
+    cert: 'saml_test_sp'
 
 production:
   'https://idp.dev.login.gov':
