@@ -1,8 +1,5 @@
 - title t('titles.enter_2fa_code')
 
-- unless current_user && current_user.phone
-  = render 'shared/progress_steps', active: 3
-
 h1.h3.my0 = @presenter.header
 p.mt-tiny.mb0#code-instructs = @presenter.help_text
 

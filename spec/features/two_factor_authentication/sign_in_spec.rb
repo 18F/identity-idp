@@ -105,14 +105,6 @@ feature 'Two Factor Authentication' do
       expect(page.evaluate_script('document.activeElement.id')).to eq 'code'
     end
 
-    scenario 'user does not see progress steps' do
-      user = create(:user, :signed_up)
-      sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit.default')
-
-      expect(page).not_to have_css('.progress-steps')
-    end
-
     context 'user enters OTP incorrectly 3 times', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
         allow(Figaro.env).to receive(:session_check_frequency).and_return('1')

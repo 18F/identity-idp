@@ -32,14 +32,6 @@ describe 'sign_up/recovery_codes/show.html.slim' do
     end
   end
 
-  it 'displays the correct progress step when @show_progress_bar is true' do
-    @show_progress_bar = true
-
-    render
-
-    expect(rendered).to have_css('.step-3.active')
-  end
-
   it 'has a localized heading' do
     render
     expect(rendered).to have_content t('headings.recovery_code')
