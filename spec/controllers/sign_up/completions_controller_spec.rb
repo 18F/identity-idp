@@ -12,7 +12,7 @@ describe SignUp::CompletionsController do
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-        { loa3: nil, service_provider_name: nil }
+        loa3: nil, service_provider_name: nil
       )
     end
 
@@ -44,7 +44,7 @@ describe SignUp::CompletionsController do
 
       expect(@analytics).to have_received(:track_event).with(
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-        { loa3: nil, service_provider_name: nil }
+        loa3: nil, service_provider_name: nil
       )
     end
   end
