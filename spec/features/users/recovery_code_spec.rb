@@ -2,12 +2,6 @@ require 'rails_helper'
 
 feature 'View recovery code' do
   context 'during sign up' do
-    scenario 'user sees progress bar on recovery code page' do
-      sign_up_and_view_recovery_code
-
-      expect(page).to have_css('.step-3.active')
-    end
-
     scenario 'user refreshes recovery code page' do
       sign_up_and_view_recovery_code
 
@@ -18,14 +12,6 @@ feature 'View recovery code' do
   end
 
   context 'after sign up' do
-    scenario 'does not display progress bar' do
-      sign_in_and_2fa_user
-
-      click_link t('profile.links.regenerate_recovery_code')
-
-      expect(page).to_not have_css('.step-3.active')
-    end
-
     context 'regenerating recovery code' do
       scenario 'displays new code and returns user to profile page' do
         user = sign_in_and_2fa_user
