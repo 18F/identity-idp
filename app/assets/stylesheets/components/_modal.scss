@@ -22,18 +22,18 @@
 .modal-cntnr {
   background-color: rgba(91, 97, 106, .9);
   display: table;
-  left: 0;
   height: 100%;
-  width: 100%;
+  left: 0;
   position: fixed;
   top: 0;
+  width: 100%;
 }
 
 .modal-inner {
   display: block;
   position: relative;
 
-  &.key-badge:before {
+  &.key-badge::before {
     background-image: url(image-path('p-key.svg'));
     background-repeat: no-repeat;
     content: '';

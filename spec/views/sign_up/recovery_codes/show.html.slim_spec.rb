@@ -49,7 +49,7 @@ describe 'sign_up/recovery_codes/show.html.slim' do
     render
 
     expect(rendered).
-      to have_link(t('forms.buttons.continue'), href: sign_up_recovery_code_path)
+      to have_content(t('forms.buttons.continue'))
   end
 
   it 'allows the user to print the recovery code' do

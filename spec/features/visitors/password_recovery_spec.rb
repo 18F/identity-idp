@@ -278,7 +278,7 @@ feature 'Password Recovery' do
 
       new_recovery_code = new_recovery_code_words.join(' ')
 
-      acknowledge_and_confirm_recovery_code(new_recovery_code)
+      acknowledge_and_confirm_recovery_code
 
       expect(page).to have_content t('profile.index.reactivation.instructions')
 

@@ -1,51 +1,80 @@
 var modalSelector = '#personal-key-confirm';
 var modal = new LoginGov.Modal({el: modalSelector });
 
+var recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
 var formEl = document.getElementById('confirm-key');
-var successRedirectPath = "<%= sign_up_recovery_code_path %>";
-
+var inputs = [].slice.call(formEl.elements).filter(function(el) { return el.type === 'text'});
 var modalTrigger = document.querySelector('[data-toggle="modal"]');
 var modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]')
 
-var recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
-var attempts = 0;
+var reminderEl = document.getElementById('recovery-code-reminder');
+
+var isInvalidForm = false;
+var alertFallback = '<div class="alert alert-alert" role="alert" id="recovery-code-alert">' +
+                    "<%= t('users.recovery_code.confirmation_error') %>" +
+                    '</div>';
 
 function show(event) {
   event.preventDefault();
 
-  if (attempts < 3) {
-    modal.show();
-  } else {
-    redirectToProfile();
-  }
+  modal.on('show', function() {
+    inputs[0].focus();
+  });
+
+  modal.show();
 }
 
 function hide() {
+  modal.on('hide', function() {
+    resetForm();
+
+    if (reminderEl.className.indexOf('hide')) {
+      reminderEl.setAttribute('aria-hidden', false);
+      reminderEl.className = reminderEl.className.replace(/\s+hide/, '');
+    }
+  });
+
   modal.hide();
 }
 
-function redirectToProfile() {
-  window.location = successRedirectPath;
+function resetForm() {
+  formEl.reset();
+  unsetInvalidHTML();
 }
 
-modalTrigger.addEventListener('click', show);
-modalDismiss.addEventListener('click', hide);
+function handleConfirmFormPost() {
+  // Recovery code page, without js enabled, has a form submission that posts
+  // to the server with no body.
+  // Mimic that here.
+  formEl.removeEventListener('submit', handleSubmit);
+  formEl.submit();
+}
 
-formEl.addEventListener('submit', function(event) {
+// The following methods are strictly fallbacks for IE < 11. There is limited
+// support for HTML5 validation attributes in those browsers
+// TODO: Potentially investigate readding client-side JS errors in a robust way
+function setInvalidHTML() {
+  if (isInvalidForm) return;
+
+  formEl.insertAdjacentHTML('beforebegin', alertFallback);
+
+  isInvalidForm = true;
+}
+
+function unsetInvalidHTML(field) {
+  var alertEl = document.getElementById('recovery-code-alert');
+  alertEl && alertEl.parentNode.removeChild(alertEl);
+
+  isInvalidForm = false;
+}
+
+function handleSubmit(event) {
   event.preventDefault();
-
-  if (attempts === 3) {
-    redirectToProfile();
-  }
-
-  var inputs = [].slice.call(event.target.elements).filter(function(element) {
-    return element.type === 'text';
-  });
 
   var invalidMatches = inputs.reduce(function(accumulator, input, index) {
     var value = input.value;
 
-    if (input.value === recoveryWords[index].getAttribute('data-recovery')) {
+    if (value === recoveryWords[index].getAttribute('data-recovery')) {
       return accumulator;
     }
 
@@ -54,10 +83,14 @@ formEl.addEventListener('submit', function(event) {
     return accumulator;
   }, []);
 
-  // a success
   if (!invalidMatches.length) {
-    redirectToProfile();
+    unsetInvalidHTML();
+    handleConfirmFormPost();
   } else {
-    attempts += 1;
+    setInvalidHTML();
   }
-});
+}
+
+modalTrigger.addEventListener('click', show);
+modalDismiss.addEventListener('click', hide);
+formEl.addEventListener('submit', handleSubmit);

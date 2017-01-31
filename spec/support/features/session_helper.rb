@@ -135,17 +135,23 @@ module Features
       click_submit_default
     end
 
-    def acknowledge_and_confirm_recovery_code(code = [])
-      code_words = code.split(' ')
+    def acknowledge_and_confirm_recovery_code
+      code_words = []
+
+      page.all(:css, 'p[data-recovery]').map do |node|
+        code_words << node.text
+      end
+
       button_text = t('forms.buttons.continue')
+      index = 0
 
       click_on button_text, class: 'recovery-code-continue'
 
-      fill_in 'recovery-0', with: code_words[0]
-      fill_in 'recovery-1', with: code_words[1]
-      fill_in 'recovery-2', with: code_words[2]
-      fill_in 'recovery-3', with: code_words[3]
-      fill_in 'recovery-4', with: code_words[4]
+      # rubocop or fasterer hates each_with_index, apparently
+      while index < code_words.length
+        fill_in "recovery-#{index}", with: code_words[index]
+        index += 1
+      end
 
       click_on button_text, class: 'recovery-code-confirm'
     end

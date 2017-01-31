@@ -1,64 +1,58 @@
-import 'classList.js'
+import 'classlist.js';
 
 const STATES = {
   HIDE: 'hide',
-  SHOW: 'show'
+  SHOW: 'show',
 };
 
 class Modal {
-  static build(options) {
-    const modal = new Modal(options);
-
-    if (options.toggle) {
-      modal.toggle();
-    }
-
-    return modal;
-  }
-
   constructor(options) {
     this.el = document.querySelector(options.el);
     this.shown = false;
   }
 
   toggle() {
-    this.shown ? this.hide() : this.show();
+    if (this.shown) {
+      this.hide();
+    } else {
+      this.show();
+    }
   }
 
   show(target) {
-    const el = target || this.el;
-
-    this.shown = true;
-    el.classList.remove(STATES.HIDE);
-
-    document.body.classList.add('modal-open');
-
-    const emitShow = new Event(STATES.SHOW);
-    el.dispatchEvent(emitShow);
+    this._setElementVisibility(target, true);
+    this._emitEvent(target, STATES.SHOW);
   }
 
   hide(target) {
-    const el = target || this.el;
-
-    this.shown = false;
-    el.classList.add(STATES.HIDE);
-
-    document.body.classList.remove('modal-open');
-
-    const emitHide = new Event(STATES.HIDE);
-    el.dispatchEvent(emitHide);
+    this._setElementVisibility(target, false);
+    this._emitEvent(target, STATES.HIDE);
   }
 
   on(event, callback) {
     this.el.addEventListener(event, callback);
   }
 
+  _setElementVisibility(target = null, showing) {
+    const el = target || this.el;
+
+    this.shown = showing;
+    el.classList[showing ? 'remove' : 'add'](STATES.HIDE);
+    document.body.classList[showing ? 'add' : 'remove']('modal-open');
+  }
+
+  _emitEvent(target = null, eventType) {
+    const emittable = new Event(eventType);
+    (target || this.el).dispatchEvent(emittable);
+  }
+
   _bindEvents() {
     [].slice.call(this.el.querySelectorAll('[data-dismiss]')).forEach((el) => {
       el.addEventListener('click', (event) => {
+        event.preventDefault();
         this.hide();
       });
-    })
+    });
   }
 }
 
