@@ -54,7 +54,7 @@ en:
       updated_not_active: >
         Your password has been changed. Please sign in with your new password.
     registrations:
-      close_window: You can close this browser window once you have confirmed your email address.
+      close_window: You can close this window if you are done.
       destroy_confirm: >
         Deleting your account cannot be undone. All data associated with your
         account will be removed. Are you sure you’d like to delete your account?
