@@ -21,7 +21,8 @@
 }
 
 .accordion {
-  overflow: hidden;
+  // TODO: Mabe unnecessary?
+  //overflow: hidden;
 
   .accordion-content {
     max-height: 40em;

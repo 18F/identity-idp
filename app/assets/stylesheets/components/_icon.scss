@@ -12,3 +12,22 @@
     background-image: url(image-path('ico-print.svg'));
   }
 }
+
+.ico-absolute {
+  background-repeat: no-repeat;
+  background-size: $h4;
+  position: relative;
+
+  &-success {
+    &::before {
+      height: $h4;
+      width: $h4;
+      top: $space-1;
+      left: -$space-3;
+      position: absolute;
+      display: block;
+      content: '';
+      background-image: url(image-path('alert/success.svg'));
+    }
+  }
+}
