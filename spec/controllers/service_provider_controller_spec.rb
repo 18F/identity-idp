@@ -52,6 +52,23 @@ describe ServiceProviderController do
         expect(sp.valid?).to eq true
         expect(VALID_SERVICE_PROVIDERS).to include dashboard_sp_issuer
       end
+
+      context 'with CSRF protection enabled' do
+        before do
+          ActionController::Base.allow_forgery_protection = true
+        end
+
+        after do
+          ActionController::Base.allow_forgery_protection = false
+        end
+
+        it 'does not redirect after invalid CSRF token' do
+          post :update
+
+          expect(response.status).to_not eq(302)
+          expect(response.status).to eq(200)
+        end
+      end
     end
   end
 end
