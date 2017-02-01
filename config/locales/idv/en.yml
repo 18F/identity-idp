@@ -115,6 +115,7 @@ en:
           belongs to you and that meets the criteria below:
         is: 'is '
         is_not: 'is not '
+        phone_of_record: phone of record
         prepaid: a pay-as-you-go phone
         same_as_2fa: >
           This phone number can be the same one you used to set up your one-time
@@ -124,6 +125,7 @@ en:
         This is your new recovery code. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       review:
+        info_verified_html: We found records matching your %{phone_message}.
         intro: Please review your information and ensure it is correct.
       review_and_continue: Review my info and try again
       sessions:

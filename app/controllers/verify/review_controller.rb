@@ -23,6 +23,12 @@ module Verify
     def new
       idv_session.params.symbolize_keys!
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
+
+      phone_of_record_msg = ActionController::Base.helpers.content_tag(
+        :strong, t('idv.messages.phone.phone_of_record')
+      )
+      flash[:success] = t('idv.messages.review.info_verified_html',
+                          phone_message: phone_of_record_msg)
     end
 
     def create
