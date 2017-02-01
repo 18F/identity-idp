@@ -74,6 +74,13 @@ namespace :deploy do
     end
   end
 
+  desc 'Clean NPM cache'
+  task :clean_npm_cache do
+    on roles(:app, :web), in: :parallel do
+      execute :npm, 'cache clean'
+    end
+  end
+
   before 'assets:precompile', :browserify
   after 'deploy:updated', 'newrelic:notice_deployment'
   after 'deploy:log_revision', :deploy_json
