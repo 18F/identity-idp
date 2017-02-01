@@ -1,23 +1,46 @@
 require 'rails_helper'
 
 describe SignUp::CompletionsController do
+  let(:service_provider_name) { 'Excellent service provider' }
+
   describe '#show' do
-    it 'tracks page visit' do
-      stub_sign_in
-      subject.session[:sp] = {}
-      stub_analytics
-      allow(@analytics).to receive(:track_event)
+    context 'user signed in, sp info present' do
+      before do
+        stub_sign_in
+        stub_analytics
+        session[:saml_request_url] = 'www.example.com'
+        allow(@analytics).to receive(:track_event)
+      end
 
-      get :show
+      context 'LOA1' do
+        it 'tracks page visit' do
+          subject.session[:sp] = { loa3: false, friendly_name: service_provider_name }
 
-      expect(@analytics).to have_received(:track_event).with(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-        loa3: nil, service_provider_name: nil
-      )
+          get :show
+
+          expect(@analytics).to have_received(:track_event).with(
+            Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+            loa3: false, service_provider_name: service_provider_name
+          )
+        end
+      end
+
+      context 'LOA3' do
+        it 'tracks page visit' do
+          subject.session[:sp] = { loa3: true, friendly_name: service_provider_name }
+
+          get :show
+
+          expect(@analytics).to have_received(:track_event).with(
+            Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
+            loa3: true, service_provider_name: service_provider_name
+          )
+        end
+      end
     end
 
     it 'requires user to be logged in' do
-      subject.session[:sp] = {}
+      subject.session[:sp] = { dog: 'max' }
       get :show
 
       expect(response).to redirect_to(new_user_session_url)
@@ -25,7 +48,7 @@ describe SignUp::CompletionsController do
 
     it 'requires service provider info in session' do
       stub_sign_in
-      subject.session[:sp] = nil
+      subject.session[:sp] = {}
 
       get :show
 
@@ -34,18 +57,37 @@ describe SignUp::CompletionsController do
   end
 
   describe '#update' do
-    it 'tracks analytics' do
+    before do
       stub_sign_in
       stub_analytics
       session[:saml_request_url] = 'www.example.com'
       allow(@analytics).to receive(:track_event)
+    end
 
-      patch :update
+    context 'LOA1' do
+      it 'tracks analytics' do
+        subject.session[:sp] = { loa3: false, friendly_name: service_provider_name }
 
-      expect(@analytics).to have_received(:track_event).with(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-        loa3: nil, service_provider_name: nil
-      )
+        patch :update
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
+          loa3: false, service_provider_name: service_provider_name
+        )
+      end
+    end
+
+    context 'LOA3' do
+      it 'tracks analytics' do
+        subject.session[:sp] = { loa3: true, friendly_name: service_provider_name }
+
+        patch :update
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
+          loa3: true, service_provider_name: service_provider_name
+        )
+      end
     end
   end
 end
