@@ -5,6 +5,9 @@
       h3.mt0.mb2 = t('forms.recovery_code.title')
       p.mb3 = t('forms.recovery_code.instructions')
 
+      #recovery-code-alert.alert.alert-alert.hide(role='alert')
+        = t('users.recovery_code.confirmation_error')
+
       form(id='confirm-key' method='post' action="#{sign_up_recovery_code_path}")
         - code.split(' ').each_with_index do |word, index|
           .border.border-dashed.mb2

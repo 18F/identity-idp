@@ -10,9 +10,6 @@ var modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]
 var reminderEl = document.getElementById('recovery-code-reminder');
 
 var isInvalidForm = false;
-var alertFallback = '<div class="alert alert-alert" role="alert" id="recovery-code-alert">' +
-                    "<%= t('users.recovery_code.confirmation_error') %>" +
-                    '</div>';
 
 function show(event) {
   event.preventDefault();
@@ -30,7 +27,7 @@ function hide() {
 
     if (reminderEl.className.indexOf('hide')) {
       reminderEl.setAttribute('aria-hidden', false);
-      reminderEl.className = reminderEl.className.replace(/\s+hide/, '');
+      reminderEl.classList.remove('hide');
     }
   });
 
@@ -56,14 +53,13 @@ function handleConfirmFormPost() {
 function setInvalidHTML() {
   if (isInvalidForm) return;
 
-  formEl.insertAdjacentHTML('beforebegin', alertFallback);
+  document.getElementById('recovery-code-alert').classList.remove('hide');
 
   isInvalidForm = true;
 }
 
 function unsetInvalidHTML(field) {
-  var alertEl = document.getElementById('recovery-code-alert');
-  alertEl && alertEl.parentNode.removeChild(alertEl);
+  document.getElementById('recovery-code-alert').classList.add('hide');
 
   isInvalidForm = false;
 }
@@ -74,7 +70,7 @@ function handleSubmit(event) {
   var invalidMatches = inputs.reduce(function(accumulator, input, index) {
     var value = input.value;
 
-    if (value === recoveryWords[index].getAttribute('data-recovery')) {
+    if (value === recoveryWords[index].innerHTML.replace(/\s+/,'')) {
       return accumulator;
     }
 
