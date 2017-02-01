@@ -11,7 +11,7 @@ feature 'OpenID Connect' do
         client_id: client_id,
         response_type: 'code',
         acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid profile',
+        scope: 'openid email',
         redirect_uri: 'gov.gsa.openidconnect.test://result',
         state: state,
         prompt: 'select_account',
@@ -73,6 +73,7 @@ feature 'OpenID Connect' do
 
       userinfo_response = JSON.parse(page.body).with_indifferent_access
       expect(userinfo_response[:sub]).to eq(sub)
+      expect(userinfo_response[:email]).to be_present
     end
   end
 
