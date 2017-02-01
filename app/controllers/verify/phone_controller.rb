@@ -21,6 +21,7 @@ module Verify
       elsif step_attempts_exceeded?
         redirect_to_fail_path
       else
+        show_warning
         render :new
       end
     end
@@ -41,6 +42,10 @@ module Verify
 
     def step_params
       params.require(:idv_phone_form).permit(:phone)
+    end
+
+    def show_warning
+      flash[:warning] = t('idv.modal.phone.warning_html')
     end
 
     def confirm_step_needed

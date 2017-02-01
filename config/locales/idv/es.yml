@@ -98,6 +98,15 @@ es:
       review_and_continue: NOT TRANSLATED YET
       sessions:
         no_pii: NOT TRANSLATED YET
+    modal:
+      button:
+        warning: NOT TRANSLATED YET
+      finance:
+        warning_html: NOT TRANSLATED YET
+      phone:
+        warning_html: NOT TRANSLATED YET
+      sessions:
+        warning_html: NOT TRANSLATED YET
     review:
       dob: NOT TRANSLATED YET
       full_name: NOT TRANSLATED YET

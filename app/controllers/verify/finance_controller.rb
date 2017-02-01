@@ -21,6 +21,7 @@ module Verify
       elsif step_attempts_exceeded?
         redirect_to_fail_path
       else
+        show_warning
         render_form
       end
     end
@@ -45,6 +46,10 @@ module Verify
 
     def confirm_step_needed
       redirect_to verify_phone_path if idv_session.financials_confirmation == true
+    end
+
+    def show_warning
+      flash[:warning] = t('idv.modal.finance.warning_html')
     end
 
     def render_form

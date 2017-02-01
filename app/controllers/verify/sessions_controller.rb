@@ -43,12 +43,17 @@ module Verify
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
+        show_warning
         render :new
       end
     end
 
     def confirm_step_needed
       redirect_to verify_finance_path if idv_session.profile_confirmation == true
+    end
+
+    def show_warning
+      flash[:warning] = t('idv.modal.sessions.warning_html')
     end
 
     def idv_profile_form
