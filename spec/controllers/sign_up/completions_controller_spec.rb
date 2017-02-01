@@ -6,7 +6,6 @@ describe SignUp::CompletionsController do
   describe '#show' do
     context 'user signed in, sp info present' do
       before do
-        stub_sign_in
         stub_analytics
         session[:saml_request_url] = 'www.example.com'
         allow(@analytics).to receive(:track_event)
@@ -14,6 +13,7 @@ describe SignUp::CompletionsController do
 
       context 'LOA1' do
         it 'tracks page visit' do
+          stub_sign_in
           subject.session[:sp] = { loa3: false, friendly_name: service_provider_name }
 
           get :show
@@ -27,6 +27,8 @@ describe SignUp::CompletionsController do
 
       context 'LOA3' do
         it 'tracks page visit' do
+          user = create(:user, profiles: [create(:profile, :verified, :active)])
+          stub_sign_in(user)
           subject.session[:sp] = { loa3: true, friendly_name: service_provider_name }
 
           get :show
@@ -58,7 +60,6 @@ describe SignUp::CompletionsController do
 
   describe '#update' do
     before do
-      stub_sign_in
       stub_analytics
       session[:saml_request_url] = 'www.example.com'
       allow(@analytics).to receive(:track_event)
@@ -79,6 +80,8 @@ describe SignUp::CompletionsController do
 
     context 'LOA3' do
       it 'tracks analytics' do
+        user = create(:user, profiles: [create(:profile, :verified, :active)])
+        stub_sign_in(user)
         subject.session[:sp] = { loa3: true, friendly_name: service_provider_name }
 
         patch :update

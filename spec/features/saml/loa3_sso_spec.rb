@@ -32,4 +32,15 @@ feature 'LOA3 Single Sign On' do
       expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
     end
   end
+
+  context 'visiting sign_up_completed path before proofing' do
+    it 'redirects to verify_path' do
+      sign_in_and_2fa_user
+      visit loa3_authnrequest
+
+      visit sign_up_completed_path
+
+      expect(current_path).to eq verify_path
+    end
+  end
 end
