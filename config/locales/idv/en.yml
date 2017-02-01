@@ -125,8 +125,8 @@ en:
         This is your new recovery code. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       review:
-        info_verified_html: We found records matching your %{phone_message}.
-        intro: Please review your information and ensure it is correct.
+        info_verified_html: We found records matching your %{phone_message}
+        intro: Your verified information
       review_and_continue: Review my info and try again
       sessions:
         no_pii: Do not use real personal information (demo purposes only)
@@ -150,4 +150,4 @@ en:
         basic: First, tell us about yourself
         finance: Provide a financial account number
         phone: What is your phone number?
-        review: Review and submit
+        review: Save your verified data by entering your password

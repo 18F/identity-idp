@@ -27,8 +27,10 @@ module Verify
       phone_of_record_msg = ActionController::Base.helpers.content_tag(
         :strong, t('idv.messages.phone.phone_of_record')
       )
+
+      # TODO: why doesn't this correctly output html without `html_safe`?
       flash[:success] = t('idv.messages.review.info_verified_html',
-                          phone_message: phone_of_record_msg)
+                          phone_message: phone_of_record_msg).html_safe
     end
 
     def create

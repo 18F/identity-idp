@@ -33,5 +33,26 @@ describe 'verify/review/new.html.slim' do
       expect(rendered).to have_content('+1 (213) 555-0000')
       expect(rendered).to have_content('March 29, 1972')
     end
+
+    it 'renders the correct content heading' do
+      render
+
+      expect(rendered).to have_content t('idv.titles.session.review')
+    end
+
+    # TODO: do we need a test that the form is displayed?
+    xit 'allows the user to enter their password to finalize their account'
+
+    it 'contains an accordion with verified user information' do
+      render
+      accordion_selector = generate_class_selector('accordion')
+      expect(rendered).to have_xpath("//#{accordion_selector}")
+    end
+
+    it 'renders the correct header for the accordion' do
+      render
+
+      expect(rendered).to have_content(t('idv.messages.review.intro'))
+    end
   end
 end

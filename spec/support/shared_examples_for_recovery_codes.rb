@@ -95,7 +95,3 @@ shared_examples_for 'recovery code page' do
     end
   end
 end
-
-def generate_class_selector(klass)
-  "*[contains(concat(' ', normalize-space(@class), ' '), ' #{klass} ')]"
-end
