@@ -6,21 +6,22 @@ module Users
     def show
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_path
+      elsif current_user.two_factor_enabled?
+        handle_valid_delivery_method(current_user.otp_delivery_preference)
       else
-        @otp_delivery_selection_form = OtpDeliverySelectionForm.new
-        @presenter = presenter_for(delivery_method)
+        redirect_to phone_setup_path
       end
     end
 
     def send_code
-      @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(current_user)
 
       result = @otp_delivery_selection_form.submit(delivery_params)
 
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.merge(context: context))
 
       if result[:success]
-        handle_valid_delivery_method(delivery_params[:otp_method])
+        handle_valid_delivery_method(user_selected_delivery_method)
       else
         redirect_to user_two_factor_authentication_path(reauthn: reauthn?)
       end
@@ -51,6 +52,10 @@ module Users
         phone: phone_to_deliver_to,
         otp_created_at: current_user.direct_otp_sent_at.to_s
       )
+    end
+
+    def user_selected_delivery_method
+      delivery_params[:otp_method]
     end
 
     def delivery_params

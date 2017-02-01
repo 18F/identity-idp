@@ -55,7 +55,7 @@ feature 'Changing authentication factor' do
       old_phone = user.phone
       visit manage_phone_path
       update_phone_number
-      choose_sms_delivery
+      submit_otp
 
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
         click_link t('forms.two_factor.try_again'), href: manage_phone_path
@@ -144,10 +144,6 @@ feature 'Changing authentication factor' do
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
-    expect(current_path).to eq user_two_factor_authentication_path
-
-    click_submit_default
-
     expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
   end
 
@@ -168,6 +164,10 @@ feature 'Changing authentication factor' do
     expect(current_path).to eq login_two_factor_authenticator_path
 
     fill_in 'code', with: generate_totp_code(@secret)
+    click_submit_default
+  end
+
+  def submit_otp
     click_submit_default
   end
 
