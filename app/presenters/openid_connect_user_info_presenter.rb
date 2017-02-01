@@ -8,27 +8,53 @@ class OpenidConnectUserInfoPresenter
   end
 
   def user_info
-    user = identity.user
-
-    {
+    info = {
       sub: identity.uuid,
       iss: root_url,
-      email: user.email,
+      email: identity.user.email,
       email_verified: true
     }.merge(loa3_attributes)
+
+    OpenidConnectAttributeScoper.new(identity.scope).filter(info)
   end
 
   private
 
   def loa3_attributes
+    phone = loa3_data.phone
+
     {
       given_name: loa3_data.first_name,
       family_name: loa3_data.last_name,
       middle_name: loa3_data.middle_name,
       birthdate: loa3_data.dob,
-      postal_code: loa3_data.zipcode
-      # address formatting?
+      address: address,
+      phone: phone,
+      phone_verified: phone ? true : nil
     }
+  end
+
+  def address
+    return nil if loa3_data.address1.blank?
+
+    {
+      formatted: formatted_address,
+      street_address: street_address,
+      locality: loa3_data.city,
+      region: loa3_data.state,
+      postal_code: loa3_data.zipcode
+    }
+  end
+
+  def formatted_address
+    [
+      street_address,
+      "#{loa3_data.city}, #{loa3_data.state} #{loa3_data.zipcode}"
+    ].compact.join("\n")
+  end
+
+  def street_address
+    [loa3_data.address1, loa3_data.address2].compact.join(' ')
   end
 
   def loa3_data

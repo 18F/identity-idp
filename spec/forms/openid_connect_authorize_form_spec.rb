@@ -108,6 +108,15 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it { expect(valid?).to eq(false) }
     end
 
+    context 'when scope does not contain valid scopes' do
+      let(:scope) { 'foo bar baz' }
+      it 'has errors' do
+        expect(valid?).to eq(false)
+        expect(form.errors[:scope]).
+          to include(t('openid_connect.authorization.errors.no_valid_scope'))
+      end
+    end
+
     context 'redirect_uri' do
       context 'without a redirect_uri' do
         let(:redirect_uri) { nil }
