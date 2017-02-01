@@ -25,16 +25,30 @@ describe IdentityLinker do
       expect(identity_attributes).to include new_attributes
     end
 
-    it 'can take an optional nonce and session_uuid to specify attributes' do
+    it 'can take an optional nonce, session_uuid, ial, and scope to specify attributes' do
       session_uuid = SecureRandom.hex
       nonce = SecureRandom.hex
+      ial = 3
+      scope = 'openid profile email'
 
-      IdentityLinker.new(user, 'test.host').link_identity(session_uuid: session_uuid, nonce: nonce)
+      IdentityLinker.new(user, 'test.host').link_identity(
+        session_uuid: session_uuid,
+        nonce: nonce,
+        ial: ial,
+        scope: scope
+      )
       user.reload
 
       last_identity = user.last_identity
       expect(last_identity.nonce).to eq(nonce)
       expect(last_identity.session_uuid).to eq(session_uuid)
+      expect(last_identity.ial).to eq(ial)
+      expect(last_identity.scope).to eq(scope)
+    end
+
+    it 'rejects bad attributes names' do
+      expect { IdentityLinker.new(user, 'test.host').link_identity(foobar: true) }.
+        to raise_error(ArgumentError)
     end
 
     it 'fails when given a nil provider' do
