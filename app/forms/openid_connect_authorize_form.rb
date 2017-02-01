@@ -3,14 +3,18 @@ class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
 
+  SIMPLE_ATTRS = %i(
+    client_id
+    nonce
+    prompt
+    redirect_uri
+    response_type
+    state
+  ).freeze
+
   attr_reader :acr_values,
-              :client_id,
-              :nonce,
-              :prompt,
-              :redirect_uri,
-              :response_type,
               :scope,
-              :state
+              *SIMPLE_ATTRS
 
   validates_presence_of :acr_values,
                         :client_id,
@@ -29,9 +33,9 @@ class OpenidConnectAuthorizeForm
   validate :validate_scope
 
   def initialize(params)
-    @acr_values = parse_acr_values(params[:acr_values])
-    simple_attrs = %i(client_id nonce prompt redirect_uri response_type scope state)
-    simple_attrs.each do |key|
+    @acr_values = parse_to_values(params[:acr_values], Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
+    @scope = parse_to_values(params[:scope], OpenidConnectAttributeScoper::VALID_SCOPES)
+    SIMPLE_ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
   end
@@ -44,7 +48,7 @@ class OpenidConnectAuthorizeForm
       prompt: prompt,
       redirect_uri: redirect_uri,
       response_type: response_type,
-      scope: scope,
+      scope: scope.join(' '),
       state: state
     }
   end
@@ -68,9 +72,9 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  def parse_acr_values(acr_values)
-    return [] if acr_values.blank?
-    acr_values.split(' ').compact & Saml::Idp::Constants::VALID_AUTHN_CONTEXTS
+  def parse_to_values(param_value, possible_values)
+    return [] if param_value.blank?
+    param_value.split(' ').compact & possible_values
   end
 
   def validate_acr_values
@@ -97,15 +101,18 @@ class OpenidConnectAuthorizeForm
     errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'))
   end
 
-  # TODO: validate scope
-  def validate_scope; end
+  def validate_scope
+    return if scope.present?
+    errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
+  end
 
   def link_identity_to_client_id(current_user, rails_session_id)
     identity_linker = IdentityLinker.new(current_user, client_id)
     identity_linker.link_identity(
       nonce: nonce,
       session_uuid: rails_session_id,
-      ial: ial
+      ial: ial,
+      scope: scope.join(' ')
     )
   end
 

@@ -14,15 +14,15 @@ RSpec.describe OpenidConnect::ConfigurationController do
         expect(json_response[:userinfo_endpoint]).to eq(openid_connect_userinfo_url)
         expect(json_response[:response_types_supported]).to eq(%w(code))
         expect(json_response[:grant_types_supported]).to eq(%w(authorization_code))
-        expected_loa = [
-          Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-          Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
-        ]
-        expect(json_response[:acr_values_supported]).to match_array(expected_loa)
+        expect(json_response[:acr_values_supported]).
+          to match_array(Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         expect(json_response[:subject_types_supported]).to eq(%w(pairwise))
         expect(json_response[:id_token_signing_alg_values_supported]).to eq(%w(RS256))
         expect(json_response[:token_endpoint_auth_methods_supported]).to eq(%w(private_key_jwt))
         expect(json_response[:token_endpoint_auth_signing_alg_values_supported]).to eq(%w(RS256))
+
+        claims = %w(iss sub) + OpenidConnectAttributeScoper::CLAIMS
+        expect(json_response[:claims_supported]).to match_array(claims)
       end
     end
 
@@ -33,7 +33,6 @@ RSpec.describe OpenidConnect::ConfigurationController do
 
       aggregate_failures do
         expect(json_response[:jwks_uri]).to be_present
-        expect(json_response[:scopes_supported]).to be_present
         expect(json_response[:service_documentation]).to be_present
       end
     end

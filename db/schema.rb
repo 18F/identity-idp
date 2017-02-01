@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170127204804) do
+ActiveRecord::Schema.define(version: 20170201154458) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -57,6 +57,7 @@ ActiveRecord::Schema.define(version: 20170127204804) do
     t.string   "nonce"
     t.integer  "ial",                               default: 1
     t.string   "access_token"
+    t.string   "scope"
   end
 
   add_index "identities", ["access_token"], name: "index_identities_on_access_token", unique: true, using: :btree
