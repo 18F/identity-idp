@@ -104,6 +104,10 @@ input::-webkit-inner-spin-button {
   width: 1rem;
 }
 
+.indicator-focused {
+  outline: -webkit-focus-ring-color auto 5px;
+}
+
 .checkbox input:checked ~ .indicator,
 .radio input:checked ~ .indicator, {
   background-color: $blue;
