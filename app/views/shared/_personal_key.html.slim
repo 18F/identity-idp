@@ -33,4 +33,4 @@ p.mt-tiny.mb0
           'data-toggle': 'modal'
 
 = render 'sign_up/recovery_codes/confirmation_modal', code: code
-= recovery_code_page_controller_js
+= javascript_include_tag 'app/controllers/recovery_page_controller'

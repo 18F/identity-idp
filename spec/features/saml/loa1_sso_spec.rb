@@ -23,7 +23,14 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
+
       sign_up_and_set_password
+
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session['saml_request_url'] = saml_authn_request
+      end
+
       fill_in 'Phone', with: '202-555-1212'
       select_sms_delivery
       enter_2fa_code

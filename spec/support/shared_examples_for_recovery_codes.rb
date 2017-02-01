@@ -58,11 +58,13 @@ shared_examples_for 'recovery code page' do
 
       scenario 'modal opens when continue is clicked', js: true do
         expect(page).to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
+
         click_acknowledge_recovery_code
+
         expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
       end
 
-      context 'closing the modal' do
+      context 'closing the modal', js: true do
         before do
           click_acknowledge_recovery_code
           click_on t('forms.buttons.back')
