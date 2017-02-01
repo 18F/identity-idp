@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'View recovery code' do
+  include XPathHelper
+
   context 'during sign up' do
     scenario 'user refreshes recovery code page' do
       sign_up_and_view_recovery_code

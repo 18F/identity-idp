@@ -125,6 +125,7 @@ en:
         This is your new recovery code. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       review:
+        financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
       review_and_continue: Review my info and try again

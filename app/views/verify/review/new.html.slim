@@ -1,5 +1,4 @@
 - title t('idv.titles.review')
-- edit_btn_cls = 'right btn btn-primary p0 w-60p h6 bg-light-blue blue regular center'
 
 h1.h3.my0 = t('idv.titles.session.review')
 
@@ -30,5 +29,8 @@ h1.h3.my0 = t('idv.titles.session.review')
 
       .h6.mt3 = t('idv.messages.phone.phone_of_record').capitalize
       .h4.bold.ico-absolute.ico-absolute-success #{idv_params[:phone]}
+
+      .mt3.mb3
+        = link_to t('idv.messages.review.financial_info'), '#'
 
 = render 'shared/cancel', link: verify_cancel_path
