@@ -2,7 +2,7 @@ class TwoFactorSetupForm
   include ActiveModel::Model
   include FormPhoneValidator
 
-  attr_accessor :phone, :otp_method
+  attr_accessor :phone
 
   def initialize(user)
     @user = user
@@ -27,6 +27,7 @@ class TwoFactorSetupForm
   private
 
   attr_reader :success, :user
+  attr_accessor :otp_method
 
   def otp_delivery_preference_changed?
     otp_method != user.otp_delivery_preference

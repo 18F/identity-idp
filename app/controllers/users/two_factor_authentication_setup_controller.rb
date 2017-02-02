@@ -36,10 +36,7 @@ module Users
     end
 
     def process_valid_form
-      prompt_to_confirm_phone(
-        phone: @two_factor_setup_form.phone,
-        otp_method: @two_factor_setup_form.otp_method
-      )
+      prompt_to_confirm_phone(phone: @two_factor_setup_form.phone)
     end
   end
 end
