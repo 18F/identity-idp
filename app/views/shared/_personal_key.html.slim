@@ -8,11 +8,11 @@ p.mt-tiny.mb0
 
 .mb3.right-align
   = link_to t('users.recovery_code.get_another'), manage_recovery_code_path(resend: true),
-    class: 'radio-btn inline-block ico ico-refresh text-decoration-none'
+    class: 'btn-border ico ico-refresh text-decoration-none'
 
   = link_to t('users.recovery_code.print'), '#',
     data: { print: true },
-    class: 'ml2 radio-btn inline-block ico ico-print text-decoration-none'
+    class: 'ml2 btn-border ico ico-print text-decoration-none'
 
 .mb4.col-12.border.rounded-md.border-blue.fs-16p.accordion(aria-expanded='true')
   .accordion-header.py1.pl2.pr3(aria-controls='recovery-code-info')

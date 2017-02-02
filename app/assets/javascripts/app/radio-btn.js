@@ -9,7 +9,7 @@ function clearHighlight(name) {
 }
 
 function highlightRadioBtn() {
-  const radios = document.querySelectorAll('.radio-btn input[type=radio]');
+  const radios = document.querySelectorAll('.btn-border input[type=radio]');
 
   if (radios) {
     Array.prototype.forEach.call(radios, (radio) => {

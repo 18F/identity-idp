@@ -16,13 +16,12 @@ p.mt-tiny.mb0
     fieldset.m0.p0.border-none
       legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_method.title')
       p = t('devise.two_factor_authentication.otp_method.instruction')
-      label.radio-btn.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
+      label.btn-border.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
         .radio
-          = radio_button_tag 'two_factor_setup_form[otp_method]', :sms,
-            checked: true
+          = radio_button_tag 'two_factor_setup_form[otp_method]', :sms, checked: true
           span.indicator
           = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio-btn.col-12.sm-col-5
+      label.btn-border.col-12.sm-col-5
         .radio
           = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
           span.indicator
