@@ -21,30 +21,6 @@ describe TwoFactorSetupForm, type: :model do
     end
   end
 
-  describe 'OTP delivery preference' do
-    context 'when voice is selected' do
-      it 'sets otp_method to "voice"' do
-        user = build_stubbed(:user, otp_delivery_preference: 'voice')
-        subject = TwoFactorSetupForm.new(user)
-        subject.submit(phone: valid_phone,
-                       otp_method: 'voice')
-
-        expect(subject.otp_method).to eq('voice')
-      end
-    end
-
-    context 'when SMS is selected' do
-      before do
-        subject.submit(phone: valid_phone,
-                       otp_method: 'sms')
-      end
-
-      it 'sets otp_method to "sms"' do
-        expect(subject.otp_method).to eq('sms')
-      end
-    end
-  end
-
   describe 'phone uniqueness' do
     context 'when phone is already taken' do
       it 'is valid' do
