@@ -49,9 +49,7 @@ describe 'sign_up/recovery_codes/show.html.slim' do
     render
 
     expect(rendered).
-      to have_xpath("//input[@value='#{t('forms.buttons.continue')}']")
-    expect(rendered).
-      to have_xpath("//form[@action='#{sign_up_recovery_code_path}']")
+      to have_content(t('forms.buttons.continue'))
   end
 
   it 'allows the user to print the recovery code' do

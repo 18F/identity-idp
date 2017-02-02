@@ -135,8 +135,26 @@ module Features
       click_submit_default
     end
 
+    def acknowledge_and_confirm_recovery_code
+      code_words = []
+
+      page.all(:css, 'p[data-recovery]').map do |node|
+        code_words << node.text
+      end
+
+      button_text = t('forms.buttons.continue')
+
+      click_on button_text, class: 'recovery-code-continue'
+
+      code_words.size.times do |index|
+        fill_in "recovery-#{index}", with: code_words[index]
+      end
+
+      click_on button_text, class: 'recovery-code-confirm'
+    end
+
     def click_acknowledge_recovery_code
-      click_button t('forms.buttons.continue')
+      click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
     end
   end
 end
