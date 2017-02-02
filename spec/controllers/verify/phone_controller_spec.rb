@@ -2,7 +2,7 @@ require 'rails_helper'
 include Features::LocalizationHelper
 
 describe Verify::PhoneController do
-  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
+  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   let(:good_phone) { '+1 (555) 555-0000' }
   let(:bad_phone) { '+1 (555) 555-5555' }
 
@@ -18,14 +18,26 @@ describe Verify::PhoneController do
   end
 
   describe '#new' do
-    it 'redirects to review when step is complete' do
-      user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+    let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+
+    before do
       stub_subject(user)
+    end
+
+    it 'redirects to review when step is complete' do
       subject.idv_session.phone_confirmation = true
 
       get :new
 
       expect(response).to redirect_to verify_review_path
+    end
+
+    it 'redirects to fail when step attempts are exceeded' do
+      subject.idv_session.step_attempts[:phone] = max_attempts
+
+      get :new
+
+      expect(response).to redirect_to verify_fail_path
     end
   end
 

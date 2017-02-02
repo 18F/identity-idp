@@ -9,13 +9,14 @@ module Idv
       :profile_id,
       :recovery_code,
       :resolution,
+      :step_attempts,
       :vendor
     ].freeze
 
     def initialize(user_session, current_user)
       @user_session = user_session
       @current_user = current_user
-      @user_session[:idv] ||= { params: {} }
+      @user_session[:idv] ||= new_idv_session
     end
 
     def method_missing(method_sym, *arguments, &block)
@@ -75,6 +76,10 @@ module Idv
     private
 
     attr_accessor :user_session, :current_user
+
+    def new_idv_session
+      { params: {}, step_attempts: { financials: 0, phone: 0 } }
+    end
 
     def move_pii_to_user_session
       user_session[:decrypted_pii] = session.delete(:decrypted_pii)

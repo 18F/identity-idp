@@ -1,6 +1,7 @@
 module Verify
   class FinanceController < StepController
     before_action :confirm_step_needed
+    before_action :confirm_step_allowed
 
     helper_method :idv_finance_form
 
@@ -11,15 +12,22 @@ module Verify
     def create
       result = step.submit
       analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result)
+      increment_step_attempts
 
       if result[:success]
         redirect_to verify_phone_url
+      elsif step_attempts_exceeded?
+        redirect_to_fail_path
       else
         render_form
       end
     end
 
     private
+
+    def step_name
+      :financials
+    end
 
     def step
       @_step ||= Idv::FinancialsStep.new(
