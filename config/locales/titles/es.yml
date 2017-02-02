@@ -12,6 +12,9 @@ es:
       phone: NOT TRANSLATED YET
     enter_2fa_code: NOT TRANSLATED YET
     help: NOT TRANSLATED YET
+    loa3_verified:
+      'true': NOT TRANSLATED YET
+      'false': NOT TRANSLATED YET
     passwords:
       change: NOT TRANSLATED YET
       confirm: NOT TRANSLATED YET
