@@ -152,7 +152,8 @@ feature 'saml api' do
         {
           issuer: dashboard_sp_issuer,
           acs_url: 'http://sp.example.org/saml/login',
-          cert: saml_test_sp_cert
+          cert: saml_test_sp_cert,
+          active: true
         }
       ]
     end
