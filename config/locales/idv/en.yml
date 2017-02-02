@@ -136,17 +136,17 @@ en:
         warning: Try again
       finance:
         warning_html: >
-          <strong>We could not find records matching your financial information.</strong> 
-          <span>Please check the information you entered.</span>
+          <strong>We could not find records matching your financial
+          information.</strong> <span>Please check the information you entered.
       phone:
         warning_html: >
-          <strong>We could not find records matching your phone information.</strong> 
-          <span>Please check the information you entered.</span>
+          <strong>We could not find records matching your phone
+          information.</strong> <span>Please check the information you entered.
       sessions:
         warning_html: >
-          <strong>We could not find records matching your personal information.</strong> 
-          <span>Please check the information you entered. Common mistakes are an incorrect
-          Social Security Number, ZIP Code, or date of birth.</span>
+          <strong>We could not find records matching your personal
+          information.</strong> <span>Please check the information you entered. Common mistakes
+          are an incorrect Social Security Number, ZIP Code, or date of birth.
     review:
       dob: Date of birth
       full_name: Full name

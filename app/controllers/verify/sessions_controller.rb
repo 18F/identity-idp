@@ -43,7 +43,7 @@ module Verify
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
-        show_warning
+        show_warning if step.vendor_invalid?
         render :new
       end
     end

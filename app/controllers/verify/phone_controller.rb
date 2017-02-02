@@ -21,8 +21,7 @@ module Verify
       elsif step_attempts_exceeded?
         redirect_to_fail_path
       else
-        show_warning
-        render :new
+        process_failure
       end
     end
 
@@ -38,6 +37,11 @@ module Verify
         idv_session: idv_session,
         params: step_params
       )
+    end
+
+    def process_failure
+      show_warning if step.vendor_invalid?
+      render :new
     end
 
     def step_params

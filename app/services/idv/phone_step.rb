@@ -10,6 +10,10 @@ module Idv
       FormResponse.new(success: complete?, errors: errors)
     end
 
+    def vendor_invalid?
+      form_valid? && !vendor_validation_passed?
+    end
+
     private
 
     def complete?

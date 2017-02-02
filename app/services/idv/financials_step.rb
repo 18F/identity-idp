@@ -13,6 +13,10 @@ module Idv
       result
     end
 
+    def vendor_invalid?
+      form_valid? && !vendor_validation_passed?
+    end
+
     private
 
     attr_reader :success
