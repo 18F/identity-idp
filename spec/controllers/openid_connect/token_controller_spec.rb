@@ -8,27 +8,16 @@ RSpec.describe OpenidConnect::TokenController do
       post :create,
            grant_type: grant_type,
            code: code,
-           client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
-           client_assertion: client_assertion
+           client_id: client_id,
+           client_secret: service_provider.metadata[:client_secret],
+           redirect_url: service_provider.metadata[:redirect_url]
     end
 
     let(:user) { create(:user) }
     let(:grant_type) { 'authorization_code' }
     let(:code) { SecureRandom.hex }
     let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
-    let(:client_assertion) do
-      jwt_payload = {
-        iss: client_id,
-        sub: client_id,
-        aud: openid_connect_token_url,
-        jti: SecureRandom.hex,
-        exp: 5.minutes.from_now.to_i
-      }
-
-      client_private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys/saml_test_sp.key').read)
-
-      JWT.encode(jwt_payload, client_private_key, 'RS256')
-    end
+    let(:service_provider) { ServiceProvider.new(client_id) }
 
     before do
       IdentityLinker.new(user, client_id).link_identity(session_uuid: code, ial: 1)

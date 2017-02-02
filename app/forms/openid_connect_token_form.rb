@@ -1,24 +1,22 @@
 class OpenidConnectTokenForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
-  include Rails.application.routes.url_helpers
 
   attr_reader :grant_type,
               :code,
-              :client_assertion_type,
-              :client_assertion
-
-  CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
+              :client_id,
+              :client_secret,
+              :redirect_uri
 
   validates_inclusion_of :grant_type, in: %w(authorization_code)
-  validates_inclusion_of :client_assertion_type,
-                         in: [CLIENT_ASSERTION_TYPE]
 
   validate :validate_code
-  validate :validate_client_assertion
+  validate :validate_client_id
+  validate :validate_client_secret
+  validate :validate_redirect_uri
 
   def initialize(params)
-    %i(grant_type code client_assertion_type client_assertion).each do |key|
+    %i(grant_type code client_id client_secret redirect_uri).each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
 
@@ -54,22 +52,22 @@ class OpenidConnectTokenForm
     errors.add :code, t('openid_connect.token.errors.invalid_code') unless identity.present?
   end
 
-  def validate_client_assertion
-    return unless identity.present?
-
-    service_provider = ServiceProvider.new(client_id)
-
-    JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
-               algorithm: 'RS256', verify_iat: true,
-               iss: client_id, verify_iss: true,
-               sub: client_id, verify_sub: true,
-               aud: openid_connect_token_url, verify_aud: true)
-  rescue JWT::DecodeError => err
-    # TODO: i18n these JWT gem error messages
-    errors.add(:client_assertion, err.message)
+  def validate_client_id
+    return if client_id == service_provider.issuer
+    errors.add :client_id, 'bad client_id'
   end
 
-  def client_id
-    identity.try(:service_provider)
+  def validate_client_secret
+    return if client_secret == service_provider.metadata[:client_secret]
+    errors.add :client_secret, 'bad secret'
+  end
+
+  def validate_redirect_uri
+    return if service_provider.metadata.fetch(:redirect_uri, '').start_with?(redirect_uri.to_s)
+    errors.add :redirect_uri, 'nah'
+  end
+
+  def service_provider
+    ServiceProvider.new(identity.try(:service_provider))
   end
 end
