@@ -27,7 +27,7 @@ module SignUp
       redirect_to verify_path if current_user.decorate.identity_not_verified?
     end
 
-    def loa_3?
+    def loa3?
       sp_session[:loa3] == true
     end
 
