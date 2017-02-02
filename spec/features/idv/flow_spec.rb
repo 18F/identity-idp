@@ -142,6 +142,10 @@ feature 'IdV session' do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_session_path
+      expect(page).to have_css(
+        '.modal-warning',
+        text: 'We could not find records matching your personal information'
+      )
       click_link t('idv.modal.button.warning')
 
       fill_out_idv_form_ok
@@ -158,6 +162,10 @@ feature 'IdV session' do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_finance_path
+      expect(page).to have_css(
+        '.modal-warning',
+        text: 'We could not find records matching your financial information'
+      )
       click_link t('idv.modal.button.warning')
 
       # can't go "back" to a successful step
@@ -198,6 +206,10 @@ feature 'IdV session' do
 
       # failure reloads the same sticky form
       expect(current_path).to eq verify_phone_path
+      expect(page).to have_css(
+        '.modal-warning',
+        text: 'We could not find records matching your phone information'
+      )
       click_link t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
 
@@ -223,7 +235,10 @@ feature 'IdV session' do
       fill_out_idv_form_fail
       click_idv_continue
 
-      expect(page).to have_css('.alert-warning')
+      expect(page).to have_css(
+        '.alert-warning',
+        text: 'We could not find records matching your personal information'
+      )
     end
 
     scenario 'clicking finance option changes input label', js: true do

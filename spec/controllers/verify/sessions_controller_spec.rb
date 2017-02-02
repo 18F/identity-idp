@@ -129,6 +129,7 @@ describe Verify::SessionsController do
           post :create, profile: partial_attrs
 
           expect(response).to render_template(:new)
+          expect(flash[:warning]).to_not match t('idv.modal.sessions.warning_html')
           expect(response.body).to match t('errors.messages.blank')
         end
       end
@@ -139,6 +140,7 @@ describe Verify::SessionsController do
         it 're-renders form' do
           post :create, profile: bad_attrs
 
+          expect(flash[:warning]).to match t('idv.modal.sessions.warning_html')
           expect(response).to render_template(:new)
         end
 

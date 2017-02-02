@@ -27,13 +27,16 @@
   position: fixed;
   top: 0;
   width: 100%;
+
+  .modal-inner {
+    display: table-cell;
+    vertical-align: top;
+   }
 }
 
 .modal-inner {
   display: block;
   position: relative;
-  // display: table-cell;
-  // vertical-align: top;
 
   &.key-badge::before {
     background-image: url(image-path('p-key.svg'));
@@ -62,7 +65,7 @@
 }
 
 @media #{$breakpoint-sm} {
-  .modal-inner {
+  .modal-cntnr > .modal-inner {
     vertical-align: middle;
   }
 }
