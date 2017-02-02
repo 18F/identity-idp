@@ -1,6 +1,6 @@
 module SignUp
   class CompletionsController < ApplicationController
-    before_action :verify_confirmed_if_loa3
+    before_action :verify_confirmed, if: :loa3?
 
     def show
       if user_fully_authenticated? && session[:sp].present?
@@ -23,10 +23,12 @@ module SignUp
 
     private
 
-    def verify_confirmed_if_loa3
-      if sp_session[:loa3] == true && current_user.decorate.identity_not_verified?
-        redirect_to verify_path
-      end
+    def verify_confirmed
+      redirect_to verify_path if current_user.decorate.identity_not_verified?
+    end
+
+    def loa_3?
+      sp_session[:loa3] == true
     end
 
     def service_provider_attributes
