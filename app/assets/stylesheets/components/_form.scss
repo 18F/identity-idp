@@ -52,7 +52,6 @@ textarea {
   }
 }
 
-
 // hide number field input spin box as per:
 // http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
 // and added .mfa class selector as per CodeClimate warning to:
@@ -254,4 +253,3 @@ input::-webkit-inner-spin-button {
     color: $white;
   }
 }
-

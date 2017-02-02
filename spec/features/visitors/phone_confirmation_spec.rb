@@ -22,7 +22,7 @@ feature 'Phone confirmation during sign up' do
       expect(@user.reload.phone_confirmed_at).to be_present
       expect(current_path).to eq sign_up_recovery_code_path
 
-      click_button t('forms.buttons.continue')
+      click_acknowledge_recovery_code
 
       expect(current_path).to eq profile_path
     end
