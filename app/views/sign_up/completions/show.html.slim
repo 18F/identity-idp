@@ -1,0 +1,9 @@
+-title t("titles.loa3_verified.#{session[:sp][:loa3]}", app: APP_NAME)
+
+.clearfix
+  .col-10.mx-auto.center
+    = image_tag(asset_url('user-verified.svg'), width: 146, alt: '', class: 'mb1')
+    h1.h3.mb3.my0 = t("titles.loa3_verified.#{session[:sp][:loa3]}", app: APP_NAME)
+
+    = button_to t('forms.buttons.continue_to', sp: @sp_name), sign_up_completed_path,
+      class: 'btn btn-wide px2 py1 rounded-lg border border-green bw2'
