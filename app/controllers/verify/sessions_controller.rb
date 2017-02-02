@@ -53,7 +53,7 @@ module Verify
     end
 
     def show_warning
-      flash[:warning] = t('idv.modal.sessions.warning_html')
+      flash.now[:warning] = t('idv.modal.sessions.warning_html')
     end
 
     def idv_profile_form

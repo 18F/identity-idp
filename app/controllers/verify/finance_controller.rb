@@ -49,7 +49,7 @@ module Verify
     end
 
     def show_warning
-      flash[:warning] = t('idv.modal.finance.warning_html')
+      flash.now[:warning] = t('idv.modal.finance.warning_html')
     end
 
     def render_form
