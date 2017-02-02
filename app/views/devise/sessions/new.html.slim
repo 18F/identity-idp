@@ -6,7 +6,7 @@ h1.h3.my0 = decorated_session.new_session_heading
                   as: resource_name,
                   url: session_path(resource_name),
                   html: { autocomplete: 'off', role: 'form' }) do |f|
-  = f.input :email, required: true
+  = f.input :email, required: true, input_html: { class: 'mb4' }
   = f.input :password, required: true
   = f.button :submit, t('links.next'), class: 'btn-wide'
 
