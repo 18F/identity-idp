@@ -23,12 +23,12 @@ describe TwoFactorSetupForm, type: :model do
 
   describe 'OTP delivery preference' do
     context 'when voice is selected' do
-      before do
+      it 'sets otp_method to "voice"' do
+        user = build_stubbed(:user, otp_delivery_preference: 'voice')
+        subject = TwoFactorSetupForm.new(user)
         subject.submit(phone: valid_phone,
                        otp_method: 'voice')
-      end
 
-      it 'sets otp_method to "voice"' do
         expect(subject.otp_method).to eq('voice')
       end
     end
@@ -102,6 +102,35 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(subject.submit(phone: '', otp_method: 'sms')).
           to eq result
+      end
+    end
+  end
+
+  describe '#submit' do
+    context 'when otp_method is the same as the user otp_delivery_preference' do
+      it 'does not update the user' do
+        user = build_stubbed(:user, otp_delivery_preference: 'sms')
+        form = TwoFactorSetupForm.new(user)
+
+        expect(UpdateUser).to_not receive(:new)
+
+        form.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')
+      end
+    end
+
+    context 'when otp_method is different from the user otp_delivery_preference' do
+      it 'updates the user' do
+        user = build_stubbed(:user, otp_delivery_preference: 'voice')
+        form = TwoFactorSetupForm.new(user)
+        attributes = { otp_delivery_preference: 'sms' }
+
+        updated_user = instance_double(UpdateUser)
+        allow(UpdateUser).to receive(:new).
+          with(user: user, attributes: attributes).and_return(updated_user)
+
+        expect(updated_user).to receive(:call)
+
+        form.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')
       end
     end
   end

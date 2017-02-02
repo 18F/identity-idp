@@ -39,7 +39,7 @@ feature 'Accessibility on pages that require authentication', :js do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq(user_two_factor_authentication_path)
+      expect(current_path).to eq(login_two_factor_path(delivery_method: 'sms'))
       expect(page).to be_accessible
     end
 

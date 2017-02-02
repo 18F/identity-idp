@@ -3,95 +3,90 @@ require 'rails_helper'
 include Features::ActiveJobHelper
 
 feature 'Two Factor Authentication' do
-  describe 'When the user has not setup 2FA' do
-    scenario 'user is prompted to setup two factor authentication at first sign in' do
-      sign_in_before_2fa
+  describe 'When the user has not set up 2FA' do
+    scenario 'user is prompted to set up two factor authentication at account creation' do
+      user = sign_in_before_2fa
+
+      attempt_to_bypass_2fa_setup
 
       expect(current_path).to eq phone_setup_path
       expect(page).
         to have_content t('devise.two_factor_authentication.two_factor_setup')
-    end
 
-    scenario 'user does not fill out a phone number when signing up' do
-      sign_up_and_set_password
-      click_button t('forms.buttons.send_passcode')
+      send_passcode_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
-    end
 
-    scenario 'user attempts to circumnavigate OTP setup' do
-      sign_in_before_2fa
+      submit_2fa_setup_form_with_empty_string_phone
 
-      visit profile_path
+      expect(page).to have_content invalid_phone_message
 
-      expect(current_path).to eq phone_setup_path
-    end
+      submit_2fa_setup_form_with_invalid_phone
 
-    describe 'user selects phone' do
-      scenario 'user leaves phone blank' do
-        sign_in_before_2fa
-        fill_in 'Phone', with: ''
-        click_button t('forms.buttons.send_passcode')
+      expect(page).to have_content invalid_phone_message
 
-        expect(page).to have_content invalid_phone_message
-      end
+      submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
 
-      scenario 'user enters an invalid number with no digits' do
-        sign_in_before_2fa
-        fill_in 'Phone', with: 'five one zero five five five four three two one'
-        click_button t('forms.buttons.send_passcode')
-
-        expect(page).to have_content invalid_phone_message
-      end
-
-      scenario 'user enters a valid number' do
-        user = sign_in_before_2fa
-        fill_in 'Phone', with: '555-555-1212'
-        click_button t('forms.buttons.send_passcode')
-
-        expect(page).to_not have_content invalid_phone_message
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
-        expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
-      end
+      expect(page).to_not have_content invalid_phone_message
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+      expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
+      expect(user.voice?).to eq true
     end
   end
 
-  describe 'When the user has set a preferred method' do
-    describe 'Using phone' do
-      context 'user is prompted for otp via phone only' do
-        before do
-          reset_job_queues
-          @user = create(:user, :signed_up)
-          reset_email
-          sign_in_before_2fa(@user)
-          click_button t('forms.buttons.submit.default')
-        end
+  def attempt_to_bypass_2fa_setup
+    visit profile_path
+  end
 
-        it 'lets the user know they are signed in' do
-          expect(page).to have_content t('devise.sessions.signed_in')
-        end
+  def send_passcode_without_entering_phone_number
+    click_button t('forms.buttons.send_passcode')
+  end
 
-        it 'asks the user to enter an OTP' do
-          expect(page).
-            to have_content t('devise.two_factor_authentication.header_text')
-        end
+  def submit_2fa_setup_form_with_empty_string_phone
+    fill_in 'Phone', with: ''
+    click_button t('forms.buttons.send_passcode')
+  end
 
-        it 'does not send an OTP via email' do
-          expect(last_email).to_not have_content('one-time passcode')
-        end
+  def submit_2fa_setup_form_with_invalid_phone
+    fill_in 'Phone', with: 'five one zero five five five four three two one'
+    click_button t('forms.buttons.send_passcode')
+  end
 
-        it 'does not allow user to bypass entering OTP' do
-          visit profile_path
+  def submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+    fill_in 'Phone', with: '555-555-1212'
+    choose 'Phone call'
+    click_button t('forms.buttons.send_passcode')
+  end
 
-          expect(current_path).to eq user_two_factor_authentication_path
-        end
-      end
+  describe 'When the user has already set up 2FA' do
+    it 'automatically sends the OTP to the preferred delivery method' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(page).
+        to have_content t('devise.two_factor_authentication.header_text')
+
+      attempt_to_bypass_2fa
+
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+
+      submit_prefilled_otp_code
+
+      expect(current_path).to eq profile_path
+    end
+
+    def attempt_to_bypass_2fa
+      visit profile_path
+    end
+
+    def submit_prefilled_otp_code
+      click_button t('forms.buttons.submit.default')
     end
 
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit.default')
       click_link t('links.two_factor_authentication.resend_code.sms')
 
       expect(page).to have_content(t('notices.send_code.sms'))
@@ -100,7 +95,6 @@ feature 'Two Factor Authentication' do
     scenario 'user does not have to focus on OTP field', js: true do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
-      click_button t('forms.buttons.submit.default')
 
       expect(page.evaluate_script('document.activeElement.id')).to eq 'code'
     end
@@ -112,7 +106,6 @@ feature 'Two Factor Authentication' do
 
         user = create(:user, :signed_up)
         sign_in_before_2fa(user)
-        click_button t('forms.buttons.submit.default')
 
         3.times do
           fill_in('code', with: 'bad-code')
@@ -130,7 +123,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa(user)
         click_button t('forms.buttons.submit.default')
 
-        expect(page).to have_content t('devise.two_factor_authentication.header_text')
+        expect(current_path).to eq profile_path
       end
     end
 
@@ -153,7 +146,6 @@ feature 'Two Factor Authentication' do
       it 'does not display error message' do
         user = create(:user, :signed_up)
         sign_in_before_2fa(user)
-        click_button t('forms.buttons.submit.default')
 
         fill_in('code', with: 'bad-code')
         click_button t('forms.buttons.submit.default')

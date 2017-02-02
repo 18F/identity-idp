@@ -64,28 +64,13 @@ describe Users::TwoFactorAuthenticationController do
   end
 
   describe '#show' do
-    context 'when resource is not fully authenticated yet' do
-      before do
-        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
-      end
-
-      it 'renders the :show view' do
+    context 'when user is TOTP enabled' do
+      it 'renders the :confirm_totp view' do
+        stub_sign_in_before_2fa(build(:user))
+        allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
         get :show
 
-        expect(response).to_not be_redirect
-        expect(response).to render_template(:show)
-      end
-
-      context 'when user is TOTP enabled' do
-        before do
-          allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
-        end
-
-        it 'renders the :confirm_totp view' do
-          get :show
-
-          expect(response).to redirect_to login_two_factor_authenticator_path
-        end
+        expect(response).to redirect_to login_two_factor_authenticator_path
       end
     end
 
@@ -96,6 +81,26 @@ describe Users::TwoFactorAuthenticationController do
         get :show
 
         expect(response).to redirect_to(new_user_session_path)
+      end
+    end
+
+    context 'when the user has already set up 2FA' do
+      it 'sends OTP via otp_delivery_preference and prompts for OTP' do
+        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
+
+        get :show
+
+        expect(response).
+          to redirect_to login_two_factor_path(delivery_method: 'sms', reauthn: false)
+      end
+    end
+
+    context 'when the user has not already set up 2FA' do
+      it 'redirects to set up 2FA' do
+        stub_sign_in_before_2fa(build(:user))
+        get :show
+
+        expect(response).to redirect_to phone_setup_url
       end
     end
   end
@@ -160,7 +165,8 @@ describe Users::TwoFactorAuthenticationController do
 
     context 'when selecting voice OTP delivery' do
       before do
-        sign_in_before_2fa
+        user = create(:user, :signed_up, otp_delivery_preference: 'voice')
+        sign_in_before_2fa(user)
         @old_otp = subject.current_user.direct_otp
         allow(VoiceOtpSenderJob).to receive(:perform_later)
       end
