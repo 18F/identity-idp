@@ -40,7 +40,7 @@ test:
 
   'urn:gov:gsa:openidconnect:test':
     redirect_uri: 'gov.gsa.openidconnect.test://result'
-    cert: 'saml_test_sp'
+    client_secret: '158bec72671f0c6ca0c00d155a379b4a'
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
@@ -101,7 +101,7 @@ development:
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uri: 'gov.gsa.openidconnect.development://result'
-    cert: 'saml_test_sp'
+    client_secret: '61ba81524248cba6e4ba0e9038547d84'
 
 production:
   'https://idp.dev.login.gov':

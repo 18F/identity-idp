@@ -20,7 +20,7 @@ RSpec.describe OpenidConnectConfigurationPresenter do
           to match_array(Saml::Idp::Constants::VALID_AUTHN_CONTEXTS)
         expect(configuration[:subject_types_supported]).to eq(%w(pairwise))
         expect(configuration[:id_token_signing_alg_values_supported]).to eq(%w(RS256))
-        expect(configuration[:token_endpoint_auth_methods_supported]).to eq(%w(private_key_jwt))
+        expect(configuration[:token_endpoint_auth_methods_supported]).to eq(%w(client_secret_jwt))
         expect(configuration[:token_endpoint_auth_signing_alg_values_supported]).to eq(%w(RS256))
 
         claims = %w(iss sub) + OpenidConnectAttributeScoper::CLAIMS

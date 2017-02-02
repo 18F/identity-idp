@@ -17,8 +17,9 @@ RSpec.describe OpenidConnectTokenForm do
   let(:grant_type) { 'authorization_code' }
   let(:code) { SecureRandom.hex }
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
-  let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
+  let(:client_assertion) { JWT.encode(jwt_payload, client_secret, 'HS256') }
 
+  let(:client_secret) { ServiceProvider.new(client_id).metadata[:client_secret] }
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:nonce) { SecureRandom.hex }
   let(:jwt_payload) do
@@ -31,7 +32,6 @@ RSpec.describe OpenidConnectTokenForm do
     }
   end
 
-  let(:client_private_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys/saml_test_sp.key').read) }
   let(:server_public_key) { RequestKeyManager.private_key.public_key }
 
   let(:user) { create(:user) }
@@ -110,8 +110,8 @@ RSpec.describe OpenidConnectTokenForm do
         end
       end
 
-      context 'signed by the wrong key' do
-        let(:client_private_key) { OpenSSL::PKey::RSA.new(2048) }
+      context 'signed by the wrong hmackey' do
+        let(:client_secret) { 'wrong wrong wrong' }
 
         it 'is invalid' do
           expect(valid?).to eq(false)
