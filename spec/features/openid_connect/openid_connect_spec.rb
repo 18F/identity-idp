@@ -4,6 +4,7 @@ feature 'OpenID Connect' do
   context 'happy path' do
     it 'renders an authorization that redirects' do
       client_id = 'urn:gov:gsa:openidconnect:test'
+      service_provider = ServiceProvider.new(client_id)
       state = SecureRandom.hex
       nonce = SecureRandom.hex
 
@@ -39,7 +40,7 @@ feature 'OpenID Connect' do
         exp: 5.minutes.from_now.to_i
       }
 
-      client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
+      client_assertion = JWT.encode(jwt_payload, service_provider.metadata[:client_secret], 'HS256')
       client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
       page.driver.post openid_connect_token_path,
@@ -80,14 +81,6 @@ feature 'OpenID Connect' do
   def sp_public_key
     @sp_public_key ||= begin
       OpenSSL::X509::Certificate.new(File.read(Rails.root.join('certs/saml.crt'))).public_key
-    end
-  end
-
-  def client_private_key
-    @client_public_key ||= begin
-      OpenSSL::PKey::RSA.new(
-        File.read(Rails.root.join('keys/saml_test_sp.key'))
-      )
     end
   end
 end
