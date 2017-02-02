@@ -104,14 +104,19 @@ input::-webkit-inner-spin-button {
   width: 1rem;
 }
 
+.checkbox input:focus ~ .indicator,
+.radio input:focus ~ .indicator {
+  box-shadow: 0 0 0 2px rgba($blue, .5);
+}
+
 .checkbox input:checked ~ .indicator,
-.radio input:checked ~ .indicator, {
+.radio input:checked ~ .indicator {
   background-color: $blue;
   color: $white;
 }
 
 .checkbox input:active ~ .indicator,
-.radio input:active ~ .indicator, {
+.radio input:active ~ .indicator {
   background-color: $blue-light;
   color: $white;
 }
