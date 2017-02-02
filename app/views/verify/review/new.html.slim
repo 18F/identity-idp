@@ -31,6 +31,4 @@ h1.h3.my0 = t('idv.titles.session.review')
       .h4.bold.ico-absolute.ico-absolute-success #{idv_params[:phone]}
 
       .mt3.mb3
-        = link_to t('idv.messages.review.financial_info'), '#'
-
-= render 'shared/cancel', link: verify_cancel_path
+        = link_to t('idv.messages.review.financial_info'), help_path
