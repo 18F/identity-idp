@@ -24,7 +24,11 @@ describe Users::PhonesController do
         expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
-        expect(response).to render_template('users/two_factor_authentication/show')
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_method: 'sms' }
+          )
+        )
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end
@@ -56,7 +60,11 @@ describe Users::PhonesController do
         expect(user.reload.phone).to_not eq second_user.phone
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
-        expect(response).to render_template('users/two_factor_authentication/show')
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_method: 'sms' }
+          )
+        )
         expect(subject.user_session[:context]).to eq 'confirmation'
       end
     end

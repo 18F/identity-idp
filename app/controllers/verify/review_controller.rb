@@ -60,7 +60,7 @@ module Verify
 
     def redirect_to_next_step
       if phone_confirmation_required?
-        prompt_to_confirm_phone(phone: idv_params[:phone], otp_method: nil, context: 'idv')
+        prompt_to_confirm_phone(phone: idv_params[:phone], context: 'idv')
       else
         redirect_to verify_confirmations_path
       end
