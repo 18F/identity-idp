@@ -1,14 +1,22 @@
 class ServiceProviderUpdater
   def run
     dashboard_service_providers.each do |service_provider|
-      service_provider = HashWithIndifferentAccess.new(service_provider)
-      issuer = service_provider['issuer']
-      SERVICE_PROVIDERS[issuer] = service_provider
-      VALID_SERVICE_PROVIDERS << issuer
+      update_local_caches(HashWithIndifferentAccess.new(service_provider))
     end
   end
 
   private
+
+  def update_local_caches(service_provider)
+    issuer = service_provider['issuer']
+    if service_provider['active'] == true
+      SERVICE_PROVIDERS[issuer] = service_provider
+      VALID_SERVICE_PROVIDERS << issuer
+    else
+      SERVICE_PROVIDERS.delete(issuer)
+      VALID_SERVICE_PROVIDERS.delete(issuer)
+    end
+  end
 
   def url
     Figaro.env.dashboard_url
