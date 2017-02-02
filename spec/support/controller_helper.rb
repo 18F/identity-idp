@@ -21,8 +21,8 @@ module ControllerHelper
     sign_in create(:user, :signed_up, :tech_support, password: VALID_PASSWORD)
   end
 
-  def sign_in_before_2fa
-    sign_in_as_user
+  def sign_in_before_2fa(user = create(:user, :signed_up))
+    sign_in_as_user(user)
     controller.current_user.send_new_otp
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end

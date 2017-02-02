@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(version: 20170201154458) do
     t.text     "encrypted_email",                           default: "", null: false
     t.string   "attribute_cost"
     t.text     "encrypted_phone"
+    t.integer  "otp_delivery_preference",                   default: 0,  null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
