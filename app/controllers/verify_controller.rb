@@ -21,12 +21,16 @@ class VerifyController < ApplicationController
   end
 
   def fail
-    redirect_to verify_url unless idv_attempter.exceeded?
+    redirect_to verify_url unless ok_to_fail?
   end
 
   private
 
   def active_profile?
     current_user.active_profile.present?
+  end
+
+  def ok_to_fail?
+    idv_attempter.exceeded? || flash[:max_attempts_exceeded]
   end
 end

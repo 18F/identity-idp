@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::Attempter do
   let(:current_user) { build(:user) }
   let(:subject) { Idv::Attempter.new(current_user) }
-  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
+  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
 
   describe '#reset' do
     it 'resets idv_attempts to zero for user' do
