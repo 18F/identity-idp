@@ -24,6 +24,7 @@ es:
           submit: Cambia la contraseña
         labels:
           password: Nueva contraseña
+      show: NOT TRANSLATED YET
     reactivate_profile:
       instructions: Proveer la siguiente información para reactivar su cuenta.
       submit: Reactivar perfil

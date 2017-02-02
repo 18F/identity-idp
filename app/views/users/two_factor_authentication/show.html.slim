@@ -13,12 +13,12 @@ p.mt-tiny.mb0#2fa-description = @presenter.help_text
     fieldset.m0.p0.border-none
       legend.mt-tiny.mb2.sm-mb3
         = t('devise.two_factor_authentication.choose_otp_delivery_html', phone: @phone_number)
-      label.radio-btn.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
+      label.btn-border.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
         .radio
           = f.radio_button :otp_method, 'sms', checked: true
           span.indicator
           = t('devise.two_factor_authentication.otp_method.sms')
-      label.radio-btn.col-12.sm-col-5
+      label.btn-border.col-12.sm-col-5
         .radio
           = f.radio_button :otp_method, 'voice'
           span.indicator

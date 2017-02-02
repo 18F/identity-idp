@@ -24,6 +24,7 @@ en:
           submit: Change password
         labels:
           password: New password
+      show: Show password
     reactivate_profile:
       instructions: Provide the information below to reactivate your account.
       submit: Reactivate profile
