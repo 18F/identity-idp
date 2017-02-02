@@ -12,7 +12,7 @@ module SignUp
     end
 
     def update
-      redirect_to(session[:saml_request_url] || profile_path)
+      redirect_to next_step
     end
 
     private
@@ -20,6 +20,14 @@ module SignUp
     def confirm_has_not_already_viewed_recovery_code
       return if user_session[:first_time_recovery_code_view].present?
       redirect_to after_sign_in_path_for(current_user)
+    end
+
+    def next_step
+      if session[:saml_request_url]
+        sign_up_completed_path
+      else
+        profile_path
+      end
     end
   end
 end

@@ -74,6 +74,8 @@ class Analytics
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   TOTP_SETUP = 'TOTP Setup'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
+  USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze
+  USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE = 'User registration: agency handoff complete'.freeze
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
   USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze

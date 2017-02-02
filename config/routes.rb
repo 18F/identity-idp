@@ -111,6 +111,8 @@ Rails.application.routes.draw do
   post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
   get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
   get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
+  get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
+  post '/sign_up/completed' => 'sign_up/completions#update'
 
   get '/verify' => 'verify#index'
   get '/verify/activated' => 'verify#activated'
