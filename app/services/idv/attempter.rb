@@ -1,5 +1,9 @@
 module Idv
   class Attempter
+    def self.idv_max_attempts
+      (Figaro.env.idv_max_attempts || 3).to_i
+    end
+
     def initialize(current_user)
       @current_user = current_user
     end
@@ -23,7 +27,7 @@ module Idv
       return false if window_expired?
 
       # too many attempts in the window
-      attempts >= idv_max_attempts && !window_expired?
+      attempts >= self.class.idv_max_attempts && !window_expired?
     end
 
     def window_expired?
@@ -43,10 +47,6 @@ module Idv
     private
 
     attr_reader :current_user
-
-    def idv_max_attempts
-      (Figaro.env.idv_max_attempts || 3).to_i
-    end
 
     def idv_attempt_window
       (Figaro.env.idv_attempt_window_in_hours || 24).to_i.hours

@@ -4,6 +4,7 @@ feature 'IdV session' do
   include IdvHelper
 
   let(:user_password) { Features::SessionHelper::VALID_PASSWORD }
+  let(:max_attempts_less_one) { Idv::Attempter.idv_max_attempts - 1 }
 
   context 'landing page' do
     before do
@@ -54,7 +55,7 @@ feature 'IdV session' do
     scenario 'allows 3 attempts in 24 hours' do
       user = sign_in_and_2fa_user
 
-      2.times do
+      max_attempts_less_one.times do
         visit verify_session_path
         complete_idv_profile_fail
 
@@ -79,6 +80,44 @@ feature 'IdV session' do
 
       user.reload
       expect(user.idv_attempted_at).to_not be_nil
+    end
+
+    scenario 'finance step redirects to fail after max attempts' do
+      sign_in_and_2fa_user
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_idv_continue
+
+      max_attempts_less_one.times do
+        fill_out_financial_form_fail
+        click_idv_continue
+
+        expect(current_path).to eq verify_finance_path
+      end
+
+      fill_out_financial_form_fail
+      click_idv_continue
+      expect(current_path).to eq verify_fail_path
+    end
+
+    scenario 'phone step redirects to fail after max attempts' do
+      sign_in_and_2fa_user
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+
+      max_attempts_less_one.times do
+        fill_out_phone_form_fail
+        click_idv_continue
+
+        expect(current_path).to eq verify_phone_path
+      end
+
+      fill_out_phone_form_fail
+      click_idv_continue
+      expect(current_path).to eq verify_fail_path
     end
 
     scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
