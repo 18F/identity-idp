@@ -12,32 +12,38 @@ feature 'View recovery code' do
   end
 
   context 'after sign up' do
+    scenario 'does not display progress bar' do
+      sign_in_and_2fa_user
+
+      click_link t('profile.links.regenerate_recovery_code')
+
+      expect(page).to_not have_css('.step-3.active')
+    end
+
     context 'regenerating recovery code' do
-      scenario 'displays new code and returns user to profile page' do
+      scenario 'displays new code' do
         user = sign_in_and_2fa_user
         old_code = user.recovery_code
 
         click_link t('profile.links.regenerate_recovery_code')
 
         expect(user.reload.recovery_code).to_not eq old_code
-
-        click_button t('forms.buttons.continue')
-
-        expect(current_path).to eq profile_path
       end
     end
 
     context 'regenerating new code after canceling edit password action' do
-      scenario 'displays new code and returns user to profile page' do
+      scenario 'displays new code' do
         allow(Figaro.env).to receive(:reauthn_window).and_return('0')
 
-        sign_in_and_2fa_user
+        user = sign_in_and_2fa_user
+
+        old_code = user.recovery_code
+
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
         click_on(t('profile.links.regenerate_recovery_code'))
-        click_on(t('forms.buttons.continue'))
 
-        expect(current_path).to eq(profile_path)
+        expect(user.reload.recovery_code).to_not eq old_code
       end
     end
 
