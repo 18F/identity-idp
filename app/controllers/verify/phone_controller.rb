@@ -1,6 +1,7 @@
 module Verify
   class PhoneController < StepController
     before_action :confirm_step_needed
+    before_action :confirm_step_allowed
 
     helper_method :idv_phone_form
 
@@ -11,15 +12,22 @@ module Verify
     def create
       result = step.submit
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION, result.to_h)
+      increment_step_attempts
 
       if result.success?
         redirect_to verify_review_url
+      elsif step_attempts_exceeded?
+        redirect_to_fail_path
       else
         render :new
       end
     end
 
     private
+
+    def step_name
+      :phone
+    end
 
     def step
       @_step ||= Idv::PhoneStep.new(

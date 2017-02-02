@@ -25,6 +25,10 @@ module IdvHelper
     fill_in :idv_finance_form_ccn, with: '12345678'
   end
 
+  def fill_out_financial_form_fail
+    fill_in :idv_finance_form_ccn, with: '00000000'
+  end
+
   def fill_out_phone_form_ok(phone = '415-555-0199')
     fill_in :idv_phone_form_phone, with: phone
   end

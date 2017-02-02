@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Verify::FinanceController do
-  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
+  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -22,6 +22,15 @@ describe Verify::FinanceController do
       get :new
 
       expect(response).to redirect_to verify_phone_path
+    end
+
+    it 'redirects to fail when step attempts are exceeded' do
+      stub_subject
+      subject.idv_session.step_attempts[:financials] = max_attempts
+
+      get :new
+
+      expect(response).to redirect_to verify_fail_path
     end
   end
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Verify::SessionsController do
-  let(:max_attempts) { (Figaro.env.idv_max_attempts || 3).to_i }
+  let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:user_attrs) do
     {
