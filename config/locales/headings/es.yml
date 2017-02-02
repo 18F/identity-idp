@@ -1,7 +1,6 @@
 ---
 es:
   headings:
-    choose_otp_delivery: Elija cómo desea recibir un código de acceso único
     confirmations:
       new: Enviar otro correo electrónico de confirmación
     contact: Contáctenos

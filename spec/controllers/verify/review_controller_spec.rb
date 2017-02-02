@@ -202,7 +202,11 @@ describe Verify::ReviewController do
         put :create, user: { password: ControllerHelper::VALID_PASSWORD }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
-        expect(response).to render_template('users/two_factor_authentication/show')
+        expect(response).to redirect_to(
+          otp_send_path(
+            otp_delivery_selection_form: { otp_method: 'sms' }
+          )
+        )
         expect(subject.user_session[:context]).to eq 'idv'
       end
     end
