@@ -1,4 +1,5 @@
-import Modal from '../components/modal';
+import Modal from '../app/components/modal';
+
 const modalSelector = '#personal-key-confirm';
 const modal = new Modal({ el: modalSelector });
 
@@ -51,18 +52,14 @@ function handleSubmit(event) {
 
   if (!invalidMatches.length) {
     unsetInvalidHTML();
-    handleConfirmFormPost();
+    // Recovery code page, without js enabled, has a form submission that posts
+    // to the server with no body.
+    // Mimic that here.
+    formEl.removeEventListener('submit', handleSubmit);
+    formEl.submit();
   } else {
     setInvalidHTML();
   }
-}
-
-function handleConfirmFormPost() {
-  // Recovery code page, without js enabled, has a form submission that posts
-  // to the server with no body.
-  // Mimic that here.
-  formEl.removeEventListener('submit', handleSubmit);
-  formEl.submit();
 }
 
 function show(event) {

@@ -143,14 +143,11 @@ module Features
       end
 
       button_text = t('forms.buttons.continue')
-      index = 0
 
       click_on button_text, class: 'recovery-code-continue'
 
-      # rubocop or fasterer hates each_with_index, apparently
-      while index < code_words.length
+      code_words.size.times do |index|
         fill_in "recovery-#{index}", with: code_words[index]
-        index += 1
       end
 
       click_on button_text, class: 'recovery-code-confirm'
