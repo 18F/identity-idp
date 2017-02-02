@@ -13,7 +13,7 @@ module PhoneConfirmation
 
   def prompt_to_choose_delivery_method
     phone_number = user_session[:unconfirmed_phone]
-    @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+    @otp_delivery_selection_form = OtpDeliverySelectionForm.new(current_user)
 
     @presenter = TwoFactorAuthCode::OtpDeliveryPresenter.new(
       reenter_phone_number_path: manage_phone_path,

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe OtpDeliverySelectionForm do
-  subject { OtpDeliverySelectionForm.new }
+  subject { OtpDeliverySelectionForm.new(build_stubbed(:user)) }
 
   describe 'otp_method inclusion validation' do
     it 'is invalid when otp_method is neither sms nor voice' do
@@ -40,6 +40,33 @@ describe OtpDeliverySelectionForm do
         }
 
         expect(result).to eq result_hash
+      end
+    end
+
+    context 'when otp_method is the same as the user otp_delivery_preference' do
+      it 'does not update the user' do
+        user = build_stubbed(:user, otp_delivery_preference: 'sms')
+        form = OtpDeliverySelectionForm.new(user)
+
+        expect(UpdateUser).to_not receive(:new)
+
+        form.submit(otp_method: 'sms')
+      end
+    end
+
+    context 'when otp_method is different from the user otp_delivery_preference' do
+      it 'updates the user' do
+        user = build_stubbed(:user, otp_delivery_preference: 'voice')
+        form = OtpDeliverySelectionForm.new(user)
+        attributes = { otp_delivery_preference: 'sms' }
+
+        updated_user = instance_double(UpdateUser)
+        allow(UpdateUser).to receive(:new).
+          with(user: user, attributes: attributes).and_return(updated_user)
+
+        expect(updated_user).to receive(:call)
+
+        form.submit(otp_method: 'sms')
       end
     end
   end

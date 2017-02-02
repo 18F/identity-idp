@@ -19,7 +19,7 @@ feature 'saml api' do
         sign_in_before_2fa(user)
         visit authnrequest_get
 
-        expect(current_path).to eq(user_two_factor_authentication_path)
+        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
       end
     end
 
@@ -132,7 +132,7 @@ feature 'saml api' do
       sign_in_before_2fa(user)
       visit '/test/saml'
 
-      expect(current_path).to eq(user_two_factor_authentication_path)
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
     end
 
     it 'adds acs_url domain names for current Rails env to CSP form_action' do

@@ -22,6 +22,7 @@ class User < ActiveRecord::Base
   include UserEncryptedAttributeOverrides
 
   enum role: { user: 0, tech: 1, admin: 2 }
+  enum otp_delivery_preference: { sms: 0, voice: 1 }
 
   has_one_time_password
 

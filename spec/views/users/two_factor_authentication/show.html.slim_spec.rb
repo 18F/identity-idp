@@ -6,7 +6,7 @@ describe 'users/two_factor_authentication/show.html.slim' do
     let(:presenter_data) { attributes_for(:generic_otp_presenter) }
 
     before do
-      @otp_delivery_selection_form = OtpDeliverySelectionForm.new
+      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(user)
       allow(view).to receive(:reauthn?).and_return(false)
       allow(view).to receive(:current_user).and_return(user)
 

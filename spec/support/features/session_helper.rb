@@ -50,6 +50,7 @@ module Features
     end
 
     def sign_in_before_2fa(user = create(:user))
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       login_as(user, scope: :user, run_callbacks: false)
 
       if user.phone.present?
@@ -105,7 +106,6 @@ module Features
     def sign_in_live_with_2fa(user = user_with_2fa)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
-      click_submit_default
       click_submit_default
       user
     end
