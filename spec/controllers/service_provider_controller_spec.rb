@@ -15,7 +15,8 @@ describe ServiceProviderController do
           acs_url: 'http://sp.example.org/saml/login',
           assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
           block_encryption: 'aes256-cbc',
-          cert: saml_test_sp_cert
+          cert: saml_test_sp_cert,
+          active: true
         }
       ]
     end

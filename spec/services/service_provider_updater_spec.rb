@@ -5,6 +5,7 @@ describe ServiceProviderUpdater do
 
   let(:fake_dashboard_url) { 'http://dashboard.example.org' }
   let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
+  let(:inactive_dashboard_sp_issuer) { 'old-dashboard-service-provider' }
   let(:dashboard_service_providers) do
     [
       {
@@ -15,7 +16,19 @@ describe ServiceProviderUpdater do
         acs_url: 'http://sp.example.org/saml/login',
         assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
         block_encryption: 'aes256-cbc',
-        cert: saml_test_sp_cert
+        cert: saml_test_sp_cert,
+        active: true
+      },
+      {
+        issuer: inactive_dashboard_sp_issuer,
+        agency: 'an old service provider',
+        friendly_name: 'an old, stale service provider',
+        description: 'forget about me',
+        acs_url: 'http://oldsp.example.org/saml/login',
+        assertion_consumer_logout_service_url: 'http://oldsp.example.org/saml/logout',
+        block_encryption: 'aes256-cbc',
+        cert: saml_test_sp_cert,
+        active: false
       }
     ]
   end
@@ -52,6 +65,21 @@ describe ServiceProviderUpdater do
         expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
         expect(sp.valid?).to eq true
         expect(VALID_SERVICE_PROVIDERS).to include dashboard_sp_issuer
+      end
+
+      it 'removes inactive Service Providers' do
+        expect(SERVICE_PROVIDERS[inactive_dashboard_sp_issuer]).to eq nil
+
+        SERVICE_PROVIDERS[inactive_dashboard_sp_issuer] = {}
+        VALID_SERVICE_PROVIDERS << inactive_dashboard_sp_issuer
+
+        subject.run
+
+        sp = ServiceProvider.new(inactive_dashboard_sp_issuer)
+
+        expect(sp.metadata[:agency]).to eq nil
+        expect(SERVICE_PROVIDERS[inactive_dashboard_sp_issuer]).to eq nil
+        expect(VALID_SERVICE_PROVIDERS).to_not include inactive_dashboard_sp_issuer
       end
     end
 
