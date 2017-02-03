@@ -18,7 +18,21 @@ module IdvHelper
     fill_in 'profile_address1', with: '123 Main St'
     fill_in 'profile_city', with: 'Nowhere'
     select 'Kansas', from: 'profile_state'
-    fill_in 'profile_zipcode', with: '66044'
+    fill_in 'profile_zipcode', with: '00000'
+  end
+
+  def fill_out_idv_previous_address_ok
+    fill_in 'profile_prev_address1', with: '456 Other Ave'
+    fill_in 'profile_prev_city', with: 'Elsewhere'
+    select 'Missouri', from: 'profile_prev_state'
+    fill_in 'profile_prev_zipcode', with: '12345'
+  end
+
+  def fill_out_idv_previous_address_fail
+    fill_in 'profile_prev_address1', with: '456 Other Ave'
+    fill_in 'profile_prev_city', with: 'Elsewhere'
+    select 'Missouri', from: 'profile_prev_state'
+    fill_in 'profile_prev_zipcode', with: '00000'
   end
 
   def fill_out_financial_form_ok

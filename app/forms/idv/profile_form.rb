@@ -8,10 +8,10 @@ module Idv
       ActiveModel::Name.new(self, nil, 'Profile')
     end
 
-    validates :first_name, :last_name, :dob, :ssn,
-              :address1, :city, :state, :zipcode, presence: true
+    validates :address1, :city, :dob, :first_name, :last_name, :ssn, :state, :zipcode,
+              presence: true
 
-    validate :ssn_is_unique, :dob_is_sane
+    validate :dob_is_sane, :ssn_is_unique
 
     validates_format_of :zipcode,
                         with: /\A\d{5}(-?\d{4})?\z/,
@@ -22,8 +22,7 @@ module Idv
                         message: I18n.t('idv.errors.pattern_mismatch.ssn'),
                         allow_blank: true
 
-    delegate :user_id, :first_name, :last_name, :phone, :email, :dob, :ssn, :address1,
-             :address2, :city, :state, :zipcode, to: :pii_attributes
+    delegate(*Pii::Attributes.members, :user_id, to: :pii_attributes)
 
     def initialize(params, user)
       @user = user
@@ -39,7 +38,7 @@ module Idv
     end
 
     def submit(params)
-      params.each { |key, val| pii_attributes[key] = val }
+      initialize_params(params)
       profile.ssn_signature = ssn_signature
       @success = valid?
       result
@@ -47,9 +46,7 @@ module Idv
 
     private
 
-    attr_writer :first_name, :last_name, :phone, :email, :dob, :ssn, :address1,
-                :address2, :city, :state, :zipcode
-
+    attr_writer(*Pii::Attributes.members)
     attr_reader :success
 
     def initialize_params(params)
