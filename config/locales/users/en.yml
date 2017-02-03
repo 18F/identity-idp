@@ -1,5 +1,6 @@
 en:
   users:
+    delete: The record of your information has been cleared
     totp_setup:
       new:
         qr_img_alt: QR Code for Authenticator App

@@ -113,6 +113,8 @@ Rails.application.routes.draw do
   get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
   post '/sign_up/completed' => 'sign_up/completions#update'
 
+  delete '/users' => 'users#destroy', as: :destroy_user
+
   get '/verify' => 'verify#index'
   get '/verify/activated' => 'verify#activated'
   get '/verify/cancel' => 'verify#cancel'
