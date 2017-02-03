@@ -21,23 +21,20 @@ RSpec.describe WorkerHealthChecker do
   end
 
   describe '#enqueue_dummy_jobs' do
-    let(:queue1) { 'queue1' }
-    let(:queue2) { 'queue2' }
-
-    before do
-      create_sidekiq_queues(queue1, queue2)
-    end
+    let(:queues) { YAML.load_file("#{Rails.root}/config/sidekiq.yml")[:queues] }
 
     subject(:enqueue_dummy_jobs) { WorkerHealthChecker.enqueue_dummy_jobs }
 
-    it 'queues a dummy job per queue that update health per job' do
-      expect(WorkerHealthChecker.status(queue1).healthy?).to eq(false)
-      expect(WorkerHealthChecker.status(queue2).healthy?).to eq(false)
+    it 'queues a dummy job per queue that updates health per job' do
+      queues.each do |queue|
+        expect(WorkerHealthChecker.status(queue).healthy?).to eq(false)
+      end
 
       enqueue_dummy_jobs
 
-      expect(WorkerHealthChecker.status(queue1).healthy?).to eq(true)
-      expect(WorkerHealthChecker.status(queue2).healthy?).to eq(true)
+      queues.each do |queue|
+        expect(WorkerHealthChecker.status(queue).healthy?).to eq(true)
+      end
     end
   end
 
