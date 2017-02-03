@@ -201,11 +201,13 @@ feature 'IdV session' do
       fill_out_phone_form_ok(good_phone_value)
       click_idv_continue
 
+      page.find('.accordion').click
+
       # success advances to next step
-      expect(page).to have_content(t('idv.titles.review'))
+      expect(page).to have_content(t('idv.titles.session.review'))
       expect(page).to have_content(second_ssn_value)
       expect(page).to_not have_content(first_ssn_value)
-      expect(page).to have_content(second_ccn_value)
+      expect(page).to_not have_content(second_ccn_value)
       expect(page).to_not have_content(mortgage_value)
       expect(page).to_not have_content(first_ccn_value)
       expect(page).to have_content(good_phone_formatted)
