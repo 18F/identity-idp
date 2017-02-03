@@ -1,5 +1,7 @@
 module Verify
-  class FinanceController < StepController
+  class FinanceController < ApplicationController
+    include IdvStepConcern
+
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
 

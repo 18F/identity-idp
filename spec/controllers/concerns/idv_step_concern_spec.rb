@@ -1,11 +1,17 @@
 require 'rails_helper'
 
-describe Verify::StepController do
+describe 'IdvStepConcern' do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:idv_session) { Idv::Session.new(subject.user_session, user) }
 
+  module Verify
+    class StepController < ApplicationController
+      include IdvStepConcern
+    end
+  end
+
   describe '#confirm_idv_attempts_allowed' do
-    controller do
+    controller Verify::StepController do
       before_action :confirm_idv_attempts_allowed
 
       def show
@@ -67,7 +73,7 @@ describe Verify::StepController do
   end
 
   describe '#confirm_idv_session_started' do
-    controller do
+    controller Verify::StepController do
       before_action :confirm_idv_session_started
 
       def show
@@ -109,7 +115,7 @@ describe Verify::StepController do
   end
 
   describe '#confirm_idv_needed' do
-    controller do
+    controller Verify::StepController do
       before_action :confirm_idv_needed
 
       def show
