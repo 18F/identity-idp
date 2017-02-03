@@ -1,5 +1,6 @@
 module Verify
-  class ReviewController < StepController
+  class ReviewController < ApplicationController
+    include IdvStepConcern
     include PhoneConfirmation
 
     before_action :confirm_idv_steps_complete
