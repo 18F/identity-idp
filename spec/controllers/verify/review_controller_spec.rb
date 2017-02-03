@@ -155,7 +155,7 @@ describe Verify::ReviewController do
       it 'displays a helpful flash message to the user' do
         get :new
 
-        expect(flash[:now]).to eq(
+        expect(flash.now[:success]).to eq(
           t('idv.messages.review.info_verified_html',
             phone_message: "<strong>#{t('idv.messages.phone.phone_of_record')}</strong>")
         )
