@@ -10,7 +10,9 @@ RSpec.describe OpenidConnectAuthorizeForm do
       redirect_uri: redirect_uri,
       response_type: response_type,
       scope: scope,
-      state: state
+      state: state,
+      code_challenge: code_challenge,
+      code_challenge_method: code_challenge_method
     )
   end
 
@@ -28,6 +30,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:response_type) { 'code' }
   let(:scope) { 'openid profile' }
   let(:state) { SecureRandom.hex }
+  let(:code_challenge) { nil }
+  let(:code_challenge_method) { nil }
 
   describe '#submit' do
     let(:user) { create(:user) }
@@ -55,6 +59,18 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         identity = user.identities.where(service_provider: client_id).first
         expect(identity.ial).to eq(3)
+      end
+
+      context 'with PKCE' do
+        let(:code_challenge) { 'abcdef' }
+        let(:code_challenge_method) { 'S256' }
+
+        it 'records the code_challenge on the identity' do
+          expect(result[:success]).to eq(true)
+
+          identity = user.identities.where(service_provider: client_id).first
+          expect(identity.code_challenge).to eq(code_challenge)
+        end
       end
     end
 
@@ -150,6 +166,27 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'without a state' do
       let(:state) { nil }
       it { expect(valid?).to eq(false) }
+    end
+
+    context 'PKCE' do
+      let(:code_challenge) { 'abcdef' }
+      let(:code_challenge_method) { 'S256' }
+
+      context 'code_challenge but no code_challenge_method' do
+        let(:code_challenge_method) { nil }
+        it 'has errors' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code_challenge_method]).to be_present
+        end
+      end
+
+      context 'bad code_challenge_method' do
+        let(:code_challenge_method) { 'plain' }
+        it 'has errors' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code_challenge_method]).to be_present
+        end
+      end
     end
   end
 

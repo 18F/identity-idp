@@ -3,22 +3,30 @@ class OpenidConnectTokenForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  attr_reader :grant_type,
-              :code,
-              :client_assertion_type,
-              :client_assertion
+  ATTRS = %i(
+    client_assertion
+    client_assertion_type
+    code
+    code_verifier
+    grant_type
+  ).freeze
+
+  attr_reader(*ATTRS)
 
   CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
 
   validates_inclusion_of :grant_type, in: %w(authorization_code)
   validates_inclusion_of :client_assertion_type,
-                         in: [CLIENT_ASSERTION_TYPE]
+                         in: [CLIENT_ASSERTION_TYPE],
+                         if: :private_key_jwt?
 
   validate :validate_code
-  validate :validate_client_assertion
+  validate :validate_pkce_or_private_key_jwt
+  validate :validate_code_verifier, if: :pkce?
+  validate :validate_client_assertion, if: :private_key_jwt?
 
   def initialize(params)
-    %i(grant_type code client_assertion_type client_assertion).each do |key|
+    ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
 
@@ -50,8 +58,28 @@ class OpenidConnectTokenForm
 
   attr_reader :identity
 
+  def pkce?
+    code_verifier.present? || identity.try(:code_challenge).present?
+  end
+
+  def private_key_jwt?
+    client_assertion.present? || client_assertion_type.present?
+  end
+
+  def validate_pkce_or_private_key_jwt
+    return if pkce? || private_key_jwt?
+    errors.add :code, t('openid_connect.token.errors.invalid_authentication')
+  end
+
   def validate_code
     errors.add :code, t('openid_connect.token.errors.invalid_code') unless identity.present?
+  end
+
+  def validate_code_verifier
+    expected_code_challenge = remove_base64_padding(identity.try(:code_challenge))
+    given_code_challenge = remove_base64_padding(Digest::SHA256.base64digest(code_verifier.to_s))
+    return if expected_code_challenge == given_code_challenge
+    errors.add :code_verifier, t('openid_connect.token.errors.invalid_code_verifier')
   end
 
   def validate_client_assertion
@@ -71,5 +99,11 @@ class OpenidConnectTokenForm
 
   def client_id
     identity.try(:service_provider)
+  end
+
+  def remove_base64_padding(data)
+    Base64.urlsafe_encode64(Base64.urlsafe_decode64(data.to_s), padding: false)
+  rescue ArgumentError
+    nil
   end
 end
