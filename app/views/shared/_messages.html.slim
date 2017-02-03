@@ -2,4 +2,4 @@
   - flash.each do |name, msg|
     - if msg.present? && msg.is_a?(String)
       div class="alert alert-#{name}" role='alert'
-        = msg
+        = safe_join([msg.html_safe])
