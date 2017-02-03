@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'IdV session' do
   include IdvHelper
-  include XPathHelper
 
   let(:user_password) { Features::SessionHelper::VALID_PASSWORD }
   let(:max_attempts_less_one) { Idv::Attempter.idv_max_attempts - 1 }

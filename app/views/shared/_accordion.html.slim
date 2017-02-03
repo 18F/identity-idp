@@ -1,9 +1,3 @@
-/ [locals] ( * denotes required)
-/ * target_id: ID of element containing accordion content to be slid. Also controls
-/ * header_text: text to be displayed when accordion is closed
-/ * content: the content of the accordion
-
-
 .mb4.col-12.border.rounded-md.border-blue.fs-16p.accordion(aria-expanded='true')
   .accordion-header.py1.pl2.pr3(aria-controls="#{target_id}")
     = header_text
