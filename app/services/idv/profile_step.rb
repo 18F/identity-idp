@@ -19,7 +19,7 @@ module Idv
       errors.key?(:ssn) && errors[:ssn].include?(I18n.t('idv.errors.duplicate_ssn'))
     end
 
-    def vendor_invalid?
+    def form_valid_but_vendor_validation_failed?
       form_valid? && !vendor_validation_passed?
     end
 

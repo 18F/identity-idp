@@ -10,7 +10,7 @@ module Idv
       FormResponse.new(success: complete?, errors: errors)
     end
 
-    def vendor_invalid?
+    def form_valid_but_vendor_validation_failed?
       form_valid? && !vendor_validation_passed?
     end
 

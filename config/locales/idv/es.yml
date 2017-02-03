@@ -102,10 +102,13 @@ es:
       button:
         warning: NOT TRANSLATED YET
       finance:
+        warning_accent: NOT TRANSLATED YET
         warning_html: NOT TRANSLATED YET
       phone:
+        warning_accent: NOT TRANSLATED YET
         warning_html: NOT TRANSLATED YET
       sessions:
+        warning_accent: NOT TRANSLATED YET
         warning_html: NOT TRANSLATED YET
     review:
       dob: NOT TRANSLATED YET
