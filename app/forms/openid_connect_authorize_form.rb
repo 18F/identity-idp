@@ -5,6 +5,8 @@ class OpenidConnectAuthorizeForm
 
   SIMPLE_ATTRS = %i(
     client_id
+    code_challenge
+    code_challenge_method
     nonce
     prompt
     redirect_uri
@@ -25,6 +27,7 @@ class OpenidConnectAuthorizeForm
 
   validates_inclusion_of :response_type, in: %w(code)
   validates_inclusion_of :prompt, in: %w(select_account)
+  validates_inclusion_of :code_challenge_method, in: %w(S256), if: :code_challenge
 
   validate :validate_acr_values
   validate :validate_client_id
@@ -40,7 +43,7 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  def params
+  def params # rubocop:disable Metrics/MethodLength
     {
       acr_values: acr_values.join(' '),
       client_id: client_id,
@@ -49,8 +52,10 @@ class OpenidConnectAuthorizeForm
       redirect_uri: redirect_uri,
       response_type: response_type,
       scope: scope.join(' '),
-      state: state
-    }
+      state: state,
+      code_challenge: code_challenge,
+      code_challenge_method: code_challenge_method
+    }.select { |_key, value| value.present? }
   end
 
   def submit(user, rails_session_id)
@@ -112,7 +117,8 @@ class OpenidConnectAuthorizeForm
       nonce: nonce,
       session_uuid: rails_session_id,
       ial: ial,
-      scope: scope.join(' ')
+      scope: scope.join(' '),
+      code_challenge: code_challenge
     )
   end
 
