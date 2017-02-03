@@ -7,20 +7,23 @@ RSpec.describe OpenidConnectTokenForm do
 
   let(:params) do
     {
-      grant_type: grant_type,
-      code: code,
+      client_assertion: client_assertion,
       client_assertion_type: client_assertion_type,
-      client_assertion: client_assertion
+      code: code,
+      code_verifier: code_verifier,
+      grant_type: grant_type
     }
   end
 
   let(:grant_type) { 'authorization_code' }
   let(:code) { SecureRandom.hex }
+  let(:code_verifier) { nil }
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
   let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
 
   let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
   let(:nonce) { SecureRandom.hex }
+  let(:code_challenge) { nil }
   let(:jwt_payload) do
     {
       iss: client_id,
@@ -37,18 +40,17 @@ RSpec.describe OpenidConnectTokenForm do
   let(:user) { create(:user) }
 
   before do
-    IdentityLinker.new(user, client_id).link_identity(nonce: nonce, session_uuid: code, ial: 1)
+    IdentityLinker.new(user, client_id).
+      link_identity(
+        nonce: nonce,
+        session_uuid: code,
+        ial: 1,
+        code_challenge: code_challenge
+      )
   end
 
   describe '#valid?' do
     subject(:valid?) { form.valid? }
-
-    context 'with valid params' do
-      it 'is true, and has no errors' do
-        expect(valid?).to eq(true)
-        expect(form.errors).to be_blank
-      end
-    end
 
     context 'with an incorrect grant_type' do
       let(:grant_type) { 'wrong' }
@@ -65,58 +67,132 @@ RSpec.describe OpenidConnectTokenForm do
       end
     end
 
-    context 'with a bad client_assertion_type' do
-      let(:grant_type) { 'wrong' }
+    context 'private_key_jwt' do
+      context 'with valid params' do
+        it 'is true, and has no errors' do
+          expect(valid?).to eq(true)
+          expect(form.errors).to be_blank
+        end
+      end
 
-      it { expect(valid?).to eq(false) }
+      context 'with a bad client_assertion_type' do
+        let(:grant_type) { 'wrong' }
+
+        it { expect(valid?).to eq(false) }
+      end
+
+      context 'with a bad client_assertion' do
+        context 'with a bad issuer' do
+          before { jwt_payload[:iss] = 'wrong' }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).
+              to include("Invalid issuer. Expected #{client_id}, received wrong")
+          end
+        end
+
+        context 'with a bad subject' do
+          before { jwt_payload[:sub] = 'wrong' }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).
+              to include("Invalid subject. Expected #{client_id}, received wrong")
+          end
+        end
+
+        context 'with a bad audience' do
+          before { jwt_payload[:exp] = 5.minutes.ago.to_i }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include('Signature has expired')
+          end
+        end
+
+        context 'with an already expired assertion' do
+          before { jwt_payload[:exp] = 5.minutes.ago.to_i }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include('Signature has expired')
+          end
+        end
+
+        context 'signed by the wrong key' do
+          let(:client_private_key) { OpenSSL::PKey::RSA.new(2048) }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include('Signature verification raised')
+          end
+        end
+      end
     end
 
-    context 'with a bad client_assertion' do
-      context 'with a bad issuer' do
-        before { jwt_payload[:iss] = 'wrong' }
+    context 'PKCE' do
+      let(:client_assertion) { nil }
+      let(:client_assertion_type) { nil }
 
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).
-            to include("Invalid issuer. Expected #{client_id}, received wrong")
+      let(:code_challenge) { Digest::SHA256.base64digest(code_verifier) }
+      let(:code_verifier) { SecureRandom.hex }
+
+      context 'with valid params' do
+        it 'is true, and has no errors' do
+          expect(valid?).to eq(true)
+          expect(form.errors).to be_blank
         end
       end
 
-      context 'with a bad subject' do
-        before { jwt_payload[:sub] = 'wrong' }
+      context 'with a code_challenge that is not the SHA256 of the code_verifier' do
+        let(:code_challenge) { 'aaa' }
+        let(:code_verifier) { 'aaa' }
 
-        it 'is invalid' do
+        it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).
-            to include("Invalid subject. Expected #{client_id}, received wrong")
+          expect(form.errors[:code_verifier]).
+            to include(t('openid_connect.token.errors.invalid_code_verifier'))
         end
       end
 
-      context 'with a bad audience' do
-        before { jwt_payload[:exp] = 5.minutes.ago.to_i }
+      context 'with a code_challenge but a missing code_verifier' do
+        let(:code_verifier) { nil }
+        let(:code_challenge) { 'abcdef' }
 
-        it 'is invalid' do
+        it 'is not valid' do
           expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).to include('Signature has expired')
+          expect(form.errors[:code_verifier]).
+            to include(t('openid_connect.token.errors.invalid_code_verifier'))
         end
       end
 
-      context 'with an already expired assertion' do
-        before { jwt_payload[:exp] = 5.minutes.ago.to_i }
+      context 'with a code_challenge does not have base64 padding' do
+        let(:code_verifier) { SecureRandom.uuid }
+        let(:code_challenge) do
+          padded_base64 = Digest::SHA256.base64digest(code_verifier)
+          Base64.urlsafe_encode64(Base64.decode64(padded_base64), padding: false)
+        end
 
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).to include('Signature has expired')
+        it 'is valid' do
+          expect(Digest::SHA256.base64digest(code_verifier)).to end_with('=')
+          expect(code_verifier).to_not end_with('=')
+
+          expect(valid?).to eq(true)
+          expect(form.errors).to be_blank
         end
       end
+    end
 
-      context 'signed by the wrong key' do
-        let(:client_private_key) { OpenSSL::PKey::RSA.new(2048) }
+    context 'neither PKCE nor private_key_jwt params' do
+      let(:client_assertion) { nil }
+      let(:client_assertion_type) { nil }
+      let(:code_verifier) { nil }
 
-        it 'is invalid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:client_assertion]).to include('Signature verification raised')
-        end
+      it 'is invalid' do
+        expect(valid?).to eq(false)
+        expect(form.errors[:code]).
+          to include(t('openid_connect.token.errors.invalid_authentication'))
       end
     end
   end

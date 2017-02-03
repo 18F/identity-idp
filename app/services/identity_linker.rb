@@ -27,7 +27,7 @@ IdentityLinker = Struct.new(:user, :provider) do
     }
   end
 
-  def optional_attributes(nonce: nil, ial: nil, scope: nil)
-    { nonce: nonce, ial: ial, scope: scope }
+  def optional_attributes(nonce: nil, ial: nil, scope: nil, code_challenge: nil)
+    { nonce: nonce, ial: ial, scope: scope, code_challenge: code_challenge }
   end
 end

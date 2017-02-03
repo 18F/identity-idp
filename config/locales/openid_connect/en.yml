@@ -13,7 +13,9 @@ en:
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
     token:
       errors:
+        invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion
         invalid_code: invalid code
+        invalid_code_verifier: code_verifier did not match code_challenge
     user_info:
       errors:
         no_authorization: No Authorization header provided
