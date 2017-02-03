@@ -27,6 +27,11 @@
   position: fixed;
   top: 0;
   width: 100%;
+
+  .modal-inner {
+    display: table-cell;
+    vertical-align: top;
+   }
 }
 
 .modal-inner {
@@ -43,10 +48,24 @@
     top: -25px;
     width: 60px;
   }
+
+  [class*="modal-"]::before {
+    background-repeat: no-repeat;
+    content: '';
+    display: block;
+    height: 48px;
+    margin: 0 auto;
+    position: relative;
+    width: 48px;
+  }
+
+  hr {
+    width: 7.5rem;
+  }
 }
 
 @media #{$breakpoint-sm} {
-  .modal-inner {
+  .modal-cntnr > .modal-inner {
     vertical-align: middle;
   }
 }
@@ -59,4 +78,15 @@
   right: 0;
   top: -25px;
   width: 50px;
+}
+
+.modal-warning {
+  &::before {
+    background-image: url(image-path('alert/warning-lg.svg'));
+  }
+
+  hr,
+  .btn {
+    border-color: $yellow;
+  }
 }

@@ -21,7 +21,7 @@ module Verify
       elsif step_attempts_exceeded?
         redirect_to_fail_path
       else
-        render :new
+        process_failure
       end
     end
 
@@ -39,8 +39,23 @@ module Verify
       )
     end
 
+    def process_failure
+      show_warning if step.form_valid_but_vendor_validation_failed?
+      render :new
+    end
+
     def step_params
       params.require(:idv_phone_form).permit(:phone)
+    end
+
+    def show_warning
+      flash.now[:warning] = t(
+        'idv.modal.phone.warning_html',
+        accent: ActionController::Base.helpers.content_tag(
+          :strong,
+          t('idv.modal.phone.warning_accent')
+        )
+      )
     end
 
     def confirm_step_needed
