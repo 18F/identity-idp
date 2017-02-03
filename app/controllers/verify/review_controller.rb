@@ -29,7 +29,7 @@ module Verify
       )
 
       flash[:now] = t('idv.messages.review.info_verified_html',
-                          phone_message: phone_of_record_msg)
+                      phone_message: phone_of_record_msg)
     end
 
     def create
