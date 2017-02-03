@@ -11,7 +11,7 @@ module Verify
     helper_method :step
 
     def new
-      @using_mock_vendor = idv_vendor.pick == :mock
+      @view_model = SessionsNew.new
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
@@ -44,6 +44,7 @@ module Verify
         redirect_to verify_session_dupe_path
       else
         show_warning if step.form_valid_but_vendor_validation_failed?
+        @view_model = SessionsNew.new
         render :new
       end
     end
