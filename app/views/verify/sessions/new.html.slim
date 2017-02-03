@@ -26,6 +26,21 @@ h1.h3.my0 = t('idv.titles.session.basic')
           pattern: '(\d{5}([\-]\d{4})?)',
           input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
   .mb4
+    .mb3.pb-tiny.border-bottom.border-teal = t('profile.index.previous_address')
+    = f.input :prev_address1, label: t('idv.form.address1')
+    = f.input :prev_address2, label: t('idv.form.address2')
+    = f.input :prev_city, label: t('idv.form.city')
+    .clearfix.mxn1
+      .sm-col.sm-col-6.px1
+        = f.input :prev_state, collection: us_states_territories,
+          label: t('idv.form.state')
+      .sm-col.sm-col-4.px1
+        / using :tel for mobile numeric keypad
+        = f.input :prev_zipcode, as: :tel,
+          label: t('idv.form.zipcode'),
+          pattern: '(\d{5}([\-]\d{4})?)',
+          input_html: { class: 'zipcode', value: idv_profile_form.prev_zipcode }
+  .mb4
     .mt0.mb3.pb-tiny.border-bottom.border-teal = t('idv.form.personal_details')
     / using :tel for mobile numeric keypad
     = f.input :dob, as: :tel,
