@@ -1,6 +1,7 @@
 class ServiceProviderSessionDecorator
-  def initialize(sp_name:)
+  def initialize(sp_name:, sp_logo:)
     @sp_name = sp_name
+    @sp_logo = sp_logo
   end
 
   def return_to_service_provider_partial
@@ -27,7 +28,13 @@ class ServiceProviderSessionDecorator
     'verify/hardfail4'
   end
 
+  def logo_partial
+    return 'shared/nav_branded_logo' if sp_logo
+
+    'shared/null'
+  end
+
   private
 
-  attr_reader :sp_name
+  attr_reader :sp_name, :sp_logo
 end
