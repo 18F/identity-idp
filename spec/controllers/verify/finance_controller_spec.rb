@@ -8,8 +8,7 @@ describe Verify::FinanceController do
       expect(subject).to have_actions(
         :before,
         :confirm_two_factor_authenticated,
-        :confirm_idv_session_started,
-        :confirm_idv_attempts_allowed
+        :confirm_idv_session_started
       )
     end
   end

@@ -13,11 +13,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: 4d0d90c06c102361d310e02edba8a64e4d25cc39
+  revision: 2b84e0ff1dc920b4a694dffbc43222acc25b3eff
   branch: master
   specs:
     proofer (1.0.0)
-      dotenv
 
 GIT
   remote: https://github.com/18F/saml_idp.git
@@ -221,7 +220,7 @@ GEM
       rails (>= 3.1.1)
     diff-lcs (1.2.5)
     docile (1.1.5)
-    dotenv (2.1.2)
+    dotenv (2.2.0)
     dotiw (3.1.1)
       actionpack (>= 3)
       i18n

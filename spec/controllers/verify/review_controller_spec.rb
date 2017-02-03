@@ -38,8 +38,7 @@ describe Verify::ReviewController do
         :before,
         :confirm_two_factor_authenticated,
         :confirm_idv_session_started,
-        :confirm_idv_steps_complete,
-        :confirm_idv_attempts_allowed
+        :confirm_idv_steps_complete
       )
     end
   end

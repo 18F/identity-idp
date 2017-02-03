@@ -16,6 +16,15 @@ describe Verify::SessionsController do
       zipcode: '66044'
     }
   end
+  let(:previous_address) do
+    {
+      prev_address1: '456 Other St',
+      prev_address2: '',
+      prev_city: 'Elsewhere',
+      prev_state: 'MO',
+      prev_zipcode: '66666'
+    }
+  end
   let(:idv_session) { Idv::Session.new(subject.user_session, user) }
 
   describe 'before_actions' do
@@ -196,6 +205,28 @@ describe Verify::SessionsController do
 
           expect(response).to redirect_to verify_finance_path
           expect(user.idv_attempts).to eq 1
+        end
+      end
+
+      context 'previous address supplied' do
+        let(:bad_zipcode) { '00000' }
+
+        it 'fails if previous address has bad zipcode' do
+          post :create, profile: user_attrs.merge(previous_address).merge(prev_zipcode: bad_zipcode)
+
+          expect(idv_session.resolution.success?).to eq false
+        end
+
+        it 'fails if current address has bad zipcode' do
+          post :create, profile: user_attrs.merge(previous_address).merge(zipcode: bad_zipcode)
+
+          expect(idv_session.resolution.success?).to eq false
+        end
+
+        it 'respects both addresses' do
+          post :create, profile: user_attrs.merge(previous_address)
+
+          expect(idv_session.resolution.success?).to eq true
         end
       end
     end

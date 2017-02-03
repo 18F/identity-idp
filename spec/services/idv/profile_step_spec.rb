@@ -94,6 +94,40 @@ describe Idv::ProfileStep do
       expect(idv_session.profile_confirmation).to eq false
     end
 
+    it 'fails with invalid ZIP code on current address' do
+      step = build_step(user_attrs.merge(zipcode: '00000'))
+
+      errors = { zipcode: ['Unverified ZIP code.'] }
+
+      result = instance_double(FormResponse)
+      extra = {
+        idv_attempts_exceeded: false,
+        vendor: { reasons: ['The ZIP code was suspicious'] }
+      }
+
+      expect(FormResponse).to receive(:new).
+        with(success: false, errors: errors, extra: extra).and_return(result)
+      expect(step.submit).to eq result
+      expect(idv_session.profile_confirmation).to eq false
+    end
+
+    it 'fails with invalid ZIP code on previous address' do
+      step = build_step(user_attrs.merge(prev_zipcode: '00000'))
+
+      errors = { zipcode: ['Unverified ZIP code.'] }
+
+      result = instance_double(FormResponse)
+      extra = {
+        idv_attempts_exceeded: false,
+        vendor: { reasons: ['The ZIP code was suspicious'] }
+      }
+
+      expect(FormResponse).to receive(:new).
+        with(success: false, errors: errors, extra: extra).and_return(result)
+      expect(step.submit).to eq result
+      expect(idv_session.profile_confirmation).to eq false
+    end
+
     it 'increments attempts count if the form is valid' do
       step = build_step(user_attrs)
       expect { step.submit }.to change(user, :idv_attempts).by(1)
