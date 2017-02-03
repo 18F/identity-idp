@@ -43,12 +43,23 @@ module Verify
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
+        show_warning if step.form_valid_but_vendor_validation_failed?
         render :new
       end
     end
 
     def confirm_step_needed
       redirect_to verify_finance_path if idv_session.profile_confirmation == true
+    end
+
+    def show_warning
+      flash.now[:warning] = t(
+        'idv.modal.sessions.warning_html',
+        accent: ActionController::Base.helpers.content_tag(
+          :strong,
+          t('idv.modal.sessions.warning_accent')
+        )
+      )
     end
 
     def idv_profile_form
