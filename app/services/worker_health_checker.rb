@@ -39,12 +39,16 @@ module WorkerHealthChecker
     end
   end
 
-  # called on an interval to enqueues a dummy job in each queue
+  # called on an interval to enqueue a dummy job in each queue
   # @see deploy/schedule.rb
-  def enqueue_dummy_jobs
-    Sidekiq::Queue.all.each do |queue|
-      DummyJob.set(queue: queue.name).perform_later
+  def enqueue_dummy_jobs(queues = sidekiq_queues)
+    queues.each do |queue|
+      DummyJob.set(queue: queue).perform_later
     end
+  end
+
+  def sidekiq_queues
+    @_queues ||= YAML.load_file("#{Rails.root}/config/sidekiq.yml")[:queues]
   end
 
   # Called on an interval to check background queue health and report errors to NewRelic
