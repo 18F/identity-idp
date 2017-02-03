@@ -1,8 +1,10 @@
 module Pii
   class ReEncryptor
-    def initialize(user, user_session)
+    def initialize(user: nil, user_session: nil, pii: nil, profile: nil)
       @user = user
       @user_session = user_session
+      @pii = pii
+      @profile = profile
     end
 
     def perform
@@ -15,7 +17,7 @@ module Pii
     attr_reader :user, :user_session
 
     def pii_attributes
-      cacher.fetch
+      @pii ||= cacher.fetch
     end
 
     def cacher
@@ -23,7 +25,7 @@ module Pii
     end
 
     def profile
-      user.active_profile
+      @profile ||= user.active_profile
     end
   end
 end
