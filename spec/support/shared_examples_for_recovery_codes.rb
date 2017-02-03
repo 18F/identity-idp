@@ -1,4 +1,6 @@
 shared_examples_for 'recovery code page' do
+  include XPathHelper
+
   it 'hides confirmation importance reminder text by default' do
     expect(page).to have_xpath(
       "//div[@id='recovery-code-reminder'][@aria-hidden='true']", visible: false
@@ -94,8 +96,4 @@ shared_examples_for 'recovery code page' do
       end
     end
   end
-end
-
-def generate_class_selector(klass)
-  "*[contains(concat(' ', normalize-space(@class), ' '), ' #{klass} ')]"
 end
