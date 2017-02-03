@@ -22,4 +22,6 @@ class SessionDecorator
   def idv_hardfail4_partial
     'shared/null'
   end
+
+  def logo_partial; end
 end

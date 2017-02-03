@@ -27,7 +27,9 @@ module ApplicationHelper
 
   def decorated_session
     if @sp_name.present?
-      @_decorated_session ||= ServiceProviderSessionDecorator.new(sp_name: @sp_name)
+      @_decorated_session ||= ServiceProviderSessionDecorator.new(
+        sp_name: @sp_name, sp_logo: @sp_logo
+      )
     else
       @_decorated_session ||= SessionDecorator.new
     end
