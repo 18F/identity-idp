@@ -140,8 +140,13 @@ feature 'IdV session' do
       fill_out_idv_form_fail
       click_idv_continue
 
-      # failure reloads the form
+      # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_session_path
+      expect(page).to have_css(
+        '.modal-warning',
+        text: t('idv.modal.sessions.warning_accent')
+      )
+      click_link t('idv.modal.button.warning')
 
       fill_out_idv_form_ok
       click_idv_continue
@@ -155,12 +160,16 @@ feature 'IdV session' do
       fill_in :idv_finance_form_ccn, with: first_ccn_value
       click_idv_continue
 
-      # failure reloads the form
+      # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_finance_path
+      expect(page).to have_css(
+        '.modal-warning',
+        text: t('idv.modal.finance.warning_accent')
+      )
+      click_link t('idv.modal.button.warning')
 
       # can't go "back" to a successful step
       visit verify_session_path
-
       expect(current_path).to eq verify_finance_path
 
       # re-entering a failed step is sticky
@@ -176,8 +185,9 @@ feature 'IdV session' do
       fill_in :idv_finance_form_mortgage, with: mortgage_value
       click_idv_continue
 
-      # failure reloads the same sticky form (different path)
+      # failure reloads the same sticky form (different path) and shows warning modal
       expect(current_path).to eq verify_finance_path
+      click_link t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
       # try again with CCN
@@ -196,6 +206,11 @@ feature 'IdV session' do
 
       # failure reloads the same sticky form
       expect(current_path).to eq verify_phone_path
+      expect(page).to have_css(
+        '.modal-warning',
+        text: t('idv.modal.phone.warning_accent')
+      )
+      click_link t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
 
       fill_out_phone_form_ok(good_phone_value)
@@ -212,6 +227,18 @@ feature 'IdV session' do
       expect(page).to_not have_content(first_ccn_value)
       expect(page).to have_content(good_phone_formatted)
       expect(page).to_not have_content(bad_phone_formatted)
+    end
+
+    scenario 'failed attempt shows flash message' do
+      sign_in_and_2fa_user
+      visit verify_session_path
+      fill_out_idv_form_fail
+      click_idv_continue
+
+      expect(page).to have_css(
+        '.alert-warning',
+        text: t('idv.modal.sessions.warning_accent')
+      )
     end
 
     scenario 'clicking finance option changes input label', js: true do

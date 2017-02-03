@@ -19,6 +19,10 @@ module Idv
       errors.key?(:ssn) && errors[:ssn].include?(I18n.t('idv.errors.duplicate_ssn'))
     end
 
+    def form_valid_but_vendor_validation_failed?
+      form_valid? && !vendor_validation_passed?
+    end
+
     private
 
     attr_reader :success

@@ -44,6 +44,10 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { foo: 'bar' }
 
           expect(response).to render_template :new
+          expect(flash[:warning]).to_not match(
+            t('idv.modal.finance.warning_html',
+              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
+          )
           expect(subject.idv_session.params).to be_empty
         end
       end
@@ -53,6 +57,10 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { finance_type: 'foo', finance_account: '123' }
 
           expect(response).to render_template :new
+          expect(flash[:warning]).to_not match(
+            t('idv.modal.finance.warning_html',
+              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
+          )
           expect(subject.idv_session.params).to be_empty
         end
       end
@@ -62,6 +70,10 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { finance_type: 'ccn', finance_account: 'abc' }
 
           expect(response).to render_template :new
+          expect(flash[:warning]).to_not match(
+            t('idv.modal.finance.warning_html',
+              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
+          )
           expect(subject.idv_session.params).to be_empty
         end
       end
@@ -72,6 +84,10 @@ describe Verify::FinanceController do
             put :create, idv_finance_form: { finance_type: finance_type, finance_account: 'abc' }
 
             expect(response).to render_template :new
+            expect(flash[:warning]).to_not match(
+              t('idv.modal.finance.warning_html',
+                accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
+            )
             expect(subject.idv_session.params).to be_empty
           end
         end
@@ -107,6 +123,10 @@ describe Verify::FinanceController do
         it 'renders #new with error' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
 
+          expect(flash[:warning]).to match(
+            t('idv.modal.finance.warning_html',
+              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
+          )
           expect(response).to render_template :new
         end
       end
