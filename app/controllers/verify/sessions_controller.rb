@@ -56,9 +56,7 @@ module Verify
     end
 
     def profile_params
-      params.require(:profile).permit(
-        :first_name, :last_name, :dob, :ssn, :address1, :address2, :city, :state, :zipcode
-      )
+      params.require(:profile).permit(*Pii::Attributes.members)
     end
   end
 end

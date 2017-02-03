@@ -9,6 +9,7 @@ en:
       full_name: Full name
       password: Password
       phone: Phone number
+      previous_address: Previous address
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset, reactivate your profile to get your awesome PII back.
         reactivate_button: Reactivate your profile
