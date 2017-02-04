@@ -66,6 +66,8 @@ UserDecorator = Struct.new(:user) do
   end
 
   def should_acknowledge_recovery_code?(session)
+    return true if session[:new_recovery_code]
+
     sp_session = session[:sp]
 
     user.recovery_code.blank? &&
