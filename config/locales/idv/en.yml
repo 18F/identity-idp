@@ -132,21 +132,27 @@ en:
       sessions:
         no_pii: Do not use real personal information (demo purposes only)
     modal:
+      attempts:
+        one: 1 attempt
+        other: "%{count} attempts"
       button:
         warning: Try again
       finance:
         warning_accent: We could not find records matching your financial information.
         warning_html: >
-          %{accent} <span>Please check the information you entered.</span>
+          %{accent} <span>Please check the information you entered.</span> <span>
+          You have <strong>%{attempt} remaining.</strong></span>
       phone:
         warning_accent: We could not find records matching your phone information.
         warning_html: >
-          %{accent} <span>Please check the information you entered.</span>
+          %{accent} <span>Please check the information you entered.</span> <span>
+          You have <strong>%{attempt} remaining.</strong></span>
       sessions:
         warning_accent: We could not find records matching your personal information.
         warning_html: >
           %{accent} <span>Please check the information you entered. Common mistakes
-          are an incorrect Social Security Number, ZIP Code, or date of birth.</span>
+          are an incorrect Social Security Number, ZIP Code, or date of birth.</span> <span>
+          You have <strong>%{attempt} remaining.</strong></span>
     review:
       dob: Date of birth
       full_name: Full name

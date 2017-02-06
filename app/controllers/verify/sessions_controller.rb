@@ -58,9 +58,15 @@ module Verify
       flash.now[:warning] = t(
         'idv.modal.sessions.warning_html',
         accent: ActionController::Base.helpers.content_tag(
-          :strong, t('idv.modal.sessions.warning_accent')
-        )
+          :strong,
+          t('idv.modal.sessions.warning_accent')
+        ),
+        attempt: t('idv.modal.attempts', count: remaining_idv_attempts)
       )
+    end
+
+    def remaining_idv_attempts
+      Idv::Attempter.idv_max_attempts - current_user.idv_attempts
     end
 
     def idv_profile_form

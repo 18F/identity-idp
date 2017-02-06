@@ -137,15 +137,16 @@ describe Verify::SessionsController do
           post :create, profile: partial_attrs
 
           expect(response).to render_template(:new)
-          expect(flash[:warning]).to_not match(
-            t('idv.modal.sessions.warning_html',
-              accent: "<strong>#{t('idv.modal.sessions.warning_accent')}</strong>")
-          )
+          expect(flash[:warning]).to be_nil
           expect(response.body).to match t('errors.messages.blank')
         end
       end
 
       context 'un-resolvable attributes' do
+        before do
+          allow(Idv::Attempter).to receive(:idv_max_attempts).and_return 3
+        end
+
         let(:bad_attrs) { user_attrs.dup.merge(first_name: 'Bad') }
 
         it 're-renders form' do
@@ -153,7 +154,8 @@ describe Verify::SessionsController do
 
           expect(flash[:warning]).to match(
             t('idv.modal.sessions.warning_html',
-              accent: "<strong>#{t('idv.modal.sessions.warning_accent')}</strong>")
+              accent: "<strong>#{t('idv.modal.sessions.warning_accent')}</strong>",
+              attempt: t('idv.modal.attempts', count: 2))
           )
           expect(response).to render_template(:new)
         end

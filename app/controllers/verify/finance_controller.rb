@@ -58,7 +58,8 @@ module Verify
         accent: ActionController::Base.helpers.content_tag(
           :strong,
           t('idv.modal.finance.warning_accent')
-        )
+        ),
+        attempt: t('idv.modal.attempts', count: remaining_step_attempts)
       )
     end
 

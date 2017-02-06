@@ -99,6 +99,9 @@ es:
       sessions:
         no_pii: NOT TRANSLATED YET
     modal:
+      attempts:
+        one: NOT TRANSLATED YET
+        other: NOT TRANSLATED YET
       button:
         warning: NOT TRANSLATED YET
       finance:
