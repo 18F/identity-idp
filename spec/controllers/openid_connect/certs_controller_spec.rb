@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe OpenidConnect::ConfigurationController do
+RSpec.describe OpenidConnect::CertsController do
   describe '#index' do
     let(:json_response) { JSON.parse(response.body).with_indifferent_access }
 
-    it 'renders information about the OpenID Connect integration' do
+    it 'renders the server public key as a JWK set' do
       get :index
 
-      expect(json_response).to eq(OpenidConnectConfigurationPresenter.new.configuration.as_json)
+      expect(json_response).to eq(OpenidConnectCertsPresenter.new.certs.as_json)
     end
 
     it 'sets HTTP headers to cache for a week' do
