@@ -79,9 +79,8 @@ describe Profile do
     it 'prevents create! via ActiveRecord uniqueness validation' do
       profile.active = true
       profile.save!
-      expect do
-        Profile.create!(user_id: user.id, active: true)
-      end.to raise_error(ActiveRecord::RecordInvalid)
+      expect { Profile.create!(user_id: user.id, active: true) }.
+        to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'prevents save! via psql unique partial index' do
@@ -100,9 +99,7 @@ describe Profile do
       pii_attrs = Pii::Attributes.new_from_hash(ssn: '1234')
       profile.encrypt_pii(user_access_key, pii_attrs)
       profile.save!
-      expect do
-        create(:profile, pii: { ssn: '1234' }, user: user)
-      end.to_not raise_error
+      expect { create(:profile, pii: { ssn: '1234' }, user: user) }.to_not raise_error
     end
 
     it 'prevents save! via ActiveRecord uniqueness validation' do
