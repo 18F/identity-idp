@@ -51,7 +51,7 @@ module Idv
 
     def applicant_from_params
       app_vars = params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
-      Proofer::Applicant.new(app_vars)
+      Proofer::Applicant.new(app_vars.merge(uuid: current_user.uuid))
     end
 
     def profile
