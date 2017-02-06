@@ -39,9 +39,8 @@ describe 'NIST Encryption Model' do
       expect(hex_to_bin(user_access_key.z1).length).to eq 16
       expect(hex_to_bin(user_access_key.z2).length).to eq 16
 
-      expect do
-        SCrypt::Password.new(user_access_key.as_scrypt_hash)
-      end.to_not raise_error
+      expect { SCrypt::Password.new(user_access_key.as_scrypt_hash) }.
+        to_not raise_error
     end
   end
 
@@ -127,9 +126,7 @@ describe 'NIST Encryption Model' do
       # unroll encrypted_C to verify it was encrypted with hash_E
       cipher = Pii::Cipher.new
 
-      expect do
-        cipher.decrypt(encrypted_C, hash_E)
-      end.not_to raise_error
+      expect { cipher.decrypt(encrypted_C, hash_E) }.not_to raise_error
 
       deciphered = cipher.decrypt(encrypted_C, hash_E)
       deciphered_pii, deciphered_pii_fingerprint = open_envelope(deciphered)

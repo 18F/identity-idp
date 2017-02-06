@@ -41,9 +41,8 @@ describe Pii::PasswordEncryptor do
       ciphertext = subject.encrypt(plaintext, user_access_key)
       different_user_access_key = UserAccessKey.new(password: 'different password', salt: salt)
 
-      expect do
-        subject.decrypt(ciphertext, different_user_access_key)
-      end.to raise_error Pii::EncryptionError
+      expect { subject.decrypt(ciphertext, different_user_access_key) }.
+        to raise_error Pii::EncryptionError
     end
   end
 end

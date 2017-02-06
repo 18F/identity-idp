@@ -9,9 +9,7 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
     presenter = presenter_with
 
     %w(header help_text fallback_links).each do |m|
-      expect do
-        presenter.send(m.to_sym)
-      end.to raise_error(NotImplementedError)
+      expect { presenter.send(m.to_sym) }.to raise_error(NotImplementedError)
     end
   end
 
