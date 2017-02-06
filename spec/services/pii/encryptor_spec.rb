@@ -23,9 +23,7 @@ describe Pii::Encryptor do
       encrypted = subject.encrypt(plaintext, aes_cek)
       diff_cek = aes_cek.tr('-', 'z')
 
-      expect do
-        subject.decrypt(encrypted, diff_cek)
-      end.to raise_error Pii::EncryptionError
+      expect { subject.decrypt(encrypted, diff_cek) }.to raise_error Pii::EncryptionError
     end
   end
 end

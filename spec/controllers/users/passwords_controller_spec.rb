@@ -54,9 +54,7 @@ describe Users::PasswordsController do
         expect(flash[:recovery_code]).to be_present
         expect(profile.decrypt_pii(new_user_access_key)).to be_a Pii::Attributes
         expect(profile.decrypt_pii(new_user_access_key).ssn).to eq '1234'
-        expect do
-          profile.decrypt_pii(old_user_access_key)
-        end.to raise_error Pii::EncryptionError
+        expect { profile.decrypt_pii(old_user_access_key) }.to raise_error Pii::EncryptionError
       end
     end
 

@@ -32,9 +32,7 @@ describe UserAccessKey do
 
   describe '#as_scrypt_hash' do
     it 'returns SCrypt compatible hash string' do
-      expect do
-        SCrypt::Password.new(subject.as_scrypt_hash)
-      end.to_not raise_error
+      expect { SCrypt::Password.new(subject.as_scrypt_hash) }.to_not raise_error
     end
   end
 
