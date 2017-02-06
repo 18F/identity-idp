@@ -149,9 +149,12 @@ feature 'OpenID Connect' do
   end
 
   def sp_public_key
-    @sp_public_key ||= begin
-      OpenSSL::X509::Certificate.new(File.read(Rails.root.join('certs/saml.crt'))).public_key
-    end
+    page.driver.get openid_connect_certs_path
+
+    expect(page.status_code).to eq(200)
+    certs_response = JSON.parse(page.body).with_indifferent_access
+
+    JSON::JWK.new(certs_response[:keys].first).to_key
   end
 
   def client_private_key
