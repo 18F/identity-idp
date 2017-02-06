@@ -91,6 +91,14 @@ describe Verify::SessionsController do
         allow(@analytics).to receive(:track_event)
       end
 
+      context 'UUID' do
+        it 'assigned user UUID to applicant' do
+          post :create, profile: user_attrs
+
+          expect(subject.idv_session.applicant.uuid).to eq subject.current_user.uuid
+        end
+      end
+
       context 'existing SSN' do
         it 'redirects to custom error' do
           create(:profile, pii: { ssn: '666-66-1234' })
