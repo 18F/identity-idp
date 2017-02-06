@@ -14,6 +14,8 @@ RSpec.describe OpenidConnectConfigurationPresenter do
         expect(configuration[:authorization_endpoint]).to eq(openid_connect_authorize_url)
         expect(configuration[:token_endpoint]).to eq(openid_connect_token_url)
         expect(configuration[:userinfo_endpoint]).to eq(openid_connect_userinfo_url)
+        expect(configuration[:jwks_uri]).to eq(openid_connect_certs_url)
+        expect(configuration[:service_documentation]).to eq('https://pages.18f.gov/identity-dev-docs/')
         expect(configuration[:response_types_supported]).to eq(%w(code))
         expect(configuration[:grant_types_supported]).to eq(%w(authorization_code))
         expect(configuration[:acr_values_supported]).
@@ -25,15 +27,6 @@ RSpec.describe OpenidConnectConfigurationPresenter do
 
         claims = %w(iss sub) + OpenidConnectAttributeScoper::CLAIMS
         expect(configuration[:claims_supported]).to match_array(claims)
-      end
-    end
-
-    it 'includes all required keys' do
-      pending 'additional details'
-
-      aggregate_failures do
-        expect(configuration[:jwks_uri]).to be_present
-        expect(configuration[:service_documentation]).to be_present
       end
     end
   end

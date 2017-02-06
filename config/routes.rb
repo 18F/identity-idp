@@ -82,6 +82,8 @@ Rails.application.routes.draw do
   delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
          as: :openid_connect_deny
 
+  get '/openid_connect/certs' => 'openid_connect/certs#index'
+
   post '/openid_connect/token' => 'openid_connect/token#create'
 
   get '/openid_connect/userinfo' => 'openid_connect/user_info#show'
