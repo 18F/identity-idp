@@ -10,9 +10,7 @@ describe Pii::Cipher do
 
       expect(ciphertext).to_not match plaintext
       expect(ciphertext).to be_a String
-      expect do
-        JSON.parse(ciphertext)
-      end.to_not raise_error
+      expect { JSON.parse(ciphertext) }.to_not raise_error
     end
   end
 
@@ -27,9 +25,7 @@ describe Pii::Cipher do
       ciphertext = subject.encrypt(plaintext, cek)
       ciphertext += 'foo'
 
-      expect do
-        subject.decrypt(ciphertext, cek)
-      end.to raise_error Pii::EncryptionError
+      expect { subject.decrypt(ciphertext, cek) }.to raise_error Pii::EncryptionError
     end
   end
 
