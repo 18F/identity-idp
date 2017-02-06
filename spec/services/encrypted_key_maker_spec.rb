@@ -24,6 +24,10 @@ describe EncryptedKeyMaker do
         expect(user_access_key_encrypted.hash_e).to eq hash_E
         expect(user_access_key_encrypted.hash_f).to eq hash_F
       end
+
+      it 'raises exception when param is invalid' do
+        expect { subject.make('foobar') }.to raise_error RuntimeError
+      end
     end
 
     context 'FeatureManagement.use_kms? is true' do
@@ -56,6 +60,12 @@ describe EncryptedKeyMaker do
         encryption_key = user_access_key.encryption_key
 
         expect(subject.unlock(user_access_key, encryption_key)).to eq hash_E
+      end
+
+      it 'raises exception when params are invalid' do
+        expect { subject.unlock(user_access_key, '!@#$%^&*()') }.to raise_error Pii::EncryptionError
+
+        expect { subject.unlock('foobar', 'zzzz') }.to raise_error Pii::EncryptionError
       end
     end
 
