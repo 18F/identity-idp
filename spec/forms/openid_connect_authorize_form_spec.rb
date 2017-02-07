@@ -221,19 +221,4 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it { expect(loa3_requested?).to eq(false) }
     end
   end
-
-  describe '#params' do
-    it 'is the serialized form values' do
-      expect(form.params).to eq(
-        acr_values: acr_values,
-        client_id: client_id,
-        nonce: nonce,
-        prompt: prompt,
-        redirect_uri: redirect_uri,
-        response_type: response_type,
-        scope: scope,
-        state: state
-      )
-    end
-  end
 end

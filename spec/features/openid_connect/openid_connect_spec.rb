@@ -83,6 +83,7 @@ feature 'OpenID Connect' do
       state = SecureRandom.hex
       nonce = SecureRandom.hex
       code_verifier = SecureRandom.hex
+      code_challenge = Digest::SHA256.base64digest(code_verifier)
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -93,11 +94,12 @@ feature 'OpenID Connect' do
         state: state,
         prompt: 'select_account',
         nonce: nonce,
-        code_challenge: Digest::SHA256.base64digest(code_verifier),
+        code_challenge: code_challenge,
         code_challenge_method: 'S256'
       )
 
       _user = sign_in_live_with_2fa
+      expect(page.html).to_not include(code_challenge)
       click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
@@ -119,32 +121,6 @@ feature 'OpenID Connect' do
 
       id_token = token_response[:id_token]
       expect(id_token).to be_present
-    end
-
-    it 'does not render the code_challenge back to the client' do
-      client_id = 'urn:gov:gsa:openidconnect:test'
-      state = SecureRandom.hex
-      nonce = SecureRandom.hex
-      code_verifier = SecureRandom.hex
-      code_challenge = Digest::SHA256.base64digest(code_verifier)
-
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'gov.gsa.openidconnect.test://result',
-        state: state,
-        prompt: 'select_account',
-        nonce: nonce,
-        code_challenge: code_challenge,
-        code_challenge_method: 'S256'
-      )
-
-      pending 'not echoing back the code_challenge'
-
-      _user = sign_in_live_with_2fa
-      expect(page.html).to_not include(code_challenge)
     end
   end
 
