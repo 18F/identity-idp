@@ -6,7 +6,7 @@ es:
       confirmed_but_must_set_password: Ha confirmado tu dirección de correo electrónico
       send_instructions:
         Recibirá un correo electrónico con instrucciones para confirmar su
-        dirección de correo electrónico en pocos minutos.
+        dirección de correo electrónico en breve.
       send_paranoid_instructions:
         Recibirá un correo electrónico con instrucciones para confirmar su
         dirección de correo electrónico en pocos minutos.
