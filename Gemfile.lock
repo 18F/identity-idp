@@ -244,7 +244,7 @@ GEM
     factory_girl_rails (4.8.0)
       factory_girl (~> 4.8.0)
       railties (>= 3.0.0)
-    faker (1.7.2)
+    faker (1.7.3)
       i18n (~> 0.5)
     fasterer (0.3.2)
       colorize (~> 0.7)
