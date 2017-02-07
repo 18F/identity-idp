@@ -6,7 +6,6 @@ Rails.application.routes.draw do
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
   devise_for :users, skip: [:confirmations, :sessions, :registrations, :two_factor_authentication], controllers: {
-    omniauth_callbacks: 'users/omniauth_callbacks',
     passwords: 'users/reset_passwords'
   }
 
