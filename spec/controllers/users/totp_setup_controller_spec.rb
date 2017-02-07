@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Users::TotpSetupController, devise: true do
-  render_views
-
   describe 'before_actions' do
     it 'includes confirm_two_factor_authenticated' do
       expect(subject).to have_actions(
@@ -13,27 +11,43 @@ describe Users::TotpSetupController, devise: true do
   end
 
   describe '#new' do
-    before do
-      sign_in_as_user
-      get :new
+    context 'user has not yet enabled authenticator app' do
+      render_views
+
+      before do
+        stub_sign_in
+        get :new
+      end
+
+      it 'returns a 200 status code' do
+        expect(response.status).to eq(200)
+      end
+
+      it 'sets new_totp_secret in user_session' do
+        expect(subject.user_session[:new_totp_secret]).not_to be_nil
+      end
+
+      it 'can be used to generate a qrcode with UserDecorator#qrcode' do
+        user_decorator = subject.current_user.decorate
+
+        expect(user_decorator.qrcode(subject.user_session[:new_totp_secret])).not_to be_nil
+      end
+
+      it 'presents a QR code to the user' do
+        expect(response.body).to include('QR Code for Authenticator App')
+      end
     end
 
-    it 'returns a 200 status code' do
-      expect(response.status).to eq(200)
-    end
+    context 'user has already enabled authenticator app' do
+      it 'redirects to profile page' do
+        stub_sign_in
 
-    it 'sets new_totp_secret in user_session' do
-      expect(subject.user_session[:new_totp_secret]).not_to be_nil
-    end
+        allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
 
-    it 'can be used to generate a qrcode with UserDecorator#qrcode' do
-      user_decorator = subject.current_user.decorate
+        get :new
 
-      expect(user_decorator.qrcode(subject.user_session[:new_totp_secret])).not_to be_nil
-    end
-
-    it 'presents a QR code to the user' do
-      expect(response.body).to include('QR Code for Authenticator App')
+        expect(response).to redirect_to profile_path
+      end
     end
   end
 
