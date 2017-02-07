@@ -109,7 +109,7 @@ GEM
     american_date (1.1.1)
     arel (6.0.3)
     ast (2.3.0)
-    aws-sdk-core (2.6.49)
+    aws-sdk-core (2.7.3)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
     aws-sigv4 (1.0.0)
