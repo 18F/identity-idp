@@ -10,7 +10,7 @@ module Devise
           subject: subject_for(action),
           to: recipient,
           template_path: template_paths,
-          template_name: action
+          template_name: action,
         }.merge(opts)
 
         @email = headers[:to]

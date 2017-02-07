@@ -136,7 +136,7 @@ describe Users::TwoFactorAuthenticationController do
           delivery_method: 'sms',
           resend: nil,
           errors: [],
-          context: 'authentication'
+          context: 'authentication',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -194,7 +194,7 @@ describe Users::TwoFactorAuthenticationController do
           delivery_method: 'voice',
           resend: nil,
           errors: [],
-          context: 'authentication'
+          context: 'authentication',
         }
 
         expect(@analytics).to receive(:track_event).

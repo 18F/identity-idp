@@ -66,7 +66,7 @@ module FormHelper
       ['Washington', 'WA'],
       ['West Virginia', 'WV'],
       ['Wisconsin', 'WI'],
-      ['Wyoming', 'WY']
+      ['Wyoming', 'WY'],
     ]
   end
   # rubocop:enable MethodLength, WordArray

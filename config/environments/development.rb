@@ -12,7 +12,7 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = {
     host: Figaro.env.domain_name,
-    protocol: 'http'
+    protocol: 'http',
   }
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }

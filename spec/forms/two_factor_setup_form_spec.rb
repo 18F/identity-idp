@@ -31,7 +31,7 @@ describe TwoFactorSetupForm, type: :model do
         result = {
           success: true,
           error: nil,
-          otp_method: 'sms'
+          otp_method: 'sms',
         }
 
         expect(form.submit(phone: user.phone, otp_method: 'sms')).
@@ -44,7 +44,7 @@ describe TwoFactorSetupForm, type: :model do
         result = {
           success: true,
           error: nil,
-          otp_method: 'sms'
+          otp_method: 'sms',
         }
 
         expect(subject.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')).
@@ -60,7 +60,7 @@ describe TwoFactorSetupForm, type: :model do
         result = {
           success: true,
           error: nil,
-          otp_method: 'sms'
+          otp_method: 'sms',
         }
 
         expect(form.submit(phone: valid_phone, otp_method: 'sms')).
@@ -73,7 +73,7 @@ describe TwoFactorSetupForm, type: :model do
         result = {
           success: false,
           error: t('errors.messages.improbable_phone'),
-          otp_method: 'sms'
+          otp_method: 'sms',
         }
 
         expect(subject.submit(phone: '', otp_method: 'sms')).

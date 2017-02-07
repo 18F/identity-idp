@@ -201,7 +201,7 @@ describe SamlIdpController do
           authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
           errors: ['Unauthorized authentication context'],
           service_provider: 'http://localhost:3000',
-          valid: false
+          valid: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -223,7 +223,7 @@ describe SamlIdpController do
           authn_context: nil,
           errors: ['Unauthorized authentication context'],
           service_provider: 'http://localhost:3000',
-          valid: false
+          valid: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -246,7 +246,7 @@ describe SamlIdpController do
           authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
           errors: ['Unauthorized Service Provider'],
           service_provider: 'invalid_provider',
-          valid: false
+          valid: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -269,7 +269,7 @@ describe SamlIdpController do
           authn_context: 'http://idmanagement.gov/ns/assurance/loa/5',
           errors: ['Unauthorized Service Provider', 'Unauthorized authentication context'],
           service_provider: 'invalid_provider',
-          valid: false
+          valid: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -750,7 +750,7 @@ describe SamlIdpController do
           errors: [],
           service_provider: 'http://localhost:3000',
           valid: true,
-          idv: true
+          idv: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -772,7 +772,7 @@ describe SamlIdpController do
           errors: [],
           service_provider: 'http://localhost:3000',
           valid: true,
-          idv: false
+          idv: false,
         }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)

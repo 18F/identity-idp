@@ -111,7 +111,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         resend_path = otp_send_path(otp_delivery_selection_form: {
                                       otp_method: delivery_method,
-                                      resend: true
+                                      resend: true,
                                     })
 
         expect(rendered).to have_link(
@@ -122,7 +122,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       it 'has a fallback link to send confirmation with voice' do
         expected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                 otp_method: 'voice'
+                                                 otp_method: 'voice',
                                                })
         expected_link = link_to(t('links.two_factor_authentication.voice'),
                                 expected_fallback_path)
@@ -136,7 +136,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       it 'does not have a fallback link to send confirmation via SMS' do
         unexpected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                   otp_method: delivery_method
+                                                   otp_method: delivery_method,
                                                  })
         unexpected_link = link_to(
           t("links.two_factor_authentication.#{delivery_method}"),
@@ -165,7 +165,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         resend_path = otp_send_path(otp_delivery_selection_form: {
                                       otp_method: delivery_method,
-                                      resend: true
+                                      resend: true,
                                     })
 
         expect(rendered).to have_link(
@@ -176,7 +176,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       it 'has a fallback link to send confirmation as SMS' do
         expected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                 otp_method: 'sms'
+                                                 otp_method: 'sms',
                                                })
         expected_link = link_to(t('links.two_factor_authentication.sms'),
                                 expected_fallback_path)
@@ -190,7 +190,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
       it 'does not have a fallback link to send a confirmation as SMS' do
         unexpected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                   otp_method: delivery_method
+                                                   otp_method: delivery_method,
                                                  })
         unexpected_link = link_to(
           t("links.two_factor_authentication.#{delivery_method}"),

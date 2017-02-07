@@ -38,7 +38,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           city: 'Washington',
           state: 'DC',
           zipcode: '12345',
-          phone: '+1 (555) 555-5555'
+          phone: '+1 (555) 555-5555',
         }
       end
 

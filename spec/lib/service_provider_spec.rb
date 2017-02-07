@@ -22,7 +22,7 @@ describe ServiceProvider do
         service_provider = ServiceProvider.new('http://localhost:3000')
 
         fingerprint = {
-          fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa'
+          fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa',
         }
 
         yaml_attributes = ServiceProviderConfig.new(

@@ -14,7 +14,7 @@ describe Idv::ProfileStep do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044'
+      zipcode: '66044',
     }
   end
 
@@ -33,7 +33,7 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['Everything looks good'] }
+        vendor: { reasons: ['Everything looks good'] },
       }
 
       expect(FormResponse).to receive(:new).
@@ -49,7 +49,7 @@ describe Idv::ProfileStep do
       errors = { ssn: ['Unverified SSN.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The SSN was suspicious'] }
+        vendor: { reasons: ['The SSN was suspicious'] },
       }
 
       result = instance_double(FormResponse)
@@ -66,7 +66,7 @@ describe Idv::ProfileStep do
       errors = { ssn: [t('idv.errors.pattern_mismatch.ssn')] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: nil }
+        vendor: { reasons: nil },
       }
 
       result = instance_double(FormResponse)
@@ -85,7 +85,7 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The name was suspicious'] }
+        vendor: { reasons: ['The name was suspicious'] },
       }
 
       expect(FormResponse).to receive(:new).
@@ -102,7 +102,7 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The ZIP code was suspicious'] }
+        vendor: { reasons: ['The ZIP code was suspicious'] },
       }
 
       expect(FormResponse).to receive(:new).
@@ -119,7 +119,7 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The ZIP code was suspicious'] }
+        vendor: { reasons: ['The ZIP code was suspicious'] },
       }
 
       expect(FormResponse).to receive(:new).

@@ -37,7 +37,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       analytics_hash = {
         context: 'authentication',
         method: 'sms',
-        confirmation_for_phone_change: false
+        confirmation_for_phone_change: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -66,7 +66,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           success: false,
           confirmation_for_phone_change: false,
           context: 'authentication',
-          method: 'sms'
+          method: 'sms',
         }
 
         stub_analytics
@@ -100,7 +100,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           success: false,
           confirmation_for_phone_change: false,
           context: 'authentication',
-          method: 'sms'
+          method: 'sms',
         }
 
         stub_analytics
@@ -138,7 +138,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           success: true,
           confirmation_for_phone_change: false,
           context: 'authentication',
-          method: 'sms'
+          method: 'sms',
         }
 
         stub_analytics
@@ -222,7 +222,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               success: true,
               confirmation_for_phone_change: true,
               context: 'confirmation',
-              method: 'sms'
+              method: 'sms',
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -266,7 +266,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               success: false,
               confirmation_for_phone_change: true,
               context: 'confirmation',
-              method: 'sms'
+              method: 'sms',
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -300,7 +300,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
               success: true,
               context: 'confirmation',
               method: 'sms',
-              confirmation_for_phone_change: false
+              confirmation_for_phone_change: false,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -352,7 +352,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             success: true,
             confirmation_for_phone_change: false,
             context: 'idv',
-            method: 'sms'
+            method: 'sms',
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -417,7 +417,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             success: false,
             confirmation_for_phone_change: false,
             context: 'idv',
-            method: 'sms'
+            method: 'sms',
           }
 
           expect(@analytics).to have_received(:track_event).

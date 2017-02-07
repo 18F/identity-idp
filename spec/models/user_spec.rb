@@ -240,7 +240,7 @@ describe User do
       before do
         user.profiles << [
           active_profile,
-          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' })
+          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' }),
         ]
       end
 

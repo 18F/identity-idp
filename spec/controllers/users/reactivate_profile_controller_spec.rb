@@ -9,7 +9,7 @@ RSpec.describe Users::ReactivateProfileController do
         :create,
         reactivate_profile_form: {
           password: 'password',
-          recovery_code: 'recovery_code'
+          recovery_code: 'recovery_code',
         }
       )
     end

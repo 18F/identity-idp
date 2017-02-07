@@ -4,8 +4,8 @@ module AwsKmsClientHelper
     Aws.config[:kms] = {
       stub_responses: {
         encrypt: { ciphertext_blob: ciphered_key, key_id: aws_key_id },
-        decrypt: { plaintext: random_key, key_id: aws_key_id }
-      }
+        decrypt: { plaintext: random_key, key_id: aws_key_id },
+      },
     }
     [random_key, ciphered_key]
   end

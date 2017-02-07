@@ -31,7 +31,7 @@ module TwoFactorAuthentication
       {
         context: context,
         method: params[:delivery_method],
-        confirmation_for_phone_change: confirmation_for_phone_change?
+        confirmation_for_phone_change: confirmation_for_phone_change?,
       }
     end
 

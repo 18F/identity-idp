@@ -10,7 +10,7 @@ module Idv
       :recovery_code,
       :resolution,
       :step_attempts,
-      :vendor
+      :vendor,
     ].freeze
 
     def initialize(user_session, current_user)

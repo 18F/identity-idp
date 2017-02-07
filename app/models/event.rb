@@ -8,7 +8,7 @@ class Event < ActiveRecord::Base
     phone_changed: 4,
     email_changed: 5,
     authenticator_enabled: 6,
-    authenticator_disabled: 7
+    authenticator_disabled: 7,
   }
 
   validates :event_type, presence: true

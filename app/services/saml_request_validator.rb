@@ -23,7 +23,7 @@ class SamlRequestValidator
       authn_context: authn_context,
       errors: errors.messages.values.flatten,
       service_provider: service_provider.issuer,
-      valid: success
+      valid: success,
     }
   end
 

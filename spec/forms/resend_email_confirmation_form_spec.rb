@@ -15,7 +15,7 @@ describe ResendEmailConfirmationForm do
           success: true,
           errors: [],
           user_id: user.uuid,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(subject.submit).to eq result
@@ -30,7 +30,7 @@ describe ResendEmailConfirmationForm do
           success: true,
           errors: [],
           user_id: 'nonexistent-uuid',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(subject.submit).to eq result
@@ -45,7 +45,7 @@ describe ResendEmailConfirmationForm do
           success: false,
           errors: [t('valid_email.validations.email.invalid')],
           user_id: 'nonexistent-uuid',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(subject.submit).to eq result

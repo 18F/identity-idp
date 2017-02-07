@@ -54,7 +54,7 @@ class UpdateUserEmailForm
       success: success,
       errors: errors.messages.values.flatten,
       email_already_exists: email_taken?,
-      email_changed: email_changed?
+      email_changed: email_changed?,
     }
   end
 end

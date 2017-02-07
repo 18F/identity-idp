@@ -17,7 +17,7 @@ module TwoFactorAuthCode
       [
         otp_fallback_options,
         update_phone_link,
-        recovery_code_link
+        recovery_code_link,
       ].compact
     end
 
