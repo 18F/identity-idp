@@ -14,9 +14,9 @@ class OpenidConnectAuthorizeForm
     state
   ).freeze
 
-  attr_reader :acr_values,
-              :scope,
-              *SIMPLE_ATTRS
+  ATTRS = [:acr_values, :scope, *SIMPLE_ATTRS].freeze
+
+  attr_reader(*ATTRS)
 
   validates_presence_of :acr_values,
                         :client_id,
@@ -41,21 +41,6 @@ class OpenidConnectAuthorizeForm
     SIMPLE_ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
-  end
-
-  def params # rubocop:disable Metrics/MethodLength
-    {
-      acr_values: acr_values.join(' '),
-      client_id: client_id,
-      nonce: nonce,
-      prompt: prompt,
-      redirect_uri: redirect_uri,
-      response_type: response_type,
-      scope: scope.join(' '),
-      state: state,
-      code_challenge: code_challenge,
-      code_challenge_method: code_challenge_method,
-    }.select { |_key, value| value.present? }
   end
 
   def submit(user, rails_session_id)
