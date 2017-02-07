@@ -1,2 +1,1 @@
-server 'demo.login.gov', roles: %w(web db)
-server 'demo-worker.login.gov', roles: %w(app job_creator)
+set :bastion_host, 'jumphost.demo.login.gov'
