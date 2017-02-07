@@ -28,7 +28,7 @@ class IdTokenBuilder
     {
       exp: @custom_expiration || expires,
       iat: now,
-      nbf: now
+      nbf: now,
     }
   end
 

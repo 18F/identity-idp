@@ -42,7 +42,7 @@ module Idv
       {
         success: success,
         errors: errors,
-        vendor: { reasons: vendor_reasons }
+        vendor: { reasons: vendor_reasons },
       }
     end
   end

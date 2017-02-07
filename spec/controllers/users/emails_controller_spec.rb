@@ -20,7 +20,7 @@ describe Users::EmailsController do
           success: true,
           errors: [],
           email_already_exists: false,
-          email_changed: true
+          email_changed: true,
         }
 
         put :update, update_user_email_form: { email: new_email }
@@ -47,7 +47,7 @@ describe Users::EmailsController do
           success: false,
           errors: [t('valid_email.validations.email.invalid')],
           email_already_exists: false,
-          email_changed: false
+          email_changed: false,
         }
 
         put :update, update_user_email_form: { email: '' }
@@ -70,7 +70,7 @@ describe Users::EmailsController do
           success: true,
           errors: [],
           email_already_exists: true,
-          email_changed: true
+          email_changed: true,
         }
 
         put :update, update_user_email_form: { email: second_user.email.upcase }
@@ -96,7 +96,7 @@ describe Users::EmailsController do
           success: false,
           errors: [t('valid_email.validations.email.invalid')],
           email_already_exists: false,
-          email_changed: false
+          email_changed: false,
         }
 
         put :update, update_user_email_form: { email: 'foo' }
@@ -120,7 +120,7 @@ describe Users::EmailsController do
           success: true,
           errors: [],
           email_already_exists: false,
-          email_changed: false
+          email_changed: false,
         }
 
         put :update, update_user_email_form: { email: user.email }

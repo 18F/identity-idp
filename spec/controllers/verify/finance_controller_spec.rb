@@ -164,7 +164,7 @@ describe Verify::FinanceController do
         result = {
           success: true,
           errors: {},
-          vendor: { reasons: ['Good number'] }
+          vendor: { reasons: ['Good number'] },
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -180,7 +180,7 @@ describe Verify::FinanceController do
         result = {
           success: false,
           errors: { ccn: ['The ccn could not be verified.'] },
-          vendor: { reasons: ['Bad number'] }
+          vendor: { reasons: ['Bad number'] },
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -197,7 +197,7 @@ describe Verify::FinanceController do
         result = {
           success: false,
           errors: { ccn: ['Credit card number should be only last 8 digits.'] },
-          vendor: { reasons: nil }
+          vendor: { reasons: nil },
         }
 
         expect(@analytics).to have_received(:track_event).

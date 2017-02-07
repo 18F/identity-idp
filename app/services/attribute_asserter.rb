@@ -10,7 +10,7 @@ class AttributeAsserter
     :zipcode,
     :dob,
     :ssn,
-    :phone
+    :phone,
   ].freeze
 
   URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
@@ -38,8 +38,8 @@ class AttributeAsserter
       uuid: {
         getter: uuid_getter_function,
         name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
-        name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
-      }
+        name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
+      },
     }
   end
 
@@ -67,7 +67,7 @@ class AttributeAsserter
     attrs[:email] = {
       getter: :email,
       name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
-      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
   end
 

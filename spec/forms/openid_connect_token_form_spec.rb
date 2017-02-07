@@ -11,7 +11,7 @@ RSpec.describe OpenidConnectTokenForm do
       client_assertion_type: client_assertion_type,
       code: code,
       code_verifier: code_verifier,
-      grant_type: grant_type
+      grant_type: grant_type,
     }
   end
 
@@ -30,7 +30,7 @@ RSpec.describe OpenidConnectTokenForm do
       sub: client_id,
       aud: openid_connect_token_url,
       jti: SecureRandom.hex,
-      exp: 5.minutes.from_now.to_i
+      exp: 5.minutes.from_now.to_i,
     }
   end
 

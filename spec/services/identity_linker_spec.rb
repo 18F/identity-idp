@@ -13,7 +13,7 @@ describe IdentityLinker do
       new_attributes = {
         service_provider: 'test.host',
         user_id: user.id,
-        uuid: last_identity.uuid
+        uuid: last_identity.uuid,
       }
 
       identity_attributes = last_identity.attributes.symbolize_keys.

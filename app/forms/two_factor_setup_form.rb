@@ -37,7 +37,7 @@ class TwoFactorSetupForm
     {
       success: success,
       error: errors.messages.values.flatten.first,
-      otp_method: otp_method
+      otp_method: otp_method,
     }
   end
 end

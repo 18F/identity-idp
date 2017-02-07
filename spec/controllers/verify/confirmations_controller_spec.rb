@@ -98,7 +98,7 @@ describe Verify::ConfirmationsController do
 
         result = {
           success: true,
-          new_phone_added: false
+          new_phone_added: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -115,7 +115,7 @@ describe Verify::ConfirmationsController do
 
         result = {
           success: true,
-          new_phone_added: true
+          new_phone_added: true,
         }
 
         expect(@analytics).to receive(:track_event).

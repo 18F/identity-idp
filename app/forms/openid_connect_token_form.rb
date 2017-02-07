@@ -37,7 +37,7 @@ class OpenidConnectTokenForm
     {
       success: valid?,
       client_id: client_id,
-      errors: errors.messages
+      errors: errors.messages,
     }
   end
 
@@ -47,7 +47,7 @@ class OpenidConnectTokenForm
         access_token: identity.access_token,
         token_type: 'Bearer',
         expires_in: Pii::SessionStore.new(identity.session_uuid).ttl,
-        id_token: IdTokenBuilder.new(identity).id_token
+        id_token: IdTokenBuilder.new(identity).id_token,
       }
     else
       { error: errors.to_a.join(' ') }

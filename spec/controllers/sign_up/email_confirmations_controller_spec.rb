@@ -11,7 +11,7 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         error: 'Confirmation token Please fill in this field.',
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -28,7 +28,7 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         error: 'Confirmation token Please fill in this field.',
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -45,7 +45,7 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         error: 'Confirmation token is invalid',
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -62,7 +62,7 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         error: 'Confirmation token is invalid',
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -81,7 +81,7 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         error: 'Email was already confirmed, please try signing in',
         user_id: user.uuid,
-        existing_user: true
+        existing_user: true,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -98,7 +98,7 @@ describe SignUp::EmailConfirmationsController do
         success: false,
         error: 'Confirmation token has expired',
         user_id: user.uuid,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -123,7 +123,7 @@ describe SignUp::EmailConfirmationsController do
         success: true,
         error: '',
         user_id: user.uuid,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -148,7 +148,7 @@ describe SignUp::EmailConfirmationsController do
         success: true,
         error: '',
         user_id: user.uuid,
-        existing_user: true
+        existing_user: true,
       }
 
       expect(@analytics).to receive(:track_event).

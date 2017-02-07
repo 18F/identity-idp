@@ -22,7 +22,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       result = {
         success: false,
         error: t('errors.messages.improbable_phone'),
-        otp_method: 'sms'
+        otp_method: 'sms',
       }
 
       expect(@analytics).to receive(:track_event).
@@ -41,7 +41,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         result = {
           success: true,
           error: nil,
-          otp_method: 'voice'
+          otp_method: 'voice',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -72,7 +72,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         result = {
           success: true,
           error: nil,
-          otp_method: 'sms'
+          otp_method: 'sms',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -102,7 +102,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         result = {
           success: true,
           error: nil,
-          otp_method: 'sms'
+          otp_method: 'sms',
         }
 
         expect(@analytics).to receive(:track_event).

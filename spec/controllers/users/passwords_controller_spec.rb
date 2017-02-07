@@ -71,7 +71,7 @@ describe Users::PasswordsController do
         patch :update, update_user_password_form: params
 
         errors = [
-          "Password #{t('errors.messages.too_short.other', count: Devise.password_length.first)}"
+          "Password #{t('errors.messages.too_short.other', count: Devise.password_length.first)}",
         ]
 
         expect(@analytics).to have_received(:track_event).

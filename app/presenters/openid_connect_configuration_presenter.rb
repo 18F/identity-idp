@@ -8,7 +8,7 @@ class OpenidConnectConfigurationPresenter
       grant_types_supported: %w(authorization_code),
       response_types_supported: %w(code),
       scopes_supported: OpenidConnectAttributeScoper::VALID_SCOPES,
-      subject_types_supported: %w(pairwise)
+      subject_types_supported: %w(pairwise),
     }.merge(url_configuration).merge(crypto_configuration)
   end
 
@@ -21,7 +21,7 @@ class OpenidConnectConfigurationPresenter
       jwks_uri: openid_connect_certs_url,
       service_documentation: 'https://pages.18f.gov/identity-dev-docs/',
       token_endpoint: openid_connect_token_url,
-      userinfo_endpoint: openid_connect_userinfo_url
+      userinfo_endpoint: openid_connect_userinfo_url,
     }
   end
 
@@ -29,7 +29,7 @@ class OpenidConnectConfigurationPresenter
     {
       id_token_signing_alg_values_supported: %w(RS256),
       token_endpoint_auth_methods_supported: %w(private_key_jwt),
-      token_endpoint_auth_signing_alg_values_supported: %w(RS256)
+      token_endpoint_auth_signing_alg_values_supported: %w(RS256),
     }
   end
 

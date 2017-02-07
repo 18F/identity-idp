@@ -5,9 +5,11 @@ Rails.application.routes.draw do
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
-  devise_for :users, skip: [:confirmations, :sessions, :registrations, :two_factor_authentication], controllers: {
-    passwords: 'users/reset_passwords'
-  }
+  devise_for(
+    :users,
+    skip: [:confirmations, :sessions, :registrations, :two_factor_authentication],
+    controllers: { passwords: 'users/reset_passwords' }
+  )
 
   # Additional device controller routes.
   devise_scope :user do

@@ -12,7 +12,7 @@ module TwoFactorAuthenticatable
     authenticator: 'authenticator',
     sms: 'phone',
     voice: 'phone',
-    two_factor_authentication: 'otp'
+    two_factor_authentication: 'otp',
   }.freeze
 
   private
@@ -174,7 +174,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       recovery_code_unavailable: recovery_code_unavailable?,
-      totp_enabled: current_user.totp_enabled?
+      totp_enabled: current_user.totp_enabled?,
     }
   end
 
@@ -182,7 +182,7 @@ module TwoFactorAuthenticatable
     {
       delivery_method: delivery_method,
       user_email: current_user.email,
-      recovery_code_unavailable: recovery_code_unavailable?
+      recovery_code_unavailable: recovery_code_unavailable?,
     }
   end
 
@@ -191,7 +191,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       phone_number: display_phone_to_deliver_to,
       unconfirmed_phone: unconfirmed_phone?,
-      recovery_code_unavailable: recovery_code_unavailable?
+      recovery_code_unavailable: recovery_code_unavailable?,
     }
   end
 

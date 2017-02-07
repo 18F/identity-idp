@@ -38,7 +38,7 @@ class OtpDeliverySelectionForm
       success: success,
       delivery_method: otp_method,
       resend: resend,
-      errors: errors.full_messages
+      errors: errors.full_messages,
     }
   end
 end

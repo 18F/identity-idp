@@ -5,7 +5,7 @@ describe Analytics do
     {
       user_ip: FakeRequest.new.remote_ip,
       user_agent: FakeRequest.new.user_agent,
-      host: FakeRequest.new.host
+      host: FakeRequest.new.host,
     }
   end
 
@@ -21,7 +21,7 @@ describe Analytics do
 
       analytics_hash = {
         event_properties: {},
-        user_id: user.uuid
+        user_id: user.uuid,
       }
 
       expect(ahoy).to receive(:track).
@@ -38,7 +38,7 @@ describe Analytics do
 
       analytics_hash = {
         event_properties: {},
-        user_id: tracked_user.uuid
+        user_id: tracked_user.uuid,
       }
 
       expect(ahoy).to receive(:track).

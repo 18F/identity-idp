@@ -27,7 +27,7 @@ class ResendEmailConfirmationForm
       success: success,
       errors: errors.messages.values.flatten,
       user_id: user.uuid,
-      confirmed: user.confirmed?
+      confirmed: user.confirmed?,
     }
   end
 

@@ -58,7 +58,7 @@ describe SignUp::RegistrationsController, devise: true do
           success: true,
           errors: [],
           email_already_exists: false,
-          user_id: user.uuid
+          user_id: user.uuid,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -93,7 +93,7 @@ describe SignUp::RegistrationsController, devise: true do
         success: true,
         errors: [],
         email_already_exists: true,
-        user_id: existing_user.uuid
+        user_id: existing_user.uuid,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -110,7 +110,7 @@ describe SignUp::RegistrationsController, devise: true do
         success: false,
         errors: [t('valid_email.validations.email.invalid')],
         email_already_exists: false,
-        user_id: nil
+        user_id: nil,
       }
 
       expect(@analytics).to receive(:track_event).

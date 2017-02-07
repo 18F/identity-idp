@@ -19,7 +19,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:acr_values) do
     [
       Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
     ].join(' ')
   end
 

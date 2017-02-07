@@ -54,7 +54,7 @@ class OpenidConnectAuthorizeForm
       scope: scope.join(' '),
       state: state,
       code_challenge: code_challenge,
-      code_challenge_method: code_challenge_method
+      code_challenge_method: code_challenge_method,
     }.select { |_key, value| value.present? }
   end
 
@@ -67,7 +67,7 @@ class OpenidConnectAuthorizeForm
       success: valid?,
       redirect_uri: result_uri,
       client_id: client_id,
-      errors: errors.messages
+      errors: errors.messages,
     }
   end
 

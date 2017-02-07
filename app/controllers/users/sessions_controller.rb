@@ -71,7 +71,7 @@ module Users
       properties = {
         success: user_signed_in_and_not_locked_out?(user),
         user_id: user.uuid,
-        user_locked_out: user_locked_out?(user)
+        user_locked_out: user_locked_out?(user),
       }
 
       analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)

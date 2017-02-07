@@ -7,7 +7,7 @@ class Analytics
   def track_event(event, attributes = {})
     analytics_hash = {
       event_properties: attributes.except(:user_id),
-      user_id: attributes[:user_id] || uuid
+      user_id: attributes[:user_id] || uuid,
     }
 
     ahoy.track(event, analytics_hash.merge!(request_attributes))
@@ -25,7 +25,7 @@ class Analytics
     {
       user_ip: request.remote_ip,
       user_agent: request.user_agent,
-      host: request.host
+      host: request.host,
     }
   end
 

@@ -20,7 +20,7 @@ module Verify
     def track_final_idv_event
       result = {
         success: true,
-        new_phone_added: idv_session.params['phone_confirmed_at'].present?
+        new_phone_added: idv_session.params['phone_confirmed_at'].present?,
       }
       analytics.track_event(Analytics::IDV_FINAL, result)
     end
