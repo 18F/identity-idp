@@ -46,7 +46,7 @@ describe FormResponse do
         response = FormResponse.new(success: true, errors: errors)
         response_hash = {
           success: true,
-          errors: errors
+          errors: errors,
         }
 
         expect(response.to_h).to eq response_hash
@@ -62,7 +62,7 @@ describe FormResponse do
           success: true,
           errors: errors,
           user_id: 1,
-          context: 'confirmation'
+          context: 'confirmation',
         }
 
         expect(response.to_h).to eq response_hash

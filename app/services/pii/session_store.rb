@@ -27,8 +27,8 @@ module Pii
     def put(pii, expiration = 5.minutes)
       session_data = {
         'warden.user.user.session' => {
-          decrypted_pii: pii.to_h.to_json
-        }
+          decrypted_pii: pii.to_h.to_json,
+        },
       }
 
       session_store.

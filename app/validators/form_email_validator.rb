@@ -7,7 +7,7 @@ module FormEmailValidator
     validates :email,
               email: {
                 mx: !ENV['RAILS_OFFLINE'],
-                ban_disposable_email: true
+                ban_disposable_email: true,
               }
   end
 

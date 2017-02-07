@@ -15,7 +15,7 @@ describe Idv::ProfileForm do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044'
+      zipcode: '66044',
     }
   end
 
@@ -36,7 +36,7 @@ describe Idv::ProfileForm do
 
         result = {
           success: false,
-          errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+          errors: { ssn: [t('idv.errors.duplicate_ssn')] },
         }
 
         expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
@@ -51,7 +51,7 @@ describe Idv::ProfileForm do
 
         result = {
           success: false,
-          errors: { ssn: [t('idv.errors.duplicate_ssn')] }
+          errors: { ssn: [t('idv.errors.duplicate_ssn')] },
         }
 
         expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
@@ -65,7 +65,7 @@ describe Idv::ProfileForm do
 
         result = {
           success: true,
-          errors: {}
+          errors: {},
         }
 
         expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
@@ -78,7 +78,7 @@ describe Idv::ProfileForm do
 
         result = {
           success: true,
-          errors: {}
+          errors: {},
         }
 
         expect(subject.submit(profile_attrs.merge(ssn: ssn))).to eq result
@@ -91,7 +91,7 @@ describe Idv::ProfileForm do
       it 'is invalid' do
         result = {
           success: false,
-          errors: { dob: [t('idv.errors.bad_dob')] }
+          errors: { dob: [t('idv.errors.bad_dob')] },
         }
 
         expect(subject.submit(profile_attrs.merge(dob: '00000000'))).to eq result
@@ -103,7 +103,7 @@ describe Idv::ProfileForm do
       it 'is invalid' do
         result = {
           success: false,
-          errors: { dob: [t('idv.errors.bad_dob')] }
+          errors: { dob: [t('idv.errors.bad_dob')] },
         }
 
         expect(
@@ -118,7 +118,7 @@ describe Idv::ProfileForm do
     it 'accepts 9 numbers with optional `-` delimiting the 5th and 6th position' do
       result = {
         success: true,
-        errors: {}
+        errors: {},
       }
 
       %w(12345 123454567 12345-1234).each do |valid_zip|
@@ -140,7 +140,7 @@ describe Idv::ProfileForm do
     it 'accepts 9 numbers with optional `-` delimiters' do
       result = {
         success: true,
-        errors: {}
+        errors: {},
       }
 
       %w(123411111 123-11-1123).each do |valid_ssn|
@@ -162,7 +162,7 @@ describe Idv::ProfileForm do
     it 'returns true on success' do
       result = {
         success: true,
-        errors: {}
+        errors: {},
       }
 
       expect(subject.submit(profile_attrs)).to eq result
@@ -177,8 +177,8 @@ describe Idv::ProfileForm do
           address1: [t('errors.messages.missing_field')],
           city: [t('errors.messages.missing_field')],
           state: [t('errors.messages.missing_field')],
-          zipcode: [t('errors.messages.missing_field')]
-        }
+          zipcode: [t('errors.messages.missing_field')],
+        },
       }
 
       expect(subject.submit(ssn: ssn, first_name: 'Joe')).to eq result

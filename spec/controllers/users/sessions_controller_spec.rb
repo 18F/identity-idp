@@ -139,7 +139,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: true,
         user_id: user.uuid,
-        user_locked_out: false
+        user_locked_out: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -155,7 +155,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: false,
         user_id: user.uuid,
-        user_locked_out: false
+        user_locked_out: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -169,7 +169,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: false,
         user_id: 'anonymous-uuid',
-        user_locked_out: false
+        user_locked_out: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -189,7 +189,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: false,
         user_id: user.uuid,
-        user_locked_out: true
+        user_locked_out: true,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -249,7 +249,7 @@ describe Users::SessionsController, devise: true do
         analytics_hash = {
           success: true,
           user_id: user.uuid,
-          user_locked_out: false
+          user_locked_out: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -257,7 +257,7 @@ describe Users::SessionsController, devise: true do
 
         profile_encryption_error = {
           error: 'Unable to parse encrypted payload. ' \
-                 '#<TypeError: no implicit conversion of nil into String>'
+                 '#<TypeError: no implicit conversion of nil into String>',
         }
         expect(@analytics).to receive(:track_event).
           with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)

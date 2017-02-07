@@ -18,7 +18,7 @@ feature 'Visitor signs up with email address' do
   scenario 'visitor cannot sign up with email with invalid domain name' do
     invalid_addresses = [
       'foo@bar.com',
-      'foo@example.com'
+      'foo@example.com',
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 

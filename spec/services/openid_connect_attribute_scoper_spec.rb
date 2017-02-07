@@ -24,8 +24,8 @@ RSpec.describe OpenidConnectAttributeScoper do
           street_address: '123 Fake St',
           locality: 'Washington',
           region: 'DC',
-          postal_code: '12345'
-        }
+          postal_code: '12345',
+        },
       }
     end
 

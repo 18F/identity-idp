@@ -25,7 +25,7 @@ describe Idv::FinancialsStep do
       result = {
         success: false,
         errors: { ccn: [t('idv.errors.invalid_ccn')] },
-        vendor: { reasons: nil }
+        vendor: { reasons: nil },
       }
 
       expect(step.submit).to eq result
@@ -38,7 +38,7 @@ describe Idv::FinancialsStep do
       result = {
         success: true,
         errors: {},
-        vendor: { reasons: ['Good number'] }
+        vendor: { reasons: ['Good number'] },
       }
 
       expect(step.submit).to eq result
@@ -52,7 +52,7 @@ describe Idv::FinancialsStep do
       result = {
         success: false,
         errors: { ccn: ['The ccn could not be verified.'] },
-        vendor: { reasons: ['Bad number'] }
+        vendor: { reasons: ['Bad number'] },
       }
 
       expect(step.submit).to eq result

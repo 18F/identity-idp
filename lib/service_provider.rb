@@ -17,7 +17,7 @@ class ServiceProvider
     {
       cert: ssl_cert,
       block_encryption: block_encryption,
-      key_transport: 'rsa-oaep-mgf1p'
+      key_transport: 'rsa-oaep-mgf1p',
     }
   end
 

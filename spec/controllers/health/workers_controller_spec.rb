@@ -14,7 +14,7 @@ RSpec.describe Health::WorkersController do
     let(:statuses) do
       [
         WorkerHealthChecker::Status.new('voice', 0.minutes.ago, true),
-        WorkerHealthChecker::Status.new('sms', 0.minutes.ago, true)
+        WorkerHealthChecker::Status.new('sms', 0.minutes.ago, true),
       ]
     end
 
@@ -40,7 +40,7 @@ RSpec.describe Health::WorkersController do
       let(:statuses) do
         [
           WorkerHealthChecker::Status.new('voice', 0.minutes.ago, true),
-          WorkerHealthChecker::Status.new('sms', nil, false)
+          WorkerHealthChecker::Status.new('sms', nil, false),
         ]
       end
 

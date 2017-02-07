@@ -12,7 +12,7 @@ RSpec.describe SignUp::EmailResendController do
           success: true,
           errors: [],
           user_id: user.uuid,
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -43,7 +43,7 @@ RSpec.describe SignUp::EmailResendController do
           success: true,
           errors: [],
           user_id: 'nonexistent-uuid',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -63,7 +63,7 @@ RSpec.describe SignUp::EmailResendController do
           success: true,
           errors: [],
           user_id: user.uuid,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).

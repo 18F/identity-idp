@@ -46,7 +46,7 @@ UserDecorator = Struct.new(:user) do
   def qrcode(otp_secret_key)
     options = {
       issuer: 'Login.gov',
-      otp_secret_key: otp_secret_key
+      otp_secret_key: otp_secret_key,
     }
     url = user.provisioning_uri(nil, options)
     qrcode = RQRCode::QRCode.new(url)

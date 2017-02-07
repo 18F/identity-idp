@@ -51,7 +51,7 @@ class SamlIdpController < ApplicationController
       locals: {
         action_url: action_url,
         message: message,
-        type: type
+        type: type,
       },
       layout: false
     )

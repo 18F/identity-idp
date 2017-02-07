@@ -23,7 +23,7 @@ class PasswordResetTokenValidator
     {
       success: success,
       error: errors.messages.values.flatten.first,
-      user_id: user&.uuid
+      user_id: user&.uuid,
     }
   end
 

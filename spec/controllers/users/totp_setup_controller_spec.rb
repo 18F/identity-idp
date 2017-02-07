@@ -69,7 +69,7 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.current_user.totp_enabled?).to be(false)
 
         result = {
-          success: false
+          success: false,
         }
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
       end
@@ -94,7 +94,7 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.user_session[:new_totp_secret]).to be_nil
 
         result = {
-          success: true
+          success: true,
         }
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
       end

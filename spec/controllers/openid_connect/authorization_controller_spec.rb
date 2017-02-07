@@ -11,7 +11,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       response_type: 'code',
       scope: 'openid profile',
-      state:  SecureRandom.hex
+      state:  SecureRandom.hex,
     }
   end
 

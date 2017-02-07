@@ -11,7 +11,7 @@ describe TotpSetupForm do
         form = TotpSetupForm.new(user, secret, code)
 
         result = {
-          success: true
+          success: true,
         }
 
         expect(form.submit).to eq result
@@ -23,7 +23,7 @@ describe TotpSetupForm do
         form = TotpSetupForm.new(user, secret, 'kode')
 
         result = {
-          success: false
+          success: false,
         }
 
         expect(form.submit).to eq result

@@ -42,7 +42,7 @@ class RegisterUserEmailForm
       success: success,
       errors: errors.messages.values.flatten,
       email_already_exists: email_taken?,
-      user_id: existing_user&.uuid
+      user_id: existing_user&.uuid,
     }
   end
 
