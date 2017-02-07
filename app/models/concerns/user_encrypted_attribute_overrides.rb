@@ -75,6 +75,19 @@ module UserEncryptedAttributeOverrides
     encrypted_attributes[:phone].stale?
   end
 
+  def otp_secret_key
+    get_encrypted_attribute(name: :otp_secret_key, default: nil)
+  end
+
+  def otp_secret_key=(otp_secret_key)
+    set_encrypted_attribute(name: :otp_secret_key, value: otp_secret_key, default: nil)
+  end
+
+  def stale_encrypted_otp_secret_key?
+    return false unless otp_secret_key.present?
+    encrypted_attributes[:otp_secret_key].stale?
+  end
+
   private
 
   def encrypted_attributes
