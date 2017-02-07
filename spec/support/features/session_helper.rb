@@ -1,5 +1,3 @@
-require 'omniauth_spec_helper'
-
 module Features
   module SessionHelper
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze

@@ -12,9 +12,7 @@ class User < ActiveRecord::Base
     :timeoutable,
     :trackable,
     :two_factor_authenticatable,
-    :omniauthable,
-    authentication_keys: [:email],
-    omniauth_providers: [:saml]
+    authentication_keys: [:email]
   )
 
   # IMPORTANT this comes *after* devise() call.

@@ -16,6 +16,7 @@ FeatureEnvy:
     - reauthn?
     - mark_profile_inactive
     - EncryptedSidekiqRedis#zrem
+    - UserDecorator#should_acknowledge_recovery_code?
 IrresponsibleModule:
   enabled: false
 ManualDispatch:

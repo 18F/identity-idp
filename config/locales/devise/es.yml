@@ -1,4 +1,3 @@
----
 es:
   devise:
     confirmations:
@@ -33,9 +32,6 @@ es:
         subject: Su contraseña ha sido cambiada.
       reset_password_instructions:
         subject: Restablecer su contraseña.
-    omniauth_callbacks:
-      failure: 'No se pudo iniciar sesión debido a: %{razon}.'
-      success: Autenticación con éxito!
     passwords:
       choose_new_password: Elija una contraseña nueva.
       invalid_token: El token de contraseña de restablecimiento no es válido. Inténtalo de nuevo.
