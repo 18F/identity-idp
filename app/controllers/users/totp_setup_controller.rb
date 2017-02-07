@@ -3,6 +3,8 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     def new
+      return redirect_to profile_path if current_user.totp_enabled?
+
       user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
 
       @qrcode = decorated_user.qrcode(new_totp_secret)
