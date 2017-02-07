@@ -291,7 +291,7 @@ GEM
       rack
       socksify
     i18n (0.8.0)
-    i18n-tasks (0.9.9)
+    i18n-tasks (0.9.11)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       easy_translate (>= 0.5.0)
@@ -596,7 +596,7 @@ GEM
     thread_safe (0.3.5)
     tilt (2.0.5)
     timecop (0.8.1)
-    tins (1.13.0)
+    tins (1.13.2)
     twilio-ruby (4.13.0)
       builder (>= 2.1.2)
       jwt (~> 1.0)
