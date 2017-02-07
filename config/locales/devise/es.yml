@@ -9,7 +9,7 @@ es:
         dirección de correo electrónico en breve.
       send_paranoid_instructions:
         Recibirá un correo electrónico con instrucciones para confirmar su
-        dirección de correo electrónico en pocos minutos.
+        dirección de correo electrónico en breve.
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
