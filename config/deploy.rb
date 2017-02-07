@@ -1,3 +1,5 @@
+require 'net/ssh/proxy/command'
+
 #################
 # GLOBAL CONFIG
 #################
@@ -27,6 +29,17 @@ set :sidekiq_user, 'ubuntu'
 set :ssh_options, forward_agent: false, user: 'ubuntu'
 set :whenever_roles, [:job_creator]
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+set :ssh_options do
+  ssh_command = "ssh #{fetch(:bastion_host)} -W %h:%p"
+  {
+    proxy: Net::SSH::Proxy::Command.new(ssh_command),
+    user: 'ubuntu',
+  }
+end
+
+server 'idp1-0', roles: %w(web db) # idp1
+server 'idp2-0', roles: %w(web) # idp2
+server 'worker', roles: %w(app job_creator) # worker
 
 #########
 # TASKS
