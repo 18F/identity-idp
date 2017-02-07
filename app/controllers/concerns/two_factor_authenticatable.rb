@@ -97,7 +97,7 @@ module TwoFactorAuthenticatable
   end
 
   def assign_phone
-    @updating_existing_number = old_phone
+    @updating_existing_number = old_phone.present?
 
     if @updating_existing_number && confirmation_context?
       phone_changed
