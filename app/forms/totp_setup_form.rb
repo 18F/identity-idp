@@ -21,7 +21,7 @@ class TotpSetupForm
 
   def result
     {
-      success: success
+      success: success,
     }
   end
 end

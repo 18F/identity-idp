@@ -14,7 +14,7 @@ describe RegisterUserEmailForm do
           success: true,
           errors: [],
           email_already_exists: true,
-          user_id: existing_user.uuid
+          user_id: existing_user.uuid,
         }
 
         mailer = instance_double(ActionMailer::MessageDelivery)
@@ -39,7 +39,7 @@ describe RegisterUserEmailForm do
           success: true,
           errors: [],
           email_already_exists: true,
-          user_id: '123'
+          user_id: '123',
         }
 
         expect(subject.submit(email: user.email)).to eq result
@@ -54,7 +54,7 @@ describe RegisterUserEmailForm do
           success: true,
           errors: [],
           email_already_exists: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid
+          user_id: User.find_with_email('not_taken@gmail.com').uuid,
         }
 
         expect(result).to eq result_hash
@@ -67,7 +67,7 @@ describe RegisterUserEmailForm do
           success: false,
           errors: [t('valid_email.validations.email.invalid')],
           email_already_exists: false,
-          user_id: nil
+          user_id: nil,
         }
 
         expect(subject.submit(email: 'invalid_email')).to eq result

@@ -16,7 +16,7 @@ describe UpdateUserPasswordForm, type: :model do
 
         result_hash = {
           success: false,
-          errors: subject.errors.full_messages
+          errors: subject.errors.full_messages,
         }
 
         expect(result).to eq result_hash
@@ -33,7 +33,7 @@ describe UpdateUserPasswordForm, type: :model do
 
         result_hash = {
           success: true,
-          errors: []
+          errors: [],
         }
 
         expect(result).to eq result_hash

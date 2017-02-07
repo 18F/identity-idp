@@ -12,7 +12,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           error: 'invalid_token',
-          user_id: nil
+          user_id: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -37,7 +37,7 @@ describe Users::ResetPasswordsController, devise: true do
         analytics_hash = {
           success: false,
           error: 'token_expired',
-          user_id: '123'
+          user_id: '123',
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -89,7 +89,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: ['is too short (minimum is 8 characters)', 'token_expired'],
           user_id: user.uuid,
           active_profile: false,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -122,7 +122,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: ['is too short (minimum is 8 characters)'],
           user_id: user.uuid,
           active_profile: false,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -162,7 +162,7 @@ describe Users::ResetPasswordsController, devise: true do
             errors: [],
             user_id: user.uuid,
             active_profile: false,
-            confirmed: true
+            confirmed: true,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -202,7 +202,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: user.uuid,
           active_profile: true,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -241,7 +241,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: user.uuid,
           active_profile: false,
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -265,7 +265,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -290,7 +290,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: tech_user.uuid,
           role: 'tech',
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -315,7 +315,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: admin.uuid,
           role: 'admin',
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -340,7 +340,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: user.uuid,
           role: 'user',
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -364,7 +364,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [],
           user_id: user.uuid,
           role: 'user',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -392,7 +392,7 @@ describe Users::ResetPasswordsController, devise: true do
           errors: [t('valid_email.validations.email.invalid')],
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(form).to receive(:submit).and_return(analytics_hash)

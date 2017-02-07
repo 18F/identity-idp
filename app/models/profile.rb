@@ -9,7 +9,7 @@ class Profile < ActiveRecord::Base
 
   enum deactivation_reason: {
     password_reset: 1,
-    encryption_error: 2
+    encryption_error: 2,
   }
 
   attr_reader :recovery_code

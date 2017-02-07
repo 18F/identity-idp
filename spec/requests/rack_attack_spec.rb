@@ -22,7 +22,7 @@ describe 'throttling requests' do
       data = {
         count: 1,
         limit: Figaro.env.requests_per_ip_limit.to_i,
-        period: Figaro.env.requests_per_ip_period.to_i.seconds
+        period: Figaro.env.requests_per_ip_period.to_i.seconds,
       }
 
       expect(last_request.env['rack.attack.throttle_data']['req/ip']).to eq(data)
@@ -75,7 +75,7 @@ describe 'throttling requests' do
           discriminator: '1.2.3.4',
           event: 'throttle',
           type: 'req/ip',
-          user_ip: '1.2.3.4'
+          user_ip: '1.2.3.4',
         }
 
         expect(Rails.logger).to have_received(:warn).with(analytics_hash)
@@ -90,7 +90,7 @@ describe 'throttling requests' do
       data = {
         count: 1,
         limit: Figaro.env.logins_per_ip_limit.to_i,
-        period: Figaro.env.logins_per_ip_period.to_i.seconds
+        period: Figaro.env.logins_per_ip_period.to_i.seconds,
       }
 
       expect(last_request.env['rack.attack.throttle_data']['logins/ip/level_1']).to eq(data)
@@ -162,7 +162,7 @@ describe 'throttling requests' do
           discriminator: '1.2.3.4',
           event: 'throttle',
           type: 'logins/ip/level_1',
-          user_ip: '1.2.3.4'
+          user_ip: '1.2.3.4',
         }
 
         expect(Rails.logger).to have_received(:warn).with(analytics_hash)
@@ -208,7 +208,7 @@ describe 'throttling requests' do
         discriminator: user.uuid,
         event: 'throttle',
         type: 'OTP delivery',
-        user_ip: '1.2.3.4'
+        user_ip: '1.2.3.4',
       }
 
       expect(last_response.status).to eq(429)
@@ -235,7 +235,7 @@ describe 'throttling requests' do
         discriminator: second_user_with_same_number.uuid,
         event: 'throttle',
         type: 'OTP delivery',
-        user_ip: '1.2.3.5'
+        user_ip: '1.2.3.5',
       }
 
       expect(last_response.status).to eq(429)
@@ -267,7 +267,7 @@ describe 'throttling requests' do
         discriminator: user.uuid,
         event: 'throttle',
         type: 'OTP delivery',
-        user_ip: '1.2.3.4'
+        user_ip: '1.2.3.4',
       }
 
       expect(last_response.status).to eq(429)
@@ -299,7 +299,7 @@ describe 'throttling requests' do
         discriminator: user.uuid,
         event: 'throttle',
         type: 'OTP delivery',
-        user_ip: '1.2.3.4'
+        user_ip: '1.2.3.4',
       }
 
       expect(last_response.status).to eq(429)

@@ -16,7 +16,7 @@ class OpenidConnectAttributeScoper
     given_name: 'profile',
     family_name: 'profile',
     middle_name: 'profile',
-    birthdate: 'profile'
+    birthdate: 'profile',
   }.with_indifferent_access.freeze
 
   CLAIMS = ATTRIBUTE_SCOPE_MAP.keys

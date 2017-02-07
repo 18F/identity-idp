@@ -21,7 +21,7 @@ describe OtpDeliverySelectionForm do
           success: true,
           delivery_method: 'sms',
           resend: true,
-          errors: []
+          errors: [],
         }
 
         expect(result).to eq result_hash
@@ -36,7 +36,7 @@ describe OtpDeliverySelectionForm do
           success: false,
           delivery_method: 'foo',
           resend: nil,
-          errors: subject.errors.full_messages
+          errors: subject.errors.full_messages,
         }
 
         expect(result).to eq result_hash

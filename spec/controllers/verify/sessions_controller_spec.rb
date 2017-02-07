@@ -13,7 +13,7 @@ describe Verify::SessionsController do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044'
+      zipcode: '66044',
     }
   end
   let(:previous_address) do
@@ -22,7 +22,7 @@ describe Verify::SessionsController do
       prev_address2: '',
       prev_city: 'Elsewhere',
       prev_state: 'MO',
-      prev_zipcode: '66666'
+      prev_zipcode: '66666',
     }
   end
   let(:idv_session) { Idv::Session.new(subject.user_session, user) }
@@ -75,7 +75,7 @@ describe Verify::SessionsController do
           get :new
 
           result = {
-            request_path: verify_session_path
+            request_path: verify_session_path,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -107,7 +107,7 @@ describe Verify::SessionsController do
             success: false,
             idv_attempts_exceeded: false,
             errors: { ssn: [t('idv.errors.duplicate_ssn')] },
-            vendor: { reasons: nil }
+            vendor: { reasons: nil },
           }
 
           expect(@analytics).to receive(:track_event).
@@ -165,9 +165,9 @@ describe Verify::SessionsController do
             success: false,
             idv_attempts_exceeded: false,
             errors: {
-              first_name: ['Unverified first name.']
+              first_name: ['Unverified first name.'],
             },
-            vendor: { reasons: ['The name was suspicious'] }
+            vendor: { reasons: ['The name was suspicious'] },
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -183,7 +183,7 @@ describe Verify::SessionsController do
             success: true,
             idv_attempts_exceeded: false,
             errors: {},
-            vendor: { reasons: ['Everything looks good'] }
+            vendor: { reasons: ['Everything looks good'] },
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -201,7 +201,7 @@ describe Verify::SessionsController do
           post :create, profile: user_attrs
 
           result = {
-            request_path: verify_session_path
+            request_path: verify_session_path,
           }
 
           expect(@analytics).to have_received(:track_event).

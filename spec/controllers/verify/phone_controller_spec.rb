@@ -70,8 +70,8 @@ describe Verify::PhoneController do
         result = {
           success: false,
           errors: {
-            phone: [invalid_phone_message]
-          }
+            phone: [invalid_phone_message],
+          },
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -110,8 +110,8 @@ describe Verify::PhoneController do
         result = {
           success: false,
           errors: {
-            phone: ['The phone number could not be verified.']
-          }
+            phone: ['The phone number could not be verified.'],
+          },
         }
 
         expect(flash[:warning]).to match(
@@ -134,7 +134,7 @@ describe Verify::PhoneController do
 
           expected_params = {
             phone: good_phone,
-            phone_confirmed_at: user.phone_confirmed_at
+            phone_confirmed_at: user.phone_confirmed_at,
           }
           expect(subject.idv_session.params).to eq expected_params
         end
@@ -150,7 +150,7 @@ describe Verify::PhoneController do
           expect(response).to redirect_to verify_review_path
 
           expected_params = {
-            phone: good_phone
+            phone: good_phone,
           }
           expect(subject.idv_session.params).to eq expected_params
         end

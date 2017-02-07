@@ -64,7 +64,7 @@ module Idv
     def extra_analytics_attributes
       {
         idv_attempts_exceeded: attempts_exceeded?,
-        vendor: { reasons: vendor_reasons }
+        vendor: { reasons: vendor_reasons },
       }
     end
 

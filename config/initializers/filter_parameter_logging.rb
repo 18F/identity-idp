@@ -9,7 +9,7 @@ Rails.application.config.filter_parameters += [
   :password,
   :phone,
   :profile,
-  :user
+  :user,
 ]
 # Configure redirect URLs to be filtered based on a matching string.
 Rails.application.config.filter_redirect << 'token'

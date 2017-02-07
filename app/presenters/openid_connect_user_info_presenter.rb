@@ -12,7 +12,7 @@ class OpenidConnectUserInfoPresenter
       sub: identity.uuid,
       iss: root_url,
       email: identity.user.email,
-      email_verified: true
+      email_verified: true,
     }.merge(loa3_attributes)
 
     OpenidConnectAttributeScoper.new(identity.scope).filter(info)
@@ -30,7 +30,7 @@ class OpenidConnectUserInfoPresenter
       birthdate: loa3_data.dob,
       address: address,
       phone: phone,
-      phone_verified: phone ? true : nil
+      phone_verified: phone ? true : nil,
     }
   end
 
@@ -42,14 +42,14 @@ class OpenidConnectUserInfoPresenter
       street_address: street_address,
       locality: loa3_data.city,
       region: loa3_data.state,
-      postal_code: loa3_data.zipcode
+      postal_code: loa3_data.zipcode,
     }
   end
 
   def formatted_address
     [
       street_address,
-      "#{loa3_data.city}, #{loa3_data.state} #{loa3_data.zipcode}"
+      "#{loa3_data.city}, #{loa3_data.state} #{loa3_data.zipcode}",
     ].compact.join("\n")
   end
 

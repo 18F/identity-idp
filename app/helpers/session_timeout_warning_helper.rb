@@ -26,7 +26,7 @@ module SessionTimeoutWarningHelper
                warning: warning,
                start: start,
                frequency: frequency,
-               modal: modal
+               modal: modal,
              }
     end
   end

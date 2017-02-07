@@ -23,7 +23,7 @@ class EmailConfirmationTokenValidator
       success: success,
       error: [errors.full_messages, user.errors.full_messages].join,
       user_id: user.uuid,
-      existing_user: user.confirmed?
+      existing_user: user.confirmed?,
     }
   end
 

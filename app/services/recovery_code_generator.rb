@@ -39,7 +39,7 @@ class RecoveryCodeGenerator
     key_maker.make(user_access_key)
     [
       user_access_key.encryption_key,
-      user_access_key.encrypted_password
+      user_access_key.encrypted_password,
     ].join(Pii::Encryptor::DELIMITER)
   end
 

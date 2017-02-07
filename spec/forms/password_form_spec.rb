@@ -17,7 +17,7 @@ describe PasswordForm, type: :model do
         result = {
           success: true,
           errors: [],
-          user_id: user.uuid
+          user_id: user.uuid,
         }
 
         expect(form.submit(password: password)).to eq result
@@ -35,7 +35,7 @@ describe PasswordForm, type: :model do
         result_hash = {
           success: false,
           errors: ['is too short (minimum is 8 characters)'],
-          user_id: '123'
+          user_id: '123',
         }
 
         expect(form.submit(password: password)).to eq result_hash
@@ -58,7 +58,7 @@ describe PasswordForm, type: :model do
             ' This is similar to a commonly used password.' \
             ' Add another word or two.' \
             ' Uncommon words are better.'],
-          user_id: '123'
+          user_id: '123',
         }
 
         passwords.each do |password|

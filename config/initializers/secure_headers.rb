@@ -22,10 +22,10 @@ SecureHeaders::Configuration.default do |config|
       '*.newrelic.com',
       '*.nr-data.net',
       'dap.digitalgov.gov',
-      '*.google-analytics.com'
+      '*.google-analytics.com',
     ],
     style_src: ["'self'"],
-    base_uri: ["'self'"]
+    base_uri: ["'self'"],
   }
 
   if !Rails.env.production?
@@ -44,7 +44,7 @@ SecureHeaders::Configuration.default do |config|
     # is fixed in Chrome: https://bugs.chromium.org/p/chromium/issues/detail?id=619603
     samesite: {
       lax: true # mark all cookies as SameSite=Lax.
-    }
+    },
   }
 
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.

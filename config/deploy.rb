@@ -53,7 +53,7 @@ namespace :deploy do
           branch: fetch(:branch),
           user: fetch(:local_user),
           sha: fetch(:current_revision),
-          timestamp: fetch(:release_timestamp)
+          timestamp: fetch(:release_timestamp),
         }
 
         execute :mkdir, '-p', 'public/api'

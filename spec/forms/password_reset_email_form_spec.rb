@@ -16,7 +16,7 @@ describe PasswordResetEmailForm do
           errors: [],
           user_id: user.uuid,
           role: user.role,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(subject.submit).to eq result
@@ -32,7 +32,7 @@ describe PasswordResetEmailForm do
           errors: [],
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(subject.submit).to eq result
@@ -48,7 +48,7 @@ describe PasswordResetEmailForm do
           errors: [t('valid_email.validations.email.invalid')],
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(subject.submit).to eq result

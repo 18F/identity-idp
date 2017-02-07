@@ -14,7 +14,7 @@ describe SignUp::PasswordsController do
       analytics_hash = {
         success: true,
         errors: [],
-        user_id: user.uuid
+        user_id: user.uuid,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -40,7 +40,7 @@ describe SignUp::PasswordsController do
       analytics_hash = {
         success: false,
         errors: ['is too short (minimum is 8 characters)'],
-        user_id: user.uuid
+        user_id: user.uuid,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -55,7 +55,7 @@ describe SignUp::PasswordsController do
 
       analytics_hash = {
         success: true,
-        errors: []
+        errors: [],
       }
 
       expect(form).to receive(:submit).with(password: 'password').

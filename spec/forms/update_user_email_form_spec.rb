@@ -13,7 +13,7 @@ describe UpdateUserEmailForm do
         success: true,
         errors: [],
         email_already_exists: false,
-        email_changed: false
+        email_changed: false,
       }
 
       expect(result).to eq result_hash
@@ -41,7 +41,7 @@ describe UpdateUserEmailForm do
           success: true,
           errors: [],
           email_already_exists: true,
-          email_changed: true
+          email_changed: true,
         }
 
         expect(result).to eq result_hash
@@ -62,7 +62,7 @@ describe UpdateUserEmailForm do
           success: true,
           errors: [],
           email_already_exists: false,
-          email_changed: true
+          email_changed: true,
         }
 
         expect(user.unconfirmed_email).to eq 'new@example.com'
@@ -82,7 +82,7 @@ describe UpdateUserEmailForm do
           success: true,
           errors: [],
           email_already_exists: true,
-          email_changed: true
+          email_changed: true,
         }
 
         expect(result).to eq result_hash
@@ -98,7 +98,7 @@ describe UpdateUserEmailForm do
           success: false,
           errors: [t('valid_email.validations.email.invalid')],
           email_already_exists: false,
-          email_changed: false
+          email_changed: false,
         }
 
         expect(result).to eq result_hash

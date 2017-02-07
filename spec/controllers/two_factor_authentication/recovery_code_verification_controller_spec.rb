@@ -71,7 +71,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       it 'tracks the max attempts event' do
         properties = {
           success: false,
-          method: 'recovery code'
+          method: 'recovery code',
         }
 
         stub_analytics

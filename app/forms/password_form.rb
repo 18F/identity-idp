@@ -24,7 +24,7 @@ class PasswordForm
     {
       success: success,
       errors: errors.messages.values.flatten,
-      user_id: user.uuid
+      user_id: user.uuid,
     }
   end
 end

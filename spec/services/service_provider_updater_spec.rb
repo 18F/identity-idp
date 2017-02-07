@@ -17,7 +17,7 @@ describe ServiceProviderUpdater do
         assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
         block_encryption: 'aes256-cbc',
         cert: saml_test_sp_cert,
-        active: true
+        active: true,
       },
       {
         issuer: inactive_dashboard_sp_issuer,
@@ -28,8 +28,8 @@ describe ServiceProviderUpdater do
         assertion_consumer_logout_service_url: 'http://oldsp.example.org/saml/logout',
         block_encryption: 'aes256-cbc',
         cert: saml_test_sp_cert,
-        active: false
-      }
+        active: false,
+      },
     ]
   end
 

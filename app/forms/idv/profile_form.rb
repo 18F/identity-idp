@@ -101,7 +101,7 @@ module Idv
     def result
       {
         success: success,
-        errors: errors.messages
+        errors: errors.messages,
       }
     end
   end

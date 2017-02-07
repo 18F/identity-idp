@@ -21,7 +21,7 @@ describe Verify::ReviewController do
       state: 'KS',
       zipcode: '66044',
       phone: user.phone,
-      ccn: '12345678'
+      ccn: '12345678',
     }
   end
   let(:idv_session) do

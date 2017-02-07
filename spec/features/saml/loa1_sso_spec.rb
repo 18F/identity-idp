@@ -26,7 +26,7 @@ feature 'LOA1 Single Sign On' do
       session = proxy.env['rack.session']
       session['warden.user.user.session'] = {
         'need_two_factor_authentication' => true,
-        first_time_recovery_code_view: true
+        first_time_recovery_code_view: true,
       }
       session[:saml_request_url] = @saml_authn_request
       session[:sp] = { loa3: false, name: 'Your friendly Government Agency' }

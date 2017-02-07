@@ -11,7 +11,7 @@ describe Idv::PhoneForm do
       subject.submit(phone: '703-555-1212')
 
       expected_params = {
-        phone: '+1 (703) 555-1212'
+        phone: '+1 (703) 555-1212',
       }
 
       expect(subject.idv_params).to eq expected_params
@@ -22,7 +22,7 @@ describe Idv::PhoneForm do
 
       expected_params = {
         phone: user.phone,
-        phone_confirmed_at: user.phone_confirmed_at
+        phone_confirmed_at: user.phone_confirmed_at,
       }
 
       expect(subject.idv_params).to eq expected_params
