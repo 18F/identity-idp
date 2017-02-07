@@ -88,7 +88,7 @@ class ApplicationController < ActionController::Base
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
-    return if decorated_user.may_bypass_2fa?(session) || user_fully_authenticated?
+    return if user_fully_authenticated?
 
     return prompt_to_set_up_2fa unless current_user.two_factor_enabled?
 

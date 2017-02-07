@@ -1,7 +1,6 @@
 require File.join(Rails.root, 'lib', 'config_validator')
 
 Figaro.require_keys(
-  'allow_third_party_auth',
   'attribute_cost',
   'attribute_encryption_key',
   'domain_name',

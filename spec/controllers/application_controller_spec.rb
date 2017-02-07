@@ -46,7 +46,7 @@ describe ApplicationController do
       end
     end
 
-    context 'when the user is not signed in' do
+    context 'not signed in' do
       it 'redirects to sign in page' do
         get :index
 
@@ -54,51 +54,10 @@ describe ApplicationController do
       end
     end
 
-    context 'when the user may bypass 2FA' do
-      it 'returns nil' do
-        sign_in_as_user
-
-        user_decorator = instance_double(UserDecorator)
-
-        allow(UserDecorator).to receive(:new).with(subject.current_user).
-          and_return(user_decorator)
-        allow(user_decorator).to receive(:may_bypass_2fa?).
-          and_return(true)
-
-        get :index
-
-        expect(response.body).to eq 'Hello'
-      end
-    end
-
-    context 'when the user may not bypass 2FA and is already two-factor authenticated' do
-      it 'returns nil' do
-        sign_in_as_user
-
-        user_decorator = instance_double(UserDecorator)
-
-        allow(UserDecorator).to receive(:new).with(subject.current_user).
-          and_return(user_decorator)
-        allow(user_decorator).to receive(:may_bypass_2fa?).
-          and_return(false)
-
-        get :index
-
-        expect(response.body).to eq 'Hello'
-      end
-    end
-
-    context 'when the user may not bypass 2FA and is not 2FA-enabled' do
+    context 'is not 2FA-enabled' do
       it 'redirects to phone_setup_url with a flash message' do
         user = create(:user)
         sign_in user
-
-        user_decorator = instance_double(UserDecorator)
-
-        allow(UserDecorator).to receive(:new).with(subject.current_user).
-          and_return(user_decorator)
-        allow(user_decorator).to receive(:may_bypass_2fa?).
-          and_return(false)
 
         get :index
 
@@ -106,16 +65,9 @@ describe ApplicationController do
       end
     end
 
-    context 'when the user may not bypass 2FA and is 2FA-enabled' do
+    context 'is 2FA-enabled' do
       it 'prompts user to enter their OTP' do
         sign_in_before_2fa
-
-        user_decorator = instance_double(UserDecorator)
-
-        allow(UserDecorator).to receive(:new).with(subject.current_user).
-          and_return(user_decorator)
-        allow(user_decorator).to receive(:may_bypass_2fa?).
-          and_return(false)
 
         get :index
 
