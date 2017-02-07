@@ -91,12 +91,13 @@ RSpec.describe OpenidConnect::AuthorizationController do
   end
 
   describe '#create' do
-    subject(:action) { post :create, params }
+    subject(:action) { post :create }
 
     context 'user is signed in' do
       before do
         user = create(:user, :signed_up)
         stub_sign_in user
+        controller.user_session[:openid_auth_request] = params
       end
 
       it 'tracks the allow event' do
@@ -136,7 +137,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   end
 
   describe '#destroy' do
-    subject(:action) { delete :destroy, params }
+    subject(:action) { delete :destroy }
 
     before { stub_analytics }
 
@@ -144,6 +145,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       before do
         user = create(:user, :signed_up)
         stub_sign_in user
+        controller.user_session[:openid_auth_request] = params
       end
 
       it 'tracks the decline event' do
