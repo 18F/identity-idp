@@ -15,7 +15,7 @@ class IdTokenBuilder
       sub: identity.uuid,
       acr: acr,
       nonce: identity.nonce,
-      jti: '', # a unique identifier for the token which can be used to prevent reuse of the token
+      jti: SecureRandom.urlsafe_base64,
     }.merge(id_token_timestamp_values)
 
     JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
