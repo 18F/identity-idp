@@ -48,9 +48,7 @@ RSpec.describe IdTokenBuilder do
     end
 
     it 'sets the jti to something meaningful' do
-      pending 'actually setting the jti'
-
-      expect(decoded_payload[:jti]).to_not eq('')
+      expect(decoded_payload[:jti]).to be_present
     end
 
     context 'without a custom_expiration' do
