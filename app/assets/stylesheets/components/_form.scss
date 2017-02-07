@@ -8,6 +8,10 @@ $radio-checkbox-space: 1.5rem;
   }
 }
 
+input[type='submit'] {
+  white-space: normal;
+}
+
 label {
   display: inline-block;
   margin-bottom: $space-tiny;

@@ -130,6 +130,7 @@ Rails.application.routes.draw do
   put '/verify/review' => 'verify/review#create'
   get '/verify/session' => 'verify/sessions#new'
   put '/verify/session' => 'verify/sessions#create'
+  delete '/verify/session' => 'verify/sessions#destroy'
   get '/verify/session/dupe' => 'verify/sessions#dupe'
 
   root to: 'users/sessions#new'

@@ -1,0 +1,27 @@
+---
+en:
+  loa:
+    cancel:
+      modal_header: Are you sure you want to cancel?
+      warning_header: If you cancel now
+  loa1:
+    buttons:
+      continue: Continue account creation
+      cancel: Cancel and delete your information
+    cancel:
+      success: The record of your information has been cleared
+      warning_points:
+        - You won’t have a login.gov account
+        - We won't keep a record of your email address, password, and phone number
+        - You won't be able to access your benefits information with the Railroad Retirement Board
+  loa3:
+    buttons:
+      continue: Continue identity verification
+      cancel: Cancel and return to your profile
+    cancel:
+      warning_points:
+        - We won’t be able to verify your identity
+        - We won't keep a record of your name, address, birth date, or Social Security number
+        - You’ll still have a login.gov account for your email address
+        - You can manage or delete that account on your profile page
+        - You won't be able to access your benefits information with the Railroad Retirement Board

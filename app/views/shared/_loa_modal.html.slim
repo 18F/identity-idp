@@ -1,0 +1,34 @@
+- loa_type = loa3 ? 'loa3' : 'loa1'
+
+#sp-loa-cancel.hide
+  .modal-cntnr
+  .px2.py4.modal
+    .mx-auto.p5.cntnr-xskinny.border-box.bg-white.rounded.relative.rounded-lg.modal-inner
+      .center.sans-serif.mb4
+        .mb3
+          = image_tag 'alert/alert-warning.svg', height: 64, width: 64
+        h3.mt0.mb2.bold.sans-serif
+          = t('loa.cancel.modal_header')
+        .modal-seperator.modal-seperator-yellow.mx-auto
+
+      .mb5
+        p.mb1.bold
+          = t('loa.cancel.warning_header')
+        ul.px2.yellow-dots
+          - t("#{loa_type}.cancel.warning_points").each do |point|
+            li.mb2
+              = point
+          end
+
+      .clearfix
+        button.btn.btn-primary.rounded-lg.mb2.col-12(id='loa-continue' type='button')
+          = t("#{loa_type}.buttons.continue")
+
+        - if loa3
+          = button_to t('loa3.buttons.cancel'), verify_session_path, method: :delete,
+            class: 'btn btn-outline btn-outline-blue rounded-lg col-12'
+        - else
+          = button_to t('loa1.buttons.cancel'), destroy_user_path, method: :delete,
+                        class: 'btn btn-outline btn-outline-blue rounded-lg col-12'
+
+== javascript_include_tag 'misc/loa1-cancel-modal'

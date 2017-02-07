@@ -28,6 +28,11 @@ module Verify
       end
     end
 
+    def destroy
+      user_session[:idv].clear
+      handle_idv_redirect
+    end
+
     private
 
     def step_name
@@ -36,6 +41,12 @@ module Verify
 
     def confirm_step_needed
       redirect_to verify_finance_path if idv_session.profile_confirmation == true
+    end
+
+    def handle_idv_redirect
+      redirect_to profile_path and return if current_user.recovery_code
+
+      redirect_to manage_recovery_code_path
     end
 
     def step

@@ -45,15 +45,6 @@ class Modal {
     const emittable = new Event(eventType);
     (target || this.el).dispatchEvent(emittable);
   }
-
-  _bindEvents() {
-    [].slice.call(this.el.querySelectorAll('[data-dismiss]')).forEach((el) => {
-      el.addEventListener('click', (event) => {
-        event.preventDefault();
-        this.hide();
-      });
-    });
-  }
 }
 
 export default Modal;

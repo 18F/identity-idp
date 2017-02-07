@@ -1,10 +1,10 @@
 class UsersController < ApplicationController
-  def destroy
-    return unless current_user
+  before_action :confirm_two_factor_authenticated
 
-    if current_user.destroy!
-      flash[:now] = t('users.delete')
-      redirect_to root_path
-    end
+  def destroy
+    return unless current_user.destroy!
+
+    flash.now[:success] = t('loa1.cancel.success')
+    redirect_to root_path
   end
 end

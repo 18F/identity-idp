@@ -34,4 +34,13 @@ module ApplicationHelper
       @_decorated_session ||= SessionDecorator.new
     end
   end
+
+  def service_provider
+    session[:sp]
+  end
+
+  def loa3_context?
+    provider = service_provider
+    provider && provider[:loa3] && !session[:needs_two_factor_authentication]
+  end
 end

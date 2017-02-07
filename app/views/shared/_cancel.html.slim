@@ -1,9 +1,7 @@
-= debug session[:saml_request_url]
-= debug session[:sp]
 .mt2.pt1.border-top
-  - if session[:sp]
-    = button_to t('links.cancel'), destroy_user_path, method: :delete
-    /, action: :destroy }, method: :delete
+  - if service_provider
+    button(type='button' class='btn btn-link' id="loa-cancel")
+      = t('links.cancel')
+    = render 'shared/loa_modal', loa3: loa3_context?
   - else
     = link_to t('links.cancel'), link, class: 'h5'
-  

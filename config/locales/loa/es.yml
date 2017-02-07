@@ -1,0 +1,19 @@
+---
+es:
+  loa:
+    cancel:
+      modal_header: NOT TRANSLATED YET
+      warning_header: NOT TRANSLATED YET
+  loa1:
+    buttons:
+      continue: NOT TRANSLATED YET
+      cancel: NOT TRANSLATED YET
+    cancel:
+      success: NOT TRANSLATED YET
+      warning_points: NOT TRANSLATED YET
+  loa3:
+    buttons:
+      continue: NOT TRANSLATED YET
+      cancel: NOT TRANSLATED YET
+    cancel:
+      warning_points: NOT TRANSLATED YET
