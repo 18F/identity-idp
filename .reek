@@ -93,6 +93,7 @@ UtilityFunction:
     - Remote#extract_trailing_options
     - Remote#host
     - Remote#parse_positional_arguments
+    - SessionsNew
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

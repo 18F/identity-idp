@@ -11,7 +11,7 @@ module Verify
     helper_method :step
 
     def new
-      @using_mock_vendor = idv_vendor.pick == :mock
+      @view_model = SessionsNew.new
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
@@ -28,6 +28,10 @@ module Verify
 
     private
 
+    def confirm_step_needed
+      redirect_to verify_finance_path if idv_session.profile_confirmation == true
+    end
+
     def step
       @_step ||= Idv::ProfileStep.new(
         idv_form: idv_profile_form,
@@ -43,21 +47,18 @@ module Verify
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
-        show_warning if step.form_valid_but_vendor_validation_failed?
+        show_warning
+        @view_model = SessionsNew.new
         render :new
       end
     end
 
-    def confirm_step_needed
-      redirect_to verify_finance_path if idv_session.profile_confirmation == true
-    end
-
     def show_warning
+      return unless step.form_valid_but_vendor_validation_failed?
       flash.now[:warning] = t(
         'idv.modal.sessions.warning_html',
         accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.sessions.warning_accent')
+          :strong, t('idv.modal.sessions.warning_accent')
         )
       )
     end

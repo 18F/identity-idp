@@ -1,7 +1,6 @@
-- title t('idv.titles.session.basic')
+- title @view_model.title
+= render @view_model.mock_vendor_partial
 
-- if @using_mock_vendor
-  .mt1.mb2.h6.caps.bold.red = t('idv.messages.sessions.no_pii')
 h1.h3.my0 = t('idv.titles.session.basic')
 = simple_form_for(idv_profile_form, url: verify_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
