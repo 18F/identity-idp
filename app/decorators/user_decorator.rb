@@ -27,10 +27,6 @@ UserDecorator = Struct.new(:user) do
     )
   end
 
-  def may_bypass_2fa?(session = {})
-    omniauthed?(session)
-  end
-
   def masked_two_factor_phone_number
     masked_number(user.phone)
   end
@@ -70,9 +66,7 @@ UserDecorator = Struct.new(:user) do
 
     sp_session = session[:sp]
 
-    user.recovery_code.blank? &&
-      !omniauthed?(session) &&
-      (sp_session.blank? || sp_session[:loa3] == false)
+    user.recovery_code.blank? && (sp_session.blank? || sp_session[:loa3] == false)
   end
 
   def recent_events
@@ -98,12 +92,6 @@ UserDecorator = Struct.new(:user) do
   end
 
   private
-
-  def omniauthed?(session)
-    return false if session[:omniauthed] != true
-
-    session.delete(:omniauthed)
-  end
 
   def masked_number(number)
     "***-***-#{number[-4..-1]}"

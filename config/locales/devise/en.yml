@@ -33,9 +33,6 @@ en:
         subject: Your password has been changed
       reset_password_instructions:
         subject: Reset your password
-    omniauth_callbacks:
-      failure: 'Could not sign you in due to: %{reason}.'
-      success: Third party authentication successful!
     passwords:
       choose_new_password: Choose a new password.
       invalid_token: The reset password token is invalid. Try again.
