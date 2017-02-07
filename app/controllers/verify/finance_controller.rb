@@ -53,14 +53,9 @@ module Verify
     end
 
     def show_warning
-      flash.now[:warning] = t(
-        'idv.modal.finance.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.finance.warning_accent')
-        ),
-        attempt: t('idv.modal.attempts', count: remaining_step_attempts)
-      )
+      presenter = VerificationWarningPresenter.new(step_name, remaining_step_attempts)
+
+      flash.now[:warning] = presenter.warning_message
     end
 
     def render_form

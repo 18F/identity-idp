@@ -102,8 +102,6 @@ describe Verify::PhoneController do
         user = build(:user, phone: bad_phone, phone_confirmed_at: Time.zone.now)
         stub_subject(user)
 
-        allow(Idv::Attempter).to receive(:idv_max_attempts).and_return 3
-
         put :create, idv_phone_form: { phone: bad_phone }
 
         result = {
@@ -113,10 +111,11 @@ describe Verify::PhoneController do
           }
         }
 
-        expect(flash[:warning]).to match(
-          t('idv.modal.phone.warning_html',
-            accent: "<strong>#{t('idv.modal.phone.warning_accent')}</strong>",
-            attempt: t('idv.modal.attempts', count: 2))
+        expect(flash[:warning]).to eq(
+          t('idv.modal.warning_html',
+            heading: "<strong>#{t('idv.modal.phone.heading')}</strong>",
+            attempt: t('idv.modal.attempts', count: max_attempts - 1),
+            body: "<span>#{t('idv.modal.phone.body')}</span>")
         )
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION, result

@@ -55,13 +55,15 @@ module Verify
 
     def show_warning
       return unless step.form_valid_but_vendor_validation_failed?
+
+      helper = ActionController::Base.helpers
+
+      attempt = t('idv.modal.attempts', count: remaining_idv_attempts)
+      body = helper.content_tag(:span, t('idv.modal.sessions.body'))
+      heading = helper.content_tag(:strong, t('idv.modal.sessions.heading'))
+
       flash.now[:warning] = t(
-        'idv.modal.sessions.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.sessions.warning_accent')
-        ),
-        attempt: t('idv.modal.attempts', count: remaining_idv_attempts)
+        'idv.modal.warning_html', heading: heading, attempt: attempt, body: body
       )
     end
 

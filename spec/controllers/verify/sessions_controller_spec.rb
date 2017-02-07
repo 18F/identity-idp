@@ -143,19 +143,16 @@ describe Verify::SessionsController do
       end
 
       context 'un-resolvable attributes' do
-        before do
-          allow(Idv::Attempter).to receive(:idv_max_attempts).and_return 3
-        end
-
         let(:bad_attrs) { user_attrs.dup.merge(first_name: 'Bad') }
 
         it 're-renders form' do
           post :create, profile: bad_attrs
 
-          expect(flash[:warning]).to match(
-            t('idv.modal.sessions.warning_html',
-              accent: "<strong>#{t('idv.modal.sessions.warning_accent')}</strong>",
-              attempt: t('idv.modal.attempts', count: 2))
+          expect(flash[:warning]).to eq(
+            t('idv.modal.warning_html',
+              heading: "<strong>#{t('idv.modal.sessions.heading')}</strong>",
+              attempt: t('idv.modal.attempts', count: max_attempts - 1),
+              body: "<span>#{t('idv.modal.sessions.body')}</span>")
           )
           expect(response).to render_template(:new)
         end
