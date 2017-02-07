@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: b099540eabbc50f861c1e24e1f888075b51268bf
+  revision: 80baba4d5fa91694b81ac579f8e59f5e8bb5db19
   branch: master
   specs:
     equifax (1.0.0)

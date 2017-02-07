@@ -28,7 +28,8 @@ RUN npm install
 COPY Gemfile /upaya
 COPY Gemfile.lock /upaya
 
-RUN bundle install --without deployment deploy --jobs 20 --retry 5
+RUN gem install bundler
+RUN bundle install --jobs=20 --retry=5 --frozen --without deploy production
 
 COPY . /upaya
 

@@ -35,9 +35,9 @@ Dir.chdir APP_ROOT do
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
-    run 'docker-compose up -d'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
+    run 'docker-compose up'
     exit
   end
 
