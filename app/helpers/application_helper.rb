@@ -41,6 +41,6 @@ module ApplicationHelper
 
   def loa3_context?
     provider = service_provider
-    provider && provider[:loa3] && !session[:needs_two_factor_authentication]
+    provider && provider[:loa3] && current_user.recovery_code.present?
   end
 end

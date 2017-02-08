@@ -33,6 +33,33 @@ feature 'LOA3 Single Sign On' do
     end
   end
 
+  context 'canceling verification', :js do
+    it 'redirects user to the recovery code page if they cancel during initial sign up' do
+      sign_in_and_2fa_user
+
+      loa3_sp_session do |session|
+        session['warden.user.user.session'][:first_time_recovery_code_view] =  true
+      end
+
+      visit verify_path
+
+      click_on t('links.cancel')
+      click_on t('loa3.buttons.cancel')
+      expect(current_url).to match(/recovery/)
+    end
+
+    it 'returns user to profile page' do
+      sign_in_and_2fa_user
+      loa3_sp_session
+
+      visit verify_path
+
+      click_on t('links.cancel')
+      click_on t('loa3.buttons.cancel')
+      expect(current_url).to match(/profile/)
+    end
+  end
+
   context 'visiting sign_up_completed path before proofing' do
     it 'redirects to verify_path' do
       sign_in_and_2fa_user

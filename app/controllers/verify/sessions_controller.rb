@@ -2,7 +2,7 @@ module Verify
   class SessionsController < ApplicationController
     include IdvSession
 
-    before_action :confirm_two_factor_authenticated
+    before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
     before_action :confirm_step_needed
@@ -44,7 +44,9 @@ module Verify
     end
 
     def handle_idv_redirect
-      redirect_to profile_path and return if current_user.recovery_code
+      viewed_recovery_code = user_session[:first_time_recovery_code_view].present?
+
+      redirect_to profile_path and return unless viewed_recovery_code
 
       redirect_to manage_recovery_code_path
     end

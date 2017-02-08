@@ -35,6 +35,16 @@ module Features
       user
     end
 
+    def sign_up_with_sp(loa: 'loa1')
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      user = sign_up_and_set_password
+      fill_in 'Phone', with: '202-555-1212'
+      send("#{loa}_sp_session")
+      select_sms_delivery
+
+      user
+    end
+
     def sign_up_and_set_password
       user = sign_up
       fill_in 'password_form_password', with: VALID_PASSWORD
@@ -153,6 +163,21 @@ module Features
 
     def click_acknowledge_recovery_code
       click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
+    end
+
+    def loa1_sp_session
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session[:sp] = { loa3: false, name: 'Your friendly Government Agency' }
+      end
+    end
+
+    def loa3_sp_session(&block)
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        yield session if block_given?
+        session[:sp] = { loa3: true, name: 'Your friendly Government Agency' }
+      end
     end
   end
 end

@@ -258,8 +258,7 @@ describe Verify::SessionsController do
       end
 
       it 'redirects user to recovery code page' do
-        user.update(recovery_code: nil)
-        user.reload
+        controller.user_session[:first_time_recovery_code_view] = true
 
         delete :destroy
         expect(response).to redirect_to(manage_recovery_code_path)
