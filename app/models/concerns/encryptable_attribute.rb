@@ -4,8 +4,14 @@ module EncryptableAttribute
   attr_accessor :attribute_user_access_key
 
   class_methods do
+    cattr_accessor :encryptable_attributes do
+      []
+    end
+
     # rubocop:disable MethodLength
     def encrypted_attribute(name:, default:, setter: true)
+      self.encryptable_attributes << name
+
       class_eval <<-METHODS, __FILE__, __LINE__ + 1
         def #{name}
           get_encrypted_attribute(name: :"#{name}", default: #{default.inspect})

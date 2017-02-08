@@ -20,13 +20,11 @@ module KeyRotator
     end
 
     def encrypted_attributes
-      User.attribute_names.grep(/^encrypted_/).each_with_object({}) do |attribute, result|
-        next if attribute == 'encrypted_password'
-        plain_attribute_name = attribute.gsub(/^encrypted_/, '')
-        plain_attribute = user.public_send(plain_attribute_name)
+      User.encryptable_attributes.each_with_object({}) do |attribute, result|
+        plain_attribute = user.public_send(attribute)
         next unless plain_attribute
 
-        result[attribute] = EncryptedAttribute.new_from_decrypted(
+        result[:"encrypted_#{attribute}"] = EncryptedAttribute.new_from_decrypted(
           plain_attribute,
           uak
         ).encrypted
