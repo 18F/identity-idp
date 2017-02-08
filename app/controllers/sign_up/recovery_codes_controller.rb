@@ -33,6 +33,8 @@ module SignUp
     def next_step
       if session[:saml_request_url]
         sign_up_completed_path
+      elsif current_user.password_reset_profile.present?
+        reactivate_profile_path
       else
         profile_path
       end
