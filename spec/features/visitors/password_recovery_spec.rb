@@ -34,7 +34,6 @@ feature 'Password Recovery' do
   end
 
   def reactivate_profile(password, recovery_code)
-    click_link t('profile.index.reactivation.reactivate_button')
     fill_in 'Password', with: password
     fill_in 'Recovery code', with: recovery_code
     click_button t('forms.reactivate_profile.submit')
@@ -261,7 +260,7 @@ feature 'Password Recovery' do
       click_submit_default
       enter_correct_otp_code_for_user(user)
 
-      expect(page).to have_content t('profile.index.reactivation.instructions')
+      expect(current_path).to eq reactivate_profile_path
 
       reactivate_profile(new_password, recovery_code)
 
@@ -277,14 +276,14 @@ feature 'Password Recovery' do
       click_submit_default
       enter_correct_otp_code_for_user(user)
 
-      expect(page).to have_content t('profile.index.reactivation.instructions')
+      expect(current_path).to eq reactivate_profile_path
 
       visit manage_recovery_code_path
 
       new_recovery_code = scrape_recovery_code
       click_acknowledge_recovery_code
 
-      expect(page).to have_content t('profile.index.reactivation.instructions')
+      expect(current_path).to eq reactivate_profile_path
 
       reactivate_profile(new_password, new_recovery_code)
 
@@ -308,8 +307,7 @@ feature 'Password Recovery' do
       new_recovery_code = scrape_recovery_code
       click_acknowledge_recovery_code
 
-      expect(current_path).to eq profile_path
-      expect(page).to have_content t('profile.index.reactivation.instructions')
+      expect(current_path).to eq reactivate_profile_path
 
       reactivate_profile(new_password, new_recovery_code)
 

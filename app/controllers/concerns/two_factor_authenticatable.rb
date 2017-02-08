@@ -139,13 +139,29 @@ module TwoFactorAuthenticatable
   def after_otp_verification_confirmation_path
     if idv_context?
       verify_confirmations_path
-    elsif @updating_existing_number
-      profile_path
-    elsif decorated_user.should_acknowledge_recovery_code?(session)
-      user_session[:first_time_recovery_code_view] = 'true'
-      sign_up_recovery_code_path
+    elsif after_otp_action_required?
+      after_otp_action_path
     else
       after_sign_in_path_for(current_user)
+    end
+  end
+
+  def after_otp_action_required?
+    current_user.password_reset_profile.present? ||
+      @updating_existing_number ||
+      decorated_user.should_acknowledge_recovery_code?(session)
+  end
+
+  def after_otp_action_path
+    if decorated_user.should_acknowledge_recovery_code?(session)
+      user_session[:first_time_recovery_code_view] = 'true'
+      sign_up_recovery_code_path
+    elsif @updating_existing_number
+      profile_path
+    elsif current_user.password_reset_profile.present?
+      reactivate_profile_path
+    else
+      profile_path
     end
   end
 
