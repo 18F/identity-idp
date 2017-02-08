@@ -23,7 +23,28 @@ feature 'Verify phone' do
     expect(current_path).to eq verify_fail_path
   end
 
-  scenario 'enter invalid phone number', :js do
+  context 'Idv phone and user phone are different' do
+    scenario 'prompts to confirm phone' do
+      user = create(
+        :user, :signed_up,
+        phone: '+1 (416) 555-0190',
+        password: Features::SessionHelper::VALID_PASSWORD
+      )
+      sign_in_and_2fa_user(user)
+      visit verify_session_path
+
+      complete_idv_profile_with_phone('555-555-0000')
+
+      expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
+
+      enter_correct_otp_code_for_user(user)
+      click_acknowledge_recovery_code
+
+      expect(current_path).to eq profile_path
+    end
+  end
+
+  scenario 'phone field only allows numbers', js: true do
     sign_in_and_2fa_user
     visit verify_session_path
     fill_out_idv_form_ok
@@ -32,13 +53,22 @@ feature 'Verify phone' do
     click_idv_continue
 
     visit verify_phone_path
-    submit_form_with_invalid_phone
+    fill_in 'Phone', with: ''
+    find('#idv_phone_form_phone').native.send_keys('abcd1234')
 
-    expect(page).to have_content t('errors.messages.improbable_phone')
+    expect(find('#idv_phone_form_phone').value).to eq '1 (234) '
   end
 
-  def submit_form_with_invalid_phone
-    fill_in 'Phone', with: 'five one zero five five five four three two one'
-    click_idv_continue
+  def complete_idv_profile_with_phone(phone)
+    fill_out_idv_form_ok
+    click_button t('forms.buttons.continue')
+    fill_out_financial_form_ok
+    click_button t('forms.buttons.continue')
+    fill_out_phone_form_ok(phone)
+    click_button t('forms.buttons.continue')
+    fill_in :user_password, with: user_password
+    click_submit_default
+    # choose default SMS delivery method for confirming this new number
+    click_submit_default
   end
 end

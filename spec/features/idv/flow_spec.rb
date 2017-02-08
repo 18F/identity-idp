@@ -3,8 +3,6 @@ require 'rails_helper'
 feature 'IdV session' do
   include IdvHelper
 
-  let(:user_password) { Features::SessionHelper::VALID_PASSWORD }
-
   context 'landing page' do
     before do
       sign_in_and_2fa_user
@@ -275,27 +273,6 @@ feature 'IdV session' do
       expect(find('#idv_finance_form_ccn').value).to eq '1234'
     end
 
-    context 'Idv phone and user phone are different' do
-      it 'prompts to confirm phone' do
-        user = create(
-          :user, :signed_up,
-          phone: '+1 (416) 555-0190',
-          password: Features::SessionHelper::VALID_PASSWORD
-        )
-        sign_in_and_2fa_user(user)
-        visit verify_session_path
-
-        complete_idv_profile_with_phone('555-555-0000')
-
-        expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
-
-        enter_correct_otp_code_for_user(user)
-        click_acknowledge_recovery_code
-
-        expect(current_path).to eq profile_path
-      end
-    end
-
     context 'recovery codes information and actions' do
       before do
         recovery_code = 'a1b2c3d4e5f6g7h8'
@@ -318,18 +295,5 @@ feature 'IdV session' do
   def complete_idv_profile_fail
     fill_out_idv_form_fail
     click_button 'Continue'
-  end
-
-  def complete_idv_profile_with_phone(phone)
-    fill_out_idv_form_ok
-    click_button t('forms.buttons.continue')
-    fill_out_financial_form_ok
-    click_button t('forms.buttons.continue')
-    fill_out_phone_form_ok(phone)
-    click_button t('forms.buttons.continue')
-    fill_in :user_password, with: user_password
-    click_submit_default
-    # choose default SMS delivery method for confirming this new number
-    click_submit_default
   end
 end
