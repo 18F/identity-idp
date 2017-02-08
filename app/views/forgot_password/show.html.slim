@@ -9,9 +9,7 @@
       <strong>#{@email}</strong>
       #{t('notices.forgot_password.first_paragraph_end')}
   - if @resend_confirmation
-    .alert.alert-success.alert-no-icon role="alert"
-      = image_tag(asset_url('alert/ico-thumb.svg'), height: '16', alt: '',\
-        class: 'mr2 align-bottom')
+    .alert.alert-thumb role="alert"
       = t('notices.forgot_password.resend_email_success')
   = simple_form_for(@password_reset_email_form, url: user_password_path,
     html: { autocomplete: 'off', method: :post, role: 'form', class: 'mb2' }) do |f|
