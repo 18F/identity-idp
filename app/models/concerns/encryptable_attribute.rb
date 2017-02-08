@@ -8,7 +8,7 @@ module EncryptableAttribute
     def encrypted_attribute(name:, default:, setter: true)
       class_eval <<-METHODS, __FILE__, __LINE__ + 1
         def #{name}
-          get_encrypted_attribute(name: :"#{name}", default: #{default} )
+          get_encrypted_attribute(name: :"#{name}", default: #{default.inspect})
         end
 
         def stale_encrypted_#{name}?
@@ -21,7 +21,7 @@ module EncryptableAttribute
 
       class_eval <<-METHODS, __FILE__, __LINE__ + 1
         def #{name}=(attribute)
-          set_encrypted_attribute(name: :"#{name}", value: attribute, default: #{default} )
+          set_encrypted_attribute(name: :"#{name}", value: attribute, default: #{default.inspect})
         end
       METHODS
     end
