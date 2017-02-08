@@ -20,20 +20,12 @@ module KeyRotator
     end
 
     def encrypted_attributes
-      encrypted_email_attributes.merge!(other_encrypted_attributes)
-    end
-
-    def encrypted_email_attributes
-      email = EncryptedAttribute.new_from_decrypted(user.email, uak)
-      { encrypted_email: email.encrypted, attribute_cost: new_cost }
-    end
-
-    def other_encrypted_attributes
-      User::ENCRYPTED_ATTRIBUTES.each_with_object({}) do |attribute, result|
-        plain_attribute = user.public_send(attribute)
+      User.attribute_names.grep(/^encrypted_/).each_with_object({}) do |attribute, result|
+        plain_attribute_name = attribute.gsub(/^encrypted_/, '')
+        plain_attribute = user.public_send(plain_attribute_name)
         next unless plain_attribute
 
-        result[:"encrypted_#{attribute}"] = EncryptedAttribute.new_from_decrypted(
+        result[attribute] = EncryptedAttribute.new_from_decrypted(
           plain_attribute,
           uak
         ).encrypted
