@@ -40,7 +40,7 @@ module ApplicationHelper
   end
 
   def loa1_signup_context?
-    sp_session && !current_user.recovery_code.present?
+    sp_session && current_user && !current_user.recovery_code.present?
   end
 
   def loa3_context?

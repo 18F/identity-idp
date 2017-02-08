@@ -24,15 +24,6 @@
   text-align: center;
 }
 
-.btn-outline {
-  &-blue {
-    border-color: $blue;
-    box-sizing: border-box;
-    color: $blue;
-    text-align: center;
-  }
-}
-
 .btn-transparent {
   @extend %btn-basic;
   cursor: pointer;
