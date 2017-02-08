@@ -1,7 +1,5 @@
 module KeyRotator
   class AttributeEncryption
-    ATTRIBUTES = [:phone, :otp_secret_key].freeze
-
     def initialize(user)
       @user = user
       self.new_cost = Figaro.env.attribute_cost
@@ -31,7 +29,7 @@ module KeyRotator
     end
 
     def other_encrypted_attributes
-      ATTRIBUTES.each_with_object({}) do |attribute, result|
+      User::ENCRYPTED_ATTRIBUTES.each_with_object({}) do |attribute, result|
         plain_attribute = user.public_send(attribute)
         next unless plain_attribute
 

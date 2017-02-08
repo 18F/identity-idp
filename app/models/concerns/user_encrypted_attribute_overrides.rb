@@ -3,6 +3,8 @@ module UserEncryptedAttributeOverrides
 
   attr_accessor :attribute_user_access_key
 
+  ENCRYPTED_ATTRIBUTES = [:phone, :otp_secret_key].freeze
+
   # override some Devise methods to support our use of encrypted_email
 
   class_methods do
@@ -62,30 +64,25 @@ module UserEncryptedAttributeOverrides
     encrypted_attributes[:email].stale?
   end
 
-  def phone
-    get_encrypted_attribute(name: :phone, default: nil)
+  ENCRYPTED_ATTRIBUTES.each do |attribute|
+    class_eval <<-METHODS, __FILE__, __LINE__ + 1
+      def #{attribute}
+        get_encrypted_attribute(name: :"#{attribute}", default: nil)
+      end
+    METHODS
   end
 
-  def phone=(phone)
-    set_encrypted_attribute(name: :phone, value: phone, default: nil)
-  end
+  ENCRYPTED_ATTRIBUTES.each do |attribute|
+    class_eval <<-METHODS, __FILE__, __LINE__ + 1
+      def #{attribute}=(attribute)
+        set_encrypted_attribute(name: :"#{attribute}", value: attribute, default: nil)
+      end
 
-  def stale_encrypted_phone?
-    return false unless phone.present?
-    encrypted_attributes[:phone].stale?
-  end
-
-  def otp_secret_key
-    get_encrypted_attribute(name: :otp_secret_key, default: nil)
-  end
-
-  def otp_secret_key=(otp_secret_key)
-    set_encrypted_attribute(name: :otp_secret_key, value: otp_secret_key, default: nil)
-  end
-
-  def stale_encrypted_otp_secret_key?
-    return false unless otp_secret_key.present?
-    encrypted_attributes[:otp_secret_key].stale?
+      def stale_encrypted_#{attribute}?
+        return false unless self.public_send(:"#{attribute}")
+        encrypted_attributes[:"#{attribute}"].stale?
+      end
+    METHODS
   end
 
   private
