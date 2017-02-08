@@ -31,7 +31,7 @@ describe Verify::SessionsController do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
         :before,
-        :confirm_two_factor_authenticated,
+        [:confirm_two_factor_authenticated, except: :destroy],
         :confirm_idv_attempts_allowed,
         :confirm_idv_needed,
         :confirm_step_needed

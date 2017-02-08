@@ -8,9 +8,11 @@ $radio-checkbox-space: 1.5rem;
   }
 }
 
-input[type='submit'] {
+// sass-lint:disable-all
+.button_to input[type='submit'] {
   white-space: normal;
 }
+// sass-lint:enable-all
 
 label {
   display: inline-block;

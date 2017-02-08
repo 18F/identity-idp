@@ -172,7 +172,7 @@ module Features
       end
     end
 
-    def loa3_sp_session(&block)
+    def loa3_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         yield session if block_given?

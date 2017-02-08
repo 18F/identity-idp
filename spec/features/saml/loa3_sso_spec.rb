@@ -38,7 +38,7 @@ feature 'LOA3 Single Sign On' do
       sign_in_and_2fa_user
 
       loa3_sp_session do |session|
-        session['warden.user.user.session'][:first_time_recovery_code_view] =  true
+        session['warden.user.user.session'][:first_time_recovery_code_view] = true
       end
 
       visit verify_path
