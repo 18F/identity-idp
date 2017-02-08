@@ -21,6 +21,7 @@ module KeyRotator
 
     def encrypted_attributes
       User.attribute_names.grep(/^encrypted_/).each_with_object({}) do |attribute, result|
+        next if attribute == 'encrypted_password'
         plain_attribute_name = attribute.gsub(/^encrypted_/, '')
         plain_attribute = user.public_send(plain_attribute_name)
         next unless plain_attribute
