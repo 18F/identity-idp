@@ -44,18 +44,14 @@ module Verify
       render :new
     end
 
-    def step_params
-      params.require(:idv_phone_form).permit(:phone)
+    def show_warning
+      presenter = VerificationWarningPresenter.new(step_name, remaining_step_attempts)
+
+      flash.now[:warning] = presenter.warning_message
     end
 
-    def show_warning
-      flash.now[:warning] = t(
-        'idv.modal.phone.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.phone.warning_accent')
-        )
-      )
+    def step_params
+      params.require(:idv_phone_form).permit(:phone)
     end
 
     def confirm_step_needed

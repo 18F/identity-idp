@@ -144,7 +144,7 @@ feature 'IdV session' do
       expect(current_path).to eq verify_session_path
       expect(page).to have_css(
         '.modal-warning',
-        text: t('idv.modal.sessions.warning_accent')
+        text: t('idv.modal.sessions.heading')
       )
       click_link t('idv.modal.button.warning')
 
@@ -164,7 +164,7 @@ feature 'IdV session' do
       expect(current_path).to eq verify_finance_path
       expect(page).to have_css(
         '.modal-warning',
-        text: t('idv.modal.finance.warning_accent')
+        text: t('idv.modal.financials.heading')
       )
       click_link t('idv.modal.button.warning')
 
@@ -208,7 +208,7 @@ feature 'IdV session' do
       expect(current_path).to eq verify_phone_path
       expect(page).to have_css(
         '.modal-warning',
-        text: t('idv.modal.phone.warning_accent')
+        text: t('idv.modal.phone.heading')
       )
       click_link t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
@@ -237,7 +237,7 @@ feature 'IdV session' do
 
       expect(page).to have_css(
         '.alert-warning',
-        text: t('idv.modal.sessions.warning_accent')
+        text: t('idv.modal.sessions.heading')
       )
     end
 

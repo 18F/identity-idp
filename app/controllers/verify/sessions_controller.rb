@@ -28,6 +28,10 @@ module Verify
 
     private
 
+    def step_name
+      :sessions
+    end
+
     def confirm_step_needed
       redirect_to verify_finance_path if idv_session.profile_confirmation == true
     end
@@ -55,12 +59,12 @@ module Verify
 
     def show_warning
       return unless step.form_valid_but_vendor_validation_failed?
-      flash.now[:warning] = t(
-        'idv.modal.sessions.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong, t('idv.modal.sessions.warning_accent')
-        )
-      )
+      presenter = VerificationWarningPresenter.new(step_name, remaining_idv_attempts)
+      flash.now[:warning] = presenter.warning_message
+    end
+
+    def remaining_idv_attempts
+      Idv::Attempter.idv_max_attempts - current_user.idv_attempts
     end
 
     def idv_profile_form
