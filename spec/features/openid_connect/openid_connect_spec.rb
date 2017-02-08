@@ -18,7 +18,7 @@ feature 'OpenID Connect' do
         nonce: nonce
       )
 
-      _user = sign_in_live_with_2fa
+      user = sign_in_live_with_2fa
       click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
@@ -63,6 +63,7 @@ feature 'OpenID Connect' do
       expect(decoded_id_token[:aud]).to eq(client_id)
       expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:iss]).to eq(root_url)
+      expect(decoded_id_token[:email]).to eq(user.email)
 
       access_token = token_response[:access_token]
       expect(access_token).to be_present
@@ -73,7 +74,7 @@ feature 'OpenID Connect' do
 
       userinfo_response = JSON.parse(page.body).with_indifferent_access
       expect(userinfo_response[:sub]).to eq(sub)
-      expect(userinfo_response[:email]).to be_present
+      expect(userinfo_response[:email]).to eq(user.email)
     end
   end
 

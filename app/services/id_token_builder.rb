@@ -1,6 +1,8 @@
 class IdTokenBuilder
   include Rails.application.routes.url_helpers
 
+  JWT_SIGNING_ALGORITHM = 'RS256'.freeze
+
   attr_reader :identity
 
   def initialize(identity, custom_expiration: nil)
@@ -9,21 +11,27 @@ class IdTokenBuilder
   end
 
   def id_token
-    payload = {
-      iss: root_url,
-      aud: identity.service_provider,
-      sub: identity.uuid,
-      acr: acr,
-      nonce: identity.nonce,
-      jti: SecureRandom.urlsafe_base64,
-    }.merge(id_token_timestamp_values)
-
-    JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
+    JWT.encode(jwt_payload, RequestKeyManager.private_key, JWT_SIGNING_ALGORITHM)
   end
 
   private
 
-  def id_token_timestamp_values
+  def jwt_payload
+    OpenidConnectUserInfoPresenter.new(identity).user_info.
+      merge(id_token_claims).
+      merge(timestamp_claims)
+  end
+
+  def id_token_claims
+    {
+      acr: acr,
+      nonce: identity.nonce,
+      aud: identity.service_provider,
+      jti: SecureRandom.urlsafe_base64,
+    }
+  end
+
+  def timestamp_claims
     now = Time.zone.now.to_i
     {
       exp: @custom_expiration || expires,
