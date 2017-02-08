@@ -35,12 +35,11 @@ module ApplicationHelper
     end
   end
 
-  def service_provider
-    session[:sp]
+  def service_provider_sign_up
+    session[:sp] && !current_user.recovery_code.present?
   end
 
   def loa3_context?
-    provider = service_provider
-    provider && provider[:loa3] && current_user.recovery_code.present?
+    service_provider_sign_up && session[:sp][:loa3]
   end
 end

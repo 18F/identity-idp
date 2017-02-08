@@ -26,9 +26,9 @@
 
         - if loa3
           = button_to t('loa3.buttons.cancel'), verify_session_path, method: :delete,
-            class: 'btn btn-outline btn-outline-blue rounded-lg col-12'
+            class: 'btn btn-outline btn-outline-blue rounded-lg col-12 input-submit'
         - else
           = button_to t('loa1.buttons.cancel'), destroy_user_path, method: :delete,
-                        class: 'btn btn-outline btn-outline-blue rounded-lg col-12'
+                        class: 'btn btn-outline btn-outline-blue rounded-lg col-12 input-submit'
 
 == javascript_include_tag 'misc/loa1-cancel-modal'
