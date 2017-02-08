@@ -16,7 +16,7 @@ p = t('idv.messages.phone.same_as_2fa')
 
 = simple_form_for(idv_phone_form, url: verify_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
-  = f.input :phone, required: true
+  = f.input :phone, required: true, input_html: { class: 'phone' }
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
 = render 'shared/cancel', link: verify_cancel_path
 
