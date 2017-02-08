@@ -1,4 +1,8 @@
 module IdvHelper
+  def max_attempts_less_one
+    Idv::Attempter.idv_max_attempts - 1
+  end
+
   def fill_out_idv_form_ok
     fill_in 'profile_first_name', with: 'Some'
     fill_in 'profile_last_name', with: 'One'
