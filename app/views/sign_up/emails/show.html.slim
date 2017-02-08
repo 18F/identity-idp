@@ -9,9 +9,7 @@
       <strong>#{email}</strong>
       #{t('notices.signed_up_but_unconfirmed.first_paragraph_end')}
   - if @resend_confirmation
-    .alert.alert-success.alert-no-icon role="alert"
-      = image_tag(asset_url('alert/ico-thumb.svg'), height: '16', alt: '',\
-        class: 'mr2 align-bottom')
+    .alert.alert-thumb role="alert"
       = t('notices.resend_confirmation_email.success')
   = simple_form_for(@register_user_email_form, url: sign_up_register_path,
     html: { class: 'mb2' }) do |f|
