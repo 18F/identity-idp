@@ -18,6 +18,7 @@ test:
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
     sp_initiated_login_url: 'https://example.com/auth/saml/login'
+    friendly_name: 'Test SP'
     cert: 'saml_test_sp'
     logo: 'generic.svg'
     attribute_bundle:

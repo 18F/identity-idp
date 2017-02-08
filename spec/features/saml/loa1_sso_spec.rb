@@ -18,6 +18,19 @@ feature 'LOA1 Single Sign On' do
 
       expect(current_url).to eq @saml_authn_request
     end
+
+    it 'takes user to agency handoff page when sign in flow complete' do
+      user = create(:user, :signed_up)
+      saml_authn_request = auth_request.create(saml_settings)
+
+      visit saml_authn_request
+      sign_in_live_with_2fa(user)
+
+      expect(current_url).to eq saml_authn_request
+
+      visit root_path
+      expect(current_path).to eq profile_path
+    end
   end
 
   def sign_in_and_require_viewing_recovery_code(user)
