@@ -44,10 +44,9 @@ module Verify
     end
 
     def handle_idv_redirect
-      viewed_recovery_code = user_session[:first_time_recovery_code_view].present?
+      has_viewed_recovery_code = user_session[:first_time_recovery_code_view].present?
 
-      redirect_to profile_path and return unless viewed_recovery_code
-
+      redirect_to profile_path and return if has_viewed_recovery_code
       redirect_to manage_recovery_code_path
     end
 

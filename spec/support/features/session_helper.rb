@@ -175,8 +175,8 @@ module Features
     def loa3_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        yield session if block_given?
         session[:sp] = { loa3: true, name: 'Your friendly Government Agency' }
+        yield session if block_given?
       end
     end
   end

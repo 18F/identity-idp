@@ -253,14 +253,15 @@ describe Verify::SessionsController do
       end
 
       it 'redirects user to profile' do
+        session = { idv: {}, first_time_recovery_code_view: true }
+        allow(controller).to receive(:user_session).and_return(session)
         delete :destroy
         expect(response).to redirect_to(profile_path)
       end
 
       it 'redirects user to recovery code page' do
-        controller.user_session[:first_time_recovery_code_view] = true
-
         delete :destroy
+        subject.user_session[:first_time_recovery_code_view] = false
         expect(response).to redirect_to(manage_recovery_code_path)
       end
     end
