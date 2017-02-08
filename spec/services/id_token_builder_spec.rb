@@ -7,7 +7,8 @@ RSpec.describe IdTokenBuilder do
     build(:identity,
           nonce: SecureRandom.hex,
           uuid: SecureRandom.uuid,
-          ial: 3)
+          ial: 3,
+          user: build(:user))
   end
 
   let(:custom_expiration) { 5.minutes.from_now.to_i }
@@ -68,6 +69,26 @@ RSpec.describe IdTokenBuilder do
 
     it 'sets the not-before to now' do
       expect(decoded_payload[:nbf]).to eq(now.to_i)
+    end
+
+    context 'including attributes allowed by the scope from the request' do
+      before { identity.scope = scope }
+
+      context 'without the email scope' do
+        let(:scope) { 'openid' }
+
+        it 'does not include the email' do
+          expect(decoded_payload).to_not have_key(:email)
+        end
+      end
+
+      context 'with the email scope' do
+        let(:scope) { 'openid email' }
+
+        it 'sets the email' do
+          expect(decoded_payload[:email]).to eq(identity.user.email)
+        end
+      end
     end
   end
 end
