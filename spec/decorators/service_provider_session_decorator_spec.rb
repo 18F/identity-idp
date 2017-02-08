@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe ServiceProviderSessionDecorator do
+  subject { ServiceProviderSessionDecorator.new(sp_name: sp_name, sp_logo: nil) }
+  let(:sp_name) { 'Best SP ever!' }
+
   it 'has the same public API as SessionDecorator' do
     SessionDecorator.public_instance_methods.each do |method|
       expect(
@@ -11,7 +14,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#return_to_service_provider_partial' do
     it 'returns the correct partial' do
-      expect(decorator.return_to_service_provider_partial).to eq(
+      expect(subject.return_to_service_provider_partial).to eq(
         'devise/sessions/return_to_service_provider'
       )
     end
@@ -19,19 +22,19 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#nav_partial' do
     it 'returns the correct partial' do
-      expect(decorator.nav_partial).to eq 'shared/nav_branded'
+      expect(subject.nav_partial).to eq 'shared/nav_branded'
     end
   end
 
   describe '#new_session_heading' do
     it 'returns the correct string' do
-      expect(decorator.new_session_heading).to eq I18n.t('headings.sign_in_with_sp', sp: sp_name)
+      expect(subject.new_session_heading).to eq I18n.t('headings.sign_in_with_sp', sp: sp_name)
     end
   end
 
   describe '#registration_heading' do
     it 'returns the correct string' do
-      expect(decorator.registration_heading).to eq(
+      expect(subject.registration_heading).to eq(
         I18n.t('headings.create_account_with_sp', sp: sp_name)
       )
     end
@@ -39,7 +42,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#registration_bullet_1' do
     it 'returns the correct string' do
-      expect(decorator.registration_bullet_1).to eq(
+      expect(subject.registration_bullet_1).to eq(
         I18n.t('devise.registrations.start.bullet_1_with_sp', sp: sp_name)
       )
     end
@@ -47,7 +50,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#idv_hardfail4_partial' do
     it 'returns the correct partial' do
-      expect(decorator.idv_hardfail4_partial).to eq 'verify/hardfail4'
+      expect(subject.idv_hardfail4_partial).to eq 'verify/hardfail4'
     end
   end
 
@@ -67,13 +70,5 @@ RSpec.describe ServiceProviderSessionDecorator do
         expect(decorator.logo_partial).to eq 'shared/null'
       end
     end
-  end
-
-  def decorator
-    ServiceProviderSessionDecorator.new(sp_name: sp_name, sp_logo: nil)
-  end
-
-  def sp_name
-    'Best SP ever!'
   end
 end
