@@ -75,17 +75,6 @@
 
 }
 
-.modal-seperator {
-  border-radius: 2px;
-  border-top-style: solid;
-  border-top-width: 4px;
-  width: 120px;
-
-  &-yellow {
-    border-top-color: $yellow;
-  }
-}
-
 @media #{$breakpoint-sm} {
   .modal-content {
     vertical-align: middle;
@@ -107,8 +96,8 @@
     background-image: url(image-path('alert/warning-lg.svg'));
   }
 
-  hr,
-  .btn {
+  .btn-wide,
+  hr {
     border-color: $yellow;
   }
 }
