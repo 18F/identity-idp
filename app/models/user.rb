@@ -15,6 +15,12 @@ class User < ActiveRecord::Base
     authentication_keys: [:email]
   )
 
+  include EncryptableAttribute
+
+  encrypted_attribute(name: :phone, default: :nil)
+  encrypted_attribute(name: :otp_secret_key, default: :nil)
+  encrypted_attribute(name: :email, default: "''", setter: false)
+
   # IMPORTANT this comes *after* devise() call.
   include UserAccessKeyOverrides
   include UserEncryptedAttributeOverrides
