@@ -99,8 +99,10 @@ Rails/OutputSafety:
 Rails/TimeZone:
   # The value `strict` means that `Time` should be used with `zone`.
   # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
+  Description: 'Checks the correct usage of time zone aware methods.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
   Enabled: true
-  EnforcedStyle: flexible
+  EnforcedStyle: strict
   SupportedStyles:
     - strict
     - flexible

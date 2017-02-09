@@ -7,11 +7,11 @@ FactoryGirl.define do
 
     trait :active do
       active true
-      activated_at Time.current
+      activated_at Time.zone.now
     end
 
     trait :verified do
-      verified_at Time.current
+      verified_at Time.zone.now
     end
 
     after(:build) do |profile, evaluator|

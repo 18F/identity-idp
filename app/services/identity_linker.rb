@@ -21,7 +21,7 @@ IdentityLinker = Struct.new(:user, :provider) do
   def identity_attributes(session_uuid: nil)
     session_uuid ||= SecureRandom.uuid
     {
-      last_authenticated_at: Time.current,
+      last_authenticated_at: Time.zone.now,
       session_uuid: session_uuid,
       access_token: SecureRandom.urlsafe_base64,
     }

@@ -4,7 +4,7 @@ describe SignUp::PasswordsController do
   describe '#create' do
     it 'tracks a valid password event' do
       token = 'new token'
-      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.current)
+      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.zone.now)
 
       stub_analytics
 
@@ -27,7 +27,7 @@ describe SignUp::PasswordsController do
 
     it 'tracks an invalid password event' do
       token = 'new token'
-      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.current)
+      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.zone.now)
 
       stub_analytics
 

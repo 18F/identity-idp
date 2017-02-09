@@ -55,7 +55,7 @@ describe Users::SessionsController, devise: true do
     context 'when user is present' do
       it 'sets live key to true' do
         stub_sign_in
-        session[:session_expires_at] = Time.current + 10
+        session[:session_expires_at] = Time.zone.now + 10
         get :active
 
         json ||= JSON.parse(response.body)
@@ -65,7 +65,7 @@ describe Users::SessionsController, devise: true do
 
       it 'respects session_expires_at' do
         stub_sign_in
-        session[:session_expires_at] = Time.current - 1
+        session[:session_expires_at] = Time.zone.now - 1
         get :active
 
         json ||= JSON.parse(response.body)
@@ -75,10 +75,10 @@ describe Users::SessionsController, devise: true do
 
       it 'updates pinged_at session key' do
         stub_sign_in
-        now = Time.current
+        now = Time.zone.now
         session[:pinged_at] = now
 
-        Timecop.travel(Time.current + 10)
+        Timecop.travel(Time.zone.now + 10)
         get :active
         Timecop.return
 
@@ -182,7 +182,7 @@ describe Users::SessionsController, devise: true do
       user = create(
         :user,
         :signed_up,
-        second_factor_locked_at: Time.current
+        second_factor_locked_at: Time.zone.now
       )
 
       stub_analytics
