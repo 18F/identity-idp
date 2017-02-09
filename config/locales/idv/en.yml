@@ -33,7 +33,7 @@ en:
       ssn_label_html: Social Security Number %{tooltip}
       state: State
       use_ccn: Provide credit card number >
-      use_financial_account: Enter one of these here >
+      use_financial_account: Don't have a credit card?
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
@@ -89,15 +89,16 @@ en:
         accurate. To learn more about the information we need from you and how it’s used
         to verify your identity, please see our troubleshooting page.
       finance:
+        disclaimer: By continuing, you agree to let %{app_name} compare the account
+          information you provide with third-party sources in order to verify your
+          identity.
         hint: "You can use Mastercard, Visa, Diner's Club, or JCB."
-        intro_ccn: >
-          Help us verify your identity by providing the last 8 digits of one of your
-          credit cards.
+        intro_ccn_html: >
+          Help us verify your identity by providing the last 8 digits of a
+          credit card. Learn more about %{intro_help_link}.
+        intro_ccn_help: how your information will be used
         intro_account: >
           Help us verify your identity by providing an auto loan, mortgage, or home equity loan
-          number.
-        no_ccn: Don't have a credit card handy?
-        no_ccn_info: You can also verify with an auto loan, mortgage, or home equity loan
           number.
         no_account: Want to use a credit card instead?
         no_account_info: Help us verify your identity by providing the last 8 digits of your
@@ -130,6 +131,8 @@ en:
         intro: Your verified information
       review_and_continue: Review my info and try again
       sessions:
+        pii: personal information
+        success: We found records matching your %{pii_message}
         no_pii: Do not use real personal information (demo purposes only)
     modal:
       attempts:

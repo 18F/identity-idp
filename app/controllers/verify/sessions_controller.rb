@@ -20,7 +20,7 @@ module Verify
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result.to_h)
 
       if result.success?
-        redirect_to verify_finance_path
+        process_success
       else
         process_failure
       end
@@ -42,6 +42,17 @@ module Verify
         idv_session: idv_session,
         params: profile_params
       )
+    end
+
+    def process_success
+      pii_msg = ActionController::Base.helpers.content_tag(
+        :strong, t('idv.messages.sessions.pii')
+      )
+
+      flash[:success] = t('idv.messages.sessions.success',
+                          pii_message: pii_msg)
+
+      redirect_to verify_finance_path
     end
 
     def process_failure
