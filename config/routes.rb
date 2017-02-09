@@ -53,11 +53,6 @@ Rails.application.routes.draw do
 
   post '/api/service_provider' => 'service_provider#update'
 
-  match '/api/voice/otp/:code' => 'voice/otp#show',
-        via: [:get, :post],
-        as: :voice_otp,
-        defaults: { format: :xml }
-
   delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
   get '/authenticator_setup' => 'users/totp_setup#new'
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
