@@ -21,7 +21,7 @@ class UpdateUserEmailForm
 
     if valid_form?
       @success = true
-      @user.update(email: email)
+      UpdateUser.new(user: @user, attributes: { email: email }).call
     else
       @success = process_errors
     end

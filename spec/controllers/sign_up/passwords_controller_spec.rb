@@ -3,11 +3,8 @@ require 'rails_helper'
 describe SignUp::PasswordsController do
   describe '#create' do
     it 'tracks a valid password event' do
-      user = create(:user, :unconfirmed)
-      token, = Devise.token_generator.generate(User, :confirmation_token)
-      user.update(
-        confirmation_token: token, confirmation_sent_at: Time.current
-      )
+      token = 'new token'
+      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.current)
 
       stub_analytics
 
@@ -29,11 +26,8 @@ describe SignUp::PasswordsController do
     end
 
     it 'tracks an invalid password event' do
-      user = create(:user, :unconfirmed)
-      token, = Devise.token_generator.generate(User, :confirmation_token)
-      user.update(
-        confirmation_token: token, confirmation_sent_at: Time.current
-      )
+      token = 'new token'
+      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.current)
 
       stub_analytics
 
