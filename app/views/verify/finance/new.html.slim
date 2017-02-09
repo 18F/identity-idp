@@ -9,18 +9,18 @@ p.mt-tiny.mb0
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = hidden_field_tag 'idv_finance_form[finance_type]', :ccn
 
-  .clearfix.mxn1.px1
+  .mxn1.px1
     - Idv::FinanceForm.ccn_inputs.each do |key, label, html_options|
       = f.label key, label: label, class: 'block bold'
-      p.mb1.italic = t('idv.messages.finance.hint')
-
-      .col-12.sm-col-8
+      .col-12.sm-col-10
         = f.input key,
                   label: false,
+                  hint: t('idv.messages.finance.hint'),
+                        hint_html: { id: 'ccn-instructs', class: 'mb1 italic block' },
                   required: false,
                   wrapper_html: { data: { type: key } },
                   wrapper_class: 'mb1',
-                  input_html: html_options
+                  input_html: html_options.merge!('aria-describedby': 'ccn-instructs')
         = link_to t('idv.form.use_financial_account'), verify_finance_other_path
 
       .mb2.mt3
