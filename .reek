@@ -4,9 +4,6 @@ DuplicateMethodCall:
   exclude:
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
-    - Remote#command
-    - Remote#extract_trailing_options
-    - Remote#parse_positional_arguments
     - WorkerHealthChecker#status
 FeatureEnvy:
   exclude:
@@ -22,9 +19,6 @@ IrresponsibleModule:
 ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
-NestedIterators:
-  exclude:
-    - Remote#build_parser
 NilCheck:
   exclude:
     - AdminConstraint#user_is_admin?
@@ -54,10 +48,6 @@ TooManyStatements:
   max_statements: 6
   exclude:
     - Users::PhoneConfirmationController
-    - Remote#build_parser
-    - Remote#execute
-    - Remote#extract_trailing_options
-    - Remote#parse
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -88,12 +78,6 @@ UtilityFunction:
     - SessionDecorator#new_session_heading
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
-    - Remote#build_parser
-    - Remote#command
-    - Remote#default_config
-    - Remote#extract_trailing_options
-    - Remote#host
-    - Remote#parse_positional_arguments
     - SessionsNew
 'app/controllers':
   InstanceVariableAssumption:
