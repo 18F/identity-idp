@@ -30,7 +30,12 @@ feature 'IdV session' do
 
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
+
       expect(page).to have_content(t('idv.form.ccn'))
+      expect(page).to have_content(
+        t('idv.messages.sessions.success',
+          pii_message: t('idv.messages.sessions.pii'))
+      )
 
       fill_out_financial_form_ok
       click_button t('forms.buttons.continue')
