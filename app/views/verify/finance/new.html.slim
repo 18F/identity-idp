@@ -11,10 +11,10 @@ p.mt-tiny.mb0
 
   .clearfix.mxn1.px1
     - Idv::FinanceForm.ccn_inputs.each do |key, label, html_options|
-      div
-        = f.label key, label: label, class: 'block bold'
-        p.mb1.italic = t('idv.messages.finance.hint')
-      .col.col-12.sm-col-8
+      = f.label key, label: label, class: 'block bold'
+      p.mb1.italic = t('idv.messages.finance.hint')
+
+      .col-12.sm-col-8
         = f.input key,
                   label: false,
                   required: false,
@@ -23,12 +23,11 @@ p.mt-tiny.mb0
                   input_html: html_options
         = link_to t('idv.form.use_financial_account'), verify_finance_other_path
 
-      .col.col-12.mb2.mt3
+      .mb2.mt3
         em
           = t('idv.messages.finance.disclaimer', app_name: APP_NAME)
 
-      .col.col-12
-        = f.button :submit, t('forms.buttons.continue'), class: 'col-6'
+      = f.button :submit, t('forms.buttons.continue'), class: 'col-6'
 
 = render 'shared/cancel', link: verify_cancel_path
 
