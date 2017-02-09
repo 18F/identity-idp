@@ -70,11 +70,11 @@ es:
       dupe_ssn2_link: NOT TRANSLATED YET
       fail: NOT TRANSLATED YET
       finance:
+        disclaimer: NOT TRANSLATED YET
         hint: NOT TRANSLATED YET
-        intro_ccn: NOT TRANSLATED YET
+        intro_ccn_html: NOT TRANSLATED YET
+        intro_ccn_help: NOT TRANSLATED YET
         intro_account: NOT TRANSLATED YET
-        no_ccn: NOT TRANSLATED YET
-        no_ccn_info: NOT TRANSLATED YET
         no_account: NOT TRANSLATED YET
         no_account_info: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
@@ -97,6 +97,8 @@ es:
         intro: NOT TRANSLATED YET
       review_and_continue: NOT TRANSLATED YET
       sessions:
+        pii: NOT TRANSLATED YET
+        success: NOT TRANSLATED YET
         no_pii: NOT TRANSLATED YET
     modal:
       attempts:

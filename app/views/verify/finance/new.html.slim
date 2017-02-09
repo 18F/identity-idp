@@ -1,29 +1,34 @@
 - title t('idv.titles.session.finance')
 
 h1.h3.my0 = t('idv.titles.session.finance')
-p.mt-tiny.mb0 = t('idv.messages.finance.intro_ccn')
+p.mt-tiny.mb0
+  = t('idv.messages.finance.intro_ccn_html',
+      intro_help_link: link_to(t('idv.messages.finance.intro_ccn_help'), help_path))
+
 = simple_form_for(idv_finance_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = hidden_field_tag 'idv_finance_form[finance_type]', :ccn
-  .clearfix.mxn1
+
+  .clearfix.mxn1.px1
     - Idv::FinanceForm.ccn_inputs.each do |key, label, html_options|
-      .px1
+      div
         = f.label key, label: label, class: 'block bold'
         p.mb1.italic = t('idv.messages.finance.hint')
-      .col.col-12.sm-col-8.px1
+      .col.col-12.sm-col-8
         = f.input key,
                   label: false,
                   required: false,
                   wrapper_html: { data: { type: key } },
+                  wrapper_class: 'mb1',
                   input_html: html_options
-    .col.col-12.sm-col-4.px1
-      = f.button :submit, t('forms.buttons.continue'), class: 'col-12 mb3'
+        = link_to t('idv.form.use_financial_account'), verify_finance_other_path
 
-.mb-tiny.bold = t('idv.messages.finance.no_ccn')
-p.mb3
-  = t('idv.messages.finance.no_ccn_info')
-  '
-  = link_to t('idv.form.use_financial_account'), verify_finance_other_path
+      .col.col-12.mb2.mt3
+        em
+          = t('idv.messages.finance.disclaimer', app_name: APP_NAME)
+
+      .col.col-12
+        = f.button :submit, t('forms.buttons.continue'), class: 'col-6'
 
 = render 'shared/cancel', link: verify_cancel_path
 
