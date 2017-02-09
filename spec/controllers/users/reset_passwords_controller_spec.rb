@@ -75,7 +75,7 @@ describe Users::ResetPasswordsController, devise: true do
         user = create(
           :user,
           :signed_up,
-          reset_password_sent_at: Time.current - Devise.reset_password_within - 1.hour,
+          reset_password_sent_at: Time.zone.now - Devise.reset_password_within - 1.hour,
           reset_password_token: db_confirmation_token
         )
 
@@ -110,7 +110,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :signed_up,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
+          reset_password_sent_at: Time.zone.now
         )
 
         params = { password: 'short', reset_password_token: raw_reset_token }
@@ -139,12 +139,12 @@ describe Users::ResetPasswordsController, devise: true do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
 
-        Timecop.freeze(Time.current) do
+        Timecop.freeze(Time.zone.now) do
           user = create(
             :user,
             :signed_up,
             reset_password_token: db_confirmation_token,
-            reset_password_sent_at: Time.current
+            reset_password_sent_at: Time.zone.now
           )
           old_confirmed_at = user.reload.confirmed_at
           allow(user).to receive(:active_profile).and_return(nil)
@@ -184,7 +184,7 @@ describe Users::ResetPasswordsController, devise: true do
         user = create(
           :user,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
+          reset_password_sent_at: Time.zone.now
         )
         _profile = create(:profile, :active, :verified, user: user)
 
@@ -224,7 +224,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :unconfirmed,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
+          reset_password_sent_at: Time.zone.now
         )
 
         stub_email_notifier(user)

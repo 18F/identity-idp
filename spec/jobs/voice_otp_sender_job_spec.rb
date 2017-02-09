@@ -12,7 +12,7 @@ describe VoiceOtpSenderJob do
       VoiceOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
-        otp_created_at: Time.current.to_s
+        otp_created_at: Time.zone.now.to_s
       )
 
       calls = FakeVoiceCall.calls
@@ -33,7 +33,7 @@ describe VoiceOtpSenderJob do
         VoiceOtpSenderJob.perform_now(
           code: '1234',
           phone: '555-5555',
-          otp_created_at: Time.current.to_s
+          otp_created_at: Time.zone.now.to_s
         )
       end
 

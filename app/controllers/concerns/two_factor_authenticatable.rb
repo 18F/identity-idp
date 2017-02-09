@@ -129,7 +129,7 @@ module TwoFactorAuthenticatable
   end
 
   def update_phone_attributes
-    current_time = Time.current
+    current_time = Time.zone.now
 
     if idv_context?
       Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
