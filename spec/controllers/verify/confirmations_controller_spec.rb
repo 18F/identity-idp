@@ -111,7 +111,7 @@ describe Verify::ConfirmationsController do
     context 'user confirmed a new phone' do
       it 'tracks that event' do
         stub_analytics
-        subject.idv_session.params['phone_confirmed_at'] = Time.current
+        subject.idv_session.params['phone_confirmed_at'] = Time.zone.now
 
         result = {
           success: true,

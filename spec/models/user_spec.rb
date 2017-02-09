@@ -120,14 +120,14 @@ describe User do
   context '#confirmation_period_expired?' do
     it 'returns false when within confirm_within value' do
       user = create(:user, confirmed_at: nil)
-      user.confirmation_sent_at = Time.current - User.confirm_within + 1.minute
+      user.confirmation_sent_at = Time.zone.now - User.confirm_within + 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_falsey
     end
 
     it 'returns true when beyond confirm_within value' do
       user = create(:user, confirmed_at: nil)
-      user.confirmation_sent_at = Time.current - User.confirm_within - 1.minute
+      user.confirmation_sent_at = Time.zone.now - User.confirm_within - 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_truthy
     end
@@ -157,12 +157,12 @@ describe User do
     before do
       user.identities << Identity.create(
         service_provider: 'first',
-        last_authenticated_at: Time.current - 1.hour,
+        last_authenticated_at: Time.zone.now - 1.hour,
         session_uuid: SecureRandom.uuid
       )
       user.identities << Identity.create(
         service_provider: 'last',
-        last_authenticated_at: Time.current,
+        last_authenticated_at: Time.zone.now,
         session_uuid: SecureRandom.uuid
       )
     end

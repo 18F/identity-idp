@@ -52,7 +52,7 @@ module Users
     end
 
     def now
-      @_now ||= Time.current
+      @_now ||= Time.zone.now
     end
 
     def expires_at

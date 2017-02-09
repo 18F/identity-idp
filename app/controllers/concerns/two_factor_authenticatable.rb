@@ -82,7 +82,7 @@ module TwoFactorAuthenticatable
   def update_invalid_user
     current_user.second_factor_attempts_count += 1
     attributes = {}
-    attributes[:second_factor_locked_at] = Time.current if current_user.max_login_attempts?
+    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
 
     UpdateUser.new(
       user: current_user,
@@ -129,7 +129,7 @@ module TwoFactorAuthenticatable
   end
 
   def update_phone_attributes
-    current_time = Time.current
+    current_time = Time.zone.now
 
     if idv_context?
       Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
@@ -177,7 +177,7 @@ module TwoFactorAuthenticatable
 
   def mark_user_session_authenticated
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
-    user_session[:authn_at] = Time.current
+    user_session[:authn_at] = Time.zone.now
   end
 
   def direct_otp_code

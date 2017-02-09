@@ -63,7 +63,7 @@ module Idv
     end
 
     def complete_profile
-      profile.verified_at = Time.current
+      profile.verified_at = Time.zone.now
       profile.vendor = vendor
       profile.activate
       move_pii_to_user_session

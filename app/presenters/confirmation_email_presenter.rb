@@ -25,7 +25,7 @@ class ConfirmationEmailPresenter
   end
 
   def confirmation_period
-    current_time = Time.current
+    current_time = Time.zone.now
 
     view.distance_of_time_in_words(
       current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours

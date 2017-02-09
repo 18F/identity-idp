@@ -17,7 +17,7 @@ class Profile < ActiveRecord::Base
   def activate
     transaction do
       Profile.where('user_id=?', user_id).update_all(active: false)
-      update!(active: true, activated_at: Time.current)
+      update!(active: true, activated_at: Time.zone.now)
     end
   end
 

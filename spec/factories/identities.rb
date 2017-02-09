@@ -5,6 +5,6 @@ FactoryGirl.define do
   end
 
   trait :active do
-    last_authenticated_at Time.current
+    last_authenticated_at Time.zone.now
   end
 end

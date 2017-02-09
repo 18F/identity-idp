@@ -98,7 +98,7 @@ describe VerifyController do
       it 'allows direct access' do
         profile = create(
           :profile,
-          user: create(:user, idv_attempts: 3, idv_attempted_at: Time.current)
+          user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now)
         )
 
         stub_sign_in(profile.user)

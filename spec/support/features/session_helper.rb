@@ -68,7 +68,7 @@ module Features
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session['warden.user.user.session'] = { authn_at: Time.current }
+        session['warden.user.user.session'] = { authn_at: Time.zone.now }
       end
       visit profile_path
     end
@@ -86,7 +86,7 @@ module Features
       @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
-        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current
+        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now
       )
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token

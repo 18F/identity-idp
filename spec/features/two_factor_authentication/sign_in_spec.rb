@@ -119,7 +119,7 @@ feature 'Two Factor Authentication' do
         UpdateUser.new(
           user: user,
           attributes: {
-            second_factor_locked_at: Time.current - (Devise.direct_otp_valid_for + 1.second),
+            second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second),
           }
         ).call
 
@@ -132,7 +132,7 @@ feature 'Two Factor Authentication' do
 
     context 'user signs in while locked out' do
       it 'signs the user out and lets them know they are locked out' do
-        user = create(:user, :signed_up, second_factor_locked_at: Time.current - 1.minute)
+        user = create(:user, :signed_up, second_factor_locked_at: Time.zone.now - 1.minute)
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         signin(user.email, user.password)
 

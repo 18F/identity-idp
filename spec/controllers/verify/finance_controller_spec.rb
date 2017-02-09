@@ -122,7 +122,7 @@ describe Verify::FinanceController do
       end
 
       context 'attempt window has expired, previous attempts == max-1' do
-        let(:two_days_ago) { Time.current - 2.days }
+        let(:two_days_ago) { Time.zone.now - 2.days }
 
         before do
           subject.current_user.idv_attempts = max_attempts - 1

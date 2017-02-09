@@ -19,7 +19,7 @@ describe Idv::Attempter do
   describe '#window_expired?' do
     context 'inside window' do
       before do
-        current_user.idv_attempted_at = Time.current
+        current_user.idv_attempted_at = Time.zone.now
       end
 
       it 'returns false' do
@@ -29,7 +29,7 @@ describe Idv::Attempter do
 
     context 'outside window' do
       before do
-        current_user.idv_attempted_at = Time.current - 25.hours
+        current_user.idv_attempted_at = Time.zone.now - 25.hours
       end
 
       it 'returns true' do
@@ -42,7 +42,7 @@ describe Idv::Attempter do
     context 'no attempts yet made' do
       context 'inside the window' do
         before do
-          current_user.idv_attempted_at = Time.current
+          current_user.idv_attempted_at = Time.zone.now
         end
 
         it 'returns false' do
@@ -52,7 +52,7 @@ describe Idv::Attempter do
 
       context 'outside the window' do
         before do
-          current_user.idv_attempted_at = Time.current - 25.hours
+          current_user.idv_attempted_at = Time.zone.now - 25.hours
         end
 
         it 'returns false' do
@@ -68,7 +68,7 @@ describe Idv::Attempter do
 
       context 'inside the window' do
         before do
-          current_user.idv_attempted_at = Time.current
+          current_user.idv_attempted_at = Time.zone.now
         end
 
         it 'returns true' do
@@ -78,7 +78,7 @@ describe Idv::Attempter do
 
       context 'outside the window' do
         before do
-          current_user.idv_attempted_at = Time.current - 25.hours
+          current_user.idv_attempted_at = Time.zone.now - 25.hours
         end
 
         it 'returns false' do

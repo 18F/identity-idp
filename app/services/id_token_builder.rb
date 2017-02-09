@@ -32,7 +32,7 @@ class IdTokenBuilder
   end
 
   def timestamp_claims
-    now = Time.current.to_i
+    now = Time.zone.now.to_i
     {
       exp: @custom_expiration || expires,
       iat: now,
@@ -54,6 +54,6 @@ class IdTokenBuilder
 
   def expires
     ttl = Pii::SessionStore.new(identity.session_uuid).ttl
-    Time.current.to_i + ttl
+    Time.zone.now.to_i + ttl
   end
 end

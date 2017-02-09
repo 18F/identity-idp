@@ -80,7 +80,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         user = create(
           :user,
           :signed_up,
-          second_factor_locked_at: Time.current - Devise.direct_otp_valid_for - 1.second,
+          second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.second,
           second_factor_attempts_count: 3
         )
         sign_in_before_2fa(user)

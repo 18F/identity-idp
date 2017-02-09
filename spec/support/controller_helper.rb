@@ -30,7 +30,7 @@ module ControllerHelper
   def stub_sign_in(user = build(:user, password: VALID_PASSWORD))
     allow(request.env['warden']).to receive(:authenticate!).and_return(user)
     allow(request.env['warden']).to receive(:session).and_return(user: {})
-    allow(controller).to receive(:user_session).and_return(authn_at: Time.current)
+    allow(controller).to receive(:user_session).and_return(authn_at: Time.zone.now)
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
     allow(controller).to receive(:user_fully_authenticated?).and_return(true)

@@ -101,7 +101,7 @@ module Users
 
     def update_user
       attributes = { password: user_params[:password] }
-      attributes[:confirmed_at] = Time.current unless resource.confirmed?
+      attributes[:confirmed_at] = Time.zone.now unless resource.confirmed?
       UpdateUser.new(user: resource, attributes: attributes).call
     end
 

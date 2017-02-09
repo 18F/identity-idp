@@ -4,11 +4,11 @@ UserDecorator = Struct.new(:user) do
   MAX_RECENT_EVENTS = 5
 
   def lockout_time_remaining
-    (Devise.direct_otp_valid_for - (Time.current - user.second_factor_locked_at)).to_i
+    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def lockout_time_remaining_in_words
-    current_time = Time.current
+    current_time = Time.zone.now
 
     distance_of_time_in_words(
       current_time, current_time + lockout_time_remaining, true, highest_measures: 2
@@ -20,7 +20,7 @@ UserDecorator = Struct.new(:user) do
   end
 
   def confirmation_period
-    current_time = Time.current
+    current_time = Time.zone.now
 
     distance_of_time_in_words(
       current_time, current_time + Devise.confirm_within, true, accumulate_on: :hours
@@ -98,6 +98,6 @@ UserDecorator = Struct.new(:user) do
   end
 
   def blocked_from_2fa_period_expired?
-    (Time.current - user.second_factor_locked_at) > Devise.direct_otp_valid_for
+    (Time.zone.now - user.second_factor_locked_at) > Devise.direct_otp_valid_for
   end
 end

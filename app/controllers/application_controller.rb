@@ -17,7 +17,7 @@ class ApplicationController < ActionController::Base
   layout 'card'
 
   def session_expires_at
-    now = Time.current
+    now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
     session[:pinged_at] ||= now
     redirect_on_timeout

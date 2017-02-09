@@ -17,7 +17,7 @@ RSpec.describe IdTokenBuilder do
   describe '#id_token' do
     subject(:id_token) { Timecop.freeze(now) { builder.id_token } }
 
-    let(:now) { Time.current }
+    let(:now) { Time.zone.now }
 
     let(:decoded_id_token) do
       JWT.decode(id_token,

@@ -68,7 +68,7 @@ describe Verify::SessionsController do
       context 'max attempts exceeded' do
         before do
           user.idv_attempts = max_attempts
-          user.idv_attempted_at = Time.current
+          user.idv_attempted_at = Time.zone.now
         end
 
         it 'redirects to fail' do
@@ -193,7 +193,7 @@ describe Verify::SessionsController do
       context 'max attempts exceeded' do
         before do
           user.idv_attempts = max_attempts
-          user.idv_attempted_at = Time.current
+          user.idv_attempted_at = Time.zone.now
         end
 
         it 'redirects to fail' do
@@ -212,7 +212,7 @@ describe Verify::SessionsController do
       context 'attempt window has expired, previous attempts == max-1' do
         before do
           user.idv_attempts = max_attempts - 1
-          user.idv_attempted_at = Time.current - 2.days
+          user.idv_attempted_at = Time.zone.now - 2.days
         end
 
         it 'allows and resets attempt counter' do

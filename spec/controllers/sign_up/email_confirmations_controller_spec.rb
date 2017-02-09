@@ -94,7 +94,7 @@ describe SignUp::EmailConfirmationsController do
       user = create(:user, :unconfirmed)
       UpdateUser.new(
         user: user,
-        attributes: { confirmation_token: 'foo', confirmation_sent_at: Time.current - 2.days }
+        attributes: { confirmation_token: 'foo', confirmation_sent_at: Time.zone.now - 2.days }
       ).call
 
       analytics_hash = {
@@ -141,7 +141,7 @@ describe SignUp::EmailConfirmationsController do
         :user,
         :signed_up,
         confirmation_token: 'foo',
-        confirmation_sent_at: Time.current,
+        confirmation_sent_at: Time.zone.now,
         unconfirmed_email: 'test@example.com'
       )
 

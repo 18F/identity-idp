@@ -156,7 +156,7 @@ describe Profile do
 
     describe '#verified' do
       it 'returns only verified Profiles' do
-        user.profiles.create(verified_at: Time.current)
+        user.profiles.create(verified_at: Time.zone.now)
         user.profiles.create(verified_at: nil)
         expect(user.profiles.verified.count).to eq 1
       end

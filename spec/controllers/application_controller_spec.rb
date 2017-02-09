@@ -27,7 +27,7 @@ describe ApplicationController do
     let(:payload) { {} }
 
     it 'adds user_id, user_agent and ip to the lograge output' do
-      Timecop.freeze(Time.current) do
+      Timecop.freeze(Time.zone.now) do
         subject.append_info_to_payload(payload)
 
         expect(payload.keys).to eq [:user_id, :user_agent, :ip, :host]
