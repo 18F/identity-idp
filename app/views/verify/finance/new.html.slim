@@ -27,4 +27,7 @@ p.mb3
 
 = render 'shared/cancel', link: verify_cancel_path
 
-== javascript_include_tag 'misc/verify-modal'
+- if @modal
+  = render 'shared/modal_verification',
+    attempts: remaining_step_attempts, name: step_name, type: @modal
+  == javascript_include_tag 'misc/verify-modal'

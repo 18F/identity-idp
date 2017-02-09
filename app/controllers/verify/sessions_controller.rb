@@ -8,6 +8,8 @@ module Verify
     before_action :confirm_step_needed
 
     helper_method :idv_profile_form
+    helper_method :remaining_idv_attempts
+    helper_method :step_name
     helper_method :step
 
     def new
@@ -61,6 +63,7 @@ module Verify
       return unless step.form_valid_but_vendor_validation_failed?
       presenter = VerificationWarningPresenter.new(step_name, remaining_idv_attempts)
       flash.now[:warning] = presenter.warning_message
+      @modal = 'warning'
     end
 
     def remaining_idv_attempts

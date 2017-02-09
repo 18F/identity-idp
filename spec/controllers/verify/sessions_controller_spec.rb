@@ -148,12 +148,7 @@ describe Verify::SessionsController do
         it 're-renders form' do
           post :create, profile: bad_attrs
 
-          expect(flash[:warning]).to eq(
-            t('idv.modal.warning_html',
-              heading: "<strong>#{t('idv.modal.sessions.heading')}</strong>",
-              attempt: t('idv.modal.attempts', count: max_attempts - 1),
-              body: "<span>#{t('idv.modal.sessions.body')}</span>")
-          )
+          expect(flash[:warning]).to_not be_nil
           expect(response).to render_template(:new)
         end
 

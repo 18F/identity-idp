@@ -6,6 +6,8 @@ module Verify
     before_action :confirm_step_allowed
 
     helper_method :idv_finance_form
+    helper_method :remaining_step_attempts
+    helper_method :step_name
 
     def new
       analytics.track_event(Analytics::IDV_FINANCE_CCN_VISIT)
@@ -56,6 +58,7 @@ module Verify
       presenter = VerificationWarningPresenter.new(step_name, remaining_step_attempts)
 
       flash.now[:warning] = presenter.warning_message
+      @modal = 'warning'
     end
 
     def render_form
