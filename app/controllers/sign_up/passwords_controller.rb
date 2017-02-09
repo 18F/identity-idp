@@ -23,7 +23,10 @@ module SignUp
 
     def process_successful_password_creation
       @user.confirm
-      @user.update(reset_requested_at: nil, password: permitted_params[:password])
+      UpdateUser.new(
+        user: @user,
+        attributes: { reset_requested_at: nil, password: permitted_params[:password] }
+      ).call
       sign_in_and_redirect_user
     end
 

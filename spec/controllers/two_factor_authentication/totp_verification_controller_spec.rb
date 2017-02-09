@@ -19,7 +19,11 @@ describe TwoFactorAuthentication::TotpVerificationController do
       end
 
       it 'resets the second_factor_attempts_count' do
-        subject.current_user.update(second_factor_attempts_count: 1)
+        UpdateUser.new(
+          user: subject.current_user,
+          attributes: { second_factor_attempts_count: 1 }
+        ).call
+
         post :create, code: generate_totp_code(@secret)
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -73,13 +77,15 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user lockout period expires' do
       before do
-        sign_in_before_2fa
-        @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
-        subject.current_user.update(
+        user = create(
+          :user,
+          :signed_up,
           second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.second,
           second_factor_attempts_count: 3
         )
+        sign_in_before_2fa(user)
+        @secret = subject.current_user.generate_totp_secret
+        subject.current_user.otp_secret_key = @secret
       end
 
       describe 'when user submits an invalid TOTP' do

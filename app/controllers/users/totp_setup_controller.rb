@@ -27,7 +27,7 @@ module Users
       if current_user.totp_enabled?
         analytics.track_event(Analytics::TOTP_USER_DISABLED)
         create_user_event(:authenticator_disabled)
-        current_user.update(otp_secret_key: nil)
+        UpdateUser.new(user: current_user, attributes: { otp_secret_key: nil }).call
         flash[:success] = t('notices.totp_disabled')
       end
       redirect_to profile_path

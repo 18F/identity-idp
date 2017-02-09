@@ -11,7 +11,7 @@ class UpdateUserPasswordForm
   def submit(params)
     self.password = params[:password]
 
-    @success = valid? && user.update(params)
+    @success = valid? && UpdateUser.new(user: user, attributes: params).call
 
     result
   end
