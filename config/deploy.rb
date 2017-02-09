@@ -26,20 +26,21 @@ set :sidekiq_options, ''
 set :sidekiq_queue, [:analytics, :mailers, :sms, :voice]
 set :sidekiq_monit_use_sudo, true
 set :sidekiq_user, 'ubuntu'
-set :ssh_options, forward_agent: false, user: 'ubuntu'
 set :whenever_roles, [:job_creator]
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+
+set :bastion_user, ENV['BASTION_USER'] || 'ubuntu'
 set :ssh_options do
-  ssh_command = "ssh #{fetch(:bastion_host)} -W %h:%p"
+  ssh_command = "ssh -A #{fetch(:bastion_user)}@#{fetch(:bastion_host)} -W %h:%p"
   {
     proxy: Net::SSH::Proxy::Command.new(ssh_command),
     user: 'ubuntu',
   }
 end
 
-server 'idp1-0', roles: %w(web db) # idp1
-server 'idp2-0', roles: %w(web) # idp2
-server 'worker', roles: %w(app job_creator) # worker
+server 'idp1-0', roles: %w(web db)
+server 'idp2-0', roles: %w(web)
+server 'worker', roles: %w(app job_creator)
 
 #########
 # TASKS
