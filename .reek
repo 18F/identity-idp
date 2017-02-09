@@ -106,6 +106,7 @@ UtilityFunction:
     exclude:
       - complete_2fa_confirmation
       - complete_idv_profile
+      - expect_current_address_in_profile
       - stub_subject
       - stub_idv_session
       - saml_settings
