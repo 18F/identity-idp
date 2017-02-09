@@ -80,7 +80,8 @@ module TwoFactorAuthenticatable
   end
 
   def update_invalid_user
-    attributes = { second_factor_attempts_count: current_user.second_factor_attempts_count + 1 }
+    current_user.second_factor_attempts_count += 1
+    attributes = {}
     attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
 
     UpdateUser.new(
