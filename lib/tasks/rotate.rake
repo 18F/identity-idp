@@ -6,14 +6,14 @@ namespace :rotate do
   #
   desc 'attribute encryption key'
   task attribute_encryption_key: :environment do
-    rotator = KeyRotator::AttributeEncryption.new
     num_users = User.count
     progress = new_progress_bar('Users', num_users)
 
     User.find_in_batches.with_index do |users, batch|
       User.transaction do
         users.each do |user|
-          rotator.rotate(user)
+          rotator = KeyRotator::AttributeEncryption.new(user)
+          rotator.rotate
           progress.increment
         end
       end
