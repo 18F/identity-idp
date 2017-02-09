@@ -14,7 +14,7 @@ module KeyRotator
 
     def rotate_email_fingerprint(user)
       ee = EncryptedAttribute.new_from_decrypted(user.email)
-      UpdateUser.new(user: user, attributes: { email_fingerprint: ee.fingerprint }).call
+      user.update_columns(email_fingerprint: ee.fingerprint)
     end
 
     def rotate_ssn_signature(profile, pii_attributes)
