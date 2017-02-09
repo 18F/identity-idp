@@ -11,10 +11,6 @@ module Verify
       finish_proofing_success
     end
 
-    def continue
-      redirect_to after_sign_in_path_for(current_user)
-    end
-
     private
 
     def track_final_idv_event
