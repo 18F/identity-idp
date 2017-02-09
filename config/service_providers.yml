@@ -42,6 +42,10 @@ test:
     redirect_uri: 'gov.gsa.openidconnect.test://result'
     cert: 'saml_test_sp'
 
+  'urn:gov:gsa:openidconnect:sp:server':
+    redirect_uri: 'http://localhost:7654/'
+    cert: 'saml_test_sp'
+
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     metadata_url: 'http://localhost:3000/test/saml/metadata'
@@ -101,7 +105,10 @@ development:
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uri: 'gov.gsa.openidconnect.development://result'
-    cert: 'saml_test_sp'
+
+  'urn:gov:gsa:openidconnect:sp:sinatra':
+    redirect_uri: 'http://localhost:9292/'
+    cert: 'sp_sinatra_demo'
 
 production:
   'https://idp.dev.login.gov':

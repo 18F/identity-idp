@@ -1,4 +1,8 @@
 class SecureHeadersWhitelister
+  def self.extract_domain(url)
+    url.split('//')[1].split('/')[0]
+  end
+
   def run
     whitelisted_domains = domains(acs_urls(SERVICE_PROVIDERS.values))
     SecureHeaders::Configuration.override(:saml) do |config|
@@ -13,6 +17,6 @@ class SecureHeadersWhitelister
   end
 
   def domains(acs_urls)
-    acs_urls.grep(%r{://}).map { |url| url.split('//')[1].split('/')[0] }.uniq
+    acs_urls.grep(%r{://}).map { |url| self.class.extract_domain(url) }.uniq
   end
 end

@@ -62,6 +62,7 @@ TooManyMethods:
   exclude:
     - Users::ConfirmationsController
     - ApplicationController
+    - OpenidConnectAuthorizeForm
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
