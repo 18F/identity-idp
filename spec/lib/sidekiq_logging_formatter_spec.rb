@@ -27,7 +27,7 @@ describe SidekiqLoggerFormatter do
   end
 
   describe '#call' do
-    let(:now) { Time.current }
+    let(:now) { Time.zone.now }
 
     it 'redacts job arguments from JSON string' do
       expect(subject.call(:WARN, now, 'job', job_json.to_json)).to_not match 'sensitive pii'

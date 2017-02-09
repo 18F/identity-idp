@@ -16,7 +16,7 @@ describe ProfileController do
         user = create(:user, :signed_up)
         user.identities << Identity.create(
           service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.current
+          last_authenticated_at: Time.zone.now
         )
 
         sign_in user

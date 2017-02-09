@@ -98,6 +98,6 @@ UserDecorator = Struct.new(:user) do
   end
 
   def blocked_from_2fa_period_expired?
-    (Time.current - user.second_factor_locked_at) > Devise.direct_otp_valid_for
+    (Time.zone.now - user.second_factor_locked_at) > Devise.direct_otp_valid_for
   end
 end

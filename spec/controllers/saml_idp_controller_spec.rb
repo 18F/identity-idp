@@ -25,7 +25,7 @@ describe SamlIdpController do
       it 'finishes SLO at the IdP' do
         user.identities << Identity.create(
           service_provider: 'foo',
-          last_authenticated_at: Time.current
+          last_authenticated_at: Time.zone.now
         )
         sign_in user
 
