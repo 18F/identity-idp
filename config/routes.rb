@@ -121,7 +121,6 @@ Rails.application.routes.draw do
   get '/verify/activated' => 'verify#activated'
   get '/verify/cancel' => 'verify#cancel'
   get '/verify/confirmations' => 'verify/confirmations#index'
-  post '/verify/confirmations/continue' => 'verify/confirmations#continue'
   get '/verify/fail' => 'verify#fail'
   get '/verify/finance' => 'verify/finance#new'
   put '/verify/finance' => 'verify/finance#create'
