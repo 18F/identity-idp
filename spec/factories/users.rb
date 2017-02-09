@@ -8,7 +8,7 @@ FactoryGirl.define do
 
     trait :with_phone do
       phone '+1 (202) 555-1212'
-      phone_confirmed_at Time.zone.now
+      phone_confirmed_at Time.current
     end
 
     trait :admin do

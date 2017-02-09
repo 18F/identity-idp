@@ -40,7 +40,7 @@ module Idv
       return true unless attempted_at.present?
 
       # last attempted in the past outside the window
-      attempted_at + idv_attempt_window < Time.zone.now
+      attempted_at + idv_attempt_window < Time.current
     end
 
     def reset_attempts?

@@ -324,7 +324,7 @@ feature 'Password Recovery' do
     click_button t('forms.buttons.continue')
 
     user.reset_password_sent_at =
-      Time.zone.now - Devise.reset_password_within - 1.hour
+      Time.current - Devise.reset_password_within - 1.hour
 
     raw_reset_token, db_confirmation_token =
       Devise.token_generator.generate(User, :reset_password_token)

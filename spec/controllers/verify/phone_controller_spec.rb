@@ -17,7 +17,7 @@ describe Verify::PhoneController do
   end
 
   describe '#new' do
-    let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+    let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.current) }
 
     before do
       stub_subject(user)
@@ -86,7 +86,7 @@ describe Verify::PhoneController do
       end
 
       it 'tracks event with valid phone' do
-        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+        user = build(:user, phone: good_phone, phone_confirmed_at: Time.current)
         stub_subject(user)
 
         put :create, idv_phone_form: { phone: good_phone }
@@ -99,7 +99,7 @@ describe Verify::PhoneController do
       end
 
       it 'tracks event with invalid phone' do
-        user = build(:user, phone: bad_phone, phone_confirmed_at: Time.zone.now)
+        user = build(:user, phone: bad_phone, phone_confirmed_at: Time.current)
         stub_subject(user)
 
         put :create, idv_phone_form: { phone: bad_phone }
@@ -124,7 +124,7 @@ describe Verify::PhoneController do
 
       context 'when same as user phone' do
         it 'redirects to review page and sets phone_confirmed_at' do
-          user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+          user = build(:user, phone: good_phone, phone_confirmed_at: Time.current)
           stub_subject(user)
 
           put :create, idv_phone_form: { phone: good_phone }
@@ -141,7 +141,7 @@ describe Verify::PhoneController do
 
       context 'when different from user phone' do
         it 'redirects to review page and does not set phone_confirmed_at' do
-          user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
+          user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.current)
           stub_subject(user)
 
           put :create, idv_phone_form: { phone: good_phone }
@@ -156,8 +156,8 @@ describe Verify::PhoneController do
       end
 
       context 'attempt window has expired, previous attempts == max-1' do
-        let(:two_days_ago) { Time.zone.now - 2.days }
-        let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
+        let(:two_days_ago) { Time.current - 2.days }
+        let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.current) }
 
         before do
           stub_subject(user)

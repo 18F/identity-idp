@@ -63,25 +63,25 @@ module WorkerHealthChecker
   end
 
   # @return [Summary]
-  def summary(now: Time.zone.now)
+  def summary(now: Time.current)
     Summary.new(statuses(now: now))
   end
 
   # @return [Array<Status>]
-  def statuses(now: Time.zone.now)
+  def statuses(now: Time.current)
     Sidekiq::Queue.all.map(&:name).map do |name|
       status(name, now: now)
     end
   end
 
-  def mark_healthy!(queue_name, now: Time.zone.now)
+  def mark_healthy!(queue_name, now: Time.current)
     with_redis do |redis|
       redis.set(health_check_key(queue_name), now.to_i)
     end
   end
 
   # @return [Status]
-  def status(queue_name, now: Time.zone.now)
+  def status(queue_name, now: Time.current)
     last_run_value = with_redis { |redis| redis.get(health_check_key(queue_name)) }
 
     last_run_at = last_run_value && Time.zone.at(last_run_value.to_i)
@@ -90,7 +90,7 @@ module WorkerHealthChecker
   end
 
   # @api private
-  def healthy?(last_run_at, now: Time.zone.now)
+  def healthy?(last_run_at, now: Time.current)
     last_run_at.present? &&
       (now.to_i - last_run_at.to_i < Figaro.env.queue_health_check_dead_interval_seconds.to_i)
   end

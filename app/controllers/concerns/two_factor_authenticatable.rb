@@ -82,7 +82,7 @@ module TwoFactorAuthenticatable
   def update_invalid_user
     current_user.second_factor_attempts_count += 1
     attributes = {}
-    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
+    attributes[:second_factor_locked_at] = Time.current if current_user.max_login_attempts?
 
     UpdateUser.new(
       user: current_user,
@@ -177,7 +177,7 @@ module TwoFactorAuthenticatable
 
   def mark_user_session_authenticated
     user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
-    user_session[:authn_at] = Time.zone.now
+    user_session[:authn_at] = Time.current
   end
 
   def direct_otp_code

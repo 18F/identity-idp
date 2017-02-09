@@ -29,7 +29,7 @@ describe 'IdvStepConcern' do
     context 'user has exceeded IdV max attempts in a single session' do
       before do
         user.idv_attempts = 3
-        user.idv_attempted_at = Time.zone.now
+        user.idv_attempted_at = Time.current
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
       end
 
@@ -44,7 +44,7 @@ describe 'IdvStepConcern' do
       before do
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
         user.idv_attempts = 3
-        user.idv_attempted_at = Time.zone.now
+        user.idv_attempted_at = Time.current
       end
 
       it 'redirects to hardfail page' do
@@ -58,7 +58,7 @@ describe 'IdvStepConcern' do
       before do
         allow(subject).to receive(:confirm_idv_session_started).and_return(true)
         user.idv_attempts = 3
-        user.idv_attempted_at = Time.zone.now - 25.hours
+        user.idv_attempted_at = Time.current - 25.hours
         get :show
       end
 

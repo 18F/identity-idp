@@ -81,7 +81,7 @@ RSpec.describe WorkerHealthChecker do
 
   describe '#mark_healthy!' do
     let(:queue) { 'myqueue' }
-    let(:now) { Time.zone.now }
+    let(:now) { Time.current }
 
     it 'sets a key in redis' do
       expect { WorkerHealthChecker.mark_healthy!(queue, now: now) }.
@@ -91,7 +91,7 @@ RSpec.describe WorkerHealthChecker do
   end
 
   describe '#summary' do
-    let(:now) { Time.zone.now }
+    let(:now) { Time.current }
     subject(:summary) { WorkerHealthChecker.summary(now: now) }
 
     let(:queue1) { 'queue1' }

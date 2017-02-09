@@ -68,7 +68,7 @@ module Features
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session['warden.user.user.session'] = { authn_at: Time.zone.now }
+        session['warden.user.user.session'] = { authn_at: Time.current }
       end
       visit profile_path
     end

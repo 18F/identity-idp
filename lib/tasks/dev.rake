@@ -19,7 +19,7 @@ namespace :dev do
       last_name: 'One'
     )
     recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
-    profile.verified_at = Time.zone.now
+    profile.verified_at = Time.current
     profile.activate
 
     Rails.logger.warn "email=#{loa3_user.email} recovery_code=#{recovery_code}"
@@ -70,7 +70,7 @@ namespace :dev do
             ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
           )
           recovery_code = profile.encrypt_pii(user.user_access_key, pii)
-          profile.verified_at = Time.zone.now
+          profile.verified_at = Time.current
           profile.activate
 
           Rails.logger.warn "email=#{email_addr} recovery_code=#{recovery_code}"

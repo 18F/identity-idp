@@ -103,7 +103,7 @@ describe Verify::ReviewController do
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-      idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+      idv_session.params = user_attrs.merge(phone_confirmed_at: Time.current)
       allow(subject).to receive(:idv_session).and_return(idv_session)
     end
 
@@ -172,7 +172,7 @@ describe Verify::ReviewController do
 
     context 'user fails to supply correct password' do
       before do
-        idv_session.params = user_attrs.merge(phone_confirmed_at: Time.zone.now)
+        idv_session.params = user_attrs.merge(phone_confirmed_at: Time.current)
       end
 
       it 'redirects to original path' do

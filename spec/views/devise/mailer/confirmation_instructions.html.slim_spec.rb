@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe 'devise/mailer/confirmation_instructions.html.slim' do
   it 'mentions how long the user has to confirm' do
-    user = build_stubbed(:user, confirmed_at: Time.zone.now)
+    user = build_stubbed(:user, confirmed_at: Time.current)
     assign(:resource, user)
     assign(:confirmation_period, user.decorate.confirmation_period)
     render
@@ -16,7 +16,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   end
 
   it 'includes a link to confirmation' do
-    assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
+    assign(:resource, build_stubbed(:user, confirmed_at: Time.current))
     assign(:token, 'foo')
     render
 
@@ -27,7 +27,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   end
 
   it 'mentions updating an account when user has already been confirmed' do
-    user = build_stubbed(:user, confirmed_at: Time.zone.now)
+    user = build_stubbed(:user, confirmed_at: Time.current)
     presenter = ConfirmationEmailPresenter.new(user, self)
     assign(:resource, user)
     assign(:first_sentence, presenter.first_sentence)
@@ -61,7 +61,7 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
   end
 
   it 'mentions resetting the account when account has been reset by tech support' do
-    user = build_stubbed(:user, reset_requested_at: Time.zone.now)
+    user = build_stubbed(:user, reset_requested_at: Time.current)
     presenter = ConfirmationEmailPresenter.new(user, self)
     assign(:resource, user)
     assign(:first_sentence, presenter.first_sentence)

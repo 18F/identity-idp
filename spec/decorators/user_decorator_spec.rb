@@ -3,8 +3,8 @@ require 'rails_helper'
 describe UserDecorator do
   describe '#lockout_time_remaining' do
     it 'returns the difference in seconds between otp drift and second_factor_locked_at' do
-      Timecop.freeze(Time.zone.now) do
-        user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
+      Timecop.freeze(Time.current) do
+        user = build_stubbed(:user, second_factor_locked_at: Time.current - 180)
         user_decorator = UserDecorator.new(user)
         allow(Devise).to receive(:direct_otp_valid_for).and_return(535)
 
@@ -15,8 +15,8 @@ describe UserDecorator do
 
   describe '#lockout_time_remaining_in_words' do
     it 'converts lockout_time_remaining to words representing minutes and seconds left' do
-      Timecop.freeze(Time.zone.now) do
-        user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
+      Timecop.freeze(Time.current) do
+        user = build_stubbed(:user, second_factor_locked_at: Time.current - 180)
         user_decorator = UserDecorator.new(user)
         allow(Devise).to receive(:direct_otp_valid_for).and_return(535)
 
@@ -104,7 +104,7 @@ describe UserDecorator do
       user_decorator = UserDecorator.new(build(:user))
       identity = create(
         :identity,
-        last_authenticated_at: Time.zone.now - 1,
+        last_authenticated_at: Time.current - 1,
         user: user_decorator.user
       )
       event = create(:event, event_type: :email_changed, user: user_decorator.user)

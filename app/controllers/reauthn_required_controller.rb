@@ -14,6 +14,6 @@ class ReauthnRequiredController < ApplicationController
     return false unless user_session.present?
     authn_at = user_session[:authn_at]
     return false unless authn_at.present?
-    authn_at > Time.zone.now - Figaro.env.reauthn_window.to_i
+    authn_at > Time.current - Figaro.env.reauthn_window.to_i
   end
 end
