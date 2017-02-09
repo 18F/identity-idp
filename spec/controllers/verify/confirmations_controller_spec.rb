@@ -30,21 +30,6 @@ describe Verify::ConfirmationsController do
       stub_idv_session
     end
 
-    context 'original SAML Authn request present' do
-      let(:saml_authn_request) { sp1_authnrequest }
-
-      before do
-        subject.session[:saml_request_url] = saml_authn_request
-        get :index
-      end
-
-      it 'redirects to original SAML Authn request' do
-        post :continue
-
-        expect(response).to redirect_to saml_authn_request
-      end
-    end
-
     context 'original SAML Authn request missing' do
       before do
         subject.session[:saml_request_url] = nil
@@ -79,12 +64,6 @@ describe Verify::ConfirmationsController do
         get :index
 
         expect(assigns(:recovery_code)).to eq(code)
-      end
-
-      it 'redirects to IdP profile after user acknowledges recovery code' do
-        post :continue
-
-        expect(response).to redirect_to(profile_path)
       end
 
       it 'sets flash[:allow_confirmations_continue] to true' do
