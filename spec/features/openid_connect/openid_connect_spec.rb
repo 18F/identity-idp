@@ -135,7 +135,7 @@ feature 'OpenID Connect' do
   end
 
   def client_private_key
-    @client_public_key ||= begin
+    @client_private_key ||= begin
       OpenSSL::PKey::RSA.new(
         File.read(Rails.root.join('keys/saml_test_sp.key'))
       )
