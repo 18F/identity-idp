@@ -6,8 +6,7 @@ describe EmailNotifier do
 
     context 'when the password has changed' do
       it 'sends an email notifiying the user of the password change' do
-        user = create(:user, :signed_up)
-        user.update!(password: 'newValidPass!!00')
+        user = create(:user, :signed_up, password: 'newValidPass!!00')
 
         expect(UserMailer).to receive(:password_changed).with(user).and_return(mailer)
         expect(mailer).to receive(:deliver_later)
@@ -30,10 +29,9 @@ describe EmailNotifier do
 
     context 'when the user has changed and confirmed their new email' do
       it 'notifies the old email address of the email change' do
-        user = create(:user, :signed_up)
+        user = build(:user, :signed_up)
         old_email = user.email
-        user.email = 'new@example.com'
-        user.save!
+        UpdateUser.new(user: user, attributes: { email: 'new@example.com' }).call
         user.confirm
 
         expect(UserMailer).to receive(:email_changed).with(old_email).and_return(mailer)

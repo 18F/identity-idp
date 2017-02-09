@@ -92,7 +92,10 @@ describe SignUp::EmailConfirmationsController do
 
     it 'tracks expired token' do
       user = create(:user, :unconfirmed)
-      user.update(confirmation_token: 'foo', confirmation_sent_at: Time.current - 2.days)
+      UpdateUser.new(
+        user: user,
+        attributes: { confirmation_token: 'foo', confirmation_sent_at: Time.current - 2.days }
+      ).call
 
       analytics_hash = {
         success: false,
@@ -114,8 +117,7 @@ describe SignUp::EmailConfirmationsController do
 
   describe 'Valid email confirmation tokens' do
     it 'tracks a valid email confirmation token event' do
-      user = create(:user, :unconfirmed)
-      user.update(confirmation_token: 'foo')
+      user = create(:user, :unconfirmed, confirmation_token: 'foo')
 
       stub_analytics
 
@@ -135,8 +137,9 @@ describe SignUp::EmailConfirmationsController do
 
   describe 'User confirms new email' do
     it 'tracks the event' do
-      user = create(:user, :signed_up)
-      user.update(
+      user = create(
+        :user,
+        :signed_up,
         confirmation_token: 'foo',
         confirmation_sent_at: Time.current,
         unconfirmed_email: 'test@example.com'

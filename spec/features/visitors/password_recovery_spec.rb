@@ -176,7 +176,7 @@ feature 'Password Recovery' do
 
       raw_reset_token, db_confirmation_token =
         Devise.token_generator.generate(User, :reset_password_token)
-      @user.update(reset_password_token: db_confirmation_token)
+      UpdateUser.new(user: @user, attributes: { reset_password_token: db_confirmation_token }).call
 
       visit edit_user_password_path(reset_password_token: raw_reset_token)
     end
@@ -328,7 +328,8 @@ feature 'Password Recovery' do
 
     raw_reset_token, db_confirmation_token =
       Devise.token_generator.generate(User, :reset_password_token)
-    user.update(reset_password_token: db_confirmation_token)
+
+    UpdateUser.new(user: user, attributes: { reset_password_token: db_confirmation_token }).call
 
     visit edit_user_password_path(reset_password_token: raw_reset_token)
 
