@@ -38,7 +38,10 @@ module TwoFactorAuthenticatable
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless decorated_user.no_longer_blocked_from_entering_2fa_code?
 
-    current_user.update(second_factor_attempts_count: 0, second_factor_locked_at: nil)
+    UpdateUser.new(
+      user: current_user,
+      attributes: { second_factor_attempts_count: 0, second_factor_locked_at: nil }
+    ).call
   end
 
   def handle_valid_otp
@@ -77,10 +80,13 @@ module TwoFactorAuthenticatable
   end
 
   def update_invalid_user
-    current_user.second_factor_attempts_count += 1
-    # set time lock if max attempts reached
-    current_user.second_factor_locked_at = Time.zone.now if current_user.max_login_attempts?
-    current_user.save
+    attributes = { second_factor_attempts_count: current_user.second_factor_attempts_count + 1 }
+    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
+
+    UpdateUser.new(
+      user: current_user,
+      attributes: attributes
+    ).call
   end
 
   def handle_valid_otp_for_confirmation_context
@@ -93,7 +99,7 @@ module TwoFactorAuthenticatable
     mark_user_session_authenticated
     bypass_sign_in current_user
 
-    current_user.update(second_factor_attempts_count: 0)
+    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end
 
   def assign_phone
@@ -127,7 +133,10 @@ module TwoFactorAuthenticatable
     if idv_context?
       Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
     else
-      current_user.update(phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time)
+      UpdateUser.new(
+        user: current_user,
+        attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time }
+      ).call
     end
   end
 

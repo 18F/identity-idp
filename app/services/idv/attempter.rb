@@ -9,14 +9,17 @@ module Idv
     end
 
     def increment
-      current_user.update!(
-        idv_attempts: current_user.idv_attempts + 1,
-        idv_attempted_at: Time.zone.now
-      )
+      UpdateUser.new(
+        user: current_user,
+        attributes: { idv_attempts: current_user.idv_attempts + 1, idv_attempted_at: Time.current }
+      ).call
     end
 
     def reset
-      current_user.update!(idv_attempts: 0)
+      UpdateUser.new(
+        user: current_user,
+        attributes: { idv_attempts: 0 }
+      ).call
     end
 
     def attempts

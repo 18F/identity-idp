@@ -125,9 +125,9 @@ module Features
     end
 
     def sign_in_with_totp_enabled_user
-      user = create(:user, :signed_up, password: VALID_PASSWORD)
+      user = build(:user, :signed_up, password: VALID_PASSWORD)
       @secret = user.generate_totp_secret
-      user.update(otp_secret_key: @secret)
+      UpdateUser.new(user: user, attributes: { otp_secret_key: @secret }).call
       sign_in_user(user)
       fill_in 'code', with: generate_totp_code(@secret)
       click_submit_default

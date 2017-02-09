@@ -80,7 +80,6 @@ module Users
 
     def handle_successful_password_reset
       update_user
-
       mark_profile_inactive
 
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
@@ -101,8 +100,9 @@ module Users
     end
 
     def update_user
-      resource.update(confirmed_at: Time.current) unless resource.confirmed?
-      resource.update(password: user_params[:password])
+      attributes = { password: user_params[:password] }
+      attributes[:confirmed_at] = Time.current unless resource.confirmed?
+      UpdateUser.new(user: resource, attributes: attributes).call
     end
 
     def mark_profile_inactive

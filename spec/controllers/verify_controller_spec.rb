@@ -96,11 +96,12 @@ describe VerifyController do
 
     context 'user does not have an active profile and has exceeded IdV attempts' do
       it 'allows direct access' do
-        profile = create(:profile)
-        user = profile.user
-        user.update(idv_attempts: 3, idv_attempted_at: Time.zone.now)
+        profile = create(
+          :profile,
+          user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now)
+        )
 
-        stub_sign_in(user)
+        stub_sign_in(profile.user)
 
         get :fail
 

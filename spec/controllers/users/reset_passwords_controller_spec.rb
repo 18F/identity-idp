@@ -70,15 +70,14 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
         user = create(
           :user,
           :signed_up,
-          reset_password_sent_at: Time.current - Devise.reset_password_within - 1.hour
+          reset_password_sent_at: Time.current - Devise.reset_password_within - 1.hour,
+          reset_password_token: db_confirmation_token
         )
-
-        raw_reset_token, db_confirmation_token =
-          Devise.token_generator.generate(User, :reset_password_token)
-        user.update(reset_password_token: db_confirmation_token)
 
         params = { password: 'short', reset_password_token: raw_reset_token }
 
@@ -182,13 +181,12 @@ describe Users::ResetPasswordsController, devise: true do
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
-
-        profile = create(:profile, :active, :verified)
-        user = profile.user
-        user.update(
+        user = create(
+          :user,
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.current
         )
+        _profile = create(:profile, :active, :verified, user: user)
 
         stub_email_notifier(user)
 

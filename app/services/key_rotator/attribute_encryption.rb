@@ -7,7 +7,7 @@ module KeyRotator
     end
 
     def rotate
-      user.update_columns(encrypted_attributes)
+      UpdateUser.new(user: user, attributes: encrypted_attributes).call
     end
 
     private

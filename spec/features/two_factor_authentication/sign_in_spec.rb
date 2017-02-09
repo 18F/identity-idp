@@ -116,9 +116,12 @@ feature 'Two Factor Authentication' do
         expect(page).to have_content(/4:5\d/)
 
         # let lockout period expire
-        user.update(
-          second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second)
-        )
+        UpdateUser.new(
+          user: user,
+          attributes: {
+            second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second),
+          }
+        ).call
 
         sign_in_before_2fa(user)
         click_button t('forms.buttons.submit.default')
@@ -129,8 +132,7 @@ feature 'Two Factor Authentication' do
 
     context 'user signs in while locked out' do
       it 'signs the user out and lets them know they are locked out' do
-        user = create(:user, :signed_up)
-        user.update(second_factor_locked_at: Time.zone.now - 1.minute)
+        user = create(:user, :signed_up, second_factor_locked_at: Time.zone.now - 1.minute)
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         signin(user.email, user.password)
 
@@ -196,7 +198,7 @@ feature 'Two Factor Authentication' do
     # For example, when migrating users from another DB
     it 'displays recovery code and redirects to profile' do
       user = create(:user, :signed_up)
-      user.update!(recovery_code: nil)
+      UpdateUser.new(user: user, attributes: { recovery_code: nil }).call
 
       sign_in_user(user)
       click_button t('forms.buttons.submit.default')
