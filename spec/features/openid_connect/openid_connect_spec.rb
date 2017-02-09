@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'OpenID Connect' do
   context 'with client_secret_jwt' do
     it 'succeeds' do
-      client_id = 'urn:gov:gsa:openidconnect:test'
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
       state = SecureRandom.hex
       nonce = SecureRandom.hex
 
@@ -12,19 +12,21 @@ feature 'OpenID Connect' do
         response_type: 'code',
         acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
         scope: 'openid email',
-        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        redirect_uri: 'http://localhost:7654/auth/result',
         state: state,
         prompt: 'select_account',
         nonce: nonce
       )
 
       user = sign_in_live_with_2fa
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\' localhost:7654'))
       click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 
-      expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
+      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       expect(redirect_params[:state]).to eq(state)
 
       code = redirect_params[:code]

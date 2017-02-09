@@ -60,6 +60,11 @@ class OpenidConnectAuthorizeForm
     ial == 3
   end
 
+  def allowed_form_action
+    return unless sp_redirect_uri =~ %r{https?://}
+    SecureHeadersWhitelister.extract_domain(sp_redirect_uri)
+  end
+
   private
 
   def parse_to_values(param_value, possible_values)
@@ -86,8 +91,7 @@ class OpenidConnectAuthorizeForm
   def validate_redirect_uri_matches_sp_redirect_uri
     return if redirect_uri.blank?
     return unless service_provider.valid?
-    sp_redirect_uri = service_provider.metadata[:redirect_uri]
-    return if sp_redirect_uri.start_with?(redirect_uri)
+    return if redirect_uri.start_with?(sp_redirect_uri)
     errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'))
   end
 
@@ -127,6 +131,10 @@ class OpenidConnectAuthorizeForm
       error_description: errors.full_messages.join(' '),
       state: state
     )
+  end
+
+  def sp_redirect_uri
+    service_provider.metadata[:redirect_uri].to_s
   end
 
   def service_provider

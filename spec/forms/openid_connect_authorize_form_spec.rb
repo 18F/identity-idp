@@ -156,6 +156,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
             to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
         end
       end
+
+      context 'with a redirect_uri that adds on to the registered redirect_uri' do
+        let(:redirect_uri) { 'gov.gsa.openidconnect.test://result/more/extra' }
+        it { expect(valid?).to eq(true) }
+      end
     end
 
     context 'when response_type is not code' do
@@ -219,6 +224,27 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with a malformed loa' do
       let(:acr_values) { 'foobarbaz' }
       it { expect(loa3_requested?).to eq(false) }
+    end
+  end
+
+  describe '#allowed_form_action' do
+    subject(:allowed_form_action) { form.allowed_form_action }
+
+    context 'with a bad client_id' do
+      let(:client_id) { 'foobar' }
+      it { expect(allowed_form_action).to be_nil }
+    end
+
+    context 'with a client_id with an http redirect_uri' do
+      let(:client_id) { 'urn:gov:gsa:openidconnect:sp:server' }
+      it 'is the domain (and port)' do
+        expect(allowed_form_action).to eq('localhost:7654')
+      end
+    end
+
+    context 'with a client_id with a non-http redirect_uri' do
+      let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
+      it { expect(allowed_form_action).to be_nil }
     end
   end
 end
