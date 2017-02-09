@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'two_factor_authentication/totp_verification/show.html.slim' do
-  let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: 123) }
+  let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: '6pcrpu334cx7zyf7') }
   let(:presenter_data) do
     attributes_for(:generic_otp_presenter).merge(
       delivery_method: 'authenticator',
