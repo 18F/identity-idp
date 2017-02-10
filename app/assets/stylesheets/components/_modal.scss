@@ -18,24 +18,32 @@
   top: 0;
 }
 
+.modal-center {
+  display: table;
+  height: 100%;
+  width: 100%;
+}
+
+.modal-content {
+  display: table-cell;
+  vertical-align: middle;
+}
+
 // IE the backdrop
 .modal-cntnr {
-  background-color: rgba(91, 97, 106, .9);
+  background-color: rgba(91, 97, 106, .95);
   display: table;
   height: 100%;
   left: 0;
   position: fixed;
   top: 0;
   width: 100%;
-
-  .modal-inner {
-    display: table-cell;
-    vertical-align: top;
-   }
 }
 
 .modal-inner {
   display: block;
+  margin-left: auto;
+  margin-right: auto;
   position: relative;
 
   &.key-badge::before {

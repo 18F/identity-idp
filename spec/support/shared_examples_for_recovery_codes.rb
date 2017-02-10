@@ -3,7 +3,7 @@ shared_examples_for 'recovery code page' do
 
   it 'hides confirmation importance reminder text by default' do
     expect(page).to have_xpath(
-      "//div[@id='recovery-code-reminder'][@aria-hidden='true']", visible: false
+      "//div[@id='recovery-code-reminder-alert'][@aria-hidden='true']", visible: false
     )
   end
 
@@ -49,6 +49,8 @@ shared_examples_for 'recovery code page' do
     end
 
     context 'with javascript enabled', js: true do
+      let(:invisible_selector) { generate_class_selector('invisible') }
+
       scenario 'content is hidden by default' do
         expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='false']")
         expect(page).not_to have_content(t('users.recovery_code.help_text'))
@@ -58,12 +60,13 @@ shared_examples_for 'recovery code page' do
         expect(page).to have_content(t('users.recovery_code.help_text'))
       end
 
-      scenario 'modal opens when continue is clicked', js: true do
+      scenario 'modal opens when continue is clicked' do
         expect(page).to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
 
         click_acknowledge_recovery_code
 
         expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
+        expect(page).not_to have_xpath("//#{invisible_selector}[@id='recovery-code']")
       end
 
       context 'closing the modal', js: true do
@@ -78,7 +81,7 @@ shared_examples_for 'recovery code page' do
 
         scenario 'warning alert message appears' do
           expect(page).to have_xpath(
-            "//div[@id='recovery-code-reminder'][@aria-hidden='false']"
+            "//div[@id='recovery-code-reminder-alert'][@aria-hidden='false']"
           )
         end
       end
