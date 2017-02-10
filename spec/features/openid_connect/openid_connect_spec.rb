@@ -125,6 +125,28 @@ feature 'OpenID Connect' do
       id_token = token_response[:id_token]
       expect(id_token).to be_present
     end
+
+    it 'continues to the authorization page on first-time signup' do
+      client_id = 'urn:gov:gsa:openidconnect:test'
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'gov.gsa.openidconnect.test://result',
+        state: SecureRandom.hex,
+        prompt: 'select_account',
+        code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
+        code_challenge_method: 'S256'
+      )
+
+      sign_up_and_2fa_loa1_user
+
+      click_button t('openid_connect.authorization.index.allow')
+      redirect_uri = URI(current_url)
+      expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
+    end
   end
 
   def sp_public_key
