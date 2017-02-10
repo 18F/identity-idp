@@ -23,29 +23,16 @@ module UserEncryptedAttributeOverrides
     end
   end
 
-  # Override Devise::Models::Confirmable in order to
-  # use email_fingerprint_changed instead of email_changed.
+  # Override ActiveModel::Dirty methods in order to
+  # use email_fingerprint_changed? instead of email_changed?
   # This is necessary because email is no longer an ActiveRecord
   # attribute and all the *_changed and *_was magic no longer works.
-  def postpone_email_change?
-    postpone = self.class.reconfirmable &&
-               email_fingerprint_changed? &&
-               !@bypass_confirmation_postpone &&
-               email_fingerprint.present? &&
-               (!@skip_reconfirmation_in_callback || email_fingerprint_was.present?)
-    @bypass_confirmation_postpone = false
-    postpone
+  def email_changed?
+    email_fingerprint_changed?
   end
 
-  # Override Devise::Models::Confirmable as above,
-  # this time using encrypted_email instead to get the plaintext old email.
-  def postpone_email_change_until_confirmation_and_regenerate_confirmation_token
-    @reconfirmation_required = true
-    self.unconfirmed_email = email
-    old_email = EncryptedAttribute.new(encrypted_email_was).decrypted
-    self.email = old_email
-    self.confirmation_token = nil
-    generate_confirmation_token
+  def email_was
+    EncryptedAttribute.new(encrypted_email_was).decrypted unless encrypted_email_was.blank?
   end
 
   # Override usual setter method in order to also set fingerprint
