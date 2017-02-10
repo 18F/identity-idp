@@ -35,6 +35,8 @@ module SignUp
         sign_up_completed_path
       elsif current_user.password_reset_profile.present?
         reactivate_profile_path
+      elsif (stored_location = stored_location_for(current_user))
+        stored_location
       else
         profile_path
       end
