@@ -3,13 +3,14 @@ import Modal from '../app/components/modal';
 const modalSelector = '#personal-key-confirm';
 const modal = new Modal({ el: modalSelector });
 
+const recoveryCodeContainer = document.getElementById('recovery-code');
 const recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
 const formEl = document.getElementById('confirm-key');
 const inputs = [].slice.call(formEl.elements).filter((el) => el.type === 'text');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 
-const reminderEl = document.getElementById('recovery-code-reminder');
+const reminderEl = document.getElementById('recovery-code-reminder-alert');
 
 let isInvalidForm = false;
 
@@ -62,11 +63,19 @@ function handleSubmit(event) {
   }
 }
 
+function showReminderAlert() {
+  if (reminderEl.className.indexOf('invisible')) {
+    reminderEl.setAttribute('aria-hidden', false);
+    reminderEl.classList.remove('invisible');
+  }
+}
+
 function show(event) {
   event.preventDefault();
 
   modal.on('show', function() {
     inputs[0].focus();
+    recoveryCodeContainer.classList.add('invisible');
   });
 
   modal.show();
@@ -75,11 +84,8 @@ function show(event) {
 function hide() {
   modal.on('hide', function() {
     resetForm();
-
-    if (reminderEl.className.indexOf('hide')) {
-      reminderEl.setAttribute('aria-hidden', false);
-      reminderEl.classList.remove('hide');
-    }
+    recoveryCodeContainer.classList.remove('invisible');
+    showReminderAlert();
   });
 
   modal.hide();
