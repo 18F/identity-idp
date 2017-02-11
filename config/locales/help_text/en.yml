@@ -1,0 +1,6 @@
+---
+en:
+  help_text:
+    change_factor: >
+      Before you're able to edit your %{factor}, you will need to confirm your
+      password and receive a security code on your phone.
