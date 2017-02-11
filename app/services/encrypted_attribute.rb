@@ -22,7 +22,7 @@ class EncryptedAttribute
   end
 
   def fingerprint
-    Pii::Fingerprinter.fingerprint(decrypted.downcase)
+    Pii::Fingerprinter.fingerprint(decrypted)
   end
 
   def stale?

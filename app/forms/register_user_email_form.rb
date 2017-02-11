@@ -17,7 +17,7 @@ class RegisterUserEmailForm
   end
 
   def submit(params)
-    user.email = params[:email].downcase
+    user.email = params[:email]
 
     if valid_form?
       @success = true
@@ -31,6 +31,7 @@ class RegisterUserEmailForm
 
   private
 
+  attr_writer :email
   attr_reader :success
 
   def valid_form?
