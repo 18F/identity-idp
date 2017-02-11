@@ -53,17 +53,23 @@ module Verify
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
-        show_warning
-        @view_model = SessionsNew.new
+        process_vendor_error
         render :new
       end
     end
 
-    def show_warning
-      return unless step.form_valid_but_vendor_validation_failed?
+    def process_vendor_error
+      if step.form_valid_but_vendor_validation_failed?
+        show_vendor_warning
+        @view_model = SessionsNew.new(modal: 'warning')
+      else
+        @view_model = SessionsNew.new
+      end
+    end
+
+    def show_vendor_warning
       presenter = VerificationWarningPresenter.new(step_name, remaining_idv_attempts)
       flash.now[:warning] = presenter.warning_message
-      @modal = 'warning'
     end
 
     def remaining_idv_attempts

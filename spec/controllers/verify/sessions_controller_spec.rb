@@ -148,7 +148,11 @@ describe Verify::SessionsController do
         it 're-renders form' do
           post :create, profile: bad_attrs
 
-          expect(flash[:warning]).to_not be_nil
+          expect(flash[:warning]).to match t('idv.modal.sessions.heading')
+          expect(flash[:warning]).to match t(
+            'idv.modal.attempts_html',
+            attempt: t('idv.modal.attempts', count: max_attempts - 1)
+          )
           expect(response).to render_template(:new)
         end
 

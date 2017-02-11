@@ -111,7 +111,11 @@ describe Verify::FinanceController do
         it 'renders #new with error' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
 
-          expect(flash[:warning]).to_not be_nil
+          expect(flash[:warning]).to match t('idv.modal.financials.heading')
+          expect(flash[:warning]).to match t(
+            'idv.modal.attempts_html',
+            attempt: t('idv.modal.attempts', count: max_attempts - 1)
+          )
           expect(response).to render_template :new
         end
       end

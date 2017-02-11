@@ -95,6 +95,8 @@ UtilityFunction:
     - Remote#host
     - Remote#parse_positional_arguments
     - SessionsNew
+    - FinanceNew
+    - PhoneNew
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

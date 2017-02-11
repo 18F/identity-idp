@@ -1,4 +1,4 @@
-- title t('idv.titles.session.finance')
+- title @view_model.title
 
 h1.h3.my0 = t('idv.titles.session.finance')
 p.mt-tiny.mb0 = t('idv.messages.finance.intro_ccn')
@@ -27,7 +27,5 @@ p.mb3
 
 = render 'shared/cancel', link: verify_cancel_path
 
-- if @modal
-  = render 'shared/modal_verification',
-    attempts: remaining_step_attempts, name: step_name, type: @modal
-  == javascript_include_tag 'misc/verify-modal'
+= render @view_model.modal_partial, attempts: remaining_step_attempts, name: step_name,
+  type: @view_model.modal_type

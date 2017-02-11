@@ -17,6 +17,11 @@ module IdvStepConcern
     idv_session.step_attempts[step_name] += 1
   end
 
+  def show_vendor_warning
+    presenter = VerificationWarningPresenter.new(step_name, remaining_step_attempts)
+    flash.now[:warning] = presenter.warning_message
+  end
+
   def remaining_step_attempts
     Idv::Attempter.idv_max_attempts - idv_session.step_attempts[step_name]
   end

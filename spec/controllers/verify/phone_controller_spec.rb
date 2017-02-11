@@ -111,7 +111,11 @@ describe Verify::PhoneController do
           },
         }
 
-        expect(flash[:warning]).to_not be_nil
+        expect(flash[:warning]).to match t('idv.modal.phone.heading')
+        expect(flash[:warning]).to match t(
+          'idv.modal.attempts_html',
+          attempt: t('idv.modal.attempts', count: max_attempts - 1)
+        )
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION, result
         )

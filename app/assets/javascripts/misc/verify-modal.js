@@ -5,12 +5,12 @@ function verifyModal() {
   const modal = document.querySelector('.modal-cntnr');
   const close = document.getElementById('js-close-modal');
 
-  if (flash) flash.classList.add('hide');
-  if (modal) modal.classList.remove('hide');
+  if (flash) flash.classList.add('display-none');
+  if (modal) modal.classList.remove('display-none');
 
   if (close) {
     close.addEventListener('click', function() {
-      modal.classList.add('hide');
+      modal.classList.add('display-none');
     });
   }
 }

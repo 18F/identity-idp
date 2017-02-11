@@ -10,6 +10,7 @@ module Verify
     helper_method :step_name
 
     def new
+      @view_model = FinanceNew.new
       analytics.track_event(Analytics::IDV_FINANCE_CCN_VISIT)
     end
 
@@ -42,7 +43,13 @@ module Verify
     end
 
     def process_failure
-      show_warning if step.form_valid_but_vendor_validation_failed?
+      if step.form_valid_but_vendor_validation_failed?
+        show_vendor_warning
+        @view_model = FinanceNew.new(modal: 'warning')
+      else
+        @view_model = SessionsNew.new
+      end
+
       render_form
     end
 
@@ -52,13 +59,6 @@ module Verify
 
     def confirm_step_needed
       redirect_to verify_phone_path if idv_session.financials_confirmation == true
-    end
-
-    def show_warning
-      presenter = VerificationWarningPresenter.new(step_name, remaining_step_attempts)
-
-      flash.now[:warning] = presenter.warning_message
-      @modal = 'warning'
     end
 
     def render_form
