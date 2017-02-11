@@ -6,6 +6,9 @@ feature 'Changing authentication factor' do
 
     scenario 'editing password' do
       visit manage_password_path
+
+      expect(page).to have_content t('help_text.change_factor', factor: 'password')
+
       complete_2fa_confirmation
 
       expect(current_path).to eq manage_password_path
@@ -19,6 +22,9 @@ feature 'Changing authentication factor' do
       new_phone = '+1 (703) 555-0100'
 
       visit manage_phone_path
+
+      expect(page).to have_content t('help_text.change_factor', factor: 'phone')
+
       complete_2fa_confirmation
 
       update_phone_number
@@ -96,6 +102,8 @@ feature 'Changing authentication factor' do
 
     scenario 'editing email' do
       visit manage_email_path
+
+      expect(page).to have_content t('help_text.change_factor', factor: 'email')
       complete_2fa_confirmation
 
       expect(current_path).to eq manage_email_path
