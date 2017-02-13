@@ -104,18 +104,18 @@ es:
       attempts:
         one: NOT TRANSLATED YET
         other: NOT TRANSLATED YET
+      attempts_html: NOT TRANSLATED YET
       button:
         warning: NOT TRANSLATED YET
       financials:
         heading: NOT TRANSLATED YET
-        body: NOT TRANSLATED YET
+        warning: NOT TRANSLATED YET
       phone:
         heading: NOT TRANSLATED YET
-        body: NOT TRANSLATED YET
+        warning: NOT TRANSLATED YET
       sessions:
         heading: NOT TRANSLATED YET
-        body: NOT TRANSLATED YET
-      warning_html: NOT TRANSLATED YET
+        warning: NOT TRANSLATED YET
     review:
       dob: NOT TRANSLATED YET
       full_name: NOT TRANSLATED YET

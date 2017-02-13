@@ -80,6 +80,8 @@ UtilityFunction:
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
     - SessionsNew
+    - FinanceNew
+    - PhoneNew
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

@@ -6,8 +6,11 @@ module Verify
     before_action :confirm_step_allowed
 
     helper_method :idv_finance_form
+    helper_method :remaining_step_attempts
+    helper_method :step_name
 
     def new
+      @view_model = FinanceNew.new
       analytics.track_event(Analytics::IDV_FINANCE_OTHER_VISIT)
     end
 

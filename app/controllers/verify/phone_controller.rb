@@ -6,8 +6,11 @@ module Verify
     before_action :confirm_step_allowed
 
     helper_method :idv_phone_form
+    helper_method :remaining_step_attempts
+    helper_method :step_name
 
     def new
+      @view_model = PhoneNew.new
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
@@ -40,14 +43,14 @@ module Verify
     end
 
     def process_failure
-      show_warning if step.form_valid_but_vendor_validation_failed?
+      if step.form_valid_but_vendor_validation_failed?
+        show_vendor_warning
+        @view_model = PhoneNew.new(modal: 'warning')
+      else
+        @view_model = PhoneNew.new
+      end
+
       render :new
-    end
-
-    def show_warning
-      presenter = VerificationWarningPresenter.new(step_name, remaining_step_attempts)
-
-      flash.now[:warning] = presenter.warning_message
     end
 
     def step_params
