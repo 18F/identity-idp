@@ -40,7 +40,8 @@ module OpenidConnect
 
     def apply_secure_headers_override
       override_content_security_policy_directives(
-        form_action: ["'self'", @authorize_form.allowed_form_action].compact
+        form_action: ["'self'", @authorize_form.allowed_form_action].compact,
+        preserve_schemes: true
       )
     end
 

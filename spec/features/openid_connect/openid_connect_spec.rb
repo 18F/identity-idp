@@ -20,7 +20,7 @@ feature 'OpenID Connect' do
 
       user = sign_in_live_with_2fa
       expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' localhost:7654'))
+        to(include('form-action \'self\' http://localhost:7654'))
       click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)

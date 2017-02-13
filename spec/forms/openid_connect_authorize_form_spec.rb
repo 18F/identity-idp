@@ -237,8 +237,8 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with a client_id with an http redirect_uri' do
       let(:client_id) { 'urn:gov:gsa:openidconnect:sp:server' }
-      it 'is the domain (and port)' do
-        expect(allowed_form_action).to eq('localhost:7654')
+      it 'is the domain and port and scheme' do
+        expect(allowed_form_action).to eq('http://localhost:7654')
       end
     end
 
