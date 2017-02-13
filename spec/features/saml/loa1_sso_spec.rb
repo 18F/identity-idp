@@ -12,11 +12,20 @@ feature 'LOA1 Single Sign On' do
       sign_in_and_require_viewing_recovery_code(user)
 
       click_acknowledge_recovery_code
+      expect(current_path).to eq sign_up_completed_path
+    end
 
-      expect(page).to have_content t('titles.loa3_verified.false', app: APP_NAME)
-      click_on I18n.t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+    it 'takes user to the service provider, allows user to visit IDP' do
+      user = create(:user, :signed_up)
+      saml_authn_request = auth_request.create(saml_settings)
 
-      expect(current_url).to eq @saml_authn_request
+      visit saml_authn_request
+      sign_in_live_with_2fa(user)
+
+      expect(current_url).to eq saml_authn_request
+
+      visit root_path
+      expect(current_path).to eq profile_path
     end
   end
 

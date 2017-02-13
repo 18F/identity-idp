@@ -58,7 +58,7 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(user)
-    stored_location_for(user) || session[:saml_request_url] || profile_path
+    stored_location_for(user) || profile_path
   end
 
   def render_401
