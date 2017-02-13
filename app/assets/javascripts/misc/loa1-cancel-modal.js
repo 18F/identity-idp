@@ -4,7 +4,8 @@ const modal = new Modal({ el: '#sp-loa-cancel' });
 const modalTrigger = document.getElementById('loa-cancel');
 const modalDismiss = document.getElementById('loa-continue');
 
-modalTrigger.addEventListener('click', () => {
+modalTrigger.addEventListener('click', (event) => {
+  event.preventDefault();
   modal.show();
 });
 

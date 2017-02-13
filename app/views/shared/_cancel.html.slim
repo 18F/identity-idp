@@ -1,7 +1,9 @@
+- cancel = loa_no_js_fallabck_link || link
+
 .mt2.pt1.border-top
   - if loa1_signup_context? || loa3_context?
-    button(type='button' class='btn btn-link' id="loa-cancel")
-      = t('links.cancel')
+    = button_to t('links.cancel'), cancel, method: :delete,
+      class: 'btn btn-link', id: 'loa-cancel'
     = render 'shared/loa_modal', loa3: loa3_context?
   - else
-    = link_to t('links.cancel'), link, class: 'h5'
+    = link_to t('links.cancel'), cancel, class: 'h5'
