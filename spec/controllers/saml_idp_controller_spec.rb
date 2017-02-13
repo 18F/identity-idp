@@ -786,7 +786,7 @@ describe SamlIdpController do
         [:apply_secure_headers_override, only: [:auth, :logout]],
         [:validate_saml_request, only: :auth],
         [:validate_service_provider_and_authn_context, only: :auth],
-        [:store_saml_request_attributes_in_session, only: :auth],
+        [:add_sp_metadata_to_session, only: :auth],
         [:confirm_two_factor_authenticated, only: :auth]
       )
     end
