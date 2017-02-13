@@ -344,10 +344,6 @@ describe SamlIdpController do
         generate_saml_response(user)
       end
 
-      it 'stores the SAML Request original_url in the session' do
-        expect(session[:saml_request_url]).to eq(request.original_url)
-      end
-
       it 'calls IdentityLinker' do
         user = create(:user, :signed_up)
 

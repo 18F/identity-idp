@@ -37,7 +37,7 @@ feature 'LOA1 Single Sign On' do
         'need_two_factor_authentication' => true,
         first_time_recovery_code_view: true,
       }
-      session[:saml_request_url] = @saml_authn_request
+      session[:user_return_to] = @saml_authn_request
       session[:sp] = { loa3: false, name: 'Your friendly Government Agency' }
     end
     visit profile_path

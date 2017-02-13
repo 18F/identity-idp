@@ -4,7 +4,7 @@ module SamlIdpAuthConcern
   included do
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
-    before_action :store_saml_request_attributes_in_session, only: :auth
+    before_action :add_sp_metadata_to_session, only: :auth
     before_action :confirm_two_factor_authenticated, only: :auth
   end
 
@@ -20,12 +20,6 @@ module SamlIdpAuthConcern
 
     analytics.track_event(Analytics::SAML_AUTH, @result)
     render nothing: true, status: :unauthorized
-  end
-
-  # stores original SAMLRequest in session to continue SAML Authn flow
-  def store_saml_request_attributes_in_session
-    add_sp_metadata_to_session
-    session[:saml_request_url] = request.original_url
   end
 
   def add_sp_metadata_to_session
