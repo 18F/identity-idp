@@ -47,7 +47,7 @@ module Verify
         show_vendor_warning
         @view_model = FinanceNew.new(modal: 'warning')
       else
-        @view_model = SessionsNew.new
+        @view_model = FinanceNew.new
       end
 
       render_form
