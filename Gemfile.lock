@@ -20,8 +20,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 8de60fc64199bc6e56eb808e0aa9fa9180eabd7a
-  branch: master
+  revision: 9c1a308bb0c454bd603218f1f156a45a69cb50f2
+  tag: v0.4.1-18f
   specs:
     saml_idp (0.4.0)
       activesupport
@@ -346,7 +346,7 @@ GEM
     mini_portile2 (2.1.0)
     minitest (5.10.1)
     multi_json (1.12.1)
-    multi_xml (0.5.5)
+    multi_xml (0.6.0)
     nenv (0.3.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)

@@ -6,6 +6,27 @@ include IdvHelper
 feature 'SP-initiated logout' do
   let(:user) { create(:user, :signed_up) }
 
+  context 'when SP uses embed_sign:false' do
+    before do
+      sign_in_and_2fa_user(user)
+      visit sp1_authnrequest
+
+      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
+      settings.security[:embed_sign] = false
+      settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+
+      request = OneLogin::RubySaml::Logoutrequest.new
+      visit request.create(settings)
+    end
+
+    it 'signs out the user from IdP' do
+      visit profile_path
+
+      expect(page).to have_content t('devise.failure.unauthenticated')
+    end
+  end
+
   context 'when logged in to a single SP' do
     let(:user) { create(:user, :signed_up) }
     let(:xmldoc) { SamlResponseDoc.new('feature', 'logout_assertion') }
