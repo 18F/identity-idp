@@ -127,23 +127,6 @@ feature 'saml api' do
     end
   end
 
-  context 'visiting /test/saml' do
-    scenario 'it requires 2FA' do
-      sign_in_before_2fa(user)
-      visit '/test/saml'
-
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
-    end
-
-    it 'adds acs_url domain names for current Rails env to CSP form_action' do
-      sign_in_and_2fa_user(user)
-      visit '/test/saml'
-
-      expect(page.response_headers['Content-Security-Policy']).
-        to include('form-action \'self\' localhost:3000 example.com')
-    end
-  end
-
   context 'dashboard' do
     let(:fake_dashboard_url) { 'http://dashboard.example.org' }
     let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
