@@ -18,8 +18,8 @@ describe SamlIdp::Controller do
     expect(saml_acs_url).to eq(requested_saml_acs_url)
   end
 
-  context "SP-initiated logout" do
-    it "should respect Logout Request signed w/o embed" do
+  context "SP-initiated logout w/o embed" do
+    before do
       SamlIdp.configure do |config|
         config.service_provider.finder = lambda do |_|
           {
@@ -30,11 +30,24 @@ describe SamlIdp::Controller do
           }
         end
       end
+    end
+
+    it "should respect Logout Request" do
       request_url = URI.parse(make_sp_logout_request)
       params.merge!(Rack::Utils.parse_nested_query(request_url.query)).symbolize_keys!
       decode_request(params[:SAMLRequest])
       expect(saml_request.logout_request?).to eq true
       expect(valid_saml_request?).to eq true
+    end
+
+    it "requires Signature be present in params" do
+      request_url = URI.parse(make_sp_logout_request)
+      params.merge!(Rack::Utils.parse_nested_query(request_url.query)).symbolize_keys!
+      params.delete(:Signature)
+      decode_request(params[:SAMLRequest])
+
+      expect(saml_request.logout_request?).to eq true
+      expect(valid_saml_request?).to eq false
     end
   end
 

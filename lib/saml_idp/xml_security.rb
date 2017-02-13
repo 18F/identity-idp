@@ -61,7 +61,7 @@ module SamlIdp
       end
 
       def validate_doc(base64_cert, soft = true, options = {})
-        if options[:get_params]
+        if options[:get_params] && options[:get_params][:Signature]
           validate_doc_params_signature(base64_cert, soft, options[:get_params])
         else
           validate_doc_embedded_signature(base64_cert, soft)
