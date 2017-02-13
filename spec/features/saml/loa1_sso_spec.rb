@@ -19,7 +19,7 @@ feature 'LOA1 Single Sign On' do
       expect(current_url).to eq @saml_authn_request
     end
 
-    it 'takes user to agency handoff page when sign in flow complete' do
+    it 'takes user to the service provider when complete, allows user to visit IDP' do
       user = create(:user, :signed_up)
       saml_authn_request = auth_request.create(saml_settings)
 
