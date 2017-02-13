@@ -1,4 +1,4 @@
-- title t('idv.titles.phone')
+- title @view_model.title
 
 h1.h3.my0 = t('idv.titles.session.phone')
 p.mt-tiny.mb0 = t('idv.messages.phone.intro')
@@ -20,4 +20,5 @@ p = t('idv.messages.phone.same_as_2fa')
   = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
 = render 'shared/cancel', link: verify_cancel_path
 
-== javascript_include_tag 'misc/verify-modal'
+= render @view_model.modal_partial, attempts: remaining_step_attempts, name: step_name,
+  type: @view_model.modal_type
