@@ -73,7 +73,7 @@ feature 'IdV session' do
       visit verify_session_path
       complete_idv_profile_fail
 
-      expect(page).to have_content(t('idv.titles.hardfail'))
+      expect(page).to have_css('.alert-error', text: t('idv.modal.sessions.heading'))
 
       visit verify_session_path
 
@@ -84,7 +84,7 @@ feature 'IdV session' do
       expect(user.idv_attempted_at).to_not be_nil
     end
 
-    scenario 'finance step redirects to fail after max attempts' do
+    scenario 'finance shows failure flash message after max attempts' do
       sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
@@ -99,7 +99,21 @@ feature 'IdV session' do
 
       fill_out_financial_form_fail
       click_idv_continue
-      expect(current_path).to eq verify_fail_path
+      expect(page).to have_css('.alert-error', text: t('idv.modal.financials.heading'))
+    end
+
+    scenario 'finance shows failure modal after max attempts', js: true do
+      sign_in_and_2fa_user
+      visit verify_session_path
+      max_attempts_less_one.times do
+        fill_out_idv_form_fail
+        click_idv_continue
+        click_link t('idv.modal.button.warning')
+      end
+
+      fill_out_idv_form_fail
+      click_idv_continue
+      expect(page).to have_css('.modal-fail', text: t('idv.modal.sessions.heading'))
     end
 
     scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
@@ -124,10 +138,7 @@ feature 'IdV session' do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_session_path
-      expect(page).to have_css(
-        '.modal-warning',
-        text: t('idv.modal.sessions.heading')
-      )
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
       click_link t('idv.modal.button.warning')
 
       fill_out_idv_form_ok
@@ -144,10 +155,7 @@ feature 'IdV session' do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_finance_path
-      expect(page).to have_css(
-        '.modal-warning',
-        text: t('idv.modal.financials.heading')
-      )
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.financials.heading'))
       click_link t('idv.modal.button.warning')
 
       # can't go "back" to a successful step
@@ -188,10 +196,7 @@ feature 'IdV session' do
 
       # failure reloads the same sticky form
       expect(current_path).to eq verify_phone_path
-      expect(page).to have_css(
-        '.modal-warning',
-        text: t('idv.modal.phone.heading')
-      )
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.phone.heading'))
       click_link t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
 
@@ -217,10 +222,7 @@ feature 'IdV session' do
       fill_out_idv_form_fail
       click_idv_continue
 
-      expect(page).to have_css(
-        '.alert-warning',
-        text: t('idv.modal.sessions.heading')
-      )
+      expect(page).to have_content t('idv.modal.sessions.warning')
     end
 
     scenario 'clicking finance option changes input label', js: true do

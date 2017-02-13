@@ -10,7 +10,7 @@ module Verify
     helper_method :step_name
 
     def new
-      @view_model = FinanceNew.new
+      @view_model = FinancialsNew.new
       analytics.track_event(Analytics::IDV_FINANCE_OTHER_VISIT)
     end
 

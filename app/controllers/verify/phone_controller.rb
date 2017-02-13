@@ -21,8 +21,6 @@ module Verify
 
       if result.success?
         redirect_to verify_review_url
-      elsif step_attempts_exceeded?
-        redirect_to_fail_path
       else
         process_failure
       end
@@ -43,9 +41,10 @@ module Verify
     end
 
     def process_failure
-      if step.form_valid_but_vendor_validation_failed?
+      if step_attempts_exceeded?
+        show_vendor_fail
+      elsif step.form_valid_but_vendor_validation_failed?
         show_vendor_warning
-        @view_model = PhoneNew.new(modal: 'warning')
       else
         @view_model = PhoneNew.new
       end

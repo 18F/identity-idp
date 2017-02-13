@@ -58,9 +58,7 @@ module Verify
     end
 
     def process_failure
-      if step.attempts_exceeded?
-        redirect_to verify_fail_path
-      elsif step.duplicate_ssn?
+      if step.duplicate_ssn?
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
@@ -70,17 +68,27 @@ module Verify
     end
 
     def process_vendor_error
-      if step.form_valid_but_vendor_validation_failed?
+      if step.attempts_exceeded?
+        show_vendor_fail
+      elsif step.form_valid_but_vendor_validation_failed?
         show_vendor_warning
-        @view_model = SessionsNew.new(modal: 'warning')
       else
         @view_model = SessionsNew.new
       end
     end
 
+    def show_vendor_fail
+      @view_model = SessionsNew.new(modal: 'fail')
+      @presenter = VerificationPresenter.new(step_name, @view_model.modal_type)
+      flash.now[:error] = @presenter.fail_message
+    end
+
     def show_vendor_warning
-      presenter = VerificationWarningPresenter.new(step_name, remaining_idv_attempts)
-      flash.now[:warning] = presenter.warning_message
+      @view_model = SessionsNew.new(modal: 'warning')
+      @presenter = VerificationPresenter.new(
+        step_name, @view_model.modal_type, remaining_step_attempts: remaining_idv_attempts
+      )
+      flash.now[:warning] = @presenter.warning_message
     end
 
     def remaining_idv_attempts
