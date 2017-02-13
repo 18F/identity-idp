@@ -15,19 +15,4 @@ RSpec.describe SecureHeadersWhitelister do
       end
     end
   end
-
-  describe '.extract_scheme_and_domain' do
-    def extract(url)
-      SecureHeadersWhitelister.extract_scheme_and_domain(url)
-    end
-
-    it 'extracts the domain and port from a url' do
-      aggregate_failures do
-        expect(extract('http://localhost:1234/foo/bar')).to eq('http://localhost:1234')
-        expect(extract('https://example.com')).to eq('https://example.com')
-        expect(extract('https://example.com/test')).to eq('https://example.com')
-        expect(extract('https://example.com:1234')).to eq('https://example.com:1234')
-      end
-    end
-  end
 end

@@ -3,10 +3,6 @@ class SecureHeadersWhitelister
     url.split('//')[1].split('/')[0]
   end
 
-  def self.extract_scheme_and_domain(uri)
-    uri.split('/', 4).first(3).join('/')
-  end
-
   def run
     whitelisted_domains = domains(acs_urls(SERVICE_PROVIDERS.values))
     SecureHeaders::Configuration.override(:saml) do |config|
