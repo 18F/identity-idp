@@ -25,5 +25,18 @@ module Upaya
         path.start_with?(Rails.root.join('spec/javascripts').to_s)
       end
     end
+
+    config.middleware.insert_before 0, 'Rack::Cors' do
+      allow do
+        origins '*'
+        resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
+        resource '/openid_connect/certs', headers: :any, methods: [:get]
+        resource '/openid_connect/token',
+                 credentials: true,
+                 headers: :any,
+                 methods: [:post, :options]
+        resource '/openid_connect/userinfo', headers: :any, methods: [:get]
+      end
+    end
   end
 end
