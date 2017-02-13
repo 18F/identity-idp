@@ -38,7 +38,7 @@
     .py-12p.border-top
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.ssn')
-        .sm-col.sm-col-7.px1 = "***-**-#{@decrypted_pii.ssn[-4..-1]}"
+        .sm-col.sm-col-7.px1 = "***-**-#{@decrypted_pii.ssn.raw[-4..-1]}"
     .py-12p.border-top.border-bottom
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.phone')

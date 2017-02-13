@@ -30,7 +30,7 @@ class OpenidConnectUserInfoPresenter
       birthdate: loa3_data.dob,
       address: address,
       phone: phone,
-      phone_verified: phone ? true : nil,
+      phone_verified: phone.present? ? true : nil,
     }
   end
 
