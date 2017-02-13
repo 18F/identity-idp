@@ -61,8 +61,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def allowed_form_action
-    return unless sp_redirect_uri =~ %r{https?://}
-    SecureHeadersWhitelister.extract_domain(sp_redirect_uri)
+    sp_redirect_uri if sp_redirect_uri =~ %r{https?://}
   end
 
   private
