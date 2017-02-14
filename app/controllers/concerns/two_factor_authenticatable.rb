@@ -152,7 +152,7 @@ module TwoFactorAuthenticatable
     elsif after_otp_action_required?
       after_otp_action_path
     else
-      after_sign_in_path_for(current_user)
+      after_sign_in_path_for
     end
   end
 
