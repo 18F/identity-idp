@@ -1,4 +1,4 @@
-class FinanceNew
+class FinancialsNew
   def initialize(modal: nil)
     @modal = modal
   end
