@@ -69,7 +69,7 @@ es:
         Su solicitud para actualizar su número de teléfono fue procesada, pero necesitamos
         confirmar primero su número nuevo. Por favor, siga las siguientes instrucciones. Si no
         confirma su nuevo número, seguiremos usando su número de teléfono antiguo.
-      signed_up: ¡Bienvenido! Ha creado una cuenta.
+      signed_up: ¡Bienvenido! Usted ha creado una cuenta.
       signed_up_but_inactive:
         Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
         su cuenta aún no está activada.
