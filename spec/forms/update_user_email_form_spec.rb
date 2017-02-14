@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 describe UpdateUserEmailForm do
-  subject { UpdateUserEmailForm.new(User.new(email: 'old@example.com')) }
+  subject { UpdateUserEmailForm.new(User.new(email: ' OLD@example.com ')) }
 
   it_behaves_like 'email validation'
+  it_behaves_like 'email normalization', ' OLD@example.com '
 
   describe '#email_changed?' do
     it 'is false when the submitted email is the same as the current email' do
-      result = subject.submit(email: 'OLD@example.com')
+      result = subject.submit(email: 'OLD@example.com ')
 
       result_hash = {
         success: true,

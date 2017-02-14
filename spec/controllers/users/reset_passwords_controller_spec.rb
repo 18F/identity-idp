@@ -330,8 +330,7 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = build(:user, :signed_up, role: :user)
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
+        user = build(:user, :signed_up, role: :user, email: 'test@example.com')
 
         analytics_hash = {
           success: true,
@@ -344,7 +343,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: user.email } }.
+        expect { put :create, password_reset_email_form: { email: 'Test@example.com' } }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(response).to redirect_to forgot_password_path
