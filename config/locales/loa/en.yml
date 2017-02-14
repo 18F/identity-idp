@@ -13,7 +13,7 @@ en:
       warning_points:
         - You won’t have a login.gov account
         - We won't keep a record of your email address, password, and phone number
-        - You won't be able to access your benefits information with the Railroad Retirement Board
+        - You won't be able to securely access your information using login.gov
   loa3:
     buttons:
       continue: Continue identity verification
@@ -22,6 +22,6 @@ en:
       warning_points:
         - We won’t be able to verify your identity
         - We won't keep a record of your name, address, birth date, or Social Security number
+        - You won't be able to securely access your information using login.gov
         - You’ll still have a login.gov account for your email address
-        - You can manage or delete that account on your profile page
-        - You won't be able to access your benefits information with the Railroad Retirement Board
+        - You can manage that account on your profile page
