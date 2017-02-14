@@ -60,6 +60,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
           end
         end
+
+        context 'user has already approved this application' do
+          before do
+            IdentityLinker.new(user, client_id).link_identity
+          end
+
+          it 'redirects to the redirect_uri immediately' do
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
+        end
       end
 
       context 'with invalid params' do
