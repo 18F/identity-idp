@@ -27,18 +27,16 @@ module SignUp
 
     def confirm_has_not_already_viewed_recovery_code
       return if user_session[:first_time_recovery_code_view].present?
-      redirect_to after_sign_in_path_for(current_user)
+      redirect_to after_sign_in_path_for
     end
 
     def next_step
-      if session[:saml_request_url]
+      if session[:sp]
         sign_up_completed_path
       elsif current_user.password_reset_profile.present?
         reactivate_profile_path
-      elsif (stored_location = stored_location_for(current_user))
-        stored_location
       else
-        profile_path
+        after_sign_in_path_for
       end
     end
   end

@@ -57,8 +57,8 @@ class ApplicationController < ActionController::Base
     @_decorated_user ||= current_user.decorate
   end
 
-  def after_sign_in_path_for(user)
-    stored_location_for(user) || profile_path
+  def after_sign_in_path_for(_current_user = nil)
+    session[:user_return_to] || profile_path
   end
 
   def render_401
