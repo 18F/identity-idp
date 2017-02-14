@@ -42,6 +42,7 @@ RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
     - VerifyController
+    - Verify::Base
 TooManyConstants:
   exclude:
     - Analytics
@@ -80,9 +81,6 @@ UtilityFunction:
     - SessionDecorator#new_session_heading
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
-    - SessionsNew
-    - FinancialsNew
-    - PhoneNew
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
