@@ -32,7 +32,7 @@ describe Verify::ConfirmationsController do
 
     context 'original SAML Authn request missing' do
       before do
-        subject.session[:saml_request_url] = nil
+        subject.session[:user_return_to] = nil
       end
 
       it 'cleans up PII from session' do

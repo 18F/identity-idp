@@ -7,7 +7,7 @@ describe SignUp::CompletionsController do
     context 'user signed in, sp info present' do
       before do
         stub_analytics
-        session[:saml_request_url] = 'www.example.com'
+        session[:user_return_to] = 'www.example.com'
         allow(@analytics).to receive(:track_event)
       end
 
@@ -61,7 +61,7 @@ describe SignUp::CompletionsController do
   describe '#update' do
     before do
       stub_analytics
-      session[:saml_request_url] = 'www.example.com'
+      session[:user_return_to] = 'www.example.com'
       allow(@analytics).to receive(:track_event)
     end
 
