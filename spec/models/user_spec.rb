@@ -276,4 +276,12 @@ describe User do
       expect(user.otp_secret_key).to eq 'abc123'
     end
   end
+
+  describe '.find_with_email' do
+    it 'strips whitespace and downcases email before looking it up' do
+      user = create(:user, email: 'test1@test.com')
+
+      expect(User.find_with_email(' Test1@test.com ')).to eq user
+    end
+  end
 end

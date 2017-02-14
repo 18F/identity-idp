@@ -85,7 +85,7 @@ describe SignUp::RegistrationsController, devise: true do
     end
 
     it 'tracks successful user registration with existing email' do
-      existing_user = create(:user)
+      existing_user = create(:user, email: 'test@example.com')
 
       stub_analytics
 
@@ -100,7 +100,7 @@ describe SignUp::RegistrationsController, devise: true do
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
       expect(subject).to_not receive(:create_user_event)
 
-      post :create, user: { email: existing_user.email }
+      post :create, user: { email: 'TEST@example.com ' }
     end
 
     it 'tracks unsuccessful user registration' do

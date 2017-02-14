@@ -20,6 +20,7 @@ class ResendEmailConfirmationForm
 
   private
 
+  attr_writer :email
   attr_reader :success
 
   def result

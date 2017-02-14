@@ -1,15 +1,16 @@
 require 'rails_helper'
 
 describe PasswordResetEmailForm do
-  subject { PasswordResetEmailForm.new('test@example.com') }
+  subject { PasswordResetEmailForm.new(' Test@example.com ') }
 
   it_behaves_like 'email validation'
+  it_behaves_like 'email normalization', ' Test@example.com '
 
   describe '#submit' do
     context 'when email is valid and user exists' do
       it 'returns hash with properties about the event and the user' do
-        user = build(:user, :signed_up)
-        subject = PasswordResetEmailForm.new(user.email)
+        user = build(:user, :signed_up, email: 'test1@test.com')
+        subject = PasswordResetEmailForm.new('Test1@test.com')
 
         result = {
           success: true,
@@ -20,7 +21,6 @@ describe PasswordResetEmailForm do
         }
 
         expect(subject.submit).to eq result
-        expect(subject.email).to eq user.email
         expect(subject).to respond_to(:resend)
       end
     end
