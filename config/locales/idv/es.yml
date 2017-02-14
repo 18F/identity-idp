@@ -106,14 +106,18 @@ es:
         other: NOT TRANSLATED YET
       attempts_html: NOT TRANSLATED YET
       button:
+        fail: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
       financials:
+        fail: NOT TRANSLATED YET
         heading: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
       phone:
+        fail: NOT TRANSLATED YET
         heading: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
       sessions:
+        fail: NOT TRANSLATED YET
         heading: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
     review:

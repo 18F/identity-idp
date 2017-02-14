@@ -20,7 +20,7 @@ feature 'Verify phone' do
 
     fill_out_phone_form_fail
     click_idv_continue
-    expect(current_path).to eq verify_fail_path
+    expect(page).to have_css('.alert-error', text: t('idv.modal.phone.heading'))
   end
 
   context 'Idv phone and user phone are different' do

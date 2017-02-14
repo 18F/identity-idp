@@ -80,7 +80,7 @@ UtilityFunction:
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
     - SessionsNew
-    - FinanceNew
+    - FinancialsNew
     - PhoneNew
 'app/controllers':
   InstanceVariableAssumption:
