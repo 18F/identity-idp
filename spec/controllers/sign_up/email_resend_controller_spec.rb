@@ -85,5 +85,16 @@ RSpec.describe SignUp::EmailResendController do
         expect(response).to render_template(:new)
       end
     end
+
+    context 'email is capitalized and/or contains spaces' do
+      it 'sends an email' do
+        create(:user, :unconfirmed, email: 'test@example.com')
+
+        user_params = { resend_email_confirmation_form: { email: 'TEST@example.com ' } }
+
+        expect { post :create, user_params }.
+          to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+    end
   end
 end

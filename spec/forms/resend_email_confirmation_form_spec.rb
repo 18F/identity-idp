@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 describe ResendEmailConfirmationForm do
-  subject { ResendEmailConfirmationForm.new('test@example.com') }
+  subject { ResendEmailConfirmationForm.new(' Test@example.com ') }
 
   it_behaves_like 'email validation'
+  it_behaves_like 'email normalization', ' Test@example.com '
 
   describe '#submit' do
     context 'when email is valid and user exists' do

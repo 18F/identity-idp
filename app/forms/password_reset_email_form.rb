@@ -20,6 +20,7 @@ class PasswordResetEmailForm
 
   private
 
+  attr_writer :email
   attr_reader :success
 
   def result

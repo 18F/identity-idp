@@ -1,17 +1,17 @@
 module UserEncryptedAttributeOverrides
   extend ActiveSupport::Concern
 
-  # override some Devise methods to support our use of encrypted_email
-
   class_methods do
-    def find_first_by_auth_conditions(tainted_conditions, opts = {})
-      if tainted_conditions[:email].present?
-        opts[:email_fingerprint] = create_fingerprint(tainted_conditions.delete(:email))
-      end
-      to_adapter.find_first(devise_parameter_filter.filter(tainted_conditions).merge(opts))
+    # override this Devise method to support our use of encrypted_email
+    def find_first_by_auth_conditions(tainted_conditions, _opts = {})
+      email = tainted_conditions[:email]
+      return find_with_email(email) if email
+
+      find_by(tainted_conditions)
     end
 
     def find_with_email(email)
+      email = email.downcase.strip
       return nil if email.blank?
 
       email_fingerprint = create_fingerprint(email)
@@ -19,7 +19,7 @@ module UserEncryptedAttributeOverrides
     end
 
     def create_fingerprint(email)
-      Pii::Fingerprinter.fingerprint(email.downcase)
+      Pii::Fingerprinter.fingerprint(email)
     end
   end
 

@@ -8,7 +8,7 @@ module SignUp
     end
 
     def create
-      @resend_email_confirmation_form = ResendEmailConfirmationForm.new(downcased_email)
+      @resend_email_confirmation_form = ResendEmailConfirmationForm.new(email_from_params)
       result = @resend_email_confirmation_form.submit
 
       analytics.track_event(Analytics::EMAIL_CONFIRMATION_RESEND, result)
@@ -22,15 +22,19 @@ module SignUp
 
     private
 
-    def downcased_email
-      params[:resend_email_confirmation_form][:email].downcase
+    def email_from_params
+      params[:resend_email_confirmation_form][:email]
     end
 
     def handle_valid_email
-      User.send_confirmation_instructions(email: downcased_email)
-      session[:email] = downcased_email
+      User.send_confirmation_instructions(email: form_email)
+      session[:email] = form_email
       resend_confirmation = params[:resend_email_confirmation_form][:resend]
       redirect_to sign_up_verify_email_path(resend: resend_confirmation)
+    end
+
+    def form_email
+      @resend_email_confirmation_form.email
     end
   end
 end

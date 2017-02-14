@@ -47,7 +47,7 @@ module Pii
     end
 
     def stale_email_fingerprint?
-      Pii::Fingerprinter.stale?(user.email.downcase, user.email_fingerprint)
+      Pii::Fingerprinter.stale?(user.email, user.email_fingerprint)
     end
 
     def stale_attributes?
