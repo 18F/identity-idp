@@ -6,6 +6,8 @@ module TwoFactorAuthenticatable
     before_action :handle_two_factor_authentication
     before_action :check_already_authenticated
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
+
+    before_action :apply_secure_headers_override, only: :show
   end
 
   DELIVERY_METHOD_MAP = {
@@ -16,6 +18,23 @@ module TwoFactorAuthenticatable
   }.freeze
 
   private
+
+  def apply_secure_headers_override
+    return unless after_sign_in_path_for.start_with?(openid_connect_authorize_path)
+
+    authorize_params = Rack::Utils.parse_nested_query(
+      URI(after_sign_in_path_for).query
+    ).with_indifferent_access
+
+    authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
+
+    return unless authorize_form.valid?
+
+    override_content_security_policy_directives(
+      form_action: ["'self'", authorize_form.allowed_form_action].compact,
+      preserve_schemes: true
+    )
+  end
 
   def authenticate_user
     authenticate_user!(force: true)

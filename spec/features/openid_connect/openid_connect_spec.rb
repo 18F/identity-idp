@@ -78,6 +78,33 @@ feature 'OpenID Connect' do
       expect(userinfo_response[:sub]).to eq(sub)
       expect(userinfo_response[:email]).to eq(user.email)
     end
+
+    it 'auto-allows with a second authorization and sets the correct CSP headers' do
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      user = user_with_2fa
+
+      IdentityLinker.new(user, client_id).link_identity
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'http://localhost:7654/auth/result',
+        state: SecureRandom.hex,
+        prompt: 'select_account'
+      )
+
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      sign_in_user(user)
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\' http://localhost:7654'))
+
+      click_submit_default
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+    end
   end
 
   context 'with PCKE' do

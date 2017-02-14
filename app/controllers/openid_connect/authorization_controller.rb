@@ -16,6 +16,8 @@ module OpenidConnect
                             client_id: @authorize_form.client_id,
                             errors: @authorize_form.errors.messages)
 
+      return create if already_allowed?
+
       render(success ? :index : :error)
     end
 
@@ -37,6 +39,10 @@ module OpenidConnect
     end
 
     private
+
+    def already_allowed?
+      IdentityLinker.new(current_user, @authorize_form.client_id).already_linked?
+    end
 
     def apply_secure_headers_override
       override_content_security_policy_directives(
