@@ -246,30 +246,11 @@ describe Verify::SessionsController do
     end
 
     describe '#destroy' do
-      it 'clears the idv session' do
+      it 'clears the idv session and returns the user to their profile' do
         delete :destroy
 
         expect(controller.user_session[:idv]).to eq({})
-      end
-
-      context 'user has a recovery code' do
-        it 'redirects user to profile' do
-          session = { idv: {}, first_time_recovery_code_view: true }
-          allow(controller).to receive(:user_session).and_return(session)
-
-          delete :destroy
-          expect(response).to redirect_to(profile_path)
-        end
-      end
-
-      context 'user does not have a recovery code' do
-        it 'redirects user to recovery code page' do
-          session = { idv: {}, first_time_recovery_code_view: false }
-          allow(controller).to receive(:user_session).and_return(session)
-
-          delete :destroy
-          expect(response).to redirect_to(manage_recovery_code_path)
-        end
+        expect(response).to redirect_to(profile_path)
       end
     end
   end

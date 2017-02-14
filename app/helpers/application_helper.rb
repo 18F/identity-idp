@@ -47,7 +47,7 @@ module ApplicationHelper
     sp_session && sp_session[:loa3] && current_user.recovery_code.present?
   end
 
-  def loa_no_js_fallabck_link
+  def loa_no_js_fallback_link
     if loa1_signup_context?
       destroy_user_path
     elsif loa3_context?

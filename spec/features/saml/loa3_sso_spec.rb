@@ -36,10 +36,7 @@ feature 'LOA3 Single Sign On' do
   context 'canceling verification', js: true do
     it 'returns user to profile page if they have previously signed up' do
       sign_in_and_2fa_user
-
-      loa3_sp_session do |session|
-        session['warden.user.user.session'][:first_time_recovery_code_view] = true
-      end
+      loa3_sp_session
 
       visit verify_path
 
