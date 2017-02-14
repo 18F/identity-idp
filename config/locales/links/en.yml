@@ -13,6 +13,7 @@ en:
       fallback_to_sms_html: Send me a text message with the code instead
       fallback_to_voice_html: If you can't get text message right now, you can get a passcode via %{link}
     privacy_policy: Privacy Policy
+    remove: Remove
     resend: Resend
     sign_in: Sign in
     sign_out: Sign out
