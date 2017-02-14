@@ -1,17 +1,28 @@
-IdentityLinker = Struct.new(:user, :provider) do
-  attr_reader :identity
+class IdentityLinker
+  attr_reader :user, :provider
+
+  def initialize(user, provider)
+    @user = user
+    @provider = provider
+  end
 
   def link_identity(session_uuid: nil, **extra_attrs)
     attributes = merged_attributes(session_uuid, extra_attrs)
     identity.update!(attributes)
   end
 
+  def already_linked?
+    identity_relation.exists?
+  end
+
   private
 
   def identity
-    @identity ||= Identity.find_or_create_by(
-      service_provider: provider, user_id: user.id
-    )
+    @identity ||= identity_relation.first_or_create
+  end
+
+  def identity_relation
+    user.identities.where(service_provider: provider)
   end
 
   def merged_attributes(session_uuid, extra_attrs)
