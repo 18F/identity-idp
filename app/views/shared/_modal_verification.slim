@@ -3,10 +3,11 @@
     .mx-auto.p4.cntnr-xskinny.border-box.bg-white.rounded-xxl(class="modal-#{type}")
       h2.my2.fs-20p.sans-serif.regular.center = t("idv.modal.#{name}.heading")
       hr.mb3.bw4.rounded
-      p = t("idv.modal.#{name}.#{type}")
-      p.mb5 = t('idv.modal.attempts_html', attempt: t('idv.modal.attempts', count: attempts))
+      .mb5
+        p = @presenter.message
+        - if type == 'warning'
+          p= t('idv.modal.attempts_html', attempt: t('idv.modal.attempts', count: attempts))
       .center
-        = link_to t("idv.modal.button.#{type}"), 'javascript:void(0)',
-          id: 'js-close-modal', class: 'btn btn-wide px2 py1 rounded-lg border bw2'
+        = @presenter.button
 
 == javascript_include_tag 'misc/verify-modal'

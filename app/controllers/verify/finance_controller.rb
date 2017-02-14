@@ -10,7 +10,7 @@ module Verify
     helper_method :step_name
 
     def new
-      @view_model = FinanceNew.new
+      @view_model = FinancialsNew.new
       analytics.track_event(Analytics::IDV_FINANCE_CCN_VISIT)
     end
 
@@ -21,8 +21,6 @@ module Verify
 
       if result[:success]
         redirect_to verify_phone_url
-      elsif step_attempts_exceeded?
-        redirect_to_fail_path
       else
         process_failure
       end
@@ -43,11 +41,12 @@ module Verify
     end
 
     def process_failure
-      if step.form_valid_but_vendor_validation_failed?
+      if step_attempts_exceeded?
+        show_vendor_fail
+      elsif step.form_valid_but_vendor_validation_failed?
         show_vendor_warning
-        @view_model = FinanceNew.new(modal: 'warning')
       else
-        @view_model = FinanceNew.new
+        @view_model = FinancialsNew.new
       end
 
       render_form
