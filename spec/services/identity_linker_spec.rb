@@ -59,4 +59,20 @@ describe IdentityLinker do
       expect { linker.link_identity }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
+
+  describe '#already_linked?' do
+    let(:user) { create(:user) }
+    let(:provider) { 'test.host' }
+
+    subject(:identity_linker) { IdentityLinker.new(user, provider) }
+
+    it 'is false before an identity has been linked' do
+      expect(identity_linker.already_linked?).to eq(false)
+    end
+
+    it 'is true after an identity has been linked' do
+      expect { identity_linker.link_identity }.
+        to change { identity_linker.already_linked? }.from(false).to(true)
+    end
+  end
 end
