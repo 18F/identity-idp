@@ -21,8 +21,10 @@ describe ServiceProviderController do
       ]
     end
 
-    context 'feature on' do
+    context 'feature on, correct token in headers' do
       before do
+        correct_token = '123ABC'
+        set_headers(correct_token)
         allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
         allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
           and_return(dashboard_service_providers)
@@ -52,6 +54,8 @@ describe ServiceProviderController do
 
       context 'with CSRF protection enabled' do
         before do
+          correct_token = '123ABC'
+          set_headers(correct_token)
           ActionController::Base.allow_forgery_protection = true
         end
 
@@ -65,6 +69,23 @@ describe ServiceProviderController do
           expect(response.status).to eq(200)
         end
       end
+    end
+
+    context 'incorrect token in header' do
+      before do
+        incorrect_token = 'BAD'
+        set_headers(incorrect_token)
+      end
+
+      it 'returns a 401' do
+        post :update
+
+        expect(response.status).to eq 401
+      end
+    end
+
+    def set_headers(token)
+      request.headers['X-LOGIN-DASHBOARD-TOKEN'] = token
     end
   end
 end
