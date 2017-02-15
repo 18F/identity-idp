@@ -1,6 +1,18 @@
 ---
 en:
   idv:
+    buttons:
+      continue: Continue identity verification
+      cancel: Cancel and return to your profile
+    cancel:
+      modal_header: Are you sure you want to cancel?
+      warning_header: If you cancel now
+      warning_points:
+        - We won’t be able to verify your identity
+        - We won't keep a record of your name, address, birth date, or Social Security number
+        - You won't be able to securely access your information using login.gov
+        - You’ll still have a login.gov account for your email address
+        - You can manage that account on your profile page
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.

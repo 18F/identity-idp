@@ -7,7 +7,7 @@ describe UsersController do
 
       expect { delete :destroy }.to change(User, :count).by(-1)
       expect(response).to redirect_to(root_url)
-      expect(flash.now[:success]).to eq t('loa1.cancel.success')
+      expect(flash.now[:success]).to eq t('sign_up.cancel.success')
     end
   end
 end

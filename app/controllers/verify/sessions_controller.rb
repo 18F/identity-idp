@@ -30,7 +30,7 @@ module Verify
 
     def destroy
       user_session[:idv].clear
-      redirect_to profile_path
+      handle_idv_redirect
     end
 
     private
@@ -49,6 +49,11 @@ module Verify
         idv_session: idv_session,
         params: profile_params
       )
+    end
+
+    def handle_idv_redirect
+      redirect_to profile_path and return if current_user.recovery_code.present?
+      redirect_to manage_recovery_code_path
     end
 
     def process_success

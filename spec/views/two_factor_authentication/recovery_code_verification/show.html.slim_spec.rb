@@ -1,6 +1,12 @@
 require 'rails_helper'
 
 describe 'two_factor_authentication/recovery_code_verification/show.html.slim' do
+  let(:user) { build_stubbed(:user, :signed_up) }
+
+  before do
+    allow(view).to receive(:current_user).and_return(user)
+  end
+
   it_behaves_like 'an otp form'
 
   it 'has a localized title' do

@@ -1,7 +1,7 @@
 import Modal from '../app/components/modal';
 
-const modal = new Modal({ el: '#sp-loa-cancel' });
-const modalTrigger = document.getElementById('loa-cancel');
+const modal = new Modal({ el: '#cancel-action-modal' });
+const modalTrigger = document.getElementById('auth-flow-cancel');
 const modalDismiss = document.getElementById('loa-continue');
 
 modalTrigger.addEventListener('click', (event) => {

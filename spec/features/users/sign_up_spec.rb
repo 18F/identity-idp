@@ -16,22 +16,22 @@ feature 'Sign Up' do
     context 'sp loa1' do
       it 'allows the user to toggle the modal' do
         begin_sign_up_with_sp_and_loa(loa3: false)
-        expect(page).to have_xpath("//div[@id='sp-loa-cancel'][@class='hide']")
+        expect(page).not_to have_xpath("//div[@id='cancel-action-modal']")
 
         click_on t('links.cancel')
-        expect(page).to have_xpath("//div[@id='sp-loa-cancel']")
+        expect(page).to have_xpath("//div[@id='cancel-action-modal']")
 
-        click_on t('loa1.buttons.continue')
-        expect(page).to have_xpath("//div[@id='sp-loa-cancel'][@class='hide']")
+        click_on t('sign_up.buttons.continue')
+        expect(page).not_to have_xpath("//div[@id='cancel-action-modal']")
       end
 
       it 'allows the user to delete their account and returns them to the home page' do
         user = begin_sign_up_with_sp_and_loa(loa3: false)
         click_on t('links.cancel')
 
-        click_on t('loa1.buttons.cancel')
+        click_on t('sign_up.buttons.cancel')
 
-        expect(page).to have_content t('loa1.cancel.success')
+        expect(page).to have_content t('sign_up.cancel.success')
         expect(page).to have_content(t('headings.sign_in_with_sp',
                                        sp: 'Your friendly Government Agency'))
         expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
@@ -44,7 +44,7 @@ feature 'Sign Up' do
 
         click_on t('links.cancel')
 
-        expect(page).to have_xpath("//input[@value=\"#{t('loa1.buttons.cancel')}\"]")
+        expect(page).to have_xpath("//input[@value=\"#{t('sign_up.buttons.cancel')}\"]")
       end
     end
   end

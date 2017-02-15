@@ -39,18 +39,19 @@ module ApplicationHelper
     session[:sp]
   end
 
-  def loa1_signup_context?
-    sp_session && current_user && !current_user.recovery_code.present?
+  def user_signing_up?
+    !current_user || !current_user.two_factor_enabled?
   end
 
-  def loa3_context?
-    sp_session && sp_session[:loa3] && current_user.recovery_code.present?
+  def user_verifying_identity?
+    return unless current_user
+    sp_session && sp_session[:loa3] && current_user.two_factor_enabled?
   end
 
-  def loa_no_js_fallback_link
-    if loa1_signup_context?
+  def sign_up_or_idv_no_js_link
+    if user_signing_up?
       destroy_user_path
-    elsif loa3_context?
+    elsif user_verifying_identity?
       verify_session_path
     end
   end

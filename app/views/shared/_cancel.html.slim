@@ -1,9 +1,9 @@
-- cancel = loa_no_js_fallback_link || link
+- cancel = sign_up_or_idv_no_js_link || link
 
 .mt2.pt1.border-top
-  - if loa1_signup_context? || loa3_context?
+  - if user_signing_up? || user_verifying_identity?
     = button_to t('links.cancel'), cancel, method: :delete,
-      class: 'btn btn-link', id: 'loa-cancel'
-    = render 'shared/loa_modal', loa3: loa3_context?
+      class: 'btn btn-link', id: 'auth-flow-cancel'
+    = render 'shared/cancel_action_modal', idv: user_verifying_identity?
   - else
     = link_to t('links.cancel'), cancel, class: 'h5'
