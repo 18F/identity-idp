@@ -20,19 +20,21 @@ class OpenidConnectUserInfoPresenter
 
   private
 
+  # rubocop:disable Metrics/AbcSize
   def loa3_attributes
-    phone = loa3_data.phone
+    phone = stringify_attr(loa3_data.phone)
 
     {
-      given_name: loa3_data.first_name,
-      family_name: loa3_data.last_name,
-      middle_name: loa3_data.middle_name,
-      birthdate: loa3_data.dob,
+      given_name: stringify_attr(loa3_data.first_name),
+      family_name: stringify_attr(loa3_data.last_name),
+      middle_name: stringify_attr(loa3_data.middle_name),
+      birthdate: stringify_attr(loa3_data.dob),
       address: address,
       phone: phone,
       phone_verified: phone.present? ? true : nil,
     }
   end
+  # rubocop:enable Metrics/AbcSize
 
   def address
     return nil if loa3_data.address1.blank?
@@ -40,9 +42,9 @@ class OpenidConnectUserInfoPresenter
     {
       formatted: formatted_address,
       street_address: street_address,
-      locality: loa3_data.city,
-      region: loa3_data.state,
-      postal_code: loa3_data.zipcode,
+      locality: stringify_attr(loa3_data.city),
+      region: stringify_attr(loa3_data.state),
+      postal_code: stringify_attr(loa3_data.zipcode),
     }
   end
 
@@ -55,6 +57,10 @@ class OpenidConnectUserInfoPresenter
 
   def street_address
     [loa3_data.address1, loa3_data.address2].compact.join(' ')
+  end
+
+  def stringify_attr(attribute)
+    attribute.to_s.presence
   end
 
   def loa3_data
