@@ -1,3 +1,13 @@
+.modal-backdrop {
+  background-color: rgba(91, 97, 106, .95);
+  display: table;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 .modal-open {
   overflow: hidden;
 
@@ -26,54 +36,47 @@
 
 .modal-content {
   display: table-cell;
-  vertical-align: middle;
-}
+  vertical-align: top;
 
-// IE the backdrop
-.modal-cntnr {
-  background-color: rgba(91, 97, 106, .95);
-  display: table;
-  height: 100%;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
-.modal-inner {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-
-  &.key-badge::before {
-    background-image: url(image-path('p-key.svg'));
-    background-repeat: no-repeat;
-    content: '';
-    height: 60px;
-    left: 45%;
-    position: absolute;
-    top: -25px;
-    width: 60px;
-  }
-
-  [class*="modal-"]::before {
-    background-repeat: no-repeat;
-    content: '';
+  [class^='cntnr'],
+  [class*=' cntnr'] {
     display: block;
-    height: 48px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
-    width: 48px;
+
+    &.key-badge::before {
+      background-image: url(image-path('p-key.svg'));
+      background-repeat: no-repeat;
+      content: '';
+      height: 60px;
+      left: 45%;
+      position: absolute;
+      top: -25px;
+      width: 60px;
+    }
+
+    &[class^='modal-']::before,
+    &[class*=' modal-']::before {
+      background-repeat: no-repeat;
+      content: '';
+      display: block;
+      height: 48px;
+      margin: 0 auto;
+      position: relative;
+      width: 48px;
+    }
+
+    hr {
+      width: 7.5rem;
+    }
+
   }
 
-  hr {
-    width: 7.5rem;
-  }
 }
 
 @media #{$breakpoint-sm} {
-  .modal-cntnr > .modal-inner {
+  .modal-content {
     vertical-align: middle;
   }
 }
