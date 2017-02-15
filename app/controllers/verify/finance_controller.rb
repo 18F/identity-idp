@@ -1,16 +1,15 @@
 module Verify
   class FinanceController < ApplicationController
     include IdvStepConcern
+    include IdvFailureConcern
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
 
     helper_method :idv_finance_form
-    helper_method :remaining_step_attempts
-    helper_method :step_name
 
     def new
-      @view_model = FinancialsNew.new
+      @view_model = Verify::FinancialsNew.new(remaining_attempts: remaining_step_attempts)
       analytics.track_event(Analytics::IDV_FINANCE_CCN_VISIT)
     end
 
@@ -22,7 +21,8 @@ module Verify
       if result[:success]
         redirect_to verify_phone_url
       else
-        process_failure
+        render_failure
+        render_form
       end
     end
 
@@ -40,16 +40,8 @@ module Verify
       )
     end
 
-    def process_failure
-      if step_attempts_exceeded?
-        show_vendor_fail
-      elsif step.form_valid_but_vendor_validation_failed?
-        show_vendor_warning
-      else
-        @view_model = FinancialsNew.new
-      end
-
-      render_form
+    def view_model(error: nil)
+      Verify::FinancialsNew.new(error: error, remaining_attempts: remaining_step_attempts)
     end
 
     def step_params

@@ -18,7 +18,7 @@ feature 'IdV session' do
     scenario 'proceed to verify identity' do
       click_link 'Yes'
 
-      expect(page).to have_content(t('idv.titles.session.basic'))
+      expect(page).to have_content(t('idv.titles.sessions'))
     end
   end
 

@@ -1,7 +1,7 @@
 - title @view_model.title
 = render @view_model.mock_vendor_partial
 
-h1.h3.my0 = t('idv.titles.session.basic')
+h1.h3.my0 = t('idv.titles.sessions')
 = simple_form_for(idv_profile_form, url: verify_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
@@ -59,8 +59,6 @@ h1.h3.my0 = t('idv.titles.session.basic')
   .mt5
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
 = render 'shared/cancel', link: verify_cancel_path
-
-= render @view_model.modal_partial, attempts: remaining_idv_attempts, name: step_name,
-  type: @view_model.modal_type
+= render @view_model.modal_partial, view_model: @view_model
 
 == javascript_include_tag 'misc/previous-address'
