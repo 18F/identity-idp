@@ -1,3 +1,13 @@
+.modal-backdrop {
+  background-color: rgba(91, 97, 106, .95);
+  display: table;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 .modal-open {
   overflow: hidden;
 
@@ -26,7 +36,7 @@
 
 .modal-content {
   display: table-cell;
-  vertical-align: middle;
+  vertical-align: top;
 
   [class^='cntnr'],
   [class*=' cntnr'] {
@@ -65,19 +75,8 @@
 
 }
 
-// IE the backdrop
-.modal-cntnr {
-  background-color: rgba(91, 97, 106, .95);
-  display: table;
-  height: 100%;
-  left: 0;
-  position: fixed;
-  top: 0;
-  width: 100%;
-}
-
 @media #{$breakpoint-sm} {
-  .modal-cntnr > .modal-inner {
+  .modal-content {
     vertical-align: middle;
   }
 }
