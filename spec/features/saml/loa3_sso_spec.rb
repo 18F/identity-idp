@@ -43,7 +43,8 @@ feature 'LOA3 Single Sign On' do
 
       click_on t('links.cancel')
       click_on t('idv.buttons.cancel')
-      expect(current_url).to match(/recovery_code/)
+
+      expect(current_path).to eq(manage_recovery_code_path)
     end
 
     it 'returns user to profile page if they have previously signed up' do

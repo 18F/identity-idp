@@ -50,10 +50,15 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'user signed up' do
-      it 'provides an option to use a recovery code' do
-        build_stubbed(:user, :signed_up)
+      before do
+        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        allow(view).to receive(:current_user).and_return(user)
         render
+      end
 
+      it_behaves_like 'an otp form'
+
+      it 'provides an option to use a recovery code' do
         expect(rendered).to have_link(
           t('devise.two_factor_authentication.recovery_code_fallback.link'),
           href: login_two_factor_recovery_code_path
