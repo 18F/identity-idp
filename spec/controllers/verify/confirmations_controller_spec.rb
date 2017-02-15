@@ -8,11 +8,16 @@ describe Verify::ConfirmationsController do
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
   let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
+  let(:normalized_applicant) { Proofer::Applicant.new first_name: 'Somebody' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
   let(:profile) do
     user.unlock_user_access_key(password)
-    Idv::ProfileFromApplicant.create(applicant, user)
+    Idv::ProfileFromApplicant.create(
+      applicant: applicant,
+      user: user,
+      normalized_applicant: normalized_applicant
+    )
   end
 
   describe 'before_actions' do
@@ -59,7 +64,7 @@ describe Verify::ConfirmationsController do
       end
 
       it 'sets recovery code instance variable' do
-        subject.idv_session.cache_applicant_profile_id(applicant)
+        subject.idv_session.cache_applicant_profile_id
         code = subject.idv_session.recovery_code
         get :index
 
