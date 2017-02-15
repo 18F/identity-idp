@@ -61,11 +61,13 @@ shared_examples_for 'recovery code page' do
       end
 
       scenario 'modal opens when continue is clicked' do
-        expect(page).to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
+        expect(page).to have_xpath(
+          "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
+        )
 
         click_acknowledge_recovery_code
 
-        expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
+        expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
         expect(page).not_to have_xpath("//#{invisible_selector}[@id='recovery-code']")
       end
 
@@ -76,7 +78,9 @@ shared_examples_for 'recovery code page' do
         end
 
         scenario 'modal closes when back button within modal is clicked' do
-          expect(page).to have_xpath("//div[@id='personal-key-confirm'][@class='hide']")
+          expect(page).to have_xpath(
+            "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
+          )
         end
 
         scenario 'warning alert message appears' do
