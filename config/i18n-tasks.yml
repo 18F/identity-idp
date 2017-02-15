@@ -99,6 +99,7 @@ ignore_unused:
   - 'event_types.*'
   - 'idv.errors.pattern_mismatch.*'
   - 'idv.modal.*'
+  - 'links.remove'
   - 'valid_email.validations.email.invalid'
   - 'zxcvbn.*'
   - 'instructions.2fa.{sms,voice}.fallback_html'
