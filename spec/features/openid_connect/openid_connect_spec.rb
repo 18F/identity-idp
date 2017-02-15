@@ -10,15 +10,17 @@ feature 'OpenID Connect' do
       visit openid_connect_authorize_path(
         client_id: client_id,
         response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
+        acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email profile',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: state,
         prompt: 'select_account',
         nonce: nonce
       )
 
-      user = sign_in_live_with_2fa
+      user = create(:profile, :active, :verified, pii: { first_name: 'John' }).user
+
+      sign_in_live_with_2fa(user)
       expect(page.response_headers['Content-Security-Policy']).
         to(include('form-action \'self\' http://localhost:7654'))
       click_button t('openid_connect.authorization.index.allow')
@@ -63,9 +65,10 @@ feature 'OpenID Connect' do
       expect(sub).to be_present
       expect(decoded_id_token[:nonce]).to eq(nonce)
       expect(decoded_id_token[:aud]).to eq(client_id)
-      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
+      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:iss]).to eq(root_url)
       expect(decoded_id_token[:email]).to eq(user.email)
+      expect(decoded_id_token[:given_name]).to eq('John')
 
       access_token = token_response[:access_token]
       expect(access_token).to be_present
@@ -77,6 +80,7 @@ feature 'OpenID Connect' do
       userinfo_response = JSON.parse(page.body).with_indifferent_access
       expect(userinfo_response[:sub]).to eq(sub)
       expect(userinfo_response[:email]).to eq(user.email)
+      expect(userinfo_response[:given_name]).to eq('John')
     end
 
     it 'auto-allows with a second authorization and sets the correct CSP headers' do
