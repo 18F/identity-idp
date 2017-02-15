@@ -14,6 +14,7 @@ FeatureEnvy:
     - mark_profile_inactive
     - EncryptedSidekiqRedis#zrem
     - UserDecorator#should_acknowledge_recovery_code?
+    - Pii::Attributes#[]=
 IrresponsibleModule:
   enabled: false
 ManualDispatch:

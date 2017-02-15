@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require 'proofer/vendor/mock'
+
 describe Verify::ReviewController do
   let(:user) do
     create(
@@ -9,6 +11,8 @@ describe Verify::ReviewController do
       email: 'old_email@example.com'
     )
   end
+  let(:raw_zipcode) { '66044' }
+  let(:norm_zipcode) { '66044-1234' }
   let(:user_attrs) do
     {
       first_name: 'Some',
@@ -19,7 +23,7 @@ describe Verify::ReviewController do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044',
+      zipcode: raw_zipcode,
       phone: user.phone,
       ccn: '12345678',
     }
@@ -29,6 +33,13 @@ describe Verify::ReviewController do
     idv_session.profile_confirmation = true
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
+    idv_session.resolution = Proofer::Resolution.new(
+      success: true,
+      vendor_resp: Proofer::Vendor::MockResponse.new(
+        normalized_applicant: Proofer::Applicant.new(user_attrs.merge(zipcode: norm_zipcode))
+      ),
+      session_id: 'some-session'
+    )
     idv_session
   end
 
@@ -195,6 +206,17 @@ describe Verify::ReviewController do
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
         expect(response).to redirect_to verify_confirmations_path
+      end
+
+      it 'creates Profile with applicant and normalized_applicant attributes' do
+        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
+
+        profile = idv_session.profile
+        uak = user.unlock_user_access_key(ControllerHelper::VALID_PASSWORD)
+        pii = profile.decrypt_pii(uak)
+
+        expect(pii.zipcode.raw).to eq raw_zipcode
+        expect(pii.zipcode.norm).to eq norm_zipcode
       end
     end
 
