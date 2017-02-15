@@ -138,9 +138,8 @@ en:
         no_pii: Do not use real personal information (demo purposes only)
     modal:
       attempts:
-        one: 1 attempt
-        other: "%{count} attempts"
-      attempts_html: You have <strong>%{attempt} remaining.</strong>
+        one: You have <strong>1 attempt remaining.</strong>
+        other: You have <strong>%{count} attempts remaining.</strong>
       button:
         fail: Okay
         warning: Try again
@@ -175,12 +174,12 @@ en:
       dupe: 'Error: An account may already exist'
       expectations: Next, help us identify you
       fail: We were unable to verify your identity
+      financials: Provide a financial account number
       hardfail: We were unable to verify your identity
       intro: Help us identify you
       phone: Phone number of record
       review: Review and submit
+      sessions: First, tell us about yourself
       session:
-        basic: First, tell us about yourself
-        finance: Provide a financial account number
         phone: What is your phone number?
         review: Save your verified data by entering your password

@@ -149,10 +149,7 @@ describe Verify::SessionsController do
           post :create, profile: bad_attrs
 
           expect(flash[:warning]).to match t('idv.modal.sessions.heading')
-          expect(flash[:warning]).to match t(
-            'idv.modal.attempts_html',
-            attempt: t('idv.modal.attempts', count: max_attempts - 1)
-          )
+          expect(flash[:warning]).to match(t('idv.modal.attempts', count: max_attempts - 1))
           expect(response).to render_template(:new)
         end
 
