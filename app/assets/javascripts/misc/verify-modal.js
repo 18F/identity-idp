@@ -2,7 +2,7 @@ import 'classlist.js';
 
 function verifyModal() {
   const flash = document.querySelector('.alert');
-  const modal = document.querySelector('.modal-cntnr');
+  const modal = document.getElementById('verification-modal');
   const close = document.getElementById('js-close-modal');
 
   if (flash) flash.classList.add('display-none');

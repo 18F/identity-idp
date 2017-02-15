@@ -20,13 +20,13 @@ let isInvalidForm = false;
 function setInvalidHTML() {
   if (isInvalidForm) return;
 
-  document.getElementById('recovery-code-alert').classList.remove('hide');
+  document.getElementById('recovery-code-alert').classList.remove('display-none');
 
   isInvalidForm = true;
 }
 
 function unsetInvalidHTML() {
-  document.getElementById('recovery-code-alert').classList.add('hide');
+  document.getElementById('recovery-code-alert').classList.add('display-none');
 
   isInvalidForm = false;
 }
@@ -64,9 +64,9 @@ function handleSubmit(event) {
 }
 
 function showReminderAlert() {
-  if (reminderEl.className.indexOf('invisible')) {
+  if (reminderEl.className.indexOf('display-none')) {
     reminderEl.setAttribute('aria-hidden', false);
-    reminderEl.classList.remove('invisible');
+    reminderEl.classList.remove('display-none');
   }
 }
 

@@ -37,7 +37,7 @@ class Modal {
     const el = target || this.el;
 
     this.shown = showing;
-    el.classList[showing ? 'remove' : 'add'](STATES.HIDE);
+    el.classList[showing ? 'remove' : 'add']('display-none');
     document.body.classList[showing ? 'add' : 'remove']('modal-open');
   }
 
