@@ -44,13 +44,12 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(result[:client_id]).to eq(client_id)
       end
 
-      it 'links an identity for this client with the given session id as the code' do
+      it 'links an identity for this client with the code as the session_uuid' do
         redirect_uri = URI(result[:redirect_uri])
         code = Rack::Utils.parse_nested_query(redirect_uri.query).with_indifferent_access[:code]
-        expect(code).to eq(rails_session_id)
 
         identity = user.identities.where(service_provider: client_id).first
-        expect(identity.session_uuid).to eq(rails_session_id)
+        expect(identity.session_uuid).to eq(code)
         expect(identity.nonce).to eq(nonce)
       end
 

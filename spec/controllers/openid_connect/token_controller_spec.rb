@@ -14,7 +14,7 @@ RSpec.describe OpenidConnect::TokenController do
 
     let(:user) { create(:user) }
     let(:grant_type) { 'authorization_code' }
-    let(:code) { SecureRandom.hex }
+    let(:code) { identity.session_uuid }
     let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
     let(:client_assertion) do
       jwt_payload = {
@@ -30,8 +30,8 @@ RSpec.describe OpenidConnect::TokenController do
       JWT.encode(jwt_payload, client_private_key, 'RS256')
     end
 
-    before do
-      IdentityLinker.new(user, client_id).link_identity(session_uuid: code, ial: 1)
+    let!(:identity) do
+      IdentityLinker.new(user, client_id).link_identity(rails_session_id: SecureRandom.hex, ial: 1)
     end
 
     context 'with valid params' do

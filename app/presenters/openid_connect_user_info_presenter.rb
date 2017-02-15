@@ -60,7 +60,7 @@ class OpenidConnectUserInfoPresenter
   def loa3_data
     @loa3_data ||= begin
       if loa3_session?
-        Pii::SessionStore.new(identity.session_uuid).load
+        Pii::SessionStore.new(identity.rails_session_id).load
       else
         Pii::Attributes.new_from_hash({})
       end
