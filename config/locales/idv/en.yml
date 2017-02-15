@@ -29,6 +29,8 @@ en:
       password: Password
       personal_details: Personal details
       phone: Phone
+      previous_address_add: Add previous address
+      previous_address_html: Moved in the <strong>last 3 months</strong>?
       select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State

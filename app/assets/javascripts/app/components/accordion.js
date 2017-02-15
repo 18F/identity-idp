@@ -25,13 +25,13 @@ class Accordion {
       const { animationName } = event;
 
       if (animationName === 'accordionOut') {
-        this.content.classList.add('invisible');
+        this.content.classList.add('display-none');
       }
     });
   }
 
   onInitialize() {
-    this.content.classList.add('invisible');
+    this.content.classList.add('display-none');
     this.el.setAttribute('aria-expanded', 'false');
     this.content.setAttribute('aria-hidden', 'true');
     this.content.classList.remove('accordion-init');
@@ -51,7 +51,7 @@ class Accordion {
   open() {
     this.el.setAttribute('aria-expanded', 'true');
     this.content.setAttribute('aria-hidden', 'false');
-    this.content.classList.remove('invisible');
+    this.content.classList.remove('display-none');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
   }
