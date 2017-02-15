@@ -22,10 +22,6 @@ class ServiceProviderController < ApplicationController
   end
 
   def authorization_token
-    @authorization_token ||= authorization_header
-  end
-
-  def authorization_header
     request.headers['X-LOGIN-DASHBOARD-TOKEN']
   end
 end
