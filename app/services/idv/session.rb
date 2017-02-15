@@ -38,8 +38,12 @@ module Idv
       resolution.present? && applicant.present? && resolution.success?
     end
 
-    def cache_applicant_profile_id(applicant)
-      profile = Idv::ProfileFromApplicant.create(applicant, current_user)
+    def cache_applicant_profile_id
+      profile = Idv::ProfileFromApplicant.create(
+        applicant: applicant,
+        normalized_applicant: resolution.vendor_resp.normalized_applicant,
+        user: current_user
+      )
       self.profile_id = profile.id
       self.recovery_code = profile.recovery_code
     end
