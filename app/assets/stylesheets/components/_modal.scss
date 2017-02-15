@@ -27,6 +27,42 @@
 .modal-content {
   display: table-cell;
   vertical-align: middle;
+
+  [class^='cntnr'],
+  [class*=' cntnr'] {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+
+    &.key-badge::before {
+      background-image: url(image-path('p-key.svg'));
+      background-repeat: no-repeat;
+      content: '';
+      height: 60px;
+      left: 45%;
+      position: absolute;
+      top: -25px;
+      width: 60px;
+    }
+
+    &[class^='modal-']::before,
+    &[class*=' modal-']::before {
+      background-repeat: no-repeat;
+      content: '';
+      display: block;
+      height: 48px;
+      margin: 0 auto;
+      position: relative;
+      width: 48px;
+    }
+
+    hr {
+      width: 7.5rem;
+    }
+
+  }
+
 }
 
 // IE the backdrop
@@ -38,38 +74,6 @@
   position: fixed;
   top: 0;
   width: 100%;
-}
-
-.modal-inner {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-
-  &.key-badge::before {
-    background-image: url(image-path('p-key.svg'));
-    background-repeat: no-repeat;
-    content: '';
-    height: 60px;
-    left: 45%;
-    position: absolute;
-    top: -25px;
-    width: 60px;
-  }
-
-  [class*="modal-"]::before {
-    background-repeat: no-repeat;
-    content: '';
-    display: block;
-    height: 48px;
-    margin: 0 auto;
-    position: relative;
-    width: 48px;
-  }
-
-  hr {
-    width: 7.5rem;
-  }
 }
 
 @media #{$breakpoint-sm} {
