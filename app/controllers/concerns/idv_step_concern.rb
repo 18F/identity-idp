@@ -17,20 +17,6 @@ module IdvStepConcern
     idv_session.step_attempts[step_name] += 1
   end
 
-  def show_vendor_fail
-    @view_model = Object.const_get("#{step_name.capitalize}New").new(modal: 'fail')
-    @presenter = VerificationPresenter.new(step_name, @view_model.modal_type)
-    flash.now[:error] = @presenter.fail_message
-  end
-
-  def show_vendor_warning
-    @view_model = Object.const_get("#{step_name.capitalize}New").new(modal: 'warning')
-    @presenter = VerificationPresenter.new(
-      step_name, @view_model.modal_type, remaining_step_attempts: remaining_step_attempts
-    )
-    flash.now[:warning] = @presenter.warning_message
-  end
-
   def remaining_step_attempts
     Idv::Attempter.idv_max_attempts - idv_session.step_attempts[step_name]
   end

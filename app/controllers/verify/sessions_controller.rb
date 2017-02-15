@@ -1,6 +1,7 @@
 module Verify
   class SessionsController < ApplicationController
     include IdvSession
+    include IdvFailureConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
@@ -8,12 +9,12 @@ module Verify
     before_action :confirm_step_needed
 
     helper_method :idv_profile_form
-    helper_method :remaining_idv_attempts
-    helper_method :step_name
     helper_method :step
 
+    delegate :attempts_exceeded?, to: :step, prefix: true
+
     def new
-      @view_model = SessionsNew.new
+      @view_model = Verify::SessionsNew.new(remaining_attempts: remaining_idv_attempts)
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
@@ -62,33 +63,13 @@ module Verify
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
-        process_vendor_error
+        render_failure
         render :new
       end
     end
 
-    def process_vendor_error
-      if step.attempts_exceeded?
-        show_vendor_fail
-      elsif step.form_valid_but_vendor_validation_failed?
-        show_vendor_warning
-      else
-        @view_model = SessionsNew.new
-      end
-    end
-
-    def show_vendor_fail
-      @view_model = SessionsNew.new(modal: 'fail')
-      @presenter = VerificationPresenter.new(step_name, @view_model.modal_type)
-      flash.now[:error] = @presenter.fail_message
-    end
-
-    def show_vendor_warning
-      @view_model = SessionsNew.new(modal: 'warning')
-      @presenter = VerificationPresenter.new(
-        step_name, @view_model.modal_type, remaining_step_attempts: remaining_idv_attempts
-      )
-      flash.now[:warning] = @presenter.warning_message
+    def view_model(error: nil)
+      Verify::SessionsNew.new(error: error, remaining_attempts: remaining_idv_attempts)
     end
 
     def remaining_idv_attempts

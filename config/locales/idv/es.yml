@@ -106,7 +106,6 @@ es:
       attempts:
         one: NOT TRANSLATED YET
         other: NOT TRANSLATED YET
-      attempts_html: NOT TRANSLATED YET
       button:
         fail: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
@@ -134,12 +133,12 @@ es:
       dupe: NOT TRANSLATED YET
       expectations: NOT TRANSLATED YET
       fail: NOT TRANSLATED YET
+      financials: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       review: NOT TRANSLATED YET
+      sessions: NOT TRANSLATED YET
       session:
-        basic: NOT TRANSLATED YET
-        finance: NOT TRANSLATED YET
         phone: NOT TRANSLATED YET
         review: NOT TRANSLATED YET
