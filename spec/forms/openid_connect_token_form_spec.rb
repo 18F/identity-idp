@@ -16,7 +16,7 @@ RSpec.describe OpenidConnectTokenForm do
   end
 
   let(:grant_type) { 'authorization_code' }
-  let(:code) { SecureRandom.hex }
+  let(:code) { identity.session_uuid }
   let(:code_verifier) { nil }
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
   let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
@@ -39,11 +39,11 @@ RSpec.describe OpenidConnectTokenForm do
 
   let(:user) { create(:user) }
 
-  before do
+  let!(:identity) do
     IdentityLinker.new(user, client_id).
       link_identity(
         nonce: nonce,
-        session_uuid: code,
+        rails_session_id: SecureRandom.hex,
         ial: 1,
         code_challenge: code_challenge
       )
@@ -230,7 +230,7 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with valid params' do
       before do
-        Pii::SessionStore.new(code).put({}, 5.minutes.to_i)
+        Pii::SessionStore.new(identity.rails_session_id).put({}, 5.minutes.to_i)
       end
 
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do

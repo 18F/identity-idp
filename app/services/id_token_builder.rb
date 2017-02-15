@@ -53,7 +53,7 @@ class IdTokenBuilder
   end
 
   def expires
-    ttl = Pii::SessionStore.new(identity.session_uuid).ttl
+    ttl = Pii::SessionStore.new(identity.rails_session_id).ttl
     Time.zone.now.to_i + ttl
   end
 end

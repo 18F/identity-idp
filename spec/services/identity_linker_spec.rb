@@ -26,14 +26,14 @@ describe IdentityLinker do
     end
 
     it 'can take an additional optional attributes' do
-      session_uuid = SecureRandom.hex
+      rails_session_id = SecureRandom.hex
       nonce = SecureRandom.hex
       ial = 3
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
 
       IdentityLinker.new(user, 'test.host').link_identity(
-        session_uuid: session_uuid,
+        rails_session_id: rails_session_id,
         nonce: nonce,
         ial: ial,
         scope: scope,
@@ -43,7 +43,7 @@ describe IdentityLinker do
 
       last_identity = user.last_identity
       expect(last_identity.nonce).to eq(nonce)
-      expect(last_identity.session_uuid).to eq(session_uuid)
+      expect(last_identity.rails_session_id).to eq(rails_session_id)
       expect(last_identity.ial).to eq(ial)
       expect(last_identity.scope).to eq(scope)
       expect(last_identity.code_challenge).to eq(code_challenge)
@@ -57,6 +57,13 @@ describe IdentityLinker do
     it 'fails when given a nil provider' do
       linker = IdentityLinker.new(user, nil)
       expect { linker.link_identity }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'can link two different clients to the same rails_session_id' do
+      rails_session_id = SecureRandom.uuid
+
+      IdentityLinker.new(user, 'client1').link_identity(rails_session_id: rails_session_id)
+      IdentityLinker.new(user, 'client2').link_identity(rails_session_id: rails_session_id)
     end
   end
 

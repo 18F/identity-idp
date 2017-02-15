@@ -44,12 +44,14 @@ class OpenidConnectAuthorizeForm
   end
 
   def submit(user, rails_session_id)
-    result_uri = valid? ? success_redirect_uri(rails_session_id) : error_redirect_uri
+    success = valid?
 
-    link_identity_to_client_id(user, rails_session_id) if valid?
+    link_identity_to_client_id(user, rails_session_id) if success
+
+    result_uri = success ? success_redirect_uri : error_redirect_uri
 
     {
-      success: valid?,
+      success: success,
       redirect_uri: result_uri,
       client_id: client_id,
       errors: errors.messages,
@@ -65,6 +67,8 @@ class OpenidConnectAuthorizeForm
   end
 
   private
+
+  attr_reader :identity
 
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
@@ -101,9 +105,9 @@ class OpenidConnectAuthorizeForm
 
   def link_identity_to_client_id(current_user, rails_session_id)
     identity_linker = IdentityLinker.new(current_user, client_id)
-    identity_linker.link_identity(
+    @identity = identity_linker.link_identity(
       nonce: nonce,
-      session_uuid: rails_session_id,
+      rails_session_id: rails_session_id,
       ial: ial,
       scope: scope.join(' '),
       code_challenge: code_challenge
@@ -119,8 +123,8 @@ class OpenidConnectAuthorizeForm
     end
   end
 
-  def success_redirect_uri(rails_session_id)
-    URIService.add_params(redirect_uri, code: rails_session_id, state: state)
+  def success_redirect_uri
+    URIService.add_params(redirect_uri, code: identity.session_uuid, state: state)
   end
 
   def error_redirect_uri
