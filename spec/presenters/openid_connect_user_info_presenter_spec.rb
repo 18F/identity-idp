@@ -67,6 +67,12 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               )
             end
           end
+
+          it 'renders values as simple strings as json' do
+            json = user_info.as_json
+
+            expect(json['given_name']).to eq('John')
+          end
         end
 
         context 'when the scope only includes minimal attributes' do
