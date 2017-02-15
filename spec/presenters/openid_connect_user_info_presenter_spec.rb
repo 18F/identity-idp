@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe OpenidConnectUserInfoPresenter do
   include Rails.application.routes.url_helpers
 
-  let(:session_uuid) { SecureRandom.uuid }
+  let(:rails_session_id) { SecureRandom.uuid }
   let(:scope) { 'openid email address phone profile' }
   let(:identity) do
     build(:identity,
-          session_uuid: session_uuid,
+          rails_session_id: rails_session_id,
           user: build(:user),
           scope: scope)
   end
@@ -43,7 +43,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       end
 
       before do
-        Pii::SessionStore.new(session_uuid).put(pii, 5.minutes.to_i)
+        Pii::SessionStore.new(rails_session_id).put(pii, 5.minutes.to_i)
       end
 
       context 'when the identity has loa3 access' do
