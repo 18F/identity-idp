@@ -1,7 +1,6 @@
 class UsersController < ApplicationController
   def destroy
     destroy_user
-
     flash[:success] = t('sign_up.cancel.success')
     redirect_to root_path
   end
