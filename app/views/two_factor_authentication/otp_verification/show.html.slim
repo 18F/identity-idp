@@ -11,7 +11,8 @@ p.mt-tiny.mb0#code-instructs = @presenter.help_text
   .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag(:code, '', value: @presenter.code_value, required: true,
       autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
-      'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length)
+      'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
+      autocomplete: 'off')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
 = render 'shared/fallback_links', presenter: @presenter
