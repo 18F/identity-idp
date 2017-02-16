@@ -66,6 +66,10 @@ class OpenidConnectAuthorizeForm
     sp_redirect_uri if sp_redirect_uri =~ %r{https?://}
   end
 
+  def service_provider
+    @_service_provider ||= ServiceProvider.new(client_id)
+  end
+
   private
 
   attr_reader :identity
@@ -138,10 +142,6 @@ class OpenidConnectAuthorizeForm
 
   def sp_redirect_uri
     service_provider.metadata[:redirect_uri].to_s
-  end
-
-  def service_provider
-    @_service_provider ||= ServiceProvider.new(client_id)
   end
 end
 # rubocop:enable Metrics/ClassLength

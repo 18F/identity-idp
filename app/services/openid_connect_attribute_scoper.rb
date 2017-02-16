@@ -18,6 +18,10 @@ class OpenidConnectAttributeScoper
     birthdate: 'profile',
   }.with_indifferent_access.freeze
 
+  SCOPE_ATTRIBUTE_MAP = ATTRIBUTE_SCOPE_MAP.group_by(&:last).map do |scope, attribute_scope|
+    [scope, attribute_scope.map(&:first).reject { |str| str =~ /_verified$/ }]
+  end.to_h.with_indifferent_access.freeze
+
   CLAIMS = ATTRIBUTE_SCOPE_MAP.keys
 
   attr_reader :scopes
@@ -32,10 +36,14 @@ class OpenidConnectAttributeScoper
     end
   end
 
+  def requested_attributes
+    scopes.map { |scope| SCOPE_ATTRIBUTE_MAP[scope] }.flatten.compact
+  end
+
   private
 
   def parse_scope(scope)
     return [] if scope.blank?
-    scope.split(' ').compact & VALID_SCOPES
+    scope.split(' ').flatten.compact & VALID_SCOPES
   end
 end

@@ -42,6 +42,9 @@ test:
   'urn:gov:gsa:openidconnect:test':
     redirect_uri: 'gov.gsa.openidconnect.test://result'
     cert: 'saml_test_sp'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:server':
     redirect_uri: 'http://localhost:7654/'
@@ -106,6 +109,9 @@ development:
 
   'urn:gov:gsa:openidconnect:development':
     redirect_uri: 'gov.gsa.openidconnect.development://result'
+    friendly_name: 'Example iOS App'
+    agency: '18F'
+    logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
     redirect_uri: 'http://localhost:9292/'
