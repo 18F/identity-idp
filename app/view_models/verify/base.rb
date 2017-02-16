@@ -9,6 +9,14 @@ module Verify
 
     attr_reader :error, :remaining_attempts
 
+    def mock_vendor_partial
+      if idv_vendor.pick == :mock
+        'verify/sessions/no_pii_warning'
+      else
+        'shared/null'
+      end
+    end
+
     def title
       I18n.t("idv.titles.#{step_name}")
     end
@@ -52,21 +60,8 @@ module Verify
 
     private
 
-    def attempts
-      if error == 'warning'
-        html_paragraph(text: I18n.t('idv.modal.attempts', count: remaining_attempts))
-      else
-        ''
-      end
-    end
-
-    def html_paragraph(text:, css_class: '')
-      html = helper.safe_join([text.html_safe])
-      helper.content_tag(:p, html, class: css_class)
-    end
-
-    def helper
-      ActionController::Base.helpers
+    def idv_vendor
+      @_idv_vendor ||= Idv::Vendor.new
     end
 
     def button_link_text
@@ -83,6 +78,23 @@ module Verify
 
     def flash_body
       html_paragraph(text: I18n.t("idv.modal.#{step_name}.#{error}"))
+    end
+
+    def attempts
+      if error == 'warning'
+        html_paragraph(text: I18n.t('idv.modal.attempts', count: remaining_attempts))
+      else
+        ''
+      end
+    end
+
+    def html_paragraph(text:, css_class: '')
+      html = helper.safe_join([text.html_safe])
+      helper.content_tag(:p, html, class: css_class)
+    end
+
+    def helper
+      ActionController::Base.helpers
     end
   end
 end

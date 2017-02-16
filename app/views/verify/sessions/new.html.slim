@@ -1,7 +1,7 @@
 - title @view_model.title
 = render @view_model.mock_vendor_partial
 
-h1.h3.my0 = t('idv.titles.sessions')
+h1.h3.my0 = @view_model.title
 = simple_form_for(idv_profile_form, url: verify_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
