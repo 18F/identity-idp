@@ -59,6 +59,11 @@ module OpenidConnect
       user_session[:openid_auth_request] = authorization_params
 
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
+
+      @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
+        scopes: @authorize_form.scope,
+        service_provider: @authorize_form.service_provider
+      )
     end
 
     def authorization_params

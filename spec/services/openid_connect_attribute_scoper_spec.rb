@@ -3,6 +3,26 @@ require 'rails_helper'
 RSpec.describe OpenidConnectAttributeScoper do
   subject(:scoper) { OpenidConnectAttributeScoper.new(scope) }
 
+  describe '#scopes' do
+    subject(:scopes) { scoper.scopes }
+
+    context 'with a string of space-separate scopes' do
+      let(:scope) { 'openid email profile' }
+
+      it 'parses scopes' do
+        expect(scopes).to eq(%w(openid email profile))
+      end
+    end
+
+    context 'with an array' do
+      let(:scope) { %w(fakescope openid email profile) }
+
+      it 'filters the array' do
+        expect(scopes).to eq(%w(openid email profile))
+      end
+    end
+  end
+
   describe '#filter' do
     subject(:filtered) { scoper.filter(user_info) }
 
@@ -73,6 +93,15 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(filtered[:family_name]).to be_present
         expect(filtered[:birthdate]).to be_present
       end
+    end
+  end
+
+  describe '#requested_attributes' do
+    let(:scope) { 'email profile' }
+    subject(:requested_attributes) { scoper.requested_attributes }
+
+    it 'is the array of attributes corresponding to the scopes' do
+      expect(requested_attributes).to eq(%w(email given_name family_name birthdate))
     end
   end
 end

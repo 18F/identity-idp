@@ -26,12 +26,14 @@ module ApplicationHelper
   end
 
   def decorated_session
-    if @sp_name.present?
-      @_decorated_session ||= ServiceProviderSessionDecorator.new(
-        sp_name: @sp_name, sp_logo: @sp_logo
-      )
-    else
-      @_decorated_session ||= SessionDecorator.new
+    @_decorated_session ||= begin
+      if @sp_name.present?
+        ServiceProviderSessionDecorator.new(
+          sp_name: @sp_name, sp_logo: @sp_logo
+        )
+      else
+        SessionDecorator.new
+      end
     end
   end
 
