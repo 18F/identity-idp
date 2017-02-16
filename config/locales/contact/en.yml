@@ -1,12 +1,6 @@
 ---
 en:
   contact:
-    intro: I want to...
-    labels:
-      comments: Comments
-      comments_note: Optional, but very helpful
-      email_or_tel: Email address or phone number
-    learn_more: Learn more about %{app}
-    messages:
-      thanks: Thanks! We’ll be in touch soon.
-    tell_experience: Tell you about my %{app} experience
+    call_center: >
+      Call 1-844-US-LOGIN between 8 a.m. and 8 p.m. Monday through Friday,
+      except holidays, for help with your account.
