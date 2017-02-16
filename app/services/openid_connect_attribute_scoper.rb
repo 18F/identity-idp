@@ -15,7 +15,6 @@ class OpenidConnectAttributeScoper
     phone_verified: 'phone',
     given_name: 'profile',
     family_name: 'profile',
-    middle_name: 'profile',
     birthdate: 'profile',
   }.with_indifferent_access.freeze
 
