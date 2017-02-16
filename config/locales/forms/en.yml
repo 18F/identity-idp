@@ -10,7 +10,6 @@ en:
       enable: Enable
       resend_confirmation: Resend confirmation instructions
       search: Search
-      send: Send
       send_passcode: Send passcode
       setup_totp: Set up authentication app
       submit:
