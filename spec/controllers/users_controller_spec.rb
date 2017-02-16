@@ -16,5 +16,14 @@ describe UsersController do
       expect(response).to redirect_to(root_url)
       expect(flash.now[:success]).to eq t('sign_up.cancel.success')
     end
+
+    it 'finds the proper user and removes their record without `current_user`' do
+      confirmation_token = '1'
+
+      create(:user, confirmation_token: confirmation_token)
+      subject.session[:user_confirmation_token] = confirmation_token
+
+      expect { delete :destroy }.to change(User, :count).by(-1)
+    end
   end
 end
