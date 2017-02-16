@@ -1,7 +1,9 @@
-require 'simplecov'
-SimpleCov.start 'rails' do
-  add_filter '/config/'
-  add_filter '/lib/rspec/formatters/user_flow_formatter.rb'
+if ENV['COVERAGE']
+  require 'simplecov'
+  SimpleCov.start 'rails' do
+    add_filter '/config/'
+    add_filter '/lib/rspec/formatters/user_flow_formatter.rb'
+  end
 end
 
 ENV['RAILS_ENV'] ||= 'test'
