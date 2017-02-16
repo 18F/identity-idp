@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe UsersController do
   describe '#destroy' do
-    it 'redirects and displays the flash message even if no user is present' do
+    it 'redirects and displays the flash message if no user is present' do
       delete :destroy
 
       expect(response).to redirect_to(root_url)

@@ -29,6 +29,7 @@ module SignUp
     def process_valid_confirmation_token
       @confirmation_token = params[:confirmation_token]
       flash.now[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
+      session[:user_confirmation_token] = params[:confirmation_token]
       render '/sign_up/passwords/new'
     end
 
