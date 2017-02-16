@@ -8,7 +8,7 @@ p.mt-tiny.mb0 = t('devise.two_factor_authentication.recovery_code_prompt')
     = label_tag 'code',
       t('simple_form.required.html') + t('forms.two_factor.recovery_code'),
       class: 'block bold'
-    = block_text_field_tag :code, '', required: true
+    = block_text_field_tag :code, '', required: true, autocomplete: 'off'
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary mt2'
 
 = render 'shared/cancel', link: destroy_user_session_path
