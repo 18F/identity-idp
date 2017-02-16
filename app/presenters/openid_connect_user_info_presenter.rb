@@ -20,7 +20,6 @@ class OpenidConnectUserInfoPresenter
 
   private
 
-  # rubocop:disable Metrics/AbcSize
   def loa3_attributes
     phone = stringify_attr(loa3_data.phone)
 
@@ -33,7 +32,6 @@ class OpenidConnectUserInfoPresenter
       phone_verified: phone.present? ? true : nil,
     }
   end
-  # rubocop:enable Metrics/AbcSize
 
   def address
     return nil if loa3_data.address1.blank?
