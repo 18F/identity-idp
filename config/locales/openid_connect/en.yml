@@ -3,8 +3,15 @@ en:
     authorization:
       index:
         allow: Allow
-        allow_prompt: Allow app?
+        allow_prompt: 'Review the information that %{name} has requested access to:'
         decline: Decline
+        attributes:
+          email: Email address
+          address: Mailing address
+          phone: Phone number
+          given_name: First name
+          family_name: Last name
+          birthdate: Birthdate
       errors:
         bad_client_id: Bad client_id
         no_valid_acr_values: No acceptable acr_values found
