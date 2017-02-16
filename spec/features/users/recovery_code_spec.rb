@@ -12,14 +12,6 @@ feature 'View recovery code' do
   end
 
   context 'after sign up' do
-    scenario 'does not display progress bar' do
-      sign_in_and_2fa_user
-
-      click_link t('profile.links.regenerate_recovery_code')
-
-      expect(page).to_not have_css('.step-3.active')
-    end
-
     context 'regenerating recovery code' do
       scenario 'displays new code' do
         user = sign_in_and_2fa_user
