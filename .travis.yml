@@ -44,3 +44,5 @@ script:
   - bundle exec codeclimate-test-reporter
 services:
   - redis-server
+env:
+  - CI=true
