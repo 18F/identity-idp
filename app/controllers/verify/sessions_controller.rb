@@ -3,7 +3,7 @@ module Verify
     include IdvSession
     include IdvFailureConcern
 
-    before_action :confirm_two_factor_authenticated
+    before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
     before_action :confirm_step_needed
@@ -29,6 +29,11 @@ module Verify
       end
     end
 
+    def destroy
+      user_session[:idv].clear
+      handle_idv_redirect
+    end
+
     private
 
     def step_name
@@ -45,6 +50,11 @@ module Verify
         idv_session: idv_session,
         params: profile_params
       )
+    end
+
+    def handle_idv_redirect
+      redirect_to profile_path and return if current_user.recovery_code.present?
+      redirect_to manage_recovery_code_path
     end
 
     def process_success

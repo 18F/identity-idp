@@ -40,6 +40,7 @@ feature 'LOA1 Single Sign On' do
       session[:user_return_to] = @saml_authn_request
       session[:sp] = { loa3: false, name: 'Your friendly Government Agency' }
     end
+
     visit profile_path
     click_submit_default
   end

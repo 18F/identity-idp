@@ -14,8 +14,6 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'common OTP delivery screen behavior' do
-      it_behaves_like 'an otp form'
-
       it 'has a localized title' do
         expect(view).to receive(:title).with(t('titles.enter_2fa_code'))
 
@@ -29,8 +27,13 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       end
     end
 
+    it 'allows the user to cancel and delete their account' do
+      render
+      expect(rendered).to have_selector("form[action='/users'][method='post']")
+    end
+
     it 'informs the user that an OTP has been sent to their number via #help_text' do
-      build_stubbed(:user, :signed_up)
+      build_stubbed(:user)
 
       code_link = link_to(
         t("links.two_factor_authentication.resend_code.#{@presenter.delivery_method}"),
@@ -47,10 +50,15 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'user signed up' do
-      it 'provides an option to use a recovery code' do
-        build_stubbed(:user, :signed_up)
+      before do
+        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        allow(view).to receive(:current_user).and_return(user)
         render
+      end
 
+      it_behaves_like 'an otp form'
+
+      it 'provides an option to use a recovery code' do
         expect(rendered).to have_link(
           t('devise.two_factor_authentication.recovery_code_fallback.link'),
           href: login_two_factor_recovery_code_path
