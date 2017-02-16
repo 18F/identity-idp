@@ -1,10 +1,6 @@
 require 'rails_helper'
 
 describe 'contact/new.html.slim' do
-  before do
-    @contact_form = ContactForm.new
-  end
-
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.contact'))
 
@@ -15,5 +11,11 @@ describe 'contact/new.html.slim' do
     render
 
     expect(rendered).to have_selector('h1', text: t('headings.contact'))
+  end
+
+  it 'includes call center info' do
+    render
+
+    expect(rendered).to have_content t('contact.call_center')
   end
 end
