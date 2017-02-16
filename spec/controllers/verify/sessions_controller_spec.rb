@@ -31,7 +31,7 @@ describe Verify::SessionsController do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
         :before,
-        :confirm_two_factor_authenticated,
+        [:confirm_two_factor_authenticated, except: :destroy],
         :confirm_idv_attempts_allowed,
         :confirm_idv_needed,
         :confirm_step_needed
@@ -239,6 +239,15 @@ describe Verify::SessionsController do
 
           expect(idv_session.resolution.success?).to eq true
         end
+      end
+    end
+
+    describe '#destroy' do
+      it 'clears the idv session and returns the user to their profile' do
+        delete :destroy
+
+        expect(controller.user_session[:idv]).to eq({})
+        expect(response).to redirect_to(profile_path)
       end
     end
   end

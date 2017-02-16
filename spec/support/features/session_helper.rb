@@ -35,6 +35,21 @@ module Features
       user
     end
 
+    def begin_sign_up_with_sp_and_loa(loa3:)
+      user = create(:user)
+      login_as(user, scope: :user, run_callbacks: false)
+
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session[:sp] = { loa3: loa3, name: 'Your friendly Government Agency' }
+      end
+
+      visit profile_path
+      fill_in 'Phone', with: '202-555-1212'
+      select_sms_delivery
+      user
+    end
+
     def sign_up_and_set_password
       user = sign_up
       fill_in 'password_form_password', with: VALID_PASSWORD
@@ -66,6 +81,7 @@ module Features
     def sign_in_with_warden(user)
       login_as(user, scope: :user, run_callbacks: false)
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
+
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         session['warden.user.user.session'] = { authn_at: Time.zone.now }
@@ -153,6 +169,13 @@ module Features
 
     def click_acknowledge_recovery_code
       click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
+    end
+
+    def loa3_sp_session
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        session[:sp] = { loa3: true, name: 'Your friendly Government Agency' }
+      end
     end
   end
 end

@@ -34,4 +34,25 @@ module ApplicationHelper
       @_decorated_session ||= SessionDecorator.new
     end
   end
+
+  def sp_session
+    session[:sp]
+  end
+
+  def user_signing_up?
+    !current_user || !current_user.two_factor_enabled?
+  end
+
+  def user_verifying_identity?
+    return unless current_user
+    sp_session && sp_session[:loa3] && current_user.two_factor_enabled?
+  end
+
+  def sign_up_or_idv_no_js_link
+    if user_signing_up?
+      destroy_user_path
+    elsif user_verifying_identity?
+      verify_session_path
+    end
+  end
 end
