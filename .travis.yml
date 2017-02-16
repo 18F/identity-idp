@@ -45,4 +45,4 @@ script:
 services:
   - redis-server
 env:
-  - CI=true
+  - COVERAGE=true
