@@ -96,8 +96,8 @@
     background-image: url(image-path('alert/warning-lg.svg'));
   }
 
-  hr,
-  .btn {
+  .btn-wide,
+  hr {
     border-color: $yellow;
   }
 }

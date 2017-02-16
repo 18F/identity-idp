@@ -16,3 +16,22 @@
     }
   }
 }
+
+.yellow-dots {
+  list-style: none;
+  padding: 0;
+
+  li {
+    padding-left: 1rem;
+    text-indent: -1rem;
+
+    &::before {
+      color: $yellow;
+      content: '•';
+      font-size: 2rem;
+      line-height: 1.5rem;
+      padding-right: .5rem;
+      vertical-align: -3px;
+    }
+  }
+}

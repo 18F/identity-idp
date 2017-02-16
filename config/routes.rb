@@ -113,6 +113,8 @@ Rails.application.routes.draw do
   get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
   post '/sign_up/completed' => 'sign_up/completions#update'
 
+  delete '/users' => 'users#destroy', as: :destroy_user
+
   get '/verify' => 'verify#index'
   get '/verify/activated' => 'verify#activated'
   get '/verify/cancel' => 'verify#cancel'
@@ -128,6 +130,7 @@ Rails.application.routes.draw do
   put '/verify/review' => 'verify/review#create'
   get '/verify/session' => 'verify/sessions#new'
   put '/verify/session' => 'verify/sessions#create'
+  delete '/verify/session' => 'verify/sessions#destroy'
   get '/verify/session/dupe' => 'verify/sessions#dupe'
 
   root to: 'users/sessions#new'
