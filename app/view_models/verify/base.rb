@@ -55,6 +55,10 @@ module Verify
     end
 
     def flash_message
+      flash_heading = html_paragraph(
+        text: I18n.t("idv.modal.#{step_name}.heading"), css_class: 'mb2 fs-20p'
+      )
+      flash_body = html_paragraph(text: I18n.t("idv.modal.#{step_name}.#{error}"))
       flash_heading + flash_body + attempts
     end
 
@@ -70,14 +74,6 @@ module Verify
 
     def button_css_classes
       'btn btn-wide px2 py1 rounded-lg border bw2'
-    end
-
-    def flash_heading
-      html_paragraph(text: I18n.t("idv.modal.#{step_name}.heading"), css_class: 'mb2 fs-20p')
-    end
-
-    def flash_body
-      html_paragraph(text: I18n.t("idv.modal.#{step_name}.#{error}"))
     end
 
     def attempts
