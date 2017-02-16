@@ -18,6 +18,7 @@ es:
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     cancel: Cancelar
+    cancel_account_creation: NOT TRANSLATED YET
     two_factor_authentication:
       app: NOT TRANSLATED YET
       voice: NOT TRANSLATED YET

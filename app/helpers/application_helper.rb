@@ -55,4 +55,12 @@ module ApplicationHelper
       verify_session_path
     end
   end
+
+  def cancel_link_text
+    if user_signing_up?
+      t('links.cancel_account_creation')
+    else
+      t('links.cancel')
+    end
+  end
 end
