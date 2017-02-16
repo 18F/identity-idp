@@ -27,7 +27,6 @@ class OpenidConnectUserInfoPresenter
     {
       given_name: stringify_attr(loa3_data.first_name),
       family_name: stringify_attr(loa3_data.last_name),
-      middle_name: stringify_attr(loa3_data.middle_name),
       birthdate: stringify_attr(loa3_data.dob),
       address: address,
       phone: phone,

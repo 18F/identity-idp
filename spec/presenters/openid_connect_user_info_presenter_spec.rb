@@ -30,7 +30,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
       let(:pii) do
         {
           first_name: 'John',
-          middle_name: 'Jones',
           last_name: 'Smith',
           dob: '1970-01-01',
           address1: '123 Fake St',
@@ -53,7 +52,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           it 'returns loa3 attributes' do
             aggregate_failures do
               expect(user_info[:given_name]).to eq('John')
-              expect(user_info[:middle_name]).to eq('Jones')
               expect(user_info[:family_name]).to eq('Smith')
               expect(user_info[:birthdate]).to eq('1970-01-01')
               expect(user_info[:phone]).to eq('+1 (555) 555-5555')
@@ -84,7 +82,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:email_verified]).to eq(true)
               expect(user_info[:given_name]).to eq(nil)
               expect(user_info[:family_name]).to eq(nil)
-              expect(user_info[:middle_name]).to eq(nil)
               expect(user_info[:birthdate]).to eq(nil)
               expect(user_info[:phone]).to eq('+1 (555) 555-5555')
               expect(user_info[:phone_verified]).to eq(true)
@@ -101,7 +98,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           aggregate_failures do
             expect(user_info[:given_name]).to eq(nil)
             expect(user_info[:family_name]).to eq(nil)
-            expect(user_info[:middle_name]).to eq(nil)
             expect(user_info[:birthdate]).to eq(nil)
             expect(user_info[:phone]).to eq(nil)
             expect(user_info[:phone_verified]).to eq(nil)

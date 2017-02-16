@@ -15,7 +15,6 @@ RSpec.describe OpenidConnectAttributeScoper do
         email_verified: true,
         given_name: 'John',
         family_name: 'Jones',
-        middle_name: 'Joe',
         birthdate: '1970-01-01',
         phone: '+1 (555) 555-5555',
         phone_verified: true,
@@ -72,7 +71,6 @@ RSpec.describe OpenidConnectAttributeScoper do
       it 'includes name attributes and birthdate' do
         expect(filtered[:given_name]).to be_present
         expect(filtered[:family_name]).to be_present
-        expect(filtered[:middle_name]).to be_present
         expect(filtered[:birthdate]).to be_present
       end
     end
