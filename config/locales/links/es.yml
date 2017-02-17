@@ -19,6 +19,7 @@ es:
     sign_out: Cerrar sesión
     cancel: Cancelar
     cancel_account_creation: NOT TRANSLATED YET
+    cancel_idv: NOT TRANSLATED YET
     two_factor_authentication:
       app: NOT TRANSLATED YET
       voice: NOT TRANSLATED YET
