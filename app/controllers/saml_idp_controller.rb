@@ -58,9 +58,11 @@ class SamlIdpController < ApplicationController
   end
 
   def apply_secure_headers_override
-    override_content_security_policy_directives(
-      form_action: ["'self'", *SecureHeadersWhitelister.whitelisted_domains]
-    )
+    service_provider = ServiceProvider.from_issuer(saml_request&.service_provider&.identifier)
+    acs_url = service_provider.metadata[:acs_url]
+    domain = SecureHeadersWhitelister.extract_domain(acs_url) if acs_url
+
+    override_content_security_policy_directives(form_action: ["'self'", domain].compact)
   end
 
   def delete_branded_experience
