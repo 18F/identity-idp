@@ -4,7 +4,6 @@ class ServiceProviderController < ApplicationController
   def update
     if FeatureManagement.use_dashboard_service_providers?
       ServiceProviderUpdater.new.run
-      SecureHeadersWhitelister.new.run
     end
 
     render json: { status: 'If the feature is enabled, service providers have been updated.' }

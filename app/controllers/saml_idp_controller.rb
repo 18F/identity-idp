@@ -58,7 +58,9 @@ class SamlIdpController < ApplicationController
   end
 
   def apply_secure_headers_override
-    use_secure_headers_override(:saml)
+    override_content_security_policy_directives(
+      form_action: ["'self'", *SecureHeadersWhitelister.whitelisted_domains]
+    )
   end
 
   def delete_branded_experience
