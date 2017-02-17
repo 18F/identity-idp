@@ -6,7 +6,7 @@ RSpec.describe OpenidConnectAuthorizeDecorator do
   end
 
   let(:scopes) { %w(openid email profile) }
-  let(:service_provider) { ServiceProvider.new('urn:gov:gsa:openidconnect:test') }
+  let(:service_provider) { ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test') }
 
   describe '#name' do
     it 'is the friendly name' do

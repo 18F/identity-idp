@@ -12,7 +12,7 @@ describe ServiceProviderConfig do
         sp_initiated_login_url: 'http://test.host/test/saml',
       }
 
-      expect(config.sp_attributes).to eq yaml_hash
+      expect(config.sp_attributes).to include yaml_hash
     end
   end
 end
