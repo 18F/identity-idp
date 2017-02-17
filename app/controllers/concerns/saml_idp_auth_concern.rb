@@ -86,7 +86,7 @@ module SamlIdpAuthConcern
   end
 
   def current_service_provider
-    @_sp ||= ServiceProvider.new(saml_request.service_provider.identifier)
+    @_sp ||= ServiceProvider.from_issuer(saml_request.service_provider.identifier)
   end
 
   def current_sp_metadata

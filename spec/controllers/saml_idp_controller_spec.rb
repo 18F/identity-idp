@@ -130,7 +130,7 @@ describe SamlIdpController do
       let(:asserter) do
         AttributeAsserter.new(
           user: user,
-          service_provider: ServiceProvider.new(loa3_saml_settings.issuer),
+          service_provider: ServiceProvider.from_issuer(loa3_saml_settings.issuer),
           authn_request: this_authn_request,
           decrypted_pii: pii
         )

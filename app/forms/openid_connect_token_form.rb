@@ -85,7 +85,7 @@ class OpenidConnectTokenForm
   def validate_client_assertion
     return unless identity.present?
 
-    service_provider = ServiceProvider.new(client_id)
+    service_provider = ServiceProvider.from_issuer(client_id)
 
     JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
                algorithm: 'RS256', verify_iat: true,

@@ -26,13 +26,10 @@ describe ServiceProviderController do
         allow(Figaro.env).to receive(:use_dashboard_service_providers).and_return('true')
         allow_any_instance_of(ServiceProviderUpdater).to receive(:dashboard_service_providers).
           and_return(dashboard_service_providers)
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
       after do
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
+        ServiceProvider.from_issuer(dashboard_sp_issuer).destroy
       end
 
       it 'returns 200' do
@@ -46,12 +43,11 @@ describe ServiceProviderController do
 
         post :update
 
-        sp = ServiceProvider.new(dashboard_sp_issuer)
+        sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
         expect(sp.metadata[:agency]).to eq dashboard_service_providers.first[:agency]
         expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
-        expect(sp.valid?).to eq true
-        expect(VALID_SERVICE_PROVIDERS).to include dashboard_sp_issuer
+        expect(sp.active?).to eq true
       end
 
       context 'with CSRF protection enabled' do
