@@ -39,7 +39,8 @@ SamlIdp.configure do |config|
 
   # Find ServiceProvider metadata_url and fingerprint based on our settings
   config.service_provider.finder = lambda do |issuer_or_entity_id|
-    sp = ServiceProvider.new(issuer_or_entity_id)
-    sp.metadata.merge(cert: sp.ssl_cert)
+    sp_config = ServiceProviderConfig.new(issuer: issuer_or_entity_id)
+    sp = sp_config.service_provider
+    sp_config.sp_attributes.merge(fingerprint: sp.fingerprint, cert: sp.ssl_cert)
   end
 end

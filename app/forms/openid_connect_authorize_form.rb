@@ -67,7 +67,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def service_provider
-    @_service_provider ||= ServiceProvider.new(client_id)
+    @_service_provider ||= ServiceProvider.from_issuer(client_id)
   end
 
   private
@@ -85,7 +85,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_client_id
-    return if service_provider.valid?
+    return if service_provider.active?
     errors.add(:client_id, t('openid_connect.authorization.errors.bad_client_id'))
   end
 
@@ -97,7 +97,7 @@ class OpenidConnectAuthorizeForm
 
   def validate_redirect_uri_matches_sp_redirect_uri
     return if redirect_uri.blank?
-    return unless service_provider.valid?
+    return unless service_provider.active?
     return if redirect_uri.start_with?(sp_redirect_uri)
     errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'))
   end

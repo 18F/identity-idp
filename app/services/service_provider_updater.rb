@@ -1,4 +1,10 @@
 class ServiceProviderUpdater
+  PROTECTED_ATTRIBUTES = [
+    :id,
+    :created_at,
+    :updated_at,
+  ].to_set.freeze
+
   def run
     dashboard_service_providers.each do |service_provider|
       update_local_caches(HashWithIndifferentAccess.new(service_provider))
@@ -9,13 +15,21 @@ class ServiceProviderUpdater
 
   def update_local_caches(service_provider)
     issuer = service_provider['issuer']
+    update_cache(issuer, service_provider)
+  end
+
+  def update_cache(issuer, service_provider)
     if service_provider['active'] == true
-      SERVICE_PROVIDERS[issuer] = service_provider
-      VALID_SERVICE_PROVIDERS << issuer
+      ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
+        sp.attributes = cleaned_service_provider(service_provider)
+      end
     else
-      SERVICE_PROVIDERS.delete(issuer)
-      VALID_SERVICE_PROVIDERS.delete(issuer)
+      ServiceProvider.destroy_all(issuer: issuer, approved: false)
     end
+  end
+
+  def cleaned_service_provider(service_provider)
+    service_provider.except(*PROTECTED_ATTRIBUTES)
   end
 
   def url

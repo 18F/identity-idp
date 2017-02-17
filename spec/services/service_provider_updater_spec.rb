@@ -9,6 +9,8 @@ describe ServiceProviderUpdater do
   let(:dashboard_service_providers) do
     [
       {
+        id: 'big number',
+        updated_at: '2010-01-01 00:00:00',
         issuer: dashboard_sp_issuer,
         agency: 'a service provider',
         friendly_name: 'a friendly service provider',
@@ -20,6 +22,8 @@ describe ServiceProviderUpdater do
         active: true,
       },
       {
+        id: 'small number',
+        updated_at: '2010-01-01 00:00:00',
         issuer: inactive_dashboard_sp_issuer,
         agency: 'an old service provider',
         friendly_name: 'an old, stale service provider',
@@ -44,57 +48,50 @@ describe ServiceProviderUpdater do
           status: 200,
           body: dashboard_service_providers.to_json
         )
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
       after do
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
+        ServiceProvider.from_issuer(dashboard_sp_issuer).try(:destroy)
+        ServiceProvider.from_issuer(inactive_dashboard_sp_issuer).try(:destroy)
       end
 
       it 'updates global var registry of Service Providers' do
-        expect(SERVICE_PROVIDERS[dashboard_sp_issuer]).to eq nil
-        expect(VALID_SERVICE_PROVIDERS).to_not include dashboard_sp_issuer
+        expect(ServiceProvider.from_issuer(dashboard_sp_issuer)).to be_a NullServiceProvider
 
         subject.run
 
-        sp = ServiceProvider.new(dashboard_sp_issuer)
+        sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
 
-        expect(sp.metadata[:agency]).to eq dashboard_service_providers.first[:agency]
+        expect(sp.agency).to eq dashboard_service_providers.first[:agency]
         expect(sp.ssl_cert).to be_a OpenSSL::X509::Certificate
-        expect(sp.valid?).to eq true
-        expect(VALID_SERVICE_PROVIDERS).to include dashboard_sp_issuer
+        expect(sp.active?).to eq true
+        expect(sp.id).to_not eq dashboard_service_providers.first[:id]
+        expect(sp.updated_at).to_not eq dashboard_service_providers.first[:updated_at]
       end
 
       it 'removes inactive Service Providers' do
-        expect(SERVICE_PROVIDERS[inactive_dashboard_sp_issuer]).to eq nil
-
-        SERVICE_PROVIDERS[inactive_dashboard_sp_issuer] = {}
-        VALID_SERVICE_PROVIDERS << inactive_dashboard_sp_issuer
+        expect(ServiceProvider.from_issuer(inactive_dashboard_sp_issuer)).
+          to be_a NullServiceProvider
 
         subject.run
 
-        sp = ServiceProvider.new(inactive_dashboard_sp_issuer)
+        sp = ServiceProvider.from_issuer(inactive_dashboard_sp_issuer)
 
-        expect(sp.metadata[:agency]).to eq nil
-        expect(SERVICE_PROVIDERS[inactive_dashboard_sp_issuer]).to eq nil
-        expect(VALID_SERVICE_PROVIDERS).to_not include inactive_dashboard_sp_issuer
+        expect(sp).to be_a NullServiceProvider
       end
     end
 
     context 'dashboard is not available' do
       it 'logs error and does not affect registry' do
         allow(subject).to receive(:log_error)
-
-        valid_service_providers = VALID_SERVICE_PROVIDERS.dup
+        before_count = ServiceProvider.count
 
         stub_request(:get, fake_dashboard_url).to_return(status: 500)
 
         subject.run
 
         expect(subject).to have_received(:log_error)
-        expect(valid_service_providers).to eq VALID_SERVICE_PROVIDERS
+        expect(ServiceProvider.count).to eq before_count
       end
     end
   end

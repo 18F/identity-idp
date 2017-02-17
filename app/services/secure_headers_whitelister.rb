@@ -4,7 +4,8 @@ class SecureHeadersWhitelister
   end
 
   def run
-    whitelisted_domains = domains(acs_urls(SERVICE_PROVIDERS.values))
+    return unless ActiveRecord::Base.connection.table_exists? 'service_providers'
+    whitelisted_domains = domains(acs_urls(ServiceProvider.active))
     SecureHeaders::Configuration.override(:saml) do |config|
       config.csp[:form_action].concat whitelisted_domains
     end

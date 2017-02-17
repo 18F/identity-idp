@@ -28,7 +28,7 @@ class SamlRequestValidator
   end
 
   def authorized_service_provider
-    return if service_provider.valid?
+    return if service_provider.active? # live? instead when dashboard approvals matter.
 
     errors.add(:service_provider, 'Unauthorized Service Provider')
   end

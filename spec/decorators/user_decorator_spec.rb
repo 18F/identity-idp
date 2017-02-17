@@ -49,7 +49,7 @@ describe UserDecorator do
 
   describe '#active_identity_for' do
     it 'returns Identity matching ServiceProvider' do
-      sp = ServiceProvider.new('http://sp.example.com')
+      sp = create(:service_provider, issuer: 'http://sp.example.com')
       user = create(:user)
       user.identities << create(
         :identity,
