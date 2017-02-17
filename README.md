@@ -179,6 +179,16 @@ $ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
 
 Then, visit http://localhost:3000/user_flows in your browser!
 
+### Load testing mode
+
+The sign up flow includes a step where the user receives an email with a
+tokenized link that enables them to confirm their account.
+
+If you would like to skip the email step, you can set the
+`Figaro.env.load_testing_mode` key to `true`. This will surface the tokenized
+confirmation link during the sign up flow so that checking email is not required
+to confirm an account's email address.
+
 ### Proofing vendors
 
 Some proofing vendor code is located in private Github repositories because of NDAs. You can still use it

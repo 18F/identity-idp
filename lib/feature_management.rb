@@ -13,6 +13,10 @@ class FeatureManagement
     Figaro.env.enable_i18n_mode == 'true'
   end
 
+  def self.enable_load_testing_mode?
+    Figaro.env.enable_load_testing_mode == 'true'
+  end
+
   def self.password_strength_enabled?
     Figaro.env.password_strength_enabled == 'true'
   end

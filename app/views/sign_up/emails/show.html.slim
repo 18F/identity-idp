@@ -20,3 +20,8 @@
   - link = link_to t('notices.use_diff_email.link'), sign_up_email_path
   p = t('notices.use_diff_email.text_html', link: link)
   p = t('devise.registrations.close_window')
+
+  - if FeatureManagement.enable_load_testing_mode?
+    = link_to 'CONFIRM NOW',
+      sign_up_create_email_confirmation_url(confirmation_token: \
+      User.find_with_email(email).confirmation_token)
