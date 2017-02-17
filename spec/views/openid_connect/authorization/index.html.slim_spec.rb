@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'openid_connect/authorization/index.html.slim' do
-  let(:service_provider) { ServiceProvider.new('urn:gov:gsa:openidconnect:test') }
+  let(:service_provider) { ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test') }
 
   before do
     @authorize_decorator = OpenidConnectAuthorizeDecorator.new(

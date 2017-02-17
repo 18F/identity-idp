@@ -9,7 +9,7 @@ class Identity < ActiveRecord::Base
   end
 
   def sp_metadata
-    ServiceProvider.new(service_provider).metadata
+    ServiceProvider.from_issuer(service_provider).metadata
   end
 
   def display_name

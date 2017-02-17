@@ -11,7 +11,7 @@ feature 'SP-initiated logout' do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.security[:embed_sign] = false
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
@@ -35,7 +35,7 @@ feature 'SP-initiated logout' do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
@@ -99,7 +99,7 @@ feature 'SP-initiated logout' do
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
 
-      sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      sp2 = ServiceProvider.from_issuer(sp2_saml_settings.issuer)
       settings = sp2_saml_settings # sp2
       settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
 
@@ -125,7 +125,7 @@ feature 'SP-initiated logout' do
 
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP
 
-      sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      sp2 = ServiceProvider.from_issuer(sp2_saml_settings.issuer)
 
       expect(current_url).to eq(sp2.metadata[:assertion_consumer_logout_service_url])
       expect(user.active_identities.size).to eq(0)
@@ -151,7 +151,7 @@ feature 'SP-initiated logout' do
       @sp2_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
@@ -190,7 +190,7 @@ feature 'SP-initiated logout' do
       @sp1_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
-      sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      sp2 = ServiceProvider.from_issuer(sp2_saml_settings.issuer)
       settings = sp2_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
 
@@ -251,7 +251,7 @@ feature 'SP-initiated logout' do
     it 'terminates sessions in all browsers' do
       expect(user.active_identities.size).to eq(2)
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
       sp1_slo_request = OneLogin::RubySaml::Logoutrequest.new
@@ -304,7 +304,7 @@ feature 'SP-initiated logout' do
         sign_in_and_2fa_user(user)
         visit sp1_authnrequest
 
-        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+        sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
         settings = sp1_saml_settings
         settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
