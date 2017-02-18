@@ -15,7 +15,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#return_to_service_provider_partial' do
     it 'returns the correct partial' do
       expect(subject.return_to_service_provider_partial).to eq(
-        'devise/sessions/return_to_service_provider'
+        'users/sessions/return_to_service_provider'
       )
     end
   end

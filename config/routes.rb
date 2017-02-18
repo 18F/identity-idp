@@ -11,25 +11,28 @@ Rails.application.routes.draw do
     controllers: { passwords: 'users/reset_passwords' }
   )
 
-  # Additional device controller routes.
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
     get '/active' => 'users/sessions#active'
-
-    get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
-    post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
-    get '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#show'
-    post '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#create'
-    get  '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
-         as: :login_two_factor
-    post '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
-         as: :login_otp
-
-    get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
-    post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
     get '/timeout' => 'users/sessions#timeout'
   end
+
+  get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
+  post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
+  get '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#show'
+  post '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#create'
+  get(
+    '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
+    as: :login_two_factor
+  )
+  post(
+    '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
+    as: :login_otp
+  )
+
+  get '/reauthn' => 'mfa_confirmation#new', as: :user_password_confirm
+  post '/reauthn' => 'mfa_confirmation#create', as: :reauthn_user_password
 
   if Figaro.env.enable_test_routes == 'true'
     namespace :test do
