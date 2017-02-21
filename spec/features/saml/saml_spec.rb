@@ -158,18 +158,11 @@ feature 'saml api' do
         VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
-      it 'updates global variables' do
-        page.driver.post '/api/service_provider'
+      it 'updates the service providers in the database' do
+        expect { page.driver.post '/api/service_provider' }.
+          to change { ServiceProvider.active.sort_by(&:id) }
 
         expect(page.status_code).to eq 200
-
-        sign_in_and_2fa_user(user)
-        visit '/test/saml'
-
-        csp = page.response_headers['Content-Security-Policy']
-
-        expect(csp).
-          to include('form-action \'self\' localhost:3000 example.com test.host sp.example.org')
       end
     end
   end
