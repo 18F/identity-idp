@@ -25,7 +25,7 @@ NilCheck:
     - AdminConstraint#user_is_admin?
     - PasswordsController#edit
     - PasswordsController#mark_profile_inactive
-    - PasswordResetTokenValidator#result
+    - PasswordResetTokenValidator#submit
     - PhoneConfirmationFlow
     - RegisterUserEmailForm#result
     - slo_not_implemented_at_sp?
