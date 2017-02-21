@@ -11,14 +11,15 @@ feature 'OpenID Connect' do
         client_id: client_id,
         response_type: 'code',
         acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email profile',
+        scope: 'openid email profile social_security_number',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: state,
         prompt: 'select_account',
         nonce: nonce
       )
 
-      user = create(:profile, :active, :verified, pii: { first_name: 'John' }).user
+      user = create(:profile, :active, :verified,
+                    pii: { first_name: 'John', ssn: '111223333' }).user
 
       sign_in_live_with_2fa(user)
       expect(page.response_headers['Content-Security-Policy']).
@@ -69,6 +70,7 @@ feature 'OpenID Connect' do
       expect(decoded_id_token[:iss]).to eq(root_url)
       expect(decoded_id_token[:email]).to eq(user.email)
       expect(decoded_id_token[:given_name]).to eq('John')
+      expect(decoded_id_token[:social_security_number]).to eq('111223333')
 
       access_token = token_response[:access_token]
       expect(access_token).to be_present
@@ -81,6 +83,7 @@ feature 'OpenID Connect' do
       expect(userinfo_response[:sub]).to eq(sub)
       expect(userinfo_response[:email]).to eq(user.email)
       expect(userinfo_response[:given_name]).to eq('John')
+      expect(userinfo_response[:social_security_number]).to eq('111223333')
     end
 
     it 'auto-allows with a second authorization and sets the correct CSP headers' do
