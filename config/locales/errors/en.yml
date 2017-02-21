@@ -28,7 +28,7 @@ en:
         one: '1 error prohibited this %{resource} from being saved:'
         other: "%{count} errors prohibited this %{resource} from being saved:"
       password_incorrect: Password is incorrect
-      recovery_code_incorrect: Recovery code is incorrect
+      recovery_code_incorrect: Personal key is incorrect
       requires_phone: requires you to enter your phone number.
       weak_password: Your password is not strong enough. %{feedback}
     not_authorized: You are not authorized to perform this action.
