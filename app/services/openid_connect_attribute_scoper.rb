@@ -5,6 +5,7 @@ class OpenidConnectAttributeScoper
     openid
     phone
     profile
+    social_security_number
   ).freeze
 
   ATTRIBUTE_SCOPE_MAP = {
@@ -16,6 +17,7 @@ class OpenidConnectAttributeScoper
     given_name: 'profile',
     family_name: 'profile',
     birthdate: 'profile',
+    social_security_number: 'social_security_number',
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = ATTRIBUTE_SCOPE_MAP.group_by(&:last).map do |scope, attribute_scope|
