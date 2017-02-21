@@ -58,5 +58,3 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
-
-SecureHeadersWhitelister.new.run
