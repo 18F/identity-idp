@@ -15,6 +15,6 @@ en:
         reactivate_button: Reactivate your profile
       ssn: Social Security Number
     items:
-      recovery_code: Recovery code
+      recovery_code: Personal key
     links:
       regenerate_recovery_code: Create
