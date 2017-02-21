@@ -783,7 +783,6 @@ describe SamlIdpController do
       expect(subject).to have_actions(
         :before,
         :disable_caching,
-        [:apply_secure_headers_override, only: [:auth, :logout]],
         [:validate_saml_request, only: :auth],
         [:validate_service_provider_and_authn_context, only: :auth],
         [:add_sp_metadata_to_session, only: :auth],
