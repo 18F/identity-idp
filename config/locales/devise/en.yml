@@ -104,7 +104,7 @@ en:
       invalid_otp: >
         That passcode is invalid. You can try entering it again or request a new
         one-time passcode.
-      invalid_recovery_code: That recovery code is invalid.
+      invalid_recovery_code: That personal key is invalid.
       max_login_attempts_reached: >
         Your account is temporarily locked because you have entered the one-time
         passcode incorrectly too many times.
@@ -123,11 +123,11 @@ en:
         Your phone number has been set. Confirm it by entering the passcode below.
       please_try_again_html: Please try again in %{time_remaining}.
       recovery_code_fallback:
-        link: recovery code
+        link: personal key
         text_html: Don’t have access to your phone? Use a %{link} instead.
-      recovery_code_header_text: Enter your recovery code
+      recovery_code_header_text: Enter your personal key
       recovery_code_prompt: >
-        You can use this recovery code once. If you still need a code after
+        You can use this personal key once. If you still need a code after
         signing in, go to your account settings page to get a new one.
       totp_fallback:
         sms_link_text: receive a code via text message

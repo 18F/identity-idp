@@ -31,7 +31,7 @@ en:
       questions:
         title: Still have questions?
       signing_in:
-        forgot_codes: I can't remember where my recovery codes are.
+        forgot_codes: I can't remember where my personal key is.
         forgot_email: I forgot which email address I used to create an account.
         forgot_password: What do I do if my password doesn't work or I forgot it?
         log_out: What happens if the system logs me out?

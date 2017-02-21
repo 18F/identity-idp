@@ -48,5 +48,5 @@ en:
         you’ll need to open the application and retrieve a code.
     two_factor:
       code: One-time passcode
-      recovery_code: Recovery code
+      recovery_code: Personal key
       try_again: Use another

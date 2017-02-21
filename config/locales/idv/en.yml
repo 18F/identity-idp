@@ -137,7 +137,7 @@ en:
           password as long as it meets the criteria above.
         virtual: a virtual phone, like Google Voice or Skype
       recovery_code: >
-        This is your new recovery code. Write it down and keep it in a safe
+        This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       review:
         financial_info: Where is my financial account information?
