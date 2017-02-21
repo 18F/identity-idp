@@ -39,6 +39,10 @@ module ApplicationHelper
     session[:sp]
   end
 
+  def sign_up_init?
+    session[:sign_up_init]
+  end
+
   def user_signing_up?
     !current_user || !current_user.two_factor_enabled?
   end

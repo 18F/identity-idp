@@ -14,6 +14,7 @@ module SignUp
     def new
       ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
+      session[:sign_up_init] = true
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
     end
 
@@ -48,6 +49,7 @@ module SignUp
 
       resend_confirmation = params[:user][:resend]
       session[:email] = user.email
+      session.delete(:sign_up_init)
 
       redirect_to sign_up_verify_email_path(resend: resend_confirmation)
     end

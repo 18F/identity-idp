@@ -4,6 +4,8 @@
   - if user_signing_up? || user_verifying_identity?
     = button_to cancel_link_text, cancel, method: :delete,
       class: 'btn btn-link', id: 'auth-flow-cancel'
-    = render 'shared/cancel_action_modal', idv: user_verifying_identity?
+    = render 'shared/cancel_action_modal',
+      idv: user_verifying_identity?,
+      sign_up_init: sign_up_init?
   - else
     = link_to cancel_link_text, cancel, class: 'h5'
