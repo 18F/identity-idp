@@ -10,7 +10,6 @@ class SamlIdpController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   before_action :disable_caching
-  before_action :apply_secure_headers_override, only: [:auth, :logout]
 
   def auth
     link_identity_from_session_data
@@ -46,6 +45,9 @@ class SamlIdpController < ApplicationController
   end
 
   def render_template_for(message, action_url, type)
+    domain = SecureHeadersWhitelister.extract_domain(action_url)
+    override_content_security_policy_directives(form_action: ["'self'", domain])
+
     render(
       template: 'saml_idp/shared/saml_post_binding',
       locals: {
@@ -55,14 +57,6 @@ class SamlIdpController < ApplicationController
       },
       layout: false
     )
-  end
-
-  def apply_secure_headers_override
-    service_provider = ServiceProvider.from_issuer(saml_request&.service_provider&.identifier)
-    acs_url = service_provider.metadata[:acs_url]
-    domain = SecureHeadersWhitelister.extract_domain(acs_url) if acs_url
-
-    override_content_security_policy_directives(form_action: ["'self'", domain].compact)
   end
 
   def delete_branded_experience
