@@ -31,9 +31,6 @@ describe 'sign_up/registrations/show.html.slim' do
       expect(rendered).to have_content(
         t('headings.create_account_without_sp', sp: nil)
       )
-      expect(rendered).to have_content(
-        t('devise.registrations.start.bullet_1_without_sp', sp: nil)
-      )
     end
   end
 
@@ -47,9 +44,6 @@ describe 'sign_up/registrations/show.html.slim' do
 
       expect(rendered).to have_content(
         t('headings.create_account_with_sp', sp: @sp_name)
-      )
-      expect(rendered).to have_content(
-        t('devise.registrations.start.bullet_1_with_sp', sp: @sp_name)
       )
     end
   end

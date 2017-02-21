@@ -1,24 +1,46 @@
 - title t('titles.registrations.start')
-
-h1.h3.my0 = decorated_session.registration_heading
-.clearfix.pt3
-  .col.col-1.center
-    = image_tag(asset_url('check-outline.svg'), size: '26x26', alt: '', class: 'mt1')
-  .col.col-11.pl2
-    p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = decorated_session.registration_bullet_1
-  .clearfix
-  .col.col-1.center
-    = image_tag(asset_url('shield.svg'), size: '25x32', alt: '', class: 'mt1')
-  .col.col-11.pl2
-    p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = t('devise.registrations.start.bullet_2')
-  .clearfix
-  .col.col-1.center
-    = image_tag(asset_url('dot-gov.svg'), size: '31x27', alt: '', class: 'mt1')
-  .col.col-11.pl2
-    p.pb2.sm-pb3.mb2 = t('devise.registrations.start.bullet_3')
-.py1.sm-p0
+.center
+  = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
+  h1.h3.mb2.blue.regular = decorated_session.registration_heading
+  p.mb4 = t("devise.registrations.start.introduction.loa3_requested.#{loa3_requested?}")
   - ab_test(:demo) do |variant, _|
-    = link_to t(variant), sign_up_email_path, class: 'btn btn-primary btn-wide mb4'
-.clearfix.pt1.border-top
+    = link_to t(variant), sign_up_email_path, class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1'
   - auth_link = link_to t('links.sign_in'), new_user_session_path
-  .sm-col-right == t('instructions.registration.already_have_account', link: auth_link)
+  p.mb0 == t('instructions.registration.already_have_account', link: auth_link)
+
+- if loa3_requested?
+  .mt4
+    = accordion('you-will-need', t('devise.registrations.start.accordion')) do
+      .clearfix
+        .col.col-1.center
+          = image_tag(asset_url('get-started/email-password.svg'),
+            size: '40', alt: '', class: 'mt1')
+        .col.col-11.pl2
+          p.mb3 = t('devise.registrations.start.bullet_1_html')
+      .clearfix
+        .col.col-1.center
+          = image_tag(asset_url('get-started/2FA.svg'), size: '40', alt: '', class: 'mt1')
+        .col.col-11.pl2
+          p.mb3 = t('devise.registrations.start.bullet_2_html')
+      .clearfix
+        .col.col-1.center
+          = image_tag(asset_url('get-started/personal-details.svg'),
+            size: '40', alt: '', class: 'mt1')
+        .col.col-11.pl2
+          p.mb3 = t('devise.registrations.start.bullet_3_html')
+      .clearfix
+        .col.col-1.center
+          = image_tag(asset_url('get-started/financial.svg'), size: '40', alt: '', class: 'mt1')
+        .col.col-11.pl2
+          p.mb3 = t('devise.registrations.start.bullet_4_html')
+      .clearfix
+        .col.col-1.center
+          = image_tag(asset_url('p-key.svg'), size: '40', alt: '', class: 'mt1')
+        .col.col-11.pl2
+          p.mb2 = t('devise.registrations.start.bullet_5_html')
+          p.mb3 = link_to t('devise.registrations.start.learn_more'), help_path, target: '_blank'
+  .center
+    - ab_test(:demo) do |variant, _|
+      = link_to t(variant), sign_up_email_path,
+        class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1 js-toggle-button display-none'
+  == javascript_include_tag 'misc/toggle-button'

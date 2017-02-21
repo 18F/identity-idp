@@ -35,15 +35,7 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#registration_heading' do
     it 'returns the correct string' do
       expect(subject.registration_heading).to eq(
-        I18n.t('headings.create_account_with_sp', sp: sp_name)
-      )
-    end
-  end
-
-  describe '#registration_bullet_1' do
-    it 'returns the correct string' do
-      expect(subject.registration_bullet_1).to eq(
-        I18n.t('devise.registrations.start.bullet_1_with_sp', sp: sp_name)
+        I18n.t('headings.create_account_with_sp', sp: "<strong>#{sp_name}</strong>")
       )
     end
   end

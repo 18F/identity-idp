@@ -8,11 +8,10 @@ feature 'saml api' do
 
   context 'SAML Assertions' do
     context 'before fully signing in' do
-      it 'prompts the user to sign in' do
+      it 'directs users to the start page' do
         visit authnrequest_get
 
-        expect(current_path).to eq root_path
-        expect(page).to have_content t('devise.failure.unauthenticated')
+        expect(current_path).to eq sign_up_start_path
       end
 
       it 'prompts the user to enter OTP' do
