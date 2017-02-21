@@ -44,18 +44,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def submit(user, rails_session_id)
-    success = valid?
+    @success = valid?
 
     link_identity_to_client_id(user, rails_session_id) if success
 
-    result_uri = success ? success_redirect_uri : error_redirect_uri
-
-    {
-      success: success,
-      redirect_uri: result_uri,
-      client_id: client_id,
-      errors: errors.messages,
-    }
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def loa3_requested?
@@ -72,7 +65,7 @@ class OpenidConnectAuthorizeForm
 
   private
 
-  attr_reader :identity
+  attr_reader :identity, :success
 
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
@@ -125,6 +118,17 @@ class OpenidConnectAuthorizeForm
     when Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
       3
     end
+  end
+
+  def extra_analytics_attributes
+    {
+      client_id: client_id,
+      redirect_uri: result_uri,
+    }
+  end
+
+  def result_uri
+    success ? success_redirect_uri : error_redirect_uri
   end
 
   def success_redirect_uri
