@@ -11,7 +11,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          error: 'invalid_token',
+          errors: { user: ['invalid_token'] },
           user_id: nil,
         }
 
@@ -36,7 +36,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          error: 'token_expired',
+          errors: { user: ['token_expired'] },
           user_id: '123',
         }
 
@@ -85,7 +85,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          errors: ['is too short (minimum is 8 characters)', 'token_expired'],
+          errors: {
+            password: ['is too short (minimum is 8 characters)'],
+            reset_password_token: ['token_expired'],
+          },
           user_id: user.uuid,
           active_profile: false,
           confirmed: true,
@@ -118,7 +121,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          errors: ['is too short (minimum is 8 characters)'],
+          errors: { password: ['is too short (minimum is 8 characters)'] },
           user_id: user.uuid,
           active_profile: false,
           confirmed: true,
@@ -158,7 +161,7 @@ describe Users::ResetPasswordsController, devise: true do
 
           analytics_hash = {
             success: true,
-            errors: [],
+            errors: {},
             user_id: user.uuid,
             active_profile: false,
             confirmed: true,
@@ -197,7 +200,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           active_profile: true,
           confirmed: true,
@@ -236,7 +239,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           active_profile: false,
           confirmed: false,
@@ -260,7 +263,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
@@ -285,7 +288,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: tech_user.uuid,
           role: 'tech',
           confirmed: true,
@@ -310,7 +313,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: admin.uuid,
           role: 'admin',
           confirmed: true,
@@ -334,7 +337,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           role: 'user',
           confirmed: true,
@@ -358,7 +361,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           role: 'user',
           confirmed: false,
@@ -379,20 +382,15 @@ describe Users::ResetPasswordsController, devise: true do
 
     context 'email is invalid' do
       it 'displays an error and tracks event' do
-        form = instance_double(PasswordResetEmailForm)
-        expect(PasswordResetEmailForm).to receive(:new).with('foo').and_return(form)
-
         stub_analytics
 
         analytics_hash = {
           success: false,
-          errors: [t('valid_email.validations.email.invalid')],
+          errors: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
         }
-
-        expect(form).to receive(:submit).and_return(analytics_hash)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)

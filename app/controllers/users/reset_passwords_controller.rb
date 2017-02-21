@@ -8,25 +8,24 @@ module Users
       @password_reset_email_form = PasswordResetEmailForm.new(email)
       result = @password_reset_email_form.submit
 
-      analytics.track_event(Analytics::PASSWORD_RESET_EMAIL, result)
+      analytics.track_event(Analytics::PASSWORD_RESET_EMAIL, result.to_h)
 
-      if result[:success]
+      if result.success?
         handle_valid_email
       else
-        handle_invalid_email
+        render :new
       end
     end
 
     def edit
       result = PasswordResetTokenValidator.new(token_user(params)).submit
 
-      analytics.track_event(Analytics::PASSWORD_RESET_TOKEN, result)
+      analytics.track_event(Analytics::PASSWORD_RESET_TOKEN, result.to_h)
 
-      if result[:success]
+      if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
       else
-        flash[:error] = t("devise.passwords.#{result[:error]}")
-        redirect_to new_user_password_path
+        handle_invalid_or_expired_token(result)
       end
     end
 
@@ -38,9 +37,9 @@ module Users
 
       result = @reset_password_form.submit(user_params)
 
-      analytics.track_event(Analytics::PASSWORD_RESET_PASSWORD, result)
+      analytics.track_event(Analytics::PASSWORD_RESET_PASSWORD, result.to_h)
 
-      if result[:success]
+      if result.success?
         handle_successful_password_reset
       else
         handle_unsuccessful_password_reset(result)
@@ -62,8 +61,9 @@ module Users
       redirect_to forgot_password_path(resend: resend_confirmation)
     end
 
-    def handle_invalid_email
-      render :new
+    def handle_invalid_or_expired_token(result)
+      flash[:error] = t("devise.passwords.#{result.errors[:user].first}")
+      redirect_to new_user_password_path
     end
 
     def user_matching_token(token)
@@ -94,7 +94,7 @@ module Users
     end
 
     def handle_unsuccessful_password_reset(result)
-      if result[:errors].include?('token_expired')
+      if result.errors[:reset_password_token]
         flash[:error] = t('devise.passwords.token_expired')
         redirect_to new_user_password_path
         return
