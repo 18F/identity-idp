@@ -45,6 +45,7 @@ RSpec.describe OpenidConnectAttributeScoper do
           region: 'DC',
           postal_code: '12345',
         },
+        social_security_number: '666661234',
       }
     end
 
@@ -92,6 +93,14 @@ RSpec.describe OpenidConnectAttributeScoper do
         expect(filtered[:given_name]).to be_present
         expect(filtered[:family_name]).to be_present
         expect(filtered[:birthdate]).to be_present
+      end
+    end
+
+    context 'with social_security_number scope' do
+      let(:scope) { 'openid social_security_number' }
+
+      it 'includes social_security_number' do
+        expect(filtered[:social_security_number]).to be_present
       end
     end
   end

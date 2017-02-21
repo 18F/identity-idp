@@ -4,7 +4,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
   include Rails.application.routes.url_helpers
 
   let(:rails_session_id) { SecureRandom.uuid }
-  let(:scope) { 'openid email address phone profile' }
+  let(:scope) { 'openid email address phone profile social_security_number' }
   let(:identity) do
     build(:identity,
           rails_session_id: rails_session_id,
@@ -38,6 +38,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           state: 'DC',
           zipcode: '12345',
           phone: '+1 (555) 555-5555',
+          ssn: '666661234',
         }
       end
 
@@ -63,6 +64,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
                 region: 'DC',
                 postal_code: '12345'
               )
+              expect(user_info[:social_security_number]).to eq('666661234')
             end
           end
 
@@ -86,6 +88,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:phone]).to eq('+1 (555) 555-5555')
               expect(user_info[:phone_verified]).to eq(true)
               expect(user_info[:address]).to eq(nil)
+              expect(user_info[:social_security_number]).to eq(nil)
             end
           end
         end
