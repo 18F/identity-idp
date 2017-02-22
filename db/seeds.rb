@@ -8,6 +8,7 @@ SERVICE_PROVIDERS.each do |issuer, config|
   ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
     sp.approved = VALID_SERVICE_PROVIDERS.include?(issuer)
     sp.active = true
+    sp.native = true
     sp.attributes = config
   end
 end

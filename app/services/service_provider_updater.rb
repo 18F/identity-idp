@@ -3,6 +3,7 @@ class ServiceProviderUpdater
     :id,
     :created_at,
     :updated_at,
+    :native,
   ].to_set.freeze
 
   def run
@@ -20,11 +21,24 @@ class ServiceProviderUpdater
 
   def update_cache(issuer, service_provider)
     if service_provider['active'] == true
-      ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
-        sp.attributes = cleaned_service_provider(service_provider)
-      end
+      create_or_update_service_provider(issuer, service_provider)
     else
-      ServiceProvider.destroy_all(issuer: issuer, approved: false)
+      ServiceProvider.destroy_all(issuer: issuer, native: false)
+    end
+  end
+
+  def create_or_update_service_provider(issuer, service_provider)
+    sp = ServiceProvider.from_issuer(issuer)
+    return if sp.native?
+    sync_model(sp, cleaned_service_provider(service_provider))
+  end
+
+  def sync_model(sp, cleaned_attributes)
+    if sp.is_a?(NullServiceProvider)
+      ServiceProvider.create(cleaned_attributes)
+    else
+      sp.attributes = cleaned_attributes
+      sp.save!
     end
   end
 
