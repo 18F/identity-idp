@@ -2,8 +2,18 @@ require 'rails_helper'
 require 'proofer/vendor/mock'
 
 describe Verify::ConfirmationsController do
-  include IdvHelper
   include SamlAuthHelper
+
+  def stub_idv_session
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session.vendor = :mock
+    idv_session.applicant = applicant
+    idv_session.resolution = resolution
+    idv_session.profile_id = profile.id
+    idv_session.recovery_code = profile.recovery_code
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+  end
 
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
@@ -40,27 +50,12 @@ describe Verify::ConfirmationsController do
         subject.session[:user_return_to] = nil
       end
 
-      it 'cleans up PII from session' do
-        get :index
-
-        expect(subject.idv_session.alive?).to eq false
-      end
-
       it 'activates profile' do
         get :index
         profile.reload
 
         expect(profile).to be_active
         expect(profile.verified_at).to_not be_nil
-      end
-
-      it 'resets IdV attempts' do
-        attempter = instance_double(Idv::Attempter, reset: false)
-        allow(Idv::Attempter).to receive(:new).with(user).and_return(attempter)
-
-        expect(attempter).to receive(:reset)
-
-        get :index
       end
 
       it 'sets recovery code instance variable' do

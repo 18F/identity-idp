@@ -313,6 +313,16 @@ feature 'IdV session' do
       end
 
       it_behaves_like 'recovery code page'
+
+      scenario 'reload recovery code page' do
+        visit current_path
+
+        expect(page).to have_content(t('headings.recovery_code'))
+
+        visit current_path
+
+        expect(page).to have_content(t('headings.recovery_code'))
+      end
     end
   end
 
