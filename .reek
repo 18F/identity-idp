@@ -2,6 +2,7 @@ Attribute:
   enabled: false
 DuplicateMethodCall:
   exclude:
+    - ServiceProviderSessionDecorator#registration_heading
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
@@ -29,6 +30,7 @@ NilCheck:
     - PhoneConfirmationFlow
     - RegisterUserEmailForm#result
     - slo_not_implemented_at_sp?
+    - SessionsController#new
     - in_slo?
     - TotpSetupController#new
     - TotpSetupController#valid_code?

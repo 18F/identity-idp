@@ -31,6 +31,16 @@ feature 'LOA3 Single Sign On' do
 
       expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
     end
+
+    it 'shows user the start page with accordion' do
+      saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+
+      visit saml_authn_request
+
+      expect(current_path).to match sign_up_start_path
+      expect(page).to have_content(t('devise.registrations.start.introduction.loa3_requested.true'))
+      expect(page).to have_css('.accordion-header', text: t('devise.registrations.start.accordion'))
+    end
   end
 
   context 'canceling verification', js: true do

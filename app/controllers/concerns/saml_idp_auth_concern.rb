@@ -27,7 +27,8 @@ module SamlIdpAuthConcern
                      logo: current_sp_metadata[:logo],
                      return_url: current_sp_metadata[:return_to_sp_url],
                      name: current_sp_metadata[:friendly_name] ||
-                           current_sp_metadata[:agency] }
+                           current_sp_metadata[:agency],
+                     show_start_page: true }
   end
 
   def requested_authn_context
