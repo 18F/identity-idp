@@ -35,14 +35,6 @@ RSpec.describe SessionDecorator do
     end
   end
 
-  describe '#registration_bullet_1' do
-    it 'returns the correct string' do
-      expect(subject.registration_bullet_1).to eq(
-        I18n.t('devise.registrations.start.bullet_1_without_sp')
-      )
-    end
-  end
-
   describe '#idv_hardfail4_partial' do
     it 'returns the correct partial' do
       expect(subject.idv_hardfail4_partial).to eq 'shared/null'

@@ -45,6 +45,10 @@ module ApplicationHelper
     !current_user || !current_user.two_factor_enabled?
   end
 
+  def loa3_requested?
+    sp_session && sp_session[:loa3]
+  end
+
   def user_verifying_identity?
     return unless current_user
     sp_session && sp_session[:loa3] && current_user.two_factor_enabled?

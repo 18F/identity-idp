@@ -288,7 +288,8 @@ describe SamlIdpController do
           loa3: false,
           logo: 'generic.svg',
           return_url: 'http://localhost:3000',
-          name: 'Your friendly Government Agency'
+          name: 'Your friendly Government Agency',
+          show_start_page: true
         )
       end
 

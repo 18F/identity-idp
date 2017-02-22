@@ -4,7 +4,7 @@ en:
     confirmations:
       new: Send another confirmation email
     contact: Contact us
-    create_account_with_sp: Create a login.gov account to continue to %{sp}
+    create_account_with_sp: '%{sp} is working with login.gov to make accessing your information easy and secure.'
     create_account_without_sp: Create a login.gov account
     edit_info:
       email: Change your email

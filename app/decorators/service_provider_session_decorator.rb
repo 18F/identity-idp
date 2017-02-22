@@ -17,11 +17,10 @@ class ServiceProviderSessionDecorator
   end
 
   def registration_heading
-    I18n.t('headings.create_account_with_sp', sp: sp_name)
-  end
-
-  def registration_bullet_1
-    I18n.t('devise.registrations.start.bullet_1_with_sp', sp: sp_name)
+    sp = ActionController::Base.helpers.content_tag(:strong, sp_name)
+    ActionController::Base.helpers.safe_join(
+      [I18n.t('headings.create_account_with_sp', sp: sp).html_safe]
+    )
   end
 
   def idv_hardfail4_partial

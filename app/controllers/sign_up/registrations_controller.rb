@@ -8,6 +8,8 @@ module SignUp
     prepend_before_action :disable_account_creation, only: [:new, :create]
 
     def show
+      return redirect_to sign_up_email_path unless session[:sp].present?
+
       analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
     end
 
