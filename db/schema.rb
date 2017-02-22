@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215175444) do
+ActiveRecord::Schema.define(version: 20170222182714) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -109,6 +109,7 @@ ActiveRecord::Schema.define(version: 20170215175444) do
     t.datetime "updated_at"
     t.boolean  "active",                                default: false,        null: false
     t.boolean  "approved",                              default: false,        null: false
+    t.boolean  "native",                                default: false,        null: false
   end
 
   add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree
