@@ -53,7 +53,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
         expect(FormResponse).to have_received(:new).
           with(success: true, errors: {}, extra: extra_attributes)
-        expect(form.client_id).to eq(client_id)
       end
 
       it 'links an identity for this client with the code as the session_uuid' do
@@ -112,7 +111,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra_attributes).and_return(form_response)
         expect(result).to eq form_response
-        expect(form.client_id).to eq(client_id)
       end
     end
   end
@@ -277,6 +275,14 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with a client_id with a non-http redirect_uri' do
       let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
       it { expect(allowed_form_action).to be_nil }
+    end
+  end
+
+  describe '#client_id' do
+    it 'returns the form client_id' do
+      form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')
+
+      expect(form.client_id).to eq 'foobar'
     end
   end
 end

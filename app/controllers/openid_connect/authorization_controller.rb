@@ -23,13 +23,13 @@ module OpenidConnect
 
     def create
       result = @authorize_form.submit(current_user, session.id)
-      analytics_attributes = result.to_h
+      analytics_attributes = result.to_h.except(:redirect_uri)
 
       analytics.track_event(
-        Analytics::OPENID_CONNECT_ALLOW, analytics_attributes.except(:redirect_uri)
+        Analytics::OPENID_CONNECT_ALLOW, analytics_attributes
       )
 
-      if (redirect_uri = analytics_attributes[:redirect_uri])
+      if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri
       else
         render :error
