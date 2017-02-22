@@ -150,12 +150,10 @@ feature 'saml api' do
           body: dashboard_service_providers.to_json
         )
         SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
       after do
         SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
       it 'updates the service providers in the database' do

@@ -33,8 +33,7 @@ Figaro.require_keys(
   'twilio_accounts',
   'twilio_record_voice',
   'use_kms',
-  'valid_authn_contexts',
-  'valid_service_providers'
+  'valid_authn_contexts'
 )
 
 ConfigValidator.new.validate
