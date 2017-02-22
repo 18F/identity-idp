@@ -108,7 +108,7 @@ es:
         Código de acceso único.
       invalid_recovery_code: Ese código de recuperación no es válido.
       max_login_attempts_reached:
-        Su cuenta está bloqueada temporalmente porque ha ingresado el código de acceso único
+        Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.
       otp_method:
         instruction: Puede cambiar su elección la próxima vez que inicie sesión.
@@ -126,7 +126,7 @@ es:
       please_try_again_html: Inténtalo de nuevo en %{time_remaining}.
       recovery_code_fallback:
         link: código de recuperación
-        text_html: ¿No tiene acceso a su teléfono? Use un %{link} en su lugar.
+        text_html: ¿No tiene acceso a su teléfono? Use el %{link} en su lugar.
       recovery_code_header_text: Ingrese su código de recuperación.
       recovery_code_prompt: >
         Puede usar este código de recuperación una vez. Si todavía necesita un código después de
