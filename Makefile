@@ -28,7 +28,7 @@ brakeman:
 	bundle exec brakeman
 
 test: $(CONFIG)
-	RAILS_ENV=test bundle exec rspec && bundle exec teaspoon
+	bundle exec rspec && RAILS_ENV=test bundle exec teaspoon
 
 fast_test: $(CONFIG)
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
