@@ -4,7 +4,7 @@ function toggleButton() {
   const accordion = document.querySelector('.accordion');
 
   if (accordion) {
-    const controls = accordion.querySelectorAll('[aria-controls]');
+    const controls = [].slice.call(accordion.querySelectorAll('[aria-controls]'));
     const button = document.querySelector('.js-toggle-button');
 
     controls.forEach((control) => {
