@@ -7,16 +7,12 @@ class SessionDecorator
     'shared/nav_lite'
   end
 
-  def new_session_heading
-    I18n.t('headings.sign_in_without_sp')
-  end
-
   def registration_heading
     I18n.t('headings.create_account_without_sp')
   end
 
-  def registration_bullet_1
-    I18n.t('devise.registrations.start.bullet_1_without_sp')
+  def new_session_heading
+    I18n.t('headings.sign_in_without_sp')
   end
 
   def idv_hardfail4_partial

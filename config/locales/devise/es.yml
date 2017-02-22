@@ -77,14 +77,17 @@ es:
         Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
         su cuenta está bloqueada.
       start:
-        bullet_1_with_sp: login.gov provee servicios de cuenta a %{sp}
-        bullet_1_without_sp: login.gov provee servicios de cuenta para agencias gubernamentales
-        bullet_2:
-          Las agencias gubernamentales de los Estados Unidos están usando login.gov para interactuar con
-          el gobierno más fácil.
-        bullet_3:
-          Puede usar su cuenta para iniciar sesión en todas las agencias gubernamentales
-          participantes de los Estados Unidos.
+        accordion: NOT TRANSLATED YET
+        bullet_1_html: NOT TRANSLATED YET
+        bullet_2_html: NOT TRANSLATED YET
+        bullet_3_html: NOT TRANSLATED YET
+        bullet_4_html: NOT TRANSLATED YET
+        bullet_5_html: NOT TRANSLATED YET
+        introduction:
+          loa3_requested:
+            'true': NOT TRANSLATED YET
+            'false': NOT TRANSLATED YET
+        learn_more: NOT TRANSLATED YET
       updated: ¡Su cuenta ha sido actualizada!
     sessions:
       already_signed_out: Ahora se ha cerrado la sesión.

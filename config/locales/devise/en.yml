@@ -78,14 +78,33 @@ en:
         You have created an account. However, we could not sign you in because
         your account is locked.
       start:
-        bullet_1_with_sp: login.gov is providing account services to %{sp}
-        bullet_1_without_sp: login.gov provides account services for government agencies
-        bullet_2: >
-          U.S. government agencies are using login.gov to make interacting with
-          the government easier.
-        bullet_3: >
-          You can use your account to sign in to all participating U.S.
-          government agencies.
+        accordion: You will need
+        bullet_1_html: Provide your <strong>email address</strong> and create a
+          <strong>strong password</strong>.
+        bullet_2_html: >
+          Enable <strong>two-step authentication</strong>. This adds a second layer of security
+          to your account by requiring you to enter a new code that’s sent to your phone every time
+          you log in.
+        bullet_3_html: >
+          Provide <strong>basic information</strong>, such as your name, address, phone number,
+          and social security number.
+        bullet_4_html: >
+          Provide a <strong>financial account number</strong>, such as your  credit card number.
+          This number will only be used to verify your identity.
+        bullet_5_html: >
+          When you are finished with this process we’ll give you a personal key. <strong>Write 
+          it down and store it in a safe place; it’s important.</strong> You’ll be asked for the
+          personal key every time you make changes to your account.
+        introduction:
+          loa3_requested:
+            'true': >
+              To make a login.gov account you’ll need to have an email address and phone number
+              where we can reach you. You’ll also need to verify your identity to access sensitive
+              information about yourself.
+            'false': >
+              To make a login.gov account you’ll need to have an email address and phone number
+              where we can reach you.
+        learn_more: Learn more about verifying your identity
       updated: Your account has been updated!
     sessions:
       already_signed_out: You are now signed out.

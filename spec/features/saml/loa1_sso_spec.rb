@@ -27,6 +27,18 @@ feature 'LOA1 Single Sign On' do
       visit root_path
       expect(current_path).to eq profile_path
     end
+
+    it 'shows user the start page without accordion' do
+      saml_authn_request = auth_request.create(saml_settings)
+
+      visit saml_authn_request
+
+      expect(current_url).to match sign_up_start_path
+      expect(page).to have_content(
+        t('devise.registrations.start.introduction.loa3_requested.false')
+      )
+      expect(page).to_not have_css('.accordion-header')
+    end
   end
 
   def sign_in_and_require_viewing_recovery_code(user)
