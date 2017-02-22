@@ -73,14 +73,4 @@ module IdvHelper
     fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
     click_submit_default
   end
-
-  def stub_idv_session
-    stub_sign_in(user)
-    idv_session = Idv::Session.new(subject.user_session, user)
-    idv_session.vendor = :mock
-    idv_session.applicant = applicant
-    idv_session.resolution = resolution
-    idv_session.profile_id = profile.id
-    allow(subject).to receive(:idv_session).and_return(idv_session)
-  end
 end
