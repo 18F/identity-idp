@@ -12,7 +12,11 @@ SecureHeaders::Configuration.default do |config|
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: ["'self'"], # CSP 2.0 only
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: ["'self'"],
+    connect_src: [
+      "'self'",
+      '*.newrelic.com',
+      '*.nr-data.net',
+    ],
     font_src: ["'self'", 'data:'],
     img_src: ["'self'", 'data:', '*.google-analytics.com'],
     media_src: ["'self'"],
