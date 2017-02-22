@@ -70,7 +70,7 @@ module Idv
       profile.verified_at = Time.zone.now
       profile.vendor = vendor
       profile.activate
-      move_pii_to_user_session
+      move_pii_to_user_session if session[:decrypted_pii].present?
     end
 
     def alive?

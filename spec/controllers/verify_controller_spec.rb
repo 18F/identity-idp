@@ -33,6 +33,20 @@ describe VerifyController do
         get :activated
 
         expect(response).to render_template(:activated)
+        expect(subject.idv_session.alive?).to eq false
+      end
+
+      it 'resets IdV attempts' do
+        profile = create(:profile, :active, :verified)
+
+        stub_sign_in(profile.user)
+
+        attempter = instance_double(Idv::Attempter, reset: false)
+        allow(Idv::Attempter).to receive(:new).with(profile.user).and_return(attempter)
+
+        expect(attempter).to receive(:reset)
+
+        get :activated
       end
     end
 

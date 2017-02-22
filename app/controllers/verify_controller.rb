@@ -18,6 +18,8 @@ class VerifyController < ApplicationController
 
   def activated
     redirect_to verify_url unless active_profile?
+    idv_attempter.reset
+    idv_session.clear
   end
 
   def fail
