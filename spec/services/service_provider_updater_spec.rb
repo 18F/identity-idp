@@ -34,6 +34,12 @@ describe ServiceProviderUpdater do
         cert: saml_test_sp_cert,
         active: false,
       },
+      {
+        issuer: 'http://localhost:3000',
+        agency: 'trying to override a test SP',
+        acs_url: 'http://nasty-override.example.org/saml/login',
+        active: true,
+      },
     ]
   end
 
@@ -78,6 +84,14 @@ describe ServiceProviderUpdater do
         sp = ServiceProvider.from_issuer(inactive_dashboard_sp_issuer)
 
         expect(sp).to be_a NullServiceProvider
+      end
+
+      it 'ignores attempts to alter native Service Providers' do
+        subject.run
+
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+
+        expect(sp.agency).to_not eq 'trying to override a test SP'
       end
     end
 
