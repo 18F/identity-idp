@@ -9,6 +9,10 @@ class NullServiceProvider
     false
   end
 
+  def native?
+    false
+  end
+
   def live?
     false
   end
