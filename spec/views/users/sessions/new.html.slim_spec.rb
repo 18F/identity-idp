@@ -1,9 +1,8 @@
 require 'rails_helper'
 
-describe 'devise/sessions/new.html.slim' do
+describe 'users/sessions/new.html.slim' do
   before do
-    allow(view).to receive(:resource).and_return(build_stubbed(:user))
-    allow(view).to receive(:resource_name).and_return(:user)
+    @user = build_stubbed(:user)
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
   end

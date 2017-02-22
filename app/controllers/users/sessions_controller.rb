@@ -1,15 +1,16 @@
 module Users
-  class SessionsController < Devise::SessionsController
+  class SessionsController < DeviseController
     include ::ActionView::Helpers::DateHelper
 
+    prepend_before_action :allow_params_authentication!, only: :create
+    prepend_before_action only: [:create] { request.env['devise.skip_timeout'] = true }
     skip_before_action :session_expires_at, only: [:active]
-    skip_before_action :require_no_authentication, only: [:new]
     before_action :confirm_two_factor_authenticated, only: [:update]
     before_action :check_user_needs_redirect, only: [:new]
 
     def new
       analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT)
-      super
+      @user = User.new(sign_in_params)
     end
 
     def create
@@ -21,8 +22,7 @@ module Users
         return
       end
 
-      super
-      cache_active_profile
+      sign_in_user
     end
 
     def active
@@ -43,6 +43,10 @@ module Users
 
     private
 
+    def sign_in_params
+      params.permit(:password, :remember_me)
+    end
+
     def check_user_needs_redirect
       if user_fully_authenticated?
         redirect_to after_sign_in_path_for
@@ -51,8 +55,10 @@ module Users
       end
     end
 
-    def now
-      @_now ||= Time.zone.now
+    def sign_in_user
+      warden.authenticate!(scope: :user, recall: 'users/sessions#new')
+      redirect_to after_sign_in_path_for
+      cache_active_profile
     end
 
     def expires_at
@@ -63,6 +69,10 @@ module Users
       return false unless session && expires_at
       session_alive = expires_at > now
       current_user.present? && session_alive
+    end
+
+    def now
+      @_now ||= Time.zone.now
     end
 
     def track_authentication_attempt(email)

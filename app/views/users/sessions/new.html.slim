@@ -1,10 +1,8 @@
 - title t('titles.visitors.index')
 
 h1.h3.my0 = decorated_session.new_session_heading
-= simple_form_for(resource,
-                  as: resource_name,
-                  url: session_path(resource_name),
-                  html: { autocomplete: 'off', role: 'form' }) do |f|
+= simple_form_for(@user, url: new_user_session_path,
+  html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true, input_html: { class: 'mb4' }
   = f.input :password, required: true
   = f.button :submit, t('links.next'), class: 'btn-wide'
@@ -15,5 +13,5 @@ p.my3 == t('notices.sign_in_consent.text', app: APP_NAME, link: link)
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
   .sm-col-right.mxn1
-    = link_to t('links.passwords.forgot'), new_password_path(resource_name), class: 'px1'
+    = link_to t('links.passwords.forgot'), new_user_password_path, class: 'px1'
     = link_to t('links.create_account'), sign_up_start_path, class: 'px1 border-left border-silver'

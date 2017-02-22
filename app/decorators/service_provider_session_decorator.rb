@@ -5,7 +5,7 @@ class ServiceProviderSessionDecorator
   end
 
   def return_to_service_provider_partial
-    'devise/sessions/return_to_service_provider'
+    'users/sessions/return_to_service_provider'
   end
 
   def nav_partial
