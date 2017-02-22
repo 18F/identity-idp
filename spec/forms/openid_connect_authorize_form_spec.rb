@@ -40,12 +40,23 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with valid params' do
       it 'is successful' do
-        expect(result[:success]).to eq(true)
-        expect(result[:client_id]).to eq(client_id)
+        allow(FormResponse).to receive(:new)
+
+        form.submit(user, rails_session_id)
+
+        identity = user.identities.where(service_provider: client_id).first
+
+        extra_attributes = {
+          client_id: client_id,
+          redirect_uri: "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}",
+        }
+
+        expect(FormResponse).to have_received(:new).
+          with(success: true, errors: {}, extra: extra_attributes)
       end
 
       it 'links an identity for this client with the code as the session_uuid' do
-        redirect_uri = URI(result[:redirect_uri])
+        redirect_uri = URI(result.to_h[:redirect_uri])
         code = Rack::Utils.parse_nested_query(redirect_uri.query).with_indifferent_access[:code]
 
         identity = user.identities.where(service_provider: client_id).first
@@ -65,10 +76,20 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:code_challenge_method) { 'S256' }
 
         it 'records the code_challenge on the identity' do
-          expect(result[:success]).to eq(true)
+          allow(FormResponse).to receive(:new)
+
+          form.submit(user, rails_session_id)
 
           identity = user.identities.where(service_provider: client_id).first
+
+          extra_attributes = {
+            client_id: client_id,
+            redirect_uri: "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}",
+          }
+
           expect(identity.code_challenge).to eq(code_challenge)
+          expect(FormResponse).to have_received(:new).
+            with(success: true, errors: {}, extra: extra_attributes)
         end
       end
     end
@@ -77,9 +98,19 @@ RSpec.describe OpenidConnectAuthorizeForm do
       let(:response_type) { nil }
 
       it 'is unsuccessful and has error messages' do
-        expect(result[:success]).to eq(false)
-        expect(result[:client_id]).to eq(client_id)
-        expect(result[:errors]).to be_present
+        form_response = instance_double(FormResponse)
+
+        extra_attributes = {
+          client_id: client_id,
+          redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
+                        "Response+type+is+not+included+in+the+list&state=#{state}",
+        }
+
+        errors = { response_type: ['is not included in the list'] }
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra_attributes).and_return(form_response)
+        expect(result).to eq form_response
       end
     end
   end
@@ -244,6 +275,14 @@ RSpec.describe OpenidConnectAuthorizeForm do
     context 'with a client_id with a non-http redirect_uri' do
       let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
       it { expect(allowed_form_action).to be_nil }
+    end
+  end
+
+  describe '#client_id' do
+    it 'returns the form client_id' do
+      form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')
+
+      expect(form.client_id).to eq 'foobar'
     end
   end
 end

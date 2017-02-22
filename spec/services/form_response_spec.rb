@@ -69,4 +69,13 @@ describe FormResponse do
       end
     end
   end
+
+  describe '#extra' do
+    it 'returns the extra hash' do
+      extra = { foo: 'bar' }
+      response = FormResponse.new(success: true, errors: {}, extra: extra)
+
+      expect(response.extra).to eq extra
+    end
+  end
 end
