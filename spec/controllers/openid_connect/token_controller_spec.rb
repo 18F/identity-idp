@@ -20,7 +20,7 @@ RSpec.describe OpenidConnect::TokenController do
       jwt_payload = {
         iss: client_id,
         sub: client_id,
-        aud: openid_connect_token_url,
+        aud: api_openid_connect_token_url,
         jti: SecureRandom.hex,
         exp: 5.minutes.from_now.to_i,
       }

@@ -28,7 +28,7 @@ RSpec.describe OpenidConnectTokenForm do
     {
       iss: client_id,
       sub: client_id,
-      aud: openid_connect_token_url,
+      aud: api_openid_connect_token_url,
       jti: SecureRandom.hex,
       exp: 5.minutes.from_now.to_i,
     }
@@ -73,6 +73,22 @@ RSpec.describe OpenidConnectTokenForm do
           expect(valid?).to eq(true)
           expect(form.errors).to be_blank
         end
+
+        context 'with the old audience url' do
+          before { jwt_payload[:aud] = 'http://www.example.com/openid_connect/token' }
+
+          it 'is valid' do
+            expect(valid?).to eq(true)
+          end
+        end
+
+        context 'with a trailing slash in the audience url' do
+          before { jwt_payload[:aud] = 'http://www.example.com/api/openid_connect/token/' }
+
+          it 'is valid' do
+            expect(valid?).to eq(true)
+          end
+        end
       end
 
       context 'with a bad client_assertion_type' do
@@ -82,6 +98,28 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with a bad client_assertion' do
+        context 'without an audience' do
+          before { jwt_payload.delete(:aud) }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+            )
+          end
+        end
+
+        context 'with a bad audience' do
+          before { jwt_payload[:aud] = 'https://foobar.com' }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+            )
+          end
+        end
+
         context 'with a bad issuer' do
           before { jwt_payload[:iss] = 'wrong' }
 
