@@ -109,12 +109,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
           screenshot_and_save_page
         end
 
-        context 'with SMS OTP selected' do
-          before do
-            choose t('devise.two_factor_authentication.otp_method.sms')
-            click_button t('forms.buttons.submit.default')
-          end
-
+        context 'with SMS OTP selected (default)' do
           it 'prompts for OTP verification' do
             screenshot_and_save_page
           end
