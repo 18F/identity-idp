@@ -101,6 +101,7 @@ production:
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'change-me'
   aws_region: 'change-me'
+  disable_email_sending: 'false'
   domain_name: 'example.com'
   enable_test_routes: 'false'
   equifax_avs_username: 'sekret'
