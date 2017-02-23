@@ -18,7 +18,7 @@ module Upaya
 
     routes.default_url_options[:host] = Figaro.env.domain_name
 
-    unless Rails.env.production?
+    if Rails.env.test?
       config.browserify_rails.commandline_options += ' -p [ proxyquireify/plugin ]'
       # Make sure Browserify is triggered when asked to serve javascript spec files
       config.browserify_rails.paths << lambda do |path|
