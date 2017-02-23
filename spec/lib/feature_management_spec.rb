@@ -23,7 +23,7 @@ describe 'FeatureManagement', type: :feature do
 
       it 'returns true in production mode' do
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Figaro.env).to receive(:domain_name).and_return('idp.pt.login.gov')
+        allow(Figaro.env).to receive(:domain_name).and_return(FeatureManagement::PT_DOMAIN_NAME)
 
         expect(FeatureManagement.prefill_otp_codes?).to eq(true)
       end
@@ -46,7 +46,7 @@ describe 'FeatureManagement', type: :feature do
 
       it 'returns false in production mode when server is pt' do
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Figaro.env).to receive(:domain_name).and_return('idp.pt.login.gov')
+        allow(Figaro.env).to receive(:domain_name).and_return(FeatureManagement::PT_DOMAIN_NAME)
 
         expect(FeatureManagement.prefill_otp_codes?).to eq(false)
       end

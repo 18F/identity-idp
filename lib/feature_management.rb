@@ -1,4 +1,6 @@
 class FeatureManagement
+  PT_DOMAIN_NAME = 'idp.pt.login.gov'.freeze
+
   def self.telephony_disabled?
     Figaro.env.telephony_disabled == 'true'
   end
@@ -15,7 +17,7 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_production?
-    Figaro.env.domain_name == 'idp.pt.login.gov' && telephony_disabled?
+    Figaro.env.domain_name == PT_DOMAIN_NAME && telephony_disabled?
   end
 
   def self.enable_i18n_mode?
