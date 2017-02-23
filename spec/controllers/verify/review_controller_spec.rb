@@ -15,7 +15,7 @@ describe Verify::ReviewController do
   let(:norm_zipcode) { '66044-1234' }
   let(:user_attrs) do
     {
-      first_name: 'Some',
+      first_name: 'José',
       last_name: 'One',
       ssn: '666661234',
       dob: 'March 29, 1972',
@@ -33,13 +33,9 @@ describe Verify::ReviewController do
     idv_session.profile_confirmation = true
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
-    idv_session.resolution = Proofer::Resolution.new(
-      success: true,
-      vendor_resp: Proofer::Vendor::MockResponse.new(
-        normalized_applicant: Proofer::Applicant.new(user_attrs.merge(zipcode: norm_zipcode))
-      ),
-      session_id: 'some-session'
-    )
+    idv_session.params = user_attrs
+    vendor = Proofer::Vendor::Mock.new(applicant: idv_session.applicant_from_params)
+    idv_session.resolution = vendor.start
     idv_session
   end
 
@@ -217,6 +213,10 @@ describe Verify::ReviewController do
 
         expect(pii.zipcode.raw).to eq raw_zipcode
         expect(pii.zipcode.norm).to eq norm_zipcode
+
+        expect(idv_session.applicant.first_name).to eq 'Jose'
+        expect(pii.first_name.raw).to eq 'José'
+        expect(pii.first_name.norm).to eq 'JOSE'
       end
     end
 
