@@ -21,6 +21,8 @@ Rails.application.configure do
   config.action_mailer.default_options = { from: Figaro.env.email_from }
   config.action_mailer.delivery_method = :test if Figaro.env.disable_email_sending == 'true'
 
+  routes.default_url_options[:protocol] = :https
+
   # turn off IP spoofing protection since the network configuration in the production environment
   # creates false positive results.
   config.action_dispatch.ip_spoofing_check = false
