@@ -11,5 +11,9 @@ module OpenidConnect
       render json: @token_form.response,
              status: (result[:success] ? :ok : :bad_request)
     end
+
+    def options
+      render nothing: true
+    end
   end
 end

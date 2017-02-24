@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   get '/api/health/workers' => 'health/workers#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
+  match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
@@ -84,6 +85,7 @@ Rails.application.routes.draw do
 
   get '/openid_connect/certs' => 'openid_connect/certs#index', as: :old_openid_connect_certs
   post '/openid_connect/token' => 'openid_connect/token#create', as: :old_openid_connect_token
+  match '/openid_connect/token' => 'openid_connect/token#options', via: :options
   get '/openid_connect/userinfo' => 'openid_connect/user_info#show',
       as: :old_openid_connect_userinfo
 
