@@ -28,6 +28,7 @@ module SamlIdpAuthConcern
                      return_url: current_sp_metadata[:return_to_sp_url],
                      name: current_sp_metadata[:friendly_name] ||
                            current_sp_metadata[:agency],
+                     request_url: request.original_url,
                      show_start_page: true }
   end
 

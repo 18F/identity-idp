@@ -6,9 +6,10 @@ feature 'LOA1 Single Sign On' do
   context 'First time registration' do
     it 'takes user to agency handoff page when sign up flow complete' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      @saml_authn_request = auth_request.create(saml_settings)
-
+      saml_authn_request = auth_request.create(saml_settings)
       user = create(:user, :with_phone)
+
+      visit saml_authn_request
       sign_in_and_require_viewing_recovery_code(user)
 
       click_acknowledge_recovery_code
@@ -49,8 +50,6 @@ feature 'LOA1 Single Sign On' do
         'need_two_factor_authentication' => true,
         first_time_recovery_code_view: true,
       }
-      session[:user_return_to] = @saml_authn_request
-      session[:sp] = { loa3: false, name: 'Your friendly Government Agency' }
     end
 
     visit profile_path

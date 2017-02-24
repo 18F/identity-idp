@@ -280,7 +280,7 @@ describe SamlIdpController do
     context 'service provider is valid' do
       before do
         @user = create(:user, :signed_up)
-        saml_get_auth(saml_settings)
+        @saml_request = saml_get_auth(saml_settings)
       end
 
       it 'stores SP metadata in session' do
@@ -289,6 +289,7 @@ describe SamlIdpController do
           logo: 'generic.svg',
           return_url: 'http://localhost:3000',
           name: 'Your friendly Government Agency',
+          request_url: @saml_request.request.original_url,
           show_start_page: true
         )
       end

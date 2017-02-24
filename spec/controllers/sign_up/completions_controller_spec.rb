@@ -7,7 +7,6 @@ describe SignUp::CompletionsController do
     context 'user signed in, sp info present' do
       before do
         stub_analytics
-        session[:user_return_to] = 'www.example.com'
         allow(@analytics).to receive(:track_event)
       end
 
@@ -61,12 +60,12 @@ describe SignUp::CompletionsController do
   describe '#update' do
     before do
       stub_analytics
-      session[:user_return_to] = 'www.example.com'
       allow(@analytics).to receive(:track_event)
     end
 
     context 'LOA1' do
       it 'tracks analytics' do
+        stub_sign_in
         subject.session[:sp] = { loa3: false, friendly_name: service_provider_name }
 
         patch :update
