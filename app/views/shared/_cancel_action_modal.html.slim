@@ -23,8 +23,9 @@
           = button_to t('idv.buttons.cancel'), verify_session_path, method: :delete,
             class: 'btn btn-outline blue border border-blue rounded-lg col-12 input-submit'
         - elsif sign_up_init
-          = button_to cancel_link_text, destroy_user_session_path, method: :get,
-            class: 'btn btn-outline blue border border-blue rounded-lg col-12 input-submit'
+          .col-12
+            = link_to cancel_link_text, '/', id: 'cancel-action-home',
+              class: 'btn btn-outline blue border border-blue rounded-lg center block'
         -else
           = button_to t('sign_up.buttons.cancel'), destroy_user_path, method: :delete,
             class: 'btn btn-outline blue border border-blue rounded-lg col-12 input-submit'

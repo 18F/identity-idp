@@ -53,7 +53,9 @@ module ApplicationHelper
   end
 
   def sign_up_or_idv_no_js_link
-    if user_signing_up?
+    if sign_up_init?
+      root_path
+    elsif user_signing_up?
       destroy_user_path
     elsif user_verifying_identity?
       verify_session_path

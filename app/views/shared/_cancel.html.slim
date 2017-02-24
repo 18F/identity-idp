@@ -2,7 +2,9 @@
 
 .mt2.pt1.border-top
   - if user_signing_up? || user_verifying_identity?
-    = button_to cancel_link_text, cancel, method: :delete,
+    - method = sign_up_init? ? :get : :delete
+
+    = button_to cancel_link_text, cancel, method: method,
       class: 'btn btn-link', id: 'auth-flow-cancel'
     = render 'shared/cancel_action_modal',
       idv: user_verifying_identity?,
