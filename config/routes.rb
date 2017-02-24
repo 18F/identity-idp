@@ -45,6 +45,10 @@ Rails.application.routes.draw do
   get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
       as: :openid_connect_configuration
   get '/api/health/workers' => 'health/workers#index'
+  get '/api/openid_connect/certs' => 'openid_connect/certs#index'
+  post '/api/openid_connect/token' => 'openid_connect/token#create'
+  match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options
+  get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
         via: [:get, :post, :delete],
@@ -79,11 +83,11 @@ Rails.application.routes.draw do
   delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
          as: :openid_connect_deny
 
-  get '/openid_connect/certs' => 'openid_connect/certs#index'
-
-  post '/openid_connect/token' => 'openid_connect/token#create'
-
-  get '/openid_connect/userinfo' => 'openid_connect/user_info#show'
+  get '/openid_connect/certs' => 'openid_connect/certs#index', as: :old_openid_connect_certs
+  post '/openid_connect/token' => 'openid_connect/token#create', as: :old_openid_connect_token
+  match '/openid_connect/token' => 'openid_connect/token#options', via: :options
+  get '/openid_connect/userinfo' => 'openid_connect/user_info#show',
+      as: :old_openid_connect_userinfo
 
   get '/otp/send' => 'users/two_factor_authentication#send_code'
   get '/phone_setup' => 'users/two_factor_authentication_setup#index'
