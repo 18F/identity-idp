@@ -35,7 +35,12 @@ en:
         message_html: >
           For your security, in %{time_left_in_session} we will automatically
           cancel your sign in.
-    session_cleared: We cleared your information for your security.
+    session_cleared: >
+      For your security, we refresh the page and clear out any information you typed into the 
+      form fields if you don't submit the form within %{minutes} minutes. 
+    session_cleared_with_sp: >
+      For your security, your request from %{sp} expires after %{minutes} minutes if you don't
+      submit the form. Then you'll have to start again from %{sp}.
     sign_in_consent:
       link: Security Consent & Privacy Act Statement.
       text: By signing in, you agree to %{app}’s %{link}

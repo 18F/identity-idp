@@ -25,6 +25,7 @@ module SamlIdpAuthConcern
   def add_sp_metadata_to_session
     session[:sp] = { loa3: loa3_requested?,
                      logo: current_sp_metadata[:logo],
+                     issuer: saml_request.service_provider.identifier,
                      return_url: current_sp_metadata[:return_to_sp_url],
                      name: current_sp_metadata[:friendly_name] ||
                            current_sp_metadata[:agency],

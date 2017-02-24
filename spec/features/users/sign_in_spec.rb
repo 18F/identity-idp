@@ -115,7 +115,9 @@ feature 'Sign in' do
       visit sign_up_email_path(foo: 'bar')
       fill_in 'Email', with: 'test@example.com'
 
-      expect(page).to have_content(t('notices.session_cleared'))
+      expect(page).to have_content(
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      )
       expect(page).to have_field('Email', with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(foo: 'bar'))
     end
@@ -124,7 +126,9 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(60)
 
       visit root_path
-      expect(page).to_not have_content(t('notices.session_cleared'))
+      expect(page).to_not have_content(
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      )
     end
   end
 
@@ -159,7 +163,9 @@ feature 'Sign in' do
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
 
-      expect(page).to have_content(t('notices.session_cleared'))
+      expect(page).to have_content(
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
     end

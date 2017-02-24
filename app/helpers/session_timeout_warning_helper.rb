@@ -14,8 +14,13 @@ module SessionTimeoutWarningHelper
   def timeout_refresh_url
     URIService.add_params(
       request.original_url,
-      timeout: true
+      timeout: true,
+      issuer: request.query_parameters[:issuer] || sp_issuer
     ).html_safe # rubocop:disable Rails/OutputSafety
+  end
+
+  def sp_issuer
+    session[:sp][:issuer] if session[:sp].present?
   end
 
   def auto_session_timeout_js
