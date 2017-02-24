@@ -1,4 +1,6 @@
 class FeatureManagement
+  PT_DOMAIN_NAME = 'idp.pt.login.gov'.freeze
+
   def self.telephony_disabled?
     Figaro.env.telephony_disabled == 'true'
   end
@@ -6,7 +8,16 @@ class FeatureManagement
   def self.prefill_otp_codes?
     # In development, when SMS is disabled we pre-fill the correct codes so that
     # developers can log in without needing to configure SMS delivery.
-    Rails.env.development? && FeatureManagement.telephony_disabled?
+    # We also allow this in production on a single server that is used for load testing.
+    development_and_telephony_disabled? || prefill_otp_codes_allowed_in_production?
+  end
+
+  def self.development_and_telephony_disabled?
+    Rails.env.development? && telephony_disabled?
+  end
+
+  def self.prefill_otp_codes_allowed_in_production?
+    Figaro.env.domain_name == PT_DOMAIN_NAME && telephony_disabled?
   end
 
   def self.enable_i18n_mode?
