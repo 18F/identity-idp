@@ -38,7 +38,7 @@ feature 'OpenID Connect' do
       jwt_payload = {
         iss: client_id,
         sub: client_id,
-        aud: openid_connect_token_url,
+        aud: api_openid_connect_token_url,
         jti: SecureRandom.hex,
         exp: 5.minutes.from_now.to_i,
       }
@@ -46,7 +46,7 @@ feature 'OpenID Connect' do
       client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
       client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
-      page.driver.post openid_connect_token_path,
+      page.driver.post api_openid_connect_token_path,
                        grant_type: 'authorization_code',
                        code: code,
                        client_assertion_type: client_assertion_type,
@@ -75,7 +75,7 @@ feature 'OpenID Connect' do
       access_token = token_response[:access_token]
       expect(access_token).to be_present
 
-      page.driver.get openid_connect_userinfo_path,
+      page.driver.get api_openid_connect_userinfo_path,
                       {},
                       'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
 
@@ -148,7 +148,7 @@ feature 'OpenID Connect' do
       code = redirect_params[:code]
       expect(code).to be_present
 
-      page.driver.post openid_connect_token_path,
+      page.driver.post api_openid_connect_token_path,
                        grant_type: 'authorization_code',
                        code: code,
                        code_verifier: code_verifier
@@ -184,7 +184,7 @@ feature 'OpenID Connect' do
   end
 
   def sp_public_key
-    page.driver.get openid_connect_certs_path
+    page.driver.get api_openid_connect_certs_path
 
     expect(page.status_code).to eq(200)
     certs_response = JSON.parse(page.body).with_indifferent_access

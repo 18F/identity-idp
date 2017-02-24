@@ -12,9 +12,9 @@ RSpec.describe OpenidConnectConfigurationPresenter do
       aggregate_failures do
         expect(configuration[:issuer]).to eq(root_url)
         expect(configuration[:authorization_endpoint]).to eq(openid_connect_authorize_url)
-        expect(configuration[:token_endpoint]).to eq(openid_connect_token_url)
-        expect(configuration[:userinfo_endpoint]).to eq(openid_connect_userinfo_url)
-        expect(configuration[:jwks_uri]).to eq(openid_connect_certs_url)
+        expect(configuration[:token_endpoint]).to eq(api_openid_connect_token_url)
+        expect(configuration[:userinfo_endpoint]).to eq(api_openid_connect_userinfo_url)
+        expect(configuration[:jwks_uri]).to eq(api_openid_connect_certs_url)
         expect(configuration[:service_documentation]).to eq('https://pages.18f.gov/identity-dev-docs/')
         expect(configuration[:response_types_supported]).to eq(%w(code))
         expect(configuration[:grant_types_supported]).to eq(%w(authorization_code))

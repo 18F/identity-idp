@@ -20,7 +20,7 @@ RSpec.describe OpenidConnect::TokenController do
       jwt_payload = {
         iss: client_id,
         sub: client_id,
-        aud: openid_connect_token_url,
+        aud: api_openid_connect_token_url,
         jti: SecureRandom.hex,
         exp: 5.minutes.from_now.to_i,
       }
@@ -75,6 +75,15 @@ RSpec.describe OpenidConnect::TokenController do
 
         action
       end
+    end
+  end
+
+  describe '#options' do
+    it 'is empty so it can be used as a pre-flight request' do
+      process :options, 'OPTIONS'
+
+      expect(response).to be_ok
+      expect(response.body).to be_empty
     end
   end
 end

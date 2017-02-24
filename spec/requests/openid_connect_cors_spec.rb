@@ -14,9 +14,20 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
   describe 'certs endpoint' do
     it 'sets CORS headers to allow all origins' do
-      get openid_connect_certs_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+      get api_openid_connect_certs_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
 
       aggregate_failures do
+        expect(response).to be_ok
+        expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+        expect(response['Access-Control-Allow-Methods']).to eq('GET')
+      end
+    end
+
+    it 'sets CORS headers for the legacy endpoint as well' do
+      get old_openid_connect_certs_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+
+      aggregate_failures do
+        expect(response).to be_ok
         expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
         expect(response['Access-Control-Allow-Methods']).to eq('GET')
       end
@@ -24,22 +35,48 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
   end
 
   describe 'token endpoint' do
-    it 'responds to OPTIONS requests with the right CORS headers' do
-      post openid_connect_token_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+    it 'responds to POST requests with the right CORS headers' do
+      post api_openid_connect_token_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
 
       aggregate_failures do
+        expect(response).to_not be_not_found
         expect(response['Access-Control-Allow-Credentials']).to eq('true')
         expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
         expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
       end
     end
 
-    it 'responds to POST requests with the right CORS headers' do
+    it 'responds to OPTIONS requests with the right CORS headers' do
       reset!
-      integration_session.__send__ :process, 'OPTIONS', openid_connect_token_path, nil,
+      integration_session.__send__ :process, 'OPTIONS', api_openid_connect_token_path, nil,
                                    'HTTP_ORIGIN' => 'https://example.com'
 
       aggregate_failures do
+        expect(response).to be_ok
+        expect(response['Access-Control-Allow-Credentials']).to eq('true')
+        expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+        expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+      end
+    end
+
+    it 'responds to POST requests with the right CORS headers for the old endpoint as well' do
+      post old_openid_connect_token_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+
+      aggregate_failures do
+        expect(response).to_not be_not_found
+        expect(response['Access-Control-Allow-Credentials']).to eq('true')
+        expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+        expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+      end
+    end
+
+    it 'responds to OPTIONS requests with the right CORS headers for the old endpoint' do
+      reset!
+      integration_session.__send__ :process, 'OPTIONS', old_openid_connect_token_path, nil,
+                                   'HTTP_ORIGIN' => 'https://example.com'
+
+      aggregate_failures do
+        expect(response).to be_ok
         expect(response['Access-Control-Allow-Credentials']).to eq('true')
         expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
         expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
@@ -49,9 +86,20 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
   describe 'userinfo endpoint' do
     it 'sets CORS headers to allow all origins' do
-      get openid_connect_userinfo_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+      get api_openid_connect_userinfo_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
 
       aggregate_failures do
+        expect(response).to_not be_not_found
+        expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+        expect(response['Access-Control-Allow-Methods']).to eq('GET')
+      end
+    end
+
+    it 'sets CORS headers to allow all origins' do
+      get old_openid_connect_userinfo_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+
+      aggregate_failures do
+        expect(response).to_not be_not_found
         expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
         expect(response['Access-Control-Allow-Methods']).to eq('GET')
       end
