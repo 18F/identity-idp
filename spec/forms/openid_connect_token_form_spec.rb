@@ -74,14 +74,6 @@ RSpec.describe OpenidConnectTokenForm do
           expect(form.errors).to be_blank
         end
 
-        context 'with the old audience url' do
-          before { jwt_payload[:aud] = 'http://www.example.com/openid_connect/token' }
-
-          it 'is valid' do
-            expect(valid?).to eq(true)
-          end
-        end
-
         context 'with a trailing slash in the audience url' do
           before { jwt_payload[:aud] = 'http://www.example.com/api/openid_connect/token/' }
 
@@ -111,6 +103,17 @@ RSpec.describe OpenidConnectTokenForm do
 
         context 'with a bad audience' do
           before { jwt_payload[:aud] = 'https://foobar.com' }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+            )
+          end
+        end
+
+        context 'with the old audience' do
+          before { jwt_payload[:aud] = 'http://www.example.com/openid_connect/token' }
 
           it 'is invalid' do
             expect(valid?).to eq(false)
