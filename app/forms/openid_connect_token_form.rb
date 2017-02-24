@@ -87,14 +87,23 @@ class OpenidConnectTokenForm
 
     service_provider = ServiceProvider.from_issuer(client_id)
 
-    JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
-               algorithm: 'RS256', verify_iat: true,
-               iss: client_id, verify_iss: true,
-               sub: client_id, verify_sub: true,
-               aud: openid_connect_token_url, verify_aud: true)
+    payload, _headers = JWT.decode(client_assertion, service_provider.ssl_cert.public_key, true,
+                                   algorithm: 'RS256', verify_iat: true,
+                                   iss: client_id, verify_iss: true,
+                                   sub: client_id, verify_sub: true)
+
+    validate_aud_claim(payload)
   rescue JWT::DecodeError => err
     # TODO: i18n these JWT gem error messages
     errors.add(:client_assertion, err.message)
+  end
+
+  def validate_aud_claim(payload)
+    normalized_aud = payload['aud'].to_s.chomp('/')
+    return if [old_openid_connect_token_url, api_openid_connect_token_url].include?(normalized_aud)
+
+    errors.add(:client_assertion,
+               t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))
   end
 
   def client_id
