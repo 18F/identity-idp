@@ -83,6 +83,7 @@ UtilityFunction:
     - SessionDecorator#registration_heading
     - SessionDecorator#registration_bullet_1
     - SessionDecorator#new_session_heading
+    - SessionDecorator#timeout_flash_text
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
 'app/controllers':

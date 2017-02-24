@@ -145,7 +145,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def sp_redirect_uri
-    service_provider.metadata[:redirect_uri].to_s
+    service_provider.redirect_uri
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -1,13 +1,12 @@
 require 'rails_helper'
 
 describe 'openid_connect/authorization/index.html.slim' do
-  let(:service_provider) { ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:test') }
-
   before do
     @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
-      scopes: %w(openid email profile),
-      service_provider: service_provider
+      scopes: %w(openid email profile)
     )
+    @sp_name = 'Test SP'
+    @sp_logo = 'generic.svg'
   end
 
   it 'renders a list of localized attribute names' do
@@ -28,7 +27,7 @@ describe 'openid_connect/authorization/index.html.slim' do
   end
 
   context 'when the service provider does not have a logo' do
-    before { expect(@authorize_decorator).to receive(:logo).and_return(nil) }
+    before { @sp_logo = nil }
 
     it 'does not render the logo' do
       render

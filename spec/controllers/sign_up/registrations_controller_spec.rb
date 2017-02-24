@@ -123,7 +123,7 @@ describe SignUp::RegistrationsController, devise: true do
   describe '#show' do
     it 'tracks page visit' do
       stub_analytics
-      session[:sp] = { loa3: true, name: 'Your friendly Government Agency' }
+      session[:sp] = { loa3: true }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_INTRO_VISIT)

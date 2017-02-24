@@ -41,7 +41,8 @@ module Features
 
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session[:sp] = { loa3: loa3, name: 'Your friendly Government Agency' }
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        session[:sp] = { loa3: loa3, issuer: sp.issuer }
       end
 
       visit profile_path
@@ -183,7 +184,8 @@ module Features
     def loa3_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
-        session[:sp] = { loa3: true, name: 'Your friendly Government Agency' }
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        session[:sp] = { loa3: true, issuer: sp.issuer }
       end
     end
   end
