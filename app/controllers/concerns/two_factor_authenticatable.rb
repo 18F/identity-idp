@@ -20,10 +20,10 @@ module TwoFactorAuthenticatable
   private
 
   def apply_secure_headers_override
-    return unless after_sign_in_path_for.start_with?(openid_connect_authorize_path)
+    return unless stored_url_for_user&.start_with?(openid_connect_authorize_path)
 
     authorize_params = Rack::Utils.parse_nested_query(
-      URI(after_sign_in_path_for).query
+      URI(stored_url_for_user).query
     ).with_indifferent_access
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
@@ -34,6 +34,10 @@ module TwoFactorAuthenticatable
       form_action: ["'self'", authorize_form.allowed_form_action].compact,
       preserve_schemes: true
     )
+  end
+
+  def stored_url_for_user
+    session['user_return_to']
   end
 
   def authenticate_user
@@ -171,7 +175,7 @@ module TwoFactorAuthenticatable
     elsif after_otp_action_required?
       after_otp_action_path
     else
-      after_sign_in_path_for
+      after_sign_in_path_for(current_user)
     end
   end
 
