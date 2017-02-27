@@ -234,4 +234,17 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq root_path
     end
   end
+
+  describe 'signing in and visiting endpoint that requires user to be signed out' do
+    it 'does not result in infinite redirect loop after submitting OTP code' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      user = create(:user, :signed_up)
+      sign_in_user(user)
+
+      visit sign_up_email_path
+      click_submit_default
+
+      expect(current_path).to eq profile_path
+    end
+  end
 end

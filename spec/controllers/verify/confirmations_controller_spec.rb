@@ -45,11 +45,7 @@ describe Verify::ConfirmationsController do
       stub_idv_session
     end
 
-    context 'original SAML Authn request missing' do
-      before do
-        subject.session[:user_return_to] = nil
-      end
-
+    context 'user used 2FA phone as phone of record' do
       it 'activates profile' do
         get :index
         profile.reload

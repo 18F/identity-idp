@@ -18,7 +18,7 @@ module SignUp
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
         service_provider_attributes
       )
-      redirect_to after_sign_in_path_for
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     private
@@ -33,10 +33,6 @@ module SignUp
 
     def service_provider_attributes
       { loa3: sp_session[:loa3], service_provider_name: sp_session[:friendly_name] }
-    end
-
-    def sp_session
-      session[:sp]
     end
   end
 end
