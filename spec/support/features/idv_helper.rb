@@ -8,7 +8,7 @@ module IdvHelper
   end
 
   def fill_out_idv_form_ok
-    fill_in 'profile_first_name', with: 'Some'
+    fill_in 'profile_first_name', with: 'José'
     fill_in 'profile_last_name', with: 'One'
     fill_in 'profile_ssn', with: '666-66-1234'
     fill_in 'profile_dob', with: '01/02/1980'

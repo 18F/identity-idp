@@ -48,7 +48,7 @@ feature 'IdV session' do
       click_acknowledge_recovery_code
 
       expect(current_url).to eq(profile_url)
-      expect(page).to have_content('Some One')
+      expect(page).to have_content('José One')
       expect(page).to have_content('123 Main St')
       expect(user.reload.active_profile).to be_a(Profile)
     end
