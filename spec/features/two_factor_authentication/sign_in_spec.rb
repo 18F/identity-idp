@@ -183,9 +183,16 @@ feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
 
       code = RecoveryCodeGenerator.new(user).create
+      code_words = code.split(' ')
       click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
-      fill_in 'code', with: code
-      click_button t('forms.buttons.submit.default')
+
+      fields = page.all('input[type="text"]')
+
+      fields.size.times do |index|
+        fields[index].set(code_words[index])
+      end
+
+      click_submit_default
       click_acknowledge_recovery_code
 
       expect(user.reload.recovery_code).to_not eq code
