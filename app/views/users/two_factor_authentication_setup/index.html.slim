@@ -27,3 +27,5 @@ p.mt-tiny.mb0
           span.indicator
           = t('devise.two_factor_authentication.otp_method.voice')
   = f.button :submit, t('forms.buttons.send_passcode')
+
+= render 'shared/cancel', link: destroy_user_session_path
