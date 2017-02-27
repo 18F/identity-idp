@@ -7,7 +7,7 @@ p.mt-tiny.mb0 = t('devise.two_factor_authentication.recovery_code_prompt')
   label.block.bold#personal-key-label
     = t('simple_form.required.html') + t('forms.two_factor.recovery_code')
 
-  - ENV['recovery_code_length'].to_i.times do |_|
+  - Figaro.env.recovery_code_length.to_i.times do |_|
       .mb2
         = block_text_field_tag 'code[words][]', '', required: true, autocomplete: 'off',
           'aria-labelledby': 'personal-key-label'
