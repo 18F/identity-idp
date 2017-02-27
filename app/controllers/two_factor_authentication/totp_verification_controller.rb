@@ -4,6 +4,8 @@ module TwoFactorAuthentication
 
     skip_before_action :handle_two_factor_authentication
 
+    helper_method :confirmation_for_phone_change?
+
     def show
       @presenter = presenter_for(delivery_method)
     end

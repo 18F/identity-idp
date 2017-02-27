@@ -12,6 +12,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   before do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:reauthn?).and_return(false)
+    allow(view).to receive(:confirmation_for_phone_change?).and_return(false)
 
     @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
                  new(presenter_data, ApplicationController.new.view_context)
@@ -49,5 +50,33 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   it 'displays a helpful tooltip to the user' do
     tooltip = t('tooltips.authentication_app')
     expect(rendered).to have_xpath("//span[@aria-label=\"#{tooltip}\"]")
+  end
+
+  context 'user is reauthenticating' do
+    before do
+      allow(view).to receive(:reauthn?).and_return(true)
+      render
+    end
+
+    it 'provides a cancel link to return to profile' do
+      expect(rendered).to have_link(
+        t('links.cancel'),
+        href: profile_path
+      )
+    end
+  end
+
+  context 'user is user is changing phone number' do
+    before do
+      allow(view).to receive(:reauthn?).and_return(true)
+      render
+    end
+
+    it 'provides a cancel link to return to profile' do
+      expect(rendered).to have_link(
+        t('links.cancel'),
+        href: profile_path
+      )
+    end
   end
 end
