@@ -12,6 +12,22 @@ feature 'Sign Up' do
     end
   end
 
+  context 'user cancels sign up on email screen' do
+    before do
+      visit sign_up_email_path
+      page.find('#auth-flow-cancel').click
+    end
+
+    it 'redirects user to the home page' do
+      expect(current_path).to eq(root_path)
+    end
+
+    it 'redirects to the homepage from the modal', js: true do
+      page.find('a', text: t('links.cancel_account_creation')).click
+      expect(current_path).to eq(root_path)
+    end
+  end
+
   context 'with js', js: true do
     context 'sp loa1' do
       it 'allows the user to toggle the modal' do
