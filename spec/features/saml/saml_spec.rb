@@ -156,6 +156,7 @@ feature 'saml api' do
       end
 
       it 'updates the service providers in the database' do
+        page.driver.header 'X-LOGIN-DASHBOARD-TOKEN', '123ABC'
         expect { page.driver.post '/api/service_provider' }.
           to change { ServiceProvider.active.sort_by(&:id) }
 
