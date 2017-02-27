@@ -40,7 +40,7 @@ module Idv
 
     def cache_applicant_profile_id
       profile = Idv::ProfileFromApplicant.create(
-        applicant: applicant,
+        applicant: Proofer::Applicant.new(applicant_params),
         normalized_applicant: resolution.vendor_resp.normalized_applicant,
         user: current_user
       )
@@ -54,8 +54,7 @@ module Idv
     end
 
     def applicant_from_params
-      app_vars = params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
-      Proofer::Applicant.new(app_vars.merge(uuid: current_user.uuid))
+      Proofer::Applicant.new(applicant_params_ascii.merge(uuid: current_user.uuid))
     end
 
     def profile
@@ -91,6 +90,14 @@ module Idv
 
     def session
       user_session[:idv]
+    end
+
+    def applicant_params
+      params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
+    end
+
+    def applicant_params_ascii
+      Hash[applicant_params.map { |key, value| [key, value.to_ascii] }]
     end
   end
 end
