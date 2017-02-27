@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::RecoveryCodeVerificationController do
+  let(:code) { { words: ['foo'] } }
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
@@ -24,7 +25,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       end
 
       it 'redirects to the profile' do
-        post :create, code: 'foo'
+        post :create, code: code
 
         expect(response).to redirect_to profile_path
       end
@@ -32,7 +33,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       it 'calls handle_valid_otp' do
         expect(subject).to receive(:handle_valid_otp).and_call_original
 
-        post :create, code: 'foo'
+        post :create, code: code
       end
 
       it 'tracks the valid authentication event' do
@@ -42,7 +43,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
 
-        post :create, code: 'foo'
+        post :create, code: code
       end
     end
 
@@ -58,11 +59,11 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       it 'calls handle_invalid_otp' do
         expect(subject).to receive(:handle_invalid_otp).and_call_original
 
-        post :create, code: 'foo'
+        post :create, code: code
       end
 
       it 're-renders the recovery code entry screen' do
-        post :create, code: 'foo'
+        post :create, code: code
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_recovery_code')
@@ -80,7 +81,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
           with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, code: 'foo' }
+        3.times { post :create, code: code }
       end
     end
   end
