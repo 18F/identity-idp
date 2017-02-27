@@ -27,7 +27,7 @@ module SignUp
 
     def confirm_has_not_already_viewed_recovery_code
       return if user_session[:first_time_recovery_code_view].present?
-      redirect_to after_sign_in_path_for
+      redirect_to after_sign_in_path_for(current_user)
     end
 
     def next_step
@@ -36,7 +36,7 @@ module SignUp
       elsif current_user.password_reset_profile.present?
         reactivate_profile_path
       else
-        after_sign_in_path_for
+        after_sign_in_path_for(current_user)
       end
     end
   end
