@@ -41,6 +41,10 @@ module ApplicationHelper
     session[:sp]
   end
 
+  def sign_up_init?
+    session[:sign_up_init]
+  end
+
   def user_signing_up?
     !current_user || !current_user.two_factor_enabled?
   end
@@ -55,10 +59,20 @@ module ApplicationHelper
   end
 
   def sign_up_or_idv_no_js_link
-    if user_signing_up?
+    if sign_up_init?
+      root_path
+    elsif user_signing_up?
       destroy_user_path
     elsif user_verifying_identity?
       verify_session_path
+    end
+  end
+
+  def cancel_link_text
+    if user_signing_up?
+      t('links.cancel_account_creation')
+    else
+      t('links.cancel')
     end
   end
 end

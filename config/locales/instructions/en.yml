@@ -45,4 +45,4 @@ en:
     recovery_code_accent: Write it down or print it out.
     registration:
       already_have_account: Already have an account? %{link}
-      email: Pick an address to use for government communications.
+      email: Pick an address you want to use for government communications.

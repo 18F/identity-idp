@@ -18,6 +18,7 @@ en:
     sign_in: Sign in
     sign_out: Sign out
     cancel: Cancel
+    cancel_account_creation: ‹ Cancel account creation
     two_factor_authentication:
       app: authentication app
       voice: phone call

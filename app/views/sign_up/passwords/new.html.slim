@@ -17,4 +17,6 @@ p.mb0
   = hidden_field_tag :confirmation_token, @confirmation_token, id: 'confirmation_token'
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb1'
 
+= render 'shared/cancel', link: destroy_user_session_path
+
 == javascript_include_tag 'misc/pw-strength'
