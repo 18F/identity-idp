@@ -6,7 +6,7 @@ module TwoFactorAuthentication
     skip_before_action :handle_two_factor_authentication
 
     def create
-      result = RecoveryCodeForm.new(current_user, params[:code]).submit
+      result = RecoveryCodeForm.new(current_user, personal_key).submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.merge(method: 'recovery code'))
 
@@ -34,7 +34,11 @@ module TwoFactorAuthentication
     end
 
     def pii
-      @_pii ||= password_reset_profile.recover_pii(params[:code])
+      @_pii ||= password_reset_profile.recover_pii(personal_key)
+    end
+
+    def personal_key
+      params[:code][:words].join(' ')
     end
   end
 end
