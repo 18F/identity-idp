@@ -4,6 +4,7 @@ Devise.setup do |config|
   include Mailable
   require 'devise/orm/active_record'
   config.allow_unconfirmed_access_for = 0.days
+  config.case_insensitive_keys = []
   config.confirm_within = 24.hours
   config.expire_all_remember_me_on_sign_out = true
   config.mailer = 'CustomDeviseMailer'
@@ -16,6 +17,7 @@ Devise.setup do |config|
   config.sign_in_after_reset_password = false
   config.sign_out_via = :delete
   config.skip_session_storage = [:http_auth]
+  config.strip_whitespace_keys = []
   config.stretches = Rails.env.test? ? 1 : 12
   config.timeout_in = Figaro.env.session_timeout_in_minutes.to_i.minutes
 
