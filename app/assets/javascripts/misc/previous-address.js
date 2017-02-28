@@ -1,4 +1,6 @@
 import 'classlist.js';
+import { TextField } from 'field-kit';
+import ZipCodeFormatter from '../app/modules/zip-code-formatter';
 
 const I18n = window.LoginGov.I18n;
 
@@ -9,11 +11,11 @@ function previousAddress() {
     const controls = accordion.querySelector('[aria-controls]');
     const selects = accordion.querySelectorAll('select');
     const inputs = accordion.querySelectorAll('input');
+    const originalHeading = controls.textContent;
 
     controls.classList.remove('display-none');
 
-    const originalHeading = controls.textContent;
-
+    let firstExpansion = true;
     controls.addEventListener('click', function() {
       const expandedState = accordion.getAttribute('aria-expanded');
 
@@ -29,6 +31,12 @@ function previousAddress() {
         });
       } else if (expandedState === 'true') {
         controls.innerHTML = I18n.t('links.remove');
+
+        if (firstExpansion) {
+          /* eslint-disable no-new, no-shadow */
+          new TextField(accordion.querySelector('.zipcode'), new ZipCodeFormatter());
+          firstExpansion = false;
+        }
       }
     });
   }
