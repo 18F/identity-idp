@@ -108,4 +108,29 @@ class User < ActiveRecord::Base
   def decorate
     UserDecorator.new(self)
   end
+
+  # Devise automatically downcases and strips any attribute defined in
+  # config.case_insensitive_keys and config.strip_whitespace_keys via
+  # before_validation callbacks. Email is included by default, which means that
+  # every time the User model is saved, even if the email wasn't updated, a DB
+  # call will be made to downcase and strip the email.
+
+  # To avoid these unnecessary DB calls, we've set case_insensitive_keys and
+  # strip_whitespace_keys to empty arrays in config/initializers/devise.rb.
+  # In addition, we've overridden the downcase_keys and strip_whitespace
+  # methods below to do nothing.
+  #
+  # Note that we already downcase and strip emails, and only when necessary
+  # (i.e. when the email attribute is being created or updated, and when a user
+  # is entering an email address in a form). This is the proper way to handle
+  # this formatting, as opposed to via a model callback that performs this
+  # action regardless of whether or not it is needed. Search the codebase for
+  # ".downcase.strip" for examples.
+  def downcase_keys
+    # no-op
+  end
+
+  def strip_whitespace
+    # no-op
+  end
 end
