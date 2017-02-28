@@ -17,10 +17,14 @@ module Users
     protected
 
     def build_reactivate_profile_form
-      p params
       ReactivateProfileForm.new(
         current_user,
-        params[:reactivate_profile_form].permit(:recovery_code, :password)
+        params[:reactivate_profile_form].
+        permit({:recovery_code => []}, :password).
+        tap do |obj|
+          code = obj[:recovery_code]
+          obj[:recovery_code] = code.join(' ') unless obj[:recovery_code].nil?
+        end
       )
     end
   end

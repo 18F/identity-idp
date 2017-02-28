@@ -1,0 +1,8 @@
+.mb3
+  label.block.bold#personal-key-label
+    = t('simple_form.required.html') + t('forms.two_factor.recovery_code')
+  - Figaro.env.recovery_code_length.to_i.times do |_|
+      .mb2
+        = block_text_field_tag field_name, '',
+          required: true, autocomplete: 'off', 'aria-labelledby': 'personal-key-label'
+  end
