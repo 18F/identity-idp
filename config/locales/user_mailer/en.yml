@@ -21,6 +21,12 @@ en:
         If you did not mean to change your password, please immediately contact
         the %{app} customer contact center via web form at %{link}.
       intro: You have changed your password for your %{app} account.
+    phone_changed:
+      help: >
+        If you did not mean to change your phone, please immediately contact
+        the %{app} customer contact center via web form at %{link}.
+      intro: You have changed your phone number for your %{app} account.
+      subject: Your phone number has been changed
     signup_with_your_email:
       help: >
         If you did not request a new account or suspect an error, please
