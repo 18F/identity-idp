@@ -71,6 +71,8 @@ module ApplicationHelper
   def cancel_link_text
     if user_signing_up?
       t('links.cancel_account_creation')
+    elsif user_verifying_identity?
+      t('links.cancel_idv')
     else
       t('links.cancel')
     end
