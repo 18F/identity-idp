@@ -144,7 +144,7 @@ module TwoFactorAuthenticatable
 
   def phone_changed
     create_user_event(:phone_changed)
-    SmsSenderNumberChangeJob.perform_later(old_phone)
+    UserMailer.phone_changed(current_user).deliver_later
   end
 
   def phone_confirmed

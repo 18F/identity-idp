@@ -64,13 +64,6 @@ describe TwilioService do
 
       expect(FakeSms.messages.size).to eq 0
     end
-
-    it 'does not send a number change messages', twilio: true do
-      TwilioService.telephony_service = FakeSms
-      SmsSenderNumberChangeJob.perform_now('555-5555')
-
-      expect(FakeSms.messages.size).to eq 0
-    end
   end
 
   context 'when telephony is enabled' do

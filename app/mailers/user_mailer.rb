@@ -21,4 +21,8 @@ class UserMailer < ActionMailer::Base
     @details = details
     mail(to: Figaro.env.support_email, subject: t('mailer.contact_request.subject'))
   end
+
+  def phone_changed(user)
+    mail(to: user.email, subject: t('user_mailer.phone_changed.subject'))
+  end
 end
