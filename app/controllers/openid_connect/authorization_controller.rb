@@ -1,10 +1,10 @@
 module OpenidConnect
   class AuthorizationController < ApplicationController
-    before_action :confirm_two_factor_authenticated
-
     before_action :build_authorize_form_from_params, only: [:index]
-    before_action :load_authorize_form_from_session, only: [:create, :destroy]
+    before_action :add_sp_metadata_to_session, only: [:index]
 
+    before_action :confirm_two_factor_authenticated
+    before_action :load_authorize_form_from_session, only: [:create, :destroy]
     before_action :apply_secure_headers_override, only: [:index]
 
     def index
@@ -60,7 +60,7 @@ module OpenidConnect
     end
 
     def build_authorize_form_from_params
-      user_session[:openid_auth_request] = authorization_params
+      user_session[:openid_auth_request] = authorization_params if user_session
 
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
 
@@ -80,6 +80,15 @@ module OpenidConnect
 
     def session_params
       user_session.delete(:openid_auth_request) || {}
+    end
+
+    def add_sp_metadata_to_session
+      current_sp_metadata = @authorize_form.service_provider.metadata
+      session[:sp] = { loa3: @authorize_form.loa3_requested?,
+                       logo: current_sp_metadata[:logo],
+                       name: current_sp_metadata[:friendly_name] ||
+                             current_sp_metadata[:agency],
+                       show_start_page: true }
     end
   end
 end
