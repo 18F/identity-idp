@@ -15,10 +15,10 @@ feature 'Changing authentication factor' do
     end
 
     scenario 'editing phone number' do
-      allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+      mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+      allow(UserMailer).to receive(:phone_changed).with(user).and_return(mailer)
 
       @previous_phone_confirmed_at = user.reload.phone_confirmed_at
-      previous_phone = user.phone
       new_phone = '+1 (703) 555-0100'
 
       visit manage_phone_path
@@ -43,7 +43,8 @@ feature 'Changing authentication factor' do
 
       expect(page).to have_content t('notices.phone_confirmation_successful')
       expect(current_path).to eq profile_path
-      expect(SmsSenderNumberChangeJob).to have_received(:perform_later).with(previous_phone)
+      expect(UserMailer).to have_received(:phone_changed).with(user)
+      expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
 

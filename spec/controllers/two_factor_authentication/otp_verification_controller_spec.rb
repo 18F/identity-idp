@@ -198,7 +198,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
-        allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+        @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+        allow(UserMailer).to receive(:phone_changed).with(subject.current_user).
+          and_return(@mailer)
         @previous_phone = subject.current_user.phone
       end
 
@@ -217,7 +219,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject.user_session[:context]).to eq 'authentication'
           end
 
-          it 'tracks the update event' do
+          it 'tracks the update event and notifies via email about number change' do
             properties = {
               success: true,
               confirmation_for_phone_change: true,
@@ -229,11 +231,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
               with(Analytics::MULTI_FACTOR_AUTH, properties)
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-          end
-
-          it 'sends an SMS to the old number' do
-            expect(SmsSenderNumberChangeJob).to have_received(:perform_later).
-              with(@previous_phone)
+            expect(UserMailer).to have_received(:phone_changed).with(subject.current_user)
+            expect(@mailer).to have_received(:deliver_later)
           end
         end
 
@@ -330,7 +329,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
         subject.current_user.create_direct_otp
-        allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+        allow(UserMailer).to receive(:phone_changed)
       end
 
       context 'user enters a valid code' do
@@ -382,8 +381,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(flash[:success]).to eq t('notices.phone_confirmation_successful')
         end
 
-        it 'does not call SmsSenderNumberChangeJob' do
-          expect(SmsSenderNumberChangeJob).to_not have_received(:perform_later)
+        it 'does not call UserMailer' do
+          expect(UserMailer).to_not have_received(:phone_changed)
         end
       end
 
