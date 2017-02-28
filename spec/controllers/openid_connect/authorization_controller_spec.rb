@@ -99,6 +99,17 @@ RSpec.describe OpenidConnect::AuthorizationController do
       it 'redirects to login' do
         expect(action).to redirect_to(root_url)
       end
+
+      it 'sets sp information in the session' do
+        action
+
+        expect(session[:sp]).to eq(
+          loa3: false,
+          logo: 'generic.svg',
+          name: 'Example iOS App',
+          show_start_page: true
+        )
+      end
     end
   end
 

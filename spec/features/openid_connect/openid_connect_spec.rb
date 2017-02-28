@@ -160,7 +160,7 @@ feature 'OpenID Connect' do
       expect(id_token).to be_present
     end
 
-    it 'continues to the authorization page on first-time signup' do
+    it 'continues to the branded authorization page on first-time signup' do
       client_id = 'urn:gov:gsa:openidconnect:test'
 
       visit openid_connect_authorize_path(
@@ -175,7 +175,12 @@ feature 'OpenID Connect' do
         code_challenge_method: 'S256'
       )
 
+      expect(page).to have_content(t('headings.create_account_with_sp', sp: 'Example iOS App'))
+      click_link t('experiments.demo.get_started')
+
       sign_up_and_2fa_loa1_user
+
+      click_button t('forms.buttons.continue_to', sp: 'Example iOS App')
 
       click_button t('openid_connect.authorization.index.allow')
       redirect_uri = URI(current_url)
