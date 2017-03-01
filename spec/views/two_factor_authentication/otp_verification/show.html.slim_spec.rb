@@ -6,6 +6,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
   context 'user has a phone' do
     before do
       allow(view).to receive(:reauthn?).and_return(false)
+      allow(view).to receive(:confirmation_for_phone_change?).and_return(false)
       allow(view).to receive(:user_session).and_return({})
       allow(view).to receive(:current_user).and_return(User.new)
       controller.request.path_parameters[:delivery_method] = presenter_data[:delivery_method]
@@ -62,6 +63,38 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         expect(rendered).to have_link(
           t('devise.two_factor_authentication.recovery_code_fallback.link'),
           href: login_two_factor_recovery_code_path
+        )
+      end
+    end
+
+    context 'user is reauthenticating' do
+      before do
+        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        allow(view).to receive(:current_user).and_return(user)
+        allow(view).to receive(:reauthn?).and_return(true)
+        render
+      end
+
+      it 'provides a cancel link to return to profile' do
+        expect(rendered).to have_link(
+          t('links.cancel'),
+          href: profile_path
+        )
+      end
+    end
+
+    context 'user is changing phone number' do
+      before do
+        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        allow(view).to receive(:current_user).and_return(user)
+        allow(view).to receive(:confirmation_for_phone_change?).and_return(true)
+        render
+      end
+
+      it 'provides a cancel link to return to profile' do
+        expect(rendered).to have_link(
+          t('links.cancel'),
+          href: profile_path
         )
       end
     end
@@ -209,6 +242,23 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         expect(rendered).not_to include(
           t('instructions.2fa.sms.fallback_html', link: unexpected_link)
+        )
+      end
+    end
+
+    context 'when users phone number is unconfirmed' do
+      it 'has a link to choose a new phone number' do
+        data = presenter_data.merge(
+          unconfirmed_phone: true,
+          reenter_phone_number_path: 'some/path'
+        )
+
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(data)
+
+        render
+
+        expect(rendered).to have_link(
+          t('forms.two_factor.try_again'), href: @presenter.reenter_phone_number_path
         )
       end
     end
