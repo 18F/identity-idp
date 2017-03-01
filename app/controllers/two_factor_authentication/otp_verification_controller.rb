@@ -37,5 +37,9 @@ module TwoFactorAuthentication
         confirmation_for_phone_change: confirmation_for_phone_change?,
       }
     end
+
+    def confirmation_for_phone_change?
+      confirmation_context? && current_user.phone.present?
+    end
   end
 end

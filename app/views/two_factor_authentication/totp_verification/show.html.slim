@@ -15,7 +15,7 @@ p.mt-tiny.mb0#code-instructs = @presenter.help_text
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
 = render 'shared/fallback_links', presenter: @presenter
-- if confirmation_for_phone_change? || reauthn?
+- if reauthn?
   = render 'shared/cancel', link: profile_path
 - else
   = render 'shared/cancel', link: destroy_user_session_path

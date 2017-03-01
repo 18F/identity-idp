@@ -248,10 +248,6 @@ module TwoFactorAuthenticatable
     end
   end
 
-  def confirmation_for_phone_change?
-    confirmation_context? && current_user.phone.present?
-  end
-
   def reenter_phone_number_path
     if idv_context?
       verify_phone_path
