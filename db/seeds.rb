@@ -4,7 +4,10 @@ AppSetting.find_or_create_by!(name: 'RegistrationsEnabled') do |setting|
 end
 
 # add config/service_providers.yml
-SERVICE_PROVIDERS.each do |issuer, config|
+service_providers = YAML.load_file("#{Rails.root}/config/service_providers.yml").
+                    fetch(Rails.env, {})
+
+service_providers.each do |issuer, config|
   ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
     sp.approved = true
     sp.active = true

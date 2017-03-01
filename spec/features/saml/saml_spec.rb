@@ -148,12 +148,9 @@ feature 'saml api' do
           status: 200,
           body: dashboard_service_providers.to_json
         )
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
-      after do
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-      end
+      after { ServiceProvider.from_issuer(dashboard_sp_issuer).destroy }
 
       it 'updates the service providers in the database' do
         page.driver.header 'X-LOGIN-DASHBOARD-TOKEN', '123ABC'
