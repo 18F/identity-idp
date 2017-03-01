@@ -50,4 +50,18 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     tooltip = t('tooltips.authentication_app')
     expect(rendered).to have_xpath("//span[@aria-label=\"#{tooltip}\"]")
   end
+
+  context 'user is reauthenticating' do
+    before do
+      allow(view).to receive(:reauthn?).and_return(true)
+      render
+    end
+
+    it 'provides a cancel link to return to profile' do
+      expect(rendered).to have_link(
+        t('links.cancel'),
+        href: profile_path
+      )
+    end
+  end
 end

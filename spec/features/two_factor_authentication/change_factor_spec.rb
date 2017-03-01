@@ -28,6 +28,7 @@ feature 'Changing authentication factor' do
       complete_2fa_confirmation
 
       update_phone_number
+      expect(page).to have_link t('links.cancel'), href: profile_path
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
       expect(page).not_to have_content(
         t('devise.two_factor_authentication.recovery_code_fallback.text_html')
@@ -134,6 +135,9 @@ feature 'Changing authentication factor' do
         submit_current_password_and_totp
 
         expect(current_path).to eq manage_phone_path
+
+        update_phone_number
+        expect(page).to have_link t('links.cancel'), href: profile_path
       end
     end
   end
