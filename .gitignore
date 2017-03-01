@@ -37,6 +37,8 @@ Vagrantfile
 /config/aws.yml
 /config/newrelic.yml
 /keys/saml.key.enc
+/keys/equifax_rsa
+/keys/equifax_rsa.pub
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
