@@ -20,14 +20,21 @@ describe SessionTimeoutWarningHelper do
   end
 
   describe '#timeout_refresh_url' do
-    before { allow(helper).to receive(:request).and_return(double(original_url: original_url, query_parameters: query_parameters)) }
-    let(:query_parameters) { { issuer: 'ISSUER' } }
+    before do
+      allow(helper).to receive(:request).and_return(
+        double(original_url: original_url, query_parameters: query_parameters)
+      )
+    end
+
+    let(:query_parameters) { { issuer: 'http://localhost:3000' } }
 
     context 'with no query in the request url' do
       let(:original_url) { 'http://test.host/foo/bar' }
 
       it 'adds timeout=true and sp_name params' do
-        expect(helper.timeout_refresh_url).to eq('http://test.host/foo/bar?issuer=ISSUER&timeout=true')
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&timeout=true'
+        )
       end
     end
 
@@ -36,16 +43,18 @@ describe SessionTimeoutWarningHelper do
 
       it 'adds timeout=true param' do
         expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?issuer=ISSUER&key=value&timeout=true'
+          'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&key=value&timeout=true'
         )
       end
     end
 
-    context 'with timeout=true and issuer=ISSUER in the query params already' do
-      let(:original_url) { 'http://test.host/foo/bar?timeout=true&issuer=ISSUER' }
+    context 'with timeout=true and issuer=http://localhost:3000 in the query params already' do
+      let(:original_url) { 'http://test.host/foo/bar?timeout=true&issuer=http://localhost:3000' }
 
       it 'is the same' do
-        expect(helper.timeout_refresh_url).to eq('http://test.host/foo/bar?issuer=ISSUER&timeout=true')
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&timeout=true'
+        )
       end
     end
   end

@@ -40,7 +40,7 @@ en:
       form fields if you don't submit the form within %{minutes} minutes. 
     session_cleared_with_sp: >
       For your security, your request from %{sp} expires after %{minutes} minutes if you don't
-      submit the form. Then you'll have to start again from %{sp}.
+      submit the form. Then you'll have to start again from %{link}.
     sign_in_consent:
       link: Security Consent & Privacy Act Statement.
       text: By signing in, you agree to %{app}’s %{link}

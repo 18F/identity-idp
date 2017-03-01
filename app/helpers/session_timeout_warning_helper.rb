@@ -20,7 +20,7 @@ module SessionTimeoutWarningHelper
   end
 
   def sp_issuer
-    session[:sp][:issuer] if session[:sp].present?
+    sp_session[:issuer] if sp_session.present?
   end
 
   def auto_session_timeout_js
