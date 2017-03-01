@@ -65,18 +65,4 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
       )
     end
   end
-
-  context 'user is user is changing phone number' do
-    before do
-      allow(view).to receive(:reauthn?).and_return(true)
-      render
-    end
-
-    it 'provides a cancel link to return to profile' do
-      expect(rendered).to have_link(
-        t('links.cancel'),
-        href: profile_path
-      )
-    end
-  end
 end
