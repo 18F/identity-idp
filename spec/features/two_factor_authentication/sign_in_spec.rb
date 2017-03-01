@@ -92,6 +92,14 @@ feature 'Two Factor Authentication' do
       expect(page).to have_content(t('notices.send_code.sms'))
     end
 
+    scenario 'user can cancel OTP process' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_link t('links.cancel')
+
+      expect(current_path).to eq root_path
+    end
+
     scenario 'user does not have to focus on OTP field', js: true do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
@@ -174,6 +182,14 @@ feature 'Two Factor Authentication' do
       click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
 
       expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+    end
+
+    scenario 'user can cancel TOTP process' do
+      user = create(:user, :signed_up, otp_secret_key: 'foo')
+      sign_in_before_2fa(user)
+      click_link t('links.cancel')
+
+      expect(current_path).to eq root_path
     end
   end
 
