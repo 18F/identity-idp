@@ -40,9 +40,7 @@ describe ServiceProviderController do
         expect(response.status).to eq 200
       end
 
-      it 'updates SERVICE_PROVIDERS' do
-        expect(SERVICE_PROVIDERS[dashboard_sp_issuer]).to eq nil
-
+      it 'updates the matching ServiceProvider in the DB' do
         post :update
 
         sp = ServiceProvider.from_issuer(dashboard_sp_issuer)
