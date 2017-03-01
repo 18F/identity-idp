@@ -76,9 +76,4 @@ class OpenidConnectUserInfoPresenter
   def loa3_session?
     identity.ial == 3
   end
-
-  def session_store
-    config = Rails.application.config
-    config.session_store.new({}, config.session_options)
-  end
 end
