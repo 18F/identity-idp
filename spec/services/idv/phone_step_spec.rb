@@ -26,11 +26,12 @@ describe Idv::PhoneStep do
       step = build_step(phone: '555')
 
       errors = { phone: [invalid_phone_message] }
+      extra = { vendor: { reasons: nil } }
 
       result = instance_double(FormResponse)
 
       expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
+        with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
       expect(idv_session.phone_confirmation).to eq false
     end
@@ -39,8 +40,9 @@ describe Idv::PhoneStep do
       step = build_step(phone: '555-555-0000')
 
       result = instance_double(FormResponse)
+      extra = { vendor: { reasons: ['Good number'] } }
 
-      expect(FormResponse).to receive(:new).with(success: true, errors: {}).
+      expect(FormResponse).to receive(:new).with(success: true, errors: {}, extra: extra).
         and_return(result)
       expect(step.submit).to eq result
       expect(idv_session.phone_confirmation).to eq true
@@ -52,11 +54,12 @@ describe Idv::PhoneStep do
       step = build_step(phone: '555-555-5555')
 
       errors = { phone: ['The phone number could not be verified.'] }
+      extra = { vendor: { reasons: ['Bad number'] } }
 
       result = instance_double(FormResponse)
 
       expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
+        with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
       expect(idv_session.phone_confirmation).to eq false
     end
