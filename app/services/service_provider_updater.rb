@@ -1,9 +1,10 @@
 class ServiceProviderUpdater
   PROTECTED_ATTRIBUTES = [
-    :id,
+    :approved,
     :created_at,
-    :updated_at,
+    :id,
     :native,
+    :updated_at,
   ].to_set.freeze
 
   def run
