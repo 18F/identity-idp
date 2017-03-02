@@ -199,14 +199,10 @@ feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
 
       code = RecoveryCodeGenerator.new(user).create
-      code_words = code.split(' ')
+
       click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
 
-      fields = page.all('input[type="text"]')
-
-      fields.size.times do |index|
-        fields[index].set(code_words[index])
-      end
+      enter_recovery_code(code: code)
 
       click_submit_default
       click_acknowledge_recovery_code
@@ -255,19 +251,6 @@ feature 'Two Factor Authentication' do
       sign_in_user(user)
       find("img[alt='login.gov']").click
       expect(current_path).to eq root_path
-    end
-  end
-
-  describe 'signing in and visiting endpoint that requires user to be signed out' do
-    it 'does not result in infinite redirect loop after submitting OTP code' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      user = create(:user, :signed_up)
-      sign_in_user(user)
-
-      visit sign_up_email_path
-      click_submit_default
-
-      expect(current_path).to eq profile_path
     end
   end
 end

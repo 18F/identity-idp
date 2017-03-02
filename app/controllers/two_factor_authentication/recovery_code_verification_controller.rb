@@ -5,8 +5,13 @@ module TwoFactorAuthentication
     prepend_before_action :authenticate_user
     skip_before_action :handle_two_factor_authentication
 
+    def show
+      @recovery_code_form = RecoveryCodeForm.new(current_user)
+    end
+
     def create
-      result = RecoveryCodeForm.new(current_user, personal_key).submit
+      @recovery_code_form = RecoveryCodeForm.new(current_user, personal_key)
+      result = @recovery_code_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.merge(method: 'recovery code'))
 
@@ -38,7 +43,7 @@ module TwoFactorAuthentication
     end
 
     def personal_key
-      params[:code][:words].join(' ')
+      params[:recovery_code_form].require(:code).join(' ')
     end
   end
 end

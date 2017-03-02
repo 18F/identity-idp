@@ -1,7 +1,9 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::RecoveryCodeVerificationController do
-  let(:code) { { words: ['foo'] } }
+  let(:code) { { code: ['foo'] } }
+  let(:payload) { { recovery_code_form: code } }
+
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
@@ -25,7 +27,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       end
 
       it 'redirects to the profile' do
-        post :create, code: code
+        post :create, payload
 
         expect(response).to redirect_to profile_path
       end
@@ -33,7 +35,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       it 'calls handle_valid_otp' do
         expect(subject).to receive(:handle_valid_otp).and_call_original
 
-        post :create, code: code
+        post :create, payload
       end
 
       it 'tracks the valid authentication event' do
@@ -43,7 +45,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
 
-        post :create, code: code
+        post :create, payload
       end
     end
 
@@ -59,11 +61,11 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       it 'calls handle_invalid_otp' do
         expect(subject).to receive(:handle_invalid_otp).and_call_original
 
-        post :create, code: code
+        post :create, payload
       end
 
       it 're-renders the recovery code entry screen' do
-        post :create, code: code
+        post :create, payload
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_recovery_code')
@@ -81,7 +83,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
           with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, code: code }
+        3.times { post :create, payload }
       end
     end
   end
