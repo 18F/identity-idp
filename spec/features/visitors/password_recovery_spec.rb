@@ -35,7 +35,7 @@ feature 'Password Recovery' do
 
   def reactivate_profile(password, recovery_code)
     fill_in 'Password', with: password
-    fill_in 'Recovery code', with: recovery_code
+    enter_recovery_code(code: recovery_code)
     click_button t('forms.reactivate_profile.submit')
   end
 
@@ -292,7 +292,6 @@ feature 'Password Recovery' do
 
     scenario 'resets password, uses recovery code as 2fa', email: true do
       recovery_code = recovery_code_from_pii(user, pii)
-      code_words = recovery_code.split(' ')
 
       trigger_reset_password_and_click_email_link(user.email)
 
@@ -301,11 +300,7 @@ feature 'Password Recovery' do
 
       click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
 
-      fields = page.all('input[type="text"]')
-
-      fields.size.times do |index|
-        fields[index].set(code_words[index])
-      end
+      enter_recovery_code(code: recovery_code)
 
       click_submit_default
 

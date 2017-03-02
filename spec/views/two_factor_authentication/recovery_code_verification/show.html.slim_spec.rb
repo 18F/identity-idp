@@ -4,6 +4,7 @@ describe 'two_factor_authentication/recovery_code_verification/show.html.slim' d
   let(:user) { build_stubbed(:user, :signed_up) }
 
   before do
+    @recovery_code_form = RecoveryCodeForm.new(user)
     allow(view).to receive(:current_user).and_return(user)
   end
 

@@ -171,6 +171,15 @@ module Features
       click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
     end
 
+    def enter_recovery_code(code:, selector: 'input[type="text"]')
+      code_words = code.split(' ')
+      fields = page.all(selector)
+
+      fields.zip(code_words) do |field, word|
+        field.set(word)
+      end
+    end
+
     def loa3_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
