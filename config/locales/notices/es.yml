@@ -29,6 +29,7 @@ es:
         sign_out: NOT TRANSLATED YET
         message_html: NOT TRANSLATED YET
     session_cleared: NOT TRANSLATED YET
+    session_cleared_with_sp: NOT TRANSLATED YET
     sign_in_consent:
       link: NOT TRANSLATED YET
       text: NOT TRANSLATED YET

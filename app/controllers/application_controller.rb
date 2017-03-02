@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::Base
+class ApplicationController < ActionController::Base # rubocop:disable Metrics/ClassLength
   include BrandedExperience
   include UserSessionContext
 
@@ -47,10 +47,33 @@ class ApplicationController < ActionController::Base
   private
 
   def redirect_on_timeout
-    request_params = request.query_parameters
-    return unless request_params[:timeout]
-    flash[:timeout] = t('notices.session_cleared')
-    redirect_to url_for(request_params.except(:timeout))
+    params = request.query_parameters
+    return unless params[:timeout]
+
+    params[:issuer].present? ? redirect_with_sp : redirect_without_sp
+  end
+
+  def sp_metadata
+    ServiceProvider.from_issuer(request.query_parameters[:issuer]).metadata
+  end
+
+  def sp_name
+    sp_metadata[:friendly_name] || sp_metadata[:agency]
+  end
+
+  def redirect_with_sp # rubocop:disable Metrics/AbcSize
+    flash[:timeout] = t(
+      'notices.session_cleared_with_sp',
+      link: view_context.link_to(sp_name, sp_metadata[:return_to_sp_url]),
+      minutes: Figaro.env.session_timeout_in_minutes,
+      sp: sp_name
+    )
+    redirect_to url_for(request.query_parameters.except(:timeout))
+  end
+
+  def redirect_without_sp
+    flash[:timeout] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+    redirect_to url_for(request.query_parameters.except(:issuer, :timeout))
   end
 
   def decorated_user

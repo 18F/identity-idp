@@ -86,6 +86,7 @@ module OpenidConnect
       current_sp_metadata = @authorize_form.service_provider.metadata
       session[:sp] = { loa3: @authorize_form.loa3_requested?,
                        logo: current_sp_metadata[:logo],
+                       issuer: @authorize_form.client_id,
                        name: current_sp_metadata[:friendly_name] ||
                              current_sp_metadata[:agency],
                        show_start_page: true }
