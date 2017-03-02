@@ -4,9 +4,7 @@ h1.h3.my0 = t('forms.reactivate_profile.title')
 p.mt-tiny.mb0 = t('forms.reactivate_profile.instructions')
 = simple_form_for(@reactivate_profile_form, url: reactivate_profile_path,
   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
-  - field_name = "#{f.object_name}[#{:recovery_code}][]"
   = f.error :base
-  = f.error :recovery_code
-  = render 'partials/personal_key/entry_fields', field_name: field_name
+  = render 'partials/personal_key/entry_fields', f: f
   = f.input :password, required: true
   = f.button :submit, t('forms.reactivate_profile.submit'), class: 'mb1'

@@ -35,7 +35,7 @@ feature 'Password Recovery' do
 
   def reactivate_profile(password, recovery_code)
     fill_in 'Password', with: password
-    fill_in 'Recovery code', with: recovery_code
+    enter_recovery_code(code: recovery_code)
     click_button t('forms.reactivate_profile.submit')
   end
 
