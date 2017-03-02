@@ -106,6 +106,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         expect(session[:sp]).to eq(
           loa3: false,
           logo: 'generic.svg',
+          issuer: 'urn:gov:gsa:openidconnect:test',
           name: 'Example iOS App',
           show_start_page: true
         )

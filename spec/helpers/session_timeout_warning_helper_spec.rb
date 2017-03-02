@@ -31,7 +31,7 @@ describe SessionTimeoutWarningHelper do
     context 'with no query in the request url' do
       let(:original_url) { 'http://test.host/foo/bar' }
 
-      it 'adds timeout=true and sp_name params' do
+      it 'adds timeout=true and issuer=http%3A%2F%2Flocalhost%3A3000 params' do
         expect(helper.timeout_refresh_url).to eq(
           'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&timeout=true'
         )
@@ -48,7 +48,8 @@ describe SessionTimeoutWarningHelper do
       end
     end
 
-    context 'with timeout=true and issuer=http://localhost:3000 in the query params already' do
+    context 'with timeout=true and issuer=http%3A%2F%2Flocalhost%3A3000 \
+            in the query params already' do
       let(:original_url) { 'http://test.host/foo/bar?timeout=true&issuer=http://localhost:3000' }
 
       it 'is the same' do
