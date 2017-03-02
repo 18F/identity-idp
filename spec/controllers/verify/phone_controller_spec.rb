@@ -69,6 +69,7 @@ describe Verify::PhoneController do
           errors: {
             phone: [invalid_phone_message],
           },
+          vendor: { reasons: nil },
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -91,7 +92,7 @@ describe Verify::PhoneController do
 
         put :create, idv_phone_form: { phone: good_phone }
 
-        result = { success: true, errors: {} }
+        result = { success: true, errors: {}, vendor: { reasons: ['Good number'] } }
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION, result
@@ -109,6 +110,7 @@ describe Verify::PhoneController do
           errors: {
             phone: ['The phone number could not be verified.'],
           },
+          vendor: { reasons: ['Bad number'] },
         }
 
         expect(flash[:warning]).to match t('idv.modal.phone.heading')
