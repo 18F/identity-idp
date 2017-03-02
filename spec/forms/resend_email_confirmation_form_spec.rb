@@ -21,7 +21,6 @@ describe ResendEmailConfirmationForm do
 
         expect(subject.submit).to eq result
         expect(subject.email).to eq user.email
-        expect(subject).to respond_to(:resend)
       end
     end
 

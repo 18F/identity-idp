@@ -8,10 +8,6 @@ class ResendEmailConfirmationForm
     @email = email
   end
 
-  def resend
-    'true'
-  end
-
   def submit
     @success = valid?
 
