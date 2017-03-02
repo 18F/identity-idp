@@ -1,5 +1,9 @@
 class RecoveryCodeForm
-  def initialize(user, code)
+  include ActiveModel::Model
+
+  attr_accessor :code
+
+  def initialize(user, code = [])
     @user = user
     @code = code
   end
@@ -14,7 +18,7 @@ class RecoveryCodeForm
 
   private
 
-  attr_reader :user, :code, :success
+  attr_reader :user, :success
 
   def valid_recovery_code?
     recovery_code_generator = RecoveryCodeGenerator.new(user)
