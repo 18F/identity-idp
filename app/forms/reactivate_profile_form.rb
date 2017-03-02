@@ -10,9 +10,9 @@ class ReactivateProfileForm
   attr_reader :user
 
   def initialize(user, attrs = {})
-    options = { recovery_code: [] }.merge(attrs)
+    attrs[:recovery_code] ||= []
     @user = user
-    super options
+    super attrs
 
     @recovery_code = recovery_code.join(' ')
   end
