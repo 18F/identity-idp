@@ -3,7 +3,6 @@ require 'rails_helper'
 describe ReactivateProfileForm do
   subject(:form) do
     ReactivateProfileForm.new(user,
-                              recovery_code: recovery_code,
                               password: password)
   end
 
@@ -13,7 +12,7 @@ describe ReactivateProfileForm do
 
   describe '#valid?' do
     let(:password) { 'asd' }
-    let(:recovery_code) { '123' }
+    let(:recovery_code) { %w(123 abc) }
     let(:valid_recovery_code?) { true }
     let(:valid_password?) { true }
     let(:recovery_code_decrypts?) { true }
@@ -45,6 +44,12 @@ describe ReactivateProfileForm do
     end
 
     context 'when recovery code does not match' do
+      subject(:form) do
+        ReactivateProfileForm.new(user,
+                                  recovery_code: recovery_code,
+                                  password: password)
+      end
+
       let(:valid_recovery_code?) { false }
 
       it 'is invalid' do

@@ -6,7 +6,6 @@ module Users
 
     def create
       @reactivate_profile_form = build_reactivate_profile_form
-
       if @reactivate_profile_form.submit(flash)
         redirect_to profile_path
       else
@@ -19,7 +18,7 @@ module Users
     def build_reactivate_profile_form
       ReactivateProfileForm.new(
         current_user,
-        params[:reactivate_profile_form].permit(:recovery_code, :password)
+        params[:reactivate_profile_form].permit(:password, recovery_code: [])
       )
     end
   end

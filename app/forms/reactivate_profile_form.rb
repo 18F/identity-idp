@@ -10,8 +10,11 @@ class ReactivateProfileForm
   attr_reader :user
 
   def initialize(user, attrs = {})
+    attrs[:recovery_code] ||= []
     @user = user
     super attrs
+
+    @recovery_code = recovery_code.join(' ')
   end
 
   def submit(flash)
