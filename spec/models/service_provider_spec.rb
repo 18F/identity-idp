@@ -94,4 +94,40 @@ describe ServiceProvider do
       end
     end
   end
+
+  describe '#live?' do
+    context 'when the service provider is not approved' do
+      it 'returns false' do
+        sp = create(:service_provider, issuer: 'foo')
+
+        expect(sp.live?).to be false
+      end
+    end
+
+    context 'when the service provider is approved but not active' do
+      it 'returns false' do
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        sp.update(active: false)
+
+        expect(sp.live?).to be false
+      end
+    end
+
+    context 'when the service provider is active and approved' do
+      it 'returns true' do
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+
+        expect(sp.live?).to be true
+      end
+    end
+
+    context 'when the service provider is active but not approved' do
+      it 'returns false' do
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        sp.update(approved: false)
+
+        expect(sp.live?).to be false
+      end
+    end
+  end
 end
