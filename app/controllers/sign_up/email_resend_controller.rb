@@ -29,8 +29,7 @@ module SignUp
     def handle_valid_email
       User.send_confirmation_instructions(email: form_email)
       session[:email] = form_email
-      resend_confirmation = params[:resend_email_confirmation_form][:resend]
-      redirect_to sign_up_verify_email_path(resend: resend_confirmation)
+      redirect_to sign_up_verify_email_path
     end
 
     def form_email
