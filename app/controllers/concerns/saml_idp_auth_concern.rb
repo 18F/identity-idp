@@ -22,9 +22,10 @@ module SamlIdpAuthConcern
     render nothing: true, status: :unauthorized
   end
 
-  def add_sp_metadata_to_session
+  def add_sp_metadata_to_session # rubocop:disable Metrics/AbcSize
     session[:sp] = { loa3: loa3_requested?,
                      logo: current_sp_metadata[:logo],
+                     issuer: saml_request.service_provider.identifier,
                      return_url: current_sp_metadata[:return_to_sp_url],
                      name: current_sp_metadata[:friendly_name] ||
                            current_sp_metadata[:agency],
