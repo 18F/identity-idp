@@ -11,7 +11,7 @@ feature 'OpenID Connect' do
         client_id: client_id,
         response_type: 'code',
         acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email profile social_security_number',
+        scope: 'openid email profile:name social_security_number',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: state,
         prompt: 'select_account',
