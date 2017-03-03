@@ -22,6 +22,19 @@ namespace :rotate do
     progress.finish
   end
 
+  desc 'encrypt plain OTP secret key'
+  task encrypt_otp: :environment do
+    num_users = User.where.not(otp_secret_key: nil).count
+    progress = new_progress_bar('Users', num_users)
+
+    User.where.not(otp_secret_key: nil).find_in_batches.with_index do |users, batch|
+      users.each do |user|
+        encrypted_attribute = EncryptedAttribute.new_from_decrypted(user.otp_secret_key)
+        execute "UPDATE users SET encrypted_otp_secret_key='#{encrypted_attribute.encrypted}' WHERE id=#{user.id}"
+      end
+    end
+  end
+
   def new_progress_bar(label, num)
     ProgressBar.create(
       title: label,
