@@ -186,5 +186,18 @@ module Features
         session[:sp] = { loa3: true, name: 'Your friendly Government Agency' }
       end
     end
+
+    def cookies
+      page.driver.browser.rack_mock_session.cookie_jar.instance_variable_get(:@cookies)
+    end
+
+    def session_cookie
+      cookies.find { |cookie| cookie.name == '_upaya_session' }
+    end
+
+    def session_store
+      config = Rails.application.config
+      config.session_store.new({}, config.session_options)
+    end
   end
 end

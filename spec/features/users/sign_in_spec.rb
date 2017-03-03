@@ -55,6 +55,12 @@ feature 'Sign in' do
     Timecop.return
   end
 
+  scenario 'user session cookie has no explicit expiration time (dies with browser exit)' do
+    sign_in_and_2fa_user
+
+    expect(session_cookie.expires).to be_nil
+  end
+
   context 'session approaches timeout', js: true do
     before :each do
       allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
@@ -147,6 +153,9 @@ feature 'Sign in' do
 
       Timecop.travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))
+
+        # Redis doesn't respect Timecop so expire session manually.
+        session_store.send(:destroy_session_from_sid, session_cookie.value)
 
         fill_in_credentials_and_submit(user.email, user.password)
         expect(page).to have_content t('errors.invalid_authenticity_token')
