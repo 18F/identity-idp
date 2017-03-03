@@ -19,6 +19,15 @@ GIT
     proofer (1.0.0)
 
 GIT
+  remote: https://github.com/18F/redis-session-store.git
+  revision: 101df477da93d47cbd61fe0ead8ddca6c60ce48e
+  branch: master
+  specs:
+    redis-session-store (0.9.1)
+      actionpack (>= 3, < 5.1)
+      redis (~> 3)
+
+GIT
   remote: https://github.com/18F/saml_idp.git
   revision: 9c1a308bb0c454bd603218f1f156a45a69cb50f2
   tag: v0.4.1-18f
@@ -290,7 +299,7 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.0)
+    i18n (0.8.1)
     i18n-tasks (0.9.11)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
@@ -442,10 +451,7 @@ GEM
     readthis (2.0.2)
       connection_pool (~> 2.1)
       redis (~> 3.0)
-    redis (3.3.2)
-    redis-session-store (0.9.1)
-      actionpack (>= 3, < 5.1)
-      redis (~> 3)
+    redis (3.3.3)
     reek (4.5.2)
       codeclimate-engine-rb (~> 0.4.0)
       parser (~> 2.3.1, >= 2.3.1.2)
@@ -589,7 +595,7 @@ GEM
       rack (>= 1.0.0)
     thor (0.19.4)
     thread (0.2.2)
-    thread_safe (0.3.5)
+    thread_safe (0.3.6)
     tilt (2.0.6)
     timecop (0.8.1)
     tins (1.13.2)
@@ -707,7 +713,7 @@ DEPENDENCIES
   rails-erd
   rails_layout
   readthis
-  redis-session-store
+  redis-session-store!
   reek
   rqrcode
   rspec-rails (~> 3.5.2)
