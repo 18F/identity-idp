@@ -1,7 +1,9 @@
 import isMobileUserAgent from './utils/mobile-user-agent';
 
-const openSystemPrintDialog = () =>
+const openSystemPrintDialog = (event) => {
+  event.preventDefault();
   window.print();
+};
 
 const enableRecoveryCodePrintButton = () => {
   const buttonNodes = document.querySelectorAll('[data-print]');
