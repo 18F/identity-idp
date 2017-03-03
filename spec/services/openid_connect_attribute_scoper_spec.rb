@@ -96,6 +96,25 @@ RSpec.describe OpenidConnectAttributeScoper do
       end
     end
 
+    context 'with profile:name scope' do
+      let(:scope) { 'openid profile:name' }
+
+      it 'includes name attributes' do
+        expect(filtered[:given_name]).to be_present
+        expect(filtered[:family_name]).to be_present
+        expect(filtered[:birthdate]).to be_nil
+      end
+    end
+
+    context 'with profile:birthdate scope' do
+      let(:scope) { 'openid profile:birthdate' }
+
+      it 'includes name attributes' do
+        expect(filtered[:given_name]).to be_nil
+        expect(filtered[:family_name]).to be_nil
+        expect(filtered[:birthdate]).to be_present
+      end
+    end
     context 'with social_security_number scope' do
       let(:scope) { 'openid social_security_number' }
 
@@ -106,11 +125,22 @@ RSpec.describe OpenidConnectAttributeScoper do
   end
 
   describe '#requested_attributes' do
-    let(:scope) { 'email profile' }
     subject(:requested_attributes) { scoper.requested_attributes }
 
-    it 'is the array of attributes corresponding to the scopes' do
-      expect(requested_attributes).to eq(%w(email given_name family_name birthdate))
+    context 'with profile' do
+      let(:scope) { 'email profile' }
+
+      it 'is the array of attributes corresponding to the scopes' do
+        expect(requested_attributes).to eq(%w(email given_name family_name birthdate))
+      end
+    end
+
+    context 'with profile' do
+      let(:scope) { 'email profile:birthdate' }
+
+      it 'is the array of attributes corresponding to the scopes' do
+        expect(requested_attributes).to eq(%w(email birthdate))
+      end
     end
   end
 end
