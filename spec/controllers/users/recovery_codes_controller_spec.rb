@@ -29,7 +29,7 @@ describe Users::RecoveryCodesController do
         expect(flash[:sucess]).to be_nil
 
         get :show, resend: true
-        expect(flash[:success]).to eq t('notices.send_code.recovery_code')
+        expect(flash.now[:success]).to eq t('notices.send_code.recovery_code')
       end
     end
 
