@@ -1,6 +1,21 @@
 require 'rails_helper'
 
 describe ApplicationController do
+  describe '#disable_caching' do
+    controller do
+      def index
+        render text: 'Hello'
+      end
+    end
+
+    it 'sets headers to disable cache' do
+      get :index
+
+      expect(response.headers['Cache-Control']).to eq 'no-store'
+      expect(response.headers['Pragma']).to eq 'no-cache'
+    end
+  end
+
   describe 'handling InvalidAuthenticityToken exceptions' do
     controller do
       def index

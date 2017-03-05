@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   before_action :create_branded_experience
   prepend_before_action :session_expires_at
   before_action :set_locale
+  before_action :disable_caching
 
   layout 'card'
 
@@ -48,6 +49,11 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def disable_caching
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['Pragma'] = 'no-cache'
+  end
 
   def redirect_on_timeout
     return unless params[:timeout]
