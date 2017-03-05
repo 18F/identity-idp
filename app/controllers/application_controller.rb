@@ -13,6 +13,7 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   prepend_before_action :session_expires_at
   before_action :set_locale
+  before_action :disable_caching
 
   layout 'card'
 
@@ -45,6 +46,11 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
   end
 
   private
+
+  def disable_caching
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['Pragma'] = 'no-cache'
+  end
 
   def redirect_on_timeout
     params = request.query_parameters
