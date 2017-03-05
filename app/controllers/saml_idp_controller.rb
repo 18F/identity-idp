@@ -10,8 +10,6 @@ class SamlIdpController < ApplicationController
   skip_before_action :verify_authenticity_token
   skip_before_action :handle_two_factor_authentication, only: :logout
 
-  before_action :disable_caching
-
   def auth
     link_identity_from_session_data
 
@@ -39,11 +37,6 @@ class SamlIdpController < ApplicationController
   end
 
   private
-
-  def disable_caching
-    expires_now
-    response.headers['Pragma'] = 'no-cache'
-  end
 
   def render_template_for(message, action_url, type)
     domain = SecureHeadersWhitelister.extract_domain(action_url)
