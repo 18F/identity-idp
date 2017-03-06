@@ -8,16 +8,17 @@ function previousAddress() {
   const accordion = document.querySelector('.accordion');
 
   if (accordion) {
+    const header = accordion.querySelector('.accordion-header');
     const controls = accordion.querySelector('[aria-controls]');
     const selects = accordion.querySelectorAll('select');
     const inputs = accordion.querySelectorAll('input');
     const originalHeading = controls.textContent;
 
-    controls.classList.remove('display-none');
+    header.classList.remove('display-none');
 
     let firstExpansion = true;
     controls.addEventListener('click', function() {
-      const expandedState = accordion.getAttribute('aria-expanded');
+      const expandedState = controls.getAttribute('aria-expanded');
 
       if (expandedState === 'false') {
         controls.innerHTML = originalHeading;

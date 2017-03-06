@@ -23,7 +23,7 @@ shared_examples_for 'recovery code page' do
   end
 
   context 'informational text' do
-    let(:accordion_selector) { generate_class_selector('accordion') }
+    let(:accordion_control_selector) { generate_class_selector('accordion-header-control') }
     let(:content_selector) { generate_class_selector('accordion-content') }
 
     scenario 'it displays the recovery code info header' do
@@ -32,8 +32,8 @@ shared_examples_for 'recovery code page' do
 
     context 'with javascript disabled' do
       scenario 'content is visible by default' do
-        expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='true']")
-        expect(page).to have_xpath("//#{content_selector}[@aria-hidden='false']")
+        expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
+        expect(page).to have_xpath("//#{content_selector}")
         expect(page).to have_content(t('users.recovery_code.help_text'))
       end
     end
@@ -52,11 +52,11 @@ shared_examples_for 'recovery code page' do
       let(:invisible_selector) { generate_class_selector('invisible') }
 
       scenario 'content is hidden by default' do
-        expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='false']")
+        expect(page).to have_xpath("//#{accordion_control_selector}")
         expect(page).not_to have_content(t('users.recovery_code.help_text'))
 
-        page.find('.accordion-header').click
-        expect(page).to have_xpath("//#{accordion_selector}[@aria-expanded='true']")
+        page.find('.accordion-header-control').click
+        expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
         expect(page).to have_content(t('users.recovery_code.help_text'))
       end
 

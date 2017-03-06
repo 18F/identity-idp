@@ -1,6 +1,6 @@
 .no-js {
   .accordion {
-    .accordion-header[aria-controls] {
+    .accordion-header-control[aria-controls] {
       background-image: none;
       cursor: inherit;
     }
@@ -20,29 +20,26 @@
     opacity: 1;
   }
 
-  &[aria-expanded="true"] {
-    .accordion-header {
-      background-image: url(image-path('minus.svg'));
-    }
-  }
 
-  &[aria-expanded="false"] {
-    .accordion-header {
-      background-image: url(image-path('plus.svg'));
+  .accordion-header-control {
+    background-position: right 1rem center;
+    background-repeat: no-repeat;
+    background-size: $h4;
+    color: $blue;
+    cursor: pointer;
+
+    &[aria-expanded="true"] {
+      background-image: url(image-path('minus.svg'));
     }
 
     .accordion-content {
       max-height: 0;
       transition: max-height .3s linear;
     }
-  }
 
-  .accordion-header {
-    background-position: right 1rem center;
-    background-repeat: no-repeat;
-    background-size: $h4;
-    color: $blue;
-    cursor: pointer;
+    &[aria-expanded="false"] {
+      background-image: url(image-path('plus.svg'));
+    }
   }
 
   .accordion-footer {
@@ -63,7 +60,7 @@
 }
 
 .animate-out {
-  animation: accordionOut .5s normal ease both 1;
+  animation: accordionOut .15s normal ease-out both 1;
 }
 
 @keyframes accordionIn {

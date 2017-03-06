@@ -1,10 +1,18 @@
-.mb4.col-12.border.rounded-md.border-blue.fs-16p.accordion(aria-expanded='true')
-  .accordion-header.py1.pl2.pr3[
-    aria-controls="#{target_id}"
+.mb4.col-12.border.rounded-md.border-blue.fs-16p.accordion
+  .accordion-header.py1.pl2[
+    role="heading"
     class=('display-none' if options[:hide_header])
   ]
-    = header_text
-  .accordion-content.accordion-init.clearfix(id="#{target_id}" aria-hidden='false')
+    p.accordion-header-control.mb0(
+      role="button"
+      aria-controls="#{target_id}"
+      aria-expanded="true"
+    )
+      = header_text
+  .accordion-content.accordion-init.clearfix(
+    id="#{target_id}"
+    role="region"
+  )
     .px2
       = yield
     - unless options[:hide_close_link]

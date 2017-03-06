@@ -5,6 +5,7 @@ class Accordion {
     this.el = el;
     this.controls = [].slice.call(el.querySelectorAll('[aria-controls]'));
     this.content = el.querySelector('.accordion-content');
+    this.headerControl = el.querySelector('.accordion-header-control');
 
     this.handleClick = this.handleClick.bind(this);
   }
@@ -32,14 +33,12 @@ class Accordion {
 
   onInitialize() {
     this.content.classList.add('display-none');
-    this.el.setAttribute('aria-expanded', 'false');
-    this.content.setAttribute('aria-hidden', 'true');
+    this.setExpanded(false);
     this.content.classList.remove('accordion-init');
   }
 
   handleClick() {
-    const { el } = this;
-    const expandedState = el.getAttribute('aria-expanded');
+    const expandedState = this.headerControl.getAttribute('aria-expanded');
 
     if (expandedState === 'false') {
       this.open();
@@ -48,17 +47,19 @@ class Accordion {
     }
   }
 
+  setExpanded(bool) {
+    this.headerControl.setAttribute('aria-expanded', bool);
+  }
+
   open() {
-    this.el.setAttribute('aria-expanded', 'true');
-    this.content.setAttribute('aria-hidden', 'false');
+    this.setExpanded(true);
     this.content.classList.remove('display-none');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
   }
 
   close() {
-    this.el.setAttribute('aria-expanded', 'false');
-    this.content.setAttribute('aria-hidden', 'true');
+    this.setExpanded(false);
     this.content.classList.remove('animate-in');
     this.content.classList.add('animate-out');
   }
