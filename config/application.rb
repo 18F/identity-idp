@@ -36,14 +36,6 @@ module Upaya
                  headers: :any,
                  methods: [:post, :options]
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
-
-        # legacy URLs
-        resource '/openid_connect/certs', headers: :any, methods: [:get]
-        resource '/openid_connect/token',
-                 credentials: true,
-                 headers: :any,
-                 methods: [:post, :options]
-        resource '/openid_connect/userinfo', headers: :any, methods: [:get]
       end
     end
   end
