@@ -83,12 +83,6 @@ Rails.application.routes.draw do
   delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
          as: :openid_connect_deny
 
-  get '/openid_connect/certs' => 'openid_connect/certs#index', as: :old_openid_connect_certs
-  post '/openid_connect/token' => 'openid_connect/token#create', as: :old_openid_connect_token
-  match '/openid_connect/token' => 'openid_connect/token#options', via: :options
-  get '/openid_connect/userinfo' => 'openid_connect/user_info#show',
-      as: :old_openid_connect_userinfo
-
   get '/otp/send' => 'users/two_factor_authentication#send_code'
   get '/phone_setup' => 'users/two_factor_authentication_setup#index'
   patch '/phone_setup' => 'users/two_factor_authentication_setup#set'

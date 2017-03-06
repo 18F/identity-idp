@@ -91,7 +91,6 @@ class OpenidConnectTokenForm
                                    algorithm: 'RS256', verify_iat: true,
                                    iss: client_id, verify_iss: true,
                                    sub: client_id, verify_sub: true)
-
     validate_aud_claim(payload)
   rescue JWT::DecodeError => err
     # TODO: i18n these JWT gem error messages
@@ -100,7 +99,7 @@ class OpenidConnectTokenForm
 
   def validate_aud_claim(payload)
     normalized_aud = payload['aud'].to_s.chomp('/')
-    return if [old_openid_connect_token_url, api_openid_connect_token_url].include?(normalized_aud)
+    return if api_openid_connect_token_url == normalized_aud
 
     errors.add(:client_assertion,
                t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url))
