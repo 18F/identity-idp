@@ -76,7 +76,7 @@ describe ServiceProviderUpdater do
         expect(sp.updated_at).to_not eq dashboard_service_providers.first[:updated_at]
         expect(sp.created_at).to_not eq dashboard_service_providers.first[:created_at]
         expect(sp.native).to eq false
-        expect(sp.approved).to eq false
+        expect(sp.approved).to eq true
       end
 
       it 'updates existing dashboard-provided Service Providers' do
@@ -94,7 +94,7 @@ describe ServiceProviderUpdater do
         expect(sp.updated_at).to_not eq dashboard_service_providers.first[:updated_at]
         expect(sp.created_at).to_not eq dashboard_service_providers.first[:created_at]
         expect(sp.native).to eq false
-        expect(sp.approved).to eq false
+        expect(sp.approved).to eq true
       end
 
       it 'removes inactive Service Providers' do
