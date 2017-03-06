@@ -1,16 +1,15 @@
-class ApplicationController < ActionController::Base # rubocop:disable Metrics/ClassLength
-  include BrandedExperience
+class ApplicationController < ActionController::Base
   include UserSessionContext
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  rescue_from ActionController::InvalidAuthenticityToken,
-              with: :invalid_auth_token
+  rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
 
-  helper_method :decorated_user, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :decorated_user, :reauthn?, :user_fully_authenticated?
 
+  before_action :create_branded_experience
   prepend_before_action :session_expires_at
   before_action :set_locale
 
@@ -44,36 +43,29 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
     Event.create(user_id: user.id, event_type: event_type)
   end
 
+  def decorated_session
+    @_decorated_session ||= DecoratedSession.new(sp: current_sp, view_context: view_context).call
+  end
+
   private
 
   def redirect_on_timeout
-    params = request.query_parameters
     return unless params[:timeout]
 
-    params[:issuer].present? ? redirect_with_sp : redirect_without_sp
+    flash[:timeout] = decorated_session.timeout_flash_text
+    redirect_to url_for(params.except(:timeout))
   end
 
-  def sp_metadata
-    ServiceProvider.from_issuer(request.query_parameters[:issuer]).metadata
+  def current_sp
+    @current_sp ||= sp_from_sp_session || sp_from_params
   end
 
-  def sp_name
-    sp_metadata[:friendly_name] || sp_metadata[:agency]
+  def sp_from_sp_session
+    ServiceProvider.from_issuer(sp_session[:issuer])
   end
 
-  def redirect_with_sp # rubocop:disable Metrics/AbcSize
-    flash[:timeout] = t(
-      'notices.session_cleared_with_sp',
-      link: view_context.link_to(sp_name, sp_metadata[:return_to_sp_url]),
-      minutes: Figaro.env.session_timeout_in_minutes,
-      sp: sp_name
-    )
-    redirect_to url_for(request.query_parameters.except(:timeout))
-  end
-
-  def redirect_without_sp
-    flash[:timeout] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
-    redirect_to url_for(request.query_parameters.except(:issuer, :timeout))
+  def sp_from_params
+    ServiceProvider.from_issuer(params[:issuer])
   end
 
   def decorated_user
@@ -136,5 +128,13 @@ class ApplicationController < ActionController::Base # rubocop:disable Metrics/C
 
   def sp_session
     session.fetch(:sp, {})
+  end
+
+  def create_branded_experience
+    return unless session[:sp]
+
+    @sp_logo = current_sp.logo
+    @sp_name = decorated_session.sp_name
+    @sp_return_url = current_sp.return_to_sp_url
   end
 end

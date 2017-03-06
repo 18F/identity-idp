@@ -25,20 +25,8 @@ module ApplicationHelper
     )
   end
 
-  def decorated_session
-    @_decorated_session ||= begin
-      if @sp_name.present?
-        ServiceProviderSessionDecorator.new(
-          sp_name: @sp_name, sp_logo: @sp_logo
-        )
-      else
-        SessionDecorator.new
-      end
-    end
-  end
-
   def sp_session
-    session[:sp]
+    session.fetch(:sp, {})
   end
 
   def sign_up_init?

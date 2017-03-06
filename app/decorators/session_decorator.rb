@@ -20,4 +20,12 @@ class SessionDecorator
   end
 
   def logo_partial; end
+
+  def timeout_flash_text
+    I18n.t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+  end
+
+  def sp_name
+    nil
+  end
 end

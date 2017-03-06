@@ -28,7 +28,7 @@ describe SessionTimeoutWarningHelper do
 
     let(:query_parameters) { { issuer: 'http://localhost:3000' } }
 
-    context 'with no query in the request url' do
+    context 'with no params in the request url' do
       let(:original_url) { 'http://test.host/foo/bar' }
 
       it 'adds timeout=true and issuer=http%3A%2F%2Flocalhost%3A3000 params' do
@@ -38,10 +38,10 @@ describe SessionTimeoutWarningHelper do
       end
     end
 
-    context 'with params request url' do
+    context 'with params in the request url' do
       let(:original_url) { 'http://test.host/foo/bar?key=value' }
 
-      it 'adds timeout=true param' do
+      it 'adds timeout=true and preserves params' do
         expect(helper.timeout_refresh_url).to eq(
           'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&key=value&timeout=true'
         )
@@ -55,6 +55,30 @@ describe SessionTimeoutWarningHelper do
       it 'is the same' do
         expect(helper.timeout_refresh_url).to eq(
           'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&timeout=true'
+        )
+      end
+    end
+
+    context 'when params[:issuer] is not present, but sp_session[:issuer] is' do
+      let(:query_parameters) { {} }
+      let(:original_url) { 'http://test.host/foo/bar' }
+
+      it 'reads issuer from sp_session' do
+        session[:sp] = { issuer: 'foo' }
+
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?issuer=foo&timeout=true'
+        )
+      end
+    end
+
+    context 'when neither params[:issuer] nor sp_session[:issuer] are present' do
+      let(:query_parameters) { {} }
+      let(:original_url) { 'http://test.host/foo/bar' }
+
+      it 'sets issuer to nil' do
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?issuer=&timeout=true'
         )
       end
     end
