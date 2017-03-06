@@ -11,6 +11,8 @@
     p = t('profile.index.reactivation.instructions')
     p.mb0 = link_to t('profile.index.reactivation.reactivate_button'), reactivate_profile_path
 
+h1.hide = t('titles.profile')
+
 - if @decrypted_pii
   h2.h3.my0.mr1.inline-block = t('headings.profile.profile_info')
   = content_tag(:span, t('tooltips.profile_info'),
