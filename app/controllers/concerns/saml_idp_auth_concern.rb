@@ -22,13 +22,9 @@ module SamlIdpAuthConcern
     render nothing: true, status: :unauthorized
   end
 
-  def add_sp_metadata_to_session # rubocop:disable Metrics/AbcSize
+  def add_sp_metadata_to_session
     session[:sp] = { loa3: loa3_requested?,
-                     logo: current_sp_metadata[:logo],
-                     issuer: saml_request.service_provider.identifier,
-                     return_url: current_sp_metadata[:return_to_sp_url],
-                     name: current_sp_metadata[:friendly_name] ||
-                           current_sp_metadata[:agency],
+                     issuer: current_issuer,
                      request_url: request.original_url,
                      show_start_page: true }
   end
@@ -38,9 +34,7 @@ module SamlIdpAuthConcern
   end
 
   def link_identity_from_session_data
-    provider = saml_request.service_provider.identifier
-
-    IdentityLinker.new(current_user, provider).link_identity
+    IdentityLinker.new(current_user, current_issuer).link_identity
   end
 
   def identity_needs_verification?
@@ -89,10 +83,10 @@ module SamlIdpAuthConcern
   end
 
   def current_service_provider
-    @_sp ||= ServiceProvider.from_issuer(saml_request.service_provider.identifier)
+    @_sp ||= ServiceProvider.from_issuer(current_issuer)
   end
 
-  def current_sp_metadata
-    current_service_provider.metadata
+  def current_issuer
+    @_issuer ||= saml_request.service_provider.identifier
   end
 end

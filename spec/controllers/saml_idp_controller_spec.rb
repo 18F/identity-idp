@@ -286,10 +286,7 @@ describe SamlIdpController do
       it 'stores SP metadata in session' do
         expect(session[:sp]).to eq(
           loa3: false,
-          logo: 'generic.svg',
-          issuer: 'http://localhost:3000',
-          return_url: 'http://localhost:3000',
-          name: 'Your friendly Government Agency',
+          issuer: saml_settings.issuer,
           request_url: @saml_request.request.original_url,
           show_start_page: true
         )

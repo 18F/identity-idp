@@ -41,6 +41,7 @@ describe 'layouts/application.html.slim' do
     it 'renders a javascript page refresh' do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:current_user).and_return(false)
+      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
       render
 
       expect(view).to render_template(partial: 'session_timeout/_expire_session')
@@ -64,6 +65,7 @@ describe 'layouts/application.html.slim' do
 
   it 'displays only the logo when user is not fully authenticated' do
     allow(view).to receive(:user_fully_authenticated?).and_return(false)
+    allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
     render
 
     expect(rendered).to have_xpath('//nav[contains(@class, "bg-light-blue")]')

@@ -1,10 +1,10 @@
-- if @authorize_decorator.logo
-  = image_tag(asset_url("sp-logos/#{@authorize_decorator.logo}"), height: 50,
-    alt: @authorize_decorator.name, class: 'align-middle')
+- if @sp_logo
+  = image_tag(asset_url("sp-logos/#{@sp_logo}"), height: 50,
+    alt: @sp_name, class: 'align-middle')
 
-h3 = @authorize_decorator.name
+h3 = @sp_name
 
-p = t('openid_connect.authorization.index.allow_prompt', name: @authorize_decorator.name)
+p = t('openid_connect.authorization.index.allow_prompt', name: @sp_name)
 
 ul
   - @authorize_decorator.requested_attributes.each do |attribute|

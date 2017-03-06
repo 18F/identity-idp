@@ -6,6 +6,7 @@ describe 'devise/sessions/new.html.slim' do
     allow(view).to receive(:resource_name).and_return(:user)
     allow(view).to receive(:devise_mapping).and_return(Devise.mappings[:user])
     allow(view).to receive(:controller_name).and_return('sessions')
+    allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
   end
 
   it 'has a localized title' do
@@ -38,10 +39,18 @@ describe 'devise/sessions/new.html.slim' do
     expect(rendered).to have_selector("a[href='#{privacy_path}'][target='_blank']")
   end
 
-  context 'when @sp_name is set' do
+  context 'when SP is present' do
     before do
-      @sp_name = 'Awesome Application!'
-      @sp_return_url = 'www.awesomeness.com'
+      sp = build_stubbed(
+        :service_provider,
+        friendly_name: 'Awesome Application!',
+        return_to_sp_url: 'www.awesomeness.com'
+      )
+      view_context = ActionController::Base.new.view_context
+      decorated_session = DecoratedSession.new(sp: sp, view_context: view_context).call
+      allow(view).to receive(:decorated_session).and_return(decorated_session)
+      @sp_name = decorated_session.sp_name
+      @sp_return_url = sp.return_to_sp_url
     end
 
     it 'displays a custom header' do
@@ -61,11 +70,7 @@ describe 'devise/sessions/new.html.slim' do
     end
   end
 
-  context 'when @sp_name is not set' do
-    before do
-      @sp_name = nil
-    end
-
+  context 'when SP is not present' do
     it 'does not display the branded content' do
       render
 

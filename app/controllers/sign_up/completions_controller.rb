@@ -32,7 +32,7 @@ module SignUp
     end
 
     def service_provider_attributes
-      { loa3: sp_session[:loa3], service_provider_name: sp_session[:friendly_name] }
+      { loa3: sp_session[:loa3], service_provider_name: decorated_session.sp_name }
     end
   end
 end
