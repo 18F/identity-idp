@@ -1,6 +1,8 @@
 linters:
   LineLength:
     max: 100
+    exclude:
+      - 'app/views/pages/privacy_policy.html.slim'
   RuboCop:
     enabled: true
     # slim-lint ignores all of these cops by default, and we need to copy them

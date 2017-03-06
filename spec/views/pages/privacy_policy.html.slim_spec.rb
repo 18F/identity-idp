@@ -8,13 +8,15 @@ describe 'pages/privacy_policy.html.slim' do
   end
 
   it 'links to the system of record notices' do
-    pending 'having the correct link'
+    sorn_url = <<-EOS.gsub(/\s/, '')
+      https://www.federalregister.gov/documents/2017/01/19/2017-01174
+      /privacy-act-of-1974-notice-of-a-new-system-of-records
+    EOS
 
     render
 
-    doc = Nokogiri::HTML(rendered)
-    link_title = t('pages.privacy_policy.systems_of_record_notices')
-    expect(doc.xpath("//a[text()='#{link_title}']").first[:href]).to_not eq('#')
+    expect(rendered).
+      to have_link(t('pages.privacy_policy.systems_of_record_notices'), href: sorn_url)
   end
 
   it 'links to the contact form' do
