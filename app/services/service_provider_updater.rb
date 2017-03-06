@@ -1,6 +1,5 @@
 class ServiceProviderUpdater
   PROTECTED_ATTRIBUTES = [
-    :approved,
     :created_at,
     :id,
     :native,
