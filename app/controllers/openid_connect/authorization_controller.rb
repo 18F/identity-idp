@@ -2,7 +2,6 @@ module OpenidConnect
   class AuthorizationController < ApplicationController
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :add_sp_metadata_to_session, only: [:index]
-
     before_action :confirm_two_factor_authenticated
     before_action :load_authorize_form_from_session, only: [:create, :destroy]
     before_action :apply_secure_headers_override, only: [:index]
@@ -65,8 +64,7 @@ module OpenidConnect
       @authorize_form = OpenidConnectAuthorizeForm.new(authorization_params)
 
       @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
-        scopes: @authorize_form.scope,
-        service_provider: @authorize_form.service_provider
+        scopes: @authorize_form.scope
       )
     end
 
@@ -83,12 +81,8 @@ module OpenidConnect
     end
 
     def add_sp_metadata_to_session
-      current_sp_metadata = @authorize_form.service_provider.metadata
       session[:sp] = { loa3: @authorize_form.loa3_requested?,
-                       logo: current_sp_metadata[:logo],
                        issuer: @authorize_form.client_id,
-                       name: current_sp_metadata[:friendly_name] ||
-                             current_sp_metadata[:agency],
                        show_start_page: true }
     end
   end

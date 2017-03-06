@@ -21,11 +21,15 @@ class NullServiceProvider
     {}
   end
 
-  def fingerprint
-    nil
-  end
+  def fingerprint; end
 
-  def ssl_cert
-    nil
-  end
+  def ssl_cert; end
+
+  def logo; end
+
+  def friendly_name; end
+
+  def return_to_sp_url; end
+
+  def redirect_uri; end
 end

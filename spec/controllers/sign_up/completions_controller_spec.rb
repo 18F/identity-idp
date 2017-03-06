@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe SignUp::CompletionsController do
-  let(:service_provider_name) { 'Excellent service provider' }
-
   describe '#show' do
     context 'user signed in, sp info present' do
       before do
@@ -13,13 +11,12 @@ describe SignUp::CompletionsController do
       context 'LOA1' do
         it 'tracks page visit' do
           stub_sign_in
-          subject.session[:sp] = { loa3: false, friendly_name: service_provider_name }
-
+          subject.session[:sp] = { loa3: false }
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-            loa3: false, service_provider_name: service_provider_name
+            loa3: false, service_provider_name: subject.decorated_session.sp_name
           )
         end
       end
@@ -28,13 +25,13 @@ describe SignUp::CompletionsController do
         it 'tracks page visit' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          subject.session[:sp] = { loa3: true, friendly_name: service_provider_name }
+          subject.session[:sp] = { loa3: true }
 
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
             Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-            loa3: true, service_provider_name: service_provider_name
+            loa3: true, service_provider_name: subject.decorated_session.sp_name
           )
         end
       end
@@ -66,13 +63,13 @@ describe SignUp::CompletionsController do
     context 'LOA1' do
       it 'tracks analytics' do
         stub_sign_in
-        subject.session[:sp] = { loa3: false, friendly_name: service_provider_name }
+        subject.session[:sp] = { loa3: false }
 
         patch :update
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-          loa3: false, service_provider_name: service_provider_name
+          loa3: false, service_provider_name: subject.decorated_session.sp_name
         )
       end
     end
@@ -81,13 +78,13 @@ describe SignUp::CompletionsController do
       it 'tracks analytics' do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
-        subject.session[:sp] = { loa3: true, friendly_name: service_provider_name }
+        subject.session[:sp] = { loa3: true }
 
         patch :update
 
         expect(@analytics).to have_received(:track_event).with(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-          loa3: true, service_provider_name: service_provider_name
+          loa3: true, service_provider_name: subject.decorated_session.sp_name
         )
       end
     end

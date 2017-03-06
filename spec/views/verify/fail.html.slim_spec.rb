@@ -1,9 +1,14 @@
 require 'rails_helper'
 
 describe 'verify/fail.html.slim' do
-  context 'when @sp_name is set' do
+  let(:view_context) { ActionController::Base.new.view_context }
+
+  context 'when SP is present' do
     before do
-      @sp_name = 'Awesome Application!'
+      sp = build_stubbed(:service_provider, friendly_name: 'Awesome Application!')
+      decorated_session = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+      @sp_name = decorated_session.sp_name
+      allow(view).to receive(:decorated_session).and_return(decorated_session)
     end
 
     it 'displays the hardfail4 partial' do
@@ -16,9 +21,9 @@ describe 'verify/fail.html.slim' do
     end
   end
 
-  context 'when @sp_name is not set' do
+  context 'when SP is not present' do
     before do
-      @sp_name = nil
+      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
     end
 
     it 'displays the null partial' do
