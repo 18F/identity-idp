@@ -210,24 +210,14 @@ describe SamlIdpController do
     end
 
     context 'authn_context is missing' do
-      it 'renders nothing with a 401 error' do
+      it 'defaults to LOA1' do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
         saml_get_auth(missing_authn_context_saml_settings)
 
-        expect(response.status).to eq(401)
-        expect(response.body).to be_empty
-
-        analytics_hash = {
-          authn_context: nil,
-          errors: ['Unauthorized authentication context'],
-          service_provider: 'http://localhost:3000',
-          valid: false,
-        }
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::SAML_AUTH, analytics_hash)
+        expect(response.status).to eq(302)
+        expect(@analytics).to_not have_received(:track_event)
       end
     end
 

@@ -30,7 +30,11 @@ module SamlIdpAuthConcern
   end
 
   def requested_authn_context
-    @requested_authn_context ||= saml_request.requested_authn_context
+    @requested_authn_context ||= saml_request.requested_authn_context || default_authn_context
+  end
+
+  def default_authn_context
+    Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
   end
 
   def link_identity_from_session_data
