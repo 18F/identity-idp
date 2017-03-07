@@ -214,10 +214,21 @@ describe SamlIdpController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        saml_get_auth(missing_authn_context_saml_settings)
+        user = create(:user, :signed_up)
+        generate_saml_response(user, missing_authn_context_saml_settings)
 
-        expect(response.status).to eq(302)
-        expect(@analytics).to_not have_received(:track_event)
+        expect(response.status).to eq(200)
+
+        analytics_hash = {
+          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          errors: [],
+          service_provider: 'http://localhost:3000',
+          idv: false,
+          valid: true,
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
       end
     end
 
