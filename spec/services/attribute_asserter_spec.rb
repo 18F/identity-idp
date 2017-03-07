@@ -27,7 +27,7 @@ describe AttributeAsserter do
   let(:loa3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_loa3_authn_request)
   end
-  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jane') }
+  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jåné') }
 
   describe '#build' do
     context 'verified user and LOA3 request' do
@@ -54,12 +54,30 @@ describe AttributeAsserter do
         end
 
         it 'creates getter function' do
-          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jane'
+          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
         end
 
         it 'gets UUID (MBUN) from Service Provider' do
           uuid_getter = user.asserted_attributes[:uuid][:getter]
           expect(uuid_getter.call(user)).to eq user.last_identity.uuid
+        end
+      end
+
+      context 'bundle includes :ascii' do
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w(email phone first_name ascii))
+          subject.build
+        end
+
+        it 'skips ascii as an attribute' do
+          expect(user.asserted_attributes.keys).
+            to eq([:uuid, :email, :phone, :first_name, :verified_at])
+        end
+
+        it 'transliterates attributes to ASCII' do
+          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jane'
         end
       end
 
