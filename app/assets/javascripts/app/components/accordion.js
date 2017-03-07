@@ -8,6 +8,7 @@ class Accordion {
     this.headerControl = el.querySelector('.accordion-header-control');
 
     this.handleClick = this.handleClick.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   setup() {
@@ -18,6 +19,7 @@ class Accordion {
   bindEvents() {
     this.controls.forEach((control) => {
       control.addEventListener('click', this.handleClick);
+      control.addEventListener('keyup', this.handleKeyUp);
     });
 
     if (!('animation' in this.content.style)) return;
@@ -44,6 +46,14 @@ class Accordion {
       this.open();
     } else if (expandedState === 'true') {
       this.close();
+    }
+  }
+
+  handleKeyUp(event) {
+    const keyCode = event.keyCode || event.which;
+
+    if (keyCode === 13 || keyCode === 32) {
+      this.handleClick();
     }
   }
 
