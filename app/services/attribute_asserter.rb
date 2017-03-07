@@ -46,7 +46,8 @@ class AttributeAsserter
   def add_bundle(attrs)
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
-      attrs[attr] = { getter: attribute_getter_function(attr) }
+      getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
+      attrs[attr] = { getter: getter }
     end
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
@@ -61,6 +62,10 @@ class AttributeAsserter
 
   def attribute_getter_function(attr)
     ->(_principal) { decrypted_pii[attr] }
+  end
+
+  def attribute_getter_function_ascii(attr)
+    ->(_principal) { decrypted_pii[attr].ascii }
   end
 
   def add_email(attrs)
@@ -101,5 +106,9 @@ class AttributeAsserter
 
   def authn_context
     authn_request.requested_authn_context
+  end
+
+  def ascii?
+    bundle.include?(:ascii)
   end
 end
