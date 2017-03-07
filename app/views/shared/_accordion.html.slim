@@ -17,9 +17,9 @@
     .px2
       = yield
     - unless options[:hide_close_link]
-      div(
+      .h4.px0.pb0.text-decoration-none.accordion-footer.center.col-12.border-top(
         aria-controls="#{target_id}"
-        class="h4 px0 pb0 text-decoration-none accordion-footer center col-12 border-top"
+        tabindex="0"
       )
         = image_tag(asset_url('up-carat-thin.svg'), width: 16, class: 'mr1')
         = t('users.recovery_code.close')

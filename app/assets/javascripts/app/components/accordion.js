@@ -57,6 +57,15 @@ class Accordion {
     }
   }
 
+  on(event, callback) {
+    this.el.addEventListener(event, callback);
+  }
+
+  emitEvent(target = null, eventType) {
+    const emittable = new Event(eventType);
+    (target || this.el).dispatchEvent(emittable);
+  }
+
   setExpanded(bool) {
     this.headerControl.setAttribute('aria-expanded', bool);
   }
@@ -66,22 +75,16 @@ class Accordion {
     this.content.classList.remove('display-none');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
+    this.emitEvent(this.el, 'accordion.show');
   }
 
   close() {
     this.setExpanded(false);
     this.content.classList.remove('animate-in');
     this.content.classList.add('animate-out');
+    this.emitEvent(this.el, 'accordion.hide');
+    this.headerControl.focus();
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const elements = document.querySelectorAll('.accordion');
-
-  [].slice.call(elements).forEach((element) => {
-    const accordion = new Accordion(element);
-    accordion.setup();
-  });
-});
 
 export default Accordion;
