@@ -38,9 +38,9 @@ then
   brew_install_or_upgrade 'libevent'
   source /usr/local/bin/virtualenvwrapper.sh
   mkvirtualenv locust && \
-  workon locust &&  \
-  pip install -r scripts/load_testing/requirements.txt && \
-  locust -f scripts/load_testing/$test_to_run.py -H http://localhost:3000 --no-web -c 3 -n 27 -r 1
+    workon locust &&  \
+    pip install -r scripts/load_testing/requirements.txt && \
+    locust -f scripts/load_testing/$test_to_run.py -H http://localhost:3000 --no-web -c 3 -n 27 -r 1
   deactivate
 else
   echo "Usage: load_test [name_of_file]"

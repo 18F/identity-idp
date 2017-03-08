@@ -9,6 +9,9 @@ fake = Factory.create()
 username, password = os.getenv('AUTH_USER'), os.getenv('AUTH_PASS')
 auth = (username, password) if username and password else ()
 
+def authenticity_token(dom):
+    return dom.find('input[name="authenticity_token"]')[0].attrib['value']
+
 class UserBehavior(locust.TaskSet):
     @locust.task
     def signup(self):
@@ -19,10 +22,9 @@ class UserBehavior(locust.TaskSet):
         resp = self.client.get('/sign_up/enter_email', auth=auth)
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
-        auth_token = dom.find('input[name="authenticity_token"]')[0].attrib['value']
         data = {
             'user[email]': 'test+' + fake.md5() + '@test.com',
-            'authenticity_token': auth_token,
+            'authenticity_token': authenticity_token(dom),
             'commit': 'Submit',
         }
         resp = self.client.post('/sign_up/register', data=data, auth=auth)
@@ -30,17 +32,16 @@ class UserBehavior(locust.TaskSet):
 
         # capture email confirmation link on resulting page
         dom = pyquery.PyQuery(resp.content)
-        link = dom.find('a')[2].attrib['href']
+        link = dom.find('#confirm-now')[0].attrib['href']
 
         # click email confirmation link and submit password
         resp = self.client.get(link, auth=auth)
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
-        auth_token = dom.find('input[name="authenticity_token"]')[0].attrib['value']
         confirmation_token = dom.find('input[name="confirmation_token"]')[0].attrib['value']
         data = {
             'password_form[password]': 'salty pickles',
-            'authenticity_token': auth_token,
+            'authenticity_token': authenticity_token(dom),
             'confirmation_token': confirmation_token,
             'commit': 'Submit',
         }
@@ -49,11 +50,10 @@ class UserBehavior(locust.TaskSet):
 
         # visit phone setup page and submit phone number
         dom = pyquery.PyQuery(resp.content)
-        auth_token = dom.find('input[name="authenticity_token"]')[0].attrib['value']
         data = {
             'two_factor_setup_form[phone]': '7035550001',
             'two_factor_setup_form[otp_method]': 'sms',
-            'authenticity_token': auth_token,
+            'authenticity_token': authenticity_token(dom),
             'commit': 'Send passcode',
         }
         resp = self.client.patch('/phone_setup', data=data, auth=auth)
@@ -61,11 +61,10 @@ class UserBehavior(locust.TaskSet):
 
         # visit enter passcode page and submit pre-filled OTP
         dom = pyquery.PyQuery(resp.content)
-        auth_token = dom.find('input[name="authenticity_token"]')[0].attrib['value']
         otp_code = dom.find('input[name="code"]')[0].attrib['value']
         data = {
             'code': otp_code,
-            'authenticity_token': auth_token,
+            'authenticity_token': authenticity_token(dom),
             'commit': 'Submit',
         }
         resp = self.client.post('/login/two_factor/sms', data=data, auth=auth)
@@ -73,9 +72,8 @@ class UserBehavior(locust.TaskSet):
 
         # click Continue on recovery code page
         dom = pyquery.PyQuery(resp.content)
-        auth_token = dom.find('input[name="authenticity_token"]')[0].attrib['value']
         data = {
-            'authenticity_token': auth_token,
+            'authenticity_token': authenticity_token(dom),
             'commit': 'Continue',
         }
         self.client.post('/sign_up/recovery_code', data=data, auth=auth)
