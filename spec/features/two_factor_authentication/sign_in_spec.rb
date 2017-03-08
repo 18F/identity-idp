@@ -253,4 +253,24 @@ feature 'Two Factor Authentication' do
       expect(current_path).to eq root_path
     end
   end
+
+  describe 'clicking footer links during 2FA' do
+    it 'renders the requested pages' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_link 'Help'
+
+      expect(current_path).to eq help_path
+
+      visit login_two_factor_path(delivery_method: 'sms')
+      click_link 'Contact'
+
+      expect(current_path).to eq contact_path
+
+      visit login_two_factor_path(delivery_method: 'sms')
+      click_link 'Privacy Policy'
+
+      expect(current_path).to eq privacy_path
+    end
+  end
 end
