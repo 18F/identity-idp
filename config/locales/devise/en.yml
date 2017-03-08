@@ -142,18 +142,18 @@ en:
         Your phone number has been set. Confirm it by entering the passcode below.
       please_try_again_html: Please try again in %{time_remaining}.
       recovery_code_fallback:
-        link: personal key
-        text_html: Don’t have access to your phone? Use a %{link} instead.
+        link: Use a personal key instead
+        text_html: Don’t have access to your phone? %{link}.
       recovery_code_header_text: Enter your personal key
       recovery_code_prompt: >
         You can use this personal key once. If you still need a code after
         signing in, go to your account settings page to get a new one.
       totp_fallback:
-        sms_link_text: receive a code via text message
+        sms_link_text: get a code via text message
         text_html: >
           If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
-        voice_link_text: with a phone call
+        voice_link_text_html: <span class='hide'>get a code</span> with a phone call
       totp_header_text: Enter your authentication app code
       totp_info: Use any authenticator app to scan the QR code below.
       two_factor_setup: Add a phone number

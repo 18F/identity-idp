@@ -29,7 +29,7 @@ feature 'Changing authentication factor' do
 
       update_phone_number
       expect(page).to have_link t('links.cancel'), href: profile_path
-      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
+      expect(page).to have_xpath("//a[@href='#{manage_phone_path}']")
       expect(page).not_to have_content(
         t('devise.two_factor_authentication.recovery_code_fallback.text_html')
       )
@@ -38,7 +38,7 @@ feature 'Changing authentication factor' do
 
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
       expect(user.reload.phone).to_not eq new_phone
-      expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
+      expect(page).to have_xpath("//a[@href='#{manage_phone_path}']")
 
       submit_correct_otp
 
@@ -62,7 +62,7 @@ feature 'Changing authentication factor' do
       update_phone_number
 
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
-        click_link t('forms.two_factor.try_again'), href: manage_phone_path
+        find(:xpath, "//a[@href='#{manage_phone_path}']").click
         complete_2fa_confirmation_without_entering_otp
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).
@@ -73,7 +73,7 @@ feature 'Changing authentication factor' do
           )
 
         expect(page).to have_content UserDecorator.new(user).masked_two_factor_phone_number
-        expect(page).not_to have_link t('forms.two_factor.try_again')
+        expect(page).not_to have_xpath("//a[@href='#{manage_phone_path}']")
       end
     end
 

@@ -49,4 +49,4 @@ es:
     two_factor:
       code: Código de acceso único
       recovery_code: Código de recuperación
-      try_again: Inténtalo de nuevo
+      try_again_html: Inténtalo de nuevo

@@ -179,7 +179,10 @@ feature 'Two Factor Authentication' do
 
       visit login_two_factor_authenticator_path
 
-      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
+      find(
+        :xpath,
+        "//a[@href='#{otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })}']"
+      ).click
 
       expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
     end

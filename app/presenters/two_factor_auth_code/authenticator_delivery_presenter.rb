@@ -29,7 +29,7 @@ module TwoFactorAuthCode
     end
 
     def voice_link
-      link_to(t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+      link_to(t('devise.two_factor_authentication.totp_fallback.voice_link_text_html'),
               otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
     end
   end
