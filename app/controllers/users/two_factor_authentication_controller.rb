@@ -18,9 +18,9 @@ module Users
 
       result = @otp_delivery_selection_form.submit(delivery_params)
 
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.merge(context: context))
+      track_otp_delivery_selection_event(result)
 
-      if result[:success]
+      if result.success?
         handle_valid_delivery_method(user_selected_delivery_method)
       else
         redirect_to user_two_factor_authentication_path(reauthn: reauthn?)
@@ -52,6 +52,11 @@ module Users
         phone: phone_to_deliver_to,
         otp_created_at: current_user.direct_otp_sent_at.to_s
       )
+    end
+
+    def track_otp_delivery_selection_event(result)
+      attributes = result.to_h.merge(context: context)
+      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, attributes)
     end
 
     def user_selected_delivery_method
