@@ -47,4 +47,5 @@ script:
 services:
   - redis-server
 env:
-  - COVERAGE=true
+  global:
+    - COVERAGE=true
