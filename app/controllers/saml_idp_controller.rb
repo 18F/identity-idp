@@ -8,6 +8,7 @@ class SamlIdpController < ApplicationController
   include SamlIdpLogoutConcern
 
   skip_before_action :verify_authenticity_token
+  skip_before_action :handle_two_factor_authentication, only: :logout
 
   before_action :disable_caching
 
