@@ -8,7 +8,7 @@ p = t('pages.help.what_is_login_gov.answer_1', app: APP_NAME)
 
 p = t('pages.help.what_is_login_gov.answer_2_html',
       app: APP_NAME,
-      general_services_administration_link: link_to(t('pages.help.what_is_login_gov.general_services_administration_link'), 'https://gsa.gov'))
+      general_services_administration_link: link_to(t('pages.help.what_is_login_gov.general_services_administration_link'), 'https://gsa.gov', target: '_blank'))
 
 h2 = t('pages.help.creating_account.title')
 
@@ -132,7 +132,7 @@ h2 = t('pages.help.changing_settings.title')
 
 h3 = t('pages.help.changing_settings.question_1')
 
-p = t('pages.help.changing_settings.answer_1_part_1_html', app: link_to(APP_NAME, root_url))
+p = t('pages.help.changing_settings.answer_1_part_1_html', app: link_to(APP_NAME, root_path))
 
 p = t('pages.help.changing_settings.answer_1_part_2')
 
@@ -152,7 +152,7 @@ p = t('pages.help.privacy_and_security.answer_1_part_1', app: APP_NAME)
 
 p = t('pages.help.privacy_and_security.answer_1_part_2', app: APP_NAME)
 
-p = t('pages.help.privacy_and_security.answer_1_part_3_html', nist_link: link_to(t('pages.help.privacy_and_security.nist_link'), 'https://www.nist.gov/'))
+p = t('pages.help.privacy_and_security.answer_1_part_3_html', nist_link: link_to(t('pages.help.privacy_and_security.nist_link'), 'https://www.nist.gov/', target: '_blank'))
 
 p = t('pages.help.privacy_and_security.answer_1_part_4_html',
   info_at_login_mailto: link_to('info@login.gov', 'mailto:info@login.gov'), security_privacy_policy_link: link_to(t('pages.help.privacy_and_security.security_privacy_policy_link'), privacy_path))
@@ -177,13 +177,13 @@ p = t('pages.help.privacy_and_security.answer_4_part_1', app: APP_NAME)
 
 ul
 
-  li = link_to(t('pages.help.privacy_and_security.chrome'), 'https://support.google.com/chrome/answer/95606')
+  li = link_to(t('pages.help.privacy_and_security.chrome'), 'https://support.google.com/chrome/answer/95606', target: '_blank')
 
-  li = link_to(t('pages.help.privacy_and_security.firefox'), 'https://support.mozilla.org/kb/password-manager-remember-delete-change-passwords#w_viewing-and-deleting-passwords')
+  li = link_to(t('pages.help.privacy_and_security.firefox'), 'https://support.mozilla.org/kb/password-manager-remember-delete-change-passwords#w_viewing-and-deleting-passwords', target: '_blank')
 
-  li = link_to(t('pages.help.privacy_and_security.internet_explorer'), 'https://support.microsoft.com/en-us/help/17499/windows-internet-explorer-11-remember-passwords-fill-out-web-forms#ie=ie-11')
+  li = link_to(t('pages.help.privacy_and_security.internet_explorer'), 'https://support.microsoft.com/en-us/help/17499/windows-internet-explorer-11-remember-passwords-fill-out-web-forms#ie=ie-11', target: '_blank')
 
-  li = link_to(t('pages.help.privacy_and_security.safari'), 'http://help.apple.com/safari/mac/8.0/#/ibrw1103')
+  li = link_to(t('pages.help.privacy_and_security.safari'), 'https://help.apple.com/safari/mac/8.0/#/ibrw1103', target: '_blank')
 
 p = t('pages.help.privacy_and_security.answer_4_part_2')
 
