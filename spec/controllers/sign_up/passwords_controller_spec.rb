@@ -10,7 +10,7 @@ describe SignUp::PasswordsController do
 
       analytics_hash = {
         success: true,
-        errors: [],
+        errors: {},
         user_id: user.uuid,
       }
 
@@ -33,7 +33,7 @@ describe SignUp::PasswordsController do
 
       analytics_hash = {
         success: false,
-        errors: ['is too short (minimum is 8 characters)'],
+        errors: { password: ['is too short (minimum is 8 characters)'] },
         user_id: user.uuid,
       }
 
@@ -41,21 +41,6 @@ describe SignUp::PasswordsController do
         with(Analytics::PASSWORD_CREATION, analytics_hash)
 
       post :create, password_form: { password: 'NewVal' }, confirmation_token: token
-    end
-
-    it 'calls PasswordForm#submit' do
-      form = instance_double(PasswordForm)
-      allow(PasswordForm).to receive(:new).and_return(form)
-
-      analytics_hash = {
-        success: true,
-        errors: [],
-      }
-
-      expect(form).to receive(:submit).with(password: 'password').
-        and_return(analytics_hash)
-
-      post :create, password_form: { password: 'password' }, confirmation_token: 'foo'
     end
   end
 end
