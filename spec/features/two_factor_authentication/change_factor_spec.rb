@@ -179,4 +179,18 @@ feature 'Changing authentication factor' do
   def submit_correct_otp
     click_submit_default
   end
+
+  describe 'attempting to bypass current password entry' do
+    it 'does not allow bypassing this step' do
+      sign_in_and_2fa_user
+      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+        visit manage_password_path
+        expect(current_path).to eq user_password_confirm_path
+
+        visit login_two_factor_path(delivery_method: 'sms')
+
+        expect(current_path).to eq user_password_confirm_path
+      end
+    end
+  end
 end

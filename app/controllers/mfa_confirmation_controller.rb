@@ -26,6 +26,7 @@ class MfaConfirmationController < ApplicationController
       redirect_to user_two_factor_authentication_path(reauthn: true)
     end
     session[:password_attempts] = 0
+    user_session[:current_password_required] = false
   end
 
   def handle_invalid_password
