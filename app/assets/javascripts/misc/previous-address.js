@@ -5,41 +5,43 @@ import ZipCodeFormatter from '../app/modules/zip-code-formatter';
 const I18n = window.LoginGov.I18n;
 
 function previousAddress() {
-  const accordion = document.querySelector('.accordion');
+  const accordion = window.LoginGov.accordions.filter(a =>
+    a.el === document.querySelector('.accordion')
+  )[0];
 
-  if (accordion) {
-    const controls = accordion.querySelector('[aria-controls]');
-    const selects = accordion.querySelectorAll('select');
-    const inputs = accordion.querySelectorAll('input');
-    const originalHeading = controls.textContent;
+  if (!accordion) return;
 
-    controls.classList.remove('display-none');
+  const header = accordion.el.querySelector('.accordion-header');
+  const controls = accordion.el.querySelector('[aria-controls]');
+  const selects = accordion.el.querySelectorAll('select');
+  const inputs = accordion.el.querySelectorAll('input');
+  const originalHeading = controls.textContent;
 
-    let firstExpansion = true;
-    controls.addEventListener('click', function() {
-      const expandedState = accordion.getAttribute('aria-expanded');
+  header.classList.remove('display-none');
 
-      if (expandedState === 'false') {
-        controls.innerHTML = originalHeading;
+  let firstExpansion = true;
 
-        [].slice.call(inputs).forEach((input) => {
-          input.value = ''; // eslint-disable-line no-param-reassign
-        });
+  accordion.on('accordion.hide', () => {
+    controls.innerHTML = originalHeading;
 
-        [].slice.call(selects).forEach((select) => {
-          select.selectedIndex = '0'; // eslint-disable-line no-param-reassign
-        });
-      } else if (expandedState === 'true') {
-        controls.innerHTML = I18n.t('links.remove');
-
-        if (firstExpansion) {
-          /* eslint-disable no-new, no-shadow */
-          new TextField(accordion.querySelector('.zipcode'), new ZipCodeFormatter());
-          firstExpansion = false;
-        }
-      }
+    [].slice.call(inputs).forEach((input) => {
+      input.value = ''; // eslint-disable-line no-param-reassign
     });
-  }
+
+    [].slice.call(selects).forEach((select) => {
+      select.selectedIndex = '0'; // eslint-disable-line no-param-reassign
+    });
+  });
+
+  accordion.on('accordion.show', () => {
+    controls.innerHTML = I18n.t('links.remove');
+
+    if (firstExpansion) {
+      /* eslint-disable no-new, no-shadow */
+      new TextField(accordion.el.querySelector('.zipcode'), new ZipCodeFormatter());
+      firstExpansion = false;
+    }
+  });
 }
 
 document.addEventListener('DOMContentLoaded', previousAddress);
