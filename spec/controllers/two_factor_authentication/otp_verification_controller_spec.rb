@@ -64,6 +64,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
+          errors: {},
           confirmation_for_phone_change: false,
           context: 'authentication',
           method: 'sms',
@@ -98,6 +99,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
+          errors: {},
           confirmation_for_phone_change: false,
           context: 'authentication',
           method: 'sms',
@@ -136,6 +138,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'tracks the valid authentication event' do
         properties = {
           success: true,
+          errors: {},
           confirmation_for_phone_change: false,
           context: 'authentication',
           method: 'sms',
@@ -222,6 +225,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks the update event and notifies via email about number change' do
             properties = {
               success: true,
+              errors: {},
               confirmation_for_phone_change: true,
               context: 'confirmation',
               method: 'sms',
@@ -263,6 +267,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks an event' do
             properties = {
               success: false,
+              errors: {},
               confirmation_for_phone_change: true,
               context: 'confirmation',
               method: 'sms',
@@ -297,6 +302,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks the confirmation event' do
             properties = {
               success: true,
+              errors: {},
               context: 'confirmation',
               method: 'sms',
               confirmation_for_phone_change: false,
@@ -349,6 +355,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         it 'tracks the OTP verification event' do
           properties = {
             success: true,
+            errors: {},
             confirmation_for_phone_change: false,
             context: 'idv',
             method: 'sms',
@@ -414,6 +421,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         it 'tracks an event' do
           properties = {
             success: false,
+            errors: {},
             confirmation_for_phone_change: false,
             context: 'idv',
             method: 'sms',
