@@ -22,6 +22,7 @@ class ReauthnRequiredController < ApplicationController
     store_location_for(:user, request.url)
     user_session[:context] = 'reauthentication'
     user_session[:factor_to_change] = factor_from_request_path(request.path)
+    user_session[:current_password_required] = true
     redirect_to user_password_confirm_url
   end
 
