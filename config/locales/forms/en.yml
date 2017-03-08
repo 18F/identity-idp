@@ -49,4 +49,5 @@ en:
     two_factor:
       code: One-time passcode
       recovery_code: Personal key
-      try_again_html: Use another <span class='hide'>phone number</span>
+      try_again_html: Use another %{sr_only}
+      try_again_sr_only: phone number

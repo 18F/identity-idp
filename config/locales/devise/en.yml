@@ -153,7 +153,8 @@ en:
         text_html: >
           If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
-        voice_link_text_html: <span class='hide'>get a code</span> with a phone call
+        voice_link_text_html: "%{sr_only} with a phone call"
+        voice_link_text_sr_only: get a code
       totp_header_text: Enter your authentication app code
       totp_info: Use any authenticator app to scan the QR code below.
       two_factor_setup: Add a phone number

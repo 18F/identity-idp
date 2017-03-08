@@ -21,7 +21,8 @@ en:
     cancel_account_creation: ‹ Cancel account creation
     cancel_idv: ‹ Cancel account verification
     two_factor_authentication:
-      app_html: <span class='hide'>get a passcode via </span>authentication app
+      app_html: "%{sr_only} authentication app"
+      app_sr_only: get a passcode via
       voice: get a passcode via phone call
       sms: get a passcode via text message
       resend_code:

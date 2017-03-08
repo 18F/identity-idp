@@ -13,8 +13,12 @@ module TwoFactorAuthCode
     end
 
     def auth_app_fallback_tag
-      link_to(t('links.two_factor_authentication.app_html'),
-              login_two_factor_authenticator_path)
+      sr_only = content_tag(:span, t('links.two_factor_authentication.app_sr_only'), class: 'hide')
+
+      link_to(
+        t('links.two_factor_authentication.app_html', sr_only: sr_only),
+        login_two_factor_authenticator_path
+      )
     end
   end
 end
