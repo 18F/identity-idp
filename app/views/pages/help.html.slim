@@ -1,3 +1,5 @@
+- info_mail_to = link_to('info@login.gov')
+
 - title t('titles.help')
 
 h1 = t('titles.help')
@@ -155,7 +157,7 @@ p = t('pages.help.privacy_and_security.answer_1_part_2', app: APP_NAME)
 p = t('pages.help.privacy_and_security.answer_1_part_3_html', nist_link: link_to(t('pages.help.privacy_and_security.nist_link'), 'https://www.nist.gov/', target: '_blank'))
 
 p = t('pages.help.privacy_and_security.answer_1_part_4_html',
-  info_at_login_mailto: link_to('info@login.gov', 'mailto:info@login.gov'), security_privacy_policy_link: link_to(t('pages.help.privacy_and_security.security_privacy_policy_link'), privacy_path))
+  info_at_login_mailto: info_mail_to, security_privacy_policy_link: link_to(t('pages.help.privacy_and_security.security_privacy_policy_link'), privacy_path))
 
 h3 = t('pages.help.privacy_and_security.question_2', app: APP_NAME)
 
@@ -191,4 +193,4 @@ h3 = t('pages.help.privacy_and_security.question_5')
 
 p = t('pages.help.privacy_and_security.answer_5_part_1')
 
-p = t('pages.help.privacy_and_security.answer_5_part_2_html', info_at_login_mailto: link_to('info@login.gov', 'mailto:info@login.gov'), app: APP_NAME)
+p = t('pages.help.privacy_and_security.answer_5_part_2_html', info_at_login_mailto: info_mail_to, app: APP_NAME)
