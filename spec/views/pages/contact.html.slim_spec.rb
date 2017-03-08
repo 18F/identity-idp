@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'contact/new.html.slim' do
+describe 'pages/contact.html.slim' do
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.contact'))
 

@@ -39,7 +39,7 @@ describe 'routes that require admin + 2FA' do
 
         get endpoint
 
-        expect(response).to redirect_to user_two_factor_authentication_path
+        expect(response.status).to eq 404
       end
     end
 

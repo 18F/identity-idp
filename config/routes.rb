@@ -62,8 +62,7 @@ Rails.application.routes.draw do
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
   get '/authenticator_start' => 'users/totp_setup#start'
 
-  get '/contact' => 'contact#new', as: :contact
-  post '/contact' => 'contact#create'
+  get '/contact' => 'pages#contact', as: :contact
 
   get '/forgot_password' => 'forgot_password#show'
 
