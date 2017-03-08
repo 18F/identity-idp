@@ -20,7 +20,7 @@ class OtpDeliverySelectionForm
       UpdateUser.new(user: user, attributes: user_attributes).call
     end
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
@@ -33,12 +33,10 @@ class OtpDeliverySelectionForm
     otp_method != user.otp_delivery_preference
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
       delivery_method: otp_method,
       resend: resend,
-      errors: errors.full_messages,
     }
   end
 end

@@ -133,9 +133,9 @@ describe Users::TwoFactorAuthenticationController do
 
         analytics_hash = {
           success: true,
+          errors: {},
           delivery_method: 'sms',
           resend: nil,
-          errors: [],
           context: 'authentication',
         }
 
@@ -191,9 +191,9 @@ describe Users::TwoFactorAuthenticationController do
 
         analytics_hash = {
           success: true,
+          errors: {},
           delivery_method: 'voice',
           resend: nil,
-          errors: [],
           context: 'authentication',
         }
 

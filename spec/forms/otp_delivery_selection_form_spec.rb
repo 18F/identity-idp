@@ -15,31 +15,33 @@ describe OtpDeliverySelectionForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns true for success?' do
-        result = subject.submit(otp_method: 'sms', resend: true)
-
-        result_hash = {
-          success: true,
+        extra = {
           delivery_method: 'sms',
           resend: true,
-          errors: [],
         }
 
-        expect(result).to eq result_hash
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(subject.submit(otp_method: 'sms', resend: true)).to eq result
       end
     end
 
     context 'when the form is invalid' do
       it 'returns false for success? and includes errors' do
-        result = subject.submit(otp_method: 'foo')
+        errors = { otp_method: ['is not included in the list'] }
 
-        result_hash = {
-          success: false,
+        extra = {
           delivery_method: 'foo',
           resend: nil,
-          errors: subject.errors.full_messages,
         }
 
-        expect(result).to eq result_hash
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
+        expect(subject.submit(otp_method: 'foo')).to eq result
       end
     end
 
