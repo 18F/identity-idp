@@ -100,6 +100,12 @@ shared_examples_for 'recovery code page' do
             "//div[@id='recovery-code-reminder-alert'][@aria-hidden='false']"
           )
         end
+
+        scenario 'focus is returned to continue button' do
+          expect(page.evaluate_script('document.activeElement.value')).to eq(
+            t('forms.buttons.continue')
+          )
+        end
       end
       context 'submitting the confirmation form' do
         scenario 'does not submit when invalid' do
