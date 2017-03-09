@@ -1,7 +1,10 @@
 import 'classlist.js';
+import Events from '../utils/events';
 
-class Accordion {
+class Accordion extends Events {
   constructor(el) {
+    super();
+
     this.el = el;
     this.controls = [].slice.call(el.querySelectorAll('[aria-controls]'));
     this.content = el.querySelector('.accordion-content');
@@ -57,15 +60,6 @@ class Accordion {
     }
   }
 
-  on(event, callback) {
-    this.el.addEventListener(event, callback);
-  }
-
-  emitEvent(target = null, eventType) {
-    const emittable = new Event(eventType);
-    (target || this.el).dispatchEvent(emittable);
-  }
-
   setExpanded(bool) {
     this.headerControl.setAttribute('aria-expanded', bool);
   }
@@ -75,14 +69,14 @@ class Accordion {
     this.content.classList.remove('display-none');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
-    this.emitEvent(this.el, 'accordion.show');
+    this.emit('accordion.show');
   }
 
   close() {
     this.setExpanded(false);
     this.content.classList.remove('animate-in');
     this.content.classList.add('animate-out');
-    this.emitEvent(this.el, 'accordion.hide');
+    this.emit('accordion.hide');
     this.headerControl.focus();
   }
 }

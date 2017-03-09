@@ -12,6 +12,7 @@
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
     "normalize.css": "^4.2.0",
+    "sinon": "^1.17.7",
     "zxcvbn": "^4.3.0"
   },
   "devDependencies": {
