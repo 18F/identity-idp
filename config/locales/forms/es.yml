@@ -9,7 +9,6 @@ es:
       edit: Editar
       enable: Habilitar
       resend_confirmation: Reenviar instrucciones de confirmación
-      search: Buscar
       send_passcode: Enviar contraseña
       setup_totp: Configurar la aplicación de autenticación
       submit:
