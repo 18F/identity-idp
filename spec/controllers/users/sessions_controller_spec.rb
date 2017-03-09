@@ -231,6 +231,19 @@ describe Users::SessionsController, devise: true do
         post :create, user: { email: user.email.upcase, password: user.password }
       end
 
+      it 'caches unverified PII pending confirmation' do
+        user = create(:user, :signed_up)
+        create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          user: user, pii: { ssn: '1234' }
+        )
+
+        post :create, user: { email: user.email.upcase, password: user.password }
+
+        expect(controller.user_session[:decrypted_pii]).to match '1234'
+      end
+
       it 'caches PII in the user session' do
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
