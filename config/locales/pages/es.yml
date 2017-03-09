@@ -2,35 +2,125 @@
 es:
   pages:
     help:
+      changing_settings:
+        answer_1:
+          part_1_html: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+        answer_2: NOT TRANSLATED YET
+        answer_3: NOT TRANSLATED YET
+        question_1: NOT TRANSLATED YET
+        question_2: NOT TRANSLATED YET
+        question_3: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
       creating_account:
-        confirmation_email: >
-          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
-          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
-          nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
-          persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
-        confirmation_passcode: >
-          Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
-          abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec. Eam dicit
-          nullam cu. Ius eu meis magna vulputate, no persius legimus expetenda vis. Qui
-          adhuc nusquam mnesarchum at.
-        dont_want_to_use:
-          paragraph_1: >
-            Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
-            abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec. Eam dicit
-            nullam cu. Ius eu meis magna vulputate, no persius legimus expetenda vis. Qui
-            adhuc nusquam mnesarchum at.
-          paragraph_2: >
-            Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
-            praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
-            nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
-            persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
-        mobile_phone: >
-          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
-          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
-          nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
-          persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
-      questions:
-        paragraph_1: NOT TRANSLATED YET
+        answer_1:
+          answer: NOT TRANSLATED YET
+          heading_1: NOT TRANSLATED YET
+          heading_2: NOT TRANSLATED YET
+          heading_3: NOT TRANSLATED YET
+          heading_4: NOT TRANSLATED YET
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          part_3:
+            step_1: NOT TRANSLATED YET
+            step_2: NOT TRANSLATED YET
+            step_3: NOT TRANSLATED YET
+          part_4: NOT TRANSLATED YET
+        answer_2: NOT TRANSLATED YET
+        answer_3: NOT TRANSLATED YET
+        answer_4:
+          answer: NOT TRANSLATED YET
+          create_a_new_account_link: NOT TRANSLATED YET
+          part_1_html: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+        answer_5:
+          answer: NOT TRANSLATED YET
+          part_1_html: NOT TRANSLATED YET
+          part_2_html: NOT TRANSLATED YET
+          resend_confirmation_link: NOT TRANSLATED YET
+          update_phone_number_link: NOT TRANSLATED YET
+        answer_6: NOT TRANSLATED YET
+        answer_7:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+        answer_8:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          part_3: NOT TRANSLATED YET
+        answer_9: NOT TRANSLATED YET
+        question_1: NOT TRANSLATED YET
+        question_2: NOT TRANSLATED YET
+        question_3: NOT TRANSLATED YET
+        question_4: NOT TRANSLATED YET
+        question_5: NOT TRANSLATED YET
+        question_6: NOT TRANSLATED YET
+        question_7: NOT TRANSLATED YET
+        question_8: NOT TRANSLATED YET
+        question_9: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      privacy_and_security:
+        answer_1:
+          nist_link: NOT TRANSLATED YET
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          part_3_html: NOT TRANSLATED YET
+          part_4_html: NOT TRANSLATED YET
+          security_privacy_policy_link: NOT TRANSLATED YET
+        answer_2: NOT TRANSLATED YET
+        answer_3:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          part_3: NOT TRANSLATED YET
+          part_4: NOT TRANSLATED YET
+        answer_4:
+          chrome: NOT TRANSLATED YET
+          firefox: NOT TRANSLATED YET
+          internet_explorer: NOT TRANSLATED YET
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          safari: NOT TRANSLATED YET
+        answer_5:
+          part_1: NOT TRANSLATED YET
+          part_2_html: NOT TRANSLATED YET
+        question_1: NOT TRANSLATED YET
+        question_2: NOT TRANSLATED YET
+        question_3: NOT TRANSLATED YET
+        question_4: NOT TRANSLATED YET
+        question_5: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      signing_in:
+        answer_1: NOT TRANSLATED YET
+        answer_2:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+        answer_3: NOT TRANSLATED YET
+        answer_4:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+        answer_5:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          part_3: NOT TRANSLATED YET
+        answer_6:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+        answer_7:
+          part_1: NOT TRANSLATED YET
+          part_2: NOT TRANSLATED YET
+          part_3: NOT TRANSLATED YET
+        question_1: NOT TRANSLATED YET
+        question_2: NOT TRANSLATED YET
+        question_3: NOT TRANSLATED YET
+        question_4: NOT TRANSLATED YET
+        question_5: NOT TRANSLATED YET
+        question_6: NOT TRANSLATED YET
+        question_7: NOT TRANSLATED YET
+        title: NOT TRANSLATED YET
+      what_is_login_gov:
+        answer_1: NOT TRANSLATED YET
+        answer_2_html: NOT TRANSLATED YET
+        general_services_administration_link: NOT TRANSLATED YET
+        question_1: NOT TRANSLATED YET
     page_not_found:
       body: NOT TRANSLATED YET
       header: NOT TRANSLATED YET

@@ -1,81 +1,195 @@
+- info_mail_to = mail_to('info@login.gov')
+
 - title t('titles.help')
 
 h1 = t('titles.help')
 
-h2 = t('headings.help.creating_account.title')
+h3 = t('pages.help.what_is_login_gov.question_1', app: APP_NAME)
 
-h3 = t('headings.help.creating_account.confirmation_email')
+p = t('pages.help.what_is_login_gov.answer_1', app: APP_NAME)
 
-p = t('pages.help.creating_account.confirmation_email')
+p = t('pages.help.what_is_login_gov.answer_2_html', app: APP_NAME, general_services_administration_link: link_to(t('pages.help.what_is_login_gov.general_services_administration_link'), 'https://gsa.gov', target: '_blank'))
 
-h3 = t('headings.help.creating_account.confirmation_passcode')
+h2 = t('pages.help.creating_account.title')
 
-p = t('pages.help.creating_account.confirmation_passcode')
+h3 = t('pages.help.creating_account.question_1', app: APP_NAME)
 
-h3 = t('headings.help.creating_account.mobile_phone')
+p = t('pages.help.creating_account.answer_1.answer', app: APP_NAME)
 
-p = t('pages.help.creating_account.mobile_phone')
+h4 = t('pages.help.creating_account.answer_1.heading_1')
 
-h3 = t('headings.help.creating_account.dont_want_to_use')
+p = t('pages.help.creating_account.answer_1.part_1', app: APP_NAME)
 
-p = t('pages.help.creating_account.dont_want_to_use.paragraph_1')
+h4 = t('pages.help.creating_account.answer_1.heading_2')
 
-p = t('pages.help.creating_account.dont_want_to_use.paragraph_2')
+p = t('pages.help.creating_account.answer_1.part_2')
 
-h2 = t('headings.help.verifying_account.title')
+h4 = t('pages.help.creating_account.answer_1.heading_3')
 
-h3 = t('headings.help.verifying_account.what_verification')
+p = t('pages.help.creating_account.answer_1.part_3.step_1')
 
-h3 = t('headings.help.verifying_account.why_verified')
+p = t('pages.help.creating_account.answer_1.part_3.step_2')
 
-h3 = t('headings.help.verifying_account.how_verify')
+p = t('pages.help.creating_account.answer_1.part_3.step_3', app: APP_NAME)
 
-h3 = t('headings.help.verifying_account.what_verify')
+h4 = t('pages.help.creating_account.answer_1.heading_4')
 
-h3 = t('headings.help.verifying_account.personal_info')
+p = t('pages.help.creating_account.answer_1.part_4')
 
-h3 = t('headings.help.verifying_account.financial_info')
+h3 = t('pages.help.creating_account.question_2')
 
-h3 = t('headings.help.verifying_account.ss_number')
+p = t('pages.help.creating_account.answer_2', app: APP_NAME)
 
-h3 = t('headings.help.verifying_account.cant_verify')
+h3 = t('pages.help.creating_account.question_3')
 
-h3 = t('headings.help.verifying_account.account_not_verified')
+p = t('pages.help.creating_account.answer_3', app: APP_NAME)
 
-h3 = t('headings.help.verifying_account.phone_number')
+h3 = t('pages.help.creating_account.question_4', app: APP_NAME)
 
-h2 = t('headings.help.signing_in.title')
+p = t('pages.help.creating_account.answer_4.answer')
 
-h3 = t('headings.help.signing_in.forgot_email')
+ul
 
-h3 = t('headings.help.signing_in.forgot_password')
+  li = t('pages.help.creating_account.answer_4.part_1_html', create_a_new_account_link: link_to(t('pages.help.creating_account.answer_4.create_a_new_account_link'), sign_up_email_path))
+  li = t('pages.help.creating_account.answer_4.part_2')
 
-h3 = t('headings.help.signing_in.miss_passcode')
+h3 = t('pages.help.creating_account.question_5')
 
-h3 = t('headings.help.signing_in.lose_phone')
+p = t('pages.help.creating_account.answer_5.answer')
 
-h3 = t('headings.help.signing_in.log_out')
+ul
 
-h3 = t('headings.help.signing_in.forgot_codes')
+  li = t('pages.help.creating_account.answer_5.part_1_html', update_phone_number_link: link_to(t('pages.help.creating_account.answer_5.update_phone_number_link'), manage_phone_path))
 
-h2 = t('headings.help.changing_settings.title')
+  li = t('pages.help.creating_account.answer_5.part_2_html', resend_confirmation_link: link_to(t('pages.help.creating_account.answer_5.resend_confirmation_link'), '#'))
 
-h3 = t('headings.help.changing_settings.change_password')
+h3 = t('pages.help.creating_account.question_6', app: APP_NAME)
 
-h3 = t('headings.help.changing_settings.change_email')
+p = t('pages.help.creating_account.answer_6', app: APP_NAME)
 
-h3 = t('headings.help.changing_settings.edit_profile')
+h3 = t('pages.help.creating_account.question_7', app: APP_NAME)
 
-h2 = t('headings.help.privacy_security.title')
+p = t('pages.help.creating_account.answer_7.part_1', app: APP_NAME)
 
-h3 = t('headings.help.privacy_security.protect_data')
+p = t('pages.help.creating_account.answer_7.part_2', app: APP_NAME)
 
-h3 = t('headings.help.privacy_security.2fa')
+h3 = t('pages.help.creating_account.question_8')
 
-h3 = t('headings.help.privacy_security.third_party')
+p = t('pages.help.creating_account.answer_8.part_1', app: APP_NAME)
 
-h3 = t('headings.help.privacy_security.remove_saved')
+p = t('pages.help.creating_account.answer_8.part_2')
 
-h2 = t('headings.help.questions.title')
+p = t('pages.help.creating_account.answer_8.part_3', app: APP_NAME)
 
-p = t('pages.help.questions.paragraph_1')
+h3 = t('pages.help.creating_account.question_9')
+
+p = t('pages.help.creating_account.answer_9')
+
+h2 = t('pages.help.signing_in.title')
+
+h3 = t('pages.help.signing_in.question_1')
+
+p = t('pages.help.signing_in.answer_1', app: APP_NAME)
+
+h3 = t('pages.help.signing_in.question_2')
+
+p = t('pages.help.signing_in.answer_2.part_1')
+
+p = t('pages.help.signing_in.answer_2.part_2', app: APP_NAME)
+
+h3 = t('pages.help.signing_in.question_3')
+
+p = t('pages.help.signing_in.answer_3')
+
+h3 = t('pages.help.signing_in.question_4')
+
+p = t('pages.help.signing_in.answer_4.part_1')
+
+p = t('pages.help.signing_in.answer_4.part_2')
+
+h3 = t('pages.help.signing_in.question_5')
+
+p = t('pages.help.signing_in.answer_5.part_1')
+
+p = t('pages.help.signing_in.answer_5.part_2')
+
+p = t('pages.help.signing_in.answer_5.part_3')
+
+h3 = t('pages.help.signing_in.question_6')
+
+p = t('pages.help.signing_in.answer_6.part_1')
+
+p = t('pages.help.signing_in.answer_6.part_2')
+
+h3 = t('pages.help.signing_in.question_7')
+
+p = t('pages.help.signing_in.answer_7.part_1')
+
+p = t('pages.help.signing_in.answer_7.part_2')
+
+p = t('pages.help.signing_in.answer_7.part_3')
+
+h2 = t('pages.help.changing_settings.title')
+
+h3 = t('pages.help.changing_settings.question_1')
+
+p = t('pages.help.changing_settings.answer_1.part_1_html', app: link_to(APP_NAME, root_path))
+
+p = t('pages.help.changing_settings.answer_1.part_2')
+
+h3 = t('pages.help.changing_settings.question_2')
+
+p = t('pages.help.changing_settings.answer_2', app: APP_NAME)
+
+h3 = t('pages.help.changing_settings.question_3')
+
+p = t('pages.help.changing_settings.answer_3', app: APP_NAME)
+
+h2 = t('pages.help.privacy_and_security.title')
+
+h3 = t('pages.help.privacy_and_security.question_1', app: APP_NAME)
+
+p = t('pages.help.privacy_and_security.answer_1.part_1', app: APP_NAME)
+
+p = t('pages.help.privacy_and_security.answer_1.part_2', app: APP_NAME)
+
+p = t('pages.help.privacy_and_security.answer_1.part_3_html', nist_link: link_to(t('pages.help.privacy_and_security.answer_1.nist_link'), 'https://www.nist.gov/', target: '_blank'))
+
+p = t('pages.help.privacy_and_security.answer_1.part_4_html',
+  info_at_login_mailto: info_mail_to, security_privacy_policy_link: link_to(t('pages.help.privacy_and_security.answer_1.security_privacy_policy_link'), privacy_path))
+
+h3 = t('pages.help.privacy_and_security.question_2', app: APP_NAME)
+
+p = t('pages.help.privacy_and_security.answer_2', app: APP_NAME)
+
+h3 = t('pages.help.privacy_and_security.question_3')
+
+p = t('pages.help.privacy_and_security.answer_3.part_1')
+
+p = t('pages.help.privacy_and_security.answer_3.part_2')
+
+p = t('pages.help.privacy_and_security.answer_3.part_3')
+
+p = t('pages.help.privacy_and_security.answer_3.part_4')
+
+h3 = t('pages.help.privacy_and_security.question_4')
+
+p = t('pages.help.privacy_and_security.answer_4.part_1', app: APP_NAME)
+
+ul
+
+  li = link_to(t('pages.help.privacy_and_security.answer_4.chrome'), 'https://support.google.com/chrome/answer/95606', target: '_blank')
+
+  li = link_to(t('pages.help.privacy_and_security.answer_4.firefox'), 'https://support.mozilla.org/kb/password-manager-remember-delete-change-passwords#w_viewing-and-deleting-passwords', target: '_blank')
+
+  li = link_to(t('pages.help.privacy_and_security.answer_4.internet_explorer'), 'https://support.microsoft.com/en-us/help/17499/windows-internet-explorer-11-remember-passwords-fill-out-web-forms#ie=ie-11', target: '_blank')
+
+  li = link_to(t('pages.help.privacy_and_security.answer_4.safari'), 'https://help.apple.com/safari/mac/8.0/#/ibrw1103', target: '_blank')
+
+p = t('pages.help.privacy_and_security.answer_4.part_2')
+
+h3 = t('pages.help.privacy_and_security.question_5')
+
+p = t('pages.help.privacy_and_security.answer_5.part_1')
+
+p = t('pages.help.privacy_and_security.answer_5.part_2_html', info_at_login_mailto: info_mail_to, app: APP_NAME)
