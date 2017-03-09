@@ -10,7 +10,7 @@ RSpec.describe SignUp::EmailResendController do
         stub_analytics
         result = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           confirmed: false,
         }
@@ -41,7 +41,7 @@ RSpec.describe SignUp::EmailResendController do
         stub_analytics
         result = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: 'nonexistent-uuid',
           confirmed: false,
         }
@@ -61,7 +61,7 @@ RSpec.describe SignUp::EmailResendController do
         stub_analytics
         result = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           confirmed: true,
         }
