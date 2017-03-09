@@ -517,7 +517,7 @@ GEM
     scrypt (3.0.3)
       ffi-compiler (>= 1.0.0)
       rake
-    secure_headers (3.6.1)
+    secure_headers (3.6.2)
       useragent
     securecompare (1.0.0)
     sexp_processor (4.7.0)
