@@ -33,7 +33,6 @@ es:
     recovery_code: Asegúrese de que siempre puede iniciar sesión
     registrations:
       enter_email: Empezar a crear una cuenta
-    search: Buscar un usuario
     session_timeout_warning: ¿Necesita mas tiempo?
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
