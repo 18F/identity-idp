@@ -63,6 +63,15 @@ describe UserDecorator do
     end
   end
 
+  describe '#pending_profile' do
+    it 'returns Profile awaiting USPS confirmation' do
+      profile = create(:profile, deactivation_reason: :verification_pending)
+      user_decorator = UserDecorator.new(profile.user)
+
+      expect(user_decorator.pending_profile).to eq profile
+    end
+  end
+
   describe '#should_acknowledge_recovery_code?' do
     context 'user has no recovery code' do
       context 'service provider with loa1' do
