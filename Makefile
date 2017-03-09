@@ -36,4 +36,7 @@ fast_test: $(CONFIG)
 run: $(CONFIG)
 	foreman start -p $(PORT)
 
+load_test: $(CONFIG)
+	bin/load_test $(type)
+
 .PHONY: setup all lint run test check brakeman
