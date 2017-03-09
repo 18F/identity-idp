@@ -21,9 +21,10 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       before do
         stub_sign_in_before_2fa(build(:user, recovery_code: 'foo'))
         form = instance_double(RecoveryCodeForm)
+        response = FormResponse.new(success: true, errors: {}, extra: { method: 'recovery code' })
         allow(RecoveryCodeForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
-        allow(form).to receive(:submit).and_return(success: true)
+        allow(form).to receive(:submit).and_return(response)
       end
 
       it 'redirects to the profile' do
@@ -40,7 +41,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        analytics_hash = { success: true, method: 'recovery code' }
+        analytics_hash = { success: true, errors: {}, method: 'recovery code' }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
@@ -53,9 +54,10 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       before do
         stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
         form = instance_double(RecoveryCodeForm)
+        response = FormResponse.new(success: false, errors: {}, extra: { method: 'recovery code' })
         allow(RecoveryCodeForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
-        allow(form).to receive(:submit).and_return(success: false)
+        allow(form).to receive(:submit).and_return(response)
       end
 
       it 'calls handle_invalid_otp' do
@@ -74,6 +76,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       it 'tracks the max attempts event' do
         properties = {
           success: false,
+          errors: {},
           method: 'recovery code',
         }
 

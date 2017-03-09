@@ -7,13 +7,13 @@ describe RecoveryCodeForm do
         user = create(:user)
         raw_code = RecoveryCodeGenerator.new(user).create
 
-        result = RecoveryCodeForm.new(user, raw_code).submit
+        form = RecoveryCodeForm.new(user, raw_code)
+        result = instance_double(FormResponse)
+        extra = { method: 'recovery code' }
 
-        result_hash = {
-          success: true,
-        }
-
-        expect(result).to eq result_hash
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit).to eq result
         expect(user.recovery_code).to be_nil
       end
     end
@@ -27,13 +27,13 @@ describe RecoveryCodeForm do
           and_return(generator)
         allow(generator).to receive(:verify).with('foo').and_return(false)
 
-        result = RecoveryCodeForm.new(user, 'foo').submit
+        form = RecoveryCodeForm.new(user, 'foo')
+        result = instance_double(FormResponse)
+        extra = { method: 'recovery code' }
 
-        result_hash = {
-          success: false,
-        }
-
-        expect(result).to eq result_hash
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: {}, extra: extra).and_return(result)
+        expect(form.submit).to eq result
         expect(user.recovery_code).to_not be_nil
       end
     end

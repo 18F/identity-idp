@@ -13,7 +13,7 @@ module TwoFactorAuthentication
       @recovery_code_form = RecoveryCodeForm.new(current_user, personal_key)
       result = @recovery_code_form.submit
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.merge(method: 'recovery code'))
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
 
       handle_result(result)
     end
@@ -21,7 +21,7 @@ module TwoFactorAuthentication
     private
 
     def handle_result(result)
-      if result[:success]
+      if result.success?
         re_encrypt_profile_recovery_pii if password_reset_profile.present?
         handle_valid_otp
       else
