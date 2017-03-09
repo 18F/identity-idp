@@ -34,7 +34,7 @@ describe Verify::SessionsController do
         [:confirm_two_factor_authenticated, except: :destroy],
         :confirm_idv_attempts_allowed,
         :confirm_idv_needed,
-        :confirm_step_needed
+        [:confirm_step_needed, except: :destroy]
       )
     end
   end

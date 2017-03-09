@@ -44,37 +44,61 @@ feature 'LOA3 Single Sign On' do
     end
   end
 
-  context 'canceling verification', js: true do
-    it 'returns user to recovery code page if they sign up via loa3' do
-      user = create(:user, phone: '1 (111) 111-1111', recovery_code: nil)
-      sign_in_with_warden(user)
-      loa3_sp_session
+  context 'canceling verification' do
+    context 'with js', js: true do
+      it 'returns user to recovery code page if they sign up via loa3' do
+        user = create(:user, phone: '1 (111) 111-1111', recovery_code: nil)
+        sign_in_with_warden(user)
+        loa3_sp_session
 
-      visit verify_path
+        visit verify_path
+        click_on t('links.cancel')
+        click_on t('idv.buttons.cancel')
 
-      click_on t('links.cancel')
-      click_on t('idv.buttons.cancel')
+        expect(current_path).to eq(manage_recovery_code_path)
+      end
 
-      expect(current_path).to eq(manage_recovery_code_path)
+      it 'returns user to profile page if they have previously signed up' do
+        sign_in_and_2fa_user
+        loa3_sp_session
+
+        visit verify_path
+        click_on t('links.cancel')
+        click_on t('idv.buttons.cancel')
+
+        expect(current_path).to match(profile_path)
+      end
     end
 
-    it 'returns user to profile page if they have previously signed up' do
-      sign_in_and_2fa_user
-      loa3_sp_session
+    context 'without js' do
+      it 'returns user to recovery code page if they sign up via loa3' do
+        user = create(:user, phone: '1 (111) 111-1111', recovery_code: nil)
+        sign_in_with_warden(user)
+        loa3_sp_session
 
-      visit verify_path
+        visit verify_path
+        click_idv_cancel
 
-      click_on t('links.cancel')
-      click_on t('idv.buttons.cancel')
-      expect(current_url).to match(/profile/)
+        expect(current_path).to eq(manage_recovery_code_path)
+      end
+
+      it 'returns user to profile page if they have previously signed up' do
+        sign_in_and_2fa_user
+        loa3_sp_session
+
+        visit verify_path
+        click_idv_cancel
+
+        expect(current_url).to eq(profile_url)
+      end
     end
   end
 
   context 'visiting sign_up_completed path before proofing' do
     it 'redirects to verify_path' do
       sign_in_and_2fa_user
-      visit loa3_authnrequest
 
+      visit loa3_authnrequest
       visit sign_up_completed_path
 
       expect(current_path).to eq verify_path

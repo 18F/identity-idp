@@ -2,10 +2,12 @@
 es:
   idv:
     buttons:
+      activate_by_phone: NOT TRANSLATED YET
+      activate_by_mail: NOT TRANSLATED YET
       continue: NOT TRANSLATED YET
       cancel: NOT TRANSLATED YET
       help: NOT TRANSLATED YET
-      verify_by_phone: NOT TRANSLATED YET
+      send_letter: NOT TRANSLATED YET
     cancel:
       modal_header: NOT TRANSLATED YET
       warning_header: NOT TRANSLATED YET
@@ -23,6 +25,7 @@ es:
         ssn: NOT TRANSLATED YET
         zipcode: NOT TRANSLATED YET
     form:
+      activate_by_mail: NOT TRANSLATED YET
       address1: NOT TRANSLATED YET
       address2: NOT TRANSLATED YET
       auto_loan: NOT TRANSLATED YET
@@ -34,9 +37,11 @@ es:
       home_equity_line: NOT TRANSLATED YET
       last_name: NOT TRANSLATED YET
       mortgage: NOT TRANSLATED YET
+      no_alternate_phone_html: NOT TRANSLATED YET
       password: NOT TRANSLATED YET
       personal_details: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
+      phone_label_aside: NOT TRANSLATED YET
       previous_address_add: NOT TRANSLATED YET
       previous_address_html: NOT TRANSLATED YET
       select_financial_account: NOT TRANSLATED YET
@@ -91,26 +96,28 @@ es:
       hardfail4: NOT TRANSLATED YET
       help_center: NOT TRANSLATED YET
       phone:
+        alert: NOT TRANSLATED YET
         in_your_name: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
-        is: NOT TRANSLATED YET
-        is_not: NOT TRANSLATED YET
         phone_of_record: NOT TRANSLATED YET
         prepaid: NOT TRANSLATED YET
         same_as_2fa: NOT TRANSLATED YET
-        virtual: NOT TRANSLATED YET
       recovery_code: NOT TRANSLATED YET
       review:
         financial_info: NOT TRANSLATED YET
         info_verified_html: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
+      select_verification_without_sp: NOT TRANSLATED YET
+      select_verification_with_sp: NOT TRANSLATED YET
       sessions:
         pii: NOT TRANSLATED YET
         success: NOT TRANSLATED YET
         no_pii: NOT TRANSLATED YET
       usps:
+        bad_address: NOT TRANSLATED YET
         byline: NOT TRANSLATED YET
         success: NOT TRANSLATED YET
+      personal_details_verified: NOT TRANSLATED YET
     modal:
       attempts:
         one: NOT TRANSLATED YET
@@ -147,6 +154,7 @@ es:
       intro: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       review: NOT TRANSLATED YET
+      select_verification: NOT TRANSLATED YET
       sessions: NOT TRANSLATED YET
       session:
         phone: NOT TRANSLATED YET

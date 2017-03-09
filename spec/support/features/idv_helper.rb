@@ -64,11 +64,21 @@ module IdvHelper
   end
 
   def click_idv_address_choose_phone
-    click_link 'Phone'
+    click_link t('idv.buttons.activate_by_phone')
   end
 
   def click_idv_address_choose_usps
-    click_link 'USPS'
+    click_link t('idv.buttons.activate_by_mail')
+  end
+
+  def click_idv_cancel_modal
+    within('.modal') do
+      click_on t('idv.buttons.cancel')
+    end
+  end
+
+  def click_idv_cancel
+    click_on t('idv.buttons.cancel')
   end
 
   def complete_idv_profile_ok(user)
