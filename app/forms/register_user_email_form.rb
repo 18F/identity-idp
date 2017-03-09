@@ -26,7 +26,7 @@ class RegisterUserEmailForm
       @success = process_errors
     end
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
@@ -38,12 +38,10 @@ class RegisterUserEmailForm
     valid? && !email_taken?
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
       email_already_exists: email_taken?,
-      user_id: existing_user&.uuid,
+      user_id: existing_user.uuid,
     }
   end
 
@@ -66,6 +64,6 @@ class RegisterUserEmailForm
   end
 
   def existing_user
-    @_user ||= User.find_with_email(email)
+    @_user ||= User.find_with_email(email) || AnonymousUser.new
   end
 end

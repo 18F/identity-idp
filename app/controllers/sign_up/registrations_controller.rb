@@ -25,9 +25,9 @@ module SignUp
 
       result = @register_user_email_form.submit(permitted_params)
 
-      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result)
+      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result.to_h)
 
-      if result[:success]
+      if result.success?
         process_successful_creation
       else
         render :new
