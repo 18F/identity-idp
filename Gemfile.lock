@@ -360,7 +360,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    newrelic_rpm (3.18.0.329)
+    newrelic_rpm (3.18.1.330)
     nokogiri (1.6.8.1)
       mini_portile2 (~> 2.1.0)
     nori (2.6.0)
