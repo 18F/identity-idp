@@ -4,6 +4,7 @@ require 'rails/all'
 Bundler.require(*Rails.groups)
 
 APP_NAME = 'login.gov'.freeze
+CONTACT_PHONE_NUMBER = '1-844-USA-GOV1 (1-844-872-4681)'.freeze
 
 module Upaya
   class Application < Rails::Application
