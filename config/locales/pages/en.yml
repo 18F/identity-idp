@@ -2,35 +2,368 @@
 en:
   pages:
     help:
+      what_is_login_gov:
+        question_1: What is %{app}?
+        answer_1: >
+          %{app} offers the public secure and private online access to
+          participating government programs. With one %{app} account, users can
+          sign in to multiple government agencies. The goal: make managing
+          federal benefits, services and applications faster and more secure.
+        answer_2_html: >
+          The %{general_services_administration_link}, or GSA, manages %{app}.
+          As a federal agency, GSA’s mission is to make interactions with the
+          government easier and more efficient.
+        general_services_administration_link: General Services Administration
       creating_account:
-        confirmation_email: >
-          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
-          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
-          nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
-          persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
-        confirmation_passcode: >
-          Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
-          abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec. Eam dicit
-          nullam cu. Ius eu meis magna vulputate, no persius legimus expetenda vis. Qui
-          adhuc nusquam mnesarchum at.
-        dont_want_to_use:
-          paragraph_1: >
-            Eu diam efficiantur quo, vis suas ubique omittantur in, sensibus
-            abhorreant argumentum ne ius. Id prima mutat has, diam iriure ut nec. Eam dicit
-            nullam cu. Ius eu meis magna vulputate, no persius legimus expetenda vis. Qui
-            adhuc nusquam mnesarchum at.
-          paragraph_2: >
-            Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
-            praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
-            nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
-            persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
-        mobile_phone: >
-          Lorem ipsum dolor sit amet, elit omnium has an, dolorem officiis
-          praesent ea quo, in vis unum fugit postulant. Duo ad meis definitionem, cum ne
-          nonumes nusquam. Quidam maiorum eos ei, prima invenire sapientem est ut. Pro no
-          persius eleifend, eruditi efficiendi his ad. An quem ocurreret vituperata duo.
-      questions:
-        paragraph_1: Send an email (link to contact form) or call 1 (844) USLOGIN.
+        title: Creating an account
+        question_1: How do I create an account with %{app}?
+        answer_1:
+          answer: >
+            To create a %{app} account, you will need: a valid email address,
+            and a working phone number. We will also ask you to create a
+            password.
+          heading_1: Enter your email and confirm it
+          part_1: >
+            Select “create an account” and enter your email address where
+            indicated. Then check your email account for a message from us. Within
+            the email is a link. Clicking the link will send you back to %{app}
+            with your email confirmed.
+          heading_2: Enter your password
+          part_2: >
+            Next, you will create a strong password. Use the password strength
+            meter on the screen as a guide. Passwords must be at least 8
+            characters, but otherwise there are no restrictions. You can even
+            enter spaces in between words to get to 8 characters.
+          heading_3: Enter your phone number and confirm it
+          part_3:
+            step_1: >
+              Next, you will enter a phone number at which you can get calls or SMS
+              messages. If you have a landline, please ask for a security code by a
+              phone call. We will send a unique security code to that phone number
+              each time you sign into your account. This is called two-step
+              authentication. The second step keeps your account more secure than
+              using only a password.
+            step_2: >
+              Each security code expires after 5 minutes and can only be used once.
+              If you don’t enter the security code within 5 minutes, just request a
+              new code. Each code is only good once, so no one can steal one you’ve
+              already used.
+            step_3: >
+              Type the security code into the field. That’s it! You have just taken
+              an important step to keep yourself and your government safe. Every
+              time you sign back into your %{app} account, you will receive a new
+              security code that you need to enter. You’ll get the option each time
+              you sign in to get a security code by a phone call or by SMS.
+          heading_4: Save your personal key
+          part_4: >
+            After you’ve created your account, you will get a personal key, which
+            is a set of 16 randomly generated letters. Make a note of them and
+            store the note separately from your phone. If you forget your password
+            or don't have your phone, you can enter the personal key to access
+            your services or applications.
+        question_2: What is two-step authentication?
+        answer_2: >
+          %{app} uses two-step authentication to keep accounts secure. As its
+          name implies, two-step authentication (sometimes called two-factor
+          authentication, or 2FA), requires two different methods to sign into
+          an account. Usually this means entering a memorized password and a
+          unique code sent to a device (such as a phone) that you own. Requiring
+          two methods makes breaking into your account much harder.
+        question_3: >
+          Why do I need to confirm my email address and my phone number?
+        answer_3: >
+          %{app} uses your email address and phone number to send important
+          security messages about account activity. We won’t use them for any
+          other purposes, and we won’t share them with anyone without your
+          express permission.
+        question_4: I didn’t receive a confirmation email from %{app}.
+        answer_4:
+          answer: >
+            If you didn’t receive a confirmation email, check your spam filter.
+            Alternatively, you may have accidentally mistyped your email address.
+            If so, you can always make another account with your correct email
+            address.
+          part_1_html: >
+            If you mistyped your address, you can %{create_a_new_account_link}.
+          create_a_new_account_link: create a new account
+          part_2: >
+            If you are certain you entered the correct address, choose
+            “Send again” to get a new confirmation email.
+        question_5: Why didn’t I receive a security code to confirm my phone?
+        answer_5:
+          answer: >
+            If you didn’t receive a security code, check whether you entered your
+            phone number correctly.
+          part_1_html: >
+            If you entered the wrong phone number, you can
+            %{update_phone_number_link}.
+          update_phone_number_link: update your phone number here
+          part_2_html: >
+            If you entered your phone number correctly, you can
+            %{resend_confirmation_link}. Select if you want to receive the
+            security code by text message if you have a mobile phone or through a
+            phone call if you have either a landline or a mobile phone.
+          resend_confirmation_link: resend the confirmation SMS
+        question_6: Do I need a mobile phone to use %{app}?
+        answer_6: >
+          You do not need to own a mobile phone to use %{app}. You do need to
+          provide a phone number – either a landline or a mobile phone – at
+          which you can receive security codes every time you sign in either by
+          SMS or phone call.
+        question_7: >
+          Why do I need to use %{app} to access government services online?
+        answer_7:
+          part_1: >
+            Government agencies decide for themselves how they want to interact
+            with the public. You were sent to %{app} because the service or
+            program you want to use has chosen to take advantage of the efficiency
+            and security of %{app} as a shared technology platform. Once you have
+            finished at %{app}, you will be directed back to the agency.
+          part_2: >
+            We hope %{app} is a convenient and secure option for you. However, if
+            you prefer not to use %{app}, you can always access government
+            services. You’ll find more information at your agency.
+        question_8: >
+          What do I do if an account already exists under my email address?
+        answer_8:
+          part_1: >
+            Confirming access to an email address is the first step in making a
+            %{app} account. If you received a notice that there is already a
+            %{app} account associated with your email address but you don’t
+            remember creating it, use your email address to sign in and go through
+            the password reset process.
+          part_2: >
+            If you are not able to sign in or you have other questions about this,
+            call 1-844-USLOGIN to talk to an information specialist between the
+            hours of 8 a.m. and 8 p.m. Eastern Time, Monday through Friday, except
+            federal holidays.
+          part_3: >
+            Please notify %{app} if you are sure you did not create an account,
+            and feel like someone else is using your email address.
+        question_9: >
+          What do I do if an account has already been created using my phone
+          number?
+        answer_9: >
+          If you are not able to sign in or you have other questions about this,
+          call 1-844-USLOGIN to talk to an information specialist between the
+          hours of 8 a.m. and 8 p.m. Eastern Time, Monday through Friday, except
+          federal holidays.
+      signing_in:
+        title: Signing in
+        question_1: What do I need to have in order to sign in?
+        answer_1: >
+          Every time you log into your account, you will need your email
+          address, your password, and access to your phone. After you have
+          entered your email address and password, %{app} will send to your
+          phone a security code, which you will need to enter into the security
+          code field in order to be logged in securely.
+        question_2: What do I do if my password doesn’t work or I forget it?
+        answer_2:
+          part_1: >
+            If you don’t know your password, the link to reset it is on the
+            sign-in page. Enter your email address to receive  a link to reset
+            your password. Once you follow the link, you’ll be asked to enter a
+            new password.  Reconfirm that you have your phone (the one you will
+            use to receive one-time passcodes).
+          part_2: >
+            After you’ve successfully signed into %{app} after resetting your
+            password, %{app} will give you a personal key. The personal key is to
+            be used in the event you forget your password or don't have your phone
+            with you. Make a note of it and store it separately from your phone.
+        question_3: >
+          What happens if I miss the phone call or the text message with my
+          one-time security code?
+        answer_3: >
+          Every time you sign in you will need to enter a security code that is
+          sent to your phone either by text message or by phone call. The
+          security code you receive expires after 5 minutes and can only be used
+          once. If you miss entering the security code within the 5 minutes or
+          you just missed the phone call, just request a new security code. Each
+          security code is only good once, so no one can steal one you’ve
+          already used. We limit requests to three every 15 minutes, but
+          otherwise you can request as many codes as you need.
+        question_4: If I don’t have my phone with me, can I still sign in?
+        answer_4:
+          part_1: >
+            It is necessary to have your phone in order to get the security key to
+            sign in. But if you don’t have your phone with you, you will need the
+            personal key you received when you created your account. Enter the
+            personal key when instructed and select submit. Once you are signed
+            in, you will immediately get a new personal key. Please store the
+            personal key in a safe place separately from your phone since the
+            personal key will let you sign in to your account in case you don’t
+            have your phone with you.
+          part_2: >
+            We encourage you to store your personal key somewhere other than your
+            computer or mobile device — this way, you’ll be able to access your
+            personal key even if your device is stolen or your online accounts are
+            hacked.
+        question_5: >
+          I can’t remember where my personal key is and I don’t have my phone
+          with me.
+        answer_5:
+          part_1: >
+            If you don’t have your phone or your personal key, you may need to
+            create a new account and re-verify your personal information. To
+            create a new account, you will need to use a different email address
+            than you did when you created your first account. For urgent matters
+            — for example, to check the status of an in-progress application —
+            you may want to directly contact the government agency.
+          part_2: >
+            Or, if you don’t have your personal key and phone, call 1-844-USLOGIN
+            to talk to an information specialist between the hours of 8 a.m. and
+            8 p.m. Eastern Time, Monday through Friday, except federal holidays.
+          part_3: >
+            Another option is to log in at a later time when you have your phone
+            near you.
+        question_6: Why does the system log me out?
+        answer_6:
+          part_1: >
+            When a user is already signed in, and they want to change their email,
+            password, or phone number, they must enter their current password
+            first. After three incorrect guesses, the user is signed out.
+          part_2: >
+            The system also logs you out if you entered the security code that was
+            sent to your phone, incorrectly 3 times. Failed attempts are limited
+            to three per session, followed by a 5-minute lockout.
+        question_7: I forgot which email address I used to create an account.
+        answer_7:
+          part_1: >
+            If you can’t remember which email address you used to create your
+            account, you can use the password reset function to see if your email
+            address is on file.
+          part_2: >
+            Try to sign in as usual and ask to have your password reset. Then,
+            enter the email address you believe you used to create your account.
+            If we have your email address in our records, we will send
+            instructions on how to reset your password. Check your email in a few
+            minutes for these instructions.
+          part_3: >
+            If still can’t remember the email address you used to set up your
+            account, call 1-844-USLOGIN to talk to an information specialist
+            between the hours of 8 a.m. and 8 p.m. Eastern Time, Monday through
+            Friday, except federal holidays.
+      changing_settings:
+        title: Changing settings
+        question_1: How do I change my password?
+        answer_1:
+          part_1_html: >
+            To change your password, sign in at %{app} and go to your Profile
+            page. If you want to change your password, select Edit next to
+            password, enter the new password and submit your change. Passwords
+            must be at least 8 characters but otherwise there are no restrictions.
+            You can even use more than one word with spaces to get to 8
+            characters.
+          part_2: >
+            Instead, try making a long and complex password by using a phrase or a
+            series of words that only you recognize. And please make it different
+            than any other passwords you use to sign into other accounts such as
+            your bank account or email. Using the same passwords for your email,
+            financial and social media accounts makes identity theft easier.
+        question_2: How do I change my email address?
+        answer_2: >
+          To change your email address, select Edit next to the email address.
+          Enter the new email address and submit it. Then check your email
+          account and look for an email from %{app}. Open the email and click on
+          the link provided. Clicking the link will redirect you back to %{app}.
+          Once you reach %{app} your new email address is established.
+        question_3: How do I change the phone number I am using with my account?
+        answer_3: >
+          To change the phone number where you get your security code, select
+          Edit next to the phone number and enter the new phone number. %{app}
+          will immediately send your security code to confirm the new phone
+          number.
+      privacy_and_security:
+        title: Privacy and security
+        question_1: How does %{app} protect my data?
+        answer_1:
+          part_1: >
+            %{app} respects your privacy. We collect personal data online only to
+            help you fulfill your requests with federal agencies that partner with
+            us. %{app} manages specific parts of that agency’s website so we
+            collect personal data in order to provide a secure and private
+            environment for you to access certain government services. We are
+            bound by our privacy policy. %{app} does not lease, sell or release
+            your personal information to private companies, contractors, or
+            vendors for marketing purposes.
+          part_2: >
+            %{app} links to external federal government sites for services
+            provided by those agencies. Those sites are subject to their own
+            privacy policy, which is usually spelled out in a privacy policy and
+            legal disclaimer available on their website.
+          part_3_html: >
+            Individual accounts get a double layer of security. We require
+            two-factor authentication as well as strong passwords that meet new
+            %{nist_link} requirements for secure validation and verification. This
+            includes two-step authentication that requires you log in with your
+            password and a security code you receive on your phone. Two-step
+            authentication can help protect your account against password
+            compromises.
+          nist_link: National Institute of Standards of Technology
+          part_4_html: >
+            Your information will stay secure. For more information, read our
+            %{security_privacy_policy_link}. Please email %{info_at_login_mailto}
+            to learn more about how our protection works.
+          security_privacy_policy_link: security and privacy policy
+        question_2: Will %{app} share my information?
+        answer_2: >
+          %{app} cannot share any information with other government agencies
+          without the user’s permission. Not even %{app} administrators can
+          decrypt or access a user’s personal information without the user’s
+          password.
+        question_3: How do I make my password strong?
+        answer_3:
+          part_1: >
+            Your password should be at least 8 characters long. Try using multiple
+            words and spaces to create a memorable phrase. Longer passwords with
+            many words are stronger than short passwords with special characters.
+          part_2: >
+            When creating a password, also try to avoid using slang terms and
+            common misspellings and words spelled backward. Also, avoid using your
+            company name or your spouse’s or children’s names - and even your pet
+            - as well as other personal information such as your age or birth
+            date.
+          part_3: >
+            If you’re already signed in, and you’re trying to change your
+            password, email, or phone, you will be prompted to enter your current
+            password before you can make the changes.
+          part_4: >
+            But, if you repeatedly enter an incorrect password, it is most likely
+            due to a malicious person taking over your machine that you left
+            unattended. In that case, for your security, we sign you out after
+            three failed attempts.
+        question_4: >
+          Can I remove a saved password or login information from my browser?
+        answer_4:
+          part_1: >
+            If you accidentally saved your %{app} password or other sign-in
+            information in your browser, it’s a good idea for you to delete it;
+            this will help you keep your account more secure. From the following
+            list, select the browser (the computer program you use to access the
+            World Wide Web) you use to learn how to make it erase any saved
+            information:
+          part_2: >
+            Also, remember whenever you’re online, check the address bar of any
+            webpage you’re visiting to make sure that you can trust them,
+            especially any page that asks you to share a username and password. Be
+            careful about sharing personal information such as your login
+            credentials, financial information, or Social Security number over
+            email.
+          chrome: Chrome
+          firefox: Firefox
+          internet_explorer: Internet Explorer
+          safari: Safari
+        question_5: Still have questions?
+        answer_5:
+          part_1: >
+            Call toll-free at 1-844-USLOGIN to speak to an information specialist
+            between the hours of  8 a.m. and 8 p.m. Eastern Time, Monday through
+            Friday, except federal holidays.
+          part_2_html: >
+            Please let us know what's working and what you'd like to see in the
+            future - we're actively improving %{app}, and we base our improvements
+            on feedback from users like you! Email your suggestions to
+            %{info_at_login_mailto}.
     page_not_found:
       body: You might want to double-check your link and try again. (404)
       header: The page you were looking for doesn’t exist.
