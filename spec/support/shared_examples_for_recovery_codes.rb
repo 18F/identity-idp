@@ -71,6 +71,18 @@ shared_examples_for 'recovery code page' do
         expect(page).not_to have_xpath("//#{invisible_selector}[@id='recovery-code']")
       end
 
+      scenario 'focus is on first input and is trapped in modal' do
+        click_acknowledge_recovery_code
+
+        expect(page.evaluate_script('document.activeElement.name')).to eq 'recovery-0'
+
+        body_element = page.find('body')
+        body_element.send_keys [:shift, :tab]
+        expect(page.evaluate_script('document.activeElement.innerText')).to eq(
+          t('forms.buttons.back')
+        )
+      end
+
       context 'closing the modal', js: true do
         before do
           click_acknowledge_recovery_code

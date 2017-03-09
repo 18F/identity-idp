@@ -1,4 +1,5 @@
 import 'classlist.js';
+import focusTrap from 'focus-trap';
 
 const STATES = {
   HIDE: 'hide',
@@ -9,6 +10,7 @@ class Modal {
   constructor(options) {
     this.el = document.querySelector(options.el);
     this.shown = false;
+    this.trap = focusTrap(this.el, { escapeDeactivates: false });
   }
 
   toggle() {
@@ -39,6 +41,7 @@ class Modal {
     this.shown = showing;
     el.classList[showing ? 'remove' : 'add']('display-none');
     document.body.classList[showing ? 'add' : 'remove']('modal-open');
+    this.trap[showing ? 'activate' : 'deactivate']();
   }
 
   _emitEvent(target = null, eventType) {
