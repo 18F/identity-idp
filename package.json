@@ -9,6 +9,7 @@
   "dependencies": {
     "classlist.js": "^1.1.20150312",
     "field-kit": "^2.1.0",
+    "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
     "normalize.css": "^4.2.0",
     "zxcvbn": "^4.3.0"

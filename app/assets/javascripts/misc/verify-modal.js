@@ -1,16 +1,18 @@
 import 'classlist.js';
+import Modal from '../app/components/modal';
 
 function verifyModal() {
   const flash = document.querySelector('.alert');
-  const modal = document.getElementById('verification-modal');
-  const close = document.getElementById('js-close-modal');
+  const modalSelector = document.getElementById('verification-modal');
+  const modal = new Modal({ el: '#verification-modal' });
+  const modalDismiss = document.getElementById('js-close-modal');
 
   if (flash) flash.classList.add('display-none');
-  if (modal) modal.classList.remove('display-none');
+  if (modalSelector) modal.show();
 
-  if (close) {
-    close.addEventListener('click', function() {
-      modal.classList.add('display-none');
+  if (modalDismiss) {
+    modalDismiss.addEventListener('click', () => {
+      modal.hide();
     });
   }
 }
