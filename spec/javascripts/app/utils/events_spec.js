@@ -12,8 +12,9 @@ describe('Events', () => {
     events = new Events();
   });
 
-  it('maintains a on object of to store handlers', () => {
+  it('maintains a map of handler objects', () => {
     expect(events.handlers).not.to.be.undefined();
+    expect(events.handlers).to.be.an('object');
   });
 
   describe('#on', () => {
