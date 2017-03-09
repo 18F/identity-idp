@@ -9,20 +9,15 @@ class ResendEmailConfirmationForm
   end
 
   def submit
-    @success = valid?
-
-    result
+    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
 
   attr_writer :email
-  attr_reader :success
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
       user_id: user.uuid,
       confirmed: user.confirmed?,
     }
