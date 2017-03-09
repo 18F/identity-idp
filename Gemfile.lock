@@ -300,7 +300,7 @@ GEM
       rack
       socksify
     i18n (0.8.1)
-    i18n-tasks (0.9.11)
+    i18n-tasks (0.9.12)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       easy_translate (>= 0.5.0)
