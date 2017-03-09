@@ -18,6 +18,7 @@ engines:
     - 'spec/**/*'
     - 'node_modules/**/*'
     - 'db/schema.rb'
+    - 'app/forms/password_form.rb'
   eslint:
     enabled: true
   fixme:

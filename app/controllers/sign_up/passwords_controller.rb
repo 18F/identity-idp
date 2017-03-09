@@ -5,9 +5,9 @@ module SignUp
     def create
       with_unconfirmed_user do
         result = @password_form.submit(permitted_params)
-        analytics.track_event(Analytics::PASSWORD_CREATION, result)
+        analytics.track_event(Analytics::PASSWORD_CREATION, result.to_h)
 
-        if result[:success]
+        if result.success?
           process_successful_password_creation
         else
           process_unsuccessful_password_creation
