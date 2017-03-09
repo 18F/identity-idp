@@ -43,6 +43,14 @@ UserDecorator = Struct.new(:user) do
     user.active_identities.find_by(service_provider: service_provider.issuer)
   end
 
+  def pending_profile
+    user.profiles.verification_pending.order(created_at: :desc).first
+  end
+
+  def active_or_pending_profile
+    user.active_profile || pending_profile
+  end
+
   def qrcode(otp_secret_key)
     options = {
       issuer: 'Login.gov',
