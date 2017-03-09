@@ -125,7 +125,9 @@ describe UserMailer, type: :mailer do
       )
 
       expect(mail.html_part.body).to have_content(
-        t('user_mailer.phone_changed.help', app: APP_NAME, link: contact_url)
+        t('user_mailer.phone_changed.help',
+          app: APP_NAME,
+          contact_phone_number: CONTACT_PHONE_NUMBER)
       )
     end
   end
