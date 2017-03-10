@@ -56,7 +56,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           email_already_exists: false,
           user_id: user.uuid,
         }
@@ -91,7 +91,7 @@ describe SignUp::RegistrationsController, devise: true do
 
       analytics_hash = {
         success: true,
-        errors: [],
+        errors: {},
         email_already_exists: true,
         user_id: existing_user.uuid,
       }
@@ -108,9 +108,9 @@ describe SignUp::RegistrationsController, devise: true do
 
       analytics_hash = {
         success: false,
-        errors: [t('valid_email.validations.email.invalid')],
+        errors: { email: [t('valid_email.validations.email.invalid')] },
         email_already_exists: false,
-        user_id: nil,
+        user_id: 'anonymous-uuid',
       }
 
       expect(@analytics).to receive(:track_event).

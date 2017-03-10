@@ -28,7 +28,6 @@ NilCheck:
     - PasswordsController#mark_profile_inactive
     - PasswordResetTokenValidator#submit
     - PhoneConfirmationFlow
-    - RegisterUserEmailForm#result
     - slo_not_implemented_at_sp?
     - SessionsController#new
     - in_slo?
