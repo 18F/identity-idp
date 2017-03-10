@@ -13,10 +13,9 @@ module Users
     def confirm
       result = TotpSetupForm.new(current_user, new_totp_secret, params[:code].strip).submit
 
-      analytics.track_event(Analytics::TOTP_SETUP, result)
+      analytics.track_event(Analytics::TOTP_SETUP, result.to_h)
 
-      if result[:success]
-        current_user.save!
+      if result.success?
         process_valid_code
       else
         process_invalid_code
@@ -36,7 +35,6 @@ module Users
     private
 
     def process_valid_code
-      create_user_event(:authenticator_enabled)
       flash[:success] = t('notices.totp_configured')
       redirect_to profile_path
       user_session.delete(:new_totp_secret)
