@@ -16,12 +16,9 @@ class TwoFactorSetupForm
 
     @success = valid?
 
-    if success && otp_delivery_preference_changed?
-      user_attributes = { otp_delivery_preference: otp_method }
-      UpdateUser.new(user: user, attributes: user_attributes).call
-    end
+    update_otp_delivery_preference_for_user if success && otp_delivery_preference_changed?
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
@@ -33,10 +30,13 @@ class TwoFactorSetupForm
     otp_method != user.otp_delivery_preference
   end
 
-  def result
+  def update_otp_delivery_preference_for_user
+    user_attributes = { otp_delivery_preference: otp_method }
+    UpdateUser.new(user: user, attributes: user_attributes).call
+  end
+
+  def extra_analytics_attributes
     {
-      success: success,
-      error: errors.messages.values.flatten.first,
       otp_method: otp_method,
     }
   end
