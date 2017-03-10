@@ -35,7 +35,7 @@ feature 'Verify phone' do
 
       complete_idv_profile_with_phone('555-555-0000')
 
-      expect(page).to have_xpath("//a[@href='#{verify_phone_path}']")
+      expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
 
       enter_correct_otp_code_for_user(user)
       click_acknowledge_recovery_code

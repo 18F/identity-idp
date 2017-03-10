@@ -117,7 +117,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'does not allow user to sign in using an authenticator app' do
         render
 
-        expect(rendered).not_to have_xpath("//a[@href='#{login_two_factor_authenticator_path}']")
+        expect(rendered).not_to have_link(
+          t('links.two_factor_authentication.app'), href: login_two_factor_authenticator_path
+        )
       end
     end
 
@@ -128,7 +130,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         render
 
-        expect(rendered).to have_xpath("//a[@href='#{login_two_factor_authenticator_path}']")
+        expect(rendered).to have_link(
+          t('links.two_factor_authentication.app'), href: login_two_factor_authenticator_path
+        )
       end
     end
 
@@ -253,7 +257,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         render
 
-        expect(rendered).to have_xpath("//a[@href='#{@presenter.reenter_phone_number_path}']")
+        expect(rendered).to have_link(
+          t('forms.two_factor.try_again'), href: @presenter.reenter_phone_number_path
+        )
       end
     end
 
@@ -268,7 +274,9 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
         render
 
-        expect(rendered).to have_xpath("//a[@href='#{@presenter.reenter_phone_number_path}']")
+        expect(rendered).to have_link(
+          t('forms.two_factor.try_again'), href: @presenter.reenter_phone_number_path
+        )
       end
     end
   end

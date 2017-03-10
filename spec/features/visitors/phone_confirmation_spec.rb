@@ -41,7 +41,7 @@ feature 'Phone confirmation during sign up' do
     end
 
     it 'provides user with link to type in a phone number so they are not locked out' do
-      click_link 'Use another'
+      click_link t('forms.two_factor.try_again')
       expect(current_path).to eq phone_setup_path
     end
 

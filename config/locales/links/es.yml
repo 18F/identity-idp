@@ -21,8 +21,7 @@ es:
     cancel_account_creation: NOT TRANSLATED YET
     cancel_idv: NOT TRANSLATED YET
     two_factor_authentication:
-      app_html: NOT TRANSLATED YET
-      app_sr_only: NOT TRANSLATED YET
+      app: NOT TRANSLATED YET
       voice: NOT TRANSLATED YET
       sms: NOT TRANSLATED YET
       resend_code:

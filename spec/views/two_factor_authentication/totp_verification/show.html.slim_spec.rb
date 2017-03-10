@@ -34,9 +34,9 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     expect(rendered).
       to have_link(t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
                    href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' }))
-    expect(rendered).to have_xpath(
-      "//a[@href='#{otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' })}']"
-    )
+    expect(rendered).
+      to have_link(t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+                   href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
   end
 
   it 'provides an option to use a recovery code' do

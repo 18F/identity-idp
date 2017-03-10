@@ -14,11 +14,7 @@ module TwoFactorAuthCode
     def update_phone_link
       return unless unconfirmed_phone
 
-      link = link_to(
-        t('forms.two_factor.try_again_html',
-          sr_only: content_tag(:span, t('forms.two_factor.try_again_sr_only'), class: 'hide')),
-        reenter_phone_number_path
-      )
+      link = link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
       t('instructions.2fa.wrong_number_html', link: link)
     end
 

@@ -106,7 +106,6 @@ ignore_unused:
   - 'links.phone_confirmation.fallback_to_{sms,authenticator,voice}_html'
   - 'links.two_factor_authentication.resend_code.{sms,voice}_html'
   - 'links.two_factor_authentication.{sms,voice}_html'
-  - 'forms.two_factor.try_again_sr_only'
   - 'tooltips.authentication_app'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'

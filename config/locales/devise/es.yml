@@ -136,8 +136,7 @@ es:
         text_html: >
           Si no puede usar su aplicación de autenticador ahora, puede %{sms_link}
           O %{voice_link}.
-        voice_link_text_html: con una llamada telefónica
-        voice_link_text_sr_only: NOT TRANSLATED YET
+        voice_link_text: con una llamada telefónica
       totp_header_text: Ingrese su código de autenticador
       totp_info: Use cualquier aplicación de autenticador para escanear el código de QR que aparece a continuación.
       two_factor_setup: Agregar un número de teléfono
