@@ -5,22 +5,20 @@ class TotpVerificationForm
   end
 
   def submit
-    @success = valid_totp_code?
-
-    result
+    FormResponse.new(success: valid_totp_code?, errors: {}, extra: extra_analytics_attributes)
   end
 
   private
 
-  attr_reader :user, :code, :success
+  attr_reader :user, :code
 
   def valid_totp_code?
     user.authenticate_totp(code)
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
+      multi_factor_auth_method: 'totp',
     }
   end
 end
