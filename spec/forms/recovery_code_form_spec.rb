@@ -3,7 +3,7 @@ require 'rails_helper'
 describe RecoveryCodeForm do
   describe '#submit' do
     context 'when the form is valid' do
-      it 'returns true for success?' do
+      it 'returns FormResponse with success: true' do
         user = create(:user)
         raw_code = RecoveryCodeGenerator.new(user).create
 
@@ -19,7 +19,7 @@ describe RecoveryCodeForm do
     end
 
     context 'when the form is invalid' do
-      it 'returns false for success?' do
+      it 'returns FormResponse with success: false' do
         user = build_stubbed(:user, :signed_up, recovery_code: 'code')
 
         generator = instance_double(RecoveryCodeGenerator)
