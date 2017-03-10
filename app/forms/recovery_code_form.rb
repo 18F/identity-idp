@@ -27,7 +27,7 @@ class RecoveryCodeForm
 
   def extra_analytics_attributes
     {
-      method: 'recovery code',
+      multi_factor_auth_method: 'recovery code',
     }
   end
 end

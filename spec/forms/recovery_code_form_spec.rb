@@ -9,7 +9,7 @@ describe RecoveryCodeForm do
 
         form = RecoveryCodeForm.new(user, raw_code)
         result = instance_double(FormResponse)
-        extra = { method: 'recovery code' }
+        extra = { multi_factor_auth_method: 'recovery code' }
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
@@ -29,7 +29,7 @@ describe RecoveryCodeForm do
 
         form = RecoveryCodeForm.new(user, 'foo')
         result = instance_double(FormResponse)
-        extra = { method: 'recovery code' }
+        extra = { multi_factor_auth_method: 'recovery code' }
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
