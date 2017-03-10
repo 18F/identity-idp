@@ -13,7 +13,7 @@ class RecoveryCodeForm
 
     UpdateUser.new(user: user, attributes: { recovery_code: nil }).call if success
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
@@ -25,9 +25,9 @@ class RecoveryCodeForm
     recovery_code_generator.verify(code)
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
+      multi_factor_auth_method: 'recovery code',
     }
   end
 end
