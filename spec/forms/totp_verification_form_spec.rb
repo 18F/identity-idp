@@ -19,7 +19,7 @@ describe TotpVerificationForm do
     end
 
     context 'when the form is invalid' do
-      it 'returns false' do
+      it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         code = '123456'
         form = TotpVerificationForm.new(user, code)
