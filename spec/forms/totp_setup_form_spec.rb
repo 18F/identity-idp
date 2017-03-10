@@ -7,7 +7,7 @@ describe TotpSetupForm do
 
   describe '#submit' do
     context 'when TOTP code is valid' do
-      it 'sets success to true' do
+      it 'returns FormResponse with success: true' do
         form = TotpSetupForm.new(user, secret, code)
         result = instance_double(FormResponse)
 
@@ -21,7 +21,7 @@ describe TotpSetupForm do
     end
 
     context 'when TOTP code is invalid' do
-      it 'sets success to false' do
+      it 'returns FormResponse with success: false' do
         form = TotpSetupForm.new(user, secret, 'kode')
         result = instance_double(FormResponse)
 
