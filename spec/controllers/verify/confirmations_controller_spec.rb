@@ -88,10 +88,11 @@ describe Verify::ConfirmationsController do
       end
 
       it 'creates an `account_verified` event once per confirmation' do
-        get :index
-        user.reload
+        event_creator = instance_double(CreateVerifiedAccountEvent)
+        expect(CreateVerifiedAccountEvent).to receive(:new).and_return(event_creator)
+        expect(event_creator).to receive(:call)
 
-        expect(user.events.account_verified.size).to be 1
+        get :index
       end
     end
 
