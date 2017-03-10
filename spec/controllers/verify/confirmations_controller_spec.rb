@@ -91,7 +91,7 @@ describe Verify::ConfirmationsController do
         get :index
         user.reload
 
-        expect(user.events.where(event_type: 8).size).to be 1
+        expect(user.events.account_verified.size).to be 1
       end
     end
 

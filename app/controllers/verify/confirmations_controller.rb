@@ -36,9 +36,7 @@ module Verify
     end
 
     def create_account_verified_event
-      no_verified_event = current_user.events.find_by(
-        event_type: Event.event_types['account_verified']
-      ).empty?
+      no_verified_event = current_user.events.account_verified.empty?
 
       create_user_event(:account_verified) if no_verified_event
     end
