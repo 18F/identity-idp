@@ -86,6 +86,13 @@ describe Verify::ConfirmationsController do
 
         get :index
       end
+
+      it 'creates an `account_verified` event once per confirmation' do
+        get :index
+        user.reload
+
+        expect(user.events.where(event_type: 8).size).to be 1
+      end
     end
 
     context 'user confirmed a new phone' do
