@@ -68,6 +68,11 @@ describe Verify::ConfirmationsController do
         expect(flash[:allow_confirmations_continue]).to eq true
       end
 
+      it 'sets flash.now[:success]' do
+        get :index
+        expect(flash[:success]).to eq t('idv.messages.confirm')
+      end
+
       it 'tracks final IdV event' do
         stub_analytics
 
