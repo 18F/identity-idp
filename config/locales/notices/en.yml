@@ -49,14 +49,14 @@ en:
         with a link to confirm your email address. Follow the link to continue
         creating your account.
       first_paragraph_start: We sent an email to
-      no_email_sent_explanation_start: Didn’t get an email?
+      no_email_sent_explanation_start: Didn’t receive it?
     terms_of_service:
-      link: Learn more ›
+      link: Security Consent & Privacy Act Statement
       text_html: >
-        By continuing, I agree to the terms of this service. Providing
+        By continuing, I agree to %{app}’s %{link}. Providing
         information is voluntary. It is used to help you access government services.
         login.gov uses industry-standard monitoring and security practices to
-        protect your data. %{link}
+        protect your data.
     totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
     use_diff_email:

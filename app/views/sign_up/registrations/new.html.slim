@@ -9,7 +9,8 @@ p.mt-tiny.mb0#email-description = t('instructions.registration.email')
             input_html: { 'aria-describedby' => 'email-description' }
   p.mb-40p.mt1.italic
     = t('notices.terms_of_service.text_html',
-        link: link_to(t('notices.terms_of_service.link'), privacy_path, target: '_blank'))
+        link: link_to(t('notices.terms_of_service.link'), privacy_path, target: '_blank'),
+        app: APP_NAME)
 
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb4'
 
