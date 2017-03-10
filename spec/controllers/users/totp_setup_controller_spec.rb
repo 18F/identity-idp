@@ -54,8 +54,7 @@ describe Users::TotpSetupController, devise: true do
   describe '#confirm' do
     context 'when user presents invalid code' do
       before do
-        sign_in_as_user
-
+        stub_sign_in
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
@@ -70,6 +69,7 @@ describe Users::TotpSetupController, devise: true do
 
         result = {
           success: false,
+          errors: {},
         }
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
       end
@@ -77,30 +77,34 @@ describe Users::TotpSetupController, devise: true do
 
     context 'when user presents correct code' do
       before do
-        sign_in_as_user
-
+        stub_sign_in
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
+        code = '123455'
+        totp_secret = 'abdef'
+        subject.user_session[:new_totp_secret] = totp_secret
+        form = instance_double(TotpSetupForm)
+
+        allow(TotpSetupForm).to receive(:new).
+          with(subject.current_user, totp_secret, code).and_return(form)
+        response = FormResponse.new(success: true, errors: {})
+        allow(form).to receive(:submit).and_return(response)
+
         get :new
-        allow(subject).to receive(:create_user_event)
-        patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
+        patch :confirm, code: code
       end
 
       it 'redirects to profile_path with a success message' do
         expect(response).to redirect_to(profile_path)
         expect(flash[:success]).to eq t('notices.totp_configured')
-        expect(subject.current_user.totp_enabled?).to be(true)
         expect(subject.user_session[:new_totp_secret]).to be_nil
 
         result = {
           success: true,
+          errors: {},
         }
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
-      end
-
-      it 'creates an :authenticator_enabled event' do
-        expect(subject).to have_received(:create_user_event).with(:authenticator_enabled)
       end
     end
   end
