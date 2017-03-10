@@ -48,4 +48,4 @@ en:
     two_factor:
       code: One-time passcode
       recovery_code: Personal key
-      try_again: Use another
+      try_again: Use another phone number
