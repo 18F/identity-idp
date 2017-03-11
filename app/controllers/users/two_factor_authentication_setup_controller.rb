@@ -16,9 +16,9 @@ module Users
       @two_factor_setup_form = TwoFactorSetupForm.new(current_user)
       result = @two_factor_setup_form.submit(params[:two_factor_setup_form])
 
-      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
+      analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
-      if result[:success]
+      if result.success?
         process_valid_form
       else
         render :index

@@ -21,7 +21,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       stub_analytics
       result = {
         success: false,
-        error: t('errors.messages.improbable_phone'),
+        errors: { phone: [t('errors.messages.improbable_phone')] },
         otp_method: 'sms',
       }
 
@@ -40,7 +40,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         stub_analytics
         result = {
           success: true,
-          error: nil,
+          errors: {},
           otp_method: 'voice',
         }
 
@@ -71,7 +71,7 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         result = {
           success: true,
-          error: nil,
+          errors: {},
           otp_method: 'sms',
         }
 
@@ -101,7 +101,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         stub_analytics
         result = {
           success: true,
-          error: nil,
+          errors: {},
           otp_method: 'sms',
         }
 

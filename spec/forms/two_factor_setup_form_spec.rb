@@ -27,13 +27,13 @@ describe TwoFactorSetupForm, type: :model do
         user = build_stubbed(:user, :signed_up, phone: '+1 (202) 555-1213')
         allow(User).to receive(:exists?).with(phone: user.phone).and_return(true)
         form = TwoFactorSetupForm.new(user)
-
-        result = {
-          success: true,
-          error: nil,
+        extra = {
           otp_method: 'sms',
         }
+        result = instance_double(FormResponse)
 
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit(phone: user.phone, otp_method: 'sms')).
           to eq result
       end
@@ -41,12 +41,13 @@ describe TwoFactorSetupForm, type: :model do
 
     context 'when phone is not already taken' do
       it 'is valid' do
-        result = {
-          success: true,
-          error: nil,
+        extra = {
           otp_method: 'sms',
         }
+        result = instance_double(FormResponse)
 
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(subject.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')).
           to eq result
       end
@@ -56,13 +57,13 @@ describe TwoFactorSetupForm, type: :model do
       it 'is valid' do
         user = build_stubbed(:user, phone: valid_phone)
         form = TwoFactorSetupForm.new(user)
-
-        result = {
-          success: true,
-          error: nil,
+        extra = {
           otp_method: 'sms',
         }
+        result = instance_double(FormResponse)
 
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit(phone: valid_phone, otp_method: 'sms')).
           to eq result
       end
@@ -70,12 +71,16 @@ describe TwoFactorSetupForm, type: :model do
 
     context 'when phone is empty' do
       it 'does not add already taken errors' do
-        result = {
-          success: false,
-          error: t('errors.messages.improbable_phone'),
+        errors = {
+          phone: [t('errors.messages.improbable_phone')],
+        }
+        extra = {
           otp_method: 'sms',
         }
+        result = instance_double(FormResponse)
 
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
         expect(subject.submit(phone: '', otp_method: 'sms')).
           to eq result
       end
