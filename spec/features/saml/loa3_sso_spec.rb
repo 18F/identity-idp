@@ -23,7 +23,7 @@ feature 'LOA3 Single Sign On' do
       click_acknowledge_recovery_code
 
       expect(page).to have_content t('titles.loa3_verified.true', app: APP_NAME)
-      click_on I18n.t('forms.buttons.continue_to', sp: @sp_name)
+      click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
       expect(current_url).to eq saml_authn_request
 
       user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)

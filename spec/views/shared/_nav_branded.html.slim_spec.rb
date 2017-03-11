@@ -12,8 +12,6 @@ describe 'shared/_nav_branded.html.slim' do
         sp: sp_with_logo, view_context: view_context
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)
-      @sp_logo = sp_with_logo.logo
-      @sp_name = decorated_session.sp_name
       render
     end
 

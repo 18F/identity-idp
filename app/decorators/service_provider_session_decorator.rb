@@ -1,5 +1,5 @@
 class ServiceProviderSessionDecorator
-  attr_reader :sp_name
+  delegate :logo, to: :sp, prefix: true
 
   def initialize(sp:, view_context:)
     @sp = sp
@@ -46,6 +46,10 @@ class ServiceProviderSessionDecorator
       minutes: Figaro.env.session_timeout_in_minutes,
       sp: sp_name
     )
+  end
+
+  def sp_return_url
+    sp.return_to_sp_url
   end
 
   private

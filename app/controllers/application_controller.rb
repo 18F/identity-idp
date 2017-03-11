@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :decorated_session, :decorated_user, :reauthn?, :user_fully_authenticated?
 
-  before_action :create_branded_experience
   prepend_before_action :session_expires_at
   before_action :set_locale
   before_action :disable_caching
@@ -134,13 +133,5 @@ class ApplicationController < ActionController::Base
 
   def sp_session
     session.fetch(:sp, {})
-  end
-
-  def create_branded_experience
-    return unless session[:sp]
-
-    @sp_logo = current_sp.logo
-    @sp_name = decorated_session.sp_name
-    @sp_return_url = current_sp.return_to_sp_url
   end
 end
