@@ -23,7 +23,7 @@ class UpdateUserEmailForm
       @success = process_errors
     end
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def valid_form?
@@ -47,10 +47,8 @@ class UpdateUserEmailForm
     true
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
       email_already_exists: email_taken?,
       email_changed: email_changed?,
     }

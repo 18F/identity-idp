@@ -18,7 +18,7 @@ describe Users::EmailsController do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           email_already_exists: false,
           email_changed: true,
         }
@@ -45,7 +45,7 @@ describe Users::EmailsController do
 
         analytics_hash = {
           success: false,
-          errors: [t('valid_email.validations.email.invalid')],
+          errors: { email: [t('valid_email.validations.email.invalid')] },
           email_already_exists: false,
           email_changed: false,
         }
@@ -68,7 +68,7 @@ describe Users::EmailsController do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           email_already_exists: true,
           email_changed: true,
         }
@@ -94,7 +94,7 @@ describe Users::EmailsController do
 
         analytics_hash = {
           success: false,
-          errors: [t('valid_email.validations.email.invalid')],
+          errors: { email: [t('valid_email.validations.email.invalid')] },
           email_already_exists: false,
           email_changed: false,
         }
@@ -118,7 +118,7 @@ describe Users::EmailsController do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           email_already_exists: false,
           email_changed: false,
         }
