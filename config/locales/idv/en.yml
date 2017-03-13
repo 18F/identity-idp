@@ -17,7 +17,6 @@ en:
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
-      fail: Sorry, we can’t verify your identity based on the information you submitted.
       finance_number_length: Number must be between %{minimum} and %{maximum} digits.
       hardfail: We were unable to verify the information you provided.
       incorrect_password: The password you entered is not correct.
@@ -100,10 +99,6 @@ en:
         an account, but with a different email address.
       dupe_ssn2_html: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
-      fail: >
-        Please check that the personal and financial information you provided is
-        accurate. To learn more about the information we need from you and how it’s used
-        to verify your identity, please see our troubleshooting page.
       finance:
         disclaimer: By continuing, you agree to let %{app_name} compare the account
           information you provide with third-party sources in order to verify your
@@ -144,7 +139,6 @@ en:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
-      review_and_continue: Review my info and try again
       sessions:
         pii: personal information
         success: We found records matching your %{pii_message}
