@@ -12,7 +12,6 @@ es:
     errors:
       bad_dob: NOT TRANSLATED YET
       duplicate_ssn: NOT TRANSLATED YET
-      fail: NOT TRANSLATED YET
       finance_number_length: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       incorrect_password: NOT TRANSLATED YET
@@ -79,7 +78,6 @@ es:
       dupe_ssn1: NOT TRANSLATED YET
       dupe_ssn2_html: NOT TRANSLATED YET
       dupe_ssn2_link: NOT TRANSLATED YET
-      fail: NOT TRANSLATED YET
       finance:
         disclaimer: NOT TRANSLATED YET
         hint: NOT TRANSLATED YET
@@ -105,7 +103,6 @@ es:
         financial_info: NOT TRANSLATED YET
         info_verified_html: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
-      review_and_continue: NOT TRANSLATED YET
       sessions:
         pii: NOT TRANSLATED YET
         success: NOT TRANSLATED YET

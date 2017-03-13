@@ -123,28 +123,4 @@ describe VerifyController do
       end
     end
   end
-
-  describe '#retry' do
-    context 'user has an active profile' do
-      it 'does not allow direct access and redirects to activated url' do
-        profile = create(:profile, :active, :verified)
-
-        stub_sign_in(profile.user)
-
-        get :retry
-
-        expect(response).to redirect_to verify_activated_url
-      end
-    end
-
-    context 'user does not have an active profile' do
-      it 'allows direct access' do
-        stub_sign_in
-
-        get :retry
-
-        expect(response).to render_template(:retry)
-      end
-    end
-  end
 end
