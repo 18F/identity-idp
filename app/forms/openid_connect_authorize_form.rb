@@ -55,8 +55,8 @@ class OpenidConnectAuthorizeForm
     ial == 3
   end
 
-  def allowed_form_action
-    sp_redirect_uri if sp_redirect_uri =~ %r{https?://}
+  def sp_redirect_uri
+    service_provider.redirect_uri
   end
 
   def service_provider
@@ -142,10 +142,6 @@ class OpenidConnectAuthorizeForm
       error_description: errors.full_messages.join(' '),
       state: state
     )
-  end
-
-  def sp_redirect_uri
-    service_provider.redirect_uri
   end
 end
 # rubocop:enable Metrics/ClassLength
