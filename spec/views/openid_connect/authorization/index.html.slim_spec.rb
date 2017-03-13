@@ -1,12 +1,19 @@
 require 'rails_helper'
 
 describe 'openid_connect/authorization/index.html.slim' do
+  let(:view_context) { ActionController::Base.new.view_context }
+
   before do
     @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
       scopes: %w(openid email profile)
     )
-    @sp_name = 'Test SP'
-    @sp_logo = 'generic.svg'
+    sp = build_stubbed(
+      :service_provider,
+      friendly_name: 'Awesome Application!',
+      logo: 'generic.svg'
+    )
+    decorated_session = DecoratedSession.new(sp: sp, view_context: view_context).call
+    allow(view).to receive(:decorated_session).and_return(decorated_session)
   end
 
   it 'renders a list of localized attribute names' do
@@ -27,9 +34,12 @@ describe 'openid_connect/authorization/index.html.slim' do
   end
 
   context 'when the service provider does not have a logo' do
-    before { @sp_logo = nil }
-
     it 'does not render the logo' do
+      sp_without_logo = build_stubbed(:service_provider)
+      decorated_session = ServiceProviderSessionDecorator.new(
+        sp: sp_without_logo, view_context: view_context
+      )
+      allow(view).to receive(:decorated_session).and_return(decorated_session)
       render
 
       expect(rendered).to_not have_css('img')

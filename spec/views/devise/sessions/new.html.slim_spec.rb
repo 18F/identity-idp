@@ -47,10 +47,8 @@ describe 'devise/sessions/new.html.slim' do
         return_to_sp_url: 'www.awesomeness.com'
       )
       view_context = ActionController::Base.new.view_context
-      decorated_session = DecoratedSession.new(sp: sp, view_context: view_context).call
-      allow(view).to receive(:decorated_session).and_return(decorated_session)
-      @sp_name = decorated_session.sp_name
-      @sp_return_url = sp.return_to_sp_url
+      @decorated_session = DecoratedSession.new(sp: sp, view_context: view_context).call
+      allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end
 
     it 'displays a custom header' do
@@ -65,7 +63,7 @@ describe 'devise/sessions/new.html.slim' do
       render
 
       expect(rendered).to have_link(
-        t('links.back_to_sp', sp: 'Awesome Application!'), href: @sp_return_url
+        t('links.back_to_sp', sp: 'Awesome Application!'), href: @decorated_session.sp_return_url
       )
     end
   end

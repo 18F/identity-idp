@@ -25,7 +25,9 @@ class SessionDecorator
     I18n.t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
   end
 
-  def sp_name
-    nil
-  end
+  def sp_name; end
+
+  def sp_logo; end
+
+  def sp_return_url; end
 end
