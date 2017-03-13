@@ -11,9 +11,9 @@ module Users
 
       result = @update_user_email_form.submit(user_params)
 
-      analytics.track_event(Analytics::EMAIL_CHANGE_REQUEST, result)
+      analytics.track_event(Analytics::EMAIL_CHANGE_REQUEST, result.to_h)
 
-      if result[:success]
+      if result.success?
         process_updates
         bypass_sign_in current_user
       else
