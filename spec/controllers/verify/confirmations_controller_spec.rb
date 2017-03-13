@@ -47,7 +47,7 @@ describe Verify::ConfirmationsController do
 
     context 'user used 2FA phone as phone of record' do
       it 'activates profile' do
-        get :index
+        get :show
         profile.reload
 
         expect(profile).to be_active
@@ -57,19 +57,19 @@ describe Verify::ConfirmationsController do
       it 'sets recovery code instance variable' do
         subject.idv_session.cache_applicant_profile_id
         code = subject.idv_session.recovery_code
-        get :index
+        get :show
 
         expect(assigns(:recovery_code)).to eq(code)
       end
 
       it 'sets flash[:allow_confirmations_continue] to true' do
-        get :index
+        get :show
 
         expect(flash[:allow_confirmations_continue]).to eq true
       end
 
       it 'sets flash.now[:success]' do
-        get :index
+        get :show
         expect(flash[:success]).to eq t('idv.messages.confirm')
       end
 
@@ -84,7 +84,7 @@ describe Verify::ConfirmationsController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::IDV_FINAL, result)
 
-        get :index
+        get :show
       end
     end
 
@@ -101,7 +101,7 @@ describe Verify::ConfirmationsController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::IDV_FINAL, result)
 
-        get :index
+        get :show
       end
     end
   end
@@ -110,7 +110,7 @@ describe Verify::ConfirmationsController do
     it 'redirects to /idv/sessions' do
       stub_sign_in(user)
 
-      get :index
+      get :show
 
       expect(response).to redirect_to(verify_session_path)
     end
