@@ -257,27 +257,6 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#allowed_form_action' do
-    subject(:allowed_form_action) { form.allowed_form_action }
-
-    context 'with a bad client_id' do
-      let(:client_id) { 'foobar' }
-      it { expect(allowed_form_action).to be_nil }
-    end
-
-    context 'with a client_id with an http redirect_uri' do
-      let(:client_id) { 'urn:gov:gsa:openidconnect:sp:server' }
-      it 'is the domain and port and scheme' do
-        expect(allowed_form_action).to eq('http://localhost:7654/')
-      end
-    end
-
-    context 'with a client_id with a non-http redirect_uri' do
-      let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
-      it { expect(allowed_form_action).to be_nil }
-    end
-  end
-
   describe '#client_id' do
     it 'returns the form client_id' do
       form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')

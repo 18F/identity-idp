@@ -31,7 +31,7 @@ module TwoFactorAuthenticatable
     return unless authorize_form.valid?
 
     override_content_security_policy_directives(
-      form_action: ["'self'", authorize_form.allowed_form_action].compact,
+      form_action: ["'self'", authorize_form.sp_redirect_uri].compact,
       preserve_schemes: true
     )
   end
