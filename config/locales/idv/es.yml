@@ -4,6 +4,7 @@ es:
     buttons:
       continue: NOT TRANSLATED YET
       cancel: NOT TRANSLATED YET
+      help: NOT TRANSLATED YET
     cancel:
       modal_header: NOT TRANSLATED YET
       warning_header: NOT TRANSLATED YET
@@ -88,9 +89,8 @@ es:
         no_account: NOT TRANSLATED YET
         no_account_info: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
-      hardfail2: NOT TRANSLATED YET
-      hardfail3: NOT TRANSLATED YET
       hardfail4: NOT TRANSLATED YET
+      help_center: NOT TRANSLATED YET
       phone:
         in_your_name: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET

@@ -4,6 +4,7 @@ en:
     buttons:
       continue: Continue identity verification
       cancel: Cancel and return to your profile
+      help: Continue to Help Center
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -18,7 +19,7 @@ en:
       duplicate_ssn: An account already exists with the information you provided.
       fail: Sorry, we can’t verify your identity based on the information you submitted.
       finance_number_length: Number must be between %{minimum} and %{maximum} digits.
-      hardfail: We were unable to verify your identity at this time.
+      hardfail: We were unable to verify the information you provided.
       incorrect_password: The password you entered is not correct.
       invalid_ccn: Credit card number should be only last 8 digits.
       missing_finance: You must provide a financial account number.
@@ -118,12 +119,11 @@ en:
         no_account: Want to use a credit card instead?
         no_account_info: Help us verify your identity by providing the last 8 digits of your
           credit card.
-      hardfail: We can’t verify your identity right now.
-      hardfail2: You can try again in %{hours} hours.
-      hardfail3: >
-        If you still can’t verify your identity, visit our troubleshooting page
-        to find answers to common questions about verification.
+      hardfail: >
+        Your account is active but we were unable to verify the information you provided. Please
+        sign back in after %{hours} hours to try again.
       hardfail4: You can also go to %{sp} for more help in accessing services.
+      help_center: Visit our Help Center to learn more about verifying your account.
       phone:
         in_your_name: in your name or the name of someone in your household
         intro: >
@@ -188,7 +188,7 @@ en:
       expectations: Next, help us identify you
       fail: We were unable to verify your identity
       financials: Provide a financial account number
-      hardfail: We were unable to verify your identity
+      hardfail: We were unable to verify your account
       intro: Help us identify you
       phone: Phone number of record
       review: Review and submit
