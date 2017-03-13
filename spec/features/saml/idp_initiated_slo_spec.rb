@@ -74,7 +74,7 @@ feature 'IDP-initiated logout' do
       expect(logout_user.active_identities).to be_empty
 
       visit profile_path
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      expect(current_path).to eq root_path
     end
 
     it 'references the correct SessionIndexes' do
@@ -86,7 +86,7 @@ feature 'IDP-initiated logout' do
       expect(request_xmldoc.asserted_session_index).to eq(@sp1_asserted_session_index)
       click_button t('forms.buttons.submit.default')
       visit profile_path
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      expect(current_path).to eq root_path
     end
   end
 end
