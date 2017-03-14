@@ -30,8 +30,13 @@ module Verify
       @recovery_code = recovery_code
       idv_session.complete_profile
       idv_session.recovery_code = nil
-      flash[:allow_confirmations_continue] = true
+      create_account_verified_event
       flash.now[:success] = t('idv.messages.confirm')
+      flash[:allow_confirmations_continue] = true
+    end
+
+    def create_account_verified_event
+      CreateVerifiedAccountEvent.new(current_user).call
     end
 
     def recovery_code

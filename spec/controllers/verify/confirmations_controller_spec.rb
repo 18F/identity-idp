@@ -86,6 +86,14 @@ describe Verify::ConfirmationsController do
 
         get :index
       end
+
+      it 'creates an `account_verified` event once per confirmation' do
+        event_creator = instance_double(CreateVerifiedAccountEvent)
+        expect(CreateVerifiedAccountEvent).to receive(:new).and_return(event_creator)
+        expect(event_creator).to receive(:call)
+
+        get :index
+      end
     end
 
     context 'user confirmed a new phone' do

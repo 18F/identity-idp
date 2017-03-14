@@ -2,6 +2,7 @@
 es:
   event_types:
     account_created: Cuenta creada
+    account_verified: NOT TRANSLATED YET
     authenticated_at: Se ha iniciado sesión en %{service_provider}
     authenticator_disabled: La aplicación de autenticador está inhabilitada
     authenticator_enabled: Aplicación de autenticador activada
