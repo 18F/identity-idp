@@ -2,6 +2,7 @@ module Idv
   class ProfileStep < Step
     def submit
       initialize_idv_session
+      submit_idv_form
 
       @success = complete?
 
@@ -36,6 +37,10 @@ module Idv
       idv_session.applicant_from_params
     end
 
+    def submit_idv_form
+      idv_form.submit(params)
+    end
+
     def complete?
       !attempts_exceeded? && form_valid? && vendor_validation_passed?
     end
@@ -49,7 +54,7 @@ module Idv
     end
 
     def form_valid?
-      form_validate(params)[:success] == true
+      @_form_valid ||= idv_form.valid?
     end
 
     def vendor_validator_class
