@@ -1,14 +1,13 @@
 require 'rails_helper'
 
 describe CreateVerifiedAccountEvent do
-  let(:password) { 'password' }
   let(:user) do
-    create(:user, :signed_up, password: password) do |user|
+    create(:user) do |user|
       user.events.create(event_type: :account_verified)
     end
   end
 
-  let(:eventless_user) { create(:user, :signed_up, password: password) }
+  let(:eventless_user) { create(:user) }
 
   context '#call' do
     it 'adds an `aacount_verified` event if the user does not have one' do
