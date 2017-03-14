@@ -23,7 +23,7 @@ feature 'SP-initiated logout' do
     it 'signs out the user from IdP' do
       visit profile_path
 
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      expect(current_path).to eq root_path
     end
   end
 
@@ -46,7 +46,7 @@ feature 'SP-initiated logout' do
     it 'signs out the user from IdP' do
       visit profile_path
 
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      expect(current_path).to eq root_path
     end
 
     it 'contains an issuer nodeset' do
@@ -168,8 +168,8 @@ feature 'SP-initiated logout' do
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp1
 
       visit profile_path
-      expect(page).to have_content t('devise.failure.unauthenticated')
 
+      expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)
     end
   end
@@ -207,8 +207,8 @@ feature 'SP-initiated logout' do
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp2
 
       visit profile_path
-      expect(page).to have_content t('devise.failure.unauthenticated')
 
+      expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)
 
       removed_keys = %w(logout_response logout_response_url)
