@@ -82,6 +82,15 @@ describe EncryptedKeyMaker do
 
         expect(subject.unlock(user_access_key, encryption_key)).to eq hash_E
       end
+
+      it 'recognizes locally-encrypted legacy keys' do
+        allow(FeatureManagement).to receive(:use_kms?).and_return(false)
+        subject.make(user_access_key)
+        encryption_key = user_access_key.encryption_key
+
+        allow(FeatureManagement).to receive(:use_kms?).and_return(true)
+        expect(subject.unlock(user_access_key, encryption_key)).to eq hash_E
+      end
     end
   end
 end
