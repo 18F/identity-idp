@@ -24,6 +24,8 @@ describe 'NIST Encryption Model' do
     allow(FeatureManagement).to receive(:use_kms?).and_return(true)
   end
 
+  let(:kms_prefix) { '{}cH' } # XOR of 'KMSx' and '0000'
+
   describe 'password hashing' do
     it 'creates two substrings Z1 and Z2 via scrypt of password and salt' do
       # Generate and store a 128-bit salt S.
@@ -61,7 +63,7 @@ describe 'NIST Encryption Model' do
       encrypted_key_maker = EncryptedKeyMaker.new
       encrypted_key_maker.make(user_access_key)
 
-      expect(user_access_key.encrypted_d).to eq encrypted_D
+      expect(user_access_key.encrypted_d).to eq(kms_prefix + encrypted_D)
       expect(user_access_key.hash_e).to eq hash_E
     end
   end
@@ -92,7 +94,7 @@ describe 'NIST Encryption Model' do
 
       encrypted_D = Base64.strict_decode64(user.encryption_key)
 
-      expect(user.user_access_key.xor(ciphered_R)).to eq encrypted_D
+      expect(kms_prefix + user.user_access_key.xor(ciphered_R)).to eq(encrypted_D)
     end
   end
 
@@ -121,7 +123,7 @@ describe 'NIST Encryption Model' do
       # encrypted_payload is an envelope that contains C and D.
       encrypted_key, encrypted_C = open_envelope(encrypted_payload)
 
-      expect(Base64.strict_decode64(encrypted_key)).to eq encrypted_D
+      expect(Base64.strict_decode64(encrypted_key)).to eq(kms_prefix + encrypted_D)
 
       # unroll encrypted_C to verify it was encrypted with hash_E
       cipher = Pii::Cipher.new
