@@ -19,7 +19,7 @@ module Verify
       increment_step_attempts
 
       if result[:success]
-        redirect_to verify_phone_url
+        redirect_to verify_address_url
       else
         render_failure
         render_form
@@ -49,7 +49,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_phone_path if idv_session.financials_confirmation == true
+      redirect_to verify_address_path if idv_session.financials_confirmation == true
     end
 
     def render_form

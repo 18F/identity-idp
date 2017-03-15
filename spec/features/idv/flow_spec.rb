@@ -28,7 +28,7 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
 
       expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_content(
@@ -37,9 +37,10 @@ feature 'IdV session' do
       )
 
       fill_out_financial_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
+      click_idv_address_choose_phone
       fill_out_phone_form_ok(user.phone)
-      click_button t('forms.buttons.continue')
+      click_idv_continue
       fill_in :user_password, with: user_password
       click_button t('forms.buttons.submit.default')
 
@@ -184,6 +185,10 @@ feature 'IdV session' do
       fill_in :idv_finance_form_ccn, with: second_ccn_value
       click_idv_continue
 
+      # address mechanism choice
+      expect(current_path).to eq verify_address_path
+      click_idv_address_choose_phone
+
       # success advances to next step
       expect(current_path).to eq verify_phone_path
 
@@ -249,7 +254,7 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
 
       expect(page).to_not have_css('.js-finance-wrapper', text: t('idv.form.mortgage'))
 
@@ -268,7 +273,7 @@ feature 'IdV session' do
       _user = sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
       click_link t('idv.form.use_financial_account')
 
       select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
@@ -291,7 +296,7 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button 'Continue'
+      click_idv_continue
 
       find('#idv_finance_form_ccn').native.send_keys('abcd1234')
 
@@ -305,7 +310,7 @@ feature 'IdV session' do
         @user = sign_in_and_2fa_user
         visit verify_session_path
 
-        allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
+        allow(RandomPhrase).to receive(:to_s).and_return(recovery_code)
         complete_idv_profile_ok(@user)
       end
 
@@ -324,6 +329,21 @@ feature 'IdV session' do
 
         expect(page).to have_content(t('headings.recovery_code'))
       end
+    end
+
+    scenario 'pick USPS address verification' do
+      sign_in_and_2fa_user
+
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_usps
+      click_idv_continue
+
+      expect(current_path).to eq verify_review_path
     end
   end
 

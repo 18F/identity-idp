@@ -1,0 +1,21 @@
+.my2.p3.py2.sm-px3.border.border-teal.rounded.rounded-xl.relative
+  = image_tag(asset_url('check-email.svg'), size: '48x48', alt: 'check email',\
+    class: 'absolute top-n24 left-0 right-0 mx-auto')
+  h1.sans-serif.h2
+    = t('idv.titles.verify_mail')
+  p
+    = t('idv.messages.usps.byline')
+  p.h4.bold
+    | #{@applicant.address1}<br>
+    - if @applicant.address2.present?
+      | #{@applicant.address2}<br>
+    | #{@applicant.city}, #{@applicant.state} #{@applicant.zipcode}
+
+  p.my0
+    = t('idv.messages.usps.success')
+
+= button_to t('forms.buttons.continue'), verify_usps_path, method: 'put',
+  class: 'btn btn-primary btn-wide'
+
+.mt2.pt1.border-top
+  = link_to t('idv.buttons.verify_by_phone'), verify_phone_path
