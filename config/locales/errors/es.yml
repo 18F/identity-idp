@@ -30,5 +30,7 @@ es:
       password_incorrect: La contraseña es incorrecta
       recovery_code_incorrect: El código de recuperación es incorrecto
       requires_phone: requiere que ingrese su número de teléfono.
+      unauthorized_authn_context: NOT TRANSLATED YET
+      unauthorized_service_provider: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente fuerte. %{feedback}
     not_authorized: No está autorizado para realizar esta acción.

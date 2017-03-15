@@ -16,9 +16,9 @@ module SamlIdpAuthConcern
       authn_context: requested_authn_context
     )
 
-    return unless @result[:errors].present?
+    return if @result.success?
 
-    analytics.track_event(Analytics::SAML_AUTH, @result)
+    analytics.track_event(Analytics::SAML_AUTH, @result.to_h)
     render nothing: true, status: :unauthorized
   end
 
