@@ -69,15 +69,15 @@ describe Verify::ReviewController do
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
-    context 'user has missed phone step' do
+    context 'user has missed address step' do
       before do
         idv_session.phone_confirmation = false
       end
 
-      it 'redirects to phone step' do
+      it 'redirects to address step' do
         get :show
 
-        expect(response).to redirect_to verify_phone_path
+        expect(response).to redirect_to verify_address_path
       end
     end
 
@@ -224,6 +224,7 @@ describe Verify::ReviewController do
       before do
         idv_session.params = user_attrs.merge(phone: '213-555-1000')
         idv_session.applicant = idv_session.applicant_from_params
+        idv_session.address_verification_mechanism = :phone
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end

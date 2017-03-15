@@ -1,18 +1,19 @@
 module Idv
-  class ProfileFromApplicant
-    attr_reader :profile
+  class ProfileMaker
+    attr_reader :pii_attributes, :profile
 
-    def self.create(applicant:, user:, normalized_applicant:)
-      profile = Profile.new(user: user)
-      plain_pii = pii_from_applicant(applicant, normalized_applicant)
-      profile.encrypt_pii(user.user_access_key, plain_pii)
+    def initialize(applicant:, user:, normalized_applicant:)
+      @profile = Profile.new(user: user, deactivation_reason: :verification_pending)
+      @pii_attributes = pii_from_applicant(applicant, normalized_applicant)
+      profile.encrypt_pii(user.user_access_key, pii_attributes)
       profile.save!
-      profile
     end
+
+    private
 
     # rubocop:disable MethodLength, AbcSize
     # This method is single statement spread across many lines for readability
-    def self.pii_from_applicant(appl, norm_appl)
+    def pii_from_applicant(appl, norm_appl)
       Pii::Attributes.new_from_hash(
         first_name: Pii::Attribute.new(raw: appl.first_name, norm: norm_appl.first_name),
         middle_name: Pii::Attribute.new(raw: appl.middle_name, norm: norm_appl.middle_name),
@@ -24,10 +25,10 @@ module Idv
         zipcode: Pii::Attribute.new(raw: appl.zipcode, norm: norm_appl.zipcode),
         dob: Pii::Attribute.new(raw: appl.dob, norm: norm_appl.dob),
         ssn: Pii::Attribute.new(raw: appl.ssn, norm: norm_appl.ssn),
-        phone: Pii::Attribute.new(raw: appl.phone, norm: norm_appl.phone)
+        phone: Pii::Attribute.new(raw: appl.phone, norm: norm_appl.phone),
+        otp: SecureRandom.hex(5)
       )
     end
     # rubocop:enable MethodLength, AbcSize
-    private_class_method :pii_from_applicant
   end
 end

@@ -43,6 +43,25 @@ module ControllerHelper
     allow(controller).to receive(:current_user).and_return(user)
     allow(controller).to receive(:user_fully_authenticated?).and_return(false)
   end
+
+  def stub_verify_steps_one_and_two(user)
+    user_session = {}
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(user_session, user)
+    idv_session.resolution = Proofer::Resolution.new(
+      success: true,
+      session_id: 'some-id',
+      vendor_resp: Proofer::Vendor::MockResponse.new(
+        normalized_applicant: Proofer::Applicant.new(first_name: 'Somebody')
+      )
+    )
+    idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
+    idv_session.vendor = subject.idv_vendor.pick
+    allow(subject).to receive(:confirm_idv_session_started).and_return(true)
+    allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+    allow(subject).to receive(:user_session).and_return(user_session)
+  end
 end
 
 RSpec.configure do |config|

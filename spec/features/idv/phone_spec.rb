@@ -10,6 +10,7 @@ feature 'Verify phone' do
     click_idv_continue
     fill_out_financial_form_ok
     click_idv_continue
+    click_idv_address_choose_phone
 
     max_attempts_less_one.times do
       fill_out_phone_form_fail
@@ -61,9 +62,10 @@ feature 'Verify phone' do
 
   def complete_idv_profile_with_phone(phone)
     fill_out_idv_form_ok
-    click_button t('forms.buttons.continue')
+    click_idv_continue
     fill_out_financial_form_ok
-    click_button t('forms.buttons.continue')
+    click_idv_continue
+    click_idv_address_choose_phone
     fill_out_phone_form_ok(phone)
     click_button t('forms.buttons.continue')
     fill_in :user_password, with: user_password

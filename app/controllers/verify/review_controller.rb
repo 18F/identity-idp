@@ -11,7 +11,7 @@ module Verify
     def confirm_idv_steps_complete
       return redirect_to(verify_session_path) unless idv_profile_complete?
       return redirect_to(verify_finance_path) unless idv_finance_complete?
-      return redirect_to(verify_phone_path) unless idv_phone_complete?
+      return redirect_to(verify_address_path) unless idv_address_complete?
     end
 
     def confirm_current_password
@@ -49,8 +49,8 @@ module Verify
       idv_session.financials_confirmation == true
     end
 
-    def idv_phone_complete?
-      idv_session.phone_confirmation == true
+    def idv_address_complete?
+      idv_session.address_mechanism_chosen?
     end
 
     def init_profile
@@ -71,7 +71,8 @@ module Verify
     end
 
     def phone_confirmation_required?
-      idv_params[:phone] != current_user.phone
+      idv_params[:phone] != current_user.phone &&
+        idv_session.address_verification_mechanism == :phone
     end
 
     def valid_password?

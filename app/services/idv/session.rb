@@ -1,10 +1,12 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = [
+      :address_verification_mechanism,
       :applicant,
       :financials_confirmation,
       :params,
       :phone_confirmation,
+      :pii,
       :profile_confirmation,
       :profile_id,
       :recovery_code,
@@ -39,11 +41,13 @@ module Idv
     end
 
     def cache_applicant_profile_id
-      profile = Idv::ProfileFromApplicant.create(
+      profile_maker = Idv::ProfileMaker.new(
         applicant: Proofer::Applicant.new(applicant_params),
         normalized_applicant: resolution.vendor_resp.normalized_applicant,
         user: current_user
       )
+      profile = profile_maker.profile
+      self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.recovery_code = profile.recovery_code
     end
@@ -65,15 +69,29 @@ module Idv
       user_session.delete(:idv)
     end
 
+    def complete_session
+      complete_profile if phone_confirmation == true
+      create_usps_entry if address_verification_mechanism == :usps
+    end
+
     def complete_profile
       profile.verified_at = Time.zone.now
       profile.vendor = vendor
       profile.activate
-      move_pii_to_user_session if session[:decrypted_pii].present?
+      move_pii_to_user_session
+    end
+
+    def create_usps_entry
+      move_pii_to_user_session
+      UspsConfirmationMaker.new(pii: pii).perform
     end
 
     def alive?
       session.present?
+    end
+
+    def address_mechanism_chosen?
+      phone_confirmation == true || address_verification_mechanism == :usps
     end
 
     private
@@ -85,6 +103,7 @@ module Idv
     end
 
     def move_pii_to_user_session
+      return unless session[:decrypted_pii].present?
       user_session[:decrypted_pii] = session.delete(:decrypted_pii)
     end
 

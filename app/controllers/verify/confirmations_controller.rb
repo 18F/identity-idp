@@ -28,7 +28,7 @@ module Verify
 
     def finish_proofing_success
       @recovery_code = recovery_code
-      idv_session.complete_profile
+      idv_session.complete_session
       idv_session.recovery_code = nil
       flash[:allow_confirmations_continue] = true
       flash.now[:success] = t('idv.messages.confirm')

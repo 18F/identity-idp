@@ -5,6 +5,7 @@ es:
       continue: NOT TRANSLATED YET
       cancel: NOT TRANSLATED YET
       help: NOT TRANSLATED YET
+      verify_by_phone: NOT TRANSLATED YET
     cancel:
       modal_header: NOT TRANSLATED YET
       warning_header: NOT TRANSLATED YET
@@ -107,6 +108,9 @@ es:
         pii: NOT TRANSLATED YET
         success: NOT TRANSLATED YET
         no_pii: NOT TRANSLATED YET
+      usps:
+        byline: NOT TRANSLATED YET
+        success: NOT TRANSLATED YET
     modal:
       attempts:
         one: NOT TRANSLATED YET
@@ -147,3 +151,4 @@ es:
       session:
         phone: NOT TRANSLATED YET
         review: NOT TRANSLATED YET
+      verify_mail: NOT TRANSLATED YET

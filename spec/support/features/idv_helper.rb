@@ -63,11 +63,20 @@ module IdvHelper
     click_button t('forms.buttons.continue')
   end
 
+  def click_idv_address_choose_phone
+    click_link 'Phone'
+  end
+
+  def click_idv_address_choose_usps
+    click_link 'USPS'
+  end
+
   def complete_idv_profile_ok(user)
     fill_out_idv_form_ok
     click_idv_continue
     fill_out_financial_form_ok
     click_idv_continue
+    click_idv_address_choose_phone
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
     fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD

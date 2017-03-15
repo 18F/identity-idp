@@ -114,6 +114,7 @@ Rails.application.routes.draw do
 
   get '/verify' => 'verify#index'
   get '/verify/activated' => 'verify#activated'
+  get '/verify/address' => 'verify/address#index'
   get '/verify/cancel' => 'verify#cancel'
   get '/verify/confirmations' => 'verify/confirmations#index'
   get '/verify/fail' => 'verify#fail'
@@ -128,6 +129,8 @@ Rails.application.routes.draw do
   put '/verify/session' => 'verify/sessions#create'
   delete '/verify/session' => 'verify/sessions#destroy'
   get '/verify/session/dupe' => 'verify/sessions#dupe'
+  get '/verify/usps' => 'verify/usps#index'
+  put '/verify/usps' => 'verify/usps#create'
 
   root to: 'users/sessions#new'
 

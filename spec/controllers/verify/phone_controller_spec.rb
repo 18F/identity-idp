@@ -20,7 +20,7 @@ describe Verify::PhoneController do
     let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
 
     before do
-      stub_subject(user)
+      stub_verify_steps_one_and_two(user)
     end
 
     it 'redirects to review when step is complete' do
@@ -46,7 +46,7 @@ describe Verify::PhoneController do
 
       before do
         user = build(:user, phone: '+1 (415) 555-0130')
-        stub_subject(user)
+        stub_verify_steps_one_and_two(user)
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
@@ -88,7 +88,7 @@ describe Verify::PhoneController do
 
       it 'tracks event with valid phone' do
         user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
-        stub_subject(user)
+        stub_verify_steps_one_and_two(user)
 
         put :create, idv_phone_form: { phone: good_phone }
 
@@ -101,7 +101,7 @@ describe Verify::PhoneController do
 
       it 'tracks event with invalid phone' do
         user = build(:user, phone: bad_phone, phone_confirmed_at: Time.zone.now)
-        stub_subject(user)
+        stub_verify_steps_one_and_two(user)
 
         put :create, idv_phone_form: { phone: bad_phone }
 
@@ -123,7 +123,7 @@ describe Verify::PhoneController do
       context 'when same as user phone' do
         it 'redirects to review page and sets phone_confirmed_at' do
           user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
-          stub_subject(user)
+          stub_verify_steps_one_and_two(user)
 
           put :create, idv_phone_form: { phone: good_phone }
 
@@ -140,7 +140,7 @@ describe Verify::PhoneController do
       context 'when different from user phone' do
         it 'redirects to review page and does not set phone_confirmed_at' do
           user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
-          stub_subject(user)
+          stub_verify_steps_one_and_two(user)
 
           put :create, idv_phone_form: { phone: good_phone }
 
@@ -158,7 +158,7 @@ describe Verify::PhoneController do
         let(:user) { build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now) }
 
         before do
-          stub_subject(user)
+          stub_verify_steps_one_and_two(user)
           user.idv_attempts = max_attempts - 1
           user.idv_attempted_at = two_days_ago
         end
@@ -172,18 +172,5 @@ describe Verify::PhoneController do
         end
       end
     end
-  end
-
-  def stub_subject(user)
-    user_session = {}
-    stub_sign_in(user)
-    idv_session = Idv::Session.new(user_session, user)
-    idv_session.resolution = Proofer::Resolution.new success: true, session_id: 'some-id'
-    idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
-    idv_session.vendor = subject.idv_vendor.pick
-    allow(subject).to receive(:confirm_idv_session_started).and_return(true)
-    allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
-    allow(subject).to receive(:idv_session).and_return(idv_session)
-    allow(subject).to receive(:user_session).and_return(user_session)
   end
 end
