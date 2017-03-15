@@ -9,7 +9,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks nil email confirmation token' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token Please fill in this field.',
+        errors: { confirmation_token: [t('errors.messages.blank')] },
         user_id: nil,
         existing_user: false,
       }
@@ -26,7 +26,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks blank email confirmation token' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token Please fill in this field.',
+        errors: { confirmation_token: [t('errors.messages.blank')] },
         user_id: nil,
         existing_user: false,
       }
@@ -43,7 +43,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a single-quoted empty string' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token is invalid',
+        errors: { confirmation_token: [t('errors.messages.invalid')] },
         user_id: nil,
         existing_user: false,
       }
@@ -60,7 +60,7 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a double-quoted empty string' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token is invalid',
+        errors: { confirmation_token: [t('errors.messages.invalid')] },
         user_id: nil,
         existing_user: false,
       }
@@ -79,7 +79,7 @@ describe SignUp::EmailConfirmationsController do
 
       analytics_hash = {
         success: false,
-        error: 'Email was already confirmed, please try signing in',
+        errors: { email: [t('errors.messages.already_confirmed')] },
         user_id: user.uuid,
         existing_user: true,
       }
@@ -99,7 +99,7 @@ describe SignUp::EmailConfirmationsController do
 
       analytics_hash = {
         success: false,
-        error: 'Confirmation token has expired',
+        errors: { confirmation_token: [t('errors.messages.expired')] },
         user_id: user.uuid,
         existing_user: false,
       }
@@ -123,7 +123,7 @@ describe SignUp::EmailConfirmationsController do
 
       analytics_hash = {
         success: true,
-        error: '',
+        errors: {},
         user_id: user.uuid,
         existing_user: false,
       }
@@ -149,7 +149,7 @@ describe SignUp::EmailConfirmationsController do
 
       analytics_hash = {
         success: true,
-        error: '',
+        errors: {},
         user_id: user.uuid,
         existing_user: true,
       }

@@ -6,9 +6,9 @@ module SignUp
       with_unconfirmed_user do
         result = EmailConfirmationTokenValidator.new(@user).submit
 
-        analytics.track_event(Analytics::EMAIL_CONFIRMATION, result)
+        analytics.track_event(Analytics::EMAIL_CONFIRMATION, result.to_h)
 
-        if result[:success]
+        if result.success?
           process_successful_confirmation
         else
           process_unsuccessful_confirmation
