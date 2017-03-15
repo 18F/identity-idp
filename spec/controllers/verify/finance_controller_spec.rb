@@ -20,7 +20,7 @@ describe Verify::FinanceController do
 
       get :new
 
-      expect(response).to redirect_to verify_phone_path
+      expect(response).to redirect_to verify_address_path
     end
 
     it 'redirects to fail when step attempts are exceeded' do
@@ -100,7 +100,7 @@ describe Verify::FinanceController do
         it 'redirects to phone page' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-          expect(response).to redirect_to verify_phone_url
+          expect(response).to redirect_to verify_address_url
 
           expected_params = { ccn: '12345678' }
           expect(subject.idv_session.params).to eq expected_params
@@ -128,7 +128,7 @@ describe Verify::FinanceController do
         it 'allows and does not affect attempt counter' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-          expect(response).to redirect_to verify_phone_path
+          expect(response).to redirect_to verify_address_path
           expect(subject.current_user.idv_attempts).to eq(max_attempts - 1)
           expect(subject.current_user.idv_attempted_at).to eq two_days_ago
         end

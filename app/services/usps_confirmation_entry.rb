@@ -2,9 +2,9 @@ UspsConfirmationEntry = Struct.new(
   :address1,
   :address2,
   :city,
-  :code,
   :first_name,
   :last_name,
+  :otp,
   :state,
   :zipcode
 ) do

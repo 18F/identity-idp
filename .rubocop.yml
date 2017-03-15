@@ -51,6 +51,7 @@ Metrics/ClassLength:
   Max: 100
   Exclude:
   - spec/**/*
+  - app/controllers/application_controller.rb
   - app/controllers/users/confirmations_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
 

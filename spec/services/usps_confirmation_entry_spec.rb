@@ -5,7 +5,7 @@ describe UspsConfirmationEntry do
     described_class.new_from_hash(
       first_name: 'Some',
       last_name: 'One',
-      code: 123
+      otp: 123
     )
   end
 

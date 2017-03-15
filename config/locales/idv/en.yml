@@ -5,6 +5,7 @@ en:
       continue: Continue identity verification
       cancel: Cancel and return to your profile
       help: Continue to Help Center
+      verify_by_phone: ‹ Verify by phone
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -143,6 +144,9 @@ en:
         pii: personal information
         success: We found records matching your %{pii_message}
         no_pii: Do not use real personal information (demo purposes only)
+      usps:
+        byline: We are mailing a letter with a comfirmation code to
+        success: It should arrive in 5 to 10 business days.
     modal:
       attempts:
         one: You have <strong>1 attempt remaining.</strong>
@@ -190,3 +194,4 @@ en:
       session:
         phone: What is your phone number?
         review: Encrypt your verified data by entering your password
+      verify_mail: Your letter is on its way

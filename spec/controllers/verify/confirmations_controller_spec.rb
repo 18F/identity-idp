@@ -10,6 +10,14 @@ describe Verify::ConfirmationsController do
     idv_session.vendor = :mock
     idv_session.applicant = applicant
     idv_session.resolution = resolution
+    user.unlock_user_access_key(password)
+    profile_maker = Idv::ProfileMaker.new(
+      applicant: applicant,
+      user: user,
+      normalized_applicant: normalized_applicant
+    )
+    profile = profile_maker.profile
+    idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.recovery_code = profile.recovery_code
     allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -17,18 +25,21 @@ describe Verify::ConfirmationsController do
 
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
-  let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
+  let(:applicant) do
+    Proofer::Applicant.new(
+      first_name: 'Some',
+      last_name: 'One',
+      address1: '123 Any St',
+      address2: 'Ste 456',
+      city: 'Anywhere',
+      state: 'KS',
+      zipcode: '66666'
+    )
+  end
   let(:normalized_applicant) { Proofer::Applicant.new first_name: 'Somebody' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
-  let(:profile) do
-    user.unlock_user_access_key(password)
-    Idv::ProfileFromApplicant.create(
-      applicant: applicant,
-      user: user,
-      normalized_applicant: normalized_applicant
-    )
-  end
+  let(:profile) { subject.idv_session.profile }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -46,6 +57,10 @@ describe Verify::ConfirmationsController do
     end
 
     context 'user used 2FA phone as phone of record' do
+      before do
+        subject.idv_session.phone_confirmation = true
+      end
+
       it 'activates profile' do
         get :index
         profile.reload
@@ -93,6 +108,24 @@ describe Verify::ConfirmationsController do
         expect(event_creator).to receive(:call)
 
         get :index
+      end
+    end
+
+    context 'user picked USPS confirmation' do
+      before do
+        subject.idv_session.address_verification_mechanism = :usps
+      end
+
+      it 'leaves profile deactivated' do
+        expect(UspsConfirmation.count).to eq 0
+
+        get :index
+        profile.reload
+
+        expect(profile).to_not be_active
+        expect(profile.verified_at).to be_nil
+        expect(profile.deactivation_reason).to eq 'verification_pending'
+        expect(UspsConfirmation.count).to eq 1
       end
     end
 
