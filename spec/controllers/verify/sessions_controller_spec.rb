@@ -170,6 +170,32 @@ describe Verify::SessionsController do
         end
       end
 
+      context 'vendor agent throws exception' do
+        let(:bad_attrs) { user_attrs.dup.merge(first_name: 'Fail') }
+
+        it 'logs failure and re-renders form' do
+          exception_msg = 'Failed to contact proofing vendor'
+
+          expect(NewRelic::Agent).to receive(:notice_error).
+            with(kind_of(StandardError))
+
+          post :create, profile: bad_attrs
+
+          result = {
+            success: false,
+            idv_attempts_exceeded: false,
+            errors: {
+              agent: [exception_msg],
+            },
+            vendor: { reasons: [exception_msg] },
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+          expect(response).to render_template(:new)
+        end
+      end
+
       context 'success' do
         it 'creates analytics event' do
           post :create, profile: user_attrs
