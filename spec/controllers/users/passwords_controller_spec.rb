@@ -26,7 +26,8 @@ describe Users::PasswordsController do
         updater = instance_double(UpdateUserPassword)
         password = 'strong password'
         allow(UpdateUserPassword).to receive(:new).
-          with(subject.current_user, subject.user_session, password).and_return(updater)
+          with(user: subject.current_user, user_session: subject.user_session, password: password).
+          and_return(updater)
         response = FormResponse.new(success: true, errors: {})
         allow(updater).to receive(:call).and_return(response)
         recovery_code = 'five random words for test'

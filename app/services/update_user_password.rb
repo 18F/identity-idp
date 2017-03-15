@@ -1,7 +1,7 @@
 class UpdateUserPassword
   delegate :recovery_code, to: :encryptor
 
-  def initialize(user, user_session, password)
+  def initialize(user:, user_session:, password:)
     @user = user
     @user_session = user_session
     @password = password

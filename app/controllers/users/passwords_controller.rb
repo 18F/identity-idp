@@ -8,7 +8,7 @@ module Users
 
     def update
       @update_user_password = UpdateUserPassword.new(
-        current_user, user_session, user_params[:password]
+        user: current_user, user_session: user_session, password: user_params[:password]
       )
       result = @update_user_password.call
 
