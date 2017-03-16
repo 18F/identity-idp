@@ -15,6 +15,7 @@ set :linked_files, %w(certs/saml.crt
                       config/application.yml
                       config/database.yml
                       config/newrelic.yml
+                      keys/equifax_rsa
                       keys/saml.key.enc)
 set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
 set :passenger_roles, [:web]
@@ -28,6 +29,7 @@ set :sidekiq_monit_use_sudo, true
 set :sidekiq_user, 'ubuntu'
 set :whenever_roles, [:job_creator]
 set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+set :tmp_dir, '/tmp'
 
 set :bastion_user, ENV['BASTION_USER'] || 'ubuntu'
 set :ssh_options do
