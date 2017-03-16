@@ -15,10 +15,10 @@ module Verify
 
     def create
       result = step.submit
-      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result)
+      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result.to_h)
       increment_step_attempts
 
-      if result[:success]
+      if result.success?
         redirect_to verify_address_url
       else
         render_failure
