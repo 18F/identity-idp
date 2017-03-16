@@ -239,29 +239,31 @@ RSpec.describe OpenidConnectTokenForm do
   end
 
   describe '#submit' do
-    subject(:result) { form.submit }
-
     context 'with valid params' do
-      it 'is valid and has no errors' do
-        expect(result[:success]).to eq(true)
-        expect(result[:errors]).to be_blank
-      end
+      it 'returns FormResponse with success: true' do
+        response = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(response)
 
-      it 'has the client_id for tracking' do
-        expect(result[:client_id]).to eq(client_id)
+        submission = form.submit
+
+        expect(submission).to eq response
+        expect(FormResponse).to have_received(:new).
+          with(success: true, errors: {}, extra: { client_id: client_id })
       end
     end
 
     context 'with invalid params' do
       let(:code) { nil }
 
-      it 'is invalid and has errors' do
-        expect(result[:success]).to eq(false)
-        expect(result[:errors]).to be_present
-      end
+      it 'returns FormResponse with success: false' do
+        response = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(response)
 
-      it 'has a nil client_id when there is insufficient data' do
-        expect(result).to include(client_id: nil)
+        submission = form.submit
+
+        expect(submission).to eq response
+        expect(FormResponse).to have_received(:new).
+          with(success: false, errors: form.errors.messages, extra: { client_id: nil })
       end
     end
   end
