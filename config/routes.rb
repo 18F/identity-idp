@@ -75,6 +75,7 @@ Rails.application.routes.draw do
   get '/manage/phone' => 'users/phones#edit'
   match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
   get '/manage/recovery_code' => 'users/recovery_codes#show', as: :manage_recovery_code
+  post '/manage/recovery_code' => 'users/recovery_codes#update'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   post '/openid_connect/authorize' => 'openid_connect/authorization#create',
@@ -116,7 +117,8 @@ Rails.application.routes.draw do
   get '/verify/activated' => 'verify#activated'
   get '/verify/address' => 'verify/address#index'
   get '/verify/cancel' => 'verify#cancel'
-  get '/verify/confirmations' => 'verify/confirmations#index'
+  get '/verify/confirmations' => 'verify/confirmations#show'
+  post '/verify/confirmations' => 'verify/confirmations#update'
   get '/verify/fail' => 'verify#fail'
   get '/verify/finance' => 'verify/finance#new'
   put '/verify/finance' => 'verify/finance#create'

@@ -40,6 +40,25 @@ feature 'LOA1 Single Sign On' do
       )
       expect(page).to_not have_css('.accordion-header')
     end
+
+    it 'allows user to view recovery code via profile' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      saml_authn_request = auth_request.create(saml_settings)
+      user = create(:user, :with_phone)
+      code = RecoveryCodeGenerator.new(user).create
+
+      visit saml_authn_request
+      sign_in_and_require_viewing_recovery_code(user)
+      click_on(t('shared.nav_auth.my_account'))
+      click_on(t('profile.links.regenerate_recovery_code'))
+
+      expect(current_path).to eq manage_recovery_code_path
+
+      click_acknowledge_recovery_code
+      enter_recovery_code(code: code)
+
+      expect(current_path).to eq profile_path
+    end
   end
 
   def sign_in_and_require_viewing_recovery_code(user)

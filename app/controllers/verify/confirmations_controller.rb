@@ -6,13 +6,25 @@ module Verify
     before_action :confirm_idv_vendor_session_started
     before_action :confirm_profile_has_been_created
 
-    def index
+    def show
       track_final_idv_event
 
       finish_proofing_success
     end
 
+    def update
+      redirect_to next_step
+    end
+
     private
+
+    def next_step
+      if session[:sp]
+        sign_up_completed_path
+      else
+        after_sign_in_path_for(current_user)
+      end
+    end
 
     def confirm_profile_has_been_created
       redirect_to profile_path unless idv_session.profile.present?
