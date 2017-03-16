@@ -8,7 +8,7 @@ feature 'Email sign up' do
     sign_up_with(email)
     click_link('CONFIRM NOW')
 
-    expect(current_path).to eq sign_up_create_email_confirmation_path
+    expect(current_path).to eq sign_up_enter_password_path
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
   end
 end

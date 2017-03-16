@@ -99,16 +99,21 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
     context 'user is not signed in' do
       it 'redirects to login' do
-        expect(action).to redirect_to(root_url)
+        action
+        sp_request_id = ServiceProviderRequest.last.uuid
+
+        expect(response).to redirect_to sign_up_start_url(request_id: sp_request_id)
       end
 
       it 'sets sp information in the session' do
         action
+        sp_request_id = ServiceProviderRequest.last.uuid
 
         expect(session[:sp]).to eq(
           loa3: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
-          show_start_page: true
+          request_id: sp_request_id,
+          request_url: request.original_url
         )
       end
     end

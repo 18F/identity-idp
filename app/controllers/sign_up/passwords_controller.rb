@@ -2,6 +2,10 @@ module SignUp
   class PasswordsController < ApplicationController
     include UnconfirmedUserConcern
 
+    def new
+      with_unconfirmed_user
+    end
+
     def create
       with_unconfirmed_user do
         result = @password_form.submit(permitted_params)

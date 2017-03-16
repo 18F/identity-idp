@@ -39,15 +39,6 @@ class ServiceProviderSessionDecorator
     'shared/null'
   end
 
-  def timeout_flash_text
-    I18n.t(
-      'notices.session_cleared_with_sp',
-      link: view_context.link_to(sp_name, sp.return_to_sp_url),
-      minutes: Figaro.env.session_timeout_in_minutes,
-      sp: sp_name
-    )
-  end
-
   def sp_name
     sp.friendly_name || sp.agency
   end

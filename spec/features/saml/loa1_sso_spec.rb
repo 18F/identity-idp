@@ -3,18 +3,21 @@ require 'rails_helper'
 feature 'LOA1 Single Sign On' do
   include SamlAuthHelper
 
-  context 'First time registration' do
+  context 'First time registration', email: true do
     it 'takes user to agency handoff page when sign up flow complete' do
       saml_authn_request = auth_request.create(saml_settings)
-
       visit saml_authn_request
-      sign_up_and_2fa_loa1_user
+      sp_request_id = ServiceProviderRequest.last.uuid
+      sign_up_and_2fa_loa1_user_who_came_from_sp
 
       expect(current_path).to eq sign_up_completed_path
 
       click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
 
       expect(current_url).to eq saml_authn_request
+      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+        to be_a NullServiceProviderRequest
+      expect(page.get_rack_session.keys).to_not include('sp')
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
@@ -22,9 +25,13 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
+      sp_request_id = ServiceProviderRequest.last.uuid
       sign_in_live_with_2fa(user)
 
       expect(current_url).to eq saml_authn_request
+      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+        to be_a NullServiceProviderRequest
+      expect(page.get_rack_session.keys).to_not include('sp')
 
       visit root_path
       expect(current_path).to eq profile_path

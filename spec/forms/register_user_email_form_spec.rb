@@ -35,7 +35,7 @@ describe RegisterUserEmailForm do
         user = instance_double(User, email: 'existing@test.com', confirmed?: false, uuid: '123')
         allow(User).to receive(:find_with_email).with(user.email).and_return(user)
 
-        expect(user).to receive(:send_confirmation_instructions)
+        expect(user).to receive(:send_custom_confirmation_instructions)
 
         extra = {
           email_already_exists: true,

@@ -11,10 +11,10 @@ describe User do
     it { is_expected.to have_many(:events) }
   end
 
-  it 'should only send one email during creation' do
+  it 'does not send an email when #create is called' do
     expect do
       User.create(email: 'nobody@nobody.com')
-    end.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end.to change(ActionMailer::Base.deliveries, :count).by(0)
   end
 
   describe 'password validations' do

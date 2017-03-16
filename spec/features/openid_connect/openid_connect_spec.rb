@@ -103,6 +103,7 @@ feature 'OpenID Connect' do
         prompt: 'select_account'
       )
 
+      sp_request_id = ServiceProviderRequest.last.uuid
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
 
@@ -112,6 +113,9 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+        to be_a NullServiceProviderRequest
+      expect(page.get_rack_session.keys).to_not include('sp')
     end
   end
 
@@ -178,15 +182,17 @@ feature 'OpenID Connect' do
       )
 
       expect(page).to have_content(t('headings.create_account_with_sp', sp: 'Example iOS App'))
-      click_link t('experiments.demo.get_started')
 
-      sign_up_and_2fa_loa1_user
+      sp_request_id = ServiceProviderRequest.last.uuid
+      sign_up_and_2fa_loa1_user_who_came_from_sp
 
       click_button t('forms.buttons.continue_to', sp: 'Example iOS App')
-
       click_button t('openid_connect.authorization.index.allow')
       redirect_uri = URI(current_url)
       expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
+      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+        to be_a NullServiceProviderRequest
+      expect(page.get_rack_session.keys).to_not include('sp')
     end
   end
 

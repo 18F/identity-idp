@@ -4,8 +4,9 @@
   h1.h3.mb2.blue.regular = decorated_session.registration_heading
   p.mb4 = t("devise.registrations.start.introduction.loa3_requested.#{loa3_requested?}")
   - ab_test(:demo) do |variant, _|
-    = link_to t(variant), sign_up_email_path, class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1'
-  - auth_link = link_to t('links.sign_in'), new_user_session_path
+    = link_to t(variant), sign_up_email_path(request_id: params[:request_id]), \
+      class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1'
+  - auth_link = link_to t('links.sign_in'), new_user_session_path(request_id: params[:request_id])
   p.mb0 == t('instructions.registration.already_have_account', link: auth_link)
 
 - if loa3_requested?
@@ -40,8 +41,5 @@
           p.mb2 = t('devise.registrations.start.bullet_5_html')
           p.mb3 = link_to \
             t('devise.registrations.start.learn_more'), MarketingSite.help_url, target: '_blank'
-  .center
-    - ab_test(:demo) do |variant, _|
-      = link_to t(variant), sign_up_email_path,
-        class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1 js-toggle-button display-none'
+
   == javascript_include_tag 'misc/toggle-button'

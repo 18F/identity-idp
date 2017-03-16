@@ -213,5 +213,91 @@ module Features
       config = Rails.application.config
       config.session_store.new({}, config.session_options)
     end
+
+    def sign_up_and_2fa_loa1_user_who_came_from_sp
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      sp_request_id = ServiceProviderRequest.last.uuid
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+
+      click_link t('links.sign_in')
+      click_link t('links.create_account')
+
+      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+
+      visit sign_up_start_url(request_id: sp_request_id)
+      click_link t('experiments.demo.get_started')
+
+      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      fill_in 'Email', with: 'invalidemail'
+      click_button t('forms.buttons.submit.default')
+
+      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      fill_in 'Email', with: 'test@example.com'
+      click_button t('forms.buttons.submit.default')
+
+      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      click_link t('notices.use_diff_email.link')
+
+      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      email = 'test2@example.com'
+      fill_in 'Email', with: email
+      click_button t('forms.buttons.submit.default')
+
+      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      click_button 'Resend email'
+
+      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      visit sign_up_create_email_confirmation_url(
+        _request_id: sp_request_id, confirmation_token: 'foo'
+      )
+
+      expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
+
+      fill_in 'Email', with: email
+      click_button t('forms.buttons.resend_confirmation')
+
+      expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+
+      open_email(email)
+      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      fill_in 'Password', with: 'invalid'
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      fill_in 'Password', with: 'strong password'
+      click_button t('forms.buttons.submit.default')
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      fill_in 'Phone', with: '202-555-1212'
+      select_sms_delivery
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      enter_2fa_code
+
+      # expect(page).to have_css('img[src*=sp-logos]')
+
+      click_acknowledge_recovery_code
+    end
   end
 end

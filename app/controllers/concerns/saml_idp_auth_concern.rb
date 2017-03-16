@@ -4,8 +4,8 @@ module SamlIdpAuthConcern
   included do
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
+    before_action :store_saml_request, only: :auth
     before_action :add_sp_metadata_to_session, only: :auth
-    before_action :confirm_two_factor_authenticated, only: :auth
   end
 
   private
@@ -22,11 +22,26 @@ module SamlIdpAuthConcern
     render nothing: true, status: :unauthorized
   end
 
+  def store_saml_request
+    return if sp_session[:request_id]
+
+    @request_id = SecureRandom.uuid
+    ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
+      sp_request.issuer = current_issuer
+      sp_request.loa = requested_authn_context
+      sp_request.url = request.original_url
+    end
+  end
+
   def add_sp_metadata_to_session
-    session[:sp] = { loa3: loa3_requested?,
-                     issuer: current_issuer,
-                     request_url: request.original_url,
-                     show_start_page: true }
+    return if sp_session[:request_id]
+
+    session[:sp] = {
+      issuer: current_issuer,
+      loa3: loa3_requested?,
+      request_id: @request_id,
+      request_url: request.original_url,
+    }
   end
 
   def requested_authn_context

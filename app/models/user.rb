@@ -133,4 +133,17 @@ class User < ActiveRecord::Base
   def strip_whitespace
     # no-op
   end
+
+  # Override Devise because we want to include the SAML request id in the
+  # confirmation instructions email
+  def send_confirmation_instructions
+    # no-op
+  end
+
+  def send_custom_confirmation_instructions(id = nil)
+    generate_confirmation_token! unless @raw_confirmation_token
+
+    opts = pending_reconfirmation? ? { to: unconfirmed_email, request_id: id } : { request_id: id }
+    send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
+  end
 end
