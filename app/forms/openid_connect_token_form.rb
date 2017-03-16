@@ -36,7 +36,11 @@ class OpenidConnectTokenForm
   end
 
   def submit
-    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
+    success = valid?
+
+    clear_authorization_code if success
+
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def response
@@ -117,5 +121,9 @@ class OpenidConnectTokenForm
     {
       client_id: client_id,
     }
+  end
+
+  def clear_authorization_code
+    identity.update(session_uuid: nil)
   end
 end

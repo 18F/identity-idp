@@ -58,12 +58,23 @@ RSpec.describe OpenidConnectTokenForm do
       it { expect(valid?).to eq(false) }
     end
 
-    context 'with a bad code' do
-      before { user.identities.delete_all }
+    context 'code' do
+      context 'with a bad code' do
+        before { user.identities.delete_all }
 
-      it 'is invalid' do
-        expect(valid?).to eq(false)
-        expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
+
+      context 'using the same code a second time' do
+        before { OpenidConnectTokenForm.new(params).submit }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
       end
 
       context 'code has expired' do
