@@ -95,22 +95,35 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     context 'with invalid params' do
-      let(:response_type) { nil }
+      context 'with a bad response_type' do
+        let(:response_type) { nil }
 
-      it 'is unsuccessful and has error messages' do
-        form_response = instance_double(FormResponse)
+        it 'is unsuccessful and has error messages' do
+          form_response = instance_double(FormResponse)
 
-        extra_attributes = {
-          client_id: client_id,
-          redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
-                        "Response+type+is+not+included+in+the+list&state=#{state}",
-        }
+          extra_attributes = {
+            client_id: client_id,
+            redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
+                          "Response+type+is+not+included+in+the+list&state=#{state}",
+          }
 
-        errors = { response_type: ['is not included in the list'] }
+          errors = { response_type: ['is not included in the list'] }
 
-        expect(FormResponse).to receive(:new).
-          with(success: false, errors: errors, extra: extra_attributes).and_return(form_response)
-        expect(result).to eq form_response
+          expect(FormResponse).to receive(:new).
+            with(success: false, errors: errors, extra: extra_attributes).and_return(form_response)
+          expect(result).to eq form_response
+        end
+      end
+    end
+
+    context 'with a bad redirect_uri' do
+      let(:redirect_uri) { 'https://wrongurl.com' }
+
+      it 'has errors and does not redirect to the bad redirect_uri' do
+        expect(result.errors[:redirect_uri]).
+          to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
+
+        expect(result.extra[:redirect_uri]).to be_nil
       end
     end
   end

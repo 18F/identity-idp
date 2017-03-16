@@ -89,10 +89,14 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_redirect_uri_matches_sp_redirect_uri
-    return if redirect_uri.blank?
-    return unless service_provider.active?
-    return if redirect_uri.start_with?(sp_redirect_uri)
+    return if redirect_uri_matches_sp_redirect_uri?
     errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'))
+  end
+
+  def redirect_uri_matches_sp_redirect_uri?
+    redirect_uri.present? &&
+      service_provider.active? &&
+      redirect_uri.start_with?(sp_redirect_uri)
   end
 
   def validate_scope
@@ -137,7 +141,7 @@ class OpenidConnectAuthorizeForm
 
   def error_redirect_uri
     URIService.add_params(
-      redirect_uri,
+      redirect_uri_matches_sp_redirect_uri? ? redirect_uri : nil,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
       state: state
