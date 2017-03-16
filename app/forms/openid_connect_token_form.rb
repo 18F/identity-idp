@@ -45,7 +45,7 @@ class OpenidConnectTokenForm
         access_token: identity.access_token,
         token_type: 'Bearer',
         expires_in: Pii::SessionStore.new(identity.rails_session_id).ttl,
-        id_token: IdTokenBuilder.new(identity).id_token,
+        id_token: IdTokenBuilder.new(identity: identity, code: code).id_token,
       }
     else
       { error: errors.to_a.join(' ') }
