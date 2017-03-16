@@ -36,11 +36,7 @@ class OpenidConnectTokenForm
   end
 
   def submit
-    {
-      success: valid?,
-      client_id: client_id,
-      errors: errors.messages,
-    }
+    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def response
@@ -115,5 +111,11 @@ class OpenidConnectTokenForm
     Base64.urlsafe_encode64(Base64.urlsafe_decode64(data.to_s), padding: false)
   rescue ArgumentError
     nil
+  end
+
+  def extra_analytics_attributes
+    {
+      client_id: client_id,
+    }
   end
 end
