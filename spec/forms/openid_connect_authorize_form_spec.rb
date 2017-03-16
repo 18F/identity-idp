@@ -157,9 +157,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'without the optional nonce' do
-      let(:nonce) { nil }
-      it { expect(valid?).to eq(true) }
+    context 'nonce' do
+      context 'without a nonce' do
+        let(:nonce) { nil }
+        it { expect(valid?).to eq(false) }
+      end
+
+      context 'with a nonce that is shorter than RANDOM_VALUE_MINIMUM_LENGTH characters' do
+        let(:nonce) { '1' * (OpenidConnectAuthorizeForm::RANDOM_VALUE_MINIMUM_LENGTH - 1) }
+        it { expect(valid?).to eq(false) }
+      end
     end
 
     context 'when prompt is not select_account' do
@@ -211,9 +218,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it { expect(valid?).to eq(false) }
     end
 
-    context 'without a state' do
-      let(:state) { nil }
-      it { expect(valid?).to eq(false) }
+    context 'state' do
+      context 'without a state' do
+        let(:state) { nil }
+        it { expect(valid?).to eq(false) }
+      end
+
+      context 'with a state that is shorter than RANDOM_VALUE_MINIMUM_LENGTH characters' do
+        let(:state) { '1' * (OpenidConnectAuthorizeForm::RANDOM_VALUE_MINIMUM_LENGTH - 1) }
+        it { expect(valid?).to eq(false) }
+      end
     end
 
     context 'PKCE' do

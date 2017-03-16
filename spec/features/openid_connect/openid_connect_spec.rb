@@ -99,6 +99,7 @@ feature 'OpenID Connect' do
         scope: 'openid email',
         redirect_uri: 'http://localhost:7654/auth/result',
         state: SecureRandom.hex,
+        nonce: SecureRandom.hex,
         prompt: 'select_account'
       )
 
@@ -170,6 +171,7 @@ feature 'OpenID Connect' do
         scope: 'openid email',
         redirect_uri: 'gov.gsa.openidconnect.test://result',
         state: SecureRandom.hex,
+        nonce: SecureRandom.hex,
         prompt: 'select_account',
         code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
         code_challenge_method: 'S256'
