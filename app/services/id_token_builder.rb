@@ -2,11 +2,13 @@ class IdTokenBuilder
   include Rails.application.routes.url_helpers
 
   JWT_SIGNING_ALGORITHM = 'RS256'.freeze
+  NUM_BYTES_FIRST_128_BITS = 128 / 8
 
   attr_reader :identity
 
-  def initialize(identity, custom_expiration: nil)
+  def initialize(identity:, code:, custom_expiration: nil)
     @identity = identity
+    @code = code
     @custom_expiration = custom_expiration
   end
 
@@ -15,6 +17,8 @@ class IdTokenBuilder
   end
 
   private
+
+  attr_reader :code
 
   def jwt_payload
     OpenidConnectUserInfoPresenter.new(identity).user_info.
@@ -28,6 +32,8 @@ class IdTokenBuilder
       nonce: identity.nonce,
       aud: identity.service_provider,
       jti: SecureRandom.urlsafe_base64,
+      at_hash: hash_token(identity.access_token),
+      c_hash: hash_token(code),
     }
   end
 
@@ -55,5 +61,10 @@ class IdTokenBuilder
   def expires
     ttl = Pii::SessionStore.new(identity.rails_session_id).ttl
     Time.zone.now.to_i + ttl
+  end
+
+  def hash_token(token)
+    leftmost_128_bits = Digest::SHA256.digest(token).byteslice(0, NUM_BYTES_FIRST_128_BITS)
+    Base64.urlsafe_encode64(leftmost_128_bits, padding: false)
   end
 end
