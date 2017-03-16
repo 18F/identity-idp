@@ -30,11 +30,11 @@ describe RecoveryCodeGenerator do
       expect(user.recovery_code).to_not eq recovery_code
     end
 
-    it 'generates a phrase of 5 words by default' do
+    it 'generates a phrase of 4 words by default' do
       user = create(:user)
       generator = RecoveryCodeGenerator.new(user)
 
-      expect(generator.create).to match(/\A(\w+\ ){4}\w+\z/)
+      expect(generator.create).to match(/\A\w\w\w\w \w\w\w\w \w\w\w\w \w\w\w\w\z/)
     end
 
     it 'allows length to be configured via ENV var' do
