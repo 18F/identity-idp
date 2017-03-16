@@ -185,6 +185,14 @@ module Features
       end
     end
 
+    def loa1_sp_session
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        session[:sp] = { loa3: false, issuer: sp.issuer }
+      end
+    end
+
     def loa3_sp_session
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
