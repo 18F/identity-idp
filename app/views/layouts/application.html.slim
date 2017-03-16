@@ -46,7 +46,7 @@ html lang="#{I18n.locale}" class='no-js'
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       = render 'shared/usa_banner'
-      - if user_fully_authenticated?
+      - if user_fully_authenticated? && !session[:sp].present?
         = render 'shared/nav_auth'
       - else
         = render decorated_session.nav_partial
