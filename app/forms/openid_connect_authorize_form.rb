@@ -18,16 +18,18 @@ class OpenidConnectAuthorizeForm
 
   attr_reader(*ATTRS)
 
-  validates_presence_of :acr_values,
-                        :client_id,
-                        :prompt,
-                        :redirect_uri,
-                        :scope,
-                        :state
+  RANDOM_VALUE_MINIMUM_LENGTH = 32
 
-  validates_inclusion_of :response_type, in: %w(code)
-  validates_inclusion_of :prompt, in: %w(select_account)
-  validates_inclusion_of :code_challenge_method, in: %w(S256), if: :code_challenge
+  validates :acr_values, presence: true
+  validates :client_id, presence: true
+  validates :redirect_uri, presence: true
+  validates :scope, presence: true
+  validates :state, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
+  validates :nonce, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
+
+  validates :response_type, inclusion: { in: %w(code) }
+  validates :prompt, presence: true, inclusion: { in: %w(select_account) }
+  validates :code_challenge_method, inclusion: { in: %w(S256) }, if: :code_challenge
 
   validate :validate_acr_values
   validate :validate_client_id
