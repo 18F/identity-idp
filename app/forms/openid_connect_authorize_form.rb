@@ -141,11 +141,15 @@ class OpenidConnectAuthorizeForm
 
   def error_redirect_uri
     URIService.add_params(
-      redirect_uri_matches_sp_redirect_uri? ? redirect_uri : nil,
+      validated_input_redirect_uri,
       error: 'invalid_request',
       error_description: errors.full_messages.join(' '),
       state: state
     )
+  end
+
+  def validated_input_redirect_uri
+    redirect_uri if redirect_uri_matches_sp_redirect_uri?
   end
 end
 # rubocop:enable Metrics/ClassLength
