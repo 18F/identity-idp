@@ -108,4 +108,26 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '#enable_identity_verification?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:enable_identity_verification).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.enable_identity_verification?).to eq(true)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(Figaro.env).to receive(:enable_identity_verification).and_return('false')
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.enable_identity_verification?).to eq(false)
+      end
+    end
+  end
 end
