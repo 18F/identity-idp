@@ -2,6 +2,7 @@ Attribute:
   enabled: false
 DuplicateMethodCall:
   exclude:
+    - ApplicationController#disable_caching
     - ServiceProviderSessionDecorator#registration_heading
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
@@ -108,6 +109,7 @@ UtilityFunction:
       - sign_in_user
       - stub_auth
       - stub_sign_in
+      - stub_verify_steps_one_and_two
   FeatureEnvy:
     enabled: false
   NestedIterators:
