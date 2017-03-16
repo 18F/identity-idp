@@ -30,7 +30,9 @@ class OpenidConnectTokenForm
       instance_variable_set(:"@#{key}", params[key])
     end
 
-    @identity = Identity.where(session_uuid: code).first
+    session_expiration = Figaro.env.session_timeout_in_minutes.to_i.minutes.ago
+    @identity = Identity.where(session_uuid: code).
+                where('updated_at >= ?', session_expiration).first
   end
 
   def submit
