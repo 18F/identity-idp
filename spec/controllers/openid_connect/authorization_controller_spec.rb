@@ -88,7 +88,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: client_id,
-                 errors: { state: ['Please fill in this field.'] })
+                 errors: {
+                   state: ['Please fill in this field.', 'is too short (minimum is 32 characters)'],
+                 })
 
           action
         end
