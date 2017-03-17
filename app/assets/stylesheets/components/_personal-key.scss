@@ -1,0 +1,48 @@
+[class*="separator-"] > div {
+  &::after {
+    content: '-';
+  }
+
+  &:last-child::after {
+    content: none;
+    padding: 0;
+  }
+}
+
+.separator-inputs {
+  .col {
+    position: relative;
+
+    &::after {
+      line-height: $form-field-height;
+      position: absolute;
+      right: -4px;
+      top: 0;
+    }
+  }
+
+  .field {
+    padding: .25rem;
+  }
+}
+
+.separator-text > div {
+  &::after {
+    color: $silver;
+    padding: 0 .25rem;
+  }
+}
+
+@media #{$breakpoint-sm} {
+  .separator-text > div {
+    &::after {
+      padding: 0 .5rem;
+    }
+  }
+
+  .separator-inputs {
+    .field {
+      padding: .5rem 1rem;
+    }
+  }
+}

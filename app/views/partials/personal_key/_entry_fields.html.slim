@@ -1,7 +1,8 @@
 .mb3
   label.block.bold#personal-key-label
     = t('simple_form.required.html') + t('forms.two_factor.recovery_code')
-  - Figaro.env.recovery_code_length.to_i.times do
-    = f.input attribute_name, as: :array, label: false,
-      input_html: { required: true, 'aria-labelledby': 'personal-key-label' }
-  end
+  .clearfix.mxn1.sm-mxn2.separator-inputs
+    - Figaro.env.recovery_code_length.to_i.times do
+      .col.col-3.px1.sm-px2
+        = f.input attribute_name, as: :array, label: false,
+          input_html: { required: true, 'aria-labelledby': 'personal-key-label' }
