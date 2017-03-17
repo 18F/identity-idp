@@ -42,7 +42,18 @@ feature 'LOA1 Single Sign On' do
       expect(page).to_not have_css('.accordion-header')
     end
 
-    it 'user cannot view recovery code via profile', :js do
+    it 'user does not see auth nav content during sign up process' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      user = create(:user, :with_phone)
+
+      loa1_sp_session
+      sign_in_and_require_viewing_recovery_code(user)
+
+      expect(current_path).to eq sign_up_recovery_code_path
+      expect(page).not_to have_content(t('shared.nav_auth.my_account'))
+    end
+
+    it 'user can view and confirm recovery code during sign up', :js do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
       code = '1 2 3 4 5'
@@ -50,8 +61,6 @@ feature 'LOA1 Single Sign On' do
 
       loa1_sp_session
       sign_in_and_require_viewing_recovery_code(user)
-      expect(current_path).to eq sign_up_recovery_code_path
-      expect(page).not_to have_content(t('shared.nav_auth.my_account'))
 
       click_on(t('forms.buttons.continue'))
       enter_personal_key_words_on_modal(code)
