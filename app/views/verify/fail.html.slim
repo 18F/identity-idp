@@ -6,4 +6,4 @@ p.mb1 = t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours
 
 .mt4.p3.col-12.center.border-box.border.border-teal.rounded-xl
   p.mb3.fs-20p = t('idv.messages.help_center')
-  = link_to t('idv.buttons.help'), help_path, class: 'btn btn-primary btn-wide'
+  = link_to t('idv.buttons.help'), MarketingSite.help_url, class: 'btn btn-primary btn-wide'

@@ -34,9 +34,9 @@ describe 'devise/sessions/new.html.slim' do
     render
 
     expect(rendered).
-      to have_link(t('notices.sign_in_consent.link'), href: privacy_path)
+      to have_link(t('notices.sign_in_consent.link'), href: MarketingSite.privacy_url)
 
-    expect(rendered).to have_selector("a[href='#{privacy_path}'][target='_blank']")
+    expect(rendered).to have_selector("a[href='#{MarketingSite.privacy_url}'][target='_blank']")
   end
 
   context 'when SP is present' do

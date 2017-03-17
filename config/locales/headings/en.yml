@@ -3,7 +3,6 @@ en:
   headings:
     confirmations:
       new: Send another confirmation email
-    contact: Contact us
     create_account_with_sp: '%{sp} is working with login.gov to make accessing your information easy and secure.'
     create_account_without_sp: Create a login.gov account
     edit_info:
@@ -14,15 +13,6 @@ en:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    privacy_policy:
-      authorities: Authorities
-      disclosure: Disclosure
-      more_information: For more information
-      privacy_act: Privacy Act statement
-      privacy_practices: Our privacy practices
-      purpose: Purpose
-      routine_uses: Routine uses
-      security_practices: Our security practices
     profile:
       account_history: Account history
       basic_account: Basic Account
