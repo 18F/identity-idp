@@ -5,13 +5,11 @@ en:
     confirmations:
       new: Resend confirmation instructions for your account
       show: Create a password for your account
-    contact: Contact us
     edit_info:
       email: Edit your email address
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time passcode
-    help: Help Center
     loa3_verified:
       'true': You have verified your identity with %{app}
       'false': You have created your account with %{app}
@@ -19,7 +17,6 @@ en:
       change: Change the password for your account
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
-    privacy_policy: Security & Privacy
     profile: Profile
     reactivate_profile: Reactivate profile
     recovery_code: Just in case

@@ -38,7 +38,8 @@
           = image_tag(asset_url('p-key.svg'), size: '40', alt: '', class: 'mt1')
         .col.col-11.pl2
           p.mb2 = t('devise.registrations.start.bullet_5_html')
-          p.mb3 = link_to t('devise.registrations.start.learn_more'), help_path, target: '_blank'
+          p.mb3 = link_to \
+            t('devise.registrations.start.learn_more'), MarketingSite.help_url, target: '_blank'
   .center
     - ab_test(:demo) do |variant, _|
       = link_to t(variant), sign_up_email_path,
