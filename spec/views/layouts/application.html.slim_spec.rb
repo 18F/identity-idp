@@ -112,4 +112,41 @@ describe 'layouts/application.html.slim' do
       expect(view).not_to render_template(partial: 'shared/_dap_analytics')
     end
   end
+
+  context 'user fully authenticated' do
+    context 'user referred to IDP by an SP' do
+      it 'does not show the auth nav bar' do
+        allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+        allow(view).to receive(:user_fully_authenticated?).and_return(true)
+        sp_session = { sp: 'stuff' }
+        allow(view).to receive(:session).and_return(sp_session)
+
+        render
+
+        expect(view).to_not render_template(partial: '_nav_auth')
+      end
+    end
+
+    context 'user not referred to IDP by an SP' do
+      it 'shows the auth nav bar' do
+        allow(view).to receive(:user_fully_authenticated?).and_return(true)
+        allow(view).to receive(:session).and_return({})
+
+        render
+
+        expect(view).to render_template(partial: '_nav_auth')
+      end
+    end
+  end
+
+  context 'user not fully authenticated' do
+    it 'does not shos the auth nav bar' do
+      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+      allow(view).to receive(:user_fully_authenticated?).and_return(false)
+
+      render
+
+      expect(view).to_not render_template(partial: '_i18n_mode')
+    end
+  end
 end
