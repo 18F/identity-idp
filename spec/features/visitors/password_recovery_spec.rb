@@ -27,7 +27,7 @@ feature 'Password Recovery' do
 
   def scrape_recovery_code
     new_recovery_code_words = []
-    page.all(:css, 'p[data-recovery]').each do |node|
+    page.all(:css, '[data-recovery]').each do |node|
       new_recovery_code_words << node.text
     end
     new_recovery_code_words.join(' ')
