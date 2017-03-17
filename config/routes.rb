@@ -62,11 +62,7 @@ Rails.application.routes.draw do
   patch '/authenticator_setup' => 'users/totp_setup#confirm'
   get '/authenticator_start' => 'users/totp_setup#start'
 
-  get '/contact' => 'pages#contact', as: :contact
-
   get '/forgot_password' => 'forgot_password#show'
-
-  get '/help' => 'pages#help'
 
   get '/manage/email' => 'users/emails#edit'
   match '/manage/email' => 'users/emails#update', via: [:patch, :put]
@@ -87,8 +83,6 @@ Rails.application.routes.draw do
   patch '/phone_setup' => 'users/two_factor_authentication_setup#set'
   get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
       as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
-
-  get '/privacy' => 'pages#privacy_policy'
 
   get '/profile' => 'profile#index', as: :profile
   get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile

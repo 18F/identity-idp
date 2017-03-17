@@ -4,7 +4,7 @@
 h1.h3.my0 = @view_model.title
 p.mt-tiny.mb0
   = t('idv.messages.finance.intro_ccn_html',
-      intro_help_link: link_to(t('idv.messages.finance.intro_ccn_help'), help_path))
+      intro_help_link: link_to(t('idv.messages.finance.intro_ccn_help'), MarketingSite.help_url))
 
 = simple_form_for(idv_finance_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|

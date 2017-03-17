@@ -260,17 +260,17 @@ feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
       click_link 'Help'
 
-      expect(current_path).to eq help_path
+      expect(current_url).to eq MarketingSite.help_url
 
       visit login_two_factor_path(delivery_method: 'sms')
       click_link 'Contact'
 
-      expect(current_path).to eq contact_path
+      expect(current_url).to eq MarketingSite.contact_url
 
       visit login_two_factor_path(delivery_method: 'sms')
       click_link 'Privacy Policy'
 
-      expect(current_path).to eq privacy_path
+      expect(current_url).to eq MarketingSite.privacy_url
     end
   end
 end

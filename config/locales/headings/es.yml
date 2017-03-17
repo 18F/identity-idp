@@ -3,7 +3,6 @@ es:
   headings:
     confirmations:
       new: Enviar otro correo electrónico de confirmación
-    contact: Contáctenos
     create_account_with_sp: Crear una cuenta de login.gov para continuar con %{sp}
     create_account_without_sp: Crear una cuenta de login.gov
     edit_info:
@@ -14,15 +13,6 @@ es:
       change: Cambiar su contraseña
       confirm: Confirme la contraseña actual para continuar
       forgot: ¿Olvidó su contraseña?
-    privacy_policy:
-      authorities: Autoridades
-      disclosure: Revelación
-      more_information: Para más información
-      privacy_act: Declaración de la Ley de Privacidad
-      privacy_practices: Nuestras prácticas de privacidad
-      purpose: Propósito
-      routine_uses: Usos de rutina
-      security_practices: Nuestras prácticas de seguridad
     profile:
       account_history: La historia de la cuenta
       basic_account: Cuenta básica
