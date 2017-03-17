@@ -153,7 +153,7 @@ module Features
     def acknowledge_and_confirm_recovery_code
       code_words = []
 
-      page.all(:css, 'p[data-recovery]').map do |node|
+      page.all(:css, '[data-recovery]').map do |node|
         code_words << node.text
       end
 
