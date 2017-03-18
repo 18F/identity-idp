@@ -10,6 +10,16 @@ module AwsKmsClientHelper
     [random_key, ciphered_key]
   end
 
+  def stub_aws_kms_client_invalid_ciphertext(ciphered_key = random_str)
+    aws_key_id = Figaro.env.aws_kms_key_id
+    Aws.config[:kms] = {
+      stub_responses: {
+        encrypt: { ciphertext_blob: ciphered_key, key_id: aws_key_id },
+        decrypt: 'InvalidCiphertextException',
+      },
+    }
+  end
+
   def random_str
     SecureRandom.random_bytes(32)
   end

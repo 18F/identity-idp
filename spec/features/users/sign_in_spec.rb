@@ -234,4 +234,16 @@ feature 'Sign in' do
       expect(user.encrypted_email).to eq encrypted_email
     end
   end
+
+  context 'KMS is on and user enters incorrect password' do
+    it 'redirects to root_path with user-friendly error message, not a 500 error' do
+      allow(FeatureManagement).to receive(:use_kms?).and_return(true)
+      stub_aws_kms_client_invalid_ciphertext
+
+      user = create(:user)
+      signin(user.email, 'invalid')
+      expect(current_path).to eq root_path
+      expect(page).to have_content t('devise.failure.invalid')
+    end
+  end
 end
