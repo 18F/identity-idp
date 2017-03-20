@@ -65,6 +65,14 @@ class OpenidConnectAuthorizeForm
     @_service_provider ||= ServiceProvider.from_issuer(client_id)
   end
 
+  def decline_redirect_uri
+    URIService.add_params(
+      validated_input_redirect_uri,
+      error: 'access_denied',
+      state: state
+    )
+  end
+
   private
 
   attr_reader :identity, :success
