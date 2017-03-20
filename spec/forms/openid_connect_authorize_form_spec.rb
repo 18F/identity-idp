@@ -291,4 +291,22 @@ RSpec.describe OpenidConnectAuthorizeForm do
       expect(form.client_id).to eq 'foobar'
     end
   end
+
+  describe '#decline_redirect_uri' do
+    subject(:decline_redirect_uri) { form.decline_redirect_uri }
+
+    it 'is an access_denied error' do
+      uri = URI(decline_redirect_uri)
+      redirect_params = Rack::Utils.parse_nested_query(uri.query).with_indifferent_access
+
+      expect(redirect_params[:error]).to eq('access_denied')
+      expect(redirect_params[:state]).to eq(state)
+    end
+
+    context 'with a bad redirect_uri' do
+      let(:redirect_uri) { 'http://wrong-redirect.com' }
+
+      it { expect(decline_redirect_uri).to be_nil }
+    end
+  end
 end

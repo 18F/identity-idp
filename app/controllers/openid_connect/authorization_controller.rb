@@ -38,7 +38,11 @@ module OpenidConnect
     def destroy
       analytics.track_event(Analytics::OPENID_CONNECT_DECLINE, client_id: @authorize_form.client_id)
 
-      render nothing: true # TODO: should we try to redirect back with an error?
+      if (redirect_uri = @authorize_form.decline_redirect_uri)
+        redirect_to redirect_uri
+      else
+        render :error
+      end
     end
 
     private
