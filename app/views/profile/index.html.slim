@@ -14,12 +14,15 @@
 h1.hide = t('titles.profile')
 
 - if @decrypted_pii
-  h2.h3.my0.mr1.inline-block = t('headings.profile.profile_info')
-  = content_tag(:span, t('tooltips.profile_info'),
-    class: 'h5 blue sans-serif underline hint--top hint--no-animate',
-    tabindex: 0,
-    'aria-label': t('tooltips.profile_idv'))
-  = render partial: current_user.decorate.verified_account_partial
+  .clearfix
+    h2.h3.my0.mr1.sm-mr0.col.sm-col-8.lg-col-5 = t('headings.profile.profile_info')
+    .sm-col.sm-m0.sm-col-8.lg-col-5
+      = content_tag(:span, t('tooltips.profile_info'),
+        class: 'h5 blue sans-serif underline hint--top hint--no-animate',
+        tabindex: 0,
+        'aria-label': t('tooltips.profile_idv'))
+    .sm-col-right.left.mt2.sm-mtn3
+      = render partial: current_user.decorate.verified_account_partial
   .mt2.mb4
     .py-12p.border-top
       .clearfix.mxn1
@@ -45,10 +48,12 @@ h1.hide = t('titles.profile')
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.phone')
         .sm-col.sm-col-7.px1 = @decrypted_pii.phone
+.clearfix
+  h2.h3.my0.sm-col
+    = t('headings.profile.login_info')
+  .sm-col-right.left.sm-m0.mt1
+    = render partial: current_user.decorate.basic_account_partial
 
-h2.h3.my0
-  = t('headings.profile.login_info')
-  = render partial: current_user.decorate.basic_account_partial
 .mt2.mb4
   .py-12p.border-top
     .clearfix.mxn1
