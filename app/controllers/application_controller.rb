@@ -66,11 +66,13 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_from_sp_session
-    ServiceProvider.from_issuer(sp_session[:issuer])
+    sp = ServiceProvider.from_issuer(sp_session[:issuer])
+    sp if sp.is_a? ServiceProvider
   end
 
   def sp_from_params
-    ServiceProvider.from_issuer(params[:issuer])
+    sp = ServiceProvider.from_issuer(params[:issuer])
+    sp if sp.is_a? ServiceProvider
   end
 
   def decorated_user

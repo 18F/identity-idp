@@ -5,15 +5,16 @@ feature 'LOA1 Single Sign On' do
 
   context 'First time registration' do
     it 'takes user to agency handoff page when sign up flow complete' do
-      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       saml_authn_request = auth_request.create(saml_settings)
-      user = create(:user, :with_phone)
 
       visit saml_authn_request
-      sign_in_and_require_viewing_recovery_code(user)
+      sign_up_and_2fa_loa1_user
 
-      click_acknowledge_recovery_code
       expect(current_path).to eq sign_up_completed_path
+
+      click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+
+      expect(current_url).to eq saml_authn_request
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
