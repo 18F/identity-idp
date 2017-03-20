@@ -59,7 +59,7 @@ class EncryptedKeyMaker
   end
 
   def unlock_kms(user_access_key, encryption_key)
-    ciphertext = user_access_key.xor(decode(encryption_key))
+    ciphertext = user_access_key.xor(decode(encryption_key)).sub(KEY_TYPE[:KMS], '')
     user_access_key.unlock(aws_client.decrypt(ciphertext_blob: ciphertext).plaintext)
   end
 
