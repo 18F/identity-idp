@@ -14,7 +14,7 @@ class OtpVerificationForm
 
   def valid_direct_otp_code?
     code_length = Devise.direct_otp_length
-    return false unless code =~ /^\d{#{code_length}}$/
+    return false unless code =~ /\A\d{#{code_length}}\Z/
     user.authenticate_direct_otp(code)
   end
 end

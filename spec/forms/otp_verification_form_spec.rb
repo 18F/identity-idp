@@ -35,7 +35,7 @@ describe OtpVerificationForm do
     context 'when the code is not exactly Devise.direct_otp_length digits' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
-        codes = %w(123abc 1234567 abcdef)
+        codes = %W(123abc 1234567 abcdef aaaaa\n123456\naaaaaaaaa)
 
         codes.each do |code|
           form = OtpVerificationForm.new(user, code)

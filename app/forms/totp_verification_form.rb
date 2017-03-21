@@ -14,7 +14,7 @@ class TotpVerificationForm
 
   def valid_totp_code?
     code_length = Devise.otp_length
-    return false unless code =~ /^\d{#{code_length}}$/
+    return false unless code =~ /\A\d{#{code_length}}\Z/
     user.authenticate_totp(code)
   end
 
