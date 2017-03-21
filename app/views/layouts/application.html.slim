@@ -14,7 +14,7 @@ html lang="#{I18n.locale}" class='no-js'
 
     == stylesheet_link_tag 'application', media: 'all'
     <!--[if IE 8]>
-      <script src='https://cdnjs.cloudflare.com/ajax/libs/es5-shim/4.5.9/es5-shim.min.js'></script>
+      = javascript_include_tag 'es5-shim.min'
     <![endif]-->
     == javascript_include_tag 'misc/i18n-strings'
     - unless controller_name == 'home'
@@ -32,9 +32,9 @@ html lang="#{I18n.locale}" class='no-js'
       = stylesheet_link_tag 'ie9.css', media: 'all'
     <![endif]-->
     <!--[if lt IE 9]>
-      <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
+      = javascript_include_tag 'html5shiv'
       = stylesheet_link_tag 'ie8.css', media: 'all'
-      <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
+      = javascript_include_tag 'respond.min'
     <![endif]-->
 
     - if Figaro.env.google_analytics_key.present?
