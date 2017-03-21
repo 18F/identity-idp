@@ -1,18 +1,18 @@
 require 'rails_helper'
 
-describe TotpVerificationForm do
+describe OtpVerificationForm do
   describe '#submit' do
     context 'when the form is valid' do
       it 'returns FormResponse with success: true' do
         user = build_stubbed(:user)
         code = '123456'
-        form = TotpVerificationForm.new(user, code)
+        form = OtpVerificationForm.new(user, code)
         result = instance_double(FormResponse)
 
-        allow(user).to receive(:authenticate_totp).and_return(true)
+        allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
 
         expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: { multi_factor_auth_method: 'totp' }).
+          with(success: true, errors: {}).
           and_return(result)
         expect(form.submit).to eq result
       end
@@ -22,30 +22,28 @@ describe TotpVerificationForm do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         code = '123456'
-        form = TotpVerificationForm.new(user, code)
+        form = OtpVerificationForm.new(user, code)
         result = instance_double(FormResponse)
 
-        allow(user).to receive(:authenticate_totp).and_return(false)
-
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp' }).
+          with(success: false, errors: {}).
           and_return(result)
         expect(form.submit).to eq result
       end
     end
 
-    context 'when the code is not exactly Devise.otp_length digits' do
+    context 'when the code is not exactly Devise.direct_otp_length digits' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         codes = %w(123abc 1234567 abcdef)
 
         codes.each do |code|
-          form = TotpVerificationForm.new(user, code)
+          form = OtpVerificationForm.new(user, code)
           result = instance_double(FormResponse)
-          allow(user).to receive(:authenticate_totp).with(code).and_return(true)
+          allow(user).to receive(:authenticate_direct_otp).with(code).and_return(true)
 
           expect(FormResponse).to receive(:new).
-            with(success: false, errors: {}, extra: { multi_factor_auth_method: 'totp' }).
+            with(success: false, errors: {}).
             and_return(result)
           expect(form.submit).to eq result
         end

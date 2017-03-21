@@ -75,7 +75,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
-        expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(false)
 
         post :create, code: '12345', delivery_method: 'sms'
       end
