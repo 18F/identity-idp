@@ -162,7 +162,7 @@ module Features
       click_on button_text, class: 'recovery-code-continue'
 
       code_words.size.times do |index|
-        fill_in "recovery-#{index}", with: code_words[index]
+        fill_in "recovery-#{index}", with: code_words[index].downcase
       end
 
       click_on button_text, class: 'recovery-code-confirm'
