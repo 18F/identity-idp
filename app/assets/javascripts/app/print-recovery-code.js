@@ -6,7 +6,6 @@ const openSystemPrintDialog = (event) => {
 const enableRecoveryCodePrintButton = () => {
   const buttonNodes = document.querySelectorAll('[data-print]');
   const buttons = [].slice.call(buttonNodes);
-  const { userAgent } = navigator;
 
   buttons.forEach((button) => {
     button.addEventListener('click', openSystemPrintDialog);
