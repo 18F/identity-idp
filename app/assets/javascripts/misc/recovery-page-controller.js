@@ -42,7 +42,7 @@ function handleSubmit(event) {
   const invalidMatches = inputs.reduce(function(accumulator, input, index) {
     const value = input.value;
 
-    if (value === recoveryWords[index].innerHTML.replace(/\s+/, '')) {
+    if (value.toUpperCase() === recoveryWords[index].innerHTML.replace(/\s+/, '').toUpperCase()) {
       return accumulator;
     }
 
