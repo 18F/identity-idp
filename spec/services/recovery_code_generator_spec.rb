@@ -1,7 +1,10 @@
 require 'rails_helper'
 
 describe RecoveryCodeGenerator do
-  let(:recovery_code) { 'four score and seven years' }
+  let(:recovery_code) { Base32::Crockford.encode(100**10, length: 16, split: 4).tr('-', ' ') }
+  let(:bad_code) { Base32::Crockford.encode(100**9, length: 16, split: 4).tr('-', ' ') }
+  let(:invalid_base32_code) { 'four score has letter U in it' }
+  let(:generator) { described_class.new(create(:user)) }
 
   def stub_random_phrase
     random_phrase = instance_double(RandomPhrase)
@@ -11,9 +14,6 @@ describe RecoveryCodeGenerator do
 
   describe '#create' do
     it 'returns the raw recovery code' do
-      user = create(:user)
-      generator = RecoveryCodeGenerator.new(user)
-
       stub_random_phrase
 
       expect(generator.create).to eq recovery_code
@@ -31,40 +31,43 @@ describe RecoveryCodeGenerator do
     end
 
     it 'generates a phrase of 4 words by default' do
-      user = create(:user)
-      generator = RecoveryCodeGenerator.new(user)
-
       expect(generator.create).to match(/\A\w\w\w\w \w\w\w\w \w\w\w\w \w\w\w\w\z/)
     end
 
     it 'allows length to be configured via ENV var' do
-      user = create(:user)
       allow(Figaro.env).to receive(:recovery_code_length).and_return('14')
-      generator = RecoveryCodeGenerator.new(user)
 
-      expect(generator.create).to match(/\A(\w+\ ){13}\w+\z/)
+      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\ ){13}\w+\z/
+      expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
   end
 
   describe '#verify' do
+    let(:generator) { described_class.new(create(:user)) }
+
     before do
       stub_random_phrase
+      generator.create
     end
 
     it 'returns false for the wrong code' do
-      user = create(:user)
-      generator = RecoveryCodeGenerator.new(user)
-      generator.create
+      expect(generator.verify(bad_code)).to eq false
+    end
 
-      expect(generator.verify('not the real recovery code')).to eq false
+    it 'returns false for an invalid base32 code' do
+      expect(generator.verify(invalid_base32_code)).to eq false
     end
 
     it 'returns true for the correct code' do
-      user = create(:user)
-      generator = RecoveryCodeGenerator.new(user)
-      generator.create
-
       expect(generator.verify(recovery_code)).to eq true
+    end
+
+    it 'forgives user mistaking O for 0' do
+      expect(generator.verify(recovery_code.tr('0', 'o'))).to eq true
+    end
+
+    it 'treats case insensitively' do
+      expect(generator.verify(recovery_code.tr('H', 'h'))).to eq true
     end
   end
 end
