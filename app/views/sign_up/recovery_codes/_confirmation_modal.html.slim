@@ -12,8 +12,14 @@
           - code.split(' ').each_with_index do |word, index|
             .col.col-3.px1.sm-px2
               input(
-                name="recovery-#{index}" type='text' class='col-12 border-dashed field monospace'
-                required=true pattern="#{word}"
+                name="recovery-#{index}"
+                type='text'
+                class='col-12 border-dashed field monospace'
+                required=true
+                pattern="#{word}"
+                autocapitalize='none'
+                autocomplete='off'
+                spellcheck='false'
                 aria-label="#{t('forms.recovery_code.confirmation_label', number: index + 1)}")
         = hidden_field_tag :authenticity_token, form_authenticity_token
 
