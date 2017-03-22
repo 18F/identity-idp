@@ -23,7 +23,8 @@ describe RandomPhrase do
     end
 
     it 'does not contain the letters I L O U' do
-      100.times do
+      arbitrary_largish_number = 100
+      arbitrary_largish_number.times do
         phrase = RandomPhrase.new(num_words: 4)
 
         expect(phrase.to_s).to_not match(/[ILOU]/)
