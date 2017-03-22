@@ -21,5 +21,13 @@ describe RandomPhrase do
 
       expect(phrase.to_s.length).to eq 24 # 20 chars + 4 spaces
     end
+
+    it 'does not contain the letters I L O U' do
+      100.times do
+        phrase = RandomPhrase.new(num_words: 4)
+
+        expect(phrase.to_s).to_not match(/[ILOU]/)
+      end
+    end
   end
 end

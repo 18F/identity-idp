@@ -129,6 +129,7 @@ GEM
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    base32-crockford (0.1.0)
     bcrypt (3.1.11)
     benchmark-ips (2.6.1)
     better_errors (2.1.1)
@@ -659,6 +660,7 @@ DEPENDENCIES
   american_date
   aws-sdk-core
   axe-matchers
+  base32-crockford
   better_errors
   binding_of_caller
   brakeman
@@ -752,4 +754,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.3
+   1.14.6
