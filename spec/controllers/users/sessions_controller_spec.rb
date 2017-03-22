@@ -11,6 +11,14 @@ describe Users::SessionsController, devise: true do
 
       expect(response.body).to include('<form autocomplete="off"')
     end
+
+    it 'clears the session when user is not yet 2fa-ed' do
+      sign_in_before_2fa
+
+      get :new
+
+      expect(controller.current_user).to be nil
+    end
   end
 
   describe 'GET /active' do
