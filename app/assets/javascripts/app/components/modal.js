@@ -40,11 +40,7 @@ function Modal(focusTrap) {
       this.shown = showing;
       el.classList[showing ? 'remove' : 'add']('display-none');
       document.body.classList[showing ? 'add' : 'remove']('modal-open');
-      this.trap[showing ? 'activate' : 'deactivate']({
-        onDeactivate() {
-          console.log('deactivating', el)
-        }
-      });
+      this.trap[showing ? 'activate' : 'deactivate']();
     }
   }
 }
