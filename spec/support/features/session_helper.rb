@@ -177,6 +177,10 @@ module Features
       fields = page.all(selector)
 
       fields.zip(code_words) do |field, word|
+        expect(field[:autocapitalize]).to eq('none')
+        expect(field[:autocomplete]).to eq('off')
+        expect(field[:spellcheck]).to eq('false')
+
         field.set(word)
       end
     end
