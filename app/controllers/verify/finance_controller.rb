@@ -19,7 +19,7 @@ module Verify
       increment_step_attempts
 
       if result.success?
-        redirect_to verify_address_url
+        handle_success
       else
         render_failure
         render_form
@@ -27,6 +27,11 @@ module Verify
     end
 
     private
+
+    def handle_success
+      flash[:success] = t('idv.messages.personal_details_verified')
+      redirect_to verify_address_url
+    end
 
     def step_name
       :financials

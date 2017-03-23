@@ -15,6 +15,10 @@ class SessionDecorator
     I18n.t('headings.sign_in_without_sp')
   end
 
+  def verification_method_choice
+    I18n.t('idv.messages.select_verification_without_sp')
+  end
+
   def idv_hardfail4_partial
     'shared/null'
   end

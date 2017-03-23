@@ -348,7 +348,6 @@ feature 'IdV session' do
 
     scenario 'pick USPS address verification' do
       sign_in_and_2fa_user
-
       visit verify_session_path
 
       fill_out_idv_form_ok
@@ -356,9 +355,46 @@ feature 'IdV session' do
       fill_out_financial_form_ok
       click_idv_continue
       click_idv_address_choose_usps
-      click_idv_continue
+      click_on t('idv.buttons.send_letter')
 
       expect(current_path).to eq verify_review_path
+    end
+
+    context 'cancel from USPS/Phone verification screen' do
+      context 'without js' do
+        it 'returns user to profile path' do
+          sign_in_and_2fa_user
+          loa3_sp_session
+          visit verify_session_path
+
+          fill_out_idv_form_ok
+          click_idv_continue
+          fill_out_financial_form_ok
+          click_idv_continue
+
+          click_idv_cancel
+
+          expect(current_path).to eq(profile_path)
+        end
+      end
+
+      context 'with js', js: true do
+        it 'redirects to profile from a modal' do
+          sign_in_and_2fa_user
+          loa3_sp_session
+          visit verify_session_path
+
+          fill_out_idv_form_ok
+          click_idv_continue
+          fill_out_financial_form_ok
+          click_idv_continue
+
+          click_on t('links.cancel_idv')
+          click_idv_cancel_modal
+
+          expect(current_path).to eq(profile_path)
+        end
+      end
     end
   end
 

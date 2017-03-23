@@ -6,7 +6,7 @@ module Verify
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed
+    before_action :confirm_step_needed, except: [:destroy]
 
     helper_method :idv_profile_form
     helper_method :step
@@ -30,7 +30,8 @@ module Verify
     end
 
     def destroy
-      user_session[:idv].clear
+      idv_session = user_session[:idv]
+      idv_session && idv_session.clear
       handle_idv_redirect
     end
 
