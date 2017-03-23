@@ -62,5 +62,5 @@ html lang="#{I18n.locale}" class='no-js'
     - if FeatureManagement.enable_i18n_mode?
       == javascript_include_tag 'misc/i18n-mode'
 
-    - if Figaro.env.participate_in_dap == 'true' && current_user.nil?
+    - if Figaro.env.participate_in_dap == 'true' && !session_with_trust?
       = render 'shared/dap_analytics'
