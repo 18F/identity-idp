@@ -5,4 +5,5 @@
     - Figaro.env.recovery_code_length.to_i.times do
       .col.col-3.px1.sm-px2
         = f.input attribute_name, as: :array, label: false,
-          input_html: { required: true, 'aria-labelledby': 'personal-key-label' }
+          input_html: { 'aria-labelledby' => 'personal-key-label', autocapitalize: 'none',
+            autocomplete: 'off', required: true, spellcheck: 'false' }
