@@ -79,10 +79,7 @@ UtilityFunction:
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
     - SessionTimeoutWarningHelper#warning
-    - SessionDecorator#registration_heading
-    - SessionDecorator#registration_bullet_1
-    - SessionDecorator#new_session_heading
-    - SessionDecorator#timeout_flash_text
+    - SessionDecorator
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
 'app/controllers':

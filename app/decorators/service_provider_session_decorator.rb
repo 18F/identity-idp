@@ -14,19 +14,19 @@ class ServiceProviderSessionDecorator
     'shared/nav_branded'
   end
 
-  def new_session_heading
-    I18n.t('headings.sign_in_with_sp', sp: sp_name)
-  end
-
-  def sp_name
-    sp.friendly_name || sp.agency
-  end
-
   def registration_heading
     sp = ActionController::Base.helpers.content_tag(:strong, sp_name)
     ActionController::Base.helpers.safe_join(
       [I18n.t('headings.create_account_with_sp', sp: sp).html_safe]
     )
+  end
+
+  def new_session_heading
+    I18n.t('headings.sign_in_with_sp', sp: sp_name)
+  end
+
+  def verification_method_choice
+    I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
   def idv_hardfail4_partial
@@ -46,6 +46,10 @@ class ServiceProviderSessionDecorator
       minutes: Figaro.env.session_timeout_in_minutes,
       sp: sp_name
     )
+  end
+
+  def sp_name
+    sp.friendly_name || sp.agency
   end
 
   def sp_return_url

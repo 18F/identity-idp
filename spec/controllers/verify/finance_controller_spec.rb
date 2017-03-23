@@ -83,23 +83,11 @@ describe Verify::FinanceController do
     end
 
     context 'when form is valid' do
-      it 'creates analytics event' do
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
-
-        result = { success: true, errors: {}, vendor: { reasons: ['Good number'] } }
-
-        expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_FINANCE_CONFIRMATION, result
-        )
-      end
-
       context 'when CCN is confirmed' do
         it 'redirects to phone page' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
+          expect(flash[:success]).to eq(t('idv.messages.personal_details_verified'))
           expect(response).to redirect_to verify_address_url
 
           expected_params = { ccn: '12345678' }
