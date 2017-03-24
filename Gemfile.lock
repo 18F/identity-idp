@@ -259,7 +259,7 @@ GEM
     fasterer (0.3.2)
       colorize (~> 0.7)
       ruby_parser (~> 3.7)
-    ffi (1.9.17)
+    ffi (1.9.18)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -515,9 +515,8 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.4)
       wasabi (~> 3.4)
-    scrypt (3.0.3)
-      ffi-compiler (>= 1.0.0)
-      rake
+    scrypt (3.0.5)
+      ffi-compiler (>= 1.0, < 2.0)
     secure_headers (3.6.2)
       useragent
     securecompare (1.0.0)
