@@ -148,7 +148,7 @@ GEM
     bullet (5.5.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bummr (0.1.6)
+    bummr (0.2.0)
       rainbow
       thor
     byebug (9.0.6)
@@ -442,7 +442,7 @@ GEM
       activesupport (= 4.2.8)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rainbow (2.1.0)
+    rainbow (2.2.1)
     rake (11.3.0)
     randexp (0.1.7)
     rb-fsevent (0.9.8)
