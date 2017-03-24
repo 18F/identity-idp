@@ -384,10 +384,6 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(response).to redirect_to(verify_confirmations_path)
         end
 
-        it 'displays success flash notice' do
-          expect(flash[:success]).to eq t('notices.phone_confirmation_successful')
-        end
-
         it 'does not call UserMailer' do
           expect(UserMailer).to_not have_received(:phone_changed)
         end

@@ -42,7 +42,6 @@ feature 'Changing authentication factor' do
 
       submit_correct_otp
 
-      expect(page).to have_content t('notices.phone_confirmation_successful')
       expect(current_path).to eq profile_path
       expect(UserMailer).to have_received(:phone_changed).with(user)
       expect(mailer).to have_received(:deliver_later)
