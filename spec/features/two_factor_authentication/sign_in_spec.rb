@@ -87,9 +87,13 @@ feature 'Two Factor Authentication' do
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
+      old_code = find('input[@name="code"]').value
+
       click_link t('links.two_factor_authentication.resend_code.sms')
 
-      expect(page).to have_content(t('notices.send_code.sms'))
+      new_code = find('input[@name="code"]').value
+
+      expect(old_code).not_to eq(new_code)
     end
 
     scenario 'user can cancel OTP process' do

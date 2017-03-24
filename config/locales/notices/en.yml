@@ -19,8 +19,6 @@ en:
     resend_confirmation_email:
       success: We have resent your confirmation email.
     send_code:
-      sms: We sent you a one-time passcode via text message.
-      voice: We will call you with your one-time passcode.
       recovery_code: You've got a new personal key.
     timeout_warning:
       signed_in:
@@ -36,8 +34,8 @@ en:
           For your security, in %{time_left_in_session} we will automatically
           cancel your sign in.
     session_cleared: >
-      For your security, we refresh the page and clear out any information you typed into the 
-      form fields if you don't submit the form within %{minutes} minutes. 
+      For your security, we refresh the page and clear out any information you typed into the
+      form fields if you don't submit the form within %{minutes} minutes.
     session_cleared_with_sp: >
       For your security, your request from %{sp} expires after %{minutes} minutes if you don't
       submit the form. Then you'll have to start again from %{link}.
