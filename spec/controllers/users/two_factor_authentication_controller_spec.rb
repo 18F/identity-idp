@@ -147,23 +147,6 @@ describe Users::TwoFactorAuthenticationController do
 
         get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
       end
-
-      context 'first request' do
-        it 'does not notify the user of OTP transmission via flash message' do
-          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
-
-          expect(flash[:success]).to eq nil
-        end
-      end
-
-      context 'multiple requests' do
-        it 'notifies the user of OTP transmission via flash message' do
-          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
-          get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
-
-          expect(flash[:success]).to eq t('notices.send_code.sms')
-        end
-      end
     end
 
     context 'when selecting voice OTP delivery' do
@@ -204,23 +187,6 @@ describe Users::TwoFactorAuthenticationController do
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
-      end
-
-      context 'first request' do
-        it 'does not notify the user of OTP transmission via flash message' do
-          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
-
-          expect(flash[:success]).to eq nil
-        end
-      end
-
-      context 'multiple requests' do
-        it 'notifies the user of OTP transmission via flash message' do
-          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
-          get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
-
-          expect(flash[:success]).to eq t('notices.send_code.voice')
-        end
       end
     end
 

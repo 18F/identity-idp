@@ -16,8 +16,6 @@ es:
     resend_confirmation_email:
       success: NOT TRANSLATED YET
     send_code:
-      sms: NOT TRANSLATED YET
-      voice: NOT TRANSLATED YET
       recovery_code: NOT TRANSLATED YET
     timeout_warning:
       signed_in:
