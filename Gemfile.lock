@@ -524,7 +524,7 @@ GEM
     shellany (0.0.1)
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
-    sidekiq (4.2.9)
+    sidekiq (4.2.10)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
