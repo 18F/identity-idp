@@ -1,4 +1,7 @@
+/* eslint-disable */
 const proxyquire = require('proxyquireify')(require);
+/* eslint-enable */
+
 const stub = sinon.stub;
 const focusTrapStub = stub();
 

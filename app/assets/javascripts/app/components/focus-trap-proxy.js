@@ -2,17 +2,18 @@
 import FocusTrap from 'focus-trap';
 /* eslint-enable */
 
+/* eslint-disable no-param-reassign */
 function merge(target, ...sources) {
   return sources.reduce((memo, source) => {
-    for (const prop in source) {
-      if (source.hasOwnProperty(prop)) {
-        memo[prop] = source[prop];
-      }
-    }
+    Object.keys(source).forEach((key) => {
+      const prop = source[key];
+      memo[key] = prop;
+    });
 
     return memo;
   }, target);
 }
+/* eslint-disable no-param-reassign */
 
 function FocusTrapProxy() {
   const NOOP = function() {};
@@ -46,7 +47,7 @@ function FocusTrapProxy() {
       },
 
       deactivate(opts = {}) {
-        lastActiveTrap && lastActiveTrap.activate();
+        if (lastActiveTrap) lastActiveTrap.activate();
         lastActiveTrap = null;
 
         const deactivatedTrap = ownTrap.deactivate(opts);
