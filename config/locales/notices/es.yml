@@ -12,7 +12,6 @@ es:
       no_email_sent_explanation_start: NOT TRANSLATED YET
       resend_email_success: NOT TRANSLATED YET
     password_changed: NOT TRANSLATED YET
-    phone_confirmation_successful: NOT TRANSLATED YET
     resend_confirmation_email:
       success: NOT TRANSLATED YET
     send_code:

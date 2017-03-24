@@ -15,7 +15,6 @@ en:
       no_email_sent_explanation_start: Didn’t receive an email?
       resend_email_success: We have resent your password reset email.
     password_changed: You changed your password.
-    phone_confirmation_successful: You confirmed your phone number. Now your account is more secure!
     resend_confirmation_email:
       success: We have resent your confirmation email.
     send_code:
