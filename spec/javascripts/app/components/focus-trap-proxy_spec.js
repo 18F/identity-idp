@@ -10,15 +10,19 @@ const focusTrapAPI = {
   deactivate: stub(),
 };
 
-focusTrapStub.returns(focusTrapAPI);
-
 describe('focusTrap', () => {
   let proxy;
 
   beforeEach(function() {
     proxy = proxyquire('app/components/focus-trap-proxy', {
       'focus-trap': focusTrapStub,
-    }).focusTrapProxy;
+    }).default;
+
+    Object.keys(focusTrapAPI).forEach((methodName) => {
+      focusTrapAPI[methodName].reset();
+    });
+
+    focusTrapStub.returns(focusTrapAPI);
   });
 
   it('calls the underlying focusTrap object', () => {
@@ -50,7 +54,7 @@ describe('focusTrap', () => {
       trapB.activate();
       trapB.deactivate();
 
-      expect(focusTrapAPI.activate.calledThrice).to.be.true();
+      expect(focusTrapAPI.activate.callCount).to.be.equal(3);
       expect(focusTrapAPI.deactivate.callCount).to.equal(5);
     });
   });

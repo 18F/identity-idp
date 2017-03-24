@@ -96,7 +96,9 @@ shared_examples_for 'recovery code page' do
 
         it 'does not interfere with the session timeout modal' do
           click_acknowledge_recovery_code
+          find('a', text: t('notices.timeout_warning.signed_in.sign_out'))
           click_on t('notices.timeout_warning.signed_in.sign_out')
+
           expect(current_path).to eq(root_path)
         end
       end
