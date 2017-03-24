@@ -6,8 +6,8 @@ const STATES = {
   SHOW: 'show',
 };
 
-function Modal(focusTrap) {
-  return class Modal extends Events {
+function modal(focusTrap) {
+  return class extends Events {
     constructor(options) {
       super();
 
@@ -42,8 +42,8 @@ function Modal(focusTrap) {
       document.body.classList[showing ? 'add' : 'remove']('modal-open');
       this.trap[showing ? 'activate' : 'deactivate']();
     }
-  }
+  };
 }
 
 
-export default Modal;
+export default modal;

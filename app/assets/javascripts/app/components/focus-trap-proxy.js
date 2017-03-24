@@ -1,24 +1,36 @@
-import focusTrap from 'focus-trap';
+/* eslint-disable */
+import FocusTrap from 'focus-trap';
+/* eslint-enable */
+
+function merge(target, ...sources) {
+  return sources.reduce((memo, source) => {
+    for (const prop in source) {
+      if (source.hasOwnProperty(prop)) {
+        memo[prop] = source[prop];
+      }
+    }
+
+    return memo;
+  }, target);
+}
 
 function FocusTrapProxy() {
   const NOOP = function() {};
   const focusables = [];
 
-  return function trap(el, options) {
+  return function makeTrap(el, options = {}) {
     const safeOnDeactivate = options.onDeactivate || NOOP;
-
-    let ownTrap;
     let lastActiveTrap = null;
 
-    options = Object.assign(options, {
+    const focusTrapOptions = merge({}, options, {
       onDeactivate() {
         lastActiveTrap = this;
 
         safeOnDeactivate();
-      }
+      },
     });
 
-    ownTrap = new focusTrap(el, options)
+    const ownTrap = new FocusTrap(el, focusTrapOptions);
 
     focusables.push(ownTrap);
 
@@ -33,20 +45,22 @@ function FocusTrapProxy() {
         return ownTrap.activate();
       },
 
-      deactivate(options = {}) {
+      deactivate(opts = {}) {
         lastActiveTrap && lastActiveTrap.activate();
         lastActiveTrap = null;
 
-        const deactivatedTrap = ownTrap.deactivate(options);
+        const deactivatedTrap = ownTrap.deactivate(opts);
 
         return deactivatedTrap;
       },
 
       pause() {
         ownTrap.pause();
-      }
+      },
     };
   };
 }
 
-export const focusTrapProxy = new FocusTrapProxy();
+const focusTrapProxy = new FocusTrapProxy();
+
+export default focusTrapProxy;

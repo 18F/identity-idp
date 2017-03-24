@@ -1,9 +1,9 @@
-import { focusTrapProxy } from './focus-trap-proxy';
-import Modal from './modal';
+import focusTrapProxy from './focus-trap-proxy';
+import modal from './modal';
 import Accordion from './accordion';
 
 const LoginGov = window.LoginGov = (window.LoginGov || {});
-const trapModal = Modal(focusTrapProxy);
+const trapModal = modal(focusTrapProxy);
 
 LoginGov.Modal = trapModal;
 
@@ -19,5 +19,5 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 export {
-  trapModal as Modal
+  trapModal as Modal,
 };
