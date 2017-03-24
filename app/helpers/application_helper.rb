@@ -37,6 +37,15 @@ module ApplicationHelper
     sign_up_init? || current_user && !current_user.two_factor_enabled?
   end
 
+  def session_with_trust?
+    current_user || page_with_trust?
+  end
+
+  def page_with_trust?
+    current_page?(controller: 'sign_up/email_confirmations', action: 'create') ||
+      current_page?(controller: 'users/reset_passwords', action: 'edit')
+  end
+
   def loa3_requested?
     sp_session && sp_session[:loa3]
   end
