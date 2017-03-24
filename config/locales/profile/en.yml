@@ -11,8 +11,8 @@ en:
       phone: Phone number
       previous_address: Previous address
       reactivation:
-        instructions: Your profile was recently deactivated due to a password reset, reactivate your profile to get your awesome PII back.
-        reactivate_button: Reactivate your profile
+        instructions: For your security, you will need to verify your account information again.
+        reactivate_button: Verify your identity
       ssn: Social Security Number
     items:
       recovery_code: Personal key
