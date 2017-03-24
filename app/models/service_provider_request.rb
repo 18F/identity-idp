@@ -1,5 +1,5 @@
 class ServiceProviderRequest < ActiveRecord::Base
-  def self.find_by(*args)
-    super || NullServiceProviderRequest.new
+  def self.from_uuid(uuid)
+    find_by(uuid: uuid) || NullServiceProviderRequest.new
   end
 end

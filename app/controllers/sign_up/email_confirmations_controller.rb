@@ -47,7 +47,7 @@ module SignUp
     end
 
     def current_sp
-      @_current_sp ||= ServiceProviderRequest.find_by(uuid: params[:_request_id])
+      @_current_sp ||= ServiceProviderRequest.from_uuid(params[:_request_id])
     end
 
     def loa3_requested?

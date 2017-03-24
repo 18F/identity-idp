@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def sp_from_request_id
-    issuer = ServiceProviderRequest.find_by(uuid: params[:request_id]).issuer
+    issuer = ServiceProviderRequest.from_uuid(params[:request_id]).issuer
     sp = ServiceProvider.from_issuer(issuer)
     sp if sp.is_a? ServiceProvider
   end

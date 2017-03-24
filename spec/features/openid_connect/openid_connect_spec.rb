@@ -113,7 +113,7 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
         to be_a NullServiceProviderRequest
       expect(page.get_rack_session.keys).to_not include('sp')
     end
@@ -190,7 +190,7 @@ feature 'OpenID Connect' do
       click_button t('openid_connect.authorization.index.allow')
       redirect_uri = URI(current_url)
       expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
         to be_a NullServiceProviderRequest
       expect(page.get_rack_session.keys).to_not include('sp')
     end

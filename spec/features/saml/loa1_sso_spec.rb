@@ -15,7 +15,7 @@ feature 'LOA1 Single Sign On' do
       click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
 
       expect(current_url).to eq saml_authn_request
-      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
         to be_a NullServiceProviderRequest
       expect(page.get_rack_session.keys).to_not include('sp')
     end
@@ -29,7 +29,7 @@ feature 'LOA1 Single Sign On' do
       sign_in_live_with_2fa(user)
 
       expect(current_url).to eq saml_authn_request
-      expect(ServiceProviderRequest.find_by(uuid: sp_request_id)).
+      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
         to be_a NullServiceProviderRequest
       expect(page.get_rack_session.keys).to_not include('sp')
 
@@ -65,6 +65,29 @@ feature 'LOA1 Single Sign On' do
       click_on t('forms.buttons.continue'), class: 'recovery-code-confirm'
 
       expect(current_path).to eq sign_up_completed_path
+    end
+  end
+
+  context 'fully signed up user is signed in with email and password only' do
+    it 'prompts to enter OTP' do
+      user = create(:user, :signed_up)
+      sign_in_user(user)
+
+      saml_authn_request = auth_request.create(saml_settings)
+      visit saml_authn_request
+
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+    end
+  end
+
+  context 'user that has not yet set up 2FA is signed in with email and password only' do
+    it 'prompts to set up 2FA' do
+      sign_in_user
+
+      saml_authn_request = auth_request.create(saml_settings)
+      visit saml_authn_request
+
+      expect(current_path).to eq phone_setup_path
     end
   end
 

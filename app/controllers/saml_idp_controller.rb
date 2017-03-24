@@ -42,9 +42,7 @@ class SamlIdpController < ApplicationController
     needs_idv = identity_needs_verification?
     analytics.track_event(Analytics::SAML_AUTH, @result.to_h.merge(idv: needs_idv))
 
-    yield true if needs_idv
-
-    yield false
+    yield needs_idv
   end
 
   def store_location_and_redirect_to_verify_url

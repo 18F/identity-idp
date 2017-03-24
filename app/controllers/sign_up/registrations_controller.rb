@@ -62,7 +62,7 @@ module SignUp
       request_id = permitted_params.fetch(:request_id)
       return if request_id.empty?
 
-      ServiceProviderRequest.find_by(uuid: request_id).uuid
+      ServiceProviderRequest.from_uuid(request_id).uuid
     end
 
     def disable_account_creation

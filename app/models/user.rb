@@ -140,6 +140,9 @@ class User < ActiveRecord::Base
     # no-op
   end
 
+  # This is basically Devise's send_confirmation_instructions method copied
+  # word for word, except that it adds the ability to pass in the request_id
+  # to the mailer.
   def send_custom_confirmation_instructions(id = nil)
     generate_confirmation_token! unless @raw_confirmation_token
 
