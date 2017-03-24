@@ -123,8 +123,6 @@ module TwoFactorAuthenticatable
 
   def handle_valid_otp_for_confirmation_context
     assign_phone
-
-    flash[:success] = t('notices.phone_confirmation_successful')
   end
 
   def handle_valid_otp_for_authentication_context
