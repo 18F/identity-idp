@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 20170321170516) do
     t.datetime "updated_at", null: false
   end
 
-  add_index "service_provider_requests", ["uuid"], name: "index_service_provider_requests_on_uuid", using: :btree
+  add_index "service_provider_requests", ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true, using: :btree
 
   create_table "service_providers", force: :cascade do |t|
     t.string   "issuer",                                                       null: false

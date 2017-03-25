@@ -8,7 +8,7 @@ class CreateServiceProviderRequests < ActiveRecord::Migration
 
       t.timestamps null: false
 
-      t.index :uuid
+      t.index :uuid, unique: true
     end
   end
 end
