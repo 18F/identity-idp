@@ -218,78 +218,66 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
       sp_request_id = ServiceProviderRequest.last.uuid
+      email = 'test@test.com'
 
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
 
-      click_link t('links.sign_in')
-      click_link t('links.create_account')
+      click_sign_in_from_landing_page_then_click_create_account
 
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
 
-      visit sign_up_start_url(request_id: sp_request_id)
-      click_link t('experiments.demo.get_started')
+      visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
 
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      fill_in 'Email', with: 'invalidemail'
-      click_button t('forms.buttons.submit.default')
+      submit_form_with_invalid_email
 
       expect(current_url).to eq sign_up_email_url
       expect(page).to have_css('img[src*=sp-logos]')
 
-      fill_in 'Email', with: 'test@example.com'
-      click_button t('forms.buttons.submit.default')
+      submit_form_with_valid_but_wrong_email
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      click_link t('notices.use_diff_email.link')
+      click_link_to_use_a_different_email
 
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      email = 'test2@example.com'
-      fill_in 'Email', with: email
-      click_button t('forms.buttons.submit.default')
+      submit_form_with_valid_email
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
       expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
       expect(page).to have_css('img[src*=sp-logos]')
 
-      click_button 'Resend email'
+      click_link_to_resend_the_email
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      visit sign_up_create_email_confirmation_url(
-        _request_id: sp_request_id, confirmation_token: 'foo'
-      )
+      attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
       expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
 
-      fill_in 'Email', with: email
-      click_button t('forms.buttons.resend_confirmation')
+      submit_resend_email_confirmation_form_with_correct_email(email)
 
       expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
 
-      open_email(email)
-      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+      click_confirmation_link_in_email(email)
 
       expect(page).to have_css('img[src*=sp-logos]')
 
-      fill_in 'Password', with: 'invalid'
-      click_button t('forms.buttons.submit.default')
+      submit_form_with_invalid_password
 
       expect(page).to have_css('img[src*=sp-logos]')
 
-      fill_in 'Password', with: 'strong password'
-      click_button t('forms.buttons.submit.default')
+      submit_form_with_valid_password
 
       expect(page).to have_css('img[src*=sp-logos]')
 
-      fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      set_up_2fa_with_valid_phone
 
       expect(page).to have_css('img[src*=sp-logos]')
 
@@ -298,6 +286,70 @@ module Features
       # expect(page).to have_css('img[src*=sp-logos]')
 
       click_acknowledge_recovery_code
+    end
+
+    def click_sign_in_from_landing_page_then_click_create_account
+      click_link t('links.sign_in')
+      click_link t('links.create_account')
+    end
+
+    def visit_landing_page_and_click_create_account_with_request_id(request_id)
+      visit sign_up_start_url(request_id: request_id)
+      click_link t('experiments.demo.get_started')
+    end
+
+    def submit_form_with_invalid_email
+      fill_in 'Email', with: 'invalidemail'
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def submit_form_with_valid_but_wrong_email
+      fill_in 'Email', with: 'test@example.com'
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def click_link_to_use_a_different_email
+      click_link t('notices.use_diff_email.link')
+    end
+
+    def submit_form_with_valid_email(email = 'test@test.com')
+      fill_in 'Email', with: email
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def click_link_to_resend_the_email
+      click_button 'Resend email'
+    end
+
+    def attempt_to_confirm_email_with_invalid_token(request_id)
+      visit sign_up_create_email_confirmation_url(
+        _request_id: request_id, confirmation_token: 'foo'
+      )
+    end
+
+    def submit_resend_email_confirmation_form_with_correct_email(email)
+      fill_in 'Email', with: email
+      click_button t('forms.buttons.resend_confirmation')
+    end
+
+    def click_confirmation_link_in_email(email)
+      open_email(email)
+      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+    end
+
+    def submit_form_with_invalid_password
+      fill_in 'Password', with: 'invalid'
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def submit_form_with_valid_password(password = VALID_PASSWORD)
+      fill_in 'Password', with: password
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def set_up_2fa_with_valid_phone
+      fill_in 'Phone', with: '202-555-1212'
+      select_sms_delivery
     end
   end
 end

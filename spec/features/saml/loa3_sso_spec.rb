@@ -9,18 +9,14 @@ feature 'LOA3 Single Sign On' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+      email = 'test@test.com'
 
       visit saml_authn_request
       click_link t('experiments.demo.get_started')
-      email = 'test@example.com'
-      fill_in 'Email', with: email
-      click_button t('forms.buttons.submit.default')
-      open_email(email)
-      visit_in_email(t('mailer.confirmation_instructions.link_text'))
-      fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
-      click_button t('forms.buttons.submit.default')
-      fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      submit_form_with_valid_email
+      click_confirmation_link_in_email(email)
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
       enter_2fa_code
 
       expect(current_path).to eq verify_path

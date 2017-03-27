@@ -165,7 +165,7 @@ feature 'OpenID Connect' do
       expect(id_token).to be_present
     end
 
-    it 'continues to the branded authorization page on first-time signup' do
+    it 'continues to the branded authorization page on first-time signup', email: true do
       client_id = 'urn:gov:gsa:openidconnect:test'
 
       visit openid_connect_authorize_path(
