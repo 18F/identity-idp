@@ -23,6 +23,7 @@ describe SignUp::PasswordsController do
       expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
       expect(user.confirmed?).to eq true
       expect(user.reset_requested_at).to be_nil
+      expect(subject.session[:sign_up_init]).to be_nil
     end
 
     it 'tracks an invalid password event' do

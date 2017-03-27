@@ -34,7 +34,7 @@ module ApplicationHelper
   end
 
   def user_signing_up?
-    !current_user || !current_user.two_factor_enabled?
+    sign_up_init? || current_user && !current_user.two_factor_enabled?
   end
 
   def loa3_requested?
