@@ -9,3 +9,7 @@
 .rounded-lg { border-radius: $border-radius-lg; }
 .rounded-xl { border-radius: $border-radius-xl; }
 .rounded-xxl { border-radius: $border-radius-xxl; }
+
+@media #{$breakpoint-sm} {
+  .sm-border-none { border: 0; }
+}
