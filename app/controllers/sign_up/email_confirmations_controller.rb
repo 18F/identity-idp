@@ -39,19 +39,19 @@ module SignUp
 
     def add_sp_details_to_session
       session[:sp] = {
-        issuer: current_sp.issuer,
+        issuer: sp_request.issuer,
         loa3: loa3_requested?,
-        request_url: current_sp.url,
-        request_id: current_sp.uuid,
+        request_url: sp_request.url,
+        request_id: sp_request.uuid,
       }
     end
 
-    def current_sp
-      @_current_sp ||= ServiceProviderRequest.from_uuid(params[:_request_id])
+    def sp_request
+      @_sp_request ||= ServiceProviderRequest.from_uuid(params[:_request_id])
     end
 
     def loa3_requested?
-      current_sp.loa == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      sp_request.loa == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
     end
 
     def process_confirmed_user

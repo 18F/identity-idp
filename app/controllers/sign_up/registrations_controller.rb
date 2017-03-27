@@ -31,7 +31,7 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new, locals: { request_id: saml_request_id }
+        render :new, locals: { request_id: sp_request_id }
       end
     end
 
@@ -58,7 +58,7 @@ module SignUp
       )
     end
 
-    def saml_request_id
+    def sp_request_id
       request_id = permitted_params.fetch(:request_id)
       return if request_id.empty?
 
