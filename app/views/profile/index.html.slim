@@ -48,12 +48,8 @@ h1.hide = t('titles.profile')
       .clearfix.mxn1
         .sm-col.sm-col-5.px1 = t('.phone')
         .sm-col.sm-col-7.px1 = @decrypted_pii.phone
-.clearfix
-  h2.h3.my0.sm-col
-    = t('headings.profile.login_info')
-  .sm-col-right.left.sm-m0.mt1
-    = render partial: current_user.decorate.basic_account_partial
-
+h2.h3.my0
+  = t('headings.profile.login_info')
 .mt2.mb4
   .py-12p.border-top
     .clearfix.mxn1

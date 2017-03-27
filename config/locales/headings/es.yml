@@ -15,7 +15,6 @@ es:
       forgot: ¿Olvidó su contraseña?
     profile:
       account_history: La historia de la cuenta
-      basic_account: Cuenta básica
       login_info: Información de la cuenta
       profile_info: Información del perfil
       two_factor: Autenticación de dos factores
