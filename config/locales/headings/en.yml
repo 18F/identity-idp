@@ -15,7 +15,6 @@ en:
       forgot: Forgot your password?
     profile:
       account_history: Account history
-      basic_account: Basic Account
       login_info: Account information
       profile_info: Profile information
       two_factor: Two-factor authentication

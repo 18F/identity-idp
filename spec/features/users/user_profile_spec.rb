@@ -6,15 +6,6 @@ feature 'User profile' do
       sign_in_live_with_2fa(profile.user)
     end
 
-    context 'LOA1 account' do
-      let(:profile) { create(:profile) }
-
-      it 'shows a "Basic Account" badge with a tooltip' do
-        expect(page).to have_content(t('headings.profile.basic_account'))
-        expect(page).to have_css("[aria-label='#{t('tooltips.verified_account')}']")
-      end
-    end
-
     context 'LOA3 account' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '111', dob: '1920-01-01' }) }
 
