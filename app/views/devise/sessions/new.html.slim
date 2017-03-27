@@ -7,6 +7,7 @@ h1.h3.my0 = decorated_session.new_session_heading
                   html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, required: true, input_html: { class: 'mb4' }
   = f.input :password, required: true
+  = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] }
   = f.button :submit, t('links.next'), class: 'btn-wide'
 
 - link = link_to t('notices.sign_in_consent.link'), MarketingSite.privacy_url, target: '_blank'

@@ -63,7 +63,10 @@ describe SignUp::CompletionsController do
     context 'LOA1' do
       it 'tracks analytics' do
         stub_sign_in
-        subject.session[:sp] = { loa3: false }
+        subject.session[:sp] = {
+          loa3: false,
+          request_url: 'http://example.com',
+        }
 
         patch :update
 
@@ -78,7 +81,10 @@ describe SignUp::CompletionsController do
       it 'tracks analytics' do
         user = create(:user, profiles: [create(:profile, :verified, :active)])
         stub_sign_in(user)
-        subject.session[:sp] = { loa3: true }
+        subject.session[:sp] = {
+          loa3: true,
+          request_url: 'http://example.com',
+        }
 
         patch :update
 
