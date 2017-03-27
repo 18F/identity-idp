@@ -21,6 +21,8 @@ class RecoveryCodeForm
   attr_reader :user, :success
 
   def valid_recovery_code?
+    word_regexp = /\w{#{RandomPhrase::WORD_LENGTH}}/
+    return false unless code =~ /\A#{word_regexp} #{word_regexp} #{word_regexp} #{word_regexp}\Z/
     recovery_code_generator = RecoveryCodeGenerator.new(user)
     recovery_code_generator.verify(code)
   end
