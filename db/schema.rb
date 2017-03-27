@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170306214524) do
+ActiveRecord::Schema.define(version: 20170321170516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -87,6 +87,17 @@ ActiveRecord::Schema.define(version: 20170306214524) do
   add_index "profiles", ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)", using: :btree
   add_index "profiles", ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
   add_index "profiles", ["user_id"], name: "index_profiles_on_user_id", using: :btree
+
+  create_table "service_provider_requests", force: :cascade do |t|
+    t.string   "issuer",     null: false
+    t.string   "loa",        null: false
+    t.string   "url",        null: false
+    t.string   "uuid",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "service_provider_requests", ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true, using: :btree
 
   create_table "service_providers", force: :cascade do |t|
     t.string   "issuer",                                                       null: false

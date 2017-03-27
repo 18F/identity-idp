@@ -10,10 +10,6 @@ module Users
     def new
       session.delete(:sign_up_init)
 
-      if session[:sp]&.delete(:show_start_page)
-        return redirect_to sign_up_start_path
-      end
-
       analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT)
       super
     end

@@ -6,18 +6,16 @@ class SamlIdpController < ApplicationController
   include SamlIdp::Controller
   include SamlIdpAuthConcern
   include SamlIdpLogoutConcern
+  include FullyAuthenticatable
 
   skip_before_action :verify_authenticity_token
   skip_before_action :handle_two_factor_authentication, only: :logout
 
   def auth
-    link_identity_from_session_data
-
-    needs_idv = identity_needs_verification?
-    analytics.track_event(Analytics::SAML_AUTH, @result.to_h.merge(idv: needs_idv))
-
-    return redirect_to verify_url if needs_idv
-
+    return confirm_two_factor_authenticated(@request_id) unless user_fully_authenticated?
+    process_fully_authenticated_user do |needs_idv|
+      return store_location_and_redirect_to_verify_url if needs_idv
+    end
     delete_branded_experience
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
@@ -38,6 +36,20 @@ class SamlIdpController < ApplicationController
 
   private
 
+  def process_fully_authenticated_user
+    link_identity_from_session_data
+
+    needs_idv = identity_needs_verification?
+    analytics.track_event(Analytics::SAML_AUTH, @result.to_h.merge(idv: needs_idv))
+
+    yield needs_idv
+  end
+
+  def store_location_and_redirect_to_verify_url
+    store_location_for(:user, request.original_url)
+    redirect_to verify_url
+  end
+
   def render_template_for(message, action_url, type)
     domain = SecureHeadersWhitelister.extract_domain(action_url)
     override_content_security_policy_directives(form_action: ["'self'", domain])
@@ -47,10 +59,5 @@ class SamlIdpController < ApplicationController
       locals: { action_url: action_url, message: message, type: type },
       layout: false
     )
-  end
-
-  def delete_branded_experience
-    session.delete(:sp)
-    session.delete('user_return_to')
   end
 end

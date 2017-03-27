@@ -10,4 +10,8 @@ class NonexistentUser
   def confirmed?
     false
   end
+
+  def persisted?
+    false
+  end
 end

@@ -55,14 +55,6 @@ RSpec.describe SessionDecorator do
     end
   end
 
-  describe '#timeout_flash_text' do
-    it 'returns the correct string' do
-      expect(subject.timeout_flash_text).to eq(
-        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
-      )
-    end
-  end
-
   describe '#sp_name' do
     it 'returns nil' do
       expect(subject.sp_name).to be_nil

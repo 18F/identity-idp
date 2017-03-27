@@ -116,7 +116,7 @@ describe SignUp::RegistrationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
-      post :create, user: { email: 'invalid@' }
+      post :create, user: { email: 'invalid@', request_id: '' }
     end
   end
 

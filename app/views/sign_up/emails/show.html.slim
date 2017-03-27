@@ -15,9 +15,11 @@
     html: { class: 'mb2' }) do |f|
     = f.input :email, as: :hidden, wrapper: false
     = f.input :resend, as: :hidden, wrapper: false
+    = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] }
     | #{t('notices.signed_up_but_unconfirmed.no_email_sent_explanation_start')}
     = f.button :submit, t('links.resend'), class: 'btn-link ml-tiny'
-  - link = link_to t('notices.use_diff_email.link'), sign_up_email_path
+  - link = link_to t('notices.use_diff_email.link'),
+           sign_up_email_path(request_id: params[:request_id])
   p = t('notices.use_diff_email.text_html', link: link)
   p = t('devise.registrations.close_window')
 

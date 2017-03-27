@@ -57,12 +57,12 @@ class ApplicationController < ActionController::Base
   def redirect_on_timeout
     return unless params[:timeout]
 
-    flash[:timeout] = decorated_session.timeout_flash_text
+    flash[:timeout] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
     redirect_to url_for(params.except(:timeout))
   end
 
   def current_sp
-    @current_sp ||= sp_from_sp_session || sp_from_params
+    @current_sp ||= sp_from_sp_session || sp_from_request_id
   end
 
   def sp_from_sp_session
@@ -70,8 +70,9 @@ class ApplicationController < ActionController::Base
     sp if sp.is_a? ServiceProvider
   end
 
-  def sp_from_params
-    sp = ServiceProvider.from_issuer(params[:issuer])
+  def sp_from_request_id
+    issuer = ServiceProviderRequest.from_uuid(params[:request_id]).issuer
+    sp = ServiceProvider.from_issuer(issuer)
     sp if sp.is_a? ServiceProvider
   end
 

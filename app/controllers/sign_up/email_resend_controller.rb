@@ -8,7 +8,7 @@ module SignUp
     end
 
     def create
-      @resend_email_confirmation_form = ResendEmailConfirmationForm.new(email_from_params)
+      @resend_email_confirmation_form = ResendEmailConfirmationForm.new(permitted_params)
       result = @resend_email_confirmation_form.submit
 
       analytics.track_event(Analytics::EMAIL_CONFIRMATION_RESEND, result.to_h)
@@ -22,14 +22,17 @@ module SignUp
 
     private
 
-    def email_from_params
-      params[:resend_email_confirmation_form][:email]
+    def permitted_params
+      params.require(:resend_email_confirmation_form).permit(:email, :request_id)
     end
 
     def handle_valid_email
-      User.send_confirmation_instructions(email: form_email)
       session[:email] = form_email
       redirect_to sign_up_verify_email_path
+    end
+
+    def request_id
+      permitted_params[:request_id]
     end
 
     def form_email

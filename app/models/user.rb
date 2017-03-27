@@ -133,4 +133,21 @@ class User < ActiveRecord::Base
   def strip_whitespace
     # no-op
   end
+
+  # In order to pass in the SP request_id to the confirmation instructions
+  # email, we need to define `send_custom_confirmation_instructions` because
+  # Devise's `send_confirmation_instructions` does not include arguments.
+  # We also need to override the Devise method to do nothing because this method
+  # is called automatically when a user is created due to a Devise callback.
+  # If we didn't disable it, the user would receive two confirmation emails.
+  def send_confirmation_instructions
+    # no-op
+  end
+
+  def send_custom_confirmation_instructions(id = nil)
+    generate_confirmation_token! unless @raw_confirmation_token
+
+    opts = pending_reconfirmation? ? { to: unconfirmed_email, request_id: id } : { request_id: id }
+    send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
+  end
 end

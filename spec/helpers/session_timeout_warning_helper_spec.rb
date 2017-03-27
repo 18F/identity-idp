@@ -26,14 +26,14 @@ describe SessionTimeoutWarningHelper do
       )
     end
 
-    let(:query_parameters) { { issuer: 'http://localhost:3000' } }
+    let(:query_parameters) { { request_id: '123' } }
 
     context 'with no params in the request url' do
       let(:original_url) { 'http://test.host/foo/bar' }
 
-      it 'adds timeout=true and issuer=http%3A%2F%2Flocalhost%3A3000 params' do
+      it 'adds timeout=true params' do
         expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&timeout=true'
+          'http://test.host/foo/bar?timeout=true'
         )
       end
     end
@@ -43,42 +43,18 @@ describe SessionTimeoutWarningHelper do
 
       it 'adds timeout=true and preserves params' do
         expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&key=value&timeout=true'
+          'http://test.host/foo/bar?key=value&timeout=true'
         )
       end
     end
 
-    context 'with timeout=true and issuer=http%3A%2F%2Flocalhost%3A3000 \
+    context 'with timeout=true and request_id=123 \
             in the query params already' do
-      let(:original_url) { 'http://test.host/foo/bar?timeout=true&issuer=http://localhost:3000' }
+      let(:original_url) { 'http://test.host/foo/bar?timeout=true&request_id=123' }
 
       it 'is the same' do
         expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?issuer=http%3A%2F%2Flocalhost%3A3000&timeout=true'
-        )
-      end
-    end
-
-    context 'when params[:issuer] is not present, but sp_session[:issuer] is' do
-      let(:query_parameters) { {} }
-      let(:original_url) { 'http://test.host/foo/bar' }
-
-      it 'reads issuer from sp_session' do
-        session[:sp] = { issuer: 'foo' }
-
-        expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?issuer=foo&timeout=true'
-        )
-      end
-    end
-
-    context 'when neither params[:issuer] nor sp_session[:issuer] are present' do
-      let(:query_parameters) { {} }
-      let(:original_url) { 'http://test.host/foo/bar' }
-
-      it 'sets issuer to nil' do
-        expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?issuer=&timeout=true'
+          'http://test.host/foo/bar?request_id=123&timeout=true'
         )
       end
     end
