@@ -5,20 +5,23 @@ feature 'LOA3 Single Sign On' do
   include IdvHelper
 
   context 'First time registration' do
-    it 'redirects to original SAML Authn Request after IdV is complete' do
+    it 'redirects to original SAML Authn Request after IdV is complete', email: true do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+      email = 'test@test.com'
 
       visit saml_authn_request
-      visit sign_up_email_path
-      user = sign_up_and_set_password
-      fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      click_link t('experiments.demo.get_started')
+      submit_form_with_valid_email
+      click_confirmation_link_in_email(email)
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
       enter_2fa_code
 
       expect(current_path).to eq verify_path
       click_on 'Yes'
+      user = User.find_with_email(email)
       complete_idv_profile_ok(user.reload)
       click_acknowledge_recovery_code
 

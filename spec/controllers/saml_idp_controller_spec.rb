@@ -288,11 +288,13 @@ describe SamlIdpController do
       end
 
       it 'stores SP metadata in session' do
+        sp_request_id = ServiceProviderRequest.last.uuid
+
         expect(session[:sp]).to eq(
           loa3: false,
           issuer: saml_settings.issuer,
-          request_url: @saml_request.request.original_url,
-          show_start_page: true
+          request_id: sp_request_id,
+          request_url: @saml_request.request.original_url
         )
       end
 
@@ -337,8 +339,9 @@ describe SamlIdpController do
         saml_get_auth(saml_settings)
       end
 
-      it 'redirects the user to the home page (sign in)' do
-        expect(response).to redirect_to root_url
+      it 'redirects the user to the SP landing page with the request_id in the params' do
+        sp_request_id = ServiceProviderRequest.last.uuid
+        expect(response).to redirect_to sign_up_start_path(request_id: sp_request_id)
       end
     end
 
@@ -734,7 +737,7 @@ describe SamlIdpController do
 
     def stub_auth
       allow(controller).to receive(:validate_saml_request_and_authn_context).and_return(true)
-      allow(controller).to receive(:confirm_two_factor_authenticated).and_return(true)
+      allow(controller).to receive(:user_fully_authenticated?).and_return(true)
       allow(controller).to receive(:link_identity_from_session_data).and_return(true)
     end
 
@@ -744,6 +747,8 @@ describe SamlIdpController do
         stub_auth
         allow(controller).to receive(:identity_needs_verification?).and_return(true)
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
+        allow(controller).to receive(:saml_request_id).
+          and_return(SecureRandom.uuid)
 
         analytics_hash = {
           success: true,
@@ -789,8 +794,8 @@ describe SamlIdpController do
         :disable_caching,
         [:validate_saml_request, only: :auth],
         [:validate_service_provider_and_authn_context, only: :auth],
-        [:add_sp_metadata_to_session, only: :auth],
-        [:confirm_two_factor_authenticated, only: :auth]
+        [:store_saml_request, only: :auth],
+        [:add_sp_metadata_to_session, only: :auth]
       )
     end
   end

@@ -6,6 +6,7 @@ describe 'sign_up/registrations/new.html.slim' do
     allow(view).to receive(:controller_name).and_return('registrations')
     allow(view).to receive(:current_user).and_return(nil)
     allow(view).to receive(:session).and_return(sign_up_init: true)
+    allow(view).to receive(:request_id).and_return(nil)
   end
 
   it 'has a localized title' do

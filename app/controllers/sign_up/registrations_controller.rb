@@ -18,6 +18,7 @@ module SignUp
       @register_user_email_form = RegisterUserEmailForm.new
       session[:sign_up_init] = true
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
+      render :new, locals: { request_id: nil }
     end
 
     def create
@@ -30,7 +31,7 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new
+        render :new, locals: { request_id: sp_request_id }
       end
     end
 
@@ -42,7 +43,7 @@ module SignUp
     end
 
     def permitted_params
-      params.require(:user).permit(:email)
+      params.require(:user).permit(:email, :request_id)
     end
 
     def process_successful_creation
@@ -52,7 +53,16 @@ module SignUp
       resend_confirmation = params[:user][:resend]
       session[:email] = user.email
 
-      redirect_to sign_up_verify_email_path(resend: resend_confirmation)
+      redirect_to sign_up_verify_email_path(
+        resend: resend_confirmation, request_id: permitted_params[:request_id]
+      )
+    end
+
+    def sp_request_id
+      request_id = permitted_params.fetch(:request_id)
+      return if request_id.empty?
+
+      ServiceProviderRequest.from_uuid(request_id).uuid
     end
 
     def disable_account_creation

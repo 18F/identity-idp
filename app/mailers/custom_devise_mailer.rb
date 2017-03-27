@@ -8,6 +8,7 @@ class CustomDeviseMailer < Devise::Mailer
     presenter = ConfirmationEmailPresenter.new(record, view_context)
     @first_sentence = presenter.first_sentence
     @confirmation_period = presenter.confirmation_period
+    @request_id = options[:request_id]
     super
   end
 end

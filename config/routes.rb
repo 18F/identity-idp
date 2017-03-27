@@ -92,13 +92,13 @@ Rails.application.routes.draw do
   get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',
       as: :sign_up_create_email_confirmation
   get '/sign_up/enter_email' => 'sign_up/registrations#new', as: :sign_up_email
+  post '/sign_up/enter_email' => 'sign_up/registrations#create', as: :sign_up_register
   get '/sign_up/enter_email/resend' => 'sign_up/email_resend#new', as: :sign_up_email_resend
   post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
        as: :sign_up_create_email_resend
   get '/sign_up/enter_password' => 'sign_up/passwords#new'
   get '/sign_up/recovery_code' => 'sign_up/recovery_codes#show'
   post '/sign_up/recovery_code' => 'sign_up/recovery_codes#update'
-  post '/sign_up/register' => 'sign_up/registrations#create', as: :sign_up_register
   get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
   get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
   get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed

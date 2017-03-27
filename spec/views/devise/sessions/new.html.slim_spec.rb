@@ -26,7 +26,7 @@ describe 'devise/sessions/new.html.slim' do
 
     expect(rendered).
       to have_link(
-        t('links.create_account'), href: sign_up_email_path
+        t('links.create_account'), href: sign_up_email_url(request_id: nil)
       )
   end
 

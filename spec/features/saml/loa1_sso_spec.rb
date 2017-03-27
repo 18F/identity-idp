@@ -3,18 +3,30 @@ require 'rails_helper'
 feature 'LOA1 Single Sign On' do
   include SamlAuthHelper
 
-  context 'First time registration' do
+  context 'First time registration', email: true do
     it 'takes user to agency handoff page when sign up flow complete' do
-      saml_authn_request = auth_request.create(saml_settings)
+      email = 'test@test.com'
+      authn_request = auth_request.create(saml_settings)
 
-      visit saml_authn_request
-      sign_up_and_2fa_loa1_user
+      perform_in_browser(:one) do
+        visit authn_request
+        sign_up_user_from_sp_without_confirming_email(email)
+      end
 
-      expect(current_path).to eq sign_up_completed_path
+      sp_request_id = ServiceProviderRequest.last.uuid
 
-      click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(email)
 
-      expect(current_url).to eq saml_authn_request
+        expect(current_path).to eq sign_up_completed_path
+
+        click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+
+        expect(current_url).to eq authn_request
+        expect(ServiceProviderRequest.from_uuid(sp_request_id)).
+          to be_a NullServiceProviderRequest
+        expect(page.get_rack_session.keys).to_not include('sp')
+      end
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
@@ -22,9 +34,13 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
+      sp_request_id = ServiceProviderRequest.last.uuid
       sign_in_live_with_2fa(user)
 
       expect(current_url).to eq saml_authn_request
+      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
+        to be_a NullServiceProviderRequest
+      expect(page.get_rack_session.keys).to_not include('sp')
 
       visit root_path
       expect(current_path).to eq profile_path
@@ -57,6 +73,29 @@ feature 'LOA1 Single Sign On' do
       click_on t('forms.buttons.continue'), class: 'recovery-code-confirm'
 
       expect(current_path).to eq sign_up_completed_path
+    end
+  end
+
+  context 'fully signed up user is signed in with email and password only' do
+    it 'prompts to enter OTP' do
+      user = create(:user, :signed_up)
+      sign_in_user(user)
+
+      saml_authn_request = auth_request.create(saml_settings)
+      visit saml_authn_request
+
+      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+    end
+  end
+
+  context 'user that has not yet set up 2FA is signed in with email and password only' do
+    it 'prompts to set up 2FA' do
+      sign_in_user
+
+      saml_authn_request = auth_request.create(saml_settings)
+      visit saml_authn_request
+
+      expect(current_path).to eq phone_setup_path
     end
   end
 

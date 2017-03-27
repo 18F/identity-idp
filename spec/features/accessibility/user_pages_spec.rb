@@ -15,7 +15,7 @@ feature 'Accessibility on pages that require authentication', :js do
       create(:user, :unconfirmed)
       confirm_last_user
 
-      expect(current_path).to eq(sign_up_create_email_confirmation_path)
+      expect(current_path).to eq(sign_up_enter_password_path)
       expect(page).to be_accessible
     end
 

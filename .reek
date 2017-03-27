@@ -17,6 +17,9 @@ FeatureEnvy:
     - EncryptedSidekiqRedis#zrem
     - UserDecorator#should_acknowledge_recovery_code?
     - Pii::Attributes#[]=
+InstanceVariableAssumption:
+  exclude:
+    - User
 IrresponsibleModule:
   enabled: false
 ManualDispatch:
@@ -59,6 +62,7 @@ TooManyMethods:
     - ApplicationController
     - OpenidConnectAuthorizeForm
     - Idv::Session
+    - User
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
