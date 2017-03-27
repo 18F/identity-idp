@@ -51,7 +51,6 @@ module SignUp
 
       resend_confirmation = params[:user][:resend]
       session[:email] = user.email
-      session.delete(:sign_up_init)
 
       redirect_to sign_up_verify_email_path(resend: resend_confirmation)
     end
