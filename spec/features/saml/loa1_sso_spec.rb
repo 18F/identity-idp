@@ -5,19 +5,27 @@ feature 'LOA1 Single Sign On' do
 
   context 'First time registration', email: true do
     it 'takes user to agency handoff page when sign up flow complete' do
-      saml_authn_request = auth_request.create(saml_settings)
-      visit saml_authn_request
+      email = 'test@test.com'
+      authn_request = auth_request.create(saml_settings)
+
+      perform_in_browser(:one) do
+        sign_up_user_from_sp_without_confirming_email(email: email, request: authn_request)
+      end
+
       sp_request_id = ServiceProviderRequest.last.uuid
-      sign_up_and_2fa_loa1_user_who_came_from_sp
 
-      expect(current_path).to eq sign_up_completed_path
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(email)
 
-      click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+        expect(current_path).to eq sign_up_completed_path
 
-      expect(current_url).to eq saml_authn_request
-      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-        to be_a NullServiceProviderRequest
-      expect(page.get_rack_session.keys).to_not include('sp')
+        click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+
+        expect(current_url).to eq authn_request
+        expect(ServiceProviderRequest.from_uuid(sp_request_id)).
+          to be_a NullServiceProviderRequest
+        expect(page.get_rack_session.keys).to_not include('sp')
+      end
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do

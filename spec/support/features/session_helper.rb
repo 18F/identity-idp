@@ -214,11 +214,10 @@ module Features
       config.session_store.new({}, config.session_options)
     end
 
-    def sign_up_and_2fa_loa1_user_who_came_from_sp
+    def sign_up_user_from_sp_without_confirming_email(email:, request:)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
+      visit request
       sp_request_id = ServiceProviderRequest.last.uuid
-      email = 'test@test.com'
 
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
 
@@ -257,8 +256,6 @@ module Features
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      delete_sp_info_from_session_to_simulate_user_switching_browsers
-
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
       expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
@@ -266,7 +263,9 @@ module Features
       submit_resend_email_confirmation_form_with_correct_email(email)
 
       expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+    end
 
+    def confirm_email_in_a_different_browser(email)
       click_confirmation_link_in_email(email)
 
       expect(page).to have_css('img[src*=sp-logos]')
@@ -321,10 +320,6 @@ module Features
 
     def click_link_to_resend_the_email
       click_button 'Resend email'
-    end
-
-    def delete_sp_info_from_session_to_simulate_user_switching_browsers
-      page.set_rack_session(sp: {})
     end
 
     def attempt_to_confirm_email_with_invalid_token(request_id)
