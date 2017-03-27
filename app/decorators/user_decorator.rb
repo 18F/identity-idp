@@ -91,14 +91,6 @@ UserDecorator = Struct.new(:user) do
     end
   end
 
-  def basic_account_partial
-    if identity_not_verified?
-      'profile/basic_account_badge'
-    else
-      'shared/null'
-    end
-  end
-
   private
 
   def masked_number(number)
