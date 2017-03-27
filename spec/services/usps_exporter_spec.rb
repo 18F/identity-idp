@@ -33,6 +33,12 @@ describe UspsExporter do
     ]
     values.join('|')
   end
+  let(:file_encryptor) do
+    FileEncryptor.new(
+      Rails.root.join('keys/equifax_gpg.pub.bin'),
+      Figaro.env.equifax_gpg_email
+    )
+  end
 
   subject { described_class.new(export_file.path) }
 
@@ -46,12 +52,19 @@ describe UspsExporter do
       UspsConfirmation.create(entry: usps_entry.encrypted)
     end
 
-    it 'creates the file' do
+    it 'creates encrypted file' do
       subject.run
 
       psv_contents = export_file.read
 
-      expect(psv_contents).to eq("01|1\r\n#{psv_row_contents}\r\n")
+      expect(psv_contents).to_not eq("01|1\r\n#{psv_row_contents}\r\n")
+
+      decrypted_contents = file_encryptor.decrypt(
+        Figaro.env.equifax_gpg_passphrase,
+        export_file.path
+      )
+
+      expect(decrypted_contents).to eq("01|1\r\n#{psv_row_contents}\r\n")
     end
 
     it 'clears entries after creating file' do

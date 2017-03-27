@@ -9,6 +9,7 @@
 # Figaro requires all values to be explicit strings.
 
 email_from: 'no-reply@login.gov'
+equifax_gpg_email: 'logs@login.gov'
 idv_max_attempts: '3'
 idv_attempt_window_in_hours: '24'
 mailer_domain_name: 'http://localhost:3000'
@@ -61,6 +62,7 @@ development:
   equifax_avs_username: 'sekret'
   equifax_eid_username: 'sekret'
   equifax_endpoint: 'sekret'
+  equifax_gpg_passphrase: 'sekret'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
   equifax_ssh_passphrase: 'sekret'
@@ -112,6 +114,7 @@ production:
   equifax_avs_username: 'sekret'
   equifax_eid_username: 'sekret'
   equifax_endpoint: 'sekret'
+  equifax_gpg_passphrase: 'sekret'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
   equifax_ssh_passphrase: 'sekret'
@@ -164,6 +167,7 @@ test:
   equifax_avs_username: 'sekret'
   equifax_eid_username: 'sekret'
   equifax_endpoint: 'sekret'
+  equifax_gpg_passphrase: 'sekret'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
   equifax_ssh_passphrase: 'sekret'
