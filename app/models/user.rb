@@ -134,15 +134,16 @@ class User < ActiveRecord::Base
     # no-op
   end
 
-  # Override Devise because we want to include the SAML request id in the
-  # confirmation instructions email
+  # In order to pass in the SP request_id to the confirmation instructions
+  # email, we need to define `send_custom_confirmation_instructions` because
+  # Devise's `send_confirmation_instructions` does not include arguments.
+  # We also need to override the Devise method to do nothing because this method
+  # is called automatically when a user is created due to a Devise callback.
+  # If we didn't disable it, the user would receive two confirmation emails.
   def send_confirmation_instructions
     # no-op
   end
 
-  # This is basically Devise's send_confirmation_instructions method copied
-  # word for word, except that it adds the ability to pass in the request_id
-  # to the mailer.
   def send_custom_confirmation_instructions(id = nil)
     generate_confirmation_token! unless @raw_confirmation_token
 
