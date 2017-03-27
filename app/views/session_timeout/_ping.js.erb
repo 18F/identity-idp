@@ -2,6 +2,10 @@ var frequency = <%= frequency %> * 1000;
 var warning = <%= warning %> * 1000;
 var start = <%= start %> * 1000;
 var warning_info = "<%= j render('session_timeout/warning', locals: { modal: modal }) %>";
+var warningEl = document.getElementById('session-timeout-cntnr');
+warningEl.insertAdjacentHTML('afterbegin', warning_info);
+
+var modal = new window.LoginGov.Modal({ el: '#session-timeout-msg' });
 
 function ping() {
   var request = new XMLHttpRequest();
@@ -26,12 +30,12 @@ function success(data) {
       time_cutoff = new Date().getTime() + warning,
       show_warning = time_timeout < time_cutoff;
 
-  if (show_warning & !el) {
-    cntnr.insertAdjacentHTML('afterbegin', warning_info);
+  if (show_warning && !modal.shown) {
+    modal.show();
     window.LoginGov.countdownTimer(document.getElementById('countdown'), warning);
   }
 
-  if (!show_warning & el) el.remove();
+  if (!show_warning && modal.shown) modal.hide();
   if (!data.live) {
     window.LoginGov.autoLogout();
   }

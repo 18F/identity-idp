@@ -1,5 +1,5 @@
 import 'classlist.js';
-import Modal from '../app/components/modal';
+import { Modal } from '../app/components/index';
 
 function verifyModal() {
   const flash = document.querySelector('.alert');

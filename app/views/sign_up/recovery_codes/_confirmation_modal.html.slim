@@ -7,7 +7,7 @@
       #recovery-code-alert.alert.alert-alert.display-none(role='alert')
         = t('users.recovery_code.confirmation_error')
 
-      form(id='confirm-key' method='post' action="#{sign_up_recovery_code_path}")
+      form(id='confirm-key' method='post' action="#{sign_up_recovery_code_path}" name="key-confirm")
         .clearfix.mxn1.sm-mxn2.mb4.separator-inputs
           - code.split(' ').each_with_index do |word, index|
             .col.col-3.px1.sm-px2
@@ -28,5 +28,8 @@
             button(type='submit' class='col-12 btn btn-primary recovery-code-confirm')
               = t('forms.buttons.continue')
           .col.col-12.sm-col-6.px2
-            button.col-12.btn.btn-outline.blue.rounded-lg(data-dismiss='personal-key-confirm')
+            button.col-12.btn.btn-outline.blue.rounded-lg(
+              type="button"
+              data-dismiss="personal-key-confirm"
+            )
               = t('forms.buttons.back')

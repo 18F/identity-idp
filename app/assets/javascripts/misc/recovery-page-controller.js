@@ -1,4 +1,4 @@
-import Modal from '../app/components/modal';
+import { Modal } from '../app/components/index';
 
 const modalSelector = '#personal-key-confirm';
 const modal = new Modal({ el: modalSelector });
