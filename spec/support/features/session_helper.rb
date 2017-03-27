@@ -214,9 +214,8 @@ module Features
       config.session_store.new({}, config.session_options)
     end
 
-    def sign_up_user_from_sp_without_confirming_email(email:, request:)
+    def sign_up_user_from_sp_without_confirming_email(email)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      visit request
       sp_request_id = ServiceProviderRequest.last.uuid
 
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)

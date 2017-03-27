@@ -9,7 +9,8 @@ feature 'LOA1 Single Sign On' do
       authn_request = auth_request.create(saml_settings)
 
       perform_in_browser(:one) do
-        sign_up_user_from_sp_without_confirming_email(email: email, request: authn_request)
+        visit authn_request
+        sign_up_user_from_sp_without_confirming_email(email)
       end
 
       sp_request_id = ServiceProviderRequest.last.uuid

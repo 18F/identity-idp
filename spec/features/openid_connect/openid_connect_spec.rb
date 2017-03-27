@@ -167,32 +167,40 @@ feature 'OpenID Connect' do
 
     it 'continues to the branded authorization page on first-time signup', email: true do
       client_id = 'urn:gov:gsa:openidconnect:test'
+      email = 'test@test.com'
 
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email',
-        redirect_uri: 'gov.gsa.openidconnect.test://result',
-        state: SecureRandom.hex,
-        nonce: SecureRandom.hex,
-        prompt: 'select_account',
-        code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
-        code_challenge_method: 'S256'
-      )
+      perform_in_browser(:one) do
+        visit openid_connect_authorize_path(
+          client_id: client_id,
+          response_type: 'code',
+          acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          scope: 'openid email',
+          redirect_uri: 'gov.gsa.openidconnect.test://result',
+          state: SecureRandom.hex,
+          nonce: SecureRandom.hex,
+          prompt: 'select_account',
+          code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
+          code_challenge_method: 'S256'
+        )
 
-      expect(page).to have_content(t('headings.create_account_with_sp', sp: 'Example iOS App'))
+        expect(page).to have_content(t('headings.create_account_with_sp', sp: 'Example iOS App'))
+
+        sign_up_user_from_sp_without_confirming_email(email)
+      end
 
       sp_request_id = ServiceProviderRequest.last.uuid
-      sign_up_and_2fa_loa1_user_who_came_from_sp
 
-      click_button t('forms.buttons.continue_to', sp: 'Example iOS App')
-      click_button t('openid_connect.authorization.index.allow')
-      redirect_uri = URI(current_url)
-      expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-        to be_a NullServiceProviderRequest
-      expect(page.get_rack_session.keys).to_not include('sp')
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(email)
+
+        click_button t('forms.buttons.continue_to', sp: 'Example iOS App')
+        click_button t('openid_connect.authorization.index.allow')
+        redirect_uri = URI(current_url)
+        expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
+        expect(ServiceProviderRequest.from_uuid(sp_request_id)).
+          to be_a NullServiceProviderRequest
+        expect(page.get_rack_session.keys).to_not include('sp')
+      end
     end
   end
 
