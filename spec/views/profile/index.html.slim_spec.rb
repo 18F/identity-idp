@@ -1,12 +1,13 @@
 require 'rails_helper'
 
 describe 'profile/index.html.slim' do
-  context 'user is not TOTP enabled' do
-    before do
-      user = build_stubbed(:user, :signed_up)
-      allow(view).to receive(:current_user).and_return(user)
-    end
+  let(:user) { build_stubbed(:user, :signed_up) }
 
+  before do
+    allow(view).to receive(:current_user).and_return(user)
+  end
+
+  context 'user is not TOTP enabled' do
     it 'has a localized title' do
       expect(view).to receive(:title).with(t('titles.profile'))
 
@@ -48,9 +49,6 @@ describe 'profile/index.html.slim' do
     end
 
     it 'contains a recovery code section' do
-      user = User.new
-      allow(view).to receive(:current_user).and_return(user)
-
       render
 
       expect(rendered).to have_content t('profile.items.recovery_code')
@@ -65,9 +63,6 @@ describe 'profile/index.html.slim' do
     end
 
     it 'lacks a recovery code section' do
-      user = User.new
-      allow(view).to receive(:current_user).and_return(user)
-
       render
 
       expect(rendered).to_not have_content t('profile.items.recovery_code')
@@ -78,11 +73,14 @@ describe 'profile/index.html.slim' do
   end
 
   it 'contains account history' do
-    user = User.new
-    allow(view).to receive(:current_user).and_return(user)
-
     render
 
     expect(rendered).to have_content t('headings.profile.account_history')
+  end
+
+  it 'shows the auth nav bar' do
+    render
+
+    expect(view).to render_template(partial: '_nav_auth')
   end
 end
