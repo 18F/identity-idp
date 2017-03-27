@@ -22,14 +22,11 @@ describe RecoveryCodeForm do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user, :signed_up, recovery_code: 'code')
 
-        generator = instance_double(RecoveryCodeGenerator)
-        allow(RecoveryCodeGenerator).to receive(:new).with(user).
-          and_return(generator)
-        allow(generator).to receive(:verify).with('foo').and_return(false)
-
         form = RecoveryCodeForm.new(user, 'foo')
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'recovery code' }
+
+        expect(RecoveryCodeGenerator).to_not receive(:new)
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
