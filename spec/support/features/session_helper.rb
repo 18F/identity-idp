@@ -257,6 +257,8 @@ module Features
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
       expect(page).to have_css('img[src*=sp-logos]')
 
+      delete_sp_info_from_session_to_simulate_user_switching_browsers
+
       attempt_to_confirm_email_with_invalid_token(sp_request_id)
 
       expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
@@ -319,6 +321,10 @@ module Features
 
     def click_link_to_resend_the_email
       click_button 'Resend email'
+    end
+
+    def delete_sp_info_from_session_to_simulate_user_switching_browsers
+      page.set_rack_session(sp: {})
     end
 
     def attempt_to_confirm_email_with_invalid_token(request_id)
