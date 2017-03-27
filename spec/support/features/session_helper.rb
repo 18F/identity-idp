@@ -151,6 +151,7 @@ module Features
     end
 
     def acknowledge_and_confirm_recovery_code
+      extra_characters_get_ignored = 'abc123qwerty'
       code_words = []
 
       page.all(:css, '[data-recovery]').map do |node|
@@ -162,7 +163,7 @@ module Features
       click_on button_text, class: 'recovery-code-continue'
 
       code_words.size.times do |index|
-        fill_in "recovery-#{index}", with: code_words[index].downcase
+        fill_in "recovery-#{index}", with: code_words[index].downcase + extra_characters_get_ignored
       end
 
       click_on button_text, class: 'recovery-code-confirm'

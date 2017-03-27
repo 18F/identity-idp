@@ -13,11 +13,11 @@
             .col.col-3.px1.sm-px2
               input(
                 aria-label="#{t('forms.recovery_code.confirmation_label', number: index + 1)}"
-                autocapitalize='none'
+                maxlength="#{word.length}"
                 autocomplete='off'
                 class='col-12 border-dashed field monospace'
                 name="recovery-#{index}"
-                pattern="#{word}"
+                pattern="[#{word.upcase}#{word.downcase}]{#{word.length}}"
                 required=true
                 spellcheck='false'
                 type='text')
