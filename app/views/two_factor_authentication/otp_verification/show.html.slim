@@ -12,7 +12,7 @@ p.mt-tiny.mb0#code-instructs = @presenter.help_text
     = text_field_tag(:code, '', value: @presenter.code_value, required: true,
       autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
       'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
-      autocomplete: 'off')
+      autocomplete: 'off', type: 'tel')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
 = render 'shared/fallback_links', presenter: @presenter
