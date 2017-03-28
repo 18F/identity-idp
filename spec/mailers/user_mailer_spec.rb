@@ -20,6 +20,7 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.email_changed.intro', app: APP_NAME)
       )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
@@ -40,6 +41,7 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.password_changed.intro', app: APP_NAME)
       )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
@@ -63,6 +65,7 @@ describe UserMailer, type: :mailer do
           app: APP_NAME
         )
       )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
@@ -123,6 +126,16 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.phone_changed.intro', app: APP_NAME)
       )
+      expect_email_body_to_have_help_and_contact_links
     end
+  end
+
+  def expect_email_body_to_have_help_and_contact_links
+      expect(mail.html_part.body).to have_link(
+        t('user_mailer.help_link_text'), href: MarketingSite.help_url
+      )
+      expect(mail.html_part.body).to have_link(
+          t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
+      )
   end
 end
