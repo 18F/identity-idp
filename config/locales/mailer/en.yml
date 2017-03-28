@@ -25,8 +25,7 @@ en:
     email_reuse_notice:
       subject: Confirm your email address
     help: >
-      For more help, please contact the %{app} customer contact center via web
-      form at %{link}.
+      For more help, please visit the %{app} Help Center at %{link}.
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
     reset_password:
