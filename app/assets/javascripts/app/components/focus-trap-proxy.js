@@ -2,36 +2,12 @@
 import FocusTrap from 'focus-trap';
 /* eslint-enable */
 
-/* eslint-disable no-param-reassign */
-function merge(target, ...sources) {
-  return sources.reduce((memo, source) => {
-    Object.keys(source).forEach((key) => {
-      const prop = source[key];
-      memo[key] = prop;
-    });
-
-    return memo;
-  }, target);
-}
-/* eslint-disable no-param-reassign */
-
 function FocusTrapProxy() {
-  const NOOP = function() {};
   const focusables = [];
+  let activated = [];
 
   return function makeTrap(el, options = {}) {
-    const safeOnDeactivate = options.onDeactivate || NOOP;
-    let lastActiveTrap = null;
-
-    const focusTrapOptions = merge({}, options, {
-      onDeactivate() {
-        lastActiveTrap = this;
-
-        safeOnDeactivate();
-      },
-    });
-
-    const ownTrap = new FocusTrap(el, focusTrapOptions);
+    const ownTrap = new FocusTrap(el, options);
 
     focusables.push(ownTrap);
 
@@ -39,18 +15,26 @@ function FocusTrapProxy() {
       activate() {
         focusables.forEach(trap => trap.deactivate());
 
-        if (!lastActiveTrap) {
-          lastActiveTrap = ownTrap;
-        }
+        activated.push(ownTrap);
 
         return ownTrap.activate();
       },
 
       deactivate(opts = {}) {
-        if (lastActiveTrap) lastActiveTrap.activate();
-        lastActiveTrap = null;
-
         const deactivatedTrap = ownTrap.deactivate(opts);
+
+        // `deactivate` will return a valid trap object if it is available to be
+        // deactivated. If not, it returns a falsey value. If nothing was deactivated,
+        // bail out.
+        if (!deactivatedTrap) {
+          return false;
+        }
+
+        activated = activated.filter(activatedTrap => activatedTrap !== ownTrap);
+
+        if (activated.length) {
+          activated[activated.length - 1].activate();
+        }
 
         return deactivatedTrap;
       },
