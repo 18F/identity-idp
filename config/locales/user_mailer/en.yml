@@ -35,7 +35,7 @@ en:
         the %{app} %{help_link} or %{contact_link}.
       intro: >
         This email address is already in use, so we cannot create a new %{app} account with it. 
-        If you are not trying to sign in with this email address, you can ignore this message. 
+        If you are not trying to sign in with this email address, you can ignore this message.
         Otherwise, you can use the following link to sign in to %{app}:
       link_text: Go to %{app}
       reset_password: >
