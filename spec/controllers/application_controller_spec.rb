@@ -138,22 +138,4 @@ describe ApplicationController do
       end
     end
   end
-
-  describe '#signed_in_path' do
-    context 'user is not fully authenticated' do
-      it 'redirects to user_two_factor_authentication_path' do
-        allow(subject).to receive(:user_fully_authenticated?).and_return(false)
-
-        expect(subject.signed_in_path).to eq user_two_factor_authentication_path
-      end
-    end
-
-    context 'user is fully authenticated' do
-      it 'redirects to profile_path' do
-        allow(subject).to receive(:user_fully_authenticated?).and_return(true)
-
-        expect(subject.signed_in_path).to eq profile_path
-      end
-    end
-  end
 end

@@ -47,10 +47,6 @@ class ApplicationController < ActionController::Base
     @_decorated_session ||= DecoratedSession.new(sp: current_sp, view_context: view_context).call
   end
 
-  def signed_in_path
-    user_fully_authenticated? ? profile_path : user_two_factor_authentication_path
-  end
-
   private
 
   def disable_caching
@@ -86,6 +82,10 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(user)
     stored_location_for(user) || sp_session[:request_url] || signed_in_path
+  end
+
+  def signed_in_path
+    user_fully_authenticated? ? profile_path : user_two_factor_authentication_path
   end
 
   def render_401
