@@ -10,7 +10,7 @@ const focusTrapAPI = {
   deactivate: stub(),
 };
 
-describe('focusTrap', () => {
+xdescribe('focusTrap', () => {
   let proxy;
 
   beforeEach(function() {
@@ -47,11 +47,12 @@ describe('focusTrap', () => {
 
   context('#deactivate', () => {
     it('proxies to `deactivate` and reactivates the last active trap', () => {
-      const trapA = proxy('', {});
-      const trapB = proxy('', {});
+      const trapA = proxy('foo', {});
+      const trapB = proxy('foo2', {});
 
       trapA.activate();
       trapB.activate();
+      focusTrapAPI.deactivate.returns(trapB);
       trapB.deactivate();
 
       expect(focusTrapAPI.activate.callCount).to.be.equal(3);
