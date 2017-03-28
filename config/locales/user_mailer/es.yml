@@ -1,6 +1,8 @@
 ---
 es:
   user_mailer:
+    help_link_text: NOT TRANSLATED YET
+    contact_link_text: NOT TRANSLATED YET
     contact_request:
       comments: NOT TRANSLATED YET
       comments_header: NOT TRANSLATED YET
