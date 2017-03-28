@@ -13,8 +13,15 @@ class OtpVerificationForm
   attr_reader :code, :user
 
   def valid_direct_otp_code?
-    code_length = Devise.direct_otp_length
-    return false unless code =~ /\A\d{#{code_length}}\Z/
+    return false unless code =~ pattern_matching_otp_code_format
     user.authenticate_direct_otp(code)
+  end
+
+  def pattern_matching_otp_code_format
+    /\A\d{#{otp_code_length}}\Z/
+  end
+
+  def otp_code_length
+    Devise.direct_otp_length
   end
 end

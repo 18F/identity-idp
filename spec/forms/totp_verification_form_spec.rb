@@ -34,7 +34,7 @@ describe TotpVerificationForm do
       end
     end
 
-    context 'when the code is not exactly Devise.otp_length digits' do
+    context 'when the code is not exactly 6 digits' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
         codes = %W(123abc 1234567 abcdef aaaaa\n123456\naaaaaaaaa)
