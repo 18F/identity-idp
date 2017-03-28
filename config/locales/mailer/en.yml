@@ -23,7 +23,7 @@ en:
     email_change_notice:
       subject: Change your email address
     email_reuse_notice:
-      subject: Email already in use
+      subject: Email address associated with an existing account
     help: >
       For more help, please visit the %{app} Help Center at %{link}.
     no_reply: Please do not reply to this message.
