@@ -131,11 +131,11 @@ describe UserMailer, type: :mailer do
   end
 
   def expect_email_body_to_have_help_and_contact_links
-      expect(mail.html_part.body).to have_link(
-        t('user_mailer.help_link_text'), href: MarketingSite.help_url
-      )
-      expect(mail.html_part.body).to have_link(
-          t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
-      )
+    expect(mail.html_part.body).to have_link(
+      t('user_mailer.help_link_text'), href: MarketingSite.help_url
+    )
+    expect(mail.html_part.body).to have_link(
+      t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
+    )
   end
 end
