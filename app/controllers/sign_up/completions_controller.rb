@@ -18,7 +18,7 @@ module SignUp
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
         service_provider_attributes
       )
-      redirect_to after_sign_in_path_for(current_user)
+      redirect_to sp_session[:request_url]
     end
 
     private

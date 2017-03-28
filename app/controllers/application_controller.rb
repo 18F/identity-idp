@@ -81,7 +81,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(user)
-    stored_location_for(user) || sp_session[:request_url] || profile_path
+    stored_location_for(user) || sp_session[:request_url] || signed_in_path
+  end
+
+  def signed_in_path
+    user_fully_authenticated? ? profile_path : user_two_factor_authentication_path
   end
 
   def render_401

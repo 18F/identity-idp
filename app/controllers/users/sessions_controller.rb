@@ -17,14 +17,11 @@ module Users
     def create
       track_authentication_attempt(params[:user][:email])
 
-      if current_user && user_locked_out?(current_user)
-        render 'two_factor_authentication/shared/max_login_attempts_reached'
-        sign_out
-        return
-      end
+      return process_locked_out_user if current_user && user_locked_out?(current_user)
 
       super
       cache_active_profile
+      store_sp_metadata_in_session unless request_id.empty?
     end
 
     def active
@@ -51,6 +48,11 @@ module Users
       elsif current_user
         sign_out
       end
+    end
+
+    def process_locked_out_user
+      render 'two_factor_authentication/shared/max_login_attempts_reached'
+      sign_out
     end
 
     def now
@@ -91,13 +93,21 @@ module Users
     end
 
     def user_signed_in_and_not_locked_out?(user)
-      return false unless current_user.present?
-
+      return false unless current_user
       !user_locked_out?(user)
     end
 
     def user_locked_out?(user)
       UserDecorator.new(user).blocked_from_entering_2fa_code?
+    end
+
+    def store_sp_metadata_in_session
+      return if sp_session[:issuer]
+      StoreSpMetadataInSession.new(session: session, request_id: request_id).call
+    end
+
+    def request_id
+      params[:user].fetch(:request_id, '')
     end
   end
 end

@@ -95,22 +95,7 @@ UtilityFunction:
     exclude:
       - complete_idv_session
   DuplicateMethodCall:
-    exclude:
-      - complete_2fa_confirmation
-      - complete_idv_profile
-      - expect_current_address_in_profile
-      - stub_subject
-      - stub_idv_session
-      - saml_settings
-      - sign_up_and_2fa
-      - raw_xml_response
-      - rotate_attribute_encryption_key
-      - rotate_attribute_encryption_key_with_invalid_queue
-      - rotate_hmac_key
-      - sign_in_user
-      - stub_auth
-      - stub_sign_in
-      - stub_verify_steps_one_and_two
+    enabled: false
   FeatureEnvy:
     enabled: false
   NestedIterators:

@@ -74,6 +74,22 @@ feature 'LOA1 Single Sign On' do
 
       expect(current_path).to eq sign_up_completed_path
     end
+
+    it 'after session timeout, signing in takes user back to SP' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      user = create(:user, :signed_up)
+      saml_authn_request = auth_request.create(saml_settings)
+
+      visit saml_authn_request
+      sp_request_id = ServiceProviderRequest.last.uuid
+      page.set_rack_session(sp: {})
+      visit new_user_session_url(request_id: sp_request_id)
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
+
+      expect(current_url).to eq saml_authn_request
+    end
   end
 
   context 'fully signed up user is signed in with email and password only' do
