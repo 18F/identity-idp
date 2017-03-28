@@ -13,9 +13,16 @@ class TotpVerificationForm
   attr_reader :user, :code
 
   def valid_totp_code?
-    code_length = Devise.otp_length
-    return false unless code =~ /\A\d{#{code_length}}\Z/
+    return false unless code =~ pattern_matching_totp_code_format
     user.authenticate_totp(code)
+  end
+
+  def pattern_matching_totp_code_format
+    /\A\d{#{totp_code_length}}\Z/
+  end
+
+  def totp_code_length
+    Devise.otp_length
   end
 
   def extra_analytics_attributes

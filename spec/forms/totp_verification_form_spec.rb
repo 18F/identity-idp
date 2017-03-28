@@ -34,12 +34,12 @@ describe TotpVerificationForm do
       end
     end
 
-    context 'when the code is not exactly 6 digits' do
+    context 'when the format of the code is not exactly 6 digits' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
-        codes = %W(123abc 1234567 abcdef aaaaa\n123456\naaaaaaaaa)
+        invalid_codes = %W(123abc 1234567 abcdef aaaaa\n123456\naaaaaaaaa)
 
-        codes.each do |code|
+        invalid_codes.each do |code|
           form = TotpVerificationForm.new(user, code)
           result = instance_double(FormResponse)
           allow(user).to receive(:authenticate_totp).with(code).and_return(true)
