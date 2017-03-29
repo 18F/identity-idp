@@ -49,9 +49,9 @@ RSpec.describe SessionDecorator do
     end
   end
 
-  describe '#logo_partial' do
+  describe '#sp_logo' do
     it 'returns nil' do
-      expect(subject.logo_partial).to be_nil
+      expect(subject.sp_logo).to be_nil
     end
   end
 

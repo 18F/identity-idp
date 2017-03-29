@@ -22,7 +22,7 @@ describe 'shared/_nav_branded.html.slim' do
 
   context 'without a SP-logo configured' do
     before do
-      sp_without_logo = build_stubbed(:service_provider)
+      sp_without_logo = build_stubbed(:service_provider, friendly_name: 'No logo no problem')
       decorated_session = ServiceProviderSessionDecorator.new(
         sp: sp_without_logo, view_context: view_context
       )
@@ -30,8 +30,8 @@ describe 'shared/_nav_branded.html.slim' do
       render
     end
 
-    it 'does not display the SP logo' do
-      expect(rendered).to_not have_css("img[alt*='Best SP ever']")
+    it 'displayes the generic  SP logo' do
+      expect(rendered).to have_css("img[alt*='No logo no problem']")
     end
   end
 end

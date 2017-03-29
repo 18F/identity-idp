@@ -56,29 +56,6 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#logo_partial' do
-    context 'logo present' do
-      it 'returns branded logo partial' do
-        sp_with_logo = build_stubbed(:service_provider, logo: 'foo')
-        decorator = ServiceProviderSessionDecorator.new(
-          sp: sp_with_logo, view_context: view_context
-        )
-
-        expect(decorator.logo_partial).to eq 'shared/nav_branded_logo'
-      end
-    end
-
-    context 'logo not present' do
-      it 'is null' do
-        decorator = ServiceProviderSessionDecorator.new(
-          sp: sp, view_context: view_context
-        )
-
-        expect(decorator.logo_partial).to eq 'shared/null'
-      end
-    end
-  end
-
   describe '#sp_name' do
     it 'returns the SP friendly name if present' do
       expect(subject.sp_name).to eq sp.friendly_name
@@ -90,6 +67,29 @@ RSpec.describe ServiceProviderSessionDecorator do
       subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
       expect(subject.sp_name).to eq sp.agency
       expect(subject.sp_name).to_not be_nil
+    end
+  end
+
+  describe '#sp_logo' do
+    context 'service provider has a logo' do
+      it 'returns the logo' do
+        sp_logo = 'real_logo.svg'
+        sp = build_stubbed(:service_provider, logo: sp_logo)
+
+        subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+
+        expect(subject.sp_logo).to eq sp_logo
+      end
+    end
+
+    context 'service provider does not have a logo' do
+      it 'returns the default logo' do
+        sp = build_stubbed(:service_provider, logo: nil)
+
+        subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+
+        expect(subject.sp_logo).to eq 'generic.svg'
+      end
     end
   end
 end
