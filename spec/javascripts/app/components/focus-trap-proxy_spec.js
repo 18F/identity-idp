@@ -3,60 +3,52 @@ const proxyquire = require('proxyquireify')(require);
 /* eslint-enable */
 
 const stub = sinon.stub;
-const focusTrapStub = stub();
 
-const focusTrapAPI = {
-  activate: stub(),
-  deactivate: stub(),
-};
-
-xdescribe('focusTrap', () => {
+describe('focusTrap', () => {
   let proxy;
+  const fakeFocusTrap = {
+    build() {
+      return function() {
+        const thisTrap = sinon.createStubInstance(function() {});
+        thisTrap.deactivate = stub();
+        thisTrap.activate = stub();
 
-  beforeEach(function() {
+        return thisTrap;
+      };
+    },
+  };
+
+  beforeEach(() => {
     proxy = proxyquire('app/components/focus-trap-proxy', {
-      'focus-trap': focusTrapStub,
+      // jump through this crazy hoop so we can spy on the method and ensure
+      // the proxy object is calling the underlying `focusTrap` constructor
+      'focus-trap': () => (fakeFocusTrap.build())(),
     }).default;
-
-    Object.keys(focusTrapAPI).forEach((methodName) => {
-      focusTrapAPI[methodName].reset();
-    });
-
-    focusTrapStub.returns(focusTrapAPI);
   });
 
   it('calls the underlying focusTrap object', () => {
-    proxy('', {});
-    expect(focusTrapStub.calledOnce).to.be.true();
-  });
-
-  context('#activate', () => {
-    it('deactivates all registered traps when activate is called', () => {
-      const trapA = proxy('', {});
-
-      // define a couple more traps
-      proxy('', {});
-      proxy('', {});
-
-      trapA.activate();
-
-      expect(focusTrapAPI.activate.calledOnce).to.be.true();
-      expect(focusTrapAPI.deactivate.callCount).to.equal(3);
-    });
+    sinon.spy(fakeFocusTrap, 'build');
+    proxy('foo');
+    expect(fakeFocusTrap.build.calledOnce).to.be.true();
+    fakeFocusTrap.build.restore();
   });
 
   context('#deactivate', () => {
     it('proxies to `deactivate` and reactivates the last active trap', () => {
-      const trapA = proxy('foo', {});
-      const trapB = proxy('foo2', {});
+      const trapA = proxy('foo1');
+      const trapB = proxy('foo2');
 
-      trapA.activate();
-      trapB.activate();
-      focusTrapAPI.deactivate.returns(trapB);
+      const aFocusTrap = trapA.activate();
+      const bFocusTrap = trapB.activate();
+
+      bFocusTrap.deactivate.returns(bFocusTrap);
+
       trapB.deactivate();
 
-      expect(focusTrapAPI.activate.callCount).to.be.equal(3);
-      expect(focusTrapAPI.deactivate.callCount).to.equal(5);
+      expect(aFocusTrap.activate.callCount).to.be.equal(2);
+      expect(aFocusTrap.deactivate.callCount).to.be.equal(2);
+      expect(bFocusTrap.activate.callCount).to.be.equal(1);
+      expect(bFocusTrap.deactivate.callCount).to.equal(3);
     });
   });
 });
