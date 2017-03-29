@@ -32,7 +32,7 @@ class UserBehavior(locust.TaskSet):
 
         # capture email confirmation link on resulting page
         dom = pyquery.PyQuery(resp.content)
-        link = dom.find('#confirm-now')[0].attrib['href']
+        link = dom.find("a[href*='confirmation_token']")[0].attrib['href']
 
         # click email confirmation link and submit password
         resp = self.client.get(link, auth=auth)
@@ -51,12 +51,13 @@ class UserBehavior(locust.TaskSet):
         # visit phone setup page and submit phone number
         dom = pyquery.PyQuery(resp.content)
         data = {
+            '_method': 'patch',
             'two_factor_setup_form[phone]': '7035550001',
             'two_factor_setup_form[otp_method]': 'sms',
             'authenticity_token': authenticity_token(dom),
             'commit': 'Send security code',
         }
-        resp = self.client.patch('/phone_setup', data=data, auth=auth)
+        resp = self.client.post('/phone_setup', data=data, auth=auth)
         resp.raise_for_status()
 
         # visit enter security code page and submit pre-filled OTP
