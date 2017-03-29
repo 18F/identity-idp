@@ -1,9 +1,13 @@
 class ServiceProviderSessionDecorator
-  delegate :logo, to: :sp, prefix: true
+  DEFAULT_LOGO = 'generic.svg'.freeze
 
   def initialize(sp:, view_context:)
     @sp = sp
     @view_context = view_context
+  end
+
+  def sp_logo
+    sp.logo || DEFAULT_LOGO
   end
 
   def return_to_service_provider_partial
@@ -31,12 +35,6 @@ class ServiceProviderSessionDecorator
 
   def idv_hardfail4_partial
     'verify/hardfail4'
-  end
-
-  def logo_partial
-    return 'shared/nav_branded_logo' if sp.logo
-
-    'shared/null'
   end
 
   def sp_name

@@ -23,8 +23,6 @@ class SessionDecorator
     'shared/null'
   end
 
-  def logo_partial; end
-
   def sp_name; end
 
   def sp_logo; end

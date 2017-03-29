@@ -34,7 +34,7 @@ describe 'openid_connect/authorization/index.html.slim' do
   end
 
   context 'when the service provider does not have a logo' do
-    it 'does not render the logo' do
+    it 'renders the default logo' do
       sp_without_logo = build_stubbed(:service_provider)
       decorated_session = ServiceProviderSessionDecorator.new(
         sp: sp_without_logo, view_context: view_context
@@ -42,7 +42,7 @@ describe 'openid_connect/authorization/index.html.slim' do
       allow(view).to receive(:decorated_session).and_return(decorated_session)
       render
 
-      expect(rendered).to_not have_css('img')
+      expect(rendered).to have_css('img[src*=sp-logos]')
     end
   end
 end
