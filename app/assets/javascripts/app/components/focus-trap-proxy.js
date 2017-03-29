@@ -17,7 +17,9 @@ function FocusTrapProxy() {
 
         activated.push(ownTrap);
 
-        return ownTrap.activate();
+        ownTrap.activate();
+
+        return ownTrap;
       },
 
       deactivate(opts = {}) {
@@ -46,6 +48,6 @@ function FocusTrapProxy() {
   };
 }
 
-const focusTrapProxy = new FocusTrapProxy();
+const focusTrapProxy = FocusTrapProxy.call(FocusTrapProxy);
 
 export default focusTrapProxy;
