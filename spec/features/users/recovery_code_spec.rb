@@ -88,23 +88,6 @@ feature 'View recovery code' do
       expect(current_path).to eq profile_path
     end
   end
-
-  context 'when the session times out and the modal is visible', js: true do
-    it 'does not interfere with the session timeout modal' do
-      allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
-      allow(Figaro.env).to receive(:session_check_delay).and_return('2')
-      allow(Figaro.env).to receive(:session_timeout_warning_seconds).
-        and_return(Devise.timeout_in.to_s)
-
-      sign_in_and_2fa_user
-      click_link t('profile.links.regenerate_recovery_code')
-      click_acknowledge_recovery_code
-      find_link(t('notices.timeout_warning.signed_in.sign_out')).trigger('click')
-      visit profile_path
-
-      expect(current_path).to eq(root_path)
-    end
-  end
 end
 
 def sign_up_and_view_recovery_code
