@@ -49,6 +49,7 @@ test:
   'urn:gov:gsa:openidconnect:sp:server':
     redirect_uri: 'http://localhost:7654/'
     cert: 'saml_test_sp'
+    friendly_name: 'Test SP'
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
