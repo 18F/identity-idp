@@ -2,12 +2,14 @@ require 'rails_helper'
 
 feature 'Email confirmation during sign up' do
   scenario 'confirms valid email and sets valid password' do
+    allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
     reset_email
     email = 'test@example.com'
     sign_up_with(email)
     open_email(email)
     visit_in_email(t('mailer.confirmation_instructions.link_text'))
 
+    expect(page.html).not_to include(t('notices.dap_html'))
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
     expect(page).to have_title t('titles.confirmations.show')
     expect(page).to have_content t('forms.confirmation.show_hdr')
@@ -65,11 +67,13 @@ feature 'Email confirmation during sign up' do
 
   context 'confirmed user is signed out and tries to confirm again' do
     it 'redirects to sign in page with message that user is already confirmed' do
+      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
       sign_up_and_set_password
 
       visit destroy_user_session_url
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
+      expect(page.html).to include(t('notices.dap_html'))
       expect(page).to have_content(
         t('devise.confirmations.already_confirmed', action: 'Please sign in.')
       )
