@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'View recovery code' do
+  include XPathHelper
+
   context 'during sign up' do
     scenario 'user refreshes recovery code page' do
       sign_up_and_view_recovery_code
@@ -48,6 +50,61 @@ feature 'View recovery code' do
       it_behaves_like 'recovery code page'
     end
   end
+
+  context 'with javascript enabled', js: true do
+    let(:invisible_selector) { generate_class_selector('invisible') }
+    let(:accordion_control_selector) { generate_class_selector('accordion-header-control') }
+
+    it 'prompts the user to enter their personal key to confirm they have it' do
+      sign_in_and_2fa_user
+      click_link t('profile.links.regenerate_recovery_code')
+
+      expect_accordion_content_to_be_hidden_by_default
+
+      expand_accordion
+
+      expect_accordion_content_to_become_visible
+
+      click_acknowledge_recovery_code
+
+      expect_confirmation_modal_to_appear_with_first_code_field_in_focus
+
+      press_shift_tab
+
+      expect_back_button_to_be_in_focus
+
+      click_back_button
+
+      expect_to_be_back_on_manage_recovery_code_page_with_continue_button_in_focus
+
+      click_acknowledge_recovery_code
+      submit_form_without_entering_the_code
+
+      expect(current_path).not_to eq profile_path
+
+      visit manage_recovery_code_path
+      acknowledge_and_confirm_recovery_code
+
+      expect(current_path).to eq profile_path
+    end
+  end
+
+  context 'when the session times out and the modal is visible', js: true do
+    it 'does not interfere with the session timeout modal' do
+      allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
+      allow(Figaro.env).to receive(:session_check_delay).and_return('2')
+      allow(Figaro.env).to receive(:session_timeout_warning_seconds).
+        and_return(Devise.timeout_in.to_s)
+
+      sign_in_and_2fa_user
+      click_link t('profile.links.regenerate_recovery_code')
+      click_acknowledge_recovery_code
+      find_link(t('notices.timeout_warning.signed_in.sign_out')).trigger('click')
+      visit profile_path
+
+      expect(current_path).to eq(root_path)
+    end
+  end
 end
 
 def sign_up_and_view_recovery_code
@@ -56,4 +113,58 @@ def sign_up_and_view_recovery_code
   fill_in 'Phone', with: '202-555-1212'
   click_button t('forms.buttons.send_passcode')
   click_button t('forms.buttons.submit.default')
+end
+
+def expect_accordion_content_to_be_hidden_by_default
+  expect(page).to have_xpath("//#{accordion_control_selector}")
+  expect(page).not_to have_content(t('users.recovery_code.help_text'))
+  expect(page).to have_xpath(
+    "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
+  )
+end
+
+def expand_accordion
+  page.find('.accordion-header-control').click
+end
+
+def expect_accordion_content_to_become_visible
+  expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='false']")
+  expect(page).to have_content(t('users.recovery_code.help_text'))
+end
+
+def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
+  expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
+  expect(page).not_to have_xpath("//#{invisible_selector}[@id='recovery-code']")
+  expect(page.evaluate_script('document.activeElement.name')).to eq 'recovery-0'
+end
+
+def press_shift_tab
+  body_element = page.find('body')
+  body_element.send_keys [:shift, :tab]
+end
+
+def expect_back_button_to_be_in_focus
+  expect(page.evaluate_script('document.activeElement.innerText')).to eq(
+    t('forms.buttons.back')
+  )
+end
+
+def click_back_button
+  click_on t('forms.buttons.back')
+end
+
+def expect_to_be_back_on_manage_recovery_code_page_with_continue_button_in_focus
+  expect(page).to have_xpath(
+    "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
+  )
+  expect(page).to have_xpath(
+    "//div[@id='recovery-code-reminder-alert'][@aria-hidden='false']"
+  )
+  expect(page.evaluate_script('document.activeElement.value')).to eq(
+    t('forms.buttons.continue')
+  )
+end
+
+def submit_form_without_entering_the_code
+  click_on t('forms.buttons.continue'), class: 'recovery-code-confirm'
 end
