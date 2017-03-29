@@ -11,7 +11,9 @@ module Upaya
     config.active_record.raise_in_transactional_callbacks = true
     config.autoload_paths << Rails.root.join('app/mailers/concerns')
     config.time_zone = 'UTC'
-    config.middleware.use Rack::Attack
+
+    config.middleware.use Rack::Attack unless Figaro.env.enable_load_testing_mode == 'true'
+
     config.browserify_rails.force = true
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
