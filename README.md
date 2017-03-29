@@ -204,6 +204,14 @@ requests, and the rate at which users are created, modify the `-c`,
 `-n`, and `-r` Locust parameters in `bin/load_test`. Run `locust --help` for
 more details.
 
+By default, the test will target the host running at `http://localhost:3000`.
+To change the target host, set the `TARGET_HOST` environment variable.
+For example:
+
+```
+TARGET_HOST=https://awesome.loadtesting.com make load_test type=create_account
+```
+
 [Locust.io]: http://locust.io/
 [laptop script]: https://github.com/18F/laptop
 

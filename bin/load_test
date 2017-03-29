@@ -34,13 +34,14 @@ brew_is_upgradable() {
 if [ $1 ]
 then
   test_to_run="$1"
+  target="${TARGET_HOST:-http://localhost:3000}"
 
   brew_install_or_upgrade 'libevent'
   source /usr/local/bin/virtualenvwrapper.sh
   mkvirtualenv locust && \
     workon locust &&  \
     pip install -r scripts/load_testing/requirements.txt && \
-    locust -f scripts/load_testing/$test_to_run.py -H http://localhost:3000 --no-web -c 3 -n 27 -r 1
+    locust -f scripts/load_testing/$test_to_run.py -H "$target" --no-web -c 3 -n 27 -r 1
   deactivate
 else
   echo "Usage: load_test [name_of_file]"
