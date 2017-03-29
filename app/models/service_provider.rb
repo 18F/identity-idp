@@ -15,7 +15,7 @@ class ServiceProvider < ActiveRecord::Base
     @ssl_cert ||= begin
       return if cert.blank?
 
-      cert_file = Rails.root.join("certs/sp/#{cert}.crt")
+      cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")
 
       return OpenSSL::X509::Certificate.new(cert) unless File.exist?(cert_file)
 

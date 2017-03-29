@@ -4,7 +4,7 @@ module Idv
     # so make sure our load path includes whichever vendors we have defined.
     if Figaro.env.proofing_vendors
       Figaro.env.proofing_vendors.split(/\W+/).each do |vendor|
-        vendor_path = "#{Rails.root}/vendor/#{vendor}/lib"
+        vendor_path = Rails.root.join('vendor', vendor, 'lib')
         $LOAD_PATH.unshift vendor_path
       end
     end

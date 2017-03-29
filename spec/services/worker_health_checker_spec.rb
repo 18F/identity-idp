@@ -21,7 +21,7 @@ RSpec.describe WorkerHealthChecker do
   end
 
   describe '#enqueue_dummy_jobs' do
-    let(:queues) { YAML.load_file("#{Rails.root}/config/sidekiq.yml")[:queues] }
+    let(:queues) { YAML.load_file(Rails.root.join('config', 'sidekiq.yml'))[:queues] }
 
     subject(:enqueue_dummy_jobs) { WorkerHealthChecker.enqueue_dummy_jobs }
 

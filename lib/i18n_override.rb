@@ -74,7 +74,7 @@ class I18nLocaleTraverser
   end
 
   def traverse_file_for_key(file)
-    yml = YAML.load(File.open(file))[I18n.config.locale.to_s]
+    yml = YAML.safe_load(File.open(file))[I18n.config.locale.to_s]
 
     elements = @key.split('.')
 

@@ -68,7 +68,7 @@ describe ServiceProvider do
 
       it 'calls OpenSSL::X509::Certificate with the SP cert' do
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
-        cert = File.read("#{Rails.root}/certs/sp/saml_test_sp.crt")
+        cert = File.read(Rails.root.join('certs', 'sp', 'saml_test_sp.crt'))
 
         expect(OpenSSL::X509::Certificate).to receive(:new).with(cert)
 

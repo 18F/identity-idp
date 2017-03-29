@@ -470,7 +470,7 @@ describe SamlIdpController do
           element = signature.at('//ds:X509Certificate',
                                  ds: Saml::XML::Namespaces::SIGNATURE)
 
-          crt = File.read("#{Rails.root}/certs/saml.crt")
+          crt = File.read(Rails.root.join('certs', 'saml.crt'))
           expect(element.text).to eq(crt.split("\n")[1...-1].join("\n").delete("\n"))
         end
 

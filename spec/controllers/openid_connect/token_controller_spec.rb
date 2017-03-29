@@ -25,7 +25,7 @@ RSpec.describe OpenidConnect::TokenController do
         exp: 5.minutes.from_now.to_i,
       }
 
-      client_private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys/saml_test_sp.key').read)
+      client_private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
 
       JWT.encode(jwt_payload, client_private_key, 'RS256')
     end

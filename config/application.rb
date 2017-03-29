@@ -9,7 +9,7 @@ module Upaya
   class Application < Rails::Application
     config.active_job.queue_adapter = :sidekiq
     config.active_record.raise_in_transactional_callbacks = true
-    config.autoload_paths << Rails.root.join('app/mailers/concerns')
+    config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
     config.middleware.use Rack::Attack
     config.browserify_rails.force = true
@@ -22,7 +22,7 @@ module Upaya
       config.browserify_rails.commandline_options += ' -p [ proxyquireify/plugin ]'
       # Make sure Browserify is triggered when asked to serve javascript spec files
       config.browserify_rails.paths << lambda do |path|
-        path.start_with?(Rails.root.join('spec/javascripts').to_s)
+        path.start_with?(Rails.root.join('spec', 'javascripts').to_s)
       end
     end
 
