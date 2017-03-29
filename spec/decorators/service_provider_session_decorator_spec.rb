@@ -88,7 +88,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
         subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
 
-        expect(subject.sp_logo).to eq ServiceProviderSessionDecorator::DEFAULT_LOGO
+        expect(subject.sp_logo).to eq 'generic.svg'
       end
     end
   end
