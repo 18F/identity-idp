@@ -113,7 +113,6 @@ feature 'Password Recovery' do
       trigger_reset_password_and_click_email_link(@user.email)
     end
 
-
     it 'keeps user signed out after they successfully reset their password' do
       fill_in 'New password', with: 'NewVal!dPassw0rd'
       click_button t('forms.passwords.edit.buttons.submit')
