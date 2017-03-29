@@ -6,9 +6,11 @@ module KeyRotator
       self.encryptor = Pii::PasswordEncryptor.new
     end
 
+    # rubocop:disable Rails/SkipsModelValidations
     def rotate
       user.update_columns(encrypted_attributes)
     end
+    # rubocop:enable Rails/SkipsModelValidations
 
     private
 

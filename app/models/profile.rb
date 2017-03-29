@@ -15,12 +15,14 @@ class Profile < ActiveRecord::Base
 
   attr_reader :recovery_code
 
+  # rubocop:disable Rails/SkipsModelValidations
   def activate
     transaction do
       Profile.where('user_id=?', user_id).update_all(active: false)
       update!(active: true, activated_at: Time.zone.now, deactivation_reason: nil)
     end
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)

@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Zxcvbn do
   describe '#src' do
     it 'defaults to library from npm' do
-      default = Rails.root.join('node_modules/zxcvbn/dist/zxcvbn.js')
+      default = Rails.root.join('node_modules', 'zxcvbn', 'dist', 'zxcvbn.js')
 
       data_path = Zxcvbn::Tester.new.data_path
 

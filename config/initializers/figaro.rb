@@ -1,4 +1,4 @@
-require File.join(Rails.root, 'lib', 'config_validator')
+require Rails.root.join('lib', 'config_validator.rb')
 
 Figaro.require_keys(
   'attribute_cost',

@@ -12,6 +12,7 @@ module KeyRotator
 
     private
 
+    # rubocop:disable Rails/SkipsModelValidations
     def rotate_email_fingerprint(user)
       ee = EncryptedAttribute.new_from_decrypted(user.email)
       user.update_columns(email_fingerprint: ee.fingerprint)
@@ -21,5 +22,6 @@ module KeyRotator
       signature = Pii::Fingerprinter.fingerprint(pii_attributes.ssn.to_s)
       profile.update_columns(ssn_signature: signature)
     end
+    # rubocop:enable Rails/SkipsModelValidations
   end
 end
