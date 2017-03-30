@@ -27,7 +27,7 @@ class UserBehavior(locust.TaskSet):
             'authenticity_token': authenticity_token(dom),
             'commit': 'Submit',
         }
-        resp = self.client.post('/sign_up/register', data=data, auth=auth)
+        resp = self.client.post('/sign_up/enter_email', data=data, auth=auth)
         resp.raise_for_status()
 
         # capture email confirmation link on resulting page
