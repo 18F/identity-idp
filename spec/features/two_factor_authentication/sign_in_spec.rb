@@ -149,7 +149,7 @@ feature 'Two Factor Authentication' do
         signin(user.email, user.password)
 
         expect(page).to have_content t('devise.two_factor_authentication.' \
-                                       'max_login_attempts_reached')
+                                       'max_otp_login_attempts_reached')
 
         visit profile_path
         expect(current_path).to eq root_path
@@ -194,25 +194,6 @@ feature 'Two Factor Authentication' do
       click_link t('links.cancel')
 
       expect(current_path).to eq root_path
-    end
-  end
-
-  describe 'signing in via recovery code' do
-    it 'displays new recovery code and redirects to profile after acknowledging' do
-      user = create(:user, :signed_up)
-      sign_in_before_2fa(user)
-
-      code = RecoveryCodeGenerator.new(user).create
-
-      click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
-
-      enter_recovery_code(code: code)
-
-      click_submit_default
-      click_acknowledge_recovery_code
-
-      expect(user.reload.recovery_code).to_not eq code
-      expect(current_path).to eq profile_path
     end
   end
 

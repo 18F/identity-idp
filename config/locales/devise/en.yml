@@ -123,10 +123,13 @@ en:
       invalid_otp: >
         That security code is invalid. You can try entering it again or request a new
         one-time security code.
-      invalid_recovery_code: That personal key is invalid.
-      max_login_attempts_reached: >
+      invalid_personal_key: That personal key is invalid.
+      max_otp_login_attempts_reached: >
         Your account is temporarily locked because you have entered the one-time
         security code incorrectly too many times.
+      max_personal_key_login_attempts_reached: >
+        Your account is temporarily locked because you have entered the personal key
+        incorrectly too many times.
       otp_method:
         instruction: You can change your choice the next time you sign in
         sms: Text message (SMS)

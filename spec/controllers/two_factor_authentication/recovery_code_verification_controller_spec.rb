@@ -74,7 +74,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
         post :create, payload
 
         expect(response).to render_template(:show)
-        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_recovery_code')
+        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_personal_key')
       end
 
       it 'tracks the max attempts event' do

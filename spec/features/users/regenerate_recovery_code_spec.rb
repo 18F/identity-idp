@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'View recovery code' do
   include XPathHelper
+  include RecoveryCodeHelper
 
   context 'during sign up' do
     scenario 'user refreshes recovery code page' do

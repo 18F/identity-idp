@@ -51,7 +51,7 @@ module Users
     end
 
     def process_locked_out_user
-      render 'two_factor_authentication/shared/max_login_attempts_reached'
+      render 'two_factor_authentication/shared/max_login_attempts_reached', locals: { type: 'otp' }
       sign_out
     end
 
