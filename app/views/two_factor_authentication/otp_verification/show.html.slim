@@ -14,7 +14,6 @@ h1.h3.my0 = @presenter.header
       autocomplete: 'off')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
-p.mt3.mb1#code-instructs = @presenter.help_text
 = render 'shared/fallback_links', presenter: @presenter
 
 - if confirmation_for_phone_change? || reauthn?

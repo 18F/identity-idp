@@ -13,7 +13,6 @@ h1.h3.my0 = @presenter.header
       'aria-describedby': 'code-instructs', maxlength: Devise.otp_length, autocomplete: 'off'
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
 
-p.mt3.mb1#code-instructs = @presenter.help_text
 = render 'shared/fallback_links', presenter: @presenter
 = render 'shared/cancel', link: reauthn? ? profile_path : destroy_user_session_path
 
