@@ -7,7 +7,7 @@ feature 'Phone confirmation during sign up' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
-      click_button t('forms.buttons.send_passcode')
+      click_send_security_code
 
       expect(SmsOtpSenderJob).to have_received(:perform_later).with(
         code: @user.reload.direct_otp,
@@ -59,7 +59,7 @@ feature 'Phone confirmation during sign up' do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: @existing_user.phone
-      click_button t('forms.buttons.send_passcode')
+      click_send_security_code
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do
@@ -73,7 +73,7 @@ feature 'Phone confirmation during sign up' do
 
     it 'does not confirm the new number with an invalid code' do
       fill_in 'code', with: 'foobar'
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       expect(@user.reload.phone_confirmed_at).to be_nil
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')

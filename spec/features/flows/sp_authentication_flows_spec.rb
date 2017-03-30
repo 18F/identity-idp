@@ -70,7 +70,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
                 context 'with SMS delivery' do
                   before do
                     choose t('devise.two_factor_authentication.otp_method.sms')
-                    click_button t('forms.buttons.send_passcode')
+                    click_send_security_code
                   end
 
                   it 'prompts for OTP' do
@@ -81,7 +81,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
                 context 'with Voice delivery' do
                   before do
                     choose t('devise.two_factor_authentication.otp_method.voice')
-                    click_button t('forms.buttons.send_passcode')
+                    click_send_security_code
                   end
 
                   it 'prompts for OTP' do

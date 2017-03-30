@@ -94,8 +94,8 @@ def sign_up_and_view_recovery_code
   allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
   sign_up_and_set_password
   fill_in 'Phone', with: '202-555-1212'
-  click_button t('forms.buttons.send_passcode')
-  click_button t('forms.buttons.submit.default')
+  click_send_security_code
+  click_submit_default
 end
 
 def expect_accordion_content_to_be_hidden_by_default

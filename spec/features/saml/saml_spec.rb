@@ -34,7 +34,7 @@ feature 'saml api' do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button t('forms.buttons.send_passcode')
+        click_send_security_code
 
         expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
       end

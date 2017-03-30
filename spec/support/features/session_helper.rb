@@ -12,7 +12,7 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      click_send_security_code
       enter_2fa_code
       click_acknowledge_recovery_code
       user
@@ -47,7 +47,7 @@ module Features
 
       visit profile_path
       fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      click_send_security_code
       user
     end
 
@@ -110,8 +110,8 @@ module Features
       )
     end
 
-    def select_sms_delivery
-      click_button t('forms.buttons.send_passcode')
+    def click_send_security_code
+      click_button t('forms.buttons.send_security_code')
     end
 
     def enter_2fa_code
@@ -350,7 +350,7 @@ module Features
 
     def set_up_2fa_with_valid_phone
       fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      click_send_security_code
     end
   end
 end

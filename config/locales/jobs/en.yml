@@ -3,8 +3,8 @@ en:
   jobs:
     voice_otp_sender_job:
       message_final: >
-        Hello! Your login.gov one time passcode is, %{code}, again, your
-        passcode is, %{code}, goodbye!
+        Hello! Your login.gov one time security code is, %{code}, again, your
+        security code is, %{code}, goodbye!
       message_repeat: >
-        Hello! Your login.gov one time passcode is, %{code}, again, your
-        passcode is, %{code}. Press 1 to repeat your code.
+        Hello! Your login.gov one time security code is, %{code}, again, your
+        security code is, %{code}. Press 1 to repeat your code.

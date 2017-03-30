@@ -9,7 +9,7 @@ en:
       email: Edit your email address
       password: Edit your password
       phone: Edit your phone number
-    enter_2fa_code: Enter the secure one-time passcode
+    enter_2fa_code: Enter the secure one-time security code
     loa3_verified:
       'true': You have verified your identity with %{app}
       'false': You have created your account with %{app}
@@ -24,7 +24,7 @@ en:
       new: Sign up for a account
       start: Get started
     totp_setup:
-      new: Enter the secure one-time passcode
+      new: Enter the secure one-time security code
       start: Set up two-factor authentication
     two_factor_setup: Two-factor authentication setup
     verify_email: Check your email

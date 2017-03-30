@@ -13,7 +13,7 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('devise.two_factor_authentication.two_factor_setup')
 
-      send_passcode_without_entering_phone_number
+      send_security_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
 
@@ -38,24 +38,24 @@ feature 'Two Factor Authentication' do
     visit profile_path
   end
 
-  def send_passcode_without_entering_phone_number
-    click_button t('forms.buttons.send_passcode')
+  def send_security_code_without_entering_phone_number
+    click_send_security_code
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
     fill_in 'Phone', with: ''
-    click_button t('forms.buttons.send_passcode')
+    click_send_security_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
     fill_in 'Phone', with: 'five one zero five five five four three two one'
-    click_button t('forms.buttons.send_passcode')
+    click_send_security_code
   end
 
   def submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
     fill_in 'Phone', with: '555-555-1212'
     choose 'Phone call'
-    click_button t('forms.buttons.send_passcode')
+    click_send_security_code
   end
 
   describe 'When the user has already set up 2FA' do

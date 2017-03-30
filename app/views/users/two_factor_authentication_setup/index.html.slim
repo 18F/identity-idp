@@ -26,6 +26,6 @@ p.mt-tiny.mb0
           = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
           span.indicator
           = t('devise.two_factor_authentication.otp_method.voice')
-  = f.button :submit, t('forms.buttons.send_passcode')
+  = f.button :submit, t('forms.buttons.send_security_code')
 
 = render 'shared/cancel', link: destroy_user_session_path
