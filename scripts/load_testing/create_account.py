@@ -54,12 +54,12 @@ class UserBehavior(locust.TaskSet):
             'two_factor_setup_form[phone]': '7035550001',
             'two_factor_setup_form[otp_method]': 'sms',
             'authenticity_token': authenticity_token(dom),
-            'commit': 'Send passcode',
+            'commit': 'Send security code',
         }
         resp = self.client.patch('/phone_setup', data=data, auth=auth)
         resp.raise_for_status()
 
-        # visit enter passcode page and submit pre-filled OTP
+        # visit enter security code page and submit pre-filled OTP
         dom = pyquery.PyQuery(resp.content)
         otp_code = dom.find('input[name="code"]')[0].attrib['value']
         data = {

@@ -11,7 +11,7 @@ en:
     phone_confirmation:
       auth_app_fallback_html: ' or %{link}.'
       fallback_to_sms_html: Send me a text message with the code instead
-      fallback_to_voice_html: If you can't get text message right now, you can get a passcode via %{link}
+      fallback_to_voice_html: If you can't get text message right now, you can get a security code via %{link}
     privacy_policy: Privacy Policy
     remove: Remove
     resend: Resend email
@@ -21,9 +21,9 @@ en:
     cancel_account_creation: ‹ Cancel account creation
     cancel_idv: ‹ Cancel account verification
     two_factor_authentication:
-      app: get a passcode via authentication app
-      voice: get a passcode via phone call
-      sms: get a passcode via text message
+      app: get a security code via authentication app
+      voice: get a security code via phone call
+      sms: get a security code via text message
       resend_code:
         sms: Get another text message
         voice: Get another phone call
