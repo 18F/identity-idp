@@ -1,7 +1,6 @@
 - title t('titles.enter_2fa_code')
 
 h1.h3.my0 = @presenter.header
-p.mt-tiny.mb0#code-instructs = @presenter.help_text
 
 = form_tag(:login_two_factor_authenticator, method: :post, role: 'form', class: 'mt3 sm-mt4') do
   - if reauthn?
