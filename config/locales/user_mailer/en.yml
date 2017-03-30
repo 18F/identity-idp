@@ -3,14 +3,6 @@ en:
   user_mailer:
     help_link_text: Help Center
     contact_link_text: contact us
-    contact_request:
-      comments: No comments left
-      comments_header: 'Comments:'
-      email_or_phone: 'Email address or phone number:'
-      'no': 'no'
-      talk_about_experience: Talk about experience?
-      want_to_learn: Learn more?
-      'yes': 'yes'
     email_changed:
       help: >
         If you did not change your email address, please visit the %{app}

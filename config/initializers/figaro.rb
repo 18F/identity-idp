@@ -31,7 +31,6 @@ Figaro.require_keys(
   'secret_key_base',
   'session_encryption_key',
   'session_timeout_in_minutes',
-  'support_email',
   'twilio_accounts',
   'twilio_record_voice',
   'use_kms',

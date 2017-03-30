@@ -43,7 +43,6 @@ session_check_frequency: '30'
 
 stale_session_window: '180'
 
-support_email: 'hello@login.gov'
 use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'

@@ -69,46 +69,6 @@ describe UserMailer, type: :mailer do
     end
   end
 
-  describe 'contact_request' do
-    details = {
-      'want_learn' => '1',
-      'want_tell' => '0',
-      'email_or_tel' => 'thomas jefferson',
-      'comments' => 'usa!',
-    }
-
-    let(:mail) { UserMailer.contact_request(details) }
-
-    it_behaves_like 'a system email'
-
-    it 'sends to the current email' do
-      expect(mail.to).to eq [Figaro.env.support_email]
-    end
-
-    it 'renders the subject' do
-      expect(mail.subject).to eq t('mailer.contact_request.subject')
-    end
-
-    it 'renders the body' do
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.email_or_phone')}#{details['email_or_tel']}"
-      )
-
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.want_to_learn')}#{t('user_mailer.contact_request.yes')}"
-      )
-
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.talk_about_experience')}" \
-        "#{t('user_mailer.contact_request.no')}"
-      )
-
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.comments_header')}#{details['comments']}"
-      )
-    end
-  end
-
   describe 'phone_changed' do
     let(:mail) { UserMailer.phone_changed(user) }
 

@@ -18,8 +18,6 @@ en:
         %{intro} To confirm your email address, please click the link below
         or copy and paste the entire link into your browser.
       link_text: Confirm this email address
-    contact_request:
-      subject: Contact request
     email_change_notice:
       subject: Change your email address
     email_reuse_notice:
