@@ -10,8 +10,6 @@ const inputs = [].slice.call(formEl.elements).filter((el) => el.type === 'text')
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 
-const reminderEl = document.getElementById('recovery-code-reminder-alert');
-
 let isInvalidForm = false;
 
 // The following methods are strictly fallbacks for IE < 11. There is limited
@@ -63,13 +61,6 @@ function handleSubmit(event) {
   }
 }
 
-function showReminderAlert() {
-  if (reminderEl.className.indexOf('display-none')) {
-    reminderEl.setAttribute('aria-hidden', false);
-    reminderEl.classList.remove('display-none');
-  }
-}
-
 function show(event) {
   event.preventDefault();
 
@@ -85,7 +76,6 @@ function hide() {
   modal.on('hide', function() {
     resetForm();
     recoveryCodeContainer.classList.remove('invisible');
-    showReminderAlert();
   });
 
   modal.hide();

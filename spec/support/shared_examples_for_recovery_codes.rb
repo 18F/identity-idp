@@ -1,16 +1,6 @@
 shared_examples_for 'recovery code page' do
   include XPathHelper
 
-  it 'hides confirmation importance reminder text by default' do
-    expect(page).to have_xpath(
-      "//div[@id='recovery-code-reminder-alert'][@aria-hidden='true']", visible: false
-    )
-  end
-
-  it 'contains correct confirmation importance reminder text' do
-    expect(page).to have_content(t('users.recovery_code.reminder'))
-  end
-
   context 'regenerating recovery code with `Get another code` button' do
     scenario 'displays a flash message and a new code' do
       old_code = @user.reload.recovery_code

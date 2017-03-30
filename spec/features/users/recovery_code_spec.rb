@@ -140,9 +140,6 @@ def expect_to_be_back_on_manage_recovery_code_page_with_continue_button_in_focus
   expect(page).to have_xpath(
     "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
   )
-  expect(page).to have_xpath(
-    "//div[@id='recovery-code-reminder-alert'][@aria-hidden='false']"
-  )
   expect(page.evaluate_script('document.activeElement.value')).to eq(
     t('forms.buttons.continue')
   )
