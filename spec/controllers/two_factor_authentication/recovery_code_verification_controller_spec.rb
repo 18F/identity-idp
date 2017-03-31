@@ -78,6 +78,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       end
 
       it 'tracks the max attempts event' do
+        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         properties = {
           success: false,
           errors: {},
@@ -86,11 +87,10 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
 
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).exactly(3).times.
-          with(Analytics::MULTI_FACTOR_AUTH, properties)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, payload }
+        post :create, payload
       end
     end
   end

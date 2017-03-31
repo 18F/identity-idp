@@ -94,6 +94,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
     context 'when the user has reached the max number of OTP attempts' do
       it 'tracks the event' do
+        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         sign_in_before_2fa
 
         properties = {
@@ -106,11 +107,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).exactly(3).times.
-          with(Analytics::MULTI_FACTOR_AUTH, properties)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, code: '12345', delivery_method: 'sms' }
+        post :create, code: '12345', delivery_method: 'sms'
       end
     end
 

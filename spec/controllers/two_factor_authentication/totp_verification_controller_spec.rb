@@ -65,22 +65,23 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user has reached the max number of TOTP attempts' do
       it 'tracks the event' do
+        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         subject.current_user.otp_secret_key = @secret
 
         stub_analytics
+
         attributes = {
           success: false,
           errors: {},
           multi_factor_auth_method: 'totp',
         }
 
-        expect(@analytics).to receive(:track_event).exactly(3).times.
-          with(Analytics::MULTI_FACTOR_AUTH, attributes)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, code: '12345' }
+        post :create, code: '12345'
       end
     end
 
