@@ -202,5 +202,5 @@ en:
       sessions: First, tell us about yourself
       session:
         phone: Get a code by telephone
-        review: Save your verified data by entering your password
+        review: Encrypt your verified data by entering your password
       verify_mail: Your letter is on its way
