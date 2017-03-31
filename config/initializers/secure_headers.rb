@@ -44,8 +44,13 @@ SecureHeaders::Configuration.default do |config|
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
     httponly: true, # mark all cookies as "HttpOnly"
+    # We need to set the SameSite setting to "Lax", not "Strict" due to a bug
+    # in Chrome that resets the session in the new browser tab that opens when
+    # the email confirmation link is clicked. Resetting the session means losing
+    # all the SP info we stored there, meaning during account creation, a user
+    # will be sent to the profile page instead of back to the SP.
     samesite: {
-      strict: true # mark all cookies as SameSite=Strict.
+      lax: true # mark all cookies as SameSite=Lax.
     },
   }
 
