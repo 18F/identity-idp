@@ -25,7 +25,7 @@ module TwoFactorAuthentication
         re_encrypt_profile_recovery_pii if password_reset_profile.present?
         handle_valid_otp
       else
-        handle_invalid_otp(type: 'recovery_code')
+        handle_invalid_otp(type: 'personal_key')
       end
     end
 

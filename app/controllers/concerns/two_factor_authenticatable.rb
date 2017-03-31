@@ -44,12 +44,12 @@ module TwoFactorAuthenticatable
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user
+  def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
     sign_out
 
-    render 'two_factor_authentication/shared/max_login_attempts_reached'
+    render 'two_factor_authentication/shared/max_login_attempts_reached', locals: { type: type }
   end
 
   def require_current_password
@@ -99,7 +99,7 @@ module TwoFactorAuthenticatable
     flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
     if decorated_user.blocked_from_entering_2fa_code?
-      handle_second_factor_locked_user
+      handle_second_factor_locked_user(type)
     else
       render_show_after_invalid
     end

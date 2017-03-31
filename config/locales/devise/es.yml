@@ -106,8 +106,11 @@ es:
       invalid_otp:
         Esa contraseña no es válida. Puede intentar volver a ingresarlo o solicitar una nueva
         Código de acceso único.
-      invalid_recovery_code: Ese código de recuperación no es válido.
-      max_login_attempts_reached:
+      invalid_personal_key: Ese código de recuperación no es válido.
+      max_otp_login_attempts_reached:
+        Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
+        de forma incorrecta demasiadas veces.
+      max_personal_key_login_attempts_reached:
         Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.
       otp_method:
