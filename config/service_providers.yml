@@ -285,3 +285,28 @@ production:
     cert: 'identity_dashboard_cert'
     attribute_bundle:
       - email
+
+  # CBP Jobs
+  'urn:gov:dhs.cbp.jobs:openidconnect:cert':
+    redirect_uri: 'https://careers-cert.cbp.dhs.gov/hrm/app'
+    friendly_name: 'CBP Jobs'
+    agency: 'DHS'
+    logo: 'cbp.png'
+
+  'urn:gov:dhs.cbp.jobs:openidconnect:cert:app':
+    redirect_uri: 'gov.dhs.cbp.jobs.applicant.cert://result'
+    friendly_name: 'CBP Jobs'
+    agency: 'DHS'
+    logo: 'cbp.png'
+
+  'urn:gov:dhs.cbp.jobs:openidconnect:prod':
+    redirect_uri: 'https://careers.cbp.dhs.gov/hrm/app'
+    friendly_name: 'CBP Jobs'
+    agency: 'DHS'
+    logo: 'cbp.png'
+
+  'urn:gov:dhs.cbp.jobs:openidconnect:prod:app':
+    redirect_uri: 'gov.dhs.cbp.jobs.applicant://result'
+    friendly_name: 'CBP Jobs'
+    agency: 'DHS'
+    logo: 'cbp.png'
