@@ -41,7 +41,6 @@ feature 'Password Recovery' do
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
-      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
       user = create(:user, :signed_up)
 
       visit root_path
@@ -64,7 +63,6 @@ feature 'Password Recovery' do
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(page.html).not_to include(t('notices.dap_html'))
       expect(current_path).to eq edit_user_password_path
     end
   end

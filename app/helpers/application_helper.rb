@@ -42,7 +42,7 @@ module ApplicationHelper
   end
 
   def page_with_trust?
-    current_page?(controller: 'sign_up/passwords', action: 'new') ||
+    current_page?(controller: 'sign_up/email_confirmations', action: 'create') ||
       current_page?(controller: 'users/reset_passwords', action: 'edit')
   end
 
