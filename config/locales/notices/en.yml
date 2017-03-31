@@ -47,10 +47,7 @@ en:
     terms_of_service:
       link: Security Consent & Privacy Act Statement
       text_html: >
-        By continuing, I agree to %{app}’s %{link}. Providing
-        information is voluntary. It is used to help you access government services.
-        login.gov uses industry-standard monitoring and security practices to
-        protect your data.
+        By continuing, you agree to %{app}’s %{link}.
     totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
     use_diff_email:
