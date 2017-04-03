@@ -9,7 +9,11 @@
 }
 
 .modal-open {
+  left: 0;
   overflow: hidden;
+  position: fixed;
+  right: 0;
+  width: 100%;
 
   .modal {
     overflow-x: hidden;
@@ -23,6 +27,7 @@
   left: 0;
   outline: 0;
   overflow: hidden;
+  -webkit-overflow-scrolling: auto;
   position: fixed;
   right: 0;
   top: 0;
