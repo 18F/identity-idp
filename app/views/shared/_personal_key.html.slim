@@ -17,7 +17,7 @@ p.mt-tiny.mb0
 = accordion('recovery-code-info', t('users.recovery_code.help_text_header')) do
   = simple_format(t('users.recovery_code.help_text'))
 
-= button_to t('forms.buttons.continue'), sign_up_recovery_code_path,
+= button_to t('forms.buttons.continue'), update_path,
           class: 'btn btn-primary btn-wide mb1 recovery-code-continue',
           'data-toggle': 'modal'
 
