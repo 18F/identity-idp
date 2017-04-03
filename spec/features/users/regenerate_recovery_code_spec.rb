@@ -112,7 +112,7 @@ def expand_accordion
 end
 
 def expect_accordion_content_to_become_visible
-  expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='false']")
+  expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
   expect(page).to have_content(t('users.recovery_code.help_text'))
 end
 

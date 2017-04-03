@@ -1,7 +1,5 @@
-import { Modal } from '../app/components/index';
-
 const modalSelector = '#personal-key-confirm';
-const modal = new Modal({ el: modalSelector });
+const modal = new window.LoginGov.Modal({ el: modalSelector });
 
 const recoveryCodeContainer = document.getElementById('recovery-code');
 const recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
