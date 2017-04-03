@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170321170516) do
+ActiveRecord::Schema.define(version: 20170321170517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -142,9 +142,7 @@ ActiveRecord::Schema.define(version: 20170321170516) do
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email",            limit: 255
     t.integer  "role"
-    t.string   "otp_secret_key",               limit: 255
     t.integer  "second_factor_attempts_count",             default: 0
-    t.string   "phone_plain",                  limit: 255
     t.string   "uuid",                         limit: 255,              null: false
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
@@ -174,7 +172,6 @@ ActiveRecord::Schema.define(version: 20170321170516) do
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true, using: :btree
   add_index "users", ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true, using: :btree
-  add_index "users", ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unconfirmed_email"], name: "index_users_on_unconfirmed_email", using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", using: :btree
