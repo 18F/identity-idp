@@ -1,6 +1,4 @@
-import { Modal } from '../app/components/index';
-
-const modal = new Modal({ el: '#cancel-action-modal' });
+const modal = new window.LoginGov.Modal({ el: '#cancel-action-modal' });
 const modalTrigger = document.getElementById('auth-flow-cancel');
 const modalDismiss = document.getElementById('loa-continue');
 
