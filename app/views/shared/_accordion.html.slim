@@ -3,13 +3,16 @@
     class=('display-none' if options[:hide_header])
     role="heading"
   )
-    p.accordion-header-control.mb0.mr2(
+    .accordion-header-control(
       aria-controls="#{target_id}"
       aria-expanded="true"
       role="button"
       tabindex="0"
     )
-      = header_text
+      span.mb0.mr2
+        = header_text
+    = image_tag asset_url('plus.svg'), width: 16, class: 'plus-icon'
+    = image_tag asset_url('minus.svg'), width: 16, class: 'minus-icon'
   .accordion-content.accordion-init.clearfix(
     id="#{target_id}"
     role="region"
