@@ -36,14 +36,8 @@ en:
           For your security, in %{time_left_in_session} we will automatically
           cancel your sign in.
     session_cleared: >
-      For your security, we refresh the page and clear out any information you typed into the 
-      form fields if you don't submit the form within %{minutes} minutes. 
-    session_cleared_with_sp: >
-      For your security, your request from %{sp} expires after %{minutes} minutes if you don't
-      submit the form. Then you'll have to start again from %{link}.
-    sign_in_consent:
-      link: Security Consent & Privacy Act Statement.
-      text: By signing in, you agree to %{app}’s %{link}
+      For your security, we refresh the page and clear out any information you typed into the
+      form fields if you don't submit the form within %{minutes} minutes.
     signed_up_but_unconfirmed:
       first_paragraph_end: >
         with a link to confirm your email address. Follow the link to continue
@@ -51,12 +45,7 @@ en:
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive it?
     terms_of_service:
-      link: Security Consent & Privacy Act Statement
-      text_html: >
-        By continuing, I agree to %{app}’s %{link}. Providing
-        information is voluntary. It is used to help you access government services.
-        login.gov uses industry-standard monitoring and security practices to
-        protect your data.
+      link: Security Practices and Privacy Act Statement
     totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
     use_diff_email:
