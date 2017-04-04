@@ -26,16 +26,12 @@ es:
         sign_out: NOT TRANSLATED YET
         message_html: NOT TRANSLATED YET
     session_cleared: NOT TRANSLATED YET
-    sign_in_consent:
-      link: NOT TRANSLATED YET
-      text: NOT TRANSLATED YET
     signed_up_but_unconfirmed:
       first_paragraph_end: NOT TRANSLATED YET
       first_paragraph_start: NOT TRANSLATED YET
       no_email_sent_explanation_start: NOT TRANSLATED YET
     terms_of_service:
       link: NOT TRANSLATED YET
-      text_html: NOT TRANSLATED YET
     totp_configured: NOT TRANSLATED YET
     totp_disabled: NOT TRANSLATED YET
     use_diff_email:

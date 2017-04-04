@@ -35,9 +35,6 @@ en:
     session_cleared: >
       For your security, we refresh the page and clear out any information you typed into the
       form fields if you don't submit the form within %{minutes} minutes.
-    sign_in_consent:
-      link: Security Consent & Privacy Act Statement.
-      text: By signing in, you agree to %{app}’s %{link}
     signed_up_but_unconfirmed:
       first_paragraph_end: >
         with a link to confirm your email address. Follow the link to continue
@@ -45,9 +42,7 @@ en:
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive it?
     terms_of_service:
-      link: Security Consent & Privacy Act Statement
-      text_html: >
-        By continuing, you agree to %{app}’s %{link}.
+      link: Security Practices and Privacy Act Statement
     totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
     use_diff_email:
