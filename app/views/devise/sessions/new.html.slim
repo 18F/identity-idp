@@ -10,8 +10,8 @@ h1.h3.my0 = decorated_session.new_session_heading
   = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] }
   = f.button :submit, t('links.next'), class: 'btn-wide'
 
-- link = link_to t('notices.sign_in_consent.link'), MarketingSite.privacy_url, target: '_blank'
-p.my3 == t('notices.sign_in_consent.text', app: APP_NAME, link: link)
+p.my3
+  = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
 
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
