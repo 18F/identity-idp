@@ -15,7 +15,7 @@
 
 h1.hide = t('titles.profile')
 
-h2.h3.my0
+h2.h3.mt0.mb4
   = t('headings.profile.login_info')
 
 - if @view_model.decrypted_pii
@@ -25,59 +25,44 @@ h2.h3.my0
   = render 'verified_profile_information', decrypted_pii: @view_model.decrypted_pii
 
 
-.border-box.border.border-blue-gray.rounded-md
-  .bg-blue-light.pb1.pt0.px2
-    = t('profile.login').upcase
-    = image_tag asset_url('sign-in.svg'), width: 20, class: 'ml2 mt2'
-  .p2.clearfix
-    = render 'profile_datum_cell',
-      data_type: t('.email'),
-      content: current_user.email,
-      path: manage_email_path,
-      link_text: t('forms.buttons.edit')
+.border-box.border.border-blue-gray.rounded-md.mb3
+  .bg-blue-light.pb1.pt1.px2.h6.caps
+    = t('profile.login')
+    = image_tag asset_url('sign-in.svg'), width: 13, class: 'ml2 align-middle'
+  
+  = render 'profile_datum_cell',
+    data_type: t('.email'),
+    content: current_user.email,
+    path: manage_email_path
   .border.border-top.border-blue-light
-  .p2.clearfix
-    = render 'profile_datum_cell',
-      data_type: t('.password'),
-      content: 12.times.collect { '&#8226;' }.join('').html_safe,
-      path: manage_password_path,
-      link_text: t('forms.buttons.edit')
+  = render 'profile_datum_cell',
+    data_type: t('.password'),
+    content: 12.times.collect { '&#8226;' }.join('').html_safe,
+    path: manage_password_path
 
+.border-box.border.border-blue-gray.rounded-md
+  .bg-blue-light.pb1.pt1.px2.h6.caps
+    = t('headings.profile.two_factor')
+    = image_tag asset_url('2fa.svg'), width: 10, class: 'ml2 align-middle'
+  
+  = render 'profile_datum_cell',
+    data_type: t('.phone'),
+    content: current_user.phone,
+    path: manage_phone_path
+  .border.border-top.border-blue-light
+  = render 'profile_datum_cell',
+    data_type: t('.authentication_app'),
+    content: content_tag(:em, 
+                         current_user.totp_enabled? ? t('.auth_app_enabled') : t('.auth_app_disabled')),
+    path: manage_password_path,
+    link_text: current_user.totp_enabled? ? t('forms.buttons.enable') : t('forms.buttons.disable')
 
-.mt2.mb4
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('.email')
-      .sm-col.sm-col-5.px1.truncate = current_user.email
-      .sm-col.sm-col-2.px1.sm-right-align
-        = link_to manage_email_path, class: btn_cls do
-          span.hide = t('.email')
-          = t('forms.buttons.edit')
-  .py-12p.border-top.border-bottom
-    .clearfix.mxn1
-      .sm-col.sm-col-10.px1 = t('.password')
-      .sm-col.sm-col-2.px1.sm-right-align
-        = link_to manage_password_path, class: btn_cls do
-          span.hide = t('.password')
-          = t('forms.buttons.edit')
-  .mt3.mb1.h6.bold.caps.ls-0
-    | #{t('headings.profile.two_factor')}#{tooltip(t('tooltips.two_factor'))}
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('.phone')
-      .sm-col.sm-col-5.px1 = current_user.phone
-      .sm-col.sm-col-2.px1.sm-right-align
-        = link_to manage_phone_path, class: btn_cls do
-          span.hide = t('.phone')
-          = t('forms.buttons.edit')
   .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-10.px1 = t('.authentication_app')
       .sm-col.sm-col-2.px1.sm-right-align
         - if current_user.totp_enabled?
-          = button_to disable_totp_url, method: :delete, class: btn_cls do
-            span.hide = t('.authentication_app')
-            = t('forms.buttons.disable')
+
         - else
           = link_to authenticator_start_url, class: btn_cls do
             span.hide = t('.authentication_app')

@@ -3,6 +3,7 @@ class ProfileController < ApplicationController
   layout 'card_wide'
 
   def index
+    p 'it me!'
     cacher = Pii::Cacher.new(current_user, user_session)
 
     @view_model = UserProfile::ProfileIndex.new(
