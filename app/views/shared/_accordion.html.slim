@@ -1,5 +1,5 @@
 .mb4.col-12.border.rounded-md.border-blue.fs-16p.accordion
-  .accordion-header.py1.pl2(
+  .accordion-header.py1.px2(
     class=('display-none' if options[:hide_header])
     role="heading"
   )
@@ -11,8 +11,8 @@
     )
       span.mb0.mr2
         = header_text
-    = image_tag asset_url('plus.svg'), width: 16, class: 'plus-icon'
-    = image_tag asset_url('minus.svg'), width: 16, class: 'minus-icon'
+      = image_tag asset_url('plus.svg'), width: 16, class: 'plus-icon'
+      = image_tag asset_url('minus.svg'), width: 16, class: 'minus-icon'
   .accordion-content.accordion-init.clearfix(
     id="#{target_id}"
     role="region"

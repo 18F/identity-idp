@@ -32,28 +32,28 @@
   }
 
   .accordion-header-control[aria-expanded="false"] {
-    ~.minus-icon {
+    .minus-icon {
       display: none;
     }
 
-    ~.plus-icon {
+    .plus-icon {
       display: initial;
     }
   }
 
   .accordion-header-control[aria-expanded="true"] {
-    ~.minus-icon {
+    .minus-icon {
       display: initial;
     }
 
-    ~.plus-icon {
+    .plus-icon {
       display: none;
     }
   }
 
   .accordion-header-control {
     color: $blue;
-    margin-right: 20px;
+    padding-right: 30px;
 
     .accordion-content {
       max-height: 0;
