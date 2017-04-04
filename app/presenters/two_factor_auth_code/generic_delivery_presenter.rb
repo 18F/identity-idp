@@ -36,13 +36,13 @@ module TwoFactorAuthCode
 
     private
 
+    def recovery_code_tag
+      link_to(t("#{recovery_code_key}.link"), login_two_factor_recovery_code_path)
+    end
+
     def link_to(text, url, options = {})
       href = { href: url }
       content_tag(:a, text, options.merge(href))
-    end
-
-    def recovery_code_tag
-      link_to(t("#{recovery_code_key}.link"), login_two_factor_recovery_code_path)
     end
 
     def recovery_code_key
