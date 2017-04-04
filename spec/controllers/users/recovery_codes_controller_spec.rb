@@ -43,4 +43,29 @@ describe Users::RecoveryCodesController do
       end
     end
   end
+
+  describe '#update' do
+    context 'user does not need to reactivate account' do
+      it 'redirects to the profile page' do
+        stub_sign_in
+
+        patch :update
+
+        expect(response).to redirect_to profile_url
+      end
+    end
+
+    context 'user needs to reactive account' do
+      it 'redirects to the reactiveate_profile_path' do
+        user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user, pii: { first_name: 'Jane' })
+        user.active_profile.deactivate(:password_reset)
+        sign_in user
+
+        patch :update
+
+        expect(response).to redirect_to reactivate_profile_url
+      end
+    end
+  end
 end

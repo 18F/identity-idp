@@ -156,4 +156,29 @@ describe Verify::ConfirmationsController do
       expect(response).to redirect_to(verify_session_path)
     end
   end
+
+  describe '#update' do
+    context 'sp present' do
+      it 'redirects to the sign up completed url' do
+        stub_idv_session
+        subject.session[:sp] = 'true'
+        stub_sign_in
+
+        patch :update
+
+        expect(response).to redirect_to sign_up_completed_url
+      end
+    end
+
+    context 'no sp present' do
+      it 'redirects to the profile page' do
+        stub_idv_session
+        stub_sign_in
+
+        patch :update
+
+        expect(response).to redirect_to profile_path
+      end
+    end
+  end
 end
