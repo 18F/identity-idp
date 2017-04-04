@@ -20,24 +20,44 @@
     opacity: 1;
   }
 
-  .accordion-header-control {
-    background-position: right .25rem center;
-    background-repeat: no-repeat;
-    background-size: $h4;
-    color: $blue;
+  .accordion-header {
     cursor: pointer;
+    position: relative;
 
-    &[aria-expanded="true"] {
-      background-image: url(image-path('minus.svg'));
+    img {
+      position: absolute;
+      right: 1rem;
+      top: .8rem;
     }
+  }
+
+  .accordion-header-control[aria-expanded="false"] {
+    .minus-icon {
+      display: none;
+    }
+
+    .plus-icon {
+      display: initial;
+    }
+  }
+
+  .accordion-header-control[aria-expanded="true"] {
+    .minus-icon {
+      display: initial;
+    }
+
+    .plus-icon {
+      display: none;
+    }
+  }
+
+  .accordion-header-control {
+    color: $blue;
+    padding-right: 30px;
 
     .accordion-content {
       max-height: 0;
       transition: max-height .3s linear;
-    }
-
-    &[aria-expanded="false"] {
-      background-image: url(image-path('plus.svg'));
     }
   }
 
