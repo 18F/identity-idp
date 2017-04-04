@@ -119,6 +119,44 @@ feature 'OpenID Connect' do
         to be_a NullServiceProviderRequest
       expect(page.get_rack_session.keys).to_not include('sp')
     end
+
+    it 'auto-allows and sets the correct CSP headers after an incorrect OTP' do
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      user = user_with_2fa
+
+      IdentityLinker.new(user, client_id).link_identity
+
+      visit openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'http://localhost:7654/auth/result',
+        state: SecureRandom.hex,
+        nonce: SecureRandom.hex,
+        prompt: 'select_account'
+      )
+
+      sp_request_id = ServiceProviderRequest.last.uuid
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      sign_in_user(user)
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\' http://localhost:7654'))
+
+      fill_in :code, with: 'wrong otp'
+      click_submit_default
+
+      expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\' http://localhost:7654'))
+      click_submit_default
+
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
+        to be_a NullServiceProviderRequest
+      expect(page.get_rack_session.keys).to_not include('sp')
+    end
   end
 
   context 'with PCKE' do
