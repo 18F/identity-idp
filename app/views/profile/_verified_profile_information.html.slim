@@ -1,0 +1,25 @@
+.mt2.mb4
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.full_name')
+      .sm-col.sm-col-7.px1.truncate #{decrypted_pii.first_name} #{decrypted_pii.last_name}
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.address')
+      .sm-col.sm-col-7.px1
+        | #{decrypted_pii.address1}<br>
+        - if decrypted_pii.address2.present?
+          | #{decrypted_pii.address2}<br>
+        | #{decrypted_pii.city}, #{decrypted_pii.state} #{decrypted_pii.zipcode}
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.dob')
+      .sm-col.sm-col-7.px1 #{decrypted_pii.dob.to_date.to_formatted_s(:long)}
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.ssn')
+      .sm-col.sm-col-7.px1 = "***-**-#{decrypted_pii.ssn.raw[-4..-1]}"
+  .py-12p.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.phone')
+      .sm-col.sm-col-7.px1 = decrypted_pii.phone
