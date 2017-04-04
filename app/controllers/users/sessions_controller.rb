@@ -8,8 +8,6 @@ module Users
     before_action :check_user_needs_redirect, only: [:new]
 
     def new
-      session.delete(:sign_up_init)
-
       analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT)
       super
     end

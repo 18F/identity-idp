@@ -5,7 +5,6 @@ describe 'sign_up/registrations/new.html.slim' do
     @register_user_email_form = RegisterUserEmailForm.new
     allow(view).to receive(:controller_name).and_return('registrations')
     allow(view).to receive(:current_user).and_return(nil)
-    allow(view).to receive(:session).and_return(sign_up_init: true)
     allow(view).to receive(:request_id).and_return(nil)
   end
 
@@ -30,10 +29,10 @@ describe 'sign_up/registrations/new.html.slim' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
-  it 'includes a form to cancel account creation' do
+  it 'includes a link to return to the home page' do
     render
-    link = t('links.cancel_account_creation')
+    link = t('links.cancel')
 
-    expect(rendered).to have_selector("input[value='#{link}']")
+    expect(rendered).to have_content(link)
   end
 end
