@@ -1,6 +1,7 @@
 ---
 en:
   profile:
+    login: Login Information
     index:
       address: Current address
       authentication_app: Authentication app

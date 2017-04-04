@@ -26,10 +26,23 @@ h2.h3.my0
 
 
 .border-box.border.border-blue-gray.rounded-md
-  .bg-blue-light.py1.px2
-    = t('.email')
-  .p2
-    p Lorem ipsum...
+  .bg-blue-light.pb1.pt0.px2
+    = t('profile.login').upcase
+    = image_tag asset_url('sign-in.svg'), width: 20, class: 'ml2 mt2'
+  .p2.clearfix
+    = render 'profile_datum_cell',
+      data_type: t('.email'),
+      content: current_user.email,
+      path: manage_email_path,
+      link_text: t('forms.buttons.edit')
+  .border.border-top.border-blue-light
+  .p2.clearfix
+    = render 'profile_datum_cell',
+      data_type: t('.password'),
+      content: 12.times.collect { '&#8226;' }.join('').html_safe,
+      path: manage_password_path,
+      link_text: t('forms.buttons.edit')
+
 
 .mt2.mb4
   .py-12p.border-top
