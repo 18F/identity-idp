@@ -9,7 +9,7 @@ module TwoFactorAuthentication
     def show
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
 
-      @presenter = presenter_for(otp_delivery_preference)
+      @presenter = presenter_for_two_factor_authentication_method
     end
 
     def create

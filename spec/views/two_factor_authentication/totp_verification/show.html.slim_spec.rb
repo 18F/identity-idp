@@ -4,7 +4,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: '6pcrpu334cx7zyf7') }
   let(:presenter_data) do
     attributes_for(:generic_otp_presenter).merge(
-      otp_delivery_preference: 'authenticator',
+      two_factor_authentication_method: 'authenticator',
       user_email: view.current_user.email
     )
   end

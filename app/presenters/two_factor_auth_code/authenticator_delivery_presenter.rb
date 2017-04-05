@@ -1,11 +1,13 @@
 module TwoFactorAuthCode
   class AuthenticatorDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+    attr_reader :two_factor_authentication_method
+
     def header
       t('devise.two_factor_authentication.totp_header_text')
     end
 
     def help_text
-      t("instructions.2fa.#{otp_delivery_preference}.confirm_code_html",
+      t("instructions.2fa.#{two_factor_authentication_method}.confirm_code_html",
         email: content_tag(:strong, user_email),
         app: content_tag(:strong, APP_NAME),
         tooltip: view.tooltip(t('tooltips.authentication_app')))

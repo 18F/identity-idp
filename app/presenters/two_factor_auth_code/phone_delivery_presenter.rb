@@ -3,6 +3,8 @@ module TwoFactorAuthCode
     include TwoFactorAuthCode::Totpable
     include TwoFactorAuthCode::Phoneable
 
+    attr_reader :otp_delivery_preference
+
     def header
       t('devise.two_factor_authentication.header_text')
     end
