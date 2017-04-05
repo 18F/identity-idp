@@ -87,7 +87,7 @@ module TwoFactorAuthenticatable
   end
 
   def two_factor_authentication_method
-    params[:two_factor_authentication_method] || request.path.split('/').last
+    params[:otp_delivery_preference] || request.path.split('/').last
   end
 
   # Method will be renamed in the next refactor.
