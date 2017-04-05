@@ -1,5 +1,5 @@
 class MarketingSite
-  BASE_URL = URI('https://login.gov').freeze
+  BASE_URL = URI('https://www.login.gov').freeze
 
   def self.base_url
     BASE_URL.to_s
