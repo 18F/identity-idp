@@ -31,8 +31,7 @@ describe 'sign_up/registrations/new.html.slim' do
 
   it 'includes a link to return to the home page' do
     render
-    link = t('links.cancel')
 
-    expect(rendered).to have_content(link)
+    expect(rendered).to have_link(t('links.cancel'), href: root_path)
   end
 end
