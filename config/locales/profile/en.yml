@@ -21,3 +21,6 @@ en:
       recovery_code: Personal key
     links:
       regenerate_recovery_code: Create
+    security:
+      text: Your profile information is locked for your security.
+      link: Learn more at the Help Center

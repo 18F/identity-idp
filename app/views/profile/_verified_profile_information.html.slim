@@ -1,29 +1,38 @@
-.clearfix
-  .sm-col-right.left.mt2.sm-mtn3
-    = render partial: current_user.decorate.verified_account_partial
+.p2
+  .clearfix.mxn1
+    .sm-col.sm-col-5.px1.bold = t('profile.index.full_name')
+    .sm-col.sm-col-7.px1.truncate #{decrypted_pii.first_name} #{decrypted_pii.last_name}
+.border-bottom
 
-.mt2.mb4
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('profile.index.full_name')
-      .sm-col.sm-col-7.px1.truncate #{decrypted_pii.first_name} #{decrypted_pii.last_name}
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('profile.index.address')
-      .sm-col.sm-col-7.px1
-        | #{decrypted_pii.address1}<br>
-        - if decrypted_pii.address2.present?
-          | #{decrypted_pii.address2}<br>
-        | #{decrypted_pii.city}, #{decrypted_pii.state} #{decrypted_pii.zipcode}
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('profile.index.dob')
-      .sm-col.sm-col-7.px1 #{decrypted_pii.dob.to_date.to_formatted_s(:long)}
-  .py-12p.border-top
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('profile.index.ssn')
-      .sm-col.sm-col-7.px1 = "***-**-#{decrypted_pii.ssn.raw[-4..-1]}"
-  .py-12p.border-top.border-bottom
-    .clearfix.mxn1
-      .sm-col.sm-col-5.px1 = t('profile.index.phone')
-      .sm-col.sm-col-7.px1 = decrypted_pii.phone
+.p2  
+  .clearfix.mxn1
+    .sm-col.sm-col-5.px1.bold = t('profile.index.address')
+    .sm-col.sm-col-7.px1
+      | #{decrypted_pii.address1}<br>
+      - if decrypted_pii.address2.present?
+        | #{decrypted_pii.address2}<br>
+      | #{decrypted_pii.city}, #{decrypted_pii.state} #{decrypted_pii.zipcode}
+.border-bottom
+
+.p2
+  .clearfix.mxn1
+    .sm-col.sm-col-5.px1.bold = t('profile.index.dob')
+    .sm-col.sm-col-7.px1 #{decrypted_pii.dob.to_date.to_formatted_s(:long)}
+.border-bottom
+
+.p2
+  .clearfix.mxn1
+    .sm-col.sm-col-5.px1.bold = t('profile.index.ssn')
+    .sm-col.sm-col-7.px1 = "***-**-#{decrypted_pii.ssn.raw[-4..-1]}"
+.border-bottom
+
+.p2
+  .clearfix.mxn1
+    .sm-col.sm-col-5.px1.bold = t('profile.index.phone')
+    .sm-col.sm-col-7.px1 = decrypted_pii.phone
+
+.bg-off-white.px2.py1.clearfix.fs-13p
+  .col.col-12.sm-col-6
+    = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
+    = t('profile.security.text')
+  = link_to t('profile.security.link'), root_url
