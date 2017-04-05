@@ -5,6 +5,7 @@ describe 'sign_up/passwords/new.html.slim' do
     user = build_stubbed(:user)
     allow(view).to receive(:current_user).and_return(nil)
     allow(view).to receive(:params).and_return(confirmation_token: 123)
+    allow(view).to receive(:request_id).and_return(nil)
 
     @password_form = PasswordForm.new(user)
 
