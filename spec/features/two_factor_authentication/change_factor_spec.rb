@@ -31,7 +31,7 @@ feature 'Changing authentication factor' do
       expect(page).to have_link t('links.cancel'), href: profile_path
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
       expect(page).not_to have_content(
-        t('devise.two_factor_authentication.recovery_code_fallback.text_html')
+        t('devise.two_factor_authentication.personal_key_fallback.text_html')
       )
 
       enter_incorrect_otp_code

@@ -19,7 +19,7 @@ es:
       profile_info: Información del perfil
       two_factor: Autenticación de dos factores
       verified_account: Cuenta verificada
-    recovery_code: Asegúrese de que siempre puede iniciar sesión
+    personal_key: Asegúrese de que siempre puede iniciar sesión
     registrations:
       enter_email: Empezar a crear una cuenta
     session_timeout_warning: ¿Necesita mas tiempo?

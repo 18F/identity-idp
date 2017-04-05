@@ -127,11 +127,11 @@ es:
       please_confirm:
         Se ha establecido el número de teléfono. Confírmelo introduciendo el código de acceso siguiente.
       please_try_again_html: Inténtalo de nuevo en %{time_remaining}.
-      recovery_code_fallback:
+      personal_key_fallback:
         link: código de recuperación
         text_html: ¿No tiene acceso a su teléfono? Use el %{link} en su lugar.
-      recovery_code_header_text: Ingrese su código de recuperación.
-      recovery_code_prompt: >
+      personal_key_header_text: Ingrese su código de recuperación.
+      personal_key_prompt: >
         Puede usar este código de recuperación una vez. Si todavía necesita un código después de
         iniciar sesión, vaya a la página de configuración de su cuenta para obtener una nueva.
       totp_fallback:

@@ -28,7 +28,7 @@ en:
       instructions: Provide the information below to reactivate your account.
       submit: Reactivate profile
       title: Reactivate profile
-    recovery_code:
+    personal_key:
       title: Enter your personal key
       instructions: Please confirm you have a copy of your personal key by entering it below.
       confirmation_label: Personal key word %{number}
@@ -47,5 +47,5 @@ en:
         you’ll need to open the application and retrieve a code.
     two_factor:
       code: One-time security code
-      recovery_code: Personal key
+      personal_key: Personal key
       try_again: Use another phone number

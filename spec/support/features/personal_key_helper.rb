@@ -1,18 +1,18 @@
-module RecoveryCodeHelper
+module PersonalKeyHelper
   def reset_password_and_sign_back_in(user, password = 'a really long password')
     fill_in t('forms.passwords.edit.labels.password'), with: password
     click_button t('forms.passwords.edit.buttons.submit')
     fill_in_credentials_and_submit(user.email, password)
   end
 
-  def recovery_code_from_pii(user, pii)
+  def personal_key_from_pii(user, pii)
     profile = create(:profile, :active, :verified, user: user)
     pii_attrs = Pii::Attributes.new_from_hash(pii)
     user_access_key = user.unlock_user_access_key(user.password)
-    recovery_code = profile.encrypt_pii(user_access_key, pii_attrs)
+    personal_key = profile.encrypt_pii(user_access_key, pii_attrs)
     profile.save!
 
-    recovery_code
+    personal_key
   end
 
   def trigger_reset_password_and_click_email_link(email)

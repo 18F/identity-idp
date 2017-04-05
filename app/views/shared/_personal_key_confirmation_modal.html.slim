@@ -1,22 +1,22 @@
 #personal-key-confirm.display-none
   = render layout: '/shared/modal_layout' do
     .py5.px2.sm-px5.cntnr-skinny.border-box.bg-white.rounded.rounded-lg.key-badge
-      h3.mt0.mb2 = t('forms.recovery_code.title')
-      p.mb3 = t('forms.recovery_code.instructions')
+      h3.mt0.mb2 = t('forms.personal_key.title')
+      p.mb3 = t('forms.personal_key.instructions')
 
-      #recovery-code-alert.alert.alert-alert.display-none(role='alert')
-        = t('users.recovery_code.confirmation_error')
+      #personal-key-alert.alert.alert-alert.display-none(role='alert')
+        = t('users.personal_key.confirmation_error')
 
-      form(id='confirm-key' method='post' action="#{sign_up_recovery_code_path}" name="key-confirm")
+      form(id='confirm-key' method='post' action="#{sign_up_personal_key_path}" name="key-confirm")
         .clearfix.mxn1.sm-mxn2.mb4.separator-inputs
           - code.split(' ').each_with_index do |word, index|
             .col.col-3.px1.sm-px2
               input(
-                aria-label="#{t('forms.recovery_code.confirmation_label', number: index + 1)}"
+                aria-label="#{t('forms.personal_key.confirmation_label', number: index + 1)}"
                 maxlength="#{word.length}"
                 autocomplete='off'
                 class='col-12 border-dashed field monospace'
-                name="recovery-#{index}"
+                name="personal-key-#{index}"
                 pattern="[#{word.upcase}#{word.downcase}]{#{word.length}}"
                 required=true
                 spellcheck='false'
@@ -25,7 +25,7 @@
 
         .clearfix.mxn2
           .col.col-12.sm-col-6.px2.mb2.sm-mb0
-            button(type='submit' class='col-12 btn btn-primary recovery-code-confirm')
+            button(type='submit' class='col-12 btn btn-primary personal-key-confirm')
               = t('forms.buttons.continue')
           .col.col-12.sm-col-6.px2
             button.col-12.btn.btn-outline.blue.rounded-lg(

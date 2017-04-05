@@ -72,14 +72,14 @@ describe UserDecorator do
     end
   end
 
-  describe '#should_acknowledge_recovery_code?' do
-    context 'user has no recovery code' do
+  describe '#should_acknowledge_personal_key?' do
+    context 'user has no personal key' do
       context 'service provider with loa1' do
         it 'returns true' do
           user_decorator = UserDecorator.new(User.new)
           session = { sp: { loa3: false } }
 
-          expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
         end
       end
 
@@ -88,22 +88,22 @@ describe UserDecorator do
           user_decorator = UserDecorator.new(User.new)
           session = {}
 
-          expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
         end
       end
 
-      it 'returns false when the user has a recovery code' do
-        user_decorator = UserDecorator.new(User.new(recovery_code: 'foo'))
+      it 'returns false when the user has a personal key' do
+        user_decorator = UserDecorator.new(User.new(personal_key: 'foo'))
         session = {}
 
-        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
       end
 
       it 'returns false if the user is loa3' do
         user_decorator = UserDecorator.new(User.new)
         session = { sp: { loa3: true } }
 
-        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
       end
     end
   end

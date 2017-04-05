@@ -21,20 +21,20 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
     end
   end
 
-  describe '#recovery_code_link' do
+  describe '#personal_key_link' do
     context 'with unconfirmed user' do
-      presenter = presenter_with(recovery_code_unavailable: true)
+      presenter = presenter_with(personal_key_unavailable: true)
 
-      it 'returns without providing the option to use a recovery code' do
-        expect(presenter.recovery_code_link).to be_nil
+      it 'returns without providing the option to use a personal key' do
+        expect(presenter.personal_key_link).to be_nil
       end
     end
 
     context 'with confirmed user' do
-      presenter = presenter_with(recovery_code_unavailable: false)
+      presenter = presenter_with(personal_key_unavailable: false)
 
-      it 'returns a recovery code link' do
-        expect(presenter.recovery_code_link).not_to be_nil
+      it 'returns a personal key link' do
+        expect(presenter.personal_key_link).not_to be_nil
       end
     end
   end

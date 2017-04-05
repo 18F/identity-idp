@@ -18,7 +18,7 @@ module Users
     def build_reactivate_profile_form
       ReactivateProfileForm.new(
         current_user,
-        params[:reactivate_profile_form].permit(:password, recovery_code: [])
+        params[:reactivate_profile_form].permit(:password, personal_key: [])
       )
     end
   end

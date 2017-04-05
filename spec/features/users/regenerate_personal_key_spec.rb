@@ -1,28 +1,28 @@
 require 'rails_helper'
 
-feature 'View recovery code' do
+feature 'View personal key' do
   include XPathHelper
-  include RecoveryCodeHelper
+  include PersonalKeyHelper
 
   context 'during sign up' do
-    scenario 'user refreshes recovery code page' do
-      sign_up_and_view_recovery_code
+    scenario 'user refreshes personal key page' do
+      sign_up_and_view_personal_key
 
-      visit sign_up_recovery_code_path
+      visit sign_up_personal_key_path
 
       expect(current_path).to eq(profile_path)
     end
   end
 
   context 'after sign up' do
-    context 'regenerating recovery code' do
+    context 'regenerating personal key' do
       scenario 'displays new code' do
         user = sign_in_and_2fa_user
-        old_code = user.recovery_code
+        old_code = user.personal_key
 
-        click_link t('profile.links.regenerate_recovery_code')
+        click_link t('profile.links.regenerate_personal_key')
 
-        expect(user.reload.recovery_code).to_not eq old_code
+        expect(user.reload.personal_key).to_not eq old_code
       end
     end
 
@@ -32,23 +32,23 @@ feature 'View recovery code' do
 
         user = sign_in_and_2fa_user
 
-        old_code = user.recovery_code
+        old_code = user.personal_key
 
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
-        click_on(t('profile.links.regenerate_recovery_code'))
+        click_on(t('profile.links.regenerate_personal_key'))
 
-        expect(user.reload.recovery_code).to_not eq old_code
+        expect(user.reload.personal_key).to_not eq old_code
       end
     end
 
-    context 'recovery code actions and information' do
+    context 'personal key actions and information' do
       before do
         @user = sign_in_and_2fa_user
-        click_link t('profile.links.regenerate_recovery_code')
+        click_link t('profile.links.regenerate_personal_key')
       end
 
-      it_behaves_like 'recovery code page'
+      it_behaves_like 'personal key page'
     end
   end
 
@@ -58,7 +58,7 @@ feature 'View recovery code' do
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user
-      click_link t('profile.links.regenerate_recovery_code')
+      click_link t('profile.links.regenerate_personal_key')
 
       expect_accordion_content_to_be_hidden_by_default
 
@@ -66,7 +66,7 @@ feature 'View recovery code' do
 
       expect_accordion_content_to_become_visible
 
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
 
       expect_confirmation_modal_to_appear_with_first_code_field_in_focus
 
@@ -76,22 +76,22 @@ feature 'View recovery code' do
 
       click_back_button
 
-      expect_to_be_back_on_manage_recovery_code_page_with_continue_button_in_focus
+      expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
 
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
       submit_form_without_entering_the_code
 
       expect(current_path).not_to eq profile_path
 
-      visit manage_recovery_code_path
-      acknowledge_and_confirm_recovery_code
+      visit manage_personal_key_path
+      acknowledge_and_confirm_personal_key
 
       expect(current_path).to eq profile_path
     end
   end
 end
 
-def sign_up_and_view_recovery_code
+def sign_up_and_view_personal_key
   allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
   sign_up_and_set_password
   fill_in 'Phone', with: '202-555-1212'
@@ -101,7 +101,7 @@ end
 
 def expect_accordion_content_to_be_hidden_by_default
   expect(page).to have_xpath("//#{accordion_control_selector}")
-  expect(page).not_to have_content(t('users.recovery_code.help_text'))
+  expect(page).not_to have_content(t('users.personal_key.help_text'))
   expect(page).to have_xpath(
     "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
   )
@@ -113,13 +113,13 @@ end
 
 def expect_accordion_content_to_become_visible
   expect(page).to have_xpath("//#{accordion_control_selector}[@aria-expanded='true']")
-  expect(page).to have_content(t('users.recovery_code.help_text'))
+  expect(page).to have_content(t('users.personal_key.help_text'))
 end
 
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
   expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
-  expect(page).not_to have_xpath("//#{invisible_selector}[@id='recovery-code']")
-  expect(page.evaluate_script('document.activeElement.name')).to eq 'recovery-0'
+  expect(page).not_to have_xpath("//#{invisible_selector}[@id='personal-key']")
+  expect(page.evaluate_script('document.activeElement.name')).to eq 'personal-key-0'
 end
 
 def press_shift_tab
@@ -137,7 +137,7 @@ def click_back_button
   click_on t('forms.buttons.back')
 end
 
-def expect_to_be_back_on_manage_recovery_code_page_with_continue_button_in_focus
+def expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
   expect(page).to have_xpath(
     "//div[@id='personal-key-confirm'][@class='display-none']", visible: false
   )
@@ -147,5 +147,5 @@ def expect_to_be_back_on_manage_recovery_code_page_with_continue_button_in_focus
 end
 
 def submit_form_without_entering_the_code
-  click_on t('forms.buttons.continue'), class: 'recovery-code-confirm'
+  click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
 end

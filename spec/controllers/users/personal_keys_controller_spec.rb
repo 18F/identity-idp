@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Users::RecoveryCodesController do
+describe Users::PersonalKeysController do
   describe '#show' do
     context 'when user signed in' do
       before do
@@ -10,14 +10,14 @@ describe Users::RecoveryCodesController do
       it 'tracks an analytics event' do
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_RECOVERY_CODE_CREATE)
+        expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_CREATE)
 
         get :show
       end
 
-      it 'generates a new recovery code' do
-        generator = instance_double(RecoveryCodeGenerator)
-        allow(RecoveryCodeGenerator).to receive(:new).
+      it 'generates a new personal key' do
+        generator = instance_double(PersonalKeyGenerator)
+        allow(PersonalKeyGenerator).to receive(:new).
           with(subject.current_user).and_return(generator)
 
         expect(generator).to receive(:create)
@@ -29,7 +29,7 @@ describe Users::RecoveryCodesController do
         expect(flash[:sucess]).to be_nil
 
         get :show, resend: true
-        expect(flash.now[:success]).to eq t('notices.send_code.recovery_code')
+        expect(flash.now[:success]).to eq t('notices.send_code.personal_key')
       end
     end
 

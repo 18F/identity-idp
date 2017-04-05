@@ -15,7 +15,7 @@ es:
     resend_confirmation_email:
       success: NOT TRANSLATED YET
     send_code:
-      recovery_code: NOT TRANSLATED YET
+      personal_key: NOT TRANSLATED YET
     timeout_warning:
       signed_in:
         continue: NOT TRANSLATED YET

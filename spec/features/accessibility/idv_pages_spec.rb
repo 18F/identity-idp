@@ -69,7 +69,7 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    scenario 'recovery code / confirmation page' do
+    scenario 'personal key / confirmation page' do
       user = sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok

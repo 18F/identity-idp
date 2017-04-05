@@ -133,7 +133,7 @@ en:
         same_as_2fa: >
           This phone number can be the same one you used to set up your one-time
           password as long as it meets the criteria above.
-      recovery_code: >
+      personal_key: >
         This is your new personal key. Write it down and keep it in a safe
         place. You will need it if you ever lose your password.
       review:

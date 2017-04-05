@@ -1,5 +1,5 @@
 class ActiveProfileEncryptor
-  attr_reader :recovery_code
+  attr_reader :personal_key
 
   def initialize(user, user_session, password)
     @user = user
@@ -10,7 +10,7 @@ class ActiveProfileEncryptor
   def call
     active_profile = @user.active_profile
     user_access_key = @user.unlock_user_access_key(@password)
-    @recovery_code = active_profile.encrypt_pii(user_access_key, current_pii)
+    @personal_key = active_profile.encrypt_pii(user_access_key, current_pii)
     active_profile.save!
   end
 

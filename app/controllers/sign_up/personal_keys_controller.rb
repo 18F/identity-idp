@@ -1,14 +1,14 @@
 module SignUp
-  class RecoveryCodesController < ApplicationController
-    include RecoveryCodeConcern
+  class PersonalKeysController < ApplicationController
+    include PersonalKeyConcern
 
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_has_not_already_viewed_recovery_code, only: [:show]
+    before_action :confirm_has_not_already_viewed_personal_key, only: [:show]
 
     def show
-      user_session.delete(:first_time_recovery_code_view)
+      user_session.delete(:first_time_personal_key_view)
       @code = new_code
-      analytics.track_event(Analytics::USER_REGISTRATION_RECOVERY_CODE_VISIT)
+      analytics.track_event(Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT)
     end
 
     def update
@@ -18,15 +18,15 @@ module SignUp
     private
 
     def new_code
-      if session[:new_recovery_code].present?
-        session.delete(:new_recovery_code)
+      if session[:new_personal_key].present?
+        session.delete(:new_personal_key)
       else
         create_new_code
       end
     end
 
-    def confirm_has_not_already_viewed_recovery_code
-      return if user_session[:first_time_recovery_code_view].present?
+    def confirm_has_not_already_viewed_personal_key
+      return if user_session[:first_time_personal_key_view].present?
       redirect_to after_sign_in_path_for(current_user)
     end
 

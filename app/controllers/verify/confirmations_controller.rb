@@ -39,9 +39,9 @@ module Verify
     end
 
     def finish_proofing_success
-      @code = recovery_code
+      @code = personal_key
       idv_session.complete_session
-      idv_session.recovery_code = nil
+      idv_session.personal_key = nil
       create_account_verified_event
       flash.now[:success] = t('idv.messages.confirm')
       flash[:allow_confirmations_continue] = true
@@ -51,11 +51,11 @@ module Verify
       CreateVerifiedAccountEvent.new(current_user).call
     end
 
-    def recovery_code
-      idv_session.recovery_code || generate_recovery_code
+    def personal_key
+      idv_session.personal_key || generate_personal_key
     end
 
-    def generate_recovery_code
+    def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
     end

@@ -16,13 +16,13 @@ feature 'Phone confirmation during sign up' do
       )
     end
 
-    it 'updates phone_confirmed_at and redirects to acknowledge recovery code' do
+    it 'updates phone_confirmed_at and redirects to acknowledge personal key' do
       click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.phone_confirmed_at).to be_present
-      expect(current_path).to eq sign_up_recovery_code_path
+      expect(current_path).to eq sign_up_personal_key_path
 
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
 
       expect(current_path).to eq profile_path
     end

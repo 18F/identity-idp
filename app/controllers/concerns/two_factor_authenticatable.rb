@@ -188,13 +188,13 @@ module TwoFactorAuthenticatable
   def after_otp_action_required?
     current_user.password_reset_profile.present? ||
       @updating_existing_number ||
-      decorated_user.should_acknowledge_recovery_code?(session)
+      decorated_user.should_acknowledge_personal_key?(session)
   end
 
   def after_otp_action_path
-    if decorated_user.should_acknowledge_recovery_code?(session)
-      user_session[:first_time_recovery_code_view] = 'true'
-      sign_up_recovery_code_path
+    if decorated_user.should_acknowledge_personal_key?(session)
+      user_session[:first_time_personal_key_view] = 'true'
+      sign_up_personal_key_path
     elsif @updating_existing_number
       profile_path
     elsif current_user.password_reset_profile.present?
@@ -213,8 +213,8 @@ module TwoFactorAuthenticatable
     current_user.direct_otp if FeatureManagement.prefill_otp_codes?
   end
 
-  def recovery_code_unavailable?
-    idv_or_confirmation_context? || !current_user.recovery_code.present?
+  def personal_key_unavailable?
+    idv_or_confirmation_context? || !current_user.personal_key.present?
   end
 
   def unconfirmed_phone?
@@ -228,7 +228,7 @@ module TwoFactorAuthenticatable
       delivery_method: delivery_method,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      recovery_code_unavailable: recovery_code_unavailable?,
+      personal_key_unavailable: personal_key_unavailable?,
       totp_enabled: current_user.totp_enabled?,
     }
   end
@@ -237,7 +237,7 @@ module TwoFactorAuthenticatable
     {
       delivery_method: delivery_method,
       user_email: current_user.email,
-      recovery_code_unavailable: recovery_code_unavailable?,
+      personal_key_unavailable: personal_key_unavailable?,
     }
   end
 
@@ -246,7 +246,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       phone_number: display_phone_to_deliver_to,
       unconfirmed_phone: unconfirmed_phone?,
-      recovery_code_unavailable: recovery_code_unavailable?,
+      personal_key_unavailable: personal_key_unavailable?,
     }
   end
 

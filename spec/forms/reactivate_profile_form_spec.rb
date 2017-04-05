@@ -7,29 +7,29 @@ describe ReactivateProfileForm do
   end
 
   let(:user) { build_stubbed(:user) }
-  let(:recovery_code) { nil }
+  let(:personal_key) { nil }
   let(:password) { nil }
 
   describe '#valid?' do
     let(:password) { 'asd' }
-    let(:recovery_code) { %w(123 abc) }
-    let(:valid_recovery_code?) { true }
+    let(:personal_key) { %w(123 abc) }
+    let(:valid_personal_key?) { true }
     let(:valid_password?) { true }
-    let(:recovery_code_decrypts?) { true }
+    let(:personal_key_decrypts?) { true }
 
     before do
       allow(form).to receive(:valid_password?).and_return(valid_password?)
-      allow(form).to receive(:valid_recovery_code?).and_return(valid_recovery_code?)
-      allow(form).to receive(:recovery_code_decrypts?).and_return(recovery_code_decrypts?)
+      allow(form).to receive(:valid_personal_key?).and_return(valid_personal_key?)
+      allow(form).to receive(:personal_key_decrypts?).and_return(personal_key_decrypts?)
     end
 
     context 'when required attributes are not present' do
       let(:password) { nil }
-      let(:recovery_code) { nil }
+      let(:personal_key) { nil }
 
       it 'is invalid' do
         expect(subject).to_not be_valid
-        expect(subject.errors[:recovery_code]).to eq [t('errors.messages.blank')]
+        expect(subject.errors[:personal_key]).to eq [t('errors.messages.blank')]
         expect(subject.errors[:password]).to eq [t('errors.messages.blank')]
       end
     end
@@ -43,18 +43,18 @@ describe ReactivateProfileForm do
       end
     end
 
-    context 'when recovery code does not match' do
+    context 'when personal key does not match' do
       subject(:form) do
         ReactivateProfileForm.new(user,
-                                  recovery_code: recovery_code,
+                                  personal_key: personal_key,
                                   password: password)
       end
 
-      let(:valid_recovery_code?) { false }
+      let(:valid_personal_key?) { false }
 
       it 'is invalid' do
         expect(subject).to_not be_valid
-        expect(subject.errors[:recovery_code]).to eq [t('errors.messages.recovery_code_incorrect')]
+        expect(subject.errors[:personal_key]).to eq [t('errors.messages.personal_key_incorrect')]
       end
     end
 
@@ -76,13 +76,13 @@ describe ReactivateProfileForm do
     context 'with a valid form' do
       let(:valid?) { true }
 
-      it 're-encrypts the PII and sets the recovery code in the flash' do
-        recovery_code = '555'
-        expect(form).to receive(:reencrypt_pii).and_return(recovery_code)
+      it 're-encrypts the PII and sets the personal key in the flash' do
+        personal_key = '555'
+        expect(form).to receive(:reencrypt_pii).and_return(personal_key)
 
         form.submit(flash)
 
-        expect(flash[:recovery_code]).to eq(recovery_code)
+        expect(flash[:personal_key]).to eq(personal_key)
       end
     end
 

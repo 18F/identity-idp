@@ -71,13 +71,13 @@ class UserBehavior(locust.TaskSet):
         resp = self.client.post('/login/two_factor/sms', data=data, auth=auth)
         resp.raise_for_status()
 
-        # click Continue on recovery code page
+        # click Continue on personal key page
         dom = pyquery.PyQuery(resp.content)
         data = {
             'authenticity_token': authenticity_token(dom),
             'commit': 'Continue',
         }
-        self.client.post('/sign_up/recovery_code', data=data, auth=auth)
+        self.client.post('/sign_up/personal_key', data=data, auth=auth)
 
         # go straight to profile page
         self.client.get('/profile', auth=auth)

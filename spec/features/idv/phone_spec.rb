@@ -39,7 +39,7 @@ feature 'Verify phone' do
       expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
 
       enter_correct_otp_code_for_user(user)
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
 
       expect(current_path).to eq profile_path
     end

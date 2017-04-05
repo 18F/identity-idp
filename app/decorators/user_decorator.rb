@@ -69,12 +69,12 @@ UserDecorator = Struct.new(:user) do
     user.second_factor_locked_at.present? && blocked_from_2fa_period_expired?
   end
 
-  def should_acknowledge_recovery_code?(session)
-    return true if session[:new_recovery_code]
+  def should_acknowledge_personal_key?(session)
+    return true if session[:new_personal_key]
 
     sp_session = session[:sp]
 
-    user.recovery_code.blank? && (sp_session.blank? || sp_session[:loa3] == false)
+    user.personal_key.blank? && (sp_session.blank? || sp_session[:loa3] == false)
   end
 
   def recent_events

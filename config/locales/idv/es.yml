@@ -102,7 +102,7 @@ es:
         phone_of_record: NOT TRANSLATED YET
         prepaid: NOT TRANSLATED YET
         same_as_2fa: NOT TRANSLATED YET
-      recovery_code: NOT TRANSLATED YET
+      personal_key: NOT TRANSLATED YET
       review:
         financial_info: NOT TRANSLATED YET
         info_verified_html: NOT TRANSLATED YET

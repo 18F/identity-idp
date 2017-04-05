@@ -15,6 +15,6 @@ en:
         reactivate_button: Verify your identity
       ssn: Social Security Number
     items:
-      recovery_code: Personal key
+      personal_key: Personal key
     links:
-      regenerate_recovery_code: Create
+      regenerate_personal_key: Create

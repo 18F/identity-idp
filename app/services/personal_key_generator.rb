@@ -1,4 +1,4 @@
-class RecoveryCodeGenerator
+class PersonalKeyGenerator
   attr_reader :user_access_key
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
@@ -12,15 +12,15 @@ class RecoveryCodeGenerator
   def create
     user.recovery_salt = Devise.friendly_token[0, 20]
     user.recovery_cost = Figaro.env.scrypt_cost
-    @user_access_key = make_user_access_key(raw_recovery_code)
-    user.recovery_code = hashed_code
+    @user_access_key = make_user_access_key(raw_personal_key)
+    user.personal_key = hashed_code
     user.save!
-    raw_recovery_code
+    raw_personal_key
   end
 
   def verify(plaintext_code)
     @user_access_key = make_user_access_key(normalized_code(plaintext_code))
-    encryption_key, encrypted_code = user.recovery_code.split(Pii::Encryptor::DELIMITER)
+    encryption_key, encrypted_code = user.personal_key.split(Pii::Encryptor::DELIMITER)
     begin
       key_maker.unlock(user_access_key, encryption_key)
     rescue Pii::EncryptionError => _err
@@ -54,11 +54,11 @@ class RecoveryCodeGenerator
     ].join(Pii::Encryptor::DELIMITER)
   end
 
-  def raw_recovery_code
-    @raw_recovery_code ||= RandomPhrase.new(num_words: recovery_code_length).to_s
+  def raw_personal_key
+    @raw_personal_key ||= RandomPhrase.new(num_words: personal_key_length).to_s
   end
 
-  def recovery_code_length
+  def personal_key_length
     Figaro.env.recovery_code_length.to_i || length
   end
 end

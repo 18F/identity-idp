@@ -51,7 +51,7 @@ feature 'User profile' do
     end
 
     context 'LOA3 user' do
-      it 'generates a new recovery code' do
+      it 'generates a new personal key' do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         sign_in_live_with_2fa(profile.user)
 
@@ -60,7 +60,7 @@ feature 'User profile' do
         click_button 'Update'
 
         expect(current_path).to eq profile_path
-        expect(page).to have_content(t('idv.messages.recovery_code'))
+        expect(page).to have_content(t('idv.messages.personal_key'))
       end
     end
   end

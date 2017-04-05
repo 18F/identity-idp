@@ -19,7 +19,7 @@ describe Verify::ConfirmationsController do
     profile = profile_maker.profile
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
-    idv_session.recovery_code = profile.recovery_code
+    idv_session.personal_key = profile.personal_key
     allow(subject).to receive(:idv_session).and_return(idv_session)
   end
 
@@ -69,9 +69,10 @@ describe Verify::ConfirmationsController do
         expect(profile.verified_at).to_not be_nil
       end
 
-      it 'sets recovery code instance variable' do
+      it 'sets code instance variable' do
         subject.idv_session.cache_applicant_profile_id
-        code = subject.idv_session.recovery_code
+        code = subject.idv_session.personal_key
+
         get :show
 
         expect(assigns(:code)).to eq(code)

@@ -37,6 +37,14 @@ class User < ActiveRecord::Base
 
   attr_accessor :asserted_attributes
 
+  def personal_key
+    recovery_code
+  end
+
+  def personal_key=(value)
+    self.recovery_code = value
+  end
+
   def set_default_role
     self.role ||= :user
   end

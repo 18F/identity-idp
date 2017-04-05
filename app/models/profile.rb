@@ -13,7 +13,7 @@ class Profile < ActiveRecord::Base
     verification_pending: 3,
   }
 
-  attr_reader :recovery_code
+  attr_reader :personal_key
 
   # rubocop:disable Rails/SkipsModelValidations
   def activate
@@ -32,9 +32,9 @@ class Profile < ActiveRecord::Base
     Pii::Attributes.new_from_encrypted(encrypted_pii, user_access_key)
   end
 
-  def recover_pii(recovery_code)
+  def recover_pii(personal_key)
     rc_user_access_key = UserAccessKey.new(
-      password: recovery_code,
+      password: personal_key,
       salt: user.recovery_salt,
       cost: user.recovery_cost
     )
@@ -50,19 +50,19 @@ class Profile < ActiveRecord::Base
   end
 
   def encrypt_recovery_pii(pii)
-    recovery_code, rc_user_access_key = generate_recovery_code
+    personal_key, rc_user_access_key = generate_personal_key
     self.encrypted_pii_recovery = pii.encrypted(rc_user_access_key)
-    @recovery_code = recovery_code
+    @personal_key = personal_key
   end
 
   private
 
-  def recovery_code_generator
-    @_recovery_code_generator ||= RecoveryCodeGenerator.new(user)
+  def personal_key_generator
+    @_personal_key_generator ||= PersonalKeyGenerator.new(user)
   end
 
-  def generate_recovery_code
-    recovery_code = recovery_code_generator.create
-    [recovery_code, recovery_code_generator.user_access_key]
+  def generate_personal_key
+    personal_key = personal_key_generator.create
+    [personal_key, personal_key_generator.user_access_key]
   end
 end

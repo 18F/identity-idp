@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-describe 'two_factor_authentication/recovery_code_verification/show.html.slim' do
+describe 'two_factor_authentication/personal_key_verification/show.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up) }
 
   before do
-    @recovery_code_form = RecoveryCodeForm.new(user)
+    @personal_key_form = PersonalKeyForm.new(user)
     allow(view).to receive(:current_user).and_return(user)
   end
 
@@ -20,23 +20,23 @@ describe 'two_factor_authentication/recovery_code_verification/show.html.slim' d
     render
 
     expect(rendered).
-      to have_content t('devise.two_factor_authentication.recovery_code_header_text')
+      to have_content t('devise.two_factor_authentication.personal_key_header_text')
   end
 
-  it 'prompts the user to enter their recovery code' do
+  it 'prompts the user to enter their personal key' do
     render
 
     expect(rendered).
-      to have_content t('devise.two_factor_authentication.recovery_code_prompt')
+      to have_content t('devise.two_factor_authentication.personal_key_prompt')
   end
 
-  it 'contains a form to submit the recovery code' do
+  it 'contains a form to submit the personal key' do
     render
 
     expect(rendered).
       to have_xpath("//input[@value='#{t('forms.buttons.submit.default')}']")
     expect(rendered).
-      to have_xpath("//form[@action='#{login_two_factor_recovery_code_path}']")
+      to have_xpath("//form[@action='#{login_two_factor_personal_key_path}']")
     expect(rendered).
       to have_xpath("//form[@method='post']")
   end

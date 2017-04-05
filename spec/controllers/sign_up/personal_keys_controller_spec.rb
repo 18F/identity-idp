@@ -1,14 +1,14 @@
 require 'rails_helper'
 
-describe SignUp::RecoveryCodesController do
+describe SignUp::PersonalKeysController do
   describe '#show' do
     it 'tracks an analytics event' do
       stub_analytics
       stub_sign_in
-      subject.user_session[:first_time_recovery_code_view] = 'true'
+      subject.user_session[:first_time_personal_key_view] = 'true'
 
       expect(@analytics).to receive(:track_event).with(
-        Analytics::USER_REGISTRATION_RECOVERY_CODE_VISIT
+        Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT
       )
 
       get :show
@@ -16,7 +16,7 @@ describe SignUp::RecoveryCodesController do
 
     it 'redirects the user on subsequent views' do
       stub_sign_in
-      subject.user_session[:first_time_recovery_code_view] = 'true'
+      subject.user_session[:first_time_personal_key_view] = 'true'
 
       expect(get(:show)).not_to redirect_to(profile_path)
       expect(get(:show)).to redirect_to(profile_path)
@@ -26,7 +26,7 @@ describe SignUp::RecoveryCodesController do
       user = stub_sign_in
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' }, user: user)
       subject.user_session[:decrypted_pii] = { ssn: '1234' }.to_json
-      subject.user_session[:first_time_recovery_code_view] = 'true'
+      subject.user_session[:first_time_personal_key_view] = 'true'
 
       old_encrypted_pii = profile.encrypted_pii_recovery
 
