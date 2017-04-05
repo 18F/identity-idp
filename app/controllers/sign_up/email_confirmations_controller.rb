@@ -31,27 +31,9 @@ module SignUp
       flash[:notice] = t('devise.confirmations.confirmed_but_must_set_password')
       session[:user_confirmation_token] = @confirmation_token
       request_id = params.fetch(:_request_id, '')
-      add_sp_details_to_session unless request_id.empty?
       redirect_to sign_up_enter_password_url(
         request_id: request_id, confirmation_token: @confirmation_token
       )
-    end
-
-    def add_sp_details_to_session
-      session[:sp] = {
-        issuer: sp_request.issuer,
-        loa3: loa3_requested?,
-        request_url: sp_request.url,
-        request_id: sp_request.uuid,
-      }
-    end
-
-    def sp_request
-      @_sp_request ||= ServiceProviderRequest.from_uuid(params[:_request_id])
-    end
-
-    def loa3_requested?
-      sp_request.loa == Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
     end
 
     def process_confirmed_user
