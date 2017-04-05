@@ -5,13 +5,10 @@ RSpec.describe 'SVG files' do
     relative_path = svg_path.sub(Rails.root.to_s, '')
 
     describe relative_path do
-      it 'does not contain inline styles' do
+      it 'does not contain inline style tags' do
         doc = Nokogiri::XML(File.read(svg_path))
 
-        aggregate_failures do
-          expect(doc.css('style')).to be_empty
-          expect(doc.css('[style]')).to be_empty
-        end
+        expect(doc.css('style')).to be_empty
       end
     end
   end
