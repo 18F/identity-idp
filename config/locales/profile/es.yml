@@ -15,6 +15,6 @@ es:
         reactivate_button: NOT TRANSLATED YET
       ssn: NOT TRANSLATED YET
     items:
-      recovery_code: NOT TRANSLATED YET
+      personal_key: NOT TRANSLATED YET
     links:
-      regenerate_recovery_code: NOT TRANSLATED YET
+      regenerate_personal_key: NOT TRANSLATED YET

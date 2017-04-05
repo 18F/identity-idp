@@ -14,7 +14,7 @@ module Features
       fill_in 'Phone', with: '202-555-1212'
       click_send_security_code
       enter_2fa_code
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
       user
     end
 
@@ -150,30 +150,33 @@ module Features
       click_submit_default
     end
 
-    def acknowledge_and_confirm_recovery_code
+    def acknowledge_and_confirm_personal_key
       extra_characters_get_ignored = 'abc123qwerty'
       code_words = []
 
-      page.all(:css, '[data-recovery]').map do |node|
+      page.all(:css, '[data-personal-key]').map do |node|
         code_words << node.text
       end
 
       button_text = t('forms.buttons.continue')
 
-      click_on button_text, class: 'recovery-code-continue'
+      click_on button_text, class: 'personal-key-continue'
 
       code_words.size.times do |index|
-        fill_in "recovery-#{index}", with: code_words[index].downcase + extra_characters_get_ignored
+        fill_in(
+          "personal-key-#{index}",
+          with: code_words[index].downcase + extra_characters_get_ignored
+        )
       end
 
-      click_on button_text, class: 'recovery-code-confirm'
+      click_on button_text, class: 'personal-key-confirm'
     end
 
-    def click_acknowledge_recovery_code
-      click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
+    def click_acknowledge_personal_key
+      click_on t('forms.buttons.continue'), class: 'personal-key-continue'
     end
 
-    def enter_recovery_code(code:, selector: 'input[type="text"]')
+    def enter_personal_key(code:, selector: 'input[type="text"]')
       code_words = code.split(' ')
       fields = page.all(selector)
 
@@ -286,7 +289,7 @@ module Features
 
       # expect(page).to have_css('img[src*=sp-logos]')
 
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
     end
 
     def click_sign_in_from_landing_page_then_click_create_account

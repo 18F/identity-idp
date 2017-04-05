@@ -54,8 +54,8 @@ module Verify
     end
 
     def handle_idv_redirect
-      redirect_to profile_path and return if current_user.recovery_code.present?
-      redirect_to manage_recovery_code_path
+      redirect_to profile_path and return if current_user.personal_key.present?
+      redirect_to manage_personal_key_path
     end
 
     def process_success

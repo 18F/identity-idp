@@ -52,24 +52,24 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'user signed up' do
       before do
-        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        user = build_stubbed(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         render
       end
 
       it_behaves_like 'an otp form'
 
-      it 'provides an option to use a recovery code' do
+      it 'provides an option to use a personal key' do
         expect(rendered).to have_link(
-          t('devise.two_factor_authentication.recovery_code_fallback.link'),
-          href: login_two_factor_recovery_code_path
+          t('devise.two_factor_authentication.personal_key_fallback.link'),
+          href: login_two_factor_personal_key_path
         )
       end
     end
 
     context 'user is reauthenticating' do
       before do
-        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        user = build_stubbed(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         allow(view).to receive(:reauthn?).and_return(true)
         render
@@ -85,7 +85,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'user is changing phone number' do
       before do
-        user = build_stubbed(:user, :signed_up, recovery_code: '1')
+        user = build_stubbed(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
         allow(view).to receive(:confirmation_for_phone_change?).and_return(true)
         render
@@ -100,15 +100,15 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'user is unconfirmed' do
-      it 'does not provide an option to use a recovery code' do
-        unconfirmed_data = presenter_data.merge(recovery_code_unavailable: true)
+      it 'does not provide an option to use a personal key' do
+        unconfirmed_data = presenter_data.merge(personal_key_unavailable: true)
 
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(unconfirmed_data)
         render
 
         expect(rendered).not_to have_link(
-          t('devise.two_factor_authentication.recovery_code_fallback.link'),
-          href: login_two_factor_recovery_code_path
+          t('devise.two_factor_authentication.personal_key_fallback.link'),
+          href: login_two_factor_personal_key_path
         )
       end
     end

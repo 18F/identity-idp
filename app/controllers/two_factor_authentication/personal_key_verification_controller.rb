@@ -1,17 +1,17 @@
 module TwoFactorAuthentication
-  class RecoveryCodeVerificationController < ApplicationController
+  class PersonalKeyVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
     skip_before_action :handle_two_factor_authentication
 
     def show
-      @recovery_code_form = RecoveryCodeForm.new(current_user)
+      @personal_key_form = PersonalKeyForm.new(current_user)
     end
 
     def create
-      @recovery_code_form = RecoveryCodeForm.new(current_user, personal_key)
-      result = @recovery_code_form.submit
+      @personal_key_form = PersonalKeyForm.new(current_user, personal_key)
+      result = @personal_key_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
 
@@ -31,7 +31,7 @@ module TwoFactorAuthentication
 
     def re_encrypt_profile_recovery_pii
       Pii::ReEncryptor.new(pii: pii, profile: password_reset_profile).perform
-      session[:new_recovery_code] = password_reset_profile.recovery_code
+      session[:new_personal_key] = password_reset_profile.personal_key
     end
 
     def password_reset_profile
@@ -43,7 +43,7 @@ module TwoFactorAuthentication
     end
 
     def personal_key
-      params[:recovery_code_form].require(:code).join(' ')
+      params[:personal_key_form].require(:code).join(' ')
     end
   end
 end

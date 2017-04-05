@@ -18,11 +18,11 @@ namespace :dev do
       first_name: 'Some',
       last_name: 'One'
     )
-    recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
+    personal_key = profile.encrypt_pii(loa3_user.user_access_key, pii)
     profile.verified_at = Time.zone.now
     profile.activate
 
-    Rails.logger.warn "email=#{loa3_user.email} recovery_code=#{recovery_code}"
+    Rails.logger.warn "email=#{loa3_user.email} personal_key=#{personal_key}"
   end
 
   # protip: set ATTRIBUTE_COST and SCRYPT_COST env vars to '800$8$1$'
@@ -69,11 +69,11 @@ namespace :dev do
             dob: '1970-05-01',
             ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
           )
-          recovery_code = profile.encrypt_pii(user.user_access_key, pii)
+          personal_key = profile.encrypt_pii(user.user_access_key, pii)
           profile.verified_at = Time.zone.now
           profile.activate
 
-          Rails.logger.warn "email=#{email_addr} recovery_code=#{recovery_code}"
+          Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
         end
 
         num_created += 1

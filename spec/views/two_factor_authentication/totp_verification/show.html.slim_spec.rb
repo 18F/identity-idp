@@ -39,10 +39,10 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
                    href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
   end
 
-  it 'provides an option to use a recovery code' do
+  it 'provides an option to use a personal key' do
     expect(rendered).to have_link(
-      t('devise.two_factor_authentication.recovery_code_fallback.link'),
-      href: login_two_factor_recovery_code_path
+      t('devise.two_factor_authentication.personal_key_fallback.link'),
+      href: login_two_factor_personal_key_path
     )
   end
 

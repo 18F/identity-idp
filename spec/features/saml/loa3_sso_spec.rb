@@ -23,7 +23,7 @@ feature 'LOA3 Single Sign On' do
       click_on 'Yes'
       user = User.find_with_email(email)
       complete_idv_profile_ok(user.reload)
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
 
       expect(page).to have_content t('titles.loa3_verified.true', app: APP_NAME)
       click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
@@ -49,8 +49,8 @@ feature 'LOA3 Single Sign On' do
 
   context 'canceling verification' do
     context 'with js', js: true do
-      it 'returns user to recovery code page if they sign up via loa3' do
-        user = create(:user, phone: '1 (111) 111-1111', recovery_code: nil)
+      it 'returns user to personal key page if they sign up via loa3' do
+        user = create(:user, phone: '1 (111) 111-1111', personal_key: nil)
         sign_in_with_warden(user)
         loa3_sp_session
 
@@ -58,7 +58,7 @@ feature 'LOA3 Single Sign On' do
         click_on t('links.cancel')
         click_on t('idv.buttons.cancel')
 
-        expect(current_path).to eq(manage_recovery_code_path)
+        expect(current_path).to eq(manage_personal_key_path)
       end
 
       it 'returns user to profile page if they have previously signed up' do
@@ -74,15 +74,15 @@ feature 'LOA3 Single Sign On' do
     end
 
     context 'without js' do
-      it 'returns user to recovery code page if they sign up via loa3' do
-        user = create(:user, phone: '1 (111) 111-1111', recovery_code: nil)
+      it 'returns user to personal key page if they sign up via loa3' do
+        user = create(:user, phone: '1 (111) 111-1111', personal_key: nil)
         sign_in_with_warden(user)
         loa3_sp_session
 
         visit verify_path
         click_idv_cancel
 
-        expect(current_path).to eq(manage_recovery_code_path)
+        expect(current_path).to eq(manage_personal_key_path)
       end
 
       it 'returns user to profile page if they have previously signed up' do

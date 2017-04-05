@@ -3,7 +3,7 @@ const openSystemPrintDialog = (event) => {
   window.print();
 };
 
-const enableRecoveryCodePrintButton = () => {
+const enablePersonalKeyPrintButton = () => {
   const buttonNodes = document.querySelectorAll('[data-print]');
   const buttons = [].slice.call(buttonNodes);
 
@@ -12,4 +12,4 @@ const enableRecoveryCodePrintButton = () => {
   });
 };
 
-document.addEventListener('DOMContentLoaded', enableRecoveryCodePrintButton);
+document.addEventListener('DOMContentLoaded', enablePersonalKeyPrintButton);

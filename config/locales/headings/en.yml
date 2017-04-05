@@ -19,7 +19,7 @@ en:
       profile_info: Profile information
       two_factor: Two-factor authentication
       verified_account: Verified Account
-    recovery_code: Here is your personal key
+    personal_key: Here is your personal key
     registrations:
       enter_email: Start creating an account
     session_timeout_warning: Need more time?

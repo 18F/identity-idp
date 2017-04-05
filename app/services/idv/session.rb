@@ -9,7 +9,7 @@ module Idv
       :pii,
       :profile_confirmation,
       :profile_id,
-      :recovery_code,
+      :personal_key,
       :resolution,
       :step_attempts,
       :vendor,
@@ -49,7 +49,7 @@ module Idv
       profile = profile_maker.profile
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
-      self.recovery_code = profile.recovery_code
+      self.personal_key = profile.personal_key
     end
 
     def cache_encrypted_pii(password)

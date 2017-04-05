@@ -7,7 +7,7 @@ describe 'profile/index.html.slim' do
     allow(view).to receive(:current_user).and_return(user)
     assign(:view_model, UserProfile::ProfileIndex.new(
                           decrypted_pii: nil,
-                          recovery_code: nil,
+                          personal_key: nil,
                           has_password_reset_profile: nil
     ))
   end
@@ -53,12 +53,12 @@ describe 'profile/index.html.slim' do
       assign(:has_password_reset_profile, false)
     end
 
-    it 'contains a recovery code section' do
+    it 'contains a personal key section' do
       render
 
-      expect(rendered).to have_content t('profile.items.recovery_code')
+      expect(rendered).to have_content t('profile.items.personal_key')
       expect(rendered).
-        to have_link(t('profile.links.regenerate_recovery_code'), href: manage_recovery_code_path)
+        to have_link(t('profile.links.regenerate_personal_key'), href: manage_personal_key_path)
     end
   end
 
@@ -67,12 +67,12 @@ describe 'profile/index.html.slim' do
       assign(:has_password_reset_profile, true)
     end
 
-    it 'lacks a recovery code section' do
+    it 'lacks a personal key section' do
       render
 
-      expect(rendered).to_not have_content t('profile.items.recovery_code')
+      expect(rendered).to_not have_content t('profile.items.personal_key')
       expect(rendered).to_not have_link(
-        t('profile.links.regenerate_recovery_code'), href: manage_recovery_code_path
+        t('profile.links.regenerate_personal_key'), href: manage_personal_key_path
       )
     end
   end

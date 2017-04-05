@@ -19,8 +19,8 @@ Rails.application.routes.draw do
 
     get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
     post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
-    get '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#show'
-    post '/login/two_factor/recovery_code' => 'two_factor_authentication/recovery_code_verification#create'
+    get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
+    post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
     get  '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#show',
          as: :login_two_factor
     post '/login/two_factor/:delivery_method' => 'two_factor_authentication/otp_verification#create',
@@ -70,8 +70,8 @@ Rails.application.routes.draw do
   patch '/manage/password' => 'users/passwords#update'
   get '/manage/phone' => 'users/phones#edit'
   match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
-  get '/manage/recovery_code' => 'users/recovery_codes#show', as: :manage_recovery_code
-  post '/manage/recovery_code' => 'users/recovery_codes#update'
+  get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
+  post '/manage/personal_key' => 'users/personal_keys#update'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   post '/openid_connect/authorize' => 'openid_connect/authorization#create',
@@ -98,8 +98,8 @@ Rails.application.routes.draw do
   post '/sign_up/enter_email/resend' => 'sign_up/email_resend#create',
        as: :sign_up_create_email_resend
   get '/sign_up/enter_password' => 'sign_up/passwords#new'
-  get '/sign_up/recovery_code' => 'sign_up/recovery_codes#show'
-  post '/sign_up/recovery_code' => 'sign_up/recovery_codes#update'
+  get '/sign_up/personal_key' => 'sign_up/personal_keys#show'
+  post '/sign_up/personal_key' => 'sign_up/personal_keys#update'
   get '/sign_up/start' => 'sign_up/registrations#show', as: :sign_up_start
   get '/sign_up/verify_email' => 'sign_up/emails#show', as: :sign_up_verify_email
   get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed

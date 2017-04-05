@@ -27,7 +27,7 @@ queue_health_check_dead_interval_seconds: '240'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '120'
 
-# The number of words in the recovery code phrase
+# The number of words in the personal key phrase
 recovery_code_length: '4'
 
 # Set the number of seconds before the session times out that the timeout

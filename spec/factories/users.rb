@@ -22,7 +22,7 @@ FactoryGirl.define do
     trait :signed_up do
       with_phone
       after :build do |user|
-        user.recovery_code = RecoveryCodeGenerator.new(user).create
+        user.personal_key = PersonalKeyGenerator.new(user).create
       end
     end
 

@@ -40,7 +40,7 @@ describe ProfileController do
 
         view_model = UserProfile::ProfileIndex.new(
           decrypted_pii: nil,
-          recovery_code: nil,
+          personal_key: nil,
           has_password_reset_profile: user.password_reset_profile.present?
         )
         allow(subject).to receive(:view_model).and_return(view_model)

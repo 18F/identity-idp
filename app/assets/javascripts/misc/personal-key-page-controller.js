@@ -1,10 +1,10 @@
 const modalSelector = '#personal-key-confirm';
 const modal = new window.LoginGov.Modal({ el: modalSelector });
 
-const recoveryCodeContainer = document.getElementById('recovery-code');
-const recoveryWords = [].slice.call(document.querySelectorAll('[data-recovery]'));
+const personalKeyContainer = document.getElementById('personal-key');
+const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
 const formEl = document.getElementById('confirm-key');
-const inputs = [].slice.call(formEl.elements).filter((el) => el.type === 'text');
+const inputs = [].slice.call(formEl.elements).filter(el => el.type === 'text');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 
@@ -16,13 +16,13 @@ let isInvalidForm = false;
 function setInvalidHTML() {
   if (isInvalidForm) return;
 
-  document.getElementById('recovery-code-alert').classList.remove('display-none');
+  document.getElementById('personal-key-alert').classList.remove('display-none');
 
   isInvalidForm = true;
 }
 
 function unsetInvalidHTML() {
-  document.getElementById('recovery-code-alert').classList.add('display-none');
+  document.getElementById('personal-key-alert').classList.add('display-none');
 
   isInvalidForm = false;
 }
@@ -38,7 +38,7 @@ function handleSubmit(event) {
   const invalidMatches = inputs.reduce(function(accumulator, input, index) {
     const value = input.value;
 
-    if (value.toUpperCase() === recoveryWords[index].innerHTML.replace(/\s+/, '').toUpperCase()) {
+    if (value.toUpperCase() === personalKeyWords[index].innerHTML.replace(/\s+/, '').toUpperCase()) {
       return accumulator;
     }
 
@@ -64,7 +64,7 @@ function show(event) {
 
   modal.on('show', function() {
     inputs[0].focus();
-    recoveryCodeContainer.classList.add('invisible');
+    personalKeyContainer.classList.add('invisible');
   });
 
   modal.show();
@@ -73,7 +73,7 @@ function show(event) {
 function hide() {
   modal.on('hide', function() {
     resetForm();
-    recoveryCodeContainer.classList.remove('invisible');
+    personalKeyContainer.classList.remove('invisible');
   });
 
   modal.hide();

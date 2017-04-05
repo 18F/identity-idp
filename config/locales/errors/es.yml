@@ -28,7 +28,7 @@ es:
         one: '1 error prohibió este %{resource} de ser guardado:'
         other: "%{count} errores prohibieron este %{resource} de ser guardado:"
       password_incorrect: La contraseña es incorrecta
-      recovery_code_incorrect: El código de recuperación es incorrecto
+      personal_key_incorrect: El código de recuperación es incorrecto
       requires_phone: requiere que ingrese su número de teléfono.
       unauthorized_authn_context: NOT TRANSLATED YET
       unauthorized_service_provider: NOT TRANSLATED YET

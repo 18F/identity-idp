@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'Password Recovery' do
-  include RecoveryCodeHelper
+  include PersonalKeyHelper
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do

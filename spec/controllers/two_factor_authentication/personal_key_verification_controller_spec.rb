@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe TwoFactorAuthentication::RecoveryCodeVerificationController do
+describe TwoFactorAuthentication::PersonalKeyVerificationController do
   let(:code) { { code: ['foo'] } }
-  let(:payload) { { recovery_code_form: code } }
+  let(:payload) { { personal_key_form: code } }
 
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
@@ -17,14 +17,14 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
   end
 
   describe '#create' do
-    context 'when the user enters a valid recovery code' do
+    context 'when the user enters a valid personal key' do
       before do
-        stub_sign_in_before_2fa(build(:user, recovery_code: 'foo'))
-        form = instance_double(RecoveryCodeForm)
+        stub_sign_in_before_2fa(build(:user, personal_key: 'foo'))
+        form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
-          success: true, errors: {}, extra: { multi_factor_auth_method: 'recovery code' }
+          success: true, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
         )
-        allow(RecoveryCodeForm).to receive(:new).
+        allow(PersonalKeyForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
@@ -43,7 +43,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'recovery code' }
+        analytics_hash = { success: true, errors: {}, multi_factor_auth_method: 'personal key' }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
@@ -52,14 +52,14 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
       end
     end
 
-    context 'when the user enters an invalid recovery code' do
+    context 'when the user enters an invalid personal key' do
       before do
         stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
-        form = instance_double(RecoveryCodeForm)
+        form = instance_double(PersonalKeyForm)
         response = FormResponse.new(
-          success: false, errors: {}, extra: { multi_factor_auth_method: 'recovery code' }
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
         )
-        allow(RecoveryCodeForm).to receive(:new).
+        allow(PersonalKeyForm).to receive(:new).
           with(subject.current_user, 'foo').and_return(form)
         allow(form).to receive(:submit).and_return(response)
       end
@@ -70,7 +70,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
         post :create, payload
       end
 
-      it 're-renders the recovery code entry screen' do
+      it 're-renders the personal key entry screen' do
         post :create, payload
 
         expect(response).to render_template(:show)
@@ -82,7 +82,7 @@ describe TwoFactorAuthentication::RecoveryCodeVerificationController do
         properties = {
           success: false,
           errors: {},
-          multi_factor_auth_method: 'recovery code',
+          multi_factor_auth_method: 'personal key',
         }
 
         stub_analytics

@@ -18,7 +18,7 @@ en:
     resend_confirmation_email:
       success: We have resent your confirmation email.
     send_code:
-      recovery_code: You've got a new personal key.
+      personal_key: You've got a new personal key.
     timeout_warning:
       signed_in:
         continue: Keep me signed in

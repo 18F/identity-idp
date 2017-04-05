@@ -58,19 +58,19 @@ feature 'LOA1 Single Sign On' do
       expect(page).to_not have_css('.accordion-header')
     end
 
-    it 'user can view and confirm recovery code during sign up', :js do
+    it 'user can view and confirm personal key during sign up', :js do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
       code = '1 2 3 4 5'
       stub_personal_key(user: user, code: code)
 
       loa1_sp_session
-      sign_in_and_require_viewing_recovery_code(user)
-      expect(current_path).to eq sign_up_recovery_code_path
+      sign_in_and_require_viewing_personal_key(user)
+      expect(current_path).to eq sign_up_personal_key_path
 
       click_on(t('forms.buttons.continue'))
       enter_personal_key_words_on_modal(code)
-      click_on t('forms.buttons.continue'), class: 'recovery-code-confirm'
+      click_on t('forms.buttons.continue'), class: 'personal-key-confirm'
 
       expect(current_path).to eq sign_up_completed_path
     end
@@ -115,13 +115,13 @@ feature 'LOA1 Single Sign On' do
     end
   end
 
-  def sign_in_and_require_viewing_recovery_code(user)
+  def sign_in_and_require_viewing_personal_key(user)
     login_as(user, scope: :user, run_callbacks: false)
     Warden.on_next_request do |proxy|
       session = proxy.env['rack.session']
       session['warden.user.user.session'] = {
         'need_two_factor_authentication' => true,
-        first_time_recovery_code_view: true,
+        first_time_personal_key_view: true,
       }
     end
 
@@ -130,8 +130,8 @@ feature 'LOA1 Single Sign On' do
   end
 
   def stub_personal_key(user:, code:)
-    generator = instance_double(RecoveryCodeGenerator)
-    allow(RecoveryCodeGenerator).to receive(:new).with(user).and_return(generator)
+    generator = instance_double(PersonalKeyGenerator)
+    allow(PersonalKeyGenerator).to receive(:new).with(user).and_return(generator)
     allow(generator).to receive(:create).and_return(code)
     code
   end
@@ -139,7 +139,7 @@ feature 'LOA1 Single Sign On' do
   def enter_personal_key_words_on_modal(code)
     code_words = code.split(' ')
     code_words.each_with_index do |word, index|
-      fill_in "recovery-#{index}", with: word
+      fill_in "personal-key-#{index}", with: word
     end
   end
 end

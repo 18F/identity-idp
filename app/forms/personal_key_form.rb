@@ -1,4 +1,4 @@
-class RecoveryCodeForm
+class PersonalKeyForm
   include ActiveModel::Model
 
   attr_accessor :code
@@ -9,9 +9,9 @@ class RecoveryCodeForm
   end
 
   def submit
-    @success = valid_recovery_code?
+    @success = valid_personal_key?
 
-    UpdateUser.new(user: user, attributes: { recovery_code: nil }).call if success
+    UpdateUser.new(user: user, attributes: { personal_key: nil }).call if success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -20,16 +20,16 @@ class RecoveryCodeForm
 
   attr_reader :user, :success
 
-  def valid_recovery_code?
+  def valid_personal_key?
     word_regexp = /\w{#{RandomPhrase::WORD_LENGTH}}/
     return false unless code =~ /\A#{word_regexp} #{word_regexp} #{word_regexp} #{word_regexp}\Z/
-    recovery_code_generator = RecoveryCodeGenerator.new(user)
-    recovery_code_generator.verify(code)
+    personal_key_generator = PersonalKeyGenerator.new(user)
+    personal_key_generator.verify(code)
   end
 
   def extra_analytics_attributes
     {
-      multi_factor_auth_method: 'recovery code',
+      multi_factor_auth_method: 'personal key',
     }
   end
 end

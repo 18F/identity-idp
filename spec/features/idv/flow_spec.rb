@@ -45,8 +45,8 @@ feature 'IdV session' do
       click_button t('forms.buttons.submit.default')
 
       expect(current_url).to eq verify_confirmations_url
-      expect(page).to have_content(t('headings.recovery_code'))
-      click_acknowledge_recovery_code
+      expect(page).to have_content(t('headings.personal_key'))
+      click_acknowledge_personal_key
 
       expect(current_url).to eq(profile_url)
       expect(page).to have_content('José One')
@@ -318,31 +318,31 @@ feature 'IdV session' do
       expect(find('#idv_finance_form_ccn').value).to eq '1234'
     end
 
-    context 'recovery codes information and actions' do
+    context 'personal keys information and actions' do
       before do
-        recovery_code = 'a1b2c3d4e5f6g7h8'
+        personal_key = 'a1b2c3d4e5f6g7h8'
 
         @user = sign_in_and_2fa_user
         visit verify_session_path
 
-        allow(RandomPhrase).to receive(:to_s).and_return(recovery_code)
+        allow(RandomPhrase).to receive(:to_s).and_return(personal_key)
         complete_idv_profile_ok(@user)
       end
 
-      scenario 'recovery code presented on success' do
-        expect(page).to have_content(t('headings.recovery_code'))
+      scenario 'personal key presented on success' do
+        expect(page).to have_content(t('headings.personal_key'))
       end
 
-      it_behaves_like 'recovery code page'
+      it_behaves_like 'personal key page'
 
-      scenario 'reload recovery code page' do
+      scenario 'reload personal key page' do
         visit current_path
 
-        expect(page).to have_content(t('headings.recovery_code'))
+        expect(page).to have_content(t('headings.personal_key'))
 
         visit current_path
 
-        expect(page).to have_content(t('headings.recovery_code'))
+        expect(page).to have_content(t('headings.personal_key'))
       end
     end
 

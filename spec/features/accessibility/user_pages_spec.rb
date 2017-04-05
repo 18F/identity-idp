@@ -66,9 +66,9 @@ feature 'Accessibility on pages that require authentication', :js do
     end
   end
 
-  scenario 'recovery code page' do
+  scenario 'personal key page' do
     sign_in_and_2fa_user
-    visit manage_recovery_code_path
+    visit manage_personal_key_path
 
     expect(page).to be_accessible
   end
@@ -105,10 +105,10 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  scenario 'generate new recovery code page' do
+  scenario 'generate new personal key page' do
     sign_in_and_2fa_user
 
-    visit manage_recovery_code_path
+    visit manage_personal_key_path
 
     expect(page).to be_accessible
   end

@@ -28,7 +28,7 @@ es:
       instructions: Proveer la siguiente información para reactivar su cuenta.
       submit: Reactivar perfil
       title: Reactivar perfil
-    recovery_code:
+    personal_key:
       title: NOT TRANSLATED YET
       instructions: NOT TRANSLATED YET
       confirmation_label: NOT TRANSLATED YET
@@ -47,5 +47,5 @@ es:
         tendrá que abrir la aplicación y recuperar un código.
     two_factor:
       code: Código de acceso único
-      recovery_code: Código de recuperación
+      personal_key: Código de recuperación
       try_again: Inténtalo de nuevo

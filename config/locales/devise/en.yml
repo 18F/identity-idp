@@ -144,11 +144,11 @@ en:
       please_confirm: >
         Your phone number has been set. Confirm it by entering the security code below.
       please_try_again_html: Please try again in %{time_remaining}.
-      recovery_code_fallback:
+      personal_key_fallback:
         link: Use a personal key instead
         text_html: Don’t have access to your phone? %{link}.
-      recovery_code_header_text: Enter your personal key
-      recovery_code_prompt: >
+      personal_key_header_text: Enter your personal key
+      personal_key_prompt: >
         You can use this personal key once. If you still need a code after
         signing in, go to your account settings page to get a new one.
       totp_fallback:

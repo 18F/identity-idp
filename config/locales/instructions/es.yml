@@ -35,10 +35,10 @@ es:
         intro: 'Seguridad de la contraseña: '
         iv: Bueno
         v: Muy bueno!
-    recovery_code_html: >
+    personal_key_html: >
       Escriba este código de recuperación y guárdelo en algún lugar seguro. Si no puede
       acceder a su teléfono, puede usarlo en lugar de un código de acceso único para iniciar sesión.
-    recovery_code_accent: NOT TRANSLATED YET
+    personal_key_accent: NOT TRANSLATED YET
     registration:
       already_have_account: ¿Ya tiene una cuenta? %{link}
       email: Elija una dirección para usar en las comunicaciones del gobierno.

@@ -5,7 +5,7 @@ module TwoFactorAuthCode
     include Rails.application.routes.url_helpers
 
     attr_reader :phone_number, :code_value, :delivery_method, :reenter_phone_number_path,
-                :totp_enabled, :unconfirmed_phone, :recovery_code_unavailable, :user_email, :view
+                :totp_enabled, :unconfirmed_phone, :personal_key_unavailable, :user_email, :view
 
     def initialize(data_model, view = nil)
       data_model.each do |key, value|
@@ -27,26 +27,26 @@ module TwoFactorAuthCode
       raise NotImplementedError
     end
 
-    def recovery_code_link
-      return if recovery_code_unavailable
+    def personal_key_link
+      return if personal_key_unavailable
 
-      t("#{recovery_code_key}.text_html",
-        link: recovery_code_tag)
+      t("#{personal_key}.text_html",
+        link: personal_key_tag)
     end
 
     private
-
-    def recovery_code_tag
-      link_to(t("#{recovery_code_key}.link"), login_two_factor_recovery_code_path)
-    end
 
     def link_to(text, url, options = {})
       href = { href: url }
       content_tag(:a, text, options.merge(href))
     end
 
-    def recovery_code_key
-      'devise.two_factor_authentication.recovery_code_fallback'
+    def personal_key_tag
+      link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)
+    end
+
+    def personal_key
+      'devise.two_factor_authentication.personal_key_fallback'
     end
   end
 end

@@ -266,7 +266,7 @@ feature 'OpenID Connect' do
       sign_in_live_with_2fa(user)
       click_on 'Yes'
       complete_idv_profile_ok(user.reload)
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
       click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
       click_button t('openid_connect.authorization.index.allow')
 

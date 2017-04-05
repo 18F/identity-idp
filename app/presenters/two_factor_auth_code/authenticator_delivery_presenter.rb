@@ -12,7 +12,7 @@ module TwoFactorAuthCode
     end
 
     def fallback_links
-      [otp_fallback_options, recovery_code_link].compact
+      [otp_fallback_options, personal_key_link].compact
     end
 
     private
