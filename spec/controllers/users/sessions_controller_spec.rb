@@ -327,14 +327,6 @@ describe Users::SessionsController, devise: true do
 
         get :new
       end
-
-      it 'cleans up the sign_up_init key' do
-        subject.session[:sign_up_init] = true
-
-        get :new
-
-        expect(subject.session[:sign_up_init]).to be_nil
-      end
     end
   end
 end

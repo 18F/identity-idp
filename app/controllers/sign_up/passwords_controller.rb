@@ -26,7 +26,6 @@ module SignUp
     end
 
     def process_successful_password_creation
-      session.delete(:sign_up_init)
       @user.confirm
       UpdateUser.new(
         user: @user,
