@@ -3,27 +3,16 @@
 - title t('titles.profile')
 - btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
-- if @view_model.recovery_code
-  .mb4.alert.alert-warning
-    p = t('idv.messages.recovery_code')
-    .mb1.py1.px2.inline-block.fs-20p.regular.monospace.bg-white.rounded = @view_model.recovery_code
+= render @view_model.recovery_code_warning_partial, recovery_code: @view_model.recovery_code
 
-- if @view_model.has_password_reset_profile
-  .mb4.alert.alert-warning
-    p = t('profile.index.reactivation.instructions')
-    p.mb0 = link_to t('profile.index.reactivation.reactivate_button'), reactivate_profile_path
+= render @view_model.reactivation_instructions_partial
 
 h1.hide = t('titles.profile')
 
 h2.h3.mt0.mb4
   = t('headings.profile.login_info')
 
-- if @view_model.decrypted_pii
-  .clearfix
-    .sm-col-right.left.mt2.sm-mtn3
-      = render partial: current_user.decorate.verified_account_partial
-  = render 'verified_profile_information', decrypted_pii: @view_model.decrypted_pii
-
+= render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
 .border-box.border.border-blue-gray.rounded-md.mb3
   .bg-blue-light.pb1.pt1.px2.h6.caps
