@@ -17,4 +17,4 @@ en:
     items:
       recovery_code: Personal key
     links:
-      regenerate_recovery_code: Create
+      regenerate_recovery_code: Generate
