@@ -20,7 +20,7 @@ module Verify
 
     def next_step
       if session[:sp]
-        sign_up_completed_path
+        sign_up_completed_url
       else
         after_sign_in_path_for(current_user)
       end

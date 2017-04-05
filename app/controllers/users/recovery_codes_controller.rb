@@ -19,9 +19,9 @@ module Users
 
     def next_step
       if current_user.password_reset_profile.present?
-        reactivate_profile_path
+        reactivate_profile_url
       else
-        profile_path
+        profile_url
       end
     end
   end

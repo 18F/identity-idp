@@ -37,13 +37,25 @@ describe SignUp::RecoveryCodesController do
   end
 
   describe '#update' do
-    it 'redirects to the profile page' do
-      stub_sign_in
-      subject.current_user.recovery_code = 'foo'
+    context 'sp present' do
+      it 'redirects to the sign up completed url' do
+        subject.session[:sp] = 'true'
+        stub_sign_in
 
-      patch :update
+        patch :update
 
-      expect(response).to redirect_to profile_path
+        expect(response).to redirect_to sign_up_completed_url
+      end
+    end
+
+    context 'no sp present' do
+      it 'redirects to the profile page' do
+        stub_sign_in
+
+        patch :update
+
+        expect(response).to redirect_to profile_path
+      end
     end
   end
 end
