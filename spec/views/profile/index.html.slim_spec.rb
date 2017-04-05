@@ -5,6 +5,11 @@ describe 'profile/index.html.slim' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
+    assign(:view_model, UserProfile::ProfileIndex.new(
+                          decrypted_pii: nil,
+                          recovery_code: nil,
+                          has_password_reset_profile: nil
+    ))
   end
 
   context 'user is not TOTP enabled' do
