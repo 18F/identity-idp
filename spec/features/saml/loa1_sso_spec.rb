@@ -100,7 +100,7 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
       visit saml_authn_request
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
   end
 

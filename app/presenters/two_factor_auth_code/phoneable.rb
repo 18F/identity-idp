@@ -1,13 +1,13 @@
 module TwoFactorAuthCode
   module Phoneable
     def phone_fallback_link
-      fallback_method = if delivery_method == 'voice'
+      fallback_method = if otp_delivery_preference == 'voice'
                           'sms'
-                        elsif delivery_method == 'sms'
+                        elsif otp_delivery_preference == 'sms'
                           'voice'
                         end
 
-      t(fallback_instructions(delivery_method),
+      t(fallback_instructions(otp_delivery_preference),
         link: phone_link_tag(fallback_method))
     end
 
@@ -23,7 +23,11 @@ module TwoFactorAuthCode
     end
 
     def resend_code_path
-      otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method, resend: true })
+      otp_send_path(
+        otp_delivery_selection_form: {
+          otp_delivery_preference: otp_delivery_preference, resend: true
+        }
+      )
     end
 
     private
@@ -32,9 +36,11 @@ module TwoFactorAuthCode
       "instructions.2fa.#{method}.fallback_html"
     end
 
-    def phone_link_tag(delivery_method)
-      send_path = otp_send_path(otp_delivery_selection_form: { otp_method: delivery_method })
-      link_to(t("links.two_factor_authentication.#{delivery_method}"), send_path)
+    def phone_link_tag(otp_delivery_preference)
+      send_path = otp_send_path(
+        otp_delivery_selection_form: { otp_delivery_preference: otp_delivery_preference }
+      )
+      link_to(t("links.two_factor_authentication.#{otp_delivery_preference}"), send_path)
     end
   end
 end

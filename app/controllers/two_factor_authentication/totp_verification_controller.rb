@@ -5,7 +5,7 @@ module TwoFactorAuthentication
     skip_before_action :handle_two_factor_authentication
 
     def show
-      @presenter = presenter_for(delivery_method)
+      @presenter = presenter_for(otp_delivery_preference)
     end
 
     def create

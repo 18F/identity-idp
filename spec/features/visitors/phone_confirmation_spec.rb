@@ -30,7 +30,7 @@ feature 'Phone confirmation during sign up' do
     it 'allows user to resend confirmation code' do
       click_link t('links.two_factor_authentication.resend_code.sms')
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
 
     it 'does not enable 2FA until correct OTP is entered' do
@@ -63,7 +63,7 @@ feature 'Phone confirmation during sign up' do
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).to have_content(
         t('instructions.2fa.sms.confirm_code_html',
           number: @existing_user.phone,
@@ -77,7 +77,7 @@ feature 'Phone confirmation during sign up' do
 
       expect(@user.reload.phone_confirmed_at).to be_nil
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
   end
 end

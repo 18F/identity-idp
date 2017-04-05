@@ -4,8 +4,8 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader :phone_number, :code_value, :delivery_method, :reenter_phone_number_path,
-                :totp_enabled, :unconfirmed_phone, :personal_key_unavailable, :user_email, :view
+    attr_reader :phone_number, :code_value, :reenter_phone_number_path, :totp_enabled,
+      :unconfirmed_phone, :personal_key_unavailable, :user_email, :view
 
     def initialize(data_model, view = nil)
       data_model.each do |key, value|

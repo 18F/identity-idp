@@ -9,7 +9,8 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       allow(view).to receive(:confirmation_for_phone_change?).and_return(false)
       allow(view).to receive(:user_session).and_return({})
       allow(view).to receive(:current_user).and_return(User.new)
-      controller.request.path_parameters[:delivery_method] = presenter_data[:delivery_method]
+      controller.request.path_parameters[:otp_delivery_preference] =
+        presenter_data[:otp_delivery_preference]
 
       @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(presenter_data)
     end
@@ -37,11 +38,11 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       build_stubbed(:user)
 
       code_link = link_to(
-        t("links.two_factor_authentication.resend_code.#{@presenter.delivery_method}"),
+        t("links.two_factor_authentication.resend_code.#{@presenter.otp_delivery_preference}"),
         @presenter.resend_code_path
       )
 
-      help_text = t("instructions.2fa.#{@presenter.delivery_method}.confirm_code_html",
+      help_text = t("instructions.2fa.#{@presenter.otp_delivery_preference}.confirm_code_html",
                     number: @presenter.phone_number_tag,
                     resend_code_link: code_link)
 
@@ -145,25 +146,25 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'when choosing to receive OTP via SMS' do
-      let(:delivery_method) { 'sms' }
+      let(:otp_delivery_preference) { 'sms' }
 
       it 'allows user to resend code using the same delivery method' do
         render
 
         resend_path = otp_send_path(otp_delivery_selection_form: {
-                                      otp_method: delivery_method,
+                                      otp_delivery_preference: otp_delivery_preference,
                                       resend: true,
                                     })
 
         expect(rendered).to have_link(
-          t("links.two_factor_authentication.resend_code.#{delivery_method}"),
+          t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
           href: resend_path
         )
       end
 
       it 'has a fallback link to send confirmation with voice' do
         expected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                 otp_method: 'voice',
+                                                 otp_delivery_preference: 'voice',
                                                })
         expected_link = link_to(t('links.two_factor_authentication.voice'),
                                 expected_fallback_path)
@@ -171,16 +172,18 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to include(
-          t("instructions.2fa.#{delivery_method}.fallback_html", link: expected_link)
+          t("instructions.2fa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
       it 'does not have a fallback link to send confirmation via SMS' do
-        unexpected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                   otp_method: delivery_method,
-                                                 })
+        unexpected_fallback_path = otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: otp_delivery_preference,
+          }
+        )
         unexpected_link = link_to(
-          t("links.two_factor_authentication.#{delivery_method}"),
+          t("links.two_factor_authentication.#{otp_delivery_preference}"),
           unexpected_fallback_path
         )
 
@@ -193,48 +196,55 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'when choosing to receive OTP via voice' do
-      let(:delivery_method) { 'voice' }
+      let(:otp_delivery_preference) { 'voice' }
 
       before do
-        controller.request.path_parameters[:delivery_method] = delivery_method
-        voice_data = presenter_data.merge(delivery_method: delivery_method)
+        controller.request.path_parameters[:otp_delivery_preference] = otp_delivery_preference
+        voice_data = presenter_data.merge(otp_delivery_preference: otp_delivery_preference)
         @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(voice_data)
       end
 
       it 'allows user to resend code using the same delivery method' do
         render
 
-        resend_path = otp_send_path(otp_delivery_selection_form: {
-                                      otp_method: delivery_method,
-                                      resend: true,
-                                    })
+        resend_path = otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: otp_delivery_preference,
+            resend: true,
+          }
+        )
 
         expect(rendered).to have_link(
-          t("links.two_factor_authentication.resend_code.#{delivery_method}"),
+          t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
           href: resend_path
         )
       end
 
       it 'has a fallback link to send confirmation as SMS' do
-        expected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                 otp_method: 'sms',
-                                               })
-        expected_link = link_to(t('links.two_factor_authentication.sms'),
-                                expected_fallback_path)
+        expected_fallback_path = otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: 'sms',
+          }
+        )
+        expected_link = link_to(
+          t('links.two_factor_authentication.sms'), expected_fallback_path
+        )
 
         render
 
         expect(rendered).to include(
-          t("instructions.2fa.#{delivery_method}.fallback_html", link: expected_link)
+          t("instructions.2fa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
       it 'does not have a fallback link to send a confirmation as SMS' do
-        unexpected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                   otp_method: delivery_method,
-                                                 })
+        unexpected_fallback_path = otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: otp_delivery_preference,
+          }
+        )
         unexpected_link = link_to(
-          t("links.two_factor_authentication.#{delivery_method}"),
+          t("links.two_factor_authentication.#{otp_delivery_preference}"),
           unexpected_fallback_path
         )
 

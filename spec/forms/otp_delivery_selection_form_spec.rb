@@ -3,10 +3,10 @@ require 'rails_helper'
 describe OtpDeliverySelectionForm do
   subject { OtpDeliverySelectionForm.new(build_stubbed(:user)) }
 
-  describe 'otp_method inclusion validation' do
-    it 'is invalid when otp_method is neither sms nor voice' do
+  describe 'otp_delivery_preference inclusion validation' do
+    it 'is invalid when otp_delivery_preference is neither sms nor voice' do
       [nil, '', 'foo'].each do |method|
-        subject.submit(otp_method: method)
+        subject.submit(otp_delivery_preference: method)
         expect(subject).to_not be_valid
       end
     end
@@ -16,7 +16,7 @@ describe OtpDeliverySelectionForm do
     context 'when the form is valid' do
       it 'returns true for success?' do
         extra = {
-          delivery_method: 'sms',
+          otp_delivery_preference: 'sms',
           resend: true,
         }
 
@@ -24,16 +24,16 @@ describe OtpDeliverySelectionForm do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit(otp_method: 'sms', resend: true)).to eq result
+        expect(subject.submit(otp_delivery_preference: 'sms', resend: true)).to eq result
       end
     end
 
     context 'when the form is invalid' do
       it 'returns false for success? and includes errors' do
-        errors = { otp_method: ['is not included in the list'] }
+        errors = { otp_delivery_preference: ['is not included in the list'] }
 
         extra = {
-          delivery_method: 'foo',
+          otp_delivery_preference: 'foo',
           resend: nil,
         }
 
@@ -41,22 +41,22 @@ describe OtpDeliverySelectionForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(subject.submit(otp_method: 'foo')).to eq result
+        expect(subject.submit(otp_delivery_preference: 'foo')).to eq result
       end
     end
 
-    context 'when otp_method is the same as the user otp_delivery_preference' do
+    context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
       it 'does not update the user' do
         user = build_stubbed(:user, otp_delivery_preference: 'sms')
         form = OtpDeliverySelectionForm.new(user)
 
         expect(UpdateUser).to_not receive(:new)
 
-        form.submit(otp_method: 'sms')
+        form.submit(otp_delivery_preference: 'sms')
       end
     end
 
-    context 'when otp_method is different from the user otp_delivery_preference' do
+    context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
       it 'updates the user' do
         user = build_stubbed(:user, otp_delivery_preference: 'voice')
         form = OtpDeliverySelectionForm.new(user)
@@ -68,7 +68,7 @@ describe OtpDeliverySelectionForm do
 
         expect(updated_user).to receive(:call)
 
-        form.submit(otp_method: 'sms')
+        form.submit(otp_delivery_preference: 'sms')
       end
     end
   end

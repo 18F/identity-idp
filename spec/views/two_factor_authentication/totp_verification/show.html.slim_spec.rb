@@ -4,7 +4,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: '6pcrpu334cx7zyf7') }
   let(:presenter_data) do
     attributes_for(:generic_otp_presenter).merge(
-      delivery_method: 'authenticator',
+      otp_delivery_preference: 'authenticator',
       user_email: view.current_user.email
     )
   end
@@ -31,12 +31,14 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
   end
 
   it 'allows the user to fallback to SMS and voice' do
-    expect(rendered).
-      to have_link(t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
-                   href: otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' }))
-    expect(rendered).
-      to have_link(t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
-                   href: otp_send_path(otp_delivery_selection_form: { otp_method: 'voice' }))
+    expect(rendered).to have_link(
+      t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
+      href: otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
+    )
+    expect(rendered).to have_link(
+      t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+      href: otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'voice' })
+    )
   end
 
   it 'provides an option to use a personal key' do

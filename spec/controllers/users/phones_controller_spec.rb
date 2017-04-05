@@ -26,7 +26,7 @@ describe Users::PhonesController do
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
           )
         )
         expect(subject.user_session[:context]).to eq 'confirmation'
@@ -62,7 +62,7 @@ describe Users::PhonesController do
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
           )
         )
         expect(subject.user_session[:context]).to eq 'confirmation'

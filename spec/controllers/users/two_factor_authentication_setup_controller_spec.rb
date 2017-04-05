@@ -22,13 +22,13 @@ describe Users::TwoFactorAuthenticationSetupController do
       result = {
         success: false,
         errors: { phone: [t('errors.messages.improbable_phone')] },
-        otp_method: 'sms',
+        otp_delivery_preference: 'sms',
       }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
-      patch :set, two_factor_setup_form: { phone: '703-555-010', otp_method: :sms }
+      patch :set, two_factor_setup_form: { phone: '703-555-010', otp_delivery_preference: :sms }
 
       expect(response).to render_template(:index)
     end
@@ -41,7 +41,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         result = {
           success: true,
           errors: {},
-          otp_method: 'voice',
+          otp_delivery_preference: 'voice',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -50,12 +50,12 @@ describe Users::TwoFactorAuthenticationSetupController do
         patch(
           :set,
           two_factor_setup_form: { phone: '703-555-0100',
-                                   otp_method: 'voice' }
+                                   otp_delivery_preference: 'voice' }
         )
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'voice' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
           )
         )
 
@@ -72,7 +72,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         result = {
           success: true,
           errors: {},
-          otp_method: 'sms',
+          otp_delivery_preference: 'sms',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -81,12 +81,12 @@ describe Users::TwoFactorAuthenticationSetupController do
         patch(
           :set,
           two_factor_setup_form: { phone: '703-555-0100',
-                                   otp_method: :sms }
+                                   otp_delivery_preference: :sms }
         )
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
           )
         )
 
@@ -102,7 +102,7 @@ describe Users::TwoFactorAuthenticationSetupController do
         result = {
           success: true,
           errors: {},
-          otp_method: 'sms',
+          otp_delivery_preference: 'sms',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -110,12 +110,12 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          two_factor_setup_form: { phone: '703-555-0100', otp_method: :sms }
+          two_factor_setup_form: { phone: '703-555-0100', otp_delivery_preference: :sms }
         )
 
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
           )
         )
 

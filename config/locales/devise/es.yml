@@ -113,7 +113,7 @@ es:
       max_personal_key_login_attempts_reached:
         Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.
-      otp_method:
+      otp_delivery_preference:
         instruction: Puede cambiar su elección la próxima vez que inicie sesión.
         sms: Mensaje de texto (SMS)
         title: ¿Cómo le gustaría recibir su código de acceso?

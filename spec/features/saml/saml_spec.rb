@@ -18,7 +18,7 @@ feature 'saml api' do
         sign_in_before_2fa(user)
         visit authnrequest_get
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -36,7 +36,7 @@ feature 'saml api' do
         fill_in 'Phone', with: '202-555-1212'
         click_send_security_code
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
