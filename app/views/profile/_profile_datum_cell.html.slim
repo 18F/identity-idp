@@ -1,10 +1,10 @@
 .p2.clearfix
-  .col.col-8.sm-col-10
+  .col.col-10.sm-col-8
     .bold.col.col-12.sm-col-6
       = data_type
-    .col.col-6
-      = content
-  .col.col-4.sm-col-2.right-align
+    .col.col-8.sm-col-6
+      = content if local_assigns.key? :content
+  .col.col-2.sm-col-4.right-align
     = link_to path do
       span.hide = data_type
-      = t('forms.buttons.edit') unless local_assigns.has_key? :link_text || link_text
+      = (link_text if local_assigns.key?(:link_text)) || t('forms.buttons.edit')
