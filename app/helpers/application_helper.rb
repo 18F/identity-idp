@@ -30,7 +30,7 @@ module ApplicationHelper
   end
 
   def user_signing_up?
-    params[:confirmation_token] || (current_user && !current_user.two_factor_enabled?)
+    params[:confirmation_token].present? || (current_user && !current_user.two_factor_enabled?)
   end
 
   def session_with_trust?
