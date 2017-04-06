@@ -38,6 +38,9 @@ en:
     session_cleared: >
       For your security, we refresh the page and clear out any information you typed into the
       form fields if you don't submit the form within %{minutes} minutes.
+    session_cleared_with_sp: >
+      For your security, your request from %{sp} expires after %{minutes} minutes if you don't
+      submit the form. Then you'll have to start again from %{link}.
     signed_up_but_unconfirmed:
       first_paragraph_end: >
         with a link to confirm your email address. Follow the link to continue
