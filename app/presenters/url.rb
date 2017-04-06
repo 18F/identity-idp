@@ -1,5 +1,4 @@
 class Url
-  include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
 
   attr_reader :link_text, :path_name, :params
@@ -17,6 +16,6 @@ class Url
   private
 
   def url
-    send("#{path_name}_path", params)
+    Rails.application.routes.url_helpers.send("#{path_name}_path", params)
   end
 end
