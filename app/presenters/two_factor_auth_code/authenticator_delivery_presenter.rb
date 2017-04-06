@@ -31,7 +31,7 @@ module TwoFactorAuthCode
     end
 
     def sms_link
-      Url.new(
+      Link.new(
         link_text: t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
         path_name: 'otp_send',
         params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
@@ -39,7 +39,7 @@ module TwoFactorAuthCode
     end
 
     def voice_link
-      Url.new(
+      Link.new(
         link_text: t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
         path_name: 'otp_send',
         params: { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }

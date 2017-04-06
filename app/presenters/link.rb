@@ -1,4 +1,4 @@
-class Url
+class Link
   include ActionView::Helpers::UrlHelper
 
   attr_reader :link_text, :path_name, :params

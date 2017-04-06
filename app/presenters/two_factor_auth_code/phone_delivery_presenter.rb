@@ -39,7 +39,7 @@ module TwoFactorAuthCode
     def update_phone_link
       return unless unconfirmed_phone
 
-      link = Url.new(
+      link = Link.new(
         link_text: t('forms.two_factor.try_again'),
         path_name: reenter_phone_number_path_name
       )
@@ -51,7 +51,7 @@ module TwoFactorAuthCode
     end
 
     def phone_link_tag
-      Url.new(
+      Link.new(
         link_text: t("links.two_factor_authentication.#{fallback_method}"),
         path_name: 'otp_send',
         params: {
@@ -71,7 +71,7 @@ module TwoFactorAuthCode
     end
 
     def auth_app_fallback_tag
-      Url.new(
+      Link.new(
         link_text: t('links.two_factor_authentication.app'),
         path_name: 'login_two_factor_authenticator'
       ).to_s
@@ -90,7 +90,7 @@ module TwoFactorAuthCode
     end
 
     def resend_code_link
-      Url.new(
+      Link.new(
         link_text: t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
         path_name: 'otp_send',
         params: {

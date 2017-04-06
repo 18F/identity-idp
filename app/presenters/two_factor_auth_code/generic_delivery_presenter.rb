@@ -36,7 +36,7 @@ module TwoFactorAuthCode
     attr_reader :personal_key_unavailable
 
     def personal_key_tag
-      Url.new(link_text: t("#{personal_key}.link"), path_name: 'login_two_factor_personal_key')
+      Link.new(link_text: t("#{personal_key}.link"), path_name: 'login_two_factor_personal_key')
     end
 
     def personal_key
