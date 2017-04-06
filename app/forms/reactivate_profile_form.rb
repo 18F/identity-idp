@@ -10,11 +10,11 @@ class ReactivateProfileForm
   attr_reader :user
 
   def initialize(user, attrs = {})
-    attrs[:personal_key] ||= []
+    attrs[:personal_key] ||= nil
     @user = user
     super attrs
 
-    @personal_key = personal_key.join(' ')
+    @personal_key = personal_key
   end
 
   def submit(flash)

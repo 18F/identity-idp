@@ -4,7 +4,7 @@ const modal = new window.LoginGov.Modal({ el: modalSelector });
 const personalKeyContainer = document.getElementById('personal-key');
 const personalKeyWords = [].slice.call(document.querySelectorAll('[data-personal-key]'));
 const formEl = document.getElementById('confirm-key');
-const inputs = [].slice.call(formEl.elements).filter(el => el.type === 'text');
+const input = formEl.querySelector('input[type="text"]');
 const modalTrigger = document.querySelector('[data-toggle="modal"]');
 const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm"]');
 
@@ -35,19 +35,14 @@ function resetForm() {
 function handleSubmit(event) {
   event.preventDefault();
 
-  const invalidMatches = inputs.reduce(function(accumulator, input, index) {
-    const value = input.value;
+  const value = input.value;
+  const key = [];
 
-    if (value.toUpperCase() === personalKeyWords[index].innerHTML.replace(/\s+/, '').toUpperCase()) {
-      return accumulator;
-    }
+  personalKeyWords.forEach((group) => {
+    key.push(group.innerHTML);
+  });
 
-    accumulator.push(value);
-
-    return accumulator;
-  }, []);
-
-  if (!invalidMatches.length) {
+  if (value.toUpperCase() === key.join('-').toUpperCase()) {
     unsetInvalidHTML();
     // Recovery code page, without js enabled, has a form submission that posts
     // to the server with no body.
@@ -63,7 +58,7 @@ function show(event) {
   event.preventDefault();
 
   modal.on('show', function() {
-    inputs[0].focus();
+    input.focus();
     personalKeyContainer.classList.add('invisible');
   });
 

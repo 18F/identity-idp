@@ -43,7 +43,7 @@ module TwoFactorAuthentication
     end
 
     def personal_key
-      params[:personal_key_form].require(:code).join(' ')
+      params[:personal_key_form].require(:code)
     end
   end
 end

@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe PersonalKeyGenerator do
-  let(:personal_key) { Base32::Crockford.encode(100**10, length: 16, split: 4).tr('-', ' ') }
-  let(:bad_code) { Base32::Crockford.encode(100**9, length: 16, split: 4).tr('-', ' ') }
+  let(:personal_key) { Base32::Crockford.encode(100**10, length: 16, split: 4) }
+  let(:bad_code) { Base32::Crockford.encode(100**9, length: 16, split: 4) }
   let(:invalid_base32_code) { 'four score has letter U in it' }
   let(:generator) { described_class.new(create(:user)) }
 
@@ -31,13 +31,13 @@ describe PersonalKeyGenerator do
     end
 
     it 'generates a phrase of 4 words by default' do
-      expect(generator.create).to match(/\A\w\w\w\w \w\w\w\w \w\w\w\w \w\w\w\w\z/)
+      expect(generator.create).to match(/\A\w\w\w\w-\w\w\w\w-\w\w\w\w-\w\w\w\w\z/)
     end
 
     it 'allows length to be configured via ENV var' do
       allow(Figaro.env).to receive(:recovery_code_length).and_return('14')
 
-      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\ ){13}\w+\z/
+      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\-){13}\w+\z/
       expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
   end

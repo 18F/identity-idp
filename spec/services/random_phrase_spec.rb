@@ -13,7 +13,7 @@ describe RandomPhrase do
     it 'stringifies to space-delimited phrase' do
       phrase = RandomPhrase.new(num_words: 3, word_length: 3)
 
-      expect(phrase.to_s).to match(/\A(\w\w\w) (\w\w\w) (\w\w\w)\z/)
+      expect(phrase.to_s).to match(/\A(\w\w\w)-(\w\w\w)-(\w\w\w)\z/)
     end
 
     it 'defaults to word length of 4' do

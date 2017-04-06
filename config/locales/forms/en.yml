@@ -31,7 +31,7 @@ en:
     personal_key:
       title: Enter your personal key
       instructions: Please confirm you have a copy of your personal key by entering it below.
-      confirmation_label: Personal key word %{number}
+      confirmation_label: Personal key
     registration:
       labels:
         email: Email address

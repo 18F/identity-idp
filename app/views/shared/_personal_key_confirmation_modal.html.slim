@@ -8,19 +8,18 @@
         = t('users.personal_key.confirmation_error')
 
       form(id='confirm-key' method='post' action="#{sign_up_personal_key_path}" name="key-confirm")
-        .clearfix.mxn1.sm-mxn2.mb4.separator-inputs
-          - code.split(' ').each_with_index do |word, index|
-            .col.col-3.px1.sm-px2
-              input(
-                aria-label="#{t('forms.personal_key.confirmation_label', number: index + 1)}"
-                maxlength="#{word.length}"
-                autocomplete='off'
-                class='col-12 border-dashed field monospace'
-                name="personal-key-#{index}"
-                pattern="[#{word.upcase}#{word.downcase}]{#{word.length}}"
-                required=true
-                spellcheck='false'
-                type='text')
+        - key_length = RandomPhrase::WORD_LENGTH
+
+        input(
+          aria-label="#{t('forms.personal_key.confirmation_label')}"
+          maxlength="#{code.length}"
+          autocomplete='off'
+          class='col-12 mb4 border-dashed field monospace pkey caps'
+          name="personal-key"
+          pattern="^(?:[a-zA-Z0-9]{#{key_length}}-){3}[a-zA-Z0-9]{#{key_length}}$"
+          required=true
+          spellcheck='false'
+          type='text')
         = hidden_field_tag :authenticity_token, form_authenticity_token
 
         .clearfix.mxn2

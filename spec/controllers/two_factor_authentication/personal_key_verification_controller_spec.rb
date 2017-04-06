@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeyVerificationController do
-  let(:code) { { code: ['foo'] } }
+  let(:code) { { code: 'foo' } }
   let(:payload) { { personal_key_form: code } }
 
   describe '#show' do

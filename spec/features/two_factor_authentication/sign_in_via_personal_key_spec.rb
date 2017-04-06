@@ -24,7 +24,7 @@ feature 'Signing in via one-time use personal key' do
       sign_in_before_2fa(user)
       allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
       code = PersonalKeyGenerator.new(user).create
-      wrong_personal_key = code.split(' ').reverse.join
+      wrong_personal_key = code.split('-').reverse.join
 
       click_link t('devise.two_factor_authentication.personal_key_fallback.link')
       enter_personal_key(code: wrong_personal_key)

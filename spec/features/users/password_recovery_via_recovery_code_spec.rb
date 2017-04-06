@@ -78,7 +78,7 @@ feature 'Password recovery via personal key' do
     page.all(:css, '[data-personal-key]').each do |node|
       new_personal_key_words << node.text
     end
-    new_personal_key_words.join(' ')
+    new_personal_key_words.join('-')
   end
 
   def reactivate_profile(password, personal_key)

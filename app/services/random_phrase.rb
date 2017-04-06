@@ -9,7 +9,7 @@ class RandomPhrase
   end
 
   def to_s
-    @words.join(' ')
+    @words.join('-')
   end
 
   private

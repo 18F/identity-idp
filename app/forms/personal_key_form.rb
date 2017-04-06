@@ -3,7 +3,7 @@ class PersonalKeyForm
 
   attr_accessor :code
 
-  def initialize(user, code = [])
+  def initialize(user, code = nil)
     @user = user
     @code = code
   end
@@ -21,8 +21,8 @@ class PersonalKeyForm
   attr_reader :user, :success
 
   def valid_personal_key?
-    word_regexp = /\w{#{RandomPhrase::WORD_LENGTH}}/
-    return false unless code =~ /\A#{word_regexp} #{word_regexp} #{word_regexp} #{word_regexp}\Z/
+    length = RandomPhrase::WORD_LENGTH
+    return false unless code =~ /^(?:[a-zA-Z0-9]{#{length}}([\s-])?){3}[a-zA-Z0-9]{#{length}}$/
     personal_key_generator = PersonalKeyGenerator.new(user)
     personal_key_generator.verify(code)
   end
