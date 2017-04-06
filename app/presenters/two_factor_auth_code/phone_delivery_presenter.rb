@@ -86,12 +86,12 @@ module TwoFactorAuthCode
     def resend_code_link
       view.link_to(
         t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
-        otp_send_path({
+        otp_send_path(
           otp_delivery_selection_form: {
             otp_delivery_preference: otp_delivery_preference,
             resend: true,
           },
-        })
+        )
       )
     end
   end

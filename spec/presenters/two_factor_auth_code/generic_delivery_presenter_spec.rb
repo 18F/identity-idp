@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-def presenter_with(arguments = {}, view = nil)
-  TwoFactorAuthCode::GenericDeliveryPresenter.new(arguments, view)
+def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
+  TwoFactorAuthCode::GenericDeliveryPresenter.new(data: arguments, view: view)
 end
 
 describe TwoFactorAuthCode::GenericDeliveryPresenter do
