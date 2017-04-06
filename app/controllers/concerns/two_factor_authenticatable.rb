@@ -14,7 +14,6 @@ module TwoFactorAuthenticatable
     authenticator: 'authenticator',
     sms: 'phone',
     voice: 'phone',
-    two_factor_authentication: 'otp',
   }.freeze
 
   private
@@ -237,15 +236,6 @@ module TwoFactorAuthenticatable
     {
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
-      personal_key_unavailable: personal_key_unavailable?,
-    }
-  end
-
-  def otp_view_data
-    {
-      reenter_phone_number_path: reenter_phone_number_path,
-      phone_number: display_phone_to_deliver_to,
-      unconfirmed_phone: unconfirmed_phone?,
       personal_key_unavailable: personal_key_unavailable?,
     }
   end
