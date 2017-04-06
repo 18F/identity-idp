@@ -90,7 +90,7 @@ module TwoFactorAuthCode
           otp_delivery_selection_form: {
             otp_delivery_preference: otp_delivery_preference,
             resend: true,
-          },
+          }
         )
       )
     end
