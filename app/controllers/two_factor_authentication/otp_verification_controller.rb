@@ -4,8 +4,6 @@ module TwoFactorAuthentication
 
     skip_before_action :handle_two_factor_authentication
 
-    helper_method :confirmation_for_phone_change?
-
     def show
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_properties)
 
@@ -36,10 +34,6 @@ module TwoFactorAuthentication
         method: params[:otp_delivery_preference],
         confirmation_for_phone_change: confirmation_for_phone_change?,
       }
-    end
-
-    def confirmation_for_phone_change?
-      confirmation_context? && current_user.phone.present?
     end
   end
 end

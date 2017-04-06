@@ -223,6 +223,7 @@ module TwoFactorAuthenticatable
 
   def phone_view_data
     {
+      confirmation_for_phone_change: confirmation_for_phone_change?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
@@ -235,6 +236,7 @@ module TwoFactorAuthenticatable
 
   def authenticator_view_data
     {
+      confirmation_for_phone_change: confirmation_for_phone_change?,
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       personal_key_unavailable: personal_key_unavailable?,
@@ -266,6 +268,10 @@ module TwoFactorAuthenticatable
     else
       phone_setup_path
     end
+  end
+
+  def confirmation_for_phone_change?
+    confirmation_context? && current_user.phone.present?
   end
 
   def presenter_for_two_factor_authentication_method

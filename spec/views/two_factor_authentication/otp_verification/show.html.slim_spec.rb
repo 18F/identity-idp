@@ -14,7 +14,6 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
   context 'user has a phone' do
     before do
       allow(view).to receive(:reauthn?).and_return(false)
-      allow(view).to receive(:confirmation_for_phone_change?).and_return(false)
       allow(view).to receive(:user_session).and_return({})
       allow(view).to receive(:current_user).and_return(User.new)
       controller.request.path_parameters[:otp_delivery_preference] =
@@ -103,14 +102,17 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     end
 
     context 'user is changing phone number' do
-      before do
+      it 'provides a cancel link to return to profile' do
         user = build_stubbed(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
-        allow(view).to receive(:confirmation_for_phone_change?).and_return(true)
-        render
-      end
+        data = presenter_data.merge(confirmation_for_phone_change: true)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: data,
+          view: view
+        )
 
-      it 'provides a cancel link to return to profile' do
+        render
+
         expect(rendered).to have_link(
           t('links.cancel'),
           href: profile_path
