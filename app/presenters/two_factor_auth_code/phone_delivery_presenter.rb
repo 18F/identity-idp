@@ -22,7 +22,7 @@ module TwoFactorAuthCode
 
     attr_reader(
       :totp_enabled,
-      :reenter_phone_number_path,
+      :reenter_phone_number_path_name,
       :phone_number,
       :unconfirmed_phone,
       :otp_delivery_preference
@@ -41,7 +41,7 @@ module TwoFactorAuthCode
 
       link = Url.new(
         link_text: t('forms.two_factor.try_again'),
-        path_name: reenter_phone_number_path
+        path_name: reenter_phone_number_path_name
       )
       t('instructions.2fa.wrong_number_html', link: link)
     end

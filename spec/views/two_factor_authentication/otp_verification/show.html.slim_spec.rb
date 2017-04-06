@@ -7,7 +7,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       phone_number: '***-***-1212',
       code_value: '12777',
       unconfirmed_user: false,
-      reenter_phone_number_path: 'verify_phone',
+      reenter_phone_number_path_name: 'verify_phone',
     }
   end
 
