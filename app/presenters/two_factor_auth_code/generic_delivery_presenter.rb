@@ -2,11 +2,12 @@ module TwoFactorAuthCode
   class GenericDeliveryPresenter
     include ActionView::Helpers::TagHelper
     include ActionView::Helpers::TranslationHelper
+    include Rails.application.routes.url_helpers
 
     attr_reader :code_value
 
-    def initialize(data_model, view = nil)
-      data_model.each do |key, value|
+    def initialize(data:, view:)
+      data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
 
@@ -33,10 +34,10 @@ module TwoFactorAuthCode
 
     private
 
-    attr_reader :personal_key_unavailable
+    attr_reader :personal_key_unavailable, :view
 
     def personal_key_tag
-      Link.new(link_text: t("#{personal_key}.link"), path_name: 'login_two_factor_personal_key')
+      view.link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)
     end
 
     def personal_key

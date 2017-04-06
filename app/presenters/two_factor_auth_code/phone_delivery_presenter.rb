@@ -22,7 +22,7 @@ module TwoFactorAuthCode
 
     attr_reader(
       :totp_enabled,
-      :reenter_phone_number_path_name,
+      :reenter_phone_number_path,
       :phone_number,
       :unconfirmed_phone,
       :otp_delivery_preference
@@ -39,10 +39,7 @@ module TwoFactorAuthCode
     def update_phone_link
       return unless unconfirmed_phone
 
-      link = Link.new(
-        link_text: t('forms.two_factor.try_again'),
-        path_name: reenter_phone_number_path_name
-      )
+      link = view.link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
       t('instructions.2fa.wrong_number_html', link: link)
     end
 
@@ -51,12 +48,9 @@ module TwoFactorAuthCode
     end
 
     def phone_link_tag
-      Link.new(
-        link_text: t("links.two_factor_authentication.#{fallback_method}"),
-        path_name: 'otp_send',
-        params: {
-          otp_delivery_selection_form: { otp_delivery_preference: fallback_method },
-        }
+      view.link_to(
+        t("links.two_factor_authentication.#{fallback_method}"),
+        otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: fallback_method })
       )
     end
 
@@ -71,10 +65,10 @@ module TwoFactorAuthCode
     end
 
     def auth_app_fallback_tag
-      Link.new(
-        link_text: t('links.two_factor_authentication.app'),
-        path_name: 'login_two_factor_authenticator'
-      ).to_s
+      view.link_to(
+        t('links.two_factor_authentication.app'),
+        login_two_factor_authenticator_path
+      )
     end
 
     def fallback_instructions
@@ -90,15 +84,14 @@ module TwoFactorAuthCode
     end
 
     def resend_code_link
-      Link.new(
-        link_text: t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
-        path_name: 'otp_send',
-        params: {
+      view.link_to(
+        t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
+        otp_send_path({
           otp_delivery_selection_form: {
             otp_delivery_preference: otp_delivery_preference,
             resend: true,
           },
-        }
+        })
       )
     end
   end

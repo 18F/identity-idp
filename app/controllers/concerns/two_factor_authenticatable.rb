@@ -226,7 +226,7 @@ module TwoFactorAuthenticatable
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
-      reenter_phone_number_path_name: reenter_phone_number_path_name,
+      reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       personal_key_unavailable: personal_key_unavailable?,
       totp_enabled: current_user.totp_enabled?,
@@ -243,7 +243,7 @@ module TwoFactorAuthenticatable
 
   def otp_view_data
     {
-      reenter_phone_number_path_name: reenter_phone_number_path_name,
+      reenter_phone_number_path: reenter_phone_number_path,
       phone_number: display_phone_to_deliver_to,
       unconfirmed_phone: unconfirmed_phone?,
       personal_key_unavailable: personal_key_unavailable?,
@@ -258,7 +258,7 @@ module TwoFactorAuthenticatable
     end
   end
 
-  def reenter_phone_number_path_name
+  def reenter_phone_number_path
     if idv_context?
       'verify_phone'
     elsif current_user.phone.present?
@@ -275,6 +275,9 @@ module TwoFactorAuthenticatable
 
     data = send("#{type}_view_data".to_sym)
 
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(data, view_context)
+    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
+      data: data,
+      view: view_context
+    )
   end
 end

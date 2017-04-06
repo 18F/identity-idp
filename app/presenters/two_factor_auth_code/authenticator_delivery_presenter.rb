@@ -20,7 +20,7 @@ module TwoFactorAuthCode
 
     private
 
-    attr_reader :user_email, :view, :two_factor_authentication_method
+    attr_reader :user_email, :two_factor_authentication_method
 
     def otp_fallback_options
       t(
@@ -31,18 +31,16 @@ module TwoFactorAuthCode
     end
 
     def sms_link
-      Link.new(
-        link_text: t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
-        path_name: 'otp_send',
-        params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+      view.link_to(
+        t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
+        otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
       )
     end
 
     def voice_link
-      Link.new(
-        link_text: t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
-        path_name: 'otp_send',
-        params: { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }
+      view.link_to(
+        t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+        otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'voice' })
       )
     end
   end

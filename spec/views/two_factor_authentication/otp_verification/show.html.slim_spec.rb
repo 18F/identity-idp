@@ -7,7 +7,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       phone_number: '***-***-1212',
       code_value: '12777',
       unconfirmed_user: false,
-      reenter_phone_number_path_name: 'verify_phone',
+      reenter_phone_number_path: verify_phone_path,
     }
   end
 
@@ -20,7 +20,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       controller.request.path_parameters[:otp_delivery_preference] =
         presenter_data[:otp_delivery_preference]
 
-      @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(presenter_data)
+      @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+        data: presenter_data,
+        view: view
+      )
     end
 
     context 'common OTP delivery screen behavior' do
@@ -119,7 +122,11 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'does not provide an option to use a personal key' do
         unconfirmed_data = presenter_data.merge(personal_key_unavailable: true)
 
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(unconfirmed_data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: unconfirmed_data,
+          view: view
+        )
+
         render
 
         expect(rendered).not_to have_link(
@@ -142,7 +149,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     context 'when totp is enabled' do
       it 'allows user to sign in using an authenticator app' do
         totp_data = presenter_data.merge(totp_enabled: true)
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(totp_data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: totp_data,
+          view: view
+        )
 
         render
 
@@ -217,7 +227,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       before do
         controller.request.path_parameters[:otp_delivery_preference] = otp_delivery_preference
         voice_data = presenter_data.merge(otp_delivery_preference: otp_delivery_preference)
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(voice_data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: voice_data,
+          view: view
+        )
       end
 
       it 'allows user to resend code using the same delivery method' do
@@ -276,7 +289,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'has a link to choose a new phone number' do
         data = presenter_data.merge(unconfirmed_phone: true)
 
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: data,
+          view: view
+        )
 
         render
 
@@ -288,7 +304,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'has a link to choose a new phone number' do
         data = presenter_data.merge(unconfirmed_phone: true)
 
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: data,
+          view: view
+        )
 
         render
 
