@@ -10,7 +10,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'when FeatureManagement.prefill_otp_codes? is true' do
         it 'sets code_value on presenter to correct OTP value' do
           presenter_data = attributes_for(:generic_otp_presenter)
-          TwoFactorAuthCode::PhoneDeliveryPresenter.new(presenter_data)
+          TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: presenter_data,
+            view: ActionController::Base.new.view_context
+          )
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
           get :show, otp_delivery_preference: 'sms'
