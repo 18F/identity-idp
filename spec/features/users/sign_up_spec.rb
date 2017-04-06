@@ -24,7 +24,7 @@ feature 'Sign Up' do
   end
 
   context 'user cancels on the enter password screen' do
-    it 'deletes the user record and returns them to the home page' do
+    it 'returns them to the home page' do
       email = 'test@test.com'
 
       visit sign_up_email_path
@@ -34,7 +34,6 @@ feature 'Sign Up' do
       click_on t('links.cancel_account_creation')
 
       expect(current_path).to eq root_path
-      expect(User.find_with_email(email)).to be_nil
     end
   end
 
