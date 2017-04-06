@@ -1,7 +1,5 @@
 module TwoFactorAuthCode
   class AuthenticatorDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
-    attr_reader :two_factor_authentication_method
-
     def header
       t('devise.two_factor_authentication.totp_header_text')
     end
@@ -14,25 +12,38 @@ module TwoFactorAuthCode
     end
 
     def fallback_links
-      [otp_fallback_options, personal_key_link].compact
+      [
+        otp_fallback_options,
+        personal_key_link,
+      ].compact
     end
 
     private
 
+    attr_reader :user_email, :view, :two_factor_authentication_method
+
     def otp_fallback_options
-      t('devise.two_factor_authentication.totp_fallback.text_html',
+      t(
+        'devise.two_factor_authentication.totp_fallback.text_html',
         sms_link: sms_link,
-        voice_link: voice_link)
+        voice_link: voice_link
+      )
     end
 
     def sms_link
-      link_to(t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
-              otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' }))
+      Url.new(
+        link_text: t('devise.two_factor_authentication.totp_fallback.sms_link_text'),
+        path_name: 'otp_send',
+        params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+      )
     end
 
     def voice_link
-      link_to(t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
-              otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'voice' }))
+      Url.new(
+        link_text: t('devise.two_factor_authentication.totp_fallback.voice_link_text'),
+        path_name: 'otp_send',
+        params: { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }
+      )
     end
   end
 end

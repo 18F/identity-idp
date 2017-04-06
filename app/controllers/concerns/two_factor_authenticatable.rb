@@ -260,11 +260,11 @@ module TwoFactorAuthenticatable
 
   def reenter_phone_number_path
     if idv_context?
-      verify_phone_path
+      'verify_phone'
     elsif current_user.phone.present?
-      manage_phone_path
+      'manage_phone'
     else
-      phone_setup_path
+      'phone_setup'
     end
   end
 

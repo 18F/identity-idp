@@ -13,14 +13,6 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
     end
   end
 
-  describe 'view context' do
-    it 'makes the view context available' do
-      view = ActionController::Base.new.view_context
-      presenter = presenter_with({}, view)
-      expect(presenter.view).to equal(view)
-    end
-  end
-
   describe '#personal_key_link' do
     context 'with unconfirmed user' do
       presenter = presenter_with(personal_key_unavailable: true)
