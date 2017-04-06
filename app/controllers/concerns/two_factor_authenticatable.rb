@@ -275,6 +275,9 @@ module TwoFactorAuthenticatable
 
     data = send("#{type}_view_data".to_sym)
 
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(data, view_context)
+    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
+      data: data,
+      view: view_context
+    )
   end
 end

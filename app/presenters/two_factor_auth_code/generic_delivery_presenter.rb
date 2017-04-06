@@ -4,19 +4,10 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader(
-      :code_value,
-      :personal_key_unavailable,
-      :phone_number,
-      :reenter_phone_number_path,
-      :totp_enabled,
-      :unconfirmed_phone,
-      :user_email,
-      :view
-    )
+    attr_reader :code_value
 
-    def initialize(data_model, view = nil)
-      data_model.each do |key, value|
+    def initialize(data:, view:)
+      data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
 
@@ -38,19 +29,15 @@ module TwoFactorAuthCode
     def personal_key_link
       return if personal_key_unavailable
 
-      t("#{personal_key}.text_html",
-        link: personal_key_tag)
+      t("#{personal_key}.text_html", link: personal_key_tag)
     end
 
     private
 
-    def link_to(text, url, options = {})
-      href = { href: url }
-      content_tag(:a, text, options.merge(href))
-    end
+    attr_reader :personal_key_unavailable, :view
 
     def personal_key_tag
-      link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)
+      view.link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)
     end
 
     def personal_key

@@ -13,8 +13,9 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:reauthn?).and_return(false)
 
-    @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
-                 new(presenter_data, ApplicationController.new.view_context)
+    @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
+      data: presenter_data, view: ApplicationController.new.view_context
+    )
 
     render
   end

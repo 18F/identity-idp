@@ -1,7 +1,15 @@
 require 'rails_helper'
 
 describe 'two_factor_authentication/otp_verification/show.html.slim' do
-  let(:presenter_data) { attributes_for(:generic_otp_presenter) }
+  let(:presenter_data) do
+    {
+      otp_delivery_preference: 'sms',
+      phone_number: '***-***-1212',
+      code_value: '12777',
+      unconfirmed_user: false,
+      reenter_phone_number_path: verify_phone_path,
+    }
+  end
 
   context 'user has a phone' do
     before do
@@ -12,7 +20,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       controller.request.path_parameters[:otp_delivery_preference] =
         presenter_data[:otp_delivery_preference]
 
-      @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(presenter_data)
+      @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+        data: presenter_data,
+        view: view
+      )
     end
 
     context 'common OTP delivery screen behavior' do
@@ -38,13 +49,20 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       build_stubbed(:user)
 
       code_link = link_to(
-        t("links.two_factor_authentication.resend_code.#{@presenter.otp_delivery_preference}"),
-        @presenter.resend_code_path
+        t('links.two_factor_authentication.resend_code.sms'),
+        otp_send_path(
+          otp_delivery_selection_form: {
+            otp_delivery_preference: 'sms',
+            resend: true,
+          }
+        )
       )
 
-      help_text = t("instructions.2fa.#{@presenter.otp_delivery_preference}.confirm_code_html",
-                    number: @presenter.phone_number_tag,
-                    resend_code_link: code_link)
+      help_text = t(
+        "instructions.2fa.#{presenter_data[:otp_delivery_preference]}.confirm_code_html",
+        number: "<strong>#{presenter_data[:phone_number]}</strong>",
+        resend_code_link: code_link
+      )
 
       render
 
@@ -104,7 +122,11 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       it 'does not provide an option to use a personal key' do
         unconfirmed_data = presenter_data.merge(personal_key_unavailable: true)
 
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(unconfirmed_data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: unconfirmed_data,
+          view: view
+        )
+
         render
 
         expect(rendered).not_to have_link(
@@ -127,7 +149,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
     context 'when totp is enabled' do
       it 'allows user to sign in using an authenticator app' do
         totp_data = presenter_data.merge(totp_enabled: true)
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(totp_data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: totp_data,
+          view: view
+        )
 
         render
 
@@ -163,11 +188,12 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       end
 
       it 'has a fallback link to send confirmation with voice' do
-        expected_fallback_path = otp_send_path(otp_delivery_selection_form: {
-                                                 otp_delivery_preference: 'voice',
-                                               })
-        expected_link = link_to(t('links.two_factor_authentication.voice'),
-                                expected_fallback_path)
+        expected_fallback_path = otp_send_path(
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
+        )
+        expected_link = link_to(
+          t('links.two_factor_authentication.voice'), expected_fallback_path
+        )
 
         render
 
@@ -201,7 +227,10 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       before do
         controller.request.path_parameters[:otp_delivery_preference] = otp_delivery_preference
         voice_data = presenter_data.merge(otp_delivery_preference: otp_delivery_preference)
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(voice_data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: voice_data,
+          view: view
+        )
       end
 
       it 'allows user to resend code using the same delivery method' do
@@ -258,35 +287,31 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
     context 'when users phone number is unconfirmed' do
       it 'has a link to choose a new phone number' do
-        data = presenter_data.merge(
-          unconfirmed_phone: true,
-          reenter_phone_number_path: 'some/path'
-        )
+        data = presenter_data.merge(unconfirmed_phone: true)
 
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: data,
+          view: view
+        )
 
         render
 
-        expect(rendered).to have_link(
-          t('forms.two_factor.try_again'), href: @presenter.reenter_phone_number_path
-        )
+        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: verify_phone_path)
       end
     end
 
     context 'when users phone number is unconfirmed' do
       it 'has a link to choose a new phone number' do
-        data = presenter_data.merge(
-          unconfirmed_phone: true,
-          reenter_phone_number_path: 'some/path'
-        )
+        data = presenter_data.merge(unconfirmed_phone: true)
 
-        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(data)
+        @presenter = TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+          data: data,
+          view: view
+        )
 
         render
 
-        expect(rendered).to have_link(
-          t('forms.two_factor.try_again'), href: @presenter.reenter_phone_number_path
-        )
+        expect(rendered).to have_link(t('forms.two_factor.try_again'), href: verify_phone_path)
       end
     end
   end
