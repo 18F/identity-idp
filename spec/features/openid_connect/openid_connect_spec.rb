@@ -131,7 +131,6 @@ feature 'OpenID Connect' do
         prompt: 'select_account'
       )
 
-      sp_request_id = ServiceProviderRequest.last.uuid
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
 
@@ -147,9 +146,6 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-        to be_a NullServiceProviderRequest
-      expect(page.get_rack_session.keys).to_not include('sp')
     end
   end
 
