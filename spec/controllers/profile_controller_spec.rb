@@ -38,17 +38,16 @@ describe ProfileController do
 
         sign_in user
 
-        view_model = UserProfile::ProfileIndex.new(
+        view_model = ProfileIndex.new(
           decrypted_pii: nil,
           personal_key: nil,
-          has_password_reset_profile: user.password_reset_profile.present?
+          current_user: user
         )
         allow(subject).to receive(:view_model).and_return(view_model)
 
         get :index
 
         expect(response).to_not be_redirect
-        expect(view_model.has_password_reset_profile).to be(true)
       end
     end
   end
