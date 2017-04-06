@@ -5,10 +5,10 @@ class ProfileController < ApplicationController
   def index
     cacher = Pii::Cacher.new(current_user, user_session)
 
-    @view_model = UserProfile::ProfileIndex.new(
+    @view_model = ProfileIndex.new(
       decrypted_pii: cacher.fetch,
       personal_key: flash[:personal_key],
-      has_password_reset_profile: current_user.password_reset_profile.present?
+      current_user: current_user
     )
 
     flash.delete(:personal_key)

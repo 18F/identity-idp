@@ -1,0 +1,34 @@
+.clearfix
+  h2.h3.my0.mr1.sm-mr0.col.sm-col-8.lg-col-5 = t('headings.profile.profile_info')
+  .sm-col.sm-m0.sm-col-8.lg-col-5
+    = content_tag(:span, t('tooltips.profile_info'),
+      class: 'h5 blue sans-serif underline hint--top hint--no-animate',
+      tabindex: 0,
+      'aria-label': t('tooltips.profile_idv'))
+  .sm-col-right.left.mt2.sm-mtn3
+    = render partial: current_user.decorate.verified_account_partial
+.mt2.mb4
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.full_name')
+      .sm-col.sm-col-7.px1.truncate #{decrypted_pii.first_name} #{decrypted_pii.last_name}
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.address')
+      .sm-col.sm-col-7.px1
+        | #{decrypted_pii.address1}<br>
+        - if decrypted_pii.address2.present?
+          | #{decrypted_pii.address2}<br>
+        | #{decrypted_pii.city}, #{decrypted_pii.state} #{decrypted_pii.zipcode}
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.dob')
+      .sm-col.sm-col-7.px1 #{decrypted_pii.dob.to_date.to_formatted_s(:long)}
+  .py-12p.border-top
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.ssn')
+      .sm-col.sm-col-7.px1 = "***-**-#{decrypted_pii.ssn.raw[-4..-1]}"
+  .py-12p.border-top.border-bottom
+    .clearfix.mxn1
+      .sm-col.sm-col-5.px1 = t('profile.index.phone')
+      .sm-col.sm-col-7.px1 = decrypted_pii.phone

@@ -5,11 +5,7 @@ describe 'profile/index.html.slim' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    assign(:view_model, UserProfile::ProfileIndex.new(
-                          decrypted_pii: nil,
-                          personal_key: nil,
-                          has_password_reset_profile: nil
-    ))
+    assign(:view_model, ProfileIndex.new(decrypted_pii: nil, personal_key: nil, current_user: user))
   end
 
   context 'user is not TOTP enabled' do
@@ -37,10 +33,16 @@ describe 'profile/index.html.slim' do
   end
 
   context 'when user is TOTP enabled' do
-    it 'contains link to disable TOTP' do
-      user = build_stubbed(:user, :signed_up, otp_secret_key: '123')
-      allow(view).to receive(:current_user).and_return(user)
+    let(:user) { build_stubbed(:user, :signed_up, otp_secret_key: '123') }
 
+    before do
+      assign(
+        :view_model,
+        ProfileIndex.new(decrypted_pii: nil, personal_key: nil, current_user: user)
+      )
+    end
+
+    it 'contains link to disable TOTP' do
       render
 
       expect(rendered).to have_button t('forms.buttons.disable')
@@ -48,9 +50,10 @@ describe 'profile/index.html.slim' do
     end
   end
 
-  context 'when has_password_reset_profile is false' do
+  context 'when the user does not have password_reset_profile' do
     before do
-      assign(:has_password_reset_profile, false)
+      allow(view).to receive(:current_user).and_return(user)
+      allow(user).to receive(:password_reset_profile).and_return(false)
     end
 
     it 'contains a personal key section' do
@@ -62,9 +65,10 @@ describe 'profile/index.html.slim' do
     end
   end
 
-  context 'when has_password_reset_profile is true' do
+  context 'when current user has password_reset_profile' do
     before do
-      assign(:has_password_reset_profile, true)
+      allow(view).to receive(:current_user).and_return(user)
+      allow(user).to receive(:password_reset_profile).and_return(true)
     end
 
     it 'lacks a personal key section' do
