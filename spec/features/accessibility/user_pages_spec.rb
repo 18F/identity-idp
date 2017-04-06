@@ -39,7 +39,7 @@ feature 'Accessibility on pages that require authentication', :js do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq(login_two_factor_path(delivery_method: 'sms'))
+      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to be_accessible
     end
 
@@ -47,9 +47,9 @@ feature 'Accessibility on pages that require authentication', :js do
       scenario 'enter 2fa phone OTP code page' do
         user = create(:user, phone: '+1 (202) 555-1212')
         sign_in_before_2fa(user)
-        visit login_two_factor_path(delivery_method: 'sms')
+        visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
         expect(page).to be_accessible
       end
     end
@@ -58,9 +58,9 @@ feature 'Accessibility on pages that require authentication', :js do
       scenario 'enter 2fa phone OTP code page' do
         user = create(:user, phone: '+1 (202) 555-1212')
         sign_in_before_2fa(user)
-        visit login_two_factor_path(delivery_method: 'voice')
+        visit login_two_factor_path(otp_delivery_preference: 'voice')
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
         expect(page).to be_accessible
       end
     end

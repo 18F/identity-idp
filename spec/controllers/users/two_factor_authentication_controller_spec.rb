@@ -94,7 +94,7 @@ describe Users::TwoFactorAuthenticationController do
         get :show
 
         expect(response).
-          to redirect_to login_two_factor_path(delivery_method: 'sms', reauthn: false)
+          to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
       end
     end
 
@@ -117,7 +117,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via SMS' do
-        get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
@@ -127,7 +127,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(delivery_method: 'sms', reauthn: false)
+          login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
         )
       end
 
@@ -137,7 +137,7 @@ describe Users::TwoFactorAuthenticationController do
         analytics_hash = {
           success: true,
           errors: {},
-          delivery_method: 'sms',
+          otp_delivery_preference: 'sms',
           resend: nil,
           context: 'authentication',
         }
@@ -145,7 +145,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
-        get :send_code, otp_delivery_selection_form: { otp_method: 'sms' }
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
       end
     end
 
@@ -158,7 +158,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via voice' do
-        get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
 
         expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
@@ -168,7 +168,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(subject.current_user.direct_otp).not_to eq(@old_otp)
         expect(subject.current_user.direct_otp).not_to be_nil
         expect(response).to redirect_to(
-          login_two_factor_path(delivery_method: 'voice', reauthn: false)
+          login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
         )
       end
 
@@ -178,7 +178,7 @@ describe Users::TwoFactorAuthenticationController do
         analytics_hash = {
           success: true,
           errors: {},
-          delivery_method: 'voice',
+          otp_delivery_preference: 'voice',
           resend: nil,
           context: 'authentication',
         }
@@ -186,7 +186,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
-        get :send_code, otp_delivery_selection_form: { otp_method: 'voice' }
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
       end
     end
 
@@ -196,7 +196,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'redirects user to choose a valid delivery method' do
-        get :send_code, otp_delivery_selection_form: { otp_method: 'pigeon' }
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' }
 
         expect(response).to redirect_to user_two_factor_authentication_path(reauthn: false)
       end

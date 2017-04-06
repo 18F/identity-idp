@@ -48,7 +48,7 @@ feature 'Changing authentication factor' do
       expect(page).to have_content new_phone
       expect(user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
 
-      visit login_two_factor_path(delivery_method: 'sms')
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
       expect(current_path).to eq profile_path
     end
 
@@ -96,7 +96,7 @@ feature 'Changing authentication factor' do
             )
 
           expect(current_path).
-            to eq login_two_factor_path(delivery_method: 'sms')
+            to eq login_two_factor_path(otp_delivery_preference: 'sms')
         end
       end
     end
@@ -152,7 +152,7 @@ feature 'Changing authentication factor' do
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
-    expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+    expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   def update_phone_number
@@ -186,7 +186,7 @@ feature 'Changing authentication factor' do
         visit manage_password_path
         expect(current_path).to eq user_password_confirm_path
 
-        visit login_two_factor_path(delivery_method: 'sms')
+        visit login_two_factor_path(otp_delivery_preference: 'sms')
 
         expect(current_path).to eq user_password_confirm_path
       end

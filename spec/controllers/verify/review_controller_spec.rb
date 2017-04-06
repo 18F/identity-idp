@@ -235,7 +235,7 @@ describe Verify::ReviewController do
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
           )
         )
         expect(subject.user_session[:context]).to eq 'idv'

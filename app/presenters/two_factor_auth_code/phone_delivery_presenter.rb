@@ -3,12 +3,14 @@ module TwoFactorAuthCode
     include TwoFactorAuthCode::Totpable
     include TwoFactorAuthCode::Phoneable
 
+    attr_reader :otp_delivery_preference
+
     def header
       t('devise.two_factor_authentication.header_text')
     end
 
     def help_text
-      t("instructions.2fa.#{delivery_method}.confirm_code_html",
+      t("instructions.2fa.#{otp_delivery_preference}.confirm_code_html",
         number: phone_number_tag,
         resend_code_link: resend_code_link)
     end
@@ -28,7 +30,7 @@ module TwoFactorAuthCode
     end
 
     def resend_code_link
-      link_to(t("links.two_factor_authentication.resend_code.#{delivery_method}"),
+      link_to(t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
               resend_code_path)
     end
   end

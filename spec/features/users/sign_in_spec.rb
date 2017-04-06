@@ -161,7 +161,7 @@ feature 'Sign in' do
         expect(page).to have_content t('errors.invalid_authenticity_token')
 
         fill_in_credentials_and_submit(user.email, user.password)
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 

@@ -7,7 +7,7 @@ module Users
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_path
       elsif current_user.two_factor_enabled?
-        handle_valid_delivery_method(current_user.otp_delivery_preference)
+        handle_valid_otp_delivery_preference(current_user.otp_delivery_preference)
       else
         redirect_to phone_setup_path
       end
@@ -21,7 +21,7 @@ module Users
       track_otp_delivery_selection_event(result)
 
       if result.success?
-        handle_valid_delivery_method(user_selected_delivery_method)
+        handle_valid_otp_delivery_preference(user_selected_otp_delivery_preference)
       else
         redirect_to user_two_factor_authentication_path(reauthn: reauthn?)
       end
@@ -34,10 +34,10 @@ module Users
       super || otp_form.dig(:otp_delivery_selection_form, :reauthn)
     end
 
-    def handle_valid_delivery_method(method)
+    def handle_valid_otp_delivery_preference(method)
       send_user_otp(method)
       session[:code_sent] = 'true'
-      redirect_to login_two_factor_path(delivery_method: method, reauthn: reauthn?)
+      redirect_to login_two_factor_path(otp_delivery_preference: method, reauthn: reauthn?)
     end
 
     def send_user_otp(method)
@@ -57,12 +57,12 @@ module Users
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, attributes)
     end
 
-    def user_selected_delivery_method
-      delivery_params[:otp_method]
+    def user_selected_otp_delivery_preference
+      delivery_params[:otp_delivery_preference]
     end
 
     def delivery_params
-      params.require(:otp_delivery_selection_form).permit(:otp_method, :resend)
+      params.require(:otp_delivery_selection_form).permit(:otp_delivery_preference, :resend)
     end
 
     def phone_to_deliver_to

@@ -86,8 +86,8 @@ module TwoFactorAuthenticatable
     reset_otp_session_data
   end
 
-  def delivery_method
-    params[:delivery_method] || request.path.split('/').last
+  def two_factor_authentication_method
+    params[:otp_delivery_preference] || request.path.split('/').last
   end
 
   # Method will be renamed in the next refactor.
@@ -106,7 +106,7 @@ module TwoFactorAuthenticatable
   end
 
   def render_show_after_invalid
-    @presenter = presenter_for(delivery_method)
+    @presenter = presenter_for_two_factor_authentication_method
     render :show
   end
 
@@ -225,7 +225,7 @@ module TwoFactorAuthenticatable
     {
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
-      delivery_method: delivery_method,
+      otp_delivery_preference: two_factor_authentication_method,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       personal_key_unavailable: personal_key_unavailable?,
@@ -235,7 +235,7 @@ module TwoFactorAuthenticatable
 
   def authenticator_view_data
     {
-      delivery_method: delivery_method,
+      two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       personal_key_unavailable: personal_key_unavailable?,
     }
@@ -268,8 +268,8 @@ module TwoFactorAuthenticatable
     end
   end
 
-  def presenter_for(otp_code_method)
-    type = DELIVERY_METHOD_MAP[otp_code_method.to_sym]
+  def presenter_for_two_factor_authentication_method
+    type = DELIVERY_METHOD_MAP[two_factor_authentication_method.to_sym]
 
     return unless type
 

@@ -199,7 +199,7 @@ describe 'throttling requests' do
       over_maxretry_limit.times do
         get(
           '/otp/send',
-          { otp_delivery_selection_form: { otp_method: 'sms' } },
+          { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
           'REMOTE_ADDR' => '1.2.3.4'
         )
       end
@@ -227,7 +227,7 @@ describe 'throttling requests' do
 
       get(
         '/otp/send',
-        { otp_delivery_selection_form: { otp_method: 'sms' } },
+        { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
         'REMOTE_ADDR' => '1.2.3.5'
       )
 
@@ -258,7 +258,7 @@ describe 'throttling requests' do
       over_maxretry_limit.times do
         get(
           '/phone_confirmation/send',
-          { otp_method: 'sms' },
+          { otp_delivery_preference: 'sms' },
           'REMOTE_ADDR' => '1.2.3.4'
         )
       end
@@ -290,7 +290,7 @@ describe 'throttling requests' do
       over_maxretry_limit.times do
         get(
           '/idv/phone_confirmation/send',
-          { otp_method: 'sms' },
+          { otp_delivery_preference: 'sms' },
           'REMOTE_ADDR' => '1.2.3.4'
         )
       end

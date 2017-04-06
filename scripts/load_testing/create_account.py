@@ -53,7 +53,7 @@ class UserBehavior(locust.TaskSet):
         data = {
             '_method': 'patch',
             'two_factor_setup_form[phone]': '7035550001',
-            'two_factor_setup_form[otp_method]': 'sms',
+            'two_factor_setup_form[otp_delivery_preference]': 'sms',
             'authenticity_token': authenticity_token(dom),
             'commit': 'Send security code',
         }

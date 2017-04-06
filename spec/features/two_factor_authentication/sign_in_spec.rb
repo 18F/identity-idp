@@ -28,7 +28,7 @@ feature 'Two Factor Authentication' do
       submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
 
       expect(page).to_not have_content invalid_phone_message
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
       expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       expect(user.voice?).to eq true
     end
@@ -63,13 +63,13 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).
         to have_content t('devise.two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       submit_prefilled_otp_code
 
@@ -179,13 +179,13 @@ feature 'Two Factor Authentication' do
 
       click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_authenticator_path
 
       click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
     end
 
     scenario 'user can cancel TOTP process' do
@@ -220,7 +220,7 @@ feature 'Two Factor Authentication' do
   describe 'visiting OTP delivery and verification pages after fully authenticating' do
     it 'redirects to profile page' do
       sign_in_and_2fa_user
-      visit login_two_factor_path(delivery_method: 'sms')
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
 
       expect(current_path).to eq profile_path
 
@@ -247,12 +247,12 @@ feature 'Two Factor Authentication' do
 
       expect(current_url).to eq MarketingSite.help_url
 
-      visit login_two_factor_path(delivery_method: 'sms')
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link 'Contact'
 
       expect(current_url).to eq MarketingSite.contact_url
 
-      visit login_two_factor_path(delivery_method: 'sms')
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
       click_link 'Privacy Policy'
 
       expect(current_url).to eq MarketingSite.privacy_url
