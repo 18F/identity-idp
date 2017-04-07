@@ -49,7 +49,7 @@ h2.h3.my0
   = render @view_model.manage_personal_key_partial, btn_cls: btn_cls
 
 .border-box.border.border-blue-gray.rounded-md.mb3
-  .bg-blue-light.pb1.pt1.px2.h6.caps
+  .bg-blue-light.pb1.pt0.px2.h6.caps
     = t('headings.profile.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1 mt-tiny'
   - @view_model.recent_events.each do |event|
