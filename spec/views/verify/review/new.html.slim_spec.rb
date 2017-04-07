@@ -17,7 +17,7 @@ describe 'verify/review/new.html.slim' do
         city: 'Somewhere',
         state: 'MO',
         zipcode: '12345',
-        phone: '+1 (213) 555-0000'
+        phone: '+1 (213) 555-0000',
       }
 
       render
