@@ -1,4 +1,5 @@
-.border-box.sm-col.sm-col-4.sm-col-right.mx-auto.col-6.mtn1
-  .regular.border.border-green.rounded-xxl.py1.px2.center.bg-white.sm-mt0.mtn2-5.sm-ml0.ml1
-    = image_tag asset_url('alert/success'), width: 16, class: 'mr1 align-middle'
-    = t('headings.profile.verified_account')
+.sm-col.sm-col-4.mt1.sm-mt0.relative
+  .verification-badge.mx-auto
+    span
+      = image_tag asset_url('alert/success'), width: 16, class: 'mr1 align-middle'
+      = t('headings.profile.verified_account')
