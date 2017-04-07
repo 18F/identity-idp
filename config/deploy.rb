@@ -86,8 +86,15 @@ namespace :deploy do
   desc 'Modify permissions on /srv/idp'
   task :mod_perms do
     on roles(:web), in: :parallel do
-      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to
+      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to + '/current', '/srv/idp/shared'
     end
+  end
+
+  desc 'Things to do after deploy'
+  task :post_deploy do
+    invoke 'deploy:mod_perms'
+    Rake::Task['passenger:restart'].reenable
+    invoke 'passenger:restart'
   end
 
   desc 'Clean NPM cache'
@@ -100,6 +107,6 @@ namespace :deploy do
   before 'assets:precompile', :browserify
   after 'deploy:updated', 'newrelic:notice_deployment'
   after 'deploy:log_revision', :deploy_json
-  after 'deploy', 'deploy:mod_perms'
+  after 'deploy', 'deploy:post_deploy'
 end
 # rubocop:enable Metrics/BlockLength
