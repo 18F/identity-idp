@@ -52,6 +52,29 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
     end
 
+    context 'when the personal key field is empty' do
+      let(:code) { { code: '' } }
+      let(:payload) { { personal_key_form: code } }
+
+      before do
+        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
+        form = instance_double(PersonalKeyForm)
+        response = FormResponse.new(
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
+        )
+        allow(PersonalKeyForm).to receive(:new).
+          with(subject.current_user, '').and_return(form)
+        allow(form).to receive(:submit).and_return(response)
+      end
+
+      it 'renders the show page' do
+        post :create, payload
+
+        expect(response).to render_template(:show)
+        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_personal_key')
+      end
+    end
+
     context 'when the user enters an invalid personal key' do
       before do
         stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))

@@ -21,8 +21,11 @@ class PersonalKeyForm
   attr_reader :user, :success
 
   def valid_personal_key?
-    length = RandomPhrase::WORD_LENGTH
-    return false unless code =~ /^(?:[a-zA-Z0-9]{#{length}}([\s-])?){3}[a-zA-Z0-9]{#{length}}$/
+    char_count = RandomPhrase::WORD_LENGTH
+    word_count = Figaro.env.recovery_code_length.to_i
+    valid_char = '[a-zA-Z0-9]'
+    return false unless code =~
+      /\A(?:#{valid_char}{#{char_count}}([\s-])?){#{word_count - 1}}#{valid_char}{#{char_count}}\Z/
     personal_key_generator = PersonalKeyGenerator.new(user)
     personal_key_generator.verify(code)
   end

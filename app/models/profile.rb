@@ -33,6 +33,7 @@ class Profile < ActiveRecord::Base
   end
 
   def recover_pii(personal_key)
+    personal_key = personal_key.tr('-', ' ')
     rc_user_access_key = UserAccessKey.new(
       password: personal_key,
       salt: user.recovery_salt,

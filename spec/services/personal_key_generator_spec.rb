@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe PersonalKeyGenerator do
-  let(:personal_key) { Base32::Crockford.encode(100**10, length: 16, split: 4) }
-  let(:bad_code) { Base32::Crockford.encode(100**9, length: 16, split: 4) }
+  let(:personal_key) { Base32::Crockford.encode(100**10, length: 16, split: 4).tr('-', ' ') }
+  let(:bad_code) { Base32::Crockford.encode(100**9, length: 16, split: 4).tr('-', ' ') }
   let(:invalid_base32_code) { 'four score has letter U in it' }
   let(:generator) { described_class.new(create(:user)) }
 
@@ -16,7 +16,7 @@ describe PersonalKeyGenerator do
     it 'returns the raw personal key' do
       stub_random_phrase
 
-      expect(generator.create).to eq personal_key
+      expect(generator.create).to eq personal_key.tr(' ', '-')
     end
 
     it 'hashes the raw personal key' do

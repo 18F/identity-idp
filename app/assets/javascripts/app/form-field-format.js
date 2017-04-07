@@ -14,7 +14,7 @@ function formatForm() {
     ['.mfa', new NumericFormatter()],
     ['.mortgage', new NumericFormatter()],
     ['.phone', new PhoneFormatter()],
-    ['.pkey', new PersonalKeyFormatter()],
+    ['.personal-key', new PersonalKeyFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
   ];

@@ -15,7 +15,7 @@ class PersonalKeyGenerator
     @user_access_key = make_user_access_key(raw_personal_key)
     user.personal_key = hashed_code
     user.save!
-    raw_personal_key
+    raw_personal_key.tr(' ', '-')
   end
 
   def verify(plaintext_code)
@@ -37,7 +37,7 @@ class PersonalKeyGenerator
     normed = plaintext_code.gsub(/\W/, '')
     split_length = normed.length / length
     decoded = Base32::Crockford.decode(normed)
-    Base32::Crockford.encode(decoded, length: 16, split: split_length)
+    Base32::Crockford.encode(decoded, length: 16, split: split_length).tr('-', ' ')
   rescue ArgumentError
     INVALID_CODE
   end
