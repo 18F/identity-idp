@@ -4,7 +4,7 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader :code_value, :confirmation_for_phone_change
+    attr_reader :code_value
 
     def initialize(data:, view:)
       data.each do |key, value|
@@ -32,9 +32,17 @@ module TwoFactorAuthCode
       t("#{personal_key}.text_html", link: personal_key_tag)
     end
 
+    def reauthn_hidden_field_partial
+      if reauthn
+        'two_factor_authentication/totp_verification/reauthn'
+      else
+        'shared/null'
+      end
+    end
+
     private
 
-    attr_reader :personal_key_unavailable, :view
+    attr_reader :personal_key_unavailable, :view, :reauthn
 
     def personal_key_tag
       view.link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)

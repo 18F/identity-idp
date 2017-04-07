@@ -18,6 +18,14 @@ module TwoFactorAuthCode
       ].compact
     end
 
+    def cancel_link
+      if reauthn
+        profile_path
+      else
+        destroy_user_session_path
+      end
+    end
+
     private
 
     attr_reader :user_email, :two_factor_authentication_method
