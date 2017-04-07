@@ -6,7 +6,7 @@ p.mt-tiny.mb0
   = t('idv.messages.finance.intro_ccn_html',
       intro_help_link: link_to(t('idv.messages.finance.intro_ccn_help'), MarketingSite.help_url))
 
-= simple_form_for(@view_model.idv_finance_form, url: verify_finance_path,
+= simple_form_for(@view_model.idv_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = hidden_field_tag 'idv_finance_form[finance_type]', :ccn
 

@@ -8,13 +8,10 @@ module Verify
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: [:destroy]
 
-    helper_method :idv_profile_form
-    helper_method :step
-
     delegate :attempts_exceeded?, to: :step, prefix: true
 
     def new
-      @view_model = Verify::SessionsNew.new(remaining_attempts: remaining_idv_attempts)
+      @view_model = view_model
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
@@ -80,7 +77,11 @@ module Verify
     end
 
     def view_model(error: nil)
-      Verify::SessionsNew.new(error: error, remaining_attempts: remaining_idv_attempts)
+      Verify::SessionsNew.new(
+        error: error,
+        remaining_attempts: remaining_idv_attempts,
+        idv_form: idv_profile_form
+      )
     end
 
     def remaining_idv_attempts

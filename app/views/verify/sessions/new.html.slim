@@ -2,7 +2,7 @@
 = render @view_model.mock_vendor_partial
 
 h1.h3.my0 = @view_model.title
-= simple_form_for(idv_profile_form, url: verify_session_path,
+= simple_form_for(@view_model.idv_form, url: verify_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   fieldset.mb3.ml0.p0.border-none
@@ -23,7 +23,7 @@ h1.h3.my0 = @view_model.title
         = f.input :zipcode, as: :tel,
           label: t('idv.form.zipcode'), required: true,
           pattern: '(\d{5}([\-]\d{4})?)',
-          input_html: { class: 'zipcode', value: idv_profile_form.zipcode }
+          input_html: { class: 'zipcode', value: @view_model.idv_form.zipcode }
     .mb-tiny = t('idv.form.previous_address_html')
     = accordion('previous-address', t('idv.form.previous_address_add'),
       hide_header: true, hide_close_link: true) do
@@ -41,7 +41,7 @@ h1.h3.my0 = @view_model.title
             = f.input :prev_zipcode, as: :tel,
               label: t('idv.form.zipcode'),
               pattern: '(\d{5}([\-]\d{4})?)',
-              input_html: { class: 'zipcode', value: idv_profile_form.prev_zipcode }
+              input_html: { class: 'zipcode', value: @view_model.idv_form.prev_zipcode }
   fieldset.m0.p0.border-none
     legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('idv.form.personal_details')
     / using :tel for mobile numeric keypad
@@ -49,13 +49,13 @@ h1.h3.my0 = @view_model.title
       label: t('idv.form.dob'), required: true,
       hint: t('idv.form.dob_hint'), hint_html: { id: 'dob-instructs', class: 'mb1' },
       pattern: '(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}',
-      input_html: { class: 'dob', value: idv_profile_form.dob, 'aria-describedby': 'dob-instructs' }
+      input_html: { class: 'dob', value: @view_model.idv_form.dob, 'aria-describedby': 'dob-instructs' }
     / using :tel for mobile numeric keypad
     = f.input :ssn, as: :tel,
       label: t('idv.form.ssn_label_html', tooltip: tooltip(t('tooltips.ssn'))),
       required: true,
       pattern: '^\d{3}-?\d{2}-?\d{4}$',
-      input_html: { class: 'ssn', value: idv_profile_form.ssn }
+      input_html: { class: 'ssn', value: @view_model.idv_form.ssn }
   .mt3
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
 = render 'shared/cancel', link: verify_cancel_path

@@ -6,8 +6,6 @@ module Verify
     before_action :confirm_idv_steps_complete
     before_action :confirm_current_password, only: [:create]
 
-    helper_method :idv_params
-
     def confirm_idv_steps_complete
       return redirect_to(verify_session_path) unless idv_profile_complete?
       return redirect_to(verify_finance_path) unless idv_finance_complete?
@@ -22,6 +20,7 @@ module Verify
     end
 
     def new
+      @idv_params = idv_params
       idv_session.params.symbolize_keys!
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
