@@ -23,7 +23,7 @@ feature 'Sign Up' do
     end
   end
 
-  context 'user cancels on the enter password screen' do
+  context 'user cancels on the enter password screen', email: true do
     it 'returns them to the home page' do
       email = 'test@test.com'
 
