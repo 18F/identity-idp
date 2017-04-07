@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-feature 'Signing in via personal key' do
-  it 'displays new personal key and redirects to profile after acknowledging' do
+feature 'Signing in via one-time use personal key' do
+  it 'destroys old key, displays new one, and redirects to profile after acknowledging' do
     user = create(:user, :signed_up)
     sign_in_before_2fa(user)
 
