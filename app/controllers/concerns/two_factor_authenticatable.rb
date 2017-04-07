@@ -228,17 +228,21 @@ module TwoFactorAuthenticatable
       otp_delivery_preference: two_factor_authentication_method,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      personal_key_unavailable: personal_key_unavailable?,
       totp_enabled: current_user.totp_enabled?,
-    }
+    }.merge(generic_data)
   end
 
   def authenticator_view_data
     {
-      confirmation_for_phone_change: confirmation_for_phone_change?,
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
+    }.merge(generic_data)
+  end
+
+  def generic_data
+    {
       personal_key_unavailable: personal_key_unavailable?,
+      reauthn: reauthn?,
     }
   end
 

@@ -18,6 +18,14 @@ module TwoFactorAuthCode
       ].compact
     end
 
+    def cancel_link
+      if confirmation_for_phone_change || reauthn
+        profile_path
+      else
+        destroy_user_session_path
+      end
+    end
+
     private
 
     attr_reader(
@@ -25,7 +33,8 @@ module TwoFactorAuthCode
       :reenter_phone_number_path,
       :phone_number,
       :unconfirmed_phone,
-      :otp_delivery_preference
+      :otp_delivery_preference,
+      :confirmation_for_phone_change
     )
 
     def phone_number_tag

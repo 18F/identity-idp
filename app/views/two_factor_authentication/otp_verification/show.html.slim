@@ -3,7 +3,7 @@
 h1.h3.my0 = @presenter.header
 
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt3 sm-mt4') do
-  = hidden_field_tag(:reauthn, reauthn?)
+  = @presenter.reauthn_hidden_field_partial
   = label_tag 'code', \
     t('simple_form.required.html') + t('forms.two_factor.code'), \
     class: 'block bold'
@@ -15,8 +15,4 @@ h1.h3.my0 = @presenter.header
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
 
 = render 'shared/fallback_links', presenter: @presenter
-
-- if @presenter.confirmation_for_phone_change || reauthn?
-  = render 'shared/cancel', link: profile_path
-- else
-  = render 'shared/cancel', link: destroy_user_session_path
+= render 'shared/cancel', link: @presenter.cancel_link

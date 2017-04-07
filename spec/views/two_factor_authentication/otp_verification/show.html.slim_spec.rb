@@ -13,7 +13,6 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
 
   context 'user has a phone' do
     before do
-      allow(view).to receive(:reauthn?).and_return(false)
       allow(view).to receive(:user_session).and_return({})
       allow(view).to receive(:current_user).and_return(User.new)
       controller.request.path_parameters[:otp_delivery_preference] =
@@ -23,6 +22,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         data: presenter_data,
         view: view
       )
+      allow(@presenter).to receive(:reauthn).and_return(false)
     end
 
     context 'common OTP delivery screen behavior' do
@@ -89,7 +89,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       before do
         user = build_stubbed(:user, :signed_up, personal_key: '1')
         allow(view).to receive(:current_user).and_return(user)
-        allow(view).to receive(:reauthn?).and_return(true)
+        allow(@presenter).to receive(:reauthn).and_return(true)
         render
       end
 

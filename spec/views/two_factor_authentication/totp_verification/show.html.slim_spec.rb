@@ -11,11 +11,10 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
   before do
     allow(view).to receive(:current_user).and_return(user)
-    allow(view).to receive(:reauthn?).and_return(false)
-
     @presenter = TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(
       data: presenter_data, view: ApplicationController.new.view_context
     )
+    allow(@presenter).to receive(:reauthn).and_return(false)
 
     render
   end
@@ -56,7 +55,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
 
   context 'user is reauthenticating' do
     before do
-      allow(view).to receive(:reauthn?).and_return(true)
+      allow(@presenter).to receive(:reauthn).and_return(true)
       render
     end
 

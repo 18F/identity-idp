@@ -96,11 +96,6 @@ class ApplicationController < ActionController::Base
     params[:reauthn]
   end
 
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
-  end
-
   def invalid_auth_token
     analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN)
     sign_out
@@ -110,6 +105,11 @@ class ApplicationController < ActionController::Base
 
   def user_fully_authenticated?
     !reauthn? && user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
+  end
+
+  def reauthn?
+    reauthn = reauthn_param
+    reauthn.present? && reauthn == 'true'
   end
 
   def confirm_two_factor_authenticated
