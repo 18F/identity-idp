@@ -6,10 +6,8 @@ module Verify
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
 
-    helper_method :idv_phone_form
-
     def new
-      @view_model = Verify::PhoneNew.new(remaining_attempts: remaining_step_attempts)
+      @view_model = view_model
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
@@ -41,7 +39,11 @@ module Verify
     end
 
     def view_model(error: nil)
-      Verify::PhoneNew.new(error: error, remaining_attempts: remaining_step_attempts)
+      Verify::PhoneNew.new(
+        error: error,
+        remaining_attempts: remaining_step_attempts,
+        idv_form: idv_phone_form
+      )
     end
 
     def step_params

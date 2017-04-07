@@ -7,7 +7,7 @@ describe 'verify/review/new.html.slim' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
-      allow(view).to receive(:idv_params).and_return(
+      @idv_params = {
         first_name: 'Some',
         last_name: 'One',
         ssn: '666-66-1234',
@@ -17,8 +17,8 @@ describe 'verify/review/new.html.slim' do
         city: 'Somewhere',
         state: 'MO',
         zipcode: '12345',
-        phone: '+1 (213) 555-0000'
-      )
+        phone: '+1 (213) 555-0000',
+      }
 
       render
     end

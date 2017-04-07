@@ -3,7 +3,7 @@
 
 h1.h3.my0 = @view_model.title
 p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
-= simple_form_for(@view_model.idv_finance_form, url: verify_finance_path,
+= simple_form_for(@view_model.idv_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   .select-alt.mb2
     = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,

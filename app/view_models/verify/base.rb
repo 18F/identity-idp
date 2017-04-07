@@ -2,12 +2,13 @@ module Verify
   class Base
     include Rails.application.routes.url_helpers
 
-    def initialize(error: nil, remaining_attempts:)
+    def initialize(error: nil, remaining_attempts:, idv_form:)
       @error = error
       @remaining_attempts = remaining_attempts
+      @idv_form = idv_form
     end
 
-    attr_reader :error, :remaining_attempts
+    attr_reader :error, :remaining_attempts, :idv_form
 
     def mock_vendor_partial
       if idv_vendor.pick == :mock

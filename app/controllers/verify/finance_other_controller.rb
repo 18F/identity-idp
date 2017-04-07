@@ -23,7 +23,7 @@ module Verify
     def view_model
       Verify::FinancialsNew.new(
         remaining_attempts: remaining_step_attempts,
-        idv_finance_form: idv_finance_form
+        idv_form: idv_finance_form
       )
     end
 
