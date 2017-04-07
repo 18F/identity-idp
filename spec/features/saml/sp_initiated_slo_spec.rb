@@ -211,7 +211,7 @@ feature 'SP-initiated logout' do
       expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)
 
-      removed_keys = %w(logout_response logout_response_url)
+      removed_keys = %w[logout_response logout_response_url]
 
       expect(page.get_rack_session.keys & removed_keys).to eq []
     end

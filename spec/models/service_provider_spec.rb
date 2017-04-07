@@ -60,7 +60,7 @@ describe ServiceProvider do
         # block_encryption is 'aes256-cbc' for this SP
         sp = ServiceProvider.from_issuer('https://rp1.serviceprovider.com/auth/saml/metadata')
 
-        expect(sp.encryption_opts.keys).to eq [:cert, :block_encryption, :key_transport]
+        expect(sp.encryption_opts.keys).to eq %i[cert block_encryption key_transport]
         expect(sp.encryption_opts[:block_encryption]).to eq 'aes256-cbc'
         expect(sp.encryption_opts[:key_transport]).to eq 'rsa-oaep-mgf1p'
         expect(sp.encryption_opts[:cert]).to be_an_instance_of(OpenSSL::X509::Certificate)

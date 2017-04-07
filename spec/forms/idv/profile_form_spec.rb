@@ -21,7 +21,7 @@ describe Idv::ProfileForm do
 
   describe 'presence validations' do
     it 'is invalid when required attribute is not present' do
-      [:first_name, :last_name, :ssn, :dob, :address1, :city, :state, :zipcode].each do |attr|
+      %i[first_name last_name ssn dob address1 city state zipcode].each do |attr|
         subject.submit(profile_attrs.merge(attr => nil))
         expect(subject).to_not be_valid
       end
@@ -94,14 +94,14 @@ describe Idv::ProfileForm do
 
   describe 'zipcode validity' do
     it 'accepts 9 numbers with optional `-` delimiting the 5th and 6th position' do
-      %w(12345 123454567 12345-1234).each do |valid_zip|
+      %w[12345 123454567 12345-1234].each do |valid_zip|
         subject.submit(profile_attrs.merge(zipcode: valid_zip))
         expect(subject.valid?).to eq true
       end
     end
 
     it 'populates error for :zipcode when invalid' do
-      %w(1234 123Ac-1234 1234B).each do |invalid_zip|
+      %w[1234 123Ac-1234 1234B].each do |invalid_zip|
         subject.submit(profile_attrs.merge(zipcode: invalid_zip))
         expect(subject.valid?).to eq false
         expect(subject.errors[:zipcode]).to eq [I18n.t('idv.errors.pattern_mismatch.zipcode')]
@@ -111,14 +111,14 @@ describe Idv::ProfileForm do
 
   describe 'ssn validity' do
     it 'accepts 9 numbers with optional `-` delimiters' do
-      %w(123411111 123-11-1123).each do |valid_ssn|
+      %w[123411111 123-11-1123].each do |valid_ssn|
         subject.submit(profile_attrs.merge(ssn: valid_ssn))
         expect(subject.valid?).to eq true
       end
     end
 
     it 'populates errors for :ssn when invalid' do
-      %w(1234 123-1-1111 abc-11-1123).each do |invalid_ssn|
+      %w[1234 123-1-1111 abc-11-1123].each do |invalid_ssn|
         subject.submit(profile_attrs.merge(ssn: invalid_ssn))
         expect(subject.valid?).to eq false
         expect(subject.errors[:ssn]).to eq [I18n.t('idv.errors.pattern_mismatch.ssn')]

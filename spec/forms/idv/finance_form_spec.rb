@@ -7,7 +7,7 @@ describe Idv::FinanceForm do
     it 'is invalid when required attributes are not present' do
       valid_params = { finance_type: :mortgage, mortgage: 'abc123' }
 
-      [:finance_type, :mortgage].each do |attr|
+      %i[finance_type mortgage].each do |attr|
         subject.submit(valid_params.merge(attr => nil))
 
         expect(subject).to_not be_valid

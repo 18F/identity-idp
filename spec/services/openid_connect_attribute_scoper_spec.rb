@@ -10,15 +10,15 @@ RSpec.describe OpenidConnectAttributeScoper do
       let(:scope) { 'openid email profile' }
 
       it 'parses scopes' do
-        expect(scopes).to eq(%w(openid email profile))
+        expect(scopes).to eq(%w[openid email profile])
       end
     end
 
     context 'with an array' do
-      let(:scope) { %w(fakescope openid email profile) }
+      let(:scope) { %w[fakescope openid email profile] }
 
       it 'filters the array' do
-        expect(scopes).to eq(%w(openid email profile))
+        expect(scopes).to eq(%w[openid email profile])
       end
     end
   end
@@ -131,7 +131,7 @@ RSpec.describe OpenidConnectAttributeScoper do
       let(:scope) { 'email profile' }
 
       it 'is the array of attributes corresponding to the scopes' do
-        expect(requested_attributes).to eq(%w(email given_name family_name birthdate))
+        expect(requested_attributes).to eq(%w[email given_name family_name birthdate])
       end
     end
 
@@ -139,7 +139,7 @@ RSpec.describe OpenidConnectAttributeScoper do
       let(:scope) { 'email profile:birthdate' }
 
       it 'is the array of attributes corresponding to the scopes' do
-        expect(requested_attributes).to eq(%w(email birthdate))
+        expect(requested_attributes).to eq(%w[email birthdate])
       end
     end
   end

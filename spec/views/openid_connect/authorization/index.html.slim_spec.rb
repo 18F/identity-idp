@@ -5,7 +5,7 @@ describe 'openid_connect/authorization/index.html.slim' do
 
   before do
     @authorize_decorator = OpenidConnectAuthorizeDecorator.new(
-      scopes: %w(openid email profile)
+      scopes: %w[openid email profile]
     )
     sp = build_stubbed(
       :service_provider,
@@ -19,7 +19,7 @@ describe 'openid_connect/authorization/index.html.slim' do
   it 'renders a list of localized attribute names' do
     render
 
-    %w(email given_name family_name birthdate).each do |attribute|
+    %w[email given_name family_name birthdate].each do |attribute|
       translated_attribute = I18n.t("openid_connect.authorization.index.attributes.#{attribute}")
       expect(rendered).to have_xpath("//li[text()='#{translated_attribute}']")
     end

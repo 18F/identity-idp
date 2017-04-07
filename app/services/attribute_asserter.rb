@@ -1,16 +1,16 @@
 class AttributeAsserter
-  VALID_ATTRIBUTES = [
-    :first_name,
-    :middle_name,
-    :last_name,
-    :address1,
-    :address2,
-    :city,
-    :state,
-    :zipcode,
-    :dob,
-    :ssn,
-    :phone,
+  VALID_ATTRIBUTES = %i[
+    first_name
+    middle_name
+    last_name
+    address1
+    address2
+    city
+    state
+    zipcode
+    dob
+    ssn
+    phone
   ].freeze
 
   URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF

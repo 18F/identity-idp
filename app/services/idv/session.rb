@@ -1,18 +1,18 @@
 module Idv
   class Session
-    VALID_SESSION_ATTRIBUTES = [
-      :address_verification_mechanism,
-      :applicant,
-      :financials_confirmation,
-      :params,
-      :phone_confirmation,
-      :pii,
-      :profile_confirmation,
-      :profile_id,
-      :personal_key,
-      :resolution,
-      :step_attempts,
-      :vendor,
+    VALID_SESSION_ATTRIBUTES = %i[
+      address_verification_mechanism
+      applicant
+      financials_confirmation
+      params
+      phone_confirmation
+      pii
+      profile_confirmation
+      profile_id
+      personal_key
+      resolution
+      step_attempts
+      vendor
     ].freeze
 
     def initialize(user_session, current_user)
@@ -103,7 +103,7 @@ module Idv
     end
 
     def move_pii_to_user_session
-      return unless session[:decrypted_pii].present?
+      return if session[:decrypted_pii].blank?
       user_session[:decrypted_pii] = session.delete(:decrypted_pii)
     end
 

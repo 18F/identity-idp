@@ -1,5 +1,5 @@
 class OpenidConnectAttributeScoper
-  VALID_SCOPES = %w(
+  VALID_SCOPES = %w[
     address
     email
     openid
@@ -8,18 +8,18 @@ class OpenidConnectAttributeScoper
     profile:birthdate
     profile:name
     social_security_number
-  ).freeze
+  ].freeze
 
   ATTRIBUTE_SCOPES_MAP = {
-    email: %w(email),
-    email_verified: %w(email),
-    address: %w(address),
-    phone: %w(phone),
-    phone_verified: %w(phone),
-    given_name: %w(profile profile:name),
-    family_name: %w(profile profile:name),
-    birthdate: %w(profile profile:birthdate),
-    social_security_number: %w(social_security_number),
+    email: %w[email],
+    email_verified: %w[email],
+    address: %w[address],
+    phone: %w[phone],
+    phone_verified: %w[phone],
+    given_name: %w[profile profile:name],
+    family_name: %w[profile profile:name],
+    birthdate: %w[profile profile:birthdate],
+    social_security_number: %w[social_security_number],
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|

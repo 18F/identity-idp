@@ -16,7 +16,7 @@ describe Idv::Vendor do
 
       it 'returns random from env var' do
         expect(subject.pick).to_not eq :mock
-        expect([:foo, :bar]).to include(subject.pick)
+        expect(%i[foo bar]).to include(subject.pick)
       end
     end
   end
@@ -27,7 +27,7 @@ describe Idv::Vendor do
     end
 
     it 'returns array of symbolized values from env var' do
-      expect(subject.available).to eq [:foo, :bar]
+      expect(subject.available).to eq %i[foo bar]
     end
   end
 

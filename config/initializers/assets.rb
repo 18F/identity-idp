@@ -8,10 +8,10 @@ Rails.application.config.assets.paths << Rails.root.join('node_modules')
 
 # Precompile additional assets.
 # application.js, application.css, and all non-JS/CSS in app/assets folder are already added.
-Rails.application.config.assets.precompile += %w(
+Rails.application.config.assets.precompile += %w[
   misc/*.js email.css ie*.css es5-shim.min.js html5shiv.js respond.min.js
-)
+]
 
 if Rails.env.test?
-  Rails.application.config.assets.precompile += %w(spec_helper.js)
+  Rails.application.config.assets.precompile += %w[spec_helper.js]
 end

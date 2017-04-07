@@ -36,7 +36,7 @@ class UpdateUserPassword
 
   def encrypt_user_profile_if_active
     active_profile = user.active_profile
-    return unless active_profile.present?
+    return if active_profile.blank?
 
     encryptor.call
   end

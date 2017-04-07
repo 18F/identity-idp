@@ -124,7 +124,7 @@ end
 
 def press_shift_tab
   body_element = page.find('body')
-  body_element.send_keys [:shift, :tab]
+  body_element.send_keys %i[shift tab]
 end
 
 def expect_back_button_to_be_in_focus

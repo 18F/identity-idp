@@ -3,7 +3,7 @@ module Idv
     include ActiveModel::Model
     include FormFinanceValidator
 
-    FINANCE_TYPES = [:ccn, :mortgage, :home_equity_line, :auto_loan].freeze
+    FINANCE_TYPES = %i[ccn mortgage home_equity_line auto_loan].freeze
     FINANCE_OTHER_TYPES = FINANCE_TYPES - [:ccn]
 
     FINANCE_HTML_OPTIONS = {

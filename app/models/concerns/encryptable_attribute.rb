@@ -60,7 +60,7 @@ module EncryptableAttribute
   def get_encrypted_attribute(name:)
     getter = encrypted_attribute_name(name)
     encrypted_string = self[getter]
-    return encrypted_string unless encrypted_string.present?
+    return encrypted_string if encrypted_string.blank?
     encrypted_attribute = encrypted_attributes[name]
     return encrypted_attribute.decrypted if encrypted_attribute.present?
     build_encrypted_attribute(name, encrypted_string).decrypted

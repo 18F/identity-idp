@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe 'Identity Verification Routes', type: :routing do
-  GET_ROUTES = %w(
+  GET_ROUTES = %w[
     verify
     verify/activated
     verify/address
@@ -15,19 +15,19 @@ describe 'Identity Verification Routes', type: :routing do
     verify/session
     verify/session/dupe
     verify/usps
-  ).freeze
+  ].freeze
 
-  PUT_ROUTES = %w(
+  PUT_ROUTES = %w[
     verify/finance
     verify/phone
     verify/review
     verify/session
     verify/usps
-  ).freeze
+  ].freeze
 
-  DELETE_ROUTES = %w(
+  DELETE_ROUTES = %w[
     verify/session
-  ).freeze
+  ].freeze
 
   context 'when FeatureManagement.enable_identity_verification? is false' do
     before do
