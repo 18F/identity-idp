@@ -4,7 +4,7 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader :code_value
+    attr_reader :code_value, :confirmation_for_phone_change
 
     def initialize(data:, view:)
       data.each do |key, value|

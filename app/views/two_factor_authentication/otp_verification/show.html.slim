@@ -16,7 +16,7 @@ h1.h3.my0 = @presenter.header
 
 = render 'shared/fallback_links', presenter: @presenter
 
-- if confirmation_for_phone_change? || reauthn?
+- if @presenter.confirmation_for_phone_change || reauthn?
   = render 'shared/cancel', link: profile_path
 - else
   = render 'shared/cancel', link: destroy_user_session_path
