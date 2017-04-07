@@ -17,10 +17,14 @@
 
 .mtn1 { margin-top: -$space-1; }
 .mtn2 { margin-top: -$space-2; }
+.mtn2-5 { margin-top: -$space-2-5; }
 .mtn3 { margin-top: -$space-3; }
+.mtn4 { margin-top: -$space-5; }
 
 @media #{$breakpoint-sm} {
   .sm-mr-20p { margin-right: 20px; }
+  .sm-mt0 { margin-top: 0; }
+  .sm-mbn3 { margin-bottom: -$space-3; }
   .sm-mtn2 { margin-top: -$space-2; }
   .sm-mtn3 { margin-top: -$space-3; }
 }

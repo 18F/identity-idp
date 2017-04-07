@@ -7,6 +7,10 @@ class ProfileIndex
     @current_user = current_user
   end
 
+  def header_partial
+    'profile/header'
+  end
+
   def personal_key_partial
     if personal_key.present?
       'profile/personal_key'
@@ -45,6 +49,12 @@ class ProfileIndex
     else
       'profile/manage_personal_key'
     end
+  end
+
+  def header_personalization
+    return decrypted_pii.first_name if decrypted_pii.present?
+
+    current_user.email
   end
 
   private

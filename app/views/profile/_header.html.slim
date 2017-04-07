@@ -1,0 +1,11 @@
+.clearfix.mb3.sm-mbn3
+  .pt3.sm-pb0.pb5.bg-light-blue.sm-bg-none.sm-p0.sm-col.sm-col-8
+    h2.h3.mt0.col.col-12.sm-col-8.center.sm-left-align.mb0
+      span.sm-display-none
+        = t('shared.nav_auth.welcome')
+        '
+        span.bold
+          = view_model.header_personalization
+      span.sm-display-block.display-none
+        = t('headings.profile.login_info')
+  = render partial: current_user.decorate.verified_account_partial

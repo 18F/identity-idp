@@ -16,7 +16,6 @@ es:
     profile:
       account_history: La historia de la cuenta
       login_info: Información de la cuenta
-      profile_info: Información del perfil
       two_factor: Autenticación de dos factores
       verified_account: Cuenta verificada
     personal_key: Asegúrese de que siempre puede iniciar sesión

@@ -25,12 +25,13 @@ feature 'Sign Up' do
 
   context 'user cancels on the enter password screen', email: true do
     it 'returns them to the home page' do
-      email = 'test@test.com'
+      email = Faker::Internet.email
 
       visit sign_up_email_path
 
-      submit_form_with_valid_email
+      submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
+
       click_on t('links.cancel_account_creation')
 
       expect(current_path).to eq root_path

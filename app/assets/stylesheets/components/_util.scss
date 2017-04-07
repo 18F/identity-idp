@@ -9,9 +9,16 @@
 .invisible { visibility: hidden; }
 
 @media #{$breakpoint-sm} {
+  .sm-display-none { display: none; }
+
+  .sm-display-block { display: block !important; }
+  .sm-display-inline-block { display: inline-block !important; }
+
   .sm-maxw-190p { max-width: 190px; }
 
   .sm-bg-light-blue { background-color: $blue-light; }
+
+  .sm-bg-none { background-color: transparent; }
 
   .sm-left-align { text-align: left; }
   .sm-right-align { text-align: right; }

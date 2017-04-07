@@ -12,10 +12,6 @@ describe 'shared/_nav_auth.html.slim' do
       expect(rendered).to have_content "Welcome #{@user.email}"
     end
 
-    it 'contains link to my account' do
-      expect(rendered).to have_link(t('shared.nav_auth.my_account'), href: profile_path)
-    end
-
     it 'does not contain link to cancel the auth process' do
       expect(rendered).not_to have_link(t('links.cancel'), href: destroy_user_session_path)
     end
