@@ -7,6 +7,10 @@ class ProfileIndex
     @current_user = current_user
   end
 
+  def header_partial
+    'profile/header'
+  end
+
   def personal_key_partial
     if personal_key.present?
       'profile/personal_key'

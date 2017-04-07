@@ -10,10 +10,10 @@
 
 h1.hide = t('titles.profile')
 
+= render @view_model.header_partial, view_model: @view_model
+
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
-h2.h3.my0
-  = t('headings.profile.login_info')
 .mt2.mb4
   .py-12p.border-top
     .clearfix.mxn1
@@ -48,7 +48,7 @@ h2.h3.my0
 
   = render @view_model.manage_personal_key_partial, btn_cls: btn_cls
 
-.border-box.border.border-blue-gray.rounded-md.mb3
+.border-box.border.border-blue-gray.sm-rounded-md.mb3
   .bg-blue-light.pb1.pt0.px2.h6.caps
     = t('headings.profile.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1 mt-tiny'
