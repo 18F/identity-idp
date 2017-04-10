@@ -16,6 +16,7 @@ en:
     profile:
       account_history: Account history
       login_info: Account information
+      profile_info: Profile information
       two_factor: Two-factor authentication
       verified_account: Verified Account
     personal_key: Here is your personal key

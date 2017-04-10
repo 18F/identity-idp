@@ -36,7 +36,7 @@ class ProfileIndex
   end
 
   def edit_action_partial
-    'profile/edit_action_button'
+    'profile/actions/edit_action_button'
   end
 
   def pii_partial
@@ -49,9 +49,9 @@ class ProfileIndex
 
   def totp_partial
     if decorated_user.totp_enabled?
-      'profile/disable_totp'
+      'profile/actions/disable_totp'
     else
-      'profile/enable_totp'
+      'profile/actions/enable_totp'
     end
   end
 
@@ -59,8 +59,12 @@ class ProfileIndex
     if decorated_user.password_reset_profile.present?
       'shared/null'
     else
-      'profile/manage_personal_key'
+      'profile/actions/manage_personal_key'
     end
+  end
+
+  def recent_event_partial
+    'profile/event_item'
   end
 
   def header_personalization
@@ -69,7 +73,13 @@ class ProfileIndex
     decorated_user.email
   end
 
-  private
+  def totp_content
+    decorated_user.totp_enabled? ?
+    'profile.index.auth_app_enabled' :
+    'profile.index.auth_app_disabled'
+  end
 
-  attr_reader :current_user
+  def recent_events
+    decorateed_user.recent_events
+  end
 end

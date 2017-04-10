@@ -24,7 +24,7 @@ en:
     items:
       personal_key: Personal key
     links:
-      regenerate_personal_key: Create
+      regenerate_personal_key: Get a new key
     security:
       text: Your profile information is locked for your security.
       link: Learn more at the Help Center

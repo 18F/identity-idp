@@ -2,7 +2,6 @@
   = render 'shared/nav_auth'
 
 - title t('titles.profile')
-- btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
 = render @view_model.personal_key_partial, view_model: @view_model
 
@@ -18,14 +17,14 @@ h1.hide = t('titles.profile')
   .bg-blue-lighter.py1.px2.h6.caps
     = t('profile.index.login')
     = image_tag asset_url('sign-in.svg'), width: 12, class: 'ml1 mt-tiny'
-  = render 'profile_datum',
+  = render 'profile_item',
     name: t('profile.index.email'),
     content: current_user.email,
     path: manage_email_path,
     action: @view_model.edit_action_partial
   .border-bottom.border-blue-light
 
-  = render 'profile_datum',
+  = render 'profile_item',
     name: t('profile.index.password'),
     content: @view_model.password_content,
     path: manage_password_path,
@@ -36,55 +35,37 @@ h1.hide = t('titles.profile')
     = t('headings.profile.two_factor')
     = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1 mt-tiny'
   
-  = render 'profile_datum',
+  = render 'profile_item',
     name: t('profile.index.phone'),
     content: current_user.phone,
     path: manage_phone_path,
     action: @view_model.edit_action_partial
   .border-bottom.border-blue-light
-
-  / = render 'profile_datum',
-  /   data_type: t('.authentication_app'),
-  /   content: content_tag(:em, 
-  /                        current_user.totp_enabled? ? t('.auth_app_enabled') : t('.auth_app_disabled')),
-  /   path: manage_password_path,
-  /   link_text: current_user.totp_enabled? ? t('forms.buttons.disable') : t('forms.buttons.enable')
-  / .border-top.border-blue-light
-  / = render 'profile_datum_cell',
-  /   data_type: t('profile.items.recovery_code'),
-  /   path: manage_recovery_code_path,
-  /   link_text: t('profile.links.regenerate_recovery_code')
-    
-.mt3.mb1.h6.bold.caps.ls-0
-  | #{t('headings.profile.two_factor')}#{tooltip(t('tooltips.two_factor'))}
-.py-12p.border-top
-  .clearfix.mxn1
-    .sm-col.sm-col-5.px1 = t('.phone')
-    .sm-col.sm-col-5.px1 = current_user.phone
-    .sm-col.sm-col-2.px1.sm-right-align
-      = link_to manage_phone_path, class: btn_cls do
-        span.hide = t('.phone')
-        = t('forms.buttons.edit')
-.py-12p.border-top
-  .clearfix.mxn1
-    .sm-col.sm-col-10.px1 = t('.authentication_app')
-    .sm-col.sm-col-2.px1.sm-right-align
-      = render @view_model.totp_partial, btn_cls: btn_cls
-= render @view_model.manage_personal_key_partial, btn_cls: btn_cls
+  
+  = render 'profile_item',
+    name: t('profile.index.authentication_app'),
+    content: content_tag(:em, t(@view_model.totp_content)),
+    action: @view_model.totp_partial
+  .border-bottom.border-blue-light
+  
+  = render 'profile_item',
+    name: t('profile.items.personal_key'),
+    path: manage_personal_key_path,
+    action: @view_model.manage_personal_key_partial
 
 .border.border-blue-lighter.rounded-md.mb3
-  .bg-blue-lighter.pb1.pt1.px2.h6.caps
-    = t('headings.profile.profile_info')
-    = image_tag asset_url('user.svg'), width: 8, class: 'ml1 mt-tiny'
+  .bg-blue-lighter.pb1.pt1.px2.h6.caps.clearfix
+    .col.col-11
+      = t('headings.profile.profile_info')
+      = image_tag asset_url('user.svg'), width: 8, class: 'ml1 mt-tiny'
+    .col.col-1.right-align
+      = image_tag asset_url('lock.svg'), width: 8, class: 'mr1'
 
   = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
-h2.h3.my0 = t('headings.profile.account_history')
-.mt2.mb2
-  - @view_model.decorated_user.recent_events.each_with_index do |event, i|
-    div class="py-12p border-top #{'border-bottom' if i + 1 == @view_model.events_length}"
-      .clearfix.mxn1
-        .sm-col.sm-col-6.px1
-          .truncate = event.pretty_event_type
-        .sm-col.sm-col-6.px1.sm-right-align
-          = event.happened_at
+.border.border-blue-lighter.rounded-md.mb3
+  .bg-blue-lighter.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.profile.account_history')
+    = image_tag asset_url('history.svg'), width: 12, class: 'ml1 mt-tiny'
+  - @view_model.recent_events.each do |event|
+    = render @view_model.recent_event_partial, event: event

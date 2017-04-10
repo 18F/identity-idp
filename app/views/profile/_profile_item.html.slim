@@ -5,4 +5,7 @@
     .col.col-8.sm-col-6
       = content if local_assigns.key? :content
   .col.col-2.sm-col-4.right-align
-    = render action, path: path, name: name
+    - if local_assigns.key? :path
+      = render action, path: path, name: name
+    - else
+      = render action
