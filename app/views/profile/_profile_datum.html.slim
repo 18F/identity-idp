@@ -1,0 +1,8 @@
+.p2.clearfix
+  .col.col-10.sm-col-8
+    .bold.col.col-12.sm-col-6
+      = name
+    .col.col-8.sm-col-6
+      = content if local_assigns.key? :content
+  .col.col-2.sm-col-4.right-align
+    = render action, path: path, name: name

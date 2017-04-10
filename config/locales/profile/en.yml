@@ -2,8 +2,11 @@
 en:
   profile:
     index:
+      login: Login Information
       address: Current address
       authentication_app: Authentication app
+      auth_app_enabled: enabled
+      auth_app_disabled: not enabled
       dob: Date of birth
       email: Email address
       full_name: Full name
@@ -22,3 +25,6 @@ en:
       personal_key: Personal key
     links:
       regenerate_personal_key: Create
+    security:
+      text: Your profile information is locked for your security.
+      link: Learn more at the Help Center

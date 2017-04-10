@@ -35,6 +35,10 @@ class ProfileIndex
     end
   end
 
+  def edit_action_partial
+    'profile/edit_action_button'
+  end
+
   def pii_partial
     if decrypted_pii.present?
       'profile/pii'
@@ -65,7 +69,7 @@ class ProfileIndex
     decorated_user.email
   end
 
-  def events_length
-    @_events_length ||= decorated_user.recent_events.length
-  end
+  private
+
+  attr_reader :current_user
 end
