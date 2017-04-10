@@ -10,10 +10,10 @@
 
 h1.hide = t('titles.profile')
 
+= render @view_model.header_partial, view_model: @view_model
+
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
-h2.h3.my0
-  = t('headings.profile.login_info')
 .mt2.mb4
   .py-12p.border-top
     .clearfix.mxn1

@@ -1,1 +1,5 @@
-.h6.regular.border.rounded.p1 = t('headings.profile.verified_account')
+.sm-col.sm-col-4.mt1.sm-mt0.relative
+  .verification-badge.mx-auto
+    span
+      = image_tag asset_url('alert/success'), width: 16, class: 'mr1 align-middle'
+      = t('headings.profile.verified_account')
