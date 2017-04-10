@@ -32,7 +32,7 @@ module UserEncryptedAttributeOverrides
   end
 
   def email_was
-    EncryptedAttribute.new(encrypted_email_was).decrypted unless encrypted_email_was.blank?
+    EncryptedAttribute.new(encrypted_email_was).decrypted if encrypted_email_was.present?
   end
 
   # Override usual setter method in order to also set fingerprint

@@ -1,7 +1,7 @@
 require 'fingerprinter'
 
 class ServiceProvider < ActiveRecord::Base
-  scope :active, -> { where(active: true) }
+  scope(:active, -> { where(active: true) })
 
   def self.from_issuer(issuer)
     find_by(issuer: issuer) || NullServiceProvider.new(issuer: issuer)

@@ -2,7 +2,7 @@ module IdvSession
   extend ActiveSupport::Concern
 
   def confirm_idv_session_started
-    redirect_to verify_session_url unless idv_session.params.present?
+    redirect_to verify_session_url if idv_session.params.blank?
   end
 
   def confirm_idv_attempts_allowed

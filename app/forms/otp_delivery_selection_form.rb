@@ -3,7 +3,7 @@ class OtpDeliverySelectionForm
 
   attr_reader :otp_delivery_preference
 
-  validates :otp_delivery_preference, inclusion: { in: %w(sms voice) }
+  validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
 
   def initialize(user)
     @user = user

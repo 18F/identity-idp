@@ -4,8 +4,8 @@ class Profile < ActiveRecord::Base
   validates :active, uniqueness: { scope: :user_id, if: :active? }
   validates :ssn_signature, uniqueness: { scope: :active, if: :active? }
 
-  scope :active, -> { where(active: true) }
-  scope :verified, -> { where.not(verified_at: nil) }
+  scope(:active, -> { where(active: true) })
+  scope(:verified, -> { where.not(verified_at: nil) })
 
   enum deactivation_reason: {
     password_reset: 1,

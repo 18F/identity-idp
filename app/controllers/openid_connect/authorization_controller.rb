@@ -6,8 +6,8 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
-    before_action :confirm_fully_authenticated, only: [:create, :destroy]
-    before_action :load_authorize_form_from_session, only: [:create, :destroy]
+    before_action :confirm_fully_authenticated, only: %i[create destroy]
+    before_action :load_authorize_form_from_session, only: %i[create destroy]
 
     def index
       return confirm_two_factor_authenticated(@request_id) unless user_fully_authenticated?

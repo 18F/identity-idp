@@ -37,7 +37,7 @@ module Idv
       attempted_at = current_user.idv_attempted_at
 
       # never attempted
-      return true unless attempted_at.present?
+      return true if attempted_at.blank?
 
       # last attempted in the past outside the window
       attempted_at + idv_attempt_window < Time.zone.now

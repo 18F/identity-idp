@@ -2,7 +2,7 @@ namespace :dev do
   desc 'Sample data for local development environment'
   task prime: 'db:setup' do
     pw = 'salty pickles'
-    %w(test1@test.com test2@test.com).each_with_index do |email, index|
+    %w[test1@test.com test2@test.com].each_with_index do |email, index|
       ee = EncryptedAttribute.new_from_decrypted(email)
       User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
         setup_user(user, ee: ee, pw: pw, num: index)
@@ -51,8 +51,7 @@ namespace :dev do
     end
 
     User.transaction do
-
-      while (num_created < num_users) do
+      while num_created < num_users
         email_addr = "testuser#{num_created}@example.com"
         ee = EncryptedAttribute.new_from_decrypted(email_addr)
         User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
@@ -77,7 +76,7 @@ namespace :dev do
         end
 
         num_created += 1
-        progress.increment if progress
+        progress&.increment
       end
     end
   end

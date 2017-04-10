@@ -36,7 +36,7 @@ module Upaya
         resource '/api/openid_connect/token',
                  credentials: true,
                  headers: :any,
-                 methods: [:post, :options]
+                 methods: %i[post options]
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
     end

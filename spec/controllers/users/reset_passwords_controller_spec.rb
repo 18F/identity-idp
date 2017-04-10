@@ -273,7 +273,7 @@ describe Users::ResetPasswordsController, devise: true do
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
         expect { put :create, password_reset_email_form: { email: 'nonexistent@example.com' } }.
-          to_not change { ActionMailer::Base.deliveries.count }
+          to_not(change { ActionMailer::Base.deliveries.count })
 
         expect(response).to redirect_to forgot_password_path
       end

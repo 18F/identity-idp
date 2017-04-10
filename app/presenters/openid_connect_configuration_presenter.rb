@@ -5,10 +5,10 @@ class OpenidConnectConfigurationPresenter
     {
       acr_values_supported: Saml::Idp::Constants::VALID_AUTHN_CONTEXTS,
       claims_supported: claims_supported,
-      grant_types_supported: %w(authorization_code),
-      response_types_supported: %w(code),
+      grant_types_supported: %w[authorization_code],
+      response_types_supported: %w[code],
       scopes_supported: OpenidConnectAttributeScoper::VALID_SCOPES,
-      subject_types_supported: %w(pairwise),
+      subject_types_supported: %w[pairwise],
     }.merge(url_configuration).merge(crypto_configuration)
   end
 
@@ -27,13 +27,13 @@ class OpenidConnectConfigurationPresenter
 
   def crypto_configuration
     {
-      id_token_signing_alg_values_supported: %w(RS256),
-      token_endpoint_auth_methods_supported: %w(private_key_jwt),
-      token_endpoint_auth_signing_alg_values_supported: %w(RS256),
+      id_token_signing_alg_values_supported: %w[RS256],
+      token_endpoint_auth_methods_supported: %w[private_key_jwt],
+      token_endpoint_auth_signing_alg_values_supported: %w[RS256],
     }
   end
 
   def claims_supported
-    %w(iss sub) + OpenidConnectAttributeScoper::CLAIMS
+    %w[iss sub] + OpenidConnectAttributeScoper::CLAIMS
   end
 end

@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   # authentication failure.
   devise_for(
     :users,
-    skip: [:confirmations, :sessions, :registrations, :two_factor_authentication],
+    skip: %i[confirmations sessions registrations two_factor_authentication],
     controllers: { passwords: 'users/reset_passwords' }
   )
 
@@ -51,9 +51,9 @@ Rails.application.routes.draw do
   get '/api/openid_connect/userinfo' => 'openid_connect/user_info#show'
   get '/api/saml/metadata' => 'saml_idp#metadata'
   match '/api/saml/logout' => 'saml_idp#logout',
-        via: [:get, :post, :delete],
+        via: %i[get post delete],
         as: :destroy_user_session
-  match '/api/saml/auth' => 'saml_idp#auth', via: [:get, :post]
+  match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
 
   post '/api/service_provider' => 'service_provider#update'
 
@@ -65,11 +65,11 @@ Rails.application.routes.draw do
   get '/forgot_password' => 'forgot_password#show'
 
   get '/manage/email' => 'users/emails#edit'
-  match '/manage/email' => 'users/emails#update', via: [:patch, :put]
+  match '/manage/email' => 'users/emails#update', via: %i[patch put]
   get '/manage/password' => 'users/passwords#edit'
   patch '/manage/password' => 'users/passwords#update'
   get '/manage/phone' => 'users/phones#edit'
-  match '/manage/phone' => 'users/phones#update', via: [:patch, :put]
+  match '/manage/phone' => 'users/phones#update', via: %i[patch put]
   get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
   post '/manage/personal_key' => 'users/personal_keys#update'
 

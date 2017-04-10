@@ -3,19 +3,19 @@ class OpenidConnectTokenForm
   include ActionView::Helpers::TranslationHelper
   include Rails.application.routes.url_helpers
 
-  ATTRS = %i(
+  ATTRS = %i[
     client_assertion
     client_assertion_type
     code
     code_verifier
     grant_type
-  ).freeze
+  ].freeze
 
   attr_reader(*ATTRS)
 
   CLIENT_ASSERTION_TYPE = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'.freeze
 
-  validates_inclusion_of :grant_type, in: %w(authorization_code)
+  validates_inclusion_of :grant_type, in: %w[authorization_code]
   validates_inclusion_of :client_assertion_type,
                          in: [CLIENT_ASSERTION_TYPE],
                          if: :private_key_jwt?
@@ -74,7 +74,7 @@ class OpenidConnectTokenForm
   end
 
   def validate_code
-    errors.add :code, t('openid_connect.token.errors.invalid_code') unless identity.present?
+    errors.add :code, t('openid_connect.token.errors.invalid_code') if identity.blank?
   end
 
   def validate_code_verifier
@@ -85,7 +85,7 @@ class OpenidConnectTokenForm
   end
 
   def validate_client_assertion
-    return unless identity.present?
+    return if identity.blank?
 
     service_provider = ServiceProvider.from_issuer(client_id)
 

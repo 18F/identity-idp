@@ -158,7 +158,7 @@ describe SamlIdpController do
 
         expect(xmldoc.attribute_node_for('address1')).to be_nil
 
-        %w(first_name last_name ssn zipcode).each do |attr|
+        %w[first_name last_name ssn zipcode].each do |attr|
           node_value = xmldoc.attribute_value_for(attr)
           expect(node_value).to eq(pii[attr])
         end

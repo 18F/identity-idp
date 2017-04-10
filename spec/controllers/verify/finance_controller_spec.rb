@@ -69,7 +69,7 @@ describe Verify::FinanceController do
         end
       end
 
-      %w(mortgage auto_loan home_equity_line).each do |finance_type|
+      %w[mortgage auto_loan home_equity_line].each do |finance_type|
         context "when finance_type is #{finance_type}" do
           it 'renders verify/finance_other/new with error' do
             put :create, idv_finance_form: { finance_type: finance_type, finance_account: 'abc' }

@@ -18,7 +18,7 @@ module Pii
     end
 
     def self.new_from_json(pii_json)
-      return new unless pii_json.present?
+      return new if pii_json.blank?
       pii = JSON.parse(pii_json, symbolize_names: true)
       new_from_hash(pii)
     end

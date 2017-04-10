@@ -2,7 +2,7 @@ class AppSetting < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
 
   validates :value,
-            inclusion: { in: %w(0 1), message: :invalid },
+            inclusion: { in: %w[0 1], message: :invalid },
             presence: true, if: :boolean?
 
   def self.registrations_enabled?

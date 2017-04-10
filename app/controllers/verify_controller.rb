@@ -2,7 +2,7 @@ class VerifyController < ApplicationController
   include IdvSession
 
   before_action :confirm_two_factor_authenticated
-  before_action :confirm_idv_needed, only: [:cancel, :fail]
+  before_action :confirm_idv_needed, only: %i[cancel fail]
 
   def index
     if active_profile?

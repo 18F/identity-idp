@@ -6,7 +6,7 @@ module Test
   class SamlTestController < ApplicationController
     include SamlAuthHelper
 
-    skip_before_action :verify_authenticity_token, only: [:decode_response, :decode_slo_request]
+    skip_before_action :verify_authenticity_token, only: %i[decode_response decode_slo_request]
 
     def start
       request = OneLogin::RubySaml::Authrequest.new

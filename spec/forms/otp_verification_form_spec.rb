@@ -35,7 +35,7 @@ describe OtpVerificationForm do
     context 'when the format of the code is not exactly 6 digits' do
       it 'returns FormResponse with success: false' do
         user = build_stubbed(:user)
-        invalid_codes = %W(123abc 1234567 abcdef aaaaa\n123456\naaaaaaaaa)
+        invalid_codes = %W[123abc 1234567 abcdef aaaaa\n123456\naaaaaaaaa]
 
         invalid_codes.each do |code|
           form = OtpVerificationForm.new(user, code)

@@ -3,7 +3,7 @@ class OpenidConnectAuthorizeForm
   include ActiveModel::Model
   include ActionView::Helpers::TranslationHelper
 
-  SIMPLE_ATTRS = %i(
+  SIMPLE_ATTRS = %i[
     client_id
     code_challenge
     code_challenge_method
@@ -12,7 +12,7 @@ class OpenidConnectAuthorizeForm
     redirect_uri
     response_type
     state
-  ).freeze
+  ].freeze
 
   ATTRS = [:acr_values, :scope, *SIMPLE_ATTRS].freeze
 
@@ -27,9 +27,9 @@ class OpenidConnectAuthorizeForm
   validates :state, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
   validates :nonce, presence: true, length: { minimum: RANDOM_VALUE_MINIMUM_LENGTH }
 
-  validates :response_type, inclusion: { in: %w(code) }
-  validates :prompt, presence: true, inclusion: { in: %w(select_account) }
-  validates :code_challenge_method, inclusion: { in: %w(S256) }, if: :code_challenge
+  validates :response_type, inclusion: { in: %w[code] }
+  validates :prompt, presence: true, inclusion: { in: %w[select_account] }
+  validates :code_challenge_method, inclusion: { in: %w[S256] }, if: :code_challenge
 
   validate :validate_acr_values
   validate :validate_client_id

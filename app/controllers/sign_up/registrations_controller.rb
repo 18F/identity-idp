@@ -5,10 +5,10 @@ module SignUp
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
     before_action :skip_session_expiration, only: [:show]
-    prepend_before_action :disable_account_creation, only: [:new, :create]
+    prepend_before_action :disable_account_creation, only: %i[new create]
 
     def show
-      return redirect_to sign_up_email_path unless session[:sp].present?
+      return redirect_to sign_up_email_path if session[:sp].blank?
 
       analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
     end
