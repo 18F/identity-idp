@@ -13,7 +13,7 @@ h1.hide = t('titles.profile')
 
 = render @view_model.header_partial, view_model: @view_model
 
-.border.border-blue-lighter.rounded-md.mb3
+.profile-info-box
   .bg-blue-lighter.py1.px2.h6.caps
     = t('profile.index.login')
     = image_tag asset_url('sign-in.svg'), width: 12, class: 'ml1 mt-tiny'
@@ -30,7 +30,7 @@ h1.hide = t('titles.profile')
     path: manage_password_path,
     action: @view_model.edit_action_partial
 
-.border.border-blue-lighter.rounded-md.mb3
+.profile-info-box
   .bg-blue-lighter.py1.px2.h6.caps
     = t('headings.profile.two_factor')
     = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1 mt-tiny'
@@ -49,11 +49,11 @@ h1.hide = t('titles.profile')
   .border-bottom.border-blue-light
   
   = render 'profile_item',
-    name: t('profile.items.personal_key'),
+    name: render(@view_model.personal_key_item_partial),
     path: manage_personal_key_path,
     action: @view_model.manage_personal_key_partial
 
-.border.border-blue-lighter.rounded-md.mb3
+.profile-info-box
   .bg-blue-lighter.pb1.pt1.px2.h6.caps.clearfix
     .col.col-11
       = t('headings.profile.profile_info')
@@ -63,7 +63,7 @@ h1.hide = t('titles.profile')
 
   = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
-.border.border-blue-lighter.rounded-md.mb3
+.profile-info-box
   .bg-blue-lighter.pb1.pt1.px2.h6.caps.clearfix
     = t('headings.profile.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1 mt-tiny'

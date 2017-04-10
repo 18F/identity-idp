@@ -63,6 +63,10 @@ class ProfileIndex
     end
   end
 
+  def personal_key_item_partial
+    'profile/personal_key_item_heading'
+  end
+
   def recent_event_partial
     'profile/event_item'
   end

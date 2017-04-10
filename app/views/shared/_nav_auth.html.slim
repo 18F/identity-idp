@@ -1,13 +1,14 @@
+
 nav.bg-white
   .container.px2.sm-py3.pt2.pb0
     .clearfix
-      .sm-col.mb1.sm-m0.col.col-8
+      .sm-col.mb1.sm-m0.col.col-7
         = link_to \
           image_tag(asset_url('logo.svg'),
             alt: APP_NAME,
             class: 'align-bottom',
             width: 170), root_path
-      .sm-col-right.right-align.col.col-4
+      .sm-col-right.right-align.col.col-5
         span.sm-display-inline-block.display-none.border-right.border-silver.pr1
           = t('shared.nav_auth.welcome')
           '

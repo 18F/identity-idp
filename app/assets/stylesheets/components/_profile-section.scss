@@ -1,0 +1,14 @@
+.profile-info-box {
+  border: none;
+  border-bottom: $border-width solid $blue-lighter;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+
+@media #{$breakpoint-sm} {
+  .profile-info-box {
+    border: $border-width solid $blue-lighter;
+    border-radius: $border-radius-md;
+    margin-bottom: $space-3;
+  }
+}
