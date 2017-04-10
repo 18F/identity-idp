@@ -3,7 +3,8 @@
   = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
   h1.h3.mb2.blue.regular = decorated_session.registration_heading
   p.mb4 = t("devise.registrations.start.introduction.loa3_requested.#{loa3_requested?}")
-  = link_to t('sign_up.registrations.create_account'), sign_up_email_path(request_id: params[:request_id]), \
+  = link_to t('sign_up.registrations.create_account'),
+    sign_up_email_path(request_id: params[:request_id]),
     class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1'
   - auth_link = link_to t('links.sign_in'), new_user_session_path(request_id: params[:request_id])
   p.mb0 == t('instructions.registration.already_have_account', link: auth_link)
