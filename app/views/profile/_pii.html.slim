@@ -7,12 +7,7 @@
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = t('profile.index.address')
       .sm-col.sm-col-7.px1
-        = render 'shared/address', { \
-            address1: decrypted_pii[:address1],
-            address2: decrypted_pii[:address2],
-            city: decrypted_pii[:city],
-            state: decrypted_pii[:state],
-            zipcode: decrypted_pii[:zipcode] }
+        = render 'shared/address', address: decrypted_pii
   .py-12p.border-top
     .clearfix.mxn1
       .sm-col.sm-col-5.px1 = t('profile.index.dob')

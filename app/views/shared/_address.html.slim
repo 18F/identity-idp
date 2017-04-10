@@ -1,4 +1,4 @@
-| #{address1}<br>
-- if address2.present?
-  | #{address2}<br>
-| #{city}, #{state} #{zipcode}
+| #{address[:address1]}<br>
+- if address[:address2].present?
+  | #{address[:address2]}<br>
+| #{address[:city]}, #{address[:state]} #{address[:zipcode]}

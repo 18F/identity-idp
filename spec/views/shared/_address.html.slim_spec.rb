@@ -13,7 +13,7 @@ describe 'shared/_address.html.slim' do
 
   context 'an address' do
     it 'renders all the fields of the address' do
-      render 'shared/address', address
+      render 'shared/address', address: address
 
       expect(rendered.split('<br>')).to eq(
         [
@@ -29,7 +29,7 @@ describe 'shared/_address.html.slim' do
     let(:address) { super().merge(address2: nil) }
 
     it 'renders 1 fewer line break' do
-      render 'shared/address', address
+      render 'shared/address', address: address
 
       expect(rendered.split('<br>').size).to eq(2)
     end
