@@ -24,7 +24,7 @@ feature 'SP-initiated authentication with login.gov', devise: true, user_flow: t
 
       context 'when selecting Getting started' do
         before do
-          click_link t('experiments.demo.get_started')
+          click_link t('sign_up.registrations.create_account')
         end
 
         it 'prompts for email address' do

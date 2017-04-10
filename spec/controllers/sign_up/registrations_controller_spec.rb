@@ -28,11 +28,6 @@ describe SignUp::RegistrationsController, devise: true do
       end
     end
 
-    it 'triggers completion of "demo" experiment' do
-      expect(subject).to receive(:ab_finished).with(:demo)
-      get :new
-    end
-
     it 'cannot be viewed by signed in users' do
       stub_sign_in
 

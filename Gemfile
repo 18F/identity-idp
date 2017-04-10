@@ -43,7 +43,6 @@ gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
-gem 'split', require: 'split/dashboard'
 gem 'stringex'
 gem 'twilio-ruby'
 gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication', ref: '1d6abe3'

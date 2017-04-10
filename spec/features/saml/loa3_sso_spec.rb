@@ -12,7 +12,7 @@ feature 'LOA3 Single Sign On' do
       email = 'test@test.com'
 
       visit saml_authn_request
-      click_link t('experiments.demo.get_started')
+      click_link t('sign_up.registrations.create_account')
       submit_form_with_valid_email
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
