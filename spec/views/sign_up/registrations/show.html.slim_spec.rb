@@ -20,17 +20,11 @@ describe 'sign_up/registrations/show.html.slim' do
       render
     end
 
-    it 'calls the "demo" A/B test' do
-      expect(view).to receive(:ab_test).with(:demo)
-
-      render
-    end
-
     it 'includes a link to create a new account' do
       render
 
       expect(rendered).
-        to have_link(t('experiments.demo.get_started'), href: sign_up_email_path)
+        to have_link(t('sign_up.registrations.create_account'), href: sign_up_email_path)
     end
   end
 

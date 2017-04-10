@@ -57,5 +57,4 @@ describe 'routes that require admin + 2FA' do
   end
 
   it_behaves_like 'constrained route', '/sidekiq'
-  it_behaves_like 'constrained route', '/split'
 end

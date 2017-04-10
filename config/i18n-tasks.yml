@@ -95,7 +95,6 @@ ignore_unused:
   - 'errors.messages.*'
   - '{devise,simple_form}.*'
   - 'errors.not_authorized'
-  - 'experiments.*'
   - 'event_types.*'
   - 'idv.errors.pattern_mismatch.*'
   - 'idv.modal.*'

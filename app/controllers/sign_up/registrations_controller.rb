@@ -14,7 +14,6 @@ module SignUp
     end
 
     def new
-      ab_finished(:demo)
       @register_user_email_form = RegisterUserEmailForm.new
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
       render :new, locals: { request_id: nil }

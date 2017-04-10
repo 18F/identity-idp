@@ -299,7 +299,7 @@ module Features
 
     def visit_landing_page_and_click_create_account_with_request_id(request_id)
       visit sign_up_start_url(request_id: request_id)
-      click_link t('experiments.demo.get_started')
+      click_link t('sign_up.registrations.create_account')
     end
 
     def submit_form_with_invalid_email

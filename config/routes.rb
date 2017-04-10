@@ -1,7 +1,6 @@
 Rails.application.routes.draw do
   require 'sidekiq/web'
   mount Sidekiq::Web => '/sidekiq', constraints: AdminConstraint.new
-  mount Split::Dashboard => '/split', constraints: AdminConstraint.new
 
   # Devise handles login itself. It's first in the chain to avoid a redirect loop during
   # authentication failure.
