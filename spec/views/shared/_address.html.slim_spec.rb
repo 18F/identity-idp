@@ -15,11 +15,13 @@ describe 'shared/_address.html.slim' do
     it 'renders all the fields of the address' do
       render 'shared/address', address
 
-      expect(rendered.split('<br>')).to eq([
-        '123 Fake St',
-        'Apt 456',
-        'Washington, DC 21234'
-      ])
+      expect(rendered.split('<br>')).to eq(
+        [
+          '123 Fake St',
+          'Apt 456',
+          'Washington, DC 21234',
+        ]
+      )
     end
   end
 
