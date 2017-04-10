@@ -5,16 +5,16 @@ feature 'Signing in via one-time use personal key' do
     user = create(:user, :signed_up)
     sign_in_before_2fa(user)
 
-    code = PersonalKeyGenerator.new(user).create
+    personal_key = PersonalKeyGenerator.new(user).create
 
     click_link t('devise.two_factor_authentication.personal_key_fallback.link')
 
-    enter_personal_key(code: code)
+    enter_personal_key(personal_key: personal_key)
 
     click_submit_default
     click_acknowledge_personal_key
 
-    expect(user.reload.personal_key).to_not eq code
+    expect(user.reload.personal_key).to_not eq personal_key
     expect(current_path).to eq profile_path
   end
 
@@ -23,11 +23,11 @@ feature 'Signing in via one-time use personal key' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
       allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-      code = PersonalKeyGenerator.new(user).create
-      wrong_personal_key = code.split('-').reverse.join
+      personal_key = PersonalKeyGenerator.new(user).create
+      wrong_personal_key = personal_key.split('-').reverse.join
 
       click_link t('devise.two_factor_authentication.personal_key_fallback.link')
-      enter_personal_key(code: wrong_personal_key)
+      enter_personal_key(personal_key: wrong_personal_key)
       click_submit_default
 
       expect(page).to have_content(

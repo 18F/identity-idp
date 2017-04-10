@@ -26,8 +26,6 @@ describe PersonalKeyForm do
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'personal key' }
 
-        expect(PersonalKeyGenerator).to_not receive(:new)
-
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
         expect(form.submit).to eq result

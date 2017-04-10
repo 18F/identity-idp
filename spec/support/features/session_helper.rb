@@ -171,14 +171,14 @@ module Features
       click_on t('forms.buttons.continue'), class: 'personal-key-continue'
     end
 
-    def enter_personal_key(code:, selector: 'input[type="text"]')
+    def enter_personal_key(personal_key:, selector: 'input[type="text"]')
       field = page.find(selector)
 
       expect(field[:autocapitalize]).to eq('none')
       expect(field[:autocomplete]).to eq('off')
       expect(field[:spellcheck]).to eq('false')
 
-      field.set(code)
+      field.set(personal_key)
     end
 
     def loa1_sp_session

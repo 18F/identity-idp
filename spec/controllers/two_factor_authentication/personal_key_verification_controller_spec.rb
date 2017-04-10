@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeyVerificationController do
-  let(:code) { { code: 'foo' } }
-  let(:payload) { { personal_key_form: code } }
+  let(:personal_key) { { personal_key: 'foo' } }
+  let(:payload) { { personal_key_form: personal_key } }
 
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
@@ -53,8 +53,8 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     end
 
     context 'when the personal key field is empty' do
-      let(:code) { { code: '' } }
-      let(:payload) { { personal_key_form: code } }
+      let(:personal_key) { { personal_key: '' } }
+      let(:payload) { { personal_key_form: personal_key } }
 
       before do
         stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))

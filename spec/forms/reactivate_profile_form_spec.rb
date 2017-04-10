@@ -12,7 +12,7 @@ describe ReactivateProfileForm do
 
   describe '#valid?' do
     let(:password) { 'asd' }
-    let(:personal_key) { %w[123 abc] }
+    let(:personal_key) { 'foo' }
     let(:valid_personal_key?) { true }
     let(:valid_password?) { true }
     let(:personal_key_decrypts?) { true }

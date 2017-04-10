@@ -1,5 +1,5 @@
 class PersonalKeyGenerator
-  attr_reader :user_access_key
+  attr_reader :user_access_key, :length
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
 
@@ -29,18 +29,18 @@ class PersonalKeyGenerator
     Devise.secure_compare(encrypted_code, user_access_key.encrypted_password)
   end
 
-  private
-
-  attr_reader :length, :user, :key_maker
-
   def normalized_code(plaintext_code)
     normed = plaintext_code.gsub(/\W/, '')
     split_length = normed.length / length
     decoded = Base32::Crockford.decode(normed)
     Base32::Crockford.encode(decoded, length: 16, split: split_length).tr('-', ' ')
-  rescue ArgumentError
+  rescue ArgumentError, RegexpError
     INVALID_CODE
   end
+
+  private
+
+  attr_reader :user, :key_maker
 
   def make_user_access_key(code)
     UserAccessKey.new(password: code, salt: user.recovery_salt, cost: user.recovery_cost)

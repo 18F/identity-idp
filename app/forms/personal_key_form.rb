@@ -1,11 +1,12 @@
 class PersonalKeyForm
   include ActiveModel::Model
+  include PersonalKeyValidator
 
-  attr_accessor :code
+  attr_accessor :personal_key
 
-  def initialize(user, code = nil)
+  def initialize(user, personal_key = nil)
     @user = user
-    @code = code
+    @personal_key = personal_key
   end
 
   def submit
@@ -19,26 +20,6 @@ class PersonalKeyForm
   private
 
   attr_reader :user, :success
-
-  def valid_personal_key?
-    return false unless code =~ personal_key_regexp
-    personal_key_generator = PersonalKeyGenerator.new(user)
-    personal_key_generator.verify(code)
-  end
-
-  def personal_key_regexp
-    char_count = RandomPhrase::WORD_LENGTH
-    word_count = Figaro.env.recovery_code_length.to_i
-    valid_char = '[a-zA-Z0-9]'
-    regexp = /
-      \A
-      (?:#{valid_char}{#{char_count}}([\s-])?){#{word_count - 1}}
-      #{valid_char}{#{char_count}}
-      \Z
-    /x
-
-    regexp
-  end
 
   def extra_analytics_attributes
     {
