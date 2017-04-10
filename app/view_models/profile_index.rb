@@ -7,6 +7,10 @@ class ProfileIndex
     @current_user = current_user
   end
 
+  def header_partial
+    'profile/header'
+  end
+
   def personal_key_partial
     if personal_key.present?
       'profile/personal_key'
@@ -41,10 +45,18 @@ class ProfileIndex
 
   def manage_personal_key_partial
     if current_user.password_reset_profile.present?
-      'shared/null'
-    else
       'profile/manage_personal_key'
+    else
+      'shared/null'
     end
+  end
+
+  def recent_event_partial
+    'profile/event_datum'
+  end
+
+  def recent_events
+    current_user.decorate.recent_events
   end
 
   private
