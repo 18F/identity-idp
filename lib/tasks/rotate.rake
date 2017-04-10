@@ -13,33 +13,34 @@ namespace :rotate do
         users.each do |user|
           rotator = KeyRotator::AttributeEncryption.new(user)
           rotator.rotate
-          progress.increment
+          progress&.increment
         end
       end
     end
-
-    progress.finish
   end
 
   desc 'encrypt plain OTP secret key'
   task encrypt_otp: :environment do
     num_users = User.where.not(otp_secret_key: nil).count
-    new_progress_bar('Users', num_users)
+    progress = new_progress_bar('Users', num_users)
 
     User.where.not(otp_secret_key: nil).find_in_batches.with_index do |users, _batch|
       users.each do |user|
         encrypted_attribute = EncryptedAttribute.new_from_decrypted(user.otp_secret_key).encrypted
         id = user.id
         execute "UPDATE users SET encrypted_otp_secret_key='#{encrypted_attribute}' WHERE id=#{id}"
+        progress&.increment
       end
     end
   end
 
   def new_progress_bar(label, num)
-    ProgressBar.create(
-      title: label,
-      total: num,
-      format: '%t: |%B| %j%% [%a / %e]'
-    )
+    unless ENV['PROGRESS'] == 'no'
+      ProgressBar.create(
+        title: label,
+        total: num,
+        format: '%t: |%B| %j%% [%a / %e]'
+      )
+    end
   end
 end
