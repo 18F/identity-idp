@@ -25,7 +25,7 @@ feature 'Sign Up' do
 
   context 'user cancels on the enter password screen', email: true do
     it 'returns them to the home page' do
-      email = Faker::Internet.email
+      email = 'test@test.com'
 
       visit sign_up_email_path
 
