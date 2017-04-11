@@ -32,9 +32,9 @@ class PersonalKeyGenerator
   def normalize(plaintext_code)
     normed = plaintext_code.gsub(/\W/, '')
     split_length = RandomPhrase::WORD_LENGTH
-    return INVALID_CODE unless normed.length == personal_key_length * split_length
-    decoded = Base32::Crockford.decode(normed)
-    Base32::Crockford.encode(decoded, length: normed.length, split: split_length).tr('-', ' ')
+    normed_length = normed.length
+    return INVALID_CODE unless normed_length == personal_key_length * split_length
+    encode_code(code: normed, length: normed_length, split: split_length)
   rescue ArgumentError, RegexpError
     INVALID_CODE
   end
@@ -42,6 +42,11 @@ class PersonalKeyGenerator
   private
 
   attr_reader :user, :key_maker
+
+  def encode_code(code:, length:, split:)
+    decoded = Base32::Crockford.decode(code)
+    Base32::Crockford.encode(decoded, length: length, split: split).tr('-', ' ')
+  end
 
   def make_user_access_key(code)
     UserAccessKey.new(password: code, salt: user.recovery_salt, cost: user.recovery_cost)
