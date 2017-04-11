@@ -43,8 +43,6 @@ describe PersonalKeyGenerator do
   end
 
   describe '#verify' do
-    let(:generator) { described_class.new(create(:user)) }
-
     before do
       stub_random_phrase
       generator.create
@@ -52,6 +50,10 @@ describe PersonalKeyGenerator do
 
     it 'returns false for the wrong code' do
       expect(generator.verify(bad_code)).to eq false
+    end
+
+    it 'returns false for short code' do
+      expect(generator.verify('foo')).to eq false
     end
 
     it 'returns false for an invalid base32 code' do
@@ -68,6 +70,18 @@ describe PersonalKeyGenerator do
 
     it 'treats case insensitively' do
       expect(generator.verify(personal_key.tr('H', 'h'))).to eq true
+    end
+  end
+
+  describe '#normalize' do
+    before do
+      stub_random_phrase
+    end
+
+    it 'returns standardized string' do
+      expect(generator.normalize(personal_key.downcase)).to eq personal_key
+      expect(generator.normalize(personal_key.upcase)).to eq personal_key
+      expect(generator.normalize(personal_key.tr('-', '??????!@#$%)*(&'))).to eq personal_key
     end
   end
 end

@@ -16,7 +16,7 @@ module PersonalKeyValidator
 
   def normalized_code
     return nil if personal_key.blank?
-    self.personal_key = PersonalKeyGenerator.new(user).normalized_code(personal_key)
+    self.personal_key = personal_key_generator.normalize(personal_key)
   end
 
   def personal_key_regexp
@@ -35,7 +35,10 @@ module PersonalKeyValidator
 
   def valid_personal_key?
     return false unless normalized_code =~ personal_key_regexp
-    personal_key_generator = PersonalKeyGenerator.new(user)
     personal_key_generator.verify(normalized_code)
+  end
+
+  def personal_key_generator
+    @_personal_key_generator ||= PersonalKeyGenerator.new(user)
   end
 end

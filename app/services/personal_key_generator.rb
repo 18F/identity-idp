@@ -19,7 +19,7 @@ class PersonalKeyGenerator
   end
 
   def verify(plaintext_code)
-    @user_access_key = make_user_access_key(normalized_code(plaintext_code))
+    @user_access_key = make_user_access_key(normalize(plaintext_code))
     encryption_key, encrypted_code = user.personal_key.split(Pii::Encryptor::DELIMITER)
     begin
       key_maker.unlock(user_access_key, encryption_key)
@@ -29,11 +29,12 @@ class PersonalKeyGenerator
     Devise.secure_compare(encrypted_code, user_access_key.encrypted_password)
   end
 
-  def normalized_code(plaintext_code)
+  def normalize(plaintext_code)
     normed = plaintext_code.gsub(/\W/, '')
-    split_length = normed.length / length
+    split_length = RandomPhrase::WORD_LENGTH
+    return INVALID_CODE unless normed.length == personal_key_length * split_length
     decoded = Base32::Crockford.decode(normed)
-    Base32::Crockford.encode(decoded, length: 16, split: split_length).tr('-', ' ')
+    Base32::Crockford.encode(decoded, length: normed.length, split: split_length).tr('-', ' ')
   rescue ArgumentError, RegexpError
     INVALID_CODE
   end
