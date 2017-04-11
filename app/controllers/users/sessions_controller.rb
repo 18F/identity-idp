@@ -60,7 +60,7 @@ module Users
     end
 
     def expires_at
-      @_expires_at ||= (session[:session_expires_at] || (now - 1))
+      @_expires_at ||= (session[:session_expires_at]&.to_datetime || (now - 1))
     end
 
     def alive?

@@ -21,7 +21,6 @@ module Verify
 
     def new
       @idv_params = idv_params
-      idv_session.params.symbolize_keys!
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
       phone_of_record_msg = ActionController::Base.helpers.content_tag(
@@ -71,7 +70,7 @@ module Verify
 
     def phone_confirmation_required?
       idv_params[:phone] != current_user.phone &&
-        idv_session.address_verification_mechanism == :phone
+        idv_session.address_verification_mechanism == 'phone'
     end
 
     def valid_password?

@@ -3,7 +3,7 @@ module Idv
     private
 
     def session_id
-      idv_session.resolution.session_id
+      idv_session.vendor_session_id
     end
 
     def try_submit

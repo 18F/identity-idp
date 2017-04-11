@@ -36,7 +36,6 @@ module Idv
       idv_session.phone_confirmation = true
       idv_session.address_verification_mechanism = :phone
       idv_session.params = idv_form.idv_params
-      idv_session.applicant.phone = idv_form.phone
     end
 
     def extra_analytics_attributes

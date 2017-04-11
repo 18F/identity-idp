@@ -143,10 +143,7 @@ describe Idv::ProfileStep do
       step.submit
 
       expect(idv_session.params).to eq user_attrs
-      expect(idv_session.applicant).to be_a Proofer::Applicant
-      user_attrs.each do |key, value|
-        expect(idv_session.applicant.send(key)).to eq value
-      end
+      expect(idv_session.applicant).to eq user_attrs.merge(uuid: user.uuid)
     end
   end
 

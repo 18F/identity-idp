@@ -98,6 +98,11 @@ Rails/OutputSafety:
   Exclude:
   - lib/i18n_override.rb
 
+# temporarily disabled until the fix for https://github.com/bbatsov/rubocop/issues/4249
+# is available in a new release
+Rails/RelativeDateConstant:
+  Enabled: false
+
 Rails/TimeZone:
   # The value `strict` means that `Time` should be used with `zone`.
   # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
