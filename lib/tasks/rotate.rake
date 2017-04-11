@@ -35,12 +35,11 @@ namespace :rotate do
   end
 
   def new_progress_bar(label, num)
-    unless ENV['PROGRESS'] == 'no'
-      ProgressBar.create(
-        title: label,
-        total: num,
-        format: '%t: |%B| %j%% [%a / %e]'
-      )
-    end
+    return if ENV['PROGRESS'] == 'no'
+    ProgressBar.create(
+      title: label,
+      total: num,
+      format: '%t: |%B| %j%% [%a / %e]'
+    )
   end
 end
