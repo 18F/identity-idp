@@ -81,7 +81,7 @@ describe PersonalKeyGenerator do
     it 'returns standardized string' do
       expect(generator.normalize(personal_key.downcase)).to eq personal_key
       expect(generator.normalize(personal_key.upcase)).to eq personal_key
-      expect(generator.normalize(personal_key.tr('-', '??????!@#$%)*(&'))).to eq personal_key
+      expect(generator.normalize(personal_key.tr(' ', '??????!@#$%)*(&'))).to eq personal_key
     end
   end
 end
