@@ -56,19 +56,11 @@ class ProfileIndex
   end
 
   def manage_personal_key_partial
-<<<<<<< HEAD
     if decorated_user.password_reset_profile.present?
       'shared/null'
     else
       'profile/actions/manage_personal_key'
     end
-=======
-    yield unless current_user.password_reset_profile.present?
-  end
-
-  def personal_key_action_partial
-    'profile/actions/manage_personal_key'
->>>>>>> Hide p key partial when password_reset present
   end
 
   def recent_event_partial
@@ -88,22 +80,6 @@ class ProfileIndex
   end
 
   def recent_events
-    decorateed_user.recent_events
+    decorated_user.recent_events
   end
-<<<<<<< HEAD
-=======
-
-  private
-
-  attr_reader :current_user
-
-  def personal_key_item
-    render(
-      partial: 'profile_item',
-      name: render(@view_model.personal_key_item_partial),
-      path: manage_personal_key_path,
-      action: @view_model.manage_personal_key_partial
-    )
-  end
->>>>>>> Hide p key partial when password_reset present
 end
