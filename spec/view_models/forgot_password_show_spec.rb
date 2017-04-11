@@ -6,7 +6,7 @@ describe ForgotPasswordShow do
       email = 'test@test.com'
       session = { email: email }
 
-      view_model = ForgotPasswordShow.new(session: session, params: {})
+      view_model = ForgotPasswordShow.new(session: session, resend: false)
       view_model_email = view_model.email
 
       expect(view_model_email).to eq email

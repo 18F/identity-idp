@@ -4,7 +4,7 @@ describe 'forgot_password/show.html.slim' do
   let(:email) { 'foo@bar.com' }
 
   before do
-    @view_model = ForgotPasswordShow.new(params: {}, session: { email: email })
+    @view_model = ForgotPasswordShow.new(resend: nil, session: { email: email })
   end
 
   it 'has a localized title' do
@@ -48,7 +48,7 @@ describe 'forgot_password/show.html.slim' do
   end
 
   it 'displays a notice if resend_confirmation is present' do
-    @view_model = ForgotPasswordShow.new(params: { resend: true }, session: {})
+    @view_model = ForgotPasswordShow.new(resend: true, session: {})
 
     render
 

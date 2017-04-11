@@ -3,7 +3,7 @@ class ForgotPasswordController < ApplicationController
     if session[:email].blank?
       redirect_to new_user_password_path
     else
-      @view_model = ForgotPasswordShow.new(params: params, session: session)
+      @view_model = ForgotPasswordShow.new(resend: params[:resend], session: session)
     end
   end
 end

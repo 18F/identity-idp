@@ -1,11 +1,11 @@
 class ForgotPasswordShow
-  def initialize(params:, session:)
-    @params = params
+  def initialize(resend:, session:)
+    @resend = resend
     @session = session
   end
 
   def resend_confirmation_partial
-    if params[:resend].present?
+    if resend.present?
       'forgot_password/resend_alert'
     else
       'shared/null'
@@ -22,5 +22,5 @@ class ForgotPasswordShow
 
   private
 
-  attr_reader :params, :session
+  attr_reader :resend, :session
 end
