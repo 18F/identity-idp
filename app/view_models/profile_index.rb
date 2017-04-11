@@ -56,11 +56,23 @@ class ProfileIndex
   end
 
   def manage_personal_key_partial
+<<<<<<< HEAD
     if decorated_user.password_reset_profile.present?
       'shared/null'
     else
       'profile/actions/manage_personal_key'
     end
+=======
+    yield if current_user.password_reset_profile.blank?
+  end
+
+  def personal_key_action_partial
+    'profile/actions/manage_personal_key'
+  end
+
+  def personal_key_item_partial
+    'profile/personal_key_item_heading'
+>>>>>>> Fixes lint errors and merge wierdness
   end
 
   def recent_event_partial

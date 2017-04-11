@@ -3,7 +3,7 @@
     .sm-col.sm-col-5.px1.bold = t('profile.index.full_name')
     .sm-col.sm-col-7.px1.truncate #{decrypted_pii.first_name} #{decrypted_pii.last_name}
 
-.p2
+.p2.border-top
   .clearfix.mxn1
     .sm-col.sm-col-5.px1.bold = t('profile.index.address')
     .sm-col.sm-col-7.px1
@@ -12,17 +12,17 @@
         | #{decrypted_pii.address2}<br>
       | #{decrypted_pii.city}, #{decrypted_pii.state} #{decrypted_pii.zipcode}
 
-.p2
+.p2.border-top
   .clearfix.mxn1
     .sm-col.sm-col-5.px1.bold = t('profile.index.dob')
     .sm-col.sm-col-7.px1 #{decrypted_pii.dob.to_date.to_formatted_s(:long)}
 
-.p2
+.p2.border-top
   .clearfix.mxn1
     .sm-col.sm-col-5.px1.bold = t('profile.index.ssn')
     .sm-col.sm-col-7.px1 = "***-**-#{decrypted_pii.ssn.raw[-4..-1]}"
 
-.p2.border-bottom
+.p2.border-top.border-bottom
   .clearfix.mxn1
     .sm-col.sm-col-5.px1.bold = t('profile.index.phone')
     .sm-col.sm-col-7.px1 = decrypted_pii.phone
