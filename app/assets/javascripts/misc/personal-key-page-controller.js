@@ -10,6 +10,18 @@ const modalDismiss = document.querySelector('[data-dismiss="personal-key-confirm
 
 let isInvalidForm = false;
 
+function scrapePersonalKey() {
+  const keywords = [];
+
+  personalKeyWords.forEach((keyword) => {
+    keywords.push(keyword.innerHTML);
+  });
+
+  return keywords.join('-').toUpperCase();
+}
+
+const personalKey = scrapePersonalKey();
+
 // The following methods are strictly fallbacks for IE < 11. There is limited
 // support for HTML5 validation attributes in those browsers
 // TODO: Potentially investigate readding client-side JS errors in a robust way
@@ -36,13 +48,8 @@ function handleSubmit(event) {
   event.preventDefault();
 
   const value = input.value;
-  const key = [];
 
-  personalKeyWords.forEach((group) => {
-    key.push(group.innerHTML);
-  });
-
-  if (value.toUpperCase() === key.join('-').toUpperCase()) {
+  if (value.toUpperCase() === personalKey) {
     unsetInvalidHTML();
     // Recovery code page, without js enabled, has a form submission that posts
     // to the server with no body.
