@@ -2,7 +2,6 @@
 en:
   profile:
     index:
-      login: Login Information
       address: Current address
       authentication_app: Authentication app
       auth_app_enabled: enabled
@@ -10,6 +9,7 @@ en:
       dob: Date of birth
       email: Email address
       full_name: Full name
+      login: Login Information
       password: Password
       phone: Phone number
       previous_address: Previous address
@@ -26,5 +26,5 @@ en:
     links:
       regenerate_personal_key: Get a new key
     security:
-      text: Your profile information is locked for your security.
       link: Learn more at the Help Center
+      text: Your profile information is locked for your security.

@@ -74,8 +74,8 @@ class ProfileIndex
   end
 
   def totp_content
-    decorated_user.totp_enabled? ?
-    'profile.index.auth_app_enabled' :
+    return 'profile.index.auth_app_enabled' if decorated_user.totp_enabled?
+
     'profile.index.auth_app_disabled'
   end
 

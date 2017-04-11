@@ -4,9 +4,6 @@ en:
     ssn: >
       We ask for your Social Security number to help prove your identity. Some
       agencies we work with may need it to access your records.
-    two_factor: >
-      Two-factor authentication makes signing in more secure by requiring a
-      mobile device as well as a password.
     authentication_app: An authentication application is a mobile security app
       that generates security codes even if you don't have an Internet connection
       or cellular service.

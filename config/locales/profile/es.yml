@@ -4,9 +4,12 @@ es:
     index:
       address: NOT TRANSLATED YET
       authentication_app: NOT TRANSLATED YET
+      auth_app_enabled: NOT TRANSLATED YET
+      auth_app_disabled: NOT TRANSLATED YET
       dob: NOT TRANSLATED YET
       email: NOT TRANSLATED YET
       full_name: NOT TRANSLATED YET
+      login: NOT TRANSLATED YET
       password: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       previous_address: NOT TRANSLATED YET
@@ -22,3 +25,6 @@ es:
       personal_key: NOT TRANSLATED YET
     links:
       regenerate_personal_key: NOT TRANSLATED YET
+    security:
+      link: NOT TRANSLATED YET
+      text: NOT TRANSLATED YET
