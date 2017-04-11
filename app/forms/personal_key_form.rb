@@ -2,8 +2,6 @@ class PersonalKeyForm
   include ActiveModel::Model
   include PersonalKeyValidator
 
-  attr_accessor :personal_key
-
   def initialize(user, personal_key = nil)
     @user = user
     @personal_key = personal_key

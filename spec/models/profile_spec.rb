@@ -71,7 +71,9 @@ describe Profile do
 
       personal_key = profile.encrypt_pii(user_access_key, pii)
 
-      expect(profile.recover_pii(personal_key)).to eq pii
+      normalized_key = PersonalKeyGenerator.new(user).normalized_code(personal_key)
+
+      expect(profile.recover_pii(normalized_key)).to eq pii
     end
   end
 

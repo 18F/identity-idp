@@ -15,7 +15,7 @@ module PersonalKeyValidator
   private
 
   def normalized_code
-    return nil unless personal_key.present?
+    return nil if personal_key.blank?
     self.personal_key = PersonalKeyGenerator.new(user).normalized_code(personal_key)
   end
 

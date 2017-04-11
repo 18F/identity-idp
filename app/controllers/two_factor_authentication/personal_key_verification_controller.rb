@@ -10,7 +10,7 @@ module TwoFactorAuthentication
     end
 
     def create
-      @personal_key_form = PersonalKeyForm.new(current_user, personal_key)
+      @personal_key_form = PersonalKeyForm.new(current_user, personal_key_param)
       result = @personal_key_form.submit
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h)
@@ -39,11 +39,15 @@ module TwoFactorAuthentication
     end
 
     def pii
-      @_pii ||= password_reset_profile.recover_pii(personal_key)
+      @_pii ||= password_reset_profile.recover_pii(normalized_personal_key)
     end
 
-    def personal_key
+    def personal_key_param
       params[:personal_key_form][:personal_key]
+    end
+
+    def normalized_personal_key
+      @personal_key_form.personal_key
     end
   end
 end
