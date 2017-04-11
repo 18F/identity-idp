@@ -16,13 +16,19 @@ check: lint test
 
 lint: $(CONFIG)
 	@echo "--- rubocop ---"
-	bundle exec rubocop -R -a
+	bundle exec rubocop -R
 	@echo "--- slim-lint ---"
 	bundle exec slim-lint app/views
 	@echo "--- reek ---"
 	bundle exec reek
 	@echo "--- fasterer ---"
 	bundle exec fasterer
+
+lintfix: $(CONFIG)
+	@echo "--- rubocop fix ---"
+	bundle exec rubocop -R -a
+	@echo "--- reek fix ---"
+	bundle exec reek -t
 
 brakeman:
 	bundle exec brakeman
