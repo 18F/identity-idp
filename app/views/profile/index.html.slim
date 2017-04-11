@@ -48,10 +48,17 @@ h1.hide = t('titles.profile')
     action: @view_model.totp_partial
   .border-bottom.border-blue-light
   
+<<<<<<< HEAD
   = render 'profile_item',
     name: t('profile.items.personal_key'),
     path: manage_personal_key_path,
     action: @view_model.manage_personal_key_partial
+=======
+  - @view_model.manage_personal_key_partial do
+    = render 'profile_item',
+      name: render(@view_model.personal_key_item_partial),
+      action: @view_model.personal_key_action_partial
+>>>>>>> Hide p key partial when password_reset present
 
 .border.border-blue-lighter.rounded-md.mb3
   .bg-blue-lighter.pb1.pt1.px2.h6.caps.clearfix
