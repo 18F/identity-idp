@@ -24,6 +24,12 @@ lint: $(CONFIG)
 	@echo "--- fasterer ---"
 	bundle exec fasterer
 
+lintfix: $(CONFIG)
+	@echo "--- rubocop fix ---"
+	bundle exec rubocop -R -a
+	@echo "--- reek fix ---"
+	bundle exec reek -t
+
 brakeman:
 	bundle exec brakeman
 
