@@ -13,8 +13,6 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
   before_action :disable_caching
 
-  layout 'card'
-
   def session_expires_at
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
@@ -57,7 +55,7 @@ class ApplicationController < ActionController::Base
   def redirect_on_timeout
     return unless params[:timeout]
 
-    flash[:timeout] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+    flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
     redirect_to url_for(params.except(:timeout))
   end
 
