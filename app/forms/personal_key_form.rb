@@ -2,9 +2,12 @@ class PersonalKeyForm
   include ActiveModel::Model
   include PersonalKeyValidator
 
+  attr_accessor :personal_key
+  attr_reader :user
+
   def initialize(user, personal_key = nil)
     @user = user
-    @personal_key = personal_key
+    @personal_key = normalize_personal_key(personal_key)
   end
 
   def submit

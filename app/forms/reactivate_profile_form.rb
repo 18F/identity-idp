@@ -15,7 +15,7 @@ class ReactivateProfileForm
     @user = user
     super attrs
 
-    @personal_key = personal_key
+    @personal_key = normalize_personal_key(personal_key)
   end
 
   def submit(flash)

@@ -2,21 +2,14 @@ module PersonalKeyValidator
   extend ActiveSupport::Concern
 
   included do
-    include ActiveModel::Validations::Callbacks
-
-    before_validation :normalized_code
-
-    attr_accessor :personal_key
-    attr_reader :user
-
     validate :valid_personal_key?
   end
 
   private
 
-  def normalized_code
+  def normalize_personal_key(personal_key = nil)
     return nil if personal_key.blank?
-    self.personal_key = personal_key_generator.normalize(personal_key)
+    personal_key_generator.normalize(personal_key)
   end
 
   def personal_key_regexp
@@ -34,8 +27,8 @@ module PersonalKeyValidator
   end
 
   def valid_personal_key?
-    return false unless normalized_code =~ personal_key_regexp
-    personal_key_generator.verify(normalized_code)
+    return false unless personal_key =~ personal_key_regexp
+    personal_key_generator.verify(personal_key)
   end
 
   def personal_key_generator
