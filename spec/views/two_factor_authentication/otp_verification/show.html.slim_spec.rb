@@ -99,6 +99,12 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
           href: profile_path
         )
       end
+
+      it 'renders the reauthn partial' do
+        expect(view).to render_template(
+          partial: 'two_factor_authentication/totp_verification/_reauthn'
+        )
+      end
     end
 
     context 'user is changing phone number' do
