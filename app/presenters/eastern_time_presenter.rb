@@ -6,7 +6,7 @@ class EasternTimePresenter
   def to_s
     I18n.t(
       'event_types.eastern_timestamp',
-       timestamp: I18n.l(eastern_timestamp, format: :event_timestamp)
+      timestamp: I18n.l(eastern_timestamp, format: :event_timestamp)
     )
   end
 
