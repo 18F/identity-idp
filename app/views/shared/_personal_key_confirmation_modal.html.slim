@@ -8,15 +8,13 @@
         = t('users.personal_key.confirmation_error')
 
       form(id='confirm-key' method='post' action="#{sign_up_personal_key_path}" name="key-confirm")
-        - key_length = RandomPhrase::WORD_LENGTH
-
         input(
           aria-label="#{t('forms.personal_key.confirmation_label')}"
           maxlength="#{code.length}"
           autocomplete='off'
           class='col-12 mb4 border-dashed field monospace personal-key caps'
           name="personal-key"
-          pattern="^(?:[a-zA-Z0-9]{#{key_length}}-){3}[a-zA-Z0-9]{#{key_length}}$"
+          pattern="^#{PersonalKeyFormatter.new.regexp}$"
           required=true
           spellcheck='false'
           type='text')
