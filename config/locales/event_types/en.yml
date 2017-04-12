@@ -9,4 +9,4 @@ en:
     email_changed: Email address changed
     phone_changed: Phone number changed
     phone_confirmed: Phone confirmed
-    timestamp: '%{date} at %{time} (Eastern)'
+    eastern_timestamp: '%{timestamp} (Eastern)'

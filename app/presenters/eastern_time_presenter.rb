@@ -5,9 +5,8 @@ class EasternTimePresenter
 
   def to_s
     I18n.t(
-      'event_types.timestamp',
-      date: eastern_timestamp.strftime('%B %e, %Y'),
-      time: eastern_timestamp.strftime('%-l:%M %p')
+      'event_types.eastern_timestamp',
+       timestamp: I18n.l(eastern_timestamp, format: :event_timestamp)
     )
   end
 
