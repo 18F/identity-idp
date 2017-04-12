@@ -8,7 +8,11 @@ class ProfileIndex
   end
 
   def header_partial
-    'profile/header'
+    if current_user.decorate.identity_verified?
+      'profile/verified_header'
+    else
+      'profile/header'
+    end
   end
 
   def personal_key_partial
@@ -57,6 +61,7 @@ class ProfileIndex
 
   def manage_personal_key_partial
 <<<<<<< HEAD
+<<<<<<< HEAD
     if decorated_user.password_reset_profile.present?
       'shared/null'
     else
@@ -64,6 +69,9 @@ class ProfileIndex
     end
 =======
     yield if current_user.password_reset_profile.blank?
+=======
+    yield if current_user.decorate.password_reset_profile.blank?
+>>>>>>> Adds partial for non verified header
   end
 
   def personal_key_action_partial

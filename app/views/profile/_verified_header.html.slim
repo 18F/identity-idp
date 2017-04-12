@@ -1,14 +1,14 @@
-.clearfix.pt2.pb2.sm-py0.mb2.bg-light-blue.sm-bg-none
+.clearfix.pt2.pb3.sm-py0.mb3.bg-light-blue.sm-bg-none
   .sm-col.sm-col-8
     h2.h3.m0.center.sm-left-align
-      .sm-hide.regular.sans-serif.inline
-        span
-          = t('shared.nav_auth.welcome')
-          ',
-        p.mb0.bold
+      span.regular.sans-serif.sm-hide
+        = t('shared.nav_auth.welcome')
+        ',
+        span.bold
           = view_model.header_personalization
       span.sm-show
         = t('headings.profile.login_info')
+  = render partial: current_user.decorate.verified_account_partial
 
 .px2.pb1.bold.h3.sm-hide.serif
   = t('headings.profile.login_info')
