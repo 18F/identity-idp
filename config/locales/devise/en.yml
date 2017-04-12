@@ -95,15 +95,6 @@ en:
           When you are finished with this process we’ll give you a personal key. <strong>Write
           it down and store it in a safe place; it’s important.</strong> You’ll be asked for the
           personal key every time you make changes to your account.
-        introduction:
-          loa3_requested:
-            'true': >
-              To make a login.gov account you’ll need to have an email address and phone number
-              where we can reach you. You’ll also need to verify your identity to access sensitive
-              information about yourself.
-            'false': >
-              To make a login.gov account you’ll need to have an email address and phone number
-              where we can reach you.
         learn_more: Learn more about verifying your identity
       updated: Your account has been updated!
     sessions:

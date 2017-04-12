@@ -53,7 +53,7 @@ feature 'LOA1 Single Sign On' do
 
       expect(current_url).to match sign_up_start_path
       expect(page).to have_content(
-        t('devise.registrations.start.introduction.loa3_requested.false')
+        t('headings.create_account_with_sp')
       )
       expect(page).to_not have_css('.accordion-header')
     end

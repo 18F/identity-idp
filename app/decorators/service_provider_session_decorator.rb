@@ -19,18 +19,24 @@ class ServiceProviderSessionDecorator
   end
 
   def registration_heading
-    sp = ActionController::Base.helpers.content_tag(:strong, sp_name)
-    ActionController::Base.helpers.safe_join(
-      [I18n.t('headings.create_account_with_sp', sp: sp).html_safe]
+    sp = view_context.content_tag(
+      :strong, view_context.t('headings.create_account_with_sp.sp_text', sp: sp_name)
+    )
+
+    view_context.safe_join(
+      [
+        sp.html_safe,
+        view_context.t('headings.create_account_with_sp.app_text'),
+      ]
     )
   end
 
   def new_session_heading
-    I18n.t('headings.sign_in_with_sp', sp: sp_name)
+    view_context.t('headings.sign_in_with_sp', sp: sp_name)
   end
 
   def verification_method_choice
-    I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
+    view_context.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
   def idv_hardfail4_partial

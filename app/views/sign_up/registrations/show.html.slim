@@ -1,45 +1,18 @@
 - title t('titles.registrations.start')
-.center
+
+.px4.mt4.mb0.center
   = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
-  h1.h3.mb2.blue.regular = decorated_session.registration_heading
-  p.mb4 = t("devise.registrations.start.introduction.loa3_requested.#{loa3_requested?}")
+
+  h1.h3.mb3.blue.regular.sans-serif
+    = decorated_session.registration_heading
+
   = link_to t('sign_up.registrations.create_account'),
     sign_up_email_path(request_id: params[:request_id]),
-    class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1'
-  - auth_link = link_to t('links.sign_in'), new_user_session_path(request_id: params[:request_id])
-  p.mb0 == t('instructions.registration.already_have_account', link: auth_link)
+    class: 'sm-col-10 col-12 btn btn-primary btn-wide mb1 fs-20p'
+
+  = link_to t('links.sign_in'),
+    new_user_session_path(request_id: params[:request_id]),
+    class: 'sm-col-10 col-12 btn btn-border btn-wide mb1 fs-20p'
 
 - if loa3_requested?
-  .mt4
-    = accordion('you-will-need', t('devise.registrations.start.accordion')) do
-      .clearfix
-        .col.col-1.center
-          = image_tag(asset_url('get-started/email-password.svg'),
-            size: '40', alt: '', class: 'mt1')
-        .col.col-11.pl2
-          p.mb3 = t('devise.registrations.start.bullet_1_html')
-      .clearfix
-        .col.col-1.center
-          = image_tag(asset_url('get-started/2FA.svg'), size: '40', alt: '', class: 'mt1')
-        .col.col-11.pl2
-          p.mb3 = t('devise.registrations.start.bullet_2_html')
-      .clearfix
-        .col.col-1.center
-          = image_tag(asset_url('get-started/personal-details.svg'),
-            size: '40', alt: '', class: 'mt1')
-        .col.col-11.pl2
-          p.mb3 = t('devise.registrations.start.bullet_3_html')
-      .clearfix
-        .col.col-1.center
-          = image_tag(asset_url('get-started/financial.svg'), size: '40', alt: '', class: 'mt1')
-        .col.col-11.pl2
-          p.mb3 = t('devise.registrations.start.bullet_4_html')
-      .clearfix
-        .col.col-1.center
-          = image_tag(asset_url('p-key.svg'), size: '40', alt: '', class: 'mt1')
-        .col.col-11.pl2
-          p.mb2 = t('devise.registrations.start.bullet_5_html')
-          p.mb3 = link_to \
-            t('devise.registrations.start.learn_more'), MarketingSite.help_url, target: '_blank'
-
-  == javascript_include_tag 'misc/toggle-button'
+  = render 'required_pii_accordion'
