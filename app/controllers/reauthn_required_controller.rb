@@ -4,7 +4,7 @@ class ReauthnRequiredController < ApplicationController
   private
 
   def confirm_recently_authenticated
-    @reauthn = reauthn?
+    @reauthn = Reauthn.new(params).call
     return unless user_signed_in?
     return if recently_authenticated?
 
