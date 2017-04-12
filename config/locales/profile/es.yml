@@ -14,6 +14,10 @@ es:
         instructions: NOT TRANSLATED YET
         reactivate_button: NOT TRANSLATED YET
       ssn: NOT TRANSLATED YET
+      verification:
+        instructions: NOT TRANSLATED YET
+        reactivate_button: NOT TRANSLATED YET
+        success: NOT TRANSLATED YET
     items:
       personal_key: NOT TRANSLATED YET
     links:

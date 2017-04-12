@@ -14,6 +14,10 @@ en:
         instructions: For your security, you will need to verify your account information again.
         reactivate_button: Verify your identity
       ssn: Social Security Number
+      verification:
+        instructions: Your account requires a secret code to be verified.
+        reactivate_button: Enter the code you received via US mail
+        success: Your account has been verified.
     items:
       personal_key: Personal key
     links:

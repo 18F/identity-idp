@@ -49,3 +49,7 @@ en:
       code: One-time security code
       personal_key: Personal key
       try_again: Use another phone number
+    verify_profile:
+      title: Verify your identity
+      submit: Submit
+      instructions: Enter your secret code

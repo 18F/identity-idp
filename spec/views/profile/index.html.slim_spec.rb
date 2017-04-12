@@ -2,9 +2,11 @@ require 'rails_helper'
 
 describe 'profile/index.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up) }
+  let(:decorated_user) { user.decorate }
 
   before do
     allow(view).to receive(:current_user).and_return(user)
+    allow(user).to receive(:decorate).and_return(decorated_user)
     assign(:view_model, ProfileIndex.new(decrypted_pii: nil, personal_key: nil, current_user: user))
   end
 
@@ -52,8 +54,7 @@ describe 'profile/index.html.slim' do
 
   context 'when the user does not have password_reset_profile' do
     before do
-      allow(view).to receive(:current_user).and_return(user)
-      allow(user).to receive(:password_reset_profile).and_return(false)
+      allow(decorated_user).to receive(:password_reset_profile).and_return(false)
     end
 
     it 'contains a personal key section' do
@@ -67,8 +68,7 @@ describe 'profile/index.html.slim' do
 
   context 'when current user has password_reset_profile' do
     before do
-      allow(view).to receive(:current_user).and_return(user)
-      allow(user).to receive(:password_reset_profile).and_return(true)
+      allow(decorated_user).to receive(:password_reset_profile).and_return(true)
     end
 
     it 'lacks a personal key section' do
@@ -78,6 +78,33 @@ describe 'profile/index.html.slim' do
       expect(rendered).to_not have_link(
         t('profile.links.regenerate_personal_key'), href: manage_personal_key_path
       )
+    end
+  end
+
+  context 'when the user does not have pending_profile' do
+    before do
+      allow(decorated_user).to receive(:pending_profile).and_return(false)
+    end
+
+    it 'lacks a pending profile section' do
+      render
+
+      expect(rendered).to_not have_link(
+        t('profile.index.verification.reactivate_button'), href: verify_profile_path
+      )
+    end
+  end
+
+  context 'when current user has pending_profile' do
+    before do
+      allow(decorated_user).to receive(:pending_profile).and_return(true)
+    end
+
+    it 'contains a link to activate profile' do
+      render
+
+      expect(rendered).
+        to have_link(t('profile.index.verification.reactivate_button'), href: verify_profile_path)
     end
   end
 

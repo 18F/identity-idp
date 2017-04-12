@@ -51,6 +51,13 @@ UserDecorator = Struct.new(:user) do
     user.active_profile || pending_profile
   end
 
+  # This user's most recently activated profile that has also been deactivated
+  # due to a password reset, or nil if there is no such profile
+  def password_reset_profile
+    profile = user.profiles.order(activated_at: :desc).first
+    profile if profile&.password_reset?
+  end
+
   def qrcode(otp_secret_key)
     options = {
       issuer: 'Login.gov',
