@@ -96,7 +96,10 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !Reauthn.new(params).call && user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
+    !Reauthn.new(params).call &&
+      user_signed_in? &&
+      current_user.two_factor_enabled? &&
+      is_fully_authenticated?
   end
 
   def confirm_two_factor_authenticated
