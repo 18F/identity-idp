@@ -30,7 +30,7 @@ class ReactivateProfileForm
   protected
 
   def password_reset_profile
-    @_password_reset_profile ||= user.password_reset_profile
+    @_password_reset_profile ||= user.decorate.password_reset_profile
   end
 
   def user_access_key

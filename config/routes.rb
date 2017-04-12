@@ -87,6 +87,8 @@ Rails.application.routes.draw do
   get '/profile' => 'profile#index', as: :profile
   get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
   post '/profile/reactivate' => 'users/reactivate_profile#create'
+  get '/profile/verify' => 'users/verify_profile#index', as: :verify_profile
+  post '/profile/verify' => 'users/verify_profile#create'
 
   post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
   get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',

@@ -185,7 +185,7 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_action_required?
-    current_user.password_reset_profile.present? ||
+    decorated_user.password_reset_profile.present? ||
       @updating_existing_number ||
       decorated_user.should_acknowledge_personal_key?(session)
   end
@@ -196,7 +196,7 @@ module TwoFactorAuthenticatable
       sign_up_personal_key_path
     elsif @updating_existing_number
       profile_path
-    elsif current_user.password_reset_profile.present?
+    elsif decorated_user.password_reset_profile.present?
       reactivate_profile_path
     else
       profile_path

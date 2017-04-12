@@ -49,3 +49,7 @@ es:
       code: Código de acceso único
       personal_key: Código de recuperación
       try_again: Inténtalo de nuevo
+    verify_profile:
+      title: NOT TRANSLATED YET
+      submit: NOT TRANSLATED YET
+      instructions: NOT TRANSLATED YET

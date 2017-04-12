@@ -20,8 +20,16 @@ class ProfileIndex
   end
 
   def password_reset_partial
-    if current_user.password_reset_profile.present?
+    if current_user.decorate.password_reset_profile.present?
       'profile/password_reset'
+    else
+      'shared/null'
+    end
+  end
+
+  def pending_profile_partial
+    if current_user.decorate.pending_profile.present?
+      'profile/pending_profile'
     else
       'shared/null'
     end
@@ -44,7 +52,7 @@ class ProfileIndex
   end
 
   def manage_personal_key_partial
-    if current_user.password_reset_profile.present?
+    if current_user.decorate.password_reset_profile.present?
       'shared/null'
     else
       'profile/manage_personal_key'
