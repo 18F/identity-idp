@@ -9,3 +9,4 @@ es:
     email_changed: Dirección de correo electrónico cambiada
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
+    eastern_timestamp: '%{timestamp} (zona horaria del Este)'
