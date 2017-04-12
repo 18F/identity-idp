@@ -7,7 +7,10 @@ describe 'profile/index.html.slim' do
   before do
     allow(user).to receive(:decorate).and_return(decorated_user)
     allow(view).to receive(:current_user).and_return(user)
-    assign(:view_model, ProfileIndex.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user))
+    assign(
+      :view_model,
+      ProfileIndex.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
+    )
   end
 
   context 'user is not TOTP enabled' do

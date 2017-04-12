@@ -31,7 +31,7 @@ module Users
     end
 
     def confirm_verification_needed
-      !current_user.active_profile.present? && current_user.decorate.pending_profile.present?
+      current_user.active_profile.blank? && current_user.decorate.pending_profile.present?
     end
 
     def decrypted_pii
