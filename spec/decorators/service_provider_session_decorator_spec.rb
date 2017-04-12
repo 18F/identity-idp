@@ -36,8 +36,14 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#registration_heading' do
     it 'returns the correct string' do
+
+      sp_content = [
+        "<strong>#{t('headings.create_account_with_sp.sp_text', sp: sp_name)}</strong>",
+        t('headings.create_account_with_sp.app_text')
+      ].join('')
+
       expect(subject.registration_heading).to eq(
-        I18n.t('headings.create_account_with_sp', sp: "<strong>#{sp_name}</strong>")
+        sp_content
       )
     end
   end

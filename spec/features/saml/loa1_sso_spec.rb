@@ -48,13 +48,15 @@ feature 'LOA1 Single Sign On' do
 
     it 'shows user the start page without accordion' do
       saml_authn_request = auth_request.create(saml_settings)
+      sp_content = [
+        t('headings.create_account_with_sp.sp_text', sp: 'Your friendly Government Agency'),
+        t('headings.create_account_with_sp.app_text')
+      ].join(' ')
 
       visit saml_authn_request
 
       expect(current_url).to match sign_up_start_path
-      expect(page).to have_content(
-        t('headings.create_account_with_sp')
-      )
+      expect(page).to have_content(sp_content)
       expect(page).to_not have_css('.accordion-header')
     end
 
