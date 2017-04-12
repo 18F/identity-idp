@@ -56,7 +56,7 @@ feature 'Password recovery via personal key' do
 
     click_link t('devise.two_factor_authentication.personal_key_fallback.link')
 
-    enter_personal_key(code: personal_key)
+    enter_personal_key(personal_key: personal_key)
 
     click_submit_default
 
@@ -78,12 +78,12 @@ feature 'Password recovery via personal key' do
     page.all(:css, '[data-personal-key]').each do |node|
       new_personal_key_words << node.text
     end
-    new_personal_key_words.join(' ')
+    new_personal_key_words.join('-')
   end
 
   def reactivate_profile(password, personal_key)
     fill_in 'Password', with: password
-    enter_personal_key(code: personal_key)
+    enter_personal_key(personal_key: personal_key)
     click_button t('forms.reactivate_profile.submit')
   end
 end

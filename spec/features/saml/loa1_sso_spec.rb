@@ -61,7 +61,7 @@ feature 'LOA1 Single Sign On' do
     it 'user can view and confirm personal key during sign up', :js do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
-      code = '1 2 3 4 5'
+      code = '1234'
       stub_personal_key(user: user, code: code)
 
       loa1_sp_session
@@ -137,9 +137,6 @@ feature 'LOA1 Single Sign On' do
   end
 
   def enter_personal_key_words_on_modal(code)
-    code_words = code.split(' ')
-    code_words.each_with_index do |word, index|
-      fill_in "personal-key-#{index}", with: word
-    end
+    fill_in 'personal-key', with: code
   end
 end

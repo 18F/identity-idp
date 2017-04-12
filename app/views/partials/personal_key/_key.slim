@@ -6,7 +6,7 @@
     = image_tag(asset_url('p-key.svg'), width: 36, class: 'align-middle mr1')
     = t('users.personal_key.header')
   .my4.px0.sm-px1.py2.center.border-box.border.border-teal.bw2.rounded-md.separator-text
-    - code.split(' ').each do |word|
+    - code.split('-').each do |word|
       .inline.h3.bold.navy.monospace(data-personal-key='word')
         = word
 

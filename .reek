@@ -67,6 +67,7 @@ UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
     - ApplicationHelper#step_class
+    - PersonalKeyFormatter#regexp
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
     - SessionTimeoutWarningHelper#warning

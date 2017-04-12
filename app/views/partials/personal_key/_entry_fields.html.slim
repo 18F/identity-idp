@@ -1,13 +1,11 @@
+- word_count = Figaro.env.recovery_code_length.to_i
+
 .mb3
-  label.block.bold#personal-key-label
-    = t('simple_form.required.html') + t('forms.two_factor.personal_key')
-  .clearfix.mxn1.sm-mxn2.separator-inputs
-    - Figaro.env.recovery_code_length.to_i.times do
-      .col.col-3.px1.sm-px2
-        = f.input attribute_name, as: :array, label: false,
-          input_html: { 'aria-labelledby' => 'personal-key-label',
-            autocapitalize: 'none',
-            autocomplete: 'off',
-            maxlength: RandomPhrase::WORD_LENGTH,
-            required: true,
-            spellcheck: 'false' }
+  = f.input attribute_name,
+    label: t('simple_form.required.html') + t('forms.two_factor.personal_key'),
+    input_html: { autocapitalize: 'none',
+      autocomplete: 'off',
+      class: 'personal-key caps',
+      maxlength: (RandomPhrase::WORD_LENGTH * word_count + (word_count - 1)),
+      required: true,
+      spellcheck: 'false' }

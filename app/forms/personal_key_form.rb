@@ -1,11 +1,13 @@
 class PersonalKeyForm
   include ActiveModel::Model
+  include PersonalKeyValidator
 
-  attr_accessor :code
+  attr_accessor :personal_key
+  attr_reader :user
 
-  def initialize(user, code = [])
+  def initialize(user, personal_key = nil)
     @user = user
-    @code = code
+    @personal_key = normalize_personal_key(personal_key)
   end
 
   def submit
@@ -19,13 +21,6 @@ class PersonalKeyForm
   private
 
   attr_reader :user, :success
-
-  def valid_personal_key?
-    word_regexp = /\w{#{RandomPhrase::WORD_LENGTH}}/
-    return false unless code =~ /\A#{word_regexp} #{word_regexp} #{word_regexp} #{word_regexp}\Z/
-    personal_key_generator = PersonalKeyGenerator.new(user)
-    personal_key_generator.verify(code)
-  end
 
   def extra_analytics_attributes
     {

@@ -16,7 +16,7 @@ describe PersonalKeyGenerator do
     it 'returns the raw personal key' do
       stub_random_phrase
 
-      expect(generator.create).to eq personal_key
+      expect(generator.create).to eq personal_key.tr(' ', '-')
     end
 
     it 'hashes the raw personal key' do
@@ -31,20 +31,18 @@ describe PersonalKeyGenerator do
     end
 
     it 'generates a phrase of 4 words by default' do
-      expect(generator.create).to match(/\A\w\w\w\w \w\w\w\w \w\w\w\w \w\w\w\w\z/)
+      expect(generator.create).to match(/\A\w\w\w\w-\w\w\w\w-\w\w\w\w-\w\w\w\w\z/)
     end
 
     it 'allows length to be configured via ENV var' do
       allow(Figaro.env).to receive(:recovery_code_length).and_return('14')
 
-      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\ ){13}\w+\z/
+      fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\-){13}\w+\z/
       expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
   end
 
   describe '#verify' do
-    let(:generator) { described_class.new(create(:user)) }
-
     before do
       stub_random_phrase
       generator.create
@@ -52,6 +50,10 @@ describe PersonalKeyGenerator do
 
     it 'returns false for the wrong code' do
       expect(generator.verify(bad_code)).to eq false
+    end
+
+    it 'returns false for short code' do
+      expect(generator.verify('foo')).to eq false
     end
 
     it 'returns false for an invalid base32 code' do
@@ -68,6 +70,18 @@ describe PersonalKeyGenerator do
 
     it 'treats case insensitively' do
       expect(generator.verify(personal_key.tr('H', 'h'))).to eq true
+    end
+  end
+
+  describe '#normalize' do
+    before do
+      stub_random_phrase
+    end
+
+    it 'returns standardized string' do
+      expect(generator.normalize(personal_key.downcase)).to eq personal_key
+      expect(generator.normalize(personal_key.upcase)).to eq personal_key
+      expect(generator.normalize(personal_key.tr(' ', '??????!@#$%)*(&'))).to eq personal_key
     end
   end
 end

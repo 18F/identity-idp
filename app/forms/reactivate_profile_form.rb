@@ -1,5 +1,6 @@
 class ReactivateProfileForm
   include ActiveModel::Model
+  include PersonalKeyValidator
 
   validates :personal_key, :password, presence: true
   validate :validate_password_reset_profile
@@ -10,11 +11,11 @@ class ReactivateProfileForm
   attr_reader :user
 
   def initialize(user, attrs = {})
-    attrs[:personal_key] ||= []
+    attrs[:personal_key] ||= nil
     @user = user
     super attrs
 
-    @personal_key = personal_key.join(' ')
+    @personal_key = normalize_personal_key(personal_key)
   end
 
   def submit(flash)
@@ -75,9 +76,5 @@ class ReactivateProfileForm
     decrypted_pii.present?
   rescue Pii::EncryptionError => _err
     false
-  end
-
-  def valid_personal_key?
-    PersonalKeyGenerator.new(user).verify(personal_key)
   end
 end

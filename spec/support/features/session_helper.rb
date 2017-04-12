@@ -162,12 +162,7 @@ module Features
 
       click_on button_text, class: 'personal-key-continue'
 
-      code_words.size.times do |index|
-        fill_in(
-          "personal-key-#{index}",
-          with: code_words[index].downcase + extra_characters_get_ignored
-        )
-      end
+      fill_in 'personal-key', with: code_words.join('-').downcase + extra_characters_get_ignored
 
       click_on button_text, class: 'personal-key-confirm'
     end
@@ -176,17 +171,14 @@ module Features
       click_on t('forms.buttons.continue'), class: 'personal-key-continue'
     end
 
-    def enter_personal_key(code:, selector: 'input[type="text"]')
-      code_words = code.split(' ')
-      fields = page.all(selector)
+    def enter_personal_key(personal_key:, selector: 'input[type="text"]')
+      field = page.find(selector)
 
-      fields.zip(code_words) do |field, word|
-        expect(field[:autocapitalize]).to eq('none')
-        expect(field[:autocomplete]).to eq('off')
-        expect(field[:spellcheck]).to eq('false')
+      expect(field[:autocapitalize]).to eq('none')
+      expect(field[:autocomplete]).to eq('off')
+      expect(field[:spellcheck]).to eq('false')
 
-        field.set(word)
-      end
+      field.set(personal_key)
     end
 
     def loa1_sp_session

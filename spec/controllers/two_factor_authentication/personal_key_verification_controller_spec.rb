@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe TwoFactorAuthentication::PersonalKeyVerificationController do
-  let(:code) { { code: ['foo'] } }
-  let(:payload) { { personal_key_form: code } }
+  let(:personal_key) { { personal_key: 'foo' } }
+  let(:payload) { { personal_key_form: personal_key } }
 
   describe '#show' do
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
@@ -49,6 +49,29 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
           with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
 
         post :create, payload
+      end
+    end
+
+    context 'when the personal key field is empty' do
+      let(:personal_key) { { personal_key: '' } }
+      let(:payload) { { personal_key_form: personal_key } }
+
+      before do
+        stub_sign_in_before_2fa(build(:user, phone: '+1 (703) 555-1212'))
+        form = instance_double(PersonalKeyForm)
+        response = FormResponse.new(
+          success: false, errors: {}, extra: { multi_factor_auth_method: 'personal key' }
+        )
+        allow(PersonalKeyForm).to receive(:new).
+          with(subject.current_user, '').and_return(form)
+        allow(form).to receive(:submit).and_return(response)
+      end
+
+      it 'renders the show page' do
+        post :create, payload
+
+        expect(response).to render_template(:show)
+        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_personal_key')
       end
     end
 

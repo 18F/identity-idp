@@ -1,5 +1,5 @@
 class PersonalKeyGenerator
-  attr_reader :user_access_key
+  attr_reader :user_access_key, :length
 
   INVALID_CODE = 'meaningless string that RandomPhrase will never generate'.freeze
 
@@ -15,11 +15,11 @@ class PersonalKeyGenerator
     @user_access_key = make_user_access_key(raw_personal_key)
     user.personal_key = hashed_code
     user.save!
-    raw_personal_key
+    raw_personal_key.tr(' ', '-')
   end
 
   def verify(plaintext_code)
-    @user_access_key = make_user_access_key(normalized_code(plaintext_code))
+    @user_access_key = make_user_access_key(normalize(plaintext_code))
     encryption_key, encrypted_code = user.personal_key.split(Pii::Encryptor::DELIMITER)
     begin
       key_maker.unlock(user_access_key, encryption_key)
@@ -29,17 +29,23 @@ class PersonalKeyGenerator
     Devise.secure_compare(encrypted_code, user_access_key.encrypted_password)
   end
 
+  def normalize(plaintext_code)
+    normed = plaintext_code.gsub(/\W/, '')
+    split_length = RandomPhrase::WORD_LENGTH
+    normed_length = normed.length
+    return INVALID_CODE unless normed_length == personal_key_length * split_length
+    encode_code(code: normed, length: normed_length, split: split_length)
+  rescue ArgumentError, RegexpError
+    INVALID_CODE
+  end
+
   private
 
-  attr_reader :length, :user, :key_maker
+  attr_reader :user, :key_maker
 
-  def normalized_code(plaintext_code)
-    normed = plaintext_code.gsub(/\W/, '')
-    split_length = normed.length / length
-    decoded = Base32::Crockford.decode(normed)
-    Base32::Crockford.encode(decoded, length: 16, split: split_length).tr('-', ' ')
-  rescue ArgumentError
-    INVALID_CODE
+  def encode_code(code:, length:, split:)
+    decoded = Base32::Crockford.decode(code)
+    Base32::Crockford.encode(decoded, length: length, split: split).tr('-', ' ')
   end
 
   def make_user_access_key(code)

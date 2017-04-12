@@ -1,6 +1,7 @@
 import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-kit';
 import DateFormatter from './modules/date-formatter';
 import NumericFormatter from './modules/numeric-formatter';
+import PersonalKeyFormatter from './modules/personal-key-formatter';
 import ZipCodeFormatter from './modules/zip-code-formatter';
 
 
@@ -13,6 +14,7 @@ function formatForm() {
     ['.mfa', new NumericFormatter()],
     ['.mortgage', new NumericFormatter()],
     ['.phone', new PhoneFormatter()],
+    ['.personal-key', new PersonalKeyFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
   ];
