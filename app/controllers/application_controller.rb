@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base
   include UserSessionContext
 
+  FLASH_KEYS = %w[alert error notice success warning].freeze
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
@@ -12,8 +14,6 @@ class ApplicationController < ActionController::Base
   prepend_before_action :session_expires_at
   before_action :set_locale
   before_action :disable_caching
-
-  layout 'card'
 
   def session_expires_at
     now = Time.zone.now
@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
   def redirect_on_timeout
     return unless params[:timeout]
 
-    flash[:timeout] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+    flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
     redirect_to url_for(params.except(:timeout))
   end
 

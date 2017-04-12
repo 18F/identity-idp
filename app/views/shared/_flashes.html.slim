@@ -1,0 +1,4 @@
+- if flash.any?
+  - flash.to_hash.slice(*ApplicationController::FLASH_KEYS).each do |type, message|
+      div class="alert alert-#{type}" role='alert'
+        = safe_join([message.html_safe])

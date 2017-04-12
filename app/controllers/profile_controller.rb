@@ -10,7 +10,5 @@ class ProfileController < ApplicationController
       personal_key: flash[:personal_key],
       current_user: current_user
     )
-
-    flash.delete(:personal_key)
   end
 end
