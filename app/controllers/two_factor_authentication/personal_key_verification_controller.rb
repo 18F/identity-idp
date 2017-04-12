@@ -35,7 +35,7 @@ module TwoFactorAuthentication
     end
 
     def password_reset_profile
-      @_password_reset_profile ||= decorated_user.password_reset_profile
+      @_password_reset_profile ||= current_user.decorate.password_reset_profile
     end
 
     def pii

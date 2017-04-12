@@ -80,7 +80,7 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      @authorize_form.loa3_requested? && decorated_user.identity_not_verified?
+      @authorize_form.loa3_requested? && current_user.decorate.identity_not_verified?
     end
 
     def build_authorize_form_from_params

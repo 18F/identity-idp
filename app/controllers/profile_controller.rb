@@ -8,7 +8,7 @@ class ProfileController < ApplicationController
     @view_model = ProfileIndex.new(
       decrypted_pii: cacher.fetch,
       personal_key: flash[:personal_key],
-      current_user: current_user
+      decorated_user: current_user.decorate
     )
   end
 end

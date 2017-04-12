@@ -45,10 +45,8 @@ module TwoFactorAuthenticatable
 
   def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
-
-    sign_out
-
     render 'two_factor_authentication/shared/max_login_attempts_reached', locals: { type: type }
+    sign_out
   end
 
   def require_current_password
@@ -66,7 +64,7 @@ module TwoFactorAuthenticatable
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless decorated_user.no_longer_blocked_from_entering_2fa_code?
+    return unless current_user.decorate.no_longer_blocked_from_entering_2fa_code?
 
     UpdateUser.new(
       user: current_user,
@@ -97,7 +95,7 @@ module TwoFactorAuthenticatable
 
     flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
-    if decorated_user.blocked_from_entering_2fa_code?
+    if current_user.decorate.blocked_from_entering_2fa_code?
       handle_second_factor_locked_user(type)
     else
       render_show_after_invalid
@@ -185,18 +183,18 @@ module TwoFactorAuthenticatable
   end
 
   def after_otp_action_required?
-    decorated_user.password_reset_profile.present? ||
+    current_user.decorate.password_reset_profile.present? ||
       @updating_existing_number ||
-      decorated_user.should_acknowledge_personal_key?(session)
+      current_user.decorate.should_acknowledge_personal_key?(session)
   end
 
   def after_otp_action_path
-    if decorated_user.should_acknowledge_personal_key?(session)
+    if current_user.decorate.should_acknowledge_personal_key?(session)
       user_session[:first_time_personal_key_view] = 'true'
       sign_up_personal_key_path
     elsif @updating_existing_number
       profile_path
-    elsif decorated_user.password_reset_profile.present?
+    elsif current_user.decorate.password_reset_profile.present?
       reactivate_profile_path
     else
       profile_path
@@ -248,7 +246,7 @@ module TwoFactorAuthenticatable
 
   def display_phone_to_deliver_to
     if authentication_context?
-      decorated_user.masked_two_factor_phone_number
+      current_user.decorate.masked_two_factor_phone_number
     else
       user_session[:unconfirmed_phone]
     end
