@@ -18,25 +18,16 @@ class ServiceProviderSessionDecorator
     'shared/nav_branded'
   end
 
-  def registration_heading
-    sp = view_context.content_tag(
-      :strong, t('headings.create_account_with_sp.sp_text', sp: sp_name)
-    )
-
-    view_context.safe_join(
-      [
-        sp.html_safe,
-        t('headings.create_account_with_sp.app_text'),
-      ]
-    )
+  def new_session_heading
+    I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end
 
-  def new_session_heading
-    t('headings.sign_in_with_sp', sp: sp_name)
+  def registration_heading
+    'sign_up/registrations/sp_registration_heading'
   end
 
   def verification_method_choice
-    t('idv.messages.select_verification_with_sp', sp_name: sp_name)
+    I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
   def idv_hardfail4_partial
@@ -54,8 +45,4 @@ class ServiceProviderSessionDecorator
   private
 
   attr_reader :sp, :view_context
-
-  def t(string, options = {})
-    view_context.t(string, options)
-  end
 end

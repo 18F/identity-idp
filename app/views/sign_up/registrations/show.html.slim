@@ -3,8 +3,7 @@
 .px4.mt4.mb0.center
   = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
 
-  h1.h3.mb3.blue.regular.sans-serif
-    = decorated_session.registration_heading
+  = render decorated_session.registration_heading
 
   = link_to t('sign_up.registrations.create_account'),
     sign_up_email_path(request_id: params[:request_id]),

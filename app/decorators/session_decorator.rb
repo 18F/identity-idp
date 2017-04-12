@@ -8,7 +8,7 @@ class SessionDecorator
   end
 
   def registration_heading
-    I18n.t('headings.create_account_without_sp')
+    'sign_up/registrations/registration_heading'
   end
 
   def new_session_heading

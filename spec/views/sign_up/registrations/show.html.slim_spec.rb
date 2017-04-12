@@ -40,8 +40,8 @@ describe 'sign_up/registrations/show.html.slim' do
       render
 
       sp_content = [
-        "#{t('headings.create_account_with_sp.sp_text', sp: @sp.friendly_name)}",
-        t('headings.create_account_with_sp.app_text')
+        t('headings.create_account_with_sp.sp_text', sp: @sp.friendly_name),
+        t('headings.create_account_with_sp.app_text'),
       ].join('')
 
       expect(rendered).to have_content(sp_content)
