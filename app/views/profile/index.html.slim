@@ -22,7 +22,6 @@ h1.hide = t('titles.profile')
     content: current_user.email,
     path: manage_email_path,
     action: @view_model.edit_action_partial
-  .border-bottom.border-blue-light
 
   = render 'profile_item',
     name: t('profile.index.password'),
@@ -40,20 +39,18 @@ h1.hide = t('titles.profile')
     content: current_user.phone,
     path: manage_phone_path,
     action: @view_model.edit_action_partial
-  .border-bottom.border-blue-light
 
   = render 'profile_item',
     name: t('profile.index.authentication_app'),
     content: content_tag(:em, t(@view_model.totp_content)),
     action: @view_model.totp_partial
-  .border-bottom.border-blue-light
 
   - @view_model.manage_personal_key_partial do
     = render 'profile_item',
       name: render(@view_model.personal_key_item_partial),
       action: @view_model.personal_key_action_partial
 
-  = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
+= render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
 .mb3.profile-info-box
   .bg-light-blue.pb1.pt1.px2.h6.caps.clearfix
