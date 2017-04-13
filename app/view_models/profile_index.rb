@@ -87,7 +87,5 @@ class ProfileIndex
     'profile.index.auth_app_disabled'
   end
 
-  def recent_events
-    decorated_user.recent_events
-  end
+  delegate :recent_events, to: :decorated_user
 end
