@@ -21,10 +21,22 @@
     'space-before-function-paren': 0,
     'prefer-arrow-callback': 0,
     'import/prefer-default-export': 'off',
-    'import/extensions': ['off', 'never']
+    'import/extensions': ['off', 'never'],
   },
   'parserOptions': {
     'ecmaVersion': 6,
     'sourceType': 'module'
+  },
+  'settings': {
+    'import/core-modules': [
+      'app/components/index',
+      'app/utils/index',
+      'app/pw-toggle',
+      'app/form-validation',
+      'app/form-field-format',
+      'app/idv-finance-helper',
+      'app/radio-btn',
+      'app/print-personal-key',
+    ],
   }
 }

@@ -14,7 +14,7 @@ setup $(CONFIG): config/application.yml.example
 
 check: lint test
 
-lint: $(CONFIG)
+lint:
 	@echo "--- rubocop ---"
 	bundle exec rubocop -R
 	@echo "--- slim-lint ---"
@@ -23,8 +23,10 @@ lint: $(CONFIG)
 	bundle exec reek
 	@echo "--- fasterer ---"
 	bundle exec fasterer
+	@echo "--- eslint ---"
+	node_modules/.bin/eslint app
 
-lintfix: $(CONFIG)
+lintfix:
 	@echo "--- rubocop fix ---"
 	bundle exec rubocop -R -a
 	@echo "--- reek fix ---"
