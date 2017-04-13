@@ -2,7 +2,8 @@ import focusTrapProxy from './focus-trap-proxy';
 import modal from './modal';
 import Accordion from './accordion';
 
-const LoginGov = window.LoginGov = (window.LoginGov || {});
+window.LoginGov = (window.LoginGov || {});
+const LoginGov = window.LoginGov;
 const trapModal = modal(focusTrapProxy);
 
 LoginGov.Modal = trapModal;

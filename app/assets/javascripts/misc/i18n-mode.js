@@ -5,8 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const inputs = document.querySelectorAll('input[type="submit"]');
 
   if (inputs) {
-    for (var i = 0; i < inputs.length; i++) {
-      const input = inputs[i];
+    [].slice.call(inputs).forEach((input) => {
       const val = input.value;
       const i18nStart = val.indexOf(lookupTxt);
 
@@ -14,6 +13,6 @@ document.addEventListener('DOMContentLoaded', function() {
         input.insertAdjacentHTML('afterend', val.slice(i18nStart));
         input.value = val.slice(0, i18nStart);
       }
-    }
+    });
   }
 });
