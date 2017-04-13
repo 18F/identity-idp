@@ -40,7 +40,6 @@ describe Verify::SessionsController do
   end
 
   context 'user has created account' do
-
     before do
       stub_sign_in(user)
       allow(subject).to receive(:idv_session).and_return(idv_session)
