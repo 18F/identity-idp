@@ -145,10 +145,6 @@ module SamlAuthHelper
     settings
   end
 
-  def authnrequest_get_with_missing_authn_context
-    auth_request.create(missing_auth_context_saml_settings)
-  end
-
   def saml_test_key
     @saml_test_key ||= File.read(Rails.root.join('keys', 'saml_test_sp.key'))
   end
