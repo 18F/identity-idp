@@ -16,6 +16,9 @@
 }
 
 .accordion {
+  border: 1px solid $blue-light;
+  border-radius: $border-radius-md;
+
   .accordion-content {
     opacity: 1;
   }
@@ -62,9 +65,11 @@
   }
 
   .accordion-footer {
-    border-color: $blue;
+    background-color: $blue-light;
+    border: 1px solid $blue-light;
     color: $blue;
     cursor: pointer;
+    text-align: center;
 
     img {
       display: inline-block;
