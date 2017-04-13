@@ -6,7 +6,7 @@ const I18n = window.LoginGov.I18n;
 
 function previousAddress() {
   const accordion = window.LoginGov.accordions.filter(a =>
-    a.el === document.querySelector('.accordion')
+    a.el === document.querySelector('.accordion'),
   )[0];
 
   if (!accordion) return;

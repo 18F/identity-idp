@@ -25,16 +25,16 @@ function modal(focusTrap) {
     }
 
     show(target) {
-      this._setElementVisibility(target, true);
+      this.setElementVisibility(target, true);
       this.emit(STATES.SHOW);
     }
 
     hide(target) {
-      this._setElementVisibility(target, false);
+      this.setElementVisibility(target, false);
       this.emit(STATES.HIDE);
     }
 
-    _setElementVisibility(target = null, showing) {
+    setElementVisibility(target = null, showing) {
       const el = target || this.el;
 
       this.shown = showing;
