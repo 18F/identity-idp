@@ -24,7 +24,7 @@ lint:
 	@echo "--- fasterer ---"
 	bundle exec fasterer
 	@echo "--- eslint ---"
-	node_modules/.bin/eslint app
+	node_modules/.bin/eslint app spec
 
 lintfix:
 	@echo "--- rubocop fix ---"
