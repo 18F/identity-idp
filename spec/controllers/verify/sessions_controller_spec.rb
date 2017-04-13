@@ -40,7 +40,6 @@ describe Verify::SessionsController do
   end
 
   context 'user has created account' do
-    render_views
 
     before do
       stub_sign_in(user)
@@ -54,7 +53,6 @@ describe Verify::SessionsController do
         get :new
 
         expect(response.status).to eq 200
-        expect(response.body).to include t('idv.form.first_name')
       end
 
       it 'redirects if step is complete' do
@@ -121,11 +119,11 @@ describe Verify::SessionsController do
       end
 
       context 'empty SSN' do
-        it 'shows normal form with error' do
+        it 'renders the form' do
           post :create, profile: user_attrs.merge(ssn: '')
 
           expect(response).to_not redirect_to(verify_session_dupe_path)
-          expect(response.body).to match t('errors.messages.blank')
+          expect(response).to render_template(:new)
         end
       end
 
@@ -138,7 +136,6 @@ describe Verify::SessionsController do
 
           expect(response).to render_template(:new)
           expect(flash[:warning]).to be_nil
-          expect(response.body).to match t('errors.messages.blank')
         end
       end
 

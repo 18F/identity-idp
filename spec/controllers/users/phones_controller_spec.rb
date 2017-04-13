@@ -34,14 +34,13 @@ describe Users::PhonesController do
     end
 
     context 'user enters an empty phone' do
-      render_views
-
-      it 'displays an error message and does not delete the phone' do
+      it 'does not delete the phone' do
         stub_sign_in(user)
+
         put :update, update_user_phone_form: { phone: '' }
 
-        expect(response.body).to have_content invalid_phone_message
         expect(user.reload.phone).to be_present
+        expect(response).to render_template(:edit)
       end
     end
 
@@ -70,13 +69,15 @@ describe Users::PhonesController do
     end
 
     context 'user updates with invalid phone' do
-      render_views
-
-      it 'displays error about invalid phone' do
+      it 'does not change the user phone number' do
+        invalid_phone = '123'
+        user = build(:user, phone: '123-123-1234')
         stub_sign_in(user)
-        put :update, update_user_phone_form: { phone: '123' }
 
-        expect(response.body).to have_content('number is invalid')
+        put :update, update_user_phone_form: { phone: invalid_phone }
+
+        expect(user.phone).not_to eq invalid_phone
+        expect(response).to render_template(:edit)
       end
     end
 

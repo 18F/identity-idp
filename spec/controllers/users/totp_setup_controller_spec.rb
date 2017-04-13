@@ -12,8 +12,6 @@ describe Users::TotpSetupController, devise: true do
 
   describe '#new' do
     context 'user has not yet enabled authenticator app' do
-      render_views
-
       before do
         stub_sign_in
         get :new
@@ -31,10 +29,6 @@ describe Users::TotpSetupController, devise: true do
         expect(
           subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret])
         ).not_to be_nil
-      end
-
-      it 'presents a QR code to the user' do
-        expect(response.body).to include('QR Code for Authenticator App')
       end
     end
 
