@@ -18,6 +18,16 @@
   border-radius: $border-radius-lg;
 }
 
+.btn-secondary {
+  border: 1px solid $blue;
+  border-radius: $border-radius-lg;
+  color: $blue;
+
+  &:hover {
+    background-color: $blue-light;
+  }
+}
+
 .btn-wide {
   box-sizing: border-box;
   min-width: 220px;

@@ -1,6 +1,6 @@
 - title t('titles.registrations.start')
 
-.px4.mt4.mb0.center
+.px4.mt2.mb0.center
   = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
 
   = render decorated_session.registration_heading
@@ -11,7 +11,7 @@
 
   = link_to t('links.sign_in'),
     new_user_session_path(request_id: params[:request_id]),
-    class: 'sm-col-10 col-12 btn btn-border btn-wide mb1 fs-20p'
+    class: 'sm-col-10 col-12 btn btn-secondary btn-wide mb1 fs-20p'
 
 - if loa3_requested?
   = render 'required_pii_accordion'
