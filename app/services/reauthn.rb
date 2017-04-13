@@ -4,7 +4,7 @@ class Reauthn
   end
 
   def call
-    reauthn.present? && reauthn == 'true'
+    reauthn == 'true'
   end
 
   private
