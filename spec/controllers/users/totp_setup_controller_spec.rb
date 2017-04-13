@@ -28,9 +28,9 @@ describe Users::TotpSetupController, devise: true do
       end
 
       it 'can be used to generate a qrcode with UserDecorator#qrcode' do
-        user_decorator = subject.current_user.decorate
-
-        expect(user_decorator.qrcode(subject.user_session[:new_totp_secret])).not_to be_nil
+        expect(
+          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret])
+        ).not_to be_nil
       end
 
       it 'presents a QR code to the user' do

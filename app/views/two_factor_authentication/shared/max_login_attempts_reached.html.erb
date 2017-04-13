@@ -1,4 +1,5 @@
-<% lockout_time_in_words = decorated_user.lockout_time_remaining_in_words %>
+<% lockout_time_in_words = current_user.decorate.lockout_time_remaining_in_words %>
+<% lockout_time_remaining = current_user.decorate.lockout_time_remaining %>
 <% title t('titles.account_locked') %>
 
 <h1 class="h3 my0">
@@ -13,6 +14,6 @@
 </p>
 
 <%= nonced_javascript_tag do %>
-  var test = <%= decorated_user.lockout_time_remaining %> * 1000;
+  var test = <%= lockout_time_remaining %> * 1000;
   window.LoginGov.countdownTimer(document.getElementById('countdown'), test);
 <% end %>

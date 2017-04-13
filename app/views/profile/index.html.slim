@@ -52,10 +52,8 @@ h1.hide = t('titles.profile')
 
 h2.h3.my0 = t('headings.profile.account_history')
 .mt2.mb2
-  - decorated_user = current_user.decorate
-  - events_len = decorated_user.recent_events.length
-  - decorated_user.recent_events.each_with_index do |event, i|
-    div class="py-12p border-top #{'border-bottom' if i + 1 == events_len}"
+  - @view_model.decorated_user.recent_events.each_with_index do |event, i|
+    div class="py-12p border-top #{'border-bottom' if i + 1 == @view_model.events_length}"
       .clearfix.mxn1
         .sm-col.sm-col-6.px1
           .truncate = event.pretty_event_type

@@ -5,9 +5,12 @@ describe 'profile/index.html.slim' do
   let(:decorated_user) { user.decorate }
 
   before do
-    allow(view).to receive(:current_user).and_return(user)
     allow(user).to receive(:decorate).and_return(decorated_user)
-    assign(:view_model, ProfileIndex.new(decrypted_pii: nil, personal_key: nil, current_user: user))
+    allow(view).to receive(:current_user).and_return(user)
+    assign(
+      :view_model,
+      ProfileIndex.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
+    )
   end
 
   context 'user is not TOTP enabled' do
@@ -40,7 +43,7 @@ describe 'profile/index.html.slim' do
     before do
       assign(
         :view_model,
-        ProfileIndex.new(decrypted_pii: nil, personal_key: nil, current_user: user)
+        ProfileIndex.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
       )
     end
 

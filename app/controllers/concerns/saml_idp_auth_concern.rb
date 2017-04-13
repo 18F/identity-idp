@@ -57,7 +57,7 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    loa3_requested? && decorated_user.identity_not_verified?
+    loa3_requested? && current_user.decorate.identity_not_verified?
   end
 
   def loa3_requested?

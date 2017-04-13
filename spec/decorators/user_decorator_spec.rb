@@ -110,13 +110,14 @@ describe UserDecorator do
 
   describe '#recent_events' do
     it 'interleaves identities and events' do
-      user_decorator = UserDecorator.new(build(:user))
+      user = build(:user)
+      user_decorator = UserDecorator.new(user)
       identity = create(
         :identity,
         last_authenticated_at: Time.zone.now - 1,
-        user: user_decorator.user
+        user: user
       )
-      event = create(:event, event_type: :email_changed, user: user_decorator.user)
+      event = create(:event, event_type: :email_changed, user: user)
 
       expect(user_decorator.recent_events).to eq [event.decorate, identity.decorate]
     end

@@ -1,10 +1,10 @@
 class ProfileIndex
-  attr_reader :decrypted_pii, :personal_key
+  attr_reader :decorated_user, :decrypted_pii, :personal_key
 
-  def initialize(decrypted_pii:, personal_key:, current_user:)
+  def initialize(decrypted_pii:, personal_key:, decorated_user:)
     @decrypted_pii = decrypted_pii
     @personal_key = personal_key
-    @current_user = current_user
+    @decorated_user = decorated_user
   end
 
   def header_partial
@@ -20,7 +20,7 @@ class ProfileIndex
   end
 
   def password_reset_partial
-    if current_user.decorate.password_reset_profile.present?
+    if decorated_user.password_reset_profile.present?
       'profile/password_reset'
     else
       'shared/null'
@@ -28,7 +28,7 @@ class ProfileIndex
   end
 
   def pending_profile_partial
-    if current_user.decorate.pending_profile.present?
+    if decorated_user.pending_profile.present?
       'profile/pending_profile'
     else
       'shared/null'
@@ -44,7 +44,7 @@ class ProfileIndex
   end
 
   def totp_partial
-    if current_user.totp_enabled?
+    if decorated_user.totp_enabled?
       'profile/disable_totp'
     else
       'profile/enable_totp'
@@ -52,7 +52,7 @@ class ProfileIndex
   end
 
   def manage_personal_key_partial
-    if current_user.decorate.password_reset_profile.present?
+    if decorated_user.password_reset_profile.present?
       'shared/null'
     else
       'profile/manage_personal_key'
@@ -62,10 +62,10 @@ class ProfileIndex
   def header_personalization
     return decrypted_pii.first_name if decrypted_pii.present?
 
-    current_user.email
+    decorated_user.email
   end
 
-  private
-
-  attr_reader :current_user
+  def events_length
+    @_events_length ||= decorated_user.recent_events.length
+  end
 end

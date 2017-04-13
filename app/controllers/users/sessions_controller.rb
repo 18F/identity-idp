@@ -83,7 +83,7 @@ module Users
 
     def cache_active_profile
       cacher = Pii::Cacher.new(current_user, user_session)
-      profile = decorated_user.active_or_pending_profile
+      profile = current_user.decorate.active_or_pending_profile
       begin
         cacher.save(current_user.user_access_key, profile)
       rescue Pii::EncryptionError => err

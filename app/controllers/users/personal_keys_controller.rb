@@ -18,7 +18,7 @@ module Users
     private
 
     def next_step
-      if decorated_user.password_reset_profile.present?
+      if current_user.decorate.password_reset_profile.present?
         reactivate_profile_url
       else
         profile_url

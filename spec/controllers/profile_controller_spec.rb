@@ -41,7 +41,7 @@ describe ProfileController do
         view_model = ProfileIndex.new(
           decrypted_pii: nil,
           personal_key: nil,
-          current_user: user
+          decorated_user: user.decorate
         )
         allow(subject).to receive(:view_model).and_return(view_model)
 

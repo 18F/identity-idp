@@ -45,10 +45,8 @@ module TwoFactorAuthenticatable
 
   def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
-
-    sign_out
-
     render 'two_factor_authentication/shared/max_login_attempts_reached', locals: { type: type }
+    sign_out
   end
 
   def require_current_password
@@ -252,6 +250,10 @@ module TwoFactorAuthenticatable
     else
       user_session[:unconfirmed_phone]
     end
+  end
+
+  def decorated_user
+    current_user.decorate
   end
 
   def reenter_phone_number_path

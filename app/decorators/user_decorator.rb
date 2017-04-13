@@ -1,7 +1,14 @@
 include ActionView::Helpers::DateHelper
 
-UserDecorator = Struct.new(:user) do
+class UserDecorator
   MAX_RECENT_EVENTS = 5
+
+  def initialize(user)
+    @user = user
+  end
+
+  delegate :email, to: :user
+  delegate :totp_enabled?, to: :user
 
   def lockout_time_remaining
     (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
@@ -99,6 +106,8 @@ UserDecorator = Struct.new(:user) do
   end
 
   private
+
+  attr_reader :user
 
   def masked_number(number)
     "***-***-#{number[-4..-1]}"

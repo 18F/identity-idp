@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
 
-  helper_method :decorated_session, :decorated_user, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
   before_action :set_locale
@@ -74,10 +74,6 @@ class ApplicationController < ActionController::Base
     issuer = ServiceProviderRequest.from_uuid(params[:request_id]).issuer
     sp = ServiceProvider.from_issuer(issuer)
     sp if sp.is_a? ServiceProvider
-  end
-
-  def decorated_user
-    @_decorated_user ||= current_user.decorate
   end
 
   def after_sign_in_path_for(user)
