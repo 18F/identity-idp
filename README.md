@@ -167,6 +167,13 @@ Run security scanner
 $ make brakeman
 ```
 
+Run eslint
+
+```
+$ npm install --save-dev eslint-config-airbnb eslint@^3.15.0 eslint-plugin-jsx-a11y@^3.0.2 eslint-plugin-react@^6.9.0
+$ eslint app
+```
+
 #### User flows
 
 We have an automated tool for generating user flows using real views generated from the application. These specs are excluded from our typical spec run because of the overhead of generating screenshots for each view.
