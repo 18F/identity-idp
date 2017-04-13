@@ -1,10 +1,17 @@
 include ActionView::Helpers::DateHelper
 
-class UserDecorator < SimpleDelegator
+class UserDecorator
   MAX_RECENT_EVENTS = 5
 
+  def initialize(user)
+    @user = user
+  end
+
+  delegate :email, to: :user
+  delegate :totp_enabled?, to: :user
+
   def lockout_time_remaining
-    (Devise.direct_otp_valid_for - (Time.zone.now - model.second_factor_locked_at)).to_i
+    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def lockout_time_remaining_in_words
@@ -28,11 +35,11 @@ class UserDecorator < SimpleDelegator
   end
 
   def masked_two_factor_phone_number
-    masked_number(model.phone)
+    masked_number(user.phone)
   end
 
   def identity_verified?
-    model.active_profile.present?
+    user.active_profile.present?
   end
 
   def identity_not_verified?
@@ -40,21 +47,21 @@ class UserDecorator < SimpleDelegator
   end
 
   def active_identity_for(service_provider)
-    model.active_identities.find_by(service_provider: service_provider.issuer)
+    user.active_identities.find_by(service_provider: service_provider.issuer)
   end
 
   def pending_profile
-    model.profiles.verification_pending.order(created_at: :desc).first
+    user.profiles.verification_pending.order(created_at: :desc).first
   end
 
   def active_or_pending_profile
-    model.active_profile || pending_profile
+    user.active_profile || pending_profile
   end
 
   # This user's most recently activated profile that has also been deactivated
   # due to a password reset, or nil if there is no such profile
   def password_reset_profile
-    profile = model.profiles.order(activated_at: :desc).first
+    profile = user.profiles.order(activated_at: :desc).first
     profile if profile&.password_reset?
   end
 
@@ -63,17 +70,17 @@ class UserDecorator < SimpleDelegator
       issuer: 'Login.gov',
       otp_secret_key: otp_secret_key,
     }
-    url = model.provisioning_uri(nil, options)
+    url = user.provisioning_uri(nil, options)
     qrcode = RQRCode::QRCode.new(url)
     qrcode.as_png(size: 280).to_data_url
   end
 
   def blocked_from_entering_2fa_code?
-    model.second_factor_locked_at.present? && !blocked_from_2fa_period_expired?
+    user.second_factor_locked_at.present? && !blocked_from_2fa_period_expired?
   end
 
   def no_longer_blocked_from_entering_2fa_code?
-    model.second_factor_locked_at.present? && blocked_from_2fa_period_expired?
+    user.second_factor_locked_at.present? && blocked_from_2fa_period_expired?
   end
 
   def should_acknowledge_personal_key?(session)
@@ -81,12 +88,12 @@ class UserDecorator < SimpleDelegator
 
     sp_session = session[:sp]
 
-    model.personal_key.blank? && (sp_session.blank? || sp_session[:loa3] == false)
+    user.personal_key.blank? && (sp_session.blank? || sp_session[:loa3] == false)
   end
 
   def recent_events
-    events = model.events.order('updated_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
-    identities = model.identities.order('last_authenticated_at DESC').map(&:decorate)
+    events = user.events.order('updated_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
+    identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
     (events + identities).sort { |thing_a, thing_b| thing_b.happened_at <=> thing_a.happened_at }
   end
 
@@ -100,15 +107,13 @@ class UserDecorator < SimpleDelegator
 
   private
 
-  def model
-    __getobj__
-  end
+  attr_reader :user
 
   def masked_number(number)
     "***-***-#{number[-4..-1]}"
   end
 
   def blocked_from_2fa_period_expired?
-    (Time.zone.now - model.second_factor_locked_at) > Devise.direct_otp_valid_for
+    (Time.zone.now - user.second_factor_locked_at) > Devise.direct_otp_valid_for
   end
 end
