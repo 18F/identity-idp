@@ -170,7 +170,7 @@ $ make brakeman
 Run eslint
 
 ```
-$ npm install --save-dev eslint-config-airbnb eslint@^3.15.0 eslint-plugin-jsx-a11y@^3.0.2 eslint-plugin-react@^6.9.0
+$ npm install --save-dev eslint-config-airbnb eslint@^3.15.0
 $ eslint app
 ```
 
