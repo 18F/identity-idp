@@ -16,7 +16,7 @@
 }
 
 .accordion {
-  border: 1px solid $blue-medium;
+  border: 1px solid $border-color;
   border-radius: $border-radius-md;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
 
@@ -46,7 +46,7 @@
   }
 
   .accordion-header-control[aria-expanded="true"] {
-    border-bottom: 1px solid $blue-medium;
+    border-bottom: 1px solid $border-color;
 
     .minus-icon {
       display: initial;
@@ -69,7 +69,7 @@
 
   .accordion-footer {
     background-color: $blue-lightest;
-    border-top: 1px solid $blue-medium;
+    border-top: 1px solid $border-color;
     color: $blue;
     cursor: pointer;
     text-align: center;
