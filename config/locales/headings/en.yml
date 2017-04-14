@@ -3,7 +3,9 @@ en:
   headings:
     confirmations:
       new: Send another confirmation email
-    create_account_with_sp: '%{sp} is working with login.gov to make accessing your information easy and secure.'
+    create_account_with_sp:
+      sp_text: '%{sp} is using login.gov'
+      app_text: ' to make signing in easy and secure.'
     create_account_without_sp: Create a login.gov account
     edit_info:
       email: Change your email

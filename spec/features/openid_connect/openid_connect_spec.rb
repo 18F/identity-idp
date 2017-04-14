@@ -223,7 +223,12 @@ feature 'OpenID Connect' do
           code_challenge_method: 'S256'
         )
 
-        expect(page).to have_content(t('headings.create_account_with_sp', sp: 'Example iOS App'))
+        sp_content = [
+          t('headings.create_account_with_sp.sp_text', sp: 'Example iOS App'),
+          t('headings.create_account_with_sp.app_text'),
+        ].join(' ')
+
+        expect(page).to have_content(sp_content)
 
         sign_up_user_from_sp_without_confirming_email(email)
       end

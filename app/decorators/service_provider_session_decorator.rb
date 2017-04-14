@@ -18,15 +18,12 @@ class ServiceProviderSessionDecorator
     'shared/nav_branded'
   end
 
-  def registration_heading
-    sp = ActionController::Base.helpers.content_tag(:strong, sp_name)
-    ActionController::Base.helpers.safe_join(
-      [I18n.t('headings.create_account_with_sp', sp: sp).html_safe]
-    )
-  end
-
   def new_session_heading
     I18n.t('headings.sign_in_with_sp', sp: sp_name)
+  end
+
+  def registration_heading
+    'sign_up/registrations/sp_registration_heading'
   end
 
   def verification_method_choice

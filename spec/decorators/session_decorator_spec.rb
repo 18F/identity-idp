@@ -30,8 +30,8 @@ RSpec.describe SessionDecorator do
   end
 
   describe '#registration_heading' do
-    it 'returns the correct string' do
-      expect(subject.registration_heading).to eq I18n.t('headings.create_account_without_sp')
+    it 'returns the correct partial' do
+      expect(subject.registration_heading).to eq 'sign_up/registrations/registration_heading'
     end
   end
 

@@ -34,14 +34,6 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#registration_heading' do
-    it 'returns the correct string' do
-      expect(subject.registration_heading).to eq(
-        I18n.t('headings.create_account_with_sp', sp: "<strong>#{sp_name}</strong>")
-      )
-    end
-  end
-
   describe '#verification_method_choice' do
     it 'returns the correct string' do
       expect(subject.verification_method_choice).to eq(
