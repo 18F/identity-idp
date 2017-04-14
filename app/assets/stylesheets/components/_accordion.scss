@@ -16,8 +16,9 @@
 }
 
 .accordion {
-  border: 1px solid $blue-light;
+  border: 1px solid $blue-medium;
   border-radius: $border-radius-md;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
 
   .accordion-content {
     opacity: 1;
@@ -45,6 +46,8 @@
   }
 
   .accordion-header-control[aria-expanded="true"] {
+    border-bottom: 1px solid $blue-medium;
+
     .minus-icon {
       display: initial;
     }
@@ -65,8 +68,8 @@
   }
 
   .accordion-footer {
-    background-color: $blue-light;
-    border: 1px solid $blue-light;
+    background-color: $blue-lightest;
+    border-top: 1px solid $blue-medium;
     color: $blue;
     cursor: pointer;
     text-align: center;
