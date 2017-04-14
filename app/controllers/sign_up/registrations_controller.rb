@@ -8,7 +8,7 @@ module SignUp
     prepend_before_action :disable_account_creation, only: %i[new create]
 
     def show
-      return redirect_to sign_up_email_path if session[:sp].blank?
+      return redirect_to sign_up_email_path if params[:request_id].blank?
 
       analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
     end

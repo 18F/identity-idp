@@ -118,12 +118,11 @@ describe SignUp::RegistrationsController, devise: true do
   describe '#show' do
     it 'tracks page visit' do
       stub_analytics
-      session[:sp] = { loa3: true }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_INTRO_VISIT)
 
-      get :show
+      get :show, request_id: 'foo'
     end
 
     it 'cannot be viewed by signed in users' do
@@ -132,6 +131,12 @@ describe SignUp::RegistrationsController, devise: true do
       get :show
 
       expect(response).to redirect_to profile_path
+    end
+
+    it 'redirects to sign_up_email_path if request_id param is missing' do
+      get :show
+
+      expect(response).to redirect_to sign_up_email_path
     end
   end
 end

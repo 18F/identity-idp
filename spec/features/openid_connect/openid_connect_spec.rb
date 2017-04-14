@@ -336,6 +336,36 @@ feature 'OpenID Connect' do
     end
   end
 
+  context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
+    it 'maintains the request_id in the params' do
+      visit_idp_from_sp_with_loa1
+      sp_request_id = ServiceProviderRequest.last.uuid
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+
+      visit_idp_from_sp_with_loa1
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+    end
+  end
+
+  def visit_idp_from_sp_with_loa1
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    state = SecureRandom.hex
+    nonce = SecureRandom.hex
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce
+    )
+  end
+
   def sp_public_key
     page.driver.get api_openid_connect_certs_path
 
