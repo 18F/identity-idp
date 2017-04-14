@@ -117,6 +117,20 @@ feature 'LOA1 Single Sign On' do
     end
   end
 
+  context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
+    it 'maintains the request_id in the params' do
+      authn_request = auth_request.create(saml_settings)
+      visit authn_request
+      sp_request_id = ServiceProviderRequest.last.uuid
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+
+      visit authn_request
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+    end
+  end
+
   def sign_in_and_require_viewing_personal_key(user)
     login_as(user, scope: :user, run_callbacks: false)
     Warden.on_next_request do |proxy|
