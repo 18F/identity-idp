@@ -8,7 +8,11 @@ class ProfileIndex
   end
 
   def header_partial
-    'profile/header'
+    if decorated_user.identity_verified?
+      'profile/verified_header'
+    else
+      'profile/header'
+    end
   end
 
   def personal_key_partial
@@ -35,6 +39,10 @@ class ProfileIndex
     end
   end
 
+  def edit_action_partial
+    'profile/actions/edit_action_button'
+  end
+
   def pii_partial
     if decrypted_pii.present?
       'profile/pii'
@@ -45,18 +53,26 @@ class ProfileIndex
 
   def totp_partial
     if decorated_user.totp_enabled?
-      'profile/disable_totp'
+      'profile/actions/disable_totp'
     else
-      'profile/enable_totp'
+      'profile/actions/enable_totp'
     end
   end
 
   def manage_personal_key_partial
-    if decorated_user.password_reset_profile.present?
-      'shared/null'
-    else
-      'profile/manage_personal_key'
-    end
+    yield if decorated_user.password_reset_profile.blank?
+  end
+
+  def personal_key_action_partial
+    'profile/actions/manage_personal_key'
+  end
+
+  def personal_key_item_partial
+    'profile/personal_key_item_heading'
+  end
+
+  def recent_event_partial
+    'profile/event_item'
   end
 
   def header_personalization
@@ -65,7 +81,11 @@ class ProfileIndex
     decorated_user.email
   end
 
-  def events_length
-    @_events_length ||= decorated_user.recent_events.length
+  def totp_content
+    return 'profile.index.auth_app_enabled' if decorated_user.totp_enabled?
+
+    'profile.index.auth_app_disabled'
   end
+
+  delegate :recent_events, to: :decorated_user
 end
