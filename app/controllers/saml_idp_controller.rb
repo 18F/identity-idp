@@ -12,7 +12,7 @@ class SamlIdpController < ApplicationController
   skip_before_action :handle_two_factor_authentication, only: :logout
 
   def auth
-    return confirm_two_factor_authenticated(@request_id) unless user_fully_authenticated?
+    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
     process_fully_authenticated_user do |needs_idv|
       return store_location_and_redirect_to_verify_url if needs_idv
     end

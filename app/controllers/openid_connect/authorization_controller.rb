@@ -10,7 +10,7 @@ module OpenidConnect
     before_action :load_authorize_form_from_session, only: %i[create destroy]
 
     def index
-      return confirm_two_factor_authenticated(@request_id) unless user_fully_authenticated?
+      return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       return redirect_to verify_url if identity_needs_verification?
 
       track_index_action_analytics
