@@ -16,6 +16,9 @@
 }
 
 .accordion {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-md;
+
   .accordion-content {
     opacity: 1;
   }
@@ -42,6 +45,8 @@
   }
 
   .accordion-header-control[aria-expanded="true"] {
+    border-bottom: 1px solid $border-color;
+
     .minus-icon {
       display: initial;
     }
@@ -62,9 +67,11 @@
   }
 
   .accordion-footer {
-    border-color: $blue;
+    background-color: $blue-lightest;
+    border-top: 1px solid $border-color;
     color: $blue;
     cursor: pointer;
+    text-align: center;
 
     img {
       display: inline-block;
