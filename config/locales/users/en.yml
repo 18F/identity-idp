@@ -21,4 +21,4 @@ en:
 
         If you don’t have your personal key and you forget your password, the only way to keep your account safe is to verify that you are the legal owner.
       close: Close
-      confirmation_error: One or more fields does not match your personal key.
+      confirmation_error: The value you entered does not match your personal key.
