@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
 
-  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
   before_action :set_locale
@@ -88,10 +88,6 @@ class ApplicationController < ActionController::Base
     render file: 'public/401.html', status: 401
   end
 
-  def reauthn_param
-    params[:reauthn]
-  end
-
   def invalid_auth_token
     analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN)
     sign_out
@@ -100,12 +96,10 @@ class ApplicationController < ActionController::Base
   end
 
   def user_fully_authenticated?
-    !reauthn? && user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
-  end
-
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
+    !Reauthn.new(params).call &&
+      user_signed_in? &&
+      current_user.two_factor_enabled? &&
+      is_fully_authenticated?
   end
 
   def confirm_two_factor_authenticated

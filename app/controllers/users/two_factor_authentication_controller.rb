@@ -40,6 +40,10 @@ module Users
       redirect_to login_two_factor_path(otp_delivery_preference: method, reauthn: reauthn?)
     end
 
+    def reauthn?
+      Reauthn.new(params).call
+    end
+
     def send_user_otp(method)
       current_user.create_direct_otp
 

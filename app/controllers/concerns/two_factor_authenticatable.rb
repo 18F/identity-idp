@@ -240,7 +240,7 @@ module TwoFactorAuthenticatable
   def generic_data
     {
       personal_key_unavailable: personal_key_unavailable?,
-      reauthn: reauthn?,
+      reauthn: Reauthn.new(params).call,
     }
   end
 
