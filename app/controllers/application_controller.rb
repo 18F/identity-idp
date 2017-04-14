@@ -84,10 +84,6 @@ class ApplicationController < ActionController::Base
     user_fully_authenticated? ? profile_path : user_two_factor_authentication_path
   end
 
-  def render_401
-    render file: 'public/401.html', status: 401
-  end
-
   def reauthn_param
     params[:reauthn]
   end

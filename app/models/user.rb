@@ -63,10 +63,6 @@ class User < ActiveRecord::Base
     # the user in by calling this method. However, we don't want a code to be
     # automatically sent until the user has reached the TwoFactorAuthenticationController,
     # where we prompt them to select how they would like to receive the OTP code.
-    # Sending an OTP code is not a User responsibility. It belongs either in the
-    # controller, or in a dedicated class that the controller sends messages to.
-    # Based on the delivery method chosen by the user, the controller calls the
-    # appropriate background job to send the code, such as SmsSenderOtpJob.
     #
     # Hence, we define this method as a no-op method, meaning it doesn't do anything.
     # See https://github.com/18F/identity-idp/pull/452 for more details.
