@@ -4,9 +4,7 @@ describe 'two_factor_authentication/shared/max_login_attempts_reached.html.erb' 
   context 'locked out account' do
     it 'includes localized error message with time remaining' do
       user_decorator = instance_double(UserDecorator)
-      user = build(:user)
-      allow(view).to receive(:current_user).and_return(user)
-      allow(user).to receive(:decorate).and_return(user_decorator)
+      allow(view).to receive(:decorator).and_return(user_decorator)
       allow(view).to receive(:type).and_return('otp')
       allow(user_decorator).to receive(:lockout_time_remaining_in_words).and_return('1000 years')
       allow(user_decorator).to receive(:lockout_time_remaining).and_return(10_000)
