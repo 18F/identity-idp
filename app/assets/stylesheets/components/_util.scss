@@ -2,8 +2,6 @@
 
 .w-60p { width: 60px; }
 
-.bg-light-blue { background-color: $blue-light; }
-
 .no-hover-decoration:hover { text-decoration: none; }
 
 .invisible { visibility: hidden; }
@@ -14,10 +12,6 @@
   // scss-lint:enable ImportantRule
 
   .sm-maxw-190p { max-width: 190px; }
-
-  .sm-bg-light-blue { background-color: $blue-light; }
-
-  .sm-bg-none { background-color: transparent; }
 
   .sm-left-align { text-align: left; }
   .sm-right-align { text-align: right; }
