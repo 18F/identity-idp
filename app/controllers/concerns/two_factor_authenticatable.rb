@@ -45,8 +45,12 @@ module TwoFactorAuthenticatable
 
   def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
-    render 'two_factor_authentication/shared/max_login_attempts_reached', locals: { type: type }
+    decorator = current_user.decorate
     sign_out
+    render(
+      'two_factor_authentication/shared/max_login_attempts_reached',
+      locals: { type: type, decorator: decorator }
+    )
   end
 
   def require_current_password

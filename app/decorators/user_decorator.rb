@@ -10,16 +10,16 @@ class UserDecorator
   delegate :email, to: :user
   delegate :totp_enabled?, to: :user
 
-  def lockout_time_remaining
-    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
-  end
-
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
 
     distance_of_time_in_words(
       current_time, current_time + lockout_time_remaining, true, highest_measures: 2
     )
+  end
+
+  def lockout_time_remaining
+    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def confirmation_period_expired_error
