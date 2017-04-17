@@ -113,8 +113,9 @@ feature 'Two Factor Authentication' do
 
     context 'user enters OTP incorrectly 3 times', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
-        allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
-        allow(Figaro.env).to receive(:session_check_delay).and_return('2')
+        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        five_minute_countdown_regex = /4:5\d/
 
         user = create(:user, :signed_up)
         sign_in_before_2fa(user)
@@ -125,7 +126,7 @@ feature 'Two Factor Authentication' do
         end
 
         expect(page).to have_content t('titles.account_locked')
-        expect(page).to have_content(/4:5\d/)
+        expect(page).to have_content(five_minute_countdown_regex)
 
         # let lockout period expire
         UpdateUser.new(
@@ -153,6 +154,21 @@ feature 'Two Factor Authentication' do
 
         visit profile_path
         expect(current_path).to eq root_path
+      end
+
+      it 'leaves the user on the lockout page during the entire lockout period', js: true do
+        Timecop.freeze do
+          allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+          allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+          five_minute_countdown_regex = /4:5\d/
+          allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+          user = create(:user, :signed_up, second_factor_locked_at: Time.zone.now)
+
+          signin(user.email, user.password)
+
+          expect(page).to have_content t('titles.account_locked')
+          expect(page).to have_content(five_minute_countdown_regex)
+        end
       end
     end
 
