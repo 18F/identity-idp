@@ -8,7 +8,9 @@ class Accordion extends Events {
     this.el = el;
     this.controls = [].slice.call(el.querySelectorAll('[aria-controls]'));
     this.content = el.querySelector('.accordion-content');
-    this.headerControl = el.querySelector('.accordion-header-control');
+    this.header = el.querySelector('.accordion-header-controls');
+    this.collapsedIcon = el.querySelector('.plus-icon');
+    this.shownIcon = el.querySelector('.minus-icon');
 
     this.handleClick = this.handleClick.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
@@ -31,19 +33,18 @@ class Accordion extends Events {
       const { animationName } = event;
 
       if (animationName === 'accordionOut') {
-        this.content.classList.add('display-none');
+        this.content.classList.remove('shown');
       }
     });
   }
 
   onInitialize() {
-    this.content.classList.add('display-none');
     this.setExpanded(false);
-    this.content.classList.remove('accordion-init');
+    this.collapsedIcon.classList.remove('display-none');
   }
 
   handleClick() {
-    const expandedState = this.headerControl.getAttribute('aria-expanded');
+    const expandedState = this.header.getAttribute('aria-expanded');
 
     if (expandedState === 'false') {
       this.open();
@@ -61,12 +62,14 @@ class Accordion extends Events {
   }
 
   setExpanded(bool) {
-    this.headerControl.setAttribute('aria-expanded', bool);
+    this.header.setAttribute('aria-expanded', bool);
   }
 
   open() {
     this.setExpanded(true);
-    this.content.classList.remove('display-none');
+    this.collapsedIcon.classList.add('display-none');
+    this.shownIcon.classList.remove('display-none');
+    this.content.classList.add('shown');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
     this.emit('accordion.show');
@@ -74,10 +77,12 @@ class Accordion extends Events {
 
   close() {
     this.setExpanded(false);
+    this.collapsedIcon.classList.remove('display-none');
+    this.shownIcon.classList.add('display-none');
     this.content.classList.remove('animate-in');
     this.content.classList.add('animate-out');
     this.emit('accordion.hide');
-    this.headerControl.focus();
+    this.header.focus();
   }
 }
 

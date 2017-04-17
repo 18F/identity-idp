@@ -13,7 +13,7 @@ shared_examples_for 'personal key page' do
   end
 
   context 'informational text' do
-    let(:accordion_control_selector) { generate_class_selector('accordion-header-control') }
+    let(:accordion_control_selector) { generate_class_selector('accordion-header-controls') }
     let(:content_selector) { generate_class_selector('accordion-content') }
 
     scenario 'it displays the personal key info header' do

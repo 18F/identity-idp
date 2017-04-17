@@ -248,17 +248,17 @@ feature 'IdV session' do
       _user = sign_in_and_2fa_user
 
       visit verify_session_path
-      expect(page).to have_css('.accordion-header-control',
+      expect(page).to have_css('.accordion-header-controls',
                                text: t('idv.form.previous_address_add'))
 
-      find('.accordion-header-control').click
+      click_accordion
       expect(page).to have_css('.accordion-header', text: t('links.remove'))
 
       fill_out_idv_previous_address_ok
       expect(find('#profile_prev_address1').value).to eq '456 Other Ave'
 
-      find('.accordion-header-control').click
-      find('.accordion-header-control').click
+      click_accordion
+      click_accordion
 
       expect(find('#profile_prev_address1').value).to eq ''
     end
@@ -401,5 +401,9 @@ feature 'IdV session' do
   def complete_idv_profile_fail
     fill_out_idv_form_fail
     click_button 'Continue'
+  end
+
+  def click_accordion
+    find('.accordion-header-controls').click
   end
 end

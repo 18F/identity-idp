@@ -46,7 +46,7 @@ feature 'LOA3 Single Sign On' do
 
       expect(current_path).to match sign_up_start_path
       expect(page).to have_content(sp_content)
-      expect(page).to have_css('.accordion-header-control',
+      expect(page).to have_css('.accordion-header-controls',
                                text: t('devise.registrations.start.accordion'))
     end
   end
