@@ -115,6 +115,8 @@ en:
         That security code is invalid. You can try entering it again or request a new
         one-time security code.
       invalid_personal_key: That personal key is invalid.
+      max_generic_login_attempts_reached: >
+        Your account is temporarily locked.
       max_otp_login_attempts_reached: >
         Your account is temporarily locked because you have entered the one-time
         security code incorrectly too many times.

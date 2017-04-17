@@ -150,7 +150,7 @@ feature 'Two Factor Authentication' do
         signin(user.email, user.password)
 
         expect(page).to have_content t('devise.two_factor_authentication.' \
-                                       'max_otp_login_attempts_reached')
+                                       'max_generic_login_attempts_reached')
 
         visit profile_path
         expect(current_path).to eq root_path
