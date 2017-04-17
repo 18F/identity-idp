@@ -82,7 +82,7 @@ describe Users::EmailsController do
     end
 
     context 'user updates with invalid email' do
-      it 'does not updated the user email to be the invalid email' do
+      it 'does not change the user email' do
         stub_sign_in(user)
         stub_analytics
         allow(@analytics).to receive(:track_event)
