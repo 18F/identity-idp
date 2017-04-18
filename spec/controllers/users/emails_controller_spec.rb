@@ -35,9 +35,7 @@ describe Users::EmailsController do
     end
 
     context 'user enters an empty email address' do
-      render_views
-
-      it 'displays an error message and does not delete the email' do
+      it 'does not delete the email' do
         stub_sign_in(user)
 
         stub_analytics
@@ -52,7 +50,6 @@ describe Users::EmailsController do
 
         put :update, update_user_email_form: { email: '' }
 
-        expect(response.body).to have_content invalid_email_message
         expect(user.reload.email).to be_present
         expect(@analytics).to have_received(:track_event).
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)
@@ -85,12 +82,11 @@ describe Users::EmailsController do
     end
 
     context 'user updates with invalid email' do
-      render_views
-
-      it 'displays error about invalid email' do
+      it 'does not change the user email' do
         stub_sign_in(user)
         stub_analytics
         allow(@analytics).to receive(:track_event)
+        invalid_email = 'foo'
 
         analytics_hash = {
           success: false,
@@ -99,17 +95,15 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, update_user_email_form: { email: 'foo' }
+        put :update, update_user_email_form: { email: invalid_email }
 
-        expect(response.body).to have_content(t('valid_email.validations.email.invalid'))
+        expect(user.reload.email).not_to eq invalid_email
         expect(@analytics).to have_received(:track_event).
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)
       end
     end
 
     context 'user submits the form without changing their email' do
-      render_views
-
       it 'redirects to profile page without any messages' do
         stub_sign_in(user)
 

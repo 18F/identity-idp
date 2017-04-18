@@ -42,8 +42,6 @@ describe Verify::PhoneController do
 
   describe '#create' do
     context 'when form is invalid' do
-      render_views
-
       before do
         user = build(:user, phone: '+1 (415) 555-0130')
         stub_verify_steps_one_and_two(user)
@@ -54,7 +52,6 @@ describe Verify::PhoneController do
       it 'renders #new' do
         put :create, idv_phone_form: { phone: '703' }
 
-        expect(response.body).to have_content invalid_phone_message
         expect(flash[:warning]).to be_nil
         expect(subject.idv_session.params).to be_empty
       end

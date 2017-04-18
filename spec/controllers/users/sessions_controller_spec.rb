@@ -3,15 +3,7 @@ require 'rails_helper'
 include ActionView::Helpers::DateHelper
 
 describe Users::SessionsController, devise: true do
-  render_views
-
   describe 'GET /users/sign_in' do
-    it 'sets the autocomplete attribute to off on the sign in form' do
-      get :new
-
-      expect(response.body).to include('<form autocomplete="off"')
-    end
-
     it 'clears the session when user is not yet 2fa-ed' do
       sign_in_before_2fa
 

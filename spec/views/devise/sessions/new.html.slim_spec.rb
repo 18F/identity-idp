@@ -9,6 +9,12 @@ describe 'devise/sessions/new.html.slim' do
     allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
   end
 
+  it 'sets autocomplete attribute off' do
+    render
+
+    expect(rendered).to match(/<form autocomplete="off"/)
+  end
+
   it 'has a localized title' do
     expect(view).to receive(:title).with(t('titles.visitors.index'))
 
