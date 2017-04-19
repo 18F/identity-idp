@@ -33,7 +33,7 @@ class PersonalKeyGenerator
     normed = plaintext_code.gsub(/\W/, '')
     split_length = RandomPhrase::WORD_LENGTH
     normed_length = normed.length
-    return INVALID_CODE unless normed_length == personal_key_length * split_length
+    return unless normed_length == personal_key_length * split_length
     encode_code(code: normed, length: normed_length, split: split_length)
   rescue ArgumentError, RegexpError
     INVALID_CODE
