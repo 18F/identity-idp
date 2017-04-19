@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+#
+# Print out the sha256 fingerprint for a x509 certificate.
+# Uses both the Fingerprinter Ruby library used by the app,
+# and the equivalent openssl command, just for comparison.
+# Usage:
+#  bin/fingerprint path/to/file.cert
+#
+
+require_relative '../lib/fingerprinter'
+
+ARGV.each do |cert|
+  cert_pem = File.read(cert)
+  fprint = Fingerprinter.fingerprint_cert(cert_pem)
+  puts "#{cert} => #{fprint.upcase.split(/(..)/).reject {|c| c.length == 0 }.join(':')}"
+  system("openssl x509 -sha256 -noout -fingerprint -in #{cert}")
+end

@@ -1,3 +1,5 @@
+require 'openssl'
+
 class Fingerprinter
   def self.fingerprint_cert(ssl_cert)
     return nil unless ssl_cert
