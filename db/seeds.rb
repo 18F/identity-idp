@@ -8,6 +8,7 @@ service_providers = YAML.load_file(Rails.root.join('config', 'service_providers.
                     fetch(Rails.env, {})
 
 service_providers.each do |issuer, config|
+  next if Figaro.env.chef_env == 'prod' && config['allow_on_prod_chef_env'] != 'true'
   ServiceProvider.find_or_create_by!(issuer: issuer) do |sp|
     sp.approved = true
     sp.active = true
