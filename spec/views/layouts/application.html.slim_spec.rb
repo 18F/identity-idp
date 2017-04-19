@@ -97,13 +97,13 @@ describe 'layouts/application.html.slim' do
     end
   end
 
-  context 'user is not fully authenticated' do
+  context 'current_user is present but is not fully authenticated' do
     before do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
     end
 
-    it 'renders the DAP analytics' do
+    it 'does not render the DAP analytics' do
       allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
 
       render
