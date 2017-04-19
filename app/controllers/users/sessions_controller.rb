@@ -55,7 +55,7 @@ module Users
       sign_out
       render(
         'two_factor_authentication/shared/max_login_attempts_reached',
-        locals: { type: 'otp', decorator: decorator }
+        locals: { type: 'generic', decorator: decorator }
       )
     end
 

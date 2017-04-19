@@ -103,6 +103,8 @@ es:
         Esa contraseña no es válida. Puede intentar volver a ingresarlo o solicitar una nueva
         Código de acceso único.
       invalid_personal_key: Ese código de recuperación no es válido.
+      max_generic_login_attempts_reached:
+        Su cuenta ha sido bloqueada temporalmente.
       max_otp_login_attempts_reached:
         Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.
