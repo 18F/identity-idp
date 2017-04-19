@@ -28,9 +28,9 @@ describe PersonalKeyForm do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: {}, extra: extra).and_return(result)
-        expect(form.personal_key).to be_nil
         expect(form.submit).to eq result
         expect(user.personal_key).to_not be_nil
+        expect(form.personal_key).to be_nil
       end
     end
   end

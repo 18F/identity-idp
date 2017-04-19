@@ -13,7 +13,11 @@ class PersonalKeyForm
   def submit
     @success = valid_personal_key?
 
-    UpdateUser.new(user: user, attributes: { personal_key: nil }).call if success
+    if success
+      UpdateUser.new(user: user, attributes: { personal_key: nil }).call
+    else
+      reset_sensitive_fields
+    end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
@@ -26,5 +30,9 @@ class PersonalKeyForm
     {
       multi_factor_auth_method: 'personal key',
     }
+  end
+
+  def reset_sensitive_fields
+    self.personal_key = nil
   end
 end
