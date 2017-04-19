@@ -40,7 +40,14 @@ class ApplicationController < ActionController::Base
   end
 
   def create_user_event(event_type, user = current_user)
-    Event.create(user_id: user.id, event_type: event_type)
+    Event.transaction do
+      Event.create!(user_id: user.id, event_type: event_type)
+      # Keep total number of events per user under MAX_EVENTS_PER_USER
+      events = Event.where(user_id: user.id).order('created_at ASC')
+      if events.count > Event::MAX_EVENTS_PER_USER
+        events.first.destroy
+      end
+    end
   end
 
   def decorated_session

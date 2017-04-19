@@ -137,5 +137,17 @@ describe ApplicationController do
         subject.create_user_event(:account_created, user)
       end
     end
+
+    it 'limits the number of events per user' do
+      real_user = build(:user)
+      real_user.save!
+      allow(subject).to receive(:current_user).and_return(real_user)
+      (0..Event::MAX_EVENTS_PER_USER*2).each do |i|
+        subject.create_user_event(:account_created)
+      end
+
+      events = Event.where(user_id: real_user.id)
+      expect(events.count).to eq(Event::MAX_EVENTS_PER_USER)
+    end
   end
 end

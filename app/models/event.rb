@@ -1,6 +1,8 @@
 class Event < ActiveRecord::Base
   belongs_to :user
 
+  MAX_EVENTS_PER_USER = 10
+
   enum event_type: {
     account_created: 1,
     phone_confirmed: 2,
