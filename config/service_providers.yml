@@ -245,6 +245,7 @@ production:
     cert: 'sp_micropurchase'
     agency: 'TTS Acquisition'
     logo: '18f.svg'
+    allow_on_prod_chef_env: 'true'
     friendly_name: 'Micro-purchase'
     return_to_sp_url: 'https://micropurchase.18f.gov'
     attribute_bundle:
@@ -293,21 +294,25 @@ production:
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
+    allow_on_prod_chef_env: 'true'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:cert:app':
     redirect_uri: 'gov.dhs.cbp.jobs.applicant.cert://result'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
+    allow_on_prod_chef_env: 'true'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod':
     redirect_uri: 'https://careers.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
+    allow_on_prod_chef_env: 'true'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod:app':
     redirect_uri: 'gov.dhs.cbp.jobs.applicant://result'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
+    allow_on_prod_chef_env: 'true'
