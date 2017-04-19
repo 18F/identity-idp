@@ -8,9 +8,13 @@ $radio-checkbox-space: 1.5rem;
   }
 }
 
+// scss-lint:disable QualifyingElement
+// Disabling for now as our current designs don't have any instances
+// of input buttons that shouldn't have line breaks on small screen sizes
 input[type=submit] {
   white-space: normal;
 }
+// scss-lint:enable QualifyingElement
 
 label {
   display: inline-block;
