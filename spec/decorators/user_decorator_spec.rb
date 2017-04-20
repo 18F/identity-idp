@@ -63,12 +63,222 @@ describe UserDecorator do
     end
   end
 
-  describe '#pending_profile' do
-    it 'returns Profile awaiting USPS confirmation' do
-      profile = create(:profile, deactivation_reason: :verification_pending)
-      user_decorator = UserDecorator.new(profile.user)
+  describe '#pending_profile_requires_verification?' do
+    it 'returns false when no pending profile exists' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return(nil)
 
-      expect(user_decorator.pending_profile).to eq profile
+      expect(user_decorator.pending_profile_requires_verification?).to eq false
+    end
+
+    it 'returns true when pending profile exists and identity is not verified' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return('profile')
+      allow(user_decorator).to receive(:identity_not_verified?).and_return(true)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq true
+    end
+
+    it 'returns false when active profile is newer than pending profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return('profile')
+      allow(user_decorator).to receive(:identity_not_verified?).and_return(false)
+      allow(user_decorator).to receive(:active_profile_newer_than_pending_profile?).
+        and_return(true)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq false
+    end
+
+    it 'returns true when pending profile is newer than active profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return('profile')
+      allow(user_decorator).to receive(:identity_not_verified?).and_return(false)
+      allow(user_decorator).to receive(:active_profile_newer_than_pending_profile?).
+        and_return(false)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq true
+    end
+  end
+
+  describe '#pending_profile' do
+    context 'when a profile with a verification_pending deactivation_reason exists' do
+      it 'returns the most recent profile' do
+        user = User.new
+        _old_profile = create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          created_at: 1.day.ago,
+          user: user
+        )
+        new_profile = create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          user: user
+        )
+        user_decorator = UserDecorator.new(user)
+
+        expect(user_decorator.pending_profile).to eq new_profile
+      end
+    end
+
+    context 'when a verification_pending profile does not exist' do
+      it 'returns nil' do
+        user = User.new
+        create(
+          :profile,
+          deactivation_reason: :password_reset,
+          created_at: 1.day.ago,
+          user: user
+        )
+        create(
+          :profile,
+          deactivation_reason: :encryption_error,
+          user: user
+        )
+        user_decorator = UserDecorator.new(user)
+
+        expect(user_decorator.pending_profile).to be_nil
+      end
+    end
+  end
+
+  describe '#identity_not_verified?' do
+    it 'returns true if identity_verified returns false' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:identity_verified?).and_return(false)
+
+      expect(user_decorator.identity_not_verified?).to eq true
+    end
+
+    it 'returns false if identity_verified returns true' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:identity_verified?).and_return(true)
+
+      expect(user_decorator.identity_not_verified?).to eq false
+    end
+  end
+
+  describe '#identity_verified?' do
+    it 'returns true if user has an active profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(Profile.new)
+
+      expect(user_decorator.identity_verified?).to eq true
+    end
+
+    it 'returns false if user does not have an active profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(nil)
+
+      expect(user_decorator.identity_verified?).to eq false
+    end
+  end
+
+  describe '#active_profile_newer_than_pending_profile?' do
+    it 'returns true if the active profile is newer than the pending profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: Time.zone.now))
+      allow(user_decorator).to receive(:pending_profile).
+        and_return(Profile.new(created_at: 1.day.ago))
+
+      expect(user_decorator.active_profile_newer_than_pending_profile?).to eq true
+    end
+
+    it 'returns false if the active profile is older than the pending profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: 1.day.ago))
+      allow(user_decorator).to receive(:pending_profile).
+        and_return(Profile.new(created_at: Time.zone.now))
+
+      expect(user_decorator.active_profile_newer_than_pending_profile?).to eq false
+    end
+  end
+
+  describe '#needs_profile_phone_verification?' do
+    context 'pending profile does not require verification' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(false)
+
+        expect(user_decorator.needs_profile_phone_verification?).to eq false
+      end
+    end
+
+    context 'pending profile requires verification and phone is confirmed' do
+      it 'returns true' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: true))
+
+        expect(user_decorator.needs_profile_phone_verification?).to eq true
+      end
+    end
+
+    context 'pending profile requires verification and phone is not confirmed' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: false))
+
+        expect(user_decorator.needs_profile_phone_verification?).to eq false
+      end
+    end
+  end
+
+  describe '#needs_profile_usps_verification?' do
+    context 'pending profile does not require verification' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(false)
+
+        expect(user_decorator.needs_profile_usps_verification?).to eq false
+      end
+    end
+
+    context 'pending profile requires verification and phone is not confirmed' do
+      it 'returns true' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: false))
+
+        expect(user_decorator.needs_profile_usps_verification?).to eq true
+      end
+    end
+
+    context 'pending profile requires verification and phone is confirmed' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: true))
+
+        expect(user_decorator.needs_profile_usps_verification?).to eq false
+      end
     end
   end
 

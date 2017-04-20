@@ -1,5 +1,6 @@
 module Users
   class VerifyAccountController < ApplicationController
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_verification_needed
 
     def index
@@ -10,7 +11,7 @@ module Users
       @verify_account_form = build_verify_account_form
       if @verify_account_form.submit
         flash[:success] = t('account.index.verification.success')
-        redirect_to account_path
+        redirect_to after_sign_in_path_for(current_user)
       else
         render :index
       end
@@ -31,12 +32,15 @@ module Users
     end
 
     def confirm_verification_needed
-      current_user.active_profile.blank? && current_user.decorate.pending_profile.present?
+      return if current_user.decorate.pending_profile_requires_verification?
+      redirect_to account_url
     end
 
     def decrypted_pii
-      cacher = Pii::Cacher.new(current_user, user_session)
-      cacher.fetch
+      @_decrypted_pii ||= begin
+        cacher = Pii::Cacher.new(current_user, user_session)
+        cacher.fetch
+      end
     end
   end
 end

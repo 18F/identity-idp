@@ -15,7 +15,9 @@ describe Verify::ConfirmationsController do
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
-      normalized_applicant: normalized_applicant
+      normalized_applicant: normalized_applicant,
+      vendor: :mock,
+      phone_confirmed: true
     )
     profile = profile_maker.profile
     idv_session.pii = profile_maker.pii_attributes

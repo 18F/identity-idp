@@ -2,10 +2,12 @@ module Idv
   class ProfileMaker
     attr_reader :pii_attributes, :profile
 
-    def initialize(applicant:, user:, normalized_applicant:)
+    def initialize(applicant:, user:, normalized_applicant:, vendor:, phone_confirmed:)
       @profile = Profile.new(user: user, deactivation_reason: :verification_pending)
       @pii_attributes = pii_from_applicant(applicant, normalized_applicant)
       profile.encrypt_pii(user.user_access_key, pii_attributes)
+      profile.vendor = vendor
+      profile.phone_confirmed = phone_confirmed
       profile.save!
     end
 

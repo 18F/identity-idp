@@ -1,6 +1,7 @@
 module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
+    include VerifyProfileConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :store_request, only: [:index]
@@ -11,10 +12,9 @@ module OpenidConnect
 
     def index
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-      return redirect_to verify_url if identity_needs_verification?
+      return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
 
       track_index_action_analytics
-
       return create if already_allowed?
 
       render(@success ? :index : :error)
@@ -44,6 +44,15 @@ module OpenidConnect
     end
 
     private
+
+    def redirect_to_account_or_verify_profile_url
+      return redirect_to account_or_verify_profile_url if profile_needs_verification?
+      redirect_to verify_url if identity_needs_verification?
+    end
+
+    def profile_or_identity_needs_verification?
+      profile_needs_verification? || identity_needs_verification?
+    end
 
     def track_index_action_analytics
       @success = @authorize_form.valid?

@@ -100,7 +100,7 @@ describe 'accounts/show.html.slim' do
 
   context 'when current user has pending_profile' do
     before do
-      allow(decorated_user).to receive(:pending_profile).and_return(true)
+      allow(decorated_user).to receive(:pending_profile).and_return(build(:profile))
     end
 
     it 'contains a link to activate profile' do

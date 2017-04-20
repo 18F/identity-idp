@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   include UserSessionContext
+  include VerifyProfileConcern
 
   FLASH_KEYS = %w[alert error notice success warning].freeze
 
@@ -83,7 +84,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_path
-    user_fully_authenticated? ? account_path : user_two_factor_authentication_path
+    user_fully_authenticated? ? account_or_verify_profile_path : user_two_factor_authentication_path
   end
 
   def reauthn_param

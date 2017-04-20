@@ -43,11 +43,6 @@ module Idv
     end
 
     def cache_applicant_profile_id
-      profile_maker = Idv::ProfileMaker.new(
-        applicant: Proofer::Applicant.new(applicant_params),
-        normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
-        user: current_user
-      )
       profile = profile_maker.profile
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
@@ -78,13 +73,15 @@ module Idv
 
     def complete_profile
       profile.verified_at = Time.zone.now
-      profile.vendor = vendor
       profile.activate
       move_pii_to_user_session
     end
 
     def create_usps_entry
       move_pii_to_user_session
+      if pii.is_a?(String)
+        self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
+      end
       UspsConfirmationMaker.new(pii: pii).perform
     end
 
@@ -119,6 +116,16 @@ module Idv
 
     def applicant_params_ascii
       Hash[applicant_params.map { |key, value| [key, value.to_ascii] }]
+    end
+
+    def profile_maker
+      @_profile_maker ||= Idv::ProfileMaker.new(
+        applicant: Proofer::Applicant.new(applicant_params),
+        normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
+        phone_confirmed: phone_confirmation || false,
+        user: current_user,
+        vendor: vendor
+      )
     end
   end
 end
