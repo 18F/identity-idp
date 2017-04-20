@@ -31,7 +31,8 @@ RSpec.describe OpenidConnect::TokenController do
     end
 
     let!(:identity) do
-      IdentityLinker.new(user, client_id).link_identity(rails_session_id: SecureRandom.hex, ial: 1)
+      IdentityLinker.new(user, ServiceProvider.from_issuer(client_id)).
+        link_identity(rails_session_id: SecureRandom.hex, ial: 1)
     end
 
     context 'with valid params' do
