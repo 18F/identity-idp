@@ -21,6 +21,7 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
     event.payload[:timestamp] = event.time
+    event.payload[:uuid] = SecureRandom.uuid
     event.payload.except(:params)
   end
   config.lograge.ignore_actions = ['Users::SessionsController#active']
