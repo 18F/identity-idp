@@ -13,10 +13,10 @@ en:
         resetting your password.
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive an email?
-      resend_email_success: We have resent your password reset email.
+      resend_email_success: We sent another password reset email.
     password_changed: You changed your password.
     resend_confirmation_email:
-      success: We resent your confirmation email.
+      success: We sent another confirmation email.
     send_code:
       personal_key: You have a new personal key.
     timeout_warning:
