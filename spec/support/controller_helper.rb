@@ -36,13 +36,6 @@ module ControllerHelper
     user_session = {}
     stub_sign_in(user)
     idv_session = Idv::Session.new(user_session, user)
-    idv_session.resolution = Proofer::Resolution.new(
-      success: true,
-      session_id: 'some-id',
-      vendor_resp: Proofer::Vendor::MockResponse.new(
-        normalized_applicant: Proofer::Applicant.new(first_name: 'Somebody')
-      )
-    )
     idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
     idv_session.vendor = subject.idv_vendor.pick
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)

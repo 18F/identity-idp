@@ -9,7 +9,6 @@ describe Verify::ConfirmationsController do
     idv_session = Idv::Session.new(subject.user_session, user)
     idv_session.vendor = :mock
     idv_session.applicant = idv_session.vendor_params
-    idv_session.resolution = resolution
     idv_session.normalized_applicant_params = { first_name: 'Somebody' }
     idv_session.resolution_successful = resolution.success?
     user.unlock_user_access_key(password)

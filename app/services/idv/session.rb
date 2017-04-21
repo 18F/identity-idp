@@ -11,7 +11,6 @@ module Idv
       profile_confirmation
       profile_id
       personal_key
-      resolution
       resolution_successful
       step_attempts
       vendor
@@ -40,7 +39,7 @@ module Idv
     end
 
     def proofing_started?
-      resolution.present? && applicant.present? && resolution_successful
+      applicant.present? && resolution_successful
     end
 
     def cache_applicant_profile_id

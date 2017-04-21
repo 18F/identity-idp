@@ -7,7 +7,7 @@ module Idv
       @success = complete?
 
       increment_attempts_count if form_valid?
-      update_idv_session
+      update_idv_session if success
 
       FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
     end
@@ -62,25 +62,10 @@ module Idv
     end
 
     def update_idv_session
-      idv_session.profile_confirmation = success
-      idv_session.resolution = proofer_resolution
-      idv_session.vendor_session_id = proofer_resolution.session_id
-      idv_session.normalized_applicant_params = normalized_applicant_to_hash
-      idv_session.resolution_successful = proofer_resolution.success?
-    end
-
-    def proofer_resolution
-      @resolution ||= vendor_validator.result
-    end
-
-    def normalized_applicant
-      @normalized_applicant ||= proofer_resolution.vendor_resp.normalized_applicant
-    end
-
-    def normalized_applicant_to_hash
-      normalized_applicant.instance_variables.each_with_object({}) do |var, hash|
-        hash[var.to_s.delete('@')] = normalized_applicant.instance_variable_get(var)
-      end
+      idv_session.profile_confirmation = true
+      idv_session.vendor_session_id = vendor_validator.session_id
+      idv_session.normalized_applicant_params = vendor_validator.normalized_applicant.to_hash
+      idv_session.resolution_successful = true
     end
 
     def extra_analytics_attributes

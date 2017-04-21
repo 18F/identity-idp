@@ -7,7 +7,6 @@ describe Idv::PhoneStep do
   let(:idv_session) do
     idvs = Idv::Session.new({}, user)
     idvs.vendor = :mock
-    idvs.resolution = Proofer::Resolution.new session_id: 'some-id'
     idvs.applicant = Proofer::Applicant.new first_name: 'Some'
     idvs
   end

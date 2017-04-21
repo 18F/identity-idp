@@ -49,7 +49,6 @@ TooManyMethods:
     - OpenidConnectAuthorizeForm
     - Idv::Session
     - User
-    - Idv::ProfileStep
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

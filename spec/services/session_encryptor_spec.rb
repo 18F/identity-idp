@@ -8,6 +8,7 @@ describe SessionEncryptor do
       expect(SessionEncryptor.load(session)).to eq('foo' => 'bar')
     end
 
+    # rubocop:disable Security/MarshalLoad
     context 'value previously serialized with Marshal and Base64 encoded' do
       it 'decrypts the session and then calls .dump' do
         plain = ::Base64.encode64(Marshal.dump(foo: 'bar'))
@@ -24,6 +25,7 @@ describe SessionEncryptor do
         expect(SessionEncryptor).to have_received(:dump).with(decoded_session)
       end
     end
+    # rubocop:enable Security/MarshalLoad
   end
 
   describe '#dump' do

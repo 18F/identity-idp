@@ -40,7 +40,6 @@ describe Idv::ProfileStep do
         with(success: true, errors: {}, extra: extra).and_return(result)
       expect(step.submit).to eq result
       expect(idv_session.profile_confirmation).to eq true
-      expect(idv_session.resolution).to be_a Proofer::Resolution
     end
 
     it 'fails with invalid SSN' do
@@ -57,7 +56,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails when form validation fails' do
@@ -74,7 +73,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails with invalid first name' do
@@ -91,7 +90,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails with invalid ZIP code on current address' do
@@ -108,7 +107,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails with invalid ZIP code on previous address' do
@@ -125,7 +124,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'increments attempts count if the form is valid' do
