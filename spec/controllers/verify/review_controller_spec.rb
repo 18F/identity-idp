@@ -13,6 +13,7 @@ describe Verify::ReviewController do
   end
   let(:raw_zipcode) { '66044' }
   let(:norm_zipcode) { '66044-1234' }
+  let(:normalized_first_name) { 'JOSE' }
   let(:user_attrs) do
     {
       first_name: 'José',
@@ -34,8 +35,11 @@ describe Verify::ReviewController do
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
     idv_session.params = user_attrs
-    vendor = Proofer::Vendor::Mock.new(applicant: idv_session.applicant_from_params)
+    vendor = Proofer::Vendor::Mock.new(applicant: idv_session.vendor_params)
     idv_session.resolution = vendor.start
+    idv_session.normalized_applicant_params = user_attrs.merge(
+      zipcode: norm_zipcode, first_name: normalized_first_name
+    )
     idv_session
   end
 
@@ -192,7 +196,7 @@ describe Verify::ReviewController do
     context 'user has completed all steps' do
       before do
         idv_session.params = user_attrs
-        idv_session.applicant = idv_session.applicant_from_params
+        idv_session.applicant = idv_session.vendor_params
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
@@ -214,7 +218,7 @@ describe Verify::ReviewController do
         expect(pii.zipcode.raw).to eq raw_zipcode
         expect(pii.zipcode.norm).to eq norm_zipcode
 
-        expect(idv_session.applicant.first_name).to eq 'Jose'
+        expect(idv_session.applicant[:first_name]).to eq 'Jose'
         expect(pii.first_name.raw).to eq 'José'
         expect(pii.first_name.norm).to eq 'JOSE'
       end
@@ -223,8 +227,8 @@ describe Verify::ReviewController do
     context 'user has entered different phone number from MFA' do
       before do
         idv_session.params = user_attrs.merge(phone: '213-555-1000')
-        idv_session.applicant = idv_session.applicant_from_params
-        idv_session.address_verification_mechanism = :phone
+        idv_session.applicant = idv_session.vendor_params
+        idv_session.address_verification_mechanism = 'phone'
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end

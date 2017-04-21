@@ -5,7 +5,7 @@ module Verify
     before_action :confirm_step_needed
 
     def index
-      @applicant = idv_session.resolution.vendor_resp.normalized_applicant
+      @applicant = idv_session.normalized_applicant_params
     end
 
     def create

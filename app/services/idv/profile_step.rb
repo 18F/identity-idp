@@ -34,7 +34,7 @@ module Idv
     end
 
     def vendor_params
-      idv_session.applicant_from_params
+      idv_session.vendor_params
     end
 
     def submit_idv_form
@@ -63,7 +63,24 @@ module Idv
 
     def update_idv_session
       idv_session.profile_confirmation = success
-      idv_session.resolution = vendor_validator.result
+      idv_session.resolution = proofer_resolution
+      idv_session.vendor_session_id = proofer_resolution.session_id
+      idv_session.normalized_applicant_params = normalized_applicant_to_hash
+      idv_session.resolution_successful = proofer_resolution.success?
+    end
+
+    def proofer_resolution
+      @resolution ||= vendor_validator.result
+    end
+
+    def normalized_applicant
+      @normalized_applicant ||= proofer_resolution.vendor_resp.normalized_applicant
+    end
+
+    def normalized_applicant_to_hash
+      normalized_applicant.instance_variables.each_with_object({}) do |var, hash|
+        hash[var.to_s.delete('@')] = normalized_applicant.instance_variable_get(var)
+      end
     end
 
     def extra_analytics_attributes

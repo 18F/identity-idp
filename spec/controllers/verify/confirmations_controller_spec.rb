@@ -8,8 +8,10 @@ describe Verify::ConfirmationsController do
     stub_sign_in(user)
     idv_session = Idv::Session.new(subject.user_session, user)
     idv_session.vendor = :mock
-    idv_session.applicant = applicant
+    idv_session.applicant = idv_session.vendor_params
     idv_session.resolution = resolution
+    idv_session.normalized_applicant_params = { first_name: 'Somebody' }
+    idv_session.resolution_successful = resolution.success?
     user.unlock_user_access_key(password)
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
@@ -114,7 +116,7 @@ describe Verify::ConfirmationsController do
 
     context 'user picked USPS confirmation' do
       before do
-        subject.idv_session.address_verification_mechanism = :usps
+        subject.idv_session.address_verification_mechanism = 'usps'
       end
 
       it 'leaves profile deactivated' do

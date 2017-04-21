@@ -17,7 +17,7 @@ describe Verify::AddressController do
     end
 
     it 'redirects if usps mechanism selected' do
-      subject.idv_session.address_verification_mechanism = :usps
+      subject.idv_session.address_verification_mechanism = 'usps'
 
       get :index
 
