@@ -63,7 +63,7 @@ module OpenidConnect
     end
 
     def already_allowed?
-      IdentityLinker.new(current_user, @authorize_form.client_id).already_linked?
+      IdentityLinker.new(current_user, service_provider).already_linked?
     end
 
     def apply_secure_headers_override
@@ -110,7 +110,7 @@ module OpenidConnect
 
       @request_id = SecureRandom.uuid
       ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
-        sp_request.issuer = @authorize_form.client_id
+        sp_request.service_provider = service_provider
         sp_request.loa = @authorize_form.acr_values.sort.max
         sp_request.url = request.original_url
       end
@@ -125,6 +125,10 @@ module OpenidConnect
         request_id: @request_id,
         request_url: request.original_url,
       }
+    end
+
+    def service_provider
+      @_service_provider ||= ServiceProvider.from_issuer(@authorize_form.client_id)
     end
   end
 end

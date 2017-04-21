@@ -1,11 +1,13 @@
 require 'rails_helper'
 
 describe IdentityLinker do
+  let(:service_provider) { ServiceProvider.from_issuer('test.host') }
+
   describe '#link_identity' do
     let(:user) { create(:user) }
 
     it "updates user's last authenticated identity" do
-      IdentityLinker.new(user, 'test.host').link_identity
+      IdentityLinker.new(user, service_provider).link_identity
       user.reload
 
       last_identity = user.last_identity
@@ -32,7 +34,7 @@ describe IdentityLinker do
       scope = 'openid profile email'
       code_challenge = SecureRandom.hex
 
-      IdentityLinker.new(user, 'test.host').link_identity(
+      IdentityLinker.new(user, service_provider).link_identity(
         rails_session_id: rails_session_id,
         nonce: nonce,
         ial: ial,
@@ -50,28 +52,29 @@ describe IdentityLinker do
     end
 
     it 'rejects bad attributes names' do
-      expect { IdentityLinker.new(user, 'test.host').link_identity(foobar: true) }.
+      expect { IdentityLinker.new(user, service_provider).link_identity(foobar: true) }.
         to raise_error(ArgumentError)
     end
 
     it 'fails when given a nil provider' do
       linker = IdentityLinker.new(user, nil)
-      expect { linker.link_identity }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { linker.link_identity }.to raise_error(ArgumentError)
     end
 
     it 'can link two different clients to the same rails_session_id' do
       rails_session_id = SecureRandom.uuid
 
-      IdentityLinker.new(user, 'client1').link_identity(rails_session_id: rails_session_id)
-      IdentityLinker.new(user, 'client2').link_identity(rails_session_id: rails_session_id)
+      IdentityLinker.new(user, ServiceProvider.from_issuer('client1')).
+        link_identity(rails_session_id: rails_session_id)
+      IdentityLinker.new(user, ServiceProvider.from_issuer('client2')).
+        link_identity(rails_session_id: rails_session_id)
     end
   end
 
   describe '#already_linked?' do
     let(:user) { create(:user) }
-    let(:provider) { 'test.host' }
 
-    subject(:identity_linker) { IdentityLinker.new(user, provider) }
+    subject(:identity_linker) { IdentityLinker.new(user, service_provider) }
 
     it 'is false before an identity has been linked' do
       expect(identity_linker.already_linked?).to eq(false)

@@ -92,7 +92,7 @@ feature 'OpenID Connect' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       user = user_with_2fa
 
-      IdentityLinker.new(user, client_id).link_identity
+      IdentityLinker.new(user, ServiceProvider.from_issuer(client_id)).link_identity
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -124,7 +124,7 @@ feature 'OpenID Connect' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       user = user_with_2fa
 
-      IdentityLinker.new(user, client_id).link_identity
+      IdentityLinker.new(user, ServiceProvider.from_issuer(client_id)).link_identity
 
       visit openid_connect_authorize_path(
         client_id: client_id,

@@ -63,7 +63,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
         context 'user has already approved this application' do
           before do
-            IdentityLinker.new(user, client_id).link_identity
+            IdentityLinker.new(user, ServiceProvider.from_issuer(client_id)).link_identity
           end
 
           it 'redirects to the redirect_uri immediately' do

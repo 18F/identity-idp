@@ -2,6 +2,10 @@ class Identity < ActiveRecord::Base
   include NonNullUuid
 
   belongs_to :user
+  belongs_to :sp,
+             class_name: 'ServiceProvider',
+             foreign_key: :service_provider,
+             primary_key: :issuer
   validates :service_provider, presence: true
 
   def deactivate

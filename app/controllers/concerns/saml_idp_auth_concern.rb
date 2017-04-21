@@ -27,7 +27,7 @@ module SamlIdpAuthConcern
 
     @request_id = SecureRandom.uuid
     ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
-      sp_request.issuer = current_issuer
+      sp_request.service_provider = current_service_provider
       sp_request.loa = requested_authn_context
       sp_request.url = request.original_url
     end

@@ -1,9 +1,9 @@
 class IdentityLinker
-  attr_reader :user, :provider
+  attr_reader :user, :service_provider
 
-  def initialize(user, provider)
+  def initialize(user, service_provider)
     @user = user
-    @provider = provider
+    @service_provider = service_provider
   end
 
   def link_identity(**extra_attrs)
@@ -23,7 +23,8 @@ class IdentityLinker
   end
 
   def identity_relation
-    user.identities.where(service_provider: provider)
+    raise ArgumentError, 'service_provider must have an issuer' if service_provider&.issuer.nil?
+    user.identities.where(service_provider: service_provider.issuer)
   end
 
   def merged_attributes(extra_attrs)
