@@ -65,12 +65,23 @@ RSpec.describe ServiceProviderSessionDecorator do
   describe '#sp_logo' do
     context 'service provider has a logo' do
       it 'returns the logo' do
-        sp_logo = 'real_logo.svg'
+        sp_logo = 'cbp.png'
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
         subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
 
         expect(subject.sp_logo).to eq sp_logo
+      end
+
+      context 'sp logo refers to non-existent file' do
+        it 'returns the default logo' do
+          sp_logo = 'fake-logo.png'
+          sp = build_stubbed(:service_provider, logo: sp_logo)
+
+          subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+
+          expect(subject.sp_logo).to eq 'generic.svg'
+        end
       end
     end
 

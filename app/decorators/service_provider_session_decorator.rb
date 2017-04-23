@@ -7,7 +7,11 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_logo
-    sp.logo || DEFAULT_LOGO
+    if sp_logo_file_exist?
+      sp.logo
+    else
+      DEFAULT_LOGO
+    end
   end
 
   def return_to_service_provider_partial
@@ -45,4 +49,18 @@ class ServiceProviderSessionDecorator
   private
 
   attr_reader :sp, :view_context
+
+  def sp_logo_file_exist?
+    rails_app = Rails.application
+
+    if Rails.configuration.assets.compile
+      rails_app.precompiled_assets.include?(sp_logo_path)
+    else
+      rails_app.assets_manifest.assets[sp_logo_path].present?
+    end
+  end
+
+  def sp_logo_path
+    "sp-logos/#{sp.logo}"
+  end
 end
