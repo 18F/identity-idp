@@ -1,6 +1,17 @@
 require 'rails_helper'
 
 RSpec.describe URIService do
+  describe '.params' do
+    it 'parses params out as a hash from a URI' do
+      uri = 'https://example.com/foo/bar?a=b&c=d'
+
+      params = URIService.params(uri)
+
+      expect(params).to eq('a' => 'b', 'c' => 'd')
+      expect(params).to include(a: 'b', c: 'd'), 'also supports indifferent access'
+    end
+  end
+
   describe '.add_params' do
     it 'adds params to uris and escapes them correctly' do
       original_uri = 'https://example.com/foo/bar/'

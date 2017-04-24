@@ -23,13 +23,13 @@ describe VoiceOtpSenderJob do
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
 
       code = '1234'.scan(/\d/).join(', ')
-      query = Rack::Utils.parse_nested_query(URI(call.url).query)
+      query = URIService.params(call.url)
       expect(query['Message']).to eq(t('jobs.voice_otp_sender_job.message_repeat', code: code))
 
       nested_query = query
       while nested_query['Options']
         nested_url = URI(nested_query['Options']['1'])
-        nested_query = Rack::Utils.parse_nested_query(nested_url.query)
+        nested_query = URIService.params(nested_url)
       end
       expect(nested_query['Message']['0']).
         to eq(t('jobs.voice_otp_sender_job.message_final', code: code))
