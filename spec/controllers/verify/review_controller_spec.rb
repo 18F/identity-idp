@@ -35,8 +35,6 @@ describe Verify::ReviewController do
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
     idv_session.params = user_attrs
-    vendor = Proofer::Vendor::Mock.new(applicant: idv_session.vendor_params)
-    idv_session.resolution = vendor.start
     idv_session.normalized_applicant_params = user_attrs.merge(
       zipcode: norm_zipcode, first_name: normalized_first_name
     )

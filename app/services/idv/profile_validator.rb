@@ -1,7 +1,13 @@
 module Idv
   class ProfileValidator < VendorValidator
+    delegate :session_id, to: :result
+
     def result
       @_result ||= try_start
+    end
+
+    def normalized_applicant
+      result.vendor_resp.normalized_applicant
     end
 
     private

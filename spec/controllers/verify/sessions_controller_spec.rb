@@ -247,19 +247,19 @@ describe Verify::SessionsController do
         it 'fails if previous address has bad zipcode' do
           post :create, profile: user_attrs.merge(previous_address).merge(prev_zipcode: bad_zipcode)
 
-          expect(idv_session.resolution.success?).to eq false
+          expect(idv_session.resolution_successful).to be_nil
         end
 
         it 'fails if current address has bad zipcode' do
           post :create, profile: user_attrs.merge(previous_address).merge(zipcode: bad_zipcode)
 
-          expect(idv_session.resolution.success?).to eq false
+          expect(idv_session.resolution_successful).to be_nil
         end
 
         it 'respects both addresses' do
           post :create, profile: user_attrs.merge(previous_address)
 
-          expect(idv_session.resolution.success?).to eq true
+          expect(idv_session.resolution_successful).to eq true
         end
       end
     end
