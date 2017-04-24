@@ -57,7 +57,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
       it 'links an identity for this client with the code as the session_uuid' do
         redirect_uri = URI(result.to_h[:redirect_uri])
-        code = Rack::Utils.parse_nested_query(redirect_uri.query).with_indifferent_access[:code]
+        code = URIService.params(redirect_uri)[:code]
 
         identity = user.identities.where(service_provider: client_id).first
         expect(identity.session_uuid).to eq(code)
@@ -296,8 +296,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     subject(:decline_redirect_uri) { form.decline_redirect_uri }
 
     it 'is an access_denied error' do
-      uri = URI(decline_redirect_uri)
-      redirect_params = Rack::Utils.parse_nested_query(uri.query).with_indifferent_access
+      redirect_params = URIService.params(decline_redirect_uri).with_indifferent_access
 
       expect(redirect_params[:error]).to eq('access_denied')
       expect(redirect_params[:state]).to eq(state)

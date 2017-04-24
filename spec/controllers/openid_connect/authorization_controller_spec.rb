@@ -188,8 +188,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       it 'redirects back to the client app with a access_denied' do
         action
 
-        redirect_uri = URI(response.location)
-        redirect_params = Rack::Utils.parse_nested_query(redirect_uri.query).with_indifferent_access
+        redirect_params = URIService.params(response.location)
 
         expect(redirect_params[:error]).to eq('access_denied')
         expect(redirect_params[:state]).to eq(params[:state])

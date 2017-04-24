@@ -21,9 +21,7 @@ module TwoFactorAuthenticatable
   def apply_secure_headers_override
     return unless stored_url_for_user&.start_with?(openid_connect_authorize_path)
 
-    authorize_params = Rack::Utils.parse_nested_query(
-      URI(stored_url_for_user).query
-    ).with_indifferent_access
+    authorize_params = URIService.params(stored_url_for_user)
 
     authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
 
