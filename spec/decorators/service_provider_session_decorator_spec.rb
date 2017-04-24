@@ -2,7 +2,9 @@ require 'rails_helper'
 
 RSpec.describe ServiceProviderSessionDecorator do
   let(:view_context) { ActionController::Base.new.view_context }
-  subject { ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context) }
+  subject do
+    ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context, sp_session: {})
+  end
   let(:sp) { build_stubbed(:service_provider) }
   let(:sp_name) { subject.sp_name }
 
@@ -56,7 +58,9 @@ RSpec.describe ServiceProviderSessionDecorator do
 
     it 'returns the agency name if friendly name is not present' do
       sp = build_stubbed(:service_provider, friendly_name: nil)
-      subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+      subject = ServiceProviderSessionDecorator.new(
+        sp: sp, view_context: view_context, sp_session: {}
+      )
       expect(subject.sp_name).to eq sp.agency
       expect(subject.sp_name).to_not be_nil
     end
@@ -68,7 +72,9 @@ RSpec.describe ServiceProviderSessionDecorator do
         sp_logo = 'real_logo.svg'
         sp = build_stubbed(:service_provider, logo: sp_logo)
 
-        subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+        subject = ServiceProviderSessionDecorator.new(
+          sp: sp, view_context: view_context, sp_session: {}
+        )
 
         expect(subject.sp_logo).to eq sp_logo
       end
@@ -78,7 +84,9 @@ RSpec.describe ServiceProviderSessionDecorator do
       it 'returns the default logo' do
         sp = build_stubbed(:service_provider, logo: nil)
 
-        subject = ServiceProviderSessionDecorator.new(sp: sp, view_context: view_context)
+        subject = ServiceProviderSessionDecorator.new(
+          sp: sp, view_context: view_context, sp_session: {}
+        )
 
         expect(subject.sp_logo).to eq 'generic.svg'
       end

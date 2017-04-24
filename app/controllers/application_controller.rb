@@ -44,7 +44,9 @@ class ApplicationController < ActionController::Base
   end
 
   def decorated_session
-    @_decorated_session ||= DecoratedSession.new(sp: current_sp, view_context: view_context).call
+    @_decorated_session ||= DecoratedSession.new(
+      sp: current_sp, view_context: view_context, sp_session: sp_session
+    ).call
   end
 
   private

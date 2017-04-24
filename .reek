@@ -38,6 +38,9 @@ RepeatedConditional:
 TooManyConstants:
   exclude:
     - Analytics
+TooManyInstanceVariables:
+  exclude:
+    - OpenidConnectAuthorizeForm
 TooManyStatements:
   max_statements: 6
   exclude:
