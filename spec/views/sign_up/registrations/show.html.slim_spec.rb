@@ -32,8 +32,9 @@ describe 'sign_up/registrations/show.html.slim' do
     before do
       @sp = build_stubbed(:service_provider, friendly_name: 'Awesome Application!')
       view_context = ActionController::Base.new.view_context
-      allow(view).to receive(:decorated_session).
-        and_return(ServiceProviderSessionDecorator.new(sp: @sp, view_context: view_context))
+      allow(view).to receive(:decorated_session).and_return(
+        ServiceProviderSessionDecorator.new(sp: @sp, view_context: view_context, sp_session: {})
+      )
     end
 
     it 'includes sp-specific copy' do

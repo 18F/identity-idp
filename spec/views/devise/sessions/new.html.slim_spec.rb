@@ -53,7 +53,9 @@ describe 'devise/sessions/new.html.slim' do
         return_to_sp_url: 'www.awesomeness.com'
       )
       view_context = ActionController::Base.new.view_context
-      @decorated_session = DecoratedSession.new(sp: sp, view_context: view_context).call
+      @decorated_session = DecoratedSession.new(
+        sp: sp, view_context: view_context, sp_session: {}
+      ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end
 

@@ -12,7 +12,9 @@ describe 'openid_connect/authorization/index.html.slim' do
       friendly_name: 'Awesome Application!',
       logo: 'generic.svg'
     )
-    decorated_session = DecoratedSession.new(sp: sp, view_context: view_context).call
+    decorated_session = DecoratedSession.new(
+      sp: sp, view_context: view_context, sp_session: {}
+    ).call
     allow(view).to receive(:decorated_session).and_return(decorated_session)
   end
 
@@ -37,7 +39,7 @@ describe 'openid_connect/authorization/index.html.slim' do
     it 'renders the default logo' do
       sp_without_logo = build_stubbed(:service_provider)
       decorated_session = ServiceProviderSessionDecorator.new(
-        sp: sp_without_logo, view_context: view_context
+        sp: sp_without_logo, view_context: view_context, sp_session: {}
       )
       allow(view).to receive(:decorated_session).and_return(decorated_session)
       render

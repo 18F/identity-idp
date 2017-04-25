@@ -34,7 +34,6 @@ class OpenidConnectAuthorizeForm
   validate :validate_acr_values
   validate :validate_client_id
   validate :validate_redirect_uri
-  validate :validate_redirect_uri_matches_sp_redirect_uri
   validate :validate_scope
 
   def initialize(params)
@@ -43,6 +42,10 @@ class OpenidConnectAuthorizeForm
     SIMPLE_ATTRS.each do |key|
       instance_variable_set(:"@#{key}", params[key])
     end
+
+    @openid_connect_redirector = OpenidConnectRedirector.new(
+      redirect_uri: redirect_uri, service_provider: service_provider, state: state, errors: errors
+    )
   end
 
   def submit(user, rails_session_id)
@@ -65,17 +68,11 @@ class OpenidConnectAuthorizeForm
     @_service_provider ||= ServiceProvider.from_issuer(client_id)
   end
 
-  def decline_redirect_uri
-    URIService.add_params(
-      validated_input_redirect_uri,
-      error: 'access_denied',
-      state: state
-    )
-  end
+  delegate :decline_redirect_uri, to: :openid_connect_redirector
 
   private
 
-  attr_reader :identity, :success
+  attr_reader :identity, :success, :openid_connect_redirector
 
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
@@ -93,20 +90,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def validate_redirect_uri
-    _uri = URI(redirect_uri)
-  rescue ArgumentError, URI::InvalidURIError
-    errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_invalid'))
-  end
-
-  def validate_redirect_uri_matches_sp_redirect_uri
-    return if redirect_uri_matches_sp_redirect_uri?
-    errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'))
-  end
-
-  def redirect_uri_matches_sp_redirect_uri?
-    redirect_uri.present? &&
-      service_provider.active? &&
-      redirect_uri.start_with?(sp_redirect_uri)
+    openid_connect_redirector.validate
   end
 
   def validate_scope
@@ -146,20 +130,11 @@ class OpenidConnectAuthorizeForm
   end
 
   def success_redirect_uri
-    URIService.add_params(redirect_uri, code: identity.session_uuid, state: state)
+    openid_connect_redirector.success_redirect_uri(code: identity.session_uuid)
   end
 
   def error_redirect_uri
-    URIService.add_params(
-      validated_input_redirect_uri,
-      error: 'invalid_request',
-      error_description: errors.full_messages.join(' '),
-      state: state
-    )
-  end
-
-  def validated_input_redirect_uri
-    redirect_uri if redirect_uri_matches_sp_redirect_uri?
+    openid_connect_redirector.error_redirect_uri
   end
 end
 # rubocop:enable Metrics/ClassLength

@@ -349,9 +349,22 @@ feature 'OpenID Connect' do
     end
   end
 
-  def visit_idp_from_sp_with_loa1
+  context 'going back to the SP' do
+    it 'links back to the SP from the sign in page' do
+      state = SecureRandom.hex
+
+      visit_idp_from_sp_with_loa1(state: state)
+
+      click_link t('links.sign_in')
+
+      cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
+
+      expect(page).to have_link(t('links.back_to_sp', sp: 'Test SP'), href: cancel_callback_url)
+    end
+  end
+
+  def visit_idp_from_sp_with_loa1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
-    state = SecureRandom.hex
     nonce = SecureRandom.hex
 
     visit openid_connect_authorize_path(
