@@ -11,6 +11,6 @@ nav.bg-white
         span.sm-display-inline-block.display-none.border-right.border-silver.pr1
           = t('shared.nav_auth.welcome')
           '
-          span.bold = current_user.email
+          span.bold = greeting
         = link_to t('links.sign_out'), destroy_user_session_path,
           class: 'px1'

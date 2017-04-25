@@ -5,6 +5,7 @@ describe 'shared/_nav_auth.html.slim' do
     before do
       @user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(@user)
+      allow(view).to receive(:greeting).and_return(@user.email)
       render
     end
 
