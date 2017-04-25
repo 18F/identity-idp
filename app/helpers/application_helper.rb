@@ -1,10 +1,4 @@
 module ApplicationHelper
-  def shared_nav(greeting:)
-    content_for(:nav) do
-      render('shared/nav_auth', greeting: greeting)
-    end
-  end
-
   def title(title)
     content_for(:title) { title }
   end
