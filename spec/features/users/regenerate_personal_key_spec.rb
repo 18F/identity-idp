@@ -54,7 +54,7 @@ feature 'View personal key' do
 
   context 'with javascript enabled', js: true do
     let(:invisible_selector) { generate_class_selector('invisible') }
-    let(:accordion_control_selector) { generate_class_selector('accordion-header-control') }
+    let(:accordion_control_selector) { generate_class_selector('accordion-header-controls') }
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user
@@ -108,7 +108,7 @@ def expect_accordion_content_to_be_hidden_by_default
 end
 
 def expand_accordion
-  page.find('.accordion-header-control').click
+  page.find('.accordion-header-controls').click
 end
 
 def expect_accordion_content_to_become_visible

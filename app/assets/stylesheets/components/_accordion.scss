@@ -1,12 +1,15 @@
 .no-js {
   .accordion {
-    .accordion-header-control[aria-controls] {
-      background-image: none;
-      cursor: inherit;
+    .accordion-header {
+      cursor: initial;
     }
 
     .accordion-footer {
       display: none;
+    }
+
+    .accordion-content {
+      display: block;
     }
 
     [class*="btn-"] {
@@ -16,14 +19,11 @@
 }
 
 .accordion {
-  border: 1px solid $border-color;
+  border: $border-width solid $border-color;
   border-radius: $border-radius-md;
 
-  .accordion-content {
-    opacity: 1;
-  }
-
   .accordion-header {
+    color: $blue;
     cursor: pointer;
     position: relative;
 
@@ -34,47 +34,24 @@
     }
   }
 
-  .accordion-header-control[aria-expanded="false"] {
-    .minus-icon {
-      display: none;
-    }
+  .accordion-content {
+    border-top: $border-width solid $border-color;
+    display: none;
+    opacity: 1;
 
-    .plus-icon {
-      display: initial;
-    }
-  }
-
-  .accordion-header-control[aria-expanded="true"] {
-    border-bottom: 1px solid $border-color;
-
-    .minus-icon {
-      display: initial;
-    }
-
-    .plus-icon {
-      display: none;
-    }
-  }
-
-  .accordion-header-control {
-    color: $blue;
-    padding-right: 30px;
-
-    .accordion-content {
-      max-height: 0;
-      transition: max-height .3s linear;
+    &.shown {
+      display: block;
     }
   }
 
   .accordion-footer {
     background-color: $blue-lightest;
-    border-top: 1px solid $border-color;
+    border-top: $border-width solid $border-color;
     color: $blue;
     cursor: pointer;
     text-align: center;
 
     img {
-      display: inline-block;
       margin-top: -2px;
       vertical-align: middle;
     }
