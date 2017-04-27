@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'shared/_nav_auth.html.slim' do
+describe 'profile/_nav_auth.html.slim' do
   context 'user is signed in' do
     before do
       @user = build_stubbed(:user, :signed_up)
