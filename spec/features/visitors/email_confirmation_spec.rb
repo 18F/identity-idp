@@ -15,7 +15,7 @@ feature 'Email confirmation during sign up' do
     expect(page).to have_content t('forms.confirmation.show_hdr')
 
     fill_in 'password_form_password', with: Features::SessionHelper::VALID_PASSWORD
-    click_button t('forms.buttons.submit.default')
+    click_button t('forms.buttons.continue')
 
     expect(current_url).to eq phone_setup_url
     expect(page).to_not have_content t('devise.confirmations.confirmed_but_must_set_password')

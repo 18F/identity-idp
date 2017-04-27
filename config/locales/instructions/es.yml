@@ -19,15 +19,10 @@ es:
       forgot: >
         Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
         asociada a su cuenta para recibir más instrucciones en la pantalla.
+      help_text_header: NOT TRANSLATED YET
+      help_text: NOT TRANSLATED YET
       info:
         lead: Su contraseña debe tener al menos %{min_length} caracteres.
-        point_1: >
-          Puede ser una mezcla de caracteres alfanuméricos y especiales y
-          palabras individuales en una frase.
-        point_2: >
-          Cree una contraseña segura, pero fácil de recordar.
-          No use el mismo que utiliza con otras cuentas en línea, como
-          bancos, correo electrónico y medios sociales.
       strength:
         i: Muy débil
         ii: Débil

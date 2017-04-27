@@ -21,15 +21,15 @@ en:
       forgot: >
         If you don’t know your current password, you can reset it. Type the email address
         associated with your account to receive more on-screen instructions.
+      help_text_header: Password safety tips
+      help_text: >
+        The longer and more unusual the password, the harder it is to guess. So avoid using common
+        phrases. Also avoid repeating passwords from other online accounts such as banks, email and
+        social media.
       info:
-        lead: Your password must be at least %{min_length} characters long.
-        point_1: >
-          It can be a mix of alphanumeric and special characters and individual
-          words in a phrase.
-        point_2: >
-          Create a password that’s secure, but still easy for you to remember.
-          And don’t use the same one you use with your other online accounts, such as
-          bank, email, and social media.
+        lead: > 
+          It must be at least %{min_length} characters long and not be a commonly used password.
+          That's it!
       strength:
         i: Very weak
         ii: Weak
