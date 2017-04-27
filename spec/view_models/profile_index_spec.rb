@@ -156,33 +156,33 @@ describe ProfileIndex do
       expect(unverified_profile_index).to respond_to(:recent_events)
     end
   end
-end
 
-def verified_profile_index(personal_key: nil)
-  profile = create(:profile, :active, :verified, pii: { first_name: 'Alex' })
-  user = profile.user
-  user_access_key = user.unlock_user_access_key(user.password)
-  decrypted_pii = profile.decrypt_pii(user_access_key)
+  def verified_profile_index(personal_key: nil)
+    profile = create(:profile, :active, :verified, pii: { first_name: 'Alex' })
+    user = profile.user
+    user_access_key = user.unlock_user_access_key(user.password)
+    decrypted_pii = profile.decrypt_pii(user_access_key)
 
-  ProfileIndex.new(
-    decrypted_pii: decrypted_pii,
-    personal_key: personal_key,
-    decorated_user: user.decorate
-  )
-end
+    ProfileIndex.new(
+      decrypted_pii: decrypted_pii,
+      personal_key: personal_key,
+      decorated_user: user.decorate
+    )
+  end
 
-def unverified_profile_index(personal_key: nil)
-  ProfileIndex.new(
-    decrypted_pii: nil,
-    personal_key: personal_key,
-    decorated_user: unverified_decorated_user
-  )
-end
+  def unverified_profile_index(personal_key: nil)
+    ProfileIndex.new(
+      decrypted_pii: nil,
+      personal_key: personal_key,
+      decorated_user: unverified_decorated_user
+    )
+  end
 
-def expect_null_partial(view_model, method)
-  expect(view_model.send(method.to_sym)).to eq('shared/null')
-end
+  def expect_null_partial(view_model, method)
+    expect(view_model.send(method.to_sym)).to eq('shared/null')
+  end
 
-def unverified_decorated_user
-  build_stubbed(:user).decorate
+  def unverified_decorated_user
+    build_stubbed(:user).decorate
+  end
 end
