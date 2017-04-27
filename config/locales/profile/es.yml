@@ -25,8 +25,7 @@ es:
       personal_key: NOT TRANSLATED YET
     links:
       regenerate_personal_key: NOT TRANSLATED YET
-    nav_auth:
-      welcome: Bienvenido
     security:
       link: NOT TRANSLATED YET
       text: NOT TRANSLATED YET
+    welcome: Bienvenido
