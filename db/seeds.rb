@@ -13,6 +13,6 @@ service_providers.each do |issuer, config|
     sp.approved = true
     sp.active = true
     sp.native = true
-    sp.attributes = config
+    sp.attributes = config.except('allow_on_prod_chef_env')
   end
 end
