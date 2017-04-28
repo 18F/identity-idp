@@ -61,7 +61,7 @@ feature 'Email confirmation during sign up' do
 
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(current_url).to eq profile_url
+      expect(current_url).to eq account_url
     end
   end
 

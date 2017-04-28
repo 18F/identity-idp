@@ -17,7 +17,7 @@ describe 'layouts/application.html.slim' do
       render
 
       expect(rendered).to have_xpath('//nav[contains(@class, "bg-light-blue")]')
-      expect(rendered).to_not have_content(t('profile.welcome'))
+      expect(rendered).to_not have_content(t('account.welcome'))
       expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
     end
   end

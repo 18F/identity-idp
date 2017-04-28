@@ -21,7 +21,7 @@ feature 'SP-initiated logout' do
     end
 
     it 'signs out the user from IdP' do
-      visit profile_path
+      visit account_path
 
       expect(current_path).to eq root_path
     end
@@ -44,7 +44,7 @@ feature 'SP-initiated logout' do
     end
 
     it 'signs out the user from IdP' do
-      visit profile_path
+      visit account_path
 
       expect(current_path).to eq root_path
     end
@@ -130,7 +130,7 @@ feature 'SP-initiated logout' do
       expect(current_url).to eq(sp2.metadata[:assertion_consumer_logout_service_url])
       expect(user.active_identities.size).to eq(0)
 
-      visit profile_path
+      visit account_path
       expect(current_url).to eq root_url
     end
   end
@@ -167,7 +167,7 @@ feature 'SP-initiated logout' do
         to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp1
 
-      visit profile_path
+      visit account_path
 
       expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)
@@ -206,7 +206,7 @@ feature 'SP-initiated logout' do
         to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp2
 
-      visit profile_path
+      visit account_path
 
       expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)

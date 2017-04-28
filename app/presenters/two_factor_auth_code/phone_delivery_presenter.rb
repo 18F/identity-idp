@@ -20,7 +20,7 @@ module TwoFactorAuthCode
 
     def cancel_link
       if confirmation_for_phone_change || reauthn
-        profile_path
+        account_path
       else
         destroy_user_session_path
       end

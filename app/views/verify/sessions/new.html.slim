@@ -6,11 +6,11 @@ h1.h3.my0 = @view_model.title
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   fieldset.mb3.ml0.p0.border-none
-    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('profile.index.full_name')
+    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('account.index.full_name')
     = f.input :first_name, label: t('idv.form.first_name'), required: true
     = f.input :last_name, label: t('idv.form.last_name'), required: true
   fieldset.m0.p0.border-none
-    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('profile.index.address')
+    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('account.index.address')
     = f.input :address1, label: t('idv.form.address1'), required: true
     = f.input :address2, label: t('idv.form.address2')
     = f.input :city, label: t('idv.form.city'), required: true
@@ -28,7 +28,7 @@ h1.h3.my0 = @view_model.title
     = accordion('previous-address', t('idv.form.previous_address_add'),
       hide_header: true, hide_close_link: true) do
       fieldset.mt2.ml0.p0.border-none
-        legend.col-12.my2.pb-tiny.border-bottom.border-teal = t('profile.index.previous_address')
+        legend.col-12.my2.pb-tiny.border-bottom.border-teal = t('account.index.previous_address')
         = f.input :prev_address1, label: t('idv.form.address1')
         = f.input :prev_address2, label: t('idv.form.address2')
         = f.input :prev_city, label: t('idv.form.city')

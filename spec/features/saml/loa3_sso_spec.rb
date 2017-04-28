@@ -73,7 +73,7 @@ feature 'LOA3 Single Sign On' do
         click_on t('links.cancel')
         click_on t('idv.buttons.cancel')
 
-        expect(current_path).to match(profile_path)
+        expect(current_path).to match(account_path)
       end
     end
 
@@ -96,7 +96,7 @@ feature 'LOA3 Single Sign On' do
         visit verify_path
         click_idv_cancel
 
-        expect(current_url).to eq(profile_url)
+        expect(current_url).to eq(account_url)
       end
     end
   end

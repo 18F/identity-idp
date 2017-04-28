@@ -15,7 +15,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
         post :create, code: generate_totp_code(@secret)
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
 
       it 'resets the second_factor_attempts_count' do

@@ -1,6 +1,6 @@
 ---
 en:
-  profile:
+  account:
     index:
       address: Current address
       authentication_app: Authentication app

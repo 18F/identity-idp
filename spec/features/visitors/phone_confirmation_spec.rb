@@ -24,7 +24,7 @@ feature 'Phone confirmation during sign up' do
 
       click_acknowledge_personal_key
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     it 'allows user to resend confirmation code' do

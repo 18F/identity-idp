@@ -56,7 +56,7 @@ module SignUp
       action_text = 'Please sign in.' unless user_signed_in?
       flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
 
-      redirect_to user_signed_in? ? profile_path : new_user_session_url
+      redirect_to user_signed_in? ? account_path : new_user_session_url
     end
 
     def unsuccessful_confirmation_error

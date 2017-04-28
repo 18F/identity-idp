@@ -41,7 +41,7 @@ feature 'Verify phone' do
       enter_correct_otp_code_for_user(user)
       click_acknowledge_personal_key
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 

@@ -51,7 +51,7 @@ describe Users::PersonalKeysController do
 
         patch :update
 
-        expect(response).to redirect_to profile_url
+        expect(response).to redirect_to account_url
       end
     end
 

@@ -48,7 +48,7 @@ feature 'IdV session' do
       expect(page).to have_content(t('headings.personal_key'))
       click_acknowledge_personal_key
 
-      expect(current_url).to eq(profile_url)
+      expect(current_url).to eq(account_url)
       expect(page).to have_content('José One')
       expect(page).to have_content('123 Main St')
       expect(user.reload.active_profile).to be_a(Profile)
@@ -374,7 +374,7 @@ feature 'IdV session' do
 
           click_idv_cancel
 
-          expect(current_path).to eq(profile_path)
+          expect(current_path).to eq(account_path)
         end
       end
 
@@ -392,7 +392,7 @@ feature 'IdV session' do
           click_on t('links.cancel_idv')
           click_idv_cancel_modal
 
-          expect(current_path).to eq(profile_path)
+          expect(current_path).to eq(account_path)
         end
       end
     end

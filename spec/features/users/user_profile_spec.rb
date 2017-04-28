@@ -10,7 +10,7 @@ feature 'User profile' do
       let(:profile) { create(:profile, :active, :verified, pii: { ssn: '111', dob: '1920-01-01' }) }
 
       it 'shows a "Verified Account" badge with no tooltip' do
-        expect(page).to have_content(t('headings.profile.verified_account'))
+        expect(page).to have_content(t('headings.account.verified_account'))
       end
     end
   end
@@ -19,7 +19,7 @@ feature 'User profile' do
     xit 'deletes the account and signs the user out with a flash message' do
       pending 'temporarily disabled until we figure out the MBUN to SSN mapping'
       sign_in_and_2fa_user
-      visit profile_path
+      visit account_path
       click_button t('forms.buttons.delete_account')
 
       click_button t('forms.buttons.delete_account_confirm')
@@ -47,7 +47,7 @@ feature 'User profile' do
 
       click_button 'Update'
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     context 'LOA3 user' do
@@ -59,7 +59,7 @@ feature 'User profile' do
         fill_in 'update_user_password_form_password', with: 'this is a great sentence'
         click_button 'Update'
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
         expect(page).to have_content(t('idv.messages.personal_key'))
       end
     end

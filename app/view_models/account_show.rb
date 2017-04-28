@@ -1,4 +1,4 @@
-class ProfileIndex
+class AccountShow
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
   def initialize(decrypted_pii:, personal_key:, decorated_user:)
@@ -9,15 +9,15 @@ class ProfileIndex
 
   def header_partial
     if decorated_user.identity_verified?
-      'profile/verified_header'
+      'accounts/verified_header'
     else
-      'profile/header'
+      'accounts/header'
     end
   end
 
   def personal_key_partial
     if personal_key.present?
-      'profile/personal_key'
+      'accounts/personal_key'
     else
       'shared/null'
     end
@@ -25,7 +25,7 @@ class ProfileIndex
 
   def password_reset_partial
     if decorated_user.password_reset_profile.present?
-      'profile/password_reset'
+      'accounts/password_reset'
     else
       'shared/null'
     end
@@ -33,19 +33,19 @@ class ProfileIndex
 
   def pending_profile_partial
     if decorated_user.pending_profile.present?
-      'profile/pending_profile'
+      'accounts/pending_profile'
     else
       'shared/null'
     end
   end
 
   def edit_action_partial
-    'profile/actions/edit_action_button'
+    'accounts/actions/edit_action_button'
   end
 
   def pii_partial
     if decrypted_pii.present?
-      'profile/pii'
+      'accounts/pii'
     else
       'shared/null'
     end
@@ -53,9 +53,9 @@ class ProfileIndex
 
   def totp_partial
     if decorated_user.totp_enabled?
-      'profile/actions/disable_totp'
+      'accounts/actions/disable_totp'
     else
-      'profile/actions/enable_totp'
+      'accounts/actions/enable_totp'
     end
   end
 
@@ -64,15 +64,15 @@ class ProfileIndex
   end
 
   def personal_key_action_partial
-    'profile/actions/manage_personal_key'
+    'accounts/actions/manage_personal_key'
   end
 
   def personal_key_item_partial
-    'profile/personal_key_item_heading'
+    'accounts/personal_key_item_heading'
   end
 
   def recent_event_partial
-    'profile/event_item'
+    'accounts/event_item'
   end
 
   def header_personalization
@@ -82,9 +82,9 @@ class ProfileIndex
   end
 
   def totp_content
-    return 'profile.index.auth_app_enabled' if decorated_user.totp_enabled?
+    return 'account.index.auth_app_enabled' if decorated_user.totp_enabled?
 
-    'profile.index.auth_app_disabled'
+    'account.index.auth_app_disabled'
   end
 
   delegate :recent_events, to: :decorated_user

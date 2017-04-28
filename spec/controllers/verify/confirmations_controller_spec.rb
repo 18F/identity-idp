@@ -179,7 +179,7 @@ describe Verify::ConfirmationsController do
 
         patch :update
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
     end
   end

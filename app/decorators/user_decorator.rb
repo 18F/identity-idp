@@ -99,7 +99,7 @@ class UserDecorator
 
   def verified_account_partial
     if identity_verified?
-      'profile/verified_account_badge'
+      'accounts/verified_account_badge'
     else
       'shared/null'
     end

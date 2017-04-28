@@ -269,7 +269,7 @@ describe Verify::SessionsController do
         delete :destroy
 
         expect(controller.user_session[:idv]).to eq({})
-        expect(response).to redirect_to(profile_path)
+        expect(response).to redirect_to(account_path)
       end
     end
   end

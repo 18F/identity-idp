@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe ProfileController do
+describe AccountsController do
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
@@ -10,7 +10,7 @@ describe ProfileController do
     end
   end
 
-  describe '#index' do
+  describe '#show' do
     context 'when user has an active identity' do
       it 'renders the profile and does not redirect out of the app' do
         user = create(:user, :signed_up)
@@ -21,7 +21,7 @@ describe ProfileController do
 
         sign_in user
 
-        get :index
+        get :show
 
         expect(response).to_not be_redirect
       end
@@ -38,14 +38,14 @@ describe ProfileController do
 
         sign_in user
 
-        view_model = ProfileIndex.new(
+        view_model = AccountShow.new(
           decrypted_pii: nil,
           personal_key: nil,
           decorated_user: user.decorate
         )
         allow(subject).to receive(:view_model).and_return(view_model)
 
-        get :index
+        get :show
 
         expect(response).to_not be_redirect
       end

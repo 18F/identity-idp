@@ -51,7 +51,7 @@ module Verify
     end
 
     def handle_idv_redirect
-      redirect_to profile_path and return if current_user.personal_key.present?
+      redirect_to account_path and return if current_user.personal_key.present?
       redirect_to manage_personal_key_path
     end
 

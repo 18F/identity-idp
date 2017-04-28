@@ -25,7 +25,7 @@ describe Users::EmailsController do
 
         put :update, update_user_email_form: { email: new_email }
 
-        expect(response).to redirect_to profile_url
+        expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
         expect(response).to render_template('devise/mailer/confirmation_instructions')
         expect(user.reload.email).to eq 'old_email@example.com'
@@ -72,7 +72,7 @@ describe Users::EmailsController do
 
         put :update, update_user_email_form: { email: second_user.email.upcase }
 
-        expect(response).to redirect_to profile_url
+        expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
         expect(response).to render_template('user_mailer/signup_with_your_email')
         expect(last_email.subject).to eq t('mailer.email_reuse_notice.subject')
@@ -119,7 +119,7 @@ describe Users::EmailsController do
 
         put :update, update_user_email_form: { email: user.email }
 
-        expect(response).to redirect_to profile_url
+        expect(response).to redirect_to account_url
         expect(flash.keys).to be_empty
         expect(@analytics).to have_received(:track_event).
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)

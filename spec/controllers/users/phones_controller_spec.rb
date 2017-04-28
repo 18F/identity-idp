@@ -87,7 +87,7 @@ describe Users::PhonesController do
 
         put :update, update_user_phone_form: { phone: user.phone }
 
-        expect(response).to redirect_to profile_url
+        expect(response).to redirect_to account_url
         expect(flash.keys).to be_empty
       end
     end

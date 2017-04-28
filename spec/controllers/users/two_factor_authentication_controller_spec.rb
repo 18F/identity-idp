@@ -33,7 +33,7 @@ describe Users::TwoFactorAuthenticationController do
       it 'redirects to the profile' do
         get :index
 
-        expect(response).to redirect_to(profile_url)
+        expect(response).to redirect_to(account_url)
       end
     end
 
@@ -60,7 +60,7 @@ describe Users::TwoFactorAuthenticationController do
       it 'does not redirect to the profile' do
         get :index
 
-        expect(response).not_to redirect_to(profile_url)
+        expect(response).not_to redirect_to(account_url)
         expect(response.code).to eq('200')
       end
     end
