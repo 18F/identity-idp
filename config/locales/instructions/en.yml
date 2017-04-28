@@ -20,6 +20,11 @@ en:
     password:
       forgot: >
         Don’t know your password? Reset it after confirming your email address.
+      help_text_header: Password safety tips
+      help_text: >
+        The longer and more unusual the password, the harder it is to guess. So avoid using common
+        phrases. Also avoid repeating passwords from other online accounts such as banks, email and
+        social media.
       info:
         lead: > 
           It must be at least %{min_length} characters long and not be a commonly used password.
