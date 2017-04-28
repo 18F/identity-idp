@@ -5,7 +5,7 @@ feature 'Visitor sets password during signup' do
     create(:user, :unconfirmed)
     confirm_last_user
     fill_in 'password_form_password', with: ''
-    click_button t('forms.buttons.submit.default')
+    click_button t('forms.buttons.continue')
 
     expect(page).to have_content t('errors.messages.blank')
     expect(current_url).to eq sign_up_create_password_url
@@ -20,7 +20,7 @@ feature 'Visitor sets password during signup' do
     it 'does not allow the user to submit the form' do
       fill_in 'password_form_password', with: ''
 
-      expect(page).to_not have_button(t('forms.buttons.submit.default'))
+      expect(page).to_not have_button(t('forms.buttons.continue'))
     end
   end
 
@@ -77,7 +77,7 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
       fill_in 'password_form_password', with: 'Q!2e'
 
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content('characters')
       expect(current_url).to eq sign_up_create_password_url
@@ -90,7 +90,7 @@ feature 'Visitor sets password during signup' do
       confirm_last_user
       fill_in 'password_form_password', with: 'password'
 
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
 
       expect(page).to have_content t('zxcvbn.feedback.This is a top-10 common password')
     end

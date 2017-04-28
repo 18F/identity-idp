@@ -4,7 +4,7 @@ en:
     account_locked: Account locked
     confirmations:
       new: Resend confirmation instructions for your account
-      show: Create a password for your account
+      show: Choose a password
     edit_info:
       email: Edit your email address
       password: Edit your password

@@ -54,7 +54,7 @@ module Features
     def sign_up_and_set_password
       user = sign_up
       fill_in 'password_form_password', with: VALID_PASSWORD
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
       user
     end
 
@@ -335,12 +335,12 @@ module Features
 
     def submit_form_with_invalid_password
       fill_in 'Password', with: 'invalid'
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
     end
 
     def submit_form_with_valid_password(password = VALID_PASSWORD)
       fill_in 'Password', with: password
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
     end
 
     def set_up_2fa_with_valid_phone
