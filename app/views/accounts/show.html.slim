@@ -1,7 +1,7 @@
 - content_for(:nav) do
-  = render 'profile/nav_auth', greeting: @view_model.header_personalization
+  = render 'accounts/nav_auth', greeting: @view_model.header_personalization
 
-- title t('titles.profile')
+- title t('titles.account')
 
 = render @view_model.personal_key_partial, view_model: @view_model
 
@@ -9,44 +9,44 @@
 
 = render @view_model.pending_profile_partial, view_model: @view_model
 
-h1.hide = t('titles.profile')
+h1.hide = t('titles.account')
 
 = render @view_model.header_partial, view_model: @view_model
 
 .mb3.profile-info-box
   .bg-light-blue.py1.px2.h6.caps
-    = t('profile.index.login')
+    = t('account.index.login')
     = image_tag asset_url('sign-in.svg'), width: 12, class: 'ml1 mt-tiny'
-  = render 'profile_item',
-    name: t('profile.index.email'),
+  = render 'account_item',
+    name: t('account.index.email'),
     content: current_user.email,
     path: manage_email_path,
     action: @view_model.edit_action_partial
 
-  = render 'profile_item',
-    name: t('profile.index.password'),
+  = render 'account_item',
+    name: t('account.index.password'),
     content: '************',
     path: manage_password_path,
     action: @view_model.edit_action_partial
 
 .mb3.profile-info-box
   .bg-light-blue.py1.px2.h6.caps
-    = t('headings.profile.two_factor')
+    = t('headings.account.two_factor')
     = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1 mt-tiny'
 
-  = render 'profile_item',
-    name: t('profile.index.phone'),
+  = render 'account_item',
+    name: t('account.index.phone'),
     content: current_user.phone,
     path: manage_phone_path,
     action: @view_model.edit_action_partial
 
-  = render 'profile_item',
-    name: t('profile.index.authentication_app'),
+  = render 'account_item',
+    name: t('account.index.authentication_app'),
     content: content_tag(:em, t(@view_model.totp_content)),
     action: @view_model.totp_partial
 
   - @view_model.manage_personal_key_partial do
-    = render 'profile_item',
+    = render 'account_item',
       name: render(@view_model.personal_key_item_partial),
       action: @view_model.personal_key_action_partial
 
@@ -54,7 +54,7 @@ h1.hide = t('titles.profile')
 
 .mb3.profile-info-box
   .bg-light-blue.pb1.pt1.px2.h6.caps.clearfix
-    = t('headings.profile.account_history')
+    = t('headings.account.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1 mt-tiny'
   - @view_model.recent_events.each do |event|
     = render @view_model.recent_event_partial, event: event

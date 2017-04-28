@@ -21,7 +21,7 @@ module Users
       if current_user.decorate.password_reset_profile.present?
         reactivate_profile_url
       else
-        profile_url
+        account_url
       end
     end
   end

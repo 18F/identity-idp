@@ -62,7 +62,7 @@ describe 'two_factor_authentication/totp_verification/show.html.slim' do
     it 'provides a cancel link to return to profile' do
       expect(rendered).to have_link(
         t('links.cancel'),
-        href: profile_path
+        href: account_path
       )
     end
 

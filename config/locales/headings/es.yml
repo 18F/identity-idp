@@ -15,7 +15,7 @@ es:
       change: Cambiar su contraseña
       confirm: Confirme la contraseña actual para continuar
       forgot: ¿Olvidó su contraseña?
-    profile:
+    account:
       account_history: La historia de la cuenta
       login_info: Información de la cuenta
       profile_info: NOT TRANSLATED YET

@@ -293,7 +293,7 @@ describe Users::SessionsController, devise: true do
         subject.session[:logged_in] = true
         get :new
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
         expect(subject.session[:logged_in]).to be true
       end
     end

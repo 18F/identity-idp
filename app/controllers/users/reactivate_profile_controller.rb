@@ -7,7 +7,7 @@ module Users
     def create
       @reactivate_profile_form = build_reactivate_profile_form
       if @reactivate_profile_form.submit(flash)
-        redirect_to profile_path
+        redirect_to account_path
       else
         render :index
       end

@@ -15,7 +15,7 @@ en:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    profile:
+    account:
       account_history: Account history
       login_info: Your account
       profile_info: Profile information

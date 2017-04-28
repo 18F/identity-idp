@@ -83,7 +83,7 @@ class ApplicationController < ActionController::Base
   end
 
   def signed_in_path
-    user_fully_authenticated? ? profile_path : user_two_factor_authentication_path
+    user_fully_authenticated? ? account_path : user_two_factor_authentication_path
   end
 
   def reauthn_param

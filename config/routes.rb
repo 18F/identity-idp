@@ -43,6 +43,9 @@ Rails.application.routes.draw do
   # Non-devise-controller routes. Alphabetically sorted.
   get '/.well-known/openid-configuration' => 'openid_connect/configuration#index',
       as: :openid_connect_configuration
+
+  get '/account' => 'accounts#show'
+
   get '/api/health/workers' => 'health/workers#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
@@ -84,7 +87,7 @@ Rails.application.routes.draw do
   get '/users/two_factor_authentication' => 'users/two_factor_authentication#show',
       as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
 
-  get '/profile' => 'profile#index', as: :profile
+  get '/profile', to: redirect('/account')
   get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
   post '/profile/reactivate' => 'users/reactivate_profile#create'
   get '/profile/verify' => 'users/verify_profile#index', as: :verify_profile

@@ -32,7 +32,7 @@ module Users
         flash[:notice] = t('devise.registrations.email_update_needs_confirmation')
       end
 
-      redirect_to profile_url
+      redirect_to account_url
     end
   end
 end

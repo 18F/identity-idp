@@ -32,7 +32,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       it 'redirects to the profile' do
         post :create, payload
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
 
       it 'calls handle_valid_otp' do

@@ -15,7 +15,7 @@ feature 'Signing in via one-time use personal key' do
     click_acknowledge_personal_key
 
     expect(user.reload.personal_key).to_not eq personal_key
-    expect(current_path).to eq profile_path
+    expect(current_path).to eq account_path
   end
 
   context 'user enters incorrect personal key' do

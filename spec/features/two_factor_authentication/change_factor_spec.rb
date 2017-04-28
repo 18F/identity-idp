@@ -28,7 +28,7 @@ feature 'Changing authentication factor' do
       complete_2fa_confirmation
 
       update_phone_number
-      expect(page).to have_link t('links.cancel'), href: profile_path
+      expect(page).to have_link t('links.cancel'), href: account_path
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
       expect(page).not_to have_content(
         t('devise.two_factor_authentication.personal_key_fallback.text_html')
@@ -42,14 +42,14 @@ feature 'Changing authentication factor' do
 
       submit_correct_otp
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
       expect(UserMailer).to have_received(:phone_changed).with(user)
       expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
 
       visit login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     scenario 'waiting too long to change phone number' do
@@ -136,7 +136,7 @@ feature 'Changing authentication factor' do
         expect(current_path).to eq manage_phone_path
 
         update_phone_number
-        expect(page).to have_link t('links.cancel'), href: profile_path
+        expect(page).to have_link t('links.cancel'), href: account_path
       end
     end
   end

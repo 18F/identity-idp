@@ -10,7 +10,7 @@ feature 'View personal key' do
 
       visit sign_up_personal_key_path
 
-      expect(current_path).to eq(profile_path)
+      expect(current_path).to eq(account_path)
     end
   end
 
@@ -20,7 +20,7 @@ feature 'View personal key' do
         user = sign_in_and_2fa_user
         old_code = user.personal_key
 
-        click_link t('profile.links.regenerate_personal_key')
+        click_link t('account.links.regenerate_personal_key')
 
         expect(user.reload.personal_key).to_not eq old_code
       end
@@ -36,7 +36,7 @@ feature 'View personal key' do
 
         first(:link, t('forms.buttons.edit')).click
         click_on(t('links.cancel'))
-        click_on(t('profile.links.regenerate_personal_key'))
+        click_on(t('account.links.regenerate_personal_key'))
 
         expect(user.reload.personal_key).to_not eq old_code
       end
@@ -45,7 +45,7 @@ feature 'View personal key' do
     context 'personal key actions and information' do
       before do
         @user = sign_in_and_2fa_user
-        click_link t('profile.links.regenerate_personal_key')
+        click_link t('account.links.regenerate_personal_key')
       end
 
       it_behaves_like 'personal key page'
@@ -58,7 +58,7 @@ feature 'View personal key' do
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user
-      click_link t('profile.links.regenerate_personal_key')
+      click_link t('account.links.regenerate_personal_key')
 
       expect_accordion_content_to_be_hidden_by_default
 
@@ -81,12 +81,12 @@ feature 'View personal key' do
       click_acknowledge_personal_key
       submit_form_without_entering_the_code
 
-      expect(current_path).not_to eq profile_path
+      expect(current_path).not_to eq account_path
 
       visit manage_personal_key_path
       acknowledge_and_confirm_personal_key
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 end

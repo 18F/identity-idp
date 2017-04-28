@@ -9,8 +9,8 @@ module Users
     def create
       @verify_profile_form = build_verify_profile_form
       if @verify_profile_form.submit
-        flash[:success] = t('profile.index.verification.success')
-        redirect_to profile_path
+        flash[:success] = t('account.index.verification.success')
+        redirect_to account_path
       else
         render :index
       end

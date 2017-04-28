@@ -121,7 +121,7 @@ feature 'Password Recovery' do
       fill_in 'code', with: @user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 
@@ -161,7 +161,7 @@ feature 'Password Recovery' do
 
         expect(last_email.subject).to eq t('devise.mailer.password_updated.subject')
 
-        visit profile_path
+        visit account_path
         expect(current_path).to eq new_user_session_path
       end
     end

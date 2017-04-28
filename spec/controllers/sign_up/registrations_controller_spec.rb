@@ -33,7 +33,7 @@ describe SignUp::RegistrationsController, devise: true do
 
       get :new
 
-      expect(response).to redirect_to profile_path
+      expect(response).to redirect_to account_path
     end
   end
 
@@ -75,7 +75,7 @@ describe SignUp::RegistrationsController, devise: true do
 
         post :create, user: { email: user.email }
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
     end
 
@@ -130,7 +130,7 @@ describe SignUp::RegistrationsController, devise: true do
 
       get :show
 
-      expect(response).to redirect_to profile_path
+      expect(response).to redirect_to account_path
     end
 
     it 'redirects to sign_up_email_path if request_id param is missing' do

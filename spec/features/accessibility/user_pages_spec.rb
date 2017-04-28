@@ -76,7 +76,7 @@ feature 'Accessibility on pages that require authentication', :js do
   scenario 'profile page' do
     sign_in_and_2fa_user
 
-    visit profile_path
+    visit account_path
 
     expect(page).to be_accessible
   end

@@ -18,8 +18,8 @@ describe SignUp::PersonalKeysController do
       stub_sign_in
       subject.user_session[:first_time_personal_key_view] = 'true'
 
-      expect(get(:show)).not_to redirect_to(profile_path)
-      expect(get(:show)).to redirect_to(profile_path)
+      expect(get(:show)).not_to redirect_to(account_path)
+      expect(get(:show)).to redirect_to(account_path)
     end
 
     it 're-encrypts PII with new code if active profile exists' do
@@ -54,7 +54,7 @@ describe SignUp::PersonalKeysController do
 
         patch :update
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
     end
   end

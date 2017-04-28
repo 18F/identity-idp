@@ -140,7 +140,7 @@ describe UserDecorator do
       context 'with a verified account' do
         let(:user) { create(:user, profiles: [verified_profile]) }
 
-        it { expect(partial).to eq('profile/verified_account_badge') }
+        it { expect(partial).to eq('accounts/verified_account_badge') }
       end
     end
   end

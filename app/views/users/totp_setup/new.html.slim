@@ -10,4 +10,4 @@ p.mt-tiny.mb0 = t('forms.totp_setup.totp_info')
     = text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
       class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length
   = submit_tag 'Submit', class: 'btn btn-primary align-top'
-= render 'shared/cancel', link: profile_path
+= render 'shared/cancel', link: account_path

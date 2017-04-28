@@ -35,7 +35,7 @@ feature 'Two Factor Authentication' do
   end
 
   def attempt_to_bypass_2fa_setup
-    visit profile_path
+    visit account_path
   end
 
   def send_security_code_without_entering_phone_number
@@ -73,11 +73,11 @@ feature 'Two Factor Authentication' do
 
       submit_prefilled_otp_code
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     def attempt_to_bypass_2fa
-      visit profile_path
+      visit account_path
     end
 
     def submit_prefilled_otp_code
@@ -139,7 +139,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa(user)
         click_button t('forms.buttons.submit.default')
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
       end
     end
 
@@ -152,7 +152,7 @@ feature 'Two Factor Authentication' do
         expect(page).to have_content t('devise.two_factor_authentication.' \
                                        'max_generic_login_attempts_reached')
 
-        visit profile_path
+        visit account_path
         expect(current_path).to eq root_path
       end
 
@@ -229,7 +229,7 @@ feature 'Two Factor Authentication' do
 
       click_acknowledge_personal_key
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 
@@ -238,11 +238,11 @@ feature 'Two Factor Authentication' do
       sign_in_and_2fa_user
       visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
 
       visit user_two_factor_authentication_path
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 

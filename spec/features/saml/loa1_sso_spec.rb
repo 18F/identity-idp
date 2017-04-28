@@ -43,7 +43,7 @@ feature 'LOA1 Single Sign On' do
       expect(page.get_rack_session.keys).to_not include('sp')
 
       visit root_path
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     it 'shows user the start page without accordion' do
@@ -141,7 +141,7 @@ feature 'LOA1 Single Sign On' do
       }
     end
 
-    visit profile_path
+    visit account_path
     click_submit_default
   end
 

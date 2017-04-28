@@ -45,7 +45,7 @@ module Features
         session[:sp] = { loa3: loa3, issuer: sp.issuer }
       end
 
-      visit profile_path
+      visit account_path
       fill_in 'Phone', with: '202-555-1212'
       click_send_security_code
       user
@@ -75,7 +75,7 @@ module Features
         end
       end
 
-      visit profile_path
+      visit account_path
       user
     end
 
@@ -87,7 +87,7 @@ module Features
         session = proxy.env['rack.session']
         session['warden.user.user.session'] = { authn_at: Time.zone.now }
       end
-      visit profile_path
+      visit account_path
     end
 
     def sign_in_and_2fa_user(user = user_with_2fa)

@@ -27,7 +27,7 @@ module Verify
     end
 
     def confirm_profile_has_been_created
-      redirect_to profile_path if idv_session.profile.blank?
+      redirect_to account_path if idv_session.profile.blank?
     end
 
     def track_final_idv_event

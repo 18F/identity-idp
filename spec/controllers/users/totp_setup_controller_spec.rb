@@ -40,7 +40,7 @@ describe Users::TotpSetupController, devise: true do
 
         get :new
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
     end
   end
@@ -89,8 +89,8 @@ describe Users::TotpSetupController, devise: true do
         patch :confirm, code: code
       end
 
-      it 'redirects to profile_path with a success message' do
-        expect(response).to redirect_to(profile_path)
+      it 'redirects to account_path with a success message' do
+        expect(response).to redirect_to(account_path)
         expect(flash[:success]).to eq t('notices.totp_configured')
         expect(subject.user_session[:new_totp_secret]).to be_nil
 
@@ -117,7 +117,7 @@ describe Users::TotpSetupController, devise: true do
 
         expect(user.reload.otp_secret_key).to be_nil
         expect(user.reload.totp_enabled?).to be(false)
-        expect(response).to redirect_to(profile_path)
+        expect(response).to redirect_to(account_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)

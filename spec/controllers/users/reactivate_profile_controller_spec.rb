@@ -27,7 +27,7 @@ RSpec.describe Users::ReactivateProfileController do
       it 'redirects to the profile page' do
         action
 
-        expect(response).to redirect_to(profile_path)
+        expect(response).to redirect_to(account_path)
       end
     end
 

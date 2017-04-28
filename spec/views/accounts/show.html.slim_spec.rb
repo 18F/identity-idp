@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'profile/index.html.slim' do
+describe 'accounts/show.html.slim' do
   let(:user) { build_stubbed(:user, :signed_up) }
   let(:decorated_user) { user.decorate }
 
@@ -9,13 +9,13 @@ describe 'profile/index.html.slim' do
     allow(view).to receive(:current_user).and_return(user)
     assign(
       :view_model,
-      ProfileIndex.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
+      AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
     )
   end
 
   context 'user is not TOTP enabled' do
     it 'has a localized title' do
-      expect(view).to receive(:title).with(t('titles.profile'))
+      expect(view).to receive(:title).with(t('titles.account'))
 
       render
     end
@@ -43,7 +43,7 @@ describe 'profile/index.html.slim' do
     before do
       assign(
         :view_model,
-        ProfileIndex.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
+        AccountShow.new(decrypted_pii: nil, personal_key: nil, decorated_user: decorated_user)
       )
     end
 
@@ -63,9 +63,9 @@ describe 'profile/index.html.slim' do
     it 'contains a personal key section' do
       render
 
-      expect(rendered).to have_content t('profile.items.personal_key')
+      expect(rendered).to have_content t('account.items.personal_key')
       expect(rendered).
-        to have_link(t('profile.links.regenerate_personal_key'), href: manage_personal_key_path)
+        to have_link(t('account.links.regenerate_personal_key'), href: manage_personal_key_path)
     end
   end
 
@@ -77,9 +77,9 @@ describe 'profile/index.html.slim' do
     it 'lacks a personal key section' do
       render
 
-      expect(rendered).to_not have_content t('profile.items.personal_key')
+      expect(rendered).to_not have_content t('account.items.personal_key')
       expect(rendered).to_not have_link(
-        t('profile.links.regenerate_personal_key'), href: manage_personal_key_path
+        t('account.links.regenerate_personal_key'), href: manage_personal_key_path
       )
     end
   end
@@ -93,7 +93,7 @@ describe 'profile/index.html.slim' do
       render
 
       expect(rendered).to_not have_link(
-        t('profile.index.verification.reactivate_button'), href: verify_profile_path
+        t('account.index.verification.reactivate_button'), href: verify_profile_path
       )
     end
   end
@@ -107,14 +107,14 @@ describe 'profile/index.html.slim' do
       render
 
       expect(rendered).
-        to have_link(t('profile.index.verification.reactivate_button'), href: verify_profile_path)
+        to have_link(t('account.index.verification.reactivate_button'), href: verify_profile_path)
     end
   end
 
   it 'contains account history' do
     render
 
-    expect(rendered).to have_content t('headings.profile.account_history')
+    expect(rendered).to have_content t('headings.account.account_history')
   end
 
   it 'shows the auth nav bar' do

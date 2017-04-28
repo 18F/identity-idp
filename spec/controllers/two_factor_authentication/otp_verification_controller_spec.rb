@@ -127,7 +127,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'redirects to the profile' do
         post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -298,7 +298,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           end
 
           it 'redirects to profile page' do
-            expect(response).to redirect_to(profile_path)
+            expect(response).to redirect_to(account_path)
           end
 
           it 'tracks the confirmation event' do

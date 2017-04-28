@@ -12,7 +12,7 @@ module UnconfirmedUserConcern
     if !user_signed_in?
       new_user_session_url
     elsif user.two_factor_enabled?
-      profile_path
+      account_path
     else
       phone_setup_url
     end

@@ -62,7 +62,7 @@ module TwoFactorAuthenticatable
   def check_already_authenticated
     return unless initial_authentication_context?
 
-    redirect_to profile_path if user_fully_authenticated?
+    redirect_to account_path if user_fully_authenticated?
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
@@ -195,11 +195,11 @@ module TwoFactorAuthenticatable
       user_session[:first_time_personal_key_view] = 'true'
       sign_up_personal_key_path
     elsif @updating_existing_number
-      profile_path
+      account_path
     elsif decorated_user.password_reset_profile.present?
       reactivate_profile_path
     else
-      profile_path
+      account_path
     end
   end
 

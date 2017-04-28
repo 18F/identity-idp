@@ -44,12 +44,12 @@ feature 'Sign in' do
   scenario 'user session expires in amount of time specified by Devise config' do
     sign_in_and_2fa_user
 
-    visit profile_path
-    expect(current_path).to eq profile_path
+    visit account_path
+    expect(current_path).to eq account_path
 
     Timecop.travel(Devise.timeout_in + 1.minute)
 
-    visit profile_path
+    visit account_path
     expect(current_path).to eq root_path
 
     Timecop.return
@@ -86,7 +86,7 @@ feature 'Sign in' do
     scenario 'user can continue browsing' do
       find_link(t('notices.timeout_warning.signed_in.continue')).trigger('click')
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     scenario 'user has option to sign out' do
@@ -197,17 +197,17 @@ feature 'Sign in' do
       perform_in_browser(:one) do
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
       end
 
       perform_in_browser(:two) do
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
       end
 
       perform_in_browser(:one) do
-        visit profile_path
+        visit account_path
 
         expect(current_path).to eq new_user_session_path
         expect(page).to have_content(t('devise.failure.session_limited'))
