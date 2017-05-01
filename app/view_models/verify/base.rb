@@ -51,7 +51,7 @@ module Verify
           class: button_css_classes
         )
       else
-        helper.link_to button_link_text, account_path, class: button_css_classes
+        helper.link_to button_link_text, verify_fail_path, class: button_css_classes
       end
     end
 
