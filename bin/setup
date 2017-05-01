@@ -35,7 +35,7 @@ Dir.chdir APP_ROOT do
   run "cp keys/equifax_rsa.pub.example keys/equifax_rsa.pub"
   run "cp certs/saml.crt.example certs/saml.crt"
   run "gpg --dearmor < keys/equifax_gpg.pub.example > keys/equifax_gpg.pub.bin"
-  system "gpg --import keys/equifax_gpg.example"
+  system "gpg --batch --import keys/equifax_gpg.example"
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'

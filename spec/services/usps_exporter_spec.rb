@@ -2,8 +2,9 @@ require 'rails_helper'
 
 describe UspsExporter do
   let(:export_file) { Tempfile.new('usps_export.psv') }
-  let(:usps_entry) do
-    UspsConfirmationEntry.new_from_hash(
+  let(:usps_entry) { UspsConfirmationEntry.new_from_hash(pii_attributes) }
+  let(:pii_attributes) do
+    {
       first_name: 'Some',
       last_name: 'One',
       address1: '123 Any St',
@@ -11,8 +12,8 @@ describe UspsExporter do
       city: 'Somewhere',
       state: 'KS',
       zipcode: '66666-1234',
-      otp: 123
-    )
+      otp: 123,
+    }
   end
   let(:psv_row_contents) do
     now = Time.zone.now
@@ -49,7 +50,7 @@ describe UspsExporter do
 
   describe '#run' do
     before do
-      UspsConfirmation.create(entry: usps_entry.encrypted)
+      UspsConfirmationMaker.new(pii: pii_attributes).perform
     end
 
     it 'creates encrypted file' do

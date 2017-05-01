@@ -40,6 +40,7 @@ Vagrantfile
 /keys/saml.key.enc
 /keys/equifax_rsa
 /keys/equifax_rsa.pub
+/keys/equifax_gpg.pub.bin
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv
