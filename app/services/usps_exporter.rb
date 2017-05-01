@@ -1,22 +1,24 @@
 class UspsExporter
-  OTP_MAX_VALID_DAYS = 30
+  OTP_MAX_VALID_DAYS = Figaro.env.usps_confirmation_max_days.to_i
 
-  def initialize(csv_file_path)
-    @csv_file_path = csv_file_path
+  def initialize(psv_file_path)
+    @psv_file_path = psv_file_path
   end
 
   def run
-    CSV.open(csv_file_path, 'wb', col_sep: '|') do |csv|
-      make_csv(csv)
+    psv_buffer = CSV.generate(col_sep: '|', row_sep: "\r\n") do |csv|
+      make_psv(csv)
     end
+    psv_buffer += entries.size.to_s + "\r\n"
+    file_encryptor.encrypt(psv_buffer, psv_file_path)
     clear_entries
   end
 
   private
 
-  attr_reader :csv_file_path
+  attr_reader :psv_file_path
 
-  def make_csv(csv)
+  def make_psv(csv)
     entries.map(&:decrypted_entry).each do |entry|
       csv << make_entry_row(entry)
     end
@@ -42,9 +44,16 @@ class UspsExporter
       entry.state,
       entry.zipcode,
       entry.otp,
-      "#{now.strftime('%B %e')},#{now.year}",
-      "#{due.strftime('%B %e')},#{due.year}",
+      "#{now.strftime('%B %e')}, #{now.year}",
+      "#{due.strftime('%B %e')}, #{due.year}",
     ]
   end
   # rubocop:enable MethodLength, AbcSize
+
+  def file_encryptor
+    @_file_encryptor ||= FileEncryptor.new(
+      Rails.root.join('keys/equifax_gpg.pub.bin'),
+      Figaro.env.equifax_gpg_email
+    )
+  end
 end
