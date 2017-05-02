@@ -20,7 +20,7 @@ feature 'verify profile with OTP' do
 
     click_on t('account.index.verification.reactivate_button')
 
-    expect(current_path).to eq verify_profile_path
+    expect(current_path).to eq verify_account_path
 
     fill_in 'Secret code', with: otp
     click_button t('forms.verify_profile.submit')
@@ -41,7 +41,7 @@ feature 'verify profile with OTP' do
     fill_in 'Secret code', with: 'the wrong code'
     click_button t('forms.verify_profile.submit')
 
-    expect(current_path).to eq verify_profile_path
+    expect(current_path).to eq verify_account_path
     expect(page).to have_content(t('errors.messages.otp_incorrect'))
     expect(page.body).to_not match('the wrong code')
   end
