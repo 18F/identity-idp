@@ -2,7 +2,7 @@
   .col.col-8
     .bold.col.col-12.sm-col-6
       = name
-    .col.col-8.sm-col-6
+    .col.col-12.sm-col-6.truncate
       = content if local_assigns.key? :content
   .col.col-4.right-align
     - if local_assigns.key? :path
