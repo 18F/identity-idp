@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe ReactivateProfileForm do
+describe ReactivateAccountForm do
   subject(:form) do
-    ReactivateProfileForm.new(user,
+    ReactivateAccountForm.new(user,
                               password: password)
   end
 
@@ -45,7 +45,7 @@ describe ReactivateProfileForm do
 
     context 'when personal key does not match' do
       subject(:form) do
-        ReactivateProfileForm.new(user,
+        ReactivateAccountForm.new(user,
                                   personal_key: personal_key,
                                   password: password)
       end

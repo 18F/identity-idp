@@ -34,7 +34,7 @@ module SignUp
       if session[:sp]
         sign_up_completed_path
       elsif current_user.decorate.password_reset_profile.present?
-        reactivate_profile_path
+        reactivate_account_path
       else
         after_sign_in_path_for(current_user)
       end

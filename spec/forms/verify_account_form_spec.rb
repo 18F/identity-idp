@@ -1,8 +1,8 @@
 require 'rails_helper'
 
-describe VerifyProfileForm do
+describe VerifyAccountForm do
   subject(:form) do
-    VerifyProfileForm.new(user: user, otp: otp, pii_attributes: pii_attributes)
+    VerifyAccountForm.new(user: user, otp: otp, pii_attributes: pii_attributes)
   end
 
   let(:user) { pending_profile.user }

@@ -1,15 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe Users::ReactivateProfileController do
+RSpec.describe Users::VerifyAccountController do
   include Features::LocalizationHelper
 
   describe '#create' do
     subject(:action) do
       post(
         :create,
-        reactivate_profile_form: {
-          password: 'password',
-          personal_key: 'personal_key',
+        verify_account_form: {
+          otp: 'abc123',
         }
       )
     end
@@ -17,8 +16,8 @@ RSpec.describe Users::ReactivateProfileController do
     before do
       stub_sign_in
 
-      form = instance_double('ReactivateProfileForm', submit: success)
-      expect(controller).to receive(:build_reactivate_profile_form).and_return(form)
+      form = instance_double('VerifyAccountForm', submit: success)
+      expect(controller).to receive(:build_verify_account_form).and_return(form)
     end
 
     context 'with a valid form' do
@@ -37,7 +36,7 @@ RSpec.describe Users::ReactivateProfileController do
       it 'renders the index page to show errors' do
         action
 
-        expect(response).to render_template('users/reactivate_profile/index')
+        expect(response).to render_template('users/verify_account/index')
       end
     end
   end

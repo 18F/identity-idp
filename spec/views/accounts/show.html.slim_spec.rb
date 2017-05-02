@@ -93,7 +93,7 @@ describe 'accounts/show.html.slim' do
       render
 
       expect(rendered).to_not have_link(
-        t('account.index.verification.reactivate_button'), href: verify_profile_path
+        t('account.index.verification.reactivate_button'), href: verify_account_path
       )
     end
   end
@@ -107,7 +107,7 @@ describe 'accounts/show.html.slim' do
       render
 
       expect(rendered).
-        to have_link(t('account.index.verification.reactivate_button'), href: verify_profile_path)
+        to have_link(t('account.index.verification.reactivate_button'), href: verify_account_path)
     end
   end
 

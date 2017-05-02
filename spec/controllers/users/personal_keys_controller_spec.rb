@@ -64,7 +64,7 @@ describe Users::PersonalKeysController do
 
         patch :update
 
-        expect(response).to redirect_to reactivate_profile_url
+        expect(response).to redirect_to reactivate_account_url
       end
     end
   end

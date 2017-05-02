@@ -16,7 +16,7 @@ feature 'Password recovery via personal key' do
     click_submit_default
     enter_correct_otp_code_for_user(user)
 
-    expect(current_path).to eq reactivate_profile_path
+    expect(current_path).to eq reactivate_account_path
 
     reactivate_profile(new_password, personal_key)
 
@@ -32,14 +32,14 @@ feature 'Password recovery via personal key' do
     click_submit_default
     enter_correct_otp_code_for_user(user)
 
-    expect(current_path).to eq reactivate_profile_path
+    expect(current_path).to eq reactivate_account_path
 
     visit manage_personal_key_path
 
     new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
 
-    expect(current_path).to eq reactivate_profile_path
+    expect(current_path).to eq reactivate_account_path
 
     reactivate_profile(new_password, new_personal_key)
 
@@ -65,7 +65,7 @@ feature 'Password recovery via personal key' do
     new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
 
-    expect(current_path).to eq reactivate_profile_path
+    expect(current_path).to eq reactivate_account_path
 
     reactivate_profile(new_password, new_personal_key)
 

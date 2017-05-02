@@ -8,4 +8,20 @@ RSpec.describe 'Redirecting Legacy Routes', type: :request do
       expect(response).to redirect_to('/account')
     end
   end
+
+  describe '/profile/reactivate' do
+    it 'redirects to /account/reactivate' do
+      get '/profile/reactivate'
+
+      expect(response).to redirect_to('/account/reactivate')
+    end
+  end
+
+  describe '/profile/verify' do
+    it 'redirects to /account/verify' do
+      get '/profile/verify'
+
+      expect(response).to redirect_to('/account/verify')
+    end
+  end
 end

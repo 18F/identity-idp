@@ -1,4 +1,4 @@
-class VerifyProfileForm
+class VerifyAccountForm
   include ActiveModel::Model
 
   validates :otp, presence: true

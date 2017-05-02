@@ -45,6 +45,10 @@ Rails.application.routes.draw do
       as: :openid_connect_configuration
 
   get '/account' => 'accounts#show'
+  get '/account/reactivate' => 'users/reactivate_account#index', as: :reactivate_account
+  post '/account/reactivate' => 'users/reactivate_account#create'
+  get '/account/verify' => 'users/verify_account#index', as: :verify_account
+  post '/account/verify' => 'users/verify_account#create'
 
   get '/api/health/workers' => 'health/workers#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
@@ -88,10 +92,8 @@ Rails.application.routes.draw do
       as: :user_two_factor_authentication # route name is used by two_factor_authentication gem
 
   get '/profile', to: redirect('/account')
-  get '/profile/reactivate' => 'users/reactivate_profile#index', as: :reactivate_profile
-  post '/profile/reactivate' => 'users/reactivate_profile#create'
-  get '/profile/verify' => 'users/verify_profile#index', as: :verify_profile
-  post '/profile/verify' => 'users/verify_profile#create'
+  get '/profile/reactivate', to: redirect('/account/reactivate')
+  get '/profile/verify', to: redirect('/account/verify')
 
   post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
   get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',

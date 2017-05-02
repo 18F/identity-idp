@@ -1,4 +1,4 @@
-class ReactivateProfileForm
+class ReactivateAccountForm
   include ActiveModel::Model
   include PersonalKeyValidator
 

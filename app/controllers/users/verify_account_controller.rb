@@ -1,14 +1,14 @@
 module Users
-  class VerifyProfileController < ApplicationController
+  class VerifyAccountController < ApplicationController
     before_action :confirm_verification_needed
 
     def index
-      @verify_profile_form = VerifyProfileForm.new(user: current_user)
+      @verify_account_form = VerifyAccountForm.new(user: current_user)
     end
 
     def create
-      @verify_profile_form = build_verify_profile_form
-      if @verify_profile_form.submit
+      @verify_account_form = build_verify_account_form
+      if @verify_account_form.submit
         flash[:success] = t('account.index.verification.success')
         redirect_to account_path
       else
@@ -18,8 +18,8 @@ module Users
 
     private
 
-    def build_verify_profile_form
-      VerifyProfileForm.new(
+    def build_verify_account_form
+      VerifyAccountForm.new(
         user: current_user,
         otp: params_otp,
         pii_attributes: decrypted_pii
@@ -27,7 +27,7 @@ module Users
     end
 
     def params_otp
-      params[:verify_profile_form].permit(:otp)[:otp]
+      params[:verify_account_form].permit(:otp)[:otp]
     end
 
     def confirm_verification_needed
