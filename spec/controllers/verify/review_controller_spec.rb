@@ -170,6 +170,20 @@ describe Verify::ReviewController do
         )
       end
     end
+
+    context 'user chooses address verification' do
+      before do
+        idv_session.address_verification_mechanism = 'usps'
+      end
+
+      it 'displays a helpful flash message to the user' do
+        get :new
+
+        expect(flash.now[:success]).to eq(
+          t('idv.titles.verify_mail')
+        )
+      end
+    end
   end
 
   describe '#create' do

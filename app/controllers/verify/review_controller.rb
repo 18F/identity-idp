@@ -23,12 +23,7 @@ module Verify
       @idv_params = idv_params
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
-      phone_of_record_msg = ActionController::Base.helpers.content_tag(
-        :strong, t('idv.messages.phone.phone_of_record')
-      )
-
-      flash.now[:success] = t('idv.messages.review.info_verified_html',
-                              phone_message: phone_of_record_msg)
+      flash.now[:success] = flash_message_content
     end
 
     def create
@@ -38,6 +33,17 @@ module Verify
     end
 
     private
+
+    def flash_message_content
+      if idv_session.address_verification_mechanism == 'usps'
+        t('idv.titles.verify_mail')
+      else
+        phone_of_record_msg = ActionController::Base.helpers.content_tag(
+          :strong, t('idv.messages.phone.phone_of_record')
+        )
+        t('idv.messages.review.info_verified_html', phone_message: phone_of_record_msg)
+      end
+    end
 
     def idv_profile_complete?
       idv_session.profile_confirmation == true
