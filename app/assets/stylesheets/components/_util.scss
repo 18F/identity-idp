@@ -6,6 +6,12 @@
 
 .invisible { visibility: hidden; }
 
+.truncate-inline {
+  max-width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 @media #{$breakpoint-sm} {
   // scss-lint:disable ImportantRule
   .sm-display-inline-block { display: inline-block !important; }
