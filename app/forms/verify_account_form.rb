@@ -19,7 +19,7 @@ class VerifyAccountForm
       activate_profile
       true
     else
-      clear_fields
+      reset_sensitive_fields
       false
     end
   end
@@ -43,8 +43,7 @@ class VerifyAccountForm
     ActiveSupport::SecurityUtils.secure_compare(otp, pii_attributes.otp.to_s)
   end
 
-  # Reset sensitive fields so they don't get sent back to the browser
-  def clear_fields
+  def reset_sensitive_fields
     self.otp = nil
   end
 
