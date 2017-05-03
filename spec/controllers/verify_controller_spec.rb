@@ -21,6 +21,19 @@ describe VerifyController do
 
       get :index
     end
+
+    it 'redirects to failure page if number of attempts has been exceeded' do
+      profile = create(
+        :profile,
+        user: create(:user, idv_attempts: 3, idv_attempted_at: Time.zone.now)
+      )
+
+      stub_sign_in(profile.user)
+
+      get :index
+
+      expect(response).to redirect_to verify_fail_url
+    end
   end
 
   describe '#activated' do
