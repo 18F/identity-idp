@@ -26,6 +26,18 @@ textarea {
   &.phone {
     font-family: $monospace-font-family;
   }
+
+  &:focus,
+  &.is-focused {
+    border-color: $field-focus-color;
+    box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
+    outline: none;
+  }
+
+  &:invalid,
+  &.is-error {
+    border-color: $border-color;
+  }
 }
 
 .radio-extra {
