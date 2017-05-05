@@ -7,6 +7,10 @@ module IdvHelper
     Features::SessionHelper::VALID_PASSWORD
   end
 
+  def usps_otp_code_for(user)
+    user.profiles.first.decrypt_pii(user.unlock_user_access_key(user.password))[:otp]
+  end
+
   def fill_out_idv_form_ok
     fill_in 'profile_first_name', with: 'José'
     fill_in 'profile_last_name', with: 'One'
@@ -59,6 +63,10 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(555) 555-5555'
   end
 
+  def click_idv_begin
+    click_on t('idv.index.continue_link')
+  end
+
   def click_idv_continue
     click_button t('forms.buttons.continue')
   end
@@ -89,7 +97,7 @@ module IdvHelper
     click_idv_address_choose_phone
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
-    fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+    fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_submit_default
   end
 end

@@ -2,8 +2,11 @@
 
 h1.h3.my0 = t('forms.verify_profile.title')
 p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
+
 = simple_form_for(@verify_account_form, url: verify_account_path,
   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.error :base
-  = f.input :otp, required: true, label: 'Secret code'
-  = f.button :submit, t('forms.verify_profile.submit'), class: 'mb1'
+  = f.input :otp, required: true, label: t('forms.verify_profile.name'), wrapper: :inline_form do
+    = f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10'
+    = f.button :submit, t('forms.verify_profile.submit')
+  end

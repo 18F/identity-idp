@@ -295,7 +295,8 @@ describe SamlIdpController do
           loa3: false,
           issuer: saml_settings.issuer,
           request_id: sp_request_id,
-          request_url: @saml_request.request.original_url
+          request_url: @saml_request.request.original_url,
+          requested_attributes: [:email]
         )
       end
 

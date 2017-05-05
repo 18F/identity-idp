@@ -10,6 +10,7 @@ es:
     messages:
       already_confirmed: Ya está confirmado, por favor intenta iniciar sesión.
       blank: Por favor, rellenar este campo.
+      confirmation_code_incorrect: NOT TRANSLATED YET
       confirmation_invalid_token:
         El enlace de confirmación en el que ha hecho clic ya no es válido. Esto puede haber
         sido causado al hacer clic en un enlace antiguo de su correo electrónico, o puede ser que ya haya

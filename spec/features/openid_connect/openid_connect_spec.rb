@@ -285,11 +285,14 @@ feature 'OpenID Connect' do
 
         sign_in_live_with_2fa(user)
 
-        fill_in 'Secret code', with: otp
+        fill_in t('forms.verify_profile.name'), with: usps_otp_code_for(user)
         click_button t('forms.verify_profile.submit')
-        click_button t('openid_connect.authorization.index.allow')
 
+        expect(current_path).to eq(sign_up_completed_path)
+        find('input').click
+        click_button t('openid_connect.authorization.index.allow')
         redirect_uri = URI(current_url)
+
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       end
     end

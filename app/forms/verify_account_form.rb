@@ -36,7 +36,7 @@ class VerifyAccountForm
 
   def validate_otp
     return if valid_otp?
-    errors.add :otp, :otp_incorrect
+    errors.add :otp, :confirmation_code_incorrect
   end
 
   def valid_otp?
