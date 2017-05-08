@@ -5,6 +5,8 @@ body { -webkit-font-smoothing: antialiased; }
 .sans-serif { font-family: $sans-serif-font-family; }
 .serif { font-family: $serif-font-family; }
 
+.text-decoration-none { text-decoration: none; }
+
 .lower { text-transform: lowercase; }
 
 .ls-0 { letter-spacing: 0; }
@@ -13,6 +15,18 @@ body { -webkit-font-smoothing: antialiased; }
 
 .fs-12p { font-size: 12px; }
 .fs-20p { font-size: 20px; }
+
+.caps {
+  letter-spacing: $caps-letter-spacing;
+  text-transform: uppercase;
+}
+
+.line-height-1 { line-height: $line-height-1; }
+.line-height-2 { line-height: $line-height-2; }
+.line-height-3 { line-height: $line-height-3; }
+.line-height-4 { line-height: $line-height-4; }
+
+.underline { text-decoration: underline; }
 
 // given how similar & coupled these are, single line preferred
 // scss-lint:disable SingleLinePerSelector
