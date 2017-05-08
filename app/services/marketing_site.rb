@@ -16,4 +16,8 @@ class MarketingSite
   def self.help_url
     URI.join(BASE_URL, '/help').to_s
   end
+
+  def self.help_authenticator_app_url
+    URI.join(BASE_URL, help_url, '#what-is-an-authenticator-app').to_s
+  end
 end

@@ -28,6 +28,5 @@ es:
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
     totp_setup:
-      new: Escanear el código QR con su dispositivo
-      start: Configurar la autenticación de dos factores
+      new: Configurar la autenticación de dos factores
     verify_email: Revisar su correo electrónico

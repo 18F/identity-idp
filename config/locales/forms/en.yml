@@ -10,7 +10,6 @@ en:
       enable: Enable
       resend_confirmation: Resend confirmation instructions
       send_security_code: Send security code
-      setup_totp: Set up authentication app
       submit:
         confirm_change: Confirm change
         default: Submit
@@ -36,15 +35,11 @@ en:
       labels:
         email: Email address
     totp_setup:
-      code: One-time security code
-      totp_info: >
-        To enable two-factor authentication, use the QR code provided to link
-        this account to your authentication app.
-      totp_intro: >
-        To receive a one-time security code, you may choose to use a two-factor
-        authentication application to log into to your account. If so, you’ll need to
-        link your login.gov account to the application you choose. Each time you sign in
-        you’ll need to open the application and retrieve a code.
+      totp_intro_html: >
+        When you sign in, you can get your security code from an authentication app. %{link}
+      totp_step_1: Open your authentication app
+      totp_step_2: Enter this key in the app
+      totp_step_3: Enter the code from the app
     two_factor:
       code: One-time security code
       personal_key: Personal key

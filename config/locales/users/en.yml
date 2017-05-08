@@ -4,8 +4,6 @@ en:
     totp_setup:
       new:
         qr_img_alt: QR Code for Authenticator App
-      start:
-        app_img_alt: Authentication App
     personal_key:
       header: Your personal key
       generated_on_html: Generated on %{date}

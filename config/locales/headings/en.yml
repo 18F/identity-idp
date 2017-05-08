@@ -28,6 +28,5 @@ en:
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
     totp_setup:
-      new: Scan the QR code with your device
-      start: Set up two-factor authentication
+      new: Enable an authentication app
     verify_email: Check your email

@@ -3,6 +3,7 @@ en:
   links:
     back_to_sp: "‹ Back to %{sp}"
     contact: Contact
+    copy: Copy
     create_account: Create account
     help: Help
     next: Next
@@ -27,3 +28,4 @@ en:
       resend_code:
         sms: Get another text message
         voice: Get another phone call
+    what_is_totp: What is an authentication app?

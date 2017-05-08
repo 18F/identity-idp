@@ -113,14 +113,6 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  scenario 'start set up of authenticator app page' do
-    sign_in_and_2fa_user
-
-    visit '/authenticator_start'
-
-    expect(page).to be_accessible
-  end
-
   scenario 'set up authenticator app page' do
     sign_in_and_2fa_user
 
