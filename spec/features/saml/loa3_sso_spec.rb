@@ -38,8 +38,8 @@ feature 'LOA3 Single Sign On' do
     it 'shows user the start page with accordion' do
       saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
       sp_content = [
-        t('headings.create_account_with_sp.sp_text', sp: 'Test SP'),
-        t('headings.create_account_with_sp.app_text'),
+        'Test SP',
+        t('headings.create_account_with_sp.sp_text'),
       ].join(' ')
 
       visit saml_authn_request
