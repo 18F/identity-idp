@@ -7,7 +7,7 @@ en:
       continue: Continue identity verification
       cancel: Cancel and return to your profile
       help: Continue to Help Center
-      send_letter: Send letter
+      send_letter: Send a letter
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -125,6 +125,7 @@ en:
       hardfail: We can’t verify your identity right now.
       hardfail4: You can also go to %{sp} for more help in accessing services.
       help_center: Visit our Help Center to learn more about verifying your account.
+      mail_sent: Your letter is on its way
       phone:
         alert: This phone line must be
         in_your_name: in your name or a family member's name
@@ -153,8 +154,7 @@ en:
         no_pii: Do not use real personal information (demo purposes only)
       usps:
         bad_address: I can't get mail at this address
-        byline: We will mail a letter with a confirmation code to your verified
-          address on file.
+        byline: To activate by mail, we will mail a letter with a confirmation code to your street address.
         success: It should arrive in 5 to 10 business days.
       personal_details_verified: Personal details verified!
     modal:
@@ -205,4 +205,4 @@ en:
       session:
         phone: Get a code by telephone
         review: Encrypt your verified data by entering your password
-      verify_mail: Your letter is on its way
+      verify_mail: Want a letter?
