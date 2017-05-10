@@ -34,6 +34,20 @@ describe VerifyController do
 
       expect(response).to redirect_to verify_fail_url
     end
+
+    context 'user does not have an active profile, but has a pending one' do
+      it 'redirects to the account page' do
+        profile = create(
+          :profile, deactivation_reason: 3
+        )
+
+        stub_sign_in(profile.user)
+
+        get :index
+
+        expect(response).to redirect_to account_url
+      end
+    end
   end
 
   describe '#activated' do
