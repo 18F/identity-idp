@@ -180,7 +180,7 @@ describe Verify::ReviewController do
         get :new
 
         expect(flash.now[:success]).to eq(
-          t('idv.titles.verify_mail')
+          t('idv.messages.mail_sent')
         )
       end
     end
