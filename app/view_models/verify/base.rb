@@ -44,11 +44,8 @@ module Verify
 
     def button
       if error == 'warning'
-        helper.link_to(
-          button_link_text,
-          'javascript:void(0)',
-          id: 'js-close-modal',
-          class: button_css_classes
+        helper.content_tag(
+          :button, button_link_text, id: 'js-close-modal', class: button_css_classes
         )
       else
         helper.link_to button_link_text, verify_fail_path, class: button_css_classes
