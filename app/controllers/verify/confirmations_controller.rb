@@ -20,6 +20,7 @@ module Verify
 
     def next_step
       if session[:sp]
+        return account_path if current_user.decorate.pending_profile?
         sign_up_completed_url
       else
         after_sign_in_path_for(current_user)
