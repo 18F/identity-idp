@@ -123,7 +123,7 @@ feature 'IdV session' do
       max_attempts_less_one.times do
         fill_out_idv_form_fail
         click_idv_continue
-        click_link t('idv.modal.button.warning')
+        click_button t('idv.modal.button.warning')
       end
 
       fill_out_idv_form_fail
@@ -154,7 +154,7 @@ feature 'IdV session' do
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_session_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
-      click_link t('idv.modal.button.warning')
+      click_button t('idv.modal.button.warning')
 
       fill_out_idv_form_ok
       click_idv_continue
@@ -171,7 +171,7 @@ feature 'IdV session' do
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_finance_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.financials.heading'))
-      click_link t('idv.modal.button.warning')
+      click_button t('idv.modal.button.warning')
 
       # can't go "back" to a successful step
       visit verify_session_path
@@ -192,7 +192,7 @@ feature 'IdV session' do
 
       # failure reloads the same sticky form (different path) and shows warning modal
       expect(current_path).to eq verify_finance_path
-      click_link t('idv.modal.button.warning')
+      click_button t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
       # try again with CCN
@@ -216,7 +216,7 @@ feature 'IdV session' do
       # failure reloads the same sticky form
       expect(current_path).to eq verify_phone_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.phone.heading'))
-      click_link t('idv.modal.button.warning')
+      click_button t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
 
       fill_out_phone_form_ok(good_phone_value)
