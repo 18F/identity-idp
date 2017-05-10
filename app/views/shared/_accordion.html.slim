@@ -1,4 +1,6 @@
-.mb4.col-12.fs-16p.accordion
+.accordion(
+  class=(options[:wrapper_css] || 'mb4 col-12 fs-16p')
+)
   .accordion-header(
     class=('display-none' if options[:hide_header])
     role="heading"

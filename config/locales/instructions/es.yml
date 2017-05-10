@@ -3,9 +3,11 @@ es:
   instructions:
     2fa:
       authenticator:
+        accordion_header: NOT TRANSLATED YET
         confirm_code_html: Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
           configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
           <strong>%{app}</strong>.%{tooltip}
+        or: NOT TRANSLATED YET
       sms:
         confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código? %{link}.
         fallback_html: NOT TRANSLATED YET

@@ -3,6 +3,7 @@ es:
   links:
     back_to_sp: "‹ Volver a %{sp}"
     contact: Contactar
+    copy: NOT TRANSLATED YET
     create_account: Crear cuenta
     help: Ayuda
     next: Siguiente
@@ -27,3 +28,4 @@ es:
       resend_code:
         sms: NOT TRANSLATED YET
         voice: NOT TRANSLATED YET
+    what_is_totp: NOT TRANSLATED YET

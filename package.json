@@ -9,6 +9,7 @@
   "dependencies": {
     "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
+    "clipboard": "^1.6.1",
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",

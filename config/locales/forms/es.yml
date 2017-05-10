@@ -10,7 +10,6 @@ es:
       enable: Habilitar
       resend_confirmation: Reenviar instrucciones de confirmación
       send_security_code: Enviar contraseña
-      setup_totp: Configurar la aplicación de autenticación
       submit:
         confirm_change: Confirm change
         default: Enviar
@@ -36,15 +35,10 @@ es:
       labels:
         email: Dirección de correo electrónico
     totp_setup:
-      code: Código de acceso único
-      totp_info: >
-        Para habilitar la autenticación de dos factores, utilice el código QR para conectar
-        esta cuenta a su aplicación de autenticación.
-      totp_intro: >
-        Para recibir una contraseña de un solo uso, puede elijir una aplicación de
-        autenticación de dos factores para iniciar sesión en su cuenta. Si es así, necesitará
-        conectar su cuenta de login.gov a la aplicación que elija. Cada vez que inicie sesión,
-        tendrá que abrir la aplicación y recuperar un código.
+      totp_intro_html: NOT TRANSLATED YET
+      totp_step_1: NOT TRANSLATED YET
+      totp_step_2: NOT TRANSLATED YET
+      totp_step_3: NOT TRANSLATED YET
     two_factor:
       code: Código de acceso único
       personal_key: Código de recuperación

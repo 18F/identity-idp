@@ -1,13 +1,47 @@
 - title t('titles.totp_setup.new')
+- help_link = link_to t('links.what_is_totp'),
+              MarketingSite.help_authenticator_app_url, target: :_blank
+- btn_cls = 'btn btn-primary p0 w-60p bg-light-blue blue h6 regular border-box center'
 
 h1.h3.my0 = t('headings.totp_setup.new')
-p.mt-tiny.mb0 = t('forms.totp_setup.totp_info')
-.mxn3.center.sm-left-align
-  = image_tag @qrcode, alt: t('.qr_img_alt')
-= form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
-  = label_tag 'code', t('forms.totp_setup.code'), class: 'block bold'
-  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
-    = text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
-      class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length
-  = submit_tag 'Submit', class: 'btn btn-primary align-top'
+p.mt-tiny.mb3 = t('forms.totp_setup.totp_intro_html', link: help_link)
+ul.list-reset
+  li.py2.border-top
+    .mr1.inline-block.circle.circle-number.bg-blue.white
+      | 1
+    .inline-block.bold = t('forms.totp_setup.totp_step_1')
+  li.py2.border-top
+    .mb2
+      .mr1.inline-block.circle.circle-number.bg-blue.white
+        | 2
+      .inline-block.bold = t('forms.totp_setup.totp_step_2')
+    .sm-col-9.sm-ml-28p
+      .px2.py1.border.border-dashed.border-navy
+        #qr-code.inline.fs-20p.caps.monospace
+          = @code
+        .clipboard.ml2.right.mt-tiny class=btn_cls data-clipboard-text=@code.upcase
+          = t('links.copy')
+      .py2.center.bold
+        = t('instructions.2fa.authenticator.or')
+      = accordion('totp-info', t('instructions.2fa.authenticator.accordion_header'),
+        wrapper_css: 'mb2 col-12 fs-16p') do
+        .center
+          = image_tag @qrcode, alt: t('users.totp_setup.new.qr_img_alt')
+  li.py2.border-top
+    .mb2
+      .mr1.inline-block.circle.circle-number.bg-blue.white
+        | 3
+      #totp-label.inline-block.bold = t('forms.totp_setup.totp_step_3')
+    .sm-col-9.sm-ml-28p
+      = form_tag(authenticator_setup_path, method: :patch, role: 'form', class: 'mb1') do
+        .clearfix.mxn1
+          .col.col-6.sm-col-7.px1
+            = text_field_tag :code, '', required: true, pattern: '[0-9]*', type: 'tel',
+              class: 'block col-12 field monospace mfa', maxlength: Devise.otp_length,
+                'aria-labelledby': 'totp-label'
+          .col.col-6.sm-col-5.px1
+            = submit_tag t('forms.buttons.submit.default'),
+              class: 'col-12 btn btn-primary align-top'
 = render 'shared/cancel', link: account_path
+
+== javascript_include_tag 'misc/clipboard'
