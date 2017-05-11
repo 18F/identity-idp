@@ -11,7 +11,9 @@ describe Idv::ProfileMaker do
       profile_maker = described_class.new(
         applicant: applicant,
         user: user,
-        normalized_applicant: normalized_applicant
+        normalized_applicant: normalized_applicant,
+        vendor: :mock,
+        phone_confirmed: false
       )
 
       profile = profile_maker.profile

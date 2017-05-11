@@ -21,6 +21,7 @@ en:
         instructions: Your account requires a secret code to be verified.
         reactivate_button: Enter the code you received via US mail
         success: Your account has been verified.
+        with_phone_button: Verify with your phone
     items:
       personal_key: Personal key
     links:

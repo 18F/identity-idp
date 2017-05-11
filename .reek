@@ -50,6 +50,7 @@ TooManyMethods:
     - Users::ConfirmationsController
     - ApplicationController
     - OpenidConnectAuthorizeForm
+    - OpenidConnect::AuthorizationController
     - Idv::Session
     - User
 UncommunicativeMethodName:
@@ -103,6 +104,9 @@ UtilityFunction:
     enabled: false
   TooManyStatements:
     enabled: false
+  UncommunicativeMethodName:
+    exclude:
+      - visit_idp_from_sp_with_loa1
   UncommunicativeParameterName:
     exclude:
       - begin_sign_up_with_sp_and_loa

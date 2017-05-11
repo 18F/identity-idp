@@ -11,6 +11,7 @@ module Verify
     delegate :attempts_exceeded?, to: :step, prefix: true
 
     def new
+      user_session[:context] = 'idv'
       @view_model = view_model
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end

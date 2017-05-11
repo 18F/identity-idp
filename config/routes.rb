@@ -49,6 +49,8 @@ Rails.application.routes.draw do
   post '/account/reactivate' => 'users/reactivate_account#create'
   get '/account/verify' => 'users/verify_account#index', as: :verify_account
   post '/account/verify' => 'users/verify_account#create'
+  get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
+  post '/account/verify_phone' => 'users/verify_profile_phone#create'
 
   get '/api/health/workers' => 'health/workers#index'
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'

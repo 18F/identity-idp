@@ -225,6 +225,7 @@ describe SamlIdpController do
           authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
+          finish_profile: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -756,6 +757,7 @@ describe SamlIdpController do
           authn_context: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: true,
+          finish_profile: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -778,6 +780,30 @@ describe SamlIdpController do
           authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
           service_provider: 'http://localhost:3000',
           idv: false,
+          finish_profile: false,
+        }
+
+        expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)
+
+        generate_saml_response(user)
+      end
+    end
+
+    context 'user has not finished verifying profile' do
+      it 'tracks the authentication with finish_profile==true' do
+        user = create(:user, :signed_up)
+
+        stub_analytics
+        allow(controller).to receive(:identity_needs_verification?).and_return(false)
+        allow(controller).to receive(:profile_needs_verification?).and_return(true)
+
+        analytics_hash = {
+          success: true,
+          errors: {},
+          authn_context: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+          service_provider: 'http://localhost:3000',
+          idv: false,
+          finish_profile: true,
         }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SAML_AUTH, analytics_hash)

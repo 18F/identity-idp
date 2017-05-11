@@ -249,6 +249,67 @@ feature 'OpenID Connect' do
     end
   end
 
+  context 'LOA3 continuation' do
+    let(:user) { profile.user }
+    let(:otp) { 'abc123' }
+    let(:profile) do
+      create(
+        :profile,
+        deactivation_reason: :verification_pending,
+        phone_confirmed: phone_confirmed,
+        pii: { otp: otp, ssn: '6666', dob: '1920-01-01' }
+      )
+    end
+    let(:oidc_auth_url) do
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      state = SecureRandom.hex
+      nonce = SecureRandom.hex
+
+      openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email profile:name social_security_number',
+        redirect_uri: 'http://localhost:7654/auth/result',
+        state: state,
+        prompt: 'select_account',
+        nonce: nonce
+      )
+    end
+
+    context 'USPS verification' do
+      let(:phone_confirmed) { false }
+
+      it 'prompts to finish verifying profile, then redirects to SP' do
+        visit oidc_auth_url
+
+        sign_in_live_with_2fa(user)
+
+        fill_in 'Secret code', with: otp
+        click_button t('forms.verify_profile.submit')
+        click_button t('openid_connect.authorization.index.allow')
+
+        redirect_uri = URI(current_url)
+        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      end
+    end
+
+    context 'phone verification' do
+      let(:phone_confirmed) { true }
+
+      it 'prompts to finish verifying profile, then redirects to SP' do
+        visit oidc_auth_url
+
+        sign_in_live_with_2fa(user)
+        enter_correct_otp_code_for_user(user)
+        click_button t('openid_connect.authorization.index.allow')
+
+        redirect_uri = URI(current_url)
+        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+      end
+    end
+  end
+
   context 'LOA3 signup' do
     it 'redirects back to SP' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'

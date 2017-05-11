@@ -42,7 +42,7 @@ feature 'IdV session' do
       fill_out_phone_form_ok(user.phone)
       click_idv_continue
       fill_in :user_password, with: user_password
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       expect(current_url).to eq verify_confirmations_url
       expect(page).to have_content(t('headings.personal_key'))
@@ -358,6 +358,15 @@ feature 'IdV session' do
       click_on t('idv.buttons.send_letter')
 
       expect(current_path).to eq verify_review_path
+
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      expect(current_url).to eq verify_confirmations_url
+      click_acknowledge_personal_key
+
+      expect(current_url).to eq(account_url)
+      expect(page).to have_content(t('account.index.verification.reactivate_button'))
     end
 
     context 'cancel from USPS/Phone verification screen' do
@@ -395,6 +404,35 @@ feature 'IdV session' do
           expect(current_path).to eq(account_path)
         end
       end
+    end
+
+    scenario 'continue phone OTP verification after cancel' do
+      different_phone = '555-555-9876'
+      user = sign_in_live_with_2fa
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok(different_phone)
+      click_idv_continue
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      click_on t('links.cancel')
+
+      expect(current_path).to eq root_path
+
+      sign_in_live_with_2fa(user)
+
+      expect(page).to have_content('9876')
+      expect(page).to have_content(t('account.index.verification.instructions'))
+
+      enter_correct_otp_code_for_user(user)
+
+      expect(current_path).to eq account_path
     end
   end
 

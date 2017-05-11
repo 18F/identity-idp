@@ -38,24 +38,43 @@ class UserDecorator
     masked_number(user.phone)
   end
 
-  def identity_verified?
-    user.active_profile.present?
-  end
-
-  def identity_not_verified?
-    !identity_verified?
-  end
-
   def active_identity_for(service_provider)
     user.active_identities.find_by(service_provider: service_provider.issuer)
+  end
+
+  def active_or_pending_profile
+    user.active_profile || pending_profile
+  end
+
+  def pending_profile_requires_verification?
+    return false if pending_profile.blank?
+    return true if identity_not_verified?
+    return false if active_profile_newer_than_pending_profile?
+    true
   end
 
   def pending_profile
     user.profiles.verification_pending.order(created_at: :desc).first
   end
 
-  def active_or_pending_profile
-    user.active_profile || pending_profile
+  def identity_not_verified?
+    !identity_verified?
+  end
+
+  def identity_verified?
+    user.active_profile.present?
+  end
+
+  def active_profile_newer_than_pending_profile?
+    user.active_profile.activated_at >= pending_profile.created_at
+  end
+
+  def needs_profile_phone_verification?
+    pending_profile_requires_verification? && pending_profile.phone_confirmed?
+  end
+
+  def needs_profile_usps_verification?
+    pending_profile_requires_verification? && !pending_profile.phone_confirmed?
   end
 
   # This user's most recently activated profile that has also been deactivated

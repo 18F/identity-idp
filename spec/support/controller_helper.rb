@@ -43,6 +43,15 @@ module ControllerHelper
     allow(subject).to receive(:idv_session).and_return(idv_session)
     allow(subject).to receive(:user_session).and_return(user_session)
   end
+
+  def stub_decorated_user_with_pending_profile(user)
+    decorated_user = instance_double(UserDecorator)
+    allow(user).to receive(:decorate).and_return(decorated_user)
+    allow(decorated_user).to receive(:pending_profile).and_return(pending_profile)
+    allow(decorated_user).to receive(:pending_profile_requires_verification?).
+      and_return(has_pending_profile)
+    decorated_user
+  end
 end
 
 RSpec.configure do |config|

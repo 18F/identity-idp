@@ -101,6 +101,54 @@ feature 'LOA3 Single Sign On' do
     end
   end
 
+  context 'continuing verification' do
+    let(:user) { profile.user }
+    let(:otp) { 'abc123' }
+    let(:profile) do
+      create(
+        :profile,
+        deactivation_reason: :verification_pending,
+        phone_confirmed: phone_confirmed,
+        pii: { otp: otp, ssn: '6666', dob: '1920-01-01' }
+      )
+    end
+
+    context 'having previously selected USPS verification' do
+      let(:phone_confirmed) { false }
+
+      it 'prompts for OTP at sign in' do
+        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+
+        visit saml_authn_request
+
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq verify_account_path
+
+        fill_in 'Secret code', with: otp
+        click_button t('forms.verify_profile.submit')
+
+        expect(current_url).to eq saml_authn_request
+      end
+    end
+
+    context 'having previously cancelled phone verification' do
+      let(:phone_confirmed) { true }
+
+      it 'prompts for OTP at sign in, then continues' do
+        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+
+        visit saml_authn_request
+
+        sign_in_live_with_2fa(user)
+
+        enter_correct_otp_code_for_user(user)
+
+        expect(current_url).to eq saml_authn_request
+      end
+    end
+  end
+
   context 'visiting sign_up_completed path before proofing' do
     it 'redirects to verify_path' do
       sign_in_and_2fa_user

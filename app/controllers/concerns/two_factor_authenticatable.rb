@@ -77,7 +77,7 @@ module TwoFactorAuthenticatable
   def handle_valid_otp
     if authentication_context?
       handle_valid_otp_for_authentication_context
-    elsif idv_or_confirmation_context?
+    elsif idv_or_confirmation_context? || profile_context?
       handle_valid_otp_for_confirmation_context
     end
 
@@ -132,7 +132,7 @@ module TwoFactorAuthenticatable
   end
 
   def assign_phone
-    @updating_existing_number = old_phone.present?
+    @updating_existing_number = old_phone.present? && !profile_context?
 
     if @updating_existing_number && confirmation_context?
       phone_changed
@@ -157,15 +157,24 @@ module TwoFactorAuthenticatable
   end
 
   def update_phone_attributes
-    current_time = Time.zone.now
-
-    if idv_context?
-      Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
+    if idv_or_profile_context?
+      update_idv_state
     else
       UpdateUser.new(
         user: current_user,
-        attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time }
+        attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: Time.zone.now }
       ).call
+    end
+  end
+
+  def update_idv_state
+    now = Time.zone.now
+    if idv_context?
+      Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = now
+    elsif profile_context?
+      profile = current_user.decorate.pending_profile
+      profile.verified_at = now
+      profile.activate
     end
   end
 
@@ -213,7 +222,7 @@ module TwoFactorAuthenticatable
   end
 
   def personal_key_unavailable?
-    idv_or_confirmation_context? || current_user.personal_key.blank?
+    idv_or_confirmation_context? || profile_context? || current_user.personal_key.blank?
   end
 
   def unconfirmed_phone?

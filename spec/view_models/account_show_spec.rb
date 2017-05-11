@@ -1,188 +1,203 @@
 require 'rails_helper'
 
 describe AccountShow do
-  let(:unverified_view_model) { unverified_account_show }
-
   describe '#header_partial' do
-    it 'returns a basic header when user\'s identity is unverified' do
-      expect(unverified_view_model.header_partial).to eq('accounts/header')
+    context 'user has a verified identity' do
+      it 'returns the verified header partial' do
+        user = User.new
+        allow(user).to receive(:identity_verified?).and_return(true)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+
+        expect(profile_index.header_partial).to eq 'accounts/verified_header'
+      end
     end
 
-    it 'returns a verified header when user identity is verified' do
-      view_model = verified_profile_index
+    context 'user does not have a verified identity' do
+      it 'returns the unverified header partial' do
+        user = User.new
+        allow(user).to receive(:identity_verified?).and_return(false)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-      expect(view_model.header_partial).to eq('accounts/verified_header')
+        expect(profile_index.header_partial).to eq 'accounts/header'
+      end
     end
   end
 
   describe '#personal_key_partial' do
-    it 'returns a null partial when a new personal key is not present' do
-      expect_null_partial(unverified_view_model, 'personal_key_partial')
+    context 'AccountShow instance has a personal_key' do
+      it 'returns the personal_key partial' do
+        user = User.new
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: 'foo', decorated_user: user
+        )
+
+        expect(profile_index.personal_key_partial).to eq 'accounts/personal_key'
+      end
     end
 
-    it 'returns personal_key partial when a new personal key is present' do
-      view_model = unverified_account_show(personal_key: '123')
+    context 'AccountShow instance does not have a personal_key' do
+      it 'returns the shared/null partial' do
+        user = User.new
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: '', decorated_user: user
+        )
 
-      expect(view_model.personal_key_partial).to eq('accounts/personal_key')
+        expect(profile_index.personal_key_partial).to eq 'shared/null'
+      end
     end
   end
 
   describe '#password_reset_partial' do
-    it 'returns null partial when reset password flag is not present' do
-      expect_null_partial(unverified_view_model, 'password_reset_partial')
+    context 'user has a password_reset_profile' do
+      it 'returns the accounts/password_reset partial' do
+        user = User.new
+        allow(user).to receive(:password_reset_profile).and_return('profile')
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: 'foo', decorated_user: user
+        )
+
+        expect(profile_index.password_reset_partial).to eq 'accounts/password_reset'
+      end
     end
 
-    it 'returns password reset alert partial when password reset flag present' do
-      user = create(:profile, deactivation_reason: 1).user.decorate
-      view_model = AccountShow.new(
-        decrypted_pii: nil,
-        personal_key: nil,
-        decorated_user: user
-      )
+    context 'user does not have a password_reset_profile' do
+      it 'returns the shared/null partial' do
+        user = User.new
+        allow(user).to receive(:password_reset_profile).and_return(nil)
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: '', decorated_user: user
+        )
 
-      expect(view_model.password_reset_partial).to eq('accounts/password_reset')
+        expect(profile_index.password_reset_partial).to eq 'shared/null'
+      end
     end
   end
 
   describe '#pending_profile_partial' do
-    it 'returns null partial when pending profile flag is not present' do
-      expect_null_partial(unverified_view_model, 'pending_profile_partial')
+    context 'user needs profile usps verification' do
+      it 'returns the accounts/pending_profile_usps partial' do
+        user = User.new
+        allow(user).to receive(:needs_profile_usps_verification?).and_return(true)
+        allow(user).to receive(:needs_profile_phone_verification?).and_return(false)
+        profile_index = AccountShow.new(
+          decrypted_pii: {}, personal_key: 'foo', decorated_user: user
+        )
+
+        expect(profile_index.pending_profile_partial).to eq 'accounts/pending_profile_usps'
+      end
     end
 
-    it 'returns pending profile alert partial when pending profile flag present' do
-      user = create(:profile, deactivation_reason: 3).user.decorate
-      view_model = AccountShow.new(
-        decrypted_pii: nil,
-        personal_key: nil,
-        decorated_user: user
-      )
+    context 'user needs profile phone verification' do
+      it 'returns the accounts/pending_profile_phone partial' do
+        user = User.new
+        allow(user).to receive(:needs_profile_usps_verification?).and_return(false)
+        allow(user).to receive(:needs_profile_phone_verification?).and_return(true)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-      expect(view_model.pending_profile_partial).to eq('accounts/pending_profile')
+        expect(profile_index.pending_profile_partial).to eq 'accounts/pending_profile_phone'
+      end
+    end
+
+    context 'user does not need profile verification' do
+      it 'returns the shared/null partial' do
+        user = User.new
+        allow(user).to receive(:needs_profile_phone_verification?).and_return(false)
+        allow(user).to receive(:needs_profile_usps_verification?).and_return(false)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+
+        expect(profile_index.pending_profile_partial).to eq 'shared/null'
+      end
     end
   end
 
   describe '#pii_partial' do
-    it 'returns a null partial when the user is unverified' do
-      expect_null_partial(unverified_view_model, 'pii_partial')
-    end
-
-    it 'returns pii partial when user is verified' do
-      expect(verified_profile_index.pii_partial).to eq('accounts/pii')
-    end
-  end
-
-  describe '#edit_action_partial' do
-    it 'returns edit action button partial' do
-      expect(unverified_view_model.edit_action_partial).to(
-        eq('accounts/actions/edit_action_button')
-      )
-    end
-  end
-
-  describe '#personal_key_action_partial' do
-    it 'returns manage personal key action partial' do
-      expect(unverified_view_model.personal_key_action_partial).to(
-        eq('accounts/actions/manage_personal_key')
-      )
-    end
-  end
-
-  describe '#personal_key_item_partial' do
-    it 'returns personal key item heading partial' do
-      expect(unverified_view_model.personal_key_item_partial).to(
-        eq('accounts/personal_key_item_heading')
-      )
-    end
-  end
-
-  describe '#recent_event_partial' do
-    it 'returns partial to format a single recent user event' do
-      expect(unverified_view_model.recent_event_partial).to eq('accounts/event_item')
-    end
-  end
-
-  context 'totp related methods' do
-    context 'with totp enabled' do
-      before do
-        user = build_stubbed(:user, otp_secret_key: '123').decorate
-        @view_model = AccountShow.new(
-          decrypted_pii: nil,
-          personal_key: nil,
-          decorated_user: user
+    context 'AccountShow instance has decrypted_pii' do
+      it 'returns the accounts/password_reset partial' do
+        user = User.new
+        profile_index = AccountShow.new(
+          decrypted_pii: { foo: 'bar' }, personal_key: '', decorated_user: user
         )
-      end
 
-      describe '#totp_partial' do
-        it 'returns a partial to disable totp if active' do
-          expect(@view_model.totp_partial).to eq('accounts/actions/disable_totp')
-        end
-      end
-
-      describe '#totp_content' do
-        it 'returns auth app enabled message' do
-          expect(@view_model.totp_content).to eq('account.index.auth_app_enabled')
-        end
+        expect(profile_index.pii_partial).to eq 'accounts/pii'
       end
     end
 
-    context 'with totp disabled' do
-      describe '#totp_partial' do
-        it 'returns a partial to enable totp' do
-          expect(unverified_view_model.totp_partial).to eq('accounts/actions/enable_totp')
-        end
-      end
+    context 'AccountShow instance does not have decrypted_pii' do
+      it 'returns the shared/null partial' do
+        user = User.new
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-      describe '#totp_content' do
-        it 'returns auth app disabled message' do
-          expect(unverified_view_model.totp_content).to eq('account.index.auth_app_disabled')
-        end
+        expect(profile_index.pii_partial).to eq 'shared/null'
+      end
+    end
+  end
+
+  describe '#totp_partial' do
+    context 'user has enabled an authenticator app' do
+      it 'returns the disable_totp partial' do
+        user = User.new
+        allow(user).to receive(:totp_enabled?).and_return(true)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+
+        expect(profile_index.totp_partial).to eq 'accounts/actions/disable_totp'
+      end
+    end
+
+    context 'user does not have an authenticator app enabled' do
+      it 'returns the enable_totp partial' do
+        user = User.new
+        allow(user).to receive(:totp_enabled?).and_return(false)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+
+        expect(profile_index.totp_partial).to eq 'accounts/actions/enable_totp'
       end
     end
   end
 
   describe '#header_personalization' do
-    it 'returns an email address when user does not have a verified profile' do
-      user = unverified_view_model.decorated_user
-      expect(unverified_view_model.header_personalization).to eq(user.email)
+    context 'AccountShow instance has decrypted_pii' do
+      it "returns the user's first name" do
+        user = User.new
+        first_name = 'John'
+        decrypted_pii = Pii::Attributes.new_from_json({ first_name: first_name }.to_json)
+        profile_index = AccountShow.new(
+          decrypted_pii: decrypted_pii, personal_key: '', decorated_user: user
+        )
+
+        expect(profile_index.header_personalization).to eq first_name
+      end
     end
 
-    it 'returns the users first name when they have a verified profile' do
-      expect(verified_profile_index.header_personalization).to eq('Alex')
+    context 'AccountShow instance does not have decrypted_pii' do
+      it "returns the user's email" do
+        email = 'john@smith.com'
+        user = User.new(email: email)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+
+        expect(profile_index.header_personalization).to eq email
+      end
     end
   end
 
-  describe '#recent_events' do
-    it 'exposes recent_events method from decorated_user' do
-      expect(unverified_account_show).to respond_to(:recent_events)
+  describe '#totp_content' do
+    context 'user has enabled an authenticator app' do
+      it 'returns profile.index.auth_app_enabled ' do
+        user = User.new
+        allow(user).to receive(:totp_enabled?).and_return(true)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
+
+        expect(profile_index.totp_content).to eq 'account.index.auth_app_enabled'
+      end
     end
-  end
 
-  def verified_profile_index(personal_key: nil)
-    profile = create(:profile, :active, :verified, pii: { first_name: 'Alex' })
-    user = profile.user
-    user_access_key = user.unlock_user_access_key(user.password)
-    decrypted_pii = profile.decrypt_pii(user_access_key)
+    context 'user does not have an authenticator app enabled' do
+      it 'returns profile.index.auth_app_disabled' do
+        user = User.new
+        allow(user).to receive(:totp_enabled?).and_return(false)
+        profile_index = AccountShow.new(decrypted_pii: {}, personal_key: '', decorated_user: user)
 
-    AccountShow.new(
-      decrypted_pii: decrypted_pii,
-      personal_key: personal_key,
-      decorated_user: user.decorate
-    )
-  end
-
-  def unverified_account_show(personal_key: nil)
-    AccountShow.new(
-      decrypted_pii: nil,
-      personal_key: personal_key,
-      decorated_user: unverified_decorated_user
-    )
-  end
-
-  def expect_null_partial(view_model, method)
-    expect(view_model.send(method.to_sym)).to eq('shared/null')
-  end
-
-  def unverified_decorated_user
-    build_stubbed(:user).decorate
+        expect(profile_index.totp_content).to eq 'account.index.auth_app_disabled'
+      end
+    end
   end
 end
