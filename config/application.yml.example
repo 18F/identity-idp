@@ -94,6 +94,7 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
+  usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
 
@@ -145,6 +146,7 @@ production:
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'false'
   use_kms: 'false'
+  usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
 
@@ -190,5 +192,6 @@ test:
   twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
   twilio_record_voice: 'true'
   use_kms: 'false'
+  usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
