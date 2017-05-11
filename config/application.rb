@@ -12,7 +12,7 @@ module Upaya
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
-    config.middleware.use Rack::Attack unless Figaro.env.enable_load_testing_mode == 'true'
+    config.middleware.use Rack::Attack unless Figaro.env.disable_email_sending == 'true'
 
     config.browserify_rails.force = true
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
