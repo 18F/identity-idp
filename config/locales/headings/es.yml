@@ -5,7 +5,6 @@ es:
       new: Enviar otro correo electrónico de confirmación
     create_account_with_sp:
       sp_text: NOT TRANSLATED YET
-      app_text: NOT TRANSLATED YET
     create_account_without_sp: Crear una cuenta de login.gov
     edit_info:
       email: Cambiar su correo electrónico

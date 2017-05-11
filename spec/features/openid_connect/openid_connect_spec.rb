@@ -224,8 +224,8 @@ feature 'OpenID Connect' do
         )
 
         sp_content = [
-          t('headings.create_account_with_sp.sp_text', sp: 'Example iOS App'),
-          t('headings.create_account_with_sp.app_text'),
+          'Example iOS App',
+          t('headings.create_account_with_sp.sp_text'),
         ].join(' ')
 
         expect(page).to have_content(sp_content)
