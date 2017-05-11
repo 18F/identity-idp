@@ -37,7 +37,7 @@ class UserFlowFormatter < RSpec::Core::Formatters::DocumentationFormatter
     example = notification.example
     indent = '       ' * example.metadata[:scoped_id].split(':').size
     @html << "<br>#{indent}<a class='underline' href='#{$cur_screenshot_link}'>" \
-             "#{example.description} ›</a>"
+             "#{example.description} &raquo;</a>"
 
     super
   end
