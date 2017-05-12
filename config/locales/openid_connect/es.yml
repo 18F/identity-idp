@@ -16,6 +16,9 @@ es:
         invalid_authentication: NOT TRANSLATED YET
         invalid_code: NOT TRANSLATED YET
         invalid_code_verifier: NOT TRANSLATED YET
+    logout:
+      errors:
+        id_token_hint: NOT TRANSLATED YET
     user_info:
       errors:
         no_authorization: NOT TRANSLATED YET

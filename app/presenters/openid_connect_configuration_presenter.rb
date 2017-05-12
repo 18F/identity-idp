@@ -22,6 +22,7 @@ class OpenidConnectConfigurationPresenter
       service_documentation: 'https://pages.18f.gov/identity-dev-docs/',
       token_endpoint: api_openid_connect_token_url,
       userinfo_endpoint: api_openid_connect_userinfo_url,
+      end_session_endpoint: openid_connect_logout_url,
     }
   end
 

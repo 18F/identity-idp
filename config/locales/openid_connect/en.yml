@@ -21,3 +21,6 @@ en:
         no_authorization: No Authorization header provided
         malformed_authorization: Malformed Authorization header
         not_found: Could not find authorization for the contents of the provided access_token or it may have expired
+    logout:
+      errors:
+        id_token_hint: id_token_hint was not recognized

@@ -11,11 +11,12 @@ class OpenidConnectRedirector
     )
   end
 
-  def initialize(redirect_uri:, service_provider:, state:, errors: nil)
+  def initialize(redirect_uri:, service_provider:, state:, errors: nil, error_attr: :redirect_uri)
     @redirect_uri = redirect_uri
     @service_provider = service_provider
     @state = state
     @errors = errors
+    @error_attr = error_attr
   end
 
   def validate
@@ -44,19 +45,23 @@ class OpenidConnectRedirector
     )
   end
 
+  def logout_redirect_uri
+    URIService.add_params(validated_input_redirect_uri, state: state)
+  end
+
   private
 
-  attr_reader :redirect_uri, :service_provider, :state, :errors
+  attr_reader :redirect_uri, :service_provider, :state, :errors, :error_attr
 
   def validate_redirect_uri
     _uri = URI(redirect_uri)
   rescue ArgumentError, URI::InvalidURIError
-    errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_invalid'))
+    errors.add(error_attr, t('openid_connect.authorization.errors.redirect_uri_invalid'))
   end
 
   def validate_redirect_uri_matches_sp_redirect_uri
     return if redirect_uri_matches_sp_redirect_uri?
-    errors.add(:redirect_uri, t('openid_connect.authorization.errors.redirect_uri_no_match'))
+    errors.add(error_attr, t('openid_connect.authorization.errors.redirect_uri_no_match'))
   end
 
   def redirect_uri_matches_sp_redirect_uri?

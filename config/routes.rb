@@ -86,6 +86,7 @@ Rails.application.routes.draw do
        as: :openid_connect_allow
   delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
          as: :openid_connect_deny
+  get '/openid_connect/logout' => 'openid_connect/logout#index'
 
   get '/otp/send' => 'users/two_factor_authentication#send_code'
   get '/phone_setup' => 'users/two_factor_authentication_setup#index'
