@@ -122,6 +122,7 @@ module OpenidConnect
         sp_request.issuer = @authorize_form.client_id
         sp_request.loa = @authorize_form.acr_values.sort.max
         sp_request.url = request.original_url
+        sp_request.requested_attributes = @authorize_decorator.requested_attributes
       end
     end
 

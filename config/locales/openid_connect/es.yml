@@ -3,16 +3,7 @@ es:
     authorization:
       index:
         allow: NOT TRANSLATED YET
-        allow_prompt: NOT TRANSLATED YET
         decline: NOT TRANSLATED YET
-        attributes:
-          address: NOT TRANSLATED YET
-          birthdate: NOT TRANSLATED YET
-          email: NOT TRANSLATED YET
-          family_name: NOT TRANSLATED YET
-          given_name: NOT TRANSLATED YET
-          phone: NOT TRANSLATED YET
-          social_security_number: NOT TRANSLATED YET
       errors:
         bad_client_id: NOT TRANSLATED YET
         no_valid_acr_values: NOT TRANSLATED YET

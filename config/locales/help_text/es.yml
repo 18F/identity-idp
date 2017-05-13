@@ -3,3 +3,14 @@ es:
   help_text:
     change_factor: >
       NOT TRANSLATED YET
+    requested_attributes:
+      intro: NOT TRANSLATED YET
+      address: NOT TRANSLATED YET
+      birthdate: NOT TRANSLATED YET
+      email: NOT TRANSLATED YET
+      family_name: NOT TRANSLATED YET
+      given_name: NOT TRANSLATED YET
+      name: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+      social_security_number: NOT TRANSLATED YET
+

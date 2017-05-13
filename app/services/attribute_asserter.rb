@@ -13,8 +13,6 @@ class AttributeAsserter
     phone
   ].freeze
 
-  URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
-
   def initialize(user:, service_provider:, authn_request:, decrypted_pii:)
     self.user = user
     self.service_provider = service_provider
@@ -83,21 +81,7 @@ class AttributeAsserter
   end
 
   def authn_request_bundle
-    return unless authn_context_attr_nodes.any?
-    authn_context_attr_nodes.join(':').gsub(URI_PATTERN, '').split(/\W+/).compact.uniq
-  end
-
-  def authn_context_attr_nodes
-    @_attr_node_contents ||= begin
-      doc = Saml::XML::Document.parse(authn_request.raw_xml)
-      doc.xpath(
-        '//samlp:AuthnRequest/samlp:RequestedAuthnContext/saml:AuthnContextClassRef',
-        samlp: Saml::XML::Namespaces::PROTOCOL,
-        saml: Saml::XML::Namespaces::ASSERTION
-      ).select do |node|
-        node.content =~ /#{Regexp.escape(URI_PATTERN)}/
-      end
-    end
+    SamlRequestParser.new(authn_request).requested_attributes
   end
 
   def loa3_authn_context?

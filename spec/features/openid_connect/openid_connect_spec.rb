@@ -311,10 +311,13 @@ feature 'OpenID Connect' do
   end
 
   context 'LOA3 signup' do
-    it 'redirects back to SP' do
+    it 'redirects back to SP', email: true do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       state = SecureRandom.hex
       nonce = SecureRandom.hex
+      email = 'test@test.com'
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -327,12 +330,27 @@ feature 'OpenID Connect' do
         nonce: nonce
       )
 
-      user = create(:user, :signed_up, password: Features::SessionHelper::VALID_PASSWORD)
-
-      sign_in_live_with_2fa(user)
+      click_link t('sign_up.registrations.create_account')
+      submit_form_with_valid_email
+      click_confirmation_link_in_email(email)
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
+      enter_2fa_code
       click_on 'Yes'
+      user = User.find_with_email(email)
       complete_idv_profile_ok(user.reload)
       click_acknowledge_personal_key
+
+      within('.requested-attributes') do
+        expect(page).to have_content t('help_text.requested_attributes.email')
+        expect(page).to_not have_content t('help_text.requested_attributes.address')
+        expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
+        expect(page).to have_content t('help_text.requested_attributes.given_name')
+        expect(page).to have_content t('help_text.requested_attributes.family_name')
+        expect(page).to_not have_content t('help_text.requested_attributes.phone')
+        expect(page).to have_content t('help_text.requested_attributes.social_security_number')
+      end
+
       click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
       click_button t('openid_connect.authorization.index.allow')
 

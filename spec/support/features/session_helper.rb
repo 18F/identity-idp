@@ -185,7 +185,11 @@ module Features
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        session[:sp] = { loa3: false, issuer: sp.issuer }
+        session[:sp] = {
+          loa3: false,
+          issuer: sp.issuer,
+          requested_attributes: [:email],
+        }
       end
     end
 

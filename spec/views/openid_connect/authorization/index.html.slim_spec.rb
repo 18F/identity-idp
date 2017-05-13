@@ -18,15 +18,6 @@ describe 'openid_connect/authorization/index.html.slim' do
     allow(view).to receive(:decorated_session).and_return(decorated_session)
   end
 
-  it 'renders a list of localized attribute names' do
-    render
-
-    %w[email given_name family_name birthdate].each do |attribute|
-      translated_attribute = I18n.t("openid_connect.authorization.index.attributes.#{attribute}")
-      expect(rendered).to have_xpath("//li[text()='#{translated_attribute}']")
-    end
-  end
-
   context 'when the service provider has a logo' do
     it 'renders the logo' do
       render

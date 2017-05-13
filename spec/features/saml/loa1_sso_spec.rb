@@ -19,6 +19,15 @@ feature 'LOA1 Single Sign On' do
         confirm_email_in_a_different_browser(email)
 
         expect(current_path).to eq sign_up_completed_path
+        within('.requested-attributes') do
+          expect(page).to have_content t('help_text.requested_attributes.email')
+          expect(page).to_not have_content t('help_text.requested_attributes.address')
+          expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
+          expect(page).to_not have_content t('help_text.requested_attributes.name')
+          expect(page).to_not have_content t('help_text.requested_attributes.phone')
+          expect(page).
+            to_not have_content t('help_text.requested_attributes.social_security_number')
+        end
 
         click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
 
