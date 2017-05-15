@@ -347,7 +347,7 @@ feature 'IdV session' do
     end
 
     scenario 'pick USPS address verification' do
-      user = sign_in_and_2fa_user
+      sign_in_and_2fa_user
       visit verify_session_path
 
       fill_out_idv_form_ok

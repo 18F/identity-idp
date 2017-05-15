@@ -19,7 +19,7 @@ module Verify
     private
 
     def next_step
-      if session[:sp]
+      if session[:sp] && !pending_profile?
         sign_up_completed_url
       else
         after_sign_in_path_for(current_user)
@@ -58,6 +58,10 @@ module Verify
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+    end
+
+    def pending_profile?
+      current_user.decorate.pending_profile?
     end
   end
 end

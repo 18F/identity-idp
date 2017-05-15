@@ -9,8 +9,6 @@ class VerifyController < ApplicationController
       redirect_to verify_activated_path
     elsif idv_attempter.exceeded?
       redirect_to verify_fail_url
-    elsif pending_profile?
-      redirect_to account_url
     else
       analytics.track_event(Analytics::IDV_INTRO_VISIT)
     end
@@ -30,10 +28,6 @@ class VerifyController < ApplicationController
 
   def active_profile?
     current_user.active_profile.present?
-  end
-
-  def pending_profile?
-    current_user.decorate.pending_profile?
   end
 
   def ok_to_fail?
