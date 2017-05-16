@@ -39,7 +39,7 @@ html lang="#{I18n.locale}" class='no-js'
 
     - if Figaro.env.google_analytics_key.present?
       = render 'shared/google_analytics/page_tracking'
-    - if Figaro.env.newrelic_browser_key.present?
+    - if Figaro.env.newrelic_browser_key.present? && Figaro.env.newrelic_browser_app_id.present?
       = render 'shared/newrelic/browser_instrumentation'
 
   body class="#{Rails.env}-env site sm-bg-light-blue"
