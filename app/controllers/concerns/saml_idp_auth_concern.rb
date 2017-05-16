@@ -30,6 +30,7 @@ module SamlIdpAuthConcern
       sp_request.issuer = current_issuer
       sp_request.loa = requested_authn_context
       sp_request.url = request.original_url
+      sp_request.requested_attributes = requested_attributes
     end
   end
 
@@ -107,5 +108,11 @@ module SamlIdpAuthConcern
 
   def current_issuer
     @_issuer ||= saml_request.service_provider.identifier
+  end
+
+  def requested_attributes
+    @_attributes ||= SamlRequestPresenter.new(
+      request: saml_request, service_provider: current_service_provider
+    ).requested_attributes
   end
 end

@@ -3,16 +3,7 @@ en:
     authorization:
       index:
         allow: Allow
-        allow_prompt: 'Review the information that %{name} has requested access to:'
         decline: Decline
-        attributes:
-          address: Mailing address
-          birthdate: Birthdate
-          email: Email address
-          family_name: Last name
-          given_name: First name
-          phone: Phone number
-          social_security_number: Social security number
       errors:
         bad_client_id: Bad client_id
         no_valid_acr_values: No acceptable acr_values found
