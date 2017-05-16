@@ -1,17 +1,17 @@
--title t("titles.loa3_verified.#{session[:sp][:loa3]}", app: APP_NAME)
+-title @view_model.title
 
 .clearfix
-  .col-10.mx-auto.center
-    = image_tag(asset_url("user-verified-#{session[:sp][:loa3]}.svg"),
-                          width: 146, alt: '', class: 'mb1')
-    h1.h3.mb3.my0 = t("titles.loa3_verified.#{session[:sp][:loa3]}", app: APP_NAME)
+  .col-10.sm-col-8.mx-auto
+    .center
+      = @view_model.image
+    h1.h3.mb3.my0.regular = @view_model.heading
 
-    = t('help_text.requested_attributes.intro', app_name: APP_NAME, sp: decorated_session.sp_name)
-    ul.requested-attributes
+    p = t('help_text.requested_attributes.intro_html', app_name: APP_NAME,
+        sp: content_tag(:strong, decorated_session.sp_name))
+    ul.mb3.list-reset.border-bottom.success-bullets.requested-attributes
       - session[:sp][:requested_attributes].each do |attribute|
-        li
+        li.border-top.bold
           = t("help_text.requested_attributes.#{attribute}")
 
-    = button_to t('forms.buttons.continue_to', sp: decorated_session.sp_name), \
-                sign_up_completed_path, \
-                class: 'btn btn-wide px2 py1 rounded-lg border border-green bw2'
+    = button_to t('forms.buttons.continue'), sign_up_completed_path, \
+                class: 'col-12 btn btn-wide px2 py-12p rounded-lg border border-green bw2'

@@ -238,7 +238,7 @@ feature 'OpenID Connect' do
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
 
-        click_button t('forms.buttons.continue_to', sp: 'Example iOS App')
+        click_button t('forms.buttons.continue')
         click_button t('openid_connect.authorization.index.allow')
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
@@ -351,7 +351,7 @@ feature 'OpenID Connect' do
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
       end
 
-      click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
+      click_on I18n.t('forms.buttons.continue')
       click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)

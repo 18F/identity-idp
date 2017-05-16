@@ -10,9 +10,6 @@ en:
       password: Edit your password
       phone: Edit your phone number
     enter_2fa_code: Enter the secure one-time security code
-    loa3_verified:
-      'true': You have verified your identity with %{app}
-      'false': You have created your account with %{app}
     passwords:
       change: Change the password for your account
       confirm: Confirm the password for your account
@@ -23,6 +20,10 @@ en:
     registrations:
       new: Sign up for a account
       start: Get started
+    sign_up:
+      completion_html: You have %{accent} with %{app}
+      loa1: created your account
+      loa3: verified your identity
     totp_setup:
       new: Set up two-factor authentication
     two_factor_setup: Two-factor authentication setup
