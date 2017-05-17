@@ -10,3 +10,4 @@ en:
     phone_changed: Phone number changed
     phone_confirmed: Phone confirmed
     eastern_timestamp: '%{timestamp} (Eastern)'
+    usps_mail_sent: Letter sent

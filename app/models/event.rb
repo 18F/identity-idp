@@ -10,6 +10,7 @@ class Event < ActiveRecord::Base
     authenticator_enabled: 6,
     authenticator_disabled: 7,
     account_verified: 8,
+    usps_mail_sent: 9,
   }
 
   validates :event_type, presence: true

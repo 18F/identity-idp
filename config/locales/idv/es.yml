@@ -7,7 +7,9 @@ es:
       continue: NOT TRANSLATED YET
       cancel: NOT TRANSLATED YET
       help: NOT TRANSLATED YET
-      send_letter: NOT TRANSLATED YET
+      mail:
+        send: NOT TRANSLATED YET
+        resend: NOT TRANSLATED YET
     cancel:
       modal_header: NOT TRANSLATED YET
       warning_header: NOT TRANSLATED YET
@@ -20,6 +22,7 @@ es:
       incorrect_password: NOT TRANSLATED YET
       invalid_ccn: NOT TRANSLATED YET
       missing_finance: NOT TRANSLATED YET
+      mail_limit_reached: NOT TRANSLATED YET
       pattern_mismatch:
         dob: NOT TRANSLATED YET
         "personal-key": NOT TRANSLATED YET
@@ -118,6 +121,7 @@ es:
       usps:
         bad_address: NOT TRANSLATED YET
         byline: NOT TRANSLATED YET
+        resend: NOT TRANSLATED YET
         success: NOT TRANSLATED YET
       personal_details_verified: NOT TRANSLATED YET
     modal:
@@ -154,6 +158,9 @@ es:
       financials: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET
+      mail:
+        verify: NOT TRANSLATED YET
+        resend: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       review: NOT TRANSLATED YET
       select_verification: NOT TRANSLATED YET
@@ -161,4 +168,3 @@ es:
       session:
         phone: NOT TRANSLATED YET
         review: NOT TRANSLATED YET
-      verify_mail: NOT TRANSLATED YET

@@ -10,3 +10,4 @@ es:
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
     eastern_timestamp: '%{timestamp} (zona horaria del Este)'
+    usps_mail_sent: Carta enviada

@@ -6,6 +6,11 @@ p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
 = simple_form_for(@verify_account_form, url: verify_account_path,
   html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
   = f.error :base
-  = f.input :otp, required: true, label: t('forms.verify_profile.name'), wrapper: :inline_form do
+  = f.input :otp, required: true, label: t('forms.verify_profile.name'),
+    wrapper_html: { class: 'mb3' }, wrapper: :inline_form do
     = f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code
     = f.button :submit, t('forms.verify_profile.submit')
+- unless @mail_spammed
+  = link_to t('idv.messages.usps.resend'), verify_usps_path,
+    class: 'block mb2'
+= link_to t('idv.messages.usps.bad_address'), verify_phone_path
