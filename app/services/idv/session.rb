@@ -82,6 +82,7 @@ module Idv
       if pii.is_a?(String)
         self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
       end
+
       UspsConfirmationMaker.new(pii: pii).perform
     end
 

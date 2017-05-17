@@ -53,6 +53,10 @@ class UserDecorator
     true
   end
 
+  def pending_profile?
+    pending_profile.present?
+  end
+
   def pending_profile
     user.profiles.verification_pending.order(created_at: :desc).first
   end
