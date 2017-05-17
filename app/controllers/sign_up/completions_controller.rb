@@ -3,6 +3,8 @@ module SignUp
     before_action :verify_confirmed, if: :loa3?
 
     def show
+      @view_model = view_model
+
       if user_fully_authenticated? && session[:sp].present?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
@@ -22,6 +24,12 @@ module SignUp
     end
 
     private
+
+    def view_model
+      SignUpCompletionsShow.new(
+        loa3_requested: loa3?
+      )
+    end
 
     def verify_confirmed
       redirect_to verify_path if current_user.decorate.identity_not_verified?

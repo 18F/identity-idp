@@ -25,7 +25,11 @@ feature 'LOA3 Single Sign On' do
       complete_idv_profile_ok(user.reload)
       click_acknowledge_personal_key
 
-      expect(page).to have_content t('titles.loa3_verified.true', app: APP_NAME)
+      expect(page).to have_content t(
+        'titles.sign_up.completion_html',
+        accent: t('titles.sign_up.loa3'),
+        app: APP_NAME
+      )
       within('.requested-attributes') do
         expect(page).to have_content t('help_text.requested_attributes.email')
         expect(page).to_not have_content t('help_text.requested_attributes.address')
@@ -36,7 +40,7 @@ feature 'LOA3 Single Sign On' do
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
       end
 
-      click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
+      click_on I18n.t('forms.buttons.continue')
       expect(current_url).to eq saml_authn_request
 
       user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)

@@ -4,7 +4,6 @@ es:
     buttons:
       back: Atrás
       continue: Continuar
-      continue_to: Continuar a %{sp}
       disable: Inhabilitar
       edit: Editar
       enable: Habilitar

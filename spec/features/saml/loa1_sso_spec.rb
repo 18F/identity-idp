@@ -29,7 +29,7 @@ feature 'LOA1 Single Sign On' do
             to_not have_content t('help_text.requested_attributes.social_security_number')
         end
 
-        click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+        click_on t('forms.buttons.continue')
 
         expect(current_url).to eq authn_request
         expect(ServiceProviderRequest.from_uuid(sp_request_id)).
