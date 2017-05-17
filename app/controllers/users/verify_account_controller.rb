@@ -5,6 +5,9 @@ module Users
 
     def index
       @verify_account_form = VerifyAccountForm.new(user: current_user)
+
+      return unless FeatureManagement.reveal_usps_code?
+      @code = JSON.parse(user_session[:decrypted_pii])['otp']['raw']
     end
 
     def create

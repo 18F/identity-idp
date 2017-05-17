@@ -130,4 +130,33 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '#reveal_usps_code?' do
+    context 'server domain name is dev, qa, or int' do
+      it 'returns true' do
+        %w[idp.dev.login.gov idp.int.login.gov idp.qa.login.gov].each do |domain|
+          allow(Figaro.env).to receive(:domain_name).and_return(domain)
+
+          expect(FeatureManagement.reveal_usps_code?).to eq(true)
+        end
+      end
+    end
+
+    context 'Rails env is development' do
+      it 'returns true' do
+        allow(Rails.env).to receive(:development?).and_return(true)
+
+        expect(FeatureManagement.reveal_usps_code?).to eq(true)
+      end
+    end
+
+    context 'Rails env is not development and server is not dev, qa, or int' do
+      it 'returns false' do
+        allow(Rails.env).to receive(:development?).and_return(false)
+        allow(Figaro.env).to receive(:domain_name).and_return('foo.login.gov')
+
+        expect(FeatureManagement.reveal_usps_code?).to eq(false)
+      end
+    end
+  end
 end
