@@ -237,10 +237,10 @@ GEM
       json
       thread
       thread_safe
-    email_spec (2.1.0)
+    email_spec (2.1.1)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
-      mail (~> 2.6.3)
+      mail (~> 2.6)
     encryptor (3.0.0)
     equalizer (0.0.11)
     errbase (0.0.3)
@@ -335,7 +335,7 @@ GEM
     lumberjack (1.0.11)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    mail (2.6.4)
+    mail (2.6.5)
       mime-types (>= 1.16, < 4)
     mailcatcher (0.6.5)
       eventmachine (= 1.0.9.1)
