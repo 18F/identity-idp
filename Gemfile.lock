@@ -435,7 +435,7 @@ GEM
       ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails_layout (1.0.34)
+    rails_layout (1.0.41)
     railties (4.2.8)
       actionpack (= 4.2.8)
       activesupport (= 4.2.8)
