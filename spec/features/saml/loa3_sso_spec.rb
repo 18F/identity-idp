@@ -160,13 +160,14 @@ feature 'LOA3 Single Sign On' do
       let(:phone_confirmed) { false }
 
       it 'prompts for confirmation code at sign in' do
+        allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
+
         saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
         visit saml_authn_request
         sign_in_live_with_2fa(user)
 
         expect(current_path).to eq verify_account_path
 
-        fill_in t('forms.verify_profile.name'), with: usps_otp_code_for(user)
         click_button t('forms.verify_profile.submit')
 
         expect(current_path).to eq(sign_up_completed_path)

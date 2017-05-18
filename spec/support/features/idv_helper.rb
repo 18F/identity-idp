@@ -7,10 +7,6 @@ module IdvHelper
     Features::SessionHelper::VALID_PASSWORD
   end
 
-  def usps_otp_code_for(user)
-    user.profiles.first.decrypt_pii(user.unlock_user_access_key(user.password))[:otp]
-  end
-
   def fill_out_idv_form_ok
     fill_in 'profile_first_name', with: 'José'
     fill_in 'profile_last_name', with: 'One'

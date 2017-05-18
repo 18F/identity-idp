@@ -1,6 +1,10 @@
 class FeatureManagement
   PT_DOMAIN_NAME = 'idp.pt.login.gov'.freeze
 
+  ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
+    idp.dev.login.gov idp.int.login.gov idp.qa.login.gov
+  ].freeze
+
   def self.telephony_disabled?
     Figaro.env.telephony_disabled == 'true'
   end
@@ -42,5 +46,13 @@ class FeatureManagement
 
   def self.enable_identity_verification?
     Figaro.env.enable_identity_verification == 'true'
+  end
+
+  def self.reveal_usps_code?
+    Rails.env.development? || current_env_allowed_to_see_usps_code?
+  end
+
+  def self.current_env_allowed_to_see_usps_code?
+    ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(Figaro.env.domain_name)
   end
 end
