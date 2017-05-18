@@ -1,4 +1,6 @@
 class SessionDecorator
+  include Rails.application.routes.url_helpers
+
   def return_to_service_provider_partial
     'shared/null'
   end
@@ -28,4 +30,8 @@ class SessionDecorator
   def sp_logo; end
 
   def sp_return_url; end
+
+  def cancel_link_url
+    root_url
+  end
 end

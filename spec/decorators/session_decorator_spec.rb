@@ -60,4 +60,10 @@ RSpec.describe SessionDecorator do
       expect(subject.sp_name).to be_nil
     end
   end
+
+  describe '#cancel_link_url' do
+    it 'returns root url' do
+      expect(subject.cancel_link_url).to eq 'http://www.example.com/'
+    end
+  end
 end
