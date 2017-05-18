@@ -1,9 +1,11 @@
+# rubocop:disable Metrics/BlockLength
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
   config.default_form_class = 'mt3 sm-mt4'
   config.error_notification_tag = :div
   config.error_notification_class = 'alert alert-error'
+  config.wrapper_mappings = { inline: :append }
 
   config.wrappers :base do |b|
     b.use :html5
@@ -23,5 +25,19 @@ SimpleForm.setup do |config|
     b.use :error, wrap_with: { tag: 'div', class: 'mt-tiny h6 red error-message' }
   end
 
+  config.wrappers :inline_form, tag: 'div' do |b|
+    b.use :label, class: 'bold block'
+    b.wrapper tag: 'div', class: 'col-12 clearfix' do |ba|
+      ba.use :input
+    end
+
+    b.wrapper tag: 'div' do |bb|
+      bb.use :error, wrap_with: { tag: 'span', class: 'mt-tiny h6 red error-message' }
+    end
+
+    b.optional :maxlength
+  end
+
   config.default_wrapper = :vertical_form
 end
+# rubocop:enable Metrics/BlockLength

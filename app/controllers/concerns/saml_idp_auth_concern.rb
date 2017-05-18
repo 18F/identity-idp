@@ -42,6 +42,7 @@ module SamlIdpAuthConcern
       loa3: loa3_requested?,
       request_id: @request_id,
       request_url: request.original_url,
+      requested_attributes: requested_attributes,
     }
   end
 

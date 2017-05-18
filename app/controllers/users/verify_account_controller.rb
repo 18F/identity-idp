@@ -9,9 +9,10 @@ module Users
 
     def create
       @verify_account_form = build_verify_account_form
+
       if @verify_account_form.submit
         flash[:success] = t('account.index.verification.success')
-        redirect_to after_sign_in_path_for(current_user)
+        redirect_to sign_up_completed_url
       else
         render :index
       end

@@ -5,22 +5,23 @@ feature 'LOA3 Single Sign On' do
   include IdvHelper
 
   context 'First time registration' do
-    it 'redirects to original SAML Authn Request after IdV is complete', email: true do
+    let(:email) { 'test@test.com' }
+    before do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-      email = 'test@test.com'
+      @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+    end
 
-      visit saml_authn_request
-      click_link t('sign_up.registrations.create_account')
-      submit_form_with_valid_email
-      click_confirmation_link_in_email(email)
-      submit_form_with_valid_password
-      set_up_2fa_with_valid_phone
-      enter_2fa_code
+    it 'redirects to original SAML Authn Request after IdV is complete', email: true do
+      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
+
+      visit @saml_authn_request
+
+      saml_register_loa3_user(email)
 
       expect(current_path).to eq verify_path
-      click_on 'Yes'
+
+      click_idv_begin
+
       user = User.find_with_email(email)
       complete_idv_profile_ok(user.reload)
       click_acknowledge_personal_key
@@ -41,12 +42,40 @@ feature 'LOA3 Single Sign On' do
       end
 
       click_on I18n.t('forms.buttons.continue')
-      expect(current_url).to eq saml_authn_request
+      expect(current_url).to eq @saml_authn_request
 
       user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
       profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
 
       expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
+    end
+
+    it 'allows the user to select verification via USPS letter', email: true do
+      visit @saml_authn_request
+
+      saml_register_loa3_user(email)
+
+      click_idv_begin
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+
+      click_idv_address_choose_usps
+
+      click_on t('idv.buttons.send_letter')
+
+      expect(current_path).to eq verify_review_path
+
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      expect(current_url).to eq verify_confirmations_url
+      click_acknowledge_personal_key
+
+      expect(current_url).to eq(account_url)
+      expect(page).to have_content(t('account.index.verification.reactivate_button'))
     end
 
     it 'shows user the start page with accordion' do
@@ -130,17 +159,18 @@ feature 'LOA3 Single Sign On' do
     context 'having previously selected USPS verification' do
       let(:phone_confirmed) { false }
 
-      it 'prompts for OTP at sign in' do
+      it 'prompts for confirmation code at sign in' do
         saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-
         visit saml_authn_request
-
         sign_in_live_with_2fa(user)
 
         expect(current_path).to eq verify_account_path
 
-        fill_in 'Secret code', with: otp
+        fill_in t('forms.verify_profile.name'), with: usps_otp_code_for(user)
         click_button t('forms.verify_profile.submit')
+
+        expect(current_path).to eq(sign_up_completed_path)
+        find('input').click
 
         expect(current_url).to eq saml_authn_request
       end

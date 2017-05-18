@@ -113,7 +113,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           loa3: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
-          request_url: request.original_url
+          request_url: request.original_url,
+          requested_attributes: %w[given_name family_name birthdate]
         )
       end
     end

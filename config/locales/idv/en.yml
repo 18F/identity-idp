@@ -154,7 +154,8 @@ en:
         no_pii: Do not use real personal information (demo purposes only)
       usps:
         bad_address: I can't get mail at this address
-        byline: To activate by mail, we will mail a letter with a confirmation code to your street address.
+        byline: We will mail a letter with a confirmation code to your verified
+          address on file.
         success: It should arrive in 5 to 10 business days.
       personal_details_verified: Personal details verified!
     modal:
