@@ -210,13 +210,15 @@ feature 'OpenID Connect' do
       email = 'test@test.com'
 
       perform_in_browser(:one) do
+        state = SecureRandom.hex
+
         visit openid_connect_authorize_path(
           client_id: client_id,
           response_type: 'code',
           acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
           scope: 'openid email',
           redirect_uri: 'gov.gsa.openidconnect.test://result',
-          state: SecureRandom.hex,
+          state: state,
           nonce: SecureRandom.hex,
           prompt: 'select_account',
           code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
@@ -229,6 +231,13 @@ feature 'OpenID Connect' do
         ].join(' ')
 
         expect(page).to have_content(sp_content)
+
+        cancel_callback_url =
+          "gov.gsa.openidconnect.test://result?error=access_denied&state=#{state}"
+
+        expect(page).to have_link(
+          t('links.back_to_sp', sp: 'Example iOS App'), href: cancel_callback_url
+        )
 
         sign_up_user_from_sp_without_confirming_email(email)
       end
@@ -442,7 +451,9 @@ feature 'OpenID Connect' do
 
       cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
-      expect(page).to have_link(t('links.back_to_sp', sp: 'Test SP'), href: cancel_callback_url)
+      expect(page).to have_link(
+        "‹ #{t('links.back_to_sp', sp: 'Test SP')}", href: cancel_callback_url
+      )
     end
   end
 
