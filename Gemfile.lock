@@ -203,7 +203,7 @@ GEM
     css_parser (1.4.10)
       addressable
     daemons (1.2.4)
-    database_cleaner (1.5.3)
+    database_cleaner (1.6.1)
     debug_inspector (0.0.2)
     derailed (0.1.0)
       derailed_benchmarks
