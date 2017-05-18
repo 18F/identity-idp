@@ -50,7 +50,7 @@ html lang="#{I18n.locale}" class='no-js'
         = yield(:nav)
       - else
         = render decorated_session.nav_partial
-      .container.sm-pt4
+      .container
         div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box card #{yield(:card_cls)}"
           = render 'shared/flashes'
           == yield
