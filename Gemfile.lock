@@ -292,7 +292,7 @@ GEM
     highline (1.7.8)
     hiredis (0.6.1)
     htmlentities (4.3.4)
-    httparty (0.14.0)
+    httparty (0.15.4)
       multi_xml (>= 0.5.2)
     httpi (2.4.2)
       rack
