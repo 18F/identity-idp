@@ -3,6 +3,7 @@ if ENV['COVERAGE']
   SimpleCov.start 'rails' do
     add_filter '/config/'
     add_filter '/lib/rspec/formatters/user_flow_formatter.rb'
+    add_filter '/lib/user_flow_exporter.rb'
   end
 end
 

@@ -129,4 +129,59 @@ feature 'Visitors requesting login.gov directly', devise: true, user_flow: true 
       end
     end
   end
+
+  context 'when choosing \'Forgot your password?' do
+    before do
+      visit new_user_password_path
+    end
+
+    it 'prompts for email address' do
+      screenshot_and_save_page
+    end
+
+    context 'when submitting email for an existing account' do
+      before do
+        @user = create(:user, :signed_up)
+        fill_in 'Email', with: @user.email
+        click_button t('forms.buttons.continue')
+      end
+
+      it 'informs the user to check their email' do
+        screenshot_and_save_page
+      end
+
+      context 'when following link in email', email: true do
+        before do
+          open_last_email
+          click_email_link_matching(/reset_password_token/)
+        end
+
+        it 'prompts the user to enter a new password' do
+          screenshot_and_save_page
+        end
+
+        context 'when submitting a valid password' do
+          before do
+            fill_in t('forms.passwords.edit.labels.password'), with: 'NewVal!dPassw0rd'
+            click_button t('forms.passwords.edit.buttons.submit')
+          end
+
+          it 'redirects to the homepage with a helpful message' do
+            screenshot_and_save_page
+          end
+        end
+      end
+    end
+
+    context 'when submitting email not associated with an account' do
+      before do
+        fill_in 'Email', with: 'non-existent-email@example.com'
+        click_button t('forms.buttons.continue')
+      end
+
+      it 'informs the user to check their email' do
+        screenshot_and_save_page
+      end
+    end
+  end
 end

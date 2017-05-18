@@ -14,6 +14,8 @@ AllCops:
     - 'config/initializers/devise.rb'
     - 'db/migrate/*'
     - 'spec/services/pii/nist_encryption_spec.rb'
+    - 'lib/rspec/user_flow_formatter.rb'
+    - 'lib/user_flow_exporter.rb'
   TargetRubyVersion: 2.3
   UseCache: true
 
