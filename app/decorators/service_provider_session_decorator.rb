@@ -1,4 +1,6 @@
 class ServiceProviderSessionDecorator
+  include Rails.application.routes.url_helpers
+
   DEFAULT_LOGO = 'generic.svg'.freeze
 
   def initialize(sp:, view_context:, sp_session:)
@@ -45,6 +47,10 @@ class ServiceProviderSessionDecorator
     else
       sp.return_to_sp_url
     end
+  end
+
+  def cancel_link_url
+    sign_up_start_url(request_id: sp_session[:request_id])
   end
 
   private

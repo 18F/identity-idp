@@ -6,6 +6,12 @@ describe 'sign_up/registrations/new.html.slim' do
     allow(view).to receive(:controller_name).and_return('registrations')
     allow(view).to receive(:current_user).and_return(nil)
     allow(view).to receive(:request_id).and_return(nil)
+
+    view_context = ActionController::Base.new.view_context
+    @decorated_session = DecoratedSession.new(
+      sp: nil, view_context: view_context, sp_session: {}
+    ).call
+    allow(view).to receive(:decorated_session).and_return(@decorated_session)
   end
 
   it 'has a localized title' do
@@ -29,9 +35,9 @@ describe 'sign_up/registrations/new.html.slim' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
-  it 'includes a link to return to the home page' do
+  it 'includes a link to return to the decorated_session cancel_link_url' do
     render
 
-    expect(rendered).to have_link(t('links.cancel'), href: root_path)
+    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
   end
 end
