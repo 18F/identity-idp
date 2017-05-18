@@ -47,6 +47,7 @@ feature 'LOA3 Single Sign On' do
       user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
       profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
 
+      expect(user.events.account_verified.size).to be(1)
       expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
     end
 
@@ -74,6 +75,7 @@ feature 'LOA3 Single Sign On' do
       expect(current_url).to eq verify_confirmations_url
       click_acknowledge_personal_key
 
+      expect(User.find_with_email(email).events.account_verified.size).to be(0)
       expect(current_url).to eq(account_url)
       expect(page).to have_content(t('account.index.verification.reactivate_button'))
     end
@@ -170,7 +172,9 @@ feature 'LOA3 Single Sign On' do
 
         click_button t('forms.verify_profile.submit')
 
+        expect(user.events.account_verified.size).to be(1)
         expect(current_path).to eq(sign_up_completed_path)
+
         find('input').click
 
         expect(current_url).to eq saml_authn_request

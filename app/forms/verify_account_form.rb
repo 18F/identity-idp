@@ -48,7 +48,6 @@ class VerifyAccountForm
   end
 
   def activate_profile
-    pending_profile.verified_at = Time.zone.now
-    pending_profile.activate
+    Idv::ProfileActivator.new(user: user).call
   end
 end

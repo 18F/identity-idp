@@ -72,8 +72,7 @@ module Idv
     end
 
     def complete_profile
-      profile.verified_at = Time.zone.now
-      profile.activate
+      ProfileActivator.new(user: current_user).call
       move_pii_to_user_session
     end
 
