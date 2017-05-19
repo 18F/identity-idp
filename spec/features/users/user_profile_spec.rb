@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'User profile' do
+  include IdvHelper
+
   context 'account status badges' do
     before do
       sign_in_live_with_2fa(profile.user)
@@ -61,6 +63,36 @@ feature 'User profile' do
 
         expect(current_path).to eq account_path
         expect(page).to have_content(t('idv.messages.personal_key'))
+      end
+
+      it 'allows the user reactivate their profile by reverifying' do
+        profile = create(:profile, :active, pii: { ssn: '1234', dob: '1920-01-01' })
+        user = profile.user
+
+        sign_in_live_with_2fa(user)
+
+        profile.deactivate(:password_reset)
+        profile.reload
+        visit account_path
+
+        click_on t('account.index.reactivation.reverify')
+        click_idv_begin
+
+        # not using the helper method as the generic password doesn't seem to work
+        fill_out_idv_form_ok
+        click_idv_continue
+        fill_out_financial_form_ok
+        click_idv_continue
+        click_idv_address_choose_phone
+        fill_out_phone_form_ok(user.phone)
+        click_idv_continue
+        fill_in 'Password', with: user.password
+        click_submit_default
+        click_acknowledge_personal_key
+
+        expect(current_path).to eq(account_path)
+        visit account_path
+        expect(page).not_to have_content(t('account.index.reactivation.instructions'))
       end
     end
   end

@@ -8,3 +8,6 @@ p.mt-tiny.mb0 = t('forms.reactivate_profile.instructions')
   = render 'partials/personal_key/entry_fields', f: f, attribute_name: :personal_key
   = f.input :password, required: true
   = f.button :submit, t('forms.reactivate_profile.submit'), class: 'mb1'
+
+.mt2.pt1.border-top
+  = link_to t('links.cancel'), account_path
