@@ -78,7 +78,7 @@ describe 'throttling requests' do
           user_ip: '1.2.3.4',
         }
 
-        expect(Rails.logger).to have_received(:warn).with(analytics_hash)
+        expect(Rails.logger).to have_received(:warn).with(analytics_hash.to_json)
       end
     end
   end
@@ -165,7 +165,7 @@ describe 'throttling requests' do
           user_ip: '1.2.3.4',
         }
 
-        expect(Rails.logger).to have_received(:warn).with(analytics_hash)
+        expect(Rails.logger).to have_received(:warn).with(analytics_hash.to_json)
       end
     end
   end
@@ -220,7 +220,7 @@ describe 'throttling requests' do
       }
 
       expect(last_response.status).to eq(429)
-      expect(Rails.logger).to have_received(:warn).exactly(:twice).with(analytics_hash)
+      expect(Rails.logger).to have_received(:warn).exactly(:twice).with(analytics_hash.to_json)
 
       delete destroy_user_session_path
 
@@ -247,7 +247,7 @@ describe 'throttling requests' do
       }
 
       expect(last_response.status).to eq(429)
-      expect(Rails.logger).to have_received(:warn).with(analytics_hash)
+      expect(Rails.logger).to have_received(:warn).with(analytics_hash.to_json)
     end
 
     it 'uses the throttled_response for the blocklisted_response' do
