@@ -60,6 +60,7 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Adding git hooks via Overcommit =="
   run 'overcommit --install'
+  run 'overcommit --sign'
 
   puts "\n== Restarting application server =="
   run "mkdir -p tmp"
