@@ -124,8 +124,10 @@ end
 ActiveSupport::Notifications.subscribe('rack.attack') do |_name, _start, _finish, _request_id, req|
   discriminator = req.env['rack.attack.match_discriminator'] || req.env['warden'].user&.uuid
 
-  Rails.logger.warn(discriminator: discriminator,
-                    event: 'throttle',
-                    type: req.env['rack.attack.matched'],
-                    user_ip: req.remote_ip)
+  Rails.logger.warn({
+    discriminator: discriminator,
+    event: 'throttle',
+    type: req.env['rack.attack.matched'],
+    user_ip: req.remote_ip,
+  }.to_json)
 end
