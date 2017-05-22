@@ -14,8 +14,10 @@ en:
       phone: Phone number
       previous_address: Previous address
       reactivation:
-        instructions: For your security, you will need to verify your account information again.
-        reactivate_button: Verify your identity
+        instructions: Your profile was recently deactivated due to a password reset.
+          You can use your personal key to reactivate your profile.
+        personal_key: Reactivate your profile with your personal key.
+        reverify: No personal key? Reverify all your information instead.
       ssn: Social Security Number
       verification:
         instructions: Your account requires a secret code to be verified.

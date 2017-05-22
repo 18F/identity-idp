@@ -93,7 +93,7 @@ module IdvHelper
     click_idv_address_choose_phone
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
-    fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
+    fill_in 'Password', with: user_password
     click_submit_default
   end
 end
