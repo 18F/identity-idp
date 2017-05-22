@@ -88,4 +88,11 @@ RSpec.describe OpenidConnectRedirector do
                                     error_description: 'some attribute is missing'))
     end
   end
+
+  describe '#logout_redirect_uri' do
+    it 'adds the state to the URL' do
+      expect(redirector.logout_redirect_uri).
+        to eq(URIService.add_params(redirect_uri, state: state))
+    end
+  end
 end

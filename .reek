@@ -17,6 +17,7 @@ FeatureEnvy:
     - EncryptedSidekiqRedis#zrem
     - UserDecorator#should_acknowledge_personal_key?
     - Pii::Attributes#[]=
+    - OpenidConnectLogoutForm#load_identity
 InstanceVariableAssumption:
   exclude:
     - User
@@ -41,6 +42,7 @@ TooManyConstants:
 TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm
+    - OpenidConnectRedirector
 TooManyStatements:
   max_statements: 6
   exclude:
