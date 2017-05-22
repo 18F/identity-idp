@@ -149,7 +149,7 @@ feature 'Sign in' do
 
     it 'fails to sign in the user, with CSRF error' do
       user = sign_in_and_2fa_user
-      click_link(t('links.sign_out'))
+      click_link(t('links.sign_out'), match: :first)
 
       Timecop.travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))

@@ -14,9 +14,9 @@ h1.hide = t('titles.account')
 = render @view_model.header_partial, view_model: @view_model
 
 .mb3.profile-info-box
-  .bg-light-blue.py1.px2.h6.caps
+  .bg-lightest-blue.py1.px2.h6.caps
     = t('account.index.login')
-    = image_tag asset_url('sign-in.svg'), width: 12, class: 'ml1 mt-tiny'
+    = image_tag asset_url('sign-in.svg'), width: 12, class: 'ml1'
   = render 'account_item',
     name: t('account.index.email'),
     content: current_user.email,
@@ -30,9 +30,9 @@ h1.hide = t('titles.account')
     action: @view_model.edit_action_partial
 
 .mb3.profile-info-box
-  .bg-light-blue.py1.px2.h6.caps
+  .bg-lightest-blue.py1.px2.h6.caps
     = t('headings.account.two_factor')
-    = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1 mt-tiny'
+    = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1'
 
   = render 'account_item',
     name: t('account.index.phone'),
@@ -53,8 +53,8 @@ h1.hide = t('titles.account')
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
 .mb3.profile-info-box
-  .bg-light-blue.pb1.pt1.px2.h6.caps.clearfix
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
     = t('headings.account.account_history')
-    = image_tag asset_url('history.svg'), width: 12, class: 'ml1 mt-tiny'
+    = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
   - @view_model.recent_events.each do |event|
     = render @view_model.recent_event_partial, event: event
