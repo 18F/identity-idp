@@ -92,6 +92,18 @@ feature 'LOA3 Single Sign On' do
       expect(page).to have_css('.accordion-header-controls',
                                text: t('devise.registrations.start.accordion'))
     end
+
+    it 'shows user the start page with a link back to the SP' do
+      saml_authn_request = auth_request.create(saml_settings)
+
+      visit saml_authn_request
+
+      cancel_callback_url = 'http://localhost:3000'
+
+      expect(page).to have_link(
+        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: cancel_callback_url
+      )
+    end
   end
 
   context 'canceling verification' do
