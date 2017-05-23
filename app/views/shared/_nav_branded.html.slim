@@ -1,8 +1,7 @@
-nav.py2.sm-pt3.sm-pb0.bg-light-blue.center
-  .my1.sm-mb0.relative
-    = image_tag(asset_url('logo.svg'), width: 124,
-      alt: APP_NAME, class: 'align-middle')
-    .px2.inline-block
-      span.absolute.top-0.bottom-0.border-right
-    = image_tag(asset_url("sp-logos/#{decorated_session.sp_logo}"), height: 50,
-      alt: decorated_session.sp_name, class: 'align-middle')
+nav.nav-branded.vertical-align.bg-light-blue.center.relative
+  = image_tag(asset_url('logo.svg'), height: 14,
+    alt: APP_NAME, class: 'inline-block align-middle')
+  .px-12p.inline-block
+    span.absolute.top-0.bottom-0.border-right.my1.sm-my2
+  = image_tag(asset_url("sp-logos/#{decorated_session.sp_logo}"), height: 40,
+    alt: decorated_session.sp_name, class: 'inline-block align-middle')
