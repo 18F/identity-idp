@@ -82,10 +82,6 @@ Rails.application.routes.draw do
   post '/manage/personal_key' => 'users/personal_keys#update'
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
-  post '/openid_connect/authorize' => 'openid_connect/authorization#create',
-       as: :openid_connect_allow
-  delete '/openid_connect/authorize' => 'openid_connect/authorization#destroy',
-         as: :openid_connect_deny
   get '/openid_connect/logout' => 'openid_connect/logout#index'
 
   get '/otp/send' => 'users/two_factor_authentication#send_code'

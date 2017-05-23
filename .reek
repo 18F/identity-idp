@@ -46,6 +46,7 @@ TooManyInstanceVariables:
 TooManyStatements:
   max_statements: 6
   exclude:
+    - OpenidConnect::AuthorizationController#index
     - OpenidConnect::AuthorizationController#store_request
     - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
