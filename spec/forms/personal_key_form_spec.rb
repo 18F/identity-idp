@@ -20,14 +20,15 @@ describe PersonalKeyForm do
 
     context 'when the form is invalid' do
       it 'returns FormResponse with success: false' do
-        user = build_stubbed(:user, :signed_up, personal_key: 'code')
+        user = create(:user, :signed_up, personal_key: 'code')
+        errors = { personal_key: ['Incorrect personal key'] }
 
         form = PersonalKeyForm.new(user, 'foo')
         result = instance_double(FormResponse)
         extra = { multi_factor_auth_method: 'personal key' }
 
         expect(FormResponse).to receive(:new).
-          with(success: false, errors: {}, extra: extra).and_return(result)
+          with(success: false, errors: errors, extra: extra).and_return(result)
         expect(form.submit).to eq result
         expect(user.personal_key).to_not be_nil
         expect(form.personal_key).to be_nil

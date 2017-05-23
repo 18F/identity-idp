@@ -29,7 +29,7 @@ describe ReactivateAccountForm do
 
       it 'is invalid' do
         expect(subject).to_not be_valid
-        expect(subject.errors[:personal_key]).to eq [t('errors.messages.blank')]
+        expect(subject.errors[:personal_key]).to include t('errors.messages.blank')
         expect(subject.errors[:password]).to eq [t('errors.messages.blank')]
       end
     end
