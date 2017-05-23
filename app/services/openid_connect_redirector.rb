@@ -15,8 +15,13 @@ class OpenidConnectRedirector
     @redirect_uri = redirect_uri
     @service_provider = service_provider
     @state = state
-    @errors = errors
+    @errors = errors || ActiveModel::Errors.new(self)
     @error_attr = error_attr
+  end
+
+  def valid?
+    validate
+    errors.blank?
   end
 
   def validate

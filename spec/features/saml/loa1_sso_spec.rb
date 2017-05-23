@@ -69,6 +69,18 @@ feature 'LOA1 Single Sign On' do
       expect(page).to_not have_css('.accordion-header')
     end
 
+    it 'shows user the start page with a link back to the SP' do
+      saml_authn_request = auth_request.create(saml_settings)
+
+      visit saml_authn_request
+
+      cancel_callback_url = 'http://localhost:3000'
+
+      expect(page).to have_link(
+        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: cancel_callback_url
+      )
+    end
+
     it 'user can view and confirm personal key during sign up', :js do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)

@@ -14,7 +14,7 @@ describe 'sign_up/registrations/show.html.slim' do
       )
 
       expect(rendered).not_to have_link(
-        t('links.back_to_sp_alt', sp: 'Awesome Application!')
+        t('links.back_to_sp', sp: 'Awesome Application!')
       )
     end
 

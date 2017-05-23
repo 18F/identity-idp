@@ -13,9 +13,7 @@
     new_user_session_path(request_id: params[:request_id]),
     class: 'sm-col-10 col-12 btn btn-secondary btn-wide mb1 fs-20p'
 
-  .sm-col-10.col-12.mx-auto
-    p = link_to t('links.back_to_sp', sp: decorated_session.sp_name),
-                  decorated_session.sp_return_url
+  = render decorated_session.return_to_sp_from_start_page_partial
 
 - if loa3_requested?
   = render 'required_pii_accordion'

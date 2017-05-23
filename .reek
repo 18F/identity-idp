@@ -1,5 +1,8 @@
 Attribute:
   enabled: false
+ControlParameter:
+  exclude:
+    - OpenidConnectRedirector#initialize
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
