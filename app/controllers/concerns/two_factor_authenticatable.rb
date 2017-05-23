@@ -172,9 +172,7 @@ module TwoFactorAuthenticatable
     if idv_context?
       Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = now
     elsif profile_context?
-      profile = current_user.decorate.pending_profile
-      profile.verified_at = now
-      profile.activate
+      Idv::ProfileActivator.new(user: current_user).call
     end
   end
 
