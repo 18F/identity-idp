@@ -34,7 +34,7 @@ function getFeedback(z) {
   if (!warning && !suggestions.length) return '';
   if (warning) return lookup(warning);
 
-  return `${suggestions.map(s => lookup(s)).join('; ')}`;
+  return `${suggestions.map(s => lookup(s)).join('. ')}`;
 }
 
 function disableSubmit(submitEl, score = 0) {

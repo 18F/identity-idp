@@ -64,7 +64,7 @@ describe PasswordForm, type: :model do
           password: ['Your password is not strong enough.' \
             ' This is similar to a commonly used password.' \
             ' Add another word or two.' \
-            ' Uncommon words are better.'],
+            ' Uncommon words are better'],
         }
 
         passwords.each do |password|
