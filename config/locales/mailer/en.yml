@@ -4,11 +4,11 @@ en:
     about: About %{app}
     confirmation_instructions:
       first_sentence:
-        confirmed: > Trying to change your email address?
+        confirmed: Trying to change your email address?
         reset_requested: >
           Your %{app} account has been reset by a tech support representative.
           To continue, you must confirm your email address.
-        unconfirmed: > Thanks for creating an account. 
+        unconfirmed: Thanks for creating an account. 
       footer: This link will expire in %{confirmation_period}.
       header: >
         %{intro} Please click the link below or copy and paste the entire link into your browser.
@@ -17,13 +17,11 @@ en:
       subject: Change your email address
     email_reuse_notice:
       subject: This email address is already associated with an account. 
-    help: >
-      For more help, visit %{link}.
+    help: For more help, visit %{link}.
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
     reset_password:
-      footer: >
-        This link expires in %{expires} hours.
+      footer: This link expires in %{expires} hours.
       header: >
         To finish resetting your password, please click the link below 
         or copy and paste the entire link into your browser.
