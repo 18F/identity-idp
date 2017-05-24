@@ -75,5 +75,15 @@ describe UspsExporter do
 
       expect(UspsConfirmation.count).to eq 0
     end
+
+    it 'does not clear entries when GPG encrypting fails for some reason' do
+      expect(Figaro.env).to receive(:equifax_gpg_email).and_return('wrong@email.com')
+
+      original_count = UspsConfirmation.count
+
+      expect { subject.run }.to raise_error(FileEncryptor::EncryptionError)
+
+      expect(UspsConfirmation.count).to eq(original_count)
+    end
   end
 end

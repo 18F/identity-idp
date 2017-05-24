@@ -10,6 +10,7 @@ DuplicateMethodCall:
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
+    - FileEncryptor#encrypt
 FeatureEnvy:
   exclude:
     - track_registration
@@ -29,6 +30,9 @@ IrresponsibleModule:
 ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
+NestedIterators:
+  exclude:
+    - FileEncryptor#encrypt
 NilCheck:
   enabled: false
 LongParameterList:
@@ -52,6 +56,7 @@ TooManyStatements:
     - OpenidConnect::AuthorizationController#store_request
     - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
+    - FileEncryptor#encrypt
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
