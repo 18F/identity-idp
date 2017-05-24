@@ -4,34 +4,26 @@ en:
     about: About %{app}
     confirmation_instructions:
       first_sentence:
-        confirmed: >
-          To finish updating your %{app} account, you must confirm your email
-          address within %{confirmation_period} of receiving this message.
+        confirmed: Trying to change your email address?
         reset_requested: >
           Your %{app} account has been reset by a tech support representative.
           To continue, you must confirm your email address.
-        unconfirmed: >
-          To continue creating your %{app} account, you must confirm your email
-          address within %{confirmation_period} of receiving this message.
-      footer: Please note that this link expires in %{confirmation_period}.
+        unconfirmed: Thanks for creating an account. 
+      footer: This link will expire in %{confirmation_period}.
       header: >
-        %{intro} To confirm your email address, please click the link below
-        or copy and paste the entire link into your browser.
-      link_text: Confirm this email address
+        %{intro} Please click the link below or copy and paste the entire link into your browser.
+      link_text: Confirm your email address
     email_change_notice:
       subject: Change your email address
     email_reuse_notice:
-      subject: Email address associated with an existing account
-    help: >
-      For more help, please visit the %{app} Help Center at %{link}.
+      subject: This email address is already associated with an account. 
+    help: For more help, visit %{link}.
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
     reset_password:
-      footer: >
-        Please note that this link expires in %{expires} hours.
+      footer: This link expires in %{expires} hours.
       header: >
-        You have asked %{app} to reset your password for your account. To
-        confirm your request, please click on the link below or copy and paste the
-        entire link into your browser.
+        To finish resetting your password, please click the link below 
+        or copy and paste the entire link into your browser.
       link_text: Reset your password
     sent_from: Sent from %{app}
