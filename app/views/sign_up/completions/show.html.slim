@@ -8,10 +8,7 @@
 
     p = t('help_text.requested_attributes.intro_html', app_name: APP_NAME,
         sp: content_tag(:strong, decorated_session.sp_name))
-    ul.mb3.list-reset.border-bottom.success-bullets.requested-attributes
-      - session[:sp][:requested_attributes].each do |attribute|
-        li.border-top.bold
-          = t("help_text.requested_attributes.#{attribute}")
+    = render @view_model.requested_attributes_partial, view_model: @view_model
 
     = button_to t('forms.buttons.continue'), sign_up_completed_path, \
                 class: 'col-12 btn btn-wide px2 py-12p rounded-lg border border-green bw2'

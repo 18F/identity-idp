@@ -35,6 +35,8 @@ class SessionDecorator
 
   def sp_return_url; end
 
+  def requested_attributes; end
+
   def cancel_link_url
     root_url
   end

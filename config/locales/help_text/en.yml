@@ -9,8 +9,6 @@ en:
       address: Mailing address
       birthdate: Date of birth
       email: Email address
-      family_name: Last name
-      given_name: First name
-      name: Full name
+      full_name: Full name
       phone: Phone number
       social_security_number: Social Security number

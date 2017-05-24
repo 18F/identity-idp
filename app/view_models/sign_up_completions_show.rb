@@ -2,11 +2,21 @@ class SignUpCompletionsShow
   include ActionView::Helpers::AssetTagHelper
   include ActionView::Helpers::TagHelper
 
-  def initialize(loa3_requested:)
+  def initialize(loa3_requested:, decorated_session:)
     @loa3_requested = loa3_requested
+    @decorated_session = decorated_session
   end
 
-  attr_reader :loa3_requested
+  attr_reader :loa3_requested, :decorated_session
+
+  SORTED_ATTRIBUTE_MAPPING = [
+    [%i[given_name family_name], :full_name],
+    [[:address], :address],
+    [[:phone], :phone],
+    [[:email], :email],
+    [[:birthdate], :birthdate],
+    [[:social_security_number], :social_security_number],
+  ].freeze
 
   def heading
     safe_join([I18n.t(
@@ -30,7 +40,21 @@ class SignUpCompletionsShow
     )
   end
 
+  def requested_attributes_partial
+    'sign_up/completions/requested_attributes'
+  end
+
+  def requested_attributes_sorted
+    SORTED_ATTRIBUTE_MAPPING.map do |raw_attribute, display_attribute|
+      display_attribute if (requested_attributes & raw_attribute).present?
+    end.compact
+  end
+
   private
+
+  def requested_attributes
+    decorated_session.requested_attributes.map(&:to_sym)
+  end
 
   def requested_loa
     loa3_requested ? 'loa3' : 'loa1'
