@@ -48,6 +48,10 @@ class FeatureManagement
     Figaro.env.enable_identity_verification == 'true'
   end
 
+  def self.enable_usps_verification?
+    Figaro.env.enable_usps_verification == 'true'
+  end
+
   def self.reveal_usps_code?
     Rails.env.development? || current_env_allowed_to_see_usps_code?
   end

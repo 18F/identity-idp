@@ -291,7 +291,6 @@ feature 'OpenID Connect' do
 
       it 'prompts to finish verifying profile, then redirects to SP' do
         allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
-
         visit oidc_auth_url
 
         sign_in_live_with_2fa(user)

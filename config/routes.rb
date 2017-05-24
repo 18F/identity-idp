@@ -47,8 +47,6 @@ Rails.application.routes.draw do
   get '/account' => 'accounts#show'
   get '/account/reactivate' => 'users/reactivate_account#index', as: :reactivate_account
   post '/account/reactivate' => 'users/reactivate_account#create'
-  get '/account/verify' => 'users/verify_account#index', as: :verify_account
-  post '/account/verify' => 'users/verify_account#create'
   get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
   post '/account/verify_phone' => 'users/verify_profile_phone#create'
 
@@ -135,6 +133,12 @@ Rails.application.routes.draw do
     put '/verify/session' => 'verify/sessions#create'
     delete '/verify/session' => 'verify/sessions#destroy'
     get '/verify/session/dupe' => 'verify/sessions#dupe'
+
+  end
+
+  if FeatureManagement.enable_usps_verification?
+    get '/account/verify' => 'users/verify_account#index', as: :verify_account
+    post '/account/verify' => 'users/verify_account#create'
     get '/verify/usps' => 'verify/usps#index'
     put '/verify/usps' => 'verify/usps#create'
   end
