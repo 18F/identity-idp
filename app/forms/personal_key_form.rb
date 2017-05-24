@@ -5,13 +5,15 @@ class PersonalKeyForm
   attr_accessor :personal_key
   attr_reader :user
 
+  validate :check_personal_key
+
   def initialize(user, personal_key = nil)
     @user = user
     @personal_key = normalize_personal_key(personal_key)
   end
 
   def submit
-    @success = valid_personal_key?
+    @success = valid?
 
     if success
       UpdateUser.new(user: user, attributes: { personal_key: nil }).call
