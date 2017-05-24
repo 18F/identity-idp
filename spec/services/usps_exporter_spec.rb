@@ -61,7 +61,7 @@ describe UspsExporter do
       expect(psv_contents).to_not eq("01|1\r\n#{psv_row_contents}\r\n")
 
       decrypted_contents = file_encryptor.decrypt(
-        Figaro.env.equifax_gpg_passphrase,
+        Figaro.env.equifax_development_example_gpg_passphrase,
         export_file.path
       )
 
