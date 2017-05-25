@@ -33,6 +33,16 @@ module TwoFactorAuthenticatable
     )
   end
 
+  def handle_too_many_otp_sends
+    analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_SENDS)
+    decorator = current_user.decorate
+    sign_out
+    render(
+      'two_factor_authentication/shared/max_login_attempts_reached',
+      locals: { type: :otp, decorator: decorator }
+    )
+  end
+
   def require_current_password
     redirect_to user_password_confirm_path
   end
@@ -52,7 +62,12 @@ module TwoFactorAuthenticatable
 
     UpdateUser.new(
       user: current_user,
-      attributes: { second_factor_attempts_count: 0, second_factor_locked_at: nil }
+      attributes: {
+        second_factor_attempts_count: 0,
+        second_factor_locked_at: nil,
+        otp_send_count: 0,
+        otp_last_sent_at: nil,
+      }
     ).call
   end
 

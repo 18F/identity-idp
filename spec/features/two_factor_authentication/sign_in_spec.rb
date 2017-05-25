@@ -143,6 +143,39 @@ feature 'Two Factor Authentication' do
       end
     end
 
+    context 'user requests an OTP too many times', js: true do
+      it 'locks the user out and leaves user on the page during entire lockout period' do
+        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        five_minute_countdown_regex = /4:5\d/
+
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
+
+        Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+        expect(page).to have_content(five_minute_countdown_regex)
+
+        findtime = Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes
+
+        # let lockout period expire
+        UpdateUser.new(
+          user: user,
+          attributes: {
+            otp_last_sent_at: Time.zone.now - findtime,
+          }
+        ).call
+
+        sign_in_before_2fa(user)
+        click_button t('forms.buttons.submit.default')
+
+        expect(current_path).to eq account_path
+      end
+    end
+
     context 'user signs in while locked out' do
       it 'signs the user out and lets them know they are locked out' do
         user = create(:user, :signed_up, second_factor_locked_at: Time.zone.now - 1.minute)

@@ -111,7 +111,8 @@ describe Users::TwoFactorAuthenticationController do
   describe '#send_code' do
     context 'when selecting SMS OTP delivery' do
       before do
-        sign_in_before_2fa
+        @user = create(:user)
+        sign_in_before_2fa(@user)
         @old_otp = subject.current_user.direct_otp
         allow(SmsOtpSenderJob).to receive(:perform_later)
       end
@@ -146,6 +147,43 @@ describe Users::TwoFactorAuthenticationController do
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+      end
+
+      it 'increments the otp_send_count each time' do
+        expect(@user.reload.otp_send_count).to eq(0)
+
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+
+        expect(@user.reload.otp_send_count).to eq(1)
+
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+
+        expect(@user.reload.otp_send_count).to eq(2)
+      end
+
+      it 'sets otp_last_sent_at each time' do
+        expect(@user.reload.otp_last_sent_at).to be_nil
+
+        now = Time.zone.now
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+
+        expect(@user.reload.otp_last_sent_at.to_i).to eq(now.to_i)
+
+        Timecop.freeze(now + 10) do
+          get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        end
+
+        expect(@user.reload.otp_last_sent_at.to_i).to eq(now.to_i + 10)
+      end
+
+      it 'marks the user as locked out after too many attempts' do
+        expect(@user.second_factor_locked_at).to be_nil
+
+        (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
+          get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        end
+
+        expect(@user.reload.second_factor_locked_at.to_f).to be_within(0.1).of(Time.zone.now.to_f)
       end
     end
 
