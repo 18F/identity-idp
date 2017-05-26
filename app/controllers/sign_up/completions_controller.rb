@@ -27,7 +27,8 @@ module SignUp
 
     def view_model
       SignUpCompletionsShow.new(
-        loa3_requested: loa3?
+        loa3_requested: loa3?,
+        decorated_session: decorated_session
       )
     end
 

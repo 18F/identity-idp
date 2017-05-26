@@ -49,6 +49,10 @@ class ServiceProviderSessionDecorator
     'verify/hardfail4'
   end
 
+  def requested_attributes
+    sp_session[:requested_attributes]
+  end
+
   def sp_name
     sp.friendly_name || sp.agency
   end

@@ -358,8 +358,7 @@ feature 'OpenID Connect' do
         expect(page).to have_content t('help_text.requested_attributes.email')
         expect(page).to_not have_content t('help_text.requested_attributes.address')
         expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
-        expect(page).to have_content t('help_text.requested_attributes.given_name')
-        expect(page).to have_content t('help_text.requested_attributes.family_name')
+        expect(page).to have_content t('help_text.requested_attributes.full_name')
         expect(page).to_not have_content t('help_text.requested_attributes.phone')
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
       end
