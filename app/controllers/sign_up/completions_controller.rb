@@ -1,6 +1,9 @@
 module SignUp
   class CompletionsController < ApplicationController
+    include SecureHeadersConcern
+
     before_action :verify_confirmed, if: :loa3?
+    before_action :apply_secure_headers_override, only: :show
 
     def show
       @view_model = view_model

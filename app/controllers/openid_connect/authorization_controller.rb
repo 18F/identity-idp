@@ -7,23 +7,15 @@ module OpenidConnect
     before_action :store_request, only: [:index]
     before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
-    before_action :confirm_fully_authenticated, only: %i[create destroy]
-    before_action :load_authorize_form_from_session, only: %i[create destroy]
 
+    # rubocop:disable Metrics/AbcSize
     def index
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
 
-      track_index_action_analytics
-      return create if already_allowed?
-
-      render(@success ? :index : :error)
-    end
-
-    def create
       result = @authorize_form.submit(current_user, session.id)
 
-      track_create_action_analytics(result)
+      track_authorize_analytics(result)
 
       if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri
@@ -32,16 +24,7 @@ module OpenidConnect
         render :error
       end
     end
-
-    def destroy
-      analytics.track_event(Analytics::OPENID_CONNECT_DECLINE, client_id: @authorize_form.client_id)
-
-      if (redirect_uri = @authorize_form.decline_redirect_uri)
-        redirect_to redirect_uri
-      else
-        render :error
-      end
-    end
+    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -54,25 +37,12 @@ module OpenidConnect
       profile_needs_verification? || identity_needs_verification?
     end
 
-    def track_index_action_analytics
-      @success = @authorize_form.valid?
-
-      analytics.track_event(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
-                            success: @success,
-                            client_id: @authorize_form.client_id,
-                            errors: @authorize_form.errors.messages)
-    end
-
-    def track_create_action_analytics(result)
+    def track_authorize_analytics(result)
       analytics_attributes = result.to_h.except(:redirect_uri)
 
       analytics.track_event(
-        Analytics::OPENID_CONNECT_ALLOW, analytics_attributes
+        Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION, analytics_attributes
       )
-    end
-
-    def already_allowed?
-      IdentityLinker.new(current_user, @authorize_form.client_id).already_linked?
     end
 
     def apply_secure_headers_override
@@ -80,12 +50,6 @@ module OpenidConnect
         form_action: ["'self'", @authorize_form.sp_redirect_uri].compact,
         preserve_schemes: true
       )
-    end
-
-    def confirm_fully_authenticated
-      return if user_fully_authenticated?
-
-      redirect_to root_url
     end
 
     def identity_needs_verification?
@@ -106,20 +70,15 @@ module OpenidConnect
       params.permit(OpenidConnectAuthorizeForm::ATTRS)
     end
 
-    def load_authorize_form_from_session
-      @authorize_form = OpenidConnectAuthorizeForm.new(session_params)
-    end
-
-    def session_params
-      user_session.delete(:openid_auth_request) || {}
-    end
-
     def store_request
       return if sp_session[:request_id]
 
+      client_id = @authorize_form.client_id
+      return if client_id.blank?
+
       @request_id = SecureRandom.uuid
       ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
-        sp_request.issuer = @authorize_form.client_id
+        sp_request.issuer = client_id
         sp_request.loa = @authorize_form.acr_values.sort.max
         sp_request.url = request.original_url
         sp_request.requested_attributes = requested_attributes

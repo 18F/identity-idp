@@ -24,9 +24,6 @@ feature 'OpenID Connect' do
                     pii: { first_name: 'John', ssn: '111223333' }).user
 
       sign_in_live_with_2fa(user)
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-      click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -182,7 +179,6 @@ feature 'OpenID Connect' do
 
       _user = sign_in_live_with_2fa
       expect(page.html).to_not include(code_challenge)
-      click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -248,7 +244,6 @@ feature 'OpenID Connect' do
         confirm_email_in_a_different_browser(email)
 
         click_button t('forms.buttons.continue')
-        click_button t('openid_connect.authorization.index.allow')
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
         expect(ServiceProviderRequest.from_uuid(sp_request_id)).
@@ -300,7 +295,7 @@ feature 'OpenID Connect' do
 
         expect(current_path).to eq(sign_up_completed_path)
         find('input').click
-        click_button t('openid_connect.authorization.index.allow')
+
         redirect_uri = URI(current_url)
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
@@ -315,7 +310,6 @@ feature 'OpenID Connect' do
 
         sign_in_live_with_2fa(user)
         enter_correct_otp_code_for_user(user)
-        click_button t('openid_connect.authorization.index.allow')
 
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
@@ -363,8 +357,10 @@ feature 'OpenID Connect' do
         expect(page).to have_content t('help_text.requested_attributes.social_security_number')
       end
 
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\' http://localhost:7654'))
+
       click_on I18n.t('forms.buttons.continue')
-      click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -514,7 +510,6 @@ feature 'OpenID Connect' do
     )
 
     _user = sign_in_live_with_2fa
-    click_button t('openid_connect.authorization.index.allow')
 
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
