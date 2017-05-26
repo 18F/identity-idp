@@ -27,7 +27,7 @@ en:
       not_saved:
         one: '1 error prohibited this %{resource} from being saved:'
         other: "%{count} errors prohibited this %{resource} from being saved:"
-      otp_incorrect: Security code is incorrect
+      otp_incorrect: Incorrect code. Did you type it correctly?
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       requires_phone: requires you to enter your phone number.

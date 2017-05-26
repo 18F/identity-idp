@@ -7,7 +7,9 @@ en:
       continue: Continue identity verification
       cancel: Cancel and return to your profile
       help: Continue to Help Center
-      send_letter: Send a letter
+      mail:
+        send: Send a letter
+        resend: Send another letter
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -25,6 +27,7 @@ en:
       incorrect_password: The password you entered is not correct.
       invalid_ccn: Credit card number should be only last 8 digits.
       missing_finance: You must provide a financial account number.
+      mail_limit_reached: You have have requested too much mail in the last month.
       pattern_mismatch:
         dob: Your date of birth must be entered in as mm/dd/yyyy
         "personal-key": >
@@ -156,6 +159,7 @@ en:
         bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified
           address on file.
+        resend: Send me another letter.
         success: It should arrive in 5 to 10 business days.
       personal_details_verified: Personal details verified!
     modal:
@@ -199,6 +203,9 @@ en:
       financials: Provide a financial account number
       hardfail: We were unable to verify your identity
       intro: Help us identify you
+      mail:
+        verify: Want a letter?
+        resend: Want another letter?
       phone: Phone number of record
       review: Review and submit
       select_verification: Activate your account
@@ -206,4 +213,3 @@ en:
       session:
         phone: Get a code by telephone
         review: Encrypt your verified data by entering your password
-      verify_mail: Want a letter?

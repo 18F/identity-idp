@@ -64,7 +64,7 @@ feature 'LOA3 Single Sign On' do
 
       click_idv_address_choose_usps
 
-      click_on t('idv.buttons.send_letter')
+      click_on t('idv.buttons.mail.send')
 
       expect(current_path).to eq verify_review_path
 
