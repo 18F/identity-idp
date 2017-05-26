@@ -13,7 +13,10 @@ en:
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
-      forgot: Forgot your password?
+      forgot:
+        basic: Forgot your password?
+        loa3: Confirm your email address
+      reset: Reset your password
     account:
       account_history: Account history
       login_info: Your account

@@ -33,6 +33,14 @@ class ServiceProviderSessionDecorator
     'shared/nav_branded'
   end
 
+  def forgot_password_partial
+    if sp_session[:loa3]
+      'reset_password/link'
+    else
+      'forgot_password/link'
+    end
+  end
+
   def new_session_heading
     I18n.t('headings.sign_in_with_sp', sp: sp_name)
   end

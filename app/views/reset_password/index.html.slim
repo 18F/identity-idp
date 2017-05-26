@@ -1,0 +1,23 @@
+- title t('titles.passwords.forgot')
+
+h1.h3.mt0.mb2 = t('headings.passwords.reset')
+
+p.mb4#email-description
+  = t('instructions.password.reset')
+
+h2.h4.pb1.border-bottom Let's get started.
+
+h3.fs-20p.sans-serif.mt4 Do you have your personal key?
+
+p When you created your account, we gave you a list of words and asked \
+  you to store them in a safe place. It looked similar to this:
+
+.scale-down
+  = render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX'
+
+.block-center.center.col-10
+  div
+    = button_to 'I have my key', reset_password_path, method: :put,
+                form_class: 'block btn-primary mb2', class: 'btn'
+  div
+    = link_to 'I don\'t have my key', verify_path, class: 'btn btn-secondary block'

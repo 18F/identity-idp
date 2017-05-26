@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   devise_scope :user do
     get '/' => 'users/sessions#new', as: :new_user_session
     post '/' => 'users/sessions#create', as: :user_session
+
     get '/active' => 'users/sessions#active'
 
     get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
@@ -93,6 +94,9 @@ Rails.application.routes.draw do
   get '/profile', to: redirect('/account')
   get '/profile/reactivate', to: redirect('/account/reactivate')
   get '/profile/verify', to: redirect('/account/verify')
+
+  get '/reset_password' => 'reset_password#index', as: :reset_password
+  put '/reset_password' => 'reset_password#update'
 
   post '/sign_up/create_password' => 'sign_up/passwords#create', as: :sign_up_create_password
   get '/sign_up/email/confirm' => 'sign_up/email_confirmations#create',

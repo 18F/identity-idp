@@ -16,6 +16,6 @@ p.my3
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
   .sm-col-right.mxn1
-    = link_to t('links.passwords.forgot'), new_password_path(resource_name), class: 'px1'
+    = render decorated_session.forgot_password_partial
     = link_to t('links.create_account'), sign_up_email_url(request_id: params[:request_id]), \
       class: 'px1 border-left border-silver'
