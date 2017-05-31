@@ -310,14 +310,12 @@ production:
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
-    allow_on_prod_chef_env: 'true'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:cert:app':
     redirect_uri: 'gov.dhs.cbp.jobs.applicant.cert://result'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
-    allow_on_prod_chef_env: 'true'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod':
     redirect_uri: 'https://careers.cbp.dhs.gov/hrm/app'
