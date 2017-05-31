@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'throttling requests' do
+xdescribe 'throttling requests' do
   include Rack::Test::Methods
 
   def app
