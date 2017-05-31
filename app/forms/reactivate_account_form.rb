@@ -45,6 +45,7 @@ class ReactivateAccountForm
   def reencrypt_pii
     personal_key = password_reset_profile.encrypt_pii(user_access_key, decrypted_pii)
     password_reset_profile.deactivation_reason = nil
+    password_reset_profile.active = true
     password_reset_profile.save!
     personal_key
   end

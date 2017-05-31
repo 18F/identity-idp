@@ -21,6 +21,7 @@ feature 'Password recovery via personal key' do
     reactivate_profile(new_password, personal_key)
 
     expect(page).to have_content t('idv.messages.personal_key')
+    expect(page).to have_content t('headings.account.verified_account')
   end
 
   scenario 'resets password, makes personal key, attempts reactivate profile', email: true do
