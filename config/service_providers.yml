@@ -100,6 +100,9 @@ development:
       - email
 
   'https://dashboard.login.gov':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    logo: '18f.svg'
     acs_url: 'http://localhost:3001/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
     sp_initiated_login_url: 'http://localhost:3001/users/auth/saml'
@@ -254,6 +257,9 @@ production:
 
   # Dashboard
   'https://dashboard.demo.login.gov':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    logo: '18f.svg'
     acs_url: 'https://dashboard.demo.login.gov/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://dashboard.demo.login.gov/users/auth/saml/logout'
     sp_initiated_login_url: 'https://dashboard.demo.login.gov/users/auth/saml'
@@ -263,6 +269,9 @@ production:
       - email
 
   'https://dashboard.int.login.gov':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    logo: '18f.svg'
     acs_url: 'https://dashboard.int.login.gov/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://dashboard.int.login.gov/users/auth/saml/logout'
     sp_initiated_login_url: 'https://dashboard.int.login.gov/users/auth/saml'
@@ -272,6 +281,9 @@ production:
       - email
 
   'https://dashboard.qa.login.gov':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    logo: '18f.svg'
     acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://dashboard.qa.login.gov/users/auth/saml/logout'
     sp_initiated_login_url: 'https://dashboard.qa.login.gov/users/auth/saml'
@@ -281,6 +293,9 @@ production:
       - email
 
   'https://dashboard.dev.login.gov':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    logo: '18f.svg'
     acs_url: 'https://dashboard.dev.login.gov/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://dashboard.dev.login.gov/users/auth/saml/logout'
     sp_initiated_login_url: 'https://dashboard.dev.login.gov/users/auth/saml'
