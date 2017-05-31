@@ -180,6 +180,7 @@ test:
   idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
   logins_per_ip_limit: '2'
   logins_per_ip_period: '60'
+  max_mail_events: '2'
   newrelic_license_key: 'xxx'
   otp_delivery_blocklist_bantime: '1'
   otp_delivery_blocklist_findtime: '1'

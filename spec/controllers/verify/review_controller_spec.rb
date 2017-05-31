@@ -188,23 +188,15 @@ describe Verify::ReviewController do
     context 'user has not requested too much mail' do
       before do
         idv_session.address_verification_mechanism = 'usps'
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.months.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.week.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.day.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.hour.ago)
+        usps_mail_service = instance_double(Idv::UspsMail)
+        allow(Idv::UspsMail).to receive(:new).with(user).and_return(usps_mail_service)
+        allow(usps_mail_service).to receive(:mail_spammed?).and_return(false)
       end
 
-      it 'does not display a success message' do
+      it 'displays a success message' do
         get :new
 
-        expect(flash.now[:success]).to eq(
-          t('idv.messages.mail_sent')
-        )
-      end
-
-      it 'displays a helpful error message' do
-        get :new
-
+        expect(flash.now[:success]).to eq t('idv.messages.mail_sent')
         expect(flash.now[:error]).to be_nil
       end
     end
@@ -212,24 +204,16 @@ describe Verify::ReviewController do
     context 'user has requested too much mail' do
       before do
         idv_session.address_verification_mechanism = 'usps'
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.weeks.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.week.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.day.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.hour.ago)
-      end
-
-      it 'does not display a success message' do
-        get :new
-
-        expect(flash.now[:success]).to be_nil
+        usps_mail_service = instance_double(Idv::UspsMail)
+        allow(Idv::UspsMail).to receive(:new).with(user).and_return(usps_mail_service)
+        allow(usps_mail_service).to receive(:mail_spammed?).and_return(true)
       end
 
       it 'displays a helpful error message' do
         get :new
 
-        expect(flash.now[:error]).to eq(
-          t('idv.errors.mail_limit_reached')
-        )
+        expect(flash.now[:error]).to eq t('idv.errors.mail_limit_reached')
+        expect(flash.now[:success]).to be_nil
       end
     end
   end

@@ -6,26 +6,39 @@ describe Idv::UspsMail do
 
   describe '#mail_spammed?' do
     context 'when no mail has been sent' do
-      it 'is never spammed' do
+      it 'returns false' do
+        expect(subject.mail_spammed?).to eq false
+      end
+    end
+
+    context 'when the amount of sent mail is lower than the allowed maximum' do
+      it 'returns false' do
+        Event.create(event_type: :usps_mail_sent, user: user)
+
         expect(subject.mail_spammed?).to eq false
       end
     end
 
     context 'when too much mail has been sent' do
-      it 'is spammed if all the updates have been within the last month' do
+      it 'returns true if the oldest event was within the last month' do
         Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.weeks.ago)
         Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.week.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.day.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.hour.ago)
 
         expect(subject.mail_spammed?).to eq true
       end
 
-      it 'is not spammed if the most distant update was more than a month ago' do
+      it 'returns false if the oldest event was more than a month ago' do
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.weeks.ago)
         Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.months.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.week.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.day.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.hour.ago)
+
+        expect(subject.mail_spammed?).to eq false
+      end
+    end
+
+    context 'when MAX_MAIL_EVENTS or MAIL_EVENTS_WINDOW_DAYS are zero' do
+      it 'returns false' do
+        stub_const 'Idv::UspsMail::MAX_MAIL_EVENTS', 0
+        stub_const 'Idv::UspsMail::MAIL_EVENTS_WINDOW_DAYS', 0
 
         expect(subject.mail_spammed?).to eq false
       end
