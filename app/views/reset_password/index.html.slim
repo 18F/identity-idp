@@ -2,22 +2,23 @@
 
 h1.h3.mt0.mb2 = t('headings.passwords.reset')
 
-p.mb4#email-description
-  = t('instructions.password.reset')
+p.mb4 = t('instructions.password.reset.intro')
 
-h2.h4.pb1.border-bottom Let's get started.
+h2.h4.pb1.border-bottom = t('instructions.password.reset.begin')
 
-h3.fs-20p.sans-serif.mt4 Do you have your personal key?
+h3.fs-20p.sans-serif.mt4 = t('instructions.password.reset.with_key')
 
-p When you created your account, we gave you a list of words and asked \
-  you to store them in a safe place. It looked similar to this:
+p.mb0 = t('instructions.password.reset.explanation')
 
 .scale-down
   = render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX'
 
 .block-center.center.col-10
+  = form_tag reset_password_path, method: :put, class: 'mb2' do
+    = button_tag t('links.passwords.reset.with_key'), class: 'col-12 btn btn-primary',
+      name: :personal_key, type: 'submit', value: 'true'
   div
-    = button_to 'I have my key', reset_password_path, method: :put,
-                form_class: 'block btn-primary mb2', class: 'btn'
-  div
-    = link_to 'I don\'t have my key', verify_path, class: 'btn btn-secondary block'
+    = link_to t('links.passwords.reset.without_key'), verify_path,
+      class: 'btn btn-secondary block', id: 'password-reset'
+
+= render 'reset_password/modal'

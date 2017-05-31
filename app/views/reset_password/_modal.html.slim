@@ -1,0 +1,15 @@
+#password-reset-modal.display-none
+  = render layout: '/shared/modal_layout' do
+    .p4.cntnr-xxskinny.border-box.bg-white.rounded-xxl.modal-warning
+      h2.my2.fs-20p.sans-serif.regular.center
+        = t('instructions.password.reset.modal.heading')
+      hr.mb3.bw4.rounded
+      .mb5
+        = t('instructions.password.reset.modal.copy')
+      .center
+        = form_tag reset_password_path, method: :put do
+          = button_tag t('forms.buttons.continue'), type: 'submit',
+            class: 'btn btn-wide px2 py1 rounded-lg border bw2', name: :personal_key,
+            value: 'false'
+
+== javascript_include_tag 'misc/password-reset-modal'

@@ -183,10 +183,6 @@ module TwoFactorAuthenticatable
     if decorated_user.should_acknowledge_personal_key?(session)
       user_session[:first_time_personal_key_view] = 'true'
       sign_up_personal_key_path
-    elsif @updating_existing_number
-      account_path
-    elsif decorated_user.password_reset_profile.present?
-      reactivate_account_path
     else
       account_path
     end

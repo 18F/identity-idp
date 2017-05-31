@@ -15,6 +15,7 @@ en:
       no_email_sent_explanation_start: Didn’t receive an email?
       resend_email_success: We sent another password reset email.
     password_changed: You changed your password.
+    password_reset: Great! You have your personal key. We'll ask for that in a minute.
     resend_confirmation_email:
       success: We sent another confirmation email.
     send_code:
@@ -24,7 +25,7 @@ en:
         continue: Keep me signed in
         sign_out: Sign me out
         message_html: >
-          For your security, we will sign you out in %{time_left_in_session} unless 
+          For your security, we will sign you out in %{time_left_in_session} unless
           you tell us otherwise.
       partially_signed_in:
         continue: Continue signing in

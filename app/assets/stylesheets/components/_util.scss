@@ -24,7 +24,9 @@
 }
 
 .scale-down {
-  transform: scale(.8);
+  // trigger anti-aliasing in chrome
+  backface-visibility: hidden;
+  transform: scale(.7);
 }
 
 @media #{$breakpoint-sm} {

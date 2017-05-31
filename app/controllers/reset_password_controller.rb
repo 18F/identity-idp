@@ -2,8 +2,19 @@ class ResetPasswordController < ApplicationController
   def index; end
 
   def update
-    flash[:notice] = 'Great! You have you personal key. We\'ll ask for that in a minute.'
+    if personal_key == 'true'
+      flash[:notice] = t('notices.password_reset')
+      session[:personal_key] = true
+    else
+      session[:personal_key] = false
+    end
 
     redirect_to new_user_password_path
+  end
+
+  private
+
+  def personal_key
+    params.require(:personal_key)
   end
 end

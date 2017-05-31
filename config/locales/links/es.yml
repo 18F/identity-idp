@@ -9,6 +9,9 @@ es:
     next: Siguiente
     passwords:
       forgot: ¿Olvidó su contraseña?
+      reset:
+        with_key: NOT TRANSLATED YET
+        without_key: NOT TRANSLATED YET
     phone_confirmation:
       auth_app_fallback_html: NOT TRANSLATED YET
       fallback_to_sms_html: Envíame un mensaje de texto con el código en su lugar

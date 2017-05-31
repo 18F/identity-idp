@@ -24,9 +24,17 @@ en:
         basic: >
           Don’t know your password? Reset it after confirming your email address.
         loa3: Enter your email address to reset your password.
-      reset: >
-        We take extra steps to keep your personal information secure and private,
-        so resetting your password takes a little extra effort.
+      reset:
+        intro: >
+          We take extra steps to keep your personal information secure and private,
+          so resetting your password takes a little extra effort.
+        begin: Let's get started.
+        with_key: Do you have your personal key?
+        explanation: 'When you created your account, we gave you a list of words and asked
+          you to store them in a safe place. It looked similar to this:'
+        modal:
+          heading: Don't have your personal key?
+          copy: If you don't have your personal key, you will need to verify your identity again.
       help_text_header: Password safety tips
       help_text: >
         The longer and more unusual the password, the harder it is to guess. So avoid using common

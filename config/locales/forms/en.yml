@@ -16,7 +16,7 @@ en:
     confirmation:
       show_hdr: Create a strong password
     email:
-      label: Email Address
+      label: Email
     passwords:
       edit:
         buttons:

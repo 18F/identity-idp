@@ -18,9 +18,19 @@ es:
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
     password:
-      forgot: >
-        Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
-        asociada a su cuenta para recibir más instrucciones en la pantalla.
+      forgot:
+        basic: >
+          Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
+          asociada a su cuenta para recibir más instrucciones en la pantalla.
+        loa3: NOT TRANSLATED YET
+      reset:
+        intro: NOT TRANSLATED YET
+        begin: NOT TRANSLATED YET
+        with_key: NOT TRANSLATED YET
+        explanation: NOT TRANSLATED YET
+        modal:
+          heading: NOT TRANSLATED YET
+          copy: NOT TRANSLATED YET
       help_text_header: NOT TRANSLATED YET
       help_text: NOT TRANSLATED YET
       info:
