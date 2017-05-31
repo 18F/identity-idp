@@ -332,3 +332,28 @@ production:
     agency: 'DHS'
     logo: 'cbp.png'
     allow_on_prod_chef_env: 'true'
+
+  # RRB
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:RRB:BOS-Pre-Prod':
+    friendly_name: 'Railroad Retirement Board'
+    agency: 'RRB'
+    logo: 'rrb.svg'
+    acs_url: 'https://onlinetest.rrb.gov/login/login/callback'
+    assertion_consumer_logout_service_url: 'https://onlinetest.rrb.gov/login/login/logout'
+    sp_initiated_login_url: 'https://onlinetest.rrb.gov/login/login/Auth'
+    return_to_sp_url: 'https://onlinetest.rrb.gov/login/login/RRBHome'
+    block_encryption: 'aes256-cbc'
+    cert: 'rrb_bos_pre_prod'
+    attribute_bundle:
+      - email
+      - first_name
+      - middle_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - dob
+      - ssn
+      - phone
