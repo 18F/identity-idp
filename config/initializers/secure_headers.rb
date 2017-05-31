@@ -1,6 +1,6 @@
 SecureHeaders::Configuration.default do |config|
   config.hsts = "max-age=#{365.days.to_i}; includeSubDomains; preload"
-  config.x_frame_options = 'SAMEORIGIN'
+  config.x_frame_options = 'DENY'
   config.x_content_type_options = 'nosniff'
   config.x_xss_protection = '1; mode=block'
   config.x_download_options = 'noopen'
@@ -12,7 +12,11 @@ SecureHeaders::Configuration.default do |config|
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: ["'self'"], # CSP 2.0 only
     block_all_mixed_content: true, # CSP 2.0 only;
-    connect_src: ["'self'"],
+    connect_src: [
+      "'self'",
+      '*.newrelic.com',
+      '*.nr-data.net',
+    ],
     font_src: ["'self'", 'data:'],
     img_src: ["'self'", 'data:', '*.google-analytics.com'],
     media_src: ["'self'"],
@@ -22,29 +26,27 @@ SecureHeaders::Configuration.default do |config|
       '*.newrelic.com',
       '*.nr-data.net',
       'dap.digitalgov.gov',
-      '*.google-analytics.com'
+      '*.google-analytics.com',
     ],
     style_src: ["'self'"],
-    base_uri: ["'self'"]
+    base_uri: ["'self'"],
   }
 
-  if !Rails.env.production?
-    config.csp = default_csp_config.merge(
-      script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
-      style_src: ["'self'", "'unsafe-inline'"]
-    )
-  else
-    config.csp = default_csp_config
-  end
+  config.csp = if !Rails.env.production?
+                 default_csp_config.merge(
+                   script_src: ["'self'", "'unsafe-eval'", "'unsafe-inline'"],
+                   style_src: ["'self'", "'unsafe-inline'"]
+                 )
+               else
+                 default_csp_config
+               end
 
   config.cookies = {
     secure: true, # mark all cookies as "Secure"
     httponly: true, # mark all cookies as "HttpOnly"
-    # We need to set the SameSite setting to "Lax", not "Strict" until this bug
-    # is fixed in Chrome: https://bugs.chromium.org/p/chromium/issues/detail?id=619603
     samesite: {
-      lax: true # mark all cookies as SameSite=Lax.
-    }
+      lax: true # SameSite setting.
+    },
   }
 
   # Temporarily disabled until we configure pinning. See GitHub issue #1895.
@@ -58,5 +60,3 @@ SecureHeaders::Configuration.default do |config|
   #   ]
   # }
 end
-
-SecureHeadersWhitelister.new.run

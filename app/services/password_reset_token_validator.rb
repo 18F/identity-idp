@@ -9,23 +9,12 @@ class PasswordResetTokenValidator
   end
 
   def submit
-    @success = valid?
-
-    result
+    FormResponse.new(success: valid?, errors: errors.messages, extra: { user_id: user&.uuid })
   end
 
   private
 
   attr_accessor :user
-  attr_reader :success
-
-  def result
-    {
-      success: success,
-      error: errors.messages.values.flatten.first,
-      user_id: user&.uuid
-    }
-  end
 
   def valid_token
     errors.add(:user, 'token_expired') unless user.reset_password_period_valid?

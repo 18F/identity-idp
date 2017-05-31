@@ -14,24 +14,24 @@ RSpec.describe OpenidConnect::TokenController do
 
     let(:user) { create(:user) }
     let(:grant_type) { 'authorization_code' }
-    let(:code) { SecureRandom.hex }
+    let(:code) { identity.session_uuid }
     let(:client_id) { 'urn:gov:gsa:openidconnect:test' }
     let(:client_assertion) do
       jwt_payload = {
         iss: client_id,
         sub: client_id,
-        aud: openid_connect_token_url,
+        aud: api_openid_connect_token_url,
         jti: SecureRandom.hex,
-        exp: 5.minutes.from_now.to_i
+        exp: 5.minutes.from_now.to_i,
       }
 
-      client_private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys/saml_test_sp.key').read)
+      client_private_key = OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
 
       JWT.encode(jwt_payload, client_private_key, 'RS256')
     end
 
-    before do
-      IdentityLinker.new(user, client_id).link_identity(session_uuid: code, ial: 1)
+    let!(:identity) do
+      IdentityLinker.new(user, client_id).link_identity(rails_session_id: SecureRandom.hex, ial: 1)
     end
 
     context 'with valid params' do
@@ -75,6 +75,15 @@ RSpec.describe OpenidConnect::TokenController do
 
         action
       end
+    end
+  end
+
+  describe '#options' do
+    it 'is empty so it can be used as a pre-flight request' do
+      process :options, 'OPTIONS'
+
+      expect(response).to be_ok
+      expect(response.body).to be_empty
     end
   end
 end

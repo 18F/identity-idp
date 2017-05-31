@@ -9,7 +9,7 @@ describe SmsOtpSenderJob do
       SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
-        otp_created_at: Time.current.to_s
+        otp_created_at: Time.zone.now.to_s
       )
 
       messages = FakeSms.messages
@@ -20,7 +20,7 @@ describe SmsOtpSenderJob do
 
       expect(msg.from).to match(/(\+19999999999|\+12222222222)/)
       expect(msg.to).to eq('555-5555')
-      expect(msg.body).to include('one-time passcode')
+      expect(msg.body).to include('one-time security code')
       expect(msg.body).to include('1234')
     end
 

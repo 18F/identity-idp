@@ -16,9 +16,7 @@ class ResetPasswordForm
 
     self.password = submitted_password
 
-    @success = valid?
-
-    result
+    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
@@ -31,13 +29,11 @@ class ResetPasswordForm
     errors.add(:reset_password_token, 'token_expired')
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
       user_id: user.uuid,
       active_profile: user.active_profile.present?,
-      confirmed: user.confirmed?
+      confirmed: user.confirmed?,
     }
   end
 end

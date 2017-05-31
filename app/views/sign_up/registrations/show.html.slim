@@ -1,24 +1,17 @@
 - title t('titles.registrations.start')
 
-h1.h3.my0 = decorated_session.registration_heading
-.clearfix.pt3
-  .col.col-1.center
-    = image_tag(asset_url('check-outline.svg'), size: '26x26', alt: '', class: 'mt1')
-  .col.col-11.pl2
-    p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = decorated_session.registration_bullet_1
-  .clearfix
-  .col.col-1.center
-    = image_tag(asset_url('shield.svg'), size: '25x32', alt: '', class: 'mt1')
-  .col.col-11.pl2
-    p.pb2.sm-pb3.mb2.sm-mb3.border-bottom = t('devise.registrations.start.bullet_2')
-  .clearfix
-  .col.col-1.center
-    = image_tag(asset_url('dot-gov.svg'), size: '31x27', alt: '', class: 'mt1')
-  .col.col-11.pl2
-    p.pb2.sm-pb3.mb2 = t('devise.registrations.start.bullet_3')
-.py1.sm-p0
-  - ab_test(:demo) do |variant, _|
-    = link_to t(variant), sign_up_email_path, class: 'btn btn-primary btn-wide mb4'
-.clearfix.pt1.border-top
-  - auth_link = link_to t('links.sign_in'), new_user_session_path
-  .sm-col-right == t('instructions.registration.already_have_account', link: auth_link)
+.sm-px4.mt2.mb0.center
+  = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
+
+  = render decorated_session.registration_heading
+
+  = link_to t('sign_up.registrations.create_account'),
+    sign_up_email_path(request_id: params[:request_id]),
+    class: 'sm-col-10 col-12 btn btn-primary btn-wide mb2 fs-20p'
+
+  = link_to t('links.sign_in'),
+    new_user_session_path(request_id: params[:request_id]),
+    class: 'sm-col-10 col-12 btn btn-secondary btn-wide mb2 fs-20p'
+
+- if loa3_requested?
+  = render 'required_pii_accordion'

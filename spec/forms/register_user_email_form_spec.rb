@@ -10,21 +10,23 @@ describe RegisterUserEmailForm do
       it 'sets success to true to prevent revealing account existence' do
         existing_user = create(:user, :signed_up, email: 'taken@gmail.com')
 
-        result = {
-          success: true,
-          errors: [],
+        mailer = instance_double(ActionMailer::MessageDelivery)
+        allow(UserMailer).to receive(:signup_with_your_email).
+          with(existing_user.email).and_return(mailer)
+        allow(mailer).to receive(:deliver_later)
+
+        extra = {
           email_already_exists: true,
-          user_id: existing_user.uuid
+          user_id: existing_user.uuid,
         }
 
-        mailer = instance_double(ActionMailer::MessageDelivery)
-        expect(UserMailer).to receive(:signup_with_your_email).
-          with(existing_user.email).and_return(mailer)
-        expect(mailer).to receive(:deliver_later)
+        result = instance_double(FormResponse)
 
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(subject.submit(email: 'TAKEN@gmail.com')).to eq result
-
         expect(subject.email).to eq 'taken@gmail.com'
+        expect(mailer).to have_received(:deliver_later)
       end
     end
 
@@ -33,43 +35,50 @@ describe RegisterUserEmailForm do
         user = instance_double(User, email: 'existing@test.com', confirmed?: false, uuid: '123')
         allow(User).to receive(:find_with_email).with(user.email).and_return(user)
 
-        expect(user).to receive(:send_confirmation_instructions)
+        expect(user).to receive(:send_custom_confirmation_instructions)
 
-        result = {
-          success: true,
-          errors: [],
+        extra = {
           email_already_exists: true,
-          user_id: '123'
+          user_id: user.uuid,
         }
 
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(subject.submit(email: user.email)).to eq result
       end
     end
 
     context 'when email is not already taken' do
       it 'is valid' do
-        result = subject.submit(email: 'not_taken@gmail.com')
-
-        result_hash = {
-          success: true,
-          errors: [],
+        result = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(result)
+        submit_form = subject.submit(email: 'not_taken@gmail.com')
+        extra = {
           email_already_exists: false,
-          user_id: User.find_with_email('not_taken@gmail.com').uuid
+          user_id: User.find_with_email('not_taken@gmail.com').uuid,
         }
 
-        expect(result).to eq result_hash
+        expect(FormResponse).to have_received(:new).
+          with(success: true, errors: {}, extra: extra)
+        expect(submit_form).to eq result
       end
     end
 
     context 'when email is invalid' do
       it 'returns false and adds errors to the form object' do
-        result = {
-          success: false,
-          errors: [t('valid_email.validations.email.invalid')],
+        errors = { email: [t('valid_email.validations.email.invalid')] }
+
+        extra = {
           email_already_exists: false,
-          user_id: nil
+          user_id: 'anonymous-uuid',
         }
 
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
         expect(subject.submit(email: 'invalid_email')).to eq result
       end
     end

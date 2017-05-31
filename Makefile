@@ -14,7 +14,7 @@ setup $(CONFIG): config/application.yml.example
 
 check: lint test
 
-lint: $(CONFIG)
+lint:
 	@echo "--- rubocop ---"
 	bundle exec rubocop -R
 	@echo "--- slim-lint ---"
@@ -23,17 +23,28 @@ lint: $(CONFIG)
 	bundle exec reek
 	@echo "--- fasterer ---"
 	bundle exec fasterer
+	@echo "--- eslint ---"
+	node_modules/.bin/eslint app spec
+
+lintfix:
+	@echo "--- rubocop fix ---"
+	bundle exec rubocop -R -a
+	@echo "--- reek fix ---"
+	bundle exec reek -t
 
 brakeman:
 	bundle exec brakeman
 
 test: $(CONFIG)
-	bundle exec rspec && bundle exec teaspoon
+	bundle exec rspec && RAILS_ENV=test bundle exec teaspoon
 
 fast_test: $(CONFIG)
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 run: $(CONFIG)
 	foreman start -p $(PORT)
+
+load_test: $(CONFIG)
+	bin/load_test $(type)
 
 .PHONY: setup all lint run test check brakeman

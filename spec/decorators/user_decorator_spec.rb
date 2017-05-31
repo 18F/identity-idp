@@ -47,28 +47,9 @@ describe UserDecorator do
     end
   end
 
-  describe '#may_bypass_2fa?' do
-    it 'returns true when the user is omniauthed' do
-      user = instance_double(User)
-      allow(user).to receive(:two_factor_enabled?).and_return(true)
-
-      user_decorator = UserDecorator.new(user)
-      session = { omniauthed: true }
-
-      expect(user_decorator.may_bypass_2fa?(session)).to eq true
-    end
-
-    it 'returns false when the user is not omniauthed' do
-      user = instance_double(User)
-      user_decorator = UserDecorator.new(user)
-
-      expect(user_decorator.may_bypass_2fa?).to eq false
-    end
-  end
-
   describe '#active_identity_for' do
     it 'returns Identity matching ServiceProvider' do
-      sp = ServiceProvider.new('http://sp.example.com')
+      sp = create(:service_provider, issuer: 'http://sp.example.com')
       user = create(:user)
       user.identities << create(
         :identity,
@@ -82,58 +63,271 @@ describe UserDecorator do
     end
   end
 
-  describe '#should_acknowledge_recovery_code?' do
-    context 'user has no recovery code and is not omniauthed' do
+  describe '#pending_profile_requires_verification?' do
+    it 'returns false when no pending profile exists' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return(nil)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq false
+    end
+
+    it 'returns true when pending profile exists and identity is not verified' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return('profile')
+      allow(user_decorator).to receive(:identity_not_verified?).and_return(true)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq true
+    end
+
+    it 'returns false when active profile is newer than pending profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return('profile')
+      allow(user_decorator).to receive(:identity_not_verified?).and_return(false)
+      allow(user_decorator).to receive(:active_profile_newer_than_pending_profile?).
+        and_return(true)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq false
+    end
+
+    it 'returns true when pending profile is newer than active profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:pending_profile).and_return('profile')
+      allow(user_decorator).to receive(:identity_not_verified?).and_return(false)
+      allow(user_decorator).to receive(:active_profile_newer_than_pending_profile?).
+        and_return(false)
+
+      expect(user_decorator.pending_profile_requires_verification?).to eq true
+    end
+  end
+
+  describe '#pending_profile' do
+    context 'when a profile with a verification_pending deactivation_reason exists' do
+      it 'returns the most recent profile' do
+        user = User.new
+        _old_profile = create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          created_at: 1.day.ago,
+          user: user
+        )
+        new_profile = create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          user: user
+        )
+        user_decorator = UserDecorator.new(user)
+
+        expect(user_decorator.pending_profile).to eq new_profile
+      end
+    end
+
+    context 'when a verification_pending profile does not exist' do
+      it 'returns nil' do
+        user = User.new
+        create(
+          :profile,
+          deactivation_reason: :password_reset,
+          created_at: 1.day.ago,
+          user: user
+        )
+        create(
+          :profile,
+          deactivation_reason: :encryption_error,
+          user: user
+        )
+        user_decorator = UserDecorator.new(user)
+
+        expect(user_decorator.pending_profile).to be_nil
+      end
+    end
+  end
+
+  describe '#identity_not_verified?' do
+    it 'returns true if identity_verified returns false' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:identity_verified?).and_return(false)
+
+      expect(user_decorator.identity_not_verified?).to eq true
+    end
+
+    it 'returns false if identity_verified returns true' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user_decorator).to receive(:identity_verified?).and_return(true)
+
+      expect(user_decorator.identity_not_verified?).to eq false
+    end
+  end
+
+  describe '#identity_verified?' do
+    it 'returns true if user has an active profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(Profile.new)
+
+      expect(user_decorator.identity_verified?).to eq true
+    end
+
+    it 'returns false if user does not have an active profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(nil)
+
+      expect(user_decorator.identity_verified?).to eq false
+    end
+  end
+
+  describe '#active_profile_newer_than_pending_profile?' do
+    it 'returns true if the active profile is newer than the pending profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: Time.zone.now))
+      allow(user_decorator).to receive(:pending_profile).
+        and_return(Profile.new(created_at: 1.day.ago))
+
+      expect(user_decorator.active_profile_newer_than_pending_profile?).to eq true
+    end
+
+    it 'returns false if the active profile is older than the pending profile' do
+      user = User.new
+      user_decorator = UserDecorator.new(user)
+      allow(user).to receive(:active_profile).and_return(Profile.new(activated_at: 1.day.ago))
+      allow(user_decorator).to receive(:pending_profile).
+        and_return(Profile.new(created_at: Time.zone.now))
+
+      expect(user_decorator.active_profile_newer_than_pending_profile?).to eq false
+    end
+  end
+
+  describe '#needs_profile_phone_verification?' do
+    context 'pending profile does not require verification' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(false)
+
+        expect(user_decorator.needs_profile_phone_verification?).to eq false
+      end
+    end
+
+    context 'pending profile requires verification and phone is confirmed' do
+      it 'returns true' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: true))
+
+        expect(user_decorator.needs_profile_phone_verification?).to eq true
+      end
+    end
+
+    context 'pending profile requires verification and phone is not confirmed' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: false))
+
+        expect(user_decorator.needs_profile_phone_verification?).to eq false
+      end
+    end
+  end
+
+  describe '#needs_profile_usps_verification?' do
+    context 'pending profile does not require verification' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(false)
+
+        expect(user_decorator.needs_profile_usps_verification?).to eq false
+      end
+    end
+
+    context 'pending profile requires verification and phone is not confirmed' do
+      it 'returns true' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: false))
+
+        expect(user_decorator.needs_profile_usps_verification?).to eq true
+      end
+    end
+
+    context 'pending profile requires verification and phone is confirmed' do
+      it 'returns false' do
+        user = User.new
+        user_decorator = UserDecorator.new(user)
+        allow(user_decorator).to receive(:pending_profile_requires_verification?).
+          and_return(true)
+        allow(user_decorator).to receive(:pending_profile).
+          and_return(Profile.new(phone_confirmed: true))
+
+        expect(user_decorator.needs_profile_usps_verification?).to eq false
+      end
+    end
+  end
+
+  describe '#should_acknowledge_personal_key?' do
+    context 'user has no personal key' do
       context 'service provider with loa1' do
         it 'returns true' do
           user_decorator = UserDecorator.new(User.new)
-          session = { omniauthed: false, sp: { loa3: false } }
+          session = { sp: { loa3: false } }
 
-          expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
         end
       end
 
       context 'no service provider' do
         it 'returns true' do
           user_decorator = UserDecorator.new(User.new)
-          session = { omniauthed: false }
+          session = {}
 
-          expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq true
+          expect(user_decorator.should_acknowledge_personal_key?(session)).to eq true
         end
       end
 
-      it 'returns false when the user has a recovery code' do
-        user_decorator = UserDecorator.new(User.new(recovery_code: 'foo'))
+      it 'returns false when the user has a personal key' do
+        user_decorator = UserDecorator.new(User.new(personal_key: 'foo'))
         session = {}
 
-        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
-      end
-
-      it 'returns false when the user is omniauthed' do
-        user_decorator = UserDecorator.new(User.new)
-        session = { omniauthed: true }
-
-        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
       end
 
       it 'returns false if the user is loa3' do
         user_decorator = UserDecorator.new(User.new)
-        session = { omniauthed: false, sp: { loa3: true } }
+        session = { sp: { loa3: true } }
 
-        expect(user_decorator.should_acknowledge_recovery_code?(session)).to eq false
+        expect(user_decorator.should_acknowledge_personal_key?(session)).to eq false
       end
     end
   end
 
   describe '#recent_events' do
     it 'interleaves identities and events' do
-      user_decorator = UserDecorator.new(build(:user))
+      user = build(:user)
+      user_decorator = UserDecorator.new(user)
       identity = create(
         :identity,
         last_authenticated_at: Time.zone.now - 1,
-        user: user_decorator.user
+        user: user
       )
-      event = create(:event, event_type: :email_changed, user: user_decorator.user)
+      event = create(:event, event_type: :email_changed, user: user)
 
       expect(user_decorator.recent_events).to eq [event.decorate, identity.decorate]
     end
@@ -156,23 +350,37 @@ describe UserDecorator do
       context 'with a verified account' do
         let(:user) { create(:user, profiles: [verified_profile]) }
 
-        it { expect(partial).to eq('profile/verified_account_badge') }
+        it { expect(partial).to eq('accounts/verified_account_badge') }
       end
     end
+  end
 
-    describe '#basic_account_partial' do
-      subject(:partial) { UserDecorator.new(user).basic_account_partial }
+  describe '#password_reset_profile' do
+    let(:user) { create(:user) }
+    subject(:decorated_user) { UserDecorator.new(user) }
 
-      context 'with an unverified account' do
-        let(:user) { build(:user) }
+    context 'with no profiles' do
+      it { expect(decorated_user.password_reset_profile).to be_nil }
+    end
 
-        it { expect(partial).to eq('profile/basic_account_badge') }
+    context 'with an active profile' do
+      let(:active_profile) do
+        build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
       end
 
-      context 'with a verified account' do
-        let(:user) { create(:user, profiles: [verified_profile]) }
+      before do
+        user.profiles << [
+          active_profile,
+          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' }),
+        ]
+      end
 
-        it { expect(partial).to eq('shared/null') }
+      it { expect(decorated_user.password_reset_profile).to be_nil }
+
+      context 'when the active profile is deactivated due to password reset' do
+        before { active_profile.deactivate(:password_reset) }
+
+        it { expect(decorated_user.password_reset_profile).to eq(active_profile) }
       end
     end
   end

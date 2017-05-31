@@ -2,12 +2,8 @@ const I18n = window.LoginGov.I18n;
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
-  if (form && window.onbeforeunload) {
-    form.addEventListener('submit', () => {
-      if (form.checkValidity()) window.onbeforeunload = false;
-    });
-
-    const fields = ['dob', 'ssn', 'zipcode'];
+  if (form) {
+    const fields = ['dob', 'personal-key', 'ssn', 'zipcode'];
 
     fields.forEach(function(f) {
       const input = document.querySelector(`.${f}`);

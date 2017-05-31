@@ -32,6 +32,7 @@ RSpec::Matchers.define :have_actions do |kind, *names|
     actions = callbacks.each_with_object([]) do |f, result|
       result << f.filter unless action_has_only_option?(f) || action_has_except_option?(f)
       result << [f.filter, only: parsed_only_action(f)] if action_has_only_option?(f)
+      result << [f.filter, if: parsed_only_action(f)] if action_has_only_option?(f)
       result << [f.filter, except: parsed_except_action(f)] if action_has_except_option?(f)
     end
 
@@ -98,5 +99,15 @@ class StringOptionParser
 
   def single_action_passed_to_only_or_except_option_in_controller_callback
     @option.split('==')[1].strip.tr("'", '').to_sym
+  end
+end
+
+class SymbolOptionParser
+  def initialize(option)
+    @option = option
+  end
+
+  def parse
+    @option
   end
 end

@@ -6,6 +6,27 @@ include IdvHelper
 feature 'SP-initiated logout' do
   let(:user) { create(:user, :signed_up) }
 
+  context 'when SP uses embed_sign:false' do
+    before do
+      sign_in_and_2fa_user(user)
+      visit sp1_authnrequest
+
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
+      settings.security[:embed_sign] = false
+      settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+
+      request = OneLogin::RubySaml::Logoutrequest.new
+      visit request.create(settings)
+    end
+
+    it 'signs out the user from IdP' do
+      visit account_path
+
+      expect(current_path).to eq root_path
+    end
+  end
+
   context 'when logged in to a single SP' do
     let(:user) { create(:user, :signed_up) }
     let(:xmldoc) { SamlResponseDoc.new('feature', 'logout_assertion') }
@@ -14,7 +35,7 @@ feature 'SP-initiated logout' do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
@@ -23,9 +44,9 @@ feature 'SP-initiated logout' do
     end
 
     it 'signs out the user from IdP' do
-      visit profile_path
+      visit account_path
 
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      expect(current_path).to eq root_path
     end
 
     it 'contains an issuer nodeset' do
@@ -78,7 +99,7 @@ feature 'SP-initiated logout' do
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
 
-      sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      sp2 = ServiceProvider.from_issuer(sp2_saml_settings.issuer)
       settings = sp2_saml_settings # sp2
       settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
 
@@ -104,12 +125,12 @@ feature 'SP-initiated logout' do
 
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP
 
-      sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      sp2 = ServiceProvider.from_issuer(sp2_saml_settings.issuer)
 
       expect(current_url).to eq(sp2.metadata[:assertion_consumer_logout_service_url])
       expect(user.active_identities.size).to eq(0)
 
-      visit profile_path
+      visit account_path
       expect(current_url).to eq root_url
     end
   end
@@ -130,7 +151,7 @@ feature 'SP-initiated logout' do
       @sp2_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
@@ -146,9 +167,9 @@ feature 'SP-initiated logout' do
         to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp1
 
-      visit profile_path
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      visit account_path
 
+      expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)
     end
   end
@@ -169,7 +190,7 @@ feature 'SP-initiated logout' do
       @sp1_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
-      sp2 = ServiceProvider.new(sp2_saml_settings.issuer)
+      sp2 = ServiceProvider.from_issuer(sp2_saml_settings.issuer)
       settings = sp2_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp2).uuid
 
@@ -185,12 +206,12 @@ feature 'SP-initiated logout' do
         to eq('urn:oasis:names:tc:SAML:2.0:status:Success')
       click_button t('forms.buttons.submit.default') # LogoutResponse for originating SP: sp2
 
-      visit profile_path
-      expect(page).to have_content t('devise.failure.unauthenticated')
+      visit account_path
 
+      expect(current_path).to eq root_path
       expect(user.active_identities.size).to eq(0)
 
-      removed_keys = %w(logout_response logout_response_url)
+      removed_keys = %w[logout_response logout_response_url]
 
       expect(page.get_rack_session.keys & removed_keys).to eq []
     end
@@ -230,7 +251,7 @@ feature 'SP-initiated logout' do
     it 'terminates sessions in all browsers' do
       expect(user.active_identities.size).to eq(2)
 
-      sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
       sp1_slo_request = OneLogin::RubySaml::Logoutrequest.new
@@ -283,7 +304,7 @@ feature 'SP-initiated logout' do
         sign_in_and_2fa_user(user)
         visit sp1_authnrequest
 
-        sp1 = ServiceProvider.new(sp1_saml_settings.issuer)
+        sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
         settings = sp1_saml_settings
         settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 

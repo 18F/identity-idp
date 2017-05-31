@@ -3,9 +3,6 @@ require 'rails_helper'
 feature 'IdV session' do
   include IdvHelper
 
-  let(:user_password) { Features::SessionHelper::VALID_PASSWORD }
-  let(:max_attempts_less_one) { Idv::Attempter.idv_max_attempts - 1 }
-
   context 'landing page' do
     before do
       sign_in_and_2fa_user
@@ -14,14 +11,13 @@ feature 'IdV session' do
 
     scenario 'decline to verify identity' do
       click_link t('links.cancel')
-
       expect(page).to have_content(t('idv.titles.cancel'))
     end
 
     scenario 'proceed to verify identity' do
       click_link 'Yes'
 
-      expect(page).to have_content(t('idv.titles.session.basic'))
+      expect(page).to have_content(t('idv.titles.sessions'))
     end
   end
 
@@ -32,24 +28,45 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
+
       expect(page).to have_content(t('idv.form.ccn'))
+      expect(page).to have_content(
+        t('idv.messages.sessions.success',
+          pii_message: t('idv.messages.sessions.pii'))
+      )
 
       fill_out_financial_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
+      click_idv_address_choose_phone
       fill_out_phone_form_ok(user.phone)
-      click_button t('forms.buttons.continue')
+      click_idv_continue
       fill_in :user_password, with: user_password
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       expect(current_url).to eq verify_confirmations_url
-      expect(page).to have_content(t('headings.recovery_code'))
-      click_acknowledge_recovery_code
+      expect(page).to have_content(t('headings.personal_key'))
+      click_acknowledge_personal_key
 
-      expect(current_url).to eq(profile_url)
-      expect(page).to have_content('Some One')
+      expect(current_url).to eq(account_url)
+      expect(page).to have_content('José One')
       expect(page).to have_content('123 Main St')
       expect(user.reload.active_profile).to be_a(Profile)
+    end
+
+    scenario 'vendor agent throws exception' do
+      first_name_to_trigger_exception = 'Fail'
+
+      sign_in_and_2fa_user
+
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      fill_in 'profile_first_name', with: first_name_to_trigger_exception
+      click_idv_continue
+
+      expect(current_path).to eq verify_session_path
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
     end
 
     scenario 'allows 3 attempts in 24 hours' do
@@ -71,7 +88,7 @@ feature 'IdV session' do
       visit verify_session_path
       complete_idv_profile_fail
 
-      expect(page).to have_content(t('idv.titles.hardfail'))
+      expect(page).to have_css('.alert-error', text: t('idv.modal.sessions.heading'))
 
       visit verify_session_path
 
@@ -82,7 +99,7 @@ feature 'IdV session' do
       expect(user.idv_attempted_at).to_not be_nil
     end
 
-    scenario 'finance step redirects to fail after max attempts' do
+    scenario 'finance shows failure flash message after max attempts' do
       sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
@@ -97,27 +114,21 @@ feature 'IdV session' do
 
       fill_out_financial_form_fail
       click_idv_continue
-      expect(current_path).to eq verify_fail_path
+      expect(page).to have_css('.alert-error', text: t('idv.modal.financials.heading'))
     end
 
-    scenario 'phone step redirects to fail after max attempts' do
+    scenario 'finance shows failure modal after max attempts', js: true do
       sign_in_and_2fa_user
       visit verify_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
-      click_idv_continue
-
       max_attempts_less_one.times do
-        fill_out_phone_form_fail
+        fill_out_idv_form_fail
         click_idv_continue
-
-        expect(current_path).to eq verify_phone_path
+        click_button t('idv.modal.button.warning')
       end
 
-      fill_out_phone_form_fail
+      fill_out_idv_form_fail
       click_idv_continue
-      expect(current_path).to eq verify_fail_path
+      expect(page).to have_css('.modal-fail', text: t('idv.modal.sessions.heading'))
     end
 
     scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
@@ -142,11 +153,8 @@ feature 'IdV session' do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_session_path
-      expect(page).to have_css(
-        '.modal-warning',
-        text: t('idv.modal.sessions.warning_accent')
-      )
-      click_link t('idv.modal.button.warning')
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
+      click_button t('idv.modal.button.warning')
 
       fill_out_idv_form_ok
       click_idv_continue
@@ -162,11 +170,8 @@ feature 'IdV session' do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_finance_path
-      expect(page).to have_css(
-        '.modal-warning',
-        text: t('idv.modal.finance.warning_accent')
-      )
-      click_link t('idv.modal.button.warning')
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.financials.heading'))
+      click_button t('idv.modal.button.warning')
 
       # can't go "back" to a successful step
       visit verify_session_path
@@ -187,13 +192,17 @@ feature 'IdV session' do
 
       # failure reloads the same sticky form (different path) and shows warning modal
       expect(current_path).to eq verify_finance_path
-      click_link t('idv.modal.button.warning')
+      click_button t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
       # try again with CCN
       click_link t('idv.form.use_ccn')
       fill_in :idv_finance_form_ccn, with: second_ccn_value
       click_idv_continue
+
+      # address mechanism choice
+      expect(current_path).to eq verify_address_path
+      click_idv_address_choose_phone
 
       # success advances to next step
       expect(current_path).to eq verify_phone_path
@@ -206,11 +215,8 @@ feature 'IdV session' do
 
       # failure reloads the same sticky form
       expect(current_path).to eq verify_phone_path
-      expect(page).to have_css(
-        '.modal-warning',
-        text: t('idv.modal.phone.warning_accent')
-      )
-      click_link t('idv.modal.button.warning')
+      expect(page).to have_css('.modal-warning', text: t('idv.modal.phone.heading'))
+      click_button t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
 
       fill_out_phone_form_ok(good_phone_value)
@@ -235,10 +241,26 @@ feature 'IdV session' do
       fill_out_idv_form_fail
       click_idv_continue
 
-      expect(page).to have_css(
-        '.alert-warning',
-        text: t('idv.modal.sessions.warning_accent')
-      )
+      expect(page).to have_content t('idv.modal.sessions.warning')
+    end
+
+    scenario 'closing previous address accordion clears inputs and toggles header', js: true do
+      _user = sign_in_and_2fa_user
+
+      visit verify_session_path
+      expect(page).to have_css('.accordion-header-controls',
+                               text: t('idv.form.previous_address_add'))
+
+      click_accordion
+      expect(page).to have_css('.accordion-header', text: t('links.remove'))
+
+      fill_out_idv_previous_address_ok
+      expect(find('#profile_prev_address1').value).to eq '456 Other Ave'
+
+      click_accordion
+      click_accordion
+
+      expect(find('#profile_prev_address1').value).to eq ''
     end
 
     scenario 'clicking finance option changes input label', js: true do
@@ -247,7 +269,7 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
 
       expect(page).to_not have_css('.js-finance-wrapper', text: t('idv.form.mortgage'))
 
@@ -266,7 +288,7 @@ feature 'IdV session' do
       _user = sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
       click_link t('idv.form.use_financial_account')
 
       select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
@@ -289,50 +311,128 @@ feature 'IdV session' do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_button 'Continue'
+      click_idv_continue
 
       find('#idv_finance_form_ccn').native.send_keys('abcd1234')
 
       expect(find('#idv_finance_form_ccn').value).to eq '1234'
     end
 
-    context 'Idv phone and user phone are different' do
-      it 'prompts to confirm phone' do
-        user = create(
-          :user, :signed_up,
-          phone: '+1 (416) 555-0190',
-          password: Features::SessionHelper::VALID_PASSWORD
-        )
-        sign_in_and_2fa_user(user)
-        visit verify_session_path
-
-        complete_idv_profile_with_phone('555-555-0000')
-
-        expect(page).to have_link t('forms.two_factor.try_again'), href: verify_phone_path
-
-        enter_correct_otp_code_for_user(user)
-        click_acknowledge_recovery_code
-
-        expect(current_path).to eq profile_path
-      end
-    end
-
-    context 'recovery codes information and actions' do
+    context 'personal keys information and actions' do
       before do
-        recovery_code = 'a1b2c3d4e5f6g7h8'
+        personal_key = 'a1b2c3d4e5f6g7h8'
 
         @user = sign_in_and_2fa_user
         visit verify_session_path
 
-        allow(SecureRandom).to receive(:hex).with(8).and_return(recovery_code)
+        allow(RandomPhrase).to receive(:to_s).and_return(personal_key)
         complete_idv_profile_ok(@user)
       end
 
-      scenario 'recovery code presented on success' do
-        expect(page).to have_content(t('headings.recovery_code'))
+      scenario 'personal key presented on success' do
+        expect(page).to have_content(t('headings.personal_key'))
       end
 
-      it_behaves_like 'recovery code page'
+      it_behaves_like 'personal key page'
+
+      scenario 'reload personal key page' do
+        visit current_path
+
+        expect(page).to have_content(t('headings.personal_key'))
+
+        visit current_path
+
+        expect(page).to have_content(t('headings.personal_key'))
+      end
+    end
+
+    scenario 'pick USPS address verification' do
+      sign_in_and_2fa_user
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_usps
+      click_on t('idv.buttons.send_letter')
+
+      expect(current_path).to eq verify_review_path
+
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      expect(current_url).to eq verify_confirmations_url
+      click_acknowledge_personal_key
+
+      expect(current_url).to eq(account_url)
+      expect(page).to have_content(t('account.index.verification.reactivate_button'))
+    end
+
+    context 'cancel from USPS/Phone verification screen' do
+      context 'without js' do
+        it 'returns user to profile path' do
+          sign_in_and_2fa_user
+          loa3_sp_session
+          visit verify_session_path
+
+          fill_out_idv_form_ok
+          click_idv_continue
+          fill_out_financial_form_ok
+          click_idv_continue
+
+          click_idv_cancel
+
+          expect(current_path).to eq(account_path)
+        end
+      end
+
+      context 'with js', js: true do
+        it 'redirects to profile from a modal' do
+          sign_in_and_2fa_user
+          loa3_sp_session
+          visit verify_session_path
+
+          fill_out_idv_form_ok
+          click_idv_continue
+          fill_out_financial_form_ok
+          click_idv_continue
+
+          click_on t('links.cancel_idv')
+          click_idv_cancel_modal
+
+          expect(current_path).to eq(account_path)
+        end
+      end
+    end
+
+    scenario 'continue phone OTP verification after cancel' do
+      different_phone = '555-555-9876'
+      user = sign_in_live_with_2fa
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok(different_phone)
+      click_idv_continue
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      click_on t('links.cancel')
+
+      expect(current_path).to eq root_path
+
+      sign_in_live_with_2fa(user)
+
+      expect(page).to have_content('9876')
+      expect(page).to have_content(t('account.index.verification.instructions'))
+
+      enter_correct_otp_code_for_user(user)
+
+      expect(current_path).to eq account_path
     end
   end
 
@@ -341,16 +441,7 @@ feature 'IdV session' do
     click_button 'Continue'
   end
 
-  def complete_idv_profile_with_phone(phone)
-    fill_out_idv_form_ok
-    click_button t('forms.buttons.continue')
-    fill_out_financial_form_ok
-    click_button t('forms.buttons.continue')
-    fill_out_phone_form_ok(phone)
-    click_button t('forms.buttons.continue')
-    fill_in :user_password, with: user_password
-    click_submit_default
-    # choose default SMS delivery method for confirming this new number
-    click_submit_default
+  def click_accordion
+    find('.accordion-header-controls').click
   end
 end

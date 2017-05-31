@@ -1,0 +1,32 @@
+---
+en:
+  account:
+    index:
+      address: Current address
+      authentication_app: Authentication app
+      auth_app_enabled: enabled
+      auth_app_disabled: not enabled
+      dob: Date of birth
+      email: Email address
+      full_name: Full name
+      login: Login Information
+      password: Password
+      phone: Phone number
+      previous_address: Previous address
+      reactivation:
+        instructions: For your security, you will need to verify your account information again.
+        reactivate_button: Verify your identity
+      ssn: Social Security Number
+      verification:
+        instructions: Your account requires a secret code to be verified.
+        reactivate_button: Enter the code you received via US mail
+        success: Your account has been verified.
+        with_phone_button: Verify with your phone
+    items:
+      personal_key: Personal key
+    links:
+      regenerate_personal_key: Get a new key
+    security:
+      link: Learn more at the Help Center
+      text: Your profile information is locked for your security.
+    welcome: Welcome

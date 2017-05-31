@@ -15,7 +15,7 @@ feature 'Accessibility on pages that require authentication', :js do
       create(:user, :unconfirmed)
       confirm_last_user
 
-      expect(current_path).to eq(sign_up_create_email_confirmation_path)
+      expect(current_path).to eq(sign_up_enter_password_path)
       expect(page).to be_accessible
     end
 
@@ -39,7 +39,7 @@ feature 'Accessibility on pages that require authentication', :js do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq(login_two_factor_path(delivery_method: 'sms'))
+      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: 'sms'))
       expect(page).to be_accessible
     end
 
@@ -47,9 +47,9 @@ feature 'Accessibility on pages that require authentication', :js do
       scenario 'enter 2fa phone OTP code page' do
         user = create(:user, phone: '+1 (202) 555-1212')
         sign_in_before_2fa(user)
-        visit login_two_factor_path(delivery_method: 'sms')
+        visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
         expect(page).to be_accessible
       end
     end
@@ -58,17 +58,17 @@ feature 'Accessibility on pages that require authentication', :js do
       scenario 'enter 2fa phone OTP code page' do
         user = create(:user, phone: '+1 (202) 555-1212')
         sign_in_before_2fa(user)
-        visit login_two_factor_path(delivery_method: 'voice')
+        visit login_two_factor_path(otp_delivery_preference: 'voice')
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
         expect(page).to be_accessible
       end
     end
   end
 
-  scenario 'recovery code page' do
+  scenario 'personal key page' do
     sign_in_and_2fa_user
-    visit manage_recovery_code_path
+    visit manage_personal_key_path
 
     expect(page).to be_accessible
   end
@@ -76,7 +76,7 @@ feature 'Accessibility on pages that require authentication', :js do
   scenario 'profile page' do
     sign_in_and_2fa_user
 
-    visit profile_path
+    visit account_path
 
     expect(page).to be_accessible
   end
@@ -105,18 +105,10 @@ feature 'Accessibility on pages that require authentication', :js do
     expect(page).to be_accessible
   end
 
-  scenario 'generate new recovery code page' do
+  scenario 'generate new personal key page' do
     sign_in_and_2fa_user
 
-    visit manage_recovery_code_path
-
-    expect(page).to be_accessible
-  end
-
-  scenario 'start set up of authenticator app page' do
-    sign_in_and_2fa_user
-
-    visit '/authenticator_start'
+    visit manage_personal_key_path
 
     expect(page).to be_accessible
   end

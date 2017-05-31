@@ -11,6 +11,8 @@ h1.h3.my0 = t('headings.passwords.change')
   = f.full_error :reset_password_token
   = f.input :password, label: t('forms.passwords.edit.labels.password'), required: true
   = render 'devise/shared/password_strength'
-  = f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'mb1'
+  = f.button :submit, t('forms.passwords.edit.buttons.submit'), class: 'mb3'
+
+= render 'shared/password_accordion'
 
 == javascript_include_tag 'misc/pw-strength'

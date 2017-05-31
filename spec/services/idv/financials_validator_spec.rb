@@ -6,11 +6,10 @@ describe Idv::FinancialsValidator do
   let(:idv_session) do
     idvs = Idv::Session.new({}, user)
     idvs.vendor = :mock
-    idvs.resolution = Proofer::Resolution.new session_id: 'some-id'
     idvs
   end
 
-  let(:session_id) { idv_session.resolution.session_id }
+  let(:session_id) { idv_session.vendor_session_id }
 
   let(:params) do
     { ccn: '123-45-6789' }
@@ -26,7 +25,7 @@ describe Idv::FinancialsValidator do
       with(applicant: idv_session.applicant, vendor: :mock).
       and_return(agent)
     expect(agent).to receive(:submit_financials).
-      with(params, idv_session.resolution.session_id).and_return(confirmation)
+      with(params, idv_session.vendor_session_id).and_return(confirmation)
   end
 
   describe '#success?' do

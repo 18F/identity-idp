@@ -1,11 +1,12 @@
 footer.footer.bg-navy.white
-  .container.p2.h6
+  .container.py2.h6
     .clearfix
-      .sm-col = t('shared.footer_lite.gsa')
-      .sm-col-right.caps
-        = link_to t('links.help'), help_path,
+      .sm-col-right.caps.pt1.pb2.sm-pt0.sm-pb0.center.caps
+        = link_to t('links.help'), MarketingSite.help_url,
           class: 'white text-decoration-none mr3', target: '_blank'
-        = link_to t('links.contact'), contact_path,
+        = link_to t('links.contact'), MarketingSite.contact_url,
           class: 'white text-decoration-none mr3', target: '_blank'
-        = link_to t('links.privacy_policy'), privacy_path,
+        = link_to t('links.privacy_policy'), MarketingSite.privacy_url,
           class: 'white text-decoration-none', target: '_blank'
+      .sm-col.pt2.sm-pt0.center.border-top.sm-border-none.border-blue
+        = t('shared.footer_lite.gsa')

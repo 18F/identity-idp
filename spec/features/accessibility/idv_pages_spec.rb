@@ -49,6 +49,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       fill_out_and_submit_finance_form
+      click_idv_address_choose_phone
 
       expect(current_path).to eq verify_phone_path
       expect(page).to be_accessible
@@ -60,6 +61,7 @@ feature 'Accessibility on IDV pages', :js do
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       fill_out_and_submit_finance_form
+      click_idv_address_choose_phone
       fill_out_phone_form_ok
       click_button t('forms.buttons.continue')
 
@@ -67,14 +69,15 @@ feature 'Accessibility on IDV pages', :js do
       expect(page).to be_accessible
     end
 
-    scenario 'recovery code / confirmation page' do
+    scenario 'personal key / confirmation page' do
       user = sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
       fill_out_and_submit_finance_form
+      click_idv_address_choose_phone
       fill_out_phone_form_ok(user.phone)
-      click_button t('forms.buttons.continue')
+      click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_submit_default
 

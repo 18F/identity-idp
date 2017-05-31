@@ -18,7 +18,7 @@ module SignUp
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
         service_provider_attributes
       )
-      redirect_to session[:saml_request_url]
+      redirect_to sp_session[:request_url]
     end
 
     private
@@ -32,11 +32,7 @@ module SignUp
     end
 
     def service_provider_attributes
-      { loa3: sp_session[:loa3], service_provider_name: sp_session[:friendly_name] }
-    end
-
-    def sp_session
-      session[:sp]
+      { loa3: sp_session[:loa3], service_provider_name: decorated_session.sp_name }
     end
   end
 end

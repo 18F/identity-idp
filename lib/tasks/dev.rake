@@ -2,7 +2,7 @@ namespace :dev do
   desc 'Sample data for local development environment'
   task prime: 'db:setup' do
     pw = 'salty pickles'
-    %w(test1@test.com test2@test.com).each_with_index do |email, index|
+    %w[test1@test.com test2@test.com].each_with_index do |email, index|
       ee = EncryptedAttribute.new_from_decrypted(email)
       User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
         setup_user(user, ee: ee, pw: pw, num: index)
@@ -18,11 +18,11 @@ namespace :dev do
       first_name: 'Some',
       last_name: 'One'
     )
-    recovery_code = profile.encrypt_pii(loa3_user.user_access_key, pii)
+    personal_key = profile.encrypt_pii(loa3_user.user_access_key, pii)
     profile.verified_at = Time.zone.now
     profile.activate
 
-    Rails.logger.warn "email=#{loa3_user.email} recovery_code=#{recovery_code}"
+    Rails.logger.warn "email=#{loa3_user.email} personal_key=#{personal_key}"
   end
 
   # protip: set ATTRIBUTE_COST and SCRYPT_COST env vars to '800$8$1$'
@@ -51,8 +51,7 @@ namespace :dev do
     end
 
     User.transaction do
-
-      while (num_created < num_users) do
+      while num_created < num_users
         email_addr = "testuser#{num_created}@example.com"
         ee = EncryptedAttribute.new_from_decrypted(email_addr)
         User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
@@ -69,15 +68,15 @@ namespace :dev do
             dob: '1970-05-01',
             ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
           )
-          recovery_code = profile.encrypt_pii(user.user_access_key, pii)
+          personal_key = profile.encrypt_pii(user.user_access_key, pii)
           profile.verified_at = Time.zone.now
           profile.activate
 
-          Rails.logger.warn "email=#{email_addr} recovery_code=#{recovery_code}"
+          Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
         end
 
         num_created += 1
-        progress.increment if progress
+        progress&.increment
       end
     end
   end
@@ -87,7 +86,7 @@ namespace :dev do
     user.skip_confirmation!
     user.reset_password(args[:pw], args[:pw])
     user.phone = format('+1 (415) 555-%04d', args[:num])
-    user.phone_confirmed_at = Time.current
+    user.phone_confirmed_at = Time.zone.now
     Event.create(user_id: user.id, event_type: :account_created)
   end
 

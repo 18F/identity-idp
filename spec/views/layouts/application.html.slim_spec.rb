@@ -5,8 +5,21 @@ describe 'layouts/application.html.slim' do
 
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
+    allow(view).to receive(:decorated_session).and_return(
+      DecoratedSession.new(sp: nil, view_context: nil, sp_session: {}).call
+    )
     allow(view.request).to receive(:original_url).and_return('http://test.host/foobar')
     allow(view).to receive(:current_user).and_return(User.new)
+  end
+
+  context 'no content for nav present' do
+    it 'displays only the logo' do
+      render
+
+      expect(rendered).to have_xpath('//nav[contains(@class, "bg-light-blue")]')
+      expect(rendered).to_not have_content(t('account.welcome'))
+      expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
+    end
   end
 
   context 'when i18n mode enabled' do
@@ -41,6 +54,7 @@ describe 'layouts/application.html.slim' do
     it 'renders a javascript page refresh' do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:current_user).and_return(false)
+      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
       render
 
       expect(view).to render_template(partial: 'session_timeout/_expire_session')
@@ -57,18 +71,43 @@ describe 'layouts/application.html.slim' do
     end
   end
 
-  it 'displays the navbar component when user is fully authenticated' do
-    render
-    expect(rendered).to have_xpath('//nav[@class="bg-white"]')
+  context 'user is not authenticated' do
+    it 'displays the DAP analytics' do
+      allow(view).to receive(:current_user).and_return(nil)
+      allow(view).to receive(:user_fully_authenticated?).and_return(false)
+      allow(view).to receive(:decorated_session).and_return(
+        DecoratedSession.new(sp: nil, view_context: nil, sp_session: {}).call
+      )
+      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
+
+      render
+
+      expect(view).to render_template(partial: 'shared/_dap_analytics')
+    end
   end
 
-  it 'displays only the logo when user is not fully authenticated' do
-    allow(view).to receive(:user_fully_authenticated?).and_return(false)
-    render
+  context 'user is fully authenticated' do
+    it 'does not render the DAP analytics' do
+      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
 
-    expect(rendered).to have_xpath('//nav[contains(@class, "bg-light-blue")]')
-    expect(rendered).to_not have_link(t('shared.nav_auth.my_account'), href: profile_path)
-    expect(rendered).to_not have_content(t('shared.nav_auth.welcome'))
-    expect(rendered).to_not have_link(t('links.sign_out'), href: destroy_user_session_path)
+      render
+
+      expect(view).not_to render_template(partial: 'shared/_dap_analytics')
+    end
+  end
+
+  context 'current_user is present but is not fully authenticated' do
+    before do
+      allow(view).to receive(:user_fully_authenticated?).and_return(false)
+      allow(view).to receive(:decorated_session).and_return(SessionDecorator.new)
+    end
+
+    it 'does not render the DAP analytics' do
+      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
+
+      render
+
+      expect(view).not_to render_template(partial: 'shared/_dap_analytics')
+    end
   end
 end

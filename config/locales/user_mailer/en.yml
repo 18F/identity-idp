@@ -1,34 +1,34 @@
 ---
 en:
   user_mailer:
-    contact_request:
-      comments: No comments left
-      comments_header: 'Comments:'
-      email_or_phone: 'Email address or phone number:'
-      'no': 'no'
-      talk_about_experience: Talk about experience?
-      want_to_learn: Learn more?
-      'yes': 'yes'
+    help_link_text: Help Center
+    contact_link_text: contact us
     email_changed:
       help: >
-        If you did not change your email address, please contact the %{app}
-        Customer Contact Center at %{link}.
+        If you did not change your email address, please visit the %{app}
+        %{help_link} or %{contact_link}.
       intro: >
         You have asked %{app} to change the email address currently associated
         with your account.
     password_changed:
       help: >
-        If you did not mean to change your password, please immediately contact
-        the %{app} customer contact center via web form at %{link}.
+        If you did not change your password, please visit the %{app}
+        %{help_link} or %{contact_link}.
       intro: You have changed your password for your %{app} account.
+    phone_changed:
+      help: >
+        If you did not change your phone, please visit the %{app} %{help_link}
+        or %{contact_link}.
+      intro: You have changed your phone number for your %{app} account.
+      subject: Your phone number has been changed
     signup_with_your_email:
       help: >
-        If you did not request a new account or suspect an error, please
-        immediately contact the %{app} customer contact center via web form at %{link}.
+        If you did not request a new account or suspect an error, please visit
+        the %{app} %{help_link} or %{contact_link}.
       intro: >
-        Your request to create a %{app} account using this email address cannot
-        be granted because this email address is already in use. If you requested this
-        change, please use the following link to log in to %{app}:
+        This email address is already associated with a %{app} account, so we cannot create a new account with it. 
+        If you are not trying to sign in with this email address, you can ignore this message.
+        To sign in with your existing account, follow the link below. 
       link_text: Go to %{app}
       reset_password: >
         If you cannot remember your password, you can reset it at %{app}.

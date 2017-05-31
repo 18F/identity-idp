@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 describe 'devise/passwords/new.html.slim' do
+  let(:user) { build_stubbed(:user) }
+
   before do
     @password_reset_email_form = PasswordResetEmailForm.new('')
+
+    allow(view).to receive(:current_user).and_return(user)
   end
 
   it 'has a localized title' do

@@ -3,81 +3,29 @@ en:
   headings:
     confirmations:
       new: Send another confirmation email
-    contact: Contact us
-    create_account_with_sp: Create a login.gov account to continue to %{sp}
+    create_account_with_sp:
+      sp_text: is using login.gov to make signing in easy and secure.
     create_account_without_sp: Create a login.gov account
     edit_info:
       email: Change your email
       password: Change your password
       phone: Enter your new phone number
-    help:
-      changing_settings:
-        change_email: How do I change my email address?
-        change_password: How do I change my password?
-        edit_profile: Why can't I edit my profile information?
-        title: Changing your settings
-      creating_account:
-        confirmation_email: I didn't receive a confirmation email from login.gov.
-        confirmation_passcode: I didn't receive a confirmation passcode on my phone.
-        dont_want_to_use: I don't want to use login.gov to access government services.
-        mobile_phone: Do I need a mobile phone to use login.gov?
-        title: Creating your account
-      privacy_security:
-        2fa: What is two-factor authentication? (2FA)?
-        protect_data: How does login.gov protect my data?
-        remove_saved: Can I remove a saved password or login information from my browser?
-        third_party: What are third-party vendors? What do they do with my information?
-        title: Keeping your account private and secure
-      questions:
-        title: Still have questions?
-      signing_in:
-        forgot_codes: I can't remember where my recovery codes are.
-        forgot_email: I forgot which email address I used to create an account.
-        forgot_password: What do I do if my password doesn't work or I forgot it?
-        log_out: What happens if the system logs me out?
-        lose_phone: If I lose my phone, can I still sign in?
-        miss_passcode: What happens if I miss the phone call or the text message with my one-time passcode?
-        title: Signing into your account
-      verifying_account:
-        account_not_verified: What happens if my account can't be verified?
-        cant_verify: Why can't you verify my account?
-        financial_info: Why are you asking for financial information?
-        how_verify: How do you verify my account?
-        personal_info: Why are you asking for personal information?
-        phone_number: What type of phone number should I enter?
-        ss_number: Why are you asking for my Social Security Number?
-        title: Verifying your account
-        what_verification: What is account verification?
-        what_verify: What do I need to verify my account?
-        why_verified: Why do I need a verified account?
     passwords:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    privacy_policy:
-      authorities: Authorities
-      disclosure: Disclosure
-      more_information: For more information
-      privacy_act: Privacy Act statement
-      privacy_practices: Our privacy practices
-      purpose: Purpose
-      routine_uses: Routine uses
-      security_practices: Our security practices
-    profile:
+    account:
       account_history: Account history
-      basic_account: Basic Account
-      login_info: Account information
+      login_info: Your account
       profile_info: Profile information
       two_factor: Two-factor authentication
       verified_account: Verified Account
-    recovery_code: Here is your personal key
+    personal_key: Here is your personal key
     registrations:
       enter_email: Start creating an account
-    search: Search for a user
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
     totp_setup:
-      new: Scan the QR code with your device
-      start: Set up two-factor authentication
+      new: Enable an authentication app
     verify_email: Check your email

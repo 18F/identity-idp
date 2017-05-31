@@ -3,6 +3,8 @@ class EmailConfirmationTokenValidator
 
   validate :token_not_expired
 
+  delegate :confirmation_token, to: :user
+
   def initialize(user)
     @user = user
   end
@@ -10,7 +12,7 @@ class EmailConfirmationTokenValidator
   def submit
     @success = valid? && user_valid?
 
-    result
+    FormResponse.new(success: success, errors: form_errors, extra: extra_analytics_attributes)
   end
 
   private
@@ -18,12 +20,14 @@ class EmailConfirmationTokenValidator
   attr_accessor :user
   attr_reader :success
 
-  def result
+  def form_errors
+    errors.messages.merge!(user.errors.messages)
+  end
+
+  def extra_analytics_attributes
     {
-      success: success,
-      error: [errors.full_messages, user.errors.full_messages].join,
       user_id: user.uuid,
-      existing_user: user.confirmed?
+      existing_user: user.confirmed?,
     }
   end
 
@@ -32,6 +36,6 @@ class EmailConfirmationTokenValidator
   end
 
   def token_not_expired
-    errors.add(:confirmation_token, 'has expired') if user.confirmation_period_expired?
+    errors.add(:confirmation_token, :expired) if user.confirmation_period_expired?
   end
 end

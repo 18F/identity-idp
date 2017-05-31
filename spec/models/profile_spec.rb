@@ -27,29 +27,29 @@ describe Profile do
       expect(profile.encrypted_pii).to_not match '666'
     end
 
-    it 'generates new recovery code' do
+    it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
 
-      initial_recovery_code = user.recovery_code
+      initial_personal_key = user.personal_key
 
       profile.encrypt_pii(user_access_key, pii)
 
       expect(profile.encrypted_pii_recovery).to_not be_nil
-      expect(user.recovery_code).to_not eq initial_recovery_code
+      expect(user.personal_key).to_not eq initial_personal_key
     end
   end
 
   describe '#encrypt_recovery_pii' do
-    it 'generates new recovery code' do
+    it 'generates new personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
 
-      initial_recovery_code = user.recovery_code
+      initial_personal_key = user.personal_key
 
       profile.encrypt_recovery_pii(pii)
 
       expect(profile.encrypted_pii_recovery).to_not be_nil
-      expect(user.recovery_code).to_not eq initial_recovery_code
-      expect(profile.recovery_code).to_not eq user.recovery_code
+      expect(user.personal_key).to_not eq initial_personal_key
+      expect(profile.personal_key).to_not eq user.personal_key
     end
   end
 
@@ -66,12 +66,14 @@ describe Profile do
   end
 
   describe '#recover_pii' do
-    it 'decrypts the encrypted_pii_recovery using a recovery code' do
+    it 'decrypts the encrypted_pii_recovery using a personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
 
-      recovery_code = profile.encrypt_pii(user_access_key, pii)
+      personal_key = profile.encrypt_pii(user_access_key, pii)
 
-      expect(profile.recover_pii(recovery_code)).to eq pii
+      normalize_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+
+      expect(profile.recover_pii(normalize_personal_key)).to eq pii
     end
   end
 
@@ -156,7 +158,7 @@ describe Profile do
 
     describe '#verified' do
       it 'returns only verified Profiles' do
-        user.profiles.create(verified_at: Time.current)
+        user.profiles.create(verified_at: Time.zone.now)
         user.profiles.create(verified_at: nil)
         expect(user.profiles.verified.count).to eq 1
       end

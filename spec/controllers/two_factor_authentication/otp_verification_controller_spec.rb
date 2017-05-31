@@ -10,10 +10,13 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'when FeatureManagement.prefill_otp_codes? is true' do
         it 'sets code_value on presenter to correct OTP value' do
           presenter_data = attributes_for(:generic_otp_presenter)
-          TwoFactorAuthCode::PhoneDeliveryPresenter.new(presenter_data)
+          TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+            data: presenter_data,
+            view: ActionController::Base.new.view_context
+          )
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
-          get :show, delivery_method: 'sms'
+          get :show, otp_delivery_preference: 'sms'
 
           expect(assigns(:presenter).code_value).to eq(subject.current_user.direct_otp)
         end
@@ -22,7 +25,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'when FeatureManagement.prefill_otp_codes? is false' do
         it 'does not set @code_value' do
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(false)
-          get :show, delivery_method: 'sms'
+          get :show, otp_delivery_preference: 'sms'
 
           expect(assigns(:code_value)).to be_nil
         end
@@ -37,20 +40,20 @@ describe TwoFactorAuthentication::OtpVerificationController do
       analytics_hash = {
         context: 'authentication',
         method: 'sms',
-        confirmation_for_phone_change: false
+        confirmation_for_phone_change: false,
       }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_hash)
 
-      get :show, delivery_method: 'sms'
+      get :show, otp_delivery_preference: 'sms'
     end
 
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
         expect(controller.user_session).to be_nil
 
-        get :show, delivery_method: 'sms'
+        get :show, otp_delivery_preference: 'sms'
 
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -64,9 +67,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         properties = {
           success: false,
+          errors: {},
           confirmation_for_phone_change: false,
           context: 'authentication',
-          method: 'sms'
+          method: 'sms',
         }
 
         stub_analytics
@@ -74,9 +78,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
-        expect(subject.current_user).to receive(:authenticate_direct_otp).and_return(false)
 
-        post :create, code: '12345', delivery_method: 'sms'
+        post :create, code: '12345', otp_delivery_preference: 'sms'
       end
 
       it 'increments second_factor_attempts_count' do
@@ -94,22 +97,23 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
     context 'when the user has reached the max number of OTP attempts' do
       it 'tracks the event' do
+        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         sign_in_before_2fa
 
         properties = {
           success: false,
+          errors: {},
           confirmation_for_phone_change: false,
           context: 'authentication',
-          method: 'sms'
+          method: 'sms',
         }
 
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).exactly(3).times.
-          with(Analytics::MULTI_FACTOR_AUTH, properties)
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, code: '12345', delivery_method: 'sms' }
+        post :create, code: '12345', otp_delivery_preference: 'sms'
       end
     end
 
@@ -121,14 +125,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'redirects to the profile' do
-        post :create, code: subject.current_user.reload.direct_otp, delivery_method: 'sms'
+        post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
 
       it 'resets the second_factor_attempts_count' do
         subject.current_user.update(second_factor_attempts_count: 1)
-        post :create, code: subject.current_user.reload.direct_otp, delivery_method: 'sms'
+        post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
@@ -136,9 +140,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
       it 'tracks the valid authentication event' do
         properties = {
           success: true,
+          errors: {},
           confirmation_for_phone_change: false,
           context: 'authentication',
-          method: 'sms'
+          method: 'sms',
         }
 
         stub_analytics
@@ -146,7 +151,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, properties)
 
-        post :create, code: subject.current_user.reload.direct_otp, delivery_method: 'sms'
+        post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
       end
     end
 
@@ -161,7 +166,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits an invalid OTP' do
         before do
-          post :create, code: '12345', delivery_method: 'sms'
+          post :create, code: '12345', otp_delivery_preference: 'sms'
         end
 
         it 'resets attempts count' do
@@ -175,7 +180,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits a valid OTP' do
         before do
-          post :create, code: subject.current_user.direct_otp, delivery_method: 'sms'
+          post :create, code: subject.current_user.direct_otp, otp_delivery_preference: 'sms'
         end
 
         it 'resets attempts count' do
@@ -198,7 +203,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
-        allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+        @mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+        allow(UserMailer).to receive(:phone_changed).with(subject.current_user).
+          and_return(@mailer)
         @previous_phone = subject.current_user.phone
       end
 
@@ -208,7 +215,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
             post(
               :create,
               code: subject.current_user.direct_otp,
-              delivery_method: 'sms'
+              otp_delivery_preference: 'sms'
             )
           end
 
@@ -217,28 +224,26 @@ describe TwoFactorAuthentication::OtpVerificationController do
             expect(subject.user_session[:context]).to eq 'authentication'
           end
 
-          it 'tracks the update event' do
+          it 'tracks the update event and notifies via email about number change' do
             properties = {
               success: true,
+              errors: {},
               confirmation_for_phone_change: true,
               context: 'confirmation',
-              method: 'sms'
+              method: 'sms',
             }
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::MULTI_FACTOR_AUTH, properties)
             expect(subject).to have_received(:create_user_event).with(:phone_changed)
             expect(subject).to have_received(:create_user_event).exactly(:once)
-          end
-
-          it 'sends an SMS to the old number' do
-            expect(SmsSenderNumberChangeJob).to have_received(:perform_later).
-              with(@previous_phone)
+            expect(UserMailer).to have_received(:phone_changed).with(subject.current_user)
+            expect(@mailer).to have_received(:deliver_later)
           end
         end
 
         context 'user enters an invalid code' do
-          before { post :create, code: '999', delivery_method: 'sms' }
+          before { post :create, code: '999', otp_delivery_preference: 'sms' }
 
           it 'does not increment second_factor_attempts_count' do
             expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -264,9 +269,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
           it 'tracks an event' do
             properties = {
               success: false,
+              errors: {},
               confirmation_for_phone_change: true,
               context: 'confirmation',
-              method: 'sms'
+              method: 'sms',
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -287,20 +293,21 @@ describe TwoFactorAuthentication::OtpVerificationController do
             post(
               :create,
               code: subject.current_user.direct_otp,
-              delivery_method: 'sms'
+              otp_delivery_preference: 'sms'
             )
           end
 
           it 'redirects to profile page' do
-            expect(response).to redirect_to(profile_path)
+            expect(response).to redirect_to(account_path)
           end
 
           it 'tracks the confirmation event' do
             properties = {
               success: true,
+              errors: {},
               context: 'confirmation',
               method: 'sms',
-              confirmation_for_phone_change: false
+              confirmation_for_phone_change: false,
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -330,7 +337,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         allow(@analytics).to receive(:track_event)
         allow(subject).to receive(:create_user_event)
         subject.current_user.create_direct_otp
-        allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+        allow(UserMailer).to receive(:phone_changed)
       end
 
       context 'user enters a valid code' do
@@ -338,7 +345,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           post(
             :create,
             code: subject.current_user.direct_otp,
-            delivery_method: 'sms'
+            otp_delivery_preference: 'sms'
           )
         end
 
@@ -350,9 +357,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         it 'tracks the OTP verification event' do
           properties = {
             success: true,
+            errors: {},
             confirmation_for_phone_change: false,
             context: 'idv',
-            method: 'sms'
+            method: 'sms',
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -378,17 +386,13 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(response).to redirect_to(verify_confirmations_path)
         end
 
-        it 'displays success flash notice' do
-          expect(flash[:success]).to eq t('notices.phone_confirmation_successful')
-        end
-
-        it 'does not call SmsSenderNumberChangeJob' do
-          expect(SmsSenderNumberChangeJob).to_not have_received(:perform_later)
+        it 'does not call UserMailer' do
+          expect(UserMailer).to_not have_received(:phone_changed)
         end
       end
 
       context 'user enters an invalid code' do
-        before { post :create, code: '999', delivery_method: 'sms' }
+        before { post :create, code: '999', otp_delivery_preference: 'sms' }
 
         it 'does not increment second_factor_attempts_count' do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -415,9 +419,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         it 'tracks an event' do
           properties = {
             success: false,
+            errors: {},
             confirmation_for_phone_change: false,
             context: 'idv',
-            method: 'sms'
+            method: 'sms',
           }
 
           expect(@analytics).to have_received(:track_event).

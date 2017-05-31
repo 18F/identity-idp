@@ -6,20 +6,18 @@ class SamlIdpController < ApplicationController
   include SamlIdp::Controller
   include SamlIdpAuthConcern
   include SamlIdpLogoutConcern
+  include FullyAuthenticatable
+  include VerifyProfileConcern
 
   skip_before_action :verify_authenticity_token
-
-  before_action :disable_caching
-  before_action :apply_secure_headers_override, only: [:auth, :logout]
+  skip_before_action :handle_two_factor_authentication, only: :logout
 
   def auth
-    link_identity_from_session_data
-
-    needs_idv = identity_needs_verification?
-    analytics.track_event(Analytics::SAML_AUTH, @result.merge(idv: needs_idv))
-
-    return redirect_to verify_url if needs_idv
-
+    return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
+    process_fully_authenticated_user do |needs_idv, needs_profile_finish|
+      return store_location_and_redirect_to(verify_url) if needs_idv && !needs_profile_finish
+      return store_location_and_redirect_to(account_or_verify_profile_url) if needs_profile_finish
+    end
     delete_branded_experience
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
@@ -40,28 +38,30 @@ class SamlIdpController < ApplicationController
 
   private
 
-  def disable_caching
-    expires_now
-    response.headers['Pragma'] = 'no-cache'
+  def process_fully_authenticated_user
+    link_identity_from_session_data
+
+    needs_idv = identity_needs_verification?
+    needs_profile_finish = profile_needs_verification?
+    analytics_payload =  @result.to_h.merge(idv: needs_idv, finish_profile: needs_profile_finish)
+    analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
+
+    yield needs_idv, needs_profile_finish
+  end
+
+  def store_location_and_redirect_to(url)
+    store_location_for(:user, request.original_url)
+    redirect_to url
   end
 
   def render_template_for(message, action_url, type)
+    domain = SecureHeadersWhitelister.extract_domain(action_url)
+    override_content_security_policy_directives(form_action: ["'self'", domain])
+
     render(
       template: 'saml_idp/shared/saml_post_binding',
-      locals: {
-        action_url: action_url,
-        message: message,
-        type: type
-      },
+      locals: { action_url: action_url, message: message, type: type },
       layout: false
     )
-  end
-
-  def apply_secure_headers_override
-    use_secure_headers_override(:saml)
-  end
-
-  def delete_branded_experience
-    session.delete(:sp) if session[:sp]
   end
 end

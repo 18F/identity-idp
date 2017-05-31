@@ -1,0 +1,32 @@
+---
+es:
+  account:
+    index:
+      address: NOT TRANSLATED YET
+      authentication_app: NOT TRANSLATED YET
+      auth_app_enabled: NOT TRANSLATED YET
+      auth_app_disabled: NOT TRANSLATED YET
+      dob: NOT TRANSLATED YET
+      email: NOT TRANSLATED YET
+      full_name: NOT TRANSLATED YET
+      login: NOT TRANSLATED YET
+      password: NOT TRANSLATED YET
+      phone: NOT TRANSLATED YET
+      previous_address: NOT TRANSLATED YET
+      reactivation:
+        instructions: NOT TRANSLATED YET
+        reactivate_button: NOT TRANSLATED YET
+      ssn: NOT TRANSLATED YET
+      verification:
+        instructions: NOT TRANSLATED YET
+        reactivate_button: NOT TRANSLATED YET
+        success: NOT TRANSLATED YET
+        with_phone_button: NOT TRANSLATED YET
+    items:
+      personal_key: NOT TRANSLATED YET
+    links:
+      regenerate_personal_key: NOT TRANSLATED YET
+    security:
+      link: NOT TRANSLATED YET
+      text: NOT TRANSLATED YET
+    welcome: Bienvenido

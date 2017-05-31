@@ -7,7 +7,7 @@ describe Idv::FinanceForm do
     it 'is invalid when required attributes are not present' do
       valid_params = { finance_type: :mortgage, mortgage: 'abc123' }
 
-      [:finance_type, :mortgage].each do |attr|
+      %i[finance_type mortgage].each do |attr|
         subject.submit(valid_params.merge(attr => nil))
 
         expect(subject).to_not be_valid
@@ -29,7 +29,7 @@ describe Idv::FinanceForm do
       expect(subject.submit(ccn: '12345678', finance_type: :ccn)).to eq true
 
       expected_params = {
-        ccn: '12345678'
+        ccn: '12345678',
       }
 
       expect(subject.idv_params).to eq expected_params
@@ -85,7 +85,7 @@ describe Idv::FinanceForm do
           symbolized_type = type.to_sym
           params = {
             symbolized_type => long_value,
-            finance_type: symbolized_type
+            finance_type: symbolized_type,
           }
 
           expect(subject.submit(params)).to eq false

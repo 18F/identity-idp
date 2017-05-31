@@ -1,5 +1,3 @@
-require 'omniauth_spec_helper'
-
 module Features
   module SessionHelper
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
@@ -14,9 +12,9 @@ module Features
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
-      select_sms_delivery
+      click_send_security_code
       enter_2fa_code
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
       user
     end
 
@@ -37,10 +35,26 @@ module Features
       user
     end
 
+    def begin_sign_up_with_sp_and_loa(loa3:)
+      user = create(:user)
+      login_as(user, scope: :user, run_callbacks: false)
+
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        session[:sp] = { loa3: loa3, issuer: sp.issuer }
+      end
+
+      visit account_path
+      fill_in 'Phone', with: '202-555-1212'
+      click_send_security_code
+      user
+    end
+
     def sign_up_and_set_password
       user = sign_up
       fill_in 'password_form_password', with: VALID_PASSWORD
-      click_button t('forms.buttons.submit.default')
+      click_button t('forms.buttons.continue')
       user
     end
 
@@ -61,18 +75,19 @@ module Features
         end
       end
 
-      visit profile_path
+      visit account_path
       user
     end
 
     def sign_in_with_warden(user)
       login_as(user, scope: :user, run_callbacks: false)
       allow(user).to receive(:need_two_factor_authentication?).and_return(false)
+
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         session['warden.user.user.session'] = { authn_at: Time.zone.now }
       end
-      visit profile_path
+      visit account_path
     end
 
     def sign_in_and_2fa_user(user = user_with_2fa)
@@ -88,15 +103,15 @@ module Features
       @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
       User.last.update(
-        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.current
+        confirmation_token: @raw_confirmation_token, confirmation_sent_at: Time.zone.now
       )
       visit sign_up_create_email_confirmation_path(
         confirmation_token: @raw_confirmation_token
       )
     end
 
-    def select_sms_delivery
-      click_button t('forms.buttons.send_passcode')
+    def click_send_security_code
+      click_button t('forms.buttons.send_security_code')
     end
 
     def enter_2fa_code
@@ -127,34 +142,210 @@ module Features
     end
 
     def sign_in_with_totp_enabled_user
-      user = create(:user, :signed_up, password: VALID_PASSWORD)
+      user = build(:user, :signed_up, password: VALID_PASSWORD)
       @secret = user.generate_totp_secret
-      user.update(otp_secret_key: @secret)
+      UpdateUser.new(user: user, attributes: { otp_secret_key: @secret }).call
       sign_in_user(user)
       fill_in 'code', with: generate_totp_code(@secret)
       click_submit_default
     end
 
-    def acknowledge_and_confirm_recovery_code
+    def acknowledge_and_confirm_personal_key
+      extra_characters_get_ignored = 'abc123qwerty'
       code_words = []
 
-      page.all(:css, 'p[data-recovery]').map do |node|
+      page.all(:css, '[data-personal-key]').map do |node|
         code_words << node.text
       end
 
       button_text = t('forms.buttons.continue')
 
-      click_on button_text, class: 'recovery-code-continue'
+      click_on button_text, class: 'personal-key-continue'
 
-      code_words.size.times do |index|
-        fill_in "recovery-#{index}", with: code_words[index]
-      end
+      fill_in 'personal-key', with: code_words.join('-').downcase + extra_characters_get_ignored
 
-      click_on button_text, class: 'recovery-code-confirm'
+      click_on button_text, class: 'personal-key-confirm'
     end
 
-    def click_acknowledge_recovery_code
-      click_on t('forms.buttons.continue'), class: 'recovery-code-continue'
+    def click_acknowledge_personal_key
+      click_on t('forms.buttons.continue'), class: 'personal-key-continue'
+    end
+
+    def enter_personal_key(personal_key:, selector: 'input[type="text"]')
+      field = page.find(selector)
+
+      expect(field[:autocapitalize]).to eq('none')
+      expect(field[:autocomplete]).to eq('off')
+      expect(field[:spellcheck]).to eq('false')
+
+      field.set(personal_key)
+    end
+
+    def loa1_sp_session
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        session[:sp] = { loa3: false, issuer: sp.issuer }
+      end
+    end
+
+    def loa3_sp_session
+      Warden.on_next_request do |proxy|
+        session = proxy.env['rack.session']
+        sp = ServiceProvider.from_issuer('http://localhost:3000')
+        session[:sp] = { loa3: true, issuer: sp.issuer }
+      end
+    end
+
+    def cookies
+      page.driver.browser.rack_mock_session.cookie_jar.instance_variable_get(:@cookies)
+    end
+
+    def session_cookie
+      cookies.find { |cookie| cookie.name == '_upaya_session' }
+    end
+
+    def session_store
+      config = Rails.application.config
+      config.session_store.new({}, config.session_options)
+    end
+
+    def sign_up_user_from_sp_without_confirming_email(email)
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      sp_request_id = ServiceProviderRequest.last.uuid
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+
+      click_sign_in_from_landing_page_then_click_create_account
+
+      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+
+      visit_landing_page_and_click_create_account_with_request_id(sp_request_id)
+
+      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      submit_form_with_invalid_email
+
+      expect(current_url).to eq sign_up_email_url
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      submit_form_with_valid_but_wrong_email
+
+      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      click_link_to_use_a_different_email
+
+      expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      submit_form_with_valid_email
+
+      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
+      expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      click_link_to_resend_the_email
+
+      expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id, resend: true)
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      attempt_to_confirm_email_with_invalid_token(sp_request_id)
+
+      expect(current_url).to eq sign_up_email_resend_url(request_id: sp_request_id)
+
+      submit_resend_email_confirmation_form_with_correct_email(email)
+
+      expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
+    end
+
+    def confirm_email_in_a_different_browser(email)
+      click_confirmation_link_in_email(email)
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      submit_form_with_invalid_password
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      submit_form_with_valid_password
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      set_up_2fa_with_valid_phone
+
+      expect(page).to have_css('img[src*=sp-logos]')
+
+      enter_2fa_code
+
+      # expect(page).to have_css('img[src*=sp-logos]')
+
+      click_acknowledge_personal_key
+    end
+
+    def click_sign_in_from_landing_page_then_click_create_account
+      click_link t('links.sign_in')
+      click_link t('links.create_account')
+    end
+
+    def visit_landing_page_and_click_create_account_with_request_id(request_id)
+      visit sign_up_start_url(request_id: request_id)
+      click_link t('sign_up.registrations.create_account')
+    end
+
+    def submit_form_with_invalid_email
+      fill_in 'Email', with: 'invalidemail'
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def submit_form_with_valid_but_wrong_email
+      fill_in 'Email', with: 'test@example.com'
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def click_link_to_use_a_different_email
+      click_link t('notices.use_diff_email.link')
+    end
+
+    def submit_form_with_valid_email(email = 'test@test.com')
+      fill_in 'Email', with: email
+      click_button t('forms.buttons.submit.default')
+    end
+
+    def click_link_to_resend_the_email
+      click_button 'Resend email'
+    end
+
+    def attempt_to_confirm_email_with_invalid_token(request_id)
+      visit sign_up_create_email_confirmation_url(
+        _request_id: request_id, confirmation_token: 'foo'
+      )
+    end
+
+    def submit_resend_email_confirmation_form_with_correct_email(email)
+      fill_in 'Email', with: email
+      click_button t('forms.buttons.resend_confirmation')
+    end
+
+    def click_confirmation_link_in_email(email)
+      open_email(email)
+      visit_in_email(t('mailer.confirmation_instructions.link_text'))
+    end
+
+    def submit_form_with_invalid_password
+      fill_in 'Password', with: 'invalid'
+      click_button t('forms.buttons.continue')
+    end
+
+    def submit_form_with_valid_password(password = VALID_PASSWORD)
+      fill_in 'Password', with: password
+      click_button t('forms.buttons.continue')
+    end
+
+    def set_up_2fa_with_valid_phone
+      fill_in 'Phone', with: '202-555-1212'
+      click_send_security_code
     end
   end
 end

@@ -9,10 +9,10 @@ describe ServiceProviderConfig do
         acs_url: 'http://test.host/test/saml/decode_assertion',
         block_encryption: 'aes256-cbc',
         metadata_url: 'http://test.host/test/saml/metadata',
-        sp_initiated_login_url: 'http://test.host/test/saml'
+        sp_initiated_login_url: 'http://test.host/test/saml',
       }
 
-      expect(config.sp_attributes).to eq yaml_hash
+      expect(config.sp_attributes).to include yaml_hash
     end
   end
 end

@@ -1,27 +1,26 @@
 module Verify
   class FinanceController < ApplicationController
     include IdvStepConcern
+    include IdvFailureConcern
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
 
-    helper_method :idv_finance_form
-
     def new
+      @view_model = view_model
       analytics.track_event(Analytics::IDV_FINANCE_CCN_VISIT)
     end
 
     def create
       result = step.submit
-      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result)
+      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result.to_h)
       increment_step_attempts
 
-      if result[:success]
-        redirect_to verify_phone_url
-      elsif step_attempts_exceeded?
-        redirect_to_fail_path
+      if result.success?
+        handle_success
       else
-        process_failure
+        render_failure
+        render_form
       end
     end
 
@@ -29,6 +28,27 @@ module Verify
 
     def step_name
       :financials
+    end
+
+    def confirm_step_needed
+      redirect_to verify_address_path if idv_session.financials_confirmation == true
+    end
+
+    def view_model(error: nil)
+      Verify::FinancialsNew.new(
+        error: error,
+        remaining_attempts: remaining_step_attempts,
+        idv_form: idv_finance_form
+      )
+    end
+
+    def idv_finance_form
+      @_idv_finance_form ||= Idv::FinanceForm.new(idv_session.params)
+    end
+
+    def handle_success
+      flash[:success] = t('idv.messages.personal_details_verified')
+      redirect_to verify_address_url
     end
 
     def step
@@ -39,27 +59,8 @@ module Verify
       )
     end
 
-    def process_failure
-      show_warning if step.form_valid_but_vendor_validation_failed?
-      render_form
-    end
-
     def step_params
       params.require(:idv_finance_form).permit(:finance_type, *Idv::FinanceForm::FINANCE_TYPES)
-    end
-
-    def confirm_step_needed
-      redirect_to verify_phone_path if idv_session.financials_confirmation == true
-    end
-
-    def show_warning
-      flash.now[:warning] = t(
-        'idv.modal.finance.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.finance.warning_accent')
-        )
-      )
     end
 
     def render_form
@@ -68,10 +69,6 @@ module Verify
       else
         render 'verify/finance_other/new'
       end
-    end
-
-    def idv_finance_form
-      @_idv_finance_form ||= Idv::FinanceForm.new(idv_session.params)
     end
   end
 end

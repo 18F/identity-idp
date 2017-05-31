@@ -1,0 +1,11 @@
+- word_count = Figaro.env.recovery_code_length.to_i
+
+.mb3
+  = f.input attribute_name,
+    label: t('simple_form.required.html') + t('forms.two_factor.personal_key'),
+    input_html: { autocapitalize: 'none',
+      autocomplete: 'off',
+      class: 'personal-key caps',
+      maxlength: (RandomPhrase::WORD_LENGTH * word_count + (word_count - 1)),
+      required: true,
+      spellcheck: 'false' }

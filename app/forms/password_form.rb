@@ -11,20 +11,14 @@ class PasswordForm
 
     self.password = submitted_password
 
-    @success = valid?
-
-    result
+    FormResponse.new(success: valid?, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
 
-  attr_reader :success
-
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
-      user_id: user.uuid
+      user_id: user.uuid,
     }
   end
 end

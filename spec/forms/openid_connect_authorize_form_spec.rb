@@ -19,7 +19,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:acr_values) do
     [
       Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
-      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
     ].join(' ')
   end
 
@@ -40,17 +40,27 @@ RSpec.describe OpenidConnectAuthorizeForm do
 
     context 'with valid params' do
       it 'is successful' do
-        expect(result[:success]).to eq(true)
-        expect(result[:client_id]).to eq(client_id)
-      end
+        allow(FormResponse).to receive(:new)
 
-      it 'links an identity for this client with the given session id as the code' do
-        redirect_uri = URI(result[:redirect_uri])
-        code = Rack::Utils.parse_nested_query(redirect_uri.query).with_indifferent_access[:code]
-        expect(code).to eq(rails_session_id)
+        form.submit(user, rails_session_id)
 
         identity = user.identities.where(service_provider: client_id).first
-        expect(identity.session_uuid).to eq(rails_session_id)
+
+        extra_attributes = {
+          client_id: client_id,
+          redirect_uri: "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}",
+        }
+
+        expect(FormResponse).to have_received(:new).
+          with(success: true, errors: {}, extra: extra_attributes)
+      end
+
+      it 'links an identity for this client with the code as the session_uuid' do
+        redirect_uri = URI(result.to_h[:redirect_uri])
+        code = URIService.params(redirect_uri)[:code]
+
+        identity = user.identities.where(service_provider: client_id).first
+        expect(identity.session_uuid).to eq(code)
         expect(identity.nonce).to eq(nonce)
       end
 
@@ -66,21 +76,54 @@ RSpec.describe OpenidConnectAuthorizeForm do
         let(:code_challenge_method) { 'S256' }
 
         it 'records the code_challenge on the identity' do
-          expect(result[:success]).to eq(true)
+          allow(FormResponse).to receive(:new)
+
+          form.submit(user, rails_session_id)
 
           identity = user.identities.where(service_provider: client_id).first
+
+          extra_attributes = {
+            client_id: client_id,
+            redirect_uri: "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}",
+          }
+
           expect(identity.code_challenge).to eq(code_challenge)
+          expect(FormResponse).to have_received(:new).
+            with(success: true, errors: {}, extra: extra_attributes)
         end
       end
     end
 
     context 'with invalid params' do
-      let(:response_type) { nil }
+      context 'with a bad response_type' do
+        let(:response_type) { nil }
 
-      it 'is unsuccessful and has error messages' do
-        expect(result[:success]).to eq(false)
-        expect(result[:client_id]).to eq(client_id)
-        expect(result[:errors]).to be_present
+        it 'is unsuccessful and has error messages' do
+          form_response = instance_double(FormResponse)
+
+          extra_attributes = {
+            client_id: client_id,
+            redirect_uri: "#{redirect_uri}?error=invalid_request&error_description=" \
+                          "Response+type+is+not+included+in+the+list&state=#{state}",
+          }
+
+          errors = { response_type: ['is not included in the list'] }
+
+          expect(FormResponse).to receive(:new).
+            with(success: false, errors: errors, extra: extra_attributes).and_return(form_response)
+          expect(result).to eq form_response
+        end
+      end
+    end
+
+    context 'with a bad redirect_uri' do
+      let(:redirect_uri) { 'https://wrongurl.com' }
+
+      it 'has errors and does not redirect to the bad redirect_uri' do
+        expect(result.errors[:redirect_uri]).
+          to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
+
+        expect(result.extra[:redirect_uri]).to be_nil
       end
     end
   end
@@ -114,9 +157,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
       end
     end
 
-    context 'without the optional nonce' do
-      let(:nonce) { nil }
-      it { expect(valid?).to eq(true) }
+    context 'nonce' do
+      context 'without a nonce' do
+        let(:nonce) { nil }
+        it { expect(valid?).to eq(false) }
+      end
+
+      context 'with a nonce that is shorter than RANDOM_VALUE_MINIMUM_LENGTH characters' do
+        let(:nonce) { '1' * (OpenidConnectAuthorizeForm::RANDOM_VALUE_MINIMUM_LENGTH - 1) }
+        it { expect(valid?).to eq(false) }
+      end
     end
 
     context 'when prompt is not select_account' do
@@ -156,6 +206,11 @@ RSpec.describe OpenidConnectAuthorizeForm do
             to include(t('openid_connect.authorization.errors.redirect_uri_no_match'))
         end
       end
+
+      context 'with a redirect_uri that adds on to the registered redirect_uri' do
+        let(:redirect_uri) { 'gov.gsa.openidconnect.test://result/more/extra' }
+        it { expect(valid?).to eq(true) }
+      end
     end
 
     context 'when response_type is not code' do
@@ -163,9 +218,16 @@ RSpec.describe OpenidConnectAuthorizeForm do
       it { expect(valid?).to eq(false) }
     end
 
-    context 'without a state' do
-      let(:state) { nil }
-      it { expect(valid?).to eq(false) }
+    context 'state' do
+      context 'without a state' do
+        let(:state) { nil }
+        it { expect(valid?).to eq(false) }
+      end
+
+      context 'with a state that is shorter than RANDOM_VALUE_MINIMUM_LENGTH characters' do
+        let(:state) { '1' * (OpenidConnectAuthorizeForm::RANDOM_VALUE_MINIMUM_LENGTH - 1) }
+        it { expect(valid?).to eq(false) }
+      end
     end
 
     context 'PKCE' do
@@ -196,7 +258,7 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
 
     it 'is parsed into an array of valid ACR values' do
-      expect(form.acr_values).to eq(%w(http://idmanagement.gov/ns/assurance/loa/1))
+      expect(form.acr_values).to eq(%w[http://idmanagement.gov/ns/assurance/loa/1])
     end
   end
 
@@ -222,18 +284,28 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
-  describe '#params' do
-    it 'is the serialized form values' do
-      expect(form.params).to eq(
-        acr_values: acr_values,
-        client_id: client_id,
-        nonce: nonce,
-        prompt: prompt,
-        redirect_uri: redirect_uri,
-        response_type: response_type,
-        scope: scope,
-        state: state
-      )
+  describe '#client_id' do
+    it 'returns the form client_id' do
+      form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')
+
+      expect(form.client_id).to eq 'foobar'
+    end
+  end
+
+  describe '#decline_redirect_uri' do
+    subject(:decline_redirect_uri) { form.decline_redirect_uri }
+
+    it 'is an access_denied error' do
+      redirect_params = URIService.params(decline_redirect_uri).with_indifferent_access
+
+      expect(redirect_params[:error]).to eq('access_denied')
+      expect(redirect_params[:state]).to eq(state)
+    end
+
+    context 'with a bad redirect_uri' do
+      let(:redirect_uri) { 'http://wrong-redirect.com' }
+
+      it { expect(decline_redirect_uri).to be_nil }
     end
   end
 end

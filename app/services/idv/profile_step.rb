@@ -2,11 +2,12 @@ module Idv
   class ProfileStep < Step
     def submit
       initialize_idv_session
+      submit_idv_form
 
       @success = complete?
 
       increment_attempts_count if form_valid?
-      update_idv_session
+      update_idv_session if success
 
       FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
     end
@@ -33,7 +34,11 @@ module Idv
     end
 
     def vendor_params
-      idv_session.applicant_from_params
+      idv_session.vendor_params
+    end
+
+    def submit_idv_form
+      idv_form.submit(params)
     end
 
     def complete?
@@ -49,7 +54,7 @@ module Idv
     end
 
     def form_valid?
-      form_validate(params)[:success] == true
+      @_form_valid ||= idv_form.valid?
     end
 
     def vendor_validator_class
@@ -57,14 +62,16 @@ module Idv
     end
 
     def update_idv_session
-      idv_session.profile_confirmation = success
-      idv_session.resolution = vendor_validator.result
+      idv_session.profile_confirmation = true
+      idv_session.vendor_session_id = vendor_validator.session_id
+      idv_session.normalized_applicant_params = vendor_validator.normalized_applicant.to_hash
+      idv_session.resolution_successful = true
     end
 
     def extra_analytics_attributes
       {
         idv_attempts_exceeded: attempts_exceeded?,
-        vendor: { reasons: vendor_reasons }
+        vendor: { reasons: vendor_reasons },
       }
     end
 

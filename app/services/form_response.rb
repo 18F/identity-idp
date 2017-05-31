@@ -5,7 +5,7 @@ class FormResponse
     @extra = extra
   end
 
-  attr_reader :errors
+  attr_reader :errors, :extra
 
   def success?
     @success
@@ -17,5 +17,5 @@ class FormResponse
 
   private
 
-  attr_reader :success, :extra
+  attr_reader :success
 end

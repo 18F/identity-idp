@@ -4,7 +4,7 @@ module PhoneConfirmation
     user_session[:context] = context
 
     redirect_to otp_send_path(
-      otp_delivery_selection_form: { otp_method: current_user.otp_delivery_preference }
+      otp_delivery_selection_form: { otp_delivery_preference: current_user.otp_delivery_preference }
     )
   end
 end

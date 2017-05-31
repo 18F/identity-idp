@@ -25,4 +25,12 @@ module UserSessionContext
   def idv_or_confirmation_context?
     confirmation_context? || idv_context?
   end
+
+  def idv_or_profile_context?
+    idv_context? || profile_context?
+  end
+
+  def profile_context?
+    context == 'profile'
+  end
 end

@@ -20,7 +20,7 @@ describe Verify::FinanceController do
 
       get :new
 
-      expect(response).to redirect_to verify_phone_path
+      expect(response).to redirect_to verify_address_path
     end
 
     it 'redirects to fail when step attempts are exceeded' do
@@ -44,10 +44,7 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { foo: 'bar' }
 
           expect(response).to render_template :new
-          expect(flash[:warning]).to_not match(
-            t('idv.modal.finance.warning_html',
-              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
-          )
+          expect(flash[:warning]).to be_nil
           expect(subject.idv_session.params).to be_empty
         end
       end
@@ -57,10 +54,7 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { finance_type: 'foo', finance_account: '123' }
 
           expect(response).to render_template :new
-          expect(flash[:warning]).to_not match(
-            t('idv.modal.finance.warning_html',
-              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
-          )
+          expect(flash[:warning]).to be_nil
           expect(subject.idv_session.params).to be_empty
         end
       end
@@ -70,24 +64,18 @@ describe Verify::FinanceController do
           put :create, idv_finance_form: { finance_type: 'ccn', finance_account: 'abc' }
 
           expect(response).to render_template :new
-          expect(flash[:warning]).to_not match(
-            t('idv.modal.finance.warning_html',
-              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
-          )
+          expect(flash[:warning]).to be_nil
           expect(subject.idv_session.params).to be_empty
         end
       end
 
-      %w(mortgage auto_loan home_equity_line).each do |finance_type|
+      %w[mortgage auto_loan home_equity_line].each do |finance_type|
         context "when finance_type is #{finance_type}" do
           it 'renders verify/finance_other/new with error' do
             put :create, idv_finance_form: { finance_type: finance_type, finance_account: 'abc' }
 
             expect(response).to render_template :new
-            expect(flash[:warning]).to_not match(
-              t('idv.modal.finance.warning_html',
-                accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
-            )
+            expect(flash[:warning]).to be_nil
             expect(subject.idv_session.params).to be_empty
           end
         end
@@ -95,24 +83,12 @@ describe Verify::FinanceController do
     end
 
     context 'when form is valid' do
-      it 'creates analytics event' do
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
-
-        result = { success: true, errors: {}, vendor: { reasons: ['Good number'] } }
-
-        expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_FINANCE_CONFIRMATION, result
-        )
-      end
-
       context 'when CCN is confirmed' do
         it 'redirects to phone page' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-          expect(response).to redirect_to verify_phone_url
+          expect(flash[:success]).to eq(t('idv.messages.personal_details_verified'))
+          expect(response).to redirect_to verify_address_url
 
           expected_params = { ccn: '12345678' }
           expect(subject.idv_session.params).to eq expected_params
@@ -123,10 +99,8 @@ describe Verify::FinanceController do
         it 'renders #new with error' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
 
-          expect(flash[:warning]).to match(
-            t('idv.modal.finance.warning_html',
-              accent: "<strong>#{t('idv.modal.finance.warning_accent')}</strong>")
-          )
+          expect(flash[:warning]).to match t('idv.modal.financials.heading')
+          expect(flash[:warning]).to match t('idv.modal.attempts', count: max_attempts - 1)
           expect(response).to render_template :new
         end
       end
@@ -142,7 +116,7 @@ describe Verify::FinanceController do
         it 'allows and does not affect attempt counter' do
           put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
 
-          expect(response).to redirect_to verify_phone_path
+          expect(response).to redirect_to verify_address_path
           expect(subject.current_user.idv_attempts).to eq(max_attempts - 1)
           expect(subject.current_user.idv_attempted_at).to eq two_days_ago
         end
@@ -164,7 +138,7 @@ describe Verify::FinanceController do
         result = {
           success: true,
           errors: {},
-          vendor: { reasons: ['Good number'] }
+          vendor: { reasons: ['Good number'] },
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -180,7 +154,7 @@ describe Verify::FinanceController do
         result = {
           success: false,
           errors: { ccn: ['The ccn could not be verified.'] },
-          vendor: { reasons: ['Bad number'] }
+          vendor: { reasons: ['Bad number'] },
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -197,7 +171,7 @@ describe Verify::FinanceController do
         result = {
           success: false,
           errors: { ccn: ['Credit card number should be only last 8 digits.'] },
-          vendor: { reasons: nil }
+          vendor: { reasons: nil },
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -211,7 +185,6 @@ describe Verify::FinanceController do
   def stub_subject
     user = stub_sign_in
     idv_session = Idv::Session.new(subject.user_session, user)
-    idv_session.resolution = Proofer::Resolution.new success: true, session_id: 'some-id'
     idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
     idv_session.vendor = subject.idv_vendor.pick
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)

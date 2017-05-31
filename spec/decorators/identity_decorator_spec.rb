@@ -13,10 +13,4 @@ describe IdentityDecorator do
       )
     end
   end
-
-  describe '#happened_at' do
-    it 'returns last_authenticated_at' do
-      expect(subject.happened_at).to eq identity.last_authenticated_at
-    end
-  end
 end

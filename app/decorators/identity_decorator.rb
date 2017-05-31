@@ -4,6 +4,6 @@ IdentityDecorator = Struct.new(:identity) do
   end
 
   def happened_at
-    identity.last_authenticated_at
+    EasternTimePresenter.new(identity.last_authenticated_at).to_s
   end
 end

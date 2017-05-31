@@ -13,6 +13,9 @@ html lang="#{I18n.locale}" class='no-js'
       = content_for?(:title) ? APP_NAME + ' - ' + yield(:title) : APP_NAME
 
     == stylesheet_link_tag 'application', media: 'all'
+    <!--[if IE 8]>
+      = javascript_include_tag 'es5-shim.min'
+    <![endif]-->
     == javascript_include_tag 'misc/i18n-strings'
     - unless controller_name == 'home'
       == javascript_include_tag 'application'
@@ -25,12 +28,13 @@ html lang="#{I18n.locale}" class='no-js'
     link rel='mask-icon' href='/safari-pinned-tab.svg' color='#e21c3d'
     meta name='theme-color' content='#ffffff'
 
-    <!--[if lt IE 10]>
+    <!--[if IE 9]>
       = stylesheet_link_tag 'ie9.css', media: 'all'
-    <!--[elseif lt IE 9]>
-      <script src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js'></script>
+    <![endif]-->
+    <!--[if lt IE 9]>
+      = javascript_include_tag 'html5shiv'
       = stylesheet_link_tag 'ie8.css', media: 'all'
-      <script src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js'></script>
+      = javascript_include_tag 'respond.min'
     <![endif]-->
 
     - if Figaro.env.google_analytics_key.present?
@@ -42,21 +46,24 @@ html lang="#{I18n.locale}" class='no-js'
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       = render 'shared/usa_banner'
-      - if user_fully_authenticated?
-        = render 'shared/nav_auth'
+      - if content_for?(:nav)
+        = yield(:nav)
       - else
         = render decorated_session.nav_partial
-      = content_for?(:content) ? yield(:content) : yield
+      .container.sm-pt4
+        div class="px2 py2 sm-py5 sm-px6 mx-auto sm-mb5 border-box card #{yield(:card_cls)}"
+          = render 'shared/flashes'
+          == yield
     = render 'shared/footer_lite'
 
-  #session-timeout-cntnr
-  - if current_user
-    = auto_session_timeout_js
-  - else
-    = auto_session_expired_js
+    #session-timeout-cntnr
+    - if current_user
+      = auto_session_timeout_js
+    - else
+      = auto_session_expired_js
 
-  - if FeatureManagement.enable_i18n_mode?
-    == javascript_include_tag 'misc/i18n-mode'
+    - if FeatureManagement.enable_i18n_mode?
+      == javascript_include_tag 'misc/i18n-mode'
 
-  - if Figaro.env.participate_in_dap == 'true'
-    = render 'shared/dap_analytics'
+    - if Figaro.env.participate_in_dap == 'true' && !session_with_trust?
+      = render 'shared/dap_analytics'

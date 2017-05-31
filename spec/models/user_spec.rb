@@ -11,10 +11,10 @@ describe User do
     it { is_expected.to have_many(:events) }
   end
 
-  it 'should only send one email during creation' do
+  it 'does not send an email when #create is called' do
     expect do
       User.create(email: 'nobody@nobody.com')
-    end.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end.to change(ActionMailer::Base.deliveries, :count).by(0)
   end
 
   describe 'password validations' do
@@ -120,14 +120,14 @@ describe User do
   context '#confirmation_period_expired?' do
     it 'returns false when within confirm_within value' do
       user = create(:user, confirmed_at: nil)
-      user.confirmation_sent_at = Time.current - User.confirm_within + 1.minute
+      user.confirmation_sent_at = Time.zone.now - User.confirm_within + 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_falsey
     end
 
     it 'returns true when beyond confirm_within value' do
       user = create(:user, confirmed_at: nil)
-      user.confirmation_sent_at = Time.current - User.confirm_within - 1.minute
+      user.confirmation_sent_at = Time.zone.now - User.confirm_within - 1.minute
       user.save
       expect(user.confirmation_period_expired?).to be_truthy
     end
@@ -157,12 +157,12 @@ describe User do
     before do
       user.identities << Identity.create(
         service_provider: 'first',
-        last_authenticated_at: Time.current - 1.hour,
+        last_authenticated_at: Time.zone.now - 1.hour,
         session_uuid: SecureRandom.uuid
       )
       user.identities << Identity.create(
         service_provider: 'last',
-        last_authenticated_at: Time.current,
+        last_authenticated_at: Time.zone.now,
         session_uuid: SecureRandom.uuid
       )
     end
@@ -225,35 +225,6 @@ describe User do
     end
   end
 
-  describe '#password_reset_profile' do
-    let(:user) { create(:user) }
-
-    context 'with no profiles' do
-      it { expect(user.password_reset_profile).to be_nil }
-    end
-
-    context 'with an active profile' do
-      let(:active_profile) do
-        build(:profile, :active, :verified, activated_at: 1.day.ago, pii: { first_name: 'Jane' })
-      end
-
-      before do
-        user.profiles << [
-          active_profile,
-          build(:profile, :verified, activated_at: 5.days.ago, pii: { first_name: 'Susan' })
-        ]
-      end
-
-      it { expect(user.password_reset_profile).to be_nil }
-
-      context 'when the active profile is deactivated due to password reset' do
-        before { active_profile.deactivate(:password_reset) }
-
-        it { expect(user.password_reset_profile).to eq(active_profile) }
-      end
-    end
-  end
-
   describe 'encrypted attributes' do
     context 'input is MixEd CaSe with whitespace' do
       it 'normalizes email' do
@@ -267,6 +238,21 @@ describe User do
 
         expect(user.phone).to eq '555 555 5555'
       end
+    end
+
+    it 'decrypts phone and otp_secret_key' do
+      user = create(:user, phone: '+1 (202) 555-1212', otp_secret_key: 'abc123')
+
+      expect(user.phone).to eq '+1 (202) 555-1212'
+      expect(user.otp_secret_key).to eq 'abc123'
+    end
+  end
+
+  describe '.find_with_email' do
+    it 'strips whitespace and downcases email before looking it up' do
+      user = create(:user, email: 'test1@test.com')
+
+      expect(User.find_with_email(' Test1@test.com ')).to eq user
     end
   end
 end

@@ -28,16 +28,16 @@ describe 'layouts/user_mailer.html.slim' do
   it 'includes the support text and link' do
     expect(rendered).to have_content(t('mailer.no_reply'))
     expect(rendered).to have_content(
-      t('mailer.help', app: APP_NAME, link: contact_url)
+      t('mailer.help', app: APP_NAME, link: MarketingSite.help_url)
     )
-    expect(rendered).to have_link(contact_url, href: contact_url)
+    expect(rendered).to have_link(MarketingSite.help_url, href: MarketingSite.help_url)
   end
 
-  it 'includes placeholder link to About login.gov' do
-    expect(rendered).to have_link("About #{APP_NAME}", href: '#')
+  it 'includes link to About login.gov' do
+    expect(rendered).to have_link(t('mailer.about', app: APP_NAME), href: MarketingSite.base_url)
   end
 
-  it 'includes placeholder link to the privacy policy' do
-    expect(rendered).to have_link('Privacy policy', href: '#')
+  it 'includes link to the privacy policy' do
+    expect(rendered).to have_link(t('mailer.privacy_policy'), href: MarketingSite.privacy_url)
   end
 end

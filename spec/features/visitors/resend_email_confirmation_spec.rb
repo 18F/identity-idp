@@ -22,7 +22,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
   scenario 'user enters email with invalid format' do
     invalid_addresses = [
       'user@domain-without-suffix',
-      'Buy Medz 0nl!ne http://pharma342.onlinestore.com'
+      'Buy Medz 0nl!ne http://pharma342.onlinestore.com',
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
@@ -37,7 +37,7 @@ feature 'Visit requests confirmation instructions again during sign up' do
   scenario 'user enters email with invalid domain name' do
     invalid_addresses = [
       'foo@bar.com',
-      'foo@example.com'
+      'foo@example.com',
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 

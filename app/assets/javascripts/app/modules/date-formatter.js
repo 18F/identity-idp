@@ -13,6 +13,8 @@ class DateFormatter extends DelimitedTextFormatter {
    * @param {number} index
    * @returns {boolean}
    */
+
+  /* eslint-disable class-methods-use-this */
   hasDelimiterAtIndex(index) {
     return index === 2 || index === 5;
   }

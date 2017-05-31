@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Users::TotpSetupController, devise: true do
-  render_views
-
   describe 'before_actions' do
     it 'includes confirm_two_factor_authenticated' do
       expect(subject).to have_actions(
@@ -13,35 +11,44 @@ describe Users::TotpSetupController, devise: true do
   end
 
   describe '#new' do
-    before do
-      sign_in_as_user
-      get :new
+    context 'user has not yet enabled authenticator app' do
+      before do
+        stub_sign_in
+        get :new
+      end
+
+      it 'returns a 200 status code' do
+        expect(response.status).to eq(200)
+      end
+
+      it 'sets new_totp_secret in user_session' do
+        expect(subject.user_session[:new_totp_secret]).not_to be_nil
+      end
+
+      it 'can be used to generate a qrcode with UserDecorator#qrcode' do
+        expect(
+          subject.current_user.decorate.qrcode(subject.user_session[:new_totp_secret])
+        ).not_to be_nil
+      end
     end
 
-    it 'returns a 200 status code' do
-      expect(response.status).to eq(200)
-    end
+    context 'user has already enabled authenticator app' do
+      it 'redirects to profile page' do
+        stub_sign_in
 
-    it 'sets new_totp_secret in user_session' do
-      expect(subject.user_session[:new_totp_secret]).not_to be_nil
-    end
+        allow(subject.current_user).to receive(:totp_enabled?).and_return(true)
 
-    it 'can be used to generate a qrcode with UserDecorator#qrcode' do
-      user_decorator = subject.current_user.decorate
+        get :new
 
-      expect(user_decorator.qrcode(subject.user_session[:new_totp_secret])).not_to be_nil
-    end
-
-    it 'presents a QR code to the user' do
-      expect(response.body).to include('QR Code for Authenticator App')
+        expect(response).to redirect_to account_path
+      end
     end
   end
 
   describe '#confirm' do
     context 'when user presents invalid code' do
       before do
-        sign_in_as_user
-
+        stub_sign_in
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
@@ -55,7 +62,8 @@ describe Users::TotpSetupController, devise: true do
         expect(subject.current_user.totp_enabled?).to be(false)
 
         result = {
-          success: false
+          success: false,
+          errors: {},
         }
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
       end
@@ -63,30 +71,34 @@ describe Users::TotpSetupController, devise: true do
 
     context 'when user presents correct code' do
       before do
-        sign_in_as_user
-
+        stub_sign_in
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
+        code = '123455'
+        totp_secret = 'abdef'
+        subject.user_session[:new_totp_secret] = totp_secret
+        form = instance_double(TotpSetupForm)
+
+        allow(TotpSetupForm).to receive(:new).
+          with(subject.current_user, totp_secret, code).and_return(form)
+        response = FormResponse.new(success: true, errors: {})
+        allow(form).to receive(:submit).and_return(response)
+
         get :new
-        allow(subject).to receive(:create_user_event)
-        patch :confirm, code: generate_totp_code(subject.user_session[:new_totp_secret])
+        patch :confirm, code: code
       end
 
-      it 'redirects to profile_path with a success message' do
-        expect(response).to redirect_to(profile_path)
+      it 'redirects to account_path with a success message' do
+        expect(response).to redirect_to(account_path)
         expect(flash[:success]).to eq t('notices.totp_configured')
-        expect(subject.current_user.totp_enabled?).to be(true)
         expect(subject.user_session[:new_totp_secret]).to be_nil
 
         result = {
-          success: true
+          success: true,
+          errors: {},
         }
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_SETUP, result)
-      end
-
-      it 'creates an :authenticator_enabled event' do
-        expect(subject).to have_received(:create_user_event).with(:authenticator_enabled)
       end
     end
   end
@@ -105,7 +117,7 @@ describe Users::TotpSetupController, devise: true do
 
         expect(user.reload.otp_secret_key).to be_nil
         expect(user.reload.totp_enabled?).to be(false)
-        expect(response).to redirect_to(profile_path)
+        expect(response).to redirect_to(account_path)
         expect(flash[:success]).to eq t('notices.totp_disabled')
         expect(@analytics).to have_received(:track_event).with(Analytics::TOTP_USER_DISABLED)
         expect(subject).to have_received(:create_user_event).with(:authenticator_disabled)

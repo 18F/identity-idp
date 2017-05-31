@@ -1,23 +1,33 @@
-- title t('idv.titles.phone')
+- title @view_model.title
+= render @view_model.mock_vendor_partial
 
-h1.h3.my0 = t('idv.titles.session.phone')
-p.mt-tiny.mb0 = t('idv.messages.phone.intro')
-ul.py1.m0
-  li
-    strong= t('idv.messages.phone.is_not')
-    = t('idv.messages.phone.virtual')
-  li
-    strong= t('idv.messages.phone.is_not')
-    = t('idv.messages.phone.prepaid')
-  li
-    strong= t('idv.messages.phone.is')
-    = t('idv.messages.phone.in_your_name')
-p = t('idv.messages.phone.same_as_2fa')
+h1.h2.my0 = t('idv.titles.session.phone')
+p.mt-tiny.mb2 = t('idv.messages.phone.intro')
 
-= simple_form_for(idv_phone_form, url: verify_phone_path,
-    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
-  = f.input :phone, required: true
-  = f.button :submit, t('forms.buttons.continue'), class: 'btn btn-primary btn-wide'
-= render 'shared/cancel', link: verify_cancel_path
+.alert.alert-warning
+  strong
+    = t('idv.messages.phone.alert')
+  ul.py1.m0.px0
+    li
+      = t('idv.messages.phone.in_your_name')
+    li
+      = t('idv.messages.phone.prepaid')
 
-== javascript_include_tag 'misc/verify-modal'
+em
+  = t('idv.messages.phone.same_as_2fa')
+
+= simple_form_for(@view_model.idv_form, url: verify_phone_path,
+    html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
+  = f.label :phone, label: t('idv.form.phone'), class: 'bold'
+  span.ml1
+    em
+     = t('idv.form.phone_label_aside')
+  = f.input :phone, required: true, input_html: { class: 'phone' }, label: false,
+    wrapper_html: { class: 'inline-block mr2' }
+  = f.button :submit, t('forms.buttons.continue')
+
+p
+  = t('idv.form.no_alternate_phone_html',
+    link: link_to(t('idv.form.activate_by_mail'), verify_usps_path))
+
+= render @view_model.modal_partial, view_model: @view_model

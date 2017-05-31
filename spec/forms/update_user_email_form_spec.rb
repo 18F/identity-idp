@@ -1,22 +1,22 @@
 require 'rails_helper'
 
 describe UpdateUserEmailForm do
-  subject { UpdateUserEmailForm.new(User.new(email: 'old@example.com')) }
+  subject { UpdateUserEmailForm.new(User.new(email: ' OLD@example.com ')) }
 
   it_behaves_like 'email validation'
+  it_behaves_like 'email normalization', ' OLD@example.com '
 
   describe '#email_changed?' do
     it 'is false when the submitted email is the same as the current email' do
-      result = subject.submit(email: 'OLD@example.com')
-
-      result_hash = {
-        success: true,
-        errors: [],
+      extra = {
         email_already_exists: false,
-        email_changed: false
+        email_changed: false,
       }
+      result = instance_double(FormResponse)
 
-      expect(result).to eq result_hash
+      expect(FormResponse).to receive(:new).
+        with(success: true, errors: {}, extra: extra).and_return(result)
+      expect(subject.submit(email: 'OLD@example.com ')).to eq result
       expect(subject.email_changed?).to eq false
     end
   end
@@ -27,24 +27,20 @@ describe UpdateUserEmailForm do
         user = create(:user, email: 'old@example.com')
         subject = UpdateUserEmailForm.new(user)
         _second_user = create(:user, :signed_up, email: 'another@example.com')
+        mailer = instance_double(ActionMailer::MessageDelivery)
+        result = instance_double(FormResponse)
+        extra = {
+          email_already_exists: true,
+          email_changed: true,
+        }
 
         expect(user).to receive(:skip_confirmation_notification!).and_call_original
-
-        mailer = instance_double(ActionMailer::MessageDelivery)
         expect(UserMailer).to receive(:signup_with_your_email).
           with('another@example.com').and_return(mailer)
         expect(mailer).to receive(:deliver_later)
-
-        result = subject.submit(email: 'ANOTHER@example.com')
-
-        result_hash = {
-          success: true,
-          errors: [],
-          email_already_exists: true,
-          email_changed: true
-        }
-
-        expect(result).to eq result_hash
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(subject.submit(email: 'ANOTHER@example.com')).to eq result
         expect(subject.email_changed?).to eq true
         expect(user.unconfirmed_email).to be_nil
         expect(user.email).to eq 'old@example.com'
@@ -55,53 +51,50 @@ describe UpdateUserEmailForm do
       it "updates the user's unconfirmed_email" do
         user = create(:user, email: 'old@example.com')
         subject = UpdateUserEmailForm.new(user)
-
-        result = subject.submit(email: 'new@example.com')
-
-        result_hash = {
-          success: true,
-          errors: [],
+        result = instance_double(FormResponse)
+        extra = {
           email_already_exists: false,
-          email_changed: true
+          email_changed: true,
         }
 
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(subject.submit(email: 'new@example.com')).to eq result
         expect(user.unconfirmed_email).to eq 'new@example.com'
         expect(user.email).to eq 'old@example.com'
-        expect(result).to eq result_hash
         expect(subject.email_changed?).to eq true
       end
     end
 
     context 'when email is already taken' do
-      it 'returns true to prevent revealing account existence' do
+      it 'returns FormResponse with success: true to prevent revealing account existence' do
         create(:user, :signed_up, email: 'taken@gmail.com')
 
-        result = subject.submit(email: 'TAKEN@gmail.com')
-
-        result_hash = {
-          success: true,
-          errors: [],
+        result = instance_double(FormResponse)
+        extra = {
           email_already_exists: true,
-          email_changed: true
+          email_changed: true,
         }
 
-        expect(result).to eq result_hash
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(subject.submit(email: 'TAKEN@gmail.com')).to eq result
         expect(subject.email).to eq 'taken@gmail.com'
       end
     end
 
     context 'when email is invalid' do
-      it 'returns false and adds errors to the form object' do
-        result = subject.submit(email: 'invalid_email')
-
-        result_hash = {
-          success: false,
-          errors: [t('valid_email.validations.email.invalid')],
+      it 'returns FormResponse with success: false' do
+        result = instance_double(FormResponse)
+        extra = {
           email_already_exists: false,
-          email_changed: false
+          email_changed: false,
         }
+        errors = { email: [t('valid_email.validations.email.invalid')] }
 
-        expect(result).to eq result_hash
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
+        expect(subject.submit(email: 'invalid_email')).to eq result
       end
     end
   end

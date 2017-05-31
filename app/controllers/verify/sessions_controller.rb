@@ -1,17 +1,18 @@
 module Verify
   class SessionsController < ApplicationController
     include IdvSession
+    include IdvFailureConcern
 
-    before_action :confirm_two_factor_authenticated
+    before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed
+    before_action :confirm_step_needed, except: [:destroy]
 
-    helper_method :idv_profile_form
-    helper_method :step
+    delegate :attempts_exceeded?, to: :step, prefix: true
 
     def new
-      @using_mock_vendor = idv_vendor.pick == :mock
+      user_session[:context] = 'idv'
+      @view_model = view_model
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 
@@ -20,13 +21,27 @@ module Verify
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result.to_h)
 
       if result.success?
-        redirect_to verify_finance_path
+        process_success
       else
         process_failure
       end
     end
 
+    def destroy
+      idv_session = user_session[:idv]
+      idv_session && idv_session.clear
+      handle_idv_redirect
+    end
+
     private
+
+    def step_name
+      :sessions
+    end
+
+    def confirm_step_needed
+      redirect_to verify_finance_path if idv_session.profile_confirmation == true
+    end
 
     def step
       @_step ||= Idv::ProfileStep.new(
@@ -36,30 +51,42 @@ module Verify
       )
     end
 
+    def handle_idv_redirect
+      redirect_to account_path and return if current_user.personal_key.present?
+      redirect_to manage_personal_key_path
+    end
+
+    def process_success
+      pii_msg = ActionController::Base.helpers.content_tag(
+        :strong, t('idv.messages.sessions.pii')
+      )
+
+      flash[:success] = t('idv.messages.sessions.success',
+                          pii_message: pii_msg)
+
+      redirect_to verify_finance_path
+    end
+
     def process_failure
-      if step.attempts_exceeded?
-        redirect_to verify_fail_path
-      elsif step.duplicate_ssn?
+      if step.duplicate_ssn?
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
-        show_warning if step.form_valid_but_vendor_validation_failed?
+        render_failure
         render :new
       end
     end
 
-    def confirm_step_needed
-      redirect_to verify_finance_path if idv_session.profile_confirmation == true
+    def view_model(error: nil)
+      Verify::SessionsNew.new(
+        error: error,
+        remaining_attempts: remaining_idv_attempts,
+        idv_form: idv_profile_form
+      )
     end
 
-    def show_warning
-      flash.now[:warning] = t(
-        'idv.modal.sessions.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.sessions.warning_accent')
-        )
-      )
+    def remaining_idv_attempts
+      Idv::Attempter.idv_max_attempts - current_user.idv_attempts
     end
 
     def idv_profile_form

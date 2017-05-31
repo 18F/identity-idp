@@ -18,7 +18,7 @@ feature 'Visitor signs up with email address' do
   scenario 'visitor cannot sign up with email with invalid domain name' do
     invalid_addresses = [
       'foo@bar.com',
-      'foo@example.com'
+      'foo@example.com',
     ]
     allow(ValidateEmail).to receive(:mx_valid?).and_return(false)
 
@@ -51,6 +51,6 @@ feature 'Visitor signs up with email address' do
     visit sign_up_email_path
     sign_up_and_2fa_loa1_user
 
-    expect(current_path).to eq profile_path
+    expect(current_path).to eq account_path
   end
 end

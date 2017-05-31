@@ -1,3 +1,11 @@
+.circle-number {
+  font-size: 13px;
+  font-weight: bold;
+  height: 20px;
+  text-align: center;
+  width: 20px;
+}
+
 .teal-dots {
   list-style: none;
   padding: 0;
@@ -8,6 +16,25 @@
 
     &::before {
       color: $teal;
+      content: '•';
+      font-size: 2rem;
+      line-height: 1.5rem;
+      padding-right: .5rem;
+      vertical-align: -3px;
+    }
+  }
+}
+
+.yellow-dots {
+  list-style: none;
+  padding: 0;
+
+  li {
+    padding-left: 1rem;
+    text-indent: -1rem;
+
+    &::before {
+      color: $yellow;
       content: '•';
       font-size: 2rem;
       line-height: 1.5rem;

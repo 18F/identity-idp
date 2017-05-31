@@ -2,16 +2,22 @@
 
 .w-60p { width: 60px; }
 
-.bg-light-blue { background-color: $blue-light; }
-
 .no-hover-decoration:hover { text-decoration: none; }
 
 .invisible { visibility: hidden; }
 
-@media #{$breakpoint-sm} {
-  .sm-maxw-190p { max-width: 190px; }
+.truncate-inline {
+  max-width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+}
 
-  .sm-bg-light-blue { background-color: $blue-light; }
+@media #{$breakpoint-sm} {
+  // scss-lint:disable ImportantRule
+  .sm-display-inline-block { display: inline-block !important; }
+  // scss-lint:enable ImportantRule
+
+  .sm-maxw-190p { max-width: 190px; }
 
   .sm-left-align { text-align: left; }
   .sm-right-align { text-align: right; }

@@ -4,11 +4,10 @@ module TwoFactorAuthCode
     include ActionView::Helpers::TranslationHelper
     include Rails.application.routes.url_helpers
 
-    attr_reader :phone_number, :code_value, :delivery_method, :reenter_phone_number_path,
-                :totp_enabled, :unconfirmed_phone, :recovery_code_unavailable, :user_email, :view
+    attr_reader :code_value
 
-    def initialize(data_model, view = nil)
-      data_model.each do |key, value|
+    def initialize(data:, view:)
+      data.each do |key, value|
         instance_variable_set("@#{key}", value)
       end
 
@@ -27,26 +26,30 @@ module TwoFactorAuthCode
       raise NotImplementedError
     end
 
-    def recovery_code_link
-      return if recovery_code_unavailable
+    def personal_key_link
+      return if personal_key_unavailable
 
-      t("#{recovery_code_key}.text_html",
-        link: recovery_code_tag)
+      t("#{personal_key}.text_html", link: personal_key_tag)
+    end
+
+    def reauthn_hidden_field_partial
+      if reauthn
+        'two_factor_authentication/totp_verification/reauthn'
+      else
+        'shared/null'
+      end
     end
 
     private
 
-    def link_to(text, url, options = {})
-      href = { href: url }
-      content_tag(:a, text, options.merge(href))
+    attr_reader :personal_key_unavailable, :view, :reauthn
+
+    def personal_key_tag
+      view.link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)
     end
 
-    def recovery_code_tag
-      link_to(t("#{recovery_code_key}.link"), login_two_factor_recovery_code_path)
-    end
-
-    def recovery_code_key
-      'devise.two_factor_authentication.recovery_code_fallback'
+    def personal_key
+      'devise.two_factor_authentication.personal_key_fallback'
     end
   end
 end

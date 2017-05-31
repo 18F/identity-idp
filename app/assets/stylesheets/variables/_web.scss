@@ -78,7 +78,7 @@ $border-radius-md: 6px !default;
 $border-radius-lg: 8px !default;
 $border-radius-xl: 16px !default;
 $border-radius-xxl: 24px !default;
-$border-color: #cedbec !default;
+$border-color: #cedced !default;
 
 $table-header-font-weight: $bold-font-weight !default;
 $table-cell-padding-x: $space-2 !default;
@@ -101,4 +101,5 @@ $breakpoint-md-lg: '(min-width: 52em) and (max-width: 64em)' !default;
 
 $container-width: 780px !default;
 $container-skinny-width: 620px !default;
-$container-xskinny-width: 396px !default;
+$container-xskinny-width: 540px !default;
+$container-xxskinny-width: 396px !default;

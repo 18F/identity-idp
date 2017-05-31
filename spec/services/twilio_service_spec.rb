@@ -59,15 +59,8 @@ describe TwilioService do
       SmsOtpSenderJob.perform_now(
         code: '1234',
         phone: '555-5555',
-        otp_created_at: Time.current.to_s
+        otp_created_at: Time.zone.now.to_s
       )
-
-      expect(FakeSms.messages.size).to eq 0
-    end
-
-    it 'does not send a number change messages', twilio: true do
-      TwilioService.telephony_service = FakeSms
-      SmsSenderNumberChangeJob.perform_now('555-5555')
 
       expect(FakeSms.messages.size).to eq 0
     end

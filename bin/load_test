@@ -1,0 +1,48 @@
+#!/bin/sh
+
+set -e
+
+fancy_echo() {
+  local fmt="$1"; shift
+
+  # shellcheck disable=SC2059
+  printf "\n$fmt\n" "$@"
+}
+
+brew_install_or_upgrade() {
+  if brew_is_installed "$1"; then
+    if brew_is_upgradable "$1"; then
+      fancy_echo "Upgrading %s ..." "$1"
+      brew upgrade "$@"
+    else
+      fancy_echo "Already using the latest version of %s. Skipping ..." "$1"
+    fi
+  else
+    fancy_echo "Installing %s ..." "$1"
+    brew install "$@"
+  fi
+}
+
+brew_is_installed() {
+  brew list -1 | grep -Fqx "$1"
+}
+
+brew_is_upgradable() {
+  ! brew outdated --quiet "$1" >/dev/null
+}
+
+if [ $1 ]
+then
+  test_to_run="$1"
+  target="${TARGET_HOST:-http://localhost:3000}"
+
+  brew_install_or_upgrade 'libevent'
+  source /usr/local/bin/virtualenvwrapper.sh
+  mkvirtualenv locust && \
+    workon locust &&  \
+    pip install -r scripts/load_testing/requirements.txt && \
+    locust -f scripts/load_testing/$test_to_run.py -H "$target" --no-web -c 3 -n 27 -r 1
+  deactivate
+else
+  echo "Usage: load_test [name_of_file]"
+fi

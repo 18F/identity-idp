@@ -11,7 +11,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       redirect_uri: 'gov.gsa.openidconnect.test://result',
       response_type: 'code',
       scope: 'openid profile',
-      state:  SecureRandom.hex
+      state:  SecureRandom.hex,
     }
   end
 
@@ -60,6 +60,18 @@ RSpec.describe OpenidConnect::AuthorizationController do
             end
           end
         end
+
+        context 'user has already approved this application' do
+          before do
+            IdentityLinker.new(user, client_id).link_identity
+          end
+
+          it 'redirects to the redirect_uri immediately' do
+            action
+
+            expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+          end
+        end
       end
 
       context 'with invalid params' do
@@ -76,7 +88,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: client_id,
-                 errors: { state: ['Please fill in this field.'] })
+                 errors: {
+                   state: ['Please fill in this field.', 'is too short (minimum is 32 characters)'],
+                 })
 
           action
         end
@@ -84,19 +98,35 @@ RSpec.describe OpenidConnect::AuthorizationController do
     end
 
     context 'user is not signed in' do
-      it 'redirects to login' do
-        expect(action).to redirect_to(root_url)
+      it 'redirects to SP landing page with the request_id in the params' do
+        action
+        sp_request_id = ServiceProviderRequest.last.uuid
+
+        expect(response).to redirect_to sign_up_start_url(request_id: sp_request_id)
+      end
+
+      it 'sets sp information in the session' do
+        action
+        sp_request_id = ServiceProviderRequest.last.uuid
+
+        expect(session[:sp]).to eq(
+          loa3: false,
+          issuer: 'urn:gov:gsa:openidconnect:test',
+          request_id: sp_request_id,
+          request_url: request.original_url
+        )
       end
     end
   end
 
   describe '#create' do
-    subject(:action) { post :create, params }
+    subject(:action) { post :create }
 
     context 'user is signed in' do
       before do
         user = create(:user, :signed_up)
         stub_sign_in user
+        controller.user_session[:openid_auth_request] = params
       end
 
       it 'tracks the allow event' do
@@ -136,7 +166,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   end
 
   describe '#destroy' do
-    subject(:action) { delete :destroy, params }
+    subject(:action) { delete :destroy }
 
     before { stub_analytics }
 
@@ -144,6 +174,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       before do
         user = create(:user, :signed_up)
         stub_sign_in user
+        controller.user_session[:openid_auth_request] = params
       end
 
       it 'tracks the decline event' do
@@ -152,6 +183,24 @@ RSpec.describe OpenidConnect::AuthorizationController do
           with(Analytics::OPENID_CONNECT_DECLINE, client_id: client_id)
 
         action
+      end
+
+      it 'redirects back to the client app with a access_denied' do
+        action
+
+        redirect_params = URIService.params(response.location)
+
+        expect(redirect_params[:error]).to eq('access_denied')
+        expect(redirect_params[:state]).to eq(params[:state])
+      end
+
+      context 'with invalid params' do
+        before { params.delete(:redirect_uri) }
+
+        it 'renders the error page' do
+          action
+          expect(controller).to render_template('openid_connect/authorization/error')
+        end
       end
     end
 

@@ -4,47 +4,80 @@ module TwoFactorAuthenticatable
   included do
     before_action :authenticate_user
     before_action :handle_two_factor_authentication
+    before_action :require_current_password, if: :current_password_required?
     before_action :check_already_authenticated
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
+    before_action :apply_secure_headers_override, only: %i[show create]
   end
 
   DELIVERY_METHOD_MAP = {
     authenticator: 'authenticator',
     sms: 'phone',
     voice: 'phone',
-    two_factor_authentication: 'otp'
   }.freeze
 
   private
+
+  def apply_secure_headers_override
+    return unless stored_url_for_user&.start_with?(openid_connect_authorize_path)
+
+    authorize_params = URIService.params(stored_url_for_user)
+
+    authorize_form = OpenidConnectAuthorizeForm.new(authorize_params)
+
+    return unless authorize_form.valid?
+
+    override_content_security_policy_directives(
+      form_action: ["'self'", authorize_form.sp_redirect_uri].compact,
+      preserve_schemes: true
+    )
+  end
+
+  def stored_url_for_user
+    session['user_return_to']
+  end
 
   def authenticate_user
     authenticate_user!(force: true)
   end
 
-  def handle_second_factor_locked_user
+  def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
-
+    decorator = current_user.decorate
     sign_out
+    render(
+      'two_factor_authentication/shared/max_login_attempts_reached',
+      locals: { type: type, decorator: decorator }
+    )
+  end
 
-    render 'two_factor_authentication/shared/max_login_attempts_reached'
+  def require_current_password
+    redirect_to user_password_confirm_path
+  end
+
+  def current_password_required?
+    user_session[:current_password_required] == true
   end
 
   def check_already_authenticated
     return unless initial_authentication_context?
 
-    redirect_to profile_path if user_fully_authenticated?
+    redirect_to account_path if user_fully_authenticated?
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
     return unless decorated_user.no_longer_blocked_from_entering_2fa_code?
 
-    current_user.update(second_factor_attempts_count: 0, second_factor_locked_at: nil)
+    UpdateUser.new(
+      user: current_user,
+      attributes: { second_factor_attempts_count: 0, second_factor_locked_at: nil }
+    ).call
   end
 
   def handle_valid_otp
     if authentication_context?
       handle_valid_otp_for_authentication_context
-    elsif idv_or_confirmation_context?
+    elsif idv_or_confirmation_context? || profile_context?
       handle_valid_otp_for_confirmation_context
     end
 
@@ -52,8 +85,8 @@ module TwoFactorAuthenticatable
     reset_otp_session_data
   end
 
-  def delivery_method
-    params[:delivery_method] || request.path.split('/').last
+  def two_factor_authentication_method
+    params[:otp_delivery_preference] || request.path.split('/').last
   end
 
   # Method will be renamed in the next refactor.
@@ -65,39 +98,41 @@ module TwoFactorAuthenticatable
     flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
     if decorated_user.blocked_from_entering_2fa_code?
-      handle_second_factor_locked_user
+      handle_second_factor_locked_user(type)
     else
       render_show_after_invalid
     end
   end
 
   def render_show_after_invalid
-    @presenter = presenter_for(delivery_method)
+    @presenter = presenter_for_two_factor_authentication_method
     render :show
   end
 
   def update_invalid_user
     current_user.second_factor_attempts_count += 1
-    # set time lock if max attempts reached
-    current_user.second_factor_locked_at = Time.zone.now if current_user.max_login_attempts?
-    current_user.save
+    attributes = {}
+    attributes[:second_factor_locked_at] = Time.zone.now if current_user.max_login_attempts?
+
+    UpdateUser.new(
+      user: current_user,
+      attributes: attributes
+    ).call
   end
 
   def handle_valid_otp_for_confirmation_context
     assign_phone
-
-    flash[:success] = t('notices.phone_confirmation_successful')
   end
 
   def handle_valid_otp_for_authentication_context
     mark_user_session_authenticated
     bypass_sign_in current_user
 
-    current_user.update(second_factor_attempts_count: 0)
+    UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end
 
   def assign_phone
-    @updating_existing_number = old_phone
+    @updating_existing_number = old_phone.present? && !profile_context?
 
     if @updating_existing_number && confirmation_context?
       phone_changed
@@ -114,7 +149,7 @@ module TwoFactorAuthenticatable
 
   def phone_changed
     create_user_event(:phone_changed)
-    SmsSenderNumberChangeJob.perform_later(old_phone)
+    UserMailer.phone_changed(current_user).deliver_later
   end
 
   def phone_confirmed
@@ -122,12 +157,24 @@ module TwoFactorAuthenticatable
   end
 
   def update_phone_attributes
-    current_time = Time.current
-
-    if idv_context?
-      Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = current_time
+    if idv_or_profile_context?
+      update_idv_state
     else
-      current_user.update(phone: user_session[:unconfirmed_phone], phone_confirmed_at: current_time)
+      UpdateUser.new(
+        user: current_user,
+        attributes: { phone: user_session[:unconfirmed_phone], phone_confirmed_at: Time.zone.now }
+      ).call
+    end
+  end
+
+  def update_idv_state
+    now = Time.zone.now
+    if idv_context?
+      Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = now
+    elsif profile_context?
+      profile = current_user.decorate.pending_profile
+      profile.verified_at = now
+      profile.activate
     end
   end
 
@@ -139,13 +186,29 @@ module TwoFactorAuthenticatable
   def after_otp_verification_confirmation_path
     if idv_context?
       verify_confirmations_path
-    elsif @updating_existing_number
-      profile_path
-    elsif decorated_user.should_acknowledge_recovery_code?(session)
-      user_session[:first_time_recovery_code_view] = 'true'
-      sign_up_recovery_code_path
+    elsif after_otp_action_required?
+      after_otp_action_path
     else
       after_sign_in_path_for(current_user)
+    end
+  end
+
+  def after_otp_action_required?
+    decorated_user.password_reset_profile.present? ||
+      @updating_existing_number ||
+      decorated_user.should_acknowledge_personal_key?(session)
+  end
+
+  def after_otp_action_path
+    if decorated_user.should_acknowledge_personal_key?(session)
+      user_session[:first_time_personal_key_view] = 'true'
+      sign_up_personal_key_path
+    elsif @updating_existing_number
+      account_path
+    elsif decorated_user.password_reset_profile.present?
+      reactivate_account_path
+    else
+      account_path
     end
   end
 
@@ -158,8 +221,8 @@ module TwoFactorAuthenticatable
     current_user.direct_otp if FeatureManagement.prefill_otp_codes?
   end
 
-  def recovery_code_unavailable?
-    idv_or_confirmation_context? || !current_user.recovery_code.present?
+  def personal_key_unavailable?
+    idv_or_confirmation_context? || profile_context? || current_user.personal_key.blank?
   end
 
   def unconfirmed_phone?
@@ -168,30 +231,27 @@ module TwoFactorAuthenticatable
 
   def phone_view_data
     {
+      confirmation_for_phone_change: confirmation_for_phone_change?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
-      delivery_method: delivery_method,
+      otp_delivery_preference: two_factor_authentication_method,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
-      recovery_code_unavailable: recovery_code_unavailable?,
-      totp_enabled: current_user.totp_enabled?
-    }
+      totp_enabled: current_user.totp_enabled?,
+    }.merge(generic_data)
   end
 
   def authenticator_view_data
     {
-      delivery_method: delivery_method,
+      two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
-      recovery_code_unavailable: recovery_code_unavailable?
-    }
+    }.merge(generic_data)
   end
 
-  def otp_view_data
+  def generic_data
     {
-      reenter_phone_number_path: reenter_phone_number_path,
-      phone_number: display_phone_to_deliver_to,
-      unconfirmed_phone: unconfirmed_phone?,
-      recovery_code_unavailable: recovery_code_unavailable?
+      personal_key_unavailable: personal_key_unavailable?,
+      reauthn: reauthn?,
     }
   end
 
@@ -201,6 +261,10 @@ module TwoFactorAuthenticatable
     else
       user_session[:unconfirmed_phone]
     end
+  end
+
+  def decorated_user
+    current_user.decorate
   end
 
   def reenter_phone_number_path
@@ -213,13 +277,20 @@ module TwoFactorAuthenticatable
     end
   end
 
-  def presenter_for(otp_code_method)
-    type = DELIVERY_METHOD_MAP[otp_code_method.to_sym]
+  def confirmation_for_phone_change?
+    confirmation_context? && current_user.phone.present?
+  end
+
+  def presenter_for_two_factor_authentication_method
+    type = DELIVERY_METHOD_MAP[two_factor_authentication_method.to_sym]
 
     return unless type
 
     data = send("#{type}_view_data".to_sym)
 
-    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(data, view_context)
+    TwoFactorAuthCode.const_get("#{type}_delivery_presenter".classify).new(
+      data: data,
+      view: view_context
+    )
   end
 end

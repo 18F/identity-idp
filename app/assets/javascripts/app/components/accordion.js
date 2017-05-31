@@ -1,12 +1,19 @@
 import 'classlist.js';
+import Events from '../utils/events';
 
-class Accordion {
+class Accordion extends Events {
   constructor(el) {
+    super();
+
     this.el = el;
     this.controls = [].slice.call(el.querySelectorAll('[aria-controls]'));
     this.content = el.querySelector('.accordion-content');
+    this.header = el.querySelector('.accordion-header-controls');
+    this.collapsedIcon = el.querySelector('.plus-icon');
+    this.shownIcon = el.querySelector('.minus-icon');
 
     this.handleClick = this.handleClick.bind(this);
+    this.handleKeyUp = this.handleKeyUp.bind(this);
   }
 
   setup() {
@@ -17,6 +24,7 @@ class Accordion {
   bindEvents() {
     this.controls.forEach((control) => {
       control.addEventListener('click', this.handleClick);
+      control.addEventListener('keyup', this.handleKeyUp);
     });
 
     if (!('animation' in this.content.style)) return;
@@ -25,21 +33,18 @@ class Accordion {
       const { animationName } = event;
 
       if (animationName === 'accordionOut') {
-        this.content.classList.add('invisible');
+        this.content.classList.remove('shown');
       }
     });
   }
 
   onInitialize() {
-    this.content.classList.add('invisible');
-    this.el.setAttribute('aria-expanded', 'false');
-    this.content.setAttribute('aria-hidden', 'true');
-    this.content.classList.remove('accordion-init');
+    this.setExpanded(false);
+    this.collapsedIcon.classList.remove('display-none');
   }
 
   handleClick() {
-    const { el } = this;
-    const expandedState = el.getAttribute('aria-expanded');
+    const expandedState = this.header.getAttribute('aria-expanded');
 
     if (expandedState === 'false') {
       this.open();
@@ -48,29 +53,37 @@ class Accordion {
     }
   }
 
+  handleKeyUp(event) {
+    const keyCode = event.keyCode || event.which;
+
+    if (keyCode === 13 || keyCode === 32) {
+      this.handleClick();
+    }
+  }
+
+  setExpanded(bool) {
+    this.header.setAttribute('aria-expanded', bool);
+  }
+
   open() {
-    this.el.setAttribute('aria-expanded', 'true');
-    this.content.setAttribute('aria-hidden', 'false');
-    this.content.classList.remove('invisible');
+    this.setExpanded(true);
+    this.collapsedIcon.classList.add('display-none');
+    this.shownIcon.classList.remove('display-none');
+    this.content.classList.add('shown');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
+    this.emit('accordion.show');
   }
 
   close() {
-    this.el.setAttribute('aria-expanded', 'false');
-    this.content.setAttribute('aria-hidden', 'true');
+    this.setExpanded(false);
+    this.collapsedIcon.classList.remove('display-none');
+    this.shownIcon.classList.add('display-none');
     this.content.classList.remove('animate-in');
     this.content.classList.add('animate-out');
+    this.emit('accordion.hide');
+    this.header.focus();
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const elements = document.querySelectorAll('.accordion');
-
-  [].slice.call(elements).forEach((element) => {
-    const accordion = new Accordion(element);
-    accordion.setup();
-  });
-});
 
 export default Accordion;

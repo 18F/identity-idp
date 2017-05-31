@@ -3,9 +3,11 @@ es:
   instructions:
     2fa:
       authenticator:
+        accordion_header: NOT TRANSLATED YET
         confirm_code_html: Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
           configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
           <strong>%{app}</strong>.%{tooltip}
+        or: NOT TRANSLATED YET
       sms:
         confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código? %{link}.
         fallback_html: NOT TRANSLATED YET
@@ -19,15 +21,10 @@ es:
       forgot: >
         Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
         asociada a su cuenta para recibir más instrucciones en la pantalla.
+      help_text_header: NOT TRANSLATED YET
+      help_text: NOT TRANSLATED YET
       info:
         lead: Su contraseña debe tener al menos %{min_length} caracteres.
-        point_1: >
-          Puede ser una mezcla de caracteres alfanuméricos y especiales y
-          palabras individuales en una frase.
-        point_2: >
-          Cree una contraseña segura, pero fácil de recordar.
-          No use el mismo que utiliza con otras cuentas en línea, como
-          bancos, correo electrónico y medios sociales.
       strength:
         i: Muy débil
         ii: Débil
@@ -35,10 +32,9 @@ es:
         intro: 'Seguridad de la contraseña: '
         iv: Bueno
         v: Muy bueno!
-    recovery_code_html: >
+    personal_key_html: >
       Escriba este código de recuperación y guárdelo en algún lugar seguro. Si no puede
       acceder a su teléfono, puede usarlo en lugar de un código de acceso único para iniciar sesión.
-    recovery_code_accent: NOT TRANSLATED YET
+    personal_key_accent: NOT TRANSLATED YET
     registration:
-      already_have_account: ¿Ya tiene una cuenta? %{link}
       email: Elija una dirección para usar en las comunicaciones del gobierno.

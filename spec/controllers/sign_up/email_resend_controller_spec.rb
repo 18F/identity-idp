@@ -10,9 +10,9 @@ RSpec.describe SignUp::EmailResendController do
         stub_analytics
         result = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -41,9 +41,9 @@ RSpec.describe SignUp::EmailResendController do
         stub_analytics
         result = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: 'nonexistent-uuid',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -61,9 +61,9 @@ RSpec.describe SignUp::EmailResendController do
         stub_analytics
         result = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -83,6 +83,17 @@ RSpec.describe SignUp::EmailResendController do
         post :create, user_params
 
         expect(response).to render_template(:new)
+      end
+    end
+
+    context 'email is capitalized and/or contains spaces' do
+      it 'sends an email' do
+        create(:user, :unconfirmed, email: 'test@example.com')
+
+        user_params = { resend_email_confirmation_form: { email: 'TEST@example.com ' } }
+
+        expect { post :create, user_params }.
+          to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
   end

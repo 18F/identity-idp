@@ -1,16 +1,25 @@
 {
   "ignored_warnings": [
     {
-      "warning_type": "Command Injection",
-      "warning_code": 14,
-      "fingerprint": "b78936e578167c6d25902e399c5e624cacc6219d83cca53806a0d7f1ab8f3161",
-      "file": "lib/remote.rb",
-      "line": 69,
-      "link": "http://brakemanscanner.org/docs/warning_types/command_injection/",
-      "confidence": "Medium",
-      "note": "intentionally shelling out"
+      "warning_type": "Dynamic Render Path",
+      "warning_code": 15,
+      "fingerprint": "44a987d6df02343325ea1a46db17c5d19817c9f124781bf157f811355c7e2f54",
+      "check_name": "Render",
+      "message": "Render path contains parameter value",
+      "file": "app/views/forgot_password/show.html.slim",
+      "line": 11,
+      "link": "http://brakemanscanner.org/docs/warning_types/dynamic_render_path/",
+      "code": "render(action => ForgotPasswordShow.new(:resend => params[:resend], :session => (session)).resend_confirmation_partial, {})",
+      "render_path": [{"type":"controller","class":"ForgotPasswordController","method":"show","line":4,"file":"app/controllers/forgot_password_controller.rb"}],
+      "location": {
+        "type": "template",
+        "template": "forgot_password/show"
+      },
+      "user_input": "params[:resend]",
+      "confidence": "Weak",
+      "note": ""
     }
   ],
-  "updated": "2016-11-25 13:18:43 -0500",
-  "brakeman_version": "3.4.1"
+  "updated": "2017-04-11 12:51:37 -0700",
+  "brakeman_version": "3.6.0"
 }

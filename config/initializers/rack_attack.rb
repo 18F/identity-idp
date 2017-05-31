@@ -89,7 +89,6 @@ module Rack
       # `filter` returns truthy value if request fails, or if it's to a
       # previously banned phone_number so the request is blocked
       phone_number = req.env['warden'].user&.phone
-      paths = %w(/otp/send /phone_confirmation/send /idv/phone_confirmation/send)
 
       Allow2Ban.filter(
         "otp-#{phone_number}",
@@ -98,7 +97,7 @@ module Rack
         bantime: Figaro.env.otp_delivery_blocklist_bantime.to_i.minutes
       ) do
         # The count for the phone_number is incremented if the return value is truthy
-        req.get? && paths.include?(req.path)
+        req.get? && req.path == '/otp/send'
       end
     end
 

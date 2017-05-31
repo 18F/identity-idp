@@ -82,6 +82,31 @@ describe EncryptedKeyMaker do
 
         expect(subject.unlock(user_access_key, encryption_key)).to eq hash_E
       end
+
+      it 'recognizes locally-encrypted legacy keys' do
+        allow(FeatureManagement).to receive(:use_kms?).and_return(false)
+        subject.make(user_access_key)
+        encryption_key = user_access_key.encryption_key
+
+        allow(FeatureManagement).to receive(:use_kms?).and_return(true)
+        expect(subject.unlock(user_access_key, encryption_key)).to eq hash_E
+      end
+
+      it 'removes KMS ciphertext prefix before deciphering' do
+        prefix = EncryptedKeyMaker::KEY_TYPE[:KMS]
+        prefixed_ciphertext = prefix + ciphered_key
+        aws_client = Aws::KMS::Client.new(region: Figaro.env.aws_region)
+
+        expect(aws_client).to receive(:decrypt).
+          with(ciphertext_blob: ciphered_key).and_call_original
+        expect(subject).to receive(:aws_client).at_least(:twice).and_return(aws_client)
+        expect(user_access_key).to receive(:store_encrypted_key).
+          with(prefixed_ciphertext).and_call_original
+
+        subject.make(user_access_key)
+        encryption_key = user_access_key.encryption_key
+        subject.unlock(user_access_key, encryption_key)
+      end
     end
   end
 end

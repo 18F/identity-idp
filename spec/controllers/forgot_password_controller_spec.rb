@@ -3,12 +3,11 @@ require 'rails_helper'
 RSpec.describe ForgotPasswordController do
   describe '#show' do
     context 'email in session' do
-      it 'renders the page and deletes the email from the session' do
+      it 'renders the page' do
         session[:email] = 'test@example.com'
 
         get :show
 
-        expect(session[:email]).to be_nil
         expect(response).to render_template(:show)
       end
     end

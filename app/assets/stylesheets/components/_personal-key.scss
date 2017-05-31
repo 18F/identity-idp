@@ -1,0 +1,25 @@
+.separator-text > div {
+  &::after {
+    color: $silver;
+    content: '-';
+    padding: 0 .25rem;
+  }
+
+  &:last-child::after {
+    content: none;
+    padding: 0;
+  }
+}
+
+.ico-scissors {
+  left: -5px;
+  top: -14px;
+}
+
+@media #{$breakpoint-sm} {
+  .separator-text > div {
+    &::after {
+      padding: 0 .5rem;
+    }
+  }
+}

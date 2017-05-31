@@ -2,9 +2,6 @@
 es:
   shared:
     footer_lite:
-      gsa: NOT TRANSLATED YET
-    nav_auth:
-      my_account: NOT TRANSLATED YET
-      welcome: NOT TRANSLATED YET
+      gsa: Administración de Servicios Generales de EE. UU.
     usa_banner:
-      official_site: NOT TRANSLATED YET
+      official_site: Un sitio web oficial del gobierno de los Estados Unidos

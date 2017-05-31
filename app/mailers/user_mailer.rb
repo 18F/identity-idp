@@ -17,8 +17,7 @@ class UserMailer < ActionMailer::Base
     mail(to: user.email, subject: t('devise.mailer.password_updated.subject'))
   end
 
-  def contact_request(details)
-    @details = details
-    mail(to: Figaro.env.support_email, subject: t('mailer.contact_request.subject'))
+  def phone_changed(user)
+    mail(to: user.email, subject: t('user_mailer.phone_changed.subject'))
   end
 end

@@ -18,8 +18,6 @@ es:
         %{intro} Para confirmar su dirección de correo electrónico, haga clic en el enlace abajo
         o puede copiar y pegar el enlace completo en su navegador.
       link_text: Confirmar esta dirección de correo electrónico
-    contact_request:
-      subject: Solicitud de contacto
     email_change_notice:
       subject: Cambiar su direccion de correo electronico
     email_reuse_notice:

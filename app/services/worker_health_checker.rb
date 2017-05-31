@@ -48,7 +48,7 @@ module WorkerHealthChecker
   end
 
   def sidekiq_queues
-    @_queues ||= YAML.load_file("#{Rails.root}/config/sidekiq.yml")[:queues]
+    @_queues ||= YAML.load_file(Rails.root.join('config', 'sidekiq.yml'))[:queues]
   end
 
   # Called on an interval to check background queue health and report errors to NewRelic

@@ -1,0 +1,14 @@
+.clearfix.py2.sm-py0.mb2.bg-light-blue.sm-bg-none
+  .sm-col.sm-col-8
+    h2.h3.my0.mx2.center.sm-left-align
+      .sm-hide.regular.sans-serif.inline
+        span
+          = t('account.welcome')
+          ',
+        p.mb0.bold.truncate
+          = view_model.header_personalization
+      span.sm-show
+        = t('headings.account.login_info')
+
+.px2.pb1.bold.h3.sm-hide.serif
+  = t('headings.account.login_info')

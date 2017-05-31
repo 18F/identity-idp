@@ -1,10 +1,20 @@
 ---
 es:
   idv:
+    buttons:
+      activate_by_phone: NOT TRANSLATED YET
+      activate_by_mail: NOT TRANSLATED YET
+      continue: NOT TRANSLATED YET
+      cancel: NOT TRANSLATED YET
+      help: NOT TRANSLATED YET
+      send_letter: NOT TRANSLATED YET
+    cancel:
+      modal_header: NOT TRANSLATED YET
+      warning_header: NOT TRANSLATED YET
+      warning_points: NOT TRANSLATED YET
     errors:
       bad_dob: NOT TRANSLATED YET
       duplicate_ssn: NOT TRANSLATED YET
-      fail: NOT TRANSLATED YET
       finance_number_length: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       incorrect_password: NOT TRANSLATED YET
@@ -12,9 +22,11 @@ es:
       missing_finance: NOT TRANSLATED YET
       pattern_mismatch:
         dob: NOT TRANSLATED YET
+        "personal-key": NOT TRANSLATED YET
         ssn: NOT TRANSLATED YET
         zipcode: NOT TRANSLATED YET
     form:
+      activate_by_mail: NOT TRANSLATED YET
       address1: NOT TRANSLATED YET
       address2: NOT TRANSLATED YET
       auto_loan: NOT TRANSLATED YET
@@ -26,9 +38,13 @@ es:
       home_equity_line: NOT TRANSLATED YET
       last_name: NOT TRANSLATED YET
       mortgage: NOT TRANSLATED YET
+      no_alternate_phone_html: NOT TRANSLATED YET
       password: NOT TRANSLATED YET
       personal_details: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
+      phone_label_aside: NOT TRANSLATED YET
+      previous_address_add: NOT TRANSLATED YET
+      previous_address_html: NOT TRANSLATED YET
       select_financial_account: NOT TRANSLATED YET
       ssn_label_html: NOT TRANSLATED YET
       state: NOT TRANSLATED YET
@@ -65,51 +81,64 @@ es:
       activated_html: NOT TRANSLATED YET
       activated_link: contact us
       cancel: NOT TRANSLATED YET
+      confirm: NOT TRANSLATED YET
       dupe_ssn1: NOT TRANSLATED YET
       dupe_ssn2_html: NOT TRANSLATED YET
       dupe_ssn2_link: NOT TRANSLATED YET
-      fail: NOT TRANSLATED YET
       finance:
+        disclaimer: NOT TRANSLATED YET
         hint: NOT TRANSLATED YET
-        intro_ccn: NOT TRANSLATED YET
+        intro_ccn_html: NOT TRANSLATED YET
+        intro_ccn_help: NOT TRANSLATED YET
         intro_account: NOT TRANSLATED YET
-        no_ccn: NOT TRANSLATED YET
-        no_ccn_info: NOT TRANSLATED YET
         no_account: NOT TRANSLATED YET
         no_account_info: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
-      hardfail2: NOT TRANSLATED YET
-      hardfail3: NOT TRANSLATED YET
       hardfail4: NOT TRANSLATED YET
+      help_center: NOT TRANSLATED YET
+      mail_sent: NOT TRANSLATED YET
       phone:
+        alert: NOT TRANSLATED YET
         in_your_name: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
-        is: NOT TRANSLATED YET
-        is_not: NOT TRANSLATED YET
         phone_of_record: NOT TRANSLATED YET
         prepaid: NOT TRANSLATED YET
         same_as_2fa: NOT TRANSLATED YET
-        virtual: NOT TRANSLATED YET
-      recovery_code: NOT TRANSLATED YET
+      personal_key: NOT TRANSLATED YET
       review:
         financial_info: NOT TRANSLATED YET
         info_verified_html: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
-      review_and_continue: NOT TRANSLATED YET
+      select_verification_without_sp: NOT TRANSLATED YET
+      select_verification_with_sp: NOT TRANSLATED YET
       sessions:
+        pii: NOT TRANSLATED YET
+        success: NOT TRANSLATED YET
         no_pii: NOT TRANSLATED YET
+      usps:
+        bad_address: NOT TRANSLATED YET
+        byline: NOT TRANSLATED YET
+        success: NOT TRANSLATED YET
+      personal_details_verified: NOT TRANSLATED YET
     modal:
+      attempts:
+        one: NOT TRANSLATED YET
+        other: NOT TRANSLATED YET
       button:
+        fail: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
-      finance:
-        warning_accent: NOT TRANSLATED YET
-        warning_html: NOT TRANSLATED YET
+      financials:
+        fail: NOT TRANSLATED YET
+        heading: NOT TRANSLATED YET
+        warning: NOT TRANSLATED YET
       phone:
-        warning_accent: NOT TRANSLATED YET
-        warning_html: NOT TRANSLATED YET
+        fail: NOT TRANSLATED YET
+        heading: NOT TRANSLATED YET
+        warning: NOT TRANSLATED YET
       sessions:
-        warning_accent: NOT TRANSLATED YET
-        warning_html: NOT TRANSLATED YET
+        fail: NOT TRANSLATED YET
+        heading: NOT TRANSLATED YET
+        warning: NOT TRANSLATED YET
     review:
       dob: NOT TRANSLATED YET
       full_name: NOT TRANSLATED YET
@@ -122,12 +151,14 @@ es:
       dupe: NOT TRANSLATED YET
       expectations: NOT TRANSLATED YET
       fail: NOT TRANSLATED YET
+      financials: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       review: NOT TRANSLATED YET
+      select_verification: NOT TRANSLATED YET
+      sessions: NOT TRANSLATED YET
       session:
-        basic: NOT TRANSLATED YET
-        finance: NOT TRANSLATED YET
         phone: NOT TRANSLATED YET
         review: NOT TRANSLATED YET
+      verify_mail: NOT TRANSLATED YET

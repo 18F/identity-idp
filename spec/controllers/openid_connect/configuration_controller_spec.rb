@@ -9,5 +9,11 @@ RSpec.describe OpenidConnect::ConfigurationController do
 
       expect(json_response).to eq(OpenidConnectConfigurationPresenter.new.configuration.as_json)
     end
+
+    it 'sets HTTP headers to cache for a week' do
+      get :index
+
+      expect(response['Cache-Control']).to eq("max-age=#{1.week.to_i}, public")
+    end
   end
 end

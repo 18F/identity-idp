@@ -6,7 +6,7 @@ describe Pii::ReEncryptor do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
       user_session = {
-        decrypted_pii: { ssn: '1234' }.to_json
+        decrypted_pii: { ssn: '1234' }.to_json,
       }
 
       pii_attributes = Pii::Attributes.new

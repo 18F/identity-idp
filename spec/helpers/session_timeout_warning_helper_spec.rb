@@ -20,29 +20,42 @@ describe SessionTimeoutWarningHelper do
   end
 
   describe '#timeout_refresh_url' do
-    before { expect(helper).to receive(:request).and_return(double(original_url: original_url)) }
+    before do
+      allow(helper).to receive(:request).and_return(
+        double(original_url: original_url, query_parameters: query_parameters)
+      )
+    end
 
-    context 'with no query in the request url' do
+    let(:query_parameters) { { request_id: '123' } }
+
+    context 'with no params in the request url' do
       let(:original_url) { 'http://test.host/foo/bar' }
 
       it 'adds timeout=true params' do
-        expect(helper.timeout_refresh_url).to eq('http://test.host/foo/bar?timeout=true')
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?timeout=true'
+        )
       end
     end
 
-    context 'with params request url' do
+    context 'with params in the request url' do
       let(:original_url) { 'http://test.host/foo/bar?key=value' }
 
-      it 'adds timeout=true param' do
-        expect(helper.timeout_refresh_url).to eq('http://test.host/foo/bar?key=value&timeout=true')
+      it 'adds timeout=true and preserves params' do
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?key=value&timeout=true'
+        )
       end
     end
 
-    context 'with timeout=true in the query params already' do
-      let(:original_url) { 'http://test.host/foo/bar?timeout=true' }
+    context 'with timeout=true and request_id=123 \
+            in the query params already' do
+      let(:original_url) { 'http://test.host/foo/bar?timeout=true&request_id=123' }
 
       it 'is the same' do
-        expect(helper.timeout_refresh_url).to eq('http://test.host/foo/bar?timeout=true')
+        expect(helper.timeout_refresh_url).to eq(
+          'http://test.host/foo/bar?request_id=123&timeout=true'
+        )
       end
     end
   end

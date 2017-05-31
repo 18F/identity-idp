@@ -14,7 +14,7 @@ describe Idv::ProfileStep do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044'
+      zipcode: '66044',
     }
   end
 
@@ -33,14 +33,13 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['Everything looks good'] }
+        vendor: { reasons: ['Everything looks good'] },
       }
 
       expect(FormResponse).to receive(:new).
         with(success: true, errors: {}, extra: extra).and_return(result)
       expect(step.submit).to eq result
       expect(idv_session.profile_confirmation).to eq true
-      expect(idv_session.resolution).to be_a Proofer::Resolution
     end
 
     it 'fails with invalid SSN' do
@@ -49,7 +48,7 @@ describe Idv::ProfileStep do
       errors = { ssn: ['Unverified SSN.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The SSN was suspicious'] }
+        vendor: { reasons: ['The SSN was suspicious'] },
       }
 
       result = instance_double(FormResponse)
@@ -57,7 +56,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails when form validation fails' do
@@ -66,7 +65,7 @@ describe Idv::ProfileStep do
       errors = { ssn: [t('idv.errors.pattern_mismatch.ssn')] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: nil }
+        vendor: { reasons: nil },
       }
 
       result = instance_double(FormResponse)
@@ -74,7 +73,7 @@ describe Idv::ProfileStep do
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails with invalid first name' do
@@ -85,13 +84,13 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The name was suspicious'] }
+        vendor: { reasons: ['The name was suspicious'] },
       }
 
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails with invalid ZIP code on current address' do
@@ -102,13 +101,13 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The ZIP code was suspicious'] }
+        vendor: { reasons: ['The ZIP code was suspicious'] },
       }
 
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'fails with invalid ZIP code on previous address' do
@@ -119,13 +118,13 @@ describe Idv::ProfileStep do
       result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The ZIP code was suspicious'] }
+        vendor: { reasons: ['The ZIP code was suspicious'] },
       }
 
       expect(FormResponse).to receive(:new).
         with(success: false, errors: errors, extra: extra).and_return(result)
       expect(step.submit).to eq result
-      expect(idv_session.profile_confirmation).to eq false
+      expect(idv_session.profile_confirmation).to be_nil
     end
 
     it 'increments attempts count if the form is valid' do
@@ -143,10 +142,7 @@ describe Idv::ProfileStep do
       step.submit
 
       expect(idv_session.params).to eq user_attrs
-      expect(idv_session.applicant).to be_a Proofer::Applicant
-      user_attrs.each do |key, value|
-        expect(idv_session.applicant.send(key)).to eq value
-      end
+      expect(idv_session.applicant).to eq user_attrs.merge(uuid: user.uuid)
     end
   end
 

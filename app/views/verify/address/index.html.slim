@@ -1,0 +1,14 @@
+h1.h2
+  = t('idv.titles.select_verification')
+p
+  = decorated_session.verification_method_choice
+
+.clearfix
+  .sm-col.sm-col-12.md-col-6
+    = link_to t('idv.buttons.activate_by_phone'), verify_phone_path,
+      class: 'btn btn-primary mb2 center inline-block'
+  .sm-col.sm-col-12.md-col-6
+    = link_to t('idv.buttons.activate_by_mail'), verify_usps_path,
+      class: 'btn btn-outline rounded-lg mb2 center'
+
+= render 'shared/cancel', link: verify_cancel_path

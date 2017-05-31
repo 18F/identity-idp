@@ -4,10 +4,8 @@ function togglePw() {
   const inputs = document.querySelectorAll('input[type="password"]');
 
   if (inputs) {
-    for (let i = 0; i < inputs.length; i++) {
-      const input = inputs[i];
-
-      input.parentNode.className += ' relative';
+    [].slice.call(inputs).forEach((input, i) => {
+      input.parentNode.classList.add('relative');
 
       const el = `
         <div class="top-n24 right-0 absolute">
@@ -25,7 +23,7 @@ function togglePw() {
       toggle.addEventListener('change', function() {
         input.type = toggle.checked ? 'text' : 'password';
       });
-    }
+    });
   }
 }
 

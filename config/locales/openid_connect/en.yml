@@ -3,8 +3,16 @@ en:
     authorization:
       index:
         allow: Allow
-        allow_prompt: Allow app?
+        allow_prompt: 'Review the information that %{name} has requested access to:'
         decline: Decline
+        attributes:
+          address: Mailing address
+          birthdate: Birthdate
+          email: Email address
+          family_name: Last name
+          given_name: First name
+          phone: Phone number
+          social_security_number: Social security number
       errors:
         bad_client_id: Bad client_id
         no_valid_acr_values: No acceptable acr_values found
@@ -13,6 +21,7 @@ en:
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
     token:
       errors:
+        invalid_aud: Invalid audience claim, expected %{url}
         invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion
         invalid_code: invalid code
         invalid_code_verifier: code_verifier did not match code_challenge

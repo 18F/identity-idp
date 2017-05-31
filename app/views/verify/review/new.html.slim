@@ -12,23 +12,19 @@ h1.h3.my0 = t('idv.titles.session.review')
     .pl5
       .h6 = t('idv.review.full_name')
       .h4.bold.ico-absolute.ico-absolute-success
-        = "#{idv_params[:first_name]} #{idv_params[:last_name]}"
+        = "#{@idv_params[:first_name]} #{@idv_params[:last_name]}"
 
       .mt3.h6 = t('idv.review.mailing_address')
       .h4.bold.ico-absolute.ico-absolute-success
-        | #{idv_params[:address1]}<br>
-        - if idv_params[:address2].present?
-          | #{idv_params[:address2]}<br>
-        | #{idv_params[:city]}, #{idv_params[:state]} #{idv_params[:zipcode]}
-
+        = render 'shared/address', address: @idv_params
       .mt3.h6 = t('idv.review.dob')
-      .h4.bold.ico-absolute.ico-absolute-success #{idv_params[:dob].to_date.to_formatted_s(:long)}
+      .h4.bold.ico-absolute.ico-absolute-success #{@idv_params[:dob].to_date.to_formatted_s(:long)}
 
       .mt3.h6 = t('idv.review.ssn')
-      .h4.bold.ico-absolute.ico-absolute-success #{idv_params[:ssn]}
+      .h4.bold.ico-absolute.ico-absolute-success #{@idv_params[:ssn]}
 
       .h6.mt3 = t('idv.messages.phone.phone_of_record').capitalize
-      .h4.bold.ico-absolute.ico-absolute-success #{idv_params[:phone]}
+      .h4.bold.ico-absolute.ico-absolute-success #{@idv_params[:phone]}
 
       .mt3.mb3
-        = link_to t('idv.messages.review.financial_info'), help_path
+        = link_to t('idv.messages.review.financial_info'), MarketingSite.help_url

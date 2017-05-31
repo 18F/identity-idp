@@ -1,8 +1,9 @@
-- title t('idv.titles.session.finance')
+- title @view_model.title
+= render @view_model.mock_vendor_partial
 
-h1.h3.my0 = t('idv.titles.session.finance')
+h1.h3.my0 = @view_model.title
 p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
-= simple_form_for(idv_finance_form, url: verify_finance_path,
+= simple_form_for(@view_model.idv_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   .select-alt.mb2
     = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,
@@ -36,5 +37,4 @@ p.mb3
   = link_to t('idv.form.use_ccn'), verify_finance_path
 
 = render 'shared/cancel', link: verify_cancel_path
-
-== javascript_include_tag 'misc/verify-modal'
+= render @view_model.modal_partial, view_model: @view_model

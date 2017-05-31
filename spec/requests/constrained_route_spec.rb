@@ -7,9 +7,9 @@ describe 'routes that require admin + 2FA' do
       'user[email]' => user.email,
       'user[password]' => user.password
     )
-    get_via_redirect otp_send_path(otp_delivery_selection_form: { otp_method: 'sms' })
+    get_via_redirect otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
     post_via_redirect(
-      login_two_factor_path(delivery_method: 'sms'),
+      login_two_factor_path(otp_delivery_preference: 'sms'),
       'code' => user.reload.direct_otp
     )
   end
@@ -39,7 +39,7 @@ describe 'routes that require admin + 2FA' do
 
         get endpoint
 
-        expect(response).to redirect_to user_two_factor_authentication_path
+        expect(response.status).to eq 404
       end
     end
 
@@ -57,5 +57,4 @@ describe 'routes that require admin + 2FA' do
   end
 
   it_behaves_like 'constrained route', '/sidekiq'
-  it_behaves_like 'constrained route', '/split'
 end

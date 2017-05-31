@@ -15,18 +15,15 @@ en:
           address within %{confirmation_period} of receiving this message.
       footer: Please note that this link expires in %{confirmation_period}.
       header: >
-        %{intro} To confirm your email address, please click on the link below
+        %{intro} To confirm your email address, please click the link below
         or copy and paste the entire link into your browser.
       link_text: Confirm this email address
-    contact_request:
-      subject: Contact request
     email_change_notice:
       subject: Change your email address
     email_reuse_notice:
-      subject: Confirm your email address
+      subject: Email address associated with an existing account
     help: >
-      For more help, please contact the %{app} customer contact center via web
-      form at %{link}.
+      For more help, please visit the %{app} Help Center at %{link}.
     no_reply: Please do not reply to this message.
     privacy_policy: Privacy policy
     reset_password:

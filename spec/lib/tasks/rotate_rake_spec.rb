@@ -4,6 +4,8 @@ require 'rake'
 describe 'rotate' do
   describe 'attribute_encryption_key' do
     it 'runs successfully' do
+      prev_progress = ENV['PROGRESS']
+      ENV['PROGRESS'] = 'no'
       Rake.application.rake_require('lib/tasks/rotate', [Rails.root.to_s])
       Rake::Task.define_task(:environment)
 
@@ -22,6 +24,7 @@ describe 'rotate' do
       expect(user.email).to eq old_email
       expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(user.encrypted_phone).to_not eq old_encrypted_phone
+      ENV['PROGRESS'] = prev_progress
     end
   end
 end

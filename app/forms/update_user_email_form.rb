@@ -2,8 +2,7 @@ class UpdateUserEmailForm
   include ActiveModel::Model
   include FormEmailValidator
 
-  attr_accessor :email
-  attr_reader :user
+  attr_reader :email, :user
 
   def persisted?
     true
@@ -15,18 +14,17 @@ class UpdateUserEmailForm
   end
 
   def submit(params)
-    email = params[:email].downcase
-
-    self.email = email
+    self.email = params[:email]
 
     if valid_form?
       @success = true
-      @user.update(email: email)
+      UpdateUser.new(user: @user, attributes: { email: email }).call
+      @user.send_custom_confirmation_instructions
     else
       @success = process_errors
     end
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def valid_form?
@@ -39,6 +37,7 @@ class UpdateUserEmailForm
 
   private
 
+  attr_writer :email
   attr_reader :email_changed, :success
 
   def process_errors
@@ -49,12 +48,10 @@ class UpdateUserEmailForm
     true
   end
 
-  def result
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
       email_already_exists: email_taken?,
-      email_changed: email_changed?
+      email_changed: email_changed?,
     }
   end
 end

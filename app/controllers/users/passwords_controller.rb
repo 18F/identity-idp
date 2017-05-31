@@ -7,13 +7,14 @@ module Users
     end
 
     def update
-      @update_user_password_form = UpdateUserPasswordForm.new(current_user)
+      @update_user_password = UpdateUserPassword.new(
+        user: current_user, user_session: user_session, password: user_params[:password]
+      )
+      result = @update_user_password.call
 
-      result = @update_user_password_form.submit(user_params)
+      analytics.track_event(Analytics::PASSWORD_CHANGED, result.to_h)
 
-      analytics.track_event(Analytics::PASSWORD_CHANGED, result)
-
-      if result[:success]
+      if result.success?
         handle_success
       else
         render :edit
@@ -27,26 +28,10 @@ module Users
     end
 
     def handle_success
-      re_encrypt_active_profile
-
       bypass_sign_in current_user
 
-      redirect_to profile_url, notice: t('notices.password_changed')
-
-      EmailNotifier.new(current_user).send_password_changed_email
-    end
-
-    def re_encrypt_active_profile
-      active_profile = current_user.active_profile
-      return unless active_profile.present?
-      user_access_key = current_user.unlock_user_access_key(user_params[:password])
-      flash[:recovery_code] = active_profile.encrypt_pii(user_access_key, current_pii)
-      active_profile.save!
-    end
-
-    def current_pii
-      cacher = Pii::Cacher.new(current_user, user_session)
-      cacher.fetch
+      flash[:personal_key] = @update_user_password.personal_key
+      redirect_to account_url, notice: t('notices.password_changed')
     end
   end
 end

@@ -13,7 +13,7 @@ describe Verify::SessionsController do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044'
+      zipcode: '66044',
     }
   end
   let(:previous_address) do
@@ -22,7 +22,7 @@ describe Verify::SessionsController do
       prev_address2: '',
       prev_city: 'Elsewhere',
       prev_state: 'MO',
-      prev_zipcode: '66666'
+      prev_zipcode: '66666',
     }
   end
   let(:idv_session) { Idv::Session.new(subject.user_session, user) }
@@ -31,17 +31,15 @@ describe Verify::SessionsController do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
         :before,
-        :confirm_two_factor_authenticated,
+        [:confirm_two_factor_authenticated, except: :destroy],
         :confirm_idv_attempts_allowed,
         :confirm_idv_needed,
-        :confirm_step_needed
+        [:confirm_step_needed, except: :destroy]
       )
     end
   end
 
   context 'user has created account' do
-    render_views
-
     before do
       stub_sign_in(user)
       allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -54,7 +52,6 @@ describe Verify::SessionsController do
         get :new
 
         expect(response.status).to eq 200
-        expect(response.body).to include t('idv.form.first_name')
       end
 
       it 'redirects if step is complete' do
@@ -75,7 +72,7 @@ describe Verify::SessionsController do
           get :new
 
           result = {
-            request_path: verify_session_path
+            request_path: verify_session_path,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -95,7 +92,7 @@ describe Verify::SessionsController do
         it 'assigned user UUID to applicant' do
           post :create, profile: user_attrs
 
-          expect(subject.idv_session.applicant.uuid).to eq subject.current_user.uuid
+          expect(subject.idv_session.applicant[:uuid]).to eq subject.current_user.uuid
         end
       end
 
@@ -107,7 +104,7 @@ describe Verify::SessionsController do
             success: false,
             idv_attempts_exceeded: false,
             errors: { ssn: [t('idv.errors.duplicate_ssn')] },
-            vendor: { reasons: nil }
+            vendor: { reasons: nil },
           }
 
           expect(@analytics).to receive(:track_event).
@@ -121,11 +118,11 @@ describe Verify::SessionsController do
       end
 
       context 'empty SSN' do
-        it 'shows normal form with error' do
+        it 'renders the form' do
           post :create, profile: user_attrs.merge(ssn: '')
 
           expect(response).to_not redirect_to(verify_session_dupe_path)
-          expect(response.body).to match t('errors.messages.blank')
+          expect(response).to render_template(:new)
         end
       end
 
@@ -137,11 +134,7 @@ describe Verify::SessionsController do
           post :create, profile: partial_attrs
 
           expect(response).to render_template(:new)
-          expect(flash[:warning]).to_not match(
-            t('idv.modal.sessions.warning_html',
-              accent: "<strong>#{t('idv.modal.sessions.warning_accent')}</strong>")
-          )
-          expect(response.body).to match t('errors.messages.blank')
+          expect(flash[:warning]).to be_nil
         end
       end
 
@@ -151,10 +144,8 @@ describe Verify::SessionsController do
         it 're-renders form' do
           post :create, profile: bad_attrs
 
-          expect(flash[:warning]).to match(
-            t('idv.modal.sessions.warning_html',
-              accent: "<strong>#{t('idv.modal.sessions.warning_accent')}</strong>")
-          )
+          expect(flash[:warning]).to match t('idv.modal.sessions.heading')
+          expect(flash[:warning]).to match(t('idv.modal.attempts', count: max_attempts - 1))
           expect(response).to render_template(:new)
         end
 
@@ -165,13 +156,39 @@ describe Verify::SessionsController do
             success: false,
             idv_attempts_exceeded: false,
             errors: {
-              first_name: ['Unverified first name.']
+              first_name: ['Unverified first name.'],
             },
-            vendor: { reasons: ['The name was suspicious'] }
+            vendor: { reasons: ['The name was suspicious'] },
           }
 
           expect(@analytics).to have_received(:track_event).
             with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+        end
+      end
+
+      context 'vendor agent throws exception' do
+        let(:bad_attrs) { user_attrs.dup.merge(first_name: 'Fail') }
+
+        it 'logs failure and re-renders form' do
+          exception_msg = 'Failed to contact proofing vendor'
+
+          expect(NewRelic::Agent).to receive(:notice_error).
+            with(kind_of(StandardError))
+
+          post :create, profile: bad_attrs
+
+          result = {
+            success: false,
+            idv_attempts_exceeded: false,
+            errors: {
+              agent: [exception_msg],
+            },
+            vendor: { reasons: [exception_msg] },
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+          expect(response).to render_template(:new)
         end
       end
 
@@ -183,7 +200,7 @@ describe Verify::SessionsController do
             success: true,
             idv_attempts_exceeded: false,
             errors: {},
-            vendor: { reasons: ['Everything looks good'] }
+            vendor: { reasons: ['Everything looks good'] },
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -201,7 +218,7 @@ describe Verify::SessionsController do
           post :create, profile: user_attrs
 
           result = {
-            request_path: verify_session_path
+            request_path: verify_session_path,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -230,20 +247,29 @@ describe Verify::SessionsController do
         it 'fails if previous address has bad zipcode' do
           post :create, profile: user_attrs.merge(previous_address).merge(prev_zipcode: bad_zipcode)
 
-          expect(idv_session.resolution.success?).to eq false
+          expect(idv_session.resolution_successful).to be_nil
         end
 
         it 'fails if current address has bad zipcode' do
           post :create, profile: user_attrs.merge(previous_address).merge(zipcode: bad_zipcode)
 
-          expect(idv_session.resolution.success?).to eq false
+          expect(idv_session.resolution_successful).to be_nil
         end
 
         it 'respects both addresses' do
           post :create, profile: user_attrs.merge(previous_address)
 
-          expect(idv_session.resolution.success?).to eq true
+          expect(idv_session.resolution_successful).to eq true
         end
+      end
+    end
+
+    describe '#destroy' do
+      it 'clears the idv session and returns the user to their profile' do
+        delete :destroy
+
+        expect(controller.user_session[:idv]).to eq({})
+        expect(response).to redirect_to(account_path)
       end
     end
   end

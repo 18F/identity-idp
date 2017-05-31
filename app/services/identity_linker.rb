@@ -1,33 +1,56 @@
-IdentityLinker = Struct.new(:user, :provider) do
-  attr_reader :identity
+class IdentityLinker
+  attr_reader :user, :provider
 
-  def link_identity(session_uuid: nil, **extra_attrs)
-    attributes = merged_attributes(session_uuid, extra_attrs)
+  def initialize(user, provider)
+    @user = user
+    @provider = provider
+  end
+
+  def link_identity(**extra_attrs)
+    attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
+    identity
+  end
+
+  def already_linked?
+    identity_relation.exists?
   end
 
   private
 
   def identity
-    @identity ||= Identity.find_or_create_by(
-      service_provider: provider, user_id: user.id
-    )
+    @identity ||= identity_relation.first_or_create
   end
 
-  def merged_attributes(session_uuid, extra_attrs)
-    identity_attributes(session_uuid: session_uuid).merge(optional_attributes(extra_attrs))
+  def identity_relation
+    user.identities.where(service_provider: provider)
   end
 
-  def identity_attributes(session_uuid: nil)
-    session_uuid ||= SecureRandom.uuid
+  def merged_attributes(extra_attrs)
+    identity_attributes.merge(optional_attributes(extra_attrs))
+  end
+
+  def identity_attributes
     {
-      last_authenticated_at: Time.current,
-      session_uuid: session_uuid,
-      access_token: SecureRandom.urlsafe_base64
+      last_authenticated_at: Time.zone.now,
+      session_uuid: SecureRandom.uuid,
+      access_token: SecureRandom.urlsafe_base64,
     }
   end
 
-  def optional_attributes(nonce: nil, ial: nil, scope: nil, code_challenge: nil)
-    { nonce: nonce, ial: ial, scope: scope, code_challenge: code_challenge }
+  def optional_attributes(
+    code_challenge: nil,
+    ial: nil,
+    nonce: nil,
+    rails_session_id: nil,
+    scope: nil
+  )
+    {
+      code_challenge: code_challenge,
+      ial: ial,
+      nonce: nonce,
+      rails_session_id: rails_session_id,
+      scope: scope,
+    }
   end
 end

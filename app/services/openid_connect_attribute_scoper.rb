@@ -1,25 +1,38 @@
 class OpenidConnectAttributeScoper
-  VALID_SCOPES = %w(
+  VALID_SCOPES = %w[
     address
     email
     openid
     phone
     profile
-  ).freeze
+    profile:birthdate
+    profile:name
+    social_security_number
+  ].freeze
 
-  ATTRIBUTE_SCOPE_MAP = {
-    email: 'email',
-    email_verified: 'email',
-    address: 'address',
-    phone: 'phone',
-    phone_verified: 'phone',
-    given_name: 'profile',
-    family_name: 'profile',
-    middle_name: 'profile',
-    birthdate: 'profile'
+  ATTRIBUTE_SCOPES_MAP = {
+    email: %w[email],
+    email_verified: %w[email],
+    address: %w[address],
+    phone: %w[phone],
+    phone_verified: %w[phone],
+    given_name: %w[profile profile:name],
+    family_name: %w[profile profile:name],
+    birthdate: %w[profile profile:birthdate],
+    social_security_number: %w[social_security_number],
   }.with_indifferent_access.freeze
 
-  CLAIMS = ATTRIBUTE_SCOPE_MAP.keys
+  SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
+    ATTRIBUTE_SCOPES_MAP.each do |attribute, scopes|
+      next [] if attribute =~ /_verified$/
+      scopes.each do |scope|
+        scope_attribute_map[scope] ||= []
+        scope_attribute_map[scope] << attribute
+      end
+    end
+  end.with_indifferent_access.freeze
+
+  CLAIMS = ATTRIBUTE_SCOPES_MAP.keys
 
   attr_reader :scopes
 
@@ -29,14 +42,18 @@ class OpenidConnectAttributeScoper
 
   def filter(user_info)
     user_info.select do |key, _v|
-      !ATTRIBUTE_SCOPE_MAP.key?(key) || scopes.include?(ATTRIBUTE_SCOPE_MAP[key])
+      !ATTRIBUTE_SCOPES_MAP.key?(key) || (scopes & ATTRIBUTE_SCOPES_MAP[key]).present?
     end
+  end
+
+  def requested_attributes
+    scopes.map { |scope| SCOPE_ATTRIBUTE_MAP[scope] }.flatten.compact
   end
 
   private
 
   def parse_scope(scope)
     return [] if scope.blank?
-    scope.split(' ').compact & VALID_SCOPES
+    scope.split(' ').flatten.compact & VALID_SCOPES
   end
 end

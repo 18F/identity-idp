@@ -2,7 +2,7 @@ FactoryGirl.define do
   Faker::Config.locale = 'en-US'
 
   factory :user do
-    confirmed_at Time.current
+    confirmed_at Time.zone.now
     email { Faker::Internet.safe_email }
     password '!1a Z@6s' * 16 # Maximum length password.
 
@@ -22,7 +22,7 @@ FactoryGirl.define do
     trait :signed_up do
       with_phone
       after :build do |user|
-        user.recovery_code = RecoveryCodeGenerator.new(user).create
+        user.personal_key = PersonalKeyGenerator.new(user).create
       end
     end
 

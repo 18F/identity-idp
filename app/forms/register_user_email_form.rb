@@ -2,6 +2,8 @@ class RegisterUserEmailForm
   include ActiveModel::Model
   include FormEmailValidator
 
+  attr_reader :request_id
+
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end
@@ -17,40 +19,45 @@ class RegisterUserEmailForm
   end
 
   def submit(params)
-    user.email = params[:email].downcase
+    user.email = params[:email]
+    request_id = params[:request_id]
 
     if valid_form?
-      @success = true
-      user.save!
+      process_successful_submission(request_id)
     else
-      @success = process_errors
+      @success = process_errors(request_id)
     end
 
-    result
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   private
 
+  attr_writer :email
   attr_reader :success
 
   def valid_form?
     valid? && !email_taken?
   end
 
-  def result
+  def process_successful_submission(request_id)
+    @success = true
+    user.save!
+    user.send_custom_confirmation_instructions(request_id)
+  end
+
+  def extra_analytics_attributes
     {
-      success: success,
-      errors: errors.messages.values.flatten,
       email_already_exists: email_taken?,
-      user_id: existing_user&.uuid
+      user_id: existing_user.uuid,
     }
   end
 
-  def process_errors
+  def process_errors(request_id)
     # To prevent discovery of existing emails, we check to see if the email is
     # already taken and if so, we act as if the user registration was successful.
     if email_taken? && user_unconfirmed?
-      existing_user.send_confirmation_instructions
+      existing_user.send_custom_confirmation_instructions(request_id)
       true
     elsif email_taken?
       UserMailer.signup_with_your_email(email).deliver_later
@@ -65,6 +72,6 @@ class RegisterUserEmailForm
   end
 
   def existing_user
-    @_user ||= User.find_with_email(email)
+    @_user ||= User.find_with_email(email) || AnonymousUser.new
   end
 end

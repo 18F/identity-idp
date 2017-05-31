@@ -39,7 +39,7 @@ module Pii
     end
 
     def rotate_encrypted_attributes
-      KeyRotator::AttributeEncryption.new.rotate(user)
+      KeyRotator::AttributeEncryption.new(user).rotate
     end
 
     def stale_fingerprints?(profile)
@@ -47,11 +47,12 @@ module Pii
     end
 
     def stale_email_fingerprint?
-      Pii::Fingerprinter.stale?(user.email.downcase, user.email_fingerprint)
+      Pii::Fingerprinter.stale?(user.email, user.email_fingerprint)
     end
 
     def stale_attributes?
-      user.stale_encrypted_phone? || user.stale_encrypted_email?
+      user.stale_encrypted_phone? || user.stale_encrypted_email? ||
+        user.stale_encrypted_otp_secret_key?
     end
 
     def stale_ssn_signature?(profile)

@@ -1,6 +1,10 @@
 class EncryptedKeyMaker
   include Pii::Encodable
 
+  KEY_TYPE = {
+    KMS: 'KMSx',
+  }.freeze
+
   # Creates an encrypted encryption key.
   #
   # @param user_access_key [UserAccessKey]
@@ -34,7 +38,7 @@ class EncryptedKeyMaker
   private
 
   def unlock_key(user_access_key, encryption_key)
-    if FeatureManagement.use_kms?
+    if FeatureManagement.use_kms? && looks_like_kms?(user_access_key, encryption_key)
       unlock_kms(user_access_key, encryption_key)
     else
       unlock_local(user_access_key, encryption_key)
@@ -51,12 +55,14 @@ class EncryptedKeyMaker
       key_id: Figaro.env.aws_kms_key_id,
       plaintext: user_access_key.random_r
     ).ciphertext_blob
-    build_user_access_key(user_access_key, encrypted_key)
+    build_user_access_key(user_access_key, KEY_TYPE[:KMS] + encrypted_key)
   end
 
   def unlock_kms(user_access_key, encryption_key)
-    ciphertext = user_access_key.xor(decode(encryption_key))
+    ciphertext = user_access_key.xor(decode(encryption_key)).sub(KEY_TYPE[:KMS], '')
     user_access_key.unlock(aws_client.decrypt(ciphertext_blob: ciphertext).plaintext)
+  rescue Aws::KMS::Errors::InvalidCiphertextException
+    raise Pii::EncryptionError
   end
 
   def make_local(user_access_key)
@@ -70,6 +76,10 @@ class EncryptedKeyMaker
       raise Pii::EncryptionError, 'invalid base64-encoded ciphertext'
     end
     user_access_key.unlock(encryptor.decrypt(ciphertext, Figaro.env.password_pepper))
+  end
+
+  def looks_like_kms?(user_access_key, encryption_key)
+    user_access_key.xor(decode(encryption_key)).start_with?(KEY_TYPE[:KMS])
   end
 
   def aws_client

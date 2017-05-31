@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Pii::Cacher do
   let(:password) { 'salty peanuts are best' }
   let(:user_access_key) { user.unlock_user_access_key(password) }
-  let(:user) { create(:user, password: password) }
+  let(:user) { create(:user, :with_phone, password: password, otp_secret_key: 'abc123') }
   let(:profile) { build(:profile, :active, :verified, user: user, pii: { ssn: '1234' }) }
   let(:diff_profile) { build(:profile, :verified, user: user, pii: { ssn: '5678' }) }
   let(:user_session) { {} }
@@ -20,7 +20,7 @@ describe Pii::Cacher do
       decrypted_pii_json = subject.save(user_access_key)
       decrypted_pii = JSON.parse(decrypted_pii_json, symbolize_names: true)
 
-      expect(decrypted_pii[:ssn]).to eq '1234'
+      expect(decrypted_pii[:ssn][:raw]).to eq '1234'
       expect(user_session[:decrypted_pii]).to eq decrypted_pii_json
     end
 
@@ -29,8 +29,8 @@ describe Pii::Cacher do
       decrypted_pii_json = subject.save(user_access_key, diff_profile)
       decrypted_pii = JSON.parse(decrypted_pii_json, symbolize_names: true)
 
-      expect(decrypted_pii[:ssn]).to_not eq '1234'
-      expect(decrypted_pii[:ssn]).to eq '5678'
+      expect(decrypted_pii[:ssn][:raw]).to_not eq '1234'
+      expect(decrypted_pii[:ssn][:raw]).to eq '5678'
       expect(user_session[:decrypted_pii]).to eq decrypted_pii_json
     end
 
@@ -38,6 +38,8 @@ describe Pii::Cacher do
       old_ssn_signature = profile.ssn_signature
       old_email_fingerprint = user.email_fingerprint
       old_encrypted_email = user.encrypted_email
+      old_encrypted_phone = user.encrypted_phone
+      old_encrypted_otp_secret_key = user.encrypted_otp_secret_key
 
       rotate_all_keys
 
@@ -47,6 +49,17 @@ describe Pii::Cacher do
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
       expect(user.encrypted_email).to_not eq old_encrypted_email
       expect(profile.ssn_signature).to_not eq old_ssn_signature
+      expect(user.encrypted_phone).to_not eq old_encrypted_phone
+      expect(user.encrypted_otp_secret_key).to_not eq old_encrypted_otp_secret_key
+    end
+
+    it 'does not attempt to rotate nil attributes' do
+      user = create(:user, password: password)
+      user_access_key = user.unlock_user_access_key(password)
+      cacher = described_class.new(user, user_session)
+      rotate_all_keys
+
+      expect { cacher.save(user_access_key) }.to_not raise_error
     end
   end
 

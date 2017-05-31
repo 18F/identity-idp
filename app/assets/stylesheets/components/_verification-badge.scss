@@ -1,0 +1,25 @@
+.verification-badge {
+  left: 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: $space-1;
+
+  span {
+    background-color: $white;
+    border: 1px solid $green;
+    border-radius: $border-radius-xxl;
+    box-sizing: border-box;
+    display: inline-block;
+    padding: $space-1 $space-2;
+    white-space: nowrap;
+  }
+}
+
+@media #{$breakpoint-sm} {
+  .verification-badge {
+    margin: -$space-1 0 0;
+    position: static;
+    text-align: right;
+  }
+}

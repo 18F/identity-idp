@@ -6,25 +6,32 @@ feature 'Changing authentication factor' do
 
     scenario 'editing password' do
       visit manage_password_path
+
+      expect(page).to have_content t('help_text.change_factor', factor: 'password')
+
       complete_2fa_confirmation
 
       expect(current_path).to eq manage_password_path
     end
 
     scenario 'editing phone number' do
-      allow(SmsSenderNumberChangeJob).to receive(:perform_later)
+      mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
+      allow(UserMailer).to receive(:phone_changed).with(user).and_return(mailer)
 
       @previous_phone_confirmed_at = user.reload.phone_confirmed_at
-      previous_phone = user.phone
       new_phone = '+1 (703) 555-0100'
 
       visit manage_phone_path
+
+      expect(page).to have_content t('help_text.change_factor', factor: 'phone')
+
       complete_2fa_confirmation
 
       update_phone_number
+      expect(page).to have_link t('links.cancel'), href: account_path
       expect(page).to have_link t('forms.two_factor.try_again'), href: manage_phone_path
       expect(page).not_to have_content(
-        t('devise.two_factor_authentication.recovery_code_fallback.text_html')
+        t('devise.two_factor_authentication.personal_key_fallback.text_html')
       )
 
       enter_incorrect_otp_code
@@ -35,14 +42,14 @@ feature 'Changing authentication factor' do
 
       submit_correct_otp
 
-      expect(page).to have_content t('notices.phone_confirmation_successful')
-      expect(current_path).to eq profile_path
-      expect(SmsSenderNumberChangeJob).to have_received(:perform_later).with(previous_phone)
+      expect(current_path).to eq account_path
+      expect(UserMailer).to have_received(:phone_changed).with(user)
+      expect(mailer).to have_received(:deliver_later)
       expect(page).to have_content new_phone
       expect(user.reload.phone_confirmed_at).to_not eq(@previous_phone_confirmed_at)
 
-      visit login_two_factor_path(delivery_method: 'sms')
-      expect(current_path).to eq profile_path
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
+      expect(current_path).to eq account_path
     end
 
     scenario 'waiting too long to change phone number' do
@@ -89,13 +96,15 @@ feature 'Changing authentication factor' do
             )
 
           expect(current_path).
-            to eq login_two_factor_path(delivery_method: 'sms')
+            to eq login_two_factor_path(otp_delivery_preference: 'sms')
         end
       end
     end
 
     scenario 'editing email' do
       visit manage_email_path
+
+      expect(page).to have_content t('help_text.change_factor', factor: 'email')
       complete_2fa_confirmation
 
       expect(current_path).to eq manage_email_path
@@ -125,6 +134,9 @@ feature 'Changing authentication factor' do
         submit_current_password_and_totp
 
         expect(current_path).to eq manage_phone_path
+
+        update_phone_number
+        expect(page).to have_link t('links.cancel'), href: account_path
       end
     end
   end
@@ -140,7 +152,7 @@ feature 'Changing authentication factor' do
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
-    expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+    expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
   end
 
   def update_phone_number
@@ -165,5 +177,19 @@ feature 'Changing authentication factor' do
 
   def submit_correct_otp
     click_submit_default
+  end
+
+  describe 'attempting to bypass current password entry' do
+    it 'does not allow bypassing this step' do
+      sign_in_and_2fa_user
+      Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do
+        visit manage_password_path
+        expect(current_path).to eq user_password_confirm_path
+
+        visit login_two_factor_path(otp_delivery_preference: 'sms')
+
+        expect(current_path).to eq user_password_confirm_path
+      end
+    end
   end
 end

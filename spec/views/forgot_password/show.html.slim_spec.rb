@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 describe 'forgot_password/show.html.slim' do
+  let(:email) { 'foo@bar.com' }
+
   before do
-    @email = 'foo@bar.com'
-    @password_reset_email_form = PasswordResetEmailForm.new('foo@bar.com')
+    @view_model = ForgotPasswordShow.new(resend: nil, session: { email: email })
   end
 
   it 'has a localized title' do
@@ -32,7 +33,7 @@ describe 'forgot_password/show.html.slim' do
     render
 
     expect(rendered).to have_content t('notices.forgot_password.first_paragraph_start')
-    expect(rendered).to have_content 'foo@bar.com'
+    expect(rendered).to have_content email
     expect(rendered).to have_content t('notices.forgot_password.first_paragraph_end')
     expect(rendered).to have_content t('notices.forgot_password.no_email_sent_explanation_start')
     expect(rendered).to have_content t('instructions.forgot_password.close_window')
@@ -46,11 +47,11 @@ describe 'forgot_password/show.html.slim' do
       to have_link(t('notices.forgot_password.use_diff_email.link'), href: sign_up_email_path)
   end
 
-  it 'displays a notice if @resend_confirmation is present' do
-    @resend_confirmation = true
+  it 'displays a notice if resend_confirmation is present' do
+    @view_model = ForgotPasswordShow.new(resend: true, session: {})
 
     render
 
-    expect(rendered).to have_content t('notices.forgot_password.resend_email_success')
+    expect(view).to render_template(partial: 'forgot_password/_resend_alert')
   end
 end

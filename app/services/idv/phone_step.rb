@@ -7,7 +7,7 @@ module Idv
         idv_session.phone_confirmation = false
       end
 
-      FormResponse.new(success: complete?, errors: errors)
+      FormResponse.new(success: complete?, errors: errors, extra: extra_analytics_attributes)
     end
 
     def form_valid_but_vendor_validation_failed?
@@ -34,8 +34,12 @@ module Idv
 
     def update_idv_session
       idv_session.phone_confirmation = true
+      idv_session.address_verification_mechanism = :phone
       idv_session.params = idv_form.idv_params
-      idv_session.applicant.phone = idv_form.phone
+    end
+
+    def extra_analytics_attributes
+      { vendor: { reasons: vendor_reasons } }
     end
   end
 end

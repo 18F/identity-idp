@@ -27,7 +27,7 @@ describe AttributeAsserter do
   let(:loa3_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_loa3_authn_request)
   end
-  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jane') }
+  let(:decrypted_pii) { Pii::Attributes.new_from_hash(first_name: 'Jåné') }
 
   describe '#build' do
     context 'verified user and LOA3 request' do
@@ -44,22 +44,40 @@ describe AttributeAsserter do
         before do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w(email phone first_name))
+            and_return(%w[email phone first_name])
           subject.build
         end
 
         it 'includes all requested attributes + uuid' do
           expect(user.asserted_attributes.keys).
-            to eq([:uuid, :email, :phone, :first_name, :verified_at])
+            to eq(%i[uuid email phone first_name verified_at])
         end
 
         it 'creates getter function' do
-          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jane'
+          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jåné'
         end
 
         it 'gets UUID (MBUN) from Service Provider' do
           uuid_getter = user.asserted_attributes[:uuid][:getter]
           expect(uuid_getter.call(user)).to eq user.last_identity.uuid
+        end
+      end
+
+      context 'bundle includes :ascii' do
+        before do
+          user.identities << identity
+          allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
+            and_return(%w[email phone first_name ascii])
+          subject.build
+        end
+
+        it 'skips ascii as an attribute' do
+          expect(user.asserted_attributes.keys).
+            to eq(%i[uuid email phone first_name verified_at])
+        end
+
+        it 'transliterates attributes to ASCII' do
+          expect(user.asserted_attributes[:first_name][:getter].call(user)).to eq 'Jane'
         end
       end
 
@@ -72,7 +90,7 @@ describe AttributeAsserter do
 
         context 'authn request does not specify bundle' do
           it 'only returns uuid and verified_at' do
-            expect(user.asserted_attributes.keys).to eq [:uuid, :verified_at]
+            expect(user.asserted_attributes.keys).to eq %i[uuid verified_at]
           end
         end
 
@@ -83,7 +101,7 @@ describe AttributeAsserter do
 
           it 'uses authn request bundle' do
             expect(user.asserted_attributes.keys).
-              to eq([:uuid, :email, :first_name, :last_name, :ssn, :phone, :verified_at])
+              to eq(%i[uuid email first_name last_name ssn phone verified_at])
           end
         end
       end
@@ -96,20 +114,20 @@ describe AttributeAsserter do
         end
 
         it 'contains uuid and verified_at only' do
-          expect(user.asserted_attributes.keys).to eq([:uuid, :verified_at])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid verified_at])
         end
       end
 
       context 'custom bundle has invalid attribute name' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w(email foo)
+            %w[email foo]
           )
           subject.build
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq([:uuid, :email, :verified_at])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid email verified_at])
         end
       end
     end
@@ -128,12 +146,12 @@ describe AttributeAsserter do
         before do
           user.identities << identity
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).
-            and_return(%w(email phone first_name))
+            and_return(%w[email phone first_name])
           subject.build
         end
 
         it 'only includes uuid + email (no verified_at)' do
-          expect(user.asserted_attributes.keys).to eq [:uuid, :email]
+          expect(user.asserted_attributes.keys).to eq %i[uuid email]
         end
 
         it 'does not create a getter function for LOA1 attributes' do
@@ -165,7 +183,7 @@ describe AttributeAsserter do
           end
 
           it 'only returns uuid + email' do
-            expect(user.asserted_attributes.keys).to eq [:uuid, :email]
+            expect(user.asserted_attributes.keys).to eq %i[uuid email]
           end
         end
       end
@@ -185,13 +203,13 @@ describe AttributeAsserter do
       context 'custom bundle has invalid attribute name' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w(email foo)
+            %w[email foo]
           )
           subject.build
         end
 
         it 'silently skips invalid attribute name' do
-          expect(user.asserted_attributes.keys).to eq([:uuid, :email])
+          expect(user.asserted_attributes.keys).to eq(%i[uuid email])
         end
       end
     end
@@ -200,7 +218,7 @@ describe AttributeAsserter do
       context 'custom bundle does not include email, phone' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w(first_name last_name)
+            %w[first_name last_name]
           )
           subject.build
         end
@@ -213,13 +231,13 @@ describe AttributeAsserter do
       context 'custom bundle includes email, phone' do
         before do
           allow(service_provider.metadata).to receive(:[]).with(:attribute_bundle).and_return(
-            %w(first_name last_name email phone)
+            %w[first_name last_name email phone]
           )
           subject.build
         end
 
         it 'only includes UUID and email' do
-          expect(loa1_user.asserted_attributes.keys).to eq([:uuid, :email])
+          expect(loa1_user.asserted_attributes.keys).to eq(%i[uuid email])
         end
       end
     end

@@ -28,17 +28,12 @@ describe SignUp::RegistrationsController, devise: true do
       end
     end
 
-    it 'triggers completion of "demo" experiment' do
-      expect(subject).to receive(:ab_finished).with(:demo)
-      get :new
-    end
-
     it 'cannot be viewed by signed in users' do
       stub_sign_in
 
       get :new
 
-      expect(response).to redirect_to profile_path
+      expect(response).to redirect_to account_path
     end
   end
 
@@ -56,9 +51,9 @@ describe SignUp::RegistrationsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           email_already_exists: false,
-          user_id: user.uuid
+          user_id: user.uuid,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -80,27 +75,27 @@ describe SignUp::RegistrationsController, devise: true do
 
         post :create, user: { email: user.email }
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
     end
 
     it 'tracks successful user registration with existing email' do
-      existing_user = create(:user)
+      existing_user = create(:user, email: 'test@example.com')
 
       stub_analytics
 
       analytics_hash = {
         success: true,
-        errors: [],
+        errors: {},
         email_already_exists: true,
-        user_id: existing_user.uuid
+        user_id: existing_user.uuid,
       }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
       expect(subject).to_not receive(:create_user_event)
 
-      post :create, user: { email: existing_user.email }
+      post :create, user: { email: 'TEST@example.com ' }
     end
 
     it 'tracks unsuccessful user registration' do
@@ -108,15 +103,15 @@ describe SignUp::RegistrationsController, devise: true do
 
       analytics_hash = {
         success: false,
-        errors: [t('valid_email.validations.email.invalid')],
+        errors: { email: [t('valid_email.validations.email.invalid')] },
         email_already_exists: false,
-        user_id: nil
+        user_id: 'anonymous-uuid',
       }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
-      post :create, user: { email: 'invalid@' }
+      post :create, user: { email: 'invalid@', request_id: '' }
     end
   end
 
@@ -127,7 +122,7 @@ describe SignUp::RegistrationsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::USER_REGISTRATION_INTRO_VISIT)
 
-      get :show
+      get :show, request_id: 'foo'
     end
 
     it 'cannot be viewed by signed in users' do
@@ -135,7 +130,13 @@ describe SignUp::RegistrationsController, devise: true do
 
       get :show
 
-      expect(response).to redirect_to profile_path
+      expect(response).to redirect_to account_path
+    end
+
+    it 'redirects to sign_up_email_path if request_id param is missing' do
+      get :show
+
+      expect(response).to redirect_to sign_up_email_path
     end
   end
 end

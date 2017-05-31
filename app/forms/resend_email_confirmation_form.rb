@@ -4,34 +4,40 @@ class ResendEmailConfirmationForm
 
   attr_reader :email
 
-  def initialize(email = nil)
-    @email = email
-  end
-
-  def resend
-    'true'
+  def initialize(params = {})
+    @params = params
+    self.email = params[:email]
   end
 
   def submit
     @success = valid?
-
-    result
-  end
-
-  private
-
-  attr_reader :success
-
-  def result
-    {
-      success: success,
-      errors: errors.messages.values.flatten,
-      user_id: user.uuid,
-      confirmed: user.confirmed?
-    }
+    send_confirmation_email_if_necessary
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
   def user
     @_user ||= (email.presence && User.find_with_email(email)) || NonexistentUser.new
+  end
+
+  private
+
+  attr_writer :email
+  attr_reader :params, :success
+
+  def send_confirmation_email_if_necessary
+    return unless valid? && user.persisted? && !user.confirmed?
+
+    user.send_custom_confirmation_instructions(request_id)
+  end
+
+  def request_id
+    params[:request_id]
+  end
+
+  def extra_analytics_attributes
+    {
+      user_id: user.uuid,
+      confirmed: user.confirmed?,
+    }
   end
 end

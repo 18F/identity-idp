@@ -25,5 +25,27 @@ module Idv
         vendor: (idv_session.vendor || idv_vendor.pick)
       )
     end
+
+    def result
+      @_result ||= try_submit
+    end
+
+    def try_agent_action
+      yield
+    rescue => err
+      err_msg = err.to_s
+      NewRelic::Agent.notice_error(err)
+      agent_error_resolution(err_msg)
+    end
+
+    def agent_error_resolution(err_msg)
+      Proofer::Resolution.new(
+        success: false,
+        errors: { agent: [err_msg] },
+        vendor_resp: Proofer::Vendor::MockResponse.new(
+          reasons: [err_msg]
+        )
+      )
+    end
   end
 end

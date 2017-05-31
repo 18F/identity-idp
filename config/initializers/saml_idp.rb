@@ -4,7 +4,7 @@ SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
   api_base = protocol + Figaro.env.domain_name + '/api'
 
-  config.x509_certificate = File.read("#{Rails.root}/certs/saml.crt")
+  config.x509_certificate = File.read(Rails.root.join('certs', 'saml.crt'))
   config.secret_key = RequestKeyManager.private_key.to_pem
 
   config.algorithm = OpenSSL::Digest::SHA256
@@ -27,7 +27,7 @@ SamlIdp.configure do |config|
   config.name_id.formats =
     {
       persistent: ->(principal) { principal.asserted_attributes[:uuid][:getter].call(principal) },
-      email_address: ->(principal) { principal.email }
+      email_address: ->(principal) { principal.email },
     }
 
   ## Technical contact ##
@@ -39,6 +39,8 @@ SamlIdp.configure do |config|
 
   # Find ServiceProvider metadata_url and fingerprint based on our settings
   config.service_provider.finder = lambda do |issuer_or_entity_id|
-    ServiceProvider.new(issuer_or_entity_id).metadata
+    sp_config = ServiceProviderConfig.new(issuer: issuer_or_entity_id)
+    sp = sp_config.service_provider
+    sp_config.sp_attributes.merge(fingerprint: sp.fingerprint, cert: sp.ssl_cert)
   end
 end

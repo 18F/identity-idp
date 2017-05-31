@@ -20,6 +20,7 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.email_changed.intro', app: APP_NAME)
       )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
@@ -40,6 +41,7 @@ describe UserMailer, type: :mailer do
       expect(mail.html_part.body).to have_content(
         t('user_mailer.password_changed.intro', app: APP_NAME)
       )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
@@ -63,46 +65,37 @@ describe UserMailer, type: :mailer do
           app: APP_NAME
         )
       )
+      expect_email_body_to_have_help_and_contact_links
     end
   end
 
-  describe 'contact_request' do
-    details = {
-      'want_learn' => '1',
-      'want_tell' => '0',
-      'email_or_tel' => 'thomas jefferson',
-      'comments' => 'usa!'
-    }
-
-    let(:mail) { UserMailer.contact_request(details) }
+  describe 'phone_changed' do
+    let(:mail) { UserMailer.phone_changed(user) }
 
     it_behaves_like 'a system email'
 
     it 'sends to the current email' do
-      expect(mail.to).to eq [Figaro.env.support_email]
+      expect(mail.to).to eq [user.email]
     end
 
     it 'renders the subject' do
-      expect(mail.subject).to eq t('mailer.contact_request.subject')
+      expect(mail.subject).to eq t('user_mailer.phone_changed.subject')
     end
 
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.email_or_phone')}#{details['email_or_tel']}"
+        t('user_mailer.phone_changed.intro', app: APP_NAME)
       )
-
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.want_to_learn')}#{t('user_mailer.contact_request.yes')}"
-      )
-
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.talk_about_experience')}" \
-        "#{t('user_mailer.contact_request.no')}"
-      )
-
-      expect(mail.html_part.body).to have_content(
-        "#{t('user_mailer.contact_request.comments_header')}#{details['comments']}"
-      )
+      expect_email_body_to_have_help_and_contact_links
     end
+  end
+
+  def expect_email_body_to_have_help_and_contact_links
+    expect(mail.html_part.body).to have_link(
+      t('user_mailer.help_link_text'), href: MarketingSite.help_url
+    )
+    expect(mail.html_part.body).to have_link(
+      t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
+    )
   end
 end

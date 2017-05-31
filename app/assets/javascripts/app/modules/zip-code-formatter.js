@@ -19,6 +19,7 @@ class ZipCodeFormatter extends DelimitedTextFormatter {
    * @param {number} index
    * @returns {boolean}
    */
+  /* eslint-disable class-methods-use-this */
   hasDelimiterAtIndex(index) {
     return index === 5;
   }

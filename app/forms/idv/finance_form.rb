@@ -3,7 +3,7 @@ module Idv
     include ActiveModel::Model
     include FormFinanceValidator
 
-    FINANCE_TYPES = [:ccn, :mortgage, :home_equity_line, :auto_loan].freeze
+    FINANCE_TYPES = %i[ccn mortgage home_equity_line auto_loan].freeze
     FINANCE_OTHER_TYPES = FINANCE_TYPES - [:ccn]
 
     FINANCE_HTML_OPTIONS = {
@@ -11,26 +11,26 @@ module Idv
         class: 'ccn',
         pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_CCN_LENGTH,
-        maxlength: FormFinanceValidator::VALID_CCN_LENGTH
+        maxlength: FormFinanceValidator::VALID_CCN_LENGTH,
       },
       mortgage: {
         class: 'mortgage',
         pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH,
       },
       home_equity_line: {
         class: 'home_equity_line',
         pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
+        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH,
       },
       auto_loan: {
         class: 'auto_loan',
         pattern: '[0-9]*',
         minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH
-      }
+        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH,
+      },
     }.freeze
 
     attr_reader :idv_params, :finance_type, :blank, *FINANCE_TYPES
@@ -57,7 +57,7 @@ module Idv
 
     def self.ccn_inputs
       [
-        [:ccn, I18n.t('idv.form.ccn'), FINANCE_HTML_OPTIONS.fetch(:ccn, {})]
+        [:ccn, I18n.t('idv.form.ccn'), FINANCE_HTML_OPTIONS.fetch(:ccn, {})],
       ]
     end
 

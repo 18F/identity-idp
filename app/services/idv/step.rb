@@ -42,7 +42,10 @@ module Idv
     end
 
     def vendor_validator
-      vendor_validator_class.new(idv_session: idv_session, vendor_params: vendor_params)
+      @_vendor_validator ||= vendor_validator_class.new(
+        idv_session: idv_session,
+        vendor_params: vendor_params
+      )
     end
   end
 end

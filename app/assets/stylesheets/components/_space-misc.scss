@@ -16,9 +16,12 @@
 .mb-40p { margin-bottom: 40px; }
 
 .mtn1 { margin-top: -$space-1; }
+.mtn2 { margin-top: -$space-2; }
 .mtn3 { margin-top: -$space-3; }
 
 @media #{$breakpoint-sm} {
   .sm-mr-20p { margin-right: 20px; }
+  .sm-ml-28p { margin-left: 28px; }
+  .sm-mtn2 { margin-top: -$space-2; }
   .sm-mtn3 { margin-top: -$space-3; }
 }

@@ -1,11 +1,10 @@
-#session-timeout-msg
-  .modal-cntnr
-    .px2.py4.modal-inner
-      .mx-auto.p4.cntnr-skinny.border-box.bg-white.rounded.relative
-        = image_tag(asset_url('clock.svg'), class: 'modal-ico')
-        h3.mt0.mb2 = t('headings.session_timeout_warning')
-        p.mb3 = modal.message
-        = link_to modal.continue,
-          request.original_url, class: 'btn btn-primary'
-        = link_to modal.sign_out,
-          destroy_user_session_path, class: 'ml2 btn btn-outline'
+#session-timeout-msg.display-none
+  = render layout: '/shared/modal_layout' do
+    .p4.cntnr-skinny.border-box.bg-white.rounded.relative
+      = image_tag(asset_url('clock.svg'), class: 'modal-ico')
+      h3.mt0.mb2 = t('headings.session_timeout_warning')
+      p.mb3 = modal.message
+      = link_to modal.continue,
+        request.original_url, class: 'btn btn-primary'
+      = link_to modal.sign_out,
+        destroy_user_session_path, class: 'ml2 btn btn-outline'

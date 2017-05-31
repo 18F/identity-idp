@@ -19,6 +19,8 @@ Rails.application.configure do
 
   if ENV.key?('RAILS_ASSET_HOST')
     config.action_controller.asset_host = ENV['RAILS_ASSET_HOST']
+  else
+    config.action_controller.asset_host = '//'
   end
 
   config.assets.debug = true

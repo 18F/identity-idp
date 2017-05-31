@@ -8,18 +8,17 @@ feature 'saml api' do
 
   context 'SAML Assertions' do
     context 'before fully signing in' do
-      it 'prompts the user to sign in' do
+      it 'directs users to the start page' do
         visit authnrequest_get
 
-        expect(current_path).to eq root_path
-        expect(page).to have_content t('devise.failure.unauthenticated')
+        expect(current_path).to eq sign_up_start_path
       end
 
       it 'prompts the user to enter OTP' do
         sign_in_before_2fa(user)
         visit authnrequest_get
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -35,9 +34,9 @@ feature 'saml api' do
 
       it 'prompts the user to confirm phone after setting up 2FA' do
         fill_in 'Phone', with: '202-555-1212'
-        click_button t('forms.buttons.send_passcode')
+        click_send_security_code
 
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -127,23 +126,6 @@ feature 'saml api' do
     end
   end
 
-  context 'visiting /test/saml' do
-    scenario 'it requires 2FA' do
-      sign_in_before_2fa(user)
-      visit '/test/saml'
-
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
-    end
-
-    it 'adds acs_url domain names for current Rails env to CSP form_action' do
-      sign_in_and_2fa_user(user)
-      visit '/test/saml'
-
-      expect(page.response_headers['Content-Security-Policy']).
-        to include('form-action \'self\' localhost:3000 example.com')
-    end
-  end
-
   context 'dashboard' do
     let(:fake_dashboard_url) { 'http://dashboard.example.org' }
     let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
@@ -153,8 +135,8 @@ feature 'saml api' do
           issuer: dashboard_sp_issuer,
           acs_url: 'http://sp.example.org/saml/login',
           cert: saml_test_sp_cert,
-          active: true
-        }
+          active: true,
+        },
       ]
     end
 
@@ -166,27 +148,16 @@ feature 'saml api' do
           status: 200,
           body: dashboard_service_providers.to_json
         )
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
       end
 
-      after do
-        SERVICE_PROVIDERS.delete dashboard_sp_issuer
-        VALID_SERVICE_PROVIDERS.delete dashboard_sp_issuer
-      end
+      after { ServiceProvider.from_issuer(dashboard_sp_issuer).destroy }
 
-      it 'updates global variables' do
-        page.driver.post '/api/service_provider'
+      it 'updates the service providers in the database' do
+        page.driver.header 'X-LOGIN-DASHBOARD-TOKEN', '123ABC'
+        expect { page.driver.post '/api/service_provider' }.
+          to(change { ServiceProvider.active.sort_by(&:id) })
 
         expect(page.status_code).to eq 200
-
-        sign_in_and_2fa_user(user)
-        visit '/test/saml'
-
-        csp = page.response_headers['Content-Security-Policy']
-
-        expect(csp).
-          to include('form-action \'self\' localhost:3000 example.com test.host sp.example.org')
       end
     end
   end

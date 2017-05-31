@@ -11,9 +11,9 @@ module Users
 
       result = @update_user_email_form.submit(user_params)
 
-      analytics.track_event(Analytics::EMAIL_CHANGE_REQUEST, result)
+      analytics.track_event(Analytics::EMAIL_CHANGE_REQUEST, result.to_h)
 
-      if result[:success]
+      if result.success?
         process_updates
         bypass_sign_in current_user
       else
@@ -32,7 +32,7 @@ module Users
         flash[:notice] = t('devise.registrations.email_update_needs_confirmation')
       end
 
-      redirect_to profile_url
+      redirect_to account_url
     end
   end
 end

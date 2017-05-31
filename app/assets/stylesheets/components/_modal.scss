@@ -1,5 +1,19 @@
+.modal-backdrop {
+  background-color: rgba(91, 97, 106, .95);
+  display: table;
+  height: 100%;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+}
+
 .modal-open {
+  left: 0;
   overflow: hidden;
+  position: fixed;
+  right: 0;
+  width: 100%;
 
   .modal {
     overflow-x: hidden;
@@ -13,59 +27,61 @@
   left: 0;
   outline: 0;
   overflow: hidden;
+  -webkit-overflow-scrolling: auto;
   position: fixed;
   right: 0;
   top: 0;
 }
 
-// IE the backdrop
-.modal-cntnr {
-  background-color: rgba(91, 97, 106, .9);
+.modal-center {
   display: table;
   height: 100%;
-  left: 0;
-  position: fixed;
-  top: 0;
   width: 100%;
-
-  .modal-inner {
-    display: table-cell;
-    vertical-align: top;
-   }
 }
 
-.modal-inner {
-  display: block;
-  position: relative;
+.modal-content {
+  display: table-cell;
+  vertical-align: top;
 
-  &.key-badge::before {
-    background-image: url(image-path('p-key.svg'));
-    background-repeat: no-repeat;
-    content: '';
-    height: 60px;
-    left: 45%;
-    position: absolute;
-    top: -25px;
-    width: 60px;
-  }
-
-  [class*="modal-"]::before {
-    background-repeat: no-repeat;
-    content: '';
+  [class^='cntnr'],
+  [class*=' cntnr'] {
     display: block;
-    height: 48px;
-    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto;
     position: relative;
-    width: 48px;
+
+    &.key-badge::before {
+      background-image: url(image-path('p-key.svg'));
+      background-repeat: no-repeat;
+      content: '';
+      height: 60px;
+      left: 45%;
+      position: absolute;
+      top: -25px;
+      width: 60px;
+    }
+
+    &[class^='modal-']::before,
+    &[class*=' modal-']::before {
+      background-repeat: no-repeat;
+      content: '';
+      display: block;
+      height: 48px;
+      margin: 0 auto;
+      position: relative;
+      width: 48px;
+    }
+
+    hr {
+      width: 7.5rem;
+    }
+
   }
 
-  hr {
-    width: 7.5rem;
-  }
 }
 
 @media #{$breakpoint-sm} {
-  .modal-cntnr > .modal-inner {
+  .modal-content {
     vertical-align: middle;
   }
 }
@@ -85,8 +101,19 @@
     background-image: url(image-path('alert/warning-lg.svg'));
   }
 
+  .btn-wide,
+  hr {
+    border-color: $yellow;
+  }
+}
+
+.modal-fail {
+  &::before {
+    background-image: url(image-path('alert/fail-lg.svg'));
+  }
+
   hr,
   .btn {
-    border-color: $yellow;
+    border-color: $pink;
   }
 }

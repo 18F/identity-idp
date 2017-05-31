@@ -1,30 +1,35 @@
-- title t('idv.titles.session.finance')
+- title @view_model.title
+= render @view_model.mock_vendor_partial
 
-h1.h3.my0 = t('idv.titles.session.finance')
-p.mt-tiny.mb0 = t('idv.messages.finance.intro_ccn')
-= simple_form_for(idv_finance_form, url: verify_finance_path,
+h1.h3.my0 = @view_model.title
+p.mt-tiny.mb0
+  = t('idv.messages.finance.intro_ccn_html',
+      intro_help_link: link_to(t('idv.messages.finance.intro_ccn_help'), MarketingSite.help_url))
+
+= simple_form_for(@view_model.idv_form, url: verify_finance_path,
     html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
   = hidden_field_tag 'idv_finance_form[finance_type]', :ccn
-  .clearfix.mxn1
+
+  .mxn1.px1
     - Idv::FinanceForm.ccn_inputs.each do |key, label, html_options|
-      .px1
-        = f.label key, label: label, class: 'block bold'
-        p.mb1.italic = t('idv.messages.finance.hint')
-      .col.col-12.sm-col-8.px1
+      = f.label key, label: label, class: 'block bold'
+      .col-12.sm-col-10
         = f.input key,
                   label: false,
+                  hint: t('idv.messages.finance.hint'),
+                        hint_html: { id: 'ccn-instructs', class: 'mb1 italic block' },
                   required: false,
                   wrapper_html: { data: { type: key } },
-                  input_html: html_options
-    .col.col-12.sm-col-4.px1
-      = f.button :submit, t('forms.buttons.continue'), class: 'col-12 mb3'
+                  wrapper_class: 'mb1',
+                  input_html: html_options.merge!('aria-describedby': 'ccn-instructs')
+        = link_to t('idv.form.use_financial_account'), verify_finance_other_path
 
-.mb-tiny.bold = t('idv.messages.finance.no_ccn')
-p.mb3
-  = t('idv.messages.finance.no_ccn_info')
-  '
-  = link_to t('idv.form.use_financial_account'), verify_finance_other_path
+      .mb2.mt3
+        em
+          = t('idv.messages.finance.disclaimer', app_name: APP_NAME)
+
+      = f.button :submit, t('forms.buttons.continue'), class: 'col-6'
 
 = render 'shared/cancel', link: verify_cancel_path
 
-== javascript_include_tag 'misc/verify-modal'
+= render @view_model.modal_partial, view_model: @view_model

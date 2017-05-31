@@ -11,12 +11,12 @@ RSpec.describe OpenidConnectTokenForm do
       client_assertion_type: client_assertion_type,
       code: code,
       code_verifier: code_verifier,
-      grant_type: grant_type
+      grant_type: grant_type,
     }
   end
 
   let(:grant_type) { 'authorization_code' }
-  let(:code) { SecureRandom.hex }
+  let(:code) { identity.session_uuid }
   let(:code_verifier) { nil }
   let(:client_assertion_type) { OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE }
   let(:client_assertion) { JWT.encode(jwt_payload, client_private_key, 'RS256') }
@@ -28,22 +28,24 @@ RSpec.describe OpenidConnectTokenForm do
     {
       iss: client_id,
       sub: client_id,
-      aud: openid_connect_token_url,
+      aud: api_openid_connect_token_url,
       jti: SecureRandom.hex,
-      exp: 5.minutes.from_now.to_i
+      exp: 5.minutes.from_now.to_i,
     }
   end
 
-  let(:client_private_key) { OpenSSL::PKey::RSA.new(Rails.root.join('keys/saml_test_sp.key').read) }
+  let(:client_private_key) do
+    OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
+  end
   let(:server_public_key) { RequestKeyManager.private_key.public_key }
 
   let(:user) { create(:user) }
 
-  before do
+  let!(:identity) do
     IdentityLinker.new(user, client_id).
       link_identity(
         nonce: nonce,
-        session_uuid: code,
+        rails_session_id: SecureRandom.hex,
         ial: 1,
         code_challenge: code_challenge
       )
@@ -58,12 +60,32 @@ RSpec.describe OpenidConnectTokenForm do
       it { expect(valid?).to eq(false) }
     end
 
-    context 'with a bad code' do
-      before { user.identities.delete_all }
+    context 'code' do
+      context 'with a bad code' do
+        before { user.identities.delete_all }
 
-      it 'is invalid' do
-        expect(valid?).to eq(false)
-        expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
+
+      context 'using the same code a second time' do
+        before { OpenidConnectTokenForm.new(params).submit }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
+      end
+
+      context 'code has expired' do
+        before { identity.update(updated_at: 1.day.ago) }
+
+        it 'is invalid' do
+          expect(valid?).to eq(false)
+          expect(form.errors[:code]).to include(t('openid_connect.token.errors.invalid_code'))
+        end
       end
     end
 
@@ -72,6 +94,14 @@ RSpec.describe OpenidConnectTokenForm do
         it 'is true, and has no errors' do
           expect(valid?).to eq(true)
           expect(form.errors).to be_blank
+        end
+
+        context 'with a trailing slash in the audience url' do
+          before { jwt_payload[:aud] = 'http://www.example.com/api/openid_connect/token/' }
+
+          it 'is valid' do
+            expect(valid?).to eq(true)
+          end
         end
       end
 
@@ -82,6 +112,39 @@ RSpec.describe OpenidConnectTokenForm do
       end
 
       context 'with a bad client_assertion' do
+        context 'without an audience' do
+          before { jwt_payload.delete(:aud) }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+            )
+          end
+        end
+
+        context 'with a bad audience' do
+          before { jwt_payload[:aud] = 'https://foobar.com' }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+            )
+          end
+        end
+
+        context 'with the old audience' do
+          before { jwt_payload[:aud] = 'http://www.example.com/openid_connect/token' }
+
+          it 'is invalid' do
+            expect(valid?).to eq(false)
+            expect(form.errors[:client_assertion]).to include(
+              t('openid_connect.token.errors.invalid_aud', url: api_openid_connect_token_url)
+            )
+          end
+        end
+
         context 'with a bad issuer' do
           before { jwt_payload[:iss] = 'wrong' }
 
@@ -198,29 +261,31 @@ RSpec.describe OpenidConnectTokenForm do
   end
 
   describe '#submit' do
-    subject(:result) { form.submit }
-
     context 'with valid params' do
-      it 'is valid and has no errors' do
-        expect(result[:success]).to eq(true)
-        expect(result[:errors]).to be_blank
-      end
+      it 'returns FormResponse with success: true' do
+        response = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(response)
 
-      it 'has the client_id for tracking' do
-        expect(result[:client_id]).to eq(client_id)
+        submission = form.submit
+
+        expect(submission).to eq response
+        expect(FormResponse).to have_received(:new).
+          with(success: true, errors: {}, extra: { client_id: client_id })
       end
     end
 
     context 'with invalid params' do
       let(:code) { nil }
 
-      it 'is invalid and has errors' do
-        expect(result[:success]).to eq(false)
-        expect(result[:errors]).to be_present
-      end
+      it 'returns FormResponse with success: false' do
+        response = instance_double(FormResponse)
+        allow(FormResponse).to receive(:new).and_return(response)
 
-      it 'has a nil client_id when there is insufficient data' do
-        expect(result).to include(client_id: nil)
+        submission = form.submit
+
+        expect(submission).to eq response
+        expect(FormResponse).to have_received(:new).
+          with(success: false, errors: form.errors.messages, extra: { client_id: nil })
       end
     end
   end
@@ -230,7 +295,7 @@ RSpec.describe OpenidConnectTokenForm do
 
     context 'with valid params' do
       before do
-        Pii::SessionStore.new(code).put({}, 5.minutes.to_i)
+        Pii::SessionStore.new(identity.rails_session_id).put({}, 5.minutes.to_i)
       end
 
       it 'has a properly-encoded id_token with an expiration that matches the expires_in' do

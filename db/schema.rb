@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170203150129) do
+ActiveRecord::Schema.define(version: 20170413152832) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,6 +59,7 @@ ActiveRecord::Schema.define(version: 20170203150129) do
     t.string   "access_token"
     t.string   "scope"
     t.string   "code_challenge"
+    t.string   "rails_session_id"
   end
 
   add_index "identities", ["access_token"], name: "index_identities_on_access_token", unique: true, using: :btree
@@ -79,6 +80,7 @@ ActiveRecord::Schema.define(version: 20170203150129) do
     t.string   "ssn_signature",          limit: 64
     t.text     "encrypted_pii_recovery"
     t.integer  "deactivation_reason"
+    t.boolean  "phone_confirmed",                   default: false, null: false
   end
 
   add_index "profiles", ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
@@ -87,40 +89,73 @@ ActiveRecord::Schema.define(version: 20170203150129) do
   add_index "profiles", ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
   add_index "profiles", ["user_id"], name: "index_profiles_on_user_id", using: :btree
 
-  create_table "users", force: :cascade do |t|
-    t.string   "encrypted_password",            limit: 255, default: ""
-    t.string   "reset_password_token",          limit: 255
-    t.datetime "reset_password_sent_at"
-    t.datetime "remember_created_at"
-    t.integer  "sign_in_count",                             default: 0,  null: false
-    t.datetime "current_sign_in_at"
-    t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",            limit: 255
-    t.string   "last_sign_in_ip",               limit: 255
+  create_table "service_provider_requests", force: :cascade do |t|
+    t.string   "issuer",     null: false
+    t.string   "loa",        null: false
+    t.string   "url",        null: false
+    t.string   "uuid",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "service_provider_requests", ["uuid"], name: "index_service_provider_requests_on_uuid", unique: true, using: :btree
+
+  create_table "service_providers", force: :cascade do |t|
+    t.string   "issuer",                                                       null: false
+    t.string   "friendly_name"
+    t.text     "description"
+    t.text     "metadata_url"
+    t.text     "acs_url"
+    t.text     "assertion_consumer_logout_service_url"
+    t.text     "cert"
+    t.text     "logo"
+    t.string   "fingerprint"
+    t.string   "signature"
+    t.string   "block_encryption",                      default: "aes256-cbc", null: false
+    t.text     "sp_initiated_login_url"
+    t.text     "return_to_sp_url"
+    t.string   "agency"
+    t.json     "attribute_bundle"
+    t.string   "redirect_uri"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "confirmation_token",            limit: 255
+    t.boolean  "active",                                default: false,        null: false
+    t.boolean  "approved",                              default: false,        null: false
+    t.boolean  "native",                                default: false,        null: false
+  end
+
+  add_index "service_providers", ["issuer"], name: "index_service_providers_on_issuer", unique: true, using: :btree
+
+  create_table "users", force: :cascade do |t|
+    t.string   "encrypted_password",           limit: 255, default: ""
+    t.string   "reset_password_token",         limit: 255
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                            default: 0,  null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip",           limit: 255
+    t.string   "last_sign_in_ip",              limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "confirmation_token",           limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.string   "unconfirmed_email",             limit: 255
+    t.string   "unconfirmed_email",            limit: 255
     t.integer  "role"
-    t.string   "otp_secret_key",                limit: 255
-    t.integer  "second_factor_attempts_count",              default: 0
-    t.string   "phone_plain",                   limit: 255
-    t.string   "uuid",                          limit: 255,              null: false
+    t.integer  "second_factor_attempts_count",             default: 0
+    t.string   "uuid",                         limit: 255,              null: false
     t.datetime "reset_requested_at"
     t.datetime "second_factor_locked_at"
     t.datetime "locked_at"
-    t.integer  "failed_attempts",                           default: 0
-    t.string   "unlock_token",                  limit: 255
+    t.integer  "failed_attempts",                          default: 0
+    t.string   "unlock_token",                 limit: 255
     t.datetime "phone_confirmed_at"
-    t.string   "encrypted_otp_secret_key",      limit: 255
-    t.string   "encrypted_otp_secret_key_iv",   limit: 255
-    t.string   "encrypted_otp_secret_key_salt", limit: 255
+    t.text     "encrypted_otp_secret_key"
     t.string   "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.datetime "idv_attempted_at"
-    t.integer  "idv_attempts",                              default: 0
+    t.integer  "idv_attempts",                             default: 0
     t.string   "recovery_code"
     t.string   "password_salt"
     t.string   "encryption_key"
@@ -128,21 +163,26 @@ ActiveRecord::Schema.define(version: 20170203150129) do
     t.string   "recovery_salt"
     t.string   "password_cost"
     t.string   "recovery_cost"
-    t.string   "email_fingerprint",                         default: "", null: false
-    t.text     "encrypted_email",                           default: "", null: false
+    t.string   "email_fingerprint",                        default: "", null: false
+    t.text     "encrypted_email",                          default: "", null: false
     t.string   "attribute_cost"
     t.text     "encrypted_phone"
-    t.integer  "otp_delivery_preference",                   default: 0,  null: false
+    t.integer  "otp_delivery_preference",                  default: 0,  null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true, using: :btree
   add_index "users", ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true, using: :btree
-  add_index "users", ["otp_secret_key"], name: "index_users_on_otp_secret_key", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unconfirmed_email"], name: "index_users_on_unconfirmed_email", using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", using: :btree
   add_index "users", ["uuid"], name: "index_users_on_uuid", unique: true, using: :btree
+
+  create_table "usps_confirmations", force: :cascade do |t|
+    t.text     "entry",      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   add_foreign_key "events", "users"
 end

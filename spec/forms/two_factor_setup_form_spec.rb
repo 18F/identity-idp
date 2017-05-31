@@ -27,27 +27,28 @@ describe TwoFactorSetupForm, type: :model do
         user = build_stubbed(:user, :signed_up, phone: '+1 (202) 555-1213')
         allow(User).to receive(:exists?).with(phone: user.phone).and_return(true)
         form = TwoFactorSetupForm.new(user)
-
-        result = {
-          success: true,
-          error: nil,
-          otp_method: 'sms'
+        extra = {
+          otp_delivery_preference: 'sms',
         }
+        result = instance_double(FormResponse)
 
-        expect(form.submit(phone: user.phone, otp_method: 'sms')).
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit(phone: user.phone, otp_delivery_preference: 'sms')).
           to eq result
       end
     end
 
     context 'when phone is not already taken' do
       it 'is valid' do
-        result = {
-          success: true,
-          error: nil,
-          otp_method: 'sms'
+        extra = {
+          otp_delivery_preference: 'sms',
         }
+        result = instance_double(FormResponse)
 
-        expect(subject.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')).
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(subject.submit(phone: '+1 (703) 555-1212', otp_delivery_preference: 'sms')).
           to eq result
       end
     end
@@ -56,45 +57,49 @@ describe TwoFactorSetupForm, type: :model do
       it 'is valid' do
         user = build_stubbed(:user, phone: valid_phone)
         form = TwoFactorSetupForm.new(user)
-
-        result = {
-          success: true,
-          error: nil,
-          otp_method: 'sms'
+        extra = {
+          otp_delivery_preference: 'sms',
         }
+        result = instance_double(FormResponse)
 
-        expect(form.submit(phone: valid_phone, otp_method: 'sms')).
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit(phone: valid_phone, otp_delivery_preference: 'sms')).
           to eq result
       end
     end
 
     context 'when phone is empty' do
       it 'does not add already taken errors' do
-        result = {
-          success: false,
-          error: t('errors.messages.improbable_phone'),
-          otp_method: 'sms'
+        errors = {
+          phone: [t('errors.messages.improbable_phone')],
         }
+        extra = {
+          otp_delivery_preference: 'sms',
+        }
+        result = instance_double(FormResponse)
 
-        expect(subject.submit(phone: '', otp_method: 'sms')).
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
+        expect(subject.submit(phone: '', otp_delivery_preference: 'sms')).
           to eq result
       end
     end
   end
 
   describe '#submit' do
-    context 'when otp_method is the same as the user otp_delivery_preference' do
+    context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
       it 'does not update the user' do
         user = build_stubbed(:user, otp_delivery_preference: 'sms')
         form = TwoFactorSetupForm.new(user)
 
         expect(UpdateUser).to_not receive(:new)
 
-        form.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')
+        form.submit(phone: '+1 (703) 555-1212', otp_delivery_preference: 'sms')
       end
     end
 
-    context 'when otp_method is different from the user otp_delivery_preference' do
+    context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
       it 'updates the user' do
         user = build_stubbed(:user, otp_delivery_preference: 'voice')
         form = TwoFactorSetupForm.new(user)
@@ -106,7 +111,7 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(updated_user).to receive(:call)
 
-        form.submit(phone: '+1 (703) 555-1212', otp_method: 'sms')
+        form.submit(phone: '+1 (703) 555-1212', otp_delivery_preference: 'sms')
       end
     end
   end

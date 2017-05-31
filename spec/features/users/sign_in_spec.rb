@@ -44,15 +44,21 @@ feature 'Sign in' do
   scenario 'user session expires in amount of time specified by Devise config' do
     sign_in_and_2fa_user
 
-    visit profile_path
-    expect(current_path).to eq profile_path
+    visit account_path
+    expect(current_path).to eq account_path
 
     Timecop.travel(Devise.timeout_in + 1.minute)
 
-    visit profile_path
+    visit account_path
     expect(current_path).to eq root_path
 
     Timecop.return
+  end
+
+  scenario 'user session cookie has no explicit expiration time (dies with browser exit)' do
+    sign_in_and_2fa_user
+
+    expect(session_cookie.expires).to be_nil
   end
 
   context 'session approaches timeout', js: true do
@@ -80,7 +86,7 @@ feature 'Sign in' do
     scenario 'user can continue browsing' do
       find_link(t('notices.timeout_warning.signed_in.continue')).trigger('click')
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     scenario 'user has option to sign out' do
@@ -115,7 +121,9 @@ feature 'Sign in' do
       visit sign_up_email_path(foo: 'bar')
       fill_in 'Email', with: 'test@example.com'
 
-      expect(page).to have_content(t('notices.session_cleared'))
+      expect(page).to have_content(
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      )
       expect(page).to have_field('Email', with: '')
       expect(current_url).to match Regexp.escape(sign_up_email_path(foo: 'bar'))
     end
@@ -124,7 +132,9 @@ feature 'Sign in' do
       allow(Devise).to receive(:timeout_in).and_return(60)
 
       visit root_path
-      expect(page).to_not have_content(t('notices.session_cleared'))
+      expect(page).to_not have_content(
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      )
     end
   end
 
@@ -144,11 +154,14 @@ feature 'Sign in' do
       Timecop.travel(Devise.timeout_in + 1.minute) do
         expect(page).to_not have_content(t('forms.buttons.continue'))
 
+        # Redis doesn't respect Timecop so expire session manually.
+        session_store.send(:destroy_session_from_sid, session_cookie.value)
+
         fill_in_credentials_and_submit(user.email, user.password)
         expect(page).to have_content t('errors.invalid_authenticity_token')
 
         fill_in_credentials_and_submit(user.email, user.password)
-        expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 
@@ -159,7 +172,9 @@ feature 'Sign in' do
       fill_in 'Email', with: user.email
       fill_in 'Password', with: user.password
 
-      expect(page).to have_content(t('notices.session_cleared'))
+      expect(page).to have_content(
+        t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      )
       expect(find_field('Email').value).to be_blank
       expect(find_field('Password').value).to be_blank
     end
@@ -182,17 +197,17 @@ feature 'Sign in' do
       perform_in_browser(:one) do
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
       end
 
       perform_in_browser(:two) do
         sign_in_live_with_2fa(user)
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
       end
 
       perform_in_browser(:one) do
-        visit profile_path
+        visit account_path
 
         expect(current_path).to eq new_user_session_path
         expect(page).to have_content(t('devise.failure.session_limited'))
@@ -217,6 +232,18 @@ feature 'Sign in' do
 
       user = User.find_with_email(email)
       expect(user.encrypted_email).to eq encrypted_email
+    end
+  end
+
+  context 'KMS is on and user enters incorrect password' do
+    it 'redirects to root_path with user-friendly error message, not a 500 error' do
+      allow(FeatureManagement).to receive(:use_kms?).and_return(true)
+      stub_aws_kms_client_invalid_ciphertext
+
+      user = create(:user)
+      signin(user.email, 'invalid')
+      expect(current_path).to eq root_path
+      expect(page).to have_content t('devise.failure.invalid')
     end
   end
 end

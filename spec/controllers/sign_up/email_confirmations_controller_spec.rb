@@ -9,9 +9,9 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks nil email confirmation token' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token Please fill in this field.',
+        errors: { confirmation_token: [t('errors.messages.blank')] },
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -26,9 +26,9 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks blank email confirmation token' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token Please fill in this field.',
+        errors: { confirmation_token: [t('errors.messages.blank')] },
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -43,9 +43,9 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a single-quoted empty string' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token is invalid',
+        errors: { confirmation_token: [t('errors.messages.invalid')] },
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -60,9 +60,9 @@ describe SignUp::EmailConfirmationsController do
     it 'tracks confirmation token as a double-quoted empty string' do
       analytics_hash = {
         success: false,
-        error: 'Confirmation token is invalid',
+        errors: { confirmation_token: [t('errors.messages.invalid')] },
         user_id: nil,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -79,9 +79,9 @@ describe SignUp::EmailConfirmationsController do
 
       analytics_hash = {
         success: false,
-        error: 'Email was already confirmed, please try signing in',
+        errors: { email: [t('errors.messages.already_confirmed')] },
         user_id: user.uuid,
-        existing_user: true
+        existing_user: true,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -92,13 +92,16 @@ describe SignUp::EmailConfirmationsController do
 
     it 'tracks expired token' do
       user = create(:user, :unconfirmed)
-      user.update(confirmation_token: 'foo', confirmation_sent_at: Time.current - 2.days)
+      UpdateUser.new(
+        user: user,
+        attributes: { confirmation_token: 'foo', confirmation_sent_at: Time.zone.now - 2.days }
+      ).call
 
       analytics_hash = {
         success: false,
-        error: 'Confirmation token has expired',
+        errors: { confirmation_token: [t('errors.messages.expired')] },
         user_id: user.uuid,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -114,16 +117,15 @@ describe SignUp::EmailConfirmationsController do
 
   describe 'Valid email confirmation tokens' do
     it 'tracks a valid email confirmation token event' do
-      user = create(:user, :unconfirmed)
-      user.update(confirmation_token: 'foo')
+      user = create(:user, :unconfirmed, confirmation_token: 'foo')
 
       stub_analytics
 
       analytics_hash = {
         success: true,
-        error: '',
+        errors: {},
         user_id: user.uuid,
-        existing_user: false
+        existing_user: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -135,10 +137,11 @@ describe SignUp::EmailConfirmationsController do
 
   describe 'User confirms new email' do
     it 'tracks the event' do
-      user = create(:user, :signed_up)
-      user.update(
+      user = create(
+        :user,
+        :signed_up,
         confirmation_token: 'foo',
-        confirmation_sent_at: Time.current,
+        confirmation_sent_at: Time.zone.now,
         unconfirmed_email: 'test@example.com'
       )
 
@@ -146,9 +149,9 @@ describe SignUp::EmailConfirmationsController do
 
       analytics_hash = {
         success: true,
-        error: '',
+        errors: {},
         user_id: user.uuid,
-        existing_user: true
+        existing_user: true,
       }
 
       expect(@analytics).to receive(:track_event).

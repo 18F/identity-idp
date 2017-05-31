@@ -1,7 +1,14 @@
 class ServiceProviderSessionDecorator
-  def initialize(sp_name:, sp_logo:)
-    @sp_name = sp_name
-    @sp_logo = sp_logo
+  DEFAULT_LOGO = 'generic.svg'.freeze
+
+  def initialize(sp:, view_context:, sp_session:)
+    @sp = sp
+    @view_context = view_context
+    @sp_session = sp_session
+  end
+
+  def sp_logo
+    sp.logo || DEFAULT_LOGO
   end
 
   def return_to_service_provider_partial
@@ -17,24 +24,34 @@ class ServiceProviderSessionDecorator
   end
 
   def registration_heading
-    I18n.t('headings.create_account_with_sp', sp: sp_name)
+    'sign_up/registrations/sp_registration_heading'
   end
 
-  def registration_bullet_1
-    I18n.t('devise.registrations.start.bullet_1_with_sp', sp: sp_name)
+  def verification_method_choice
+    I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
   def idv_hardfail4_partial
     'verify/hardfail4'
   end
 
-  def logo_partial
-    return 'shared/nav_branded_logo' if sp_logo
+  def sp_name
+    sp.friendly_name || sp.agency
+  end
 
-    'shared/null'
+  def sp_return_url
+    if request_url.present?
+      OpenidConnectRedirector.from_request_url(request_url).decline_redirect_uri
+    else
+      sp.return_to_sp_url
+    end
   end
 
   private
 
-  attr_reader :sp_name, :sp_logo
+  attr_reader :sp, :view_context, :sp_session
+
+  def request_url
+    sp_session[:request_url]
+  end
 end

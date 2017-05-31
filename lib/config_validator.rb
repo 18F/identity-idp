@@ -12,7 +12,7 @@ class ConfigValidator
   end
 
   def keys_with_bad_values(env, keys)
-    keys.keep_if { |key| %w(yes no).include?(env[key]) }
+    keys.keep_if { |key| %w[yes no].include?(env[key]) }
   end
 
   def warning(bad_keys)

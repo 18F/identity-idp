@@ -4,22 +4,25 @@ class Profile < ActiveRecord::Base
   validates :active, uniqueness: { scope: :user_id, if: :active? }
   validates :ssn_signature, uniqueness: { scope: :active, if: :active? }
 
-  scope :active, -> { where(active: true) }
-  scope :verified, -> { where.not(verified_at: nil) }
+  scope(:active, -> { where(active: true) })
+  scope(:verified, -> { where.not(verified_at: nil) })
 
   enum deactivation_reason: {
     password_reset: 1,
-    encryption_error: 2
+    encryption_error: 2,
+    verification_pending: 3,
   }
 
-  attr_reader :recovery_code
+  attr_reader :personal_key
 
+  # rubocop:disable Rails/SkipsModelValidations
   def activate
     transaction do
       Profile.where('user_id=?', user_id).update_all(active: false)
-      update!(active: true, activated_at: Time.zone.now)
+      update!(active: true, activated_at: Time.zone.now, deactivation_reason: nil)
     end
   end
+  # rubocop:enable Rails/SkipsModelValidations
 
   def deactivate(reason)
     update!(active: false, deactivation_reason: reason)
@@ -29,9 +32,9 @@ class Profile < ActiveRecord::Base
     Pii::Attributes.new_from_encrypted(encrypted_pii, user_access_key)
   end
 
-  def recover_pii(recovery_code)
+  def recover_pii(personal_key)
     rc_user_access_key = UserAccessKey.new(
-      password: recovery_code,
+      password: personal_key,
       salt: user.recovery_salt,
       cost: user.recovery_cost
     )
@@ -47,19 +50,19 @@ class Profile < ActiveRecord::Base
   end
 
   def encrypt_recovery_pii(pii)
-    recovery_code, rc_user_access_key = generate_recovery_code
+    personal_key, rc_user_access_key = generate_personal_key
     self.encrypted_pii_recovery = pii.encrypted(rc_user_access_key)
-    @recovery_code = recovery_code
+    @personal_key = personal_key
   end
 
   private
 
-  def recovery_code_generator
-    @_recovery_code_generator ||= RecoveryCodeGenerator.new(user)
+  def personal_key_generator
+    @_personal_key_generator ||= PersonalKeyGenerator.new(user)
   end
 
-  def generate_recovery_code
-    recovery_code = recovery_code_generator.create
-    [recovery_code, recovery_code_generator.user_access_key]
+  def generate_personal_key
+    personal_key = personal_key_generator.create
+    [personal_key, personal_key_generator.user_access_key]
   end
 end

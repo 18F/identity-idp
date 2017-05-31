@@ -1,11 +1,14 @@
 include ActionView::Helpers::DateHelper
 
-UserDecorator = Struct.new(:user) do
+class UserDecorator
   MAX_RECENT_EVENTS = 5
 
-  def lockout_time_remaining
-    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
+  def initialize(user)
+    @user = user
   end
+
+  delegate :email, to: :user
+  delegate :totp_enabled?, to: :user
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
@@ -13,6 +16,10 @@ UserDecorator = Struct.new(:user) do
     distance_of_time_in_words(
       current_time, current_time + lockout_time_remaining, true, highest_measures: 2
     )
+  end
+
+  def lockout_time_remaining
+    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def confirmation_period_expired_error
@@ -27,30 +34,60 @@ UserDecorator = Struct.new(:user) do
     )
   end
 
-  def may_bypass_2fa?(session = {})
-    omniauthed?(session)
-  end
-
   def masked_two_factor_phone_number
     masked_number(user.phone)
-  end
-
-  def identity_verified?
-    user.active_profile.present?
-  end
-
-  def identity_not_verified?
-    !identity_verified?
   end
 
   def active_identity_for(service_provider)
     user.active_identities.find_by(service_provider: service_provider.issuer)
   end
 
+  def active_or_pending_profile
+    user.active_profile || pending_profile
+  end
+
+  def pending_profile_requires_verification?
+    return false if pending_profile.blank?
+    return true if identity_not_verified?
+    return false if active_profile_newer_than_pending_profile?
+    true
+  end
+
+  def pending_profile
+    user.profiles.verification_pending.order(created_at: :desc).first
+  end
+
+  def identity_not_verified?
+    !identity_verified?
+  end
+
+  def identity_verified?
+    user.active_profile.present?
+  end
+
+  def active_profile_newer_than_pending_profile?
+    user.active_profile.activated_at >= pending_profile.created_at
+  end
+
+  def needs_profile_phone_verification?
+    pending_profile_requires_verification? && pending_profile.phone_confirmed?
+  end
+
+  def needs_profile_usps_verification?
+    pending_profile_requires_verification? && !pending_profile.phone_confirmed?
+  end
+
+  # This user's most recently activated profile that has also been deactivated
+  # due to a password reset, or nil if there is no such profile
+  def password_reset_profile
+    profile = user.profiles.order(activated_at: :desc).first
+    profile if profile&.password_reset?
+  end
+
   def qrcode(otp_secret_key)
     options = {
       issuer: 'Login.gov',
-      otp_secret_key: otp_secret_key
+      otp_secret_key: otp_secret_key,
     }
     url = user.provisioning_uri(nil, options)
     qrcode = RQRCode::QRCode.new(url)
@@ -65,14 +102,12 @@ UserDecorator = Struct.new(:user) do
     user.second_factor_locked_at.present? && blocked_from_2fa_period_expired?
   end
 
-  def should_acknowledge_recovery_code?(session)
-    return true if session[:new_recovery_code]
+  def should_acknowledge_personal_key?(session)
+    return true if session[:new_personal_key]
 
     sp_session = session[:sp]
 
-    user.recovery_code.blank? &&
-      !omniauthed?(session) &&
-      (sp_session.blank? || sp_session[:loa3] == false)
+    user.personal_key.blank? && (sp_session.blank? || sp_session[:loa3] == false)
   end
 
   def recent_events
@@ -83,15 +118,7 @@ UserDecorator = Struct.new(:user) do
 
   def verified_account_partial
     if identity_verified?
-      'profile/verified_account_badge'
-    else
-      'shared/null'
-    end
-  end
-
-  def basic_account_partial
-    if identity_not_verified?
-      'profile/basic_account_badge'
+      'accounts/verified_account_badge'
     else
       'shared/null'
     end
@@ -99,17 +126,13 @@ UserDecorator = Struct.new(:user) do
 
   private
 
-  def omniauthed?(session)
-    return false if session[:omniauthed] != true
-
-    session.delete(:omniauthed)
-  end
+  attr_reader :user
 
   def masked_number(number)
     "***-***-#{number[-4..-1]}"
   end
 
   def blocked_from_2fa_period_expired?
-    (Time.current - user.second_factor_locked_at) > Devise.direct_otp_valid_for
+    (Time.zone.now - user.second_factor_locked_at) > Devise.direct_otp_valid_for
   end
 end

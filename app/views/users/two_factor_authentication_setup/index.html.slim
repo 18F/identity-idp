@@ -14,16 +14,18 @@ p.mt-tiny.mb0
       input_html: { class: 'phone sm-col-8 mb4' }
   .mb3
     fieldset.m0.p0.border-none
-      legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_method.title')
-      p = t('devise.two_factor_authentication.otp_method.instruction')
+      legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_delivery_preference.title')
       label.btn-border.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
         .radio
-          = radio_button_tag 'two_factor_setup_form[otp_method]', :sms, checked: true
+          = radio_button_tag 'two_factor_setup_form[otp_delivery_preference]', :sms, checked: true
           span.indicator
-          = t('devise.two_factor_authentication.otp_method.sms')
+          = t('devise.two_factor_authentication.otp_delivery_preference.sms')
       label.btn-border.col-12.sm-col-5
         .radio
-          = radio_button_tag 'two_factor_setup_form[otp_method]', :voice
+          = radio_button_tag 'two_factor_setup_form[otp_delivery_preference]', :voice
           span.indicator
-          = t('devise.two_factor_authentication.otp_method.voice')
-  = f.button :submit, t('forms.buttons.send_passcode')
+          = t('devise.two_factor_authentication.otp_delivery_preference.voice')
+      p.mt1.mb0 = t('devise.two_factor_authentication.otp_delivery_preference.instruction')
+  = f.button :submit, t('forms.buttons.send_security_code')
+
+= render 'shared/cancel', link: destroy_user_session_path

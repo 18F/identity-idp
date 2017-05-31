@@ -12,7 +12,7 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = {
     host: Figaro.env.domain_name,
-    protocol: 'http'
+    protocol: 'http',
   }
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.smtp_settings = { address: ENV['SMTP_HOST'] || 'localhost', port: 1025 }
@@ -21,6 +21,7 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
     event.payload[:timestamp] = event.time
+    event.payload[:uuid] = SecureRandom.uuid
     event.payload.except(:params)
   end
   config.lograge.ignore_actions = ['Users::SessionsController#active']

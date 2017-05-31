@@ -12,10 +12,9 @@ services:
     depends_on:
       - db
       - redis
-      - worker
-  worker:
+  sidekiq:
     build: .
-    command: "bundle exec sidekiq -q sms -q voice -q mailers -q analytics"
+    command: "bundle exec sidekiq --config config/sidekiq.yml"
     environment:
       REDIS_URL: "redis://redis"
       DATABASE_URL: "postgres://postgres@db"
@@ -24,6 +23,8 @@ services:
       - db
       - redis
       - mailcatcher
+    volumes:
+      - .:/upaya
   db:
     image: postgres
   redis:

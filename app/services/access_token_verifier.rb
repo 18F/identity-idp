@@ -29,7 +29,7 @@ class AccessTokenVerifier
   def load_identity(access_token)
     identity = Identity.where(access_token: access_token).first
 
-    if identity && Pii::SessionStore.new(identity.session_uuid).ttl.positive?
+    if identity && Pii::SessionStore.new(identity.rails_session_id).ttl.positive?
       @identity = identity
     else
       errors.add(:access_token, t('openid_connect.user_info.errors.not_found'))

@@ -31,13 +31,15 @@ Dir.chdir APP_ROOT do
 
   puts "== Copying sample certs and keys =="
   run "cp keys/saml.key.enc.example keys/saml.key.enc"
+  run "cp keys/equifax_rsa.example keys/equifax_rsa"
+  run "cp keys/equifax_rsa.pub.example keys/equifax_rsa.pub"
   run "cp certs/saml.crt.example certs/saml.crt"
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
-    run 'docker-compose up -d'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
+    run 'docker-compose up'
     exit
   end
 

@@ -4,57 +4,41 @@ include Features::LocalizationHelper
 include Features::MailerHelper
 
 describe Users::PasswordsController do
-  def stub_email_notifier(user)
-    email_notifier = instance_double(EmailNotifier)
-    allow(EmailNotifier).to receive(:new).with(user).and_return(email_notifier)
-
-    expect(email_notifier).to receive(:send_password_changed_email)
-  end
-
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do
         stub_sign_in
-
-        user = controller.current_user
-
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        stub_email_notifier(user)
-
-        params = { password: 'salty new password', current_password: user.password }
+        params = { password: 'salty new password' }
         patch :update, update_user_password_form: params
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::PASSWORD_CHANGED, success: true, errors: [])
-        expect(response).to redirect_to profile_url
+          with(Analytics::PASSWORD_CHANGED, success: true, errors: {})
+        expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('notices.password_changed')
+        expect(flash[:personal_key]).to be_nil
       end
 
-      it 're-encrypts PII on active profile' do
-        user = stub_sign_in
-        profile = build(:profile, :active, user: user, pii: { ssn: '1234' })
-        allow(user).to receive(:active_profile).and_return(profile)
+      it 'calls UpdateUserPassword' do
+        stub_sign_in
+        updater = instance_double(UpdateUserPassword)
+        password = 'strong password'
+        allow(UpdateUserPassword).to receive(:new).
+          with(user: subject.current_user, user_session: subject.user_session, password: password).
+          and_return(updater)
+        response = FormResponse.new(success: true, errors: {})
+        allow(updater).to receive(:call).and_return(response)
+        personal_key = 'five random words for test'
+        allow(updater).to receive(:personal_key).and_return(personal_key)
 
-        new_password = 'salty new password'
-        old_password = user.password
-        old_user_access_key = user.unlock_user_access_key(old_password)
-
-        cacher = Pii::Cacher.new(user, controller.user_session)
-        cacher.save(old_user_access_key, profile)
-
-        stub_email_notifier(user)
-
-        params = { password: new_password, current_password: user.password }
+        params = { password: password }
         patch :update, update_user_password_form: params
 
-        new_user_access_key = user.unlock_user_access_key(new_password)
-
-        expect(flash[:recovery_code]).to be_present
-        expect(profile.decrypt_pii(new_user_access_key)).to be_a Pii::Attributes
-        expect(profile.decrypt_pii(new_user_access_key).ssn).to eq '1234'
-        expect { profile.decrypt_pii(old_user_access_key) }.to raise_error Pii::EncryptionError
+        expect(flash[:personal_key]).to eq personal_key
+        expect(updater).to have_received(:call)
+        expect(updater).to have_received(:personal_key)
       end
     end
 
@@ -65,14 +49,14 @@ describe Users::PasswordsController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        expect(EmailNotifier).to_not receive(:new)
-
         params = { password: 'new' }
         patch :update, update_user_password_form: params
 
-        errors = [
-          "Password #{t('errors.messages.too_short.other', count: Devise.password_length.first)}"
-        ]
+        errors = {
+          password: [
+            t('errors.messages.too_short.other', count: Devise.password_length.first),
+          ],
+        }
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_CHANGED, success: false, errors: errors)

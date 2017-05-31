@@ -1,16 +1,16 @@
 class AttributeAsserter
-  VALID_ATTRIBUTES = [
-    :first_name,
-    :middle_name,
-    :last_name,
-    :address1,
-    :address2,
-    :city,
-    :state,
-    :zipcode,
-    :dob,
-    :ssn,
-    :phone
+  VALID_ATTRIBUTES = %i[
+    first_name
+    middle_name
+    last_name
+    address1
+    address2
+    city
+    state
+    zipcode
+    dob
+    ssn
+    phone
   ].freeze
 
   URI_PATTERN = Saml::Idp::Constants::REQUESTED_ATTRIBUTES_CLASSREF
@@ -38,15 +38,16 @@ class AttributeAsserter
       uuid: {
         getter: uuid_getter_function,
         name_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
-        name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT
-      }
+        name_id_format: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
+      },
     }
   end
 
   def add_bundle(attrs)
     bundle.each do |attr|
       next unless VALID_ATTRIBUTES.include? attr
-      attrs[attr] = { getter: attribute_getter_function(attr) }
+      getter = ascii? ? attribute_getter_function_ascii(attr) : attribute_getter_function(attr)
+      attrs[attr] = { getter: getter }
     end
     attrs[:verified_at] = { getter: verified_at_getter_function }
   end
@@ -63,11 +64,15 @@ class AttributeAsserter
     ->(_principal) { decrypted_pii[attr] }
   end
 
+  def attribute_getter_function_ascii(attr)
+    ->(_principal) { decrypted_pii[attr].ascii }
+  end
+
   def add_email(attrs)
     attrs[:email] = {
       getter: :email,
       name_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
-      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS
+      name_id_format: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
     }
   end
 
@@ -101,5 +106,9 @@ class AttributeAsserter
 
   def authn_context
     authn_request.requested_authn_context
+  end
+
+  def ascii?
+    bundle.include?(:ascii)
   end
 end

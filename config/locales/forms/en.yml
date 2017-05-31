@@ -9,10 +9,7 @@ en:
       edit: Edit
       enable: Enable
       resend_confirmation: Resend confirmation instructions
-      search: Search
-      send: Send
-      send_passcode: Send passcode
-      setup_totp: Set up authentication app
+      send_security_code: Send security code
       submit:
         confirm_change: Confirm change
         default: Submit
@@ -30,24 +27,24 @@ en:
       instructions: Provide the information below to reactivate your account.
       submit: Reactivate profile
       title: Reactivate profile
-    recovery_code:
+    personal_key:
       title: Enter your personal key
       instructions: Please confirm you have a copy of your personal key by entering it below.
-      confirmation_label: Personal key word %{number}
+      confirmation_label: Personal key
     registration:
       labels:
         email: Email address
     totp_setup:
-      code: One-time passcode
-      totp_info: >
-        To enable two-factor authentication, use the QR code provided to link
-        this account to your authentication app.
-      totp_intro: >
-        To receive a one-time passode, you may choose to use a two-factor
-        authentication application to log into to your account. If so, you’ll need to
-        link your login.gov account to the application you choose. Each time you sign in
-        you’ll need to open the application and retrieve a code.
+      totp_intro_html: >
+        When you sign in, you can get your security code from an authentication app. %{link}
+      totp_step_1: Open your authentication app
+      totp_step_2: Enter this key in the app
+      totp_step_3: Enter the code from the app
     two_factor:
-      code: One-time passcode
-      recovery_code: Recovery code
-      try_again: Use another
+      code: One-time security code
+      personal_key: Personal key
+      try_again: Use another phone number
+    verify_profile:
+      title: Verify your identity
+      submit: Submit
+      instructions: Enter your secret code

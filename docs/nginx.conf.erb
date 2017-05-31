@@ -1,0 +1,56 @@
+#user  nobody;
+worker_processes  5;
+error_log  <%= @log_path %>/error.log;
+pid <%= @pidfile %>;
+
+events {
+  worker_connections  <%= @passenger[:worker_connections] %>;
+}
+
+include conf.d/*.conf;
+
+http {
+  passenger_min_instances <%= @passenger[:min_instances] %>;
+  passenger_max_instances_per_app <%= @passenger[:max_instances_per_app] %>;
+  passenger_max_pool_size <%= @passenger[:max_pool_size] %>;
+  passenger_pool_idle_time <%= @passenger[:pool_idle_time] %>;
+  passenger_root <%= @passenger_root %>;
+  passenger_ruby <%= @ruby_path %>;
+  passenger_show_version_in_header off;
+  passenger_user <%= @passenger_user %>;
+
+  include mime.types;
+  default_type application/octet-stream;
+
+  sendfile <%= @passenger[:sendfile] ? 'on' : 'off' %>;
+  tcp_nopush <%= @passenger[:tcp_nopush] ? 'on' : 'off' %>;
+  keepalive_timeout <%= @passenger[:keepalive_timeout] %>;
+  gzip <%= @passenger[:gzip] ? 'on' : 'off' %>;
+
+  # Timeouts definition
+  client_body_timeout   10;
+  client_header_timeout 10;
+  send_timeout          10;
+  # Set buffer size limits
+  client_body_buffer_size  1k;
+  client_header_buffer_size 1k;
+  client_max_body_size 20k;
+  large_client_header_buffers 2 20k;
+  # Limit connections
+  limit_conn_zone       $binary_remote_addr zone=addr:5m;
+  limit_conn addr       5;
+  # Disable sending server versions
+  server_tokens off;
+  # Prevent clickJacking attack
+  add_header X-Frame-Options SAMEORIGIN;
+  # Disable content-type sniffing
+  add_header X-Content-Type-Options nosniff;
+  # Enable XSS filter
+  add_header X-XSS-Protection "1; mode=block";
+
+  include sites.d/*.conf;
+}
+
+<% @passenger[:pre_start].each do |url| %>
+  passenger_pre_start <%= url %>;
+<% end %>

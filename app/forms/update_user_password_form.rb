@@ -8,22 +8,7 @@ class UpdateUserPasswordForm
     @user = user
   end
 
-  def submit(params)
-    self.password = params[:password]
-
-    @success = valid? && user.update(params)
-
-    result
-  end
-
-  private
-
-  attr_reader :success
-
-  def result
-    {
-      success: success,
-      errors: errors.full_messages
-    }
+  def submit(password)
+    self.password = password
   end
 end

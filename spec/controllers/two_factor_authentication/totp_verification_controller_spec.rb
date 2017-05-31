@@ -15,11 +15,15 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
         post :create, code: generate_totp_code(@secret)
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
       end
 
       it 'resets the second_factor_attempts_count' do
-        subject.current_user.update(second_factor_attempts_count: 1)
+        UpdateUser.new(
+          user: subject.current_user,
+          attributes: { second_factor_attempts_count: 1 }
+        ).call
+
         post :create, code: generate_totp_code(@secret)
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -27,8 +31,12 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
       it 'tracks the valid authentication event' do
         stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH, success: true, method: 'totp')
+        attributes = {
+          success: true,
+          errors: {},
+          multi_factor_auth_method: 'totp',
+        }
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
 
         post :create, code: generate_totp_code(@secret)
       end
@@ -57,29 +65,37 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user has reached the max number of TOTP attempts' do
       it 'tracks the event' do
+        allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         subject.current_user.otp_secret_key = @secret
 
         stub_analytics
 
-        expect(@analytics).to receive(:track_event).exactly(3).times.
-          with(Analytics::MULTI_FACTOR_AUTH, success: false, method: 'totp')
+        attributes = {
+          success: false,
+          errors: {},
+          multi_factor_auth_method: 'totp',
+        }
+
+        expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        3.times { post :create, code: '12345' }
+        post :create, code: '12345'
       end
     end
 
     context 'when the user lockout period expires' do
       before do
-        sign_in_before_2fa
-        @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
-        subject.current_user.update(
+        user = create(
+          :user,
+          :signed_up,
           second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.second,
           second_factor_attempts_count: 3
         )
+        sign_in_before_2fa(user)
+        @secret = subject.current_user.generate_totp_secret
+        subject.current_user.otp_secret_key = @secret
       end
 
       describe 'when user submits an invalid TOTP' do

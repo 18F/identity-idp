@@ -13,7 +13,7 @@ feature 'Two Factor Authentication' do
       expect(page).
         to have_content t('devise.two_factor_authentication.two_factor_setup')
 
-      send_passcode_without_entering_phone_number
+      send_security_code_without_entering_phone_number
 
       expect(current_path).to eq phone_setup_path
 
@@ -28,34 +28,34 @@ feature 'Two Factor Authentication' do
       submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
 
       expect(page).to_not have_content invalid_phone_message
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
       expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       expect(user.voice?).to eq true
     end
   end
 
   def attempt_to_bypass_2fa_setup
-    visit profile_path
+    visit account_path
   end
 
-  def send_passcode_without_entering_phone_number
-    click_button t('forms.buttons.send_passcode')
+  def send_security_code_without_entering_phone_number
+    click_send_security_code
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
     fill_in 'Phone', with: ''
-    click_button t('forms.buttons.send_passcode')
+    click_send_security_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
     fill_in 'Phone', with: 'five one zero five five five four three two one'
-    click_button t('forms.buttons.send_passcode')
+    click_send_security_code
   end
 
   def submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
     fill_in 'Phone', with: '555-555-1212'
     choose 'Phone call'
-    click_button t('forms.buttons.send_passcode')
+    click_send_security_code
   end
 
   describe 'When the user has already set up 2FA' do
@@ -63,21 +63,21 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).
         to have_content t('devise.two_factor_authentication.header_text')
 
       attempt_to_bypass_2fa
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       submit_prefilled_otp_code
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     def attempt_to_bypass_2fa
-      visit profile_path
+      visit account_path
     end
 
     def submit_prefilled_otp_code
@@ -87,9 +87,21 @@ feature 'Two Factor Authentication' do
     scenario 'user can resend one-time password (OTP)' do
       user = create(:user, :signed_up)
       sign_in_before_2fa(user)
+      old_code = find('input[@name="code"]').value
+
       click_link t('links.two_factor_authentication.resend_code.sms')
 
-      expect(page).to have_content(t('notices.send_code.sms'))
+      new_code = find('input[@name="code"]').value
+
+      expect(old_code).not_to eq(new_code)
+    end
+
+    scenario 'user can cancel OTP process' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_link t('links.cancel')
+
+      expect(current_path).to eq root_path
     end
 
     scenario 'user does not have to focus on OTP field', js: true do
@@ -101,8 +113,9 @@ feature 'Two Factor Authentication' do
 
     context 'user enters OTP incorrectly 3 times', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
-        allow(Figaro.env).to receive(:session_check_frequency).and_return('1')
-        allow(Figaro.env).to receive(:session_check_delay).and_return('2')
+        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        five_minute_countdown_regex = /4:5\d/
 
         user = create(:user, :signed_up)
         sign_in_before_2fa(user)
@@ -113,32 +126,49 @@ feature 'Two Factor Authentication' do
         end
 
         expect(page).to have_content t('titles.account_locked')
-        expect(page).to have_content(/4:5\d/)
+        expect(page).to have_content(five_minute_countdown_regex)
 
         # let lockout period expire
-        user.update(
-          second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second)
-        )
+        UpdateUser.new(
+          user: user,
+          attributes: {
+            second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second),
+          }
+        ).call
 
         sign_in_before_2fa(user)
         click_button t('forms.buttons.submit.default')
 
-        expect(current_path).to eq profile_path
+        expect(current_path).to eq account_path
       end
     end
 
     context 'user signs in while locked out' do
       it 'signs the user out and lets them know they are locked out' do
-        user = create(:user, :signed_up)
-        user.update(second_factor_locked_at: Time.zone.now - 1.minute)
+        user = create(:user, :signed_up, second_factor_locked_at: Time.zone.now - 1.minute)
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
         signin(user.email, user.password)
 
         expect(page).to have_content t('devise.two_factor_authentication.' \
-                                       'max_login_attempts_reached')
+                                       'max_generic_login_attempts_reached')
 
-        visit profile_path
+        visit account_path
         expect(current_path).to eq root_path
+      end
+
+      it 'leaves the user on the lockout page during the entire lockout period', js: true do
+        Timecop.freeze do
+          allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+          allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+          five_minute_countdown_regex = /4:5\d/
+          allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
+          user = create(:user, :signed_up, second_factor_locked_at: Time.zone.now)
+
+          signin(user.email, user.password)
+
+          expect(page).to have_content t('titles.account_locked')
+          expect(page).to have_content(five_minute_countdown_regex)
+        end
       end
     end
 
@@ -165,62 +195,54 @@ feature 'Two Factor Authentication' do
 
       click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
       visit login_two_factor_authenticator_path
 
       click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'voice')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
     end
-  end
 
-  describe 'signing in via recovery code' do
-    it 'displays new recovery code and redirects to profile after acknowledging' do
-      user = create(:user, :signed_up)
+    scenario 'user can cancel TOTP process' do
+      user = create(:user, :signed_up, otp_secret_key: 'foo')
       sign_in_before_2fa(user)
+      click_link t('links.cancel')
 
-      code = RecoveryCodeGenerator.new(user).create
-      click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
-      fill_in 'code', with: code
-      click_button t('forms.buttons.submit.default')
-      click_acknowledge_recovery_code
-
-      expect(user.reload.recovery_code).to_not eq code
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq root_path
     end
   end
 
   # TODO: readd profile redirect, modal tests
-  describe 'signing in when user does not already have recovery code' do
+  describe 'signing in when user does not already have personal key' do
     # For example, when migrating users from another DB
-    it 'displays recovery code and redirects to profile' do
+    it 'displays personal key and redirects to profile' do
       user = create(:user, :signed_up)
-      user.update!(recovery_code: nil)
+      UpdateUser.new(user: user, attributes: { personal_key: nil }).call
 
       sign_in_user(user)
       click_button t('forms.buttons.submit.default')
       fill_in 'code', with: user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(user.reload.recovery_code).not_to be_nil
+      expect(user.reload.personal_key).not_to be_nil
 
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 
   describe 'visiting OTP delivery and verification pages after fully authenticating' do
     it 'redirects to profile page' do
       sign_in_and_2fa_user
-      visit login_two_factor_path(delivery_method: 'sms')
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
 
       visit user_two_factor_authentication_path
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 
@@ -230,6 +252,26 @@ feature 'Two Factor Authentication' do
       sign_in_user(user)
       find("img[alt='login.gov']").click
       expect(current_path).to eq root_path
+    end
+  end
+
+  describe 'clicking footer links during 2FA' do
+    it 'renders the requested pages' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+      click_link t('links.help')
+
+      expect(current_url).to eq MarketingSite.help_url
+
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
+      click_link t('links.contact')
+
+      expect(current_url).to eq MarketingSite.contact_url
+
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
+      click_link t('links.privacy_policy')
+
+      expect(current_url).to eq MarketingSite.privacy_url
     end
   end
 end

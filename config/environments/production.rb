@@ -12,15 +12,16 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
   config.action_mailer.smtp_settings = JSON.parse(Figaro.env.smtp_settings).symbolize_keys
 
-  routes.default_url_options[:protocol] = 'https'
-
   config.action_mailer.default_url_options = {
     host: Figaro.env.domain_name,
-    protocol: 'https'
+    protocol: 'https',
   }
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_options = { from: Figaro.env.email_from }
+  config.action_mailer.delivery_method = :test if Figaro.env.disable_email_sending == 'true'
+
+  routes.default_url_options[:protocol] = :https
 
   # turn off IP spoofing protection since the network configuration in the production environment
   # creates false positive results.
@@ -30,6 +31,7 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.custom_options = lambda do |event|
     event.payload[:timestamp] = event.time
+    event.payload[:uuid] = SecureRandom.uuid
     event.payload.except(:params)
   end
   config.lograge.ignore_actions = ['Users::SessionsController#active']

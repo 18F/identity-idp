@@ -38,6 +38,7 @@ Metrics/BlockLength:
     - 'app/decorators/user_decorator.rb'
     - 'app/services/omniauth_authorizer.rb'
     - 'app/services/single_logout_handler.rb'
+    - 'app/services/pii/attributes.rb'
     - 'config/environments/*.rb'
     - 'config/initializers/secure_headers.rb'
     - 'config/routes.rb'
@@ -50,8 +51,12 @@ Metrics/ClassLength:
   Max: 100
   Exclude:
   - spec/**/*
+  - app/controllers/application_controller.rb
+  - app/controllers/openid_connect/authorization_controller.rb
   - app/controllers/users/confirmations_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
+  - app/decorators/user_decorator.rb
+  - app/services/idv/session.rb
 
 Metrics/LineLength:
   Description: Limit lines to 100 characters.
@@ -96,11 +101,18 @@ Rails/OutputSafety:
   Exclude:
   - lib/i18n_override.rb
 
+# temporarily disabled until the fix for https://github.com/bbatsov/rubocop/issues/4249
+# is available in a new release
+Rails/RelativeDateConstant:
+  Enabled: false
+
 Rails/TimeZone:
   # The value `strict` means that `Time` should be used with `zone`.
   # The value `flexible` allows usage of `in_time_zone` instead of `zone`.
+  Description: 'Checks the correct usage of time zone aware methods.'
+  StyleGuide: 'https://github.com/bbatsov/rails-style-guide#time'
   Enabled: true
-  EnforcedStyle: flexible
+  EnforcedStyle: strict
   SupportedStyles:
     - strict
     - flexible
@@ -216,6 +228,18 @@ Style/MultilineOperationIndentation:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
+Style/PercentLiteralDelimiters:
+  # Specify the default preferred delimiter for all types with the 'default' key
+  # Override individual delimiters (even with default specified) by specifying
+  # an individual key
+  PreferredDelimiters:
+    default: ()
+    '%i': '[]'
+    '%I': '[]'
+    '%r': '{}'
+    '%w': '[]'
+    '%W': '[]'
+
 Style/StringLiterals:
   Description: Checks if uses of quotes match the configured preference.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-string-literals
@@ -231,7 +255,7 @@ Style/TrailingCommaInArguments:
   # If `consistent_comma`, the cop requires a comma after the last argument,
   # for all parenthesized method calls with arguments.
   EnforcedStyleForMultiline: no_comma
-  SupportedStyles:
+  SupportedStylesForMultiline:
     - comma
     - consistent_comma
     - no_comma
@@ -241,8 +265,8 @@ Style/TrailingCommaInLiteral:
   # hash, but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
   # non-empty array and hash literals.
-  EnforcedStyleForMultiline: no_comma
-  SupportedStyles:
+  EnforcedStyleForMultiline: comma
+  SupportedStylesForMultiline:
     - comma
     - consistent_comma
     - no_comma

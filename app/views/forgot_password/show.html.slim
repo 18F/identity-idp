@@ -6,14 +6,10 @@
   h1.mt1.mb-12p.h3 = t('headings.verify_email')
   p
     | #{t('notices.forgot_password.first_paragraph_start')}
-      <strong>#{@email}</strong>
+      <strong>#{@view_model.email}</strong>
       #{t('notices.forgot_password.first_paragraph_end')}
-  - if @resend_confirmation
-    .alert.alert-success.alert-no-icon role="alert"
-      = image_tag(asset_url('alert/ico-thumb.svg'), height: '16', alt: '',\
-        class: 'mr2 align-bottom')
-      = t('notices.forgot_password.resend_email_success')
-  = simple_form_for(@password_reset_email_form, url: user_password_path,
+  = render @view_model.resend_confirmation_partial
+  = simple_form_for(@view_model.password_reset_email_form, url: user_password_path,
     html: { autocomplete: 'off', method: :post, role: 'form', class: 'mb2' }) do |f|
     = f.input :email, as: :hidden, wrapper: false
     = f.input :resend, as: :hidden, wrapper: false

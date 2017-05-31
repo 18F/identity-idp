@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+require 'proofer/vendor/mock'
+
 describe Verify::ReviewController do
   let(:user) do
     create(
@@ -9,9 +11,12 @@ describe Verify::ReviewController do
       email: 'old_email@example.com'
     )
   end
+  let(:raw_zipcode) { '66044' }
+  let(:norm_zipcode) { '66044-1234' }
+  let(:normalized_first_name) { 'JOSE' }
   let(:user_attrs) do
     {
-      first_name: 'Some',
+      first_name: 'José',
       last_name: 'One',
       ssn: '666661234',
       dob: 'March 29, 1972',
@@ -19,9 +24,9 @@ describe Verify::ReviewController do
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: '66044',
+      zipcode: raw_zipcode,
       phone: user.phone,
-      ccn: '12345678'
+      ccn: '12345678',
     }
   end
   let(:idv_session) do
@@ -29,6 +34,10 @@ describe Verify::ReviewController do
     idv_session.profile_confirmation = true
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true
+    idv_session.params = user_attrs
+    idv_session.normalized_applicant_params = user_attrs.merge(
+      zipcode: norm_zipcode, first_name: normalized_first_name
+    )
     idv_session
   end
 
@@ -62,15 +71,15 @@ describe Verify::ReviewController do
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     end
 
-    context 'user has missed phone step' do
+    context 'user has missed address step' do
       before do
         idv_session.phone_confirmation = false
       end
 
-      it 'redirects to phone step' do
+      it 'redirects to address step' do
         get :show
 
-        expect(response).to redirect_to verify_phone_path
+        expect(response).to redirect_to verify_address_path
       end
     end
 
@@ -161,6 +170,20 @@ describe Verify::ReviewController do
         )
       end
     end
+
+    context 'user chooses address verification' do
+      before do
+        idv_session.address_verification_mechanism = 'usps'
+      end
+
+      it 'displays a helpful flash message to the user' do
+        get :new
+
+        expect(flash.now[:success]).to eq(
+          t('idv.messages.mail_sent')
+        )
+      end
+    end
   end
 
   describe '#create' do
@@ -185,7 +208,7 @@ describe Verify::ReviewController do
     context 'user has completed all steps' do
       before do
         idv_session.params = user_attrs
-        idv_session.applicant = idv_session.applicant_from_params
+        idv_session.applicant = idv_session.vendor_params
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
@@ -196,12 +219,28 @@ describe Verify::ReviewController do
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
         expect(response).to redirect_to verify_confirmations_path
       end
+
+      it 'creates Profile with applicant and normalized_applicant attributes' do
+        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
+
+        profile = idv_session.profile
+        uak = user.unlock_user_access_key(ControllerHelper::VALID_PASSWORD)
+        pii = profile.decrypt_pii(uak)
+
+        expect(pii.zipcode.raw).to eq raw_zipcode
+        expect(pii.zipcode.norm).to eq norm_zipcode
+
+        expect(idv_session.applicant[:first_name]).to eq 'Jose'
+        expect(pii.first_name.raw).to eq 'José'
+        expect(pii.first_name.norm).to eq 'JOSE'
+      end
     end
 
     context 'user has entered different phone number from MFA' do
       before do
         idv_session.params = user_attrs.merge(phone: '213-555-1000')
-        idv_session.applicant = idv_session.applicant_from_params
+        idv_session.applicant = idv_session.vendor_params
+        idv_session.address_verification_mechanism = 'phone'
         stub_analytics
         allow(@analytics).to receive(:track_event)
       end
@@ -212,7 +251,7 @@ describe Verify::ReviewController do
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
         expect(response).to redirect_to(
           otp_send_path(
-            otp_delivery_selection_form: { otp_method: 'sms' }
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
           )
         )
         expect(subject.user_session[:context]).to eq 'idv'

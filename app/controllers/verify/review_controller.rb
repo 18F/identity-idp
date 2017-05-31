@@ -6,12 +6,10 @@ module Verify
     before_action :confirm_idv_steps_complete
     before_action :confirm_current_password, only: [:create]
 
-    helper_method :idv_params
-
     def confirm_idv_steps_complete
       return redirect_to(verify_session_path) unless idv_profile_complete?
       return redirect_to(verify_finance_path) unless idv_finance_complete?
-      return redirect_to(verify_phone_path) unless idv_phone_complete?
+      return redirect_to(verify_address_path) unless idv_address_complete?
     end
 
     def confirm_current_password
@@ -22,15 +20,10 @@ module Verify
     end
 
     def new
-      idv_session.params.symbolize_keys!
+      @idv_params = idv_params
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
-      phone_of_record_msg = ActionController::Base.helpers.content_tag(
-        :strong, t('idv.messages.phone.phone_of_record')
-      )
-
-      flash.now[:success] = t('idv.messages.review.info_verified_html',
-                              phone_message: phone_of_record_msg)
+      flash.now[:success] = flash_message_content
     end
 
     def create
@@ -41,6 +34,17 @@ module Verify
 
     private
 
+    def flash_message_content
+      if idv_session.address_verification_mechanism == 'usps'
+        t('idv.messages.mail_sent')
+      else
+        phone_of_record_msg = ActionController::Base.helpers.content_tag(
+          :strong, t('idv.messages.phone.phone_of_record')
+        )
+        t('idv.messages.review.info_verified_html', phone_message: phone_of_record_msg)
+      end
+    end
+
     def idv_profile_complete?
       idv_session.profile_confirmation == true
     end
@@ -49,12 +53,12 @@ module Verify
       idv_session.financials_confirmation == true
     end
 
-    def idv_phone_complete?
-      idv_session.phone_confirmation == true
+    def idv_address_complete?
+      idv_session.address_mechanism_chosen?
     end
 
     def init_profile
-      idv_session.cache_applicant_profile_id(idv_session.applicant)
+      idv_session.cache_applicant_profile_id
       idv_session.cache_encrypted_pii(current_user.user_access_key)
     end
 
@@ -71,7 +75,8 @@ module Verify
     end
 
     def phone_confirmation_required?
-      idv_params[:phone] != current_user.phone
+      idv_params[:phone] != current_user.phone &&
+        idv_session.address_verification_mechanism == 'phone'
     end
 
     def valid_password?

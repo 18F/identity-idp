@@ -18,6 +18,17 @@ describe 'FeatureManagement', type: :feature do
       end
     end
 
+    context 'when the server is idp.pt.login.gov' do
+      before { allow(FeatureManagement).to receive(:telephony_disabled?).and_return(true) }
+
+      it 'returns true in production mode' do
+        allow(Rails.env).to receive(:production?).and_return(true)
+        allow(Figaro.env).to receive(:domain_name).and_return(FeatureManagement::PT_DOMAIN_NAME)
+
+        expect(FeatureManagement.prefill_otp_codes?).to eq(true)
+      end
+    end
+
     context 'when SMS sending is enabled' do
       before { allow(FeatureManagement).to receive(:telephony_disabled?).and_return(false) }
 
@@ -29,6 +40,13 @@ describe 'FeatureManagement', type: :feature do
 
       it 'returns false in non-development mode' do
         allow(Rails.env).to receive(:development?).and_return(false)
+
+        expect(FeatureManagement.prefill_otp_codes?).to eq(false)
+      end
+
+      it 'returns false in production mode when server is pt' do
+        allow(Rails.env).to receive(:production?).and_return(true)
+        allow(Figaro.env).to receive(:domain_name).and_return(FeatureManagement::PT_DOMAIN_NAME)
 
         expect(FeatureManagement.prefill_otp_codes?).to eq(false)
       end
@@ -87,6 +105,28 @@ describe 'FeatureManagement', type: :feature do
 
       it 'disables the feature' do
         expect(FeatureManagement.use_dashboard_service_providers?).to eq(false)
+      end
+    end
+  end
+
+  describe '#enable_identity_verification?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:enable_identity_verification).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.enable_identity_verification?).to eq(true)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(Figaro.env).to receive(:enable_identity_verification).and_return('false')
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.enable_identity_verification?).to eq(false)
       end
     end
   end

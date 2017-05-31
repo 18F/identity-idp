@@ -1,4 +1,5 @@
 addons:
+  postgresql: 9.3
   code_climate:
     repo_token:
       secure: '0RG6L9Sfur37NAB4X9rZypo6tffcWQtTcTpuSi08SfLN9jgiG2nHArVvw0nfNcSg7EmJ27ZnQxQqRjXlG76ufndlmoxgVX6xs96VyDyCOEFzRecE+wziNis+B3ACZb5OHaoMpomzsYFA73nYoCnPkgKUPAQFReTIqW7IB2Z1t7auTZe6kYBkKP7yB37wAVD4HMUDwm0spT0U2ur2GzSi86EqFEXR4NfhzGu5o7Y/hzWPxyyz+CRrujXhdWZl1FNtMj0mUM0/zSEEgUuCRRClGkD31RECjDKQQrXUkgQ1b3O/Nbih/8EjDqs4udLGnBYbtoahZ0ogZ/SV5xj7n2umNBJeLLTZO/qhWyQA4YDPuAZCw61VK1jpyQE1uZKxawYkgXBScmTWCJeAwEqZ4V8z4H4W2y1ZgegAoBCYOhv2+Dq4d9IaBUaeH3ukhEKX9H38yF1DEkp2sXKfXOxyEgpr0g0IIII9YVYQ89WExNmnZnfgd6lBqMFlP4wj8pQkCAeMG8+e+O0QsewzwlVgDDp5pQCgHEYq5X3quvWv0bRJDBL68/4fU9kEjv+RAo8Wx99x3nrZSzJglBrSaPt2/+eoVf3VTIJX4p8oO3aC/gcpbrWZrsfcGfLgKCEiu/ggzhicYhWY+Aa+pdeOefrO51ki9BIu84PoMrP2I7EREp2s1vw='
@@ -26,6 +27,7 @@ before_script:
   - cp config/application.yml.example config/application.yml
   - cp certs/saml.crt.example certs/saml.crt
   - cp keys/saml.key.enc.example keys/saml.key.enc
+  - cp keys/equifax_rsa.example keys/equifax_rsa
   - bin/rake db:setup --trace
   - bin/rake assets:precompile
 bundler_args: "--deployment --jobs=3 --retry=3 --without deploy development doc production"
@@ -44,3 +46,6 @@ script:
   - bundle exec codeclimate-test-reporter
 services:
   - redis-server
+env:
+  global:
+    - COVERAGE=true

@@ -31,7 +31,7 @@ module Users
         flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')
         prompt_to_confirm_phone(phone: @update_user_phone_form.phone)
       else
-        redirect_to profile_url
+        redirect_to account_url
       end
     end
   end

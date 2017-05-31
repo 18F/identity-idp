@@ -1,47 +1,11 @@
 require 'rails_helper'
 
 feature 'Password Recovery' do
-  def reset_password_and_sign_back_in(user, password = 'a really long password')
-    fill_in t('forms.passwords.edit.labels.password'), with: password
-    click_button t('forms.passwords.edit.buttons.submit')
-    fill_in_credentials_and_submit(user.email, password)
-  end
-
-  def recovery_code_from_pii(user, pii)
-    profile = create(:profile, :active, :verified, user: user)
-    pii_attrs = Pii::Attributes.new_from_hash(pii)
-    user_access_key = user.unlock_user_access_key(user.password)
-    recovery_code = profile.encrypt_pii(user_access_key, pii_attrs)
-    profile.save!
-
-    recovery_code
-  end
-
-  def trigger_reset_password_and_click_email_link(email)
-    visit new_user_password_path
-    fill_in 'Email', with: email
-    click_button t('forms.buttons.continue')
-    open_last_email
-    click_email_link_matching(/reset_password_token/)
-  end
-
-  def scrape_recovery_code
-    new_recovery_code_words = []
-    page.all(:css, 'p[data-recovery]').each do |node|
-      new_recovery_code_words << node.text
-    end
-    new_recovery_code_words.join(' ')
-  end
-
-  def reactivate_profile(password, recovery_code)
-    click_link t('profile.index.reactivation.reactivate_button')
-    fill_in 'Password', with: password
-    fill_in 'Recovery code', with: recovery_code
-    click_button t('forms.reactivate_profile.submit')
-  end
+  include PersonalKeyHelper
 
   context 'user enters valid email in forgot password form', email: true do
     it 'redirects to forgot_password path and sends an email to the user' do
+      allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
       user = create(:user, :signed_up)
 
       visit root_path
@@ -53,7 +17,7 @@ feature 'Password Recovery' do
 
       expect(last_email.subject).to eq t('devise.mailer.reset_password_instructions.' \
                                           'subject')
-      expect(last_email.html_part.body).to include contact_url
+      expect(last_email.html_part.body).to include MarketingSite.help_url
       expect(last_email.html_part.body).to have_content(
         t(
           'mailer.reset_password.footer',
@@ -64,6 +28,7 @@ feature 'Password Recovery' do
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
+      expect(page.html).not_to include(t('notices.dap_html'))
       expect(current_path).to eq edit_user_password_path
     end
   end
@@ -156,7 +121,7 @@ feature 'Password Recovery' do
       fill_in 'code', with: @user.reload.direct_otp
       click_button t('forms.buttons.submit.default')
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
   end
 
@@ -177,7 +142,7 @@ feature 'Password Recovery' do
 
       raw_reset_token, db_confirmation_token =
         Devise.token_generator.generate(User, :reset_password_token)
-      @user.update(reset_password_token: db_confirmation_token)
+      UpdateUser.new(user: @user, attributes: { reset_password_token: db_confirmation_token }).call
 
       visit edit_user_password_path(reset_password_token: raw_reset_token)
     end
@@ -196,7 +161,7 @@ feature 'Password Recovery' do
 
         expect(last_email.subject).to eq t('devise.mailer.password_updated.subject')
 
-        visit profile_path
+        visit account_path
         expect(current_path).to eq new_user_session_path
       end
     end
@@ -247,77 +212,6 @@ feature 'Password Recovery' do
     end
   end
 
-  context 'LOA3 user' do
-    let(:user) { create(:user, :signed_up) }
-    let(:new_password) { 'some really awesome new password' }
-    let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01' } }
-
-    scenario 'resets password and reactivates profile with recovery code', email: true do
-      recovery_code = recovery_code_from_pii(user, pii)
-
-      trigger_reset_password_and_click_email_link(user.email)
-
-      reset_password_and_sign_back_in(user, new_password)
-      click_submit_default
-      enter_correct_otp_code_for_user(user)
-
-      expect(page).to have_content t('profile.index.reactivation.instructions')
-
-      reactivate_profile(new_password, recovery_code)
-
-      expect(page).to have_content t('idv.messages.recovery_code')
-    end
-
-    scenario 'resets password, makes recovery code, attempts reactivate profile', email: true do
-      _recovery_code = recovery_code_from_pii(user, pii)
-
-      trigger_reset_password_and_click_email_link(user.email)
-
-      reset_password_and_sign_back_in(user, new_password)
-      click_submit_default
-      enter_correct_otp_code_for_user(user)
-
-      expect(page).to have_content t('profile.index.reactivation.instructions')
-
-      visit manage_recovery_code_path
-
-      new_recovery_code = scrape_recovery_code
-      click_acknowledge_recovery_code
-
-      expect(page).to have_content t('profile.index.reactivation.instructions')
-
-      reactivate_profile(new_password, new_recovery_code)
-
-      expect(page).to have_content t('errors.messages.recovery_code_incorrect')
-    end
-
-    scenario 'resets password, uses recovery code as 2fa', email: true do
-      recovery_code = recovery_code_from_pii(user, pii)
-
-      trigger_reset_password_and_click_email_link(user.email)
-
-      reset_password_and_sign_back_in(user, new_password)
-      click_submit_default
-
-      click_link t('devise.two_factor_authentication.recovery_code_fallback.link')
-      fill_in 'code', with: recovery_code
-      click_submit_default
-
-      expect(current_path).to eq sign_up_recovery_code_path
-
-      new_recovery_code = scrape_recovery_code
-      click_acknowledge_recovery_code
-
-      expect(current_path).to eq profile_path
-      expect(page).to have_content t('profile.index.reactivation.instructions')
-
-      reactivate_profile(new_password, new_recovery_code)
-
-      expect(page).to_not have_content t('errors.messages.recovery_code_incorrect')
-      expect(page).to have_content t('idv.messages.recovery_code')
-    end
-  end
-
   scenario 'user takes too long to click the reset password link' do
     user = create(:user, :signed_up)
 
@@ -330,7 +224,8 @@ feature 'Password Recovery' do
 
     raw_reset_token, db_confirmation_token =
       Devise.token_generator.generate(User, :reset_password_token)
-    user.update(reset_password_token: db_confirmation_token)
+
+    UpdateUser.new(user: user, attributes: { reset_password_token: db_confirmation_token }).call
 
     visit edit_user_password_path(reset_password_token: raw_reset_token)
 

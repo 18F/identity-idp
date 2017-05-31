@@ -1,0 +1,10 @@
+- title t('titles.reactivate_profile')
+
+h1.h3.my0 = t('forms.reactivate_profile.title')
+p.mt-tiny.mb0 = t('forms.reactivate_profile.instructions')
+= simple_form_for(@reactivate_account_form, url: reactivate_account_path,
+  html: { autocomplete: 'off', method: :post, role: 'form' }) do |f|
+  = f.error :base
+  = render 'partials/personal_key/entry_fields', f: f, attribute_name: :personal_key
+  = f.input :password, required: true
+  = f.button :submit, t('forms.reactivate_profile.submit'), class: 'mb1'

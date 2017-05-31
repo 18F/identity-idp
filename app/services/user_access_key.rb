@@ -56,7 +56,7 @@ class UserAccessKey
   end
 
   def unlock(random_key)
-    raise Pii::EncryptionError, 'Cannot unlock with nil random_key' unless random_key.present?
+    raise Pii::EncryptionError, 'Cannot unlock with nil random_key' if random_key.blank?
     self.unlocked = true
     self.random_r = random_key
     hash_e
@@ -74,14 +74,8 @@ class UserAccessKey
 
   attr_accessor :made, :unlocked
 
-  def z1_with_padding(len)
-    cur_len = z1.length
-    str = z1.dup
-    while cur_len < len
-      str = '0' + str
-      cur_len += 1
-    end
-    str
+  def z1_with_padding(length)
+    z1.dup.rjust(length, '0')
   end
 
   def build(password, pw_salt)

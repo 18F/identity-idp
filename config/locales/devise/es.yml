@@ -1,16 +1,15 @@
----
 es:
   devise:
     confirmations:
       already_confirmed: Su dirección de correo electrónico ya ha sido confirmada. %{acción}
-      confirmed: Ha confirmado tu dirección de correo electrónico
+      confirmed: Su dirección de correo electrónico esta confirmada.
       confirmed_but_must_set_password: Ha confirmado tu dirección de correo electrónico
       send_instructions:
         Recibirá un correo electrónico con instrucciones para confirmar su
-        dirección de correo electrónico en pocos minutos.
+        dirección de correo electrónico en breve.
       send_paranoid_instructions:
         Recibirá un correo electrónico con instrucciones para confirmar su
-        dirección de correo electrónico en pocos minutos.
+        dirección de correo electrónico en breve.
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
@@ -33,9 +32,6 @@ es:
         subject: Su contraseña ha sido cambiada.
       reset_password_instructions:
         subject: Restablecer su contraseña.
-    omniauth_callbacks:
-      failure: 'No se pudo iniciar sesión debido a: %{razon}.'
-      success: Autenticación con éxito!
     passwords:
       choose_new_password: Elija una contraseña nueva.
       invalid_token: El token de contraseña de restablecimiento no es válido. Inténtalo de nuevo.
@@ -73,7 +69,7 @@ es:
         Su solicitud para actualizar su número de teléfono fue procesada, pero necesitamos
         confirmar primero su número nuevo. Por favor, siga las siguientes instrucciones. Si no
         confirma su nuevo número, seguiremos usando su número de teléfono antiguo.
-      signed_up: ¡Bienvenido! Ha creado una cuenta.
+      signed_up: ¡Bienvenido! Usted ha creado una cuenta.
       signed_up_but_inactive:
         Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
         su cuenta aún no está activada.
@@ -81,14 +77,13 @@ es:
         Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
         su cuenta está bloqueada.
       start:
-        bullet_1_with_sp: login.gov provee servicios de cuenta a %{sp}
-        bullet_1_without_sp: login.gov provee servicios de cuenta para agencias gubernamentales
-        bullet_2:
-          Las agencias gubernamentales de los Estados Unidos están usando login.gov para interactuar con
-          el gobierno más fácil.
-        bullet_3:
-          Puede usar su cuenta para iniciar sesión en todas las agencias gubernamentales
-          participantes de los Estados Unidos.
+        accordion: NOT TRANSLATED YET
+        bullet_1_html: NOT TRANSLATED YET
+        bullet_2_html: NOT TRANSLATED YET
+        bullet_3_html: NOT TRANSLATED YET
+        bullet_4_html: NOT TRANSLATED YET
+        bullet_5_html: NOT TRANSLATED YET
+        learn_more: NOT TRANSLATED YET
       updated: ¡Su cuenta ha sido actualizada!
     sessions:
       already_signed_out: Ahora se ha cerrado la sesión.
@@ -107,11 +102,16 @@ es:
       invalid_otp:
         Esa contraseña no es válida. Puede intentar volver a ingresarlo o solicitar una nueva
         Código de acceso único.
-      invalid_recovery_code: Ese código de recuperación no es válido.
-      max_login_attempts_reached:
-        Su cuenta está bloqueada temporalmente porque ha ingresado el código de acceso único
+      invalid_personal_key: Ese código de recuperación no es válido.
+      max_generic_login_attempts_reached:
+        Su cuenta ha sido bloqueada temporalmente.
+      max_otp_login_attempts_reached:
+        Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.
-      otp_method:
+      max_personal_key_login_attempts_reached:
+        Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
+        de forma incorrecta demasiadas veces.
+      otp_delivery_preference:
         instruction: Puede cambiar su elección la próxima vez que inicie sesión.
         sms: Mensaje de texto (SMS)
         title: ¿Cómo le gustaría recibir su código de acceso?
@@ -125,11 +125,11 @@ es:
       please_confirm:
         Se ha establecido el número de teléfono. Confírmelo introduciendo el código de acceso siguiente.
       please_try_again_html: Inténtalo de nuevo en %{time_remaining}.
-      recovery_code_fallback:
+      personal_key_fallback:
         link: código de recuperación
-        text_html: ¿No tiene acceso a su teléfono? Use un %{link} en su lugar.
-      recovery_code_header_text: Ingrese su código de recuperación.
-      recovery_code_prompt: >
+        text_html: ¿No tiene acceso a su teléfono? Use el %{link} en su lugar.
+      personal_key_header_text: Ingrese su código de recuperación.
+      personal_key_prompt: >
         Puede usar este código de recuperación una vez. Si todavía necesita un código después de
         iniciar sesión, vaya a la página de configuración de su cuenta para obtener una nueva.
       totp_fallback:

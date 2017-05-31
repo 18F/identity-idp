@@ -1,34 +1,48 @@
 class IdTokenBuilder
   include Rails.application.routes.url_helpers
 
+  JWT_SIGNING_ALGORITHM = 'RS256'.freeze
+  NUM_BYTES_FIRST_128_BITS = 128 / 8
+
   attr_reader :identity
 
-  def initialize(identity, custom_expiration: nil)
+  def initialize(identity:, code:, custom_expiration: nil)
     @identity = identity
+    @code = code
     @custom_expiration = custom_expiration
   end
 
   def id_token
-    payload = {
-      iss: root_url,
-      aud: identity.service_provider,
-      sub: identity.uuid,
-      acr: acr,
-      nonce: identity.nonce,
-      jti: '', # a unique identifier for the token which can be used to prevent reuse of the token
-    }.merge(id_token_timestamp_values)
-
-    JWT.encode(payload, RequestKeyManager.private_key, 'RS256')
+    JWT.encode(jwt_payload, RequestKeyManager.private_key, JWT_SIGNING_ALGORITHM)
   end
 
   private
 
-  def id_token_timestamp_values
+  attr_reader :code
+
+  def jwt_payload
+    OpenidConnectUserInfoPresenter.new(identity).user_info.
+      merge(id_token_claims).
+      merge(timestamp_claims)
+  end
+
+  def id_token_claims
+    {
+      acr: acr,
+      nonce: identity.nonce,
+      aud: identity.service_provider,
+      jti: SecureRandom.urlsafe_base64,
+      at_hash: hash_token(identity.access_token),
+      c_hash: hash_token(code),
+    }
+  end
+
+  def timestamp_claims
     now = Time.zone.now.to_i
     {
       exp: @custom_expiration || expires,
       iat: now,
-      nbf: now
+      nbf: now,
     }
   end
 
@@ -45,7 +59,12 @@ class IdTokenBuilder
   end
 
   def expires
-    ttl = Pii::SessionStore.new(identity.session_uuid).ttl
+    ttl = Pii::SessionStore.new(identity.rails_session_id).ttl
     Time.zone.now.to_i + ttl
+  end
+
+  def hash_token(token)
+    leftmost_128_bits = Digest::SHA256.digest(token).byteslice(0, NUM_BYTES_FIRST_128_BITS)
+    Base64.urlsafe_encode64(leftmost_128_bits, padding: false)
   end
 end

@@ -7,37 +7,29 @@ describe UpdateUserPasswordForm, type: :model do
 
   it_behaves_like 'password validation'
 
-  describe '#submit' do
+  describe '#valid?' do
     context 'when the form is invalid' do
       it 'returns false' do
-        params = { password: 'new' }
+        subject.submit('new')
 
-        result = subject.submit(params)
-
-        result_hash = {
-          success: false,
-          errors: subject.errors.full_messages
-        }
-
-        expect(result).to eq result_hash
+        expect(subject.valid?).to eq false
       end
     end
 
-    context 'when both the form and user are valid' do
-      it 'sets the user password to the submitted password' do
-        params = { password: 'salty new password' }
+    context 'when the form is valid' do
+      it 'returns true' do
+        subject.submit('salty new password')
 
-        expect(subject.errors).to receive(:full_messages).and_call_original
-
-        result = subject.submit(params)
-
-        result_hash = {
-          success: true,
-          errors: []
-        }
-
-        expect(result).to eq result_hash
+        expect(subject.valid?).to eq true
       end
+    end
+  end
+
+  describe '#submit' do
+    it 'assigns the passed in password to the form' do
+      subject.submit('new strong password')
+
+      expect(subject.password).to eq 'new strong password'
     end
   end
 end

@@ -9,14 +9,17 @@ module Idv
     end
 
     def increment
-      current_user.update!(
-        idv_attempts: current_user.idv_attempts + 1,
-        idv_attempted_at: Time.zone.now
-      )
+      UpdateUser.new(
+        user: current_user,
+        attributes: { idv_attempts: current_user.idv_attempts + 1, idv_attempted_at: Time.zone.now }
+      ).call
     end
 
     def reset
-      current_user.update!(idv_attempts: 0)
+      UpdateUser.new(
+        user: current_user,
+        attributes: { idv_attempts: 0 }
+      ).call
     end
 
     def attempts
@@ -34,7 +37,7 @@ module Idv
       attempted_at = current_user.idv_attempted_at
 
       # never attempted
-      return true unless attempted_at.present?
+      return true if attempted_at.blank?
 
       # last attempted in the past outside the window
       attempted_at + idv_attempt_window < Time.zone.now

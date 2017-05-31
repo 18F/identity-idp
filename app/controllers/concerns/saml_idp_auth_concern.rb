@@ -4,8 +4,8 @@ module SamlIdpAuthConcern
   included do
     before_action :validate_saml_request, only: :auth
     before_action :validate_service_provider_and_authn_context, only: :auth
-    before_action :store_saml_request_attributes_in_session, only: :auth
-    before_action :confirm_two_factor_authenticated, only: :auth
+    before_action :store_saml_request, only: :auth
+    before_action :add_sp_metadata_to_session, only: :auth
   end
 
   private
@@ -16,38 +16,48 @@ module SamlIdpAuthConcern
       authn_context: requested_authn_context
     )
 
-    return unless @result[:errors].present?
+    return if @result.success?
 
-    analytics.track_event(Analytics::SAML_AUTH, @result)
+    analytics.track_event(Analytics::SAML_AUTH, @result.to_h)
     render nothing: true, status: :unauthorized
   end
 
-  # stores original SAMLRequest in session to continue SAML Authn flow
-  def store_saml_request_attributes_in_session
-    add_sp_metadata_to_session
-    session[:saml_request_url] = request.original_url
+  def store_saml_request
+    return if sp_session[:request_id]
+
+    @request_id = SecureRandom.uuid
+    ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
+      sp_request.issuer = current_issuer
+      sp_request.loa = requested_authn_context
+      sp_request.url = request.original_url
+    end
   end
 
   def add_sp_metadata_to_session
-    session[:sp] = { loa3: loa3_requested?,
-                     logo: current_sp_metadata[:logo],
-                     return_url: current_sp_metadata[:return_to_sp_url],
-                     name: current_sp_metadata[:friendly_name] ||
-                           current_sp_metadata[:agency] }
+    return if sp_session[:request_id]
+
+    session[:sp] = {
+      issuer: current_issuer,
+      loa3: loa3_requested?,
+      request_id: @request_id,
+      request_url: request.original_url,
+    }
   end
 
   def requested_authn_context
-    @requested_authn_context ||= saml_request.requested_authn_context
+    @requested_authn_context ||= saml_request.requested_authn_context || default_authn_context
+  end
+
+  def default_authn_context
+    Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
   end
 
   def link_identity_from_session_data
-    provider = saml_request.service_provider.identifier
-
-    IdentityLinker.new(current_user, provider).link_identity
+    IdentityLinker.new(current_user, current_issuer).link_identity
   end
 
   def identity_needs_verification?
-    loa3_requested? && decorated_user.identity_not_verified?
+    loa3_requested? && current_user.decorate.identity_not_verified?
   end
 
   def loa3_requested?
@@ -92,10 +102,10 @@ module SamlIdpAuthConcern
   end
 
   def current_service_provider
-    @_sp ||= ServiceProvider.new(saml_request.service_provider.identifier)
+    @_sp ||= ServiceProvider.from_issuer(current_issuer)
   end
 
-  def current_sp_metadata
-    current_service_provider.metadata
+  def current_issuer
+    @_issuer ||= saml_request.service_provider.identifier
   end
 end

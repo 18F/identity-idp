@@ -8,7 +8,9 @@ class TotpSetupForm
   def submit
     @success = valid_totp_code?
 
-    result
+    process_valid_submission if success
+
+    FormResponse.new(success: success, errors: {})
   end
 
   private
@@ -19,9 +21,8 @@ class TotpSetupForm
     user.confirm_totp_secret(secret, code)
   end
 
-  def result
-    {
-      success: success
-    }
+  def process_valid_submission
+    user.save!
+    Event.create(user_id: user.id, event_type: :authenticator_enabled)
   end
 end

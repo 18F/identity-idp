@@ -4,14 +4,12 @@ en:
     account_locked: Account locked
     confirmations:
       new: Resend confirmation instructions for your account
-      show: Create a password for your account
-    contact: Contact us
+      show: Choose a password
     edit_info:
       email: Edit your email address
       password: Edit your password
       phone: Edit your phone number
-    enter_2fa_code: Enter the secure one-time passcode
-    help: Help Center
+    enter_2fa_code: Enter the secure one-time security code
     loa3_verified:
       'true': You have verified your identity with %{app}
       'false': You have created your account with %{app}
@@ -19,17 +17,16 @@ en:
       change: Change the password for your account
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
-    privacy_policy: Privacy
-    profile: Profile
+    account: Account
     reactivate_profile: Reactivate profile
-    recovery_code: Just in case
+    personal_key: Just in case
     registrations:
       new: Sign up for a account
       start: Get started
     totp_setup:
-      new: Enter the secure one-time passcode
-      start: Set up two-factor authentication
+      new: Set up two-factor authentication
     two_factor_setup: Two-factor authentication setup
     verify_email: Check your email
+    verify_profile: Activate your account
     visitors:
       index: Welcome

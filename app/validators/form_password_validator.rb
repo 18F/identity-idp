@@ -32,7 +32,7 @@ module FormPasswordValidator
 
   def i18n_variables
     {
-      feedback: zxcvbn_feedback
+      feedback: zxcvbn_feedback,
     }
   end
 

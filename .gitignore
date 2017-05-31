@@ -4,6 +4,7 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile ~/.gitignore_global
 
+*.pyc
 *.rbc
 *.sassc
 **.orig
@@ -37,6 +38,8 @@ Vagrantfile
 /config/aws.yml
 /config/newrelic.yml
 /keys/saml.key.enc
+/keys/equifax_rsa
+/keys/equifax_rsa.pub
 /coverage
 /db/*.sqlite3
 /doc/search_stats.csv

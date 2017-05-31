@@ -2,11 +2,10 @@ Attribute:
   enabled: false
 DuplicateMethodCall:
   exclude:
+    - ApplicationController#disable_caching
+    - ServiceProviderSessionDecorator#registration_heading
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
-    - Remote#command
-    - Remote#extract_trailing_options
-    - Remote#parse_positional_arguments
     - WorkerHealthChecker#status
 FeatureEnvy:
   exclude:
@@ -16,29 +15,18 @@ FeatureEnvy:
     - reauthn?
     - mark_profile_inactive
     - EncryptedSidekiqRedis#zrem
+    - UserDecorator#should_acknowledge_personal_key?
+    - Pii::Attributes#[]=
+InstanceVariableAssumption:
+  exclude:
+    - User
 IrresponsibleModule:
   enabled: false
 ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
-NestedIterators:
-  exclude:
-    - Remote#build_parser
 NilCheck:
-  exclude:
-    - AdminConstraint#user_is_admin?
-    - PasswordsController#edit
-    - PasswordsController#mark_profile_inactive
-    - PasswordResetTokenValidator#result
-    - PhoneConfirmationFlow
-    - RegisterUserEmailForm#result
-    - slo_not_implemented_at_sp?
-    - in_slo?
-    - TotpSetupController#new
-    - TotpSetupController#valid_code?
-    - user_not_found?
-    - SamlIdpLogoutConcern#name_id
-    - User#password_reset_profile
+  enabled: false
 LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
@@ -46,21 +34,25 @@ RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
     - VerifyController
+    - Verify::Base
 TooManyConstants:
   exclude:
     - Analytics
+TooManyInstanceVariables:
+  exclude:
+    - OpenidConnectAuthorizeForm
 TooManyStatements:
   max_statements: 6
   exclude:
     - Users::PhoneConfirmationController
-    - Remote#build_parser
-    - Remote#execute
-    - Remote#extract_trailing_options
-    - Remote#parse
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
     - ApplicationController
+    - OpenidConnectAuthorizeForm
+    - OpenidConnect::AuthorizationController
+    - Idv::Session
+    - User
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -79,20 +71,13 @@ UtilityFunction:
   exclude:
     - AnalyticsEventJob#perform
     - ApplicationHelper#step_class
+    - PersonalKeyFormatter#regexp
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
     - SessionTimeoutWarningHelper#warning
-    - SessionDecorator#registration_heading
-    - SessionDecorator#registration_bullet_1
-    - SessionDecorator#new_session_heading
+    - SessionDecorator
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
-    - Remote#build_parser
-    - Remote#command
-    - Remote#default_config
-    - Remote#extract_trailing_options
-    - Remote#host
-    - Remote#parse_positional_arguments
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
@@ -101,20 +86,7 @@ UtilityFunction:
     exclude:
       - complete_idv_session
   DuplicateMethodCall:
-    exclude:
-      - complete_2fa_confirmation
-      - complete_idv_profile
-      - stub_subject
-      - stub_idv_session
-      - saml_settings
-      - sign_up_and_2fa
-      - raw_xml_response
-      - rotate_attribute_encryption_key
-      - rotate_attribute_encryption_key_with_invalid_queue
-      - rotate_hmac_key
-      - sign_in_user
-      - stub_auth
-      - stub_sign_in
+    enabled: false
   FeatureEnvy:
     enabled: false
   NestedIterators:
@@ -132,6 +104,12 @@ UtilityFunction:
     enabled: false
   TooManyStatements:
     enabled: false
+  UncommunicativeMethodName:
+    exclude:
+      - visit_idp_from_sp_with_loa1
+  UncommunicativeParameterName:
+    exclude:
+      - begin_sign_up_with_sp_and_loa
   UncommunicativeVariableName:
     exclude:
       - complete_idv_questions_fail

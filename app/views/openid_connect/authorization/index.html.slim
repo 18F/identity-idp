@@ -1,12 +1,22 @@
-p = t('openid_connect.authorization.index.allow_prompt')
+= image_tag(asset_url("sp-logos/#{decorated_session.sp_logo}"), height: 50,
+  alt: decorated_session.sp_name, class: 'align-middle')
+
+h3 = decorated_session.sp_name
+
+p = t('openid_connect.authorization.index.allow_prompt', name: decorated_session.sp_name)
+
+ul
+  - @authorize_decorator.requested_attributes.each do |attribute|
+    li = t("openid_connect.authorization.index.attributes.#{attribute}")
 
 = button_to t('openid_connect.authorization.index.allow'),
             openid_connect_allow_path,
-            params: @authorize_form.params,
-            class: 'btn btn-primary btn-wide'
+            class: 'btn btn-primary',
+            form_class: 'inline-block'
+| &nbsp;
 
 = button_to t('openid_connect.authorization.index.decline'),
             openid_connect_deny_path,
             method: :delete,
-            params: @authorize_form.params,
-            class: 'btn btn-outline btn-wide'
+            class: 'btn btn-primary',
+            form_class: 'inline-block'

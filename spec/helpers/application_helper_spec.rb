@@ -21,22 +21,37 @@ describe ApplicationHelper do
     end
   end
 
-  describe '#decorated_session' do
-    context 'with service provider' do
-      it 'returns the service provider decorator' do
-        @sp_name = 'any sp'
-
-        expect(helper.decorated_session).to be_an_instance_of(
-          ServiceProviderSessionDecorator
-        )
+  describe '#session_with_trust?' do
+    context 'no user present' do
+      before do
+        allow(controller).to receive(:current_user).and_return(nil)
       end
-    end
 
-    context 'without service provider' do
-      it 'returns the regular sessiin decorator' do
-        @sp_name = nil
+      it 'returns false' do
+        expect(helper.session_with_trust?).to eq false
+      end
 
-        expect(helper.decorated_session).to be_an_instance_of(SessionDecorator)
+      context 'current path is email confirmation path' do
+        it 'returns true' do
+          allow(helper).to receive(:current_page?).with(
+            controller: 'sign_up/passwords', action: 'new'
+          ).and_return(true)
+
+          expect(helper.session_with_trust?).to eq true
+        end
+      end
+
+      context 'current path is reset password path' do
+        it 'returns true' do
+          allow(helper).to receive(:current_page?).with(
+            controller: 'sign_up/passwords', action: 'new'
+          ).and_return(true)
+          allow(helper).to receive(:current_page?).with(
+            controller: 'users/reset_passwords', action: 'edit'
+          ).and_return(true)
+
+          expect(helper.session_with_trust?).to eq true
+        end
       end
     end
   end

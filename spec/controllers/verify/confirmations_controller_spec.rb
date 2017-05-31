@@ -2,18 +2,47 @@ require 'rails_helper'
 require 'proofer/vendor/mock'
 
 describe Verify::ConfirmationsController do
-  include IdvHelper
   include SamlAuthHelper
+
+  def stub_idv_session
+    stub_sign_in(user)
+    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session.vendor = :mock
+    idv_session.applicant = idv_session.vendor_params
+    idv_session.normalized_applicant_params = { first_name: 'Somebody' }
+    idv_session.resolution_successful = resolution.success?
+    user.unlock_user_access_key(password)
+    profile_maker = Idv::ProfileMaker.new(
+      applicant: applicant,
+      user: user,
+      normalized_applicant: normalized_applicant,
+      vendor: :mock,
+      phone_confirmed: true
+    )
+    profile = profile_maker.profile
+    idv_session.pii = profile_maker.pii_attributes
+    idv_session.profile_id = profile.id
+    idv_session.personal_key = profile.personal_key
+    allow(subject).to receive(:idv_session).and_return(idv_session)
+  end
 
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
-  let(:applicant) { Proofer::Applicant.new first_name: 'Some', last_name: 'One' }
+  let(:applicant) do
+    Proofer::Applicant.new(
+      first_name: 'Some',
+      last_name: 'One',
+      address1: '123 Any St',
+      address2: 'Ste 456',
+      city: 'Anywhere',
+      state: 'KS',
+      zipcode: '66666'
+    )
+  end
+  let(:normalized_applicant) { Proofer::Applicant.new first_name: 'Somebody' }
   let(:agent) { Proofer::Agent.new vendor: :mock }
   let(:resolution) { agent.start applicant }
-  let(:profile) do
-    user.unlock_user_access_key(password)
-    Idv::ProfileFromApplicant.create(applicant, user)
-  end
+  let(:profile) { subject.idv_session.profile }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -30,67 +59,37 @@ describe Verify::ConfirmationsController do
       stub_idv_session
     end
 
-    context 'original SAML Authn request present' do
-      let(:saml_authn_request) { sp1_authnrequest }
-
+    context 'user used 2FA phone as phone of record' do
       before do
-        subject.session[:saml_request_url] = saml_authn_request
-        get :index
-      end
-
-      it 'redirects to original SAML Authn request' do
-        post :continue
-
-        expect(response).to redirect_to saml_authn_request
-      end
-    end
-
-    context 'original SAML Authn request missing' do
-      before do
-        subject.session[:saml_request_url] = nil
-      end
-
-      it 'cleans up PII from session' do
-        get :index
-
-        expect(subject.idv_session.alive?).to eq false
+        subject.idv_session.phone_confirmation = true
       end
 
       it 'activates profile' do
-        get :index
+        get :show
         profile.reload
 
         expect(profile).to be_active
         expect(profile.verified_at).to_not be_nil
       end
 
-      it 'resets IdV attempts' do
-        attempter = instance_double(Idv::Attempter, reset: false)
-        allow(Idv::Attempter).to receive(:new).with(user).and_return(attempter)
+      it 'sets code instance variable' do
+        subject.idv_session.cache_applicant_profile_id
+        code = subject.idv_session.personal_key
 
-        expect(attempter).to receive(:reset)
+        get :show
 
-        get :index
-      end
-
-      it 'sets recovery code instance variable' do
-        subject.idv_session.cache_applicant_profile_id(applicant)
-        code = subject.idv_session.recovery_code
-        get :index
-
-        expect(assigns(:recovery_code)).to eq(code)
-      end
-
-      it 'redirects to IdP profile after user acknowledges recovery code' do
-        post :continue
-
-        expect(response).to redirect_to(profile_path)
+        expect(assigns(:code)).to eq(code)
       end
 
       it 'sets flash[:allow_confirmations_continue] to true' do
-        get :index
+        get :show
 
         expect(flash[:allow_confirmations_continue]).to eq true
+      end
+
+      it 'sets flash.now[:success]' do
+        get :show
+        expect(flash[:success]).to eq t('idv.messages.confirm')
       end
 
       it 'tracks final IdV event' do
@@ -98,30 +97,56 @@ describe Verify::ConfirmationsController do
 
         result = {
           success: true,
-          new_phone_added: false
+          new_phone_added: false,
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::IDV_FINAL, result)
 
-        get :index
+        get :show
+      end
+
+      it 'creates an `account_verified` event once per confirmation' do
+        event_creator = instance_double(CreateVerifiedAccountEvent)
+        expect(CreateVerifiedAccountEvent).to receive(:new).and_return(event_creator)
+        expect(event_creator).to receive(:call)
+
+        get :show
+      end
+    end
+
+    context 'user picked USPS confirmation' do
+      before do
+        subject.idv_session.address_verification_mechanism = 'usps'
+      end
+
+      it 'leaves profile deactivated' do
+        expect(UspsConfirmation.count).to eq 0
+
+        get :show
+        profile.reload
+
+        expect(profile).to_not be_active
+        expect(profile.verified_at).to be_nil
+        expect(profile.deactivation_reason).to eq 'verification_pending'
+        expect(UspsConfirmation.count).to eq 1
       end
     end
 
     context 'user confirmed a new phone' do
       it 'tracks that event' do
         stub_analytics
-        subject.idv_session.params['phone_confirmed_at'] = Time.current
+        subject.idv_session.params['phone_confirmed_at'] = Time.zone.now
 
         result = {
           success: true,
-          new_phone_added: true
+          new_phone_added: true,
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::IDV_FINAL, result)
 
-        get :index
+        get :show
       end
     end
   end
@@ -130,9 +155,34 @@ describe Verify::ConfirmationsController do
     it 'redirects to /idv/sessions' do
       stub_sign_in(user)
 
-      get :index
+      get :show
 
       expect(response).to redirect_to(verify_session_path)
+    end
+  end
+
+  describe '#update' do
+    context 'sp present' do
+      it 'redirects to the sign up completed url' do
+        stub_idv_session
+        subject.session[:sp] = 'true'
+        stub_sign_in
+
+        patch :update
+
+        expect(response).to redirect_to sign_up_completed_url
+      end
+    end
+
+    context 'no sp present' do
+      it 'redirects to the profile page' do
+        stub_idv_session
+        stub_sign_in
+
+        patch :update
+
+        expect(response).to redirect_to account_path
+      end
     end
   end
 end

@@ -1,20 +1,20 @@
 class ApplicationController < ActionController::Base
-  include BrandedExperience
   include UserSessionContext
+  include VerifyProfileConcern
+
+  FLASH_KEYS = %w[alert error notice success warning].freeze
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
-  rescue_from ActionController::InvalidAuthenticityToken,
-              with: :invalid_auth_token
+  rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
 
-  helper_method :decorated_user, :reauthn?, :user_fully_authenticated?
+  helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
   before_action :set_locale
-
-  layout 'card'
+  before_action :disable_caching
 
   def session_expires_at
     now = Time.zone.now
@@ -44,34 +44,51 @@ class ApplicationController < ActionController::Base
     Event.create(user_id: user.id, event_type: event_type)
   end
 
-  private
-
-  def redirect_on_timeout
-    request_params = request.query_parameters
-    return unless request_params[:timeout]
-    flash[:timeout] = t('notices.session_cleared')
-    redirect_to url_for(request_params.except(:timeout))
+  def decorated_session
+    @_decorated_session ||= DecoratedSession.new(
+      sp: current_sp, view_context: view_context, sp_session: sp_session
+    ).call
   end
 
-  def decorated_user
-    @_decorated_user ||= current_user.decorate
+  private
+
+  def disable_caching
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['Pragma'] = 'no-cache'
+  end
+
+  def redirect_on_timeout
+    return unless params[:timeout]
+
+    flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+    redirect_to url_for(params.except(:timeout))
+  end
+
+  def current_sp
+    @current_sp ||= sp_from_sp_session || sp_from_request_id
+  end
+
+  def sp_from_sp_session
+    sp = ServiceProvider.from_issuer(sp_session[:issuer])
+    sp if sp.is_a? ServiceProvider
+  end
+
+  def sp_from_request_id
+    issuer = ServiceProviderRequest.from_uuid(params[:request_id]).issuer
+    sp = ServiceProvider.from_issuer(issuer)
+    sp if sp.is_a? ServiceProvider
   end
 
   def after_sign_in_path_for(user)
-    stored_location_for(user) || session[:saml_request_url] || profile_path
+    stored_location_for(user) || sp_session[:request_url] || signed_in_path
   end
 
-  def render_401
-    render file: 'public/401.html', status: 401
+  def signed_in_path
+    user_fully_authenticated? ? account_or_verify_profile_path : user_two_factor_authentication_path
   end
 
   def reauthn_param
     params[:reauthn]
-  end
-
-  def reauthn?
-    reauthn = reauthn_param
-    reauthn.present? && reauthn == 'true'
   end
 
   def invalid_auth_token
@@ -85,10 +102,15 @@ class ApplicationController < ActionController::Base
     !reauthn? && user_signed_in? && current_user.two_factor_enabled? && is_fully_authenticated?
   end
 
+  def reauthn?
+    reauthn = reauthn_param
+    reauthn.present? && reauthn == 'true'
+  end
+
   def confirm_two_factor_authenticated
     authenticate_user!(force: true)
 
-    return if decorated_user.may_bypass_2fa?(session) || user_fully_authenticated?
+    return if user_fully_authenticated?
 
     return prompt_to_set_up_2fa unless current_user.two_factor_enabled?
 
@@ -109,5 +131,9 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = params[:locale] || I18n.default_locale
+  end
+
+  def sp_session
+    session.fetch(:sp, {})
   end
 end

@@ -4,7 +4,11 @@ class ServiceProviderConfig
   end
 
   def sp_attributes
-    SERVICE_PROVIDERS.fetch(issuer, {}).symbolize_keys
+    service_provider.metadata
+  end
+
+  def service_provider
+    @_sp ||= ServiceProvider.from_issuer(issuer)
   end
 
   private

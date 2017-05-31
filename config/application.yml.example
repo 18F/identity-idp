@@ -27,8 +27,8 @@ queue_health_check_dead_interval_seconds: '240'
 # How often to enqueue simple jobs to make sure the background queues are running
 queue_health_check_frequency_seconds: '120'
 
-# The number of words in the recovery code phrase
-recovery_code_length: '5'
+# The number of words in the personal key phrase
+recovery_code_length: '4'
 
 # Set the number of seconds before the session times out that the timeout
 # warning should appear.
@@ -43,26 +43,27 @@ session_check_frequency: '30'
 
 stale_session_window: '180'
 
-support_email: 'hello@login.gov'
 use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
 development:
-  allow_third_party_auth: 'true'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
+  dashboard_api_token: 'test_token'
   dashboard_url: 'http://localhost:3001/api/service_providers'
   domain_name: 'localhost:3000'
+  enable_identity_verification: 'true'
   enable_test_routes: 'true'
   equifax_avs_username: 'sekret'
   equifax_eid_username: 'sekret'
   equifax_endpoint: 'sekret'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
+  equifax_ssh_passphrase: 'sekret'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   idp_sso_target_url: 'https://upaya-mockidp.18f.gov/saml/auth'
@@ -93,23 +94,27 @@ development:
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
   use_kms: 'false'
-  valid_service_providers: '["https://rp1.serviceprovider.com/auth/saml/metadata", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-rails", "https://dashboard.login.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase", "urn:gov:gsa:openidconnect:development"]'
+  usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
+  enable_load_testing_mode: 'false'
 
 production:
-  allow_third_party_auth: 'true'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: 'generate via `rake secret`'
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
   aws_kms_key_id: 'change-me'
   aws_region: 'change-me'
+  disable_email_sending: 'false'
+  dashboard_api_token: 'sekret'
   domain_name: 'example.com'
+  enable_identity_verification: 'false'
   enable_test_routes: 'false'
   equifax_avs_username: 'sekret'
   equifax_eid_username: 'sekret'
   equifax_endpoint: 'sekret'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
+  equifax_ssh_passphrase: 'sekret'
   google_analytics_key: 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: 'generate via `rake secret`'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
@@ -141,11 +146,11 @@ production:
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'false'
   use_kms: 'false'
-  valid_service_providers: '["https://upaya-dev.18f.gov", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev", "urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo", "https://dashboard.demo.login.gov", "https://dashboard.qa.login.gov", "https://dashboard.dev.login.gov", "urn:gov:gsa:saml:2.0.profiles:sp:sso:micropurchase-staging", "urn:gov:gsa:saml:2.0.profiles:sp:sso:micropurchase-production"]'
+  usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
+  enable_load_testing_mode: 'false'
 
 test:
-  allow_third_party_auth: 'true'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
@@ -153,12 +158,15 @@ test:
   aws_region: 'us-east-1'
   domain_name: 'www.example.com'
   ducksboard_uid: '8VEQre2c8b62mQV0sa'
+  dashboard_api_token: '123ABC'
+  enable_identity_verification: 'true'
   enable_test_routes: 'true'
   equifax_avs_username: 'sekret'
   equifax_eid_username: 'sekret'
   equifax_endpoint: 'sekret'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
+  equifax_ssh_passphrase: 'sekret'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   idp_sso_target_url: 'http://identityprovider.example.com/saml/auth'
@@ -184,5 +192,6 @@ test:
   twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
   twilio_record_voice: 'true'
   use_kms: 'false'
-  valid_service_providers: '["http://localhost:3000", "https://rp1.serviceprovider.com/auth/saml/metadata", "https://rp2.serviceprovider.com/auth/saml/metadata", "http://test.host", "urn:gov:gsa:openidconnect:test"]'
+  usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
+  enable_load_testing_mode: 'false'

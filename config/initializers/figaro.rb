@@ -1,11 +1,12 @@
-require File.join(Rails.root, 'lib', 'config_validator')
+require Rails.root.join('lib', 'config_validator.rb')
 
 Figaro.require_keys(
-  'allow_third_party_auth',
   'attribute_cost',
   'attribute_encryption_key',
   'domain_name',
+  'enable_identity_verification',
   'enable_test_routes',
+  'equifax_ssh_passphrase',
   'hmac_fingerprinter_key',
   'idp_sso_target_url',
   'logins_per_ip_limit',
@@ -30,12 +31,10 @@ Figaro.require_keys(
   'secret_key_base',
   'session_encryption_key',
   'session_timeout_in_minutes',
-  'support_email',
   'twilio_accounts',
   'twilio_record_voice',
   'use_kms',
-  'valid_authn_contexts',
-  'valid_service_providers'
+  'valid_authn_contexts'
 )
 
 ConfigValidator.new.validate

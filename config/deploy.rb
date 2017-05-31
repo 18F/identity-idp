@@ -1,32 +1,48 @@
+require 'net/ssh/proxy/command'
+
 #################
 # GLOBAL CONFIG
 #################
 set :application, 'idp'
-set :assets_roles, [:app, :web]
+set :assets_roles, %i[app web]
 # set branch based on env var or ask with the default set to the current local branch
 set :branch, ENV['branch'] || ENV['BRANCH'] || ask(:branch, `git branch`.match(/\* (\S+)\s/m)[1])
 set :bundle_without, 'deploy development doc test'
 set :deploy_to, '/srv/idp'
 set :deploy_via, :remote_cache
 set :keep_releases, 5
-set :linked_files, %w(certs/saml.crt
+set :linked_files, %w[certs/saml.crt
                       config/application.yml
                       config/database.yml
                       config/newrelic.yml
-                      keys/saml.key.enc)
-set :linked_dirs, %w(bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system)
+                      keys/equifax_rsa
+                      keys/saml.key.enc]
+set :linked_dirs, %w[bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system]
 set :passenger_roles, [:web]
 set :passenger_restart_wait, 5
 set :passenger_restart_runner, :sequence
 set :rails_env, :production
 set :repo_url, 'https://github.com/18F/identity-idp.git'
 set :sidekiq_options, ''
-set :sidekiq_queue, [:analytics, :mailers, :sms, :voice]
+set :sidekiq_queue, %i[analytics mailers sms voice]
 set :sidekiq_monit_use_sudo, true
 set :sidekiq_user, 'ubuntu'
-set :ssh_options, forward_agent: false, user: 'ubuntu'
 set :whenever_roles, [:job_creator]
-set :whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" }
+set(:whenever_identifier, -> { "#{fetch(:application)}_#{fetch(:stage)}" })
+set :tmp_dir, '/tmp'
+
+set :bastion_user, ENV['BASTION_USER'] || 'ubuntu'
+set :ssh_options do
+  ssh_command = "ssh -A #{fetch(:bastion_user)}@#{fetch(:bastion_host)} -W %h:%p"
+  {
+    proxy: Net::SSH::Proxy::Command.new(ssh_command),
+    user: 'ubuntu',
+  }
+end
+
+server 'idp1-0', roles: %w[web db]
+server 'idp2-0', roles: %w[web]
+server 'worker', roles: %w[app job_creator]
 
 #########
 # TASKS
@@ -53,7 +69,7 @@ namespace :deploy do
           branch: fetch(:branch),
           user: fetch(:local_user),
           sha: fetch(:current_revision),
-          timestamp: fetch(:release_timestamp)
+          timestamp: fetch(:release_timestamp),
         }
 
         execute :mkdir, '-p', 'public/api'
@@ -70,8 +86,15 @@ namespace :deploy do
   desc 'Modify permissions on /srv/idp'
   task :mod_perms do
     on roles(:web), in: :parallel do
-      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to
+      execute :sudo, :chown, '-R', 'ubuntu:nogroup', deploy_to + '/current', '/srv/idp/shared'
     end
+  end
+
+  desc 'Things to do after deploy'
+  task :post_deploy do
+    invoke 'deploy:mod_perms'
+    Rake::Task['passenger:restart'].reenable
+    invoke 'passenger:restart'
   end
 
   desc 'Clean NPM cache'
@@ -84,6 +107,6 @@ namespace :deploy do
   before 'assets:precompile', :browserify
   after 'deploy:updated', 'newrelic:notice_deployment'
   after 'deploy:log_revision', :deploy_json
-  after 'deploy', 'deploy:mod_perms'
+  after 'deploy', 'deploy:post_deploy'
 end
 # rubocop:enable Metrics/BlockLength

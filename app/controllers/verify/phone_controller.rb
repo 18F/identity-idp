@@ -1,13 +1,13 @@
 module Verify
   class PhoneController < ApplicationController
     include IdvStepConcern
+    include IdvFailureConcern
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
 
-    helper_method :idv_phone_form
-
     def new
+      @view_model = view_model
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
@@ -18,10 +18,9 @@ module Verify
 
       if result.success?
         redirect_to verify_review_url
-      elsif step_attempts_exceeded?
-        redirect_to_fail_path
       else
-        process_failure
+        render_failure
+        render :new
       end
     end
 
@@ -39,23 +38,16 @@ module Verify
       )
     end
 
-    def process_failure
-      show_warning if step.form_valid_but_vendor_validation_failed?
-      render :new
+    def view_model(error: nil)
+      Verify::PhoneNew.new(
+        error: error,
+        remaining_attempts: remaining_step_attempts,
+        idv_form: idv_phone_form
+      )
     end
 
     def step_params
       params.require(:idv_phone_form).permit(:phone)
-    end
-
-    def show_warning
-      flash.now[:warning] = t(
-        'idv.modal.phone.warning_html',
-        accent: ActionController::Base.helpers.content_tag(
-          :strong,
-          t('idv.modal.phone.warning_accent')
-        )
-      )
     end
 
     def confirm_step_needed

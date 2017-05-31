@@ -7,7 +7,7 @@ feature 'Phone confirmation during sign up' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
-      click_button t('forms.buttons.send_passcode')
+      click_send_security_code
 
       expect(SmsOtpSenderJob).to have_received(:perform_later).with(
         code: @user.reload.direct_otp,
@@ -16,21 +16,21 @@ feature 'Phone confirmation during sign up' do
       )
     end
 
-    it 'updates phone_confirmed_at and redirects to acknowledge recovery code' do
+    it 'updates phone_confirmed_at and redirects to acknowledge personal key' do
       click_button t('forms.buttons.submit.default')
 
       expect(@user.reload.phone_confirmed_at).to be_present
-      expect(current_path).to eq sign_up_recovery_code_path
+      expect(current_path).to eq sign_up_personal_key_path
 
-      click_acknowledge_recovery_code
+      click_acknowledge_personal_key
 
-      expect(current_path).to eq profile_path
+      expect(current_path).to eq account_path
     end
 
     it 'allows user to resend confirmation code' do
       click_link t('links.two_factor_authentication.resend_code.sms')
 
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
 
     it 'does not enable 2FA until correct OTP is entered' do
@@ -59,11 +59,11 @@ feature 'Phone confirmation during sign up' do
       @existing_user = create(:user, :signed_up)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: @existing_user.phone
-      click_button t('forms.buttons.send_passcode')
+      click_send_security_code
     end
 
     it 'pretends the phone is valid and prompts to confirm the number' do
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(page).to have_content(
         t('instructions.2fa.sms.confirm_code_html',
           number: @existing_user.phone,
@@ -73,11 +73,11 @@ feature 'Phone confirmation during sign up' do
 
     it 'does not confirm the new number with an invalid code' do
       fill_in 'code', with: 'foobar'
-      click_button t('forms.buttons.submit.default')
+      click_submit_default
 
       expect(@user.reload.phone_confirmed_at).to be_nil
       expect(page).to have_content t('devise.two_factor_authentication.invalid_otp')
-      expect(current_path).to eq login_two_factor_path(delivery_method: 'sms')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
     end
   end
 end

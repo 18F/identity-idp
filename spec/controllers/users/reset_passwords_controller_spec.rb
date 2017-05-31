@@ -11,8 +11,8 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          error: 'invalid_token',
-          user_id: nil
+          errors: { user: ['invalid_token'] },
+          user_id: nil,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -36,8 +36,8 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          error: 'token_expired',
-          user_id: '123'
+          errors: { user: ['token_expired'] },
+          user_id: '123',
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -70,15 +70,14 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
+        raw_reset_token, db_confirmation_token =
+          Devise.token_generator.generate(User, :reset_password_token)
         user = create(
           :user,
           :signed_up,
-          reset_password_sent_at: Time.current - Devise.reset_password_within - 1.hour
+          reset_password_sent_at: Time.zone.now - Devise.reset_password_within - 1.hour,
+          reset_password_token: db_confirmation_token
         )
-
-        raw_reset_token, db_confirmation_token =
-          Devise.token_generator.generate(User, :reset_password_token)
-        user.update(reset_password_token: db_confirmation_token)
 
         params = { password: 'short', reset_password_token: raw_reset_token }
 
@@ -86,10 +85,13 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          errors: ['is too short (minimum is 8 characters)', 'token_expired'],
+          errors: {
+            password: ['is too short (minimum is 8 characters)'],
+            reset_password_token: ['token_expired'],
+          },
           user_id: user.uuid,
           active_profile: false,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -111,7 +113,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :signed_up,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
+          reset_password_sent_at: Time.zone.now
         )
 
         params = { password: 'short', reset_password_token: raw_reset_token }
@@ -119,10 +121,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: false,
-          errors: ['is too short (minimum is 8 characters)'],
+          errors: { password: ['is too short (minimum is 8 characters)'] },
           user_id: user.uuid,
           active_profile: false,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -140,12 +142,12 @@ describe Users::ResetPasswordsController, devise: true do
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
 
-        Timecop.freeze(Time.current) do
+        Timecop.freeze(Time.zone.now) do
           user = create(
             :user,
             :signed_up,
             reset_password_token: db_confirmation_token,
-            reset_password_sent_at: Time.current
+            reset_password_sent_at: Time.zone.now
           )
           old_confirmed_at = user.reload.confirmed_at
           allow(user).to receive(:active_profile).and_return(nil)
@@ -159,10 +161,10 @@ describe Users::ResetPasswordsController, devise: true do
 
           analytics_hash = {
             success: true,
-            errors: [],
+            errors: {},
             user_id: user.uuid,
             active_profile: false,
-            confirmed: true
+            confirmed: true,
           }
 
           expect(@analytics).to have_received(:track_event).
@@ -182,13 +184,12 @@ describe Users::ResetPasswordsController, devise: true do
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
-
-        profile = create(:profile, :active, :verified)
-        user = profile.user
-        user.update(
+        user = create(
+          :user,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
+          reset_password_sent_at: Time.zone.now
         )
+        _profile = create(:profile, :active, :verified, user: user)
 
         stub_email_notifier(user)
 
@@ -199,10 +200,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           active_profile: true,
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -226,7 +227,7 @@ describe Users::ResetPasswordsController, devise: true do
           :user,
           :unconfirmed,
           reset_password_token: db_confirmation_token,
-          reset_password_sent_at: Time.current
+          reset_password_sent_at: Time.zone.now
         )
 
         stub_email_notifier(user)
@@ -238,10 +239,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           active_profile: false,
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -262,17 +263,17 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
         expect { put :create, password_reset_email_form: { email: 'nonexistent@example.com' } }.
-          to_not change { ActionMailer::Base.deliveries.count }
+          to_not(change { ActionMailer::Base.deliveries.count })
 
         expect(response).to redirect_to forgot_password_path
       end
@@ -287,10 +288,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: tech_user.uuid,
           role: 'tech',
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -312,10 +313,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: admin.uuid,
           role: 'admin',
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -332,21 +333,20 @@ describe Users::ResetPasswordsController, devise: true do
       it 'sends password reset email to user and tracks event' do
         stub_analytics
 
-        user = build(:user, :signed_up, role: :user)
-        allow(User).to receive(:find_with_email).with(user.email).and_return(user)
+        user = build(:user, :signed_up, role: :user, email: 'test@example.com')
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           role: 'user',
-          confirmed: true
+          confirmed: true,
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: user.email } }.
+        expect { put :create, password_reset_email_form: { email: 'Test@example.com' } }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(response).to redirect_to forgot_password_path
@@ -361,10 +361,10 @@ describe Users::ResetPasswordsController, devise: true do
 
         analytics_hash = {
           success: true,
-          errors: [],
+          errors: {},
           user_id: user.uuid,
           role: 'user',
-          confirmed: false
+          confirmed: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -382,20 +382,15 @@ describe Users::ResetPasswordsController, devise: true do
 
     context 'email is invalid' do
       it 'displays an error and tracks event' do
-        form = instance_double(PasswordResetEmailForm)
-        expect(PasswordResetEmailForm).to receive(:new).with('foo').and_return(form)
-
         stub_analytics
 
         analytics_hash = {
           success: false,
-          errors: [t('valid_email.validations.email.invalid')],
+          errors: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
-          confirmed: false
+          confirmed: false,
         }
-
-        expect(form).to receive(:submit).and_return(analytics_hash)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)

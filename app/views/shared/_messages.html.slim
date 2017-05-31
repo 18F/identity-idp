@@ -1,5 +1,0 @@
-- unless flash.empty?
-  - flash.each do |name, msg|
-    - if msg.present? && msg.is_a?(String)
-      div id="js-modal-#{name}" class="alert alert-#{name}" role='alert'
-        = safe_join([msg.html_safe])

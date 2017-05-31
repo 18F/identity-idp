@@ -12,7 +12,7 @@ describe ConfigValidator do
         bad_key => 'yes',
         other_bad_key => 'no',
         noncandidate_key => 'yes',
-        good_key => 'foo'
+        good_key => 'foo',
       }
 
       expect { ConfigValidator.new.validate(env) }.to raise_error(

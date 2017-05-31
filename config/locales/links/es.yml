@@ -3,6 +3,7 @@ es:
   links:
     back_to_sp: "‹ Volver a %{sp}"
     contact: Contactar
+    copy: NOT TRANSLATED YET
     create_account: Crear cuenta
     help: Ayuda
     next: Siguiente
@@ -13,10 +14,13 @@ es:
       fallback_to_sms_html: Envíame un mensaje de texto con el código en su lugar
       fallback_to_voice_html: Llámame con el código en su lugar
     privacy_policy: Política de privacidad
+    remove: NOT TRANSLATED YET
     resend: Enviar de nuevo
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     cancel: Cancelar
+    cancel_account_creation: NOT TRANSLATED YET
+    cancel_idv: NOT TRANSLATED YET
     two_factor_authentication:
       app: NOT TRANSLATED YET
       voice: NOT TRANSLATED YET
@@ -24,3 +28,4 @@ es:
       resend_code:
         sms: NOT TRANSLATED YET
         voice: NOT TRANSLATED YET
+    what_is_totp: NOT TRANSLATED YET

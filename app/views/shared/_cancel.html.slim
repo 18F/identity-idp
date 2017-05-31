@@ -1,2 +1,13 @@
+- cancel = sign_up_or_idv_no_js_link || link
+
 .mt2.pt1.border-top
-  = link_to t('links.cancel'), link, class: 'h5'
+  - if user_signing_up? || user_verifying_identity?
+    - method = user_signing_up? ? :delete : :get
+
+    = button_to cancel_link_text, cancel, method: method,
+      class: 'btn btn-link', id: 'auth-flow-cancel'
+    = render 'shared/cancel_action_modal',
+      idv: user_verifying_identity?,
+      user_signing_up: user_signing_up?
+  - else
+    = link_to cancel_link_text, cancel, class: 'h5'

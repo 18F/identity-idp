@@ -3,13 +3,13 @@ require 'rails_helper'
 include ActionView::Helpers::DateHelper
 
 describe Users::SessionsController, devise: true do
-  render_views
-
   describe 'GET /users/sign_in' do
-    it 'sets the autocomplete attribute to off on the sign in form' do
+    it 'clears the session when user is not yet 2fa-ed' do
+      sign_in_before_2fa
+
       get :new
 
-      expect(response.body).to include('<form autocomplete="off"')
+      expect(controller.current_user).to be nil
     end
   end
 
@@ -55,7 +55,7 @@ describe Users::SessionsController, devise: true do
     context 'when user is present' do
       it 'sets live key to true' do
         stub_sign_in
-        session[:session_expires_at] = Time.current + 10
+        session[:session_expires_at] = Time.zone.now + 10
         get :active
 
         json ||= JSON.parse(response.body)
@@ -65,7 +65,7 @@ describe Users::SessionsController, devise: true do
 
       it 'respects session_expires_at' do
         stub_sign_in
-        session[:session_expires_at] = Time.current - 1
+        session[:session_expires_at] = Time.zone.now - 1
         get :active
 
         json ||= JSON.parse(response.body)
@@ -75,10 +75,10 @@ describe Users::SessionsController, devise: true do
 
       it 'updates pinged_at session key' do
         stub_sign_in
-        now = Time.current
+        now = Time.zone.now
         session[:pinged_at] = now
 
-        Timecop.travel(Time.current + 10)
+        Timecop.travel(Time.zone.now + 10)
         get :active
         Timecop.return
 
@@ -104,9 +104,12 @@ describe Users::SessionsController, devise: true do
 
       get :timeout
 
-      expect(flash[:timeout]).to eq t('session_timedout',
-                                      app: APP_NAME,
-                                      minutes: Figaro.env.session_timeout_in_minutes)
+      expect(flash[:notice]).to eq t(
+        'session_timedout',
+        app: APP_NAME,
+        minutes: Figaro.env.session_timeout_in_minutes
+      )
+
       expect(subject.current_user).to be_nil
     end
 
@@ -139,7 +142,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: true,
         user_id: user.uuid,
-        user_locked_out: false
+        user_locked_out: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -155,7 +158,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: false,
         user_id: user.uuid,
-        user_locked_out: false
+        user_locked_out: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -169,7 +172,7 @@ describe Users::SessionsController, devise: true do
       analytics_hash = {
         success: false,
         user_id: 'anonymous-uuid',
-        user_locked_out: false
+        user_locked_out: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -182,14 +185,14 @@ describe Users::SessionsController, devise: true do
       user = create(
         :user,
         :signed_up,
-        second_factor_locked_at: Time.current
+        second_factor_locked_at: Time.zone.now
       )
 
       stub_analytics
       analytics_hash = {
         success: false,
         user_id: user.uuid,
-        user_locked_out: true
+        user_locked_out: true,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -231,6 +234,19 @@ describe Users::SessionsController, devise: true do
         post :create, user: { email: user.email.upcase, password: user.password }
       end
 
+      it 'caches unverified PII pending confirmation' do
+        user = create(:user, :signed_up)
+        create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          user: user, pii: { ssn: '1234' }
+        )
+
+        post :create, user: { email: user.email.upcase, password: user.password }
+
+        expect(controller.user_session[:decrypted_pii]).to match '1234'
+      end
+
       it 'caches PII in the user session' do
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
@@ -249,7 +265,7 @@ describe Users::SessionsController, devise: true do
         analytics_hash = {
           success: true,
           user_id: user.uuid,
-          user_locked_out: false
+          user_locked_out: false,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -257,7 +273,7 @@ describe Users::SessionsController, devise: true do
 
         profile_encryption_error = {
           error: 'Unable to parse encrypted payload. ' \
-                 '#<TypeError: no implicit conversion of nil into String>'
+                 '#<TypeError: no implicit conversion of nil into String>',
         }
         expect(@analytics).to receive(:track_event).
           with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
@@ -277,7 +293,7 @@ describe Users::SessionsController, devise: true do
         subject.session[:logged_in] = true
         get :new
 
-        expect(response).to redirect_to profile_path
+        expect(response).to redirect_to account_path
         expect(subject.session[:logged_in]).to be true
       end
     end

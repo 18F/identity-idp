@@ -3,7 +3,7 @@ require 'axe/rspec'
 
 feature 'Accessibility on pages that do not require authentication', :js do
   scenario 'contact page' do
-    visit contact_path
+    visit MarketingSite.contact_url
 
     expect(page).to be_accessible
   end

@@ -14,12 +14,14 @@ describe PasswordForm, type: :model do
 
         password = 'valid password'
 
-        result = {
-          success: true,
-          errors: [],
-          user_id: user.uuid
+        extra = {
+          user_id: user.uuid,
         }
 
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
         expect(form.submit(password: password)).to eq result
       end
     end
@@ -32,13 +34,19 @@ describe PasswordForm, type: :model do
 
         password = 'invalid'
 
-        result_hash = {
-          success: false,
-          errors: ['is too short (minimum is 8 characters)'],
-          user_id: '123'
+        errors = {
+          password: ['is too short (minimum is 8 characters)'],
         }
 
-        expect(form.submit(password: password)).to eq result_hash
+        extra = {
+          user_id: '123',
+        }
+
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: false, errors: errors, extra: extra).and_return(result)
+        expect(form.submit(password: password)).to eq result
       end
     end
 
@@ -52,18 +60,22 @@ describe PasswordForm, type: :model do
 
         passwords = ['custom!@', 'benevolent', 'custom benevolent comcast']
 
-        result_hash = {
-          success: false,
-          errors: ['Your password is not strong enough.' \
+        errors = {
+          password: ['Your password is not strong enough.' \
             ' This is similar to a commonly used password.' \
             ' Add another word or two.' \
             ' Uncommon words are better.'],
-          user_id: '123'
         }
 
         passwords.each do |password|
-          expect(form.submit(password: password)).to eq result_hash
-          expect(form.errors.full_messages.first).to match 'not strong enough'
+          extra = {
+            user_id: '123',
+          }
+          result = instance_double(FormResponse)
+
+          expect(FormResponse).to receive(:new).
+            with(success: false, errors: errors, extra: extra).and_return(result)
+          expect(form.submit(password: password)).to eq result
         end
       end
     end
