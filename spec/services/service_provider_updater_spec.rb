@@ -6,6 +6,8 @@ describe ServiceProviderUpdater do
   let(:fake_dashboard_url) { 'http://dashboard.example.org' }
   let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
   let(:inactive_dashboard_sp_issuer) { 'old-dashboard-service-provider' }
+  let(:openid_connect_issuer) { 'sp:test:foo:bar' }
+  let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app:/result] }
   let(:dashboard_service_providers) do
     [
       {
@@ -41,6 +43,12 @@ describe ServiceProviderUpdater do
         issuer: 'http://localhost:3000',
         agency: 'trying to override a test SP',
         acs_url: 'http://nasty-override.example.org/saml/login',
+        active: true,
+      },
+      {
+        issuer: openid_connect_issuer,
+        agency: 'a service provider',
+        redirect_uris: openid_connect_redirect_uris,
         active: true,
       },
     ]
@@ -114,6 +122,14 @@ describe ServiceProviderUpdater do
         sp = ServiceProvider.from_issuer('http://localhost:3000')
 
         expect(sp.agency).to_not eq 'trying to override a test SP'
+      end
+
+      it 'updates redirect_uris' do
+        subject.run
+
+        sp = ServiceProvider.from_issuer(openid_connect_issuer)
+
+        expect(sp.redirect_uris).to eq(openid_connect_redirect_uris)
       end
     end
 

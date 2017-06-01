@@ -54,6 +54,10 @@ class OpenidConnectRedirector
     URIService.add_params(validated_input_redirect_uri, state: state)
   end
 
+  def validated_input_redirect_uri
+    redirect_uri if redirect_uri_matches_sp_redirect_uri?
+  end
+
   private
 
   attr_reader :redirect_uri, :service_provider, :state, :errors, :error_attr
@@ -72,14 +76,8 @@ class OpenidConnectRedirector
   def redirect_uri_matches_sp_redirect_uri?
     redirect_uri.present? &&
       service_provider.active? &&
-      redirect_uri.start_with?(sp_redirect_uri)
-  end
-
-  def validated_input_redirect_uri
-    redirect_uri if redirect_uri_matches_sp_redirect_uri?
-  end
-
-  def sp_redirect_uri
-    service_provider.redirect_uri
+      service_provider.redirect_uris.any? do |sp_redirect_uri|
+        redirect_uri.start_with?(sp_redirect_uri)
+      end
   end
 end

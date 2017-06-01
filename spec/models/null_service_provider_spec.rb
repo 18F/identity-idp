@@ -64,9 +64,9 @@ describe NullServiceProvider do
     end
   end
 
-  describe '#redirect_uri' do
-    it 'returns nil' do
-      expect(subject.redirect_uri).to be_nil
+  describe '#redirect_uris' do
+    it 'returns empty array' do
+      expect(subject.redirect_uris).to eq([])
     end
   end
 end

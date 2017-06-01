@@ -58,7 +58,7 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_return_url
-    if sp.redirect_uri.present? && openid_connect_redirector.valid?
+    if sp.redirect_uris.present? && openid_connect_redirector.valid?
       openid_connect_redirector.decline_redirect_uri
     else
       sp.return_to_sp_url
