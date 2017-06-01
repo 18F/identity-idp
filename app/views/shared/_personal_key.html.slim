@@ -4,7 +4,8 @@ p.mt-tiny.mb0
   = t('instructions.personal_key_html',
       accent: content_tag(:strong, t('instructions.personal_key_accent')))
 
-= render 'partials/personal_key/key', code: code
+.mt4.mb3
+  = render 'partials/personal_key/key', code: code
 
 .mb3.right-align
   = link_to t('users.personal_key.get_another'), manage_personal_key_path(resend: true),

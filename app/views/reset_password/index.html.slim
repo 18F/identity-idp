@@ -1,0 +1,24 @@
+- title t('titles.passwords.forgot')
+
+h1.h3.mt0.mb2 = t('headings.passwords.reset')
+
+p.mb4 = t('instructions.password.reset.intro')
+
+h2.h4.pb1.border-bottom = t('instructions.password.reset.begin')
+
+h3.fs-20p.sans-serif.mt4 = t('instructions.password.reset.with_key')
+
+p.mb0 = t('instructions.password.reset.explanation')
+
+.scale-down
+  = render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX'
+
+.block-center.center.col-10
+  = form_tag reset_password_path, method: :put, class: 'mb2' do
+    = button_tag t('links.passwords.reset.with_key'), class: 'col-12 btn btn-primary',
+      name: :personal_key, type: 'submit', value: 'true'
+  div
+    = link_to t('links.passwords.reset.without_key'), verify_path,
+      class: 'btn btn-secondary block', id: 'password-reset'
+
+= render 'reset_password/modal'

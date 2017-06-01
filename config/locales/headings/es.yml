@@ -13,7 +13,10 @@ es:
     passwords:
       change: Cambiar su contraseña
       confirm: Confirme la contraseña actual para continuar
-      forgot: ¿Olvidó su contraseña?
+      forgot:
+        basic: ¿Olvidó su contraseña?
+        loa3: NOT TRANSLATED YET
+      reset: NOT TRANSLATED YET
     account:
       account_history: La historia de la cuenta
       login_info: Información de la cuenta

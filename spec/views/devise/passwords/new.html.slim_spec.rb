@@ -15,10 +15,18 @@ describe 'devise/passwords/new.html.slim' do
     render
   end
 
-  it 'has a localized header' do
-    render
+  context 'localized header' do
+    it 'displays the basic header' do
+      render
 
-    expect(rendered).to have_selector('h1', text: t('headings.passwords.forgot'))
+      expect(rendered).to have_selector('h1', text: t('headings.passwords.forgot.basic'))
+    end
+
+    it 'displays LOA3 header during LOA3 flow' do
+      allow(view).to receive(:loa3_requested?).and_return(true)
+      render
+      expect(rendered).to have_selector('h1', text: t('headings.passwords.forgot.loa3'))
+    end
   end
 
   it 'sets form autocomplete to off' do

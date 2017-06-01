@@ -15,6 +15,8 @@ en:
         update: Update
     confirmation:
       show_hdr: Create a strong password
+    email:
+      label: Email
     passwords:
       edit:
         buttons:
