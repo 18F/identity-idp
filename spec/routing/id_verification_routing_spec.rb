@@ -14,7 +14,6 @@ describe 'Identity Verification Routes', type: :routing do
     verify/review
     verify/session
     verify/session/dupe
-    verify/usps
   ].freeze
 
   PUT_ROUTES = %w[
@@ -22,7 +21,6 @@ describe 'Identity Verification Routes', type: :routing do
     verify/phone
     verify/review
     verify/session
-    verify/usps
   ].freeze
 
   DELETE_ROUTES = %w[
