@@ -16,6 +16,10 @@ feature 'Password recovery via personal key' do
     click_submit_default
     enter_correct_otp_code_for_user(user)
 
+    expect(current_path).to eq manage_reactivate_account_path
+
+    click_on t('links.account.reactivate.with_key')
+
     expect(current_path).to eq reactivate_account_path
 
     reactivate_profile(new_password, personal_key)
@@ -32,8 +36,6 @@ feature 'Password recovery via personal key' do
     reset_password_and_sign_back_in(user, new_password)
     click_submit_default
     enter_correct_otp_code_for_user(user)
-
-    expect(current_path).to eq reactivate_account_path
 
     visit manage_personal_key_path
 

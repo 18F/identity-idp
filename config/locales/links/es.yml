@@ -1,6 +1,10 @@
 ---
 es:
   links:
+    account:
+      reactivate:
+        with_key: NOT TRANSLATED YET
+        without_key: NOT TRANSLATED YET
     back_to_sp: "Volver a %{sp}"
     contact: Contactar
     copy: NOT TRANSLATED YET

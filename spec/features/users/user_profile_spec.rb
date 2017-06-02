@@ -74,8 +74,7 @@ feature 'User profile' do
         reset_password_and_sign_back_in(user, user_password)
         click_submit_default
         enter_correct_otp_code_for_user(user)
-        click_on t('links.cancel')
-        click_on t('account.index.reactivation.reverify')
+        click_on t('links.account.reactivate.without_key')
         click_idv_begin
         complete_idv_profile_ok(user)
         click_acknowledge_personal_key

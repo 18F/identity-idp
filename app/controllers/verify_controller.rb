@@ -3,6 +3,7 @@ class VerifyController < ApplicationController
 
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_needed, only: %i[cancel fail]
+  before_action :profile_needs_reactivation?, only: [:index]
 
   def index
     if active_profile?
@@ -25,6 +26,15 @@ class VerifyController < ApplicationController
   end
 
   private
+
+  def profile_needs_reactivation?
+    return unless password_reset_profile && user_session[:acknowledge_personal_key] == true
+    redirect_to manage_reactivate_account_url
+  end
+
+  def password_reset_profile
+    current_user.decorate.password_reset_profile
+  end
 
   def active_profile?
     current_user.active_profile.present?

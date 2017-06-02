@@ -15,6 +15,12 @@ es:
         confirm_code_html: NOT TRANSLATED YET
         fallback_html: NOT TRANSLATED YET
       wrong_number_html: ¿Ha ingresado el número de teléfono equivocado? %{link}
+    account:
+      reactivate:
+        begin: NOT TRANSLATED YET
+        explanation: NOT TRANSLATED YET
+        intro: NOT TRANSLATED YET
+        with_key: NOT TRANSLATED YET
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
     password:
