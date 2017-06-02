@@ -19,6 +19,17 @@
   vertical-align: middle;
 }
 
+
+.block-center {
+  margin: 0 auto;
+}
+
+.scale-down {
+  // trigger anti-aliasing in chrome
+  backface-visibility: hidden;
+  transform: scale(.7);
+}
+
 @media #{$breakpoint-sm} {
   // scss-lint:disable ImportantRule
   .sm-display-inline-block { display: inline-block !important; }

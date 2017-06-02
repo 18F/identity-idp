@@ -47,6 +47,8 @@ Rails.application.routes.draw do
   get '/account' => 'accounts#show'
   get '/account/reactivate' => 'users/reactivate_account#index', as: :reactivate_account
   post '/account/reactivate' => 'users/reactivate_account#create'
+  get '/account/reactivate/start' => 'reactivate_account#index', as: :manage_reactivate_account
+  put '/account/reactivate/start' => 'reactivate_account#update'
   get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
   post '/account/verify_phone' => 'users/verify_profile_phone#create'
 

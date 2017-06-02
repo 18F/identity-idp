@@ -17,6 +17,16 @@ en:
           %{resend_code_link}
         fallback_html: If you can't take a phone call right now, you can %{link}
       wrong_number_html: Entered the wrong phone number? %{link}
+    account:
+      reactivate:
+        begin: Let's get started.
+        explanation: >
+          When you created your account, we gave you a list of words and asked
+          you to store them in a safe place. It looked similar to this:
+        intro: >
+          We take extra steps to keep your personal information secure and private,
+          so resetting your password takes a little extra effort.
+        with_key: Do you have your personal key?
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
     password:
@@ -28,7 +38,7 @@ en:
         phrases. Also avoid repeating passwords from other online accounts such as banks, email and
         social media.
       info:
-        lead: > 
+        lead: >
           It must be at least %{min_length} characters long and not be a commonly used password.
           That's it!
       strength:

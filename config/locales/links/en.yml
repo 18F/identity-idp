@@ -1,6 +1,10 @@
 ---
 en:
   links:
+    account:
+      reactivate:
+        with_key: I have my key
+        without_key: I don't have my key
     back_to_sp: Back to %{sp}
     contact: Contact
     copy: Copy
