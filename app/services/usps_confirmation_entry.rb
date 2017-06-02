@@ -6,7 +6,8 @@ UspsConfirmationEntry = Struct.new(
   :last_name,
   :otp,
   :state,
-  :zipcode
+  :zipcode,
+  :issuer
 ) do
   def self.user_access_key
     SessionEncryptor.user_access_key

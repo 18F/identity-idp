@@ -1,6 +1,7 @@
 class UspsConfirmationMaker
-  def initialize(pii:)
+  def initialize(pii:, issuer:)
     @pii = pii
+    @issuer = issuer
   end
 
   def perform
@@ -10,9 +11,9 @@ class UspsConfirmationMaker
 
   private
 
-  attr_reader :pii
+  attr_reader :pii, :issuer
 
-  # rubocop:disable AbcSize
+  # rubocop:disable AbcSize, MethodLength
   # This method is single statement spread across many lines for readability
   def attributes
     {
@@ -24,7 +25,8 @@ class UspsConfirmationMaker
       last_name: pii[:last_name],
       state: pii[:state],
       zipcode: pii[:zipcode],
+      issuer: issuer,
     }
   end
-  # rubocop:enable AbcSize
+  # rubocop:enable AbcSize, MethodLength
 end

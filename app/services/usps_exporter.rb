@@ -42,6 +42,8 @@ class UspsExporter
   def make_entry_row(entry)
     now = Time.zone.now
     due = now + OTP_MAX_VALID_DAYS.days
+    service_provider = ServiceProvider.from_issuer(entry.issuer)
+
     [
       CONTENT_ROW_ID,
       "#{entry.first_name} #{entry.last_name}",
@@ -53,6 +55,8 @@ class UspsExporter
       entry.otp,
       "#{now.strftime('%-B %-e')}, #{now.year}",
       "#{due.strftime('%-B %-e')}, #{due.year}",
+      service_provider.friendly_name,
+      service_provider.return_to_sp_url,
     ]
   end
   # rubocop:enable MethodLength, AbcSize

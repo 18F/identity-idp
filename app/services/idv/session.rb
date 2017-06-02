@@ -17,9 +17,10 @@ module Idv
       vendor_session_id
     ].freeze
 
-    def initialize(user_session, current_user)
+    def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
       @current_user = current_user
+      @issuer = issuer
       @user_session[:idv] ||= new_idv_session
     end
 
@@ -82,7 +83,7 @@ module Idv
         self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
       end
 
-      UspsConfirmationMaker.new(pii: pii).perform
+      UspsConfirmationMaker.new(pii: pii, issuer: issuer).perform
     end
 
     def alive?
@@ -95,7 +96,7 @@ module Idv
 
     private
 
-    attr_accessor :user_session, :current_user
+    attr_accessor :user_session, :current_user, :issuer
 
     def new_idv_session
       { params: {}, step_attempts: { financials: 0, phone: 0 } }

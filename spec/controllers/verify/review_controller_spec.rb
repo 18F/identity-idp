@@ -30,7 +30,11 @@ describe Verify::ReviewController do
     }
   end
   let(:idv_session) do
-    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session = Idv::Session.new(
+      user_session: subject.user_session,
+      current_user: user,
+      issuer: nil
+    )
     idv_session.profile_confirmation = true
     idv_session.phone_confirmation = true
     idv_session.financials_confirmation = true

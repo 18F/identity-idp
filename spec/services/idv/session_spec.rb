@@ -4,7 +4,7 @@ describe Idv::Session do
   let(:user) { build(:user) }
   let(:user_session) { {} }
 
-  subject { described_class.new(user_session, user) }
+  subject { Idv::Session.new(user_session: user_session, current_user: user, issuer: nil) }
 
   describe '#method_missing' do
     it 'disallows un-supported attributes' do

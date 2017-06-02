@@ -15,6 +15,7 @@ describe UspsExporter do
       otp: 123,
     }
   end
+  let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
   let(:psv_row_contents) do
     now = Time.zone.now
     due = now + UspsExporter::OTP_MAX_VALID_DAYS.days
@@ -31,6 +32,8 @@ describe UspsExporter do
       usps_entry.otp,
       "#{current_date}, #{now.year}",
       "#{due_date}, #{due.year}",
+      service_provider.friendly_name,
+      service_provider.return_to_sp_url,
     ]
     values.join('|')
   end
@@ -50,7 +53,7 @@ describe UspsExporter do
 
   describe '#run' do
     before do
-      UspsConfirmationMaker.new(pii: pii_attributes).perform
+      UspsConfirmationMaker.new(pii: pii_attributes, issuer: service_provider.issuer).perform
     end
 
     it 'creates encrypted file' do
