@@ -37,7 +37,7 @@ class SessionDecorator
 
   def requested_attributes; end
 
-  def cancel_link_url
-    root_url
+  def cancel_link_path
+    root_path
   end
 end
