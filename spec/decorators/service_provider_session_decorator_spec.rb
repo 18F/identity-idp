@@ -93,14 +93,14 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#cancel_link_url' do
+  describe '#cancel_link_path' do
     it 'returns sign_up_start_url with the request_id as a param' do
       subject = ServiceProviderSessionDecorator.new(
         sp: sp, view_context: view_context, sp_session: { request_id: 'foo' }
       )
 
-      expect(subject.cancel_link_url).
-        to eq 'http://www.example.com/sign_up/start?request_id=foo'
+      expect(subject.cancel_link_path).
+        to eq '/sign_up/start?request_id=foo'
     end
   end
 end
