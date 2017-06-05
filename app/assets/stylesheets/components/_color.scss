@@ -1,0 +1,5 @@
+.gray { color: $gray; }
+
+@media #{$breakpoint-sm} {
+  .sm-white { color: $white; }
+}
