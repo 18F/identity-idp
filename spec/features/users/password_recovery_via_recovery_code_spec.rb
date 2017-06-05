@@ -7,7 +7,7 @@ feature 'Password recovery via personal key' do
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
-  scenario 'resets password and reactivates profile with personal key', email: true do
+  scenario 'resets password and reactivates profile with personal key', email: true, js: true do
     personal_key = personal_key_from_pii(user, pii)
 
     trigger_reset_password_and_click_email_link(user.email)
@@ -15,10 +15,6 @@ feature 'Password recovery via personal key' do
     reset_password_and_sign_back_in(user, new_password)
     click_submit_default
     enter_correct_otp_code_for_user(user)
-
-    expect(current_path).to eq manage_reactivate_account_path
-
-    click_on t('links.account.reactivate.with_key')
 
     expect(current_path).to eq reactivate_account_path
 
@@ -44,7 +40,9 @@ feature 'Password recovery via personal key' do
 
     expect(current_path).to eq reactivate_account_path
 
-    reactivate_profile(new_password, new_personal_key)
+    click_on t('links.account.reactivate.with_key')
+    fill_in 'personal_key', with: new_personal_key
+    click_on t('forms.buttons.continue')
 
     expect(page).to have_content t('errors.messages.personal_key_incorrect')
   end
@@ -85,8 +83,16 @@ feature 'Password recovery via personal key' do
   end
 
   def reactivate_profile(password, personal_key)
+    click_on t('links.account.reactivate.with_key')
+
+    expect(current_path).to eq verify_personal_key_path
+
+    fill_in 'personal_key', with: personal_key
+    click_on t('forms.buttons.continue')
+
+    expect(current_path).to eq verify_password_path
+
     fill_in 'Password', with: password
-    enter_personal_key(personal_key: personal_key)
-    click_button t('forms.reactivate_profile.submit')
+    click_on t('forms.buttons.submit.default')
   end
 end

@@ -174,6 +174,6 @@ feature 'LOA1 Single Sign On' do
   end
 
   def enter_personal_key_words_on_modal(code)
-    fill_in 'personal-key', with: code
+    fill_in 'personal_key', with: code
   end
 end

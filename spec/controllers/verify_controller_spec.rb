@@ -42,7 +42,7 @@ describe VerifyController do
 
       get :index
 
-      expect(response).to redirect_to manage_reactivate_account_url
+      expect(response).to redirect_to reactivate_account_url
     end
   end
 

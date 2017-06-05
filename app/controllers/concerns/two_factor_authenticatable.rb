@@ -190,7 +190,7 @@ module TwoFactorAuthenticatable
     elsif @updating_existing_number
       account_path
     elsif decorated_user.password_reset_profile.present?
-      manage_reactivate_account_path
+      reactivate_account_path
     else
       account_path
     end
