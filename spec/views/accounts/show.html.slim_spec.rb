@@ -92,9 +92,8 @@ describe 'accounts/show.html.slim' do
     it 'contains link to reactivate profile via personal key or reverification' do
       render
 
-      expect(rendered).to have_link(t('account.index.reactivation.personal_key'),
-                                    href: reactivate_account_path)
-      expect(rendered).to have_link(t('account.index.reactivation.reverify'), href: verify_path)
+      expect(rendered).to have_link(t('account.index.reactivation.link'),
+                                    href: manage_reactivate_account_path)
     end
   end
 
