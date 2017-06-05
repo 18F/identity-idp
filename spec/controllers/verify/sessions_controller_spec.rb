@@ -25,7 +25,9 @@ describe Verify::SessionsController do
       prev_zipcode: '66666',
     }
   end
-  let(:idv_session) { Idv::Session.new(subject.user_session, user) }
+  let(:idv_session) do
+    Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
+  end
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do

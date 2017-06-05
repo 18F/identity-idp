@@ -35,7 +35,7 @@ module ControllerHelper
   def stub_verify_steps_one_and_two(user)
     user_session = {}
     stub_sign_in(user)
-    idv_session = Idv::Session.new(user_session, user)
+    idv_session = Idv::Session.new(user_session: user_session, current_user: user, issuer: nil)
     idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
     idv_session.vendor = subject.idv_vendor.pick
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)

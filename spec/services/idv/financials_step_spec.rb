@@ -3,7 +3,7 @@ require 'rails_helper'
 describe Idv::FinancialsStep do
   let(:user) { build(:user) }
   let(:idv_session) do
-    idvs = Idv::Session.new({}, user)
+    idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)
     idvs.vendor = :mock
     idvs
   end

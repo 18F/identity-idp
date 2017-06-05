@@ -8,7 +8,7 @@ RSpec.describe UspsDecorator do
       profiles: [build(:profile, :active, :verified, pii: { first_name: 'Jane' })]
     )
 
-    idv_session = Idv::Session.new({}, user)
+    idv_session = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)
     UspsDecorator.new(idv_session)
   end
 

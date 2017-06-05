@@ -69,7 +69,9 @@ feature 'LOA3 Single Sign On' do
       expect(current_path).to eq verify_review_path
 
       fill_in :user_password, with: user_password
-      click_submit_default
+
+      expect { click_submit_default }.
+        to change { UspsConfirmation.count }.from(0).to(1)
 
       expect(current_url).to eq verify_confirmations_url
       click_acknowledge_personal_key
@@ -77,6 +79,10 @@ feature 'LOA3 Single Sign On' do
       expect(User.find_with_email(email).events.account_verified.size).to be(0)
       expect(current_url).to eq(account_url)
       expect(page).to have_content(t('account.index.verification.reactivate_button'))
+
+      usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
+      expect(usps_confirmation_entry.issuer).
+        to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
     end
 
     it 'shows user the start page with accordion' do

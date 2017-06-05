@@ -6,7 +6,11 @@ describe Verify::ConfirmationsController do
 
   def stub_idv_session
     stub_sign_in(user)
-    idv_session = Idv::Session.new(subject.user_session, user)
+    idv_session = Idv::Session.new(
+      user_session: subject.user_session,
+      current_user: user,
+      issuer: nil
+    )
     idv_session.vendor = :mock
     idv_session.applicant = idv_session.vendor_params
     idv_session.normalized_applicant_params = { first_name: 'Somebody' }
