@@ -43,4 +43,8 @@ class ServiceProvider < ActiveRecord::Base
   def live?
     active? && approved?
   end
+
+  def redirect_uris
+    super.presence || Array(redirect_uri)
+  end
 end
