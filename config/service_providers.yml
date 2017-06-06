@@ -363,3 +363,12 @@ production:
       - dob
       - ssn
       - phone
+
+  # CBP GOES
+  'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
+    friendly_name: 'CBP PSPD Trusted Traveler Programs'
+    agency: 'DHS'
+    logo: 'cbp.png'
+    cert: 'cbp_goes_pre_prod'
+    redirect_uris:
+      - 'http://10.156.152.27/login'
