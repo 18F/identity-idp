@@ -1,15 +1,21 @@
 footer.footer.bg-light-blue.sm-bg-navy
   .container.h6.py1.px2.lg-px0
     .clearfix
-      .col-right.caps.py0.center.caps
+      .col-right.caps
         = link_to t('links.help'), MarketingSite.help_url,
           class: 'gray sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.contact'), MarketingSite.contact_url,
           class: 'gray sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.privacy_policy'), MarketingSite.privacy_url,
           class: 'gray sm-white text-decoration-none', target: '_blank'
-      .col.pt0.center.flex.flex-center
-        = image_tag asset_url('sp-logos/square-gsa.svg'), width: 20, class: 'mr1 sm-show'
-        = image_tag asset_url('sp-logos/square-gsa-dark.svg'), width: 20, class: 'mr1 sm-hide'
-        span.sm-show.gray.sm-white
-         = t('shared.footer_lite.gsa')
+      .col
+        = link_to('https://gsa.gov',
+          class: 'flex flex-center text-decoration-none white',
+          target: '_blank') do
+          = image_tag asset_url('sp-logos/square-gsa.svg'),
+            width: 20, class: 'mr1 sm-show', alt: 'GSA homepage'
+          = image_tag asset_url('sp-logos/square-gsa-dark.svg'),
+            width: 20, class: 'mr1 sm-hide', alt: 'GSA homepage'
+          span.sm-show
+           = t('shared.footer_lite.gsa')
+        end

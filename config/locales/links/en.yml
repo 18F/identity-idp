@@ -17,7 +17,7 @@ en:
       auth_app_fallback_html: ' or %{link}.'
       fallback_to_sms_html: Send me a text message with the code instead
       fallback_to_voice_html: If you can't get text message right now, you can get a security code via %{link}
-    privacy_policy: Privacy and security
+    privacy_policy: Privacy & security
     remove: Remove
     resend: Resend email
     sign_in: Sign in
