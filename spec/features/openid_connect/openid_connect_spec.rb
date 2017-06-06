@@ -24,9 +24,6 @@ feature 'OpenID Connect' do
                     pii: { first_name: 'John', ssn: '111223333' }).user
 
       sign_in_live_with_2fa(user)
-      expect(page.response_headers['Content-Security-Policy']).
-        to(include('form-action \'self\' http://localhost:7654'))
-      click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -182,7 +179,6 @@ feature 'OpenID Connect' do
 
       _user = sign_in_live_with_2fa
       expect(page.html).to_not include(code_challenge)
-      click_button t('openid_connect.authorization.index.allow')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -210,13 +206,15 @@ feature 'OpenID Connect' do
       email = 'test@test.com'
 
       perform_in_browser(:one) do
+        state = SecureRandom.hex
+
         visit openid_connect_authorize_path(
           client_id: client_id,
           response_type: 'code',
           acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
           scope: 'openid email',
           redirect_uri: 'gov.gsa.openidconnect.test://result',
-          state: SecureRandom.hex,
+          state: state,
           nonce: SecureRandom.hex,
           prompt: 'select_account',
           code_challenge: Digest::SHA256.base64digest(SecureRandom.hex),
@@ -230,6 +228,13 @@ feature 'OpenID Connect' do
 
         expect(page).to have_content(sp_content)
 
+        cancel_callback_url =
+          "gov.gsa.openidconnect.test://result?error=access_denied&state=#{state}"
+
+        expect(page).to have_link(
+          t('links.back_to_sp', sp: 'Example iOS App'), href: cancel_callback_url
+        )
+
         sign_up_user_from_sp_without_confirming_email(email)
       end
 
@@ -238,8 +243,7 @@ feature 'OpenID Connect' do
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
 
-        click_button t('forms.buttons.continue_to', sp: 'Example iOS App')
-        click_button t('openid_connect.authorization.index.allow')
+        click_button t('forms.buttons.continue')
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
         expect(ServiceProviderRequest.from_uuid(sp_request_id)).
@@ -281,15 +285,19 @@ feature 'OpenID Connect' do
       let(:phone_confirmed) { false }
 
       it 'prompts to finish verifying profile, then redirects to SP' do
+        allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
+
         visit oidc_auth_url
 
         sign_in_live_with_2fa(user)
 
-        fill_in 'Secret code', with: otp
         click_button t('forms.verify_profile.submit')
-        click_button t('openid_connect.authorization.index.allow')
+
+        expect(current_path).to eq(sign_up_completed_path)
+        find('input').click
 
         redirect_uri = URI(current_url)
+
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
       end
     end
@@ -302,7 +310,6 @@ feature 'OpenID Connect' do
 
         sign_in_live_with_2fa(user)
         enter_correct_otp_code_for_user(user)
-        click_button t('openid_connect.authorization.index.allow')
 
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
@@ -311,10 +318,13 @@ feature 'OpenID Connect' do
   end
 
   context 'LOA3 signup' do
-    it 'redirects back to SP' do
+    it 'redirects back to SP', email: true do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
       state = SecureRandom.hex
       nonce = SecureRandom.hex
+      email = 'test@test.com'
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -327,14 +337,30 @@ feature 'OpenID Connect' do
         nonce: nonce
       )
 
-      user = create(:user, :signed_up, password: Features::SessionHelper::VALID_PASSWORD)
-
-      sign_in_live_with_2fa(user)
+      click_link t('sign_up.registrations.create_account')
+      submit_form_with_valid_email
+      click_confirmation_link_in_email(email)
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
+      enter_2fa_code
       click_on 'Yes'
+      user = User.find_with_email(email)
       complete_idv_profile_ok(user.reload)
       click_acknowledge_personal_key
-      click_on I18n.t('forms.buttons.continue_to', sp: 'Test SP')
-      click_button t('openid_connect.authorization.index.allow')
+
+      within('.requested-attributes') do
+        expect(page).to have_content t('help_text.requested_attributes.email')
+        expect(page).to_not have_content t('help_text.requested_attributes.address')
+        expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
+        expect(page).to have_content t('help_text.requested_attributes.full_name')
+        expect(page).to_not have_content t('help_text.requested_attributes.phone')
+        expect(page).to have_content t('help_text.requested_attributes.social_security_number')
+      end
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('form-action \'self\' http://localhost:7654'))
+
+      click_on I18n.t('forms.buttons.continue')
 
       redirect_uri = URI(current_url)
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -420,7 +446,30 @@ feature 'OpenID Connect' do
 
       cancel_callback_url = "http://localhost:7654/auth/result?error=access_denied&state=#{state}"
 
-      expect(page).to have_link(t('links.back_to_sp', sp: 'Test SP'), href: cancel_callback_url)
+      expect(page).to have_link(
+        "‹ #{t('links.back_to_sp', sp: 'Test SP')}", href: cancel_callback_url
+      )
+    end
+  end
+
+  context 'signing out' do
+    it 'redirects back to the client app and destroys the session' do
+      id_token = sign_in_get_id_token
+
+      state = SecureRandom.hex
+
+      visit openid_connect_logout_path(
+        post_logout_redirect_uri: 'gov.gsa.openidconnect.test://result/logout',
+        state: state,
+        id_token_hint: id_token
+      )
+
+      current_url_no_port = URI(current_url).tap { |uri| uri.port = nil }.to_s
+      expect(current_url_no_port).to eq("gov.gsa.openidconnect.test://result/logout?state=#{state}")
+
+      visit account_path
+      expect(page).to_not have_content(t('headings.account.login_info'))
+      expect(page).to have_content(t('headings.sign_in_without_sp'))
     end
   end
 
@@ -438,6 +487,43 @@ feature 'OpenID Connect' do
       prompt: 'select_account',
       nonce: nonce
     )
+  end
+
+  def sign_in_get_id_token
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    state = SecureRandom.hex
+    nonce = SecureRandom.hex
+    code_verifier = SecureRandom.hex
+    code_challenge = Digest::SHA256.base64digest(code_verifier)
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'gov.gsa.openidconnect.test://result/auth',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce,
+      code_challenge: code_challenge,
+      code_challenge_method: 'S256'
+    )
+
+    _user = sign_in_live_with_2fa
+
+    redirect_uri = URI(current_url)
+    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
+    code = redirect_params[:code]
+    expect(code).to be_present
+
+    page.driver.post api_openid_connect_token_path,
+                     grant_type: 'authorization_code',
+                     code: code,
+                     code_verifier: code_verifier
+    expect(page.status_code).to eq(200)
+
+    token_response = JSON.parse(page.body).with_indifferent_access
+    token_response[:id_token]
   end
 
   def sp_public_key

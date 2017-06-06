@@ -17,9 +17,10 @@ class Profile < ActiveRecord::Base
 
   # rubocop:disable Rails/SkipsModelValidations
   def activate
+    now = Time.zone.now
     transaction do
       Profile.where('user_id=?', user_id).update_all(active: false)
-      update!(active: true, activated_at: Time.zone.now, deactivation_reason: nil)
+      update!(active: true, activated_at: now, deactivation_reason: nil, verified_at: now)
     end
   end
   # rubocop:enable Rails/SkipsModelValidations

@@ -1,8 +1,13 @@
 module SignUp
   class CompletionsController < ApplicationController
+    include SecureHeadersConcern
+
     before_action :verify_confirmed, if: :loa3?
+    before_action :apply_secure_headers_override, only: :show
 
     def show
+      @view_model = view_model
+
       if user_fully_authenticated? && session[:sp].present?
         analytics.track_event(
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
@@ -22,6 +27,13 @@ module SignUp
     end
 
     private
+
+    def view_model
+      SignUpCompletionsShow.new(
+        loa3_requested: loa3?,
+        decorated_session: decorated_session
+      )
+    end
 
     def verify_confirmed
       redirect_to verify_path if current_user.decorate.identity_not_verified?

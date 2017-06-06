@@ -7,14 +7,14 @@
       #personal-key-alert.alert.alert-alert.display-none(role='alert')
         = t('users.personal_key.confirmation_error')
 
-      form(id='confirm-key' method='post' action="#{sign_up_personal_key_path}" name="key-confirm")
+      form(id='confirm-key' method='post' action="#{update_path}" name="key-confirm")
         input(
           aria-label="#{t('forms.personal_key.confirmation_label')}"
           maxlength="#{code.length}"
           autocomplete='off'
           class='col-12 mb4 border-dashed field monospace personal-key caps'
           name="personal-key"
-          pattern="^#{PersonalKeyFormatter.new.regexp}$"
+          pattern="^#{PersonalKeyFormatter.regexp_string}$"
           required=true
           spellcheck='false'
           type='text')

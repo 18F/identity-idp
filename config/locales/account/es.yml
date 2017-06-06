@@ -15,7 +15,8 @@ es:
       previous_address: NOT TRANSLATED YET
       reactivation:
         instructions: NOT TRANSLATED YET
-        reactivate_button: NOT TRANSLATED YET
+        personal_key: NOT TRANSLATED YET
+        reverify: NOT TRANSLATED YET
       ssn: NOT TRANSLATED YET
       verification:
         instructions: NOT TRANSLATED YET

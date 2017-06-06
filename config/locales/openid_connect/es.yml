@@ -1,18 +1,6 @@
 es:
   openid_connect:
     authorization:
-      index:
-        allow: NOT TRANSLATED YET
-        allow_prompt: NOT TRANSLATED YET
-        decline: NOT TRANSLATED YET
-        attributes:
-          address: NOT TRANSLATED YET
-          birthdate: NOT TRANSLATED YET
-          email: NOT TRANSLATED YET
-          family_name: NOT TRANSLATED YET
-          given_name: NOT TRANSLATED YET
-          phone: NOT TRANSLATED YET
-          social_security_number: NOT TRANSLATED YET
       errors:
         bad_client_id: NOT TRANSLATED YET
         no_valid_acr_values: NOT TRANSLATED YET
@@ -25,6 +13,9 @@ es:
         invalid_authentication: NOT TRANSLATED YET
         invalid_code: NOT TRANSLATED YET
         invalid_code_verifier: NOT TRANSLATED YET
+    logout:
+      errors:
+        id_token_hint: NOT TRANSLATED YET
     user_info:
       errors:
         no_authorization: NOT TRANSLATED YET

@@ -295,7 +295,8 @@ describe SamlIdpController do
           loa3: false,
           issuer: saml_settings.issuer,
           request_id: sp_request_id,
-          request_url: @saml_request.request.original_url
+          request_url: @saml_request.request.original_url,
+          requested_attributes: [:email]
         )
       end
 
@@ -750,6 +751,7 @@ describe SamlIdpController do
         allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
         allow(controller).to receive(:saml_request_id).
           and_return(SecureRandom.uuid)
+        stub_requested_attributes
 
         analytics_hash = {
           success: true,
@@ -765,6 +767,15 @@ describe SamlIdpController do
 
         get :auth
       end
+    end
+
+    def stub_requested_attributes
+      request_parser = instance_double(SamlRequestPresenter)
+      service_provider = ServiceProvider.from_issuer('http://localhost:3000')
+      expect(SamlRequestPresenter).to receive(:new).
+        with(request: controller.saml_request, service_provider: service_provider).
+        and_return(request_parser)
+      allow(request_parser).to receive(:requested_attributes).and_return([:email])
     end
 
     context 'user is not redirected to IdV' do

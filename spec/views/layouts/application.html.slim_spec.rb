@@ -110,4 +110,26 @@ describe 'layouts/application.html.slim' do
       expect(view).not_to render_template(partial: 'shared/_dap_analytics')
     end
   end
+
+  context 'when new relic browser key and app id are present' do
+    it 'it render the new relic javascript' do
+      allow(Figaro.env).to receive(:newrelic_browser_key).and_return('foo')
+      allow(Figaro.env).to receive(:newrelic_browser_app_id).and_return('foo')
+
+      render
+
+      expect(view).to render_template(partial: 'shared/newrelic/_browser_instrumentation')
+    end
+  end
+
+  context 'when new relic browser key and app id are not present' do
+    it 'it does not render the new relic javascript' do
+      allow(Figaro.env).to receive(:newrelic_browser_key).and_return('')
+      allow(Figaro.env).to receive(:newrelic_browser_app_id).and_return('')
+
+      render
+
+      expect(view).to_not render_template(partial: 'shared/newrelic/_browser_instrumentation')
+    end
+  end
 end

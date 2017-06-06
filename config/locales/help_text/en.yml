@@ -4,3 +4,11 @@ en:
     change_factor: >
       Before you're able to edit your %{factor}, you will need to confirm your
       password and receive a security code on your phone.
+    requested_attributes:
+      intro_html: This is the only information %{app_name} will share with %{sp}
+      address: Mailing address
+      birthdate: Date of birth
+      email: Email address
+      full_name: Full name
+      phone: Phone number
+      social_security_number: Social Security number

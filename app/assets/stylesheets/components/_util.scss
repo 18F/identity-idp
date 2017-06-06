@@ -12,6 +12,13 @@
   white-space: nowrap;
 }
 
+.vertical-align::before {
+  content: ' ';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+}
+
 @media #{$breakpoint-sm} {
   // scss-lint:disable ImportantRule
   .sm-display-inline-block { display: inline-block !important; }

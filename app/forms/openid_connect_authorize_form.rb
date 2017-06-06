@@ -68,11 +68,9 @@ class OpenidConnectAuthorizeForm
     @_service_provider ||= ServiceProvider.from_issuer(client_id)
   end
 
-  delegate :decline_redirect_uri, to: :openid_connect_redirector
-
   private
 
-  attr_reader :identity, :success, :openid_connect_redirector
+  attr_reader :identity, :success, :openid_connect_redirector, :already_linked
 
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?

@@ -10,6 +10,7 @@ class StoreSpMetadataInSession
       loa3: loa3_requested?,
       request_url: sp_request.url,
       request_id: sp_request.uuid,
+      requested_attributes: sp_request.requested_attributes,
     }
   end
 

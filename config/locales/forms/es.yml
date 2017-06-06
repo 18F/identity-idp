@@ -4,7 +4,6 @@ es:
     buttons:
       back: Atrás
       continue: Continuar
-      continue_to: Continuar a %{sp}
       disable: Inhabilitar
       edit: Editar
       enable: Habilitar
@@ -44,6 +43,7 @@ es:
       personal_key: Código de recuperación
       try_again: Inténtalo de nuevo
     verify_profile:
+      name: NOT TRANSLATED YET
       title: NOT TRANSLATED YET
       submit: NOT TRANSLATED YET
       instructions: NOT TRANSLATED YET

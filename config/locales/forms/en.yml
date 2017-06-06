@@ -4,7 +4,6 @@ en:
     buttons:
       back: Back
       continue: Continue
-      continue_to: Continue to %{sp}
       disable: Disable
       edit: Edit
       enable: Enable
@@ -45,6 +44,7 @@ en:
       personal_key: Personal key
       try_again: Use another phone number
     verify_profile:
-      title: Verify your identity
-      submit: Submit
-      instructions: Enter your secret code
+      name: Confirmation code
+      instructions: Enter the ten-character code in the letter we sent you.
+      submit: Confirm account
+      title: Confirm your account

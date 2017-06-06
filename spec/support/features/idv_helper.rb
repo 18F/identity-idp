@@ -59,6 +59,10 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(555) 555-5555'
   end
 
+  def click_idv_begin
+    click_on t('idv.index.continue_link')
+  end
+
   def click_idv_continue
     click_button t('forms.buttons.continue')
   end
@@ -89,7 +93,7 @@ module IdvHelper
     click_idv_address_choose_phone
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
-    fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
+    fill_in 'Password', with: user_password
     click_submit_default
   end
 end

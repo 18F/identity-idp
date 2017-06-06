@@ -5,7 +5,7 @@ class UspsConfirmationMaker
 
   def perform
     entry = UspsConfirmationEntry.new_from_hash(attributes)
-    UspsConfirmation.create!(entry: entry)
+    UspsConfirmation.create!(entry: entry.encrypted)
   end
 
   private

@@ -1,18 +1,6 @@
 en:
   openid_connect:
     authorization:
-      index:
-        allow: Allow
-        allow_prompt: 'Review the information that %{name} has requested access to:'
-        decline: Decline
-        attributes:
-          address: Mailing address
-          birthdate: Birthdate
-          email: Email address
-          family_name: Last name
-          given_name: First name
-          phone: Phone number
-          social_security_number: Social security number
       errors:
         bad_client_id: Bad client_id
         no_valid_acr_values: No acceptable acr_values found
@@ -30,3 +18,6 @@ en:
         no_authorization: No Authorization header provided
         malformed_authorization: Malformed Authorization header
         not_found: Could not find authorization for the contents of the provided access_token or it may have expired
+    logout:
+      errors:
+        id_token_hint: id_token_hint was not recognized
