@@ -17,3 +17,5 @@ nav.bg-white
           p.m0
             = link_to t('links.sign_out'), destroy_user_session_path,
               class: 'pl1'
+      .right.sm-hide
+        = link_to t('links.sign_out'), destroy_user_session_path

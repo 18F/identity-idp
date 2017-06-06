@@ -184,6 +184,54 @@ describe Verify::ReviewController do
         )
       end
     end
+
+    context 'user has not requested too much mail' do
+      before do
+        idv_session.address_verification_mechanism = 'usps'
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.months.ago)
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.week.ago)
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.day.ago)
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.hour.ago)
+      end
+
+      it 'does not display a success message' do
+        get :new
+
+        expect(flash.now[:success]).to eq(
+          t('idv.messages.mail_sent')
+        )
+      end
+
+      it 'displays a helpful error message' do
+        get :new
+
+        expect(flash.now[:error]).to be_nil
+      end
+    end
+
+    context 'user has requested too much mail' do
+      before do
+        idv_session.address_verification_mechanism = 'usps'
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 2.weeks.ago)
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.week.ago)
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.day.ago)
+        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 1.hour.ago)
+      end
+
+      it 'does not display a success message' do
+        get :new
+
+        expect(flash.now[:success]).to be_nil
+      end
+
+      it 'displays a helpful error message' do
+        get :new
+
+        expect(flash.now[:error]).to eq(
+          t('idv.errors.mail_limit_reached')
+        )
+      end
+    end
   end
 
   describe '#create' do

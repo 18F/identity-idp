@@ -1,5 +1,8 @@
 Attribute:
   enabled: false
+ControlParameter:
+  exclude:
+    - OpenidConnectRedirector#initialize
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
@@ -7,6 +10,7 @@ DuplicateMethodCall:
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
+    - FileEncryptor#encrypt
 FeatureEnvy:
   exclude:
     - track_registration
@@ -17,6 +21,7 @@ FeatureEnvy:
     - EncryptedSidekiqRedis#zrem
     - UserDecorator#should_acknowledge_personal_key?
     - Pii::Attributes#[]=
+    - OpenidConnectLogoutForm#load_identity
 InstanceVariableAssumption:
   exclude:
     - User
@@ -25,6 +30,9 @@ IrresponsibleModule:
 ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
+NestedIterators:
+  exclude:
+    - FileEncryptor#encrypt
 NilCheck:
   enabled: false
 LongParameterList:
@@ -41,10 +49,15 @@ TooManyConstants:
 TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm
+    - OpenidConnectRedirector
 TooManyStatements:
   max_statements: 6
   exclude:
+    - OpenidConnect::AuthorizationController#index
+    - OpenidConnect::AuthorizationController#store_request
+    - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
+    - FileEncryptor#encrypt
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController

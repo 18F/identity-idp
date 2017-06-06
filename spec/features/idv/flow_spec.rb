@@ -346,29 +346,6 @@ feature 'IdV session' do
       end
     end
 
-    scenario 'pick USPS address verification' do
-      sign_in_and_2fa_user
-      visit verify_session_path
-
-      fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
-      click_idv_continue
-      click_idv_address_choose_usps
-      click_on t('idv.buttons.send_letter')
-
-      expect(current_path).to eq verify_review_path
-
-      fill_in :user_password, with: user_password
-      click_submit_default
-
-      expect(current_url).to eq verify_confirmations_url
-      click_acknowledge_personal_key
-
-      expect(current_url).to eq(account_url)
-      expect(page).to have_content(t('account.index.verification.reactivate_button'))
-    end
-
     context 'cancel from USPS/Phone verification screen' do
       context 'without js' do
         it 'returns user to profile path' do

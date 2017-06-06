@@ -25,9 +25,15 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
 
       context 'with valid params' do
-        it 'renders the approve/deny form' do
+        it 'redirects back to the client app with a code' do
           action
-          expect(controller).to render_template('openid_connect/authorization/index')
+
+          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+          redirect_params = URIService.params(response.location)
+
+          expect(redirect_params[:code]).to be_present
+          expect(redirect_params[:state]).to eq(params[:state])
         end
 
         it 'tracks the event' do
@@ -47,9 +53,10 @@ RSpec.describe OpenidConnect::AuthorizationController do
           context 'account is already verified' do
             let(:user) { create(:profile, :active, :verified).user }
 
-            it 'renders the approve/deny form' do
+            it 'redirects to the redirect_uri immediately' do
               action
-              expect(controller).to render_template('openid_connect/authorization/index')
+
+              expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
             end
           end
 
@@ -74,8 +81,35 @@ RSpec.describe OpenidConnect::AuthorizationController do
         end
       end
 
-      context 'with invalid params' do
-        before { params.delete(:state) }
+      context 'with invalid params that do not interfere with the redirect_uri' do
+        before { params.delete(:prompt) }
+
+        it 'redirects to the redirect_uri immediately with an invalid_request' do
+          action
+
+          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+
+          redirect_params = URIService.params(response.location)
+
+          expect(redirect_params[:error]).to eq('invalid_request')
+          expect(redirect_params[:error_description]).to be_present
+          expect(redirect_params[:state]).to eq(params[:state])
+        end
+
+        it 'tracks the event with errors' do
+          stub_analytics
+          expect(@analytics).to receive(:track_event).
+            with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
+                 success: false,
+                 client_id: client_id,
+                 errors: hash_including(:prompt))
+
+          action
+        end
+      end
+
+      context 'with invalid params that mean the redirect_uri is not trusted' do
+        before { params.delete(:client_id) }
 
         it 'renders the error page' do
           action
@@ -87,10 +121,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
           expect(@analytics).to receive(:track_event).
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
-                 client_id: client_id,
-                 errors: {
-                   state: ['Please fill in this field.', 'is too short (minimum is 32 characters)'],
-                 })
+                 client_id: nil,
+                 errors: hash_including(:client_id))
 
           action
         end
@@ -113,100 +145,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
           loa3: false,
           issuer: 'urn:gov:gsa:openidconnect:test',
           request_id: sp_request_id,
-          request_url: request.original_url
+          request_url: request.original_url,
+          requested_attributes: %w[given_name family_name birthdate]
         )
-      end
-    end
-  end
-
-  describe '#create' do
-    subject(:action) { post :create }
-
-    context 'user is signed in' do
-      before do
-        user = create(:user, :signed_up)
-        stub_sign_in user
-        controller.user_session[:openid_auth_request] = params
-      end
-
-      it 'tracks the allow event' do
-        stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::OPENID_CONNECT_ALLOW, success: true, client_id: client_id, errors: {})
-
-        action
-      end
-
-      context 'with invalid params' do
-        before { params.delete(:redirect_uri) }
-
-        it 'renders the error page' do
-          action
-          expect(controller).to render_template('openid_connect/authorization/error')
-        end
-
-        it 'tracks the allow event with success: false' do
-          stub_analytics
-          expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_ALLOW,
-                 success: false,
-                 client_id: client_id,
-                 errors: hash_including(:redirect_uri))
-
-          action
-        end
-      end
-    end
-
-    context 'user is not signed in' do
-      it 'redirects to login' do
-        expect(action).to redirect_to(root_url)
-      end
-    end
-  end
-
-  describe '#destroy' do
-    subject(:action) { delete :destroy }
-
-    before { stub_analytics }
-
-    context 'user is signed in' do
-      before do
-        user = create(:user, :signed_up)
-        stub_sign_in user
-        controller.user_session[:openid_auth_request] = params
-      end
-
-      it 'tracks the decline event' do
-        stub_analytics
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::OPENID_CONNECT_DECLINE, client_id: client_id)
-
-        action
-      end
-
-      it 'redirects back to the client app with a access_denied' do
-        action
-
-        redirect_params = URIService.params(response.location)
-
-        expect(redirect_params[:error]).to eq('access_denied')
-        expect(redirect_params[:state]).to eq(params[:state])
-      end
-
-      context 'with invalid params' do
-        before { params.delete(:redirect_uri) }
-
-        it 'renders the error page' do
-          action
-          expect(controller).to render_template('openid_connect/authorization/error')
-        end
-      end
-    end
-
-    context 'user is not signed in' do
-      it 'redirects to login' do
-        expect(action).to redirect_to(root_url)
       end
     end
   end

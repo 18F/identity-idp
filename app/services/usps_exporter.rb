@@ -11,7 +11,7 @@ class UspsExporter
     psv_buffer = CSV.generate(col_sep: '|', row_sep: "\r\n") do |csv|
       make_psv(csv)
     end
-    File.open(psv_file_path, 'wb') { |file| file.write psv_buffer }
+    file_encryptor.encrypt(psv_buffer, psv_file_path)
     clear_entries
   end
 
@@ -56,4 +56,11 @@ class UspsExporter
     ]
   end
   # rubocop:enable MethodLength, AbcSize
+
+  def file_encryptor
+    @_file_encryptor ||= FileEncryptor.new(
+      Rails.root.join('keys/equifax_gpg.pub.bin'),
+      Figaro.env.equifax_gpg_email
+    )
+  end
 end

@@ -9,12 +9,13 @@ en:
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
+      confirmation_code_incorrect: Incorrect code. Did you type it in correctly?
       confirmation_invalid_token: >
-        Invalid confirmation link. Either the link expired or you 
-        already confirmed your account. 
+        Invalid confirmation link. Either the link expired or you
+        already confirmed your account.
       confirmation_period_expired: >
         Expired confirmation link.
-        You can click "Resend confirmation instructions" to get another one. 
+        You can click "Resend confirmation instructions" to get another one.
       expired: has expired, please request a new one
       format_mismatch: Please match the requested format.
       improbable_phone: Invalid phone number. Please make sure you enter a 10-digit phone number.
@@ -26,7 +27,7 @@ en:
       not_saved:
         one: '1 error prohibited this %{resource} from being saved:'
         other: "%{count} errors prohibited this %{resource} from being saved:"
-      otp_incorrect: Security code is incorrect
+      otp_incorrect: Incorrect code. Did you type it correctly?
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       requires_phone: requires you to enter your phone number.

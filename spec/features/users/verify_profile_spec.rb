@@ -22,7 +22,7 @@ feature 'verify profile with OTP' do
 
       expect(current_path).to eq verify_account_path
 
-      fill_in 'Secret code', with: otp
+      fill_in t('forms.verify_profile.name'), with: otp
       click_button t('forms.verify_profile.submit')
 
       expect(current_path).to eq account_path
@@ -35,11 +35,11 @@ feature 'verify profile with OTP' do
 
     scenario 'wrong OTP used' do
       sign_in_live_with_2fa(user)
-      fill_in 'Secret code', with: 'the wrong code'
+      fill_in t('forms.verify_profile.name'), with: 'the wrong code'
       click_button t('forms.verify_profile.submit')
 
       expect(current_path).to eq verify_account_path
-      expect(page).to have_content(t('errors.messages.otp_incorrect'))
+      expect(page).to have_content(t('errors.messages.confirmation_code_incorrect'))
       expect(page.body).to_not match('the wrong code')
     end
   end

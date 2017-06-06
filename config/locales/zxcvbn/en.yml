@@ -4,7 +4,7 @@ en:
     feedback:
       "A word by itself is easy to guess": A word by itself is easy to guess
       "Add another word or two_ Uncommon words are better_": >-
-        Add another word or two. Uncommon words are better.
+        Add another word or two. Uncommon words are better
       "All-uppercase is almost as easy to guess as all-lowercase": >-
         All-uppercase is almost as easy to guess as all-lowercase
       "Avoid dates and years that are associated with you": >-
@@ -19,7 +19,7 @@ en:
       "Names and surnames by themselves are easy to guess": >-
         Names and surnames by themselves are easy to guess
       "No need for symbols, digits, or uppercase letters": >-
-        No need for symbols, digits, or uppercase letters
+        There is no need for symbols, digits, or uppercase letters
       "Predictable substitutions like '@' instead of 'a' don't help very much":
         Predictable substitutions like '@' instead of 'a' don’t help very much
       "Recent years are easy to guess": Recent years are easy to guess
@@ -34,6 +34,7 @@ en:
       "This is a top-100 common password": This is a top-100 common password
       "This is a very common password": This is a very common password
       "This is similar to a commonly used password": This is similar to a commonly used password
-      "Use a few words, avoid common phrases": Use a few words, avoid common phrases
+      "Use a few words, avoid common phrases":
+          For a stronger password, use a few words separated by spaces, but avoid common phrases
       "Use a longer keyboard pattern with more turns": >-
         Use a longer keyboard pattern with more turns

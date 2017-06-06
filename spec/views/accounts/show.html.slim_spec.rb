@@ -82,6 +82,20 @@ describe 'accounts/show.html.slim' do
         t('account.links.regenerate_personal_key'), href: manage_personal_key_path
       )
     end
+
+    it 'displays an alert with instructions to reactivate their profile' do
+      render
+
+      expect(rendered).to have_content(t('account.index.reactivation.instructions'))
+    end
+
+    it 'contains link to reactivate profile via personal key or reverification' do
+      render
+
+      expect(rendered).to have_link(t('account.index.reactivation.personal_key'),
+                                    href: reactivate_account_path)
+      expect(rendered).to have_link(t('account.index.reactivation.reverify'), href: verify_path)
+    end
   end
 
   context 'when the user does not have pending_profile' do

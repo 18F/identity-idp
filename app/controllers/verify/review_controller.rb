@@ -23,7 +23,13 @@ module Verify
       @idv_params = idv_params
       analytics.track_event(Analytics::IDV_REVIEW_VISIT)
 
-      flash.now[:success] = flash_message_content
+      usps_mail_service = Idv::UspsMail.new(current_user)
+      flash_now = flash.now
+      if usps_mail_service.mail_spammed?
+        flash_now[:error] = t('idv.errors.mail_limit_reached')
+      else
+        flash_now[:success] = flash_message_content
+      end
     end
 
     def create

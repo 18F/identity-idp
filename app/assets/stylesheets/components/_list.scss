@@ -6,6 +6,23 @@
   width: 20px;
 }
 
+.success-bullets {
+  li {
+    padding: 1rem 1rem 1rem 0;
+
+    &::before {
+      background-image: url(image-path('alert/success.svg'));
+      background-repeat: no-repeat;
+      content: '';
+      display: inline-block;
+      height: 1rem;
+      padding-right: 1rem;
+      vertical-align: middle;
+      width: 1rem;
+    }
+  }
+}
+
 .teal-dots {
   list-style: none;
   padding: 0;

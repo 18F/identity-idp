@@ -4,14 +4,20 @@ module Users
     before_action :confirm_verification_needed
 
     def index
+      usps_mail = Idv::UspsMail.new(current_user)
+      @mail_spammed = usps_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
+
+      return unless FeatureManagement.reveal_usps_code?
+      @code = JSON.parse(user_session[:decrypted_pii])['otp']['raw']
     end
 
     def create
       @verify_account_form = build_verify_account_form
+
       if @verify_account_form.submit
         flash[:success] = t('account.index.verification.success')
-        redirect_to after_sign_in_path_for(current_user)
+        redirect_to sign_up_completed_url
       else
         render :index
       end

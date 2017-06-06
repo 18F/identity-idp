@@ -39,8 +39,6 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
         app: APP_NAME, confirmation_period: presenter.confirmation_period
       )
     )
-
-    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
   end
 
   it 'mentions creating an account when user is not yet confirmed' do
@@ -56,8 +54,6 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
         app: APP_NAME, confirmation_period: presenter.confirmation_period
       )
     )
-
-    expect(rendered).to have_xpath("//p[contains(@class, 'lead')]/a[text()='#{APP_NAME}']")
   end
 
   it 'mentions resetting the account when account has been reset by tech support' do

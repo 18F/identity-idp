@@ -41,7 +41,7 @@ describe VerifyAccountForm do
 
       it 'is invalid' do
         expect(subject).to_not be_valid
-        expect(subject.errors[:otp]).to eq [t('errors.messages.otp_incorrect')]
+        expect(subject.errors[:otp]).to eq [t('errors.messages.confirmation_code_incorrect')]
       end
     end
   end

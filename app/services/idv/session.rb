@@ -72,8 +72,7 @@ module Idv
     end
 
     def complete_profile
-      profile.verified_at = Time.zone.now
-      profile.activate
+      ProfileActivator.new(user: current_user).call
       move_pii_to_user_session
     end
 
@@ -82,6 +81,7 @@ module Idv
       if pii.is_a?(String)
         self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
       end
+
       UspsConfirmationMaker.new(pii: pii).perform
     end
 

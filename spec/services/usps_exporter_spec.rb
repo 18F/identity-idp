@@ -2,8 +2,9 @@ require 'rails_helper'
 
 describe UspsExporter do
   let(:export_file) { Tempfile.new('usps_export.psv') }
-  let(:usps_entry) do
-    UspsConfirmationEntry.new_from_hash(
+  let(:usps_entry) { UspsConfirmationEntry.new_from_hash(pii_attributes) }
+  let(:pii_attributes) do
+    {
       first_name: 'Some',
       last_name: 'One',
       address1: '123 Any St',
@@ -11,8 +12,8 @@ describe UspsExporter do
       city: 'Somewhere',
       state: 'KS',
       zipcode: '66666-1234',
-      otp: 123
-    )
+      otp: 123,
+    }
   end
   let(:psv_row_contents) do
     now = Time.zone.now
@@ -33,6 +34,12 @@ describe UspsExporter do
     ]
     values.join('|')
   end
+  let(:file_encryptor) do
+    FileEncryptor.new(
+      Rails.root.join('keys/equifax_gpg.pub.bin'),
+      Figaro.env.equifax_gpg_email
+    )
+  end
 
   subject { described_class.new(export_file.path) }
 
@@ -43,15 +50,22 @@ describe UspsExporter do
 
   describe '#run' do
     before do
-      UspsConfirmation.create(entry: usps_entry.encrypted)
+      UspsConfirmationMaker.new(pii: pii_attributes).perform
     end
 
-    it 'creates the file' do
+    it 'creates encrypted file' do
       subject.run
 
       psv_contents = export_file.read
 
-      expect(psv_contents).to eq("01|1\r\n#{psv_row_contents}\r\n")
+      expect(psv_contents).to_not eq("01|1\r\n#{psv_row_contents}\r\n")
+
+      decrypted_contents = file_encryptor.decrypt(
+        Figaro.env.equifax_development_example_gpg_passphrase,
+        export_file.path
+      )
+
+      expect(decrypted_contents).to eq("01|1\r\n#{psv_row_contents}\r\n")
     end
 
     it 'clears entries after creating file' do
@@ -60,6 +74,16 @@ describe UspsExporter do
       subject.run
 
       expect(UspsConfirmation.count).to eq 0
+    end
+
+    it 'does not clear entries when GPG encrypting fails for some reason' do
+      expect(Figaro.env).to receive(:equifax_gpg_email).and_return('wrong@email.com')
+
+      original_count = UspsConfirmation.count
+
+      expect { subject.run }.to raise_error(FileEncryptor::EncryptionError)
+
+      expect(UspsConfirmation.count).to eq(original_count)
     end
   end
 end

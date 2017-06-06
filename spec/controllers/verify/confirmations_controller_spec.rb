@@ -24,6 +24,7 @@ describe Verify::ConfirmationsController do
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
     allow(subject).to receive(:idv_session).and_return(idv_session)
+    allow(subject).to receive(:user_session).and_return(context: 'idv')
   end
 
   let(:password) { 'sekrit phrase' }
@@ -131,6 +132,13 @@ describe Verify::ConfirmationsController do
         expect(profile.deactivation_reason).to eq 'verification_pending'
         expect(UspsConfirmation.count).to eq 1
       end
+
+      it 'redirects to account page' do
+        subject.session[:sp] = { loa3: true }
+        patch :update
+
+        expect(response).to redirect_to account_url
+      end
     end
 
     context 'user confirmed a new phone' do
@@ -175,7 +183,7 @@ describe Verify::ConfirmationsController do
     end
 
     context 'no sp present' do
-      it 'redirects to the profile page' do
+      it 'redirects to the account page' do
         stub_idv_session
         stub_sign_in
 

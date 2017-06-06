@@ -54,12 +54,12 @@ class ReactivateAccountForm
   end
 
   def validate_password
-    return if password.blank? || valid_password?
+    return if valid_password?
     errors.add :password, :password_incorrect
   end
 
   def validate_personal_key
-    return if personal_key.blank? || (valid_personal_key? && personal_key_decrypts?)
+    return check_personal_key if personal_key_decrypts?
     errors.add :personal_key, :personal_key_incorrect
   end
 

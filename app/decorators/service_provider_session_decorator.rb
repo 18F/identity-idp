@@ -1,4 +1,6 @@
 class ServiceProviderSessionDecorator
+  include Rails.application.routes.url_helpers
+
   DEFAULT_LOGO = 'generic.svg'.freeze
 
   def initialize(sp:, view_context:, sp_session:)
@@ -12,7 +14,19 @@ class ServiceProviderSessionDecorator
   end
 
   def return_to_service_provider_partial
-    'devise/sessions/return_to_service_provider'
+    if sp_return_url.present?
+      'devise/sessions/return_to_service_provider'
+    else
+      'shared/null'
+    end
+  end
+
+  def return_to_sp_from_start_page_partial
+    if sp_return_url.present?
+      'sign_up/registrations/return_to_sp_from_start_page'
+    else
+      'shared/null'
+    end
   end
 
   def nav_partial
@@ -35,16 +49,24 @@ class ServiceProviderSessionDecorator
     'verify/hardfail4'
   end
 
+  def requested_attributes
+    sp_session[:requested_attributes]
+  end
+
   def sp_name
     sp.friendly_name || sp.agency
   end
 
   def sp_return_url
-    if request_url.present?
-      OpenidConnectRedirector.from_request_url(request_url).decline_redirect_uri
+    if sp.redirect_uri.present? && openid_connect_redirector.valid?
+      openid_connect_redirector.decline_redirect_uri
     else
       sp.return_to_sp_url
     end
+  end
+
+  def cancel_link_url
+    sign_up_start_url(request_id: sp_session[:request_id])
   end
 
   private
@@ -53,5 +75,9 @@ class ServiceProviderSessionDecorator
 
   def request_url
     sp_session[:request_url]
+  end
+
+  def openid_connect_redirector
+    @_openid_connect_redirector ||= OpenidConnectRedirector.from_request_url(request_url)
   end
 end

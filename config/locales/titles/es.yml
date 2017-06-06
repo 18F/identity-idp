@@ -10,9 +10,6 @@ es:
       password: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
     enter_2fa_code: NOT TRANSLATED YET
-    loa3_verified:
-      'true': NOT TRANSLATED YET
-      'false': NOT TRANSLATED YET
     passwords:
       change: NOT TRANSLATED YET
       confirm: NOT TRANSLATED YET
@@ -23,6 +20,10 @@ es:
     registrations:
       new: NOT TRANSLATED YET
       start: NOT TRANSLATED YET
+    sign_up:
+      completion_html: You have %{accent} with %{app}
+      loa1: created your account
+      loa3: verified your identity
     totp_setup:
       new: NOT TRANSLATED YET
     two_factor_setup: NOT TRANSLATED YET

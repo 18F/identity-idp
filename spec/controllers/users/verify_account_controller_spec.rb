@@ -54,10 +54,12 @@ RSpec.describe Users::VerifyAccountController do
     end
 
     context 'with a valid form' do
-      it 'redirects to the account verification page' do
+      let(:success) { true }
+
+      it 'redirects to the sign_up/completions page' do
         action
 
-        expect(response).to redirect_to(verify_account_path)
+        expect(response).to redirect_to(sign_up_completed_url)
       end
     end
 

@@ -19,8 +19,17 @@ feature 'LOA1 Single Sign On' do
         confirm_email_in_a_different_browser(email)
 
         expect(current_path).to eq sign_up_completed_path
+        within('.requested-attributes') do
+          expect(page).to have_content t('help_text.requested_attributes.email')
+          expect(page).to_not have_content t('help_text.requested_attributes.address')
+          expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
+          expect(page).to_not have_content t('help_text.requested_attributes.name')
+          expect(page).to_not have_content t('help_text.requested_attributes.phone')
+          expect(page).
+            to_not have_content t('help_text.requested_attributes.social_security_number')
+        end
 
-        click_on t('forms.buttons.continue_to', sp: 'Your friendly Government Agency')
+        click_on t('forms.buttons.continue')
 
         expect(current_url).to eq authn_request
         expect(ServiceProviderRequest.from_uuid(sp_request_id)).
@@ -58,6 +67,18 @@ feature 'LOA1 Single Sign On' do
       expect(current_url).to match sign_up_start_path
       expect(page).to have_content(sp_content)
       expect(page).to_not have_css('.accordion-header')
+    end
+
+    it 'shows user the start page with a link back to the SP' do
+      saml_authn_request = auth_request.create(saml_settings)
+
+      visit saml_authn_request
+
+      cancel_callback_url = 'http://localhost:3000'
+
+      expect(page).to have_link(
+        t('links.back_to_sp', sp: 'Your friendly Government Agency'), href: cancel_callback_url
+      )
     end
 
     it 'user can view and confirm personal key during sign up', :js do

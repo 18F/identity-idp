@@ -9,7 +9,7 @@ module Verify
     def show
       track_final_idv_event
 
-      finish_proofing_success
+      finish_idv_session
     end
 
     def update
@@ -19,7 +19,7 @@ module Verify
     private
 
     def next_step
-      if session[:sp]
+      if session[:sp] && !pending_profile?
         sign_up_completed_url
       else
         after_sign_in_path_for(current_user)
@@ -38,17 +38,12 @@ module Verify
       analytics.track_event(Analytics::IDV_FINAL, result)
     end
 
-    def finish_proofing_success
+    def finish_idv_session
       @code = personal_key
       idv_session.complete_session
       idv_session.personal_key = nil
-      create_account_verified_event
       flash.now[:success] = t('idv.messages.confirm')
       flash[:allow_confirmations_continue] = true
-    end
-
-    def create_account_verified_event
-      CreateVerifiedAccountEvent.new(current_user).call
     end
 
     def personal_key
@@ -58,6 +53,10 @@ module Verify
     def generate_personal_key
       cacher = Pii::Cacher.new(current_user, user_session)
       idv_session.profile.encrypt_recovery_pii(cacher.fetch)
+    end
+
+    def pending_profile?
+      current_user.decorate.pending_profile?
     end
   end
 end

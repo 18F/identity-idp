@@ -36,7 +36,7 @@ class VerifyAccountForm
 
   def validate_otp
     return if valid_otp?
-    errors.add :otp, :otp_incorrect
+    errors.add :otp, :confirmation_code_incorrect
   end
 
   def valid_otp?
@@ -48,7 +48,6 @@ class VerifyAccountForm
   end
 
   def activate_profile
-    pending_profile.verified_at = Time.zone.now
-    pending_profile.activate
+    Idv::ProfileActivator.new(user: user).call
   end
 end

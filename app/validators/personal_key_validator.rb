@@ -1,10 +1,6 @@
 module PersonalKeyValidator
   extend ActiveSupport::Concern
 
-  included do
-    validate :valid_personal_key?
-  end
-
   private
 
   def normalize_personal_key(personal_key = nil)
@@ -12,9 +8,13 @@ module PersonalKeyValidator
     personal_key_generator.normalize(personal_key)
   end
 
-  def valid_personal_key?
-    return false unless personal_key =~ /\A#{PersonalKeyFormatter.new.regexp}\Z/
-    personal_key_generator.verify(personal_key)
+  def check_personal_key
+    return if personal_key_format_matches? && personal_key_generator.verify(personal_key)
+    errors.add :personal_key, :personal_key_incorrect
+  end
+
+  def personal_key_format_matches?
+    personal_key =~ PersonalKeyFormatter.regexp
   end
 
   def personal_key_generator

@@ -1,7 +1,7 @@
 ---
 en:
   links:
-    back_to_sp: "‹ Back to %{sp}"
+    back_to_sp: Back to %{sp}
     contact: Contact
     copy: Copy
     create_account: Create account

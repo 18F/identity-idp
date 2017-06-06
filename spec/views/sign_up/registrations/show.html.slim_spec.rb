@@ -12,6 +12,10 @@ describe 'sign_up/registrations/show.html.slim' do
       expect(rendered).to have_content(
         t('headings.create_account_without_sp', sp: nil)
       )
+
+      expect(rendered).not_to have_link(
+        t('links.back_to_sp', sp: 'Awesome Application!')
+      )
     end
 
     it 'has a localized title' do
@@ -30,11 +34,16 @@ describe 'sign_up/registrations/show.html.slim' do
 
   context 'when SP is present' do
     before do
-      @sp = build_stubbed(:service_provider, friendly_name: 'Awesome Application!')
-      view_context = ActionController::Base.new.view_context
-      allow(view).to receive(:decorated_session).and_return(
-        ServiceProviderSessionDecorator.new(sp: @sp, view_context: view_context, sp_session: {})
+      @sp = build_stubbed(
+        :service_provider,
+        friendly_name: 'Awesome Application!',
+        return_to_sp_url: 'www.awesomeness.com'
       )
+      view_context = ActionController::Base.new.view_context
+      @decorated_session = DecoratedSession.new(
+        sp: @sp, view_context: view_context, sp_session: {}
+      ).call
+      allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end
 
     it 'includes sp-specific copy' do
@@ -46,6 +55,15 @@ describe 'sign_up/registrations/show.html.slim' do
       ].join(' ')
 
       expect(rendered).to have_content(sp_content)
+    end
+
+    it 'displays a back to sp link' do
+      render
+
+      expect(rendered).to have_link(
+        t('links.back_to_sp', sp: 'Awesome Application!'),
+        href: @decorated_session.sp_return_url
+      )
     end
   end
 end

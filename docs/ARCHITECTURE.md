@@ -17,6 +17,8 @@ For more details on our system security, see [SECURITY.md](SECURITY.md).
 #### Entity-relationship Diagram
 ![ERD](diagrams/erd.png)
 
+To update the ERD, run `erd` from the project root (eg. `bundle exec erd`). The ERD is generated using the `.erdconfig` file, also in the project root.
+
 
 ### SAML Profile
 [Web SSO Profile](SAML_PROFILE.md)
