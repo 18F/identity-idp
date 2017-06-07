@@ -11,6 +11,8 @@ Figaro.require_keys(
   'idp_sso_target_url',
   'logins_per_ip_limit',
   'logins_per_ip_period',
+  'max_mail_events',
+  'max_mail_events_window_in_days',
   'min_password_score',
   'otp_delivery_blocklist_bantime',
   'otp_delivery_blocklist_findtime',

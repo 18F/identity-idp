@@ -8,6 +8,7 @@ module Idv
     end
 
     def mail_spammed?
+      return false if user_mail_events.empty?
       max_events? && updated_within_last_month?
     end
 
@@ -23,7 +24,7 @@ module Idv
     end
 
     def max_events?
-      user_mail_events.count == MAX_MAIL_EVENTS
+      user_mail_events.size == MAX_MAIL_EVENTS
     end
 
     def updated_within_last_month?
