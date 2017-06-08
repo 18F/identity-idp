@@ -1,5 +1,6 @@
 require 'yaml'
 require 'active_support/core_ext/hash/conversions'
+require 'front_matter_parser'
 
 class I18nConverter
   def initialize(stdin:, stdout:)
@@ -10,9 +11,8 @@ class I18nConverter
   def xml_to_yml
     return if bad_usage?(in_format: :xml, out_format: :yml)
 
-    data = Hash.from_xml(stdin.read)
-    data_hash = data['hash']
-    data = data_hash if data_hash
+    data = read_xml
+
     stdout.puts YAML.dump(data)
   end
 
@@ -21,6 +21,27 @@ class I18nConverter
 
     data = YAML.safe_load(stdin.read)
     stdout.puts data.to_xml
+  end
+
+  def md_to_xml
+    return if bad_usage?(in_format: :md, out_format: :xml)
+
+    parsed = FrontMatterParser::Parser.new(:md).call(stdin.read)
+    data = {
+      front_matter: parsed.front_matter,
+      content: parsed.content,
+    }
+    stdout.puts data.to_xml
+  end
+
+  def xml_to_md
+    return if bad_usage?(in_format: :xml, out_format: :md)
+
+    data = read_xml
+
+    stdout.puts YAML.dump(data['front_matter'])
+    stdout.puts '---'
+    stdout.puts data['content']
   end
 
   private
@@ -35,5 +56,12 @@ class I18nConverter
     exit 1
     # rubocop:enable Rails/Exit
     true
+  end
+
+  def read_xml
+    data = Hash.from_xml(stdin.read)
+    data_hash = data['hash']
+    data = data_hash if data_hash
+    data
   end
 end
