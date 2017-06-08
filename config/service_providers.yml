@@ -308,6 +308,20 @@ production:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:openidconnect:sp:sinatra':
+    agency: 'GSA'
+    cert: 'sp_sinatra_demo'
+    friendly_name: 'Example Sinatra OIDC App'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'https://sp-oidc-sinatra.dev.login.gov/'
+      - 'https://sp-oidc-sinatra.dm.login.gov/'
+      - 'https://sp-oidc-sinatra.int.login.gov/'
+      - 'https://sp-oidc-sinatra.pt.login.gov/'
+      - 'https://sp-oidc-sinatra.qa.login.gov/'
+      - 'https://sp-oidc-sinatra.staging.login.gov/'
+
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':
     redirect_uris:
