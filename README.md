@@ -179,6 +179,16 @@ $ RAILS_ASSET_HOST=localhost:3000 rake spec:user_flows
 
 Then, visit http://localhost:3000/user_flows in your browser!
 
+##### Exporting
+
+The user flows tool also has an export feature which allows you to export everything for the web. You may host these assets with someting like [`simplehttpserver`](https://www.npmjs.com/package/simplehttpserver) or publish to [Federalist](https://federalist.18f.gov/). To publish user flows for Federalist, first make sure the application is running locally (eg. localhost:3000) and run:
+
+```
+$ RAILS_ASSET_HOST=localhost:3000 FEDERALIST_PATH=/site/user/repository rake spec:user_flows:web
+```
+
+This will output your site to `public/site/user/repository` for quick publishing to [Federalist](https://federalist-docs.18f.gov/pages/using-federalist/). To test compatibility, run `simplehttpserver` from the app's `public` folder and visit `http://localhost:8000/<FEDERALIST PATH>/user_flows` in your browser.
+
 ### Load testing
 
 We provide some [Locust.io] Python scripts you can run to test how the

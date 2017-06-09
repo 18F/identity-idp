@@ -23,10 +23,10 @@ class UserFlowFormatter < RSpec::Core::Formatters::DocumentationFormatter
                                    :stop
 
   def initialize(output)
-    @html = '<html><head><link href="assets/application.css" rel="stylesheet"></head>' \
+    @html = '<html><head><link href="/assets/application.self.css" rel="stylesheet"></head>' \
             '<body class="p2 container black">' \
             '<h1 class="p2 my2 inline-block navy border border-dashed">' \
-            '<img class="mr1 align-middle" src="images/logo.svg" width="140">' \
+            '<img class="mr1 align-middle" src="/assets/logo.svg" width="140">' \
             '<span class="inline-block">/ user flows</span></h1>' \
             '<pre class="h5 line-height-2 sans-serif">'
     @user_flows_html_file = Capybara.save_path.join('index.html').to_s

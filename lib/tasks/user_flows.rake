@@ -7,5 +7,13 @@ unless Rails.env.production?
                         --require ./lib/rspec/formatters/user_flow_formatter.rb
                         --format UserFlowFormatter]
     end
+
+    desc 'Exports user flows for the web'
+    task 'user_flows:web' do |t|
+      ENV['RAILS_DISABLE_ASSET_DIGEST'] = 'true'
+      require './lib/user_flow_exporter'
+      Rake::Task['spec:user_flows'].invoke
+      UserFlowExporter.run
+    end
   end
 end
