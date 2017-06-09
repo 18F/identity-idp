@@ -19,7 +19,7 @@ module Users
 
     def next_step
       if current_user.decorate.password_reset_profile.present?
-        reactivate_account_url
+        manage_reactivate_account_url
       else
         account_url
       end
