@@ -33,5 +33,8 @@ RUN bundle install --jobs=20 --retry=5 --frozen --without deploy production
 
 COPY . /upaya
 
+RUN gpg --dearmor < keys/equifax_gpg.pub.example > keys/equifax_gpg.pub.bin
+RUN gpg --batch --import keys/equifax_gpg.example
+
 EXPOSE 3000
 CMD ["rackup", "config.ru", "--host", "0.0.0.0", "--port", "3000"]
