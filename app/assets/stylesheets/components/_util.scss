@@ -19,9 +19,18 @@
   vertical-align: middle;
 }
 
-
 .block-center {
   margin: 0 auto;
+}
+
+.js-fallback {
+  display: none;
+}
+
+.no-js {
+  .js-fallback {
+    display: block;
+  }
 }
 
 .scale-down {

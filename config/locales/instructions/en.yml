@@ -26,6 +26,9 @@ en:
         intro: >
           We take extra steps to keep your personal information secure and private,
           so resetting your password takes a little extra effort.
+        modal:
+          copy: If you don't have your personal key, you will need to verify your identity again.
+          heading: Don't have your personal key?
         with_key: Do you have your personal key?
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
