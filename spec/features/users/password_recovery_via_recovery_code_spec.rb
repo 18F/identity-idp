@@ -2,12 +2,13 @@ require 'rails_helper'
 
 feature 'Password recovery via personal key' do
   include PersonalKeyHelper
+  include IdvHelper
 
   let(:user) { create(:user, :signed_up) }
   let(:new_password) { 'some really awesome new password' }
   let(:pii) { { ssn: '666-66-1234', dob: '1920-01-01', first_name: 'alice' } }
 
-  scenario 'resets password and reactivates profile with personal key', email: true, js: true do
+  scenario 'resets password and reactivates profile with personal key', email: true do
     personal_key = personal_key_from_pii(user, pii)
 
     trigger_reset_password_and_click_email_link(user.email)
@@ -22,6 +23,36 @@ feature 'Password recovery via personal key' do
 
     expect(page).to have_content t('idv.messages.personal_key')
     expect(page).to have_content t('headings.account.verified_account')
+  end
+
+  scenario 'resets password and reactivates profile with no personal key', email: true, js: true do
+    personal_key_from_pii(user, pii)
+    trigger_reset_password_and_click_email_link(user.email)
+    reset_password_and_sign_back_in(user, new_password)
+    click_submit_default
+    enter_correct_otp_code_for_user(user)
+    visit account_path
+
+    expect(page).not_to have_content(t('headings.account.verified_account'))
+
+    visit reactivate_account_path
+    click_on t('links.account.reactivate.without_key')
+    click_on t('forms.buttons.continue')
+
+    click_idv_begin
+    fill_out_idv_form_ok
+    click_idv_continue
+    fill_out_financial_form_ok
+    click_idv_continue
+    click_idv_address_choose_phone
+    fill_out_phone_form_ok(user.phone)
+    click_idv_continue
+    fill_in 'Password', with: new_password
+    click_submit_default
+    acknowledge_and_confirm_personal_key
+
+    expect(current_path).to eq(account_path)
+    expect(page).to have_content(t('headings.account.verified_account'))
   end
 
   scenario 'resets password, makes personal key, attempts reactivate profile', email: true do
