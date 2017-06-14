@@ -29,7 +29,7 @@ class VerifyController < ApplicationController
 
   def profile_needs_reactivation?
     return unless password_reset_profile && user_session[:acknowledge_personal_key] == true
-    redirect_to manage_reactivate_account_url
+    redirect_to reactivate_account_url
   end
 
   def password_reset_profile
