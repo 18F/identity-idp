@@ -10,7 +10,7 @@ en:
       intro: The email address for your %{app} account has been changed.
     password_changed:
       help: >
-        If you did not change your password, please visit the %{app}
+        If you did not make this change, please visit the %{app}
         %{help_link} or %{contact_link}.
       intro: The password for your %{app} account has been changed.
     phone_changed:
