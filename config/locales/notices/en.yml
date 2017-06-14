@@ -27,8 +27,8 @@ en:
           For your security, we will sign you out in %{time_left_in_session} unless 
           you tell us otherwise.
       partially_signed_in:
-        continue: Continue signing in
-        sign_out: Cancel signing in
+        continue: Continue sign in
+        sign_out: Cancel sign in
         message_html: >
           For your security, in %{time_left_in_session} we will
           cancel your sign in.

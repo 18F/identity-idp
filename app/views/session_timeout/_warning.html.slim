@@ -1,10 +1,12 @@
 #session-timeout-msg.display-none
   = render layout: '/shared/modal_layout' do
-    .p4.cntnr-skinny.border-box.bg-white.rounded.relative
-      = image_tag(asset_url('clock.svg'), class: 'modal-ico')
-      h3.mt0.mb2 = t('headings.session_timeout_warning')
-      p.mb3 = modal.message
-      = link_to modal.continue,
-        request.original_url, class: 'btn btn-primary'
-      = link_to modal.sign_out,
-        destroy_user_session_path, class: 'ml2 btn btn-outline'
+    .p3.cntnr-xxskinny.border-box.bg-white.rounded-xxl.modal-timeout
+      h2.my2.fs-20p.sans-serif.regular.center = t('headings.session_timeout_warning')
+      hr.mb3.bw4.rounded
+      .mb4
+        p = modal.message
+      .center
+        = link_to modal.continue,
+          request.original_url, class: 'btn btn-primary col-12 mb2 p2 rounded-lg border-box'
+        = link_to modal.sign_out,
+          destroy_user_session_path, class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
