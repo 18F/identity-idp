@@ -20,6 +20,9 @@ es:
         begin: NOT TRANSLATED YET
         explanation: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
+        modal:
+          copy: NOT TRANSLATED YET
+          heading: NOT TRANSLATED YET
         with_key: NOT TRANSLATED YET
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
