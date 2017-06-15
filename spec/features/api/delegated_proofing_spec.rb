@@ -77,7 +77,7 @@ feature 'Delegated Proofing' do
     enter_2fa_code
     click_on 'Yes'
     user = User.find_with_email(email)
-    complete_idv_profile_ok(user.reload)
+    complete_idv_profile_ok(user.reload, fill_out_financial: false, fill_out_address: false)
   end
 
   def load_id_token_data(client_id:, code:)

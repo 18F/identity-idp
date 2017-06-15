@@ -1,6 +1,7 @@
 module Verify
   class ConfirmationsController < ApplicationController
     include IdvSession
+    include DelegatedProofingConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_vendor_session_started

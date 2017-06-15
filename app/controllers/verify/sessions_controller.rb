@@ -2,6 +2,7 @@ module Verify
   class SessionsController < ApplicationController
     include IdvSession
     include IdvFailureConcern
+    include DelegatedProofingConcern
 
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
@@ -99,10 +100,6 @@ module Verify
 
     def profile_params
       params.require(:profile).permit(*Pii::Attributes.members)
-    end
-
-    def delegated_proofing_session?
-      ServiceProvider.from_issuer(sp_session[:issuer]).supports_delegated_proofing?
     end
   end
 end
