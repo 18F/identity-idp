@@ -64,7 +64,11 @@ module Verify
       flash[:success] = t('idv.messages.sessions.success',
                           pii_message: pii_msg)
 
-      redirect_to verify_finance_path
+      if delegated_proofing_session?
+        redirect_to verify_review_path
+      else
+        redirect_to verify_finance_path
+      end
     end
 
     def process_failure
@@ -95,6 +99,10 @@ module Verify
 
     def profile_params
       params.require(:profile).permit(*Pii::Attributes.members)
+    end
+
+    def delegated_proofing_session?
+      ServiceProvider.from_issuer(sp_session[:issuer]).supports_delegated_proofing?
     end
   end
 end

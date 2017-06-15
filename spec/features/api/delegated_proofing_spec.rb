@@ -5,8 +5,7 @@ feature 'Delegated Proofing' do
   include OpenidConnectHelper
 
   it 'allows accounts to be verified by a participating agency out-of-band', email: true do
-    # LOA3 auth request
-    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    client_id = 'urn:gov:gsa.openidconnect:delegated-proofing'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
     email = 'test@test.com'
@@ -33,10 +32,10 @@ feature 'Delegated Proofing' do
     user_id = decoded_id_token[:sub]
 
     # make sure loa3 attributes are present, but labelled as loa1
-    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
-    expect(decoded_id_token[:email]).to eq(user.email)
+    expect(decoded_id_token[:email]).to eq(email)
     expect(decoded_id_token[:given_name]).to eq('José')
     expect(decoded_id_token[:social_security_number]).to eq('666-66-1234')
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
 
     page.driver.post api_identity_verify_path,
                      user_id: user_id,

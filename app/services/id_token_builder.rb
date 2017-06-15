@@ -47,14 +47,10 @@ class IdTokenBuilder
   end
 
   def acr
-    ial = identity.ial
-    case ial
-    when 1
+    if identity.user.decorate.identity_verified?
       Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
-    when 3
-      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
     else
-      raise "Unknown ial #{ial}"
+      Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
     end
   end
 
