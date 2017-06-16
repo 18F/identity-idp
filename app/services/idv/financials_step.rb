@@ -10,7 +10,7 @@ module Idv
         idv_session.financials_confirmation = false
       end
 
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
+      FormResponse.new(success: success, errors: errors)
     end
 
     def form_valid_but_vendor_validation_failed?
@@ -36,12 +36,6 @@ module Idv
     def vendor_params
       finance_type = idv_form.finance_type
       { finance_type => idv_form.idv_params[finance_type] }
-    end
-
-    def extra_analytics_attributes
-      {
-        vendor: { reasons: vendor_reasons },
-      }
     end
   end
 end
