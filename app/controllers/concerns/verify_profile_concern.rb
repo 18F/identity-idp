@@ -16,7 +16,6 @@ module VerifyProfileConcern
   end
 
   def verify_profile_route
-    decorated_user = current_user.decorate
     if decorated_user.needs_profile_phone_verification?
       flash[:notice] = t('account.index.verification.instructions')
       return 'verify_profile_phone'
@@ -26,6 +25,17 @@ module VerifyProfileConcern
 
   def profile_needs_verification?
     return false if current_user.blank?
-    current_user.decorate.pending_profile_requires_verification?
+    decorated_user.pending_profile_requires_verification? &&
+      !pending_delegated_profile_to_same_issuer?
+  end
+
+  def pending_delegated_profile_to_same_issuer?
+    pending_profile = decorated_user.pending_profile
+
+    pending_profile.present? && pending_profile.delegated_proofing_issuer == sp_session[:issuer]
+  end
+
+  def decorated_user
+    @_decorated_user ||= current_user.decorate
   end
 end

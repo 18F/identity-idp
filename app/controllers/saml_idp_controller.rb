@@ -8,6 +8,7 @@ class SamlIdpController < ApplicationController
   include SamlIdpLogoutConcern
   include FullyAuthenticatable
   include VerifyProfileConcern
+  include DelegatedProofingConcern
 
   skip_before_action :verify_authenticity_token
   skip_before_action :handle_two_factor_authentication, only: :logout

@@ -69,18 +69,19 @@ ActiveRecord::Schema.define(version: 20170615152625) do
   add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
 
   create_table "profiles", force: :cascade do |t|
-    t.integer  "user_id",                                           null: false
-    t.boolean  "active",                            default: false, null: false
+    t.integer  "user_id",                                              null: false
+    t.boolean  "active",                               default: false, null: false
     t.datetime "verified_at"
     t.datetime "activated_at"
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at",                                           null: false
+    t.datetime "updated_at",                                           null: false
     t.string   "vendor"
     t.text     "encrypted_pii"
-    t.string   "ssn_signature",          limit: 64
+    t.string   "ssn_signature",             limit: 64
     t.text     "encrypted_pii_recovery"
     t.integer  "deactivation_reason"
-    t.boolean  "phone_confirmed",                   default: false, null: false
+    t.boolean  "phone_confirmed",                      default: false, null: false
+    t.string   "delegated_proofing_issuer"
   end
 
   add_index "profiles", ["ssn_signature", "active"], name: "index_profiles_on_ssn_signature_and_active", unique: true, where: "(active = true)", using: :btree
