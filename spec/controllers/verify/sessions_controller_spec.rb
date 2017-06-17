@@ -94,7 +94,7 @@ describe Verify::SessionsController do
         it 'assigned user UUID to applicant' do
           post :create, profile: user_attrs
 
-          expect(subject.idv_session.applicant[:uuid]).to eq subject.current_user.uuid
+          expect(subject.idv_session.applicant['uuid']).to eq subject.current_user.uuid
         end
       end
 

@@ -56,7 +56,7 @@ module Idv
     end
 
     def vendor_params
-      applicant_params_ascii.merge(uuid: current_user.uuid)
+      applicant_params_ascii.merge('uuid' => current_user.uuid)
     end
 
     def profile
