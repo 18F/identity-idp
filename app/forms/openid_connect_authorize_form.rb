@@ -56,6 +56,13 @@ class OpenidConnectAuthorizeForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
+  # Similar to submit, but only helps generate errors
+  def check_submit
+    @success = valid?
+    @identity = NullIdentity.new
+    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+  end
+
   def loa3_requested?
     ial == 3
   end
@@ -128,7 +135,8 @@ class OpenidConnectAuthorizeForm
   end
 
   def success_redirect_uri
-    openid_connect_redirector.success_redirect_uri(code: identity.session_uuid)
+    code = identity.session_uuid
+    openid_connect_redirector.success_redirect_uri(code: code) if code
   end
 
   def error_redirect_uri

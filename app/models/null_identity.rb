@@ -12,4 +12,8 @@ class NullIdentity
   def sp_metadata
     {}
   end
+
+  def session_uuid
+    nil
+  end
 end

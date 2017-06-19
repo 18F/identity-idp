@@ -128,6 +128,26 @@ RSpec.describe OpenidConnectAuthorizeForm do
     end
   end
 
+  describe '#check_submit' do
+    subject(:result) { form.check_submit }
+
+    context 'with valid params' do
+      it 'generates a result without a redirect_uri' do
+        expect(result.success?).to eq(true)
+        expect(result.extra[:redirect_uri]).to be_blank
+      end
+    end
+
+    context 'with invalid params' do
+      let(:acr_values) { nil }
+
+      it 'generates an error object with a redirect_uri' do
+        expect(result.success?).to eq(false)
+        expect(result.extra[:redirect_uri]).to be_present
+      end
+    end
+  end
+
   describe '#valid?' do
     subject(:valid?) { form.valid? }
 

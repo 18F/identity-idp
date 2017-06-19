@@ -4,6 +4,7 @@ module OpenidConnect
     include VerifyProfileConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
+    before_action :validate_authorize_form, only: [:index]
     before_action :store_request, only: [:index]
     before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
@@ -70,11 +71,23 @@ module OpenidConnect
       params.permit(OpenidConnectAuthorizeForm::ATTRS)
     end
 
+    def validate_authorize_form
+      result = @authorize_form.check_submit
+      return if result.success?
+
+      track_authorize_analytics(result)
+
+      if (redirect_uri = result.extra[:redirect_uri])
+        redirect_to redirect_uri
+      else
+        render :error
+      end
+    end
+
     def store_request
       return if sp_session[:request_id]
 
       client_id = @authorize_form.client_id
-      return if client_id.blank?
 
       @request_id = SecureRandom.uuid
       ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
