@@ -35,6 +35,8 @@ module Users
     end
 
     def handle_valid_otp_delivery_preference(method)
+      otp_rate_limiter.reset_count_and_otp_last_sent_at if decorated_user.no_longer_locked_out?
+
       if otp_rate_limiter.exceeded_otp_send_limit?
         otp_rate_limiter.lock_out_user
 
@@ -79,7 +81,7 @@ module Users
     end
 
     def otp_rate_limiter
-      @_otp_rate_limited ||= OtpRateLimiter.new(current_user)
+      @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to, user: current_user)
     end
   end
 end

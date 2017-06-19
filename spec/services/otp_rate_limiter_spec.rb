@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe OtpRateLimiter do
-  let(:current_user) { build(:user) }
-  subject(:otp_rate_limiter) { OtpRateLimiter.new(current_user) }
+  let(:current_user) { build(:user, :with_phone) }
+  subject(:otp_rate_limiter) { OtpRateLimiter.new(phone: current_user.phone, user: current_user) }
+  let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(current_user.phone) }
+  let(:rate_limited_phone) { OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint) }
 
   describe '#exceeded_otp_send_limit?' do
     it 'is false by default' do
@@ -22,31 +24,25 @@ RSpec.describe OtpRateLimiter do
 
   describe '#increment' do
     it 'sets the otp_last_sent_at' do
-      expect(current_user.otp_last_sent_at).to be_nil
-
       now = Time.zone.now
       otp_rate_limiter.increment
 
-      expect(current_user.otp_last_sent_at.to_i).to eq(now.to_i)
+      expect(rate_limited_phone.otp_last_sent_at.to_i).to eq(now.to_i)
     end
 
     it 'increments the otp_send_count' do
+      otp_rate_limiter.increment
+
       expect { otp_rate_limiter.increment }.
-        to change { current_user.otp_send_count }.from(0).to(1)
+        to change { rate_limited_phone.reload.otp_send_count }.from(1).to(2)
     end
   end
 
   describe '#lock_out_user' do
     before do
-      current_user.otp_last_sent_at = 5.minutes.ago
-      current_user.otp_send_count = 0
-    end
-
-    it 'resets otp_last_sent_at and otp_send_count' do
-      otp_rate_limiter.lock_out_user
-
-      expect(current_user.otp_last_sent_at).to be_nil
-      expect(current_user.otp_send_count).to eq(0)
+      otp_rate_limiter.increment
+      rate_limited_phone.otp_last_sent_at = 5.minutes.ago
+      rate_limited_phone.otp_send_count = 0
     end
 
     it 'sets the second_factor_locked_at' do

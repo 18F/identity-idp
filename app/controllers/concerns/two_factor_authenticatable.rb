@@ -38,8 +38,8 @@ module TwoFactorAuthenticatable
     decorator = current_user.decorate
     sign_out
     render(
-      'two_factor_authentication/shared/max_login_attempts_reached',
-      locals: { type: :otp, decorator: decorator }
+      'two_factor_authentication/shared/max_otp_requests_reached',
+      locals: { decorator: decorator }
     )
   end
 
@@ -58,15 +58,13 @@ module TwoFactorAuthenticatable
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless decorated_user.no_longer_blocked_from_entering_2fa_code?
+    return unless decorated_user.no_longer_locked_out?
 
     UpdateUser.new(
       user: current_user,
       attributes: {
         second_factor_attempts_count: 0,
         second_factor_locked_at: nil,
-        otp_send_count: 0,
-        otp_last_sent_at: nil,
       }
     ).call
   end
@@ -94,7 +92,7 @@ module TwoFactorAuthenticatable
 
     flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
-    if decorated_user.blocked_from_entering_2fa_code?
+    if decorated_user.locked_out?
       handle_second_factor_locked_user(type)
     else
       render_show_after_invalid

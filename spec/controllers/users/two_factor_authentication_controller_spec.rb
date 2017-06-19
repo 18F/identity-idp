@@ -111,7 +111,7 @@ describe Users::TwoFactorAuthenticationController do
   describe '#send_code' do
     context 'when selecting SMS OTP delivery' do
       before do
-        @user = create(:user)
+        @user = create(:user, :with_phone)
         sign_in_before_2fa(@user)
         @old_otp = subject.current_user.direct_otp
         allow(SmsOtpSenderJob).to receive(:perform_later)
@@ -149,31 +149,15 @@ describe Users::TwoFactorAuthenticationController do
         get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
       end
 
-      it 'increments the otp_send_count each time' do
-        expect(@user.reload.otp_send_count).to eq(0)
+      it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
+        otp_rate_limiter = instance_double(OtpRateLimiter)
+        allow(OtpRateLimiter).to receive(:new).with(phone: @user.phone, user: @user).
+          and_return(otp_rate_limiter)
+
+        expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+        expect(otp_rate_limiter).to receive(:increment)
 
         get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-
-        expect(@user.reload.otp_send_count).to eq(1)
-
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-
-        expect(@user.reload.otp_send_count).to eq(2)
-      end
-
-      it 'sets otp_last_sent_at each time' do
-        expect(@user.reload.otp_last_sent_at).to be_nil
-
-        now = Time.zone.now
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-
-        expect(@user.reload.otp_last_sent_at.to_i).to eq(now.to_i)
-
-        Timecop.freeze(now + 10) do
-          get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-        end
-
-        expect(@user.reload.otp_last_sent_at.to_i).to eq(now.to_i + 10)
       end
 
       it 'marks the user as locked out after too many attempts' do

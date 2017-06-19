@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170531204549) do
+ActiveRecord::Schema.define(version: 20170621202836) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,6 +67,19 @@ ActiveRecord::Schema.define(version: 20170531204549) do
   add_index "identities", ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
   add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
+
+  create_table "otp_requests_trackers", force: :cascade do |t|
+    t.text     "encrypted_phone"
+    t.datetime "otp_last_sent_at"
+    t.integer  "otp_send_count",    default: 0
+    t.string   "attribute_cost"
+    t.string   "phone_fingerprint", default: "", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "otp_requests_trackers", ["phone_fingerprint"], name: "index_otp_requests_trackers_on_phone_fingerprint", unique: true, using: :btree
+  add_index "otp_requests_trackers", ["updated_at"], name: "index_otp_requests_trackers_on_updated_at", using: :btree
 
   create_table "profiles", force: :cascade do |t|
     t.integer  "user_id",                                           null: false
@@ -170,8 +183,6 @@ ActiveRecord::Schema.define(version: 20170531204549) do
     t.string   "attribute_cost"
     t.text     "encrypted_phone"
     t.integer  "otp_delivery_preference",                  default: 0,  null: false
-    t.integer  "otp_send_count",                           default: 0
-    t.datetime "otp_last_sent_at"
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree

@@ -1,36 +1,55 @@
 class OtpRateLimiter
-  def initialize(current_user)
-    @current_user = current_user
+  def initialize(phone:, user:)
+    @phone = phone
+    @user = user
   end
 
   def exceeded_otp_send_limit?
-    otp_last_sent_at = current_user.otp_last_sent_at
-    now = Time.zone.now
+    return false if entry_for_current_phone.blank?
 
-    otp_last_sent_at.present? &&
-      otp_last_sent_at + otp_findtime > now &&
-      current_user.otp_send_count >= otp_maxretry_times
+    if rate_limit_period_expired?
+      reset_count_and_otp_last_sent_at
+      return false
+    end
+
+    max_requests_reached?
+  end
+
+  def max_requests_reached?
+    entry_for_current_phone.otp_send_count >= otp_maxretry_times
+  end
+
+  def rate_limit_period_expired?
+    otp_last_sent_at.present? && (otp_last_sent_at + otp_findtime) < Time.zone.now
+  end
+
+  def reset_count_and_otp_last_sent_at
+    entry_for_current_phone.update(otp_last_sent_at: Time.zone.now, otp_send_count: 0)
   end
 
   def lock_out_user
-    UpdateUser.new(
-      user: current_user,
-      attributes: {
-        second_factor_locked_at: Time.zone.now,
-        otp_last_sent_at: nil,
-        otp_send_count: 0,
-      }
-    ).call
+    UpdateUser.new(user: user, attributes: { second_factor_locked_at: Time.zone.now }).call
   end
 
   def increment
-    current_user.otp_last_sent_at = Time.zone.now
-    current_user.otp_send_count += 1
+    now = Time.zone.now
+
+    entry_for_current_phone.otp_send_count += 1
+    entry_for_current_phone.otp_last_sent_at = now
+    entry_for_current_phone.save!
   end
 
   private
 
-  attr_reader :current_user
+  attr_reader :phone, :user
+
+  def entry_for_current_phone
+    @entry ||= OtpRequestsTracker.find_or_create_with_phone(phone)
+  end
+
+  def otp_last_sent_at
+    entry_for_current_phone.otp_last_sent_at
+  end
 
   def otp_findtime
     Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes
