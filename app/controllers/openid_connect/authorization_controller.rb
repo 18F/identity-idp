@@ -2,6 +2,7 @@ module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
     include VerifyProfileConcern
+    include DelegatedProofingConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -45,7 +46,12 @@ module OpenidConnect
     end
 
     def identity_needs_verification?
-      @authorize_form.loa3_requested? && current_user.decorate.identity_not_verified?
+      @authorize_form.loa3_requested? &&
+        (current_user.decorate.identity_not_verified? && !pending_delegated_profile?)
+    end
+
+    def pending_delegated_profile?
+      current_user.decorate.pending_profile? && delegated_proofing_session?
     end
 
     def build_authorize_form_from_params

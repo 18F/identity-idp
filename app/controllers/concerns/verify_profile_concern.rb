@@ -30,9 +30,7 @@ module VerifyProfileConcern
   end
 
   def pending_delegated_profile_to_same_issuer?
-    pending_profile = decorated_user.pending_profile
-
-    pending_profile.present? && pending_profile.delegated_proofing_issuer == sp_session[:issuer]
+    sp_session[:issuer] == decorated_user.pending_profile&.delegated_proofing_issuer
   end
 
   def decorated_user

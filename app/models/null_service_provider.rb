@@ -34,4 +34,8 @@ class NullServiceProvider
   def redirect_uris
     []
   end
+
+  def supports_delegated_proofing?
+    false
+  end
 end

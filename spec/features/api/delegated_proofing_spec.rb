@@ -19,7 +19,6 @@ feature 'Delegated Proofing' do
     sign_up_with_loa3_data(email: email)
 
     click_acknowledge_personal_key
-    click_on I18n.t('forms.buttons.continue')
 
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
