@@ -1,6 +1,7 @@
 module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
+    include DelegatedProofingConcern
 
     before_action :verify_confirmed, if: :loa3?
     before_action :apply_secure_headers_override, only: :show
@@ -36,7 +37,9 @@ module SignUp
     end
 
     def verify_confirmed
-      redirect_to verify_path if current_user.decorate.identity_not_verified?
+      if current_user.decorate.identity_not_verified? && !deleted_proofing_session?
+        redirect_to verify_path
+      end
     end
 
     def loa3?
