@@ -108,6 +108,7 @@ development:
     return_to_sp_url: 'http://localhost:3003'
     attribute_bundle:
       - email
+    supports_delegated_proofing: true
 
   'https://dashboard.login.gov':
     friendly_name: 'Dashboard'
