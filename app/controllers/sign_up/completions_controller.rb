@@ -37,7 +37,7 @@ module SignUp
     end
 
     def verify_confirmed
-      if current_user.decorate.identity_not_verified? && !deleted_proofing_session?
+      if current_user.decorate.identity_not_verified? && !delegated_proofing_session?
         redirect_to verify_path
       end
     end
