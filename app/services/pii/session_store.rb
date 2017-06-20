@@ -18,7 +18,9 @@ module Pii
 
     def load
       session = session_store.send(:load_session_from_redis, session_uuid) || {}
-      Pii::Attributes.new_from_json(session.dig('warden.user.user.session', :decrypted_pii))
+      json = session.dig('warden.user.user.session', :decrypted_pii) ||
+        session.dig('warden.user.user.session', :idv, :decrypted_pii)
+      Pii::Attributes.new_from_json(json)
     end
 
     # @api private

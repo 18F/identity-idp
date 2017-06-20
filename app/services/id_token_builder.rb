@@ -48,9 +48,9 @@ class IdTokenBuilder
 
   def acr
     if identity.user.decorate.identity_verified?
-      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
-    else
       Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
+    else
+      Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
     end
   end
 
