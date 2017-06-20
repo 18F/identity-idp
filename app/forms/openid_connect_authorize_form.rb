@@ -48,18 +48,9 @@ class OpenidConnectAuthorizeForm
     )
   end
 
-  def submit(user, rails_session_id)
+  def submit
     @success = valid?
 
-    link_identity_to_client_id(user, rails_session_id) if success
-
-    FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
-  end
-
-  # Similar to submit, but only helps generate errors
-  def check_submit
-    @success = valid?
-    @identity = NullIdentity.new
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
@@ -73,6 +64,22 @@ class OpenidConnectAuthorizeForm
 
   def service_provider
     @_service_provider ||= ServiceProvider.from_issuer(client_id)
+  end
+
+  def link_identity_to_service_provider(current_user, rails_session_id)
+    identity_linker = IdentityLinker.new(current_user, client_id)
+    @identity = identity_linker.link_identity(
+      nonce: nonce,
+      rails_session_id: rails_session_id,
+      ial: ial,
+      scope: scope.join(' '),
+      code_challenge: code_challenge
+    )
+  end
+
+  def success_redirect_uri
+    code = identity&.session_uuid
+    openid_connect_redirector.success_redirect_uri(code: code) if code
   end
 
   private
@@ -103,17 +110,6 @@ class OpenidConnectAuthorizeForm
     errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
   end
 
-  def link_identity_to_client_id(current_user, rails_session_id)
-    identity_linker = IdentityLinker.new(current_user, client_id)
-    @identity = identity_linker.link_identity(
-      nonce: nonce,
-      rails_session_id: rails_session_id,
-      ial: ial,
-      scope: scope.join(' '),
-      code_challenge: code_challenge
-    )
-  end
-
   def ial
     case acr_values.sort.max
     when Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
@@ -132,11 +128,6 @@ class OpenidConnectAuthorizeForm
 
   def result_uri
     success ? success_redirect_uri : error_redirect_uri
-  end
-
-  def success_redirect_uri
-    code = identity.session_uuid
-    openid_connect_redirector.success_redirect_uri(code: code) if code
   end
 
   def error_redirect_uri

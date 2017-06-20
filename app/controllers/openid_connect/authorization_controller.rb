@@ -9,23 +9,14 @@ module OpenidConnect
     before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
 
-    # rubocop:disable Metrics/AbcSize
     def index
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
 
-      result = @authorize_form.submit(current_user, session.id)
-
-      track_authorize_analytics(result)
-
-      if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri
-        delete_branded_experience
-      else
-        render :error
-      end
+      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+      redirect_to @authorize_form.success_redirect_uri
+      delete_branded_experience
     end
-    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -72,10 +63,10 @@ module OpenidConnect
     end
 
     def validate_authorize_form
-      result = @authorize_form.check_submit
-      return if result.success?
-
+      result = @authorize_form.submit
       track_authorize_analytics(result)
+
+      return if result.success?
 
       if (redirect_uri = result.extra[:redirect_uri])
         redirect_to redirect_uri
