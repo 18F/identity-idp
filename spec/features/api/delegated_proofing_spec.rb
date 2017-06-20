@@ -38,6 +38,7 @@ feature 'Delegated Proofing' do
 
     page.driver.post api_identity_verify_path,
                      user_id: user_id,
+                     client_id: client_id, # TODO: authenticate via headers?
                      given_name_matches: true,
                      family_name_matches: true,
                      address_matches: true,
