@@ -4,11 +4,9 @@ module Users
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_password_reset_profile
-    before_action :init_account_recovery, only: [:create]
+    before_action :init_account_recovery, only: [:new]
 
     def new
-      flash.now[:notice] = t('notices.account_recovery') unless user_session[:account_recovery]
-
       @personal_key_form = VerifyPersonalKeyForm.new(
         user: current_user,
         personal_key: ''
@@ -28,20 +26,19 @@ module Users
     private
 
     def init_account_recovery
-      user_session[:account_recovery] ||= {
-        personal_key: false,
-      }
+      return if reactivate_account_session.started?
+
+      flash.now[:notice] = t('notices.account_recovery')
+      reactivate_account_session.start
     end
 
     def handle_success(result)
-      user_session[:account_recovery][:personal_key] = true
-      user_session[:decrypted_pii] = result.extra[:decrypted_pii]
-
+      reactivate_account_session.store_decrypted_pii(result.extra[:decrypted_pii])
       redirect_to verify_password_url
     end
 
     def handle_failure(result)
-      flash[:error] = result.errors[:personal_key].last
+      flash.now[:error] = result.errors[:personal_key].last
       render :new
     end
 

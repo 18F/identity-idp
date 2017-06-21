@@ -63,7 +63,7 @@ describe Users::VerifyPersonalKeyController do
       it 'stores that the personal key was entered in the user session' do
         post :create, personal_key: personal_key
 
-        expect(subject.user_session[:account_recovery][:personal_key]).to eq(true)
+        expect(subject.reactivate_account_session.personal_key?).to eq(true)
       end
     end
 

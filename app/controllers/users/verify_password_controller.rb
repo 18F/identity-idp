@@ -18,9 +18,7 @@ module Users
       result = verify_password_form.submit
 
       if result.success?
-        flash[:personal_key] = result.extra[:personal_key]
-        user_session.delete(:account_recovery)
-        redirect_to account_url
+        handle_success(result)
       else
         render :new
       end
@@ -29,12 +27,19 @@ module Users
     private
 
     def confirm_personal_key
-      account_recovery = user_session[:account_recovery]
-      redirect_to root_url unless account_recovery[:personal_key]
+      return if reactivate_account_session.personal_key?
+      redirect_to root_url
     end
 
     def decrypted_pii
-      @_decrypted_pii ||= Pii::Attributes.new_from_json(user_session[:decrypted_pii])
+      pii = reactivate_account_session.decrypted_pii
+      @_decrypted_pii ||= Pii::Attributes.new_from_json(pii)
+    end
+
+    def handle_success(result)
+      flash[:personal_key] = result.extra[:personal_key]
+      reactivate_account_session.clear
+      redirect_to account_url
     end
 
     def verify_password_form
