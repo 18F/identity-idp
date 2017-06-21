@@ -130,6 +130,25 @@ RSpec.describe OpenidConnect::AuthorizationController do
     end
 
     context 'user is not signed in' do
+      context 'without valid acr_values' do
+        before { params.delete(:acr_values) }
+
+        it 'handles the error and does not blow up' do
+          action
+
+          expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
+        end
+      end
+
+      context 'with a bad redirect_uri' do
+        before { params[:redirect_uri] = '!!!' }
+
+        it 'renders the error page' do
+          action
+          expect(controller).to render_template('openid_connect/authorization/error')
+        end
+      end
+
       it 'redirects to SP landing page with the request_id in the params' do
         action
         sp_request_id = ServiceProviderRequest.last.uuid
