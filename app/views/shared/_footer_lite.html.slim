@@ -1,12 +1,21 @@
-footer.footer.bg-navy.white
-  .container.py2.h6
+footer.footer.bg-light-blue.sm-bg-navy
+  .container.h6.py1.px2.lg-px0
     .clearfix
-      .sm-col-right.caps.pt1.pb2.sm-pt0.sm-pb0.center.caps
+      .col-right.caps
         = link_to t('links.help'), MarketingSite.help_url,
-          class: 'white text-decoration-none mr3', target: '_blank'
+          class: 'gray sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.contact'), MarketingSite.contact_url,
-          class: 'white text-decoration-none mr3', target: '_blank'
+          class: 'gray sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.privacy_policy'), MarketingSite.privacy_url,
-          class: 'white text-decoration-none', target: '_blank'
-      .sm-col.pt2.sm-pt0.center.border-top.sm-border-none.border-blue
-        = t('shared.footer_lite.gsa')
+          class: 'gray sm-white text-decoration-none', target: '_blank'
+      .col
+        = link_to('https://gsa.gov',
+          class: 'flex flex-center text-decoration-none white',
+          target: '_blank') do
+          = image_tag asset_url('sp-logos/square-gsa.svg'),
+            width: 20, class: 'mr1 sm-show', alt: 'GSA homepage'
+          = image_tag asset_url('sp-logos/square-gsa-dark.svg'),
+            width: 20, class: 'mr1 sm-hide', alt: 'GSA homepage'
+          span.sm-show
+           = t('shared.footer_lite.gsa')
+        end

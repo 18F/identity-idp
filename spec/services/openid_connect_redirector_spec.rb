@@ -95,4 +95,46 @@ RSpec.describe OpenidConnectRedirector do
         to eq(URIService.add_params(redirect_uri, state: state))
     end
   end
+
+  describe '#validated_input_redirect_uri' do
+    let(:service_provider) { ServiceProvider.new(redirect_uris: redirect_uris, active: true) }
+
+    subject(:validated_input_redirect_uri) { redirector.validated_input_redirect_uri }
+
+    context 'when the service provider has no redirect URIs' do
+      let(:redirect_uris) { [] }
+
+      it 'is nil' do
+        expect(validated_input_redirect_uri).to be_nil
+      end
+    end
+
+    context 'when the service provider has 2 redirect URIs' do
+      let(:redirect_uris) { %w[http://localhost:1234/result my-app://result] }
+
+      context 'when a URL matching the first redirect_uri is passed in' do
+        let(:redirect_uri) { 'http://localhost:1234/result/more' }
+
+        it 'is that URL' do
+          expect(validated_input_redirect_uri).to eq(redirect_uri)
+        end
+      end
+
+      context 'when a URL matching the second redirect_uri is passed in' do
+        let(:redirect_uri) { 'my-app://result/more' }
+
+        it 'is that URL' do
+          expect(validated_input_redirect_uri).to eq(redirect_uri)
+        end
+      end
+
+      context 'when a URL matching the neither redirect_uri is passed in' do
+        let(:redirect_uri) { 'https://example.com' }
+
+        it 'is nil' do
+          expect(validated_input_redirect_uri).to be_nil
+        end
+      end
+    end
+  end
 end

@@ -40,14 +40,16 @@ test:
     sp_initiated_login_url: 'http://test.host/test/saml'
 
   'urn:gov:gsa:openidconnect:test':
-    redirect_uri: 'gov.gsa.openidconnect.test://result'
+    redirect_uris:
+      - 'gov.gsa.openidconnect.test://result'
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:server':
-    redirect_uri: 'http://localhost:7654/'
+    redirect_uris:
+      - 'http://localhost:7654/'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
 
@@ -112,13 +114,15 @@ development:
       - email
 
   'urn:gov:gsa:openidconnect:development':
-    redirect_uri: 'gov.gsa.openidconnect.development://result'
+    redirect_uris:
+      - 'gov.gsa.openidconnect.development://result'
     friendly_name: 'Example iOS App'
     agency: '18F'
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
-    redirect_uri: 'http://localhost:9292/'
+    redirect_uris:
+      - 'http://localhost:9292/'
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
@@ -304,28 +308,46 @@ production:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:openidconnect:sp:sinatra':
+    agency: 'GSA'
+    cert: 'sp_sinatra_demo'
+    friendly_name: 'Example Sinatra OIDC App'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9292/'
+      - 'https://sp-oidc-sinatra.dev.login.gov/'
+      - 'https://sp-oidc-sinatra.dm.login.gov/'
+      - 'https://sp-oidc-sinatra.int.login.gov/'
+      - 'https://sp-oidc-sinatra.pt.login.gov/'
+      - 'https://sp-oidc-sinatra.qa.login.gov/'
+      - 'https://sp-oidc-sinatra.staging.login.gov/'
+
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':
-    redirect_uri: 'https://careers-cert.cbp.dhs.gov/hrm/app'
+    redirect_uris:
+      - 'https://careers-cert.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:cert:app':
-    redirect_uri: 'gov.dhs.cbp.jobs.applicant.cert://result'
+    redirect_uris:
+      - 'gov.dhs.cbp.jobs.applicant.cert://result'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod':
-    redirect_uri: 'https://careers.cbp.dhs.gov/hrm/app'
+    redirect_uris:
+      - 'https://careers.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
     allow_on_prod_chef_env: 'true'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod:app':
-    redirect_uri: 'gov.dhs.cbp.jobs.applicant://result'
+    redirect_uris:
+      - 'gov.dhs.cbp.jobs.applicant://result'
     friendly_name: 'CBP Jobs'
     agency: 'DHS'
     logo: 'cbp.png'
@@ -355,3 +377,12 @@ production:
       - dob
       - ssn
       - phone
+
+  # CBP GOES
+  'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
+    friendly_name: 'CBP PSPD Trusted Traveler Programs'
+    agency: 'DHS'
+    logo: 'cbp.png'
+    cert: 'cbp_goes_pre_prod'
+    redirect_uris:
+      - 'http://10.156.152.27/login'

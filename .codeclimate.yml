@@ -1,6 +1,11 @@
 engines:
   brakeman:
     enabled: true
+    exclude_paths:
+    # Excluding User Flows tools since these are not loaded
+    # except when explicitly called from the User Flow rake tasks
+    - 'lib/user_flow_exporter.rb'
+    - 'lib/rspec/formatters/user_flow_formatter.rb'
   bundler-audit:
     enabled: true
   coffeelint:
@@ -19,6 +24,8 @@ engines:
     - 'node_modules/**/*'
     - 'db/schema.rb'
     - 'app/forms/password_form.rb'
+    - 'lib/user_flow_exporter.rb'
+    - 'lib/rspec/formatters/user_flow_formatter.rb'
   eslint:
     enabled: true
   fixme:
@@ -38,6 +45,8 @@ engines:
     exclude_paths:
     - 'spec/**/*'
     - 'db/migrate/*'
+    - 'lib/user_flow_exporter.rb'
+    - 'lib/rspec/formatters/user_flow_formatter.rb'
   rubocop:
     enabled: true
   scss-lint:
@@ -50,4 +59,5 @@ ratings:
   - '**.rb'
   - '**.go'
   exclude_paths:
-    - 'lib/rspec/formatters/*'
+    - 'lib/user_flow_exporter.rb'
+    - 'lib/rspec/formatters/user_flow_formatter.rb'

@@ -34,8 +34,6 @@ Dir.chdir APP_ROOT do
   run "cp keys/equifax_rsa.example keys/equifax_rsa"
   run "cp keys/equifax_rsa.pub.example keys/equifax_rsa.pub"
   run "cp certs/saml.crt.example certs/saml.crt"
-  run "gpg --dearmor < keys/equifax_gpg.pub.example > keys/equifax_gpg.pub.bin"
-  system "gpg --batch --import keys/equifax_gpg.example"
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
@@ -44,6 +42,11 @@ Dir.chdir APP_ROOT do
     run 'docker-compose up'
     exit
   end
+
+  puts "\n== GPG Setup =="
+  run "which gpg || brew install gpg"
+  run "gpg --dearmor < keys/equifax_gpg.pub.example > keys/equifax_gpg.pub.bin"
+  system "gpg --batch --import keys/equifax_gpg.example"
 
   puts "\n== Installing dependencies =="
   run "gem install bundler --conservative"

@@ -25,5 +25,14 @@ describe UsersController do
 
       expect { delete :destroy }.to change(User, :count).by(-1)
     end
+
+    it 'redirects to the branded start page if the user came from an SP' do
+      session[:sp] = { issuer: 'http://localhost:3000', request_id: 'foo' }
+
+      delete :destroy
+
+      expect(response).
+        to redirect_to sign_up_start_path(request_id: 'foo')
+    end
   end
 end

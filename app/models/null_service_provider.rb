@@ -31,5 +31,7 @@ class NullServiceProvider
 
   def return_to_sp_url; end
 
-  def redirect_uri; end
+  def redirect_uris
+    []
+  end
 end

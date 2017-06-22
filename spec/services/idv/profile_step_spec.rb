@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::ProfileStep do
   let(:user) { create(:user) }
-  let(:idv_session) { Idv::Session.new({}, user) }
+  let(:idv_session) { Idv::Session.new(user_session: {}, current_user: user, issuer: nil) }
   let(:idv_profile_form) { Idv::ProfileForm.new(idv_session.params, user) }
   let(:user_attrs) do
     {

@@ -15,9 +15,7 @@ en:
       previous_address: Previous address
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset.
-          You can use your personal key to reactivate your profile.
-        personal_key: Reactivate your profile with your personal key.
-        reverify: No personal key? Reverify all your information instead.
+        link: Reactivate your profile now.
       ssn: Social Security Number
       verification:
         instructions: Your account requires a secret code to be verified.

@@ -17,14 +17,16 @@ Rails.application.configure do
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
+  config.assets.debug = true
+
   if ENV.key?('RAILS_ASSET_HOST')
     config.action_controller.asset_host = ENV['RAILS_ASSET_HOST']
   else
     config.action_controller.asset_host = '//'
   end
 
-  config.assets.debug = true
-  config.assets.digest = true
+  config.assets.digest = ENV.key?('RAILS_DISABLE_ASSET_DIGEST') ? false : true
+
   config.middleware.use RackSessionAccess::Middleware
   config.lograge.enabled = true
   config.lograge.custom_options = ->(event) { event.payload }

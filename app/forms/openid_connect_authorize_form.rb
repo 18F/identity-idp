@@ -61,7 +61,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def sp_redirect_uri
-    service_provider.redirect_uri
+    openid_connect_redirector.validated_input_redirect_uri
   end
 
   def service_provider

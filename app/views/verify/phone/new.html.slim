@@ -26,8 +26,7 @@ em
     wrapper_html: { class: 'inline-block mr2' }
   = f.button :submit, t('forms.buttons.continue')
 
-p
-  = t('idv.form.no_alternate_phone_html',
-    link: link_to(t('idv.form.activate_by_mail'), verify_usps_path))
+- if FeatureManagement.enable_usps_verification?
+    = render 'verification_options'
 
 = render @view_model.modal_partial, view_model: @view_model

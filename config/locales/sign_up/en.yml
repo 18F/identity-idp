@@ -7,7 +7,7 @@
       cancel:
         modal_header: Are you sure you want to cancel?
         warning_header: If you cancel now
-        success: The record of your information has been cleared
+        success: Your account has been deleted. We did not save your information.
         warning_points:
           - You won’t have a login.gov account
           - We won't keep a record of your email address, password, and phone number

@@ -34,6 +34,16 @@ describe VerifyController do
 
       expect(response).to redirect_to verify_fail_url
     end
+
+    it 'redirects to account recovery if user has a password reset profile' do
+      profile = create(:profile, deactivation_reason: :password_reset)
+      stub_sign_in(profile.user)
+      allow(subject).to receive(:user_session).and_return(acknowledge_personal_key: true)
+
+      get :index
+
+      expect(response).to redirect_to manage_reactivate_account_url
+    end
   end
 
   describe '#activated' do

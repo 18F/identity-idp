@@ -5,4 +5,5 @@
 @media #{$breakpoint-sm} {
   .sm-bg-light-blue { background-color: $blue-light; }
   .sm-bg-none { background-color: transparent; }
+  .sm-bg-navy { background-color: $navy; }
 }

@@ -42,9 +42,7 @@ module Idv
       Proofer::Resolution.new(
         success: false,
         errors: { agent: [err_msg] },
-        vendor_resp: Proofer::Vendor::MockResponse.new(
-          reasons: [err_msg]
-        )
+        vendor_resp: OpenStruct.new(reasons: [err_msg])
       )
     end
   end

@@ -58,15 +58,15 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_return_url
-    if sp.redirect_uri.present? && openid_connect_redirector.valid?
+    if sp.redirect_uris.present? && openid_connect_redirector.valid?
       openid_connect_redirector.decline_redirect_uri
     else
       sp.return_to_sp_url
     end
   end
 
-  def cancel_link_url
-    sign_up_start_url(request_id: sp_session[:request_id])
+  def cancel_link_path
+    sign_up_start_path(request_id: sp_session[:request_id])
   end
 
   private

@@ -2,7 +2,9 @@ require 'rails_helper'
 
 describe 'IdvStepConcern' do
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
-  let(:idv_session) { Idv::Session.new(subject.user_session, user) }
+  let(:idv_session) do
+    Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
+  end
 
   module Verify
     class StepController < ApplicationController

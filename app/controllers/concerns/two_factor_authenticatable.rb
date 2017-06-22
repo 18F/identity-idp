@@ -152,7 +152,11 @@ module TwoFactorAuthenticatable
   def update_idv_state
     now = Time.zone.now
     if idv_context?
-      Idv::Session.new(user_session, current_user).params['phone_confirmed_at'] = now
+      Idv::Session.new(
+        user_session: user_session,
+        current_user: current_user,
+        issuer: sp_session[:issuer]
+      ).params['phone_confirmed_at'] = now
     elsif profile_context?
       Idv::ProfileActivator.new(user: current_user).call
     end
@@ -186,7 +190,7 @@ module TwoFactorAuthenticatable
     elsif @updating_existing_number
       account_path
     elsif decorated_user.password_reset_profile.present?
-      reactivate_account_path
+      manage_reactivate_account_path
     else
       account_path
     end

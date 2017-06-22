@@ -15,7 +15,7 @@ en:
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
     account: Account
-    reactivate_profile: Reactivate profile
+    reactivate_account: Reactivate your account
     personal_key: Just in case
     registrations:
       new: Sign up for a account
