@@ -1,11 +1,11 @@
 # This module is part of the User Flows toolchest
-# 
+#
 # UserFlowExporter.run - scrapes user flows for use on the web
-# 
+#
 # Dependencies:
 #   - Must be running the application locally eg (localhost:3000)
 #   - Must have wget installed and available on your PATH
-# 
+#
 # Executing:
 #   Start the application with:
 #     $ make run
@@ -35,7 +35,7 @@ module UserFlowExporter
     output_dir = "public#{FEDERALIST_PATH}"
 
     # -r = recursively mirrors site
-    # -H = span hosts (e.g. include assets from other domains) 
+    # -H = span hosts (e.g. include assets from other domains)
     # -p = download all assets associated with the page
     # --no-host-directories = removes domain prefix from output path
     # -P = output prefix (a.k.a the directory to dump the assets)
@@ -56,8 +56,9 @@ module UserFlowExporter
 
   def self.massage_html(dir)
     Dir.glob("#{dir}/**/*.html") do |html|
-      File.open(html) do |f|
-        contents = File.read(f.path)
+      File.open(html) do |file|
+        path = file.path
+        contents = File.read(path)
         contents.gsub!("http://#{ASSET_HOST}/", "#{FEDERALIST_PATH}/")
         contents.gsub!('.css?body=1', '.css')
         contents.gsub!('.js?body=1', '.js')
@@ -67,8 +68,8 @@ module UserFlowExporter
 
         contents.gsub!("<base href='#{ASSET_HOST}' />", "<base href='#{FEDERALIST_PATH}/' />")
 
-        File.open(f.path, "w") {|file| file.puts contents }
-        Kernel.puts "Updated #{f.path} references"
+        File.open(path, "w") {|file| file.puts contents }
+        Kernel.puts "Updated #{path} references"
       end
     end
   end

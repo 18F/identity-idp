@@ -11,6 +11,7 @@ DuplicateMethodCall:
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
     - FileEncryptor#encrypt
+    - UserFlowExporter#self.massage_assets
 FeatureEnvy:
   exclude:
     - track_registration
@@ -33,6 +34,7 @@ ManualDispatch:
 NestedIterators:
   exclude:
     - FileEncryptor#encrypt
+    - UserFlowExporter#self.massage_html
 NilCheck:
   enabled: false
 LongParameterList:
@@ -58,6 +60,9 @@ TooManyStatements:
     - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
     - FileEncryptor#encrypt
+    - UserFlowExporter#self.massage_assets
+    - UserFlowExporter#self.massage_html
+    - UserFlowExporter#self.run
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController

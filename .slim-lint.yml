@@ -1,3 +1,5 @@
+exclude:
+    - 'app/views/shared/_flashes.html.slim'
 linters:
   LineLength:
     max: 100
@@ -6,35 +8,3 @@ linters:
       - 'app/views/pages/privacy_policy.html.slim'
   RuboCop:
     enabled: true
-    # slim-lint ignores all of these cops by default, and we need to copy them
-    # all over if we want to add more cops to the list. We had to do this to
-    # ignore the Metrics/BlockLength cop, which will hopefully be ignored by
-    # default if this issue is addressed: https://github.com/sds/slim-lint/issues/49
-    # If it gets added to the default list of ignored cops, we can remove this
-    # whole RuboCop section.
-    ignored_cops:
-      - Lint/BlockAlignment
-      - Lint/EndAlignment
-      - Lint/Void
-      - Metrics/BlockLength
-      - Metrics/LineLength
-      - Style/AlignHash
-      - Style/AlignParameters
-      - Style/BlockNesting
-      - Style/FileName
-      - Style/FirstParameterIndentation
-      - Style/FrozenStringLiteralComment
-      - Style/IfUnlessModifier
-      - Style/IndentationConsistency
-      - Style/IndentationWidth
-      - Style/MultilineArrayBraceLayout
-      - Style/MultilineAssignmentLayout
-      - Style/MultilineHashBraceLayout
-      - Style/MultilineMethodCallBraceLayout
-      - Style/MultilineMethodDefinitionBraceLayout
-      - Style/MultilineMethodCallIndentation
-      - Style/MultilineOperationIndentation
-      - Style/Next
-      - Style/TrailingBlankLines
-      - Style/TrailingWhitespace
-      - Style/WhileUntilModifier
