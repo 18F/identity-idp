@@ -117,7 +117,7 @@ GEM
     american_date (1.1.1)
     arel (6.0.4)
     ast (2.3.0)
-    aws-sdk-core (2.9.20)
+    aws-sdk-core (2.10.1)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
     aws-sigv4 (1.0.0)
@@ -746,4 +746,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.6
+   1.15.1
