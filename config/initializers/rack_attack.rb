@@ -31,7 +31,7 @@ module Rack
     # (blacklist & throttles are skipped)
     unless Rails.env.production?
       safelist('allow from localhost') do |req|
-        '127.0.0.1' == req.remote_ip || '::1' == req.remote_ip
+        req.remote_ip == '127.0.0.1' || req.remote_ip == '::1'
       end
     end
 
