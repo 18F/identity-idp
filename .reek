@@ -23,6 +23,7 @@ FeatureEnvy:
     - UserDecorator#should_acknowledge_personal_key?
     - Pii::Attributes#[]=
     - OpenidConnectLogoutForm#load_identity
+    - Idv::ProfileMaker#pii_from_applicant
 InstanceVariableAssumption:
   exclude:
     - User

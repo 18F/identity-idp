@@ -2,23 +2,18 @@ require 'rails_helper'
 
 describe VerifyAccountForm do
   subject(:form) do
-    VerifyAccountForm.new(user: user, otp: otp, pii_attributes: pii_attributes)
+    VerifyAccountForm.new(user: user, otp: entered_otp, pii_attributes: pii_attributes)
   end
 
   let(:user) { pending_profile.user }
+  let(:entered_otp) { otp }
   let(:otp) { 'abc123' }
   let(:pii_attributes) { Pii::Attributes.new_from_hash(otp: otp) }
   let(:pending_profile) { create(:profile, deactivation_reason: :verification_pending) }
 
   describe '#valid?' do
-    let(:valid_otp?) { true }
-
-    before do
-      allow(form).to receive(:valid_otp?).and_return(valid_otp?)
-    end
-
     context 'when required attributes are not present' do
-      let(:otp) { nil }
+      let(:entered_otp) { nil }
 
       it 'is invalid' do
         expect(subject).to_not be_valid
@@ -36,8 +31,28 @@ describe VerifyAccountForm do
       end
     end
 
+    context 'OTP crockford normalizing' do
+      context 'when the entered OTP has lowercase' do
+        let(:entered_otp) { 'abcdef12345' }
+        let(:otp) { 'ABCDEF12345' }
+
+        it 'is valid' do
+          expect(subject).to be_valid
+        end
+      end
+
+      context 'when the entered OTP has ohs instead of zeroes' do
+        let(:entered_otp) { 'oOoOoOoOoO' }
+        let(:otp) { '0000000000' }
+
+        it 'is valid' do
+          expect(subject).to be_valid
+        end
+      end
+    end
+
     context 'when OTP does not match' do
-      let(:valid_otp?) { false }
+      let(:entered_otp) { 'wrong' }
 
       it 'is invalid' do
         expect(subject).to_not be_valid
@@ -47,12 +62,6 @@ describe VerifyAccountForm do
   end
 
   describe '#submit' do
-    let(:valid_otp?) { true }
-
-    before do
-      allow(form).to receive(:valid_otp?).and_return(valid_otp?)
-    end
-
     context 'correct OTP' do
       it 'returns true' do
         expect(subject.submit).to eq true
@@ -68,7 +77,7 @@ describe VerifyAccountForm do
     end
 
     context 'incorrect OTP' do
-      let(:valid_otp?) { false }
+      let(:entered_otp) { 'wrong' }
 
       it 'clears form' do
         subject.submit

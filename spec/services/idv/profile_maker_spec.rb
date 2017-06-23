@@ -27,6 +27,10 @@ describe Idv::ProfileMaker do
       expect(pii).to be_a Pii::Attributes
       expect(pii.first_name.raw).to eq 'Some'
       expect(pii.first_name.norm).to eq 'Somebody'
+
+      otp = pii.otp.raw
+      expect(otp.length).to eq(10)
+      expect(otp).to eq(Base32::Crockford.normalize(otp))
     end
   end
 end
