@@ -7,10 +7,7 @@ class DelegatedProofingController < ApplicationController
     if result.success?
       render json: { success: true }
     else
-      render json: {
-               success: false,
-               errors: result.errors,
-             },
+      render json: { success: false, errors: result.errors },
              status: :bad_request
     end
   end
@@ -29,6 +26,6 @@ class DelegatedProofingController < ApplicationController
   end
 
   def delegated_proofing_form
-    DelegatedProofingForm.new(params)
+    @_delegated_proofing_form ||= DelegatedProofingForm.new(params)
   end
 end
