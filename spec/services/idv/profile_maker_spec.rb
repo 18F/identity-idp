@@ -7,13 +7,15 @@ describe Idv::ProfileMaker do
       normalized_applicant = Proofer::Applicant.new first_name: 'Somebody', last_name: 'Oneatatime'
       user = create(:user, :signed_up)
       user.unlock_user_access_key(user.password)
+      delegated_proofing_issuer = 'some:issuer'
 
       profile_maker = described_class.new(
         applicant: applicant,
         user: user,
         normalized_applicant: normalized_applicant,
         vendor: :mock,
-        phone_confirmed: false
+        phone_confirmed: false,
+        delegated_proofing_issuer: delegated_proofing_issuer
       )
 
       profile = profile_maker.profile
@@ -21,6 +23,7 @@ describe Idv::ProfileMaker do
 
       expect(profile).to be_a Profile
       expect(profile.id).to_not be_nil
+      expect(profile.delegated_proofing_issuer).to eq(delegated_proofing_issuer)
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Some'
 

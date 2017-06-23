@@ -21,7 +21,8 @@ describe Verify::ConfirmationsController do
       user: user,
       normalized_applicant: normalized_applicant,
       vendor: :mock,
-      phone_confirmed: true
+      phone_confirmed: true,
+      delegated_proofing_issuer: nil,
     )
     profile = profile_maker.profile
     idv_session.pii = profile_maker.pii_attributes
