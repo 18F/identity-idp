@@ -9,7 +9,7 @@ es:
           <strong>%{app}</strong>.%{tooltip}
         or: NOT TRANSLATED YET
       sms:
-        confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código? %{link}.
+        confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código?
         fallback_html: NOT TRANSLATED YET
       voice:
         confirm_code_html: NOT TRANSLATED YET
