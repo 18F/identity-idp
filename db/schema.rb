@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170621202836) do
+ActiveRecord::Schema.define(version: 20170626205402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -69,7 +69,6 @@ ActiveRecord::Schema.define(version: 20170621202836) do
   add_index "identities", ["uuid"], name: "index_identities_on_uuid", unique: true, using: :btree
 
   create_table "otp_requests_trackers", force: :cascade do |t|
-    t.text     "encrypted_phone"
     t.datetime "otp_last_sent_at"
     t.integer  "otp_send_count",    default: 0
     t.string   "attribute_cost"
