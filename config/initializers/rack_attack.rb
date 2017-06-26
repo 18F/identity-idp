@@ -83,24 +83,6 @@ module Rack
       end
     end
 
-    # After maxretry OTP requests in findtime minutes,
-    # block all requests from that user for bantime minutes.
-    blocklist('OTP delivery') do |req|
-      # `filter` returns truthy value if request fails, or if it's to a
-      # previously banned phone_number so the request is blocked
-      phone_number = req.env['warden'].user&.phone
-
-      Allow2Ban.filter(
-        "otp-#{phone_number}",
-        maxretry: Figaro.env.otp_delivery_blocklist_maxretry.to_i,
-        findtime: Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes,
-        bantime: Figaro.env.otp_delivery_blocklist_bantime.to_i.minutes
-      ) do
-        # The count for the phone_number is incremented if the return value is truthy
-        req.get? && req.path == '/otp/send'
-      end
-    end
-
     ### Custom Throttle Response ###
 
     # By default, Rack::Attack returns an HTTP 429 for throttled responses,

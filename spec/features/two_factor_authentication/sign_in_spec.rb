@@ -115,6 +115,7 @@ feature 'Two Factor Authentication' do
       it 'locks the user out and leaves user on the page during entire lockout period' do
         allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
         allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
         user = create(:user, :signed_up)
@@ -132,7 +133,7 @@ feature 'Two Factor Authentication' do
         UpdateUser.new(
           user: user,
           attributes: {
-            second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second),
+            second_factor_locked_at: Time.zone.now - (lockout_period + 1.second),
           }
         ).call
 
@@ -140,6 +141,158 @@ feature 'Two Factor Authentication' do
         click_button t('forms.buttons.submit.default')
 
         expect(current_path).to eq account_path
+      end
+    end
+
+    context 'user requests an OTP too many times within `findtime` minutes', js: true do
+      it 'locks the user out and leaves user on the page during entire lockout period' do
+        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
+        five_minute_countdown_regex = /4:5\d/
+
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
+
+        Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+        expect(page).to have_content(five_minute_countdown_regex)
+        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+
+        visit root_path
+        signin(user.email, user.password)
+
+        expect(page).to have_content t('titles.account_locked')
+        expect(page).to have_content(five_minute_countdown_regex)
+        expect(page).
+          to have_content t('devise.two_factor_authentication.max_generic_login_attempts_reached')
+
+        # let lockout period expire
+        Timecop.travel(lockout_period) do
+          signin(user.email, user.password)
+
+          expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        end
+      end
+    end
+
+    context 'findtime period is greater than lockout period' do
+      it 'does not lock the user' do
+        allow(Figaro.env).to receive(:otp_delivery_blocklist_findtime).and_return('10')
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
+        user = create(:user, :signed_up)
+
+        sign_in_before_2fa(user)
+
+        Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+
+        # let lockout period expire
+        Timecop.travel(lockout_period) do
+          signin(user.email, user.password)
+
+          expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        end
+      end
+    end
+
+    context 'user requests OTP several times but spaced out far apart' do
+      it 'does not lock the user out' do
+        max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+        findtime = Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes
+        user = create(:user, :signed_up)
+
+        sign_in_before_2fa(user)
+        (max_attempts - 1).times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+        click_submit_default
+
+        expect(current_path).to eq account_path
+
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone)
+        rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
+
+        # let findtime period expire
+        rate_limited_phone.update(otp_last_sent_at: Time.zone.now - (findtime + 1))
+
+        visit destroy_user_session_url
+        sign_in_before_2fa(user)
+
+        expect(rate_limited_phone.reload.otp_send_count).to eq 1
+
+        click_link t('links.two_factor_authentication.resend_code.sms')
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+
+        click_submit_default
+
+        expect(current_path).to eq account_path
+      end
+    end
+
+    context '2 users with same phone number request OTP too many times within findtime' do
+      it 'locks both users out' do
+        allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('3')
+        first_user = create(:user, :signed_up, phone: '+1 703-555-1212')
+        second_user = create(:user, :signed_up, phone: '+1 703-555-1212')
+        max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+
+        sign_in_before_2fa(first_user)
+        click_link t('links.two_factor_authentication.resend_code.sms')
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+
+        visit destroy_user_session_url
+
+        sign_in_before_2fa(second_user)
+        click_link t('links.two_factor_authentication.resend_code.sms')
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone)
+        rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
+
+        expect(current_path).to eq otp_send_path
+        expect(rate_limited_phone.otp_send_count).to eq max_attempts
+
+        visit account_path
+
+        expect(current_path).to eq root_path
+
+        visit destroy_user_session_url
+
+        signin(first_user.email, first_user.password)
+
+        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+
+        visit account_path
+        expect(current_path).to eq root_path
+      end
+    end
+
+    context 'When setting up 2FA for the first time' do
+      it 'enforces rate limiting only for current phone' do
+        second_user = create(:user, :signed_up, phone: '+1 202-555-1212')
+
+        sign_in_before_2fa
+        max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+
+        submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+
+        max_attempts.times do
+          click_link t('links.two_factor_authentication.resend_code.voice')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+
+        visit root_path
+        signin(second_user.email, second_user.password)
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 

@@ -35,12 +35,21 @@ module Users
     end
 
     def handle_valid_otp_delivery_preference(method)
+      otp_rate_limiter.reset_count_and_otp_last_sent_at if decorated_user.no_longer_locked_out?
+
+      if otp_rate_limiter.exceeded_otp_send_limit?
+        otp_rate_limiter.lock_out_user
+
+        return handle_too_many_otp_sends
+      end
+
       send_user_otp(method)
       session[:code_sent] = 'true'
       redirect_to login_two_factor_path(otp_delivery_preference: method, reauthn: reauthn?)
     end
 
     def send_user_otp(method)
+      otp_rate_limiter.increment
       current_user.create_direct_otp
 
       job = "#{method.capitalize}OtpSenderJob".constantize
@@ -69,6 +78,10 @@ module Users
       return current_user.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
+    end
+
+    def otp_rate_limiter
+      @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to, user: current_user)
     end
   end
 end

@@ -6,9 +6,9 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(Devise).to receive(:direct_otp_valid_for).and_return(535)
+        allow(Figaro.env).to receive(:lockout_period_in_minutes).and_return('8')
 
-        expect(user_decorator.lockout_time_remaining).to eq 355
+        expect(user_decorator.lockout_time_remaining).to eq 300
       end
     end
   end
@@ -18,10 +18,10 @@ describe UserDecorator do
       Timecop.freeze(Time.zone.now) do
         user = build_stubbed(:user, second_factor_locked_at: Time.zone.now - 180)
         user_decorator = UserDecorator.new(user)
-        allow(Devise).to receive(:direct_otp_valid_for).and_return(535)
+        allow(Figaro.env).to receive(:lockout_period_in_minutes).and_return('8')
 
         expect(user_decorator.lockout_time_remaining_in_words).
-          to eq '5 minutes and 55 seconds'
+          to eq '5 minutes'
       end
     end
   end

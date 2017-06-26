@@ -15,6 +15,8 @@ feature 'Changing authentication factor' do
     end
 
     scenario 'editing phone number' do
+      allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
+
       mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
       allow(UserMailer).to receive(:phone_changed).with(user).and_return(mailer)
 
