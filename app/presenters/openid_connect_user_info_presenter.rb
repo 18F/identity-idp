@@ -74,6 +74,7 @@ class OpenidConnectUserInfoPresenter
   end
 
   def loa3_session?
-    identity.ial == 3
+    identity.ial == 3 ||
+      identity.service_provider == identity.user.decorate.pending_profile&.delegated_proofing_issuer
   end
 end

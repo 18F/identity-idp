@@ -125,8 +125,13 @@ module Idv
         normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
         phone_confirmed: phone_confirmation || false,
         user: current_user,
-        vendor: vendor
+        vendor: vendor,
+        delegated_proofing_issuer: delegated_proofing_issuer
       )
+    end
+
+    def delegated_proofing_issuer
+      issuer if ServiceProvider.from_issuer(issuer).supports_delegated_proofing?
     end
   end
 end

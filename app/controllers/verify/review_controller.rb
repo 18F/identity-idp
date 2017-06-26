@@ -2,12 +2,14 @@ module Verify
   class ReviewController < ApplicationController
     include IdvStepConcern
     include PhoneConfirmation
+    include DelegatedProofingConcern
 
     before_action :confirm_idv_steps_complete
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
       return redirect_to(verify_session_path) unless idv_profile_complete?
+      return if delegated_proofing_session?
       return redirect_to(verify_finance_path) unless idv_finance_complete?
       return redirect_to(verify_address_path) unless idv_address_complete?
     end

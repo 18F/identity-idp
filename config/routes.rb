@@ -57,6 +57,9 @@ Rails.application.routes.draw do
   post '/account/verify_phone' => 'users/verify_profile_phone#create'
 
   get '/api/health/workers' => 'health/workers#index'
+
+  post '/api/identity/verify' => 'delegated_proofing#create'
+
   get '/api/openid_connect/certs' => 'openid_connect/certs#index'
   post '/api/openid_connect/token' => 'openid_connect/token#create'
   match '/api/openid_connect/token' => 'openid_connect/token#options', via: :options

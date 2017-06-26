@@ -2,6 +2,7 @@ module Verify
   class SessionsController < ApplicationController
     include IdvSession
     include IdvFailureConcern
+    include DelegatedProofingConcern
 
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
@@ -64,7 +65,11 @@ module Verify
       flash[:success] = t('idv.messages.sessions.success',
                           pii_message: pii_msg)
 
-      redirect_to verify_finance_path
+      if delegated_proofing_session?
+        redirect_to verify_review_path
+      else
+        redirect_to verify_finance_path
+      end
     end
 
     def process_failure

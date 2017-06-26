@@ -9,7 +9,6 @@ RSpec.describe IdTokenBuilder do
     build(:identity,
           nonce: SecureRandom.hex,
           uuid: SecureRandom.uuid,
-          ial: 3,
           # this is a known value from an example developer guide
           # https://developer.pingidentity.com/en/resources/openid-connect-developers-guide.html
           access_token: 'dNZX1hEZ9wBCzNL40Upu646bdzQA',
@@ -51,8 +50,8 @@ RSpec.describe IdTokenBuilder do
       expect(decoded_payload[:nonce]).to eq(identity.nonce)
     end
 
-    it 'sets the acr to the request acr' do
-      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
+    it 'sets the acr to match the user' do
+      expect(decoded_payload[:acr]).to eq(Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF)
     end
 
     it 'sets the jti to something meaningful' do

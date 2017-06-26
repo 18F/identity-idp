@@ -59,7 +59,12 @@ module SamlIdpAuthConcern
   end
 
   def identity_needs_verification?
-    loa3_requested? && current_user.decorate.identity_not_verified?
+    loa3_requested? &&
+      (current_user.decorate.identity_not_verified? && !pending_delegated_profile?)
+  end
+
+  def pending_delegated_profile?
+    current_user.decorate.pending_profile? && delegated_proofing_session?
   end
 
   def loa3_requested?

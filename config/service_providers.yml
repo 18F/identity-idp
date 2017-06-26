@@ -54,6 +54,13 @@ test:
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
 
+  'urn:gov:gsa.openidconnect:delegated-proofing':
+    redirect_uris:
+      - 'http://localhost:7654/'
+    cert: 'saml_test_sp'
+    friendly_name: 'Test Delegated Proofing SP'
+    supports_delegated_proofing: true
+
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     metadata_url: 'http://localhost:3000/test/saml/metadata'
@@ -101,6 +108,7 @@ development:
     return_to_sp_url: 'http://localhost:3003'
     attribute_bundle:
       - email
+    supports_delegated_proofing: true
 
   'https://dashboard.login.gov':
     friendly_name: 'Dashboard'
