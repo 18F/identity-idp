@@ -2,6 +2,7 @@ include ActionView::Helpers::DateHelper
 
 class UserDecorator
   MAX_RECENT_EVENTS = 5
+  DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
   def initialize(user)
     @user = user
@@ -137,7 +138,12 @@ class UserDecorator
   end
 
   def lockout_period
-    Figaro.env.lockout_period_in_minutes.to_i.minutes
+    return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
+    lockout_period_config.to_i.minutes
+  end
+
+  def lockout_period_config
+    @config ||= Figaro.env.lockout_period_in_minutes
   end
 
   def lockout_period_expired?
