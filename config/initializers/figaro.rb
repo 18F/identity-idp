@@ -10,7 +10,6 @@ Figaro.require_keys(
   'equifax_ssh_passphrase',
   'hmac_fingerprinter_key',
   'idp_sso_target_url',
-  'lockout_period_in_minutes',
   'logins_per_ip_limit',
   'logins_per_ip_period',
   'max_mail_events',
