@@ -38,7 +38,7 @@ describe VerifyController do
     it 'redirects to account recovery if user has a password reset profile' do
       profile = create(:profile, deactivation_reason: :password_reset)
       stub_sign_in(profile.user)
-      allow(subject).to receive(:user_session).and_return(acknowledge_personal_key: true)
+      allow(subject.reactivate_account_session).to receive(:started?).and_return(true)
 
       get :index
 

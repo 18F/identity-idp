@@ -8,7 +8,6 @@ describe Users::VerifyPasswordController do
 
   before do
     stub_sign_in(user)
-    subject.user_session[:account_recovery] = recovery_hash
   end
 
   context 'without password_reset_profile' do
@@ -21,11 +20,33 @@ describe Users::VerifyPasswordController do
     end
   end
 
+  context 'without personal key flag set' do
+    let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
+
+    describe '#new' do
+      it 'redirects to the root url' do
+        get :new
+        expect(response).to redirect_to(root_url)
+      end
+    end
+
+    describe '#update' do
+      it 'redirects to the root url' do
+        get :new
+        expect(response).to redirect_to(root_url)
+      end
+    end
+  end
+
   context 'with password reset profile' do
     let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
     let(:response_ok) { FormResponse.new(success: true, errors: {}, extra: { personal_key: key }) }
     let(:response_bad) { FormResponse.new(success: false, errors: {}) }
     let(:key) { 'key' }
+
+    before do
+      allow(subject.reactivate_account_session).to receive(:personal_key?).and_return(personal_key)
+    end
 
     describe '#new' do
       it 'renders the `new` template' do
