@@ -89,6 +89,7 @@ UtilityFunction:
   public_methods_only: true
   exclude:
     - AnalyticsEventJob#perform
+    - ApplicationController#default_url_options
     - ApplicationHelper#step_class
     - PersonalKeyFormatter#regexp
     - SessionTimeoutWarningHelper#frequency
