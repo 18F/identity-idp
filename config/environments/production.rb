@@ -10,7 +10,6 @@ Rails.application.configure do
   config.i18n.fallbacks = true
   config.active_support.deprecation = :notify
   config.active_record.dump_schema_after_migration = false
-  config.action_mailer.smtp_settings = JSON.parse(Figaro.env.smtp_settings).symbolize_keys
 
   config.action_mailer.default_url_options = {
     host: Figaro.env.domain_name,
@@ -19,7 +18,11 @@ Rails.application.configure do
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_options = { from: Figaro.env.email_from }
-  config.action_mailer.delivery_method = :test if Figaro.env.disable_email_sending == 'true'
+  config.action_mailer.delivery_method = if Figaro.env.disable_email_sending == 'true'
+                                           :test
+                                         else
+                                           :mandrill
+                                         end
 
   routes.default_url_options[:protocol] = :https
 
