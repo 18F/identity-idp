@@ -1,7 +1,7 @@
 ---
 es:
   notices:
-    account_recovery: NOT TRANSLATED YET
+    account_reactivation: NOT TRANSLATED YET
     dap_html: NOT TRANSLATED YET
     forgot_password:
       use_diff_email:

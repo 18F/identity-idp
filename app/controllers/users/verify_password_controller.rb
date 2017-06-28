@@ -1,6 +1,6 @@
 module Users
   class VerifyPasswordController < ApplicationController
-    include AccountRecoveryConcern
+    include AccountReactivationConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_password_reset_profile
