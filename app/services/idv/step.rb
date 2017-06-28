@@ -37,14 +37,20 @@ module Idv
       end
     end
 
+    def idv_vendor
+      @_idv_vendor ||= Idv::Vendor.new
+    end
+
     def vendor_errors
       @_vendor_errors ||= vendor_validator.errors
     end
 
     def vendor_validator
       @_vendor_validator ||= vendor_validator_class.new(
-        idv_session: idv_session,
-        vendor_params: vendor_params
+        applicant: idv_session.applicant,
+        vendor: (idv_session.vendor || idv_vendor.pick),
+        vendor_params: vendor_params,
+        vendor_session_id: idv_session.vendor_session_id
       )
     end
   end

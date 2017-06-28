@@ -2,11 +2,13 @@
 module Idv
   class VendorValidator
     delegate :success?, :errors, to: :result
-    attr_reader :idv_session, :vendor_params
+    attr_reader :applicant, :vendor, :vendor_params, :vendor_session_id
 
-    def initialize(idv_session:, vendor_params:)
-      @idv_session = idv_session
+    def initialize(applicant:, vendor:, vendor_params:, vendor_session_id:)
+      @applicant = applicant
+      @vendor = vendor
       @vendor_params = vendor_params
+      @vendor_session_id = vendor_session_id
     end
 
     def reasons
@@ -15,14 +17,10 @@ module Idv
 
     private
 
-    def idv_vendor
-      @_idv_vendor ||= Idv::Vendor.new
-    end
-
     def idv_agent
       @_agent ||= Idv::Agent.new(
-        applicant: idv_session.applicant,
-        vendor: (idv_session.vendor || idv_vendor.pick)
+        applicant: applicant,
+        vendor: vendor
       )
     end
 
