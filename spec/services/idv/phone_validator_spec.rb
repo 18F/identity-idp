@@ -31,27 +31,25 @@ describe Idv::PhoneValidator do
       with(params, vendor_session_id).and_return(confirmation)
   end
 
-  describe '#success?' do
-    it 'returns Proofer::Confirmation#success?' do
+  describe '#result' do
+    it 'has success' do
       stub_agent_calls
 
       success_string = 'true'
 
       expect(confirmation).to receive(:success?).and_return(success_string)
 
-      expect(subject.success?).to eq success_string
+      expect(subject.result.success?).to eq success_string
     end
-  end
 
-  describe '#error' do
-    it 'returns Proofer::Confirmation#errors' do
+    it 'has errors' do
       stub_agent_calls
 
       error_string = 'mucho errors'
 
       expect(confirmation).to receive(:errors).and_return(error_string)
 
-      expect(subject.errors).to eq error_string
+      expect(subject.result.errors).to eq error_string
     end
   end
 end

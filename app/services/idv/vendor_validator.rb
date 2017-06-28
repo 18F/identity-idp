@@ -1,7 +1,6 @@
 # abstract base class for proofing vendor validation
 module Idv
   class VendorValidator
-    delegate :success?, :errors, to: :result
     attr_reader :applicant, :vendor, :vendor_params, :vendor_session_id
 
     def initialize(applicant:, vendor:, vendor_params:, vendor_session_id:)
@@ -11,8 +10,8 @@ module Idv
       @vendor_session_id = vendor_session_id
     end
 
-    def reasons
-      result.vendor_resp.reasons
+    def result
+      @_result ||= try_submit
     end
 
     private
@@ -22,10 +21,6 @@ module Idv
         applicant: applicant,
         vendor: vendor
       )
-    end
-
-    def result
-      @_result ||= try_submit
     end
 
     def try_agent_action

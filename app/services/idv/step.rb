@@ -21,7 +21,23 @@ module Idv
     end
 
     def vendor_validation_passed?
-      vendor_validator.success?
+      vendor_validator_result.success?
+    end
+
+    def vendor_validator_result
+      @_vendor_validator_result ||= extract_vendor_result(vendor_validator.result)
+    end
+
+    def extract_vendor_result(result)
+      vendor_resp = result.vendor_resp
+
+      Idv::VendorResult.new(
+        success: result.success?,
+        errors: result.errors,
+        reasons: vendor_resp.reasons,
+        normalized_applicant: vendor_resp.try(:normalized_applicant),
+        session_id: result.try(:session_id)
+      )
     end
 
     def errors
@@ -42,7 +58,7 @@ module Idv
     end
 
     def vendor_errors
-      @_vendor_errors ||= vendor_validator.errors
+      @_vendor_errors ||= vendor_validator_result.errors
     end
 
     def vendor_validator
