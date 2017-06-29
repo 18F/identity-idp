@@ -50,6 +50,11 @@ class ApplicationController < ActionController::Base
     ).call
   end
 
+  def default_url_options
+    active_locale = I18n.locale
+    { locale: active_locale == I18n.default_locale ? nil : active_locale }
+  end
+
   private
 
   def disable_caching
@@ -130,9 +135,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale =
-      http_accept_language.compatible_language_from(I18n.available_locales) ||
-      I18n.default_locale
+    I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
   def sp_session
