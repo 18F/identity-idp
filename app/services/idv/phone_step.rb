@@ -29,7 +29,7 @@ module Idv
     end
 
     def vendor_reasons
-      vendor_validator.reasons if form_valid?
+      vendor_validator_result.reasons if form_valid?
     end
 
     def update_idv_session

@@ -24,6 +24,7 @@ FeatureEnvy:
     - Pii::Attributes#[]=
     - OpenidConnectLogoutForm#load_identity
     - Idv::ProfileMaker#pii_from_applicant
+    - Idv::Step#vendor_validator_result
 InstanceVariableAssumption:
   exclude:
     - User
@@ -53,6 +54,7 @@ TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
+    - Idv::VendorResult
 TooManyStatements:
   max_statements: 6
   exclude:
