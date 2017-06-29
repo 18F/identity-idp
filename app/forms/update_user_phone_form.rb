@@ -17,7 +17,7 @@ class UpdateUserPhoneForm
   def submit(params)
     check_phone_change(params)
 
-    valid?
+    FormResponse.new(success: valid?, errors: errors.messages)
   end
 
   def phone_changed?

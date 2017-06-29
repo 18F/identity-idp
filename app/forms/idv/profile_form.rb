@@ -40,6 +40,8 @@ module Idv
     def submit(params)
       initialize_params(params)
       profile.ssn_signature = ssn_signature
+
+      FormResponse.new(success: valid?, errors: errors.messages)
     end
 
     private

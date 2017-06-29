@@ -30,15 +30,17 @@ describe Idv::ProfileStep do
     it 'succeeds with good params' do
       step = build_step(user_attrs)
 
-      result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
         vendor: { reasons: ['Everything looks good'] },
       }
 
-      expect(FormResponse).to receive(:new).
-        with(success: true, errors: {}, extra: extra).and_return(result)
-      expect(step.submit).to eq result
+      result = step.submit
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(true)
+      expect(result.errors).to be_empty
+      expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to eq true
     end
 
@@ -51,11 +53,12 @@ describe Idv::ProfileStep do
         vendor: { reasons: ['The SSN was suspicious'] },
       }
 
-      result = instance_double(FormResponse)
+      result = step.submit
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-      expect(step.submit).to eq result
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
+      expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to be_nil
     end
 
@@ -68,11 +71,12 @@ describe Idv::ProfileStep do
         vendor: { reasons: nil },
       }
 
-      result = instance_double(FormResponse)
+      result = step.submit
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-      expect(step.submit).to eq result
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
+      expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to be_nil
     end
 
@@ -80,16 +84,17 @@ describe Idv::ProfileStep do
       step = build_step(user_attrs.merge(first_name: 'Bad'))
 
       errors = { first_name: ['Unverified first name.'] }
-
-      result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
         vendor: { reasons: ['The name was suspicious'] },
       }
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-      expect(step.submit).to eq result
+      result = step.submit
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
+      expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to be_nil
     end
 
@@ -97,16 +102,17 @@ describe Idv::ProfileStep do
       step = build_step(user_attrs.merge(zipcode: '00000'))
 
       errors = { zipcode: ['Unverified ZIP code.'] }
-
-      result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
         vendor: { reasons: ['The ZIP code was suspicious'] },
       }
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-      expect(step.submit).to eq result
+      result = step.submit
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
+      expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to be_nil
     end
 
@@ -114,16 +120,17 @@ describe Idv::ProfileStep do
       step = build_step(user_attrs.merge(prev_zipcode: '00000'))
 
       errors = { zipcode: ['Unverified ZIP code.'] }
-
-      result = instance_double(FormResponse)
       extra = {
         idv_attempts_exceeded: false,
         vendor: { reasons: ['The ZIP code was suspicious'] },
       }
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors, extra: extra).and_return(result)
-      expect(step.submit).to eq result
+      result = step.submit
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
+      expect(result.extra).to eq(extra)
       expect(idv_session.profile_confirmation).to be_nil
     end
 

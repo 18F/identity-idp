@@ -44,11 +44,14 @@ module Idv
     def submit(params)
       @params = params
       finance_value = update_finance_values(params)
-      return false unless valid?
 
-      clear_idv_params_finance
-      idv_params[finance_type] = finance_value
-      true
+      success = valid?
+      if success
+        clear_idv_params_finance
+        idv_params[finance_type] = finance_value
+      end
+
+      FormResponse.new(success: success, errors: errors.messages)
     end
 
     def self.finance_other_type_choices
