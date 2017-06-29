@@ -23,11 +23,13 @@ RSpec.describe OtpRateLimiter do
   end
 
   describe '#increment' do
-    it 'sets the otp_last_sent_at' do
-      now = Time.zone.now
+    it 'updates otp_last_sent_at' do
+      tracker = OtpRequestsTracker.find_or_create_with_phone(current_user.phone)
+      old_otp_last_sent_at = tracker.reload.otp_last_sent_at
       otp_rate_limiter.increment
+      new_otp_last_sent_at = tracker.reload.otp_last_sent_at
 
-      expect(rate_limited_phone.otp_last_sent_at.to_i).to eq(now.to_i)
+      expect(new_otp_last_sent_at).to be > old_otp_last_sent_at
     end
 
     it 'increments the otp_send_count' do
