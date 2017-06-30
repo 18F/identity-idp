@@ -2,6 +2,7 @@ module IdvSession
   extend ActiveSupport::Concern
 
   def confirm_idv_session_started
+    return if current_user.decorate.needs_profile_usps_verification?
     redirect_to verify_session_url if idv_session.params.blank?
   end
 

@@ -12,6 +12,10 @@ module Idv
       max_events? && updated_within_last_month?
     end
 
+    def any_mail_sent?
+      user_mail_events.any?
+    end
+
     private
 
     attr_reader :current_user
