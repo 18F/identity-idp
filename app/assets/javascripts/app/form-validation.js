@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (input) {
         input.addEventListener('input', () => {
           if (input.validity.patternMismatch) {
-            input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${f}`));
+            input.setCustomValidity(I18n.t(`idv.errors.pattern_mismatch.${I18n.key(f)}`));
           } else {
             input.setCustomValidity('');
           }
