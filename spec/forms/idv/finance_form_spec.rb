@@ -25,39 +25,58 @@ describe Idv::FinanceForm do
   end
 
   describe '#submit' do
-    it 'adds ccn key to idv_params when valid' do
-      expect(subject.submit(ccn: '12345678', finance_type: :ccn)).to eq true
+    context 'when the form is valid' do
+      let(:result) { subject.submit(ccn: '12345678', finance_type: :ccn) }
 
-      expected_params = {
-        ccn: '12345678',
-      }
+      it 'returns a successful form response' do
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
+        expect(result.errors).to be_empty
+      end
 
-      expect(subject.idv_params).to eq expected_params
+      it 'adds ccn key to idv_params' do
+        expected_params = {
+          ccn: '12345678',
+        }
+        subject.submit(ccn: '12345678', finance_type: :ccn)
+        expect(subject.idv_params).to eq expected_params
+      end
     end
 
-    it 'fails when missing all finance fields' do
-      expect(subject.submit(foo: 'bar')).to eq false
+    context 'when the form is invalid' do
+      it 'returns an unsuccessful form response' do
+        result = subject.submit(foo: 'bar')
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to be_present
+      end
     end
 
     context 'when CCN is invalid' do
-      it 'fails when alpha' do
-        expect(subject.submit(ccn: '1234567a', finance_type: :ccn)).to eq false
-        expect(subject.errors[:ccn]).to eq([t('idv.errors.invalid_ccn')])
+      it 'returns an unsuccessful form response when alpha' do
+        result = subject.submit(ccn: '1234567a', finance_type: :ccn)
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:ccn]).to eq([t('idv.errors.invalid_ccn')])
       end
 
-      it 'fails when long' do
-        expect(subject.submit(ccn: '123456789', finance_type: :ccn)).to eq false
-        expect(subject.errors[:ccn]).to eq([t('idv.errors.invalid_ccn')])
+      it 'returns an unsuccessful form response when long' do
+        result = subject.submit(ccn: '123456789', finance_type: :ccn)
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:ccn]).to eq([t('idv.errors.invalid_ccn')])
       end
 
-      it 'fails when short' do
-        expect(subject.submit(ccn: '1234567', finance_type: :ccn)).to eq false
-        expect(subject.errors[:ccn]).to eq([t('idv.errors.invalid_ccn')])
+      it 'returns an unsuccessful form response when short' do
+        result = subject.submit(ccn: '1234567', finance_type: :ccn)
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(false)
+        expect(result.errors[:ccn]).to eq([t('idv.errors.invalid_ccn')])
       end
     end
 
     context 'any non-ccn financial value is less than the minimum allowed digits' do
-      it 'fails' do
+      it 'returns an unsuccessful form response' do
         finance_types = Idv::FinanceForm::FINANCE_TYPES
         short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
 
@@ -65,8 +84,10 @@ describe Idv::FinanceForm do
           next if type == :ccn
           params = { type => short_value, finance_type: type }
 
-          expect(subject.submit(params)).to eq false
-          expect(subject.errors[type]).to eq([t(
+          result = subject.submit(params)
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors[type]).to eq([t(
             'idv.errors.finance_number_length',
             minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
             maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
@@ -76,7 +97,7 @@ describe Idv::FinanceForm do
     end
 
     context 'any non-ccn financial value is over the max allowed digits' do
-      it 'fails' do
+      it 'returns an unsuccessful form response' do
         finance_types = Idv::FinanceForm::FINANCE_TYPES
         long_value = '1' * (FormFinanceValidator::VALID_MAXIMUM_LENGTH + 1)
 
@@ -88,8 +109,10 @@ describe Idv::FinanceForm do
             finance_type: symbolized_type,
           }
 
-          expect(subject.submit(params)).to eq false
-          expect(subject.errors[symbolized_type]).to eq([t(
+          result = subject.submit(params)
+          expect(result).to be_kind_of(FormResponse)
+          expect(result.success?).to eq(false)
+          expect(result.errors[symbolized_type]).to eq([t(
             'idv.errors.finance_number_length',
             minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
             maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH

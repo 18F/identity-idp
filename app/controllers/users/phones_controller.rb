@@ -11,7 +11,7 @@ module Users
     def update
       @update_user_phone_form = UpdateUserPhoneForm.new(current_user)
 
-      if @update_user_phone_form.submit(user_params)
+      if @update_user_phone_form.submit(user_params).success?
         process_updates
         bypass_sign_in current_user
       else

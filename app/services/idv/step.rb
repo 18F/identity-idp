@@ -8,7 +8,7 @@ module Idv
     end
 
     def form_valid?
-      form_validate(params)
+      form_validate(params).success?
     end
 
     private

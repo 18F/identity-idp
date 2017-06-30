@@ -20,11 +20,10 @@ module Idv
 
       self.phone = formatted_phone
 
-      return false unless valid?
+      success = valid?
+      update_idv_params(formatted_phone) if success
 
-      update_idv_params(formatted_phone)
-
-      true
+      FormResponse.new(success: success, errors: errors.messages)
     end
 
     private

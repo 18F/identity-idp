@@ -24,19 +24,25 @@ shared_examples 'a phone form' do
         allow(User).to receive(:exists?).with(email: 'new@gmail.com').and_return(false)
         allow(User).to receive(:exists?).with(phone: second_user.phone).and_return(true)
 
-        expect(subject.submit(phone: second_user.phone)).to be true
+        result = subject.submit(phone: second_user.phone)
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to eq(true)
       end
     end
 
     context 'when phone is not already taken' do
       it 'is valid' do
-        expect(subject.submit(phone: '+1 (703) 555-1212')).to be true
+        result = subject.submit(phone: '+1 (703) 555-1212')
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to be true
       end
     end
 
     context 'when phone is same as current user' do
       it 'is valid' do
-        expect(subject.submit(phone: user.phone)).to be true
+        result = subject.submit(phone: user.phone)
+        expect(result).to be_kind_of(FormResponse)
+        expect(result.success?).to be true
       end
     end
   end

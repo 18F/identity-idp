@@ -26,22 +26,22 @@ describe Idv::PhoneStep do
 
       errors = { phone: [invalid_phone_message] }
 
-      result = instance_double(FormResponse)
+      result = step.submit
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-      expect(step.submit).to eq result
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
       expect(idv_session.phone_confirmation).to eq false
     end
 
     it 'returns true for mock-happy phone' do
       step = build_step(phone: '555-555-0000')
 
-      result = instance_double(FormResponse)
+      result = step.submit
 
-      expect(FormResponse).to receive(:new).with(success: true, errors: {}).
-        and_return(result)
-      expect(step.submit).to eq result
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(true)
+      expect(result.errors).to be_empty
       expect(idv_session.phone_confirmation).to eq true
       expect(idv_session.params).to eq idv_phone_form.idv_params
     end
@@ -51,11 +51,11 @@ describe Idv::PhoneStep do
 
       errors = { phone: ['The phone number could not be verified.'] }
 
-      result = instance_double(FormResponse)
+      result = step.submit
 
-      expect(FormResponse).to receive(:new).
-        with(success: false, errors: errors).and_return(result)
-      expect(step.submit).to eq result
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to eq(errors)
       expect(idv_session.phone_confirmation).to eq false
     end
   end
