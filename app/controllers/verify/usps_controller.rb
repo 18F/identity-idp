@@ -5,10 +5,7 @@ module Verify
     before_action :confirm_mail_not_spammed
 
     def index
-      @applicant = idv_session.normalized_applicant_params
-      decorated_usps = UspsDecorator.new(idv_session)
-      @title = decorated_usps.title
-      @button = decorated_usps.button
+      @decorated_usps = UspsDecorator.new(usps_mail_service)
     end
 
     def create
