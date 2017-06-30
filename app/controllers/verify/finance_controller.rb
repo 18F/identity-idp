@@ -5,6 +5,7 @@ module Verify
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
+    before_action :submit_idv_form, only: [:create]
 
     def new
       @view_model = view_model
@@ -13,7 +14,7 @@ module Verify
 
     def create
       result = step.submit
-      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result.to_h)
+      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result.to_h)
       increment_step_attempts
 
       if result.success?
@@ -25,6 +26,16 @@ module Verify
     end
 
     private
+
+    def submit_idv_form
+      result = idv_form.submit(step_params)
+      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION_FORM, result.to_h)
+
+      return if result.success?
+
+      @view_model = view_model
+      render_form
+    end
 
     def step_name
       :financials
@@ -38,12 +49,12 @@ module Verify
       Verify::FinancialsNew.new(
         error: error,
         remaining_attempts: remaining_step_attempts,
-        idv_form: idv_finance_form
+        idv_form: idv_form
       )
     end
 
-    def idv_finance_form
-      @_idv_finance_form ||= Idv::FinanceForm.new(idv_session.params)
+    def idv_form
+      @_idv_form ||= Idv::FinanceForm.new(idv_session.params)
     end
 
     def handle_success
@@ -53,9 +64,9 @@ module Verify
 
     def step
       @_step ||= Idv::FinancialsStep.new(
-        idv_form: idv_finance_form,
+        idv_form_params: idv_form.idv_params,
         idv_session: idv_session,
-        params: step_params
+        vendor_params: vendor_params
       )
     end
 
@@ -69,6 +80,11 @@ module Verify
       else
         render 'verify/finance_other/new'
       end
+    end
+
+    def vendor_params
+      finance_type = idv_form.finance_type
+      { finance_type => idv_form.idv_params[finance_type] }
     end
   end
 end

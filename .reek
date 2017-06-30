@@ -74,6 +74,7 @@ TooManyMethods:
     - OpenidConnect::AuthorizationController
     - Idv::Session
     - User
+    - Verify::SessionsController
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

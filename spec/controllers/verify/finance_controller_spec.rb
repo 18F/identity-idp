@@ -141,7 +141,10 @@ describe Verify::FinanceController do
         }
 
         expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_FINANCE_CONFIRMATION, result
+          Analytics::IDV_FINANCE_CONFIRMATION_FORM, result
+        )
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result
         )
       end
     end
@@ -156,7 +159,9 @@ describe Verify::FinanceController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
+          with(Analytics::IDV_FINANCE_CONFIRMATION_FORM, success: true, errors: {})
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result)
       end
     end
 
@@ -172,8 +177,8 @@ describe Verify::FinanceController do
         }
 
         expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
-        expect(subject.idv_session.financials_confirmation).to eq false
+          with(Analytics::IDV_FINANCE_CONFIRMATION_FORM, result)
+        expect(subject.idv_session.financials_confirmation).to be_falsy
         expect(Idv::FinancialsValidator).to_not have_received(:new)
       end
     end

@@ -19,10 +19,13 @@ describe Idv::ProfileStep do
   end
 
   def build_step(params)
+    idv_session.params.merge!(params)
+    idv_session.applicant = idv_session.vendor_params
+
     described_class.new(
-      idv_form: idv_profile_form,
-      idv_session: idv_session,
-      params: params
+      idv_form_params: params,
+      vendor_params: idv_session.vendor_params,
+      idv_session: idv_session
     )
   end
 
@@ -51,24 +54,6 @@ describe Idv::ProfileStep do
       extra = {
         idv_attempts_exceeded: false,
         vendor: { reasons: ['The SSN was suspicious'] },
-      }
-
-      result = step.submit
-
-      expect(result).to be_kind_of(FormResponse)
-      expect(result.success?).to eq(false)
-      expect(result.errors).to eq(errors)
-      expect(result.extra).to eq(extra)
-      expect(idv_session.profile_confirmation).to be_nil
-    end
-
-    it 'fails when form validation fails' do
-      step = build_step(user_attrs.merge(ssn: '6666'))
-
-      errors = { ssn: [t('idv.errors.pattern_mismatch.ssn')] }
-      extra = {
-        idv_attempts_exceeded: false,
-        vendor: { reasons: nil },
       }
 
       result = step.submit
@@ -134,14 +119,9 @@ describe Idv::ProfileStep do
       expect(idv_session.profile_confirmation).to be_nil
     end
 
-    it 'increments attempts count if the form is valid' do
+    it 'increments attempts count' do
       step = build_step(user_attrs)
       expect { step.submit }.to change(user, :idv_attempts).by(1)
-    end
-
-    it 'does not increment the attempts count if the form is not valid' do
-      step = build_step(user_attrs.merge(ssn: '666'))
-      expect { step.submit }.to change(user, :idv_attempts).by(0)
     end
 
     it 'initializes the idv_session' do
