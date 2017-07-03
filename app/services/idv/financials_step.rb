@@ -20,9 +20,5 @@ module Idv
     def complete?
       vendor_validation_passed?
     end
-
-    def vendor_validator_class
-      Idv::FinancialsValidator
-    end
   end
 end

@@ -18,25 +18,34 @@ describe Idv::ProfileStep do
     }
   end
 
-  def build_step(params)
+  def build_step(params, vendor_validator_result)
     idv_session.params.merge!(params)
     idv_session.applicant = idv_session.vendor_params
 
     described_class.new(
       idv_form_params: params,
-      vendor_params: idv_session.vendor_params,
+      vendor_validator_result: vendor_validator_result,
       idv_session: idv_session
     )
   end
 
   describe '#submit' do
     it 'succeeds with good params' do
-      step = build_step(user_attrs)
-
+      reasons = ['Everything looks good']
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['Everything looks good'] },
+        vendor: { reasons: reasons },
       }
+
+      step = build_step(
+        user_attrs,
+        Idv::VendorResult.new(
+          success: true,
+          errors: {},
+          reasons: reasons,
+          normalized_applicant: Proofer::Applicant.new(first_name: 'Some')
+        )
+      )
 
       result = step.submit
 
@@ -48,13 +57,17 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid SSN' do
-      step = build_step(user_attrs.merge(ssn: '666-66-6666'))
-
+      reasons = ['The SSN was suspicious']
       errors = { ssn: ['Unverified SSN.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The SSN was suspicious'] },
+        vendor: { reasons: reasons },
       }
+
+      step = build_step(
+        user_attrs.merge(ssn: '666-66-6666'),
+        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+      )
 
       result = step.submit
 
@@ -66,13 +79,17 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid first name' do
-      step = build_step(user_attrs.merge(first_name: 'Bad'))
-
       errors = { first_name: ['Unverified first name.'] }
+      reasons = ['The name was suspicious']
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The name was suspicious'] },
+        vendor: { reasons: reasons },
       }
+
+      step = build_step(
+        user_attrs.merge(first_name: 'Bad'),
+        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+      )
 
       result = step.submit
 
@@ -84,13 +101,17 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid ZIP code on current address' do
-      step = build_step(user_attrs.merge(zipcode: '00000'))
-
+      reasons = ['The ZIP code was suspicious']
       errors = { zipcode: ['Unverified ZIP code.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The ZIP code was suspicious'] },
+        vendor: { reasons: reasons },
       }
+
+      step = build_step(
+        user_attrs.merge(zipcode: '00000'),
+        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+      )
 
       result = step.submit
 
@@ -102,13 +123,17 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid ZIP code on previous address' do
-      step = build_step(user_attrs.merge(prev_zipcode: '00000'))
-
+      reasons = ['The ZIP code was suspicious']
       errors = { zipcode: ['Unverified ZIP code.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: ['The ZIP code was suspicious'] },
+        vendor: { reasons: reasons },
       }
+
+      step = build_step(
+        user_attrs.merge(prev_zipcode: '00000'),
+        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+      )
 
       result = step.submit
 
@@ -120,12 +145,12 @@ describe Idv::ProfileStep do
     end
 
     it 'increments attempts count' do
-      step = build_step(user_attrs)
+      step = build_step(user_attrs, Idv::VendorResult.new(errors: {}))
       expect { step.submit }.to change(user, :idv_attempts).by(1)
     end
 
     it 'initializes the idv_session' do
-      step = build_step(user_attrs)
+      step = build_step(user_attrs, Idv::VendorResult.new(errors: {}))
       step.submit
 
       expect(idv_session.params).to eq user_attrs
@@ -139,7 +164,7 @@ describe Idv::ProfileStep do
       allow(Idv::Attempter).to receive(:new).with(user).and_return(attempter)
       allow(attempter).to receive(:exceeded?)
 
-      step = build_step(user_attrs)
+      step = build_step(user_attrs, Idv::VendorResult.new(errors: {}))
       expect(step.attempts_exceeded?).to eq attempter.exceeded?
     end
   end

@@ -42,6 +42,7 @@ NilCheck:
 LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
+    - VendorValidatorJob#perform
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController

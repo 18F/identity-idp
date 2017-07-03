@@ -40,4 +40,8 @@ module IdvSession
   def idv_attempter
     @_idv_attempter ||= Idv::Attempter.new(current_user)
   end
+
+  def vendor_validator_result
+    VendorValidatorResultStorage.new.load(idv_session.async_result_id)
+  end
 end

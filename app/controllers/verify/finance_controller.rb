@@ -6,6 +6,7 @@ module Verify
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
     before_action :submit_idv_form, only: [:create]
+    before_action :submit_idv_job, only: [:create]
 
     def new
       @view_model = view_model
@@ -37,6 +38,14 @@ module Verify
       render_form
     end
 
+    def submit_idv_job
+      SubmitIdvJob.new(
+        vendor_validator_class: Idv::FinancialsValidator,
+        idv_session: idv_session,
+        vendor_params: vendor_params
+      ).call
+    end
+
     def step_name
       :financials
     end
@@ -66,7 +75,7 @@ module Verify
       @_step ||= Idv::FinancialsStep.new(
         idv_form_params: idv_form.idv_params,
         idv_session: idv_session,
-        vendor_params: vendor_params
+        vendor_validator_result: vendor_validator_result
       )
     end
 

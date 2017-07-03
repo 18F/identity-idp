@@ -9,6 +9,7 @@ module Verify
     before_action :confirm_step_needed, except: [:destroy]
     before_action :initialize_idv_session, only: [:create]
     before_action :submit_idv_form, only: [:create]
+    before_action :submit_idv_job, only: [:create]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
@@ -44,6 +45,14 @@ module Verify
       process_failure unless result.success?
     end
 
+    def submit_idv_job
+      SubmitIdvJob.new(
+        vendor_validator_class: Idv::ProfileValidator,
+        idv_session: idv_session,
+        vendor_params: idv_session.vendor_params
+      ).call
+    end
+
     def step_name
       :sessions
     end
@@ -56,7 +65,7 @@ module Verify
       @_step ||= Idv::ProfileStep.new(
         idv_form_params: profile_params,
         idv_session: idv_session,
-        vendor_params: idv_session.vendor_params
+        vendor_validator_result: vendor_validator_result
       )
     end
 
