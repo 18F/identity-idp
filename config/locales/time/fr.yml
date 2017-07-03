@@ -1,0 +1,5 @@
+---
+fr:
+  time:
+    formats:
+      event_timestamp: "%B %e, %Y à %-l:%M %p"

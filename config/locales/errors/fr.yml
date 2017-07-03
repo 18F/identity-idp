@@ -1,0 +1,35 @@
+---
+fr:
+  errors:
+    confirm_password_incorrect: Mot de passe incorrect.
+    invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez vous connecter
+      de nouveau.
+    invalid_totp: Code non valide. Veuillez essayer de nouveau.
+    max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects
+      un trop grand nombre de fois. Vous pouvez réinitialiser votre mot de passe en
+      utilisant le lien « Vous avez oublié votre mot de passe? ».
+    messages:
+      already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
+      blank: Veuillez remplir ce champ.
+      confirmation_code_incorrect: Code non valide. L'avez-vous inscrit correctement?
+      confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré ou vous avez déjà confirmé votre compte.
+      confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur « Envoyer les instructions de confirmation de nouveau » pour en obtenir un autre.
+      expired: est expiré, veuillez en demander un nouveau
+      format_mismatch: Veuillez vous assurer de respecter le format requis.
+      improbable_phone: Numéro de téléphone non valide. Veuillez vous assurer d'entrer un numéro de téléphone à 10 chiffres.
+      missing_field: Veuillez remplir ce champ.
+      no_password_reset_profile: Aucun profil récemment désactivé en raison d'une réinitialisation de mot de passe
+      no_pending_profile: Aucun profil en attente de vérification
+      not_found: introuvable
+      not_locked: n'a pas été verrouillé
+      not_saved:
+        one: "1 erreur a interdit la sauvegarde de cette %{resource} :"
+        other: "%{count} des erreurs ont empêché la sauvegarde de cette %{resource} :"
+      otp_incorrect: Code non valide. L'avez-vous inscrit correctement?
+      password_incorrect: Mot de passe incorrect
+      personal_key_incorrect: Clé personnelle incorrecte
+      requires_phone: vous demande d'entrer votre numéro de téléphone.
+      unauthorized_authn_context: Contexte d'authentification non autorisé
+      unauthorized_service_provider: Fournisseur de service non autorisé
+      weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
+    not_authorized: Vous n'êtes pas autorisé(e) à effectuer cette action.
