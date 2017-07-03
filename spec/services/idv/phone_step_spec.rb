@@ -12,30 +12,17 @@ describe Idv::PhoneStep do
   end
   let(:idv_phone_form) { Idv::PhoneForm.new(idv_session.params, user) }
 
-  def build_step(params)
+  def build_step(phone)
     described_class.new(
-      idv_form: idv_phone_form,
       idv_session: idv_session,
-      params: params
+      idv_form_params: { phone: phone },
+      vendor_params: phone
     )
   end
 
   describe '#submit' do
-    it 'returns false for invalid-looking phone' do
-      step = build_step(phone: '555')
-
-      errors = { phone: [invalid_phone_message] }
-
-      result = step.submit
-
-      expect(result).to be_kind_of(FormResponse)
-      expect(result.success?).to eq(false)
-      expect(result.errors).to eq(errors)
-      expect(idv_session.phone_confirmation).to eq false
-    end
-
     it 'returns true for mock-happy phone' do
-      step = build_step(phone: '555-555-0000')
+      step = build_step('555-555-0000')
 
       result = step.submit
 
@@ -47,7 +34,7 @@ describe Idv::PhoneStep do
     end
 
     it 'returns false for mock-sad phone' do
-      step = build_step(phone: '555-555-5555')
+      step = build_step('555-555-5555')
 
       errors = { phone: ['The phone number could not be verified.'] }
 

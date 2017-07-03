@@ -17,6 +17,8 @@ module Idv
       vendor_session_id
     ].freeze
 
+    attr_reader :current_user
+
     def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
       @current_user = current_user
@@ -96,7 +98,7 @@ module Idv
 
     private
 
-    attr_accessor :user_session, :current_user, :issuer
+    attr_accessor :user_session, :issuer
 
     def new_idv_session
       { params: {}, step_attempts: { financials: 0, phone: 0 } }
