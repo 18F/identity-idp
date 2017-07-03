@@ -30,7 +30,7 @@ en:
       mail_limit_reached: You have have requested too much mail in the last month.
       pattern_mismatch:
         dob: Your date of birth must be entered in as mm/dd/yyyy
-        "personal-key": >
+        personal_key: >
           Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         zipcode: 'Your zipcode must be entered in as #####-####'
