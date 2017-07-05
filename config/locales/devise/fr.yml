@@ -1,0 +1,153 @@
+---
+fr:
+  devise:
+    confirmations:
+      already_confirmed: Votre adresse courriel a déjà été confirmée. %{action}
+      confirmed: Vous avez confirmé votre adresse courriel
+      confirmed_but_must_set_password: Vous avez confirmé votre adresse courriel
+      send_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour confirmer votre adresse courriel.
+
+'
+      send_paranoid_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour la confirmation de votre adresse courriel.
+
+'
+    failure:
+      already_authenticated: ''
+      inactive: Votre compte n'est pas encore activé.
+      invalid: Adresse courriel ou mot de passe non valide.
+      last_attempt: Il vous reste un essai avant que votre compte ne soit verrouillé.
+      locked: Votre compte est maintenant verrouillé.
+      not_found_in_database: Adresse courriel ou mot de passe non valide.
+      session_limited: 'Vos authentifiants ont été utilisés dans un autre navigateur. Veuillez vous connecter de nouveau pour continuer avec ce navigateur.
+
+'
+      timeout: Votre session est expirée. Veuillez vous connecter de nouveau pour continuer.
+      unauthenticated: ''
+      unconfirmed: Vous devez confirmer votre adresse courriel avant de continuer.
+    mailer:
+      account_locked:
+        subject: Votre compte login.gov a été verrouillé
+      confirmation_instructions:
+        subject: Confirmez votre adresse courriel
+      password_updated:
+        subject: Votre mot de passe a été modifié
+      reset_password_instructions:
+        subject: Réinitialisez votre mot de passe
+    passwords:
+      choose_new_password: Choisissez un nouveau mot de passe.
+      invalid_token: Le jeton de réinitialisation de mot de passe n'est pas valide. Veuillez essayer de nouveau.
+      no_token: 'Vous ne pouvez accéder à cette page que depuis un courriel de réinitialisation de mot de passe. Si vous avez été redirigé à partir d''un courriel de réinitialisation de mot de passe, veuillez vous assurer que vous avez utilisé le lien fourni complet.
+
+'
+      send_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour réinitialiser votre mot de passe.
+
+'
+      send_paranoid_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour réinitialiser votre mot de passe.
+
+'
+      token_expired: Vous avez pris trop de temps pour réinitialiser votre mot de passe. Veuillez essayer de nouveau.
+      updated: Votre mot de passe a été modifié. Vous êtes maintenant connectée(e).
+      updated_not_active: 'Votre mot de passe a été modifié. Veuillez vous connecter avec votre nouveau mot de passe.
+
+'
+    registrations:
+      close_window: Vous pouvez fermer cette fenêtre si vous avez terminé.
+      destroy_confirm: 'La suppression de votre compte est irréversible. Toutes les données associées à votre compte seront effacées. Souhaitez-vous vraiment supprimer votre compte?
+
+'
+      destroyed: Votre compte a bien été supprimé.
+      email_and_phone_need_confirmation: 'Avant de terminer la mise-à-jour de votre compte, nous devons confirmer votre nouveau numéro et votre nouvelle adresse courriel. Veuillez suivre les instructions ci-dessous pour confirmer votre nouveau numéro, puis surveillez la réception d''un courriel envoyé par login.gov. Suivez le lien inclus dans le courriel pour confirmer votre nouvelle adresse courriel.
+
+'
+      email_update_needs_confirmation: 'Vous avez mis à jour votre compte, mais nous devons confirmer votre nouvelle adresse courriel. Surveillez la réception d''un courriel envoyé par nous et suivez le lien inscrit pour confirmer votre nouvelle adresse courriel.
+
+'
+      enabled_twofactor: Vous avez activé l'authentication à deux facteurs.
+      phone_update_needs_confirmation: 'Votre demande de mise à jour de votre numéro de téléphone a été traitée, mais nous devons d''abord confirmer votre nouveau numéro. Veuillez suivre les instructions ci-dessous. Si vous ne confirmez pas votre nouveau numéro, nous continuerons d''utiliser votre ancien numéro de téléphone.
+
+'
+      signed_up: Bienvenue! Vous avez créé un compte.
+      signed_up_but_inactive: 'Vous avez créé un compte. Cependant, nous n''avons pu vous connecter, car votre compte n''est pas encore activé.
+
+'
+      signed_up_but_locked: 'Vous avez créé un compte. Cependant, nous n''avons pu vous connecter, car votre compte est verrouillé.
+
+'
+      start:
+        accordion: Vous devrez
+        bullet_1_html: fournir votre <strong>adresse courriel</strong> et créer un <strong> mot de passe fort</strong>.
+        bullet_2_html: 'Activez <strong>l''authentication à deux facteurs</strong>. Cela permet d''ajouter un degré de sécurité à votre compte, car vous devez entrer un nouveau code envoyé à votre téléphone chaque fois que vous vous connectez.
+
+'
+        bullet_3_html: 'Fournissez <strong>de l''information de base</strong>, comme votre nom, adresse et numéro de sécurité sociale.
+
+'
+        bullet_4_html: 'Fournissez un <strong>numéro de compte bancaire</strong>, comme votre numéro de carte de crédit.
+
+'
+        bullet_5_html: 'Lorsque vous aurez terminé ce processus, nous vous donnerons une clé personnelle. <strong>Notez-la et placez-la en lieu sûr : c''est important.</strong> On vous demandera la clé personnelle chaque fois que vous apporterez des changements à votre compte.
+
+'
+        learn_more: En savoir plus sur la vérification de votre identité
+      updated: Votre compte a été mis à jour!
+    sessions:
+      already_signed_out: Vous êtes maintenant connecté(e).
+      signed_in: ''
+      signed_out: Vous êtes maintenant déconnecté(e).
+    two_factor_authentication:
+      buttons:
+        confirm_with_sms: Confirmer avec des messages texte
+        confirm_with_voice: Confirmer avec un appel vocal
+      choose_delivery_confirmation: 'Comment souhaitez-vous recevoir votre code de sécurité de confirmation pour %{phone}?
+
+'
+      choose_otp_delivery_html: 'Nous l''envoyons à %{phone} immédiatement. Les tarifs liés aux messages texte et aux données peuvent s''appliquer.
+
+'
+      contact_administrator: Veuillez communiquer avec votre administrateur système.
+      header_text: Entrez votre code de sécurité
+      invalid_otp: 'Ce code de sécurité est non valide. Vous pouvez essayer de l''entrer de nouveau ou demander un nouveau code de sécurité à utilisation unique.
+
+'
+      invalid_personal_key: Cette clé personnelle est non valide.
+      max_generic_login_attempts_reached: 'Votre compte est temporairement verrouillé.
+
+'
+      max_otp_login_attempts_reached: 'Votre compte est temporairement verrouillé, car vous avez entré le code de sécurité à utilisation unique de façon erronée à de trop nombreuses reprises.
+
+'
+      max_otp_requests_reached: NOT TRANSLATED YET
+      max_personal_key_login_attempts_reached: 'Votre compte est temporairement verrouillé, car vous avez entré le code de sécurité à utilisation unique de façon erronée à de trop nombreuses reprises.
+
+'
+      otp_delivery_preference:
+        instruction: Vous pourrez changer votre choix la prochaine fois que vous vous connecterez
+        sms: Message texte (SMS)
+        title: Comment souhaitez-vous recevoir votre code de sécurité?
+        voice: Appel téléphonique
+      otp_phone_label: Numéro de téléphone
+      otp_phone_label_info: Cellulaire ou ligne fixe est acceptable
+      otp_setup_html: "<strong>Chaque fois que vous vous connecterez,</strong> nous vous enverrons un code de sécurité à utilisation unique par message texte ou par appel téléphonique. Cela aide à protéger votre compte.\n"
+      otp_sms_disclaimer: Les tarifs liés aux messages texte et aux données peuvent s'appliquer.
+      personal_key_fallback:
+        link: Utlisez plutôt une clé personnelle
+        text_html: Vous n'avez pas accès à votre téléphone? %{link}.
+      personal_key_header_text: Entrez votre clé personnelle
+      personal_key_prompt: 'Vous pouvez utiliser cette clé personnelle une fois seulement. Si vous avez toujours besoin d''un code après votre connexion, allez à la page des réglages de votre compte pour en obtenir un nouveau.
+
+'
+      please_confirm: 'Votre numéro de téléphone a été entré. Confirmez-le en entrant le code de sécurité ci-dessous.
+
+'
+      please_try_again_html: Veuillez essayer de nouveau dans %{time_remaining}.
+      totp_fallback:
+        sms_link_text: Obtenir un code via message texte
+        text_html: 'Si vous ne pouvez utiliser votre application d''authentification maintenant, vous pouvez %{sms_link} ou %{voice_link}.
+
+'
+        voice_link_text: obtenir un code par appel téléphonique
+      totp_header_text: Entrez votre code d'application d'authentification
+      totp_info: Utilisez n'importe quelle application d'authentification pour balayer le code QR ci-dessous.
+      two_factor_setup: Ajoutez un numéro de téléphone
+      user:
+        new_otp_sent: Nous vous avons envoyé un code de sécurité à utilisation unique.

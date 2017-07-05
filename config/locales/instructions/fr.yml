@@ -1,0 +1,51 @@
+---
+fr:
+  instructions:
+    2fa:
+      authenticator:
+        accordion_header: Balayez le code avec votre appareil mobile
+        confirm_code_html: Entrez le code à partir de votre application d'authentification. Si vous avez plusieurs comptes configurés dans votre application, entrez le code correspondant à %{email} à %{app}.%{tooltip}
+        or: or
+      sms:
+        confirm_code_html: Nous l'avons envoyé par message texte à %{number}. Vous avez besoin d'un autre code? %{resend_code_link}. Les frais liés aux messages texte peuvent s'appliquer.
+        fallback_html: Si vous ne pouvez recevoir de messages texte pour le moment, vous pouvez %{link}
+      voice:
+        confirm_code_html: Nous venons de vous appeler au %{number}. Vous voulez que nous vous appelions de nouveau? %{resend_code_link}
+        fallback_html: Si vous ne pouvez recevoir d'appels pour le moment, vous pouvez %{link}
+      wrong_number_html: Vous avez entré un mauvais numéro de téléphone? %{link}
+    account:
+      reactivate:
+        begin: NOT TRANSLATED YET
+        explanation: NOT TRANSLATED YET
+        intro: NOT TRANSLATED YET
+        modal:
+          copy: NOT TRANSLATED YET
+          heading: NOT TRANSLATED YET
+        with_key: NOT TRANSLATED YET
+    forgot_password:
+      close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez réinitialisé votre mot de passe.
+    password:
+      forgot: 'Vous ne connaissez pas votre mot de passe? Réinitialisez-le après avoir confirmé votre adresse courriel.
+
+'
+      help_text: 'Plus long et inhabituel est le mot de passe, plus difficile il sera à trouver. Évitez donc d''utiliser des phrases communes. Évitez aussi de répéter des mots de passe d''autres comptes en ligne comme les comptes bancaires, les comptes courriel et les comptes de médias sociaux.
+
+'
+      help_text_header: Conseils sur la sécurité du mot de passe
+      info:
+        lead: 'Il doit avoir une longueur minimale de %{min_length} caractères et ne pas être un mot de passe couramment utilisé. C''est tout!
+
+'
+      strength:
+        i: Très faible
+        ii: Faible
+        iii: Correct
+        intro: 'Force du mot de passe : '
+        iv: Bonne
+        v: Excellente!
+    personal_key_accent: Notez-la ou imprimez-la.
+    personal_key_html: 'Il s''agit de la seule façon de récupérer l''accès à votre compte si vous perdez votre mot de passe ou votre téléphone. %{accent}
+
+'
+    registration:
+      email: Choisissez une adresse que vous souhaitez utiliser pour les communications avec le gouvernement.
