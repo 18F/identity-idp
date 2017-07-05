@@ -29,10 +29,6 @@ module Idv
       attempter.increment
     end
 
-    def vendor_validator_class
-      Idv::ProfileValidator
-    end
-
     def update_idv_session
       idv_session.profile_confirmation = true
       idv_session.vendor_session_id = vendor_validator_result.session_id

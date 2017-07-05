@@ -16,10 +16,6 @@ module Idv
       vendor_validation_passed?
     end
 
-    def vendor_validator_class
-      Idv::PhoneValidator
-    end
-
     def update_idv_session
       idv_session.phone_confirmation = true
       idv_session.address_verification_mechanism = :phone

@@ -11,7 +11,8 @@ module Idv
       new(**parsed)
     end
 
-    def initialize(success:, errors:, reasons:, session_id:, normalized_applicant:)
+    def initialize(success: nil, errors: nil, reasons: nil, session_id: nil,
+                   normalized_applicant: nil)
       @success = success
       @errors = errors
       @reasons = reasons

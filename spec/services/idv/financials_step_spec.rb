@@ -9,17 +9,22 @@ describe Idv::FinancialsStep do
   end
   let(:idv_form_params) { idv_session.params }
 
-  def build_step(vendor_params)
+  def build_step(vendor_validator_result)
     described_class.new(
       idv_form_params: idv_form_params,
       idv_session: idv_session,
-      vendor_params: vendor_params
+      vendor_validator_result: vendor_validator_result
     )
   end
 
   describe '#submit' do
     it 'returns FormResponse with success: true for mock-happy CCN' do
-      step = build_step(ccn: '12345678')
+      step = build_step(
+        Idv::VendorResult.new(
+          success: true,
+          errors: {}
+        )
+      )
 
       result = step.submit
       expect(result).to be_kind_of(FormResponse)
@@ -31,9 +36,14 @@ describe Idv::FinancialsStep do
     end
 
     it 'returns FormResponse with success: false for mock-sad CCN' do
-      step = build_step(ccn: '00000000')
-
       errors = { ccn: ['The ccn could not be verified.'] }
+
+      step = build_step(
+        Idv::VendorResult.new(
+          success: false,
+          errors: errors
+        )
+      )
 
       result = step.submit
       expect(result).to be_kind_of(FormResponse)

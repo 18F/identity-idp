@@ -1,6 +1,7 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      async_result_id
       address_verification_mechanism
       applicant
       financials_confirmation
