@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include UserSessionContext
   include VerifyProfileConcern
+  include LocaleHelper
 
   FLASH_KEYS = %w[alert error notice success warning].freeze
 
@@ -54,8 +55,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_url_options
-    active_locale = I18n.locale
-    { locale: active_locale == I18n.default_locale ? nil : active_locale }
+    { locale: locale_url_param }
   end
 
   private
