@@ -67,6 +67,14 @@ describe UserMailer, type: :mailer do
       )
       expect_email_body_to_have_help_and_contact_links
     end
+
+    context 'in a non-default locale' do
+      before { I18n.locale = :fr }
+
+      it 'links to the correct locale' do
+        expect(mail.html_part.body).to include(root_url(locale: :fr))
+      end
+    end
   end
 
   describe 'phone_changed' do
