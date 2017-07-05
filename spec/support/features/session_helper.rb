@@ -24,8 +24,8 @@ module Features
     end
 
     def fill_in_credentials_and_submit(email, password)
-      fill_in 'Email', with: email
-      fill_in 'Password', with: password
+      fill_in 'user_email', with: email
+      fill_in 'user_password', with: password
       click_button t('links.next')
     end
 
