@@ -46,11 +46,15 @@ window.LoginGov = window.LoginGov || {};
 ] %>
 
 window.LoginGov.I18n = {
+  currentLocale: function() { return this.__currentLocale || (this.__currentLocale = document.querySelector('html').lang); },
   strings: {},
-  t: function(key) { return this.strings[key]; },
+  t: function(key) { return this.strings[this.currentLocale()][key]; },
   key: function(key) { return key.replace(/[ -]/g, '_').replace(/\W/g, '').toLowerCase(); }
 };
 
-<% keys.each do |key| %>
-window.LoginGov.I18n.strings['<%= ActionController::Base.helpers.j key %>'] = '<%= ActionController::Base.helpers.j I18n.t(key) %>';
+<% I18n.available_locales.each do |locale| %>
+  window.LoginGov.I18n.strings['<%= ActionController::Base.helpers.j locale.to_s %>'] = {};
+  <% keys.each do |key| %>
+    window.LoginGov.I18n.strings['<%= ActionController::Base.helpers.j locale.to_s %>']['<%= ActionController::Base.helpers.j key %>'] = '<%= ActionController::Base.helpers.j I18n.t(key, locale: locale) %>';
+  <% end %>
 <% end %>
