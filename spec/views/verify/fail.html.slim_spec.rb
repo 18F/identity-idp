@@ -7,7 +7,7 @@ describe 'verify/fail.html.slim' do
     before do
       sp = build_stubbed(:service_provider, friendly_name: 'Awesome Application!')
       @decorated_session = ServiceProviderSessionDecorator.new(
-        sp: sp, view_context: view_context, sp_session: {}
+        sp: sp, view_context: view_context, sp_session: {}, service_provider_request: nil
       )
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end

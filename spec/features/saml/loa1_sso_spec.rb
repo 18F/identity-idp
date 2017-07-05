@@ -152,6 +152,23 @@ feature 'LOA1 Single Sign On' do
     end
   end
 
+  context 'canceling sign in after email and password' do
+    it 'returns to the branded landing page' do
+      user = create(:user, :signed_up)
+      authn_request = auth_request.create(saml_settings)
+
+      visit authn_request
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      sp_request_id = ServiceProviderRequest.last.uuid
+      sp = ServiceProvider.from_issuer('http://localhost:3000')
+      click_link t('links.cancel')
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
+    end
+  end
+
   def sign_in_and_require_viewing_personal_key(user)
     login_as(user, scope: :user, run_callbacks: false)
     Warden.on_next_request do |proxy|
