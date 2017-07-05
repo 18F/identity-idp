@@ -22,7 +22,7 @@ module TwoFactorAuthCode
       if confirmation_for_phone_change || reauthn
         account_path
       else
-        destroy_user_session_path
+        sign_out_path
       end
     end
 
