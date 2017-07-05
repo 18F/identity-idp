@@ -117,6 +117,8 @@ Rails.application.routes.draw do
     get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
     post '/sign_up/completed' => 'sign_up/completions#update'
 
+    match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
+
     delete '/users' => 'users#destroy', as: :destroy_user
 
     if FeatureManagement.enable_identity_verification?
