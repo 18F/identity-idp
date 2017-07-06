@@ -1,6 +1,6 @@
 module Idv
   class VendorResult
-    attr_reader :success, :errors, :reasons, :session_id, :normalized_applicant
+    attr_reader :success, :errors, :reasons, :session_id, :normalized_applicant, :timed_out
 
     def self.new_from_json(json)
       parsed = JSON.parse(json, symbolize_names: true)
@@ -11,17 +11,22 @@ module Idv
       new(**parsed)
     end
 
-    def initialize(success: nil, errors: nil, reasons: nil, session_id: nil,
-                   normalized_applicant: nil)
+    def initialize(success: nil, errors: {}, reasons: [], session_id: nil,
+                   normalized_applicant: nil, timed_out: nil)
       @success = success
       @errors = errors
       @reasons = reasons
       @session_id = session_id
       @normalized_applicant = normalized_applicant
+      @timed_out = timed_out
     end
 
     def success?
       success
+    end
+
+    def timed_out?
+      timed_out
     end
   end
 end

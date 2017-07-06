@@ -307,7 +307,7 @@ feature 'OpenID Connect' do
   end
 
   context 'LOA3 signup' do
-    it 'redirects back to SP', email: true do
+    it 'redirects back to SP', email: true, idv_job: true do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
       client_id = 'urn:gov:gsa:openidconnect:sp:server'

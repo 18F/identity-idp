@@ -11,6 +11,7 @@ RSpec.describe Idv::VendorResult do
       first_name: 'Greatest'
     )
   end
+  let(:timed_out) { false }
 
   subject(:vendor_result) do
     Idv::VendorResult.new(
@@ -18,13 +19,20 @@ RSpec.describe Idv::VendorResult do
       errors: errors,
       reasons: reasons,
       session_id: session_id,
-      normalized_applicant: normalized_applicant
+      normalized_applicant: normalized_applicant,
+      timed_out: timed_out
     )
   end
 
   describe '#success?' do
     it 'is the success value' do
       expect(vendor_result.success?).to eq(success)
+    end
+  end
+
+  describe '#timed_out?' do
+    it 'is the timed_out value' do
+      expect(vendor_result.timed_out?).to eq(timed_out)
     end
   end
 

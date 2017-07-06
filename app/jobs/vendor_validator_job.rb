@@ -5,7 +5,7 @@ class VendorValidatorJob < ActiveJob::Base
               vendor_session_id:)
     vendor_validator = vendor_validator_class.constantize.new(
       applicant: Proofer::Applicant.new(JSON.parse(applicant_json, symbolize_names: true)),
-      vendor: vendor,
+      vendor: vendor.to_sym,
       vendor_params: indifferent_access(vendor_params),
       vendor_session_id: vendor_session_id
     )
