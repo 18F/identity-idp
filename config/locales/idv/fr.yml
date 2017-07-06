@@ -23,10 +23,10 @@ fr:
       bad_dob: Votre date de naissance doit être une date valide.
       duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
       finance_number_length: Le nombre doit comprendre entre %{minimum} et %{maximum} chiffres.
-      hardfail: Nous sommes incapables de vérifier votre identité pour le moment.
+      hardfail: Nous sommes dans l'incapacité de vérifier votre identité pour le moment.
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       invalid_ccn: Vous devez inscrire seulement les 8 derniers chiffres du numéro de carte de crédit.
-      mail_limit_reached: Vous avez demandé trop de courriels au cours du dernier mois.
+      mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       missing_finance: Vous devez fournir un numéro de compte bancaire.
       pattern_mismatch:
         dob: 'Votre date de naissance doit être inscrite de cette façon: mm/jj/aaaa'
@@ -34,7 +34,7 @@ fr:
 
 '
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon : ###-##-####'
-        zipcode: 'Votre code zip doit être inscrit de cette façon : #####-####'
+        zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
     form:
       activate_by_mail: Activer mon compte par la poste.
       address1: Adresse 1
@@ -54,11 +54,11 @@ fr:
       phone: Numéro de téléphone
       phone_label_aside: Ligne mobile ou fixe
       previous_address_add: Inscrire votre adresse précédente
-      previous_address_html: A déménagé au cours des <strong>3 derniers mois</strong>?
+      previous_address_html: Avez-vous déménagé au cours des strong3 derniers mois/strong?
       select_financial_account: Sélectionnez un compte bancaire…
       ssn_label_html: Numéro de sécurité sociale %{tooltip}
       state: État
-      use_ccn: Fournissez un numéro de carte de crédit >
+      use_ccn: 'Fournissez un numéro de carte de crédit '
       use_financial_account: Vous n'avez pas de carte de crédit?
       zipcode: Code ZIP
     index:
@@ -82,8 +82,12 @@ fr:
         subheader: 'Nous avons besoin de l''un des numéros de compte suivants:'
       section_3:
         bullet_1: Votre nom ou celui d'un membre de votre famille
-        bullet_2_html: "<strong>Not</strong> un téléphone virtuel, comme Google Voice ou Skype\n"
-        bullet_3_html: "<strong>Not</strong> un téléphone prépayé\n"
+        bullet_2_html: 'strongNot/strong un téléphone virtuel, comme Google Voice ou Skype
+
+'
+        bullet_3_html: 'strongNot/strong un téléphone prépayé
+
+'
         header: Une ligne téléphonique à votre nom
         subheader: "Nous utilisons les informations des compagnies de téléphone pour vérifier votre identité. Le numéro de téléphone que vous nous donnez devrait: \n"
       subheader: Pour vérifier votre identité, nous vous demandons de répondre à quelques questions
@@ -104,7 +108,7 @@ fr:
 
 '
         intro_ccn_help: comment votre information sera utilisée
-        intro_ccn_html: 'Aidez-nous à vérifier votre identité en fournissant les 8 derniers chiffres de votre carte de crédit. Pour en apprendre davantage sur %{intro_help_link}.
+        intro_ccn_html: 'Aidez-nous à vérifier votre identité en fournissant les 8 derniers chiffres de votre carte de crédit. Suivez ce lien pour en apprendre davantage %{intro_help_link}.
 
 '
         no_account: Vous préférez utiliser une carte de crédit?
@@ -120,15 +124,15 @@ fr:
       phone:
         alert: Cette ligne téléphonique doit être
         in_your_name: en votre nom ou celui d'un membre de votre famille
-        intro: Nous pouvez envoyez un code de confirmation à un numéro de téléphone lié à votre identité légale seulement.
-        phone_of_record: appels téléphoniques
+        intro: Le seul numéro de téléphone auquel nous pouvons envoyer un code de confirmation est celui qui est lié à votre identité légale.
+        phone_of_record: numéro de téléphone enregistré
         prepaid: avec un contrat, et non prépayé
         same_as_2fa: 'Ce numéro de téléphone peut être le même que celui que vous utilisez pour configurer votre mot de passe à usage unique, tant et aussi longtemps qu''il respecte les critères mentionnés plus haut.
 
 '
       review:
         financial_info: Où se trouve l'information sur mon compte bancaire?
-        info_verified_html: Nous avons trouvé des enregistrements liés à votre téléphone%{phone_message}
+        info_verified_html: Nous avons trouvé des données qui correspondent à votre %{phone_message}
         intro: Vos informations vérifiées
       select_verification_with_sp: Afin de vous protéger des fraudes d'identité, vous ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne l'aurez pas activé en entrant votre code de confirmation.
       select_verification_without_sp: Afin de protéger votre compte des fraudes liées à l'identité, votre profil ne sera pas activé tant que vous n'aurez pas entré votre code de confirmation.
@@ -143,26 +147,26 @@ fr:
         success: Elle devrait arriver dans 5 à 10 jours ouvrables.
     modal:
       attempts:
-        one: Il ne vous reste qu' <strong>une tentative.</strong>
-        other: Il ne vous reste que <strong>%{count} tentatives.</strong>
+        one: Il ne vous reste qu' strongune tentative./strong
+        other: Il ne vous reste que strong%{count} tentatives./strong
       button:
         fail: OK
         warning: Essayez à nouveau
       financials:
-        fail: 'Votre compte est <strong>verrouillé pour 24 heures</strong> durant lesquelles vous ne pourrez pas y accéder. Consultez notre Centre d''aide pour plus d''information sur la vérification de votre identité.
+        fail: 'Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles vous ne pourrez pas y accéder. Consultez notre Centre d''aide pour plus d''information sur la vérification de votre identité.
 
 '
         heading: Nous ne trouvons pas de données qui correspondent à vos données financières.
         warning: Veuillez vérifier l'information que vous avez fournie.
       phone:
-        fail: 'Votre compte est <strong>verrouillé pour 24 heures</strong> au cours desquelles vous ne pourrez pas y accéder. Consultez notre Centre d''aide pour plus d''information sur la vérification de votre identité.
+        fail: 'Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles vous ne pourrez pas y accéder. Consultez notre Centre d''aide pour plus d''information sur la vérification de votre identité.
 
 '
         heading: Nous ne trouvons pas de données qui correspondent à vos informations téléphoniques.
         warning: Veuillez vérifier l'information que vous avez fournie.
       sessions:
-        fail: "Votre compte est <strong>verrouillé pour 24 heures</strong> au cours desquelles vous ne pourrez pas y accéder. \n"
-        heading: Nous ne pouvons pas trouver de données concordant avec vos informations personnelles.
+        fail: "Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles vous ne pourrez pas y accéder. \n"
+        heading: Nous ne trouvons pas de données qui correspondent à vos informations téléphoniques.
         warning: "Veuillez vérifier l'information que vous avez fournie. Un numéro de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont des erreurs communes.  \n"
     review:
       dob: Date de naissance
@@ -175,7 +179,7 @@ fr:
       complete: Vérification de votre identité complétée
       dupe: 'Erreur: un compte existe déjà'
       expectations: Ensuite, aidez-vous à vous identifier
-      fail: Nous sommes dans l'incapacité de vérifier votre identité
+      fail: Nous sommes dans l'incapacité de vérifier votre identité pour le moment
       financials: Veuillez fournir un numéro de compte bancaire
       hardfail: Nous sommes dans l'incapacité de vérifier votre identité
       intro: Aidez-nous à vous identifier

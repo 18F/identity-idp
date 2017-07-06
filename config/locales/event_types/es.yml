@@ -6,8 +6,8 @@ es:
     authenticated_at: Se ha iniciado sesión en %{service_provider}
     authenticator_disabled: La aplicación de autenticador está inhabilitada
     authenticator_enabled: Aplicación de autenticador activada
+    eastern_timestamp: "%{timestamp} (zona horaria del Este)"
     email_changed: Dirección de correo electrónico cambiada
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
-    eastern_timestamp: '%{timestamp} (zona horaria del Este)'
     usps_mail_sent: Carta enviada

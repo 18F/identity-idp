@@ -1,14 +1,14 @@
 ---
-  es:
-    sign_up:
-      buttons:
-        continue: NOT TRANSLATED YET
-        cancel: NOT TRANSLATED YET
-      cancel:
-        modal_header: NOT TRANSLATED YET
-        warning_header: NOT TRANSLATED YET
-        success: NOT TRANSLATED YET
-        warning_points: 
-          - NOT TRANSLATED YET
-      registrations:
-        create_account: Empezar
+es:
+  sign_up:
+    buttons:
+      cancel: NOT TRANSLATED YET
+      continue: NOT TRANSLATED YET
+    cancel:
+      modal_header: NOT TRANSLATED YET
+      success: NOT TRANSLATED YET
+      warning_header: NOT TRANSLATED YET
+      warning_points:
+      - NOT TRANSLATED YET
+    registrations:
+      create_account: Empezar

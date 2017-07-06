@@ -3,9 +3,9 @@ es:
   account:
     index:
       address: NOT TRANSLATED YET
-      authentication_app: NOT TRANSLATED YET
-      auth_app_enabled: NOT TRANSLATED YET
       auth_app_disabled: NOT TRANSLATED YET
+      auth_app_enabled: NOT TRANSLATED YET
+      authentication_app: NOT TRANSLATED YET
       dob: NOT TRANSLATED YET
       email: NOT TRANSLATED YET
       full_name: NOT TRANSLATED YET
@@ -15,7 +15,7 @@ es:
       previous_address: NOT TRANSLATED YET
       reactivation:
         instructions: NOT TRANSLATED YET
-        link:  NOT TRANSLATED YET
+        link: NOT TRANSLATED YET
       ssn: NOT TRANSLATED YET
       verification:
         instructions: NOT TRANSLATED YET

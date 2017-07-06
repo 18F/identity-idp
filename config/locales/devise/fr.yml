@@ -8,7 +8,7 @@ fr:
       send_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour confirmer votre adresse courriel.
 
 '
-      send_paranoid_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour la confirmation de votre adresse courriel.
+      send_paranoid_instructions: 'Vous recevrez dans quelques instants un courriel avec des instructions pour confirmer votre adresse courriel.
 
 '
     failure:
@@ -62,7 +62,7 @@ fr:
       email_update_needs_confirmation: 'Vous avez mis à jour votre compte, mais nous devons confirmer votre nouvelle adresse courriel. Surveillez la réception d''un courriel envoyé par nous et suivez le lien inscrit pour confirmer votre nouvelle adresse courriel.
 
 '
-      enabled_twofactor: Vous avez activé l'authentication à deux facteurs.
+      enabled_twofactor: Vous avez activé l'authentification à deux facteurs.
       phone_update_needs_confirmation: 'Votre demande de mise à jour de votre numéro de téléphone a été traitée, mais nous devons d''abord confirmer votre nouveau numéro. Veuillez suivre les instructions ci-dessous. Si vous ne confirmez pas votre nouveau numéro, nous continuerons d''utiliser votre ancien numéro de téléphone.
 
 '
@@ -76,7 +76,7 @@ fr:
       start:
         accordion: Vous devrez
         bullet_1_html: fournir votre <strong>adresse courriel</strong> et créer un <strong> mot de passe fort</strong>.
-        bullet_2_html: 'Activez <strong>l''authentication à deux facteurs</strong>. Cela permet d''ajouter un degré de sécurité à votre compte, car vous devez entrer un nouveau code envoyé à votre téléphone chaque fois que vous vous connectez.
+        bullet_2_html: 'Activez <strong>l''authentification à deux facteurs</strong>. Cela permet d''ajouter un degré de sécurité à votre compte, car vous devez entrer un nouveau code envoyé à votre téléphone chaque fois que vous vous connectez.
 
 '
         bullet_3_html: 'Fournissez <strong>de l''information de base</strong>, comme votre nom, adresse et numéro de sécurité sociale.
@@ -96,12 +96,12 @@ fr:
       signed_out: Vous êtes maintenant déconnecté(e).
     two_factor_authentication:
       buttons:
-        confirm_with_sms: Confirmer avec des messages texte
+        confirm_with_sms: Confirmer par SMS
         confirm_with_voice: Confirmer avec un appel vocal
       choose_delivery_confirmation: 'Comment souhaitez-vous recevoir votre code de sécurité de confirmation pour %{phone}?
 
 '
-      choose_otp_delivery_html: 'Nous l''envoyons à %{phone} immédiatement. Les tarifs liés aux messages texte et aux données peuvent s''appliquer.
+      choose_otp_delivery_html: 'Nous l''envoyons à %{phone} immédiatement. Les tarifs liés aux SMS et aux données peuvent s''appliquer.
 
 '
       contact_administrator: Veuillez communiquer avec votre administrateur système.
@@ -128,7 +128,7 @@ fr:
       otp_phone_label: Numéro de téléphone
       otp_phone_label_info: Cellulaire ou ligne fixe est acceptable
       otp_setup_html: "<strong>Chaque fois que vous vous connecterez,</strong> nous vous enverrons un code de sécurité à utilisation unique par message texte ou par appel téléphonique. Cela aide à protéger votre compte.\n"
-      otp_sms_disclaimer: Les tarifs liés aux messages texte et aux données peuvent s'appliquer.
+      otp_sms_disclaimer: Les tarifs liés aux SMS et aux données peuvent s'appliquer.
       personal_key_fallback:
         link: Utlisez plutôt une clé personnelle
         text_html: Vous n'avez pas accès à votre téléphone? %{link}.

@@ -1,8 +1,8 @@
 ---
 es:
   jobs:
+    sms_otp_sender_job:
+      message: NOT TRANSLATED YET
     voice_otp_sender_job:
       message_final: NOT TRANSLATED YET
       message_repeat: NOT TRANSLATED YET
-    sms_otp_sender_job:
-      message: NOT TRANSLATED YET

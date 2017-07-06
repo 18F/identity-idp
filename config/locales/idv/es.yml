@@ -2,19 +2,19 @@
 es:
   idv:
     buttons:
-      activate_by_phone: NOT TRANSLATED YET
       activate_by_mail: NOT TRANSLATED YET
-      continue: NOT TRANSLATED YET
+      activate_by_phone: NOT TRANSLATED YET
       cancel: NOT TRANSLATED YET
+      continue: NOT TRANSLATED YET
       help: NOT TRANSLATED YET
       mail:
-        send: NOT TRANSLATED YET
         resend: NOT TRANSLATED YET
+        send: NOT TRANSLATED YET
     cancel:
       modal_header: NOT TRANSLATED YET
       warning_header: NOT TRANSLATED YET
-      warning_points: 
-        - NOT TRANSLATED YET
+      warning_points:
+      - NOT TRANSLATED YET
     errors:
       bad_dob: NOT TRANSLATED YET
       duplicate_ssn: NOT TRANSLATED YET
@@ -22,8 +22,8 @@ es:
       hardfail: NOT TRANSLATED YET
       incorrect_password: NOT TRANSLATED YET
       invalid_ccn: NOT TRANSLATED YET
-      missing_finance: NOT TRANSLATED YET
       mail_limit_reached: NOT TRANSLATED YET
+      missing_finance: NOT TRANSLATED YET
       pattern_mismatch:
         dob: NOT TRANSLATED YET
         personal_key: NOT TRANSLATED YET
@@ -92,15 +92,17 @@ es:
       finance:
         disclaimer: NOT TRANSLATED YET
         hint: NOT TRANSLATED YET
-        intro_ccn_html: NOT TRANSLATED YET
-        intro_ccn_help: NOT TRANSLATED YET
         intro_account: NOT TRANSLATED YET
+        intro_ccn_help: NOT TRANSLATED YET
+        intro_ccn_html: NOT TRANSLATED YET
         no_account: NOT TRANSLATED YET
         no_account_info: NOT TRANSLATED YET
       hardfail: NOT TRANSLATED YET
       hardfail4: NOT TRANSLATED YET
       help_center: NOT TRANSLATED YET
       mail_sent: NOT TRANSLATED YET
+      personal_details_verified: NOT TRANSLATED YET
+      personal_key: NOT TRANSLATED YET
       phone:
         alert: NOT TRANSLATED YET
         in_your_name: NOT TRANSLATED YET
@@ -108,23 +110,21 @@ es:
         phone_of_record: NOT TRANSLATED YET
         prepaid: NOT TRANSLATED YET
         same_as_2fa: NOT TRANSLATED YET
-      personal_key: NOT TRANSLATED YET
       review:
         financial_info: NOT TRANSLATED YET
         info_verified_html: NOT TRANSLATED YET
         intro: NOT TRANSLATED YET
-      select_verification_without_sp: NOT TRANSLATED YET
       select_verification_with_sp: NOT TRANSLATED YET
+      select_verification_without_sp: NOT TRANSLATED YET
       sessions:
+        no_pii: NOT TRANSLATED YET
         pii: NOT TRANSLATED YET
         success: NOT TRANSLATED YET
-        no_pii: NOT TRANSLATED YET
       usps:
         bad_address: NOT TRANSLATED YET
         byline: NOT TRANSLATED YET
         resend: NOT TRANSLATED YET
         success: NOT TRANSLATED YET
-      personal_details_verified: NOT TRANSLATED YET
     modal:
       attempts:
         one: NOT TRANSLATED YET
@@ -160,12 +160,12 @@ es:
       hardfail: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET
       mail:
-        verify: NOT TRANSLATED YET
         resend: NOT TRANSLATED YET
+        verify: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       review: NOT TRANSLATED YET
       select_verification: NOT TRANSLATED YET
-      sessions: NOT TRANSLATED YET
       session:
         phone: NOT TRANSLATED YET
         review: NOT TRANSLATED YET
+      sessions: NOT TRANSLATED YET

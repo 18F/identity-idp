@@ -6,8 +6,8 @@ en:
     authenticated_at: Signed in at %{service_provider}
     authenticator_disabled: Authenticator app disabled
     authenticator_enabled: Authenticator app enabled
+    eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed
     phone_changed: Phone number changed
     phone_confirmed: Phone confirmed
-    eastern_timestamp: '%{timestamp} (Eastern)'
     usps_mail_sent: Letter sent

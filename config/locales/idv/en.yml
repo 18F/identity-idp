@@ -2,23 +2,23 @@
 en:
   idv:
     buttons:
-      activate_by_phone: Activate by phone
       activate_by_mail: Activate by mail
-      continue: Continue identity verification
+      activate_by_phone: Activate by phone
       cancel: Cancel and return to your profile
+      continue: Continue identity verification
       help: Continue to Help Center
       mail:
-        send: Send a letter
         resend: Send another letter
+        send: Send a letter
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
       warning_points:
-        - We won’t be able to verify your identity
-        - We won't keep a record of your name, address, birth date, or Social Security number
-        - You won't be able to securely access your information using login.gov
-        - You’ll still have a login.gov account for your email address
-        - You can manage that account on your profile page
+      - We won’t be able to verify your identity
+      - We won't keep a record of your name, address, birth date, or Social Security number
+      - You won't be able to securely access your information using login.gov
+      - You’ll still have a login.gov account for your email address
+      - You can manage that account on your profile page
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
@@ -26,12 +26,13 @@ en:
       hardfail: We were unable to verify your identity at this time.
       incorrect_password: The password you entered is not correct.
       invalid_ccn: Credit card number should be only last 8 digits.
-      missing_finance: You must provide a financial account number.
       mail_limit_reached: You have have requested too much mail in the last month.
+      missing_finance: You must provide a financial account number.
       pattern_mismatch:
         dob: Your date of birth must be entered in as mm/dd/yyyy
-        personal_key: >
-          Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456
+        personal_key: 'Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456
+
+'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         zipcode: 'Your zipcode must be entered in as #####-####'
     form:
@@ -62,9 +63,9 @@ en:
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
-      paragraph_1: >
-        We have partnered with a trusted third party company to verify this
-        information and your identity.
+      paragraph_1: 'We have partnered with a trusted third party company to verify this information and your identity.
+
+'
       prompt: Do you have all of this information available right now?
       section_1:
         bullet_1: Full name
@@ -78,90 +79,78 @@ en:
         bullet_2: Auto loan account number
         bullet_3: Mortgage loan account number
         bullet_4: Home equity line of credit account number
-        footnote: >
-          You will never be charged any money and are not sharing any account balances or other
-          financial information with us. We only check the account number to help verify you.
+        footnote: 'You will never be charged any money and are not sharing any account balances or other financial information with us. We only check the account number to help verify you.
+
+'
         header: Financial information
         subheader: 'We need one of the following financial account numbers:'
       section_3:
         bullet_1: Be in your name or the name of someone in your household
-        bullet_2_html: >
-          <strong>Not</strong> be a virtual phone, like Google Voice or Skype
-        bullet_3_html: >
-          <strong>Not</strong> be a pay-as-you-go phone
+        bullet_2_html: "<strong>Not</strong> be a virtual phone, like Google Voice or Skype\n"
+        bullet_3_html: "<strong>Not</strong> be a pay-as-you-go phone\n"
         header: Phone line in your name
-        subheader: >
-          We use telephone company records to verify your identity. The phone
-          number you give us should:
+        subheader: 'We use telephone company records to verify your identity. The phone number you give us should:
+
+'
       subheader: To verify your identity, we’ll ask you to answer a few questions
     messages:
-      activated_html: >
-        Your identity has been verified. If you need to change your verified
-        information, please %{link}.
+      activated_html: 'Your identity has been verified. If you need to change your verified information, please %{link}.
+
+'
       activated_link: contact us
-      cancel: >
-        To continue, %{app} needs to verify your identity. We need to collect
-        some basic personal information as well as some financial information from you
-        to complete this process. If you don’t have the information we need at this time
-        you can continue later.
+      cancel: 'To continue, %{app} needs to verify your identity. We need to collect some basic personal information as well as some financial information from you to complete this process. If you don’t have the information we need at this time you can continue later.
+
+'
       confirm: You have encrypted your verified data
-      dupe_ssn1: >
-        If you are getting this error, you may have already created and verified
-        an account, but with a different email address.
+      dupe_ssn1: 'If you are getting this error, you may have already created and verified an account, but with a different email address.
+
+'
       dupe_ssn2_html: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
       finance:
-        disclaimer: By continuing, you agree to let %{app_name} compare the account
-          information you provide with third-party sources in order to verify your
-          identity.
-        hint: "You can use Mastercard, Visa, Diner's Club, or JCB."
-        intro_ccn_html: >
-          Help us verify your identity by providing the last 8 digits of a
-          credit card. Learn more about %{intro_help_link}.
+        disclaimer: By continuing, you agree to let %{app_name} compare the account information you provide with third-party sources in order to verify your identity.
+        hint: You can use Mastercard, Visa, Diner's Club, or JCB.
+        intro_account: 'Help us verify your identity by providing an auto loan, mortgage, or home equity loan number.
+
+'
         intro_ccn_help: how your information will be used
-        intro_account: >
-          Help us verify your identity by providing an auto loan, mortgage, or home equity loan
-          number.
+        intro_ccn_html: 'Help us verify your identity by providing the last 8 digits of a credit card. Learn more about %{intro_help_link}.
+
+'
         no_account: Want to use a credit card instead?
-        no_account_info: Help us verify your identity by providing the last 8 digits of your
-          credit card.
+        no_account_info: Help us verify your identity by providing the last 8 digits of your credit card.
       hardfail: We can’t verify your identity right now.
       hardfail4: You can also go to %{sp} for more help in accessing services.
       help_center: Visit our Help Center to learn more about verifying your account.
       mail_sent: Your letter is on its way
+      personal_details_verified: Personal details verified!
+      personal_key: 'This is your new personal key. Write it down and keep it in a safe place. You will need it if you ever lose your password.
+
+'
       phone:
         alert: This phone line must be
         in_your_name: in your name or a family member's name
-        intro: We can only send a confirmation code to a telephone number linked to your
-          legal identity.
+        intro: We can only send a confirmation code to a telephone number linked to your legal identity.
         phone_of_record: Phone of record
         prepaid: on a contract, not prepaid
-        same_as_2fa: >
-          This phone number can be the same one you used to set up your one-time
-          password as long as it meets the criteria above.
-      personal_key: >
-        This is your new personal key. Write it down and keep it in a safe
-        place. You will need it if you ever lose your password.
+        same_as_2fa: 'This phone number can be the same one you used to set up your one-time password as long as it meets the criteria above.
+
+'
       review:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
-      select_verification_without_sp:
-        In order to protect your account from identity fraud, your profile
-        will not be activated until you enter a confirmation code.
-      select_verification_with_sp: To protect you from identity fraud, you can't use your
-        account at %{sp_name} until you activate it by entering a confirmation code.
+      select_verification_with_sp: To protect you from identity fraud, you can't use your account at %{sp_name} until you activate it by entering a confirmation code.
+      select_verification_without_sp: In order to protect your account from identity fraud, your profile will not be activated until you enter a confirmation code.
       sessions:
+        no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
         success: We found records matching your %{pii_message}
-        no_pii: Do not use real personal information (demo purposes only)
       usps:
         bad_address: I can't get mail at this address
-        byline: We will mail a letter with a confirmation code to your verified
-          address on file.
+        byline: We will mail a letter with a confirmation code to your verified address on file.
         resend: Send me another letter.
         success: It should arrive in 5 to 10 business days.
-      personal_details_verified: Personal details verified!
     modal:
       attempts:
         one: You have <strong>1 attempt remaining.</strong>
@@ -170,24 +159,25 @@ en:
         fail: Okay
         warning: Try again
       financials:
+        fail: 'Your account is <strong>locked for 24 hours</strong> before you can try to verify again. Check our Help section for more information about identity verification.
+
+'
         heading: We could not find records matching your financial information.
-        fail: >
-          Your account is <strong>locked for 24 hours</strong> before you can try to verify again.
-          Check our Help section for more information about identity verification.
         warning: Please check the information you entered.
       phone:
+        fail: 'Your account is <strong>locked for 24 hours</strong> before you can try to verify again. Check our Help section for more information about identity verification.
+
+'
         heading: We could not find records matching your phone information.
-        fail: >
-          Your account is <strong>locked for 24 hours</strong> before you can try to verify again.
-          Check our Help section for more information about identity verification.
         warning: Please check the information you entered.
       sessions:
+        fail: 'Your account is <strong>locked for 24 hours</strong> before you can try to verify again.
+
+'
         heading: We could not find records matching your personal information.
-        fail: >
-          Your account is <strong>locked for 24 hours</strong> before you can try to verify again.
-        warning: >
-          Please check the information you entered. Common mistakes are an incorrect Social
-          Security Number, ZIP Code, or date of birth.
+        warning: 'Please check the information you entered. Common mistakes are an incorrect Social Security Number, ZIP Code, or date of birth.
+
+'
     review:
       dob: Date of birth
       full_name: Full name
@@ -204,12 +194,12 @@ en:
       hardfail: We were unable to verify your identity
       intro: Help us identify you
       mail:
-        verify: Want a letter?
         resend: Want another letter?
+        verify: Want a letter?
       phone: Phone number of record
       review: Review and submit
       select_verification: Activate your account
-      sessions: First, tell us about yourself
       session:
         phone: Get a code by telephone
         review: Encrypt your verified data by entering your password
+      sessions: First, tell us about yourself

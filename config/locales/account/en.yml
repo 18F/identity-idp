@@ -3,9 +3,9 @@ en:
   account:
     index:
       address: Current address
-      authentication_app: Authentication app
-      auth_app_enabled: enabled
       auth_app_disabled: not enabled
+      auth_app_enabled: enabled
+      authentication_app: Authentication app
       dob: Date of birth
       email: Email address
       full_name: Full name
