@@ -82,10 +82,12 @@ module Verify
       end
     end
 
+    # rubocop:disable Rails/OutputSafety
     def html_paragraph(text:, css_class: '')
       html = helper.safe_join([text.html_safe])
       helper.content_tag(:p, html, class: css_class)
     end
+    # rubocop:enable Rails/OutputSafety
 
     def helper
       ActionController::Base.helpers

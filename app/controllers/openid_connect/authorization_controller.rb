@@ -4,27 +4,19 @@ module OpenidConnect
     include VerifyProfileConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
+    before_action :validate_authorize_form, only: [:index]
     before_action :store_request, only: [:index]
     before_action :add_sp_metadata_to_session, only: [:index]
     before_action :apply_secure_headers_override, only: [:index]
 
-    # rubocop:disable Metrics/AbcSize
     def index
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
 
-      result = @authorize_form.submit(current_user, session.id)
-
-      track_authorize_analytics(result)
-
-      if (redirect_uri = result.extra[:redirect_uri])
-        redirect_to redirect_uri
-        delete_branded_experience
-      else
-        render :error
-      end
+      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+      redirect_to @authorize_form.success_redirect_uri
+      delete_branded_experience
     end
-    # rubocop:enable Metrics/AbcSize
 
     private
 
@@ -70,11 +62,23 @@ module OpenidConnect
       params.permit(OpenidConnectAuthorizeForm::ATTRS)
     end
 
+    def validate_authorize_form
+      result = @authorize_form.submit
+      track_authorize_analytics(result)
+
+      return if result.success?
+
+      if (redirect_uri = result.extra[:redirect_uri])
+        redirect_to redirect_uri
+      else
+        render :error
+      end
+    end
+
     def store_request
       return if sp_session[:request_id]
 
       client_id = @authorize_form.client_id
-      return if client_id.blank?
 
       @request_id = SecureRandom.uuid
       ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|

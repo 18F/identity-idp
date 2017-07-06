@@ -31,7 +31,7 @@ module Rack
     # (blacklist & throttles are skipped)
     unless Rails.env.production?
       safelist('allow from localhost') do |req|
-        '127.0.0.1' == req.remote_ip || '::1' == req.remote_ip
+        req.remote_ip == '127.0.0.1' || req.remote_ip == '::1'
       end
     end
 
@@ -80,24 +80,6 @@ module Rack
         period: (Figaro.env.logins_per_ip_period.to_i**level).seconds
       ) do |req|
         req.remote_ip if req.path == '/' && req.post?
-      end
-    end
-
-    # After maxretry OTP requests in findtime minutes,
-    # block all requests from that user for bantime minutes.
-    blocklist('OTP delivery') do |req|
-      # `filter` returns truthy value if request fails, or if it's to a
-      # previously banned phone_number so the request is blocked
-      phone_number = req.env['warden'].user&.phone
-
-      Allow2Ban.filter(
-        "otp-#{phone_number}",
-        maxretry: Figaro.env.otp_delivery_blocklist_maxretry.to_i,
-        findtime: Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes,
-        bantime: Figaro.env.otp_delivery_blocklist_bantime.to_i.minutes
-      ) do
-        # The count for the phone_number is incremented if the return value is truthy
-        req.get? && req.path == '/otp/send'
       end
     end
 

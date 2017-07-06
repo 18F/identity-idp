@@ -162,7 +162,7 @@ module Features
 
       click_on button_text, class: 'personal-key-continue'
 
-      fill_in 'personal-key', with: code_words.join('-').downcase + extra_characters_get_ignored
+      fill_in 'personal_key', with: code_words.join('-').downcase + extra_characters_get_ignored
 
       click_on button_text, class: 'personal-key-confirm'
     end

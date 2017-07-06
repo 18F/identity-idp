@@ -39,7 +39,7 @@ describe UspsExporter do
   end
   let(:file_encryptor) do
     FileEncryptor.new(
-      Rails.root.join('keys/equifax_gpg.pub.bin'),
+      Rails.root.join('keys', 'equifax_gpg.pub.bin'),
       Figaro.env.equifax_gpg_email
     )
   end

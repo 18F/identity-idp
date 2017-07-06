@@ -472,6 +472,27 @@ feature 'OpenID Connect' do
     end
   end
 
+  context 'canceling sign in with active identities present' do
+    it 'signs the user out and returns to the home page' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      user = create(:user, :signed_up)
+
+      visit_idp_from_sp_with_loa1
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
+      visit destroy_user_session_url
+
+      visit_idp_from_sp_with_loa1
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_link t('links.cancel')
+
+      expect(current_url).to eq root_url
+    end
+  end
+
   def visit_idp_from_sp_with_loa1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex

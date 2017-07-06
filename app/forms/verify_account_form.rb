@@ -35,12 +35,14 @@ class VerifyAccountForm
   end
 
   def validate_otp
-    return if valid_otp?
+    return if otp.blank? || valid_otp?
     errors.add :otp, :confirmation_code_incorrect
   end
 
   def valid_otp?
-    ActiveSupport::SecurityUtils.secure_compare(otp, pii_attributes.otp.to_s)
+    otp.present? && ActiveSupport::SecurityUtils.secure_compare(
+      Base32::Crockford.normalize(otp), Base32::Crockford.normalize(pii_attributes.otp.to_s)
+    )
   end
 
   def reset_sensitive_fields

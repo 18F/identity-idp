@@ -108,6 +108,7 @@ es:
       max_otp_login_attempts_reached:
         Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.
+      max_otp_requests_reached: NOT TRANSLATED YET
       max_personal_key_login_attempts_reached:
         Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
         de forma incorrecta demasiadas veces.

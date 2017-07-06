@@ -2,6 +2,7 @@ include ActionView::Helpers::DateHelper
 
 class UserDecorator
   MAX_RECENT_EVENTS = 5
+  DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
   def initialize(user)
     @user = user
@@ -19,7 +20,7 @@ class UserDecorator
   end
 
   def lockout_time_remaining
-    (Devise.direct_otp_valid_for - (Time.zone.now - user.second_factor_locked_at)).to_i
+    (lockout_period - (Time.zone.now - user.second_factor_locked_at)).to_i
   end
 
   def confirmation_period_expired_error
@@ -98,12 +99,12 @@ class UserDecorator
     qrcode.as_png(size: 280).to_data_url
   end
 
-  def blocked_from_entering_2fa_code?
-    user.second_factor_locked_at.present? && !blocked_from_2fa_period_expired?
+  def locked_out?
+    user.second_factor_locked_at.present? && !lockout_period_expired?
   end
 
-  def no_longer_blocked_from_entering_2fa_code?
-    user.second_factor_locked_at.present? && blocked_from_2fa_period_expired?
+  def no_longer_locked_out?
+    user.second_factor_locked_at.present? && lockout_period_expired?
   end
 
   def should_acknowledge_personal_key?(session)
@@ -136,7 +137,16 @@ class UserDecorator
     "***-***-#{number[-4..-1]}"
   end
 
-  def blocked_from_2fa_period_expired?
-    (Time.zone.now - user.second_factor_locked_at) > Devise.direct_otp_valid_for
+  def lockout_period
+    return DEFAULT_LOCKOUT_PERIOD if lockout_period_config.blank?
+    lockout_period_config.to_i.minutes
+  end
+
+  def lockout_period_config
+    @config ||= Figaro.env.lockout_period_in_minutes
+  end
+
+  def lockout_period_expired?
+    (Time.zone.now - user.second_factor_locked_at) > lockout_period
   end
 end

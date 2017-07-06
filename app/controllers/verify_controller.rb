@@ -1,5 +1,6 @@
 class VerifyController < ApplicationController
   include IdvSession
+  include AccountRecoveryConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_needed, only: %i[cancel fail]
@@ -28,12 +29,9 @@ class VerifyController < ApplicationController
   private
 
   def profile_needs_reactivation?
-    return unless password_reset_profile && user_session[:acknowledge_personal_key] == true
-    redirect_to manage_reactivate_account_url
-  end
-
-  def password_reset_profile
-    current_user.decorate.password_reset_profile
+    return unless reactivate_account_session.started?
+    confirm_password_reset_profile
+    redirect_to reactivate_account_url
   end
 
   def active_profile?

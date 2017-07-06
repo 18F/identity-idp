@@ -384,6 +384,8 @@ feature 'IdV session' do
     end
 
     scenario 'continue phone OTP verification after cancel' do
+      allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
+
       different_phone = '555-555-9876'
       user = sign_in_live_with_2fa
       visit verify_session_path

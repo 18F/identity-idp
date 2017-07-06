@@ -22,11 +22,8 @@ en:
         labels:
           password: New password
       show: Show password
-    reactivate_profile:
-      instructions: Provide the information below to reactivate your account.
-      submit: Reactivate profile
-      title: Reactivate profile
     personal_key:
+      alternative: Don't have your personal key?
       title: Enter your personal key
       instructions: Please confirm you have a copy of your personal key by entering it below.
       confirmation_label: Personal key

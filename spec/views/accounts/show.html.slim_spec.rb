@@ -93,7 +93,7 @@ describe 'accounts/show.html.slim' do
       render
 
       expect(rendered).to have_link(t('account.index.reactivation.link'),
-                                    href: manage_reactivate_account_path)
+                                    href: reactivate_account_path)
     end
   end
 

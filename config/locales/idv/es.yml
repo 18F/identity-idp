@@ -13,7 +13,8 @@ es:
     cancel:
       modal_header: NOT TRANSLATED YET
       warning_header: NOT TRANSLATED YET
-      warning_points: NOT TRANSLATED YET
+      warning_points: 
+        - NOT TRANSLATED YET
     errors:
       bad_dob: NOT TRANSLATED YET
       duplicate_ssn: NOT TRANSLATED YET
