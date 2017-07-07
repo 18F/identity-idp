@@ -34,6 +34,14 @@ RSpec.describe 'I18n' do
 
         expect(bad_keys).to be_empty
       end
+
+      it 'has only has XML-safe identifiers (keys start with a letter)' do
+        keys = hash_keys(YAML.load_file(full_path))
+
+        bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
+
+        expect(bad_keys).to be_empty
+      end
     end
   end
 

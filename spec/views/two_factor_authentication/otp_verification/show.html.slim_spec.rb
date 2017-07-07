@@ -58,7 +58,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       )
 
       help_text = t(
-        "instructions.2fa.#{presenter_data[:otp_delivery_preference]}.confirm_code_html",
+        "instructions.mfa.#{presenter_data[:otp_delivery_preference]}.confirm_code_html",
         number: "<strong>#{presenter_data[:phone_number]}</strong>",
         resend_code_link: code_link
       )
@@ -206,7 +206,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to include(
-          t("instructions.2fa.#{otp_delivery_preference}.fallback_html", link: expected_link)
+          t("instructions.mfa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
@@ -224,7 +224,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).not_to include(
-          t('instructions.2fa.voice.fallback_html', link: unexpected_link)
+          t('instructions.mfa.voice.fallback_html', link: unexpected_link)
         )
       end
     end
@@ -270,7 +270,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to include(
-          t("instructions.2fa.#{otp_delivery_preference}.fallback_html", link: expected_link)
+          t("instructions.mfa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
@@ -288,7 +288,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).not_to include(
-          t('instructions.2fa.sms.fallback_html', link: unexpected_link)
+          t('instructions.mfa.sms.fallback_html', link: unexpected_link)
         )
       end
     end
