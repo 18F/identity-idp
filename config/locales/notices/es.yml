@@ -4,9 +4,7 @@ es:
     account_reactivation: NOT TRANSLATED YET
     dap_html: NOT TRANSLATED YET
     forgot_password:
-      first_paragraph_end: 'NOT TRANSLATED YET
-
-'
+      first_paragraph_end: NOT TRANSLATED YET
       first_paragraph_start: NOT TRANSLATED YET
       no_email_sent_explanation_start: NOT TRANSLATED YET
       resend_email_success: NOT TRANSLATED YET

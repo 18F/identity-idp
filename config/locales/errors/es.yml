@@ -4,25 +4,26 @@ es:
     confirm_password_incorrect: La contraseña proporcionada es incorrecta.
     invalid_authenticity_token: Huy! Algo salió mal. Inicia sesión de nuevo.
     invalid_totp: Se ha introducido un código no válido. Vuelve a intentarlo.
-    max_password_attempts_reached: >
-      Cerramos la sesión porque no proporcionó su contraseña correcta. Si
-      olvidó su contraseña, haga clic en "¿Olvidó su contraseña?" enlace abajo.
+    max_password_attempts_reached: Cerramos la sesión porque no proporcionó su contraseña
+      correcta. Si olvidó su contraseña, haga clic en "¿Olvidó su contraseña?" enlace
+      abajo.
     messages:
       already_confirmed: Ya está confirmado, por favor intenta iniciar sesión.
       blank: Por favor, rellenar este campo.
       confirmation_code_incorrect: NOT TRANSLATED YET
-      confirmation_invalid_token:
-        El enlace de confirmación en el que ha hecho clic ya no es válido. Esto puede haber
-        sido causado al hacer clic en un enlace antiguo de su correo electrónico, o puede ser que ya haya
-        confirmado su cuenta.
-      confirmation_period_expired:
-        Has tardado más de %{period} para confirmar su dirección de correo electrónico.
-        Por favor haga clic en "Reenviar instrucciones de confirmación".
+      confirmation_invalid_token: El enlace de confirmación en el que ha hecho clic
+        ya no es válido. Esto puede haber sido causado al hacer clic en un enlace
+        antiguo de su correo electrónico, o puede ser que ya haya confirmado su cuenta.
+      confirmation_period_expired: Has tardado más de %{period} para confirmar su
+        dirección de correo electrónico. Por favor haga clic en "Reenviar instrucciones
+        de confirmación".
       expired: Ha caducado, por favor solicite uno nuevo
       format_mismatch: Por favor, coincidir con el formato solicitado.
-      improbable_phone: El número de teléfono no es válido. Asegúrese de ingresar un número de teléfono de 10 dígitos.
+      improbable_phone: El número de teléfono no es válido. Asegúrese de ingresar
+        un número de teléfono de 10 dígitos.
       missing_field: Por favor, rellenar este campo.
-      no_password_reset_profile: Ningún perfil ha sido desactivado recientemente por un restablecimiento de contraseña.
+      no_password_reset_profile: Ningún perfil ha sido desactivado recientemente por
+        un restablecimiento de contraseña.
       no_pending_profile: Ningún perfil está esperando verificación
       not_found: no encontrado
       not_locked: no estaba bloqueado

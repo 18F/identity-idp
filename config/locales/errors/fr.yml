@@ -12,18 +12,23 @@ fr:
       already_confirmed: a déjà été confirmé, veuillez essayer de vous connecter
       blank: Veuillez remplir ce champ.
       confirmation_code_incorrect: Code non valide. L'avez-vous inscrit correctement?
-      confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré ou vous avez déjà confirmé votre compte.
-      confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer sur « Envoyer les instructions de confirmation de nouveau » pour en obtenir un autre.
+      confirmation_invalid_token: Lien de confirmation non valide. Le lien est expiré
+        ou vous avez déjà confirmé votre compte.
+      confirmation_period_expired: Lien de confirmation expiré. Vous pouvez cliquer
+        sur « Envoyer les instructions de confirmation de nouveau » pour en obtenir
+        un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
-      improbable_phone: Numéro de téléphone non valide. Veuillez vous assurer d'entrer un numéro de téléphone à 10 chiffres.
+      improbable_phone: Numéro de téléphone non valide. Veuillez vous assurer d'entrer
+        un numéro de téléphone à 10 chiffres.
       missing_field: Veuillez remplir ce champ.
-      no_password_reset_profile: Aucun profil récemment désactivé en raison d'une réinitialisation de mot de passe
+      no_password_reset_profile: Aucun profil récemment désactivé en raison d'une
+        réinitialisation de mot de passe
       no_pending_profile: Aucun profil en attente de vérification
       not_found: introuvable
       not_locked: n'a pas été verrouillé
       not_saved:
-        one: "1 erreur a interdit la sauvegarde de cette %{resource} :"
+        one: '1 erreur a interdit la sauvegarde de cette %{resource} :'
         other: "%{count} des erreurs ont empêché la sauvegarde de cette %{resource} :"
       otp_incorrect: Code non valide. L'avez-vous inscrit correctement?
       password_incorrect: Mot de passe incorrect

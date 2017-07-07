@@ -5,7 +5,7 @@ es:
       default_message: 'Por favor revise los siguientes problemas:'
     'no': 'No'
     required:
-      html: '<abbr title="required" class="red display-none">*</abbr> '
+      html: <abbr title="required" class="red display-none">*</abbr>
       mark: "*"
       text: Este campo es requerido
-    'yes': 'Sí'
+    'yes': Sí

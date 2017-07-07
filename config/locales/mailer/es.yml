@@ -4,34 +4,31 @@ es:
     about: Sobre %{app}
     confirmation_instructions:
       first_sentence:
-        confirmed: >
-          Para finalizar la actualización de tu cuenta de %{app}, debe confirmar dirección de
-          correo electrónico dentro de %{confirmation_period} de recibir este mensaje.
-        reset_requested: >
-          Su cuenta de %{app} ha sido restablecida por un representante de soporte técnico.
-          Para continuar, debe confirmar su dirección de correo electrónico.
-        unconfirmed: >
-          Para continuar creando su cuenta de %{app}, debe confirmar su dirección de
-          correo electrónico dentro de %{confirmation_period} de recibir este mensaje.
+        confirmed: Para finalizar la actualización de tu cuenta de %{app}, debe confirmar
+          dirección de correo electrónico dentro de %{confirmation_period} de recibir
+          este mensaje.
+        reset_requested: Su cuenta de %{app} ha sido restablecida por un representante
+          de soporte técnico. Para continuar, debe confirmar su dirección de correo
+          electrónico.
+        unconfirmed: Para continuar creando su cuenta de %{app}, debe confirmar su
+          dirección de correo electrónico dentro de %{confirmation_period} de recibir
+          este mensaje.
       footer: Tome en cuenta que este enlace expira en %{período de confirmación}.
-      header: >
-        %{intro} Para confirmar su dirección de correo electrónico, haga clic en el enlace abajo
-        o puede copiar y pegar el enlace completo en su navegador.
+      header: "%{intro} Para confirmar su dirección de correo electrónico, haga clic
+        en el enlace abajo o puede copiar y pegar el enlace completo en su navegador."
       link_text: Confirmar esta dirección de correo electrónico
     email_change_notice:
       subject: Cambiar su direccion de correo electronico
     email_reuse_notice:
       subject: Confirmar su dirección de correo electrónico
-    help: >
-      Para obtener más ayuda, póngase en contacto con el centro de contacto de clientes de %{app} a través
-      del formulario web en %{link}.
+    help: Para obtener más ayuda, póngase en contacto con el centro de contacto de
+      clientes de %{app} a través del formulario web en %{link}.
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Política de privacidad
     reset_password:
-      footer: >
-        Tome en cuenta que este enlace caduca en %{expires} horas.
-      header: >
-        Ha solicitado que restablezca la contraseña de su cuenta. Para confirmar
-        su solicitud, haga clic en el enlace abajo o puede copiar y pegar el enlace completo en su navegador.
+      footer: Tome en cuenta que este enlace caduca en %{expires} horas.
+      header: Ha solicitado que restablezca la contraseña de su cuenta. Para confirmar
+        su solicitud, haga clic en el enlace abajo o puede copiar y pegar el enlace
+        completo en su navegador.
       link_text: Restablecer su contraseña
     sent_from: Enviado desde %{app}

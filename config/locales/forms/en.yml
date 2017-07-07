@@ -25,15 +25,15 @@ en:
     personal_key:
       alternative: Don't have your personal key?
       confirmation_label: Personal key
-      instructions: Please confirm you have a copy of your personal key by entering it below.
+      instructions: Please confirm you have a copy of your personal key by entering
+        it below.
       title: Enter your personal key
     registration:
       labels:
         email: Email address
     totp_setup:
-      totp_intro_html: 'When you sign in, you can get your security code from an authentication app. %{link}
-
-'
+      totp_intro_html: When you sign in, you can get your security code from an authentication
+        app. %{link}
       totp_step_1: Open your authentication app
       totp_step_2: Enter this key in the app
       totp_step_3: Enter the code from the app

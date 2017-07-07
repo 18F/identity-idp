@@ -7,7 +7,7 @@ en:
       generated_on_html: Generated on %{date}
       get_another: Get another key
       header: Your personal key
-      help_text: |
+      help_text: |-
         To protect your account, you need a password and access to your telephone or authentication application at sign-in. If you can’t use your phone or app, you can sign in with your personal key instead.
 
         For your privacy and security, login.gov does not store your password and personal key. Only you know them. Only you can access or share your personal information.

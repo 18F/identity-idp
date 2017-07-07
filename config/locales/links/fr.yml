@@ -19,7 +19,8 @@ fr:
     phone_confirmation:
       auth_app_fallback_html: " ou %{link}."
       fallback_to_sms_html: Envoyez-moi plutôt un SMS contenant le code
-      fallback_to_voice_html: Si vous ne pouvez recevoir de message texte pour le moment, vous pouvez obtenir un code de sécurité par %{link}
+      fallback_to_voice_html: Si vous ne pouvez recevoir de message texte pour le
+        moment, vous pouvez obtenir un code de sécurité par %{link}
     privacy_policy: Confidentialité et sécurité
     remove: Retirer
     resend: Envoyer le courriel de nouveau

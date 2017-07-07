@@ -10,7 +10,9 @@ fr:
       warning_header: Si vous annulez maintenant
       warning_points:
       - Vous n'aurez pas de compte login.gov
-      - Nous ne conserverons pas de dossier contenant votre adresse courriel, votre mot de passe et votre numéro de téléphone
-      - Vous ne serez pas en mesure d'accéder à votre information de façon sécuritaire en utilisant login.gov
+      - Nous ne conserverons pas de dossier contenant votre adresse courriel, votre
+        mot de passe et votre numéro de téléphone
+      - Vous ne serez pas en mesure d'accéder à votre information de façon sécuritaire
+        en utilisant login.gov
     registrations:
       create_account: Créer un compte

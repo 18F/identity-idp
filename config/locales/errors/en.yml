@@ -4,23 +4,23 @@ en:
     confirm_password_incorrect: Incorrect password.
     invalid_authenticity_token: Oops, something went wrong. Please sign in again.
     invalid_totp: Invalid code. Please try again.
-    max_password_attempts_reached: >
-      You've entered too many incorrect passwords. You can reset your password using the "Forgot your password?" link.
+    max_password_attempts_reached: You've entered too many incorrect passwords. You
+      can reset your password using the "Forgot your password?" link.
     messages:
       already_confirmed: was already confirmed, please try signing in
       blank: Please fill in this field.
       confirmation_code_incorrect: Incorrect code. Did you type it in correctly?
-      confirmation_invalid_token: >
-        Invalid confirmation link. Either the link expired or you
-        already confirmed your account.
-      confirmation_period_expired: >
-        Expired confirmation link.
-        You can click "Resend confirmation instructions" to get another one.
+      confirmation_invalid_token: Invalid confirmation link. Either the link expired
+        or you already confirmed your account.
+      confirmation_period_expired: Expired confirmation link. You can click "Resend
+        confirmation instructions" to get another one.
       expired: has expired, please request a new one
       format_mismatch: Please match the requested format.
-      improbable_phone: Invalid phone number. Please make sure you enter a 10-digit phone number.
+      improbable_phone: Invalid phone number. Please make sure you enter a 10-digit
+        phone number.
       missing_field: Please fill in this field.
-      no_password_reset_profile: No profile has been recently deactivated due to a password reset
+      no_password_reset_profile: No profile has been recently deactivated due to a
+        password reset
       no_pending_profile: No profile is waiting for verification
       not_found: not found
       not_locked: was not locked

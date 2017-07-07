@@ -1,9 +1,7 @@
 ---
 es:
   help_text:
-    change_factor: 'NOT TRANSLATED YET
-
-'
+    change_factor: NOT TRANSLATED YET
     requested_attributes:
       address: NOT TRANSLATED YET
       birthdate: NOT TRANSLATED YET
