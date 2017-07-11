@@ -85,6 +85,7 @@ feature 'LOA3 Single Sign On' do
       click_on t('idv.buttons.mail.send')
 
       expect(current_path).to eq verify_review_path
+      expect(page).to_not have_content t('idv.messages.phone.phone_of_record')
 
       fill_in :user_password, with: user_password
 
