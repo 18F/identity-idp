@@ -4,6 +4,24 @@ feature 'LOA3 Single Sign On' do
   include SamlAuthHelper
   include IdvHelper
 
+  def perform_id_verification_with_usps_without_confirming_code_then_sign_out(user)
+    saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+    visit saml_authn_request
+    sign_in_live_with_2fa(user)
+    click_idv_begin
+    fill_out_idv_form_ok
+    click_idv_continue
+    fill_out_financial_form_ok
+    click_idv_continue
+    click_idv_address_choose_usps
+    click_on t('idv.buttons.mail.send')
+    fill_in :user_password, with: user.password
+    click_submit_default
+    click_acknowledge_personal_key
+    first(:link, t('links.sign_out')).click
+    click_submit_default
+  end
+
   context 'First time registration' do
     let(:email) { 'test@test.com' }
     before do
@@ -186,6 +204,7 @@ feature 'LOA3 Single Sign On' do
         sign_in_live_with_2fa(user)
 
         expect(current_path).to eq verify_account_path
+        expect(page).to have_content t('idv.messages.usps.resend')
 
         click_button t('forms.verify_profile.submit')
 
@@ -195,6 +214,21 @@ feature 'LOA3 Single Sign On' do
         find('input').click
 
         expect(current_url).to eq saml_authn_request
+      end
+
+      it 'provides an option to send another letter' do
+        user = create(:user, :signed_up)
+
+        perform_id_verification_with_usps_without_confirming_code_then_sign_out(user)
+
+        sign_in_live_with_2fa(user)
+
+        expect(current_path).to eq verify_account_path
+
+        click_link(t('idv.messages.usps.resend'))
+
+        expect(user.events.account_verified.size).to be(0)
+        expect(current_path).to eq(verify_usps_path)
       end
     end
 

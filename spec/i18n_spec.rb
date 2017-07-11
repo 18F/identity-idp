@@ -20,4 +20,34 @@ RSpec.describe 'I18n' do
       "#{unused_keys.leaves.count} unused i18n keys, run `i18n-tasks unused' to show them"
     )
   end
+
+  root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
+
+  Dir[File.join(root_dir, '/config/locales/**/*.yml')].each do |full_path|
+    i18n_file = full_path.sub("#{root_dir}/", '')
+
+    describe i18n_file do
+      it 'has only lower_snake_case keys' do
+        keys = hash_keys(YAML.load_file(full_path))
+
+        bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
+
+        expect(bad_keys).to be_empty
+      end
+    end
+  end
+
+  def hash_keys(hash, parent_keys: [])
+    keys = []
+
+    hash.each do |key, value|
+      if value.is_a?(Hash)
+        keys += hash_keys(value, parent_keys: parent_keys + [key])
+      else
+        keys << [*parent_keys, key].join('.')
+      end
+    end
+
+    keys
+  end
 end

@@ -24,6 +24,7 @@ FeatureEnvy:
     - Pii::Attributes#[]=
     - OpenidConnectLogoutForm#load_identity
     - Idv::ProfileMaker#pii_from_applicant
+    - Idv::Step#vendor_validator_result
 InstanceVariableAssumption:
   exclude:
     - User
@@ -41,6 +42,7 @@ NilCheck:
 LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
+    - VendorValidatorJob#perform
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
@@ -53,6 +55,7 @@ TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
+    - Idv::VendorResult
 TooManyStatements:
   max_statements: 6
   exclude:
@@ -72,6 +75,7 @@ TooManyMethods:
     - OpenidConnect::AuthorizationController
     - Idv::Session
     - User
+    - Verify::SessionsController
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -89,6 +93,7 @@ UtilityFunction:
   public_methods_only: true
   exclude:
     - AnalyticsEventJob#perform
+    - ApplicationController#default_url_options
     - ApplicationHelper#step_class
     - PersonalKeyFormatter#regexp
     - SessionTimeoutWarningHelper#frequency
@@ -97,6 +102,7 @@ UtilityFunction:
     - SessionDecorator
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
+    - LocaleHelper#locale_url_param
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

@@ -26,6 +26,21 @@ describe 'devise/mailer/confirmation_instructions.html.slim' do
     )
   end
 
+  context 'in a non-default locale' do
+    before { assign(:locale, 'fr') }
+
+    it 'puts the locale in the URL' do
+      assign(:resource, build_stubbed(:user, confirmed_at: Time.zone.now))
+      assign(:token, 'foo')
+      render
+
+      expect(rendered).to have_link(
+        'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo',
+        href: 'http://test.host/fr/sign_up/email/confirm?confirmation_token=foo'
+      )
+    end
+  end
+
   it 'mentions updating an account when user has already been confirmed' do
     user = build_stubbed(:user, confirmed_at: Time.zone.now)
     presenter = ConfirmationEmailPresenter.new(user, self)

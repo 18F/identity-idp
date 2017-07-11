@@ -7,6 +7,9 @@ module Verify
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: [:destroy]
+    before_action :initialize_idv_session, only: [:create]
+    before_action :submit_idv_form, only: [:create]
+    before_action :submit_idv_job, only: [:create]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
@@ -18,7 +21,7 @@ module Verify
 
     def create
       result = step.submit
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED, result.to_h)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result.to_h)
 
       if result.success?
         process_success
@@ -35,6 +38,21 @@ module Verify
 
     private
 
+    def submit_idv_form
+      result = idv_form.submit(profile_params)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
+
+      process_failure unless result.success?
+    end
+
+    def submit_idv_job
+      SubmitIdvJob.new(
+        vendor_validator_class: Idv::ProfileValidator,
+        idv_session: idv_session,
+        vendor_params: idv_session.vendor_params
+      ).call
+    end
+
     def step_name
       :sessions
     end
@@ -45,9 +63,9 @@ module Verify
 
     def step
       @_step ||= Idv::ProfileStep.new(
-        idv_form: idv_profile_form,
+        idv_form_params: profile_params,
         idv_session: idv_session,
-        params: profile_params
+        vendor_validator_result: vendor_validator_result
       )
     end
 
@@ -68,7 +86,7 @@ module Verify
     end
 
     def process_failure
-      if step.duplicate_ssn?
+      if idv_form.duplicate_ssn?
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to verify_session_dupe_path
       else
@@ -81,7 +99,7 @@ module Verify
       Verify::SessionsNew.new(
         error: error,
         remaining_attempts: remaining_idv_attempts,
-        idv_form: idv_profile_form
+        idv_form: idv_form
       )
     end
 
@@ -89,8 +107,13 @@ module Verify
       Idv::Attempter.idv_max_attempts - current_user.idv_attempts
     end
 
-    def idv_profile_form
-      @_idv_profile_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
+    def idv_form
+      @_idv_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
+    end
+
+    def initialize_idv_session
+      idv_session.params.merge!(profile_params)
+      idv_session.applicant = idv_session.vendor_params
     end
 
     def profile_params

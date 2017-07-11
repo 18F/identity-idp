@@ -72,6 +72,7 @@ class Accordion extends Events {
     this.content.classList.add('shown');
     this.content.classList.remove('animate-out');
     this.content.classList.add('animate-in');
+    this.content.setAttribute('aria-hidden', 'false');
     this.emit('accordion.show');
   }
 
@@ -81,6 +82,7 @@ class Accordion extends Events {
     this.shownIcon.classList.add('display-none');
     this.content.classList.remove('animate-in');
     this.content.classList.add('animate-out');
+    this.content.setAttribute('aria-hidden', 'true');
     this.emit('accordion.hide');
     this.header.focus();
   }

@@ -1,6 +1,7 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      async_result_id
       address_verification_mechanism
       applicant
       financials_confirmation
@@ -16,6 +17,8 @@ module Idv
       vendor
       vendor_session_id
     ].freeze
+
+    attr_reader :current_user
 
     def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
@@ -96,7 +99,7 @@ module Idv
 
     private
 
-    attr_accessor :user_session, :current_user, :issuer
+    attr_accessor :user_session, :issuer
 
     def new_idv_session
       { params: {}, step_attempts: { financials: 0, phone: 0 } }

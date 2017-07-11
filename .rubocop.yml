@@ -93,6 +93,9 @@ Metrics/ModuleLength:
   - spec/**/*
   - 'app/controllers/concerns/two_factor_authenticatable.rb'
 
+Metrics/ParameterLists:
+  CountKeywordArgs: false
+
 # This is a Rails 5 feature, so it should be disabled until we upgrade
 Rails/HttpPositionalArguments:
   Description: 'Use keyword arguments instead of positional arguments in http method calls.'

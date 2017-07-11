@@ -1,7 +1,7 @@
 ---
 en:
   notices:
-    account_recovery: Great! You have your personal key.
+    account_reactivation: Great! You have your personal key.
     dap_html: >
       <!-- We participate in the US government’s analytics program. -->
       <!-- See the data at analytics.usa.gov. -->

@@ -32,10 +32,8 @@ class OtpRateLimiter
   end
 
   def increment
-    now = Time.zone.now
-
     entry_for_current_phone.otp_send_count += 1
-    entry_for_current_phone.otp_last_sent_at = now
+    entry_for_current_phone.otp_last_sent_at = Time.zone.now
     entry_for_current_phone.save!
   end
 

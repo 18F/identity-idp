@@ -16,8 +16,9 @@ module Upaya
 
     config.browserify_rails.force = true
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
-    config.i18n.available_locales = Figaro.env.available_locales.split(' ')
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
+    config.i18n.available_locales = Figaro.env.available_locales.split(' ')
+    config.i18n.default_locale = :en
 
     routes.default_url_options[:host] = Figaro.env.domain_name
 

@@ -26,7 +26,7 @@ es:
       mail_limit_reached: NOT TRANSLATED YET
       pattern_mismatch:
         dob: NOT TRANSLATED YET
-        "personal-key": NOT TRANSLATED YET
+        personal_key: NOT TRANSLATED YET
         ssn: NOT TRANSLATED YET
         zipcode: NOT TRANSLATED YET
     form:

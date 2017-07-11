@@ -104,13 +104,11 @@ describe Verify::SessionsController do
 
           result = {
             success: false,
-            idv_attempts_exceeded: false,
             errors: { ssn: [t('idv.errors.duplicate_ssn')] },
-            vendor: { reasons: nil },
           }
 
           expect(@analytics).to receive(:track_event).
-            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result)
 
           post :create, profile: user_attrs.merge(ssn: '666-66-1234')
 
@@ -129,14 +127,20 @@ describe Verify::SessionsController do
       end
 
       context 'missing fields' do
-        it 'checks for required fields' do
-          partial_attrs = user_attrs.dup
-          partial_attrs.delete :first_name
+        let(:partial_attrs) do
+          user_attrs.tap { |attrs| attrs.delete :first_name }
+        end
 
+        it 'checks for required fields' do
           post :create, profile: partial_attrs
 
           expect(response).to render_template(:new)
           expect(flash[:warning]).to be_nil
+        end
+
+        it 'does not increment attempts count' do
+          expect { post :create, profile: partial_attrs }.
+            to_not change(user, :idv_attempts)
         end
       end
 
@@ -164,7 +168,7 @@ describe Verify::SessionsController do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
         end
       end
 
@@ -189,7 +193,7 @@ describe Verify::SessionsController do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
           expect(response).to render_template(:new)
         end
       end
@@ -206,7 +210,11 @@ describe Verify::SessionsController do
           }
 
           expect(@analytics).to have_received(:track_event).
-            with(Analytics::IDV_BASIC_INFO_SUBMITTED, result)
+            with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
+        end
+
+        it 'increments attempts count' do
+          expect { post :create, profile: user_attrs }.to change(user, :idv_attempts).by(1)
         end
       end
 

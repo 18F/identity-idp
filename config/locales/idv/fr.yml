@@ -1,0 +1,191 @@
+---
+fr:
+  idv:
+    buttons:
+      activate_by_mail: Activer par la poste
+      activate_by_phone: Activer par téléphone
+      cancel: Annuler et retourner à votre profil
+      continue: Continuer la vérification d'identité
+      help: Continuer jusqu'au Centre d'aide
+      mail:
+        resend: Envoyer une autre lettre
+        send: Envoyer une lettre
+    cancel:
+      modal_header: Souhaitez-vous vraiment annuler?
+      warning_header: Si vous annulez maintenant
+      warning_points:
+      - Nous ne serons pas en mesure de vérifier votre identité
+      - Nous ne conserverons pas de dossier contenant votre nom, adresse, date de naissance ou numéro de sécurité sociale
+      - Vous ne pourrez pas accéder à votre information de manière sécuritaire en utilisant login.gov
+      - Vous conserverez un compte login.gov pour votre adresse courriel
+      - Vous pouvez gérer ce compte sur la page de votre profil
+    errors:
+      bad_dob: Votre date de naissance doit être une date valide.
+      duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
+      finance_number_length: Le nombre doit comprendre entre %{minimum} et %{maximum} chiffres.
+      hardfail: Nous sommes incapables de vérifier votre identité pour le moment.
+      incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
+      invalid_ccn: Vous devez inscrire seulement les 8 derniers chiffres du numéro de carte de crédit.
+      mail_limit_reached: Vous avez demandé trop de courriels au cours du dernier mois.
+      missing_finance: Vous devez fournir un numéro de compte bancaire.
+      pattern_mismatch:
+        dob: 'Votre date de naissance doit être inscrite de cette façon: mm/jj/aaaa'
+        personal_key: 'Veuillez inscrire votre clé personnelle pour ce compte, par exemple : ABC1-DEF2-G3HI-J456
+
+'
+        ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon : ###-##-####'
+        zipcode: 'Votre code zip doit être inscrit de cette façon : #####-####'
+    form:
+      activate_by_mail: Activer mon compte par la poste.
+      address1: Adresse 1
+      address2: Adresse 2 (optional)
+      auto_loan: Numéro du prêt automobile
+      ccn: Les 8 derniers chiffres d'une carte de crédit
+      city: Ville
+      dob: Date de naissance
+      dob_hint: 'exemple : 01/17/1964'
+      first_name: Prénom
+      home_equity_line: Numéro du compte de crédit hypothécaire
+      last_name: Nom de famille
+      mortgage: Numéro du compte de prêt hypothécaire
+      no_alternate_phone_html: Je n'ai pas de numéro de téléphone. %{link}
+      password: Mot de passe
+      personal_details: Information personnelle
+      phone: Numéro de téléphone
+      phone_label_aside: Ligne mobile ou fixe
+      previous_address_add: Inscrire votre adresse précédente
+      previous_address_html: A déménagé au cours des <strong>3 derniers mois</strong>?
+      select_financial_account: Sélectionnez un compte bancaire…
+      ssn_label_html: Numéro de sécurité sociale %{tooltip}
+      state: État
+      use_ccn: Fournissez un numéro de carte de crédit >
+      use_financial_account: Vous n'avez pas de carte de crédit?
+      zipcode: Code ZIP
+    index:
+      continue_link: Oui, continuer
+      paragraph_1: "Nous avons un partenariat avec une entreprise de confiance afin de vérifier cette information ainsi que votre identité. \n"
+      prompt: Est-ce que vous avez accès à toute cette information en ce moment?
+      section_1:
+        bullet_1: Nom complet
+        bullet_2: Adresse postale
+        bullet_3: Date de naissance
+        bullet_4: Numéro de sécurité sociale
+        header: Information personnelle
+        subheader: 'Nous allons commencer avec de l''information personnelle, comme:'
+      section_2:
+        bullet_1: Les 8 derniers chiffres d'une carte de crédit
+        bullet_2: Numéro du compte de prêt automobile
+        bullet_3: Numéro du compte de crédit hypothécaire
+        bullet_4: Numéro du compte de prêt hypothécaire
+        footnote: "Vous n'aurez jamais à payer quoi que ce soit avec nous, ni à partager le solde de vos comptes. Nous vérifions uniquement le numéro du compte pour vérifier votre identité. \n"
+        header: Information bancaire
+        subheader: 'Nous avons besoin de l''un des numéros de compte suivants:'
+      section_3:
+        bullet_1: Votre nom ou celui d'un membre de votre famille
+        bullet_2_html: "<strong>Not</strong> un téléphone virtuel, comme Google Voice ou Skype\n"
+        bullet_3_html: "<strong>Not</strong> un téléphone prépayé\n"
+        header: Une ligne téléphonique à votre nom
+        subheader: "Nous utilisons les informations des compagnies de téléphone pour vérifier votre identité. Le numéro de téléphone que vous nous donnez devrait: \n"
+      subheader: Pour vérifier votre identité, nous vous demandons de répondre à quelques questions
+    messages:
+      activated_html: 'Votre identité a été vérifiée. Si vous souhaitez modifier votre information vérifiée, veuillez %{link}.
+
+'
+      activated_link: communiquer avec nous
+      cancel: "Pour continuer, %{app} doit vérifier votre identité. Nous devons recueillir quelques informations personnelles de base ainsi que certaines informations financières pour compléter ce processus. Si vous n'avez pas cette information sous la main, vous pouvez continuer plus tard. \n"
+      confirm: Vous avez crypté vos données vérifiées
+      dupe_ssn1: "Si vous recevez ce message d'erreur, il est possible que vous ayez déjà créé et vérifié un compte, mais avec une adresse courriel différente. \n"
+      dupe_ssn2_html: Veuillez %{link} avec l'adresse courriel que vous avez utilisée originalement.
+      dupe_ssn2_link: déconnectez-vous puis connectez-vous à nouveau
+      finance:
+        disclaimer: En continuant, vous acceptez que %{app_name} compare l'information du compte que vous avez fournie avec des sources tiers afin de vérifier votre identité.
+        hint: Vous pouvez utiliser Mastercard, Visa, Diner's Club, ou JCB.
+        intro_account: 'Aidez-nous à vérifier votre identité en fournissant le numéro de votre prêt automobile, de votre prêt hypothécaire, ou de votre crédit hypothécaire.
+
+'
+        intro_ccn_help: comment votre information sera utilisée
+        intro_ccn_html: 'Aidez-nous à vérifier votre identité en fournissant les 8 derniers chiffres de votre carte de crédit. Pour en apprendre davantage sur %{intro_help_link}.
+
+'
+        no_account: Vous préférez utiliser une carte de crédit?
+        no_account_info: Aidez-nous à vérifier votre identité en fournissant les 8 derniers chiffres de votre carte de crédit.
+      hardfail: Nous ne pouvons pas vérifier votre identité pour le moment.
+      hardfail4: Vous pouvez également aller sur %{sp} où vous trouverez davantage d'aide pour accéder à nos services.
+      help_center: Visitez notre Centre d'aide pour en apprendre davantage sur la façon dont nous vérifions votre compte.
+      mail_sent: Votre lettre est en route
+      personal_details_verified: Information personnelle vérifiée!
+      personal_key: 'Il s''agit de votre nouvelle clé personnelle. Notez-la et conservez-la dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot de passe.
+
+'
+      phone:
+        alert: Cette ligne téléphonique doit être
+        in_your_name: en votre nom ou celui d'un membre de votre famille
+        intro: Nous pouvez envoyez un code de confirmation à un numéro de téléphone lié à votre identité légale seulement.
+        phone_of_record: appels téléphoniques
+        prepaid: avec un contrat, et non prépayé
+        same_as_2fa: 'Ce numéro de téléphone peut être le même que celui que vous utilisez pour configurer votre mot de passe à usage unique, tant et aussi longtemps qu''il respecte les critères mentionnés plus haut.
+
+'
+      review:
+        financial_info: Où se trouve l'information sur mon compte bancaire?
+        info_verified_html: Nous avons trouvé des enregistrements liés à votre téléphone%{phone_message}
+        intro: Vos informations vérifiées
+      select_verification_with_sp: Afin de vous protéger des fraudes d'identité, vous ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne l'aurez pas activé en entrant votre code de confirmation.
+      select_verification_without_sp: Afin de protéger votre compte des fraudes liées à l'identité, votre profil ne sera pas activé tant que vous n'aurez pas entré votre code de confirmation.
+      sessions:
+        no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une démonstration seulement)
+        pii: Information personnelle
+        success: Nous avons trouvé des données qui correspondent à %{pii_message}
+      usps:
+        bad_address: Je ne peux pas recevoir de courrier à cette adresse
+        byline: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers. Celle-ci contient un code de confirmation.
+        resend: Envoyez-moi une autre lettre.
+        success: Elle devrait arriver dans 5 à 10 jours ouvrables.
+    modal:
+      attempts:
+        one: Il ne vous reste qu' <strong>une tentative.</strong>
+        other: Il ne vous reste que <strong>%{count} tentatives.</strong>
+      button:
+        fail: OK
+        warning: Essayez à nouveau
+      financials:
+        fail: 'Votre compte est <strong>verrouillé pour 24 heures</strong> durant lesquelles vous ne pourrez pas y accéder. Consultez notre Centre d''aide pour plus d''information sur la vérification de votre identité.
+
+'
+        heading: Nous ne trouvons pas de données qui correspondent à vos données financières.
+        warning: Veuillez vérifier l'information que vous avez fournie.
+      phone:
+        fail: 'Votre compte est <strong>verrouillé pour 24 heures</strong> au cours desquelles vous ne pourrez pas y accéder. Consultez notre Centre d''aide pour plus d''information sur la vérification de votre identité.
+
+'
+        heading: Nous ne trouvons pas de données qui correspondent à vos informations téléphoniques.
+        warning: Veuillez vérifier l'information que vous avez fournie.
+      sessions:
+        fail: "Votre compte est <strong>verrouillé pour 24 heures</strong> au cours desquelles vous ne pourrez pas y accéder. \n"
+        heading: Nous ne pouvons pas trouver de données concordant avec vos informations personnelles.
+        warning: "Veuillez vérifier l'information que vous avez fournie. Un numéro de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont des erreurs communes.  \n"
+    review:
+      dob: Date de naissance
+      full_name: Nom complet
+      mailing_address: Adresse postale
+      ssn: Numéro de sécurité sociale (SSN)
+    titles:
+      activated: Votre identité a déjà été vérifiée
+      cancel: Nous ne pouvons pas vérifier votre identité
+      complete: Vérification de votre identité complétée
+      dupe: 'Erreur: un compte existe déjà'
+      expectations: Ensuite, aidez-vous à vous identifier
+      fail: Nous sommes dans l'incapacité de vérifier votre identité
+      financials: Veuillez fournir un numéro de compte bancaire
+      hardfail: Nous sommes dans l'incapacité de vérifier votre identité
+      intro: Aidez-nous à vous identifier
+      mail:
+        resend: Vous voulez une autre lettre?
+        verify: Vous voulez une lettre?
+      phone: Numéro de téléphone enregistré
+      review: Réviser et soumettre
+      select_verification: Activer votre compte
+      session:
+        phone: Obtenez un code par téléphone
+        review: Encryptez vos données personnelles en entrant votre mot de passe
+      sessions: D'abord, dites-nous qui vous êtes

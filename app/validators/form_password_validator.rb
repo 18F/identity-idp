@@ -40,11 +40,15 @@ module FormPasswordValidator
     feedback = @pass_score.feedback.values.flatten.reject(&:empty?)
 
     feedback.map do |error|
-      I18n.t("zxcvbn.feedback.#{error.tr('.', '_')}")
+      I18n.t("zxcvbn.feedback.#{i18n_key(error)}")
     end.join('. ').gsub(/\.\s*\./, '.')
   end
 
   def password_strength_enabled?
     @enabled ||= FeatureManagement.password_strength_enabled?
+  end
+
+  def i18n_key(key)
+    key.tr(' -', '_').gsub(/\W/, '').downcase
   end
 end

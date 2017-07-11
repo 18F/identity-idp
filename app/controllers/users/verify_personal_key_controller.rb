@@ -1,10 +1,10 @@
 module Users
   class VerifyPersonalKeyController < ApplicationController
-    include AccountRecoveryConcern
+    include AccountReactivationConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :confirm_password_reset_profile
-    before_action :init_account_recovery, only: [:new]
+    before_action :init_account_reactivation, only: [:new]
 
     def new
       @personal_key_form = VerifyPersonalKeyForm.new(
@@ -25,10 +25,10 @@ module Users
 
     private
 
-    def init_account_recovery
+    def init_account_reactivation
       return if reactivate_account_session.started?
 
-      flash.now[:notice] = t('notices.account_recovery')
+      flash.now[:notice] = t('notices.account_reactivation')
       reactivate_account_session.start
     end
 

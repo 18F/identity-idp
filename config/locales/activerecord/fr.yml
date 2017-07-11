@@ -1,0 +1,11 @@
+---
+fr:
+  activerecord:
+    errors:
+      models:
+        app_setting:
+          attributes:
+            value:
+              cannot_disable_2fa_in_prod: L'authentification à deux facteurs ne peut
+                être désactivée en production
+              invalid: La valeur doit être de '1' ou de '0'
