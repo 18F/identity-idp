@@ -1,3 +1,4 @@
+---
 en:
   openid_connect:
     authorization:
@@ -7,17 +8,19 @@ en:
         no_valid_scope: No valid scope values found
         redirect_uri_invalid: redirect_uri is invalid
         redirect_uri_no_match: redirect_uri does not match registered redirect_uri
+    logout:
+      errors:
+        id_token_hint: id_token_hint was not recognized
     token:
       errors:
         invalid_aud: Invalid audience claim, expected %{url}
-        invalid_authentication: Client must authenticate via PKCE or private_key_jwt, missing either code_challenge or client_assertion
+        invalid_authentication: Client must authenticate via PKCE or private_key_jwt,
+          missing either code_challenge or client_assertion
         invalid_code: invalid code
         invalid_code_verifier: code_verifier did not match code_challenge
     user_info:
       errors:
-        no_authorization: No Authorization header provided
         malformed_authorization: Malformed Authorization header
-        not_found: Could not find authorization for the contents of the provided access_token or it may have expired
-    logout:
-      errors:
-        id_token_hint: id_token_hint was not recognized
+        no_authorization: No Authorization header provided
+        not_found: Could not find authorization for the contents of the provided access_token
+          or it may have expired

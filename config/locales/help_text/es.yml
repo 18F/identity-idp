@@ -1,14 +1,12 @@
 ---
 es:
   help_text:
-    change_factor: >
-      NOT TRANSLATED YET
+    change_factor: NOT TRANSLATED YET
     requested_attributes:
-      intro_html: NOT TRANSLATED YET
       address: NOT TRANSLATED YET
       birthdate: NOT TRANSLATED YET
       email: NOT TRANSLATED YET
       full_name: NOT TRANSLATED YET
+      intro_html: NOT TRANSLATED YET
       phone: NOT TRANSLATED YET
       social_security_number: NOT TRANSLATED YET
-

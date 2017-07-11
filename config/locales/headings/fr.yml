@@ -6,7 +6,7 @@ fr:
       login_info: Votre compte
       profile_info: Information du profil
       reactivate: NOT TRANSLATED YET
-      two_factor: Authentication à deux facteurs
+      two_factor: Authentification à deux facteurs
       verified_account: Compte vérifié
     confirmations:
       new: Envoyer un autre courriel de confirmation

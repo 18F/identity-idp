@@ -1,6 +1,13 @@
 ---
 es:
   headings:
+    account:
+      account_history: La historia de la cuenta
+      login_info: Información de la cuenta
+      profile_info: NOT TRANSLATED YET
+      reactivate: NOT TRANSLATED YET
+      two_factor: Autenticación de dos factores
+      verified_account: Cuenta verificada
     confirmations:
       new: Enviar otro correo electrónico de confirmación
     create_account_with_sp:
@@ -13,18 +20,11 @@ es:
     passwords:
       change: Cambiar su contraseña
       confirm: Confirme la contraseña actual para continuar
-      forgot: ¿Olvidó su contraseña?
-    account:
-      account_history: La historia de la cuenta
-      login_info: Información de la cuenta
-      profile_info: NOT TRANSLATED YET
-      reactivate: NOT TRANSLATED YET
-      two_factor: Autenticación de dos factores
-      verified_account: Cuenta verificada
+      forgot: "¿Olvidó su contraseña?"
     personal_key: Asegúrese de que siempre puede iniciar sesión
     registrations:
       enter_email: Empezar a crear una cuenta
-    session_timeout_warning: ¿Necesita mas tiempo?
+    session_timeout_warning: "¿Necesita mas tiempo?"
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
     totp_setup:

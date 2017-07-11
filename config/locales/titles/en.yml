@@ -1,6 +1,7 @@
 ---
 en:
   titles:
+    account: Account
     account_locked: Account locked
     confirmations:
       new: Resend confirmation instructions for your account
@@ -14,9 +15,8 @@ en:
       change: Change the password for your account
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
-    account: Account
-    reactivate_account: Reactivate your account
     personal_key: Just in case
+    reactivate_account: Reactivate your account
     registrations:
       new: Sign up for a account
       start: Get started

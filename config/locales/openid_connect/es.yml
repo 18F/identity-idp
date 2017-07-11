@@ -1,3 +1,4 @@
+---
 es:
   openid_connect:
     authorization:
@@ -7,17 +8,17 @@ es:
         no_valid_scope: NOT TRANSLATED YET
         redirect_uri_invalid: NOT TRANSLATED YET
         redirect_uri_no_match: NOT TRANSLATED YET
+    logout:
+      errors:
+        id_token_hint: NOT TRANSLATED YET
     token:
       errors:
         invalid_aud: NOT TRANSLATED YET
         invalid_authentication: NOT TRANSLATED YET
         invalid_code: NOT TRANSLATED YET
         invalid_code_verifier: NOT TRANSLATED YET
-    logout:
-      errors:
-        id_token_hint: NOT TRANSLATED YET
     user_info:
       errors:
-        no_authorization: NOT TRANSLATED YET
         malformed_authorization: NOT TRANSLATED YET
+        no_authorization: NOT TRANSLATED YET
         not_found: NOT TRANSLATED YET

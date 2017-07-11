@@ -1,49 +1,45 @@
 ---
 en:
   instructions:
-    2fa:
+    account:
+      reactivate:
+        begin: Let's get started.
+        explanation: 'When you created your account, we gave you a list of words and
+          asked you to store them in a safe place. It looked similar to this:'
+        intro: We take extra steps to keep your personal information secure and private,
+          so resetting your password takes a little extra effort.
+        modal:
+          copy: If you don't have your personal key, you will need to verify your
+            identity again.
+          heading: Don't have your personal key?
+        with_key: Do you have your personal key?
+    forgot_password:
+      close_window: You can close this browser window once you have reset your password.
+    mfa:
       authenticator:
         accordion_header: Scan code with your mobile device
-        confirm_code_html: Enter the code from your authenticator app. If you have several accounts
-          set up in your app, enter the code corresponding to %{email} at
-          %{app}.%{tooltip}
+        confirm_code_html: Enter the code from your authenticator app. If you have
+          several accounts set up in your app, enter the code corresponding to %{email}
+          at %{app}.%{tooltip}
         or: or
       sms:
-        confirm_code_html: We sent it in a text message to %{number}. Need another code?
-          %{resend_code_link}. Message rates may apply.
+        confirm_code_html: We sent it in a text message to %{number}. Need another
+          code? %{resend_code_link}. Message rates may apply.
         fallback_html: If you can't get text messages right now, you can %{link}
       voice:
         confirm_code_html: We just called you at %{number}. Want us to call you again?
           %{resend_code_link}
         fallback_html: If you can't take a phone call right now, you can %{link}
       wrong_number_html: Entered the wrong phone number? %{link}
-    account:
-      reactivate:
-        begin: Let's get started.
-        explanation: >
-          When you created your account, we gave you a list of words and asked
-          you to store them in a safe place. It looked similar to this:
-        intro: >
-          We take extra steps to keep your personal information secure and private,
-          so resetting your password takes a little extra effort.
-        modal:
-          copy: If you don't have your personal key, you will need to verify your identity again.
-          heading: Don't have your personal key?
-        with_key: Do you have your personal key?
-    forgot_password:
-      close_window: You can close this browser window once you have reset your password.
     password:
-      forgot: >
-        Don’t know your password? Reset it after confirming your email address.
+      forgot: Don’t know your password? Reset it after confirming your email address.
+      help_text: The longer and more unusual the password, the harder it is to guess.
+        So avoid using common phrases. Also avoid repeating passwords from other online
+        accounts such as banks, email and social media.
       help_text_header: Password safety tips
-      help_text: >
-        The longer and more unusual the password, the harder it is to guess. So avoid using common
-        phrases. Also avoid repeating passwords from other online accounts such as banks, email and
-        social media.
       info:
-        lead: >
-          It must be at least %{min_length} characters long and not be a commonly used password.
-          That's it!
+        lead: It must be at least %{min_length} characters long and not be a commonly
+          used password. That's it!
       strength:
         i: Very weak
         ii: Weak
@@ -51,9 +47,8 @@ en:
         intro: 'Password strength: '
         iv: Good
         v: Great!
-    personal_key_html: >
-      This is the only way to regain access to your account if you lose your password or
-      phone. %{accent}
     personal_key_accent: Write it down or print it out.
+    personal_key_html: This is the only way to regain access to your account if you
+      lose your password or phone. %{accent}
     registration:
       email: Pick an address you want to use for government communications.

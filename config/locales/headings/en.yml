@@ -1,6 +1,13 @@
 ---
 en:
   headings:
+    account:
+      account_history: Account history
+      login_info: Your account
+      profile_info: Profile information
+      reactivate: Reactivate your account
+      two_factor: Two-factor authentication
+      verified_account: Verified Account
     confirmations:
       new: Send another confirmation email
     create_account_with_sp:
@@ -14,13 +21,6 @@ en:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    account:
-      account_history: Account history
-      login_info: Your account
-      profile_info: Profile information
-      reactivate: Reactivate your account
-      two_factor: Two-factor authentication
-      verified_account: Verified Account
     personal_key: Here is your personal key
     registrations:
       enter_email: Start creating an account

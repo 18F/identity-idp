@@ -5,12 +5,10 @@ en:
       already_confirmed: Your email address has already been confirmed. %{action}
       confirmed: You have confirmed your email address
       confirmed_but_must_set_password: You have confirmed your email address
-      send_instructions: >
-        You will receive an email with instructions for how to confirm your
-        email address in a few minutes.
-      send_paranoid_instructions: >
-        You will receive an email with instructions for how to confirm your email
-        address in a few minutes.
+      send_instructions: You will receive an email with instructions for how to confirm
+        your email address in a few minutes.
+      send_paranoid_instructions: You will receive an email with instructions for
+        how to confirm your email address in a few minutes.
     failure:
       already_authenticated: ''
       inactive: Your account is not activated yet.
@@ -18,9 +16,8 @@ en:
       last_attempt: You have one more attempt before your account is locked.
       locked: Your account is now locked.
       not_found_in_database: Invalid email or password.
-      session_limited: >
-        Your login credentials were used in another browser. Please sign in
-        again to continue in this browser.
+      session_limited: Your login credentials were used in another browser. Please
+        sign in again to continue in this browser.
       timeout: Your session expired. Please sign in again to continue.
       unauthenticated: ''
       unconfirmed: You need to confirm your email address before continuing.
@@ -36,65 +33,55 @@ en:
     passwords:
       choose_new_password: Choose a new password.
       invalid_token: The reset password token is invalid. Try again.
-      no_token: >
-        You can’t access this page without coming from a password reset email.
-        If you do come from a password reset email, please make sure you used the full
-        link provided.
-      send_instructions: >
-        You will receive an email with instructions on how to reset your
-        password in a few minutes.
-      send_paranoid_instructions: >
-        You will receive an email with instructions on how to reset your
-        password in a few minutes.
+      no_token: You can’t access this page without coming from a password reset email.
+        If you do come from a password reset email, please make sure you used the
+        full link provided.
+      send_instructions: You will receive an email with instructions on how to reset
+        your password in a few minutes.
+      send_paranoid_instructions: You will receive an email with instructions on how
+        to reset your password in a few minutes.
       token_expired: You took too long to reset your password. Try again.
       updated: Your password has been changed. You are now signed in.
-      updated_not_active: >
-        Your password has been changed. Please sign in with your new password.
+      updated_not_active: Your password has been changed. Please sign in with your
+        new password.
     registrations:
       close_window: You can close this window if you are done.
-      destroy_confirm: >
-        Deleting your account cannot be undone. All data associated with your
-        account will be removed. Are you sure you’d like to delete your account?
+      destroy_confirm: Deleting your account cannot be undone. All data associated
+        with your account will be removed. Are you sure you’d like to delete your
+        account?
       destroyed: Your account has been successfully deleted.
-      email_and_phone_need_confirmation: >
-        Before we finish updating your account, we need to confirm both your new
-        number and new email. Please follow the instructions below to confirm your new
-        number, then check for an email from us. Follow the link in the email to confirm
-        your new email address.
-      email_update_needs_confirmation: >
-        You updated your account, but we need to confirm your new email address.
-        Check for an email from us, then follow the link in the email to confirm your
-        new address.
+      email_and_phone_need_confirmation: Before we finish updating your account, we
+        need to confirm both your new number and new email. Please follow the instructions
+        below to confirm your new number, then check for an email from us. Follow
+        the link in the email to confirm your new email address.
+      email_update_needs_confirmation: You updated your account, but we need to confirm
+        your new email address. Check for an email from us, then follow the link in
+        the email to confirm your new address.
       enabled_twofactor: You have enabled two-factor authentication.
-      phone_update_needs_confirmation: >
-        Your request to update your phone number was processed, but we need to
-        confirm your new number first. Please follow the instructions below. If you do
-        not confirm your new number, we will keep using your old phone number.
+      phone_update_needs_confirmation: Your request to update your phone number was
+        processed, but we need to confirm your new number first. Please follow the
+        instructions below. If you do not confirm your new number, we will keep using
+        your old phone number.
       signed_up: Welcome! You have created an account.
-      signed_up_but_inactive: >
-        You have created an account. However, we could not sign you in because
-        your account is not yet activated.
-      signed_up_but_locked: >
-        You have created an account. However, we could not sign you in because
-        your account is locked.
+      signed_up_but_inactive: You have created an account. However, we could not sign
+        you in because your account is not yet activated.
+      signed_up_but_locked: You have created an account. However, we could not sign
+        you in because your account is locked.
       start:
         accordion: You will need
-        bullet_1_html: Provide your <strong>email address</strong> and create a
-          <strong>strong password</strong>.
-        bullet_2_html: >
-          Enable <strong>two-step authentication</strong>. This adds a second layer of security
-          to your account by requiring you to enter a new code that’s sent to your phone every time
-          you log in.
-        bullet_3_html: >
-          Provide <strong>basic information</strong>, such as your name, address, phone number,
-          and social security number.
-        bullet_4_html: >
-          Provide a <strong>financial account number</strong>, such as your  credit card number.
-          This number will only be used to verify your identity.
-        bullet_5_html: >
-          When you are finished with this process we’ll give you a personal key. <strong>Write
-          it down and store it in a safe place; it’s important.</strong> You’ll be asked for the
-          personal key every time you make changes to your account.
+        bullet_1_html: Provide your <strong>email address</strong> and create a <strong>strong
+          password</strong>.
+        bullet_2_html: Enable <strong>two-step authentication</strong>. This adds
+          a second layer of security to your account by requiring you to enter a new
+          code that’s sent to your phone every time you log in.
+        bullet_3_html: Provide <strong>basic information</strong>, such as your name,
+          address, phone number, and social security number.
+        bullet_4_html: Provide a <strong>financial account number</strong>, such as
+          your  credit card number. This number will only be used to verify your identity.
+        bullet_5_html: When you are finished with this process we’ll give you a personal
+          key. <strong>Write it down and store it in a safe place; it’s important.</strong>
+          You’ll be asked for the personal key every time you make changes to your
+          account.
         learn_more: Learn more about verifying your identity
       updated: Your account has been updated!
     sessions:
@@ -105,27 +92,22 @@ en:
       buttons:
         confirm_with_sms: Confirm with text message
         confirm_with_voice: Confirm with voice call
-      choose_delivery_confirmation: >
-        How would you like to receive your confirmation security code for %{phone}?
-      choose_otp_delivery_html: >
-        We will send it to %{phone} immediately. Message and data rates may apply.
+      choose_delivery_confirmation: How would you like to receive your confirmation
+        security code for %{phone}?
+      choose_otp_delivery_html: We will send it to %{phone} immediately. Message and
+        data rates may apply.
       contact_administrator: Please contact your system administrator.
       header_text: Enter your security code
-      invalid_otp: >
-        That security code is invalid. You can try entering it again or request a new
-        one-time security code.
+      invalid_otp: That security code is invalid. You can try entering it again or
+        request a new one-time security code.
       invalid_personal_key: That personal key is invalid.
-      max_generic_login_attempts_reached: >
-        Your account is temporarily locked.
-      max_otp_login_attempts_reached: >
-        Your account is temporarily locked because you have entered the one-time
-        security code incorrectly too many times.
-      max_otp_requests_reached: >
-        Your account is temporarily locked because you have requested a
-        security code too many times.
-      max_personal_key_login_attempts_reached: >
-        Your account is temporarily locked because you have entered the personal key
-        incorrectly too many times.
+      max_generic_login_attempts_reached: Your account is temporarily locked.
+      max_otp_login_attempts_reached: Your account is temporarily locked because you
+        have entered the one-time security code incorrectly too many times.
+      max_otp_requests_reached: Your account is temporarily locked because you have
+        requested a security code too many times.
+      max_personal_key_login_attempts_reached: Your account is temporarily locked
+        because you have entered the personal key incorrectly too many times.
       otp_delivery_preference:
         instruction: You can change your choice the next time you sign in
         sms: Text message (SMS)
@@ -133,24 +115,22 @@ en:
         voice: Phone call
       otp_phone_label: Phone number
       otp_phone_label_info: Mobile or landline okay
-      otp_setup_html: >
-        <strong>Every time you log in,</strong> we will send you a one-time
-        security code via text message or phone call. This helps safeguard your account.
+      otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
+        one-time security code via text message or phone call. This helps safeguard
+        your account."
       otp_sms_disclaimer: Message and data rates may apply.
-      please_confirm: >
-        Your phone number has been set. Confirm it by entering the security code below.
-      please_try_again_html: Please try again in %{time_remaining}.
       personal_key_fallback:
         link: Use a personal key instead
         text_html: Don’t have access to your phone? %{link}.
       personal_key_header_text: Enter your personal key
-      personal_key_prompt: >
-        You can use this personal key once. If you still need a code after
-        signing in, go to your account settings page to get a new one.
+      personal_key_prompt: You can use this personal key once. If you still need a
+        code after signing in, go to your account settings page to get a new one.
+      please_confirm: Your phone number has been set. Confirm it by entering the security
+        code below.
+      please_try_again_html: Please try again in %{time_remaining}.
       totp_fallback:
         sms_link_text: get a code via text message
-        text_html: >
-          If you can’t use your authenticator app right now you can %{sms_link}
+        text_html: If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
         voice_link_text: get a code with a phone call
       totp_header_text: Enter your authentication app code

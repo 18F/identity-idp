@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'i18n/tasks'
+require 'yaml_normalizer'
 
 RSpec.describe 'I18n' do
   let(:i18n) { I18n::Tasks::BaseTask.new }
@@ -33,6 +34,20 @@ RSpec.describe 'I18n' do
         bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
 
         expect(bad_keys).to be_empty
+      end
+
+      it 'has only has XML-safe identifiers (keys start with a letter)' do
+        keys = hash_keys(YAML.load_file(full_path))
+
+        bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
+
+        expect(bad_keys).to be_empty
+      end
+
+      it 'is formatted as normalized YAML (run scripts/normalize-yaml)' do
+        normalized_yaml = YAML.dump(YamlNormalizer.chomp_each(YAML.load_file(full_path)))
+
+        expect(File.read(full_path)).to eq(normalized_yaml)
       end
     end
   end

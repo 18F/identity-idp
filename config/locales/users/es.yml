@@ -1,14 +1,15 @@
+---
 es:
   users:
+    personal_key:
+      close: NOT TRANSLATED YET
+      confirmation_error: NOT TRANSLATED YET
+      generated_on_html: NO TRANSLATED YET
+      get_another: NOT TRANSLATED YET
+      header: NOT TRANSLATED YET
+      help_text: NOT TRANSLATED YET
+      help_text_header: NOT TRANSLATED YET
+      print: NOT TRANSLATED YET
     totp_setup:
       new:
         qr_img_alt: Código de QR para la aplicación de autenticación
-    personal_key:
-      header: NOT TRANSLATED YET
-      generated_on_html: NO TRANSLATED YET
-      get_another: NOT TRANSLATED YET
-      print: NOT TRANSLATED YET
-      help_text_header: NOT TRANSLATED YET
-      help_text: NOT TRANSLATED YET
-      close: NOT TRANSLATED YET
-      confirmation_error: NOT TRANSLATED YET

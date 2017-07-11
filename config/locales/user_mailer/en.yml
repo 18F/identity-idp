@@ -1,31 +1,27 @@
 ---
 en:
   user_mailer:
-    help_link_text: Help Center
     contact_link_text: contact us
     email_changed:
-      help: >
-        If you did not want to change your email address, please visit the %{app}
+      help: If you did not want to change your email address, please visit the %{app}
         %{help_link} or %{contact_link}.
       intro: The email address for your %{app} account has been changed.
+    help_link_text: Help Center
     password_changed:
-      help: >
-        If you did not make this change, please visit the %{app}
-        %{help_link} or %{contact_link}.
+      help: If you did not make this change, please visit the %{app} %{help_link}
+        or %{contact_link}.
       intro: You have a new password for your %{app} account.
     phone_changed:
-      help: >
-        If you did not want to change your phone number, please visit the %{app} %{help_link}
-        or %{contact_link}.
+      help: If you did not want to change your phone number, please visit the %{app}
+        %{help_link} or %{contact_link}.
       intro: The phone number associated with your %{app} account has been changed.
       subject: New phone number
     signup_with_your_email:
-      help: >
-        If you did not request a new account or suspect an error, please visit
+      help: If you did not request a new account or suspect an error, please visit
         the %{app} %{help_link} or %{contact_link}.
-      intro: >
-        This email address is already associated with a %{app} account, so we can't use it to
-        create a new account. To sign in with your existing account, follow the link below. 
-        If you are not trying to sign in with this email address, you can ignore this message.
+      intro: This email address is already associated with a %{app} account, so we
+        can't use it to create a new account. To sign in with your existing account,
+        follow the link below.  If you are not trying to sign in with this email address,
+        you can ignore this message.
       link_text: Go to %{app}
       reset_password: If you can't remember your password, go to %{app} to reset it.

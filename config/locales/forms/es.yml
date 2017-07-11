@@ -24,9 +24,9 @@ es:
       show: NOT TRANSLATED YET
     personal_key:
       alternative: NOT TRANSLATED YET
-      title: NOT TRANSLATED YET
-      instructions: NOT TRANSLATED YET
       confirmation_label: NOT TRANSLATED YET
+      instructions: NOT TRANSLATED YET
+      title: NOT TRANSLATED YET
     registration:
       labels:
         email: Dirección de correo electrónico
@@ -40,7 +40,7 @@ es:
       personal_key: Código de recuperación
       try_again: Inténtalo de nuevo
     verify_profile:
-      name: NOT TRANSLATED YET
-      title: NOT TRANSLATED YET
-      submit: NOT TRANSLATED YET
       instructions: NOT TRANSLATED YET
+      name: NOT TRANSLATED YET
+      submit: NOT TRANSLATED YET
+      title: NOT TRANSLATED YET

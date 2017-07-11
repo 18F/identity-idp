@@ -5,14 +5,17 @@ es:
       reactivate:
         with_key: NOT TRANSLATED YET
         without_key: NOT TRANSLATED YET
-    back_to_sp: "Volver a %{sp}"
+    back_to_sp: Volver a %{sp}
+    cancel: Cancelar
+    cancel_account_creation: NOT TRANSLATED YET
+    cancel_idv: NOT TRANSLATED YET
     contact: Contactar
     copy: NOT TRANSLATED YET
     create_account: Crear cuenta
     help: Ayuda
     next: Siguiente
     passwords:
-      forgot: ¿Olvidó su contraseña?
+      forgot: "¿Olvidó su contraseña?"
     phone_confirmation:
       auth_app_fallback_html: NOT TRANSLATED YET
       fallback_to_sms_html: Envíame un mensaje de texto con el código en su lugar
@@ -23,14 +26,11 @@ es:
     reverify: NOT TRANSLATED YET
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
-    cancel: Cancelar
-    cancel_account_creation: NOT TRANSLATED YET
-    cancel_idv: NOT TRANSLATED YET
     two_factor_authentication:
       app: NOT TRANSLATED YET
-      voice: NOT TRANSLATED YET
-      sms: NOT TRANSLATED YET
       resend_code:
         sms: NOT TRANSLATED YET
         voice: NOT TRANSLATED YET
+      sms: NOT TRANSLATED YET
+      voice: NOT TRANSLATED YET
     what_is_totp: NOT TRANSLATED YET

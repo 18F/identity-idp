@@ -1,11 +1,11 @@
 ---
 es:
   user_mailer:
-    help_link_text: NOT TRANSLATED YET
     contact_link_text: NOT TRANSLATED YET
     email_changed:
       help: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET
+    help_link_text: NOT TRANSLATED YET
     password_changed:
       help: NOT TRANSLATED YET
       intro: NOT TRANSLATED YET

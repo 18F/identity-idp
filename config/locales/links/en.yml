@@ -6,6 +6,9 @@ en:
         with_key: I have my key
         without_key: I don't have my key
     back_to_sp: Back to %{sp}
+    cancel: Cancel
+    cancel_account_creation: "‹ Cancel account creation"
+    cancel_idv: "‹ Cancel account verification"
     contact: Contact
     copy: Copy
     create_account: Create account
@@ -14,23 +17,21 @@ en:
     passwords:
       forgot: Forgot your password?
     phone_confirmation:
-      auth_app_fallback_html: ' or %{link}.'
+      auth_app_fallback_html: " or %{link}."
       fallback_to_sms_html: Send me a text message with the code instead
-      fallback_to_voice_html: If you can't get text message right now, you can get a security code via %{link}
+      fallback_to_voice_html: If you can't get text message right now, you can get
+        a security code via %{link}
     privacy_policy: Privacy & security
     remove: Remove
     resend: Resend email
     reverify: Please verify your identity again.
     sign_in: Sign in
     sign_out: Sign out
-    cancel: Cancel
-    cancel_account_creation: ‹ Cancel account creation
-    cancel_idv: ‹ Cancel account verification
     two_factor_authentication:
       app: get a security code via authentication app
-      voice: get a security code via phone call
-      sms: get a security code via text message
       resend_code:
         sms: Get another text message
         voice: Get another phone call
+      sms: get a security code via text message
+      voice: get a security code via phone call
     what_is_totp: What is an authentication app?

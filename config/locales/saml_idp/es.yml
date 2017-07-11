@@ -1,10 +1,9 @@
+---
 es:
   saml_idp:
     shared:
       saml_post_binding:
         heading: Enviar para continuar
-        no_js: >
-          JavaScript parece estar desactivado en su navegador. Normalmente esto
-          paso se produce automáticamente, pero porque usted tiene JavaScript
-          desactivado, haga clic en el botón enviar para continuar iniciando o 
-          saliendo la sesión. 
+        no_js: JavaScript parece estar desactivado en su navegador. Normalmente esto
+          paso se produce automáticamente, pero porque usted tiene JavaScript desactivado,
+          haga clic en el botón enviar para continuar iniciando o  saliendo la sesión.

@@ -1,6 +1,7 @@
 ---
 es:
   titles:
+    account: NOT TRANSLATED YET
     account_locked: NOT TRANSLATED YET
     confirmations:
       new: NOT TRANSLATED YET
@@ -14,9 +15,8 @@ es:
       change: NOT TRANSLATED YET
       confirm: NOT TRANSLATED YET
       forgot: NOT TRANSLATED YET
-    account: NOT TRANSLATED YET
-    reactivate_account: NOT TRANSLATED YET
     personal_key: NOT TRANSLATED YET
+    reactivate_account: NOT TRANSLATED YET
     registrations:
       new: NOT TRANSLATED YET
       start: NOT TRANSLATED YET

@@ -1,20 +1,6 @@
 ---
 es:
   instructions:
-    2fa:
-      authenticator:
-        accordion_header: NOT TRANSLATED YET
-        confirm_code_html: Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
-          configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
-          <strong>%{app}</strong>.%{tooltip}
-        or: NOT TRANSLATED YET
-      sms:
-        confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código?
-        fallback_html: NOT TRANSLATED YET
-      voice:
-        confirm_code_html: NOT TRANSLATED YET
-        fallback_html: NOT TRANSLATED YET
-      wrong_number_html: ¿Ha ingresado el número de teléfono equivocado? %{link}
     account:
       reactivate:
         begin: NOT TRANSLATED YET
@@ -25,13 +11,28 @@ es:
           heading: NOT TRANSLATED YET
         with_key: NOT TRANSLATED YET
     forgot_password:
-      close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
+      close_window: Puede cerrar esta ventana del navegador despues que haya restablecido
+        su contraseña.
+    mfa:
+      authenticator:
+        accordion_header: NOT TRANSLATED YET
+        confirm_code_html: Ingrese el código de su aplicación de autenticador. Si
+          tiene varias cuentas configuradas en su aplicación, ingrese el código correspondiente
+          a <strong>%{email}</strong> en <strong>%{app}</strong>.%{tooltip}
+        or: NOT TRANSLATED YET
+      sms:
+        confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código?
+        fallback_html: NOT TRANSLATED YET
+      voice:
+        confirm_code_html: NOT TRANSLATED YET
+        fallback_html: NOT TRANSLATED YET
+      wrong_number_html: "¿Ha ingresado el número de teléfono equivocado? %{link}"
     password:
-      forgot: >
-        Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
-        asociada a su cuenta para recibir más instrucciones en la pantalla.
-      help_text_header: NOT TRANSLATED YET
+      forgot: Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección
+        de correo electrónico asociada a su cuenta para recibir más instrucciones
+        en la pantalla.
       help_text: NOT TRANSLATED YET
+      help_text_header: NOT TRANSLATED YET
       info:
         lead: Su contraseña debe tener al menos %{min_length} caracteres.
       strength:
@@ -41,9 +42,9 @@ es:
         intro: 'Seguridad de la contraseña: '
         iv: Bueno
         v: Muy bueno!
-    personal_key_html: >
-      Escriba este código de recuperación y guárdelo en algún lugar seguro. Si no puede
-      acceder a su teléfono, puede usarlo en lugar de un código de acceso único para iniciar sesión.
     personal_key_accent: NOT TRANSLATED YET
+    personal_key_html: Escriba este código de recuperación y guárdelo en algún lugar
+      seguro. Si no puede acceder a su teléfono, puede usarlo en lugar de un código
+      de acceso único para iniciar sesión.
     registration:
       email: Elija una dirección para usar en las comunicaciones del gobierno.

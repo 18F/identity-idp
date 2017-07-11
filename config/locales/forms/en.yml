@@ -24,15 +24,16 @@ en:
       show: Show password
     personal_key:
       alternative: Don't have your personal key?
-      title: Enter your personal key
-      instructions: Please confirm you have a copy of your personal key by entering it below.
       confirmation_label: Personal key
+      instructions: Please confirm you have a copy of your personal key by entering
+        it below.
+      title: Enter your personal key
     registration:
       labels:
         email: Email address
     totp_setup:
-      totp_intro_html: >
-        When you sign in, you can get your security code from an authentication app. %{link}
+      totp_intro_html: When you sign in, you can get your security code from an authentication
+        app. %{link}
       totp_step_1: Open your authentication app
       totp_step_2: Enter this key in the app
       totp_step_3: Enter the code from the app
@@ -41,7 +42,7 @@ en:
       personal_key: Personal key
       try_again: Use another phone number
     verify_profile:
-      name: Confirmation code
       instructions: Enter the ten-character code in the letter we sent you.
+      name: Confirmation code
       submit: Confirm account
       title: Confirm your account

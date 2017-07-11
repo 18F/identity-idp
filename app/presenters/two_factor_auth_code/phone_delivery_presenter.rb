@@ -5,7 +5,7 @@ module TwoFactorAuthCode
     end
 
     def help_text
-      t("instructions.2fa.#{otp_delivery_preference}.confirm_code_html",
+      t("instructions.mfa.#{otp_delivery_preference}.confirm_code_html",
         number: phone_number_tag,
         resend_code_link: resend_code_link)
     end
@@ -49,7 +49,7 @@ module TwoFactorAuthCode
       return unless unconfirmed_phone
 
       link = view.link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
-      t('instructions.2fa.wrong_number_html', link: link)
+      t('instructions.mfa.wrong_number_html', link: link)
     end
 
     def phone_fallback_link
@@ -81,7 +81,7 @@ module TwoFactorAuthCode
     end
 
     def fallback_instructions
-      "instructions.2fa.#{otp_delivery_preference}.fallback_html"
+      "instructions.mfa.#{otp_delivery_preference}.fallback_html"
     end
 
     def fallback_method

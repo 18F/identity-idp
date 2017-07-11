@@ -1,3 +1,4 @@
+---
 en:
   activerecord:
     errors:
@@ -5,5 +6,6 @@ en:
         app_setting:
           attributes:
             value:
-              cannot_disable_2fa_in_prod: Two-factor authentication cannot be disabled in production
+              cannot_disable_2fa_in_prod: Two-factor authentication cannot be disabled
+                in production
               invalid: Value must be '1' or '0'
