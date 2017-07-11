@@ -31,7 +31,8 @@ module Idv
     attr_writer :phone
 
     def update_idv_params(phone)
-      idv_params[:phone] = phone
+      normalized_phone = phone.gsub(/\D/, '')[1..-1]
+      idv_params[:phone] = normalized_phone
 
       return if phone != user.phone
 

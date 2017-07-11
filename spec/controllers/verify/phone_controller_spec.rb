@@ -5,6 +5,7 @@ describe Verify::PhoneController do
 
   let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   let(:good_phone) { '+1 (555) 555-0000' }
+  let(:normalized_phone) { '5555550000' }
   let(:bad_phone) { '+1 (555) 555-5555' }
 
   describe 'before_actions' do
@@ -131,7 +132,7 @@ describe Verify::PhoneController do
           expect(response).to redirect_to verify_review_path
 
           expected_params = {
-            phone: good_phone,
+            phone: normalized_phone,
             phone_confirmed_at: user.phone_confirmed_at,
           }
           expect(subject.idv_session.params).to eq expected_params
@@ -148,7 +149,7 @@ describe Verify::PhoneController do
           expect(response).to redirect_to verify_review_path
 
           expected_params = {
-            phone: good_phone,
+            phone: normalized_phone,
           }
           expect(subject.idv_session.params).to eq expected_params
         end
@@ -171,6 +172,19 @@ describe Verify::PhoneController do
           expect(user.idv_attempts).to eq(max_attempts - 1)
           expect(user.idv_attempted_at).to eq two_days_ago
         end
+      end
+
+      it 'passes the normalized phone to the background job' do
+        user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
+        stub_verify_steps_one_and_two(user)
+
+        expect(SubmitIdvJob).to receive(:new).with(
+          vendor_validator_class: Idv::PhoneValidator,
+          idv_session: subject.idv_session,
+          vendor_params: normalized_phone
+        ).and_call_original
+
+        put :create, idv_phone_form: { phone: good_phone }
       end
     end
   end

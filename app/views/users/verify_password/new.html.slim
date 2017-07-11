@@ -6,4 +6,5 @@ h1.h3.my0 = t('idv.titles.session.review')
 
 .mt4
   = accordion('review-verified-info', t('idv.messages.review.intro')) do
-    = render 'shared/pii_review', pii: @verify_password_form.decrypted_pii
+    - decrypted_pii = @verify_password_form.decrypted_pii
+    = render 'shared/pii_review', pii: decrypted_pii, phone: decrypted_pii[:phone].raw
