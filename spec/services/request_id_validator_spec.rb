@@ -12,10 +12,7 @@ RSpec.describe RequestIdValidator do
       it 'is successful' do
         expect(result.success?).to eq(true)
         expect(result.errors).to be_blank
-      end
-
-      it 'reports a blank request_id' do
-        expect(result.extra[:request_id_present]).to eq(false)
+        expect(result.extra[:request_id]).to eq('')
       end
     end
 
@@ -25,10 +22,7 @@ RSpec.describe RequestIdValidator do
       it 'is successful' do
         expect(result.success?).to eq(true)
         expect(result.errors).to be_blank
-      end
-
-      it 'reports a present request_id' do
-        expect(result.extra[:request_id_present]).to eq(true)
+        expect(result.extra[:request_id]).to eq(request_id)
       end
     end
 
@@ -38,10 +32,7 @@ RSpec.describe RequestIdValidator do
       it 'is unsuccesful' do
         expect(result.success?).to eq(false)
         expect(result.errors[:request_id]).to eq(['is invalid'])
-      end
-
-      it 'reports a present request_id' do
-        expect(result.extra[:request_id_present]).to eq(true)
+        expect(result.extra[:request_id]).to eq(request_id)
       end
     end
   end

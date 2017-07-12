@@ -140,11 +140,11 @@ describe SignUp::EmailConfirmationsController do
           expect(response).to redirect_to(destination)
         end
 
-        it 'tracks an en event with request_id_present' do
+        it 'tracks an en event with the request id' do
           analytics_hash = {
             success: true,
             errors: {},
-            request_id_present: true,
+            request_id: _request_id,
           }
 
           expect(@analytics).to receive(:track_event).
@@ -165,11 +165,11 @@ describe SignUp::EmailConfirmationsController do
           expect(params[:request_id]).to be_blank
         end
 
-        it 'tracks an en event with no request_id_present' do
+        it 'tracks an en event with no the request id' do
           analytics_hash = {
             success: true,
             errors: {},
-            request_id_present: false,
+            request_id: _request_id,
           }
 
           expect(@analytics).to receive(:track_event).
@@ -192,7 +192,7 @@ describe SignUp::EmailConfirmationsController do
           analytics_hash = {
             success: false,
             errors: { request_id: ['is invalid'] },
-            request_id_present: true,
+            request_id: _request_id,
           }
 
           expect(@analytics).to receive(:track_event).

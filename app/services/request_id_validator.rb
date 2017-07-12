@@ -31,7 +31,7 @@ class RequestIdValidator
 
   def extra_attributes
     {
-      request_id_present: request_id.present?
+      request_id: request_id
     }
   end
 end
