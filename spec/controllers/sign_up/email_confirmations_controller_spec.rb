@@ -160,11 +160,6 @@ describe SignUp::EmailConfirmationsController do
         it 'redirects with a blank request_id' do
           action
 
-          destination = sign_up_enter_password_url(
-            request_id: '',
-            confirmation_token: confirmation_token
-          )
-
           expect(response).to be_redirect
           params = URIService.params(response.location)
           expect(params[:request_id]).to be_blank
