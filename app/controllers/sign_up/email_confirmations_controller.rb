@@ -2,6 +2,8 @@ module SignUp
   class EmailConfirmationsController < ApplicationController
     include UnconfirmedUserConcern
 
+    before_action :validate_request_id
+
     def create
       with_unconfirmed_user do
         result = EmailConfirmationTokenValidator.new(@user).submit
@@ -17,6 +19,15 @@ module SignUp
     end
 
     private
+
+    def validate_request_id
+      result = RequestIdValidator.new(params[:_request_id]).submit
+      analytics.track_event(Analytics::EMAIL_CONFIRMATION_REQUEST_ID, result.to_h)
+
+      return if result.success?
+      flash[:error] = t('errors.messages.request_id_invalid')
+      redirect_to sign_up_email_resend_url
+    end
 
     def process_successful_confirmation
       if !@user.confirmed?

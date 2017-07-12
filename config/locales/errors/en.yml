@@ -30,6 +30,8 @@ en:
       otp_incorrect: Incorrect code. Did you type it correctly?
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
+      request_id_invalid: Invalid confirmation link, please check the link in your
+        email.
       requires_phone: requires you to enter your phone number.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_service_provider: Unauthorized Service Provider

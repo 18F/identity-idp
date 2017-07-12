@@ -36,6 +36,7 @@ class Analytics
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
   EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
+  EMAIL_CONFIRMATION_REQUEST_ID = 'Email Confirmation Request ID'.freeze
   EMAIL_CONFIRMATION_RESEND = 'Email Confirmation requested due to invalid token'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
