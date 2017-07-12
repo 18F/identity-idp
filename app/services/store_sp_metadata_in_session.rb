@@ -5,8 +5,6 @@ class StoreSpMetadataInSession
   end
 
   def call
-    return unless sp_request
-
     session[:sp] = {
       issuer: sp_request.issuer,
       loa3: loa3_requested?,

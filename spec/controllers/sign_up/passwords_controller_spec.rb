@@ -42,15 +42,5 @@ describe SignUp::PasswordsController do
 
       post :create, password_form: { password: 'NewVal' }, confirmation_token: token
     end
-
-    it 'does not blow up with a bad request_id' do
-      token = 'new token'
-      user = create(:user, confirmation_token: token, confirmation_sent_at: Time.zone.now)
-
-      post :create,
-           password_form: { password: 'NewVal', request_id: '123' }, confirmation_token: token
-
-      expect(response).to be_ok
-    end
   end
 end
