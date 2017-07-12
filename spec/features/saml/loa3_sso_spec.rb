@@ -248,6 +248,26 @@ feature 'LOA3 Single Sign On' do
         expect(current_url).to eq saml_authn_request
       end
     end
+
+    context 'returning to verify after canceling during the same session' do
+      it 'allows the user to verify' do
+        user = create(:user, :signed_up)
+        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+
+        visit saml_authn_request
+        sign_in_live_with_2fa(user)
+        click_idv_begin
+        fill_out_idv_form_ok
+        click_idv_continue
+        click_idv_cancel
+        visit saml_authn_request
+        click_idv_begin
+        fill_out_idv_form_ok
+        click_idv_continue
+
+        expect(current_path).to eq verify_finance_path
+      end
+    end
   end
 
   context 'visiting sign_up_completed path before proofing' do

@@ -24,7 +24,7 @@ module Idv
       @user_session = user_session
       @current_user = current_user
       @issuer = issuer
-      @user_session[:idv] ||= new_idv_session
+      set_idv_session
     end
 
     def method_missing(method_sym, *arguments, &block)
@@ -101,6 +101,11 @@ module Idv
 
     attr_accessor :user_session, :issuer
 
+    def set_idv_session
+      return if session.present?
+      user_session[:idv] = new_idv_session
+    end
+
     def new_idv_session
       { params: {}, step_attempts: { financials: 0, phone: 0 } }
     end
@@ -111,7 +116,7 @@ module Idv
     end
 
     def session
-      user_session[:idv]
+      user_session.fetch(:idv, {})
     end
 
     def applicant_params
