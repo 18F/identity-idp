@@ -33,6 +33,7 @@ fr:
       otp_incorrect: Code non valide. L'avez-vous inscrit correctement?
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
+      request_id_invalid: NOT TRANSLATED YET
       requires_phone: vous demande d'entrer votre numéro de téléphone.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_service_provider: Fournisseur de service non autorisé

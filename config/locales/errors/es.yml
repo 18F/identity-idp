@@ -33,6 +33,7 @@ es:
       otp_incorrect: El código secreto es incorrecto
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: El código de recuperación es incorrecto
+      request_id_invalid: NOT TRANSLATED YET
       requires_phone: requiere que ingrese su número de teléfono.
       unauthorized_authn_context: NOT TRANSLATED YET
       unauthorized_service_provider: NOT TRANSLATED YET
