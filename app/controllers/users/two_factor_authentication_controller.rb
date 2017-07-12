@@ -14,7 +14,7 @@ module Users
     end
 
     def send_code
-      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(current_user)
+      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to)
 
       result = @otp_delivery_selection_form.submit(delivery_params)
 
