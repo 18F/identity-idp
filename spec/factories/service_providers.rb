@@ -8,4 +8,11 @@ FactoryGirl.define do
     return_to_sp_url '/'
     agency 'Test Agency'
   end
+
+  factory :service_provider_request do
+    uuid { SecureRandom.uuid }
+    issuer { 'test issuer name' }
+    loa { 1 }
+    url { 'https://example.com/' }
+  end
 end
