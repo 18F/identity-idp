@@ -47,6 +47,7 @@ Metrics/BlockLength:
     - 'config/initializers/secure_headers.rb'
     - 'config/routes.rb'
     - 'spec/**/*.rb'
+    - 'config/initializers/active_job_logger_patch.rb'
 
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
