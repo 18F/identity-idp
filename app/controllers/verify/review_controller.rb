@@ -84,9 +84,7 @@ module Verify
       normalized_phone = idv_params[:phone]
       return false if normalized_phone.blank?
 
-      formatted_phone = normalized_phone.phony_formatted(
-        format: :international, normalize: :US, spaces: ' '
-      )
+      formatted_phone = PhoneFormatter.new.format(normalized_phone)
       formatted_phone != current_user.phone &&
         idv_session.address_verification_mechanism == 'phone'
     end

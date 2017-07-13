@@ -66,4 +66,28 @@ module FormHelper
     ]
   end
   # rubocop:enable MethodLength, WordArray
+
+  def international_phone_codes
+    PhoneNumberCapabilities::INTERNATIONAL_CODES.map do |key, value|
+      [
+        international_phone_code_label(value),
+        key,
+        { data: international_phone_codes_data(value) },
+      ]
+    end
+  end
+
+  private
+
+  def international_phone_code_label(code_data)
+    "#{code_data['name']} +#{code_data['country_code']}"
+  end
+
+  def international_phone_codes_data(code_data)
+    {
+      sms_only: code_data['sms_only'],
+      country_code: code_data['country_code'],
+      country_name: code_data['name'],
+    }
+  end
 end

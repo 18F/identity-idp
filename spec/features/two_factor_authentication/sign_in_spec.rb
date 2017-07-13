@@ -73,6 +73,46 @@ feature 'Two Factor Authentication' do
         expect(phone_radio_button).to_not be_disabled
       end
     end
+
+    context 'with international phone that does not support phone delivery' do
+      scenario 'renders an error if a user submits with phone selected' do
+        sign_in_before_2fa
+        select 'Turkey +90', from: 'International code'
+        fill_in 'Phone', with: '555-555-5000'
+        choose 'Phone call'
+        click_send_security_code
+
+        expect(current_path).to eq(phone_setup_path)
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Turkey'
+        )
+      end
+
+      scenario 'disables the phone option and displays a warning with js', :js do
+        sign_in_before_2fa
+        select 'Turkey +90', from: 'International code'
+        fill_in 'Phone', with: '555-555-5000'
+        phone_radio_button = page.find(
+          '#two_factor_setup_form_otp_delivery_preference_voice',
+          visible: :all
+        )
+
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Turkey'
+        )
+        expect(phone_radio_button).to be_disabled
+
+        select 'Canada +1', from: 'International code'
+
+        expect(page).not_to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Turkey'
+        )
+        expect(phone_radio_button).to_not be_disabled
+      end
+    end
   end
 
   def attempt_to_bypass_2fa_setup

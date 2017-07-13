@@ -22,7 +22,7 @@ module Users
     private
 
     def user_params
-      params.require(:update_user_phone_form).permit(:phone)
+      params.require(:update_user_phone_form).permit(:phone, :international_code)
     end
 
     def process_updates
