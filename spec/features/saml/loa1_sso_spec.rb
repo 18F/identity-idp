@@ -13,8 +13,6 @@ feature 'LOA1 Single Sign On' do
         sign_up_user_from_sp_without_confirming_email(email)
       end
 
-      sp_request_id = ServiceProviderRequest.last.uuid
-
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
 
@@ -32,8 +30,6 @@ feature 'LOA1 Single Sign On' do
         click_on t('forms.buttons.continue')
 
         expect(current_url).to eq authn_request
-        expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-          to be_a NullServiceProviderRequest
         expect(page.get_rack_session.keys).to_not include('sp')
       end
     end
@@ -43,12 +39,9 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      sp_request_id = ServiceProviderRequest.last.uuid
       sign_in_live_with_2fa(user)
 
       expect(current_url).to eq saml_authn_request
-      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-        to be_a NullServiceProviderRequest
       expect(page.get_rack_session.keys).to_not include('sp')
 
       visit root_path
@@ -139,16 +132,15 @@ feature 'LOA1 Single Sign On' do
   end
 
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
-    it 'maintains the request_id in the params' do
+    it 'displays the branded page' do
       authn_request = auth_request.create(saml_settings)
       visit authn_request
-      sp_request_id = ServiceProviderRequest.last.uuid
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
 
       visit authn_request
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
     end
   end
 
@@ -166,6 +158,40 @@ feature 'LOA1 Single Sign On' do
 
       expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
       expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
+    end
+  end
+
+  context 'creating two accounts during the same session' do
+    it 'allows the second account creation process to complete fully', email: true do
+      first_email = 'test1@test.com'
+      second_email = 'test2@test.com'
+      authn_request = auth_request.create(saml_settings)
+
+      perform_in_browser(:one) do
+        visit authn_request
+        sign_up_user_from_sp_without_confirming_email(first_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(first_email)
+        click_button t('forms.buttons.continue')
+
+        expect(current_url).to eq authn_request
+        expect(page.get_rack_session.keys).to_not include('sp')
+      end
+
+      perform_in_browser(:one) do
+        visit authn_request
+        sign_up_user_from_sp_without_confirming_email(second_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(second_email)
+        click_button t('forms.buttons.continue')
+
+        expect(current_url).to eq authn_request
+        expect(page.get_rack_session.keys).to_not include('sp')
+      end
     end
   end
 
