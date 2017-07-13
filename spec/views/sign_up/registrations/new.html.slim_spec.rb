@@ -9,7 +9,7 @@ describe 'sign_up/registrations/new.html.slim' do
 
     view_context = ActionController::Base.new.view_context
     @decorated_session = DecoratedSession.new(
-      sp: nil, view_context: view_context, sp_session: {}
+      sp: nil, view_context: view_context, sp_session: {}, service_provider_request: nil
     ).call
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
   end

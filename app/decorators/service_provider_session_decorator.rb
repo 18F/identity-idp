@@ -3,10 +3,11 @@ class ServiceProviderSessionDecorator
 
   DEFAULT_LOGO = 'generic.svg'.freeze
 
-  def initialize(sp:, view_context:, sp_session:)
+  def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
     @view_context = view_context
     @sp_session = sp_session
+    @service_provider_request = service_provider_request
   end
 
   def sp_logo
@@ -71,10 +72,10 @@ class ServiceProviderSessionDecorator
 
   private
 
-  attr_reader :sp, :view_context, :sp_session
+  attr_reader :sp, :view_context, :sp_session, :service_provider_request
 
   def request_url
-    sp_session[:request_url]
+    sp_session[:request_url] || service_provider_request.url
   end
 
   def openid_connect_redirector
