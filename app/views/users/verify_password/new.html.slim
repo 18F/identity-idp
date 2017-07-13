@@ -1,0 +1,9 @@
+- title t('idv.titles.review')
+
+h1.h3.my0 = t('idv.titles.session.review')
+
+= render 'shared/user_verify_password', update_path: update_verify_password_path
+
+.mt4
+  = accordion('review-verified-info', t('idv.messages.review.intro')) do
+    = render 'shared/pii_review', pii: @verify_password_form.decrypted_pii

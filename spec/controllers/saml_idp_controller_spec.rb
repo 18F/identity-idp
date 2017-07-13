@@ -292,11 +292,11 @@ describe SamlIdpController do
         sp_request_id = ServiceProviderRequest.last.uuid
 
         expect(session[:sp]).to eq(
-          loa3: false,
           issuer: saml_settings.issuer,
-          request_id: sp_request_id,
+          loa3: false,
           request_url: @saml_request.request.original_url,
-          requested_attributes: [:email]
+          request_id: sp_request_id,
+          requested_attributes: ['email']
         )
       end
 

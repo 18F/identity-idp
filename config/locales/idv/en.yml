@@ -134,7 +134,7 @@ en:
         in_your_name: in your name or a family member's name
         intro: We can only send a confirmation code to a telephone number linked to your
           legal identity.
-        phone_of_record: phone of record
+        phone_of_record: Phone of record
         prepaid: on a contract, not prepaid
         same_as_2fa: >
           This phone number can be the same one you used to set up your one-time

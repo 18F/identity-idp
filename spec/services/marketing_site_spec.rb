@@ -28,7 +28,7 @@ RSpec.describe MarketingSite do
   describe '.help_authenticator_app_url' do
     it 'points to the authenticator app section of the help page' do
       expect(MarketingSite.help_authenticator_app_url).to eq(
-        'https://www.login.gov/help#what-is-an-authenticator-app'
+        'https://www.login.gov/help/signing-in/what-is-an-authenticator-app/'
       )
     end
   end

@@ -67,7 +67,7 @@
       content: '';
       display: block;
       height: 48px;
-      margin: 0 auto;
+      margin: $space-2 auto $space-3;
       position: relative;
       width: 48px;
     }
@@ -94,6 +94,16 @@
   right: 0;
   top: -25px;
   width: 50px;
+}
+
+.modal-timeout {
+  &::before {
+    background-image: url(image-path('clock.svg'));
+  }
+
+  hr {
+    border-color: $teal;
+  }
 }
 
 .modal-warning {

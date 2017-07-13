@@ -8,6 +8,7 @@ AllCops:
   Include:
     - '**/Gemfile'
     - '**/Rakefile'
+    - '**/Capfile'
   Exclude:
     - 'db/schema.rb'
     - 'bin/**/*'
@@ -17,6 +18,7 @@ AllCops:
     - 'lib/rspec/user_flow_formatter.rb'
     - 'lib/user_flow_exporter.rb'
   TargetRubyVersion: 2.3
+  TargetRailsVersion: 4.0
   UseCache: true
 
 Rails:
@@ -119,7 +121,7 @@ Rails/TimeZone:
     - strict
     - flexible
 
-Style/AlignParameters:
+Layout/AlignParameters:
   # Alignment of parameters in multi-line method calls.
   #
   # The `with_first_parameter` style aligns the following lines along the same
@@ -160,7 +162,7 @@ Style/Documentation:
     - 'spec/**/*'
     - 'test/**/*'
 
-Style/DotPosition:
+Layout/DotPosition:
   Description: Checks the position of the dot in multi-line method calls.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#consistent-multi-line-chains
   EnforcedStyle: trailing
@@ -179,7 +181,7 @@ Style/EmptyElse:
     - nil
     - both
 
-Style/ExtraSpacing:
+Layout/ExtraSpacing:
   # When true, allows most uses of extra spacing if the intent is to align
   # things with the previous or next line, not counting empty lines or comment
   # lines.
@@ -200,7 +202,7 @@ Style/IfUnlessModifier:
   MaxLineLength: 80
 
 # Checks the indentation of the first element in an array literal.
-Style/IndentArray:
+Layout/IndentArray:
   # The value `special_inside_parentheses` means that array literals with
   # brackets that have their opening bracket on the same line as a surrounding
   # opening round parenthesis, shall have their first element indented relative
@@ -221,7 +223,7 @@ Style/IndentArray:
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
 
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   EnforcedStyle: aligned
   SupportedStyles:
     - aligned

@@ -32,7 +32,7 @@ SingleLogoutHandler = Struct.new(:saml_response, :saml_request, :user) do
   end
 
   def slo_not_implemented_at_sp?
-    identity.sp_metadata[:assertion_consumer_logout_service_url].nil?
+    identity.sp_metadata[:assertion_consumer_logout_service_url].blank?
   end
 
   def identity
