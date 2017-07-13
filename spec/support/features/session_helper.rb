@@ -243,7 +243,7 @@ module Features
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      submit_form_with_valid_email
+      submit_form_with_valid_email(email)
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
       expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"
