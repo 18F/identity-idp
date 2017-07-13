@@ -76,8 +76,6 @@ module OpenidConnect
     end
 
     def store_request
-      return if sp_session[:request_id]
-
       client_id = @authorize_form.client_id
 
       @request_id = SecureRandom.uuid
@@ -90,15 +88,7 @@ module OpenidConnect
     end
 
     def add_sp_metadata_to_session
-      return if sp_session[:request_id]
-
-      session[:sp] = {
-        issuer: @authorize_form.client_id,
-        loa3: @authorize_form.loa3_requested?,
-        request_id: @request_id,
-        request_url: request.original_url,
-        requested_attributes: requested_attributes,
-      }
+      StoreSpMetadataInSession.new(session: session, request_id: @request_id).call
     end
 
     def requested_attributes
