@@ -141,6 +141,8 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'sms',
           resend: nil,
           context: 'authentication',
+          country_code: '1',
+          area_code: '202',
         }
 
         expect(@analytics).to receive(:track_event).
@@ -203,6 +205,8 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'voice',
           resend: nil,
           context: 'authentication',
+          country_code: '1',
+          area_code: '202',
         }
 
         expect(@analytics).to receive(:track_event).

@@ -375,6 +375,7 @@ GEM
     parser (2.4.0.0)
       ast (~> 2.2)
     pg (0.21.0)
+    phonelib (0.6.12)
     phony (2.15.44)
     phony_rails (0.14.6)
       activesupport (>= 3.0)
@@ -697,6 +698,7 @@ DEPENDENCIES
   newrelic_rpm
   overcommit
   pg
+  phonelib
   phony_rails
   poltergeist
   premailer-rails
