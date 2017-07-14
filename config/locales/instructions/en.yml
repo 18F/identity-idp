@@ -16,7 +16,7 @@ en:
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
     go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app
-      on your smartphone or tablet and sign in.
+      and sign in.
     mfa:
       authenticator:
         accordion_header: Scan code with your mobile device
