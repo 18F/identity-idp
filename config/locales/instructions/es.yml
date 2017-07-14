@@ -13,6 +13,7 @@ es:
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador despues que haya restablecido
         su contraseña.
+    go_back_to_mobile_app: NOT TRANSLATED YET
     mfa:
       authenticator:
         accordion_header: NOT TRANSLATED YET

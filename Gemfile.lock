@@ -217,6 +217,7 @@ GEM
       thor (~> 0.19)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    device_detector (1.0.0)
     devise (4.3.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -673,6 +674,7 @@ DEPENDENCIES
   coffee-script
   database_cleaner
   derailed
+  device_detector
   devise (~> 4.1)
   devise_security_extension
   dotiw
