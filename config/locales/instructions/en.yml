@@ -32,7 +32,7 @@ en:
         with_key: Do you have your personal key?
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
-      go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app on your smartphone or tablet and sign in.
+      go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app and sign in.
     password:
       forgot: >
         Don’t know your password? Reset it after confirming your email address.
