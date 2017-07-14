@@ -150,7 +150,7 @@ feature 'OpenID Connect' do
     end
   end
 
-  context 'with PCKE' do
+  context 'with PCKE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       state = SecureRandom.hex
@@ -520,6 +520,26 @@ feature 'OpenID Connect' do
     end
   end
 
+  context 'starting account creation on mobile and finishing on desktop' do
+    it 'prompts the user to go back to the mobile app', email: true do
+      email = 'test@test.com'
+
+      perform_in_browser(:one) do
+        visit_idp_from_mobile_app_with_loa1
+        sign_up_user_from_sp_without_confirming_email(email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(email)
+        click_button t('forms.buttons.continue')
+
+        expect(current_url).to eq new_user_session_url
+        expect(page).
+          to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
+      end
+    end
+  end
+
   def visit_idp_from_sp_with_loa1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
@@ -530,6 +550,22 @@ feature 'OpenID Connect' do
       acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce
+    )
+  end
+
+  def visit_idp_from_mobile_app_with_loa1(state: SecureRandom.hex)
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    nonce = SecureRandom.hex
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
       nonce: nonce
