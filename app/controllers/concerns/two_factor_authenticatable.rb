@@ -163,16 +163,21 @@ module TwoFactorAuthenticatable
   end
 
   def update_idv_state
-    now = Time.zone.now
     if idv_context?
-      Idv::Session.new(
-        user_session: user_session,
-        current_user: current_user,
-        issuer: sp_session[:issuer]
-      ).params['phone_confirmed_at'] = now
+      confirm_idv_session_phone
     elsif profile_context?
       Idv::ProfileActivator.new(user: current_user).call
     end
+  end
+
+  def confirm_idv_session_phone
+    idv_session = Idv::Session.new(
+      user_session: user_session,
+      current_user: current_user,
+      issuer: sp_session[:issuer]
+    )
+    idv_session.user_phone_confirmation = true
+    idv_session.params['phone_confirmed_at'] = Time.zone.now
   end
 
   def reset_otp_session_data

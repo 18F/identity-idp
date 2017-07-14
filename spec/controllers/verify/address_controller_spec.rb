@@ -9,7 +9,7 @@ describe Verify::AddressController do
 
   describe '#index' do
     it 'redirects if phone mechanism selected' do
-      subject.idv_session.phone_confirmation = true
+      subject.idv_session.vendor_phone_confirmation = true
 
       get :index
 

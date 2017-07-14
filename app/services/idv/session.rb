@@ -7,7 +7,8 @@ module Idv
       financials_confirmation
       normalized_applicant_params
       params
-      phone_confirmation
+      vendor_phone_confirmation
+      user_phone_confirmation
       pii
       profile_confirmation
       profile_id
@@ -70,8 +71,12 @@ module Idv
       user_session.delete(:idv)
     end
 
+    def phone_confirmed?
+      vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
     def complete_session
-      complete_profile if phone_confirmation == true
+      complete_profile if phone_confirmed?
       create_usps_entry if address_verification_mechanism == 'usps'
     end
 
@@ -94,7 +99,7 @@ module Idv
     end
 
     def address_mechanism_chosen?
-      phone_confirmation == true || address_verification_mechanism == 'usps'
+      vendor_phone_confirmation == true || address_verification_mechanism == 'usps'
     end
 
     private
@@ -131,7 +136,7 @@ module Idv
       @_profile_maker ||= Idv::ProfileMaker.new(
         applicant: Proofer::Applicant.new(applicant_params),
         normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
-        phone_confirmed: phone_confirmation || false,
+        phone_confirmed: vendor_phone_confirmation || false,
         user: current_user,
         vendor: vendor
       )
