@@ -132,6 +132,7 @@ UtilityFunction:
   UncommunicativeMethodName:
     exclude:
       - visit_idp_from_sp_with_loa1
+      - visit_idp_from_mobile_app_with_loa1
   UncommunicativeParameterName:
     exclude:
       - begin_sign_up_with_sp_and_loa

@@ -13,6 +13,7 @@ fr:
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.
+    go_back_to_mobile_app: NOT TRANSLATED YET
     mfa:
       authenticator:
         accordion_header: Balayez le code avec votre appareil mobile
