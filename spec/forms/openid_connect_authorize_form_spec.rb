@@ -34,63 +34,21 @@ RSpec.describe OpenidConnectAuthorizeForm do
   let(:code_challenge_method) { nil }
 
   describe '#submit' do
-    let(:user) { create(:user) }
-    let(:rails_session_id) { SecureRandom.hex }
-    subject(:result) { form.submit(user, rails_session_id) }
+    subject(:result) { form.submit }
 
     context 'with valid params' do
       it 'is successful' do
         allow(FormResponse).to receive(:new)
 
-        form.submit(user, rails_session_id)
-
-        identity = user.identities.where(service_provider: client_id).first
+        form.submit
 
         extra_attributes = {
           client_id: client_id,
-          redirect_uri: "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}",
+          redirect_uri: nil,
         }
 
         expect(FormResponse).to have_received(:new).
           with(success: true, errors: {}, extra: extra_attributes)
-      end
-
-      it 'links an identity for this client with the code as the session_uuid' do
-        redirect_uri = URI(result.to_h[:redirect_uri])
-        code = URIService.params(redirect_uri)[:code]
-
-        identity = user.identities.where(service_provider: client_id).first
-        expect(identity.session_uuid).to eq(code)
-        expect(identity.nonce).to eq(nonce)
-      end
-
-      it 'sets the max ial/loa from the request on the identity' do
-        result
-
-        identity = user.identities.where(service_provider: client_id).first
-        expect(identity.ial).to eq(3)
-      end
-
-      context 'with PKCE' do
-        let(:code_challenge) { 'abcdef' }
-        let(:code_challenge_method) { 'S256' }
-
-        it 'records the code_challenge on the identity' do
-          allow(FormResponse).to receive(:new)
-
-          form.submit(user, rails_session_id)
-
-          identity = user.identities.where(service_provider: client_id).first
-
-          extra_attributes = {
-            client_id: client_id,
-            redirect_uri: "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}",
-          }
-
-          expect(identity.code_challenge).to eq(code_challenge)
-          expect(FormResponse).to have_received(:new).
-            with(success: true, errors: {}, extra: extra_attributes)
-        end
       end
     end
 
@@ -289,6 +247,47 @@ RSpec.describe OpenidConnectAuthorizeForm do
       form = OpenidConnectAuthorizeForm.new(client_id: 'foobar')
 
       expect(form.client_id).to eq 'foobar'
+    end
+  end
+
+  describe '#link_identity_to_service_provider' do
+    let(:user) { create(:user) }
+    let(:rails_session_id) { SecureRandom.hex }
+
+    context 'with PKCE' do
+      let(:code_challenge) { 'abcdef' }
+      let(:code_challenge_method) { 'S256' }
+
+      it 'records the code_challenge on the identity' do
+        form.link_identity_to_service_provider(user, rails_session_id)
+
+        identity = user.identities.where(service_provider: client_id).first
+
+        expect(identity.code_challenge).to eq(code_challenge)
+        expect(identity.nonce).to eq(nonce)
+        expect(identity.ial).to eq(3)
+      end
+    end
+  end
+
+  describe '#success_redirect_uri' do
+    let(:user) { create(:user) }
+    let(:rails_session_id) { SecureRandom.hex }
+
+    context 'when the identity has been linked' do
+      it 'returns a redirect URI with the code from the identity session_uuid' do
+        form.link_identity_to_service_provider(user, rails_session_id)
+        identity = user.identities.where(service_provider: client_id).first
+
+        expect(form.success_redirect_uri).
+          to eq "#{redirect_uri}?code=#{identity.session_uuid}&state=#{state}"
+      end
+    end
+
+    context 'when the identity has not been linked' do
+      it 'returns nil' do
+        expect(form.success_redirect_uri).to be_nil
+      end
     end
   end
 end

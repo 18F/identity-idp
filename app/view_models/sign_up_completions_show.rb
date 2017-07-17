@@ -18,6 +18,7 @@ class SignUpCompletionsShow
     [[:social_security_number], :social_security_number],
   ].freeze
 
+  # rubocop:disable Rails/OutputSafety
   def heading
     safe_join([I18n.t(
       'titles.sign_up.completion_html',
@@ -25,6 +26,7 @@ class SignUpCompletionsShow
       app: APP_NAME
     ).html_safe])
   end
+  # rubocop:enable Rails/OutputSafety
 
   def title
     I18n.t(

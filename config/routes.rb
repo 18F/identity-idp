@@ -45,10 +45,14 @@ Rails.application.routes.draw do
       as: :openid_connect_configuration
 
   get '/account' => 'accounts#show'
-  get '/account/reactivate' => 'users/reactivate_account#index', as: :reactivate_account
-  post '/account/reactivate' => 'users/reactivate_account#create'
-  get '/account/reactivate/start' => 'reactivate_account#index', as: :manage_reactivate_account
+  get '/account/reactivate/start' => 'reactivate_account#index', as: :reactivate_account
   put '/account/reactivate/start' => 'reactivate_account#update'
+  get '/account/reactivate/verify_password' => 'users/verify_password#new', as: :verify_password
+  put '/account/reactivate/verify_password' => 'users/verify_password#update', as: :update_verify_password
+  get '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#new',
+      as: :verify_personal_key
+  post '/account/reactivate/verify_personal_key' => 'users/verify_personal_key#create',
+       as: :create_verify_personal_key
   get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
   post '/account/verify_phone' => 'users/verify_profile_phone#create'
 
@@ -110,6 +114,8 @@ Rails.application.routes.draw do
   get '/sign_up/completed' => 'sign_up/completions#show', as: :sign_up_completed
   post '/sign_up/completed' => 'sign_up/completions#update'
 
+  match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
+
   delete '/users' => 'users#destroy', as: :destroy_user
 
   if FeatureManagement.enable_identity_verification?
@@ -147,5 +153,7 @@ Rails.application.routes.draw do
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule
   # will be ignored.
-  match '*path', via: :all, to: 'pages#page_not_found'
+  constraints(format: /html/) do
+    match '*path', via: :all, to: 'pages#page_not_found'
+  end
 end

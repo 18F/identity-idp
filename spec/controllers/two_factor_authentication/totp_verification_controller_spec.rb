@@ -87,10 +87,11 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user lockout period expires' do
       before do
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         user = create(
           :user,
           :signed_up,
-          second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.second,
+          second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
           second_factor_attempts_count: 3
         )
         sign_in_before_2fa(user)

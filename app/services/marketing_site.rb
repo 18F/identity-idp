@@ -18,6 +18,6 @@ class MarketingSite
   end
 
   def self.help_authenticator_app_url
-    URI.join(BASE_URL, help_url, '#what-is-an-authenticator-app').to_s
+    URI.join(BASE_URL, '/help/signing-in/what-is-an-authenticator-app/').to_s
   end
 end

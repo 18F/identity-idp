@@ -22,11 +22,8 @@ es:
         labels:
           password: Nueva contraseña
       show: NOT TRANSLATED YET
-    reactivate_profile:
-      instructions: Proveer la siguiente información para reactivar su cuenta.
-      submit: Reactivar perfil
-      title: Reactivar perfil
     personal_key:
+      alternative: NOT TRANSLATED YET
       title: NOT TRANSLATED YET
       instructions: NOT TRANSLATED YET
       confirmation_label: NOT TRANSLATED YET

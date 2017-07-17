@@ -12,4 +12,8 @@ class PersonalKeyFormatter
   def self.regexp_string
     REGEXP
   end
+
+  def self.code_length
+    CHAR_COUNT * WORD_COUNT + (WORD_COUNT - 1)
+  end
 end

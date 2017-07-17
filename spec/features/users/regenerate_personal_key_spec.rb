@@ -119,7 +119,7 @@ end
 def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
   expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
   expect(page).not_to have_xpath("//#{invisible_selector}[@id='personal-key']")
-  expect(page.evaluate_script('document.activeElement.name')).to eq 'personal-key'
+  expect(page.evaluate_script('document.activeElement.name')).to eq 'personal_key'
 end
 
 def press_shift_tab

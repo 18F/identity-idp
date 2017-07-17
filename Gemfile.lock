@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: 979a3342a2d08ee6ea2c444b846e4e15d50a0891
+  revision: 4308a502baf7b65e8b463ecafc2d428d530b4349
   branch: master
   specs:
     equifax (1.0.0)
@@ -117,7 +117,7 @@ GEM
     american_date (1.1.1)
     arel (6.0.4)
     ast (2.3.0)
-    aws-sdk-core (2.9.20)
+    aws-sdk-core (2.10.1)
       aws-sigv4 (~> 1.0)
       jmespath (~> 1.0)
     aws-sigv4 (1.0.0)
@@ -135,10 +135,10 @@ GEM
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
       rack (>= 0.9.0)
-    bindata (2.3.5)
+    bindata (2.4.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    brakeman (3.6.1)
+    brakeman (3.6.2)
     browser (2.4.0)
     browserify-rails (4.2.0)
       addressable (>= 2.4.0)
@@ -217,6 +217,7 @@ GEM
       thor (~> 0.19)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    device_detector (1.0.0)
     devise (4.3.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -228,7 +229,7 @@ GEM
       rails (>= 3.1.1)
     diff-lcs (1.3)
     docile (1.1.5)
-    dotenv (2.2.0)
+    dotenv (2.2.1)
     dotiw (3.1.1)
       actionpack (>= 3)
       i18n
@@ -293,12 +294,13 @@ GEM
     highline (1.7.8)
     hiredis (0.6.1)
     htmlentities (4.3.4)
+    http_accept_language (2.1.0)
     httparty (0.15.4)
       multi_xml (>= 0.5.2)
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.1)
+    i18n (0.8.4)
     i18n-tasks (0.9.15)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
@@ -313,7 +315,7 @@ GEM
     iniparse (1.4.2)
     jmespath (1.3.1)
     json (2.1.0)
-    json-jwt (1.7.1)
+    json-jwt (1.7.2)
       activesupport
       bindata
       multi_json (>= 1.3)
@@ -351,7 +353,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_portile2 (2.1.0)
+    mini_portile2 (2.2.0)
     minitest (5.10.2)
     multi_json (1.12.1)
     multi_xml (0.6.0)
@@ -359,9 +361,9 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    newrelic_rpm (4.1.0.333)
-    nokogiri (1.7.2)
-      mini_portile2 (~> 2.1.0)
+    newrelic_rpm (4.2.0.334)
+    nokogiri (1.8.0)
+      mini_portile2 (~> 2.2.0)
     nori (2.6.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
@@ -370,13 +372,14 @@ GEM
     overcommit (0.39.1)
       childprocess (~> 0.6.3)
       iniparse (~> 1.4)
+    parallel (1.11.2)
     parser (2.4.0.0)
       ast (~> 2.2)
-    pg (0.20.0)
-    phony (2.15.42)
-    phony_rails (0.14.5)
+    pg (0.21.0)
+    phony (2.15.44)
+    phony_rails (0.14.6)
       activesupport (>= 3.0)
-      phony (~> 2.15)
+      phony (> 2.15)
     poltergeist (1.15.0)
       capybara (~> 2.1)
       cliver (~> 0.3.1)
@@ -403,7 +406,7 @@ GEM
     rack-attack (5.0.1)
       rack
     rack-cors (0.4.1)
-    rack-mini-profiler (0.10.4)
+    rack-mini-profiler (0.10.5)
       rack (>= 1.2.0)
     rack-protection (1.5.3)
       rack
@@ -429,7 +432,7 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-erd (1.5.0)
+    rails-erd (1.5.2)
       activerecord (>= 3.2)
       activesupport (>= 3.2)
       choice (~> 0.2.0)
@@ -453,7 +456,7 @@ GEM
       connection_pool (~> 2.1)
       redis (~> 3.0)
     redis (3.3.3)
-    reek (4.6.2)
+    reek (4.7.1)
       codeclimate-engine-rb (~> 0.4.0)
       parser (>= 2.4.0.0, < 2.5)
       rainbow (~> 2.0)
@@ -486,7 +489,8 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubocop (0.48.1)
+    rubocop (0.49.1)
+      parallel (~> 1.10)
       parser (>= 2.3.3.1, < 3.0)
       powerpack (~> 0.1)
       rainbow (>= 1.99.1, < 3.0)
@@ -494,7 +498,7 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-graphviz (1.2.3)
     ruby-progressbar (1.8.1)
-    ruby-saml (1.4.2)
+    ruby-saml (1.4.3)
       nokogiri (>= 1.5.10)
     ruby_dep (1.5.0)
     ruby_parser (3.8.4)
@@ -519,18 +523,18 @@ GEM
       wasabi (~> 3.4)
     scrypt (3.0.5)
       ffi-compiler (>= 1.0, < 2.0)
-    secure_headers (3.6.4)
+    secure_headers (3.6.5)
       useragent
     securecompare (1.0.0)
     sexp_processor (4.8.0)
     shellany (0.0.1)
     shoulda-matchers (3.1.1)
       activesupport (>= 4.0.0)
-    sidekiq (4.2.10)
+    sidekiq (5.0.3)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
-      redis (~> 3.2, >= 3.2.1)
+      redis (~> 3.3, >= 3.3.3)
     simple_form (3.5.0)
       actionpack (> 4, < 5.2)
       activemodel (> 4, < 5.2)
@@ -546,16 +550,16 @@ GEM
     skinny (0.2.4)
       eventmachine (~> 1.0.0)
       thin (>= 1.5, < 1.7)
-    slim (3.0.7)
-      temple (~> 0.7.6)
+    slim (3.0.8)
+      temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
     slim-rails (3.1.2)
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (~> 3.0)
-    slim_lint (0.12.0)
+    slim_lint (0.13.0)
       rake (>= 10, < 13)
-      rubocop (>= 0.48.0)
+      rubocop (>= 0.49.0)
       slim (~> 3.0)
       sysexits (~> 1.1)
     slop (3.6.0)
@@ -578,7 +582,7 @@ GEM
       railties (>= 3.2.5, < 6)
     teaspoon-mocha (2.3.3)
       teaspoon (>= 1.0.0)
-    temple (0.7.7)
+    temple (0.8.0)
     terminal-table (1.8.0)
       unicode-display_width (~> 1.1, >= 1.1.1)
     test_after_commit (1.1.0)
@@ -591,7 +595,7 @@ GEM
     thread (0.2.2)
     thread_safe (0.3.6)
     tilt (2.0.7)
-    timecop (0.8.1)
+    timecop (0.9.0)
     twilio-ruby (4.13.0)
       builder (>= 2.1.2)
       jwt (~> 1.0)
@@ -600,7 +604,7 @@ GEM
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
-    unicode-display_width (1.2.1)
+    unicode-display_width (1.3.0)
     uniform_notifier (1.10.0)
     url_safe_base64 (0.2.2)
     user_agent_parser (2.3.1)
@@ -631,7 +635,7 @@ GEM
     whenever (0.9.7)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
-    xmlenc (0.6.8)
+    xmlenc (0.6.9)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       nokogiri (>= 1.6.0, < 2.0.0)
@@ -669,6 +673,7 @@ DEPENDENCIES
   coffee-script
   database_cleaner
   derailed
+  device_detector
   devise (~> 4.1)
   devise_security_extension
   dotiw
@@ -685,6 +690,7 @@ DEPENDENCIES
   gyoku
   hashie
   hiredis
+  http_accept_language
   httparty
   i18n-tasks
   json-jwt
@@ -746,4 +752,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.6
+   1.15.1

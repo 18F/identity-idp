@@ -39,6 +39,10 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    I18n.locale = :en
+  end
+
+  config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
     Rack::Attack.cache.store.clear
   end

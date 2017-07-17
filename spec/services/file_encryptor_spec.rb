@@ -5,7 +5,7 @@ RSpec.describe FileEncryptor do
 
   subject(:file_encryptor) do
     FileEncryptor.new(
-      Rails.root.join('keys/equifax_gpg.pub.bin'),
+      Rails.root.join('keys', 'equifax_gpg.pub.bin'),
       email
     )
   end

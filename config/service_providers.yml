@@ -52,6 +52,7 @@ test:
       - 'http://localhost:7654/'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
+    assertion_consumer_logout_service_url: ''
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
@@ -358,10 +359,10 @@ production:
     friendly_name: 'Railroad Retirement Board'
     agency: 'RRB'
     logo: 'rrb.svg'
-    acs_url: 'https://onlinetest.rrb.gov/login/login/callback'
-    assertion_consumer_logout_service_url: 'https://onlinetest.rrb.gov/login/login/logout'
-    sp_initiated_login_url: 'https://onlinetest.rrb.gov/login/login/Auth'
-    return_to_sp_url: 'https://onlinetest.rrb.gov/login/login/RRBHome'
+    acs_url: 'https://onlinetest.rrb.gov/AA1/login/login/callback'
+    assertion_consumer_logout_service_url: 'https://onlinetest.rrb.gov/AA1/BOS/BOS/logout'
+    sp_initiated_login_url: 'https://onlinetest.rrb.gov/AA1/login/login/Auth'
+    return_to_sp_url: 'https://onlinetest.rrb.gov/AA1/Login/login/RRBHome'
     block_encryption: 'aes256-cbc'
     cert: 'rrb_bos_pre_prod'
     attribute_bundle:

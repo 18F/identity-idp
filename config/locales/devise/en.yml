@@ -120,6 +120,9 @@ en:
       max_otp_login_attempts_reached: >
         Your account is temporarily locked because you have entered the one-time
         security code incorrectly too many times.
+      max_otp_requests_reached: >
+        Your account is temporarily locked because you have requested a
+        security code too many times.
       max_personal_key_login_attempts_reached: >
         Your account is temporarily locked because you have entered the personal key
         incorrectly too many times.

@@ -54,7 +54,10 @@ describe 'devise/sessions/new.html.slim' do
       )
       view_context = ActionController::Base.new.view_context
       @decorated_session = DecoratedSession.new(
-        sp: sp, view_context: view_context, sp_session: {}
+        sp: sp,
+        view_context: view_context,
+        sp_session: {},
+        service_provider_request: ServiceProviderRequest.new
       ).call
       allow(view).to receive(:decorated_session).and_return(@decorated_session)
     end
