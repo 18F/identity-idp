@@ -11,7 +11,7 @@ module Verify
     attr_reader :error, :remaining_attempts, :idv_form
 
     def mock_vendor_partial
-      if idv_vendor.pick == :mock
+      if FeatureManagement.no_pii_mode?
         'verify/sessions/no_pii_warning'
       else
         'shared/null'
@@ -61,10 +61,6 @@ module Verify
     end
 
     private
-
-    def idv_vendor
-      @_idv_vendor ||= Idv::Vendor.new
-    end
 
     def button_link_text
       I18n.t("idv.modal.button.#{error}")

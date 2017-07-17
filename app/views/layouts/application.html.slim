@@ -45,6 +45,7 @@ html lang="#{I18n.locale}" class='no-js'
   body class="#{Rails.env}-env site sm-bg-light-blue"
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
+      = render 'shared/no_pii_banner' if FeatureManagement.no_pii_mode?
       = render 'shared/usa_banner'
       - if content_for?(:nav)
         = yield(:nav)
