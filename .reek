@@ -14,6 +14,7 @@ DuplicateMethodCall:
     - UserFlowExporter#self.massage_assets
 FeatureEnvy:
   exclude:
+    - ActiveJob::Logging::LogSubscriber#json_for
     - track_registration
     - append_info_to_payload
     - generate_slo_request
