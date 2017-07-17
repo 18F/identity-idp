@@ -23,7 +23,12 @@ module SignUp
         Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
         service_provider_attributes
       )
-      redirect_to sp_session[:request_url]
+
+      if decider.go_back_to_mobile_app?
+        sign_user_out_and_instruct_to_go_back_to_mobile_app
+      else
+        redirect_to sp_session[:request_url]
+      end
     end
 
     private
@@ -45,6 +50,21 @@ module SignUp
 
     def service_provider_attributes
       { loa3: sp_session[:loa3], service_provider_name: decorated_session.sp_name }
+    end
+
+    def decider
+      CompletionsDecider.new(
+        user_agent: request.user_agent, request_url: sp_session[:request_url]
+      )
+    end
+
+    def sign_user_out_and_instruct_to_go_back_to_mobile_app
+      sign_out
+      flash[:notice] = t(
+        'instructions.go_back_to_mobile_app',
+        friendly_name: view_model.decorated_session.sp_name
+      )
+      redirect_to new_user_session_url
     end
   end
 end

@@ -26,6 +26,7 @@ es:
         with_key: NOT TRANSLATED YET
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
+    go_back_to_mobile_app: NOT TRANSLATED YET
     password:
       forgot: >
         Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico

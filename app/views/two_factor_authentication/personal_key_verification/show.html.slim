@@ -8,4 +8,4 @@ p.mt-tiny.mb0 = t('devise.two_factor_authentication.personal_key_prompt')
   = render 'partials/personal_key/entry_fields', f: f, attribute_name: :personal_key
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary'
 
-= render 'shared/cancel', link: destroy_user_session_path
+= render 'shared/cancel', link: sign_out_path
