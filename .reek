@@ -104,6 +104,7 @@ UtilityFunction:
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
     - LocaleHelper#locale_url_param
+    - Verify::Base#mock_vendor_partial
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
