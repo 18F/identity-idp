@@ -71,7 +71,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_review_path if idv_session.phone_confirmation == true
+      redirect_to verify_review_path if idv_session.vendor_phone_confirmation == true
     end
 
     def idv_form

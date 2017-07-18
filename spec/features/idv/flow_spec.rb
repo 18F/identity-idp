@@ -413,6 +413,29 @@ feature 'IdV session' do
 
       expect(current_path).to eq account_path
     end
+
+    scenario 'being unable to verify account without OTP phone confirmation' do
+      different_phone = '555-555-9876'
+      user = sign_in_live_with_2fa
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok(different_phone)
+      click_idv_continue
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      visit verify_confirmations_path
+      click_acknowledge_personal_key
+
+      user.reload
+
+      expect(user.active_profile).to be_nil
+    end
   end
 
   def complete_idv_profile_fail

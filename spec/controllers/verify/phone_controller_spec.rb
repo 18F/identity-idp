@@ -26,7 +26,7 @@ describe Verify::PhoneController do
     end
 
     it 'redirects to review when step is complete' do
-      subject.idv_session.phone_confirmation = true
+      subject.idv_session.vendor_phone_confirmation = true
 
       get :new
 
@@ -73,7 +73,7 @@ describe Verify::PhoneController do
         expect(@analytics).to have_received(:track_event).with(
           Analytics::IDV_PHONE_CONFIRMATION_FORM, result
         )
-        expect(subject.idv_session.phone_confirmation).to be_falsy
+        expect(subject.idv_session.vendor_phone_confirmation).to be_falsy
       end
     end
 
