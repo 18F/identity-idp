@@ -148,7 +148,7 @@ GEM
     bullet (5.5.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bummr (0.2.0)
+    bummr (0.1.8)
       rainbow
       thor
     byebug (9.0.6)
