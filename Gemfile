@@ -114,4 +114,5 @@ end
 
 group :production do
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', branch: 'master'
+  gem 'mandrill_dm'
 end
