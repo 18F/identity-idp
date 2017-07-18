@@ -61,6 +61,6 @@ class FeatureManagement
   end
 
   def self.no_pii_mode?
-    Idv::Vendor.new.pick == :mock
+    enable_identity_verification? && Idv::Vendor.new.pick == :mock
   end
 end
