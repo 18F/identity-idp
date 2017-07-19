@@ -4,13 +4,13 @@ es:
     buttons:
       back: Atrás
       continue: Continuar
-      disable: Inhabilitar
+      disable: Suspender
       edit: Editar
-      enable: Habilitar
+      enable: Permitir
       resend_confirmation: Reenviar instrucciones de confirmación
-      send_security_code: Enviar contraseña
+      send_security_code: Enviar código de seguridad
       submit:
-        confirm_change: Confirm change
+        confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
     confirmation:
@@ -18,29 +18,32 @@ es:
     passwords:
       edit:
         buttons:
-          submit: Cambia la contraseña
+          submit: Cambiar la contraseña
         labels:
           password: Nueva contraseña
-      show: NOT TRANSLATED YET
+      show: Mostrar contraseña
     personal_key:
-      alternative: NOT TRANSLATED YET
-      confirmation_label: NOT TRANSLATED YET
-      instructions: NOT TRANSLATED YET
-      title: NOT TRANSLATED YET
+      alternative: "¿No tiene su clave personal?"
+      confirmation_label: Clave personal
+      instructions: |2-
+
+        Confirme que tiene una copia de su clave personal ingresándola a continuación.
+      title: Ingrese su clave personal
     registration:
       labels:
-        email: Dirección de correo electrónico
+        email: Email
     totp_setup:
-      totp_intro_html: NOT TRANSLATED YET
-      totp_step_1: NOT TRANSLATED YET
-      totp_step_2: NOT TRANSLATED YET
-      totp_step_3: NOT TRANSLATED YET
+      totp_intro_html: Al iniciar una sesión, puede obtener el código de seguridad
+        de una app de autenticación. %{link}
+      totp_step_1: Abra su app de autenticación.
+      totp_step_2: Ingrese esta clave en la app.
+      totp_step_3: Ingrese el código de la app.
     two_factor:
-      code: Código de acceso único
-      personal_key: Código de recuperación
-      try_again: Inténtalo de nuevo
+      code: Código de seguridad de sólo un uso
+      personal_key: Clave personal
+      try_again: Use otro número de teléfono.
     verify_profile:
-      instructions: NOT TRANSLATED YET
-      name: NOT TRANSLATED YET
-      submit: NOT TRANSLATED YET
-      title: NOT TRANSLATED YET
+      instructions: Ingrese el código de 10 caracteres que le enviamos en la carta.
+      name: Código de confirmación
+      submit: Confirmar cuenta
+      title: Confirme su cuenta

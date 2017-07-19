@@ -1,33 +1,37 @@
 ---
 es:
   titles:
-    account: NOT TRANSLATED YET
-    account_locked: NOT TRANSLATED YET
+    account: Cuenta
+    account_locked: |2-
+
+      Cuenta bloqueada
     confirmations:
-      new: NOT TRANSLATED YET
-      show: NOT TRANSLATED YET
+      new: Reenviar instrucciones de confirmación de su cuenta
+      show: |2-
+
+        Elija una contraseña
     edit_info:
-      email: NOT TRANSLATED YET
-      password: NOT TRANSLATED YET
-      phone: NOT TRANSLATED YET
-    enter_2fa_code: NOT TRANSLATED YET
+      email: Edite su email
+      password: Edite su contraseña
+      phone: Edite su número de teléfono
+    enter_2fa_code: Ingese su código de seguridad de sólo un uso
     passwords:
-      change: NOT TRANSLATED YET
-      confirm: NOT TRANSLATED YET
-      forgot: NOT TRANSLATED YET
-    personal_key: NOT TRANSLATED YET
-    reactivate_account: NOT TRANSLATED YET
+      change: Cambie la contraseña de su cuenta
+      confirm: Confirme la contraseña de su cuenta
+      forgot: Restablezca la contraseña de su cuenta
+    personal_key: Por si acaso
+    reactivate_account: Reactive su cuenta
     registrations:
-      new: NOT TRANSLATED YET
-      start: NOT TRANSLATED YET
+      new: Regístrese para una cuenta
+      start: Empezar
     sign_up:
-      completion_html: You have %{accent} with %{app}
-      loa1: created your account
-      loa3: verified your identity
+      completion_html: Tiene %{accent} con %{app}
+      loa1: creó su cuenta
+      loa3: verificó su identidad
     totp_setup:
-      new: NOT TRANSLATED YET
-    two_factor_setup: NOT TRANSLATED YET
-    verify_email: NOT TRANSLATED YET
-    verify_profile: NOT TRANSLATED YET
+      new: Configure la autenticación de dos factores
+    two_factor_setup: Configuración de autenticación de dos factores
+    verify_email: Revise su email
+    verify_profile: Active su cuenta
     visitors:
-      index: NOT TRANSLATED YET
+      index: Bienvenido/a

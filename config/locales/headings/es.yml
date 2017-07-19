@@ -2,31 +2,31 @@
 es:
   headings:
     account:
-      account_history: La historia de la cuenta
-      login_info: Información de la cuenta
-      profile_info: NOT TRANSLATED YET
-      reactivate: NOT TRANSLATED YET
+      account_history: Historial de cuenta
+      login_info: Su cuenta
+      profile_info: Información de perfil
+      reactivate: Reactive su cuenta
       two_factor: Autenticación de dos factores
       verified_account: Cuenta verificada
     confirmations:
-      new: Enviar otro correo electrónico de confirmación
+      new: Enviar otro email de confirmación
     create_account_with_sp:
-      sp_text: NOT TRANSLATED YET
-    create_account_without_sp: Crear una cuenta de login.gov
+      sp_text: está usando login.gov para ingresar de manera fácil y segura.
+    create_account_without_sp: Establezca una cuenta de login.gov
     edit_info:
-      email: Cambiar su correo electrónico
-      password: Cambiar su contraseña
-      phone: Ingresar su nuevo número de teléfono
+      email: Cambie su email
+      password: Cambie su contraseña
+      phone: Ingrese su nuevo número de teléfono
     passwords:
-      change: Cambiar su contraseña
+      change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar
       forgot: "¿Olvidó su contraseña?"
-    personal_key: Asegúrese de que siempre puede iniciar sesión
+    personal_key: Aquí está su clave personal
     registrations:
-      enter_email: Empezar a crear una cuenta
-    session_timeout_warning: "¿Necesita mas tiempo?"
+      enter_email: Empiece creando una cuenta
+    session_timeout_warning: "¿Necesita más tiempo?"
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión
     totp_setup:
-      new: Configurar la autenticación de dos factores
-    verify_email: Revisar su correo electrónico
+      new: Permita una app de autenticación
+    verify_email: Revise su email

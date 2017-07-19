@@ -2,174 +2,246 @@
 es:
   idv:
     buttons:
-      activate_by_mail: NOT TRANSLATED YET
-      activate_by_phone: NOT TRANSLATED YET
-      cancel: NOT TRANSLATED YET
-      continue: NOT TRANSLATED YET
-      help: NOT TRANSLATED YET
+      activate_by_mail: Acitive por email
+      activate_by_phone: Active por teléfono
+      cancel: Cancele y regrese a su perfil
+      continue: Continúe la verificación de identidad
+      help: Continúe con el Centro de Ayuda
       mail:
-        resend: NOT TRANSLATED YET
-        send: NOT TRANSLATED YET
+        resend: Enviar otra carta
+        send: Enviar una carta
     cancel:
-      modal_header: NOT TRANSLATED YET
-      warning_header: NOT TRANSLATED YET
-      warning_points:
-      - NOT TRANSLATED YET
+      modal_header: "¿Está seguro que desea cancelar?"
+      warning_header: Si usted cancela ahora
+      warning_points: '["No podremos verificar su identidad", "No mantendremos un
+        registro de su nombre, dirección, fecha de nacimiento o número de Seguro Social",
+        "No podrá acceder a su información con seguridad usando login.gov "," Usted
+        todavía tiene una cuenta de login.gov con su email"," Puede administrar esa
+        cuenta en su página de perfil "]'
     errors:
-      bad_dob: NOT TRANSLATED YET
-      duplicate_ssn: NOT TRANSLATED YET
-      finance_number_length: NOT TRANSLATED YET
-      hardfail: NOT TRANSLATED YET
-      incorrect_password: NOT TRANSLATED YET
-      invalid_ccn: NOT TRANSLATED YET
-      mail_limit_reached: NOT TRANSLATED YET
-      missing_finance: NOT TRANSLATED YET
+      bad_dob: Su fecha de nacimiento debe ser una fecha válida.
+      duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
+      finance_number_length: El número debe estar entre los dígitos %{mínimo} y %{máximo}.
+      hardfail: No pudimos verificar su identidad en este momento.
+      incorrect_password: La contraseña que ingresó no es correcta.
+      invalid_ccn: El número de la tarjeta de crédito debe ser de sólo los últimos
+        8 dígitos.
+      mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
+      missing_finance: Debe proporcionar un número de cuenta financiera.
       pattern_mismatch:
-        dob: NOT TRANSLATED YET
-        personal_key: NOT TRANSLATED YET
-        ssn: NOT TRANSLATED YET
-        zipcode: NOT TRANSLATED YET
+        dob: |2-
+
+          Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
+        personal_key: |2-
+
+          Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456
+        ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
+        zipcode: 'Su código postal debe ser ingresado como #####-####'
     form:
-      activate_by_mail: NOT TRANSLATED YET
-      address1: NOT TRANSLATED YET
-      address2: NOT TRANSLATED YET
-      auto_loan: NOT TRANSLATED YET
-      ccn: NOT TRANSLATED YET
-      city: NOT TRANSLATED YET
-      dob: NOT TRANSLATED YET
-      dob_hint: NOT TRANSLATED YET
-      first_name: NOT TRANSLATED YET
-      home_equity_line: NOT TRANSLATED YET
-      last_name: NOT TRANSLATED YET
-      mortgage: NOT TRANSLATED YET
-      no_alternate_phone_html: NOT TRANSLATED YET
-      password: NOT TRANSLATED YET
-      personal_details: NOT TRANSLATED YET
-      phone: NOT TRANSLATED YET
-      phone_label_aside: NOT TRANSLATED YET
-      previous_address_add: NOT TRANSLATED YET
-      previous_address_html: NOT TRANSLATED YET
-      select_financial_account: NOT TRANSLATED YET
-      ssn_label_html: NOT TRANSLATED YET
-      state: NOT TRANSLATED YET
-      use_ccn: NOT TRANSLATED YET
-      use_financial_account: NOT TRANSLATED YET
-      zipcode: NOT TRANSLATED YET
+      activate_by_mail: |2-
+
+        Activar mi cuenta por correo.
+      address1: Dirección de calle 1
+      address2: Dirección de calle 2 (opcional)
+      auto_loan: Número de cuenta de préstamo de auto
+      ccn: Últimos 8 dígitos de una tarjeta de crédito
+      city: Ciudad
+      dob: Fecha de nacimiento
+      dob_hint: 'Ejemplo: 01/17/1964'
+      first_name: Nombre
+      home_equity_line: Número de la cuenta del préstamo sobre el valor neto de la
+        vivienda
+      last_name: Apellido
+      mortgage: Número de la cuenta de préstamo hipotecario
+      no_alternate_phone_html: No tengo otro número de teléfono. %{enlazar}
+      password: Contraseña
+      personal_details: Detalles personales
+      phone: Teléfono
+      phone_label_aside: Celular o teléfono fijo
+      previous_address_add: |2-
+
+        Añadir la dirección anterior
+      previous_address_html: "¿Se mudó en los <strong>últimos 3 meses</ strong>?"
+      select_financial_account: Seleccione una cuenta financiera...
+      ssn_label_html: Número de Seguro Social %{tooltip}
+      state: Estado
+      use_ccn: |2-
+
+        Proporcione el número de tarjeta de crédito >
+      use_financial_account: |2-
+
+        ¿No tiene una tarjeta de crédito?
+      zipcode: Código postal
     index:
-      continue_link: NOT TRANSLATED YET
-      paragraph_1: NOT TRANSLATED YET
-      prompt: NOT TRANSLATED YET
+      continue_link: Sí, continuar
+      paragraph_1: Nos hemos asociado con una empresa externa confiable para verificar
+        esta información y su identidad.
+      prompt: |2-
+
+        ¿Tiene toda esta información disponible ahora mismo?
       section_1:
-        bullet_1: NOT TRANSLATED YET
-        bullet_2: NOT TRANSLATED YET
-        bullet_3: NOT TRANSLATED YET
-        bullet_4: NOT TRANSLATED YET
-        header: NOT TRANSLATED YET
-        subheader: NOT TRANSLATED YET
+        bullet_1: Nombre completo
+        bullet_2: Dirección postal
+        bullet_3: Fecha de nacimiento
+        bullet_4: Número de Seguro Social
+        header: Información personal
+        subheader: 'Comenzaremos con algunos datos personales como:'
       section_2:
-        bullet_1: NOT TRANSLATED YET
-        bullet_2: NOT TRANSLATED YET
-        bullet_3: NOT TRANSLATED YET
-        bullet_4: NOT TRANSLATED YET
-        footnote: NOT TRANSLATED YET
-        header: NOT TRANSLATED YET
-        subheader: NOT TRANSLATED YET
+        bullet_1: Últimos 8 dígitos de una tarjeta de crédito
+        bullet_2: Número de cuenta de préstamo de auto
+        bullet_3: Número de cuenta de préstamo hipotecario
+        bullet_4: Número de la cuenta del préstamo sobre el valor neto de la vivienda
+        footnote: Nunca se le cobrará ningún dinero y no compartirá ningún saldo de
+          cuenta u otra información financiera con nosotros. Solo verificamos el número
+          de cuenta para verificar su identidad.
+        header: Información financiera
+        subheader: 'Necesitamos uno de los siguientes números de cuenta financiera:'
       section_3:
-        bullet_1: NOT TRANSLATED YET
-        bullet_2_html: NOT TRANSLATED YET
-        bullet_3_html: NOT TRANSLATED YET
-        header: NOT TRANSLATED YET
-        subheader: NOT TRANSLATED YET
-      subheader: NOT TRANSLATED YET
+        bullet_1: |2-
+
+          Bajo su nombre o el nombre de alguien en su hogar
+        bullet_2_html: "<strong>No es</ strong> un teléfono virtual, como Google Voice
+          o Skype"
+        bullet_3_html: "<strong>No es</ strong> un teléfono de prepago"
+        header: Línea de teléfono a su nombre
+        subheader: |2-
+
+          Utilizamos registros de la compañía telefónica para verificar su identidad. El número de teléfono que usted nos da debe:
+      subheader: Para verificar su identidad, le pediremos que responda algunas preguntas
     messages:
-      activated_html: NOT TRANSLATED YET
-      activated_link: contact us
-      cancel: NOT TRANSLATED YET
-      confirm: NOT TRANSLATED YET
-      dupe_ssn1: NOT TRANSLATED YET
-      dupe_ssn2_html: NOT TRANSLATED YET
-      dupe_ssn2_link: NOT TRANSLATED YET
+      activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
+        verificada, por favor, %{link}.
+      activated_link: Contáctenos
+      cancel: Para continuar %{app} necesita verificar su identidad. Necesitamos recopilar
+        información personal básica, así como su información financiera para completar
+        este proceso. Si no tiene la información que necesitamos en este momento,
+        puede continuar más tarde.
+      confirm: Usted ha encriptado sus datos verificados.
+      dupe_ssn1: |2-
+
+        Si recibe este error, es posible que ya haya creado y verificado una cuenta, pero con un email diferente.
+      dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
+      dupe_ssn2_link: |2-
+
+        Cerrar ahora y volver a iniciar sesión
       finance:
-        disclaimer: NOT TRANSLATED YET
-        hint: NOT TRANSLATED YET
-        intro_account: NOT TRANSLATED YET
-        intro_ccn_help: NOT TRANSLATED YET
-        intro_ccn_html: NOT TRANSLATED YET
-        no_account: NOT TRANSLATED YET
-        no_account_info: NOT TRANSLATED YET
-      hardfail: NOT TRANSLATED YET
-      hardfail4: NOT TRANSLATED YET
-      help_center: NOT TRANSLATED YET
+        disclaimer: Al continuar acepta que %{app_name} compare la información de
+          la cuenta que proporciona con fuentes de terceros para verificar su identidad.
+        hint: Puede utilizar Mastercard, Visa, Diner's Club o JCB.
+        intro_account: Ayúdenos a verificar su identidad proporcionando información
+          sobre un préstamo de auto, una hipoteca o un número de préstamo sobre el
+          valor neto de su casa.
+        intro_ccn_help: |2-
+
+          cómo se utilizará su información
+        intro_ccn_html: Ayúdenos a verificar su identidad proporcionando los últimos
+          8 dígitos de una tarjeta de crédito. Obtenga más información sobre %{intro_help_link}.
+        no_account: "¿Desea usar una tarjeta de crédito?"
+        no_account_info: Ayúdenos a verificar su identidad proporcionando los últimos
+          8 dígitos de su tarjeta de crédito.
+      hardfail: No podemos verificar su identidad en este momento.
+      hardfail4: También puede ir a %{sp} para obtener más ayuda y acceder a los servicios.
+      help_center: Visite nuestro Centro de Ayuda para obtener más información sobre
+        la verificación de su cuenta.
       loading: NOT TRANSLATED YET
-      mail_sent: NOT TRANSLATED YET
-      personal_details_verified: NOT TRANSLATED YET
-      personal_key: NOT TRANSLATED YET
+      mail_sent: Su carta está en camino
+      personal_details_verified: "¡Detalles personales verificados!"
+      personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
+        seguro. La necesitará si pierde su contraseña.
       phone:
-        alert: NOT TRANSLATED YET
-        in_your_name: NOT TRANSLATED YET
-        intro: NOT TRANSLATED YET
-        phone_of_record: NOT TRANSLATED YET
-        prepaid: NOT TRANSLATED YET
-        same_as_2fa: NOT TRANSLATED YET
+        alert: Esta línea telefónica debe
+        in_your_name: a su nombre o el nombre de un miembro de familia
+        intro: Sólo podemos enviar el código de confirmación al número de teléfono
+          vinculado a su identidad legal.
+        phone_of_record: Teléfono del registro
+        prepaid: en un contrato, no prepago
+        same_as_2fa: |2-
+
+          Este número de teléfono puede ser el mismo que utilizó para configurar su contraseña de un uso único, siempre y cuando cumpla con los criterios anteriores.
       review:
-        financial_info: NOT TRANSLATED YET
-        info_verified_html: NOT TRANSLATED YET
-        intro: NOT TRANSLATED YET
-      select_verification_with_sp: NOT TRANSLATED YET
-      select_verification_without_sp: NOT TRANSLATED YET
+        financial_info: "¿Dónde está la información de mi cuenta financiera?"
+        info_verified_html: |2-
+
+          Encontramos registros que coinciden con su %{teléfono_mensaje}
+        intro: |2-
+
+          Su información verificada
+      select_verification_with_sp: Para protegerlo de robo de identidad, no puede
+        utilizar su cuenta en %{sp_nombre} hasta que la active ingresando un código
+        de confirmación.
+      select_verification_without_sp: Para proteger su cuenta de robo de identidad,
+        su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
-        no_pii: NOT TRANSLATED YET
-        pii: NOT TRANSLATED YET
-        success: NOT TRANSLATED YET
+        no_pii: No utilice información personal real (sólo para propósitos de demostración)
+        pii: información personal
+        success: Encontramos registros que coinciden con su %{pii_mensaje}
       usps:
-        bad_address: NOT TRANSLATED YET
-        byline: NOT TRANSLATED YET
-        resend: NOT TRANSLATED YET
-        success: NOT TRANSLATED YET
+        bad_address: No puedo recibir correo en esta dirección
+        byline: Le enviaremos una carta con un código de confirmación a su dirección
+          verificada en el archivo.
+        resend: |2-
+
+          Envíeme otra carta.
+        success: Debe llegar en 5 a 10 días laborales.
     modal:
       attempts:
-        one: NOT TRANSLATED YET
-        other: NOT TRANSLATED YET
+        one: Tiene usted <strong> 1 intento restante.</ strong>
+        other: Tiene usted <strong>%{count} intentos restantes.</strong>
       button:
-        fail: NOT TRANSLATED YET
-        warning: NOT TRANSLATED YET
+        fail: Bueno
+        warning: Inténtelo de nuevo
       financials:
-        fail: NOT TRANSLATED YET
-        heading: NOT TRANSLATED YET
+        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
+          verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más
+          información sobre la verificación de identidad.
+        heading: No hemos podido encontrar registros que coincidan con su información
+          financiera.
         timeout: NOT TRANSLATED YET
-        warning: NOT TRANSLATED YET
+        warning: |2-
+
+          Compruebe la información que ingresó.
       phone:
-        fail: NOT TRANSLATED YET
-        heading: NOT TRANSLATED YET
+        fail: |2-
+
+          Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más información sobre la verificación de identidad.
+        heading: No hemos podido encontrar registros que coincidan con la información
+          de su teléfono.
         timeout: NOT TRANSLATED YET
-        warning: NOT TRANSLATED YET
+        warning: |2-
+
+          Compruebe la información que ingresó.
       sessions:
-        fail: NOT TRANSLATED YET
-        heading: NOT TRANSLATED YET
+        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de que
+          pueda intentar verificarla de nuevo.
+        heading: No hemos podido encontrar registros que coincidan con su información
+          personal.
         timeout: NOT TRANSLATED YET
-        warning: NOT TRANSLATED YET
+        warning: Compruebe la información que ingresó. Los errores comunes son números
+          incorrectos de Seguro Social, código postal o fecha de nacimiento.
     review:
-      dob: NOT TRANSLATED YET
-      full_name: NOT TRANSLATED YET
-      mailing_address: NOT TRANSLATED YET
-      ssn: NOT TRANSLATED YET
+      dob: Fecha de nacimiento
+      full_name: Nombre completo
+      mailing_address: Dirección postal
+      ssn: Número de Seguro Social (SSN, sigla en inglés)
     titles:
-      activated: NOT TRANSLATED YET
-      cancel: NOT TRANSLATED YET
-      complete: NOT TRANSLATED YET
-      dupe: NOT TRANSLATED YET
-      expectations: NOT TRANSLATED YET
-      fail: NOT TRANSLATED YET
-      financials: NOT TRANSLATED YET
-      hardfail: NOT TRANSLATED YET
-      intro: NOT TRANSLATED YET
+      activated: Su identidad ha sido verificada.
+      cancel: No podemos verificar su identidad.
+      complete: Verificación de identidad completa
+      dupe: 'Error: Una cuenta puede que ya exista.'
+      expectations: A continuación, ayúdenos a identificarlo.
+      fail: No pudimos verificar su identidad.
+      financials: Proporcione un número de cuenta financiera.
+      hardfail: No pudimos verificar su identidad.
+      intro: Ayúdenos a identificarlo
       mail:
-        resend: NOT TRANSLATED YET
-        verify: NOT TRANSLATED YET
-      phone: NOT TRANSLATED YET
-      review: NOT TRANSLATED YET
-      select_verification: NOT TRANSLATED YET
+        resend: "¿Desea otra carta?"
+        verify: "¿Desea una carta?"
+      phone: Número de teléfono del registro
+      review: Revise y envíe
+      select_verification: Active su cuenta
       session:
-        phone: NOT TRANSLATED YET
-        review: NOT TRANSLATED YET
-      sessions: NOT TRANSLATED YET
+        phone: Obtener un código por teléfono
+        review: Encripte sus datos verificados ingresando su contraseña.
+      sessions: |2-
+
+        Primero, cuéntenos sobre usted
