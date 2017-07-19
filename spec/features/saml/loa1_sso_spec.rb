@@ -30,19 +30,22 @@ feature 'LOA1 Single Sign On' do
         click_on t('forms.buttons.continue')
 
         expect(current_url).to eq authn_request
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
     end
 
     it 'takes user to the service provider, allows user to visit IDP' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
       user = create(:user, :signed_up)
       saml_authn_request = auth_request.create(saml_settings)
 
       visit saml_authn_request
-      sign_in_live_with_2fa(user)
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
 
       expect(current_url).to eq saml_authn_request
-      expect(page.get_rack_session.keys).to_not include('sp')
 
       visit root_path
       expect(current_path).to eq account_path
@@ -177,7 +180,7 @@ feature 'LOA1 Single Sign On' do
         click_button t('forms.buttons.continue')
 
         expect(current_url).to eq authn_request
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
 
       perform_in_browser(:one) do
@@ -190,7 +193,7 @@ feature 'LOA1 Single Sign On' do
         click_button t('forms.buttons.continue')
 
         expect(current_url).to eq authn_request
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
     end
   end
