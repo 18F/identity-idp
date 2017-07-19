@@ -1,0 +1,78 @@
+#!/usr/bin/env ruby
+require 'optparse'
+require 'csv'
+require 'yaml'
+require 'fileutils'
+
+Config = Struct.new(:out_dir, :out_locale, :in_csv, :separate_files, :dry_run)
+
+config = Config.new
+
+parser = OptionParser.new do |opts|
+  opts.banner = "Usage: #{$PROGRAM_NAME} [OPTIONS]"
+
+  opts.on('--out-dir=OUT_DIR', 'The directory to write to') do |out_dir|
+    config.out_dir = out_dir
+  end
+
+  opts.on('--out-locale=OUT_LOCALE', 'The locale to export') do |out_locale|
+    config.out_locale = out_locale.downcase
+  end
+
+  opts.on('--in-csv=IN_CSV', 'The CSV to read translations from') do |in_csv|
+    config.in_csv = in_csv
+  end
+
+  opts.on('--separate', 'Write separate .yml files per top-level key') do
+    config.separate_files = true
+  end
+
+  opts.on('--dry-run', 'Do not write to the filesystem') do
+    config.dry_run = true
+  end
+
+  opts.on('--help', '-h', 'Show this message') do
+    puts opts
+  end
+end
+
+parser.parse(ARGV)
+
+if !config.out_dir || !config.out_locale || !config.in_csv
+  puts parser
+  exit 1
+end
+
+# hash where keys always initialize to a empty hashes (with the same property)
+hash = ->(f) { f[f] }[->(f) { Hash.new { |h, k| h[k] = f[f] } }]
+
+csv = CSV.read(config.in_csv, headers: true)
+
+def set_nested(hash, key, value)
+  *parts, last = key.split('.')
+  parts.each do |part|
+    hash = hash[part]
+  end
+  hash[last] = value
+end
+
+csv.each do |row|
+  set_nested(hash, row['Key'], row[config.out_locale.upcase])
+end
+
+if config.separate_files
+  hash.each do |top_level_key, values|
+    path = File.join(config.out_dir, top_level_key, "#{config.out_locale}.yml")
+    puts path
+
+    content = { config.out_locale => { top_level_key => values } }
+    FileUtils.mkdir_p(File.dirname(path))
+    File.open(path, 'w') { |f| f.puts content.to_yaml } unless config.dry_run
+  end
+else
+  path = File.join(config.out_dir, "#{config.out_locale}.yml")
+  puts path
+
+  content = { config.out_locale => hash }
+  File.open(path, 'w') { |f| f.puts content.to_yaml } unless config.dry_run
+end

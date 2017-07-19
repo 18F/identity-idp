@@ -69,5 +69,16 @@ RSpec.describe YamlNormalizer do
         expect(original).to eq(trimmed)
       end
     end
+
+    context 'a nil value' do
+      let(:original) { { a: nil } }
+      let(:trimmed) { { a: nil } }
+
+      it 'does not blow up' do
+        YamlNormalizer.chomp_each(original)
+
+        expect(original).to eq(trimmed)
+      end
+    end
   end
 end
