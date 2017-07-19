@@ -159,4 +159,49 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '.no_pii_mode?' do
+    let(:proofing_vendor) { :mock }
+    let(:enable_identity_verification) { false }
+
+    before do
+      allow_any_instance_of(Idv::Vendor).to receive(:pick).and_return(proofing_vendor)
+      allow(Figaro.env).to receive(:enable_identity_verification).
+        and_return(enable_identity_verification.to_json)
+    end
+
+    subject(:no_pii_mode?) { FeatureManagement.no_pii_mode? }
+
+    context 'with mock ID-proofing vendors' do
+      let(:proofing_vendor) { :mock }
+
+      context 'with identity verification enabled' do
+        let(:enable_identity_verification) { true }
+
+        it { expect(no_pii_mode?).to eq(true) }
+      end
+
+      context 'with identity verification disabled' do
+        let(:enable_identity_verification) { false }
+
+        it { expect(no_pii_mode?).to eq(false) }
+      end
+    end
+
+    context 'with real ID-proofing vendors' do
+      let(:proofing_vendor) { :not_mock }
+
+      context 'with identity verification enabled' do
+        let(:enable_identity_verification) { true }
+
+        it { expect(no_pii_mode?).to eq(false) }
+      end
+
+      context 'with identity verification disabled' do
+        let(:enable_identity_verification) { false }
+
+        it { expect(no_pii_mode?).to eq(false) }
+      end
+    end
+  end
 end
