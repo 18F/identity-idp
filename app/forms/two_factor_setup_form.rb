@@ -1,6 +1,7 @@
 class TwoFactorSetupForm
   include ActiveModel::Model
   include FormPhoneValidator
+  include OtpDeliveryPreferenceValidator
 
   attr_accessor :phone
 

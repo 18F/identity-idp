@@ -116,11 +116,13 @@ es:
         porque ha ingresado incorrectamente la clave personal demasiadas veces.
       otp_delivery_preference:
         instruction: Puede cambiar su elección la próxima vez que inicie una sesión.
+        phone_unsupported: NOT TRANSLATED YET
         sms: Mensaje de texto (SMS, sigla en inglés)
         title: "¿Cómo le gustaría recibir su código de seguridad?"
         voice: Llamada telefónica
       otp_phone_label: Número de teléfono
       otp_phone_label_info: El móvil o teléfono fijo está bien.
+      otp_phone_label_info_modile_only: NOT TRANSLATED YET
       otp_setup_html: "<strong>Cada vez que inicie una sesión,</ strong> le enviaremos
         un código de seguridad de sólo un uso por mensaje de texto o llamada telefónica.
         Esto ayuda a proteger su cuenta."

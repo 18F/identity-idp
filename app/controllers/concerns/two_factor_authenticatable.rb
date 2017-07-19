@@ -237,6 +237,7 @@ module TwoFactorAuthenticatable
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
+      voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
@@ -263,6 +264,15 @@ module TwoFactorAuthenticatable
     else
       user_session[:unconfirmed_phone]
     end
+  end
+
+  def voice_otp_delivery_unsupported?
+    phone_number = if authentication_context?
+                     current_user.phone
+                   else
+                     user_session[:unconfirmed_phone]
+                   end
+    PhoneNumberCapabilities.new(phone_number).sms_only?
   end
 
   def decorated_user

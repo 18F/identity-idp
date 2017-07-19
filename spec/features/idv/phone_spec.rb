@@ -43,6 +43,28 @@ feature 'Verify phone' do
 
       expect(current_path).to eq account_path
     end
+
+    scenario 'phone number with no voice otp support only allows sms delivery' do
+      guam_phone = '671-555-5000'
+      user = create(
+        :user, :signed_up,
+        otp_delivery_preference: 'voice',
+        password: Features::SessionHelper::VALID_PASSWORD
+      )
+
+      sign_in_and_2fa_user(user)
+      visit verify_session_path
+
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+
+      complete_idv_profile_with_phone(guam_phone)
+
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
+      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_later)
+      expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
+    end
   end
 
   scenario 'phone field only allows numbers', js: true, idv_job: true do

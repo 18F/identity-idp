@@ -32,6 +32,47 @@ feature 'Two Factor Authentication' do
       expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       expect(user.voice?).to eq true
     end
+
+    context 'with U.S. phone that does not support phone delivery method' do
+      let(:guam_phone) { '671-555-5555' }
+
+      scenario 'renders an error if a user submits with phone selected' do
+        sign_in_before_2fa
+        fill_in 'Phone', with: guam_phone
+        choose 'Phone call'
+        click_send_security_code
+
+        expect(current_path).to eq(phone_setup_path)
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Guam'
+        )
+      end
+
+      scenario 'disables the phone option and displays a warning with js', :js do
+        sign_in_before_2fa
+
+        fill_in 'Phone', with: guam_phone
+        phone_radio_button = page.find(
+          '#two_factor_setup_form_otp_delivery_preference_voice',
+          visible: :all
+        )
+
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Guam'
+        )
+        expect(phone_radio_button).to be_disabled
+
+        fill_in 'Phone', with: '555-555-5000'
+
+        expect(page).not_to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Guam'
+        )
+        expect(phone_radio_button).to_not be_disabled
+      end
+    end
   end
 
   def attempt_to_bypass_2fa_setup
@@ -109,6 +150,25 @@ feature 'Two Factor Authentication' do
       sign_in_before_2fa(user)
 
       expect(page.evaluate_script('document.activeElement.id')).to eq 'code'
+    end
+
+    scenario 'the user changes delivery method' do
+      user = create(:user, :signed_up, otp_delivery_preference: :sms)
+      sign_in_before_2fa(user)
+
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+
+      click_on t('links.two_factor_authentication.voice')
+
+      expect(VoiceOtpSenderJob).to have_received(:perform_later)
+    end
+
+    scenario 'the user cannot change delivery method if phone is unsupported' do
+      guam_phone = '+1 (671) 555-5000'
+      user = create(:user, :signed_up, phone: guam_phone)
+      sign_in_before_2fa(user)
+
+      expect(page).to_not have_link t('links.two_factor_authentication.voice')
     end
 
     context 'user enters OTP incorrectly 3 times', js: true do

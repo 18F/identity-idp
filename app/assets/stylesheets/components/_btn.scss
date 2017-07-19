@@ -72,3 +72,9 @@
     outline: none;
   }
 }
+
+.btn-disabled {
+  background-color: $gray-light;
+  border-color: $gray;
+  color: $gray;
+}

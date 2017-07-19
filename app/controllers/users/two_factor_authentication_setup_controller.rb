@@ -9,6 +9,7 @@ module Users
 
     def index
       @two_factor_setup_form = TwoFactorSetupForm.new(current_user)
+      @unsupported_area_codes = PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 

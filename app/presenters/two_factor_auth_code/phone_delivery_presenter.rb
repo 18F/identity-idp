@@ -34,6 +34,7 @@ module TwoFactorAuthCode
       :phone_number,
       :unconfirmed_phone,
       :otp_delivery_preference,
+      :voice_otp_delivery_unsupported,
       :confirmation_for_phone_change
     )
 
@@ -42,7 +43,19 @@ module TwoFactorAuthCode
     end
 
     def otp_fallback_options
-      safe_join([phone_fallback_link, auth_app_fallback_link])
+      if totp_enabled
+        otp_fallback_options_with_totp
+      elsif !voice_otp_delivery_unsupported
+        safe_join([phone_fallback_link, '.'])
+      end
+    end
+
+    def otp_fallback_options_with_totp
+      if voice_otp_delivery_unsupported
+        safe_join([auth_app_fallback_tag, '.'])
+      else
+        safe_join([phone_fallback_link, auth_app_fallback_link])
+      end
     end
 
     def update_phone_link
@@ -64,13 +77,7 @@ module TwoFactorAuthCode
     end
 
     def auth_app_fallback_link
-      return empty unless totp_enabled
-
       t('links.phone_confirmation.auth_app_fallback_html', link: auth_app_fallback_tag)
-    end
-
-    def empty
-      '.'
     end
 
     def auth_app_fallback_tag

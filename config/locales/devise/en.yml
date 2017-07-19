@@ -110,11 +110,14 @@ en:
         because you have entered the personal key incorrectly too many times.
       otp_delivery_preference:
         instruction: You can change your choice the next time you sign in
+        phone_unsupported: We're unable to make phone calls to people in %{location}
+          at this time. You will receive your security code via text message
         sms: Text message (SMS)
         title: How would you like to receive your security code?
         voice: Phone call
       otp_phone_label: Phone number
       otp_phone_label_info: Mobile or landline okay
+      otp_phone_label_info_modile_only: Mobile only
       otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
         one-time security code via text message or phone call. This helps safeguard
         your account."
