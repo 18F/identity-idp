@@ -50,6 +50,8 @@ dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
 development:
+  async_job_refresh_interval_seconds: '5'
+  async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
@@ -105,6 +107,8 @@ development:
   enable_load_testing_mode: 'false'
 
 production:
+  async_job_refresh_interval_seconds: '5'
+  async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: 'generate via `rake secret`'
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
@@ -161,6 +165,8 @@ production:
   enable_load_testing_mode: 'false'
 
 test:
+  async_job_refresh_interval_seconds: '1'
+  async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
   attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'

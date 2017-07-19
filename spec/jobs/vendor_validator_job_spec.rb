@@ -40,5 +40,28 @@ RSpec.describe VendorValidatorJob do
       after_result = VendorValidatorResultStorage.new.load(result_id)
       expect(after_result).to be_a(Idv::VendorResult)
     end
+
+    context 'when the vendor throws an exception' do
+      let(:vendor_validator_class) { 'Idv::ProfileValidator' }
+      let(:applicant) { Proofer::Applicant.new(first_name: 'Fail') }
+
+      let(:exception_msg) { 'Failed to contact proofing vendor' }
+
+      it 'notifies NewRelic and does not raise' do
+        expect(NewRelic::Agent).to receive(:notice_error).
+          with(kind_of(StandardError))
+
+        perform
+      end
+
+      it 'writes a failure result to redis' do
+        perform
+
+        result = VendorValidatorResultStorage.new.load(result_id)
+        expect(result.success?).to eq(false)
+        expect(result.errors).to eq(agent: [exception_msg])
+        expect(result.reasons).to eq([exception_msg])
+      end
+    end
   end
 end

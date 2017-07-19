@@ -120,6 +120,7 @@ en:
       hardfail: We can’t verify your identity right now.
       hardfail4: You can also go to %{sp} for more help in accessing services.
       help_center: Visit our Help Center to learn more about verifying your account.
+      loading: Verifying your identity
       mail_sent: Your letter is on its way
       personal_details_verified: Personal details verified!
       personal_key: This is your new personal key. Write it down and keep it in a
@@ -164,17 +165,20 @@ en:
           try to verify again. Check our Help section for more information about identity
           verification.
         heading: We could not find records matching your financial information.
+        timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       phone:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again. Check our Help section for more information about identity
           verification.
         heading: We could not find records matching your phone information.
+        timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       sessions:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again.
         heading: We could not find records matching your personal information.
+        timeout: Our request to verify your information timed out.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.
     review:

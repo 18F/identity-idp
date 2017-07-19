@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Verify phone' do
   include IdvHelper
 
-  scenario 'phone step redirects to fail after max attempts' do
+  scenario 'phone step redirects to fail after max attempts', idv_job: true do
     sign_in_and_2fa_user
     visit verify_session_path
     fill_out_idv_form_ok
@@ -16,7 +16,7 @@ feature 'Verify phone' do
       fill_out_phone_form_fail
       click_idv_continue
 
-      expect(current_path).to eq verify_phone_path
+      expect(current_path).to eq verify_phone_result_path
     end
 
     fill_out_phone_form_fail
@@ -24,7 +24,7 @@ feature 'Verify phone' do
     expect(page).to have_css('.alert-error', text: t('idv.modal.phone.heading'))
   end
 
-  context 'Idv phone and user phone are different' do
+  context 'Idv phone and user phone are different', idv_job: true do
     scenario 'prompts to confirm phone' do
       user = create(
         :user, :signed_up,
@@ -45,7 +45,7 @@ feature 'Verify phone' do
     end
   end
 
-  scenario 'phone field only allows numbers', js: true do
+  scenario 'phone field only allows numbers', js: true, idv_job: true do
     sign_in_and_2fa_user
     visit verify_session_path
     fill_out_idv_form_ok

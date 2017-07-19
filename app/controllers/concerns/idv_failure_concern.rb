@@ -6,7 +6,7 @@ module IdvFailureConcern
       @view_model = view_model(error: 'fail')
       flash_message(type: :error)
     elsif form_valid_but_vendor_validation_failed?
-      @view_model = view_model(error: 'warning')
+      @view_model = view_model(error: step.vendor_validation_timed_out? ? 'timeout' : 'warning')
       flash_message(type: :warning)
     else
       @view_model = view_model

@@ -8,7 +8,9 @@ module Idv
     def initialize(idv_params, user)
       @idv_params = idv_params
       @user = user
-      self.phone = idv_params[:phone] || user.phone
+      self.phone = (idv_params[:phone] || user.phone).phony_formatted(
+        format: :international, normalize: :US, spaces: ' '
+      )
     end
 
     def submit(params)

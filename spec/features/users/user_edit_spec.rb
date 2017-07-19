@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'User edit' do
-  scenario 'user sees error message if form is submitted without email', js: true do
+  scenario 'user sees error message if form is submitted without email', js: true, idv_job: true do
     sign_in_and_2fa_user
 
     visit manage_email_path

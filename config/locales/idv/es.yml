@@ -100,6 +100,7 @@ es:
       hardfail: NOT TRANSLATED YET
       hardfail4: NOT TRANSLATED YET
       help_center: NOT TRANSLATED YET
+      loading: NOT TRANSLATED YET
       mail_sent: NOT TRANSLATED YET
       personal_details_verified: NOT TRANSLATED YET
       personal_key: NOT TRANSLATED YET
@@ -135,14 +136,17 @@ es:
       financials:
         fail: NOT TRANSLATED YET
         heading: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
       phone:
         fail: NOT TRANSLATED YET
         heading: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
       sessions:
         fail: NOT TRANSLATED YET
         heading: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
         warning: NOT TRANSLATED YET
     review:
       dob: NOT TRANSLATED YET

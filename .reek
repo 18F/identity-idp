@@ -26,6 +26,7 @@ FeatureEnvy:
     - OpenidConnectLogoutForm#load_identity
     - Idv::ProfileMaker#pii_from_applicant
     - Idv::Step#vendor_validator_result
+    - IdvSession#vendor_result_timed_out?
 InstanceVariableAssumption:
   exclude:
     - User
@@ -44,6 +45,7 @@ LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
     - VendorValidatorJob#perform
+    - Idv::VendorResult#initialize
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
@@ -105,6 +107,7 @@ UtilityFunction:
     - UserEncryptedAttributeOverrides#create_fingerprint
     - LocaleHelper#locale_url_param
     - Verify::Base#mock_vendor_partial
+    - IdvSession#timed_out_vendor_error
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

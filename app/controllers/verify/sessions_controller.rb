@@ -8,8 +8,7 @@ module Verify
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: [:destroy]
     before_action :initialize_idv_session, only: [:create]
-    before_action :submit_idv_form, only: [:create]
-    before_action :submit_idv_job, only: [:create]
+    before_action :refresh_if_not_ready, only: [:show]
 
     delegate :attempts_exceeded?, to: :step, prefix: true
 
@@ -20,6 +19,18 @@ module Verify
     end
 
     def create
+      result = idv_form.submit(profile_params)
+      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
+
+      if result.success?
+        submit_idv_job
+        redirect_to verify_session_result_path
+      else
+        process_failure
+      end
+    end
+
+    def show
       result = step.submit
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result.to_h)
 
@@ -37,13 +48,6 @@ module Verify
     end
 
     private
-
-    def submit_idv_form
-      result = idv_form.submit(profile_params)
-      analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
-
-      process_failure unless result.success?
-    end
 
     def submit_idv_job
       SubmitIdvJob.new(
@@ -63,7 +67,7 @@ module Verify
 
     def step
       @_step ||= Idv::ProfileStep.new(
-        idv_form_params: profile_params,
+        idv_form_params: idv_session.params,
         idv_session: idv_session,
         vendor_validator_result: vendor_validator_result
       )

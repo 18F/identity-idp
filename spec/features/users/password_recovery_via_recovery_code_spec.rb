@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Password recovery via personal key' do
+feature 'Password recovery via personal key', idv_job: true do
   include PersonalKeyHelper
   include IdvHelper
 

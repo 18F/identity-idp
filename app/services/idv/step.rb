@@ -11,6 +11,10 @@ module Idv
       vendor_validator_result.success?
     end
 
+    def vendor_validation_timed_out?
+      vendor_validator_result.timed_out?
+    end
+
     private
 
     attr_accessor :idv_session
