@@ -13,9 +13,7 @@ es:
       help: Si no desea cambiar su número de teléfono, visite el %{app} %{help_link}
         o el %{contact_link}.
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
-      subject: |2-
-
-        Nuevo número de teléfono
+      subject: Nuevo número de teléfono
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
         %{help_link} o el %{contact_link}.
@@ -24,6 +22,4 @@ es:
         existente, siga el siguiente enlace. Si no intenta iniciar una sesión con
         este email, puede ignorar este mensaje.
       link_text: Ir a %{app}
-      reset_password: |2-
-
-        Si no recuerda su contraseña, vaya a %{app} para restablecerla.
+      reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.

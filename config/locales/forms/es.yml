@@ -25,9 +25,8 @@ es:
     personal_key:
       alternative: "¿No tiene su clave personal?"
       confirmation_label: Clave personal
-      instructions: |2-
-
-        Confirme que tiene una copia de su clave personal ingresándola a continuación.
+      instructions: Confirme que tiene una copia de su clave personal ingresándola
+        a continuación.
       title: Ingrese su clave personal
     registration:
       labels:

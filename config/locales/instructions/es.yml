@@ -4,9 +4,8 @@ es:
     account:
       reactivate:
         begin: Empecemos.
-        explanation: |2-
-
-          Cuando creó su cuenta le dimos una lista de palabras y le pedimos que las guardara en un lugar seguro. Se parecía a esto:
+        explanation: 'Cuando creó su cuenta le dimos una lista de palabras y le pedimos
+          que las guardara en un lugar seguro. Se parecía a esto:'
         intro: Tomamos medidas adicionales para mantener su información personal segura
           y privada, por lo que restablecer su contraseña requiere un pequeño esfuerzo
           adicional.
@@ -14,9 +13,7 @@ es:
           copy: Si no tiene su clave personal, verifique su identidad nuevamente.
           heading: Para continuar, por favor regrese a la %{friendly_name} app e inicie
             una sesión.
-        with_key: |2-
-
-          ¿Tiene su clave personal?
+        with_key: "¿Tiene su clave personal?"
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador después que haya restablecido
         su contraseña.
@@ -24,9 +21,7 @@ es:
       app e inicie una sesión.
     mfa:
       authenticator:
-        accordion_header: |2-
-
-          Escanear código con su dispositivo móvil
+        accordion_header: Escanear código con su dispositivo móvil
         confirm_code_html: Ingrese el código de su app de autenticación. Si tiene
           varias cuentas configuradas en su app, ingrese el código correspondiente
           a %{email} en %{app}.%{tooltip}
@@ -35,9 +30,7 @@ es:
         confirm_code_html: Le enviamos en un mensaje de texto a %{number}. ¿Necesita
           otro código? %{Resend_code_link}. Puede estar sujeto a cargos de mensajería
           y datos.
-        fallback_html: |2-
-
-          Si no puede recibir mensajes de texto ahora, puede %{link}
+        fallback_html: Si no puede recibir mensajes de texto ahora, puede %{link}
       voice:
         confirm_code_html: Acabamos de llamarle al %{number}. ¿Desea que le llamemos
           de nuevo? %{Resend_code_link}
@@ -48,9 +41,7 @@ es:
       help_text: Cuanto más larga y más inusual sea la contraseña, más difícil es
         de adivinarla. Así que evite usar frases comunes. También evite repetir contraseñas
         de otras cuentas en línea, por ejemplo de sus bancos, email y medios sociales.
-      help_text_header: |2-
-
-        Consejos de seguridad de contraseña
+      help_text_header: Consejos de seguridad de contraseña
       info:
         lead: Su contraseña debe tener al menos %{min_length} caracteres y no ser
           una contraseña común. ¡Eso es todo!

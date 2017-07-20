@@ -2,14 +2,10 @@
 es:
   titles:
     account: Cuenta
-    account_locked: |2-
-
-      Cuenta bloqueada
+    account_locked: Cuenta bloqueada
     confirmations:
       new: Reenviar instrucciones de confirmación de su cuenta
-      show: |2-
-
-        Elija una contraseña
+      show: Elija una contraseña
     edit_info:
       email: Edite su email
       password: Edite su contraseña

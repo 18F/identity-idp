@@ -29,18 +29,12 @@ es:
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
       missing_finance: Debe proporcionar un número de cuenta financiera.
       pattern_mismatch:
-        dob: |2-
-
-          Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
-        personal_key: |2-
-
-          Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456
+        dob: Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
+        personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         zipcode: 'Su código postal debe ser ingresado como #####-####'
     form:
-      activate_by_mail: |2-
-
-        Activar mi cuenta por correo.
+      activate_by_mail: Activar mi cuenta por correo.
       address1: Dirección de calle 1
       address2: Dirección de calle 2 (opcional)
       auto_loan: Número de cuenta de préstamo de auto
@@ -58,27 +52,19 @@ es:
       personal_details: Detalles personales
       phone: Teléfono
       phone_label_aside: Celular o teléfono fijo
-      previous_address_add: |2-
-
-        Añadir la dirección anterior
+      previous_address_add: Añadir la dirección anterior
       previous_address_html: "¿Se mudó en los <strong>últimos 3 meses</ strong>?"
       select_financial_account: Seleccione una cuenta financiera...
       ssn_label_html: Número de Seguro Social %{tooltip}
       state: Estado
-      use_ccn: |2-
-
-        Proporcione el número de tarjeta de crédito >
-      use_financial_account: |2-
-
-        ¿No tiene una tarjeta de crédito?
+      use_ccn: Proporcione el número de tarjeta de crédito >
+      use_financial_account: "¿No tiene una tarjeta de crédito?"
       zipcode: Código postal
     index:
       continue_link: Sí, continuar
       paragraph_1: Nos hemos asociado con una empresa externa confiable para verificar
         esta información y su identidad.
-      prompt: |2-
-
-        ¿Tiene toda esta información disponible ahora mismo?
+      prompt: "¿Tiene toda esta información disponible ahora mismo?"
       section_1:
         bullet_1: Nombre completo
         bullet_2: Dirección postal
@@ -97,16 +83,13 @@ es:
         header: Información financiera
         subheader: 'Necesitamos uno de los siguientes números de cuenta financiera:'
       section_3:
-        bullet_1: |2-
-
-          Bajo su nombre o el nombre de alguien en su hogar
+        bullet_1: Bajo su nombre o el nombre de alguien en su hogar
         bullet_2_html: "<strong>No es</ strong> un teléfono virtual, como Google Voice
           o Skype"
         bullet_3_html: "<strong>No es</ strong> un teléfono de prepago"
         header: Línea de teléfono a su nombre
-        subheader: |2-
-
-          Utilizamos registros de la compañía telefónica para verificar su identidad. El número de teléfono que usted nos da debe:
+        subheader: 'Utilizamos registros de la compañía telefónica para verificar
+          su identidad. El número de teléfono que usted nos da debe:'
       subheader: Para verificar su identidad, le pediremos que responda algunas preguntas
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
@@ -117,13 +100,10 @@ es:
         este proceso. Si no tiene la información que necesitamos en este momento,
         puede continuar más tarde.
       confirm: Usted ha encriptado sus datos verificados.
-      dupe_ssn1: |2-
-
-        Si recibe este error, es posible que ya haya creado y verificado una cuenta, pero con un email diferente.
+      dupe_ssn1: Si recibe este error, es posible que ya haya creado y verificado
+        una cuenta, pero con un email diferente.
       dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
-      dupe_ssn2_link: |2-
-
-        Cerrar ahora y volver a iniciar sesión
+      dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
       finance:
         disclaimer: Al continuar acepta que %{app_name} compare la información de
           la cuenta que proporciona con fuentes de terceros para verificar su identidad.
@@ -131,9 +111,7 @@ es:
         intro_account: Ayúdenos a verificar su identidad proporcionando información
           sobre un préstamo de auto, una hipoteca o un número de préstamo sobre el
           valor neto de su casa.
-        intro_ccn_help: |2-
-
-          cómo se utilizará su información
+        intro_ccn_help: cómo se utilizará su información
         intro_ccn_html: Ayúdenos a verificar su identidad proporcionando los últimos
           8 dígitos de una tarjeta de crédito. Obtenga más información sobre %{intro_help_link}.
         no_account: "¿Desea usar una tarjeta de crédito?"
@@ -155,17 +133,13 @@ es:
           vinculado a su identidad legal.
         phone_of_record: Teléfono del registro
         prepaid: en un contrato, no prepago
-        same_as_2fa: |2-
-
-          Este número de teléfono puede ser el mismo que utilizó para configurar su contraseña de un uso único, siempre y cuando cumpla con los criterios anteriores.
+        same_as_2fa: Este número de teléfono puede ser el mismo que utilizó para configurar
+          su contraseña de un uso único, siempre y cuando cumpla con los criterios
+          anteriores.
       review:
         financial_info: "¿Dónde está la información de mi cuenta financiera?"
-        info_verified_html: |2-
-
-          Encontramos registros que coinciden con su %{teléfono_mensaje}
-        intro: |2-
-
-          Su información verificada
+        info_verified_html: Encontramos registros que coinciden con su %{teléfono_mensaje}
+        intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_nombre} hasta que la active ingresando un código
         de confirmación.
@@ -179,9 +153,7 @@ es:
         bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
           verificada en el archivo.
-        resend: |2-
-
-          Envíeme otra carta.
+        resend: Envíeme otra carta.
         success: Debe llegar en 5 a 10 días laborales.
     modal:
       attempts:
@@ -197,19 +169,15 @@ es:
         heading: No hemos podido encontrar registros que coincidan con su información
           financiera.
         timeout: NOT TRANSLATED YET
-        warning: |2-
-
-          Compruebe la información que ingresó.
+        warning: Compruebe la información que ingresó.
       phone:
-        fail: |2-
-
-          Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más información sobre la verificación de identidad.
+        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
+          verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más
+          información sobre la verificación de identidad.
         heading: No hemos podido encontrar registros que coincidan con la información
           de su teléfono.
         timeout: NOT TRANSLATED YET
-        warning: |2-
-
-          Compruebe la información que ingresó.
+        warning: Compruebe la información que ingresó.
       sessions:
         fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de que
           pueda intentar verificarla de nuevo.
@@ -242,6 +210,4 @@ es:
       session:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
-      sessions: |2-
-
-        Primero, cuéntenos sobre usted
+      sessions: Primero, cuéntenos sobre usted

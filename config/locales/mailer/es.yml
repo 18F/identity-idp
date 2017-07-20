@@ -15,9 +15,7 @@ es:
     email_change_notice:
       subject: Cambie su email
     email_reuse_notice:
-      subject: |2-
-
-        Este email ya está asociado a una cuenta.
+      subject: Este email ya está asociado a una cuenta.
     help: Para obtener más ayuda, visite %{link}.
     no_reply: Por favor, no responda a este mensaje.
     privacy_policy: Política de privacidad
@@ -25,7 +23,5 @@ es:
       footer: Este enlace expira en %{expires} horas.
       header: Para terminar de restablecer su contraseña, haga clic en el enlace de
         abajo o copie y pegue el enlace completo en su navegador.
-      link_text: |2-
-
-        Restablezca su contraseña
+      link_text: Restablezca su contraseña
     sent_from: Enviado desde %{app}

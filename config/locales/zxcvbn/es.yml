@@ -2,14 +2,11 @@
 es:
   zxcvbn:
     feedback:
-      a_word_by_itself_is_easy_to_guess: |2-
-
-        Una sola palabra es fácil de adivinar.
+      a_word_by_itself_is_easy_to_guess: Una sola palabra es fácil de adivinar.
       add_another_word_or_two_uncommon_words_are_better: Añada otra palabra o dos.
         Las palabras poco comunes son mejor opción.
-      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: |2-
-
-        Todo en mayúsculas es casi igual de fácil de adivinar como todo en minúsculas.
+      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Todo en mayúsculas
+        es casi igual de fácil de adivinar como todo en minúsculas.
       avoid_dates_and_years_that_are_associated_with_you: Evite las fechas y los años
         que están asociados con usted
       avoid_recent_years: Evite los años recientes
