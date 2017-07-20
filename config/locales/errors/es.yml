@@ -31,9 +31,7 @@ es:
       password_incorrect: La contraseña es incorrecta
       personal_key_incorrect: La clave personal es incorrecta
       requires_phone: requiere que ingrese su número de teléfono.
-      unauthorized_authn_context: |2-
-
-        Contexto de autenticación no autorizado
+      unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     not_authorized: No está autorizado para realizar esta acción.

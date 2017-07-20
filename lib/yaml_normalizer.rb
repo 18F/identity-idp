@@ -33,6 +33,7 @@ class YamlNormalizer
   end
 
   def self.trim(str)
+    str.sub!(/\A\n+/, '')
     ended_with_space_after_colon = str =~ /: \s*\Z/
     str.rstrip!
     str << ' ' if ended_with_space_after_colon

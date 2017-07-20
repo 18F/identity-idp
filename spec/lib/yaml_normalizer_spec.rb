@@ -70,6 +70,17 @@ RSpec.describe YamlNormalizer do
       end
     end
 
+    context 'leading newlines' do
+      let(:original) { { a: "\n\na b c", b: "a\nb" } }
+      let(:trimmed) { { a: "a b c", b: "a\nb" } }
+
+      it 'trims leading newlines but not intermediate ones' do
+        YamlNormalizer.chomp_each(original)
+
+        expect(original).to eq(trimmed)
+      end
+    end
+
     context 'a nil value' do
       let(:original) { { a: nil } }
       let(:trimmed) { { a: nil } }

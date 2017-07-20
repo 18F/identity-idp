@@ -1,31 +1,23 @@
 ---
 es:
   notices:
-    account_reactivation: |2-
-
-      ¡Estupendo! Tiene su clave personal.
+    account_reactivation: "¡Estupendo! Tiene su clave personal."
     dap_html: "<!-- Participamos en el programa analítico del Gobierno de Estados
       Unidos. --> <!-- Vea los datos en analytics.usa.gov (en inglés). -->"
     forgot_password:
       first_paragraph_end: con un enlace para restablecer su contraseña. Siga el enlace
         para continuar restableciendo su contraseña.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: |2-
-
-        ¿No recibió un email?
+      no_email_sent_explanation_start: "¿No recibió un email?"
       resend_email_success: Enviamos otro email para restablecer la contraseña.
       use_diff_email:
         link: crear una cuenta nueva
-        text_html: |2-
-
-          O, %{link} utilizando un email diferente.
+        text_html: O, %{link} utilizando un email diferente.
     password_changed: Ha cambiado su contraseña.
     resend_confirmation_email:
       success: Enviamos otro email de confirmación.
     send_code:
-      personal_key: |2-
-
-        Tiene una nueva clave personal.
+      personal_key: Tiene una nueva clave personal.
     session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una página
       nueva dentro de %{minutes} minutos.
     signed_up_but_unconfirmed:
@@ -37,9 +29,7 @@ es:
       link: Prácticas de Seguridad y Declaración de Privacidad
     timeout_warning:
       partially_signed_in:
-        continue: |2-
-
-          Continuar el inicio de sesión
+        continue: Continuar el inicio de sesión
         message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su
           acceso.
         sign_out: Cancelar el inicio de sesión

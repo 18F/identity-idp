@@ -3,12 +3,8 @@ es:
   users:
     personal_key:
       close: Cerrar
-      confirmation_error: |2-
-
-        Ha ingresado una clave personal incorrecta.
-      generated_on_html: |2-
-
-        Generado el %{date}
+      confirmation_error: Ha ingresado una clave personal incorrecta.
+      generated_on_html: Generado el %{date}
       get_another: Obtener otra clave
       header: Su clave personal
       help_text: |-
