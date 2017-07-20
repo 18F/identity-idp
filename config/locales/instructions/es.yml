@@ -28,12 +28,12 @@ es:
         or: o
       sms:
         confirm_code_html: Le enviamos en un mensaje de texto a %{number}. ¿Necesita
-          otro código? %{Resend_code_link}. Puede estar sujeto a cargos de mensajería
+          otro código? %{resend_code_link}. Puede estar sujeto a cargos de mensajería
           y datos.
         fallback_html: Si no puede recibir mensajes de texto ahora, puede %{link}
       voice:
         confirm_code_html: Acabamos de llamarle al %{number}. ¿Desea que le llamemos
-          de nuevo? %{Resend_code_link}
+          de nuevo? %{resend_code_link}
         fallback_html: Si no puede recibir una llamada de teléfono ahora, puede %{link}
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:

@@ -29,7 +29,7 @@ RSpec.describe 'I18n' do
 
     describe i18n_file do
       it 'has only lower_snake_case keys' do
-        keys = hash_keys(YAML.load_file(full_path))
+        keys = flatten_hash(YAML.load_file(full_path)).keys
 
         bad_keys = keys.reject { |key| key =~ /^[a-z0-9_.]+$/ }
 
@@ -37,9 +37,21 @@ RSpec.describe 'I18n' do
       end
 
       it 'has only has XML-safe identifiers (keys start with a letter)' do
-        keys = hash_keys(YAML.load_file(full_path))
+        keys = flatten_hash(YAML.load_file(full_path)).keys
 
         bad_keys = keys.select { |key| key.split('.').any? { |part| part =~ /^[0-9]/ } }
+
+        expect(bad_keys).to be_empty
+      end
+
+      it 'has correctly-formatted interpolation values' do
+        bad_keys = flatten_hash(YAML.load_file(full_path)).select do |_key, value|
+          next unless value.is_a?(String)
+
+          interpolation_names = value.scan(/%\{([^\}]+)\}/).flatten
+
+          interpolation_names.any? { |name| name.downcase != name }
+        end
 
         expect(bad_keys).to be_empty
       end
@@ -52,17 +64,16 @@ RSpec.describe 'I18n' do
     end
   end
 
-  def hash_keys(hash, parent_keys: [])
-    keys = []
-
+  def flatten_hash(hash, parent_keys: [], out_hash: {}, &block)
     hash.each do |key, value|
       if value.is_a?(Hash)
-        keys += hash_keys(value, parent_keys: parent_keys + [key])
+        flatten_hash(value, parent_keys: parent_keys + [key], out_hash: out_hash, &block)
       else
-        keys << [*parent_keys, key].join('.')
+        flat_key = [*parent_keys, key].join('.')
+        out_hash[flat_key] = value
       end
     end
 
-    keys
+    out_hash
   end
 end
