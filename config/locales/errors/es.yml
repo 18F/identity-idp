@@ -1,40 +1,39 @@
 ---
 es:
   errors:
-    confirm_password_incorrect: La contraseña proporcionada es incorrecta.
-    invalid_authenticity_token: Huy! Algo salió mal. Inicia sesión de nuevo.
-    invalid_totp: Se ha introducido un código no válido. Vuelve a intentarlo.
-    max_password_attempts_reached: Cerramos la sesión porque no proporcionó su contraseña
-      correcta. Si olvidó su contraseña, haga clic en "¿Olvidó su contraseña?" enlace
-      abajo.
+    confirm_password_incorrect: La contraseña es incorrecta.
+    invalid_authenticity_token: "¡Oops! Algo salió mal. Inicie la sesión de nuevo."
+    invalid_totp: El código es inválido. Vuelva a intentarlo.
+    max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
+      Puede restablecer su contraseña usando el enlace "¿Olvidó su contraseña?".
     messages:
-      already_confirmed: Ya está confirmado, por favor intenta iniciar sesión.
+      already_confirmed: ya estaba confirmado, por favor intente iniciar una sesión
       blank: Por favor, rellenar este campo.
-      confirmation_code_incorrect: NOT TRANSLATED YET
-      confirmation_invalid_token: El enlace de confirmación en el que ha hecho clic
-        ya no es válido. Esto puede haber sido causado al hacer clic en un enlace
-        antiguo de su correo electrónico, o puede ser que ya haya confirmado su cuenta.
-      confirmation_period_expired: Has tardado más de %{period} para confirmar su
-        dirección de correo electrónico. Por favor haga clic en "Reenviar instrucciones
-        de confirmación".
-      expired: Ha caducado, por favor solicite uno nuevo
-      format_mismatch: Por favor, coincidir con el formato solicitado.
+      confirmation_code_incorrect: El código es incorrecto. ¿Lo escribió correctamente?
+      confirmation_invalid_token: El enlace de confirmación no es válido. El enlace
+        expiró o usted ya ha confirmado su cuenta.
+      confirmation_period_expired: El enlace de confirmación expiró. Puede hacer clic
+        en "Reenviar instrucciones de confirmación" para obtener otro.
+      expired: ha caducado, por favor solicite uno nuevo
+      format_mismatch: Por favor, use el formato solicitado.
       improbable_phone: El número de teléfono no es válido. Asegúrese de ingresar
         un número de teléfono de 10 dígitos.
-      missing_field: Por favor, rellenar este campo.
+      missing_field: Por favor, rellene este campo.
       no_password_reset_profile: Ningún perfil ha sido desactivado recientemente por
         un restablecimiento de contraseña.
       no_pending_profile: Ningún perfil está esperando verificación
       not_found: no encontrado
       not_locked: no estaba bloqueado
       not_saved:
-        one: '1 error prohibió este %{resource} de ser guardado:'
-        other: "%{count} errores prohibieron este %{resource} de ser guardado:"
-      otp_incorrect: El código secreto es incorrecto
+        one: '1 error no permitió guardar este %{resource}:'
+        other: "%{count} errores no permitieron guardar este %{resource}:"
+      otp_incorrect: El código es incorrecto. ¿Lo escribió correctamente?
       password_incorrect: La contraseña es incorrecta
-      personal_key_incorrect: El código de recuperación es incorrecto
+      personal_key_incorrect: La clave personal es incorrecta
       requires_phone: requiere que ingrese su número de teléfono.
-      unauthorized_authn_context: NOT TRANSLATED YET
-      unauthorized_service_provider: NOT TRANSLATED YET
-      weak_password: Su contraseña no es suficientemente fuerte. %{feedback}
+      unauthorized_authn_context: |2-
+
+        Contexto de autenticación no autorizado
+      unauthorized_service_provider: Proveedor de servicio no autorizado
+      weak_password: Su contraseña no es suficientemente segura. %{feedback}
     not_authorized: No está autorizado para realizar esta acción.

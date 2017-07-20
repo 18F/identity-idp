@@ -18,7 +18,7 @@ class YamlNormalizer
         trim(value)
       elsif value.is_a?(Array)
         strip_array(value)
-      else
+      elsif value
         chomp_each(value)
       end
     end
