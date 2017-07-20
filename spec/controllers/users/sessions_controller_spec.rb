@@ -323,5 +323,22 @@ describe Users::SessionsController, devise: true do
         get :new
       end
     end
+
+    context 'with fully authenticated user who has a pending profile' do
+      it 'redirects to the verify profile page' do
+        profile = create(
+          :profile,
+          deactivation_reason: :verification_pending,
+          phone_confirmed: false,
+          pii: { otp: 'abc123', ssn: '6666', dob: '1920-01-01' }
+        )
+        user = profile.user
+
+        stub_sign_in(user)
+        get :new
+
+        expect(response).to redirect_to verify_account_path
+      end
+    end
   end
 end

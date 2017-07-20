@@ -111,7 +111,7 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(page.get_rack_session.keys).to_not include('sp')
+      expect(page.get_rack_session.keys).to include('sp')
     end
 
     it 'auto-allows and sets the correct CSP headers after an incorrect OTP' do
@@ -146,7 +146,7 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(page.get_rack_session.keys).to_not include('sp')
+      expect(page.get_rack_session.keys).to include('sp')
     end
   end
 
@@ -238,7 +238,7 @@ feature 'OpenID Connect' do
         click_button t('forms.buttons.continue')
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
     end
   end
@@ -501,7 +501,7 @@ feature 'OpenID Connect' do
         redirect_uri = URI(current_url)
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
 
       perform_in_browser(:one) do
@@ -515,7 +515,7 @@ feature 'OpenID Connect' do
         redirect_uri = URI(current_url)
 
         expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
     end
   end
