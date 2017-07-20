@@ -49,6 +49,8 @@ use_dashboard_service_providers: 'false'
 dashboard_url: 'https://dashboard.demo.login.gov'
 valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://idmanagement.gov/ns/assurance/loa/3"]'
 
+usps_mail_batch_hours: 24
+
 development:
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
@@ -71,6 +73,9 @@ development:
   equifax_gpg_email: 'logs@login.gov'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
+  equifax_sftp_directory: '/directory'
+  equifax_sftp_host: 'example.com'
+  equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
@@ -128,6 +133,9 @@ production:
   equifax_gpg_email: 'sekret@example.com'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
+  equifax_sftp_directory: '/directory'
+  equifax_sftp_host: 'example.com'
+  equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   google_analytics_key: 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: 'generate via `rake secret`'
@@ -186,6 +194,9 @@ test:
   equifax_gpg_email: 'logs@login.gov'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
+  equifax_sftp_directory: '/directory'
+  equifax_sftp_host: 'example.com'
+  equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
