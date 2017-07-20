@@ -5,6 +5,8 @@ describe TwoFactorSetupForm, type: :model do
   let(:valid_phone) { '+1 (202) 202-2020' }
   subject { TwoFactorSetupForm.new(user) }
 
+  it_behaves_like 'an otp delivery preference form'
+
   it do
     is_expected.
       to validate_presence_of(:phone).

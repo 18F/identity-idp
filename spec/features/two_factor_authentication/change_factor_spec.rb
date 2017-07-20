@@ -54,6 +54,24 @@ feature 'Changing authentication factor' do
       expect(current_path).to eq account_path
     end
 
+    scenario 'editing phone number with no voice otp support only allows sms delivery' do
+      user.update(otp_delivery_preference: 'voice')
+      guam_phone = '671-555-5000'
+
+      visit manage_phone_path
+      complete_2fa_confirmation
+
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+
+      update_phone_number(guam_phone)
+
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
+      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_later)
+      expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
+    end
+
     scenario 'waiting too long to change phone number' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
 
@@ -154,11 +172,13 @@ feature 'Changing authentication factor' do
     fill_in 'Password', with: Features::SessionHelper::VALID_PASSWORD
     click_button t('forms.buttons.continue')
 
-    expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+    expect(current_path).to eq login_two_factor_path(
+      otp_delivery_preference: user.otp_delivery_preference
+    )
   end
 
-  def update_phone_number
-    fill_in 'update_user_phone_form[phone]', with: '703-555-0100'
+  def update_phone_number(phone = '703-555-0100')
+    fill_in 'update_user_phone_form[phone]', with: phone
     click_button t('forms.buttons.submit.confirm_change')
   end
 

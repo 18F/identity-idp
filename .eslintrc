@@ -40,6 +40,7 @@
       'app/radio-btn',
       'app/print-personal-key',
       'app/utils/ms-formatter',
+      'app/phone-internationalization',
     ],
   }
 }
