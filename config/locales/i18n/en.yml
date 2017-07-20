@@ -1,0 +1,8 @@
+---
+en:
+  i18n:
+    language: Language
+    locale:
+      en: English
+      es: Español
+      fr: Français
