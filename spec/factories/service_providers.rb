@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  Faker::Config.locale = 'en-US'
+  Faker::Config.locale = :en
 
   factory :service_provider do
     cert { 'saml_test_sp' }

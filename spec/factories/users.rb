@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  Faker::Config.locale = 'en-US'
+  Faker::Config.locale = :en
 
   factory :user do
     confirmed_at Time.zone.now
