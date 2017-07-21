@@ -15,6 +15,8 @@ describe 'layouts/application.html.slim' do
     )
     allow(view.request).to receive(:original_url).and_return('http://test.host/foobar')
     allow(view).to receive(:current_user).and_return(User.new)
+    controller.request.path_parameters[:controller] = 'users/sessions'
+    controller.request.path_parameters[:action] = 'new'
   end
 
   context 'no content for nav present' do

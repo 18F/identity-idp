@@ -2,6 +2,11 @@ require 'rails_helper'
 
 describe 'shared/_footer_lite.html.slim' do
   context 'user is signed out' do
+    before do
+      controller.request.path_parameters[:controller] = 'users/sessions'
+      controller.request.path_parameters[:action] = 'new'
+    end
+
     it 'contains link to help page' do
       render
 

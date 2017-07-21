@@ -41,6 +41,7 @@
       'app/print-personal-key',
       'app/utils/ms-formatter',
       'app/phone-internationalization',
+      'app/i18n-dropdown',
     ],
   }
 }

@@ -7,3 +7,4 @@ import 'app/idv-finance-helper';
 import 'app/radio-btn';
 import 'app/phone-internationalization';
 import 'app/print-personal-key';
+import 'app/i18n-dropdown';
