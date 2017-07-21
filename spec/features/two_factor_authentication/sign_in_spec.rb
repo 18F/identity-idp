@@ -92,7 +92,7 @@ feature 'Two Factor Authentication' do
       scenario 'disables the phone option and displays a warning with js', :js do
         sign_in_before_2fa
         select 'Turkey +90', from: 'International code'
-        fill_in 'Phone', with: '555-555-5000'
+        fill_in 'Phone', with: '+90 312 213 29 65'
         phone_radio_button = page.find(
           '#two_factor_setup_form_otp_delivery_preference_voice',
           visible: :all
@@ -111,6 +111,23 @@ feature 'Two Factor Authentication' do
           location: 'Turkey'
         )
         expect(phone_radio_button).to_not be_disabled
+      end
+
+      scenario 'updates international code as user types', :js do
+        sign_in_before_2fa
+        fill_in 'Phone', with: '+81 54 354 3643'
+
+        expect(page.find('#two_factor_setup_form_international_code').value).to eq 'JP'
+
+        fill_in 'Phone', with: '5376'
+        select 'Morocco +212', from: 'International code'
+
+        expect(find('#two_factor_setup_form_phone').value).to eq '+212 5376'
+
+        fill_in 'Phone', with: '54354'
+        select 'Japan +81', from: 'International code'
+
+        expect(find('#two_factor_setup_form_phone').value).to include '+81'
       end
     end
   end

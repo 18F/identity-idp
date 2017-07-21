@@ -1,5 +1,6 @@
-import { PhoneFormatter, SocialSecurityNumberFormatter, TextField } from 'field-kit';
+import { SocialSecurityNumberFormatter, TextField } from 'field-kit';
 import DateFormatter from './modules/date-formatter';
+import InternationalPhoneFormatter from './modules/international-phone-formatter';
 import NumericFormatter from './modules/numeric-formatter';
 import PersonalKeyFormatter from './modules/personal-key-formatter';
 import ZipCodeFormatter from './modules/zip-code-formatter';
@@ -13,7 +14,7 @@ function formatForm() {
     ['.home_equity_line', new NumericFormatter()],
     ['.mfa', new NumericFormatter()],
     ['.mortgage', new NumericFormatter()],
-    ['.phone', new PhoneFormatter()],
+    ['.phone', new InternationalPhoneFormatter()],
     ['.personal-key', new PersonalKeyFormatter()],
     ['.ssn', new SocialSecurityNumberFormatter()],
     ['.zipcode', new ZipCodeFormatter()],
