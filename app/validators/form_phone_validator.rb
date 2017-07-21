@@ -3,8 +3,11 @@ module FormPhoneValidator
 
   included do
     validates_plausible_phone :phone,
-                              country_code: 'US',
                               presence: true,
-                              message: :improbable_phone
+                              message: :improbable_phone,
+                              international_code: ->(form) { form.international_code }
+    validates :international_code, inclusion: {
+      in: PhoneNumberCapabilities::INTERNATIONAL_CODES.keys,
+    }
   end
 end

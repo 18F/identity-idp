@@ -4,6 +4,7 @@ module Idv
     include FormPhoneValidator
 
     attr_reader :idv_params, :user, :phone
+    attr_accessor :international_code
 
     def initialize(idv_params, user)
       @idv_params = idv_params
@@ -11,14 +12,13 @@ module Idv
       self.phone = (idv_params[:phone] || user.phone).phony_formatted(
         format: :international, normalize: :US, spaces: ' '
       )
+      self.international_code = PhoneFormatter::DEFAULT_COUNTRY
     end
 
     def submit(params)
       submitted_phone = params[:phone]
 
-      formatted_phone = submitted_phone.phony_formatted(
-        format: :international, normalize: :US, spaces: ' '
-      )
+      formatted_phone = PhoneFormatter.new.format(submitted_phone, country_code: international_code)
 
       self.phone = formatted_phone
 

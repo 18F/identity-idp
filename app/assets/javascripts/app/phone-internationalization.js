@@ -17,7 +17,12 @@ const areaCodeFromUSPhone = (phone) => {
   return null;
 };
 
-const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
+const selectedInternationCodeOption = () => {
+  const dropdown = document.querySelector('#two_factor_setup_form_international_code');
+  return dropdown.item(dropdown.selectedIndex);
+};
+
+const unsupportedUSPhoneOTPDeliveryWarningMessage = (phone) => {
   const areaCode = areaCodeFromUSPhone(phone);
   const country = getPhoneUnsupportedAreaCodeCountry(areaCode);
   if (country) {
@@ -25,6 +30,23 @@ const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
     return messageTemplate.replace('%{location}', country);
   }
   return null;
+};
+
+const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
+  const selectedOption = selectedInternationCodeOption();
+  if (selectedOption.dataset.smsOnly === 'true') {
+    const messageTemplate = I18n.t('devise.two_factor_authentication.otp_delivery_preference.phone_unsupported');
+    return messageTemplate.replace('%{location}', selectedOption.dataset.countryName);
+  }
+  return null;
+};
+
+const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
+  const internationCodeOption = selectedInternationCodeOption();
+  if (internationCodeOption.dataset.countryCode === '1') {
+    return unsupportedUSPhoneOTPDeliveryWarningMessage(phone);
+  }
+  return unsupportedInternationalPhoneOTPDeliveryWarningMessage();
 };
 
 const updateOTPDeliveryMethods = () => {
@@ -53,9 +75,13 @@ const updateOTPDeliveryMethods = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const input = document.querySelector('#two_factor_setup_form_phone');
-  if (input) {
-    input.addEventListener('keyup', updateOTPDeliveryMethods);
+  const phoneInput = document.querySelector('#two_factor_setup_form_phone');
+  const codeInput = document.querySelector('#two_factor_setup_form_international_code');
+  if (phoneInput) {
+    phoneInput.addEventListener('keyup', updateOTPDeliveryMethods);
+  }
+  if (codeInput) {
+    codeInput.addEventListener('change', updateOTPDeliveryMethods);
     updateOTPDeliveryMethods();
   }
 });

@@ -3,16 +3,14 @@ class TwoFactorSetupForm
   include FormPhoneValidator
   include OtpDeliveryPreferenceValidator
 
-  attr_accessor :phone
+  attr_accessor :phone, :international_code
 
   def initialize(user)
     @user = user
   end
 
   def submit(params)
-    self.phone = params[:phone].phony_formatted(
-      format: :international, normalize: :US, spaces: ' '
-    )
+    process_phone_number_params(params)
     self.otp_delivery_preference = params[:otp_delivery_preference]
 
     @success = valid?
@@ -20,6 +18,11 @@ class TwoFactorSetupForm
     update_otp_delivery_preference_for_user if success && otp_delivery_preference_changed?
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
+  end
+
+  def process_phone_number_params(params)
+    self.international_code = params[:international_code]
+    self.phone = PhoneFormatter.new.format(params[:phone], country_code: international_code)
   end
 
   private

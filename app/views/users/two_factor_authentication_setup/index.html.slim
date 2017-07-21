@@ -8,6 +8,11 @@ p.mt-tiny.mb0
     data: { unsupported_area_codes: @unsupported_area_codes },
     method: :patch,
     url: phone_setup_path) do |f|
+  .clearfix
+    .sm-col.sm-col-8
+      = f.input :international_code,
+        collection: international_phone_codes,
+        include_blank: false
   = f.label :phone, class: 'block'
     strong.left = t('devise.two_factor_authentication.otp_phone_label')
     span#otp_phone_label_info.ml1.italic

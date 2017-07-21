@@ -19,8 +19,7 @@ fr:
         un autre.
       expired: est expiré, veuillez en demander un nouveau
       format_mismatch: Veuillez vous assurer de respecter le format requis.
-      improbable_phone: Numéro de téléphone non valide. Veuillez vous assurer d'entrer
-        un numéro de téléphone à 10 chiffres.
+      improbable_phone: NOT TRANSLATED YET
       missing_field: Veuillez remplir ce champ.
       no_password_reset_profile: Aucun profil récemment désactivé en raison d'une
         réinitialisation de mot de passe

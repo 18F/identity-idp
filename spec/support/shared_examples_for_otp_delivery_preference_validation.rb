@@ -1,5 +1,12 @@
 shared_examples 'an otp delivery preference form' do
   let(:phone) { '+1 (555) 555-5000' }
+  let(:params) do
+    {
+      phone: phone,
+      otp_delivery_preference: 'voice',
+      international_code: 'US',
+    }
+  end
 
   context 'voice' do
     it 'is valid when supported for the phone' do
@@ -13,7 +20,7 @@ shared_examples 'an otp delivery preference form' do
       allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)
       allow(capabilities).to receive(:sms_only?).and_return(false)
 
-      result = subject.submit(phone: phone, otp_delivery_preference: 'voice')
+      result = subject.submit(params)
 
       expect(result.success?).to eq(true)
     end
@@ -29,7 +36,7 @@ shared_examples 'an otp delivery preference form' do
       allow(PhoneNumberCapabilities).to receive(:new).with(phone).and_return(capabilities)
       allow(capabilities).to receive(:sms_only?).and_return(true)
 
-      result = subject.submit(phone: phone, otp_delivery_preference: 'voice')
+      result = subject.submit(params)
 
       expect(result.success?).to eq(false)
       expect(result.errors).to include(:phone)

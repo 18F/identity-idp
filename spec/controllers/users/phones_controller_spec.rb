@@ -16,7 +16,7 @@ describe Users::PhonesController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        put :update, update_user_phone_form: { phone: new_phone }
+        put :update, update_user_phone_form: { phone: new_phone, international_code: 'US' }
       end
 
       it 'lets user know they need to confirm their new phone' do
@@ -37,7 +37,7 @@ describe Users::PhonesController do
       it 'does not delete the phone' do
         stub_sign_in(user)
 
-        put :update, update_user_phone_form: { phone: '' }
+        put :update, update_user_phone_form: { phone: '', international_code: 'US' }
 
         expect(user.reload.phone).to be_present
         expect(response).to render_template(:edit)
@@ -51,7 +51,7 @@ describe Users::PhonesController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        put :update, update_user_phone_form: { phone: second_user.phone }
+        put :update, update_user_phone_form: { phone: second_user.phone, international_code: 'US' }
       end
 
       it 'processes successfully and informs user' do
@@ -74,7 +74,7 @@ describe Users::PhonesController do
         user = build(:user, phone: '123-123-1234')
         stub_sign_in(user)
 
-        put :update, update_user_phone_form: { phone: invalid_phone }
+        put :update, update_user_phone_form: { phone: invalid_phone, international_code: 'US' }
 
         expect(user.phone).not_to eq invalid_phone
         expect(response).to render_template(:edit)
@@ -85,7 +85,7 @@ describe Users::PhonesController do
       it 'redirects to profile page without any messages' do
         stub_sign_in(user)
 
-        put :update, update_user_phone_form: { phone: user.phone }
+        put :update, update_user_phone_form: { phone: user.phone, international_code: 'US' }
 
         expect(response).to redirect_to account_url
         expect(flash.keys).to be_empty
