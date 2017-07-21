@@ -60,12 +60,8 @@ module Verify
       )
     end
 
-    def view_model(error: nil)
-      Verify::PhoneNew.new(
-        error: error,
-        remaining_attempts: remaining_step_attempts,
-        idv_form: idv_form
-      )
+    def view_model_class
+      Verify::PhoneNew
     end
 
     def step_params

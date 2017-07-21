@@ -99,15 +99,11 @@ module Verify
       end
     end
 
-    def view_model(error: nil)
-      Verify::SessionsNew.new(
-        error: error,
-        remaining_attempts: remaining_idv_attempts,
-        idv_form: idv_form
-      )
+    def view_model_class
+      Verify::SessionsNew
     end
 
-    def remaining_idv_attempts
+    def remaining_step_attempts
       Idv::Attempter.idv_max_attempts - current_user.idv_attempts
     end
 

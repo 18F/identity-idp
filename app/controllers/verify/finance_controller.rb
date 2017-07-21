@@ -56,12 +56,8 @@ module Verify
       redirect_to verify_address_path if idv_session.financials_confirmation == true
     end
 
-    def view_model(error: nil)
-      Verify::FinancialsNew.new(
-        error: error,
-        remaining_attempts: remaining_step_attempts,
-        idv_form: idv_form
-      )
+    def view_model_class
+      Verify::FinancialsNew
     end
 
     def idv_form
