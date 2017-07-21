@@ -246,4 +246,17 @@ feature 'Sign in' do
       expect(page).to have_content t('devise.failure.invalid')
     end
   end
+
+  context 'invalid request_id' do
+    it 'allows the user to sign in and does not try to redirect to any SP' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      user = create(:user, :signed_up)
+
+      visit new_user_session_path(request_id: 'invalid')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
+
+      expect(current_path).to eq account_path
+    end
+  end
 end
