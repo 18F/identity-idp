@@ -2,7 +2,7 @@
 fr:
   jobs:
     sms_otp_sender_job:
-      message: NOT TRANSLATED YET
+      message: "%{code} est votre code de sécurité à utilisation unique pour %{app}"
     voice_otp_sender_job:
       message_final: Bonjour! Votre code de sécurité à utilisation unique de login.gov
         est, %{code}, de nouveau, votre code de sécurité est, %{code}, au revoir!
