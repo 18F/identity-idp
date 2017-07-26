@@ -1,5 +1,7 @@
 import { PhoneFormatter } from 'field-kit';
 
+const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
+
 const I18n = window.LoginGov.I18n;
 const phoneFormatter = new PhoneFormatter();
 
@@ -18,7 +20,7 @@ const areaCodeFromUSPhone = (phone) => {
 };
 
 const selectedInternationCodeOption = () => {
-  const dropdown = document.querySelector('#two_factor_setup_form_international_code');
+  const dropdown = document.querySelector('[data-international-phone-form] .international-code');
   return dropdown.item(dropdown.selectedIndex);
 };
 
@@ -50,9 +52,14 @@ const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
 };
 
 const updateOTPDeliveryMethods = () => {
-  const phoneInput = document.querySelector('#two_factor_setup_form_phone');
   const phoneRadio = document.querySelector('#two_factor_setup_form_otp_delivery_preference_voice');
   const smsRadio = document.querySelector('#two_factor_setup_form_otp_delivery_preference_sms');
+
+  if (!phoneRadio || !smsRadio) {
+    return;
+  }
+
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const phoneLabel = phoneRadio.parentNode.parentNode;
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
   const optPhoneLabelInfo = document.querySelector('#otp_phone_label_info');
@@ -74,14 +81,56 @@ const updateOTPDeliveryMethods = () => {
   }
 };
 
+const internationalCodeFromPhone = (phone) => {
+  const match = phone.match(INTERNATIONAL_CODE_REGEX);
+  if (match) {
+    return match[1] || match[2];
+  }
+  return '1';
+};
+
+const updateInternationalCodeSelection = () => {
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phone = phoneInput.value;
+  const internationalCode = internationalCodeFromPhone(phone);
+  const option = document.querySelector(`[data-country-code='${internationalCode}']`);
+  if (option) {
+    const dropdown = document.querySelector('[data-international-phone-form] .international-code');
+    dropdown.value = option.value;
+  }
+};
+
+const updateInternationalCodeInPhone = (phone, newCode) => {
+  if (phone.match(/^\+[^d+]$/)) {
+    phone = phone.replace(/^\+[^d+]$/, '');
+  }
+  if (phone.match(INTERNATIONAL_CODE_REGEX)) {
+    return phone.replace(INTERNATIONAL_CODE_REGEX, `+${newCode} `);
+  }
+  return `+${newCode} ${phone}`;
+};
+
+const updateInternationalCodeInput = () => {
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phone = phoneInput.value;
+  const inputInternationalCode = internationalCodeFromPhone(phone);
+  const selectedInternationalCode = selectedInternationCodeOption().dataset.countryCode;
+
+  if (inputInternationalCode !== selectedInternationalCode) {
+    phoneInput.value = updateInternationalCodeInPhone(phone, selectedInternationalCode);
+  }
+};
+
 document.addEventListener('DOMContentLoaded', () => {
-  const phoneInput = document.querySelector('#two_factor_setup_form_phone');
-  const codeInput = document.querySelector('#two_factor_setup_form_international_code');
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (phoneInput) {
     phoneInput.addEventListener('keyup', updateOTPDeliveryMethods);
+    phoneInput.addEventListener('keyup', updateInternationalCodeSelection);
   }
   if (codeInput) {
     codeInput.addEventListener('change', updateOTPDeliveryMethods);
+    codeInput.addEventListener('change', updateInternationalCodeInput);
     updateOTPDeliveryMethods();
   }
 });

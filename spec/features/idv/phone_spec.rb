@@ -79,7 +79,7 @@ feature 'Verify phone' do
     fill_in 'Phone', with: ''
     find('#idv_phone_form_phone').native.send_keys('abcd1234')
 
-    expect(find('#idv_phone_form_phone').value).to eq '1 (234) '
+    expect(find('#idv_phone_form_phone').value).to eq '+1 234'
   end
 
   def complete_idv_profile_with_phone(phone)

@@ -5,14 +5,16 @@ p.mt-tiny.mb0
   = t('devise.two_factor_authentication.otp_setup_html')
 = simple_form_for(@two_factor_setup_form,
     html: { autocomplete: 'off', role: 'form' },
-    data: { unsupported_area_codes: @unsupported_area_codes },
+    data: { unsupported_area_codes: @unsupported_area_codes,
+      international_phone_form: true },
     method: :patch,
     url: phone_setup_path) do |f|
   .clearfix
     .sm-col.sm-col-8
       = f.input :international_code,
         collection: international_phone_codes,
-        include_blank: false
+        include_blank: false,
+        input_html: { class: 'international-code' }
   = f.label :phone, class: 'block'
     strong.left = t('devise.two_factor_authentication.otp_phone_label')
     span#otp_phone_label_info.ml1.italic
