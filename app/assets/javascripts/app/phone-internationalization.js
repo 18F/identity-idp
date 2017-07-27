@@ -6,7 +6,7 @@ const I18n = window.LoginGov.I18n;
 const phoneFormatter = new PhoneFormatter();
 
 const getPhoneUnsupportedAreaCodeCountry = (areaCode) => {
-  const form = document.querySelector('#new_two_factor_setup_form');
+  const form = document.querySelector('[data-international-phone-form]');
   const phoneUnsupportedAreaCodes = JSON.parse(form.dataset.unsupportedAreaCodes);
   return phoneUnsupportedAreaCodes[areaCode];
 };
@@ -52,8 +52,8 @@ const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
 };
 
 const updateOTPDeliveryMethods = () => {
-  const phoneRadio = document.querySelector('#two_factor_setup_form_otp_delivery_preference_voice');
-  const smsRadio = document.querySelector('#two_factor_setup_form_otp_delivery_preference_sms');
+  const phoneRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_voice');
+  const smsRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_sms');
 
   if (!phoneRadio || !smsRadio) {
     return;

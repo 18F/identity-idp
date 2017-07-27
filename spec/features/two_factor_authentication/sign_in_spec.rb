@@ -54,7 +54,7 @@ feature 'Two Factor Authentication' do
 
         fill_in 'Phone', with: guam_phone
         phone_radio_button = page.find(
-          '#two_factor_setup_form_otp_delivery_preference_voice',
+          '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
         )
 
@@ -94,7 +94,7 @@ feature 'Two Factor Authentication' do
         select 'Turkey +90', from: 'International code'
         fill_in 'Phone', with: '+90 312 213 29 65'
         phone_radio_button = page.find(
-          '#two_factor_setup_form_otp_delivery_preference_voice',
+          '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
         )
 
@@ -117,17 +117,17 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         fill_in 'Phone', with: '+81 54 354 3643'
 
-        expect(page.find('#two_factor_setup_form_international_code').value).to eq 'JP'
+        expect(page.find('#user_phone_form_international_code').value).to eq 'JP'
 
         fill_in 'Phone', with: '5376'
         select 'Morocco +212', from: 'International code'
 
-        expect(find('#two_factor_setup_form_phone').value).to eq '+212 5376'
+        expect(find('#user_phone_form_phone').value).to eq '+212 5376'
 
         fill_in 'Phone', with: '54354'
         select 'Japan +81', from: 'International code'
 
-        expect(find('#two_factor_setup_form_phone').value).to include '+81'
+        expect(find('#user_phone_form_phone').value).to include '+81'
       end
     end
   end
