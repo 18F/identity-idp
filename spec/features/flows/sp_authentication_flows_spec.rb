@@ -58,7 +58,7 @@ feature 'SP-initiated authentication with login.gov', user_flow: true do
 
                   context 'with a valid phone number' do
                     before do
-                      fill_in 'two_factor_setup_form_phone', with: Faker::PhoneNumber.cell_phone
+                      fill_in 'user_phone_form_phone', with: Faker::PhoneNumber.cell_phone
                     end
 
                     context 'with SMS delivery' do
@@ -290,7 +290,7 @@ feature 'SP-initiated authentication with login.gov', user_flow: true do
 
                   context 'with a valid phone number' do
                     before do
-                      fill_in 'two_factor_setup_form_phone', with: Faker::PhoneNumber.cell_phone
+                      fill_in 'user_phone_form_phone', with: Faker::PhoneNumber.cell_phone
                     end
 
                     context 'with SMS delivery' do

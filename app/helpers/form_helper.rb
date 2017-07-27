@@ -77,6 +77,10 @@ module FormHelper
     end
   end
 
+  def unsupported_area_codes
+    PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES
+  end
+
   private
 
   def international_phone_code_label(code_data)

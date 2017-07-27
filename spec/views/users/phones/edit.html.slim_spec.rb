@@ -5,7 +5,7 @@ describe 'users/phones/edit.html.slim' do
     before do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
-      @update_user_phone_form = UpdateUserPhoneForm.new(user)
+      @user_phone_form = UserPhoneForm.new(user)
     end
 
     it 'has a localized title' do
