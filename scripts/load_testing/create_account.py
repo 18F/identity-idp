@@ -52,6 +52,7 @@ class UserBehavior(locust.TaskSet):
         dom = pyquery.PyQuery(resp.content)
         data = {
             '_method': 'patch',
+            'two_factor_setup_form[international_code]': 'US',
             'two_factor_setup_form[phone]': '7035550001',
             'two_factor_setup_form[otp_delivery_preference]': 'sms',
             'authenticity_token': authenticity_token(dom),
