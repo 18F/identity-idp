@@ -9,7 +9,7 @@ feature 'Email confirmation during sign up' do
     open_email(email)
     visit_in_email(t('mailer.confirmation_instructions.link_text'))
 
-    expect(page.html).not_to include(t('notices.dap_html'))
+    expect(page.html).not_to include(t('notices.dap_participation'))
     expect(page).to have_content t('devise.confirmations.confirmed_but_must_set_password')
     expect(page).to have_title t('titles.confirmations.show')
     expect(page).to have_content t('forms.confirmation.show_hdr')
@@ -73,7 +73,7 @@ feature 'Email confirmation during sign up' do
       visit destroy_user_session_url
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
-      expect(page.html).to include(t('notices.dap_html'))
+      expect(page.html).to include(t('notices.dap_participation'))
       expect(page).to have_content(
         t('devise.confirmations.already_confirmed', action: 'Please sign in.')
       )
