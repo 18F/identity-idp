@@ -2,8 +2,8 @@
 fr:
   notices:
     account_reactivation: NOT TRANSLATED YET
-    dap_html: "<!-- Nous participons au programme d'analytique du gouvernement des
-      États-Unis. --> <!-- Consultez les données à analytics.usa.gov. -->"
+    dap_participation: Nous participons au programme d'analytique du gouvernement
+      des États-Unis. Consultez les données à analytics.usa.gov.
     forgot_password:
       first_paragraph_end: avec un lien pour réinitialiser votre mot de passe. Suivez
         le lien pour continuer à réinitialiser votre mot de passe.
