@@ -11,7 +11,12 @@ module Verify
     def create
       create_user_event(:usps_mail_sent, current_user)
       idv_session.address_verification_mechanism = :usps
-      redirect_to verify_review_url
+
+      if current_user.decorate.needs_profile_usps_verification?
+        redirect_to account_path
+      else
+        redirect_to verify_review_url
+      end
     end
 
     def usps_mail_service
