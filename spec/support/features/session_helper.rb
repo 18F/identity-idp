@@ -350,5 +350,14 @@ module Features
       fill_in 'Phone', with: '202-555-1212'
       click_send_security_code
     end
+
+    def register_user(email)
+      click_link t('sign_up.registrations.create_account')
+      submit_form_with_valid_email
+      click_confirmation_link_in_email(email)
+      submit_form_with_valid_password
+      set_up_2fa_with_valid_phone
+      enter_2fa_code
+    end
   end
 end
