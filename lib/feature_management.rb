@@ -1,5 +1,7 @@
 class FeatureManagement
-  PT_DOMAIN_NAME = 'idp.pt.login.gov'.freeze
+  ENVS_WHERE_PREFILLING_OTP_ALLOWED = %w[
+    idp.dev.login.gov idp.pt.login.gov
+  ].freeze
 
   ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
     idp.dev.login.gov idp.int.login.gov idp.qa.login.gov
@@ -21,7 +23,7 @@ class FeatureManagement
   end
 
   def self.prefill_otp_codes_allowed_in_production?
-    Figaro.env.domain_name == PT_DOMAIN_NAME && telephony_disabled?
+    ENVS_WHERE_PREFILLING_OTP_ALLOWED.include?(Figaro.env.domain_name) && telephony_disabled?
   end
 
   def self.enable_i18n_mode?
