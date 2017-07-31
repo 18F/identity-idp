@@ -138,6 +138,7 @@ en:
         prepaid: on a contract, not prepaid
         same_as_2fa: This phone number can be the same one you used to set up your
           one-time password as long as it meets the criteria above.
+        us_country_code: have a U.S. country code to accept phone calls
       review:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}

@@ -83,7 +83,7 @@ describe Verify::PhoneController do
       it 'tracks form error and does not make a vendor API call' do
         expect(Idv::PhoneValidator).to_not receive(:new)
 
-        put :create, idv_phone_form: { phone: '703', international_code: 'US' }
+        put :create, idv_phone_form: { phone: '703' }
 
         result = {
           success: false,
