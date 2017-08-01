@@ -389,8 +389,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(subject.current_user.reload.phone_confirmed_at).to eq @previous_phone_confirmed_at
         end
 
-        it 'redirects to verify_confirmations_path' do
-          expect(response).to redirect_to(verify_confirmations_path)
+        it 'redirects to verify_review_path' do
+          expect(response).to redirect_to(verify_review_path)
         end
 
         it 'does not call UserMailer' do
