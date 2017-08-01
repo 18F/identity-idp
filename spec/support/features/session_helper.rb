@@ -359,5 +359,12 @@ module Features
       set_up_2fa_with_valid_phone
       enter_2fa_code
     end
+
+    def sign_in_via_branded_page(user)
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
+    end
   end
 end

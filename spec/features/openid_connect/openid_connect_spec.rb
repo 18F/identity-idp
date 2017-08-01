@@ -271,26 +271,6 @@ feature 'OpenID Connect' do
       )
     end
 
-    context 'USPS verification' do
-      let(:phone_confirmed) { false }
-
-      it 'prompts to finish verifying profile, then redirects to SP' do
-        allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
-        visit oidc_auth_url
-
-        sign_in_live_with_2fa(user)
-
-        click_button t('forms.verify_profile.submit')
-
-        expect(current_path).to eq(sign_up_completed_path)
-        find('input').click
-
-        redirect_uri = URI(current_url)
-
-        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-      end
-    end
-
     context 'phone verification' do
       let(:phone_confirmed) { true }
 

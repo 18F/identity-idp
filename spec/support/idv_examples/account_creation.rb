@@ -3,16 +3,7 @@ shared_examples 'idv account creation' do |sp|
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     email = 'test@test.com'
 
-    if sp == :saml
-      saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-      visit saml_authn_request
-    elsif sp == :oidc
-      state = SecureRandom.hex
-      client_id = 'urn:gov:gsa:openidconnect:sp:server'
-      nonce = SecureRandom.hex
-      visit_idp_from_sp_with_loa3(state: state, client_id: client_id, nonce: nonce)
-    end
+    visit_idp_from_sp_with_loa3(sp)
 
     register_user(email)
 
@@ -50,8 +41,9 @@ shared_examples 'idv account creation' do |sp|
     if sp == :saml
       user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
       profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
+      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
-      expect(current_url).to eq saml_authn_request
+      expect(current_url).to eq @saml_authn_request
       expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
     end
 
@@ -60,14 +52,14 @@ shared_examples 'idv account creation' do |sp|
       redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-      expect(redirect_params[:state]).to eq(state)
+      expect(redirect_params[:state]).to eq(@state)
 
       code = redirect_params[:code]
       expect(code).to be_present
 
       jwt_payload = {
-        iss: client_id,
-        sub: client_id,
+        iss: @client_id,
+        sub: @client_id,
         aud: api_openid_connect_token_url,
         jti: SecureRandom.hex,
         exp: 5.minutes.from_now.to_i,
@@ -94,8 +86,8 @@ shared_examples 'idv account creation' do |sp|
 
       sub = decoded_id_token[:sub]
       expect(sub).to be_present
-      expect(decoded_id_token[:nonce]).to eq(nonce)
-      expect(decoded_id_token[:aud]).to eq(client_id)
+      expect(decoded_id_token[:nonce]).to eq(@nonce)
+      expect(decoded_id_token[:aud]).to eq(@client_id)
       expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
       expect(decoded_id_token[:iss]).to eq(root_url)
       expect(decoded_id_token[:email]).to eq(user.email)
@@ -116,19 +108,6 @@ shared_examples 'idv account creation' do |sp|
       expect(userinfo_response[:social_security_number]).to eq('666-66-1234')
     end
   end
-end
-
-def visit_idp_from_sp_with_loa3(state: SecureRandom.hex, client_id:, nonce:)
-  visit openid_connect_authorize_path(
-    client_id: client_id,
-    response_type: 'code',
-    acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-    scope: 'openid email profile:name phone social_security_number',
-    redirect_uri: 'http://localhost:7654/auth/result',
-    state: state,
-    prompt: 'select_account',
-    nonce: nonce
-  )
 end
 
 def client_private_key

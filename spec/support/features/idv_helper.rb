@@ -96,4 +96,29 @@ module IdvHelper
     fill_in 'Password', with: password
     click_submit_default
   end
+
+  def visit_idp_from_sp_with_loa3(sp)
+    if sp == :saml
+      @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+      visit @saml_authn_request
+    elsif sp == :oidc
+      @state = SecureRandom.hex
+      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      @nonce = SecureRandom.hex
+      visit_idp_from_oidc_sp_with_loa3(state: @state, client_id: @client_id, nonce: @nonce)
+    end
+  end
+
+  def visit_idp_from_oidc_sp_with_loa3(state: SecureRandom.hex, client_id:, nonce:)
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile:name phone social_security_number',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce
+    )
+  end
 end
