@@ -35,42 +35,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
       @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     end
 
-    it 'allows the user to select verification via USPS letter', email: true do
-      visit @saml_authn_request
-
-      register_user(email)
-
-      click_idv_begin
-
-      fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
-      click_idv_continue
-
-      click_idv_address_choose_usps
-
-      click_on t('idv.buttons.mail.send')
-
-      expect(current_path).to eq verify_review_path
-      expect(page).to_not have_content t('idv.messages.phone.phone_of_record')
-
-      fill_in :user_password, with: user_password
-
-      expect { click_submit_default }.
-        to change { UspsConfirmation.count }.from(0).to(1)
-
-      expect(current_url).to eq verify_confirmations_url
-      click_acknowledge_personal_key
-
-      expect(User.find_with_email(email).events.account_verified.size).to be(0)
-      expect(current_url).to eq(account_url)
-      expect(page).to have_content(t('account.index.verification.reactivate_button'))
-
-      usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
-      expect(usps_confirmation_entry.issuer).
-        to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
-    end
-
     it 'shows user the start page with accordion' do
       saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
       sp_content = [
