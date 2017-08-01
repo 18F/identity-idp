@@ -38,13 +38,14 @@ shared_examples 'selecting usps address verification method' do |sp|
 
     usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
 
-    expect(current_path).to eq(account_path)
-    expect(page).to have_content(t('account.index.verification.reactivate_button'))
+    expect(current_path).to eq(verify_come_back_later_path)
 
     if sp == :saml
+      expect(page).to have_link(t('idv.buttons.return_to_account'))
       expect(usps_confirmation_entry.issuer).
         to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
     elsif sp == :oidc
+      expect(page).to have_link(t('idv.buttons.return_to_sp', sp: 'Test SP'))
       expect(usps_confirmation_entry.issuer).
         to eq('urn:gov:gsa:openidconnect:sp:server')
     end
