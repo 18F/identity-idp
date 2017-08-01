@@ -53,6 +53,7 @@ Dir.chdir APP_ROOT do
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install"
   run "npm install"
+  run "npm run build"
 
   puts "\n== Preparing database =="
   run "bin/rake db:reset RAILS_ENV=development"
