@@ -35,49 +35,10 @@ feature 'LOA3 Single Sign On', idv_job: true do
       @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     end
 
-    it 'redirects to original SAML Authn Request after IdV is complete', email: true do
-      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-
-      visit @saml_authn_request
-
-      saml_register_loa3_user(email)
-
-      expect(current_path).to eq verify_path
-
-      click_idv_begin
-
-      user = User.find_with_email(email)
-      complete_idv_profile_ok(user.reload)
-      click_acknowledge_personal_key
-
-      expect(page).to have_content t(
-        'titles.sign_up.completion_html',
-        accent: t('titles.sign_up.loa3'),
-        app: APP_NAME
-      )
-      within('.requested-attributes') do
-        expect(page).to have_content t('help_text.requested_attributes.email')
-        expect(page).to_not have_content t('help_text.requested_attributes.address')
-        expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
-        expect(page).to have_content t('help_text.requested_attributes.full_name')
-        expect(page).to have_content t('help_text.requested_attributes.phone')
-        expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-      end
-
-      click_on I18n.t('forms.buttons.continue')
-      expect(current_url).to eq @saml_authn_request
-
-      user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
-      profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
-
-      expect(user.events.account_verified.size).to be(1)
-      expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
-    end
-
     it 'allows the user to select verification via USPS letter', email: true do
       visit @saml_authn_request
 
-      saml_register_loa3_user(email)
+      register_user(email)
 
       click_idv_begin
 
