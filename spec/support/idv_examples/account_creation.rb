@@ -1,6 +1,5 @@
 shared_examples 'idv account creation' do |sp|
   it 'redirects to SP after IdV is complete', email: true do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     email = 'test@test.com'
 
     visit_idp_from_sp_with_loa3(sp)

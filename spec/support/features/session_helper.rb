@@ -351,13 +351,15 @@ module Features
       click_send_security_code
     end
 
-    def register_user(email)
+    def register_user(email = 'test@test.com')
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       click_link t('sign_up.registrations.create_account')
-      submit_form_with_valid_email
+      submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
       set_up_2fa_with_valid_phone
       enter_2fa_code
+      User.find_with_email(email)
     end
 
     def sign_in_via_branded_page(user)
