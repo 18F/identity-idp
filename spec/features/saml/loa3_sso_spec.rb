@@ -164,26 +164,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
     context 'having previously selected USPS verification' do
       let(:phone_confirmed) { false }
 
-      it 'prompts for confirmation code at sign in' do
-        allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
-
-        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-        visit saml_authn_request
-        sign_in_live_with_2fa(user)
-
-        expect(current_path).to eq verify_account_path
-        expect(page).to have_content t('idv.messages.usps.resend')
-
-        click_button t('forms.verify_profile.submit')
-
-        expect(user.events.account_verified.size).to be(1)
-        expect(current_path).to eq(sign_up_completed_path)
-
-        find('input').click
-
-        expect(current_url).to eq saml_authn_request
-      end
-
       context 'provides an option to send another letter' do
         it 'without signing out' do
           user = create(:user, :signed_up)
