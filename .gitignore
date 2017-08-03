@@ -50,11 +50,17 @@ Vagrantfile
 /kitchen/cookbooks
 /log/*
 /private_certs/*
+/public/*.ico
+/public/*.png
+/public/*.svg
+/public/browserconfig.xml
+/public/manifest.json
 /public/system
 /public/user_flows
 /spec/tmp
 /test
 /tmp/*
+/vendor/assets/fonts
 /vendor/bundle
 /node_modules
 
