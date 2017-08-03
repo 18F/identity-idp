@@ -140,11 +140,11 @@ describe Verify::ConfirmationsController do
         expect(UspsConfirmation.count).to eq 1
       end
 
-      it 'redirects to account page' do
+      it 'redirects to come back later page' do
         subject.session[:sp] = { loa3: true }
         patch :update
 
-        expect(response).to redirect_to account_url
+        expect(response).to redirect_to verify_come_back_later_path
       end
     end
 
