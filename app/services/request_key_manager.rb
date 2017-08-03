@@ -1,15 +1,21 @@
 class RequestKeyManager
-  cattr_accessor :private_key do
+  def self.read_key_file(key_file, passphrase)
     OpenSSL::PKey::RSA.new(
-      File.read(Rails.root.join('keys', 'saml.key.enc')),
-      Figaro.env.saml_passphrase
+      File.read(key_file),
+      passphrase
     )
+  rescue OpenSSL::PKey::RSAError
+    raise OpenSSL::PKey::RSAError, "Failed to load #{key_file.inspect}. Bad passphrase?"
+  end
+  private_class_method :read_key_file
+
+  cattr_accessor :private_key do
+    key_file = Rails.root.join('keys', 'saml.key.enc')
+    read_key_file(key_file, Figaro.env.saml_passphrase)
   end
 
   cattr_accessor :equifax_ssh_key do
-    OpenSSL::PKey::RSA.new(
-      File.read(Rails.root.join('keys', 'equifax_rsa')),
-      Figaro.env.equifax_ssh_passphrase
-    )
+    key_file = Rails.root.join('keys', 'equifax_rsa')
+    read_key_file(key_file, Figaro.env.equifax_ssh_passphrase)
   end
 end
