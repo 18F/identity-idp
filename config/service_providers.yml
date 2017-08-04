@@ -404,5 +404,5 @@ production:
     agency: 'DHS'
     logo: 'cbp.png'
     redirect_uris:
-      - 'gov.dhs.cbp.pspd.oars.user.prod//result'
+      - 'gov.dhs.cbp.pspd.oars.user.prod://result'
     allow_on_prod_chef_env: 'true'
