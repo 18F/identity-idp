@@ -32,6 +32,104 @@ feature 'Two Factor Authentication' do
       expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
       expect(user.voice?).to eq true
     end
+
+    context 'with U.S. phone that does not support phone delivery method' do
+      let(:guam_phone) { '671-555-5555' }
+
+      scenario 'renders an error if a user submits with phone selected' do
+        sign_in_before_2fa
+        fill_in 'Phone', with: guam_phone
+        choose 'Phone call'
+        click_send_security_code
+
+        expect(current_path).to eq(phone_setup_path)
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Guam'
+        )
+      end
+
+      scenario 'disables the phone option and displays a warning with js', :js do
+        sign_in_before_2fa
+
+        fill_in 'Phone', with: guam_phone
+        phone_radio_button = page.find(
+          '#two_factor_setup_form_otp_delivery_preference_voice',
+          visible: :all
+        )
+
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Guam'
+        )
+        expect(phone_radio_button).to be_disabled
+
+        fill_in 'Phone', with: '555-555-5000'
+
+        expect(page).not_to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Guam'
+        )
+        expect(phone_radio_button).to_not be_disabled
+      end
+    end
+
+    context 'with international phone that does not support phone delivery' do
+      scenario 'renders an error if a user submits with phone selected' do
+        sign_in_before_2fa
+        select 'Turkey +90', from: 'International code'
+        fill_in 'Phone', with: '555-555-5000'
+        choose 'Phone call'
+        click_send_security_code
+
+        expect(current_path).to eq(phone_setup_path)
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Turkey'
+        )
+      end
+
+      scenario 'disables the phone option and displays a warning with js', :js do
+        sign_in_before_2fa
+        select 'Turkey +90', from: 'International code'
+        fill_in 'Phone', with: '+90 312 213 29 65'
+        phone_radio_button = page.find(
+          '#two_factor_setup_form_otp_delivery_preference_voice',
+          visible: :all
+        )
+
+        expect(page).to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Turkey'
+        )
+        expect(phone_radio_button).to be_disabled
+
+        select 'Canada +1', from: 'International code'
+
+        expect(page).not_to have_content t(
+          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+          location: 'Turkey'
+        )
+        expect(phone_radio_button).to_not be_disabled
+      end
+
+      scenario 'updates international code as user types', :js do
+        sign_in_before_2fa
+        fill_in 'Phone', with: '+81 54 354 3643'
+
+        expect(page.find('#two_factor_setup_form_international_code').value).to eq 'JP'
+
+        fill_in 'Phone', with: '5376'
+        select 'Morocco +212', from: 'International code'
+
+        expect(find('#two_factor_setup_form_phone').value).to eq '+212 5376'
+
+        fill_in 'Phone', with: '54354'
+        select 'Japan +81', from: 'International code'
+
+        expect(find('#two_factor_setup_form_phone').value).to include '+81'
+      end
+    end
   end
 
   def attempt_to_bypass_2fa_setup
@@ -111,10 +209,30 @@ feature 'Two Factor Authentication' do
       expect(page.evaluate_script('document.activeElement.id')).to eq 'code'
     end
 
+    scenario 'the user changes delivery method' do
+      user = create(:user, :signed_up, otp_delivery_preference: :sms)
+      sign_in_before_2fa(user)
+
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+
+      click_on t('links.two_factor_authentication.voice')
+
+      expect(VoiceOtpSenderJob).to have_received(:perform_later)
+    end
+
+    scenario 'the user cannot change delivery method if phone is unsupported' do
+      guam_phone = '+1 (671) 555-5000'
+      user = create(:user, :signed_up, phone: guam_phone)
+      sign_in_before_2fa(user)
+
+      expect(page).to_not have_link t('links.two_factor_authentication.voice')
+    end
+
     context 'user enters OTP incorrectly 3 times', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
         allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
         allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
         user = create(:user, :signed_up)
@@ -132,7 +250,7 @@ feature 'Two Factor Authentication' do
         UpdateUser.new(
           user: user,
           attributes: {
-            second_factor_locked_at: Time.zone.now - (Devise.direct_otp_valid_for + 1.second),
+            second_factor_locked_at: Time.zone.now - (lockout_period + 1.second),
           }
         ).call
 
@@ -140,6 +258,158 @@ feature 'Two Factor Authentication' do
         click_button t('forms.buttons.submit.default')
 
         expect(current_path).to eq account_path
+      end
+    end
+
+    context 'user requests an OTP too many times within `findtime` minutes', js: true do
+      it 'locks the user out and leaves user on the page during entire lockout period' do
+        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
+        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
+        five_minute_countdown_regex = /4:5\d/
+
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
+
+        Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+        expect(page).to have_content(five_minute_countdown_regex)
+        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+
+        visit root_path
+        signin(user.email, user.password)
+
+        expect(page).to have_content t('titles.account_locked')
+        expect(page).to have_content(five_minute_countdown_regex)
+        expect(page).
+          to have_content t('devise.two_factor_authentication.max_generic_login_attempts_reached')
+
+        # let lockout period expire
+        Timecop.travel(lockout_period) do
+          signin(user.email, user.password)
+
+          expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        end
+      end
+    end
+
+    context 'findtime period is greater than lockout period' do
+      it 'does not lock the user' do
+        allow(Figaro.env).to receive(:otp_delivery_blocklist_findtime).and_return('10')
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
+        user = create(:user, :signed_up)
+
+        sign_in_before_2fa(user)
+
+        Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+
+        # let lockout period expire
+        Timecop.travel(lockout_period) do
+          signin(user.email, user.password)
+
+          expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+        end
+      end
+    end
+
+    context 'user requests OTP several times but spaced out far apart' do
+      it 'does not lock the user out' do
+        max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+        findtime = Figaro.env.otp_delivery_blocklist_findtime.to_i.minutes
+        user = create(:user, :signed_up)
+
+        sign_in_before_2fa(user)
+        (max_attempts - 1).times do
+          click_link t('links.two_factor_authentication.resend_code.sms')
+        end
+        click_submit_default
+
+        expect(current_path).to eq account_path
+
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(user.phone)
+        rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
+
+        # let findtime period expire
+        rate_limited_phone.update(otp_last_sent_at: Time.zone.now - (findtime + 1))
+
+        visit destroy_user_session_url
+        sign_in_before_2fa(user)
+
+        expect(rate_limited_phone.reload.otp_send_count).to eq 1
+
+        click_link t('links.two_factor_authentication.resend_code.sms')
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+
+        click_submit_default
+
+        expect(current_path).to eq account_path
+      end
+    end
+
+    context '2 users with same phone number request OTP too many times within findtime' do
+      it 'locks both users out' do
+        allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('3')
+        first_user = create(:user, :signed_up, phone: '+1 703-555-1212')
+        second_user = create(:user, :signed_up, phone: '+1 703-555-1212')
+        max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+
+        sign_in_before_2fa(first_user)
+        click_link t('links.two_factor_authentication.resend_code.sms')
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+
+        visit destroy_user_session_url
+
+        sign_in_before_2fa(second_user)
+        click_link t('links.two_factor_authentication.resend_code.sms')
+        phone_fingerprint = Pii::Fingerprinter.fingerprint(first_user.phone)
+        rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
+
+        expect(current_path).to eq otp_send_path
+        expect(rate_limited_phone.otp_send_count).to eq max_attempts
+
+        visit account_path
+
+        expect(current_path).to eq root_path
+
+        visit destroy_user_session_url
+
+        signin(first_user.email, first_user.password)
+
+        expect(page).to have_content t('devise.two_factor_authentication.max_otp_requests_reached')
+
+        visit account_path
+        expect(current_path).to eq root_path
+      end
+    end
+
+    context 'When setting up 2FA for the first time' do
+      it 'enforces rate limiting only for current phone' do
+        second_user = create(:user, :signed_up, phone: '+1 202-555-1212')
+
+        sign_in_before_2fa
+        max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
+
+        submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+
+        max_attempts.times do
+          click_link t('links.two_factor_authentication.resend_code.voice')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+
+        visit root_path
+        signin(second_user.email, second_user.password)
+
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       end
     end
 

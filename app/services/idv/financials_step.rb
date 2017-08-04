@@ -4,17 +4,13 @@ module Idv
       if complete?
         @success = true
         idv_session.financials_confirmation = true
-        idv_session.params = idv_form.idv_params
+        idv_session.params = idv_form_params
       else
         @success = false
         idv_session.financials_confirmation = false
       end
 
-      FormResponse.new(success: success, errors: errors, extra: extra_analytics_attributes)
-    end
-
-    def form_valid_but_vendor_validation_failed?
-      form_valid? && !vendor_validation_passed?
+      FormResponse.new(success: success, errors: errors)
     end
 
     private
@@ -22,26 +18,7 @@ module Idv
     attr_reader :success
 
     def complete?
-      form_valid? && vendor_validation_passed?
-    end
-
-    def vendor_validator_class
-      Idv::FinancialsValidator
-    end
-
-    def vendor_reasons
-      vendor_validator.reasons if form_valid?
-    end
-
-    def vendor_params
-      finance_type = idv_form.finance_type
-      { finance_type => idv_form.idv_params[finance_type] }
-    end
-
-    def extra_analytics_attributes
-      {
-        vendor: { reasons: vendor_reasons },
-      }
+      vendor_validation_passed?
     end
   end
 end

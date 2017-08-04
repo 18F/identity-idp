@@ -158,8 +158,9 @@ describe TwoFactorAuthentication::OtpVerificationController do
     context 'when the user lockout period expires' do
       before do
         sign_in_before_2fa
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         subject.current_user.update(
-          second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.second,
+          second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
           second_factor_attempts_count: 3
         )
       end
@@ -377,6 +378,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
         it 'updates idv session phone_confirmed_at attribute' do
           expect(subject.user_session[:idv][:params]['phone_confirmed_at']).to_not be_nil
+        end
+
+        it 'updates idv session user_phone_confirmation attributes' do
+          expect(subject.user_session[:idv][:user_phone_confirmation]).to eq(true)
         end
 
         it 'does not update user phone attributes' do

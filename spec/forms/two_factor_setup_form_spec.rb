@@ -2,8 +2,18 @@ require 'rails_helper'
 
 describe TwoFactorSetupForm, type: :model do
   let(:user) { build_stubbed(:user) }
-  let(:valid_phone) { '+1 (202) 202-2020' }
+  let(:phone) { '+1 (202) 202-2020' }
+  let(:international_code) { 'US' }
+  let(:params) do
+    {
+      phone: phone,
+      international_code: 'US',
+      otp_delivery_preference: 'sms',
+    }
+  end
   subject { TwoFactorSetupForm.new(user) }
+
+  it_behaves_like 'an otp delivery preference form'
 
   it do
     is_expected.
@@ -12,12 +22,28 @@ describe TwoFactorSetupForm, type: :model do
   end
 
   describe 'phone validation' do
-    it 'uses the phony_rails gem with country option set to US' do
+    it 'uses the phony_rails gem' do
       phone_validator = subject._validators.values.flatten.
                         detect { |v| v.class == PhonyPlausibleValidator }
 
-      expect(phone_validator.options).
-        to eq(country_code: 'US', presence: true, message: :improbable_phone)
+      expect(phone_validator.options[:presence]).to eq(true)
+      expect(phone_validator.options[:message]).to eq(:improbable_phone)
+      expect(phone_validator.options).to include(:international_code)
+    end
+
+    it do
+      should validate_inclusion_of(:international_code).
+        in_array(PhoneNumberCapabilities::INTERNATIONAL_CODES.keys)
+    end
+
+    it 'validates that the number matches the requested international code' do
+      params[:phone] = '123 123 1234'
+      params[:international_code] = 'MA'
+      result = subject.submit(params)
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(false)
+      expect(result.errors).to include(:phone)
     end
   end
 
@@ -32,14 +58,17 @@ describe TwoFactorSetupForm, type: :model do
         }
         result = instance_double(FormResponse)
 
+        params[:phone] = user.phone
+
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(phone: user.phone, otp_delivery_preference: 'sms')).
-          to eq result
+        expect(form.submit(params)).to eq result
       end
     end
 
     context 'when phone is not already taken' do
+      let(:phone) { '+1 (703) 555-1212' }
+
       it 'is valid' do
         extra = {
           otp_delivery_preference: 'sms',
@@ -48,14 +77,13 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(subject.submit(phone: '+1 (703) 555-1212', otp_delivery_preference: 'sms')).
-          to eq result
+        expect(subject.submit(params)).to eq result
       end
     end
 
     context 'when phone is same as current user' do
       it 'is valid' do
-        user = build_stubbed(:user, phone: valid_phone)
+        user = build_stubbed(:user, phone: phone)
         form = TwoFactorSetupForm.new(user)
         extra = {
           otp_delivery_preference: 'sms',
@@ -64,12 +92,13 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(FormResponse).to receive(:new).
           with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(phone: valid_phone, otp_delivery_preference: 'sms')).
-          to eq result
+        expect(form.submit(params)).to eq result
       end
     end
 
     context 'when phone is empty' do
+      let(:phone) { '' }
+
       it 'does not add already taken errors' do
         errors = {
           phone: [t('errors.messages.improbable_phone')],
@@ -81,8 +110,7 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
-        expect(subject.submit(phone: '', otp_delivery_preference: 'sms')).
-          to eq result
+        expect(subject.submit(params)).to eq result
       end
     end
   end
@@ -95,7 +123,7 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(UpdateUser).to_not receive(:new)
 
-        form.submit(phone: '+1 (703) 555-1212', otp_delivery_preference: 'sms')
+        form.submit(params)
       end
     end
 
@@ -111,7 +139,7 @@ describe TwoFactorSetupForm, type: :model do
 
         expect(updated_user).to receive(:call)
 
-        form.submit(phone: '+1 (703) 555-1212', otp_delivery_preference: 'sms')
+        form.submit(params)
       end
     end
   end

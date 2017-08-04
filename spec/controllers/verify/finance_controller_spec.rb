@@ -80,12 +80,119 @@ describe Verify::FinanceController do
           end
         end
       end
+
+      it 'tracks the form errors and does not make a vendor API call' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        allow(Idv::FinancialsValidator).to receive(:new)
+
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '123' }
+
+        result = {
+          success: false,
+          errors: { ccn: ['Credit card number should be only last 8 digits.'] },
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::IDV_FINANCE_CONFIRMATION_FORM, result)
+        expect(subject.idv_session.financials_confirmation).to be_falsy
+        expect(Idv::FinancialsValidator).to_not have_received(:new)
+      end
     end
 
     context 'when form is valid' do
+      it 'redirects to the show page' do
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+
+        expect(response).to redirect_to(verify_finance_result_path)
+      end
+
+      it 'tracks the successful submission with no errors' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+
+        result = {
+          success: true,
+          errors: {},
+        }
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_FINANCE_CONFIRMATION_FORM, result
+        )
+      end
+    end
+  end
+
+  describe '#show' do
+    before do
+      stub_subject
+    end
+
+    context 'when the background job is not complete yet' do
+      render_views
+
+      it 'renders a spinner and has the page refresh' do
+        get :show
+
+        expect(response).to render_template('shared/refresh')
+
+        dom = Nokogiri::HTML(response.body)
+        expect(dom.css('meta[http-equiv="refresh"]')).to be_present
+      end
+    end
+
+    context 'when the background job has timed out' do
+      let(:expired_started_at) do
+        Time.zone.now.to_i - Figaro.env.async_job_refresh_max_wait_seconds.to_i
+      end
+
+      before do
+        controller.idv_session.async_result_started_at = expired_started_at
+        controller.idv_session.params = { ccn: '12345678' }
+      end
+
+      it 'displays an error' do
+        get :show
+
+        expect(response).to render_template :new
+        expect(flash[:warning]).to include(t('idv.modal.financials.timeout'))
+      end
+
+      it 'tracks the failure as a timeout' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        get :show
+
+        result = {
+          success: false,
+          errors: { timed_out: ['Timed out waiting for vendor response'] },
+        }
+
+        expect(@analytics).to have_received(:track_event).with(
+          Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result
+        )
+      end
+    end
+
+    context 'when the background job has completed' do
+      let(:result_id) { SecureRandom.uuid }
+
+      before do
+        controller.idv_session.async_result_id = result_id
+        VendorValidatorResultStorage.new.store(result_id: result_id, result: result)
+      end
+
       context 'when CCN is confirmed' do
+        let(:result) { Idv::VendorResult.new(success: true) }
+
         it 'redirects to phone page' do
-          put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+          controller.idv_session.params = { ccn: '12345678' }
+
+          get :show
 
           expect(flash[:success]).to eq(t('idv.messages.personal_details_verified'))
           expect(response).to redirect_to verify_address_url
@@ -93,19 +200,62 @@ describe Verify::FinanceController do
           expected_params = { ccn: '12345678' }
           expect(subject.idv_session.params).to eq expected_params
         end
+
+        it 'tracks the successful submission with no errors' do
+          stub_analytics
+          allow(@analytics).to receive(:track_event)
+
+          get :show
+
+          result = {
+            success: true,
+            errors: {},
+          }
+
+          expect(@analytics).to have_received(:track_event).with(
+            Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result
+          )
+        end
       end
 
       context 'when CCN is not confirmed' do
+        let(:result) do
+          Idv::VendorResult.new(
+            success: false,
+            errors: { ccn: ['The ccn could not be verified.'] }
+          )
+        end
+
+        before do
+          controller.idv_session.params = { finance_type: 'ccn', ccn: '00000000' }
+        end
+
         it 'renders #new with error' do
-          put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
+          get :show
 
           expect(flash[:warning]).to match t('idv.modal.financials.heading')
           expect(flash[:warning]).to match t('idv.modal.attempts', count: max_attempts - 1)
           expect(response).to render_template :new
         end
+
+        it 'tracks the vendor error' do
+          stub_analytics
+          allow(@analytics).to receive(:track_event)
+
+          get :show
+
+          result = {
+            success: false,
+            errors: { ccn: ['The ccn could not be verified.'] },
+          }
+
+          expect(@analytics).to have_received(:track_event).
+            with(Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result)
+        end
       end
 
       context 'attempt window has expired, previous attempts == max-1' do
+        let(:result) { Idv::VendorResult.new(success: true) }
         let(:two_days_ago) { Time.zone.now - 2.days }
 
         before do
@@ -114,70 +264,12 @@ describe Verify::FinanceController do
         end
 
         it 'allows and does not affect attempt counter' do
-          put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+          get :show
 
           expect(response).to redirect_to verify_address_path
           expect(subject.current_user.idv_attempts).to eq(max_attempts - 1)
           expect(subject.current_user.idv_attempted_at).to eq two_days_ago
         end
-      end
-    end
-  end
-
-  describe 'analytics' do
-    before do
-      stub_subject
-      stub_analytics
-      allow(@analytics).to receive(:track_event)
-    end
-
-    context 'when form is valid and CCN passes vendor validation' do
-      it 'tracks the successful submission with no errors' do
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
-
-        result = {
-          success: true,
-          errors: {},
-          vendor: { reasons: ['Good number'] },
-        }
-
-        expect(@analytics).to have_received(:track_event).with(
-          Analytics::IDV_FINANCE_CONFIRMATION, result
-        )
-      end
-    end
-
-    context 'when the form is valid but the CCN does not pass vendor validation' do
-      it 'tracks the vendor error' do
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '00000000' }
-
-        result = {
-          success: false,
-          errors: { ccn: ['The ccn could not be verified.'] },
-          vendor: { reasons: ['Bad number'] },
-        }
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
-      end
-    end
-
-    context 'when the form is invalid' do
-      it 'tracks the form errors and does not make a vendor API call' do
-        allow(Idv::FinancialsValidator).to receive(:new)
-
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '123' }
-
-        result = {
-          success: false,
-          errors: { ccn: ['Credit card number should be only last 8 digits.'] },
-          vendor: { reasons: nil },
-        }
-
-        expect(@analytics).to have_received(:track_event).
-          with(Analytics::IDV_FINANCE_CONFIRMATION, result)
-        expect(subject.idv_session.financials_confirmation).to eq false
-        expect(Idv::FinancialsValidator).to_not have_received(:new)
       end
     end
   end

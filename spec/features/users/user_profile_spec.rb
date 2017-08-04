@@ -66,7 +66,7 @@ feature 'User profile' do
         expect(page).to have_content(t('idv.messages.personal_key'))
       end
 
-      it 'allows the user reactivate their profile by reverifying' do
+      it 'allows the user reactivate their profile by reverifying', idv_job: true do
         profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
         user = profile.user
 

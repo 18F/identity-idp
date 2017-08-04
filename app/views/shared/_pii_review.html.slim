@@ -1,0 +1,20 @@
+.pl5
+  .h6 = t('idv.review.full_name')
+  .h4.bold.ico-absolute.ico-absolute-success
+    = "#{pii[:first_name]} #{pii[:last_name]}"
+
+  .mt3.h6 = t('idv.review.mailing_address')
+  .h4.bold.ico-absolute.ico-absolute-success
+    = render 'shared/address', address: pii
+  .mt3.h6 = t('idv.review.dob')
+  .h4.bold.ico-absolute.ico-absolute-success #{pii[:dob].to_date.to_formatted_s(:long)}
+
+  .mt3.h6 = t('idv.review.ssn')
+  .h4.bold.ico-absolute.ico-absolute-success #{pii[:ssn]}
+
+  - if phone
+    .h6.mt3 = t('idv.messages.phone.phone_of_record')
+    .h4.bold.ico-absolute.ico-absolute-success #{phone}
+
+  .mt3.mb3
+    = link_to t('idv.messages.review.financial_info'), MarketingSite.help_url

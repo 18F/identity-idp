@@ -1,5 +1,10 @@
 - title t('titles.reactivate_account')
 
+.js-fallback
+  .alert.alert-warning
+    .bold
+       = t('instructions.account.reactivate.modal.copy')
+
 h1.h3.mt0.mb2 = t('headings.account.reactivate')
 
 p.mb4 = t('instructions.account.reactivate.intro')
@@ -15,8 +20,10 @@ p.mb0 = t('instructions.account.reactivate.explanation')
 
 .block-center.center.col-10
   .col-12.mb2
-    = link_to t('links.account.reactivate.with_key'), reactivate_account_path,
+    = link_to t('links.account.reactivate.with_key'), verify_personal_key_path,
       class: 'btn btn-primary block'
-  = form_tag manage_reactivate_account_path, method: :put, class: 'col-12' do
+  = form_tag reactivate_account_path, method: :put, class: 'col-12' do
     = button_tag t('links.account.reactivate.without_key'), type: 'submit',
-      class: 'btn btn-secondary block col-12'
+      class: 'btn btn-secondary block col-12', id: 'no-key-reactivate'
+
+= render 'reactivate_account/modal'

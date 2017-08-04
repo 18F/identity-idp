@@ -6,10 +6,17 @@ describe 'layouts/application.html.slim' do
   before do
     allow(view).to receive(:user_fully_authenticated?).and_return(true)
     allow(view).to receive(:decorated_session).and_return(
-      DecoratedSession.new(sp: nil, view_context: nil, sp_session: {}).call
+      DecoratedSession.new(
+        sp: nil,
+        view_context: nil,
+        sp_session: {},
+        service_provider_request: ServiceProviderRequest.new
+      ).call
     )
     allow(view.request).to receive(:original_url).and_return('http://test.host/foobar')
     allow(view).to receive(:current_user).and_return(User.new)
+    controller.request.path_parameters[:controller] = 'users/sessions'
+    controller.request.path_parameters[:action] = 'new'
   end
 
   context 'no content for nav present' do
@@ -76,7 +83,12 @@ describe 'layouts/application.html.slim' do
       allow(view).to receive(:current_user).and_return(nil)
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
       allow(view).to receive(:decorated_session).and_return(
-        DecoratedSession.new(sp: nil, view_context: nil, sp_session: {}).call
+        DecoratedSession.new(
+          sp: nil,
+          view_context: nil,
+          sp_session: {},
+          service_provider_request: nil
+        ).call
       )
       allow(Figaro.env).to receive(:participate_in_dap).and_return('true')
 

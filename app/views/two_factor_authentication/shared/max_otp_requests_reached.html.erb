@@ -1,0 +1,19 @@
+<% lockout_time_in_words = decorator.lockout_time_remaining_in_words %>
+<% lockout_time_remaining = decorator.lockout_time_remaining %>
+<% title t('titles.account_locked') %>
+
+<h1 class="h3 my0">
+  <%= t('titles.account_locked') %>
+</h1>
+<p>
+<%= t("devise.two_factor_authentication.max_otp_requests_reached") %>
+</p>
+<p>
+  <%= t('devise.two_factor_authentication.please_try_again_html',
+  time_remaining: content_tag(:span, lockout_time_in_words, id: 'countdown')) %>
+</p>
+
+<%= nonced_javascript_tag do %>
+  var test = <%= lockout_time_remaining %> * 1000;
+  window.LoginGov.countdownTimer(document.getElementById('countdown'), test);
+<% end %>

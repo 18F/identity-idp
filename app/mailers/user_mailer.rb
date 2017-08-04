@@ -1,5 +1,6 @@
 class UserMailer < ActionMailer::Base
   include Mailable
+  include LocaleHelper
   before_action :attach_images
   default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
 
@@ -8,8 +9,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def signup_with_your_email(email)
-    @root_url = root_url
-    @new_user_password_url = new_user_password_url
+    @root_url = root_url(locale: locale_url_param)
     mail(to: email, subject: t('mailer.email_reuse_notice.subject'))
   end
 

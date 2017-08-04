@@ -1,20 +1,25 @@
 ---
 es:
   user_mailer:
-    help_link_text: NOT TRANSLATED YET
-    contact_link_text: NOT TRANSLATED YET
+    contact_link_text: Contáctenos
     email_changed:
-      help: NOT TRANSLATED YET
-      intro: NOT TRANSLATED YET
+      help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
+      intro: El email de su cuenta de {app} ha sido cambiado.
+    help_link_text: Centro de Ayuda
     password_changed:
-      help: NOT TRANSLATED YET
-      intro: NOT TRANSLATED YET
+      help: Si no realizó este cambio, visite el %{app} % {help_link} o el %{contact_link}.
+      intro: Tiene una contraseña nueva para su cuenta de %{app}.
     phone_changed:
-      help: NOT TRANSLATED YET
-      intro: NOT TRANSLATED YET
-      subject: NOT TRANSLATED YET
+      help: Si no desea cambiar su número de teléfono, visite el %{app} %{help_link}
+        o el %{contact_link}.
+      intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
+      subject: Nuevo número de teléfono
     signup_with_your_email:
-      help: NOT TRANSLATED YET
-      intro: NOT TRANSLATED YET
-      link_text: NOT TRANSLATED YET
-      reset_password: NOT TRANSLATED YET
+      help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
+        %{help_link} o el %{contact_link}.
+      intro: Este email ya está asociado a una cuenta %{app}, por lo tanto no podemos
+        usarlo para crear una cuenta nueva. Para iniciar una sesión con su cuenta
+        existente, siga el siguiente enlace. Si no intenta iniciar una sesión con
+        este email, puede ignorar este mensaje.
+      link_text: Ir a %{app}
+      reset_password: Si no recuerda su contraseña, vaya a %{app} para restablecerla.

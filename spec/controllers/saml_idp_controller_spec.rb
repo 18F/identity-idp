@@ -292,11 +292,11 @@ describe SamlIdpController do
         sp_request_id = ServiceProviderRequest.last.uuid
 
         expect(session[:sp]).to eq(
-          loa3: false,
           issuer: saml_settings.issuer,
-          request_id: sp_request_id,
+          loa3: false,
           request_url: @saml_request.request.original_url,
-          requested_attributes: [:email]
+          request_id: sp_request_id,
+          requested_attributes: ['email']
         )
       end
 
@@ -306,8 +306,8 @@ describe SamlIdpController do
           saml_get_auth(saml_settings)
         end
 
-        it 'deletes SP metadata from session' do
-          expect(session.key?(:sp)).to eq(false)
+        it 'does not delete SP metadata from session' do
+          expect(session.key?(:sp)).to eq(true)
         end
       end
     end

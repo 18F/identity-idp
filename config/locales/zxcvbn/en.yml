@@ -2,39 +2,46 @@
 en:
   zxcvbn:
     feedback:
-      "A word by itself is easy to guess": A word by itself is easy to guess
-      "Add another word or two_ Uncommon words are better_": >-
-        Add another word or two. Uncommon words are better
-      "All-uppercase is almost as easy to guess as all-lowercase": >-
-        All-uppercase is almost as easy to guess as all-lowercase
-      "Avoid dates and years that are associated with you": >-
-        Avoid dates and years that are associated with you
-      "Avoid recent years": Avoid recent years
-      "Avoid repeated words and characters": Avoid repeated words and characters
-      "Avoid sequences": Avoid sequences
-      "Avoid years that are associated with you": Avoid years that are associated with you
-      "Capitalization doesn't help very much": Capitalization doesn’t help very much
-      "Common names and surnames are easy to guess": Common names and surnames are easy to guess
-      "Dates are often easy to guess": Dates are often easy to guess
-      "Names and surnames by themselves are easy to guess": >-
-        Names and surnames by themselves are easy to guess
-      "No need for symbols, digits, or uppercase letters": >-
-        There is no need for symbols, digits, or uppercase letters
-      "Predictable substitutions like '@' instead of 'a' don't help very much":
-        Predictable substitutions like '@' instead of 'a' don’t help very much
-      "Recent years are easy to guess": Recent years are easy to guess
-      "Repeats like \"aaa\" are easy to guess": Repeats like "aaa" are easy to guess
-      "Repeats like \"abcabcabc\" are only slightly harder to guess than \"abc\"": >-
-        Repeats like "abcabcabc" are only slightly harder to guess than "abc"
-      "Reversed words aren't much harder to guess": Reversed words aren’t much harder to guess
-      "Sequences like abc or 6543 are easy to guess": Sequences like abc or 6543 are easy to guess
-      "Short keyboard patterns are easy to guess": Short keyboard patterns are easy to guess
-      "Straight rows of keys are easy to guess": Straight rows of keys are easy to guess
-      "This is a top-10 common password": This is a top-10 common password
-      "This is a top-100 common password": This is a top-100 common password
-      "This is a very common password": This is a very common password
-      "This is similar to a commonly used password": This is similar to a commonly used password
-      "Use a few words, avoid common phrases":
-          For a stronger password, use a few words separated by spaces, but avoid common phrases
-      "Use a longer keyboard pattern with more turns": >-
-        Use a longer keyboard pattern with more turns
+      a_word_by_itself_is_easy_to_guess: A word by itself is easy to guess
+      add_another_word_or_two_uncommon_words_are_better: Add another word or two.
+        Uncommon words are better
+      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: All-uppercase is
+        almost as easy to guess as all-lowercase
+      avoid_dates_and_years_that_are_associated_with_you: Avoid dates and years that
+        are associated with you
+      avoid_recent_years: Avoid recent years
+      avoid_repeated_words_and_characters: Avoid repeated words and characters
+      avoid_sequences: Avoid sequences
+      avoid_years_that_are_associated_with_you: Avoid years that are associated with
+        you
+      capitalization_doesnt_help_very_much: Capitalization doesn’t help very much
+      common_names_and_surnames_are_easy_to_guess: Common names and surnames are easy
+        to guess
+      dates_are_often_easy_to_guess: Dates are often easy to guess
+      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases: For
+        a stronger password, use a few words separated by spaces, but avoid common
+        phrases
+      names_and_surnames_by_themselves_are_easy_to_guess: Names and surnames by themselves
+        are easy to guess
+      predictable_substitutions_like__instead_of_a_dont_help_very_much: Predictable
+        substitutions like '@' instead of 'a' don’t help very much
+      recent_years_are_easy_to_guess: Recent years are easy to guess
+      repeats_like_aaa_are_easy_to_guess: Repeats like "aaa" are easy to guess
+      repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: Repeats like
+        "abcabcabc" are only slightly harder to guess than "abc"
+      reversed_words_arent_much_harder_to_guess: Reversed words aren’t much harder
+        to guess
+      sequences_like_abc_or_6543_are_easy_to_guess: Sequences like abc or 6543 are
+        easy to guess
+      short_keyboard_patterns_are_easy_to_guess: Short keyboard patterns are easy
+        to guess
+      straight_rows_of_keys_are_easy_to_guess: Straight rows of keys are easy to guess
+      there_is_no_need_for_symbols_digits_or_uppercase_letters: There is no need for
+        symbols, digits, or uppercase letters
+      this_is_a_top_100_common_password: This is a top-100 common password
+      this_is_a_top_10_common_password: This is a top-10 common password
+      this_is_a_very_common_password: This is a very common password
+      this_is_similar_to_a_commonly_used_password: This is similar to a commonly used
+        password
+      use_a_longer_keyboard_pattern_with_more_turns: Use a longer keyboard pattern
+        with more turns

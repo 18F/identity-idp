@@ -1,16 +1,45 @@
+- show_language_dropdown = I18n.available_locales.count > 1
+
 footer.footer.bg-light-blue.sm-bg-navy
-  .container.h6.py1.px2.lg-px0
-    .clearfix
-      .col-right.caps
+  - if show_language_dropdown
+    .sm-hide.border-bottom
+      .container.py1.px2.lg-px0.h5
+        .center
+          span.i18n-mobile-toggle.block.text-decoration-none.blue.fs-13p
+            = image_tag asset_url('globe-blue.svg'), width: 12, class: 'mr1', alt: ''
+            = t('i18n.language')
+            span.caret.inline-block.ml-tiny
+              | &#9662;
+    .i18n-mobile-dropdown.sm-hide
+      ul.list-reset.mb0.white.center
+        - I18n.available_locales.each do |locale|
+          li.border-bottom
+            = link_to t("i18n.locale.#{locale}"), { locale: locale },
+              class: 'block py-12p px2 text-decoration-none blue fs-13p'
+  .container.py1.px2.lg-px0(class="#{'sm-py0' if show_language_dropdown}")
+    .flex.flex-center
+      .flex.flex-center
+        - if show_language_dropdown
+          .i18n-desktop-toggle.sm-show.white.my1.mr3.px1.py-tiny.border.border-blue.rounded-lg
+            = image_tag asset_url('globe-white.svg'), width: 12, class: 'mr1', alt: ''
+            = t('i18n.language')
+            span.caret.inline-block.ml-tiny
+              | &#9662;
+            .i18n-desktop-dropdown
+              ul.list-reset.mb0.white
+                  - I18n.available_locales.each do |locale|
+                    li.border-bottom.border-navy
+                      = link_to t("i18n.locale.#{locale}"), { locale: locale },
+                      class: 'block pl-24p py2 text-decoration-none white'
         = link_to t('links.help'), MarketingSite.help_url,
-          class: 'gray sm-white text-decoration-none mr3', target: '_blank'
+          class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.contact'), MarketingSite.contact_url,
-          class: 'gray sm-white text-decoration-none mr3', target: '_blank'
+          class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.privacy_policy'), MarketingSite.privacy_url,
-          class: 'gray sm-white text-decoration-none', target: '_blank'
-      .col
+          class: 'caps h6 blue sm-white text-decoration-none', target: '_blank'
+      .flex.flex-auto.flex-first
         = link_to('https://gsa.gov',
-          class: 'flex flex-center text-decoration-none white',
+          class: 'flex flex-center text-decoration-none white h6',
           target: '_blank') do
           = image_tag asset_url('sp-logos/square-gsa.svg'),
             width: 20, class: 'mr1 sm-show', alt: 'GSA homepage'
@@ -18,4 +47,3 @@ footer.footer.bg-light-blue.sm-bg-navy
             width: 20, class: 'mr1 sm-hide', alt: 'GSA homepage'
           span.sm-show
            = t('shared.footer_lite.gsa')
-        end

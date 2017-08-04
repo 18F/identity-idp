@@ -2,7 +2,7 @@ $ico-size: 1rem;
 $ico-offset: 1rem;
 
 .alert {
-  background-color: $blue-light;
+  background-color: $blue-lighter;
   border-radius: $space-1;
   color: #5b616a;
   font-size: 1rem;
@@ -50,4 +50,9 @@ $ico-offset: 1rem;
   padding-left: $space-4;
 
   &::before { background-image: url(image-path('alert/warning.svg')); }
+}
+
+.alert-notice {
+  padding-left: $space-4;
+  &::before { background-image: url(image-path('alert/notice.svg')); }
 }

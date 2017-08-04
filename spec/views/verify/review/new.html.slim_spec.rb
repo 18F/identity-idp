@@ -48,7 +48,8 @@ describe 'verify/review/new.html.slim' do
     end
 
     it 'renders a link telling user why financial info is not visible' do
-      expect(rendered).to have_link t('idv.messages.review.financial_info')
+      expect(rendered).
+        to have_link(t('idv.messages.review.financial_info'), href: MarketingSite.help_url)
     end
   end
 end

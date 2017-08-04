@@ -2,29 +2,10 @@
 
 h1.h3.my0 = t('idv.titles.session.review')
 
-= simple_form_for(current_user, url: verify_review_path,
-    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
-  = f.input :password, label: t('idv.form.password'), required: true
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn btn-primary btn-wide'
+= render 'shared/user_verify_password', update_path: verify_review_path
 
 .mt4
   = accordion('review-verified-info', t('idv.messages.review.intro')) do
-    .pl5
-      .h6 = t('idv.review.full_name')
-      .h4.bold.ico-absolute.ico-absolute-success
-        = "#{@idv_params[:first_name]} #{@idv_params[:last_name]}"
-
-      .mt3.h6 = t('idv.review.mailing_address')
-      .h4.bold.ico-absolute.ico-absolute-success
-        = render 'shared/address', address: @idv_params
-      .mt3.h6 = t('idv.review.dob')
-      .h4.bold.ico-absolute.ico-absolute-success #{@idv_params[:dob].to_date.to_formatted_s(:long)}
-
-      .mt3.h6 = t('idv.review.ssn')
-      .h4.bold.ico-absolute.ico-absolute-success #{@idv_params[:ssn]}
-
-      .h6.mt3 = t('idv.messages.phone.phone_of_record').capitalize
-      .h4.bold.ico-absolute.ico-absolute-success #{@idv_params[:phone]}
-
-      .mt3.mb3
-        = link_to t('idv.messages.review.financial_info'), MarketingSite.help_url
+    - phone = @idv_params[:phone]
+    - formatted_phone = PhoneFormatter.new.format(phone)
+    = render 'shared/pii_review', pii: @idv_params, phone: formatted_phone

@@ -2,12 +2,10 @@
 
 #cancel-action-modal.display-none
   = render layout: 'shared/modal_layout' do
-    .p5.cntnr-xskinny.border-box.bg-white.rounded.relative.rounded-lg.modal-warning
-      h3.my2.fs-20p.sans-serif.center
-        = t("#{app_flow}.cancel.modal_header")
+    .p3.sm-p4.cntnr-xxskinny.border-box.bg-white.rounded-xxl.lg.modal-warning
+      h3.my2.fs-20p.sans-serif.center = t("#{app_flow}.cancel.modal_header")
       hr.mb3.bw4.rounded
-
-      .mb5
+      .mb4
         p.mb1.bold
           = t("#{app_flow}.cancel.warning_header")
         ul.px2.yellow-dots
@@ -15,20 +13,20 @@
             li.mb2
               = point
 
-      .clearfix
-        button.btn.btn-primary.rounded-lg.mb2.col-12(id='loa-continue' type='button')
+      .center
+        button.btn.btn-primary.col-12.mb2.p2.rounded-lg.border-box(id='loa-continue' type='button')
           = t("#{app_flow}.buttons.continue")
 
         - if idv
           = button_to t('idv.buttons.cancel'), verify_session_path, method: :delete,
-            class: 'btn btn-outline blue border border-blue rounded-lg col-12 input-submit'
+            class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
         - elsif user_signing_up
           = button_to t('sign_up.buttons.cancel'), destroy_user_path, method: :delete,
-            class: 'btn btn-outline blue border border-blue rounded-lg col-12 input-submit'
+            class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
         - else
           .col-12
             = link_to cancel_link_text, '/', id: 'cancel-action-home',
-              class: 'btn btn-outline blue border border-blue rounded-lg center block'
+              class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
 
 
 == javascript_include_tag 'misc/cancel-action-modal'

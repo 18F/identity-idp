@@ -6,7 +6,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
       before do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
-        subject.current_user.otp_secret_key = @secret
+        subject.current_user.update(otp_secret_key: @secret)
       end
 
       it 'redirects to the profile' do
@@ -87,10 +87,11 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
     context 'when the user lockout period expires' do
       before do
+        lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         user = create(
           :user,
           :signed_up,
-          second_factor_locked_at: Time.zone.now - Devise.direct_otp_valid_for - 1.second,
+          second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
           second_factor_attempts_count: 3
         )
         sign_in_before_2fa(user)
@@ -124,6 +125,26 @@ describe TwoFactorAuthentication::TotpVerificationController do
         it 'resets second_factor_locked_at' do
           expect(subject.current_user.reload.second_factor_locked_at).to eq nil
         end
+      end
+    end
+
+    context 'when the user does not have an authenticator app enabled' do
+      it 'redirects to user_two_factor_authentication_path' do
+        stub_sign_in_before_2fa
+        post :create, code: '123456'
+
+        expect(response).to redirect_to user_two_factor_authentication_path
+      end
+    end
+  end
+
+  describe '#show' do
+    context 'when the user does not have an authenticator app enabled' do
+      it 'redirects to user_two_factor_authentication_path' do
+        stub_sign_in_before_2fa
+        get :show
+
+        expect(response).to redirect_to user_two_factor_authentication_path
       end
     end
   end

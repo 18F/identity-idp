@@ -1,0 +1,33 @@
+---
+fr:
+  titles:
+    account: Compte
+    account_locked: Compte verrouillé
+    confirmations:
+      new: Envoyer les instructions de confirmation pour votre compte
+      show: Choisissez un mot de passe
+    edit_info:
+      email: Modifier votre adresse courriel
+      password: Modifier votre mot de passe
+      phone: Modifier votre numéro de téléphone
+    enter_2fa_code: Entrez le code de sécurité à utilisation unique
+    passwords:
+      change: Changez le mot de passe de votre compte
+      confirm: Confirmez le mot de passe de votre compte
+      forgot: Réinitialisez le mot de passe de votre compte
+    personal_key: Juste au cas
+    reactivate_account: Réactiver le profil
+    registrations:
+      new: S'inscrire et créer un compte
+      start: Démarrer
+    sign_up:
+      completion_html: Vous avez %{accent} avec %{app}
+      loa1: créé votre compte
+      loa3: verifié votre identité
+    totp_setup:
+      new: Configurer l'authentification à deux facteurs
+    two_factor_setup: Configuration de l'authentification à deux facteurs
+    verify_email: Consultez vos courriels
+    verify_profile: Activez votre compte
+    visitors:
+      index: Bienvenue

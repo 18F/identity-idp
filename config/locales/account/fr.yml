@@ -1,0 +1,34 @@
+---
+fr:
+  account:
+    index:
+      address: Adresse actuelle
+      auth_app_disabled: non activée
+      auth_app_enabled: activée
+      authentication_app: Application d'authentification
+      dob: Date de naissance
+      email: Adresse courriel
+      full_name: Nom complet
+      login: Information de connexion
+      password: Mot de passe
+      phone: Numéro de téléphone
+      previous_address: Adresse précédente
+      reactivation:
+        instructions: Votre profil a été récemment désactivé en raison d'une réinitialisation
+          de mot passe. Vous pouvez utiliser votre clé personnelle pour réactiver
+          votre profil.
+        link: NOT TRANSLATED YET
+      ssn: Numéro d'assurance sociale
+      verification:
+        instructions: Votre compte requiert la vérification d'un code secret.
+        reactivate_button: Entrez le code que vous avez reçu par la poste
+        success: Votre compte a été vérifié.
+        with_phone_button: Verifiez avec votre téléphone
+    items:
+      personal_key: Clé personnelle
+    links:
+      regenerate_personal_key: Obtenez une nouvelle clé
+    security:
+      link: En apprendre davantage dans le Centre d'aide
+      text: L'information de votre profil est verrouillée pour votre sécurité.
+    welcome: Bienvenue

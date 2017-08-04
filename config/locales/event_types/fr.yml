@@ -1,0 +1,13 @@
+---
+fr:
+  event_types:
+    account_created: Compte créé
+    account_verified: Compte vérifié
+    authenticated_at: Connecté à %{service_provider}
+    authenticator_disabled: Application d'authentification désactivée
+    authenticator_enabled: Application d'authentification activée
+    eastern_timestamp: "%{timestamp} (Eastern)"
+    email_changed: Adresse courriel modifiée
+    phone_changed: Numéro de téléphone modifié
+    phone_confirmed: Numéro de téléphone confirmé
+    usps_mail_sent: Lettre envoyée

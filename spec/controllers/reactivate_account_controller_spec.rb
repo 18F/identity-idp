@@ -23,12 +23,6 @@ describe ReactivateAccountController do
 
         expect(subject).to render_template(:index)
       end
-
-      it 'sets a key on the user session for future redirect guidance' do
-        get :index
-
-        expect(subject.user_session[:acknowledge_personal_key]).to eq true
-      end
     end
 
     context 'wthout a password reset profile' do

@@ -39,6 +39,10 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
+    I18n.locale = :en
+  end
+
+  config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
     Rack::Attack.cache.store.clear
   end
@@ -46,6 +50,12 @@ RSpec.configure do |config|
   config.before(:each, twilio: true) do
     FakeSms.messages = []
     FakeVoiceCall.calls = []
+  end
+
+  config.before(:each, idv_job: true) do
+    allow(VendorValidatorJob).to receive(:perform_later) do |*args|
+      VendorValidatorJob.perform_now(*args)
+    end
   end
 end
 

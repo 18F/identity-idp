@@ -1,46 +1,60 @@
 ---
 es:
   instructions:
-    2fa:
-      authenticator:
-        accordion_header: NOT TRANSLATED YET
-        confirm_code_html: Ingrese el código de su aplicación de autenticador. Si tiene varias cuentas
-          configuradas en su aplicación, ingrese el código correspondiente a <strong>%{email}</strong> en
-          <strong>%{app}</strong>.%{tooltip}
-        or: NOT TRANSLATED YET
-      sms:
-        confirm_code_html: Lo enviamos a %{number}. ¿No recibió un código? %{link}.
-        fallback_html: NOT TRANSLATED YET
-      voice:
-        confirm_code_html: NOT TRANSLATED YET
-        fallback_html: NOT TRANSLATED YET
-      wrong_number_html: ¿Ha ingresado el número de teléfono equivocado? %{link}
     account:
       reactivate:
-        begin: NOT TRANSLATED YET
-        explanation: NOT TRANSLATED YET
-        intro: NOT TRANSLATED YET
-        with_key: NOT TRANSLATED YET
+        begin: Empecemos.
+        explanation: 'Cuando creó su cuenta le dimos una lista de palabras y le pedimos
+          que las guardara en un lugar seguro. Se parecía a esto:'
+        intro: Tomamos medidas adicionales para mantener su información personal segura
+          y privada, por lo que restablecer su contraseña requiere un pequeño esfuerzo
+          adicional.
+        modal:
+          copy: Si no tiene su clave personal, verifique su identidad nuevamente.
+          heading: Para continuar, por favor regrese a la %{friendly_name} app e inicie
+            una sesión.
+        with_key: "¿Tiene su clave personal?"
     forgot_password:
-      close_window: Puede cerrar esta ventana del navegador despues que haya restablecido su contraseña.
+      close_window: Puede cerrar esta ventana del navegador después que haya restablecido
+        su contraseña.
+    go_back_to_mobile_app: Para continuar, por favor regrese a la %{friendly_name}
+      app e inicie una sesión.
+    mfa:
+      authenticator:
+        accordion_header: Escanear código con su dispositivo móvil
+        confirm_code_html: Ingrese el código de su app de autenticación. Si tiene
+          varias cuentas configuradas en su app, ingrese el código correspondiente
+          a %{email} en %{app}.%{tooltip}
+        or: o
+      sms:
+        confirm_code_html: Le enviamos en un mensaje de texto a %{number}. ¿Necesita
+          otro código? %{resend_code_link}. Puede estar sujeto a cargos de mensajería
+          y datos.
+        fallback_html: Si no puede recibir mensajes de texto ahora, puede %{link}
+      voice:
+        confirm_code_html: Acabamos de llamarle al %{number}. ¿Desea que le llamemos
+          de nuevo? %{resend_code_link}
+        fallback_html: Si no puede recibir una llamada de teléfono ahora, puede %{link}
+      wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:
-      forgot: >
-        Si no sabe su contraseña actual, puede restablecerla. Escriba la dirección de correo electrónico
-        asociada a su cuenta para recibir más instrucciones en la pantalla.
-      help_text_header: NOT TRANSLATED YET
-      help_text: NOT TRANSLATED YET
+      forgot: "¿No sabe su contraseña? Restablézcala después de confirmar su email."
+      help_text: Cuanto más larga y más inusual sea la contraseña, más difícil es
+        de adivinarla. Así que evite usar frases comunes. También evite repetir contraseñas
+        de otras cuentas en línea, por ejemplo de sus bancos, email y medios sociales.
+      help_text_header: Consejos de seguridad de contraseña
       info:
-        lead: Su contraseña debe tener al menos %{min_length} caracteres.
+        lead: Su contraseña debe tener al menos %{min_length} caracteres y no ser
+          una contraseña común. ¡Eso es todo!
       strength:
         i: Muy débil
         ii: Débil
         iii: Más o menos
-        intro: 'Seguridad de la contraseña: '
-        iv: Bueno
-        v: Muy bueno!
-    personal_key_html: >
-      Escriba este código de recuperación y guárdelo en algún lugar seguro. Si no puede
-      acceder a su teléfono, puede usarlo en lugar de un código de acceso único para iniciar sesión.
-    personal_key_accent: NOT TRANSLATED YET
+        intro: 'Seguridad de la contraseña:'
+        iv: Buena
+        v: "¡Muy buena!"
+    personal_key_accent: Anótelo o imprímalo.
+    personal_key_html: Esta es la única manera de recuperar el acceso a su cuenta
+      si pierde su contraseña o teléfono. %{accent}
     registration:
-      email: Elija una dirección para usar en las comunicaciones del gobierno.
+      email: Elija una dirección que desee usar para manejar las comunicaciones del
+        Gobierno.

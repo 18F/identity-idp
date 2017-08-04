@@ -4,27 +4,28 @@ module Idv
     include FormPhoneValidator
 
     attr_reader :idv_params, :user, :phone
+    attr_accessor :international_code
 
     def initialize(idv_params, user)
       @idv_params = idv_params
       @user = user
-      self.phone = idv_params[:phone] || user.phone
+      self.phone = (idv_params[:phone] || user.phone).phony_formatted(
+        format: :international, normalize: :US, spaces: ' '
+      )
+      self.international_code = PhoneFormatter::DEFAULT_COUNTRY
     end
 
     def submit(params)
       submitted_phone = params[:phone]
 
-      formatted_phone = submitted_phone.phony_formatted(
-        format: :international, normalize: :US, spaces: ' '
-      )
+      formatted_phone = PhoneFormatter.new.format(submitted_phone, country_code: international_code)
 
       self.phone = formatted_phone
 
-      return false unless valid?
+      success = valid?
+      update_idv_params(formatted_phone) if success
 
-      update_idv_params(formatted_phone)
-
-      true
+      FormResponse.new(success: success, errors: errors.messages)
     end
 
     private
@@ -32,7 +33,8 @@ module Idv
     attr_writer :phone
 
     def update_idv_params(phone)
-      idv_params[:phone] = phone
+      normalized_phone = phone.gsub(/\D/, '')[1..-1]
+      idv_params[:phone] = normalized_phone
 
       return if phone != user.phone
 

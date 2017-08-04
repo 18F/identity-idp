@@ -1,23 +1,26 @@
+---
 es:
   openid_connect:
     authorization:
       errors:
-        bad_client_id: NOT TRANSLATED YET
-        no_valid_acr_values: NOT TRANSLATED YET
-        no_valid_scope: NOT TRANSLATED YET
-        redirect_uri_invalid: NOT TRANSLATED YET
-        redirect_uri_no_match: NOT TRANSLATED YET
-    token:
-      errors:
-        invalid_aud: NOT TRANSLATED YET
-        invalid_authentication: NOT TRANSLATED YET
-        invalid_code: NOT TRANSLATED YET
-        invalid_code_verifier: NOT TRANSLATED YET
+        bad_client_id: Bad client_id
+        no_valid_acr_values: acr_valores encontrados no aceptables
+        no_valid_scope: No se han encontrado valores de magnitud válidos
+        redirect_uri_invalid: Redirect_uri no es válido
+        redirect_uri_no_match: Redirect_uri no coincide con redirect_uri registrado
     logout:
       errors:
-        id_token_hint: NOT TRANSLATED YET
+        id_token_hint: Id_token_hint no fue reconocido
+    token:
+      errors:
+        invalid_aud: Solicitud de audiencia no válida, esperada % {url}
+        invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt,
+          faltando code_challenge o client_assertion
+        invalid_code: código inválido
+        invalid_code_verifier: code_verifier no coincide con code_challenge
     user_info:
       errors:
-        no_authorization: NOT TRANSLATED YET
-        malformed_authorization: NOT TRANSLATED YET
-        not_found: NOT TRANSLATED YET
+        malformed_authorization: Título de autorización mal formado
+        no_authorization: No se ha proporcionado título de autorización
+        not_found: No se pudo encontrar la autorización para el contenido del access_token
+          proporcionado o puede haber caducado

@@ -102,7 +102,6 @@ feature 'OpenID Connect' do
         prompt: 'select_account'
       )
 
-      sp_request_id = ServiceProviderRequest.last.uuid
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
 
@@ -112,9 +111,7 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-        to be_a NullServiceProviderRequest
-      expect(page.get_rack_session.keys).to_not include('sp')
+      expect(page.get_rack_session.keys).to include('sp')
     end
 
     it 'auto-allows and sets the correct CSP headers after an incorrect OTP' do
@@ -134,7 +131,6 @@ feature 'OpenID Connect' do
         prompt: 'select_account'
       )
 
-      sp_request_id = ServiceProviderRequest.last.uuid
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
 
@@ -150,13 +146,11 @@ feature 'OpenID Connect' do
       click_submit_default
 
       expect(current_url).to start_with('http://localhost:7654/auth/result')
-      expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-        to be_a NullServiceProviderRequest
-      expect(page.get_rack_session.keys).to_not include('sp')
+      expect(page.get_rack_session.keys).to include('sp')
     end
   end
 
-  context 'with PCKE' do
+  context 'with PCKE', driver: :mobile_rack_test do
     it 'succeeds with client authentication via PKCE' do
       client_id = 'urn:gov:gsa:openidconnect:test'
       state = SecureRandom.hex
@@ -238,17 +232,13 @@ feature 'OpenID Connect' do
         sign_up_user_from_sp_without_confirming_email(email)
       end
 
-      sp_request_id = ServiceProviderRequest.last.uuid
-
       perform_in_browser(:two) do
         confirm_email_in_a_different_browser(email)
 
         click_button t('forms.buttons.continue')
         redirect_uri = URI(current_url)
         expect(redirect_uri.to_s).to start_with('gov.gsa.openidconnect.test://result')
-        expect(ServiceProviderRequest.from_uuid(sp_request_id)).
-          to be_a NullServiceProviderRequest
-        expect(page.get_rack_session.keys).to_not include('sp')
+        expect(page.get_rack_session.keys).to include('sp')
       end
     end
   end
@@ -317,7 +307,7 @@ feature 'OpenID Connect' do
   end
 
   context 'LOA3 signup' do
-    it 'redirects back to SP', email: true do
+    it 'redirects back to SP', email: true, idv_job: true do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
@@ -423,15 +413,14 @@ feature 'OpenID Connect' do
   end
 
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
-    it 'maintains the request_id in the params' do
-      visit_idp_from_sp_with_loa1
-      sp_request_id = ServiceProviderRequest.last.uuid
-
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
-
+    it 'displays the branded page' do
       visit_idp_from_sp_with_loa1
 
-      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+
+      visit_idp_from_sp_with_loa1
+
+      expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
     end
   end
 
@@ -472,6 +461,85 @@ feature 'OpenID Connect' do
     end
   end
 
+  context 'canceling sign in with active identities present' do
+    it 'signs the user out and returns to the home page' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      user = create(:user, :signed_up)
+
+      visit_idp_from_sp_with_loa1
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      click_submit_default
+      visit destroy_user_session_url
+
+      visit_idp_from_sp_with_loa1
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, user.password)
+      sp_request_id = ServiceProviderRequest.last.uuid
+      sp = ServiceProvider.from_issuer('urn:gov:gsa:openidconnect:sp:server')
+      click_link t('links.cancel')
+
+      expect(current_url).to eq sign_up_start_url(request_id: sp_request_id)
+      expect(page).to have_content t('links.back_to_sp', sp: sp.friendly_name)
+    end
+  end
+
+  context 'creating two accounts during the same session' do
+    it 'allows the second account creation process to complete fully', email: true do
+      first_email = 'test1@test.com'
+      second_email = 'test2@test.com'
+
+      perform_in_browser(:one) do
+        visit_idp_from_sp_with_loa1
+        sign_up_user_from_sp_without_confirming_email(first_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(first_email)
+        click_button t('forms.buttons.continue')
+        redirect_uri = URI(current_url)
+
+        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+        expect(page.get_rack_session.keys).to include('sp')
+      end
+
+      perform_in_browser(:one) do
+        visit_idp_from_sp_with_loa1
+        sign_up_user_from_sp_without_confirming_email(second_email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(second_email)
+        click_button t('forms.buttons.continue')
+        redirect_uri = URI(current_url)
+
+        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+        expect(page.get_rack_session.keys).to include('sp')
+      end
+    end
+  end
+
+  context 'starting account creation on mobile and finishing on desktop' do
+    it 'prompts the user to go back to the mobile app', email: true do
+      email = 'test@test.com'
+
+      perform_in_browser(:one) do
+        visit_idp_from_mobile_app_with_loa1
+        sign_up_user_from_sp_without_confirming_email(email)
+      end
+
+      perform_in_browser(:two) do
+        confirm_email_in_a_different_browser(email)
+        click_button t('forms.buttons.continue')
+
+        expect(current_url).to eq new_user_session_url
+        expect(page).
+          to have_content t('instructions.go_back_to_mobile_app', friendly_name: 'Example iOS App')
+      end
+    end
+  end
+
   def visit_idp_from_sp_with_loa1(state: SecureRandom.hex)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     nonce = SecureRandom.hex
@@ -482,6 +550,22 @@ feature 'OpenID Connect' do
       acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
       scope: 'openid email',
       redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce
+    )
+  end
+
+  def visit_idp_from_mobile_app_with_loa1(state: SecureRandom.hex)
+    client_id = 'urn:gov:gsa:openidconnect:test'
+    nonce = SecureRandom.hex
+
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'gov.gsa.openidconnect.test://result',
       state: state,
       prompt: 'select_account',
       nonce: nonce

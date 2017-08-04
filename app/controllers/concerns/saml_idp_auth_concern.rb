@@ -23,8 +23,6 @@ module SamlIdpAuthConcern
   end
 
   def store_saml_request
-    return if sp_session[:request_id]
-
     @request_id = SecureRandom.uuid
     ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
       sp_request.issuer = current_issuer
@@ -35,15 +33,7 @@ module SamlIdpAuthConcern
   end
 
   def add_sp_metadata_to_session
-    return if sp_session[:request_id]
-
-    session[:sp] = {
-      issuer: current_issuer,
-      loa3: loa3_requested?,
-      request_id: @request_id,
-      request_url: request.original_url,
-      requested_attributes: requested_attributes,
-    }
+    StoreSpMetadataInSession.new(session: session, request_id: @request_id).call
   end
 
   def requested_authn_context

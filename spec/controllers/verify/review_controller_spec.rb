@@ -36,7 +36,7 @@ describe Verify::ReviewController do
       issuer: nil
     )
     idv_session.profile_confirmation = true
-    idv_session.phone_confirmation = true
+    idv_session.vendor_phone_confirmation = true
     idv_session.financials_confirmation = true
     idv_session.params = user_attrs
     idv_session.normalized_applicant_params = user_attrs.merge(
@@ -77,7 +77,7 @@ describe Verify::ReviewController do
 
     context 'user has missed address step' do
       before do
-        idv_session.phone_confirmation = false
+        idv_session.vendor_phone_confirmation = false
       end
 
       it 'redirects to address step' do

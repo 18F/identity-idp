@@ -5,6 +5,7 @@ module Verify
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
+    before_action :refresh_if_not_ready, only: [:show]
 
     def new
       @view_model = view_model
@@ -12,8 +13,21 @@ module Verify
     end
 
     def create
+      result = idv_form.submit(step_params)
+      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION_FORM, result.to_h)
+
+      if result.success?
+        submit_idv_job
+        redirect_to verify_finance_result_path
+      else
+        @view_model = view_model
+        render_form
+      end
+    end
+
+    def show
       result = step.submit
-      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION, result.to_h)
+      analytics.track_event(Analytics::IDV_FINANCE_CONFIRMATION_VENDOR, result.to_h)
       increment_step_attempts
 
       if result.success?
@@ -26,6 +40,14 @@ module Verify
 
     private
 
+    def submit_idv_job
+      SubmitIdvJob.new(
+        vendor_validator_class: Idv::FinancialsValidator,
+        idv_session: idv_session,
+        vendor_params: vendor_params
+      ).call
+    end
+
     def step_name
       :financials
     end
@@ -34,16 +56,12 @@ module Verify
       redirect_to verify_address_path if idv_session.financials_confirmation == true
     end
 
-    def view_model(error: nil)
-      Verify::FinancialsNew.new(
-        error: error,
-        remaining_attempts: remaining_step_attempts,
-        idv_form: idv_finance_form
-      )
+    def view_model_class
+      Verify::FinancialsNew
     end
 
-    def idv_finance_form
-      @_idv_finance_form ||= Idv::FinanceForm.new(idv_session.params)
+    def idv_form
+      @_idv_form ||= Idv::FinanceForm.new(idv_session.params)
     end
 
     def handle_success
@@ -53,9 +71,9 @@ module Verify
 
     def step
       @_step ||= Idv::FinancialsStep.new(
-        idv_form: idv_finance_form,
+        idv_form_params: idv_form.idv_params,
         idv_session: idv_session,
-        params: step_params
+        vendor_validator_result: vendor_validator_result
       )
     end
 
@@ -64,11 +82,16 @@ module Verify
     end
 
     def render_form
-      if step_params[:finance_type] == 'ccn'
+      if idv_form.idv_params[:ccn].present?
         render :new
       else
         render 'verify/finance_other/new'
       end
+    end
+
+    def vendor_params
+      finance_type = idv_form.finance_type
+      { finance_type => idv_form.idv_params[finance_type] }
     end
   end
 end

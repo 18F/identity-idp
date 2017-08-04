@@ -1,0 +1,10 @@
+---
+fr:
+  saml_idp:
+    shared:
+      saml_post_binding:
+        heading: Soumettre pour continuer
+        no_js: JavaScript semble être désactivé dans votre navigateur. Habituellement,
+          cette étape se déroule automatiquement, mais parce que vous avez désactivé
+          le JavaScript, veuillez cliquer sur le lien « soumettre » pour continuer
+          ou pour vous déconnecter.

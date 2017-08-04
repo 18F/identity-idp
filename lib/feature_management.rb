@@ -59,4 +59,8 @@ class FeatureManagement
   def self.current_env_allowed_to_see_usps_code?
     ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED.include?(Figaro.env.domain_name)
   end
+
+  def self.no_pii_mode?
+    enable_identity_verification? && Idv::Vendor.new.pick == :mock
+  end
 end

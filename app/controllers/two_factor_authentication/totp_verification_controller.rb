@@ -3,6 +3,7 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     skip_before_action :handle_two_factor_authentication
+    before_action :confirm_totp_enabled
 
     def show
       @presenter = presenter_for_two_factor_authentication_method
@@ -18,6 +19,14 @@ module TwoFactorAuthentication
       else
         handle_invalid_otp
       end
+    end
+
+    private
+
+    def confirm_totp_enabled
+      return if current_user.totp_enabled?
+
+      redirect_to user_two_factor_authentication_path
     end
   end
 end

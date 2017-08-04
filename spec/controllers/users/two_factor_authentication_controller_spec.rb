@@ -111,7 +111,8 @@ describe Users::TwoFactorAuthenticationController do
   describe '#send_code' do
     context 'when selecting SMS OTP delivery' do
       before do
-        sign_in_before_2fa
+        @user = create(:user, :with_phone)
+        sign_in_before_2fa(@user)
         @old_otp = subject.current_user.direct_otp
         allow(SmsOtpSenderJob).to receive(:perform_later)
       end
@@ -140,12 +141,35 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'sms',
           resend: nil,
           context: 'authentication',
+          country_code: '1',
+          area_code: '202',
         }
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+      end
+
+      it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
+        otp_rate_limiter = instance_double(OtpRateLimiter)
+        allow(OtpRateLimiter).to receive(:new).with(phone: @user.phone, user: @user).
+          and_return(otp_rate_limiter)
+
+        expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+        expect(otp_rate_limiter).to receive(:increment)
+
+        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+      end
+
+      it 'marks the user as locked out after too many attempts' do
+        expect(@user.second_factor_locked_at).to be_nil
+
+        (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
+          get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        end
+
+        expect(@user.reload.second_factor_locked_at.to_f).to be_within(0.1).of(Time.zone.now.to_f)
       end
     end
 
@@ -181,6 +205,8 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_preference: 'voice',
           resend: nil,
           context: 'authentication',
+          country_code: '1',
+          area_code: '202',
         }
 
         expect(@analytics).to receive(:track_event).

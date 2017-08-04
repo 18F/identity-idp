@@ -24,8 +24,8 @@ module Features
     end
 
     def fill_in_credentials_and_submit(email, password)
-      fill_in 'Email', with: email
-      fill_in 'Password', with: password
+      fill_in 'user_email', with: email
+      fill_in 'user_password', with: password
       click_button t('links.next')
     end
 
@@ -162,7 +162,7 @@ module Features
 
       click_on button_text, class: 'personal-key-continue'
 
-      fill_in 'personal-key', with: code_words.join('-').downcase + extra_characters_get_ignored
+      fill_in 'personal_key', with: code_words.join('-').downcase + extra_characters_get_ignored
 
       click_on button_text, class: 'personal-key-confirm'
     end
@@ -243,7 +243,7 @@ module Features
       expect(current_url).to eq sign_up_email_url(request_id: sp_request_id)
       expect(page).to have_css('img[src*=sp-logos]')
 
-      submit_form_with_valid_email
+      submit_form_with_valid_email(email)
 
       expect(current_url).to eq sign_up_verify_email_url(request_id: sp_request_id)
       expect(last_email.html_part.body).to have_content "?_request_id=#{sp_request_id}"

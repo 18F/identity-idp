@@ -1,16 +1,13 @@
 ---
 en:
   users:
-    totp_setup:
-      new:
-        qr_img_alt: QR Code for Authenticator App
     personal_key:
-      header: Your personal key
+      close: Close
+      confirmation_error: You've entered an incorrect personal key.
       generated_on_html: Generated on %{date}
       get_another: Get another key
-      print: Print this page
-      help_text_header: Why do I need to store my new key on paper?
-      help_text: |
+      header: Your personal key
+      help_text: |-
         To protect your account, you need a password and access to your telephone or authentication application at sign-in. If you can’t use your phone or app, you can sign in with your personal key instead.
 
         For your privacy and security, login.gov does not store your password and personal key. Only you know them. Only you can access or share your personal information.
@@ -18,5 +15,8 @@ en:
         We require you to store your personal key outside your computer or mobile device so that it will be safe even if your devices are stolen or your online accounts are hacked.
 
         If you don’t have your personal key and you forget your password, the only way to keep your account safe is to verify that you are the legal owner.
-      close: Close
-      confirmation_error: You've entered an incorrect personal key.
+      help_text_header: Why do I need to store my new key on paper?
+      print: Print this page
+    totp_setup:
+      new:
+        qr_img_alt: QR Code for Authenticator App

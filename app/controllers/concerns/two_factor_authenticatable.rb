@@ -33,6 +33,16 @@ module TwoFactorAuthenticatable
     )
   end
 
+  def handle_too_many_otp_sends
+    analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_SENDS)
+    decorator = current_user.decorate
+    sign_out
+    render(
+      'two_factor_authentication/shared/max_otp_requests_reached',
+      locals: { decorator: decorator }
+    )
+  end
+
   def require_current_password
     redirect_to user_password_confirm_path
   end
@@ -48,11 +58,14 @@ module TwoFactorAuthenticatable
   end
 
   def reset_attempt_count_if_user_no_longer_locked_out
-    return unless decorated_user.no_longer_blocked_from_entering_2fa_code?
+    return unless decorated_user.no_longer_locked_out?
 
     UpdateUser.new(
       user: current_user,
-      attributes: { second_factor_attempts_count: 0, second_factor_locked_at: nil }
+      attributes: {
+        second_factor_attempts_count: 0,
+        second_factor_locked_at: nil,
+      }
     ).call
   end
 
@@ -79,7 +92,7 @@ module TwoFactorAuthenticatable
 
     flash.now[:error] = t("devise.two_factor_authentication.invalid_#{type}")
 
-    if decorated_user.blocked_from_entering_2fa_code?
+    if decorated_user.locked_out?
       handle_second_factor_locked_user(type)
     else
       render_show_after_invalid
@@ -150,16 +163,21 @@ module TwoFactorAuthenticatable
   end
 
   def update_idv_state
-    now = Time.zone.now
     if idv_context?
-      Idv::Session.new(
-        user_session: user_session,
-        current_user: current_user,
-        issuer: sp_session[:issuer]
-      ).params['phone_confirmed_at'] = now
+      confirm_idv_session_phone
     elsif profile_context?
       Idv::ProfileActivator.new(user: current_user).call
     end
+  end
+
+  def confirm_idv_session_phone
+    idv_session = Idv::Session.new(
+      user_session: user_session,
+      current_user: current_user,
+      issuer: sp_session[:issuer]
+    )
+    idv_session.user_phone_confirmation = true
+    idv_session.params['phone_confirmed_at'] = Time.zone.now
   end
 
   def reset_otp_session_data
@@ -190,7 +208,7 @@ module TwoFactorAuthenticatable
     elsif @updating_existing_number
       account_path
     elsif decorated_user.password_reset_profile.present?
-      manage_reactivate_account_path
+      reactivate_account_path
     else
       account_path
     end
@@ -219,6 +237,7 @@ module TwoFactorAuthenticatable
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
+      voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
@@ -245,6 +264,15 @@ module TwoFactorAuthenticatable
     else
       user_session[:unconfirmed_phone]
     end
+  end
+
+  def voice_otp_delivery_unsupported?
+    phone_number = if authentication_context?
+                     current_user.phone
+                   else
+                     user_session[:unconfirmed_phone]
+                   end
+    PhoneNumberCapabilities.new(phone_number).sms_only?
   end
 
   def decorated_user

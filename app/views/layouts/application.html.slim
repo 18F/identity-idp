@@ -8,6 +8,8 @@ html lang="#{I18n.locale}" class='no-js'
     meta name='msapplication-config' content='none'
     meta[name='viewport' content='width=device-width, initial-scale=1.0']
     meta name="format-detection" content="telephone=no"
+    - if content_for?(:meta_refresh)
+      meta http-equiv="refresh" content="#{yield(:meta_refresh)}"
 
     title
       = content_for?(:title) ? APP_NAME + ' - ' + yield(:title) : APP_NAME
@@ -45,6 +47,7 @@ html lang="#{I18n.locale}" class='no-js'
   body class="#{Rails.env}-env site sm-bg-light-blue"
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
+      = render 'shared/no_pii_banner' if FeatureManagement.no_pii_mode?
       = render 'shared/usa_banner'
       - if content_for?(:nav)
         = yield(:nav)

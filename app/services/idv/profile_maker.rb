@@ -28,9 +28,14 @@ module Idv
         dob: Pii::Attribute.new(raw: appl.dob, norm: norm_appl.dob),
         ssn: Pii::Attribute.new(raw: appl.ssn, norm: norm_appl.ssn),
         phone: Pii::Attribute.new(raw: appl.phone, norm: norm_appl.phone),
-        otp: SecureRandom.hex(5)
+        otp: generate_otp
       )
     end
     # rubocop:enable MethodLength, AbcSize
+
+    def generate_otp(length: 10)
+      # Crockford encoding is 5 bits per character
+      Base32::Crockford.encode(SecureRandom.random_number(2**(5 * length)), length: length)
+    end
   end
 end

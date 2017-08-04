@@ -11,8 +11,10 @@ DuplicateMethodCall:
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
     - FileEncryptor#encrypt
+    - UserFlowExporter#self.massage_assets
 FeatureEnvy:
   exclude:
+    - ActiveJob::Logging::LogSubscriber#json_for
     - track_registration
     - append_info_to_payload
     - generate_slo_request
@@ -22,6 +24,9 @@ FeatureEnvy:
     - UserDecorator#should_acknowledge_personal_key?
     - Pii::Attributes#[]=
     - OpenidConnectLogoutForm#load_identity
+    - Idv::ProfileMaker#pii_from_applicant
+    - Idv::Step#vendor_validator_result
+    - IdvSession#vendor_result_timed_out?
 InstanceVariableAssumption:
   exclude:
     - User
@@ -33,11 +38,14 @@ ManualDispatch:
 NestedIterators:
   exclude:
     - FileEncryptor#encrypt
+    - UserFlowExporter#self.massage_html
 NilCheck:
   enabled: false
 LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
+    - VendorValidatorJob#perform
+    - Idv::VendorResult#initialize
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
@@ -50,6 +58,7 @@ TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
+    - Idv::VendorResult
 TooManyStatements:
   max_statements: 6
   exclude:
@@ -58,6 +67,9 @@ TooManyStatements:
     - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
     - FileEncryptor#encrypt
+    - UserFlowExporter#self.massage_assets
+    - UserFlowExporter#self.massage_html
+    - UserFlowExporter#self.run
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -66,6 +78,7 @@ TooManyMethods:
     - OpenidConnect::AuthorizationController
     - Idv::Session
     - User
+    - Verify::SessionsController
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -83,6 +96,7 @@ UtilityFunction:
   public_methods_only: true
   exclude:
     - AnalyticsEventJob#perform
+    - ApplicationController#default_url_options
     - ApplicationHelper#step_class
     - PersonalKeyFormatter#regexp
     - SessionTimeoutWarningHelper#frequency
@@ -91,6 +105,9 @@ UtilityFunction:
     - SessionDecorator
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
+    - LocaleHelper#locale_url_param
+    - Verify::Base#mock_vendor_partial
+    - IdvSession#timed_out_vendor_error
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
@@ -120,6 +137,7 @@ UtilityFunction:
   UncommunicativeMethodName:
     exclude:
       - visit_idp_from_sp_with_loa1
+      - visit_idp_from_mobile_app_with_loa1
   UncommunicativeParameterName:
     exclude:
       - begin_sign_up_with_sp_and_loa

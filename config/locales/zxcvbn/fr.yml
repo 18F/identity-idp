@@ -1,0 +1,51 @@
+---
+fr:
+  zxcvbn:
+    feedback:
+      a_word_by_itself_is_easy_to_guess: Un mot seul est facile à deviner
+      add_another_word_or_two_uncommon_words_are_better: Ajoutez un ou deux autres
+        mots. Les mots non communs sont plus efficaces
+      all_uppercase_is_almost_as_easy_to_guess_as_all_lowercase: Tout en majuscules
+        est presque aussi facile à deviner que tout en minuscules
+      avoid_dates_and_years_that_are_associated_with_you: Évitez les dates et années
+        qui vous sont associées
+      avoid_recent_years: Évitez les années récentes
+      avoid_repeated_words_and_characters: Évitez les mots et caractères répétés
+      avoid_sequences: Évitez les séquences
+      avoid_years_that_are_associated_with_you: Évitez les années qui vous sont associées
+      capitalization_doesnt_help_very_much: La capitalisation n'aide pas beaucoup
+      common_names_and_surnames_are_easy_to_guess: Les prénoms et noms de famille
+        communs sont faciles à deviner
+      dates_are_often_easy_to_guess: Les dates sont souvent faciles à deviner
+      for_a_stronger_password_use_a_few_words_separated_by_spaces_but_avoid_common_phrases: Pour
+        créer un mot de passe plus fort, utilisez quelques mots séparés par des espaces,
+        mais évitez les phrases communes
+      names_and_surnames_by_themselves_are_easy_to_guess: Les prénoms et noms de famille
+        seuls sont faciles à deviner
+      predictable_substitutions_like__instead_of_a_dont_help_very_much: Les remplacements
+        prévisibles comme es « @ » au lieu de « à » n'aident pas beaucoup
+      recent_years_are_easy_to_guess: Les années récentes sont faciles à deviner
+      repeats_like_aaa_are_easy_to_guess: Les répétitions comme « aaa » sont faciles
+        à deviner
+      repeats_like_abcabcabc_are_only_slightly_harder_to_guess_than_abc: |-
+        Les répétitions comme « abcabcabc » sont à peine
+                 plus difficiles à deviner que « abc »
+      reversed_words_arent_much_harder_to_guess: Les mots inversés ne sont pas très
+        difficiles à deviner
+      sequences_like_abc_or_6543_are_easy_to_guess: Les séquences comme abc ou 6543
+        sont faciles à deviner
+      short_keyboard_patterns_are_easy_to_guess: Les motifs de clavier courts sont
+        faciles à deviner
+      straight_rows_of_keys_are_easy_to_guess: Les rangées de lettres consécutives
+        sont faciles à deviner
+      there_is_no_need_for_symbols_digits_or_uppercase_letters: Les symboles, les
+        chiffres ou les lettres majuscules ne sont pas nécessaires
+      this_is_a_top_100_common_password: Il s'agit d'un des 100 mots de passe les
+        plus communs
+      this_is_a_top_10_common_password: Il s'agit d'un des 10 mots de passe les plus
+        communs
+      this_is_a_very_common_password: Il s'agit d'un mot de passe très commun
+      this_is_similar_to_a_commonly_used_password: Ceci est similaire à un mot de
+        passe souvent utilisé
+      use_a_longer_keyboard_pattern_with_more_turns: Utilisez un motif de clavier
+        plus long avec plus de tours

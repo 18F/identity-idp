@@ -37,6 +37,7 @@ module Idv
 
     def initialize(idv_params)
       @idv_params = idv_params
+      @params = nil
       finance_type = FINANCE_TYPES.find { |param| idv_params.key? param }
       update_finance_values(idv_params.merge(finance_type: finance_type))
     end
@@ -44,11 +45,14 @@ module Idv
     def submit(params)
       @params = params
       finance_value = update_finance_values(params)
-      return false unless valid?
 
-      clear_idv_params_finance
-      idv_params[finance_type] = finance_value
-      true
+      success = valid?
+      if success
+        clear_idv_params_finance
+        idv_params[finance_type] = finance_value
+      end
+
+      FormResponse.new(success: success, errors: errors.messages)
     end
 
     def self.finance_other_type_choices
@@ -70,6 +74,10 @@ module Idv
     private
 
     attr_writer :finance_type, *FINANCE_TYPES
+
+    def params
+      @params.presence || idv_params
+    end
 
     def update_finance_values(params)
       type = params[:finance_type]
