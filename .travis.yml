@@ -14,7 +14,6 @@ before_install:
   - nvm install stable
   - nvm use stable
   - npm install
-  - npm run build
   # Install PhantomJS 2.1.1 manually
   - "export PHANTOMJS_VERSION=2.1.1"
   - "phantomjs --version"

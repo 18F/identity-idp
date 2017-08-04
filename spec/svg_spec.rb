@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'SVG files' do
-  Dir[Rails.root.join('**', '*.svg')].reject { |f| f.include?('node_modules') }.each do |svg_path|
+  Dir[Rails.root.join('**', '*.svg')].each do |svg_path|
     relative_path = svg_path.sub(Rails.root.to_s, '')
 
     describe relative_path do
