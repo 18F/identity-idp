@@ -138,4 +138,41 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#session_expires_at' do
+    before { routes.draw { get 'index' => 'anonymous#index' } }
+    after { Rails.application.reload_routes! }
+
+    controller do
+      prepend_before_action :session_expires_at
+
+      def index
+        render text: 'Hello'
+      end
+    end
+
+    context 'when URL contains the host parameter' do
+      it 'does not redirect to the host' do
+        get :index, timeout: true, host: 'www.monfresh.com'
+
+        expect(response.header['Location']).to_not match 'www.monfresh.com'
+      end
+    end
+
+    context 'when URL does not contain the timeout parameter' do
+      it 'does not redirect anywhere' do
+        get :index, host: 'www.monfresh.com'
+
+        expect(response).to_not be_redirect
+      end
+    end
+
+    context 'when URL contains the request_id parameter' do
+      it 'preserves the request_id parameter' do
+        get :index, timeout: true, request_id: '123'
+
+        expect(response.header['Location']).to match '123'
+      end
+    end
+  end
 end
