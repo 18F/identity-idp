@@ -114,6 +114,21 @@ RSpec.describe OpenidConnectLogoutForm do
             to include(t('openid_connect.logout.errors.id_token_hint'))
         end
       end
+
+      context 'with an expired, but otherwise valid id_token_hint' do
+        let(:id_token_hint) do
+          IdTokenBuilder.new(
+            identity: identity,
+            code: code,
+            custom_expiration: 5.days.ago.to_i
+          ).id_token
+        end
+
+        it 'is valid' do
+          expect(valid?).to eq(true)
+          expect(form.errors[:id_token_hint]).to be_blank
+        end
+      end
     end
 
     context 'post_logout_redirect_uri' do
