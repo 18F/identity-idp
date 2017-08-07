@@ -49,5 +49,26 @@ describe Idv::PhoneForm do
 
       expect(subject.idv_params).to eq expected_params
     end
+
+    it 'uses the user phone number as the initial phone value' do
+      user = build_stubbed(:user, :signed_up, phone: '555-555-1234')
+      subject = Idv::PhoneForm.new({}, user)
+
+      expect(subject.phone).to eq('+1 (555) 555-1234')
+    end
+
+    it 'does not use an international number as the initial phone value' do
+      user = build_stubbed(:user, :signed_up, phone: '+81 54 354 3643')
+      subject = Idv::PhoneForm.new({}, user)
+
+      expect(subject.phone).to eq(nil)
+    end
+
+    it 'does not allow numbers with a non-US country code' do
+      result = subject.submit(phone: '+81 54 354 3643')
+
+      expect(result.success?).to eq(false)
+      expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+    end
   end
 end

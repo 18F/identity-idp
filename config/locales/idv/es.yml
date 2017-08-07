@@ -141,6 +141,7 @@ es:
         same_as_2fa: Este número de teléfono puede ser el mismo que utilizó para configurar
           su contraseña de un uso único, siempre y cuando cumpla con los criterios
           anteriores.
+        us_country_code: NOT TRANSLATED YET
       review:
         financial_info: "¿Dónde está la información de mi cuenta financiera?"
         info_verified_html: Encontramos registros que coinciden con su %{teléfono_mensaje}
