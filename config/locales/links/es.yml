@@ -3,34 +3,35 @@ es:
   links:
     account:
       reactivate:
-        with_key: NOT TRANSLATED YET
-        without_key: NOT TRANSLATED YET
-    back_to_sp: "Volver a %{sp}"
+        with_key: Tengo mi clave
+        without_key: No tengo mi clave
+    back_to_sp: Volver a %{sp}
+    cancel: Cancelar
+    cancel_account_creation: "< Cancelar la creación de cuenta"
+    cancel_idv: "< Cancelar la verificación de cuenta"
     contact: Contactar
-    copy: NOT TRANSLATED YET
+    copy: Copiar
     create_account: Crear cuenta
     help: Ayuda
     next: Siguiente
     passwords:
-      forgot: ¿Olvidó su contraseña?
+      forgot: "¿Olvidó su contraseña?"
     phone_confirmation:
-      auth_app_fallback_html: NOT TRANSLATED YET
-      fallback_to_sms_html: Envíame un mensaje de texto con el código en su lugar
-      fallback_to_voice_html: Llámame con el código en su lugar
+      auth_app_fallback_html: o %{link}.
+      fallback_to_sms_html: Envíeme un mensaje de texto con el código en su lugar
+      fallback_to_voice_html: Si no puede recibir un mensaje de texto ahora mismo,
+        puede obtener un código de seguridad a través de %{link}
     privacy_policy: Privacidad y seguridad
-    remove: NOT TRANSLATED YET
+    remove: Retirar
     resend: Enviar de nuevo
-    reverify: NOT TRANSLATED YET
+    reverify: Verifique su identidad nuevamente.
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
-    cancel: Cancelar
-    cancel_account_creation: NOT TRANSLATED YET
-    cancel_idv: NOT TRANSLATED YET
     two_factor_authentication:
-      app: NOT TRANSLATED YET
-      voice: NOT TRANSLATED YET
-      sms: NOT TRANSLATED YET
+      app: Obtener un código de seguridad mediante la app de autenticación
       resend_code:
-        sms: NOT TRANSLATED YET
-        voice: NOT TRANSLATED YET
-    what_is_totp: NOT TRANSLATED YET
+        sms: Obtener otro mensaje de texto
+        voice: Obtener otra llamada telefónica
+      sms: Obtener un código de seguridad a través de un mensaje de texto
+      voice: Obtener un código de seguridad a través de una llamada telefónica
+    what_is_totp: "¿Qué es una app de autenticación?"

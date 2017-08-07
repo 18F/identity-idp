@@ -44,28 +44,40 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
       expect(rendered).to have_selector("form[action='/users'][method='post']")
     end
 
-    it 'informs the user that an OTP has been sent to their number via #help_text' do
-      build_stubbed(:user)
-
-      code_link = link_to(
-        t('links.two_factor_authentication.resend_code.sms'),
-        otp_send_path(
-          otp_delivery_selection_form: {
-            otp_delivery_preference: 'sms',
-            resend: true,
-          }
+    context 'OTP copy' do
+      let(:help_text) do
+        code_link = link_to(
+          t('links.two_factor_authentication.resend_code.sms'),
+          otp_send_path(
+            otp_delivery_selection_form: {
+              otp_delivery_preference: 'sms',
+              resend: true,
+            }
+          )
         )
-      )
 
-      help_text = t(
-        "instructions.2fa.#{presenter_data[:otp_delivery_preference]}.confirm_code_html",
-        number: "<strong>#{presenter_data[:phone_number]}</strong>",
-        resend_code_link: code_link
-      )
+        t(
+          "instructions.mfa.#{presenter_data[:otp_delivery_preference]}.confirm_code_html",
+          number: "<strong>#{presenter_data[:phone_number]}</strong>",
+          resend_code_link: code_link
+        )
+      end
 
-      render
+      it 'informs the user that an OTP has been sent to their number via #help_text' do
+        render
 
-      expect(rendered).to include help_text
+        expect(rendered).to include help_text
+      end
+
+      context 'in other locales' do
+        before { I18n.locale = :es }
+
+        it 'translates correctly' do
+          render
+
+          expect(rendered).to include help_text
+        end
+      end
     end
 
     context 'user signed up' do
@@ -206,7 +218,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to include(
-          t("instructions.2fa.#{otp_delivery_preference}.fallback_html", link: expected_link)
+          t("instructions.mfa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
@@ -224,7 +236,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).not_to include(
-          t('instructions.2fa.voice.fallback_html', link: unexpected_link)
+          t('instructions.mfa.voice.fallback_html', link: unexpected_link)
         )
       end
     end
@@ -270,7 +282,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).to include(
-          t("instructions.2fa.#{otp_delivery_preference}.fallback_html", link: expected_link)
+          t("instructions.mfa.#{otp_delivery_preference}.fallback_html", link: expected_link)
         )
       end
 
@@ -288,7 +300,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         render
 
         expect(rendered).not_to include(
-          t('instructions.2fa.sms.fallback_html', link: unexpected_link)
+          t('instructions.mfa.sms.fallback_html', link: unexpected_link)
         )
       end
     end

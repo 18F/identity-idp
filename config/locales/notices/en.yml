@@ -1,53 +1,47 @@
 ---
 en:
   notices:
-    account_recovery: Great! You have your personal key.
-    dap_html: >
-      <!-- We participate in the US government’s analytics program. -->
-      <!-- See the data at analytics.usa.gov. -->
+    account_reactivation: Great! You have your personal key.
+    dap_html: "<!-- We participate in the US government’s analytics program. --> <!--
+      See the data at analytics.usa.gov. -->"
     forgot_password:
-      use_diff_email:
-        link: create a new account
-        text_html: Or, %{link} using a different email address.
-      first_paragraph_end: >
-        with a link to reset your password. Follow the link to continue
-        resetting your password.
+      first_paragraph_end: with a link to reset your password. Follow the link to
+        continue resetting your password.
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive an email?
       resend_email_success: We sent another password reset email.
+      use_diff_email:
+        link: create a new account
+        text_html: Or, %{link} using a different email address.
     password_changed: You changed your password.
     resend_confirmation_email:
       success: We sent another confirmation email.
     send_code:
       personal_key: You have a new personal key.
-    timeout_warning:
-      signed_in:
-        continue: Keep me signed in
-        sign_out: Sign me out
-        message_html: >
-          For your security, we will sign you out in %{time_left_in_session} unless
-          you tell us otherwise.
-      partially_signed_in:
-        continue: Continue sign in
-        sign_out: Cancel sign in
-        message_html: >
-          For your security, in %{time_left_in_session} we will
-          cancel your sign in.
-    session_cleared: >
-      For your security, we clear what you entered if you don't move to a new page within %{minutes} minutes.
+    session_cleared: For your security, we clear what you entered if you don't move
+      to a new page within %{minutes} minutes.
     signed_up_but_unconfirmed:
-      first_paragraph_end: >
-        with a link to confirm your email address. Follow the link to continue
-        creating your account.
+      first_paragraph_end: with a link to confirm your email address. Follow the link
+        to continue creating your account.
       first_paragraph_start: We sent an email to
       no_email_sent_explanation_start: Didn’t receive it?
     terms_of_service:
       link: Security Practices and Privacy Act Statement
+    timeout_warning:
+      partially_signed_in:
+        continue: Continue sign in
+        message_html: For your security, in %{time_left_in_session} we will cancel
+          your sign in.
+        sign_out: Cancel sign in
+      signed_in:
+        continue: Keep me signed in
+        message_html: For your security, we will sign you out in %{time_left_in_session}
+          unless you tell us otherwise.
+        sign_out: Sign me out
     totp_configured: You enabled an authentication app.
     totp_disabled: You disabled your authentication app.
     use_diff_email:
       link: use a different email address
       text_html: Or, %{link}
-  session_timedout: >
-    We signed you out. For your security, %{app} ends your session
+  session_timedout: We signed you out. For your security, %{app} ends your session
     when you haven’t moved to a new page for %{minutes} minutes.

@@ -1,0 +1,6 @@
+---
+fr:
+  pages:
+    page_not_found:
+      body: Vous pouvez revérifier votre lien et essayer de nouveau. (404)
+      header: La page que vous recherchez n'existe pas.

@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   include UserSessionContext
   include VerifyProfileConcern
+  include LocaleHelper
 
   FLASH_KEYS = %w[alert error notice success warning].freeze
 
@@ -51,6 +52,10 @@ class ApplicationController < ActionController::Base
       sp_session: sp_session,
       service_provider_request: service_provider_request
     ).call
+  end
+
+  def default_url_options
+    { locale: locale_url_param }
   end
 
   private
@@ -136,9 +141,7 @@ class ApplicationController < ActionController::Base
   end
 
   def set_locale
-    I18n.locale =
-      http_accept_language.compatible_language_from(I18n.available_locales) ||
-      I18n.default_locale
+    I18n.locale = LocaleChooser.new(params[:locale], request).locale
   end
 
   def sp_session

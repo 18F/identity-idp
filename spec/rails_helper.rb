@@ -51,6 +51,12 @@ RSpec.configure do |config|
     FakeSms.messages = []
     FakeVoiceCall.calls = []
   end
+
+  config.before(:each, idv_job: true) do
+    allow(VendorValidatorJob).to receive(:perform_later) do |*args|
+      VendorValidatorJob.perform_now(*args)
+    end
+  end
 end
 
 Sidekiq::Testing.inline!

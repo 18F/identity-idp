@@ -1,0 +1,18 @@
+---
+fr:
+  sign_up:
+    buttons:
+      cancel: Annuler et supprimer votre information
+      continue: Continuer la création du compte
+    cancel:
+      modal_header: Souhaitez-vous vraiment annuler?
+      success: Le dossier contenant votre information a été effacé
+      warning_header: Si vous annulez maintenant
+      warning_points:
+      - Vous n'aurez pas de compte login.gov
+      - Nous ne conserverons pas de dossier contenant votre adresse courriel, votre
+        mot de passe et votre numéro de téléphone
+      - Vous ne serez pas en mesure d'accéder à votre information de façon sécuritaire
+        en utilisant login.gov
+    registrations:
+      create_account: Créer un compte

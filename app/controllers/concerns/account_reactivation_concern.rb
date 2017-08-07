@@ -1,4 +1,4 @@
-module AccountRecoveryConcern
+module AccountReactivationConcern
   extend ActiveSupport::Concern
 
   def confirm_password_reset_profile

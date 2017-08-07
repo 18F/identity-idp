@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe 'devise/passwords/new.html.slim' do
-  let(:user) { build_stubbed(:user) }
-
   before do
     @password_reset_email_form = PasswordResetEmailForm.new('')
     sp = build_stubbed(
@@ -17,7 +15,6 @@ describe 'devise/passwords/new.html.slim' do
       sp_session: {},
       service_provider_request: ServiceProviderRequest.new
     ).call
-    allow(view).to receive(:current_user).and_return(user)
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
   end
 
@@ -37,5 +34,11 @@ describe 'devise/passwords/new.html.slim' do
     render
 
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
+  end
+
+  it 'has a cancel link that points to the decorated_session cancel_link_path' do
+    render
+
+    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_path)
   end
 end

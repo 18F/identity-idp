@@ -2,7 +2,7 @@ class UpdateUserPhoneForm
   include ActiveModel::Model
   include FormPhoneValidator
 
-  attr_accessor :phone
+  attr_accessor :phone, :international_code
   attr_reader :user
 
   def persisted?
@@ -12,12 +12,16 @@ class UpdateUserPhoneForm
   def initialize(user)
     @user = user
     self.phone = @user.phone
+    self.international_code = Phonelib.parse(phone).country || PhoneFormatter::DEFAULT_COUNTRY
   end
 
   def submit(params)
-    check_phone_change(params)
+    self.phone = params[:phone]
+    self.international_code = params[:international_code]
 
-    valid?
+    check_phone_change
+
+    FormResponse.new(success: valid?, errors: errors.messages)
   end
 
   def phone_changed?
@@ -28,10 +32,8 @@ class UpdateUserPhoneForm
 
   attr_reader :phone_changed
 
-  def check_phone_change(params)
-    formatted_phone = params[:phone].phony_formatted(
-      format: :international, normalize: :US, spaces: ' '
-    )
+  def check_phone_change
+    formatted_phone = PhoneFormatter.new.format(phone, country_code: international_code)
 
     return unless formatted_phone != @user.phone
 

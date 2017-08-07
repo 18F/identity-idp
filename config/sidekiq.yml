@@ -3,4 +3,5 @@
   - voice
   - mailers
   - analytics
+  - idv
 :logfile: 'log/sidekiq.log'

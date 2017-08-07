@@ -1,0 +1,32 @@
+---
+fr:
+  headings:
+    account:
+      account_history: Historique du compte
+      login_info: Votre compte
+      profile_info: Information du profil
+      reactivate: NOT TRANSLATED YET
+      two_factor: Authentification à deux facteurs
+      verified_account: Compte vérifié
+    confirmations:
+      new: Envoyer un autre courriel de confirmation
+    create_account_with_sp:
+      sp_text: utilise login.gov pour rendre la connexion plus facile et plus sécurisée.
+    create_account_without_sp: Créer un compte login.gov
+    edit_info:
+      email: Changez votre courriel
+      password: Changez votre mot de passe
+      phone: Entrez votre nouveau numéro de téléphone
+    passwords:
+      change: Changez votre mot de passe
+      confirm: Confirmez votre mot de passe actuel pour continuer
+      forgot: Vous avez oublié votre mot de passe?
+    personal_key: Voici votre clé personnelle
+    registrations:
+      enter_email: Commencer à créer le compte
+    session_timeout_warning: Vous avez besoin de plus de temps?
+    sign_in_with_sp: Connectez-vous pour continuer à %{sp}
+    sign_in_without_sp: Connexion
+    totp_setup:
+      new: Activer une application d'authentification
+    verify_email: Consultez vos courriels

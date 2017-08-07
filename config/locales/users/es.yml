@@ -1,14 +1,22 @@
+---
 es:
   users:
+    personal_key:
+      close: Cerrar
+      confirmation_error: Ha ingresado una clave personal incorrecta.
+      generated_on_html: Generado el %{date}
+      get_another: Obtener otra clave
+      header: Su clave personal
+      help_text: |-
+        Para proteger su cuenta, necesita una contraseña y acceso a su teléfono o app de autenticación al iniciar una sesión. Si no puede utilizar su teléfono o app, puede iniciar una sesión con su clave personal.
+
+        Para su privacidad y seguridad, login.gov no guarda su contraseña y clave personal. Sólo usted las conoce. Sólo usted puede acceder o compartir su información personal.
+
+        Le pedimos que guarde su clave personal afuera de su computadora o dispositivo móvil para que mantenerla segura en caso de que le roben sus aparatos o sus cuentas en línea sean hackeadas.
+
+        Si no tiene su clave personal y olvida su contraseña, la única manera de mantener su cuenta segura es verificando que usted es el propietario legal.
+      help_text_header: "¿Por qué necesito guardar mi nueva clave en papel?"
+      print: Imprima esta página
     totp_setup:
       new:
-        qr_img_alt: Código de QR para la aplicación de autenticación
-    personal_key:
-      header: NOT TRANSLATED YET
-      generated_on_html: NO TRANSLATED YET
-      get_another: NOT TRANSLATED YET
-      print: NOT TRANSLATED YET
-      help_text_header: NOT TRANSLATED YET
-      help_text: NOT TRANSLATED YET
-      close: NOT TRANSLATED YET
-      confirmation_error: NOT TRANSLATED YET
+        qr_img_alt: Código de QR para la app de autenticación

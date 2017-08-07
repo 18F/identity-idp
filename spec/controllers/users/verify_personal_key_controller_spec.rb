@@ -33,7 +33,7 @@ describe Users::VerifyPersonalKeyController do
       it 'displays a flash message to the user' do
         get :new
 
-        expect(subject.flash[:notice]).to eq(t('notices.account_recovery'))
+        expect(subject.flash[:notice]).to eq(t('notices.account_reactivation'))
       end
     end
   end

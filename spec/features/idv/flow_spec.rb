@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IdV session' do
+feature 'IdV session', idv_job: true do
   include IdvHelper
 
   context 'landing page' do
@@ -65,7 +65,7 @@ feature 'IdV session' do
       fill_in 'profile_first_name', with: first_name_to_trigger_exception
       click_idv_continue
 
-      expect(current_path).to eq verify_session_path
+      expect(current_path).to eq verify_session_result_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
     end
 
@@ -76,7 +76,7 @@ feature 'IdV session' do
         visit verify_session_path
         complete_idv_profile_fail
 
-        expect(current_path).to eq verify_session_path
+        expect(current_path).to eq verify_session_result_path
       end
 
       user.reload
@@ -109,7 +109,7 @@ feature 'IdV session' do
         fill_out_financial_form_fail
         click_idv_continue
 
-        expect(current_path).to eq verify_finance_path
+        expect(current_path).to eq verify_finance_result_path
       end
 
       fill_out_financial_form_fail
@@ -152,7 +152,7 @@ feature 'IdV session' do
       click_idv_continue
 
       # failure reloads the form and shows warning modal
-      expect(current_path).to eq verify_session_path
+      expect(current_path).to eq verify_session_result_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
       click_button t('idv.modal.button.warning')
 
@@ -169,7 +169,7 @@ feature 'IdV session' do
       click_idv_continue
 
       # failure reloads the form and shows warning modal
-      expect(current_path).to eq verify_finance_path
+      expect(current_path).to eq verify_finance_result_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.financials.heading'))
       click_button t('idv.modal.button.warning')
 
@@ -191,7 +191,7 @@ feature 'IdV session' do
       click_idv_continue
 
       # failure reloads the same sticky form (different path) and shows warning modal
-      expect(current_path).to eq verify_finance_path
+      expect(current_path).to eq verify_finance_result_path
       click_button t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{mortgage_value}']")
 
@@ -214,7 +214,7 @@ feature 'IdV session' do
       click_idv_continue
 
       # failure reloads the same sticky form
-      expect(current_path).to eq verify_phone_path
+      expect(current_path).to eq verify_phone_result_path
       expect(page).to have_css('.modal-warning', text: t('idv.modal.phone.heading'))
       click_button t('idv.modal.button.warning')
       expect(page).to have_selector("input[value='#{bad_phone_formatted}']")
@@ -412,6 +412,29 @@ feature 'IdV session' do
       enter_correct_otp_code_for_user(user)
 
       expect(current_path).to eq account_path
+    end
+
+    scenario 'being unable to verify account without OTP phone confirmation' do
+      different_phone = '555-555-9876'
+      user = sign_in_live_with_2fa
+      visit verify_session_path
+
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok(different_phone)
+      click_idv_continue
+      fill_in :user_password, with: user_password
+      click_submit_default
+
+      visit verify_confirmations_path
+      click_acknowledge_personal_key
+
+      user.reload
+
+      expect(user.active_profile).to be_nil
     end
   end
 

@@ -40,6 +40,13 @@ module Idv
     def submit(params)
       initialize_params(params)
       profile.ssn_signature = ssn_signature
+
+      FormResponse.new(success: valid?, errors: errors.messages)
+    end
+
+    def duplicate_ssn?
+      return true if any_matching_ssn_signatures?(ssn_signature)
+      return true if ssn_is_duplicate_with_old_key?
     end
 
     private
@@ -59,12 +66,7 @@ module Idv
     end
 
     def ssn_is_unique
-      errors.add :ssn, I18n.t('idv.errors.duplicate_ssn') if ssn_is_duplicate?
-    end
-
-    def ssn_is_duplicate?
-      return true if any_matching_ssn_signatures?(ssn_signature)
-      return true if ssn_is_duplicate_with_old_key?
+      errors.add :ssn, I18n.t('idv.errors.duplicate_ssn') if duplicate_ssn?
     end
 
     def ssn_is_duplicate_with_old_key?

@@ -19,7 +19,7 @@ class StoreSpMetadataInSession
   attr_reader :session, :request_id
 
   def sp_request
-    @sp_request ||= ServiceProviderRequest.find_by(uuid: request_id)
+    @sp_request ||= ServiceProviderRequest.from_uuid(request_id)
   end
 
   def loa3_requested?

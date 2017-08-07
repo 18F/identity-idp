@@ -2,12 +2,12 @@
 es:
   event_types:
     account_created: Cuenta creada
-    account_verified: NOT TRANSLATED YET
-    authenticated_at: Se ha iniciado sesión en %{service_provider}
-    authenticator_disabled: La aplicación de autenticador está inhabilitada
-    authenticator_enabled: Aplicación de autenticador activada
-    email_changed: Dirección de correo electrónico cambiada
+    account_verified: Cuenta verificada
+    authenticated_at: Sesión iniciada en %{service_provider}
+    authenticator_disabled: La app de autenticación fue suspendida
+    authenticator_enabled: App de autenticación permitido
+    eastern_timestamp: "%{timestamp} (hora del Este)"
+    email_changed: Email cambiado
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
-    eastern_timestamp: '%{timestamp} (zona horaria del Este)'
     usps_mail_sent: Carta enviada

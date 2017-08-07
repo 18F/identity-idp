@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: 4308a502baf7b65e8b463ecafc2d428d530b4349
+  revision: 889aad815bda2ff2a41cd2b108e2afae7f50d8b8
   branch: master
   specs:
     equifax (1.0.0)
@@ -148,7 +148,7 @@ GEM
     bullet (5.5.1)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.10.0)
-    bummr (0.2.0)
+    bummr (0.1.8)
       rainbow
       thor
     byebug (9.0.6)
@@ -247,6 +247,7 @@ GEM
     errbase (0.0.3)
     erubis (2.7.0)
     eventmachine (1.0.9.1)
+    excon (0.57.0)
     execjs (2.7.0)
     factory_girl (4.8.0)
       activesupport (>= 3.0.0)
@@ -300,7 +301,7 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.4)
+    i18n (0.8.6)
     i18n-tasks (0.9.15)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
@@ -314,7 +315,7 @@ GEM
     ice_nine (0.11.2)
     iniparse (1.4.2)
     jmespath (1.3.1)
-    json (2.1.0)
+    json (1.8.6)
     json-jwt (1.7.2)
       activesupport
       bindata
@@ -348,6 +349,12 @@ GEM
       skinny (~> 0.2.3)
       sqlite3 (~> 1.3)
       thin (~> 1.5.0)
+    mandrill-api (1.0.53)
+      excon (>= 0.16.0, < 1.0)
+      json (>= 1.7.7, < 2.0)
+    mandrill_dm (1.3.4)
+      mail (~> 2.6)
+      mandrill-api (~> 1.0.53)
     memory_profiler (0.9.8)
     method_source (0.8.2)
     mime-types (3.1)
@@ -359,6 +366,8 @@ GEM
     multi_xml (0.6.0)
     nenv (0.3.0)
     net-scp (1.2.1)
+      net-ssh (>= 2.6.5)
+    net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
     newrelic_rpm (4.2.0.334)
@@ -376,6 +385,7 @@ GEM
     parser (2.4.0.0)
       ast (~> 2.2)
     pg (0.21.0)
+    phonelib (0.6.12)
     phony (2.15.44)
     phony_rails (0.14.6)
       activesupport (>= 3.0)
@@ -696,9 +706,12 @@ DEPENDENCIES
   json-jwt
   lograge
   mailcatcher
+  mandrill_dm
+  net-sftp
   newrelic_rpm
   overcommit
   pg
+  phonelib
   phony_rails
   poltergeist
   premailer-rails

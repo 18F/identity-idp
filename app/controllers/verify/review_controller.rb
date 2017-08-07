@@ -81,7 +81,11 @@ module Verify
     end
 
     def phone_confirmation_required?
-      idv_params[:phone] != current_user.phone &&
+      normalized_phone = idv_params[:phone]
+      return false if normalized_phone.blank?
+
+      formatted_phone = PhoneFormatter.new.format(normalized_phone)
+      formatted_phone != current_user.phone &&
         idv_session.address_verification_mechanism == 'phone'
     end
 

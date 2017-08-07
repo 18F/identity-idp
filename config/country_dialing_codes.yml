@@ -1,0 +1,804 @@
+US:
+  name: United States of America
+  country_code: '1'
+  sms_only: false
+AF:
+  name: Afghanistan
+  country_code: '93'
+  sms_only: true
+AL:
+  name: Albania
+  country_code: '355'
+  sms_only: true
+DZ:
+  name: Algeria
+  country_code: '213'
+  sms_only: true
+AD:
+  name: Andorra
+  country_code: '376'
+  sms_only: true
+AO:
+  name: Angola
+  country_code: '244'
+  sms_only: true
+AR:
+  name: Argentina
+  country_code: '54'
+  sms_only: true
+AM:
+  name: Armenia
+  country_code: '374'
+  sms_only: true
+AW:
+  name: Aruba
+  country_code: '297'
+  sms_only: true
+AU:
+  name: Australia/Cocos/Christmas Island
+  country_code: '61'
+  sms_only: false
+AT:
+  name: Austria
+  country_code: '43'
+  sms_only: false
+AZ:
+  name: Azerbaijan
+  country_code: '994'
+  sms_only: true
+BH:
+  name: Bahrain
+  country_code: '973'
+  sms_only: false
+BD:
+  name: Bangladesh
+  country_code: '880'
+  sms_only: true
+BY:
+  name: Belarus
+  country_code: '375'
+  sms_only: true
+BE:
+  name: Belgium
+  country_code: '32'
+  sms_only: false
+BZ:
+  name: Belize
+  country_code: '501'
+  sms_only: true
+BJ:
+  name: Benin
+  country_code: '229'
+  sms_only: true
+BT:
+  name: Bhutan
+  country_code: '975'
+  sms_only: true
+BO:
+  name: Bolivia
+  country_code: '591'
+  sms_only: true
+BA:
+  name: Bosnia and Herzegovina
+  country_code: '387'
+  sms_only: true
+BW:
+  name: Botswana
+  country_code: '267'
+  sms_only: true
+BR:
+  name: Brazil
+  country_code: '55'
+  sms_only: false
+BN:
+  name: Brunei
+  country_code: '673'
+  sms_only: true
+BG:
+  name: Bulgaria
+  country_code: '359'
+  sms_only: false
+BF:
+  name: Burkina Faso
+  country_code: '226'
+  sms_only: true
+BI:
+  name: Burundi
+  country_code: '257'
+  sms_only: true
+KH:
+  name: Cambodia
+  country_code: '855'
+  sms_only: true
+CM:
+  name: Cameroon
+  country_code: '237'
+  sms_only: true
+CA:
+  name: Canada
+  country_code: '1'
+  sms_only: true
+CV:
+  name: Cape Verde
+  country_code: '238'
+  sms_only: true
+CF:
+  name: Central Africa
+  country_code: '236'
+  sms_only: true
+TD:
+  name: Chad
+  country_code: '235'
+  sms_only: true
+CL:
+  name: Chile
+  country_code: '56'
+  sms_only: true
+CN:
+  name: China
+  country_code: '86'
+  sms_only: false
+CO:
+  name: Colombia
+  country_code: '57'
+  sms_only: true
+KM:
+  name: Comoros
+  country_code: '269'
+  sms_only: true
+CG:
+  name: Congo
+  country_code: '242'
+  sms_only: true
+CD:
+  name: Congo (Democratic Republic of the)
+  country_code: '243'
+  sms_only: true
+CK:
+  name: Cook Islands
+  country_code: '682'
+  sms_only: true
+CR:
+  name: Costa Rica
+  country_code: '506'
+  sms_only: true
+HR:
+  name: Croatia
+  country_code: '385'
+  sms_only: true
+CU:
+  name: Cuba
+  country_code: '53'
+  sms_only: true
+CY:
+  name: Cyprus
+  country_code: '357'
+  sms_only: false
+CZ:
+  name: Czech Republic
+  country_code: '420'
+  sms_only: false
+DK:
+  name: Denmark
+  country_code: '45'
+  sms_only: false
+DJ:
+  name: Djibouti
+  country_code: '253'
+  sms_only: true
+TL:
+  name: East Timor
+  country_code: '670'
+  sms_only: true
+EC:
+  name: Ecuador
+  country_code: '593'
+  sms_only: true
+EG:
+  name: Egypt
+  country_code: '20'
+  sms_only: true
+SV:
+  name: El Salvador
+  country_code: '503'
+  sms_only: true
+GQ:
+  name: Equatorial Guinea
+  country_code: '240'
+  sms_only: true
+ER:
+  name: Eritrea
+  country_code: '291'
+  sms_only: true
+EE:
+  name: Estonia
+  country_code: '372'
+  sms_only: false
+ET:
+  name: Ethiopia
+  country_code: '251'
+  sms_only: true
+FK:
+  name: Falkland Islands
+  country_code: '500'
+  sms_only: true
+FO:
+  name: Faroe Islands
+  country_code: '298'
+  sms_only: true
+FJ:
+  name: Fiji
+  country_code: '679'
+  sms_only: true
+FI:
+  name: Finland/Aland Islands
+  country_code: '358'
+  sms_only: false
+FR:
+  name: France
+  country_code: '33'
+  sms_only: false
+GF:
+  name: French Guiana
+  country_code: '594'
+  sms_only: true
+PF:
+  name: French Polynesia
+  country_code: '689'
+  sms_only: true
+GA:
+  name: Gabon
+  country_code: '241'
+  sms_only: true
+GM:
+  name: Gambia
+  country_code: '220'
+  sms_only: true
+GE:
+  name: Georgia
+  country_code: '995'
+  sms_only: true
+DE:
+  name: Germany
+  country_code: '49'
+  sms_only: false
+GH:
+  name: Ghana
+  country_code: '233'
+  sms_only: true
+GI:
+  name: Gibraltar
+  country_code: '350'
+  sms_only: true
+GR:
+  name: Greece
+  country_code: '30'
+  sms_only: true
+GL:
+  name: Greenland
+  country_code: '299'
+  sms_only: true
+GP:
+  name: Guadeloupe
+  country_code: '590'
+  sms_only: true
+GT:
+  name: Guatemala
+  country_code: '502'
+  sms_only: true
+GN:
+  name: Guinea
+  country_code: '224'
+  sms_only: true
+GW:
+  name: Guinea-Bissau
+  country_code: '245'
+  sms_only: true
+GY:
+  name: Guyana
+  country_code: '592'
+  sms_only: true
+HT:
+  name: Haiti
+  country_code: '509'
+  sms_only: true
+HN:
+  name: Honduras
+  country_code: '504'
+  sms_only: true
+HK:
+  name: Hong Kong
+  country_code: '852'
+  sms_only: false
+HU:
+  name: Hungary
+  country_code: '36'
+  sms_only: true
+IS:
+  name: Iceland
+  country_code: '354'
+  sms_only: true
+IN:
+  name: India
+  country_code: '91'
+  sms_only: false
+ID:
+  name: Indonesia
+  country_code: '62'
+  sms_only: true
+IR:
+  name: Iran
+  country_code: '98'
+  sms_only: true
+IQ:
+  name: Iraq
+  country_code: '964'
+  sms_only: true
+IE:
+  name: Ireland
+  country_code: '353'
+  sms_only: false
+IL:
+  name: Israel
+  country_code: '972'
+  sms_only: false
+IT:
+  name: Italy
+  country_code: '39'
+  sms_only: false
+CI:
+  name: Ivory Coast
+  country_code: '225'
+  sms_only: true
+JP:
+  name: Japan
+  country_code: '81'
+  sms_only: false
+JO:
+  name: Jordan
+  country_code: '962'
+  sms_only: true
+KZ:
+  name: Kazakhstan
+  country_code: '7'
+  sms_only: true
+KE:
+  name: Kenya
+  country_code: '254'
+  sms_only: true
+KP:
+  name: Korea (Democratic People's Republic of)
+  country_code: '850'
+  sms_only: true
+KR:
+  name: Korea (Republic of)
+  country_code: '82'
+  sms_only: true
+KW:
+  name: Kuwait
+  country_code: '965'
+  sms_only: true
+KG:
+  name: Kyrgyzstan
+  country_code: '996'
+  sms_only: true
+LA:
+  name: Laos People's Democratic Republic
+  country_code: '856'
+  sms_only: true
+LV:
+  name: Latvia
+  country_code: '371'
+  sms_only: false
+LB:
+  name: Lebanon
+  country_code: '961'
+  sms_only: true
+LS:
+  name: Lesotho
+  country_code: '266'
+  sms_only: true
+LR:
+  name: Liberia
+  country_code: '231'
+  sms_only: true
+LY:
+  name: Libya
+  country_code: '218'
+  sms_only: true
+LI:
+  name: Liechtenstein
+  country_code: '423'
+  sms_only: true
+LT:
+  name: Lithuania
+  country_code: '370'
+  sms_only: false
+LU:
+  name: Luxembourg
+  country_code: '352'
+  sms_only: false
+MO:
+  name: Macau
+  country_code: '853'
+  sms_only: true
+MK:
+  name: Macedonia
+  country_code: '389'
+  sms_only: true
+MG:
+  name: Madagascar
+  country_code: '261'
+  sms_only: true
+MW:
+  name: Malawi
+  country_code: '265'
+  sms_only: true
+MY:
+  name: Malaysia
+  country_code: '60'
+  sms_only: true
+MV:
+  name: Maldives
+  country_code: '960'
+  sms_only: true
+ML:
+  name: Mali
+  country_code: '223'
+  sms_only: true
+MT:
+  name: Malta
+  country_code: '356'
+  sms_only: false
+MH:
+  name: Marshall Islands
+  country_code: '692'
+  sms_only: true
+MQ:
+  name: Martinique
+  country_code: '596'
+  sms_only: true
+MR:
+  name: Mauritania
+  country_code: '222'
+  sms_only: true
+MU:
+  name: Mauritius
+  country_code: '230'
+  sms_only: true
+YT:
+  name: Mayotte
+  country_code: '262'
+  sms_only: true
+MX:
+  name: Mexico
+  country_code: '52'
+  sms_only: false
+FM:
+  name: Micronesia
+  country_code: '691'
+  sms_only: true
+MD:
+  name: Moldo
+  country_code: '373'
+  sms_only: true
+MC:
+  name: Monaco
+  country_code: '377'
+  sms_only: true
+MN:
+  name: Mongolia
+  country_code: '976'
+  sms_only: true
+ME:
+  name: Montenegro
+  country_code: '382'
+  sms_only: true
+MA:
+  name: Morocco
+  country_code: '212'
+  sms_only: true
+MZ:
+  name: Mozambique
+  country_code: '258'
+  sms_only: true
+MM:
+  name: Myanmar
+  country_code: '95'
+  sms_only: true
+NA:
+  name: Namibia
+  country_code: '264'
+  sms_only: true
+NP:
+  name: Nepal
+  country_code: '977'
+  sms_only: true
+NL:
+  name: Netherlands
+  country_code: '31'
+  sms_only: false
+BQ:
+  name: Netherlands Antilles
+  country_code: '599'
+  sms_only: true
+NC:
+  name: New Caledonia
+  country_code: '687'
+  sms_only: true
+NZ:
+  name: New Zealand
+  country_code: '64'
+  sms_only: false
+NI:
+  name: Nicaragua
+  country_code: '505'
+  sms_only: true
+NE:
+  name: Niger
+  country_code: '227'
+  sms_only: true
+NG:
+  name: Nigeria
+  country_code: '234'
+  sms_only: true
+NO:
+  name: Norway
+  country_code: '47'
+  sms_only: false
+OM:
+  name: Oman
+  country_code: '968'
+  sms_only: true
+PK:
+  name: Pakistan
+  country_code: '92'
+  sms_only: true
+PW:
+  name: Palau
+  country_code: '680'
+  sms_only: true
+PS:
+  name: Palestine
+  country_code: '970'
+  sms_only: true
+PA:
+  name: Panama
+  country_code: '507'
+  sms_only: true
+PG:
+  name: Papua New Guinea
+  country_code: '675'
+  sms_only: true
+PY:
+  name: Paraguay
+  country_code: '595'
+  sms_only: true
+PE:
+  name: Peru
+  country_code: '51'
+  sms_only: false
+PH:
+  name: Philippines
+  country_code: '63'
+  sms_only: true
+PL:
+  name: Poland
+  country_code: '48'
+  sms_only: false
+PT:
+  name: Portugal
+  country_code: '351'
+  sms_only: true
+QA:
+  name: Qatar
+  country_code: '974'
+  sms_only: true
+RO:
+  name: Romania
+  country_code: '40'
+  sms_only: false
+RU:
+  name: Russia
+  country_code: '7'
+  sms_only: true
+RW:
+  name: Rwanda
+  country_code: '250'
+  sms_only: true
+RE:
+  name: Reunion
+  country_code: '262'
+  sms_only: true
+PM:
+  name: Saint Pierre and Miquelon
+  country_code: '508'
+  sms_only: true
+WS:
+  name: Samoa
+  country_code: '685'
+  sms_only: true
+SM:
+  name: San Marino
+  country_code: '378'
+  sms_only: true
+ST:
+  name: Sao Tome and Principe
+  country_code: '239'
+  sms_only: true
+SA:
+  name: Saudi Arabia
+  country_code: '966'
+  sms_only: true
+SN:
+  name: Senegal
+  country_code: '221'
+  sms_only: true
+RS:
+  name: Serbia
+  country_code: '381'
+  sms_only: true
+SC:
+  name: Seychelles
+  country_code: '248'
+  sms_only: true
+SL:
+  name: Sierra Leone
+  country_code: '232'
+  sms_only: true
+SG:
+  name: Singapore
+  country_code: '65'
+  sms_only: true
+SK:
+  name: Slovakia
+  country_code: '421'
+  sms_only: false
+SI:
+  name: Slovenia
+  country_code: '386'
+  sms_only: true
+SB:
+  name: Solomon Islands
+  country_code: '677'
+  sms_only: true
+SO:
+  name: Somalia
+  country_code: '252'
+  sms_only: true
+ZA:
+  name: South Africa
+  country_code: '27'
+  sms_only: false
+SS:
+  name: South Sudan
+  country_code: '211'
+  sms_only: true
+ES:
+  name: Spain
+  country_code: '34'
+  sms_only: false
+LK:
+  name: Sri Lanka
+  country_code: '94'
+  sms_only: true
+SD:
+  name: Sudan
+  country_code: '249'
+  sms_only: true
+SR:
+  name: Suriname
+  country_code: '597'
+  sms_only: true
+SZ:
+  name: Swaziland
+  country_code: '268'
+  sms_only: true
+SE:
+  name: Sweden
+  country_code: '46'
+  sms_only: true
+CH:
+  name: Switzerland
+  country_code: '41'
+  sms_only: false
+SY:
+  name: Syria
+  country_code: '963'
+  sms_only: true
+TW:
+  name: Taiwan
+  country_code: '886'
+  sms_only: true
+TJ:
+  name: Tajikistan
+  country_code: '992'
+  sms_only: true
+TZ:
+  name: Tanzania, United Republic of
+  country_code: '255'
+  sms_only: true
+TH:
+  name: Thailand
+  country_code: '66'
+  sms_only: true
+TG:
+  name: Togo
+  country_code: '228'
+  sms_only: true
+TO:
+  name: Tonga
+  country_code: '676'
+  sms_only: true
+TN:
+  name: Tunisia
+  country_code: '216'
+  sms_only: true
+TR:
+  name: Turkey
+  country_code: '90'
+  sms_only: true
+TM:
+  name: Turkmenistan
+  country_code: '993'
+  sms_only: true
+TV:
+  name: Tuvalu
+  country_code: '688'
+  sms_only: true
+UG:
+  name: Uganda
+  country_code: '256'
+  sms_only: true
+UA:
+  name: Ukraine
+  country_code: '380'
+  sms_only: true
+AE:
+  name: United Arab Emirates
+  country_code: '971'
+  sms_only: true
+GB:
+  name: United Kingdom
+  country_code: '44'
+  sms_only: false
+UY:
+  name: Uruguay
+  country_code: '598'
+  sms_only: true
+UZ:
+  name: Uzbekistan
+  country_code: '998'
+  sms_only: true
+VU:
+  name: Vanuatu
+  country_code: '678'
+  sms_only: true
+VE:
+  name: Venezuela
+  country_code: '58'
+  sms_only: true
+VN:
+  name: Vietnam
+  country_code: '84'
+  sms_only: true
+VG:
+  name: Virgin Islands (British)
+  country_code: '1'
+  sms_only: true
+VI:
+  name: Virgin Islands (U.S.)
+  country_code: '1'
+  sms_only: true
+YE:
+  name: Yemen
+  country_code: '967'
+  sms_only: true
+ZM:
+  name: Zambia
+  country_code: '260'
+  sms_only: true
+ZW:
+  name: Zimbabwe
+  country_code: '263'
+  sms_only: true

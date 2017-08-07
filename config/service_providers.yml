@@ -383,7 +383,17 @@ production:
   'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
     friendly_name: 'CBP PSPD Trusted Traveler Programs'
     agency: 'DHS'
-    logo: 'cbp.png'
+    logo: 'cbp-ttp.png'
     cert: 'cbp_goes_pre_prod'
     redirect_uris:
       - 'http://10.156.152.27/login'
+
+  'urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp':
+    agency: 'DHS'
+    allow_on_prod_chef_env: 'true'
+    block_encryption: 'aes256-cbc'
+    cert: 'cbp_goes_prod'
+    friendly_name: 'CBP Trusted Traveler Programs'
+    logo: 'cbp-ttp.png'
+    redirect_uris:
+      - 'https://ttp.cbp.dhs.gov'

@@ -5,11 +5,20 @@ p.mt-tiny.mb0
   = t('devise.two_factor_authentication.otp_setup_html')
 = simple_form_for(@two_factor_setup_form,
     html: { autocomplete: 'off', role: 'form' },
+    data: { unsupported_area_codes: @unsupported_area_codes,
+      international_phone_form: true },
     method: :patch,
     url: phone_setup_path) do |f|
+  .clearfix
+    .sm-col.sm-col-8
+      = f.input :international_code,
+        collection: international_phone_codes,
+        include_blank: false,
+        input_html: { class: 'international-code' }
   = f.label :phone, class: 'block'
     strong.left = t('devise.two_factor_authentication.otp_phone_label')
-    span.ml1.italic = t('devise.two_factor_authentication.otp_phone_label_info')
+    span#otp_phone_label_info.ml1.italic
+      = t('devise.two_factor_authentication.otp_phone_label_info')
   = f.input :phone, as: :tel, label: false, required: true,
       input_html: { class: 'phone sm-col-8 mb4' }
   .mb3
@@ -25,7 +34,8 @@ p.mt-tiny.mb0
           = radio_button_tag 'two_factor_setup_form[otp_delivery_preference]', :voice
           span.indicator
           = t('devise.two_factor_authentication.otp_delivery_preference.voice')
-      p.mt1.mb0 = t('devise.two_factor_authentication.otp_delivery_preference.instruction')
+      p#otp_delivery_preference_instruction.mt1.mb0
+        = t('devise.two_factor_authentication.otp_delivery_preference.instruction')
   = f.button :submit, t('forms.buttons.send_security_code')
 
 = render 'shared/cancel', link: destroy_user_session_path

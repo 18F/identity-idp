@@ -1,0 +1,49 @@
+---
+fr:
+  forms:
+    buttons:
+      back: Retour
+      continue: Continuer
+      disable: Désactiver
+      edit: Modifier
+      enable: Activer
+      resend_confirmation: Envoyer les instructions de confirmation de nouveau
+      send_security_code: Envoyer le code de sécurité
+      submit:
+        confirm_change: Confirmer le changement
+        default: Soumettre
+        update: Mettre à jour
+    confirmation:
+      show_hdr: Créez un mot de passe fort
+    passwords:
+      edit:
+        buttons:
+          submit: Changer le mot de passe
+        labels:
+          password: Nouveau mot de passe
+      show: Afficher le mot de passe
+    personal_key:
+      alternative: NOT TRANSLATED YET
+      confirmation_label: Clé personnelle
+      instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
+        en l'entrant ci-dessous.
+      title: Entrez votre clé personnelle
+    registration:
+      labels:
+        email: Adresse courriel
+    totp_setup:
+      totp_intro_html: Lorsque vous vous connectez, vous pouvez obtenir votre code
+        de sécurité d'une application d'authentification. %{link}
+      totp_step_1: Démarrez votre application d'authentification
+      totp_step_2: Entrez cette clé dans l'application
+      totp_step_3: Entrez le code à partir de l'application
+    two_factor:
+      code: Code de sécurité
+      personal_key: Clé personnelle
+      try_again: Utilisez un autre numéro de téléphone
+    verify_profile:
+      instructions: Entrez le code à dix caractères qui se trouve dans la lettre que
+        nous vous avons envoyée.
+      name: Code de confirmation
+      submit: Confirmer le compte
+      title: Confirmez votre compte

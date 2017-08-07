@@ -380,6 +380,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
           expect(subject.user_session[:idv][:params]['phone_confirmed_at']).to_not be_nil
         end
 
+        it 'updates idv session user_phone_confirmation attributes' do
+          expect(subject.user_session[:idv][:user_phone_confirmation]).to eq(true)
+        end
+
         it 'does not update user phone attributes' do
           expect(subject.current_user.reload.phone).to eq '+1 (202) 555-1212'
           expect(subject.current_user.reload.phone_confirmed_at).to eq @previous_phone_confirmed_at

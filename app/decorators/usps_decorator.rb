@@ -1,8 +1,8 @@
 class UspsDecorator
-  attr_reader :idv_session
+  attr_reader :usps_mail_service
 
-  def initialize(idv_session)
-    @idv_session = idv_session
+  def initialize(usps_mail_service)
+    @usps_mail_service = usps_mail_service
   end
 
   def title
@@ -16,6 +16,6 @@ class UspsDecorator
   private
 
   def letter_already_sent?
-    @idv_session.address_verification_mechanism == 'usps'
+    @usps_mail_service.any_mail_sent?
   end
 end

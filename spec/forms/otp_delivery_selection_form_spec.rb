@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 describe OtpDeliverySelectionForm do
-  subject { OtpDeliverySelectionForm.new(build_stubbed(:user)) }
+  let(:phone_to_deliver_to) { '+1 (202) 555-1234' }
+  subject { OtpDeliverySelectionForm.new(build_stubbed(:user), phone_to_deliver_to) }
 
   describe 'otp_delivery_preference inclusion validation' do
     it 'is invalid when otp_delivery_preference is neither sms nor voice' do
@@ -18,6 +19,8 @@ describe OtpDeliverySelectionForm do
         extra = {
           otp_delivery_preference: 'sms',
           resend: true,
+          country_code: '1',
+          area_code: '202',
         }
 
         result = instance_double(FormResponse)
@@ -35,6 +38,8 @@ describe OtpDeliverySelectionForm do
         extra = {
           otp_delivery_preference: 'foo',
           resend: nil,
+          country_code: '1',
+          area_code: '202',
         }
 
         result = instance_double(FormResponse)
@@ -48,7 +53,7 @@ describe OtpDeliverySelectionForm do
     context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
       it 'does not update the user' do
         user = build_stubbed(:user, otp_delivery_preference: 'sms')
-        form = OtpDeliverySelectionForm.new(user)
+        form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to)
 
         expect(UpdateUser).to_not receive(:new)
 
@@ -59,7 +64,7 @@ describe OtpDeliverySelectionForm do
     context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
       it 'updates the user' do
         user = build_stubbed(:user, otp_delivery_preference: 'voice')
-        form = OtpDeliverySelectionForm.new(user)
+        form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to)
         attributes = { otp_delivery_preference: 'sms' }
 
         updated_user = instance_double(UpdateUser)

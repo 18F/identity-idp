@@ -55,7 +55,7 @@ feature 'Visitor sets password during signup' do
       expect(page).to have_content '...'
 
       fill_in 'password_form_password', with: 'password'
-      expect(page).to have_content 'This is a top-10 common password'
+      expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
     end
   end
 
@@ -92,7 +92,7 @@ feature 'Visitor sets password during signup' do
 
       click_button t('forms.buttons.continue')
 
-      expect(page).to have_content t('zxcvbn.feedback.This is a top-10 common password')
+      expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
     end
   end
 end

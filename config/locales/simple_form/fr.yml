@@ -1,0 +1,11 @@
+---
+fr:
+  simple_form:
+    error_notification:
+      default_message: 'Veuillez examiner les problèmes ci-dessous :'
+    'no': Non
+    required:
+      html: <abbr title="required" class="red display-none">*</abbr>
+      mark: "*"
+      text: Ce champ est requis
+    'yes': Oui

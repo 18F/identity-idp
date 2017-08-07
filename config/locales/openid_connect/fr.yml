@@ -1,0 +1,26 @@
+---
+fr:
+  openid_connect:
+    authorization:
+      errors:
+        bad_client_id: Mauvaise client_id
+        no_valid_acr_values: Valeurs acr_values inacceptables trouvées
+        no_valid_scope: Aucune étendue de données valide trouvée
+        redirect_uri_invalid: redirect_uri est non valide
+        redirect_uri_no_match: redirect_uri ne correspond pas au redirect_uri enregistré
+    logout:
+      errors:
+        id_token_hint: id_token_hint n'a pas été reconnu
+    token:
+      errors:
+        invalid_aud: Affirmation liée à l'auditoire non valide, attendu %{url}
+        invalid_authentication: Le client doit s'authentifier par PKCE ou private_key_jwt,
+          code_challenge ou client_assertion manquant
+        invalid_code: code non valide
+        invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
+    user_info:
+      errors:
+        malformed_authorization: Forme de l'en-tête d'autorisation non valide
+        no_authorization: Aucune en-tête d'autorisation fournie
+        not_found: L'autorisation pour le contenu du access_token fourni introuvable
+          ou il peut être expiré

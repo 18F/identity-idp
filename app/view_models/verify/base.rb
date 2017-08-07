@@ -2,16 +2,17 @@ module Verify
   class Base
     include Rails.application.routes.url_helpers
 
-    def initialize(error: nil, remaining_attempts:, idv_form:)
+    def initialize(error: nil, remaining_attempts:, idv_form:, timed_out: nil)
       @error = error
       @remaining_attempts = remaining_attempts
       @idv_form = idv_form
+      @timed_out = timed_out
     end
 
     attr_reader :error, :remaining_attempts, :idv_form
 
     def mock_vendor_partial
-      if idv_vendor.pick == :mock
+      if FeatureManagement.no_pii_mode?
         'verify/sessions/no_pii_warning'
       else
         'shared/null'
@@ -39,6 +40,7 @@ module Verify
     end
 
     def message
+      return html_paragraph(text: I18n.t("idv.modal.#{step_name}.timeout")) if timed_out?
       html_paragraph(text: I18n.t("idv.modal.#{step_name}.#{error}")) if error
     end
 
@@ -56,14 +58,14 @@ module Verify
       flash_heading = html_paragraph(
         text: I18n.t("idv.modal.#{step_name}.heading"), css_class: 'mb2 fs-20p'
       )
-      flash_body = html_paragraph(text: I18n.t("idv.modal.#{step_name}.#{error}"))
+      flash_body = message
       flash_heading + flash_body + attempts
     end
 
     private
 
-    def idv_vendor
-      @_idv_vendor ||= Idv::Vendor.new
+    def timed_out?
+      @timed_out
     end
 
     def button_link_text

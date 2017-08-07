@@ -2,31 +2,31 @@
 es:
   account:
     index:
-      address: NOT TRANSLATED YET
-      authentication_app: NOT TRANSLATED YET
-      auth_app_enabled: NOT TRANSLATED YET
-      auth_app_disabled: NOT TRANSLATED YET
-      dob: NOT TRANSLATED YET
-      email: NOT TRANSLATED YET
-      full_name: NOT TRANSLATED YET
-      login: NOT TRANSLATED YET
-      password: NOT TRANSLATED YET
-      phone: NOT TRANSLATED YET
-      previous_address: NOT TRANSLATED YET
+      address: Dirección actual
+      auth_app_disabled: no permitido
+      auth_app_enabled: permitido
+      authentication_app: App de autenticación
+      dob: Fecha de nacimiento
+      email: Email
+      full_name: Nombre completo
+      login: Información para iniciar sesión
+      password: Contraseña
+      phone: Teléfono
+      previous_address: Dirección anterior
       reactivation:
-        instructions: NOT TRANSLATED YET
-        link:  NOT TRANSLATED YET
-      ssn: NOT TRANSLATED YET
+        instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
+        link: Reactive su perfil ahora.
+      ssn: Número de Seguro Social
       verification:
-        instructions: NOT TRANSLATED YET
-        reactivate_button: NOT TRANSLATED YET
-        success: NOT TRANSLATED YET
-        with_phone_button: NOT TRANSLATED YET
+        instructions: Su cuenta requiere que un código secreto sea verificado.
+        reactivate_button: Ingrese el código que recibió por correo postal.
+        success: Su cuenta ha sido verificada.
+        with_phone_button: Verifique con su teléfono.
     items:
-      personal_key: NOT TRANSLATED YET
+      personal_key: Clave personal
     links:
-      regenerate_personal_key: NOT TRANSLATED YET
+      regenerate_personal_key: Obtenga una clave nueva.
     security:
-      link: NOT TRANSLATED YET
-      text: NOT TRANSLATED YET
-    welcome: Bienvenido
+      link: Obtenga más información en el Centro de ayuda
+      text: Para su seguridad, la información de su perfil está bloqueada.
+    welcome: Bienvenido/a

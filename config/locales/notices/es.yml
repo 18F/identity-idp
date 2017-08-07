@@ -1,41 +1,47 @@
 ---
 es:
   notices:
-    account_recovery: NOT TRANSLATED YET
-    dap_html: NOT TRANSLATED YET
+    account_reactivation: "¡Estupendo! Tiene su clave personal."
+    dap_html: "<!-- Participamos en el programa analítico del Gobierno de Estados
+      Unidos. --> <!-- Vea los datos en analytics.usa.gov (en inglés). -->"
     forgot_password:
+      first_paragraph_end: con un enlace para restablecer su contraseña. Siga el enlace
+        para continuar restableciendo su contraseña.
+      first_paragraph_start: Enviamos un email a
+      no_email_sent_explanation_start: "¿No recibió un email?"
+      resend_email_success: Enviamos otro email para restablecer la contraseña.
       use_diff_email:
-        link: NOT TRANSLATED YET
-        text_html: NOT TRANSLATED YET
-      first_paragraph_end: >
-        NOT TRANSLATED YET
-      first_paragraph_start: NOT TRANSLATED YET
-      no_email_sent_explanation_start: NOT TRANSLATED YET
-      resend_email_success: NOT TRANSLATED YET
-    password_changed: NOT TRANSLATED YET
+        link: crear una cuenta nueva
+        text_html: O, %{link} utilizando un email diferente.
+    password_changed: Ha cambiado su contraseña.
     resend_confirmation_email:
-      success: NOT TRANSLATED YET
+      success: Enviamos otro email de confirmación.
     send_code:
-      personal_key: NOT TRANSLATED YET
-    timeout_warning:
-      signed_in:
-        continue: NOT TRANSLATED YET
-        sign_out: NOT TRANSLATED YET
-        message_html: NOT TRANSLATED YET
-      partially_signed_in:
-        continue: NOT TRANSLATED YET
-        sign_out: NOT TRANSLATED YET
-        message_html: NOT TRANSLATED YET
-    session_cleared: NOT TRANSLATED YET
+      personal_key: Tiene una nueva clave personal.
+    session_cleared: Para su seguridad, borramos lo que ingresó si no pasa a una página
+      nueva dentro de %{minutes} minutos.
     signed_up_but_unconfirmed:
-      first_paragraph_end: NOT TRANSLATED YET
-      first_paragraph_start: NOT TRANSLATED YET
-      no_email_sent_explanation_start: NOT TRANSLATED YET
+      first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
+        continuar creando su cuenta.
+      first_paragraph_start: Enviamos un email a
+      no_email_sent_explanation_start: "¿No lo recibió?"
     terms_of_service:
-      link: NOT TRANSLATED YET
-    totp_configured: NOT TRANSLATED YET
-    totp_disabled: NOT TRANSLATED YET
+      link: Prácticas de Seguridad y Declaración de Privacidad
+    timeout_warning:
+      partially_signed_in:
+        continue: Continuar el inicio de sesión
+        message_html: Para su seguridad, en %{time_left_in_session} cancelaremos su
+          acceso.
+        sign_out: Cancelar el inicio de sesión
+      signed_in:
+        continue: Manténgame conectado
+        message_html: Para su seguridad, terminaremos su sesión en% {time_left_in_session}
+          a menos que nos indique lo contrario.
+        sign_out: Desconécteme
+    totp_configured: Ha permitido una app de autenticación.
+    totp_disabled: Ha suspendido su app de autenticación.
     use_diff_email:
-      link: NOT TRANSLATED YET
-      text_html: NOT TRANSLATED YET
-  session_timedout: NOT TRANSLATED YET
+      link: use un email diferente
+      text_html: O %{link}
+  session_timedout: Hemos terminado su sesión. Para su seguridad, %{app} cierra su
+    sesión cuando usted no pasa a una nueva página durante %{minutes} minutos.

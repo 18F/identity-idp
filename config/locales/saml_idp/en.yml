@@ -1,10 +1,9 @@
+---
 en:
   saml_idp:
     shared:
       saml_post_binding:
         heading: Submit to continue
-        no_js: >
-          JavaScript seems to be turned off in your browser. Normally this
-          step happens automatically, but because you have JavaScript
-          turned off, please click the submit button to continue signing
-          in or signing out.
+        no_js: JavaScript seems to be turned off in your browser. Normally this step
+          happens automatically, but because you have JavaScript turned off, please
+          click the submit button to continue signing in or signing out.

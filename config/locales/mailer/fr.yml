@@ -1,0 +1,28 @@
+---
+fr:
+  mailer:
+    about: À propos de %{app}
+    confirmation_instructions:
+      first_sentence:
+        confirmed: Vous tentez de changer votre adresse courriel?
+        reset_requested: Votre compte %{app} a été réinitialisé par un représentant
+          du soutien technique. Pour continuer, vous devez confirmer votre adresse
+          courriel.
+        unconfirmed: Merci d'avoir créé un compte.
+      footer: Ce lien expirera dans %{confirmation_period}.
+      header: "%{intro} Veuillez cliquer sur le lien ci-dessous ou copier et coller
+        le lien complet dans votre navigateur."
+      link_text: Confirmez votre adresse courriel
+    email_change_notice:
+      subject: Changez votre adresse courriel
+    email_reuse_notice:
+      subject: Cette adresse courriel est déjà associée à un compte.
+    help: Pour plus d'aide, visitez %{link}.
+    no_reply: Veuillez ne pas répondre à ce message.
+    privacy_policy: Politique de confidentialité
+    reset_password:
+      footer: Ce lien expire dans %{expires} heures.
+      header: Pour terminer la réinitialisation de votre mot de passe, veuillez cliquer
+        sur le lien ci-dessous ou copier et coller le lien complet dans votre navigateur.
+      link_text: Réinitialisez votre mot de passe
+    sent_from: Envoyé à partir de %{app}

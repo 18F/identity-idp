@@ -47,6 +47,7 @@ Metrics/BlockLength:
     - 'config/initializers/secure_headers.rb'
     - 'config/routes.rb'
     - 'spec/**/*.rb'
+    - 'config/initializers/active_job_logger_patch.rb'
 
 Metrics/ClassLength:
   Description: Avoid classes longer than 100 lines of code.
@@ -92,6 +93,9 @@ Metrics/ModuleLength:
   Exclude:
   - spec/**/*
   - 'app/controllers/concerns/two_factor_authenticatable.rb'
+
+Metrics/ParameterLists:
+  CountKeywordArgs: false
 
 # This is a Rails 5 feature, so it should be disabled until we upgrade
 Rails/HttpPositionalArguments:

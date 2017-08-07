@@ -2,18 +2,17 @@ require 'rails_helper'
 
 describe UspsExporter do
   let(:export_file) { Tempfile.new('usps_export.psv') }
-  let(:usps_entry) { UspsConfirmationEntry.new_from_hash(pii_attributes) }
   let(:pii_attributes) do
-    {
-      first_name: 'Some',
-      last_name: 'One',
-      address1: '123 Any St',
-      address2: 'Ste 123',
-      city: 'Somewhere',
-      state: 'KS',
-      zipcode: '66666-1234',
-      otp: 123,
-    }
+    Pii::Attributes.new_from_hash(
+      first_name: { raw: 'Söme', norm: 'Some' },
+      last_name: { raw: 'Öne', norm: 'One' },
+      address1: { raw: '123 Añy St', norm: '123 Any St' },
+      address2: { raw: 'Sté 123', norm: 'Ste 123' },
+      city: { raw: 'Sömewhere', norm: 'Somewhere' },
+      state: { raw: 'KS', norm: 'KS' },
+      zipcode: { raw: '66666-1234', norm: '66666-1234' },
+      otp: { raw: 123, norm: 123 }
+    )
   end
   let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
   let(:psv_row_contents) do
@@ -23,13 +22,13 @@ describe UspsExporter do
     due_date = due.strftime('%-B %-e')
     values = [
       UspsExporter::CONTENT_ROW_ID,
-      usps_entry.first_name + ' ' + usps_entry.last_name,
-      usps_entry.address1,
-      usps_entry.address2,
-      usps_entry.city,
-      usps_entry.state,
-      usps_entry.zipcode,
-      usps_entry.otp,
+      pii_attributes.first_name.norm + ' ' + pii_attributes.last_name.norm,
+      pii_attributes.address1.norm,
+      pii_attributes.address2.norm,
+      pii_attributes.city.norm,
+      pii_attributes.state.norm,
+      pii_attributes.zipcode.norm,
+      pii_attributes.otp.norm,
       "#{current_date}, #{now.year}",
       "#{due_date}, #{due.year}",
       service_provider.friendly_name,

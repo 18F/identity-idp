@@ -1,14 +1,13 @@
 ---
 es:
   help_text:
-    change_factor: >
-      NOT TRANSLATED YET
+    change_factor: Antes de poder editar su% {factor}, deberá confirmar su contraseña
+      y recibir un código de seguridad en su teléfono.
     requested_attributes:
-      intro_html: NOT TRANSLATED YET
-      address: NOT TRANSLATED YET
-      birthdate: NOT TRANSLATED YET
-      email: NOT TRANSLATED YET
-      full_name: NOT TRANSLATED YET
-      phone: NOT TRANSLATED YET
-      social_security_number: NOT TRANSLATED YET
-
+      address: Dirección de correo postal
+      birthdate: Fecha de nacimiento
+      email: Email
+      full_name: Nombre completo
+      intro_html: Esta es la única información que %{app_name} compartirá con %{sp}
+      phone: Teléfono
+      social_security_number: Número de Seguro Social

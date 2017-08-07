@@ -24,8 +24,10 @@ gem 'http_accept_language'
 gem 'httparty'
 gem 'json-jwt'
 gem 'lograge'
+gem 'net-sftp'
 gem 'newrelic_rpm'
 gem 'pg'
+gem 'phonelib'
 gem 'phony_rails'
 gem 'premailer-rails'
 gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
@@ -113,4 +115,5 @@ end
 
 group :production do
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', branch: 'master'
+  gem 'mandrill_dm'
 end

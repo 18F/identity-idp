@@ -2,8 +2,15 @@
 
 
 h1.h3.my0 = t('headings.edit_info.phone')
-= simple_form_for(@update_user_phone_form, url: manage_phone_path,
+= simple_form_for(@update_user_phone_form,
+    data: { unsupported_area_codes: @unsupported_area_codes,
+      international_phone_form: true },
+    url: manage_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+  = f.input :international_code,
+        collection: international_phone_codes,
+        include_blank: false,
+        input_html: { class: 'international-code' }
   = f.input :phone, as: :tel, required: true, input_html: { class: 'phone', value: nil },
     label: t('account.index.phone')
   = f.button :submit, t('forms.buttons.submit.confirm_change'), class: 'mt2'

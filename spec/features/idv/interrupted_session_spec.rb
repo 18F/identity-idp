@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'Interrupted IdV session' do
   include IdvHelper
 
-  describe 'Closing the browser while on the first form', js: true do
+  describe 'Closing the browser while on the first form', js: true, idv_job: true do
     before do
       sign_in_and_2fa_user
       visit verify_session_path

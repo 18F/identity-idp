@@ -2,5 +2,5 @@
 es:
   pages:
     page_not_found:
-      body: NOT TRANSLATED YET
-      header: NOT TRANSLATED YET
+      body: Es posible que desee comprobar su enlace e intentar nuevamente. (404)
+      header: La página que buscaba no existe.

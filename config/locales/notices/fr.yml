@@ -1,0 +1,50 @@
+---
+fr:
+  notices:
+    account_reactivation: NOT TRANSLATED YET
+    dap_html: "<!-- Nous participons au programme d'analytique du gouvernement des
+      États-Unis. --> <!-- Consultez les données à analytics.usa.gov. -->"
+    forgot_password:
+      first_paragraph_end: avec un lien pour réinitialiser votre mot de passe. Suivez
+        le lien pour continuer à réinitialiser votre mot de passe.
+      first_paragraph_start: Nous avons envoyé un courriel à
+      no_email_sent_explanation_start: Vous n'avez pas reçu de courriel?
+      resend_email_success: Nous avons envoyé un autre courriel de réinitialisation
+        de mot de passe.
+      use_diff_email:
+        link: Créer un nouveau compte
+        text_html: Ou, %{link} en utilisant une adresse courriel différente.
+    password_changed: Vous avez changé votre mot de passe.
+    resend_confirmation_email:
+      success: Nous avons envoyé un autre courriel de confirmation.
+    send_code:
+      personal_key: Vous avez une nouvelle clé personnelle.
+    session_cleared: Pour votre sécurité, nous effacerons l'information que vous avez
+      entrée si vous ne vous déplacez pas vers une nouvelle page dans les %{minutes}
+      prochaines minutes.
+    signed_up_but_unconfirmed:
+      first_paragraph_end: avec un lien pour confirmer votre adresse courriel. Suivez
+        le lien pour continuer à créer votre compte.
+      first_paragraph_start: Nous avons envoyé un courriel à
+      no_email_sent_explanation_start: Vous n'avez pas reçu de courriel?
+    terms_of_service:
+      link: Pratiques en matière de sécurité et énoncé concernant la Loi sur la protection
+        des renseignements personnels
+    timeout_warning:
+      partially_signed_in:
+        continue: Continuer la connexion
+        message_html: Pour votre sécurité, nous annulerons votre connexion dans %{time_left_in_session}.
+        sign_out: Annuler la connexion
+      signed_in:
+        continue: Gardez ma connexion active
+        message_html: Pour votre sécurité, nous vous déconnecterons dans %{time_left_in_session},
+          sauf en cas d'avis contraire de votre part.
+        sign_out: Déconnectez-moi
+    totp_configured: Vous avez activé l'application d'authentification.
+    totp_disabled: Vous avez désactivé l'application d'authentification.
+    use_diff_email:
+      link: utilisez une adresse courriel différente
+      text_html: Or, %{link}
+  session_timedout: Nous vous avons déconnecté. Pour votre sécurité, %{app} désactive
+    votre session lorsque vous demeurez sur une page sans vous déplacer pendant %{minutes}
+    minutes.

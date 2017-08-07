@@ -27,8 +27,7 @@ function getFeedback(z) {
   const { warning, suggestions } = z.feedback;
 
   function lookup(str) {
-    const strFormatted = str.replace(/\./g, '_');
-    return I18n.t(`zxcvbn.feedback.${strFormatted}`);
+    return I18n.t(`zxcvbn.feedback.${I18n.key(str)}`);
   }
 
   if (!warning && !suggestions.length) return '';

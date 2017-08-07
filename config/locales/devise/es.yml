@@ -1,28 +1,26 @@
+---
 es:
   devise:
     confirmations:
-      already_confirmed: Su dirección de correo electrónico ya ha sido confirmada. %{acción}
-      confirmed: Su dirección de correo electrónico esta confirmada.
-      confirmed_but_must_set_password: Ha confirmado tu dirección de correo electrónico
-      send_instructions:
-        Recibirá un correo electrónico con instrucciones para confirmar su
-        dirección de correo electrónico en breve.
-      send_paranoid_instructions:
-        Recibirá un correo electrónico con instrucciones para confirmar su
-        dirección de correo electrónico en breve.
+      already_confirmed: Su email ha sido confirmado. %{acción}
+      confirmed: Usted ha confirmado su email.
+      confirmed_but_must_set_password: Usted ha confirmado su email.
+      send_instructions: En pocos minutos recibirá un email con instrucciones para
+        confirmar el uso de su email.
+      send_paranoid_instructions: En pocos minutos recibirá un email con instrucciones
+        para confirmar el uso de su email.
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
-      invalid: Dirección de correo electrónico o contraseña no válidos.
+      invalid: Email o contraseña no válido.
       last_attempt: Tiene un intento más antes de que su cuenta esté bloqueada.
       locked: Su cuenta está bloqueada.
-      not_found_in_database: Dirección de correo electrónico o contraseña no válidos.
-      session_limited:
-        Sus credenciales de inicio de sesión se utilizaron en otro navegador. Inicia sesión
-        de nuevo para continuar en este navegador.
-      timeout: Su sesión ha caducado. Vuelva a iniciar sesión para continuar.
+      not_found_in_database: Email o contraseña no válido.
+      session_limited: Sus credenciales para iniciar una sesión se utilizaron en otro
+        navegador. Inicie una sesión nueva para continuar en este navegador.
+      timeout: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
       unauthenticated: ''
-      unconfirmed: Necesita confirmar su dirección de correo electrónico antes de continuar.
+      unconfirmed: Debe confirmar su email antes de continuar.
     mailer:
       account_locked:
         subject: Su cuenta de login.gov ha sido bloqueada.
@@ -31,116 +29,122 @@ es:
       password_updated:
         subject: Su contraseña ha sido cambiada.
       reset_password_instructions:
-        subject: Restablecer su contraseña.
+        subject: Restablezca su contraseña.
     passwords:
       choose_new_password: Elija una contraseña nueva.
-      invalid_token: El token de contraseña de restablecimiento no es válido. Inténtalo de nuevo.
-      no_token:
-        No puede acceder a esta página sin proceder de un correo electrónico de restablecimiento de contraseña.
-        Si procede de un correo electrónico de restablecimiento de contraseña, asegúrese de utilizar el
-        enlace proporcionado.
-      send_instructions:
-        Recibirá un correo electrónico con instrucciones sobre cómo restablecer su
-        contraseña en pocos minutos.
-      send_paranoid_instructions:
-        Recibirá un correo electrónico con instrucciones sobre cómo restablecer su
-        contraseña en pocos minutos.
-      token_expired: Ha tardado demasiado en restablecer su contraseña. Inténtalo de nuevo.
-      updated: Su contraseña ha sido cambiada. Ahora ha iniciado sesión.
-      updated_not_active:
-        Su contraseña ha sido cambiada. Inicia sesión con su nueva contraseña.
+      invalid_token: El código para restablecer la contraseña no es válido. Inténtelo
+        de nuevo.
+      no_token: Usted no puede acceder a esta página si no procede desde el email
+        para restablecer la contraseña. Asegúrese de utilizar el enlace completo que
+        está en el email.
+      send_instructions: En pocos minutos recibirá un email con instrucciones para
+        restablecer su contraseña.
+      send_paranoid_instructions: En pocos minutos recibirá un email con instrucciones
+        para restablecer su contraseña.
+      token_expired: Ha tardado demasiado en restablecer su contraseña. Inténtelo
+        de nuevo.
+      updated: Su contraseña ha sido cambiada. Ahora ha iniciado una sesión.
+      updated_not_active: Su contraseña ha sido cambiada. Inicie sesión con su contraseña
+        nueva.
     registrations:
-      close_window: Puede cerrar esta ventana del navegador una vez que haya confirmado su dirección de correo electrónico.
-      destroy_confirm:
-        No se puede deshacer la eliminación de su cuenta. Todos los datos asociados a su
-        suenta se eliminará. ¿Seguro que desea eliminar su cuenta?
+      close_window: Puede cerrar esta ventana del navegador una vez que haya finalizado.
+      destroy_confirm: No se puede deshacer la eliminación de su cuenta. Todos los
+        datos asociados a su cuenta se eliminarán. ¿Confirma que desea eliminar su
+        cuenta?
       destroyed: Su cuenta se ha eliminado exitosamente.
-      email_and_phone_need_confirmation:
-        Antes de terminar de actualizar su cuenta, debemos confirmar su nuevo
-        número y el nuevo correo electrónico. Siga las instrucciones a continuación para confirmar su nuevo
-        número y, a continuación, compruebe si hay un correo electrónico de nosotros. Siga el enlace en el correo electrónico para confirmar su
-        nueva dirección de correo electrónico.
-      email_update_needs_confirmation:
-        Has actualizado su cuenta, pero debemos confirmar su nueva dirección de correo electrónico.
-        Busque un correo electrónico de nosotros, luego siga el enlace en el correo electrónico para confirmar su
-        nueva dirección.
+      email_and_phone_need_confirmation: Antes de terminar de actualizar su cuenta,
+        debemos confirmar su nuevo número y nuevo email. Siga las siguientes instrucciones
+        para confirmar su nuevo número y, luego, encuentre el email que le enviamos
+        nosotros. Siga el enlace en el email para confirmar su nueva dirección de
+        email.
+      email_update_needs_confirmation: Ha actualizado su cuenta, pero debemos confirmar
+        su nueva dirección de email. Encuentre el email que nosotros le enviamos y
+        siga el enlace para confirmar su nueva dirección.
       enabled_twofactor: Ha habilitado la autenticación de dos factores.
-      phone_update_needs_confirmation:
-        Su solicitud para actualizar su número de teléfono fue procesada, pero necesitamos
-        confirmar primero su número nuevo. Por favor, siga las siguientes instrucciones. Si no
-        confirma su nuevo número, seguiremos usando su número de teléfono antiguo.
-      signed_up: ¡Bienvenido! Usted ha creado una cuenta.
-      signed_up_but_inactive:
-        Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
-        su cuenta aún no está activada.
-      signed_up_but_locked:
-        Ha creado una cuenta. Sin embargo, no hemos podido iniciar sesión porque
-        su cuenta está bloqueada.
+      phone_update_needs_confirmation: Su solicitud para actualizar su número de teléfono
+        fue procesada, pero necesitamos confirmar primero su número nuevo. Por favor,
+        siga las siguientes instrucciones. Si no confirma su nuevo número, seguiremos
+        usando su número de teléfono antiguo.
+      signed_up: "¡Bienvenido/a! Usted ha creado una cuenta."
+      signed_up_but_inactive: Usted ha creado una cuenta. No hemos podido iniciar
+        su sesión porque su cuenta aún no está activada.
+      signed_up_but_locked: Usted ha creado una cuenta. No hemos podido iniciar su
+        sesión porque su cuenta está bloqueada.
       start:
-        accordion: NOT TRANSLATED YET
-        bullet_1_html: NOT TRANSLATED YET
-        bullet_2_html: NOT TRANSLATED YET
-        bullet_3_html: NOT TRANSLATED YET
-        bullet_4_html: NOT TRANSLATED YET
-        bullet_5_html: NOT TRANSLATED YET
-        learn_more: NOT TRANSLATED YET
-      updated: ¡Su cuenta ha sido actualizada!
+        accordion: Usted necesitará
+        bullet_1_html: Proporcione su <strong> dirección de email </strong> y establezca
+          una <strong>contraseña segura</strong>.
+        bullet_2_html: Permita <strong>la autenticación de dos factores</strong>.
+          Esto agrega una segunda capa de seguridad a su cuenta al requerirle que
+          ingrese un nuevo código que recibirá en su teléfono cada vez que inicie
+          una sesión.
+        bullet_3_html: Proporcione <strong>información básica</strong> como su nombre,
+          dirección, número de teléfono y número de Seguro Social.
+        bullet_4_html: Proporcione <strong>un número de cuenta financiera</strong>
+          como su número de tarjeta de crédito. Este número solamente será usado para
+          verificar su identidad.
+        bullet_5_html: Cuando haya terminado con este proceso, le daremos una clave
+          personal. <strong>Escríbala y guárdela en un lugar seguro; es importante.</strong>
+          Se le pedirá la clave personal cada vez que realice cambios en su cuenta.
+        learn_more: Obtenga más información sobre la verificación de su identidad.
+      updated: "¡Su cuenta ha sido actualizada!"
     sessions:
-      already_signed_out: Ahora se ha cerrado la sesión.
+      already_signed_out: Su sesión ha terminado ahora.
       signed_in: ''
-      signed_out: Ahora se ha cerrado la sesión.
+      signed_out: Su sesión ha terminado ahora.
     two_factor_authentication:
       buttons:
         confirm_with_sms: Confirmar con mensaje de texto
         confirm_with_voice: Confirmar con llamada de voz
-      choose_delivery_confirmation:
-        ¿Cómo le gustaría recibir su código de confirmación para %{phone}?
-      choose_otp_delivery_html:
-        Selecciona cómo deseas recibir su código de acceso único para %{phone}.
-      contact_administrator: Por favor, póngase en contacto con el administrador del sistema.
-      header_text: Ingrese su contraseña.
-      invalid_otp:
-        Esa contraseña no es válida. Puede intentar volver a ingresarlo o solicitar una nueva
-        Código de acceso único.
-      invalid_personal_key: Ese código de recuperación no es válido.
-      max_generic_login_attempts_reached:
-        Su cuenta ha sido bloqueada temporalmente.
-      max_otp_login_attempts_reached:
-        Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
-        de forma incorrecta demasiadas veces.
-      max_otp_requests_reached: NOT TRANSLATED YET
-      max_personal_key_login_attempts_reached:
-        Su cuenta ha sido bloqueada temporalmente porque ha ingresado el código de acceso único
-        de forma incorrecta demasiadas veces.
+      choose_delivery_confirmation: "¿Cómo le gustaría recibir su código de confirmación
+        para %{phone}?"
+      choose_otp_delivery_html: Lo enviaremos a %{phone} inmediatamente. Puede estar
+        sujeto a cargos de mensajería y datos.
+      contact_administrator: Por favor, póngase en contacto con el administrador del
+        sistema.
+      header_text: Ingrese su código de seguridad
+      invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo
+        de nuevo o solicitar un nuevo código de seguridad de sólo un uso.
+      invalid_personal_key: Esa clave personal no es válida.
+      max_generic_login_attempts_reached: Su cuenta está bloqueada temporalmente.
+      max_otp_login_attempts_reached: Su cuenta ha sido bloqueada temporalmente porque
+        ha ingresado incorrectamente el código de seguridad de sólo un uso demasiadas
+        veces.
+      max_otp_requests_reached: Su cuenta ha sido bloqueada temporalmente porque ha
+        solicitado un código de seguridad demasiadas veces más de lo permitido.
+      max_personal_key_login_attempts_reached: Su cuenta ha sido bloqueada temporalmente
+        porque ha ingresado incorrectamente la clave personal demasiadas veces.
       otp_delivery_preference:
-        instruction: Puede cambiar su elección la próxima vez que inicie sesión.
-        sms: Mensaje de texto (SMS)
-        title: ¿Cómo le gustaría recibir su código de acceso?
+        instruction: Puede cambiar su elección la próxima vez que inicie una sesión.
+        phone_unsupported: NOT TRANSLATED YET
+        sms: Mensaje de texto (SMS, sigla en inglés)
+        title: "¿Cómo le gustaría recibir su código de seguridad?"
         voice: Llamada telefónica
       otp_phone_label: Número de teléfono
-      otp_phone_label_info: Móvil o teléfono fijo está bien
-      otp_setup_html:
-        <strong>Cada vez que inicies sesión, </strong> le enviaremos un código de acceso único
-        a través de un mensaje de texto o una llamada telefónica. Esto ayuda a proteger su cuenta.
-      otp_sms_disclaimer: Se pueden aplicar tarifas de mensajes y datos.
-      please_confirm:
-        Se ha establecido el número de teléfono. Confírmelo introduciendo el código de acceso siguiente.
-      please_try_again_html: Inténtalo de nuevo en %{time_remaining}.
+      otp_phone_label_info: El móvil o teléfono fijo está bien.
+      otp_phone_label_info_modile_only: NOT TRANSLATED YET
+      otp_setup_html: "<strong>Cada vez que inicie una sesión,</ strong> le enviaremos
+        un código de seguridad de sólo un uso por mensaje de texto o llamada telefónica.
+        Esto ayuda a proteger su cuenta."
+      otp_sms_disclaimer: Puede estar sujeto a cargos de mensajería y datos.
       personal_key_fallback:
-        link: código de recuperación
-        text_html: ¿No tiene acceso a su teléfono? Use el %{link} en su lugar.
-      personal_key_header_text: Ingrese su código de recuperación.
-      personal_key_prompt: >
-        Puede usar este código de recuperación una vez. Si todavía necesita un código después de
-        iniciar sesión, vaya a la página de configuración de su cuenta para obtener una nueva.
+        link: Use una clave personal en su lugar
+        text_html: "¿No tiene acceso a su teléfono? %{link}."
+      personal_key_header_text: Ingrese su clave personal
+      personal_key_prompt: Puede usar esta clave personal una vez. Si todavía necesita
+        un código después de iniciar una sesión, vaya a la página de configuración
+        de su cuenta para obtener una clave nueva.
+      please_confirm: Su número de teléfono ha sido establecido. Confírmelo ingresando
+        el código de seguridad a continuación.
+      please_try_again_html: Inténtelo de nuevo en %{time_remaining}.
       totp_fallback:
         sms_link_text: Recibir un código por mensaje de texto
-        text_html: >
-          Si no puede usar su aplicación de autenticador ahora, puede %{sms_link}
-          O %{voice_link}.
-        voice_link_text: con una llamada telefónica
-      totp_header_text: Ingrese su código de autenticador
-      totp_info: Use cualquier aplicación de autenticador para escanear el código de QR que aparece a continuación.
-      two_factor_setup: Agregar un número de teléfono
+        text_html: Si no puede usar su app de autenticación ahora, puede %{sms_link}
+          o %{voice_link}.
+        voice_link_text: obtenga un código con una llamada telefónica
+      totp_header_text: Ingrese su código de la app de autenticación
+      totp_info: Use cualquier app de autenticación para escanear el código QR que
+        aparece a continuación.
+      two_factor_setup: Añada un número de teléfono
       user:
-        new_otp_sent: Le enviaremos un nuevo código de acceso único.
+        new_otp_sent: Le enviamos un nuevo código de sólo un uso

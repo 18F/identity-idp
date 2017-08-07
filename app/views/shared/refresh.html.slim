@@ -1,0 +1,7 @@
+- content_for(:meta_refresh) do
+  = Figaro.env.async_job_refresh_interval_seconds.to_s
+
+h2 = t('idv.messages.loading')
+
+.loading-spinner
+  img src="#{image_path('spinner.gif')}" height=100 width=100 alt=""

@@ -22,8 +22,8 @@ ul.list-reset
         .clipboard.ml2.right.mt-tiny class=btn_cls data-clipboard-text=@code.upcase
           = t('links.copy')
       .py2.center.bold
-        = t('instructions.2fa.authenticator.or')
-      = accordion('totp-info', t('instructions.2fa.authenticator.accordion_header'),
+        = t('instructions.mfa.authenticator.or')
+      = accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),
         wrapper_css: 'mb2 col-12 fs-16p') do
         .center
           = image_tag @qrcode, alt: t('users.totp_setup.new.qr_img_alt')

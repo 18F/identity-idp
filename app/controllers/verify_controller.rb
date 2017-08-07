@@ -1,6 +1,6 @@
 class VerifyController < ApplicationController
   include IdvSession
-  include AccountRecoveryConcern
+  include AccountReactivationConcern
 
   before_action :confirm_two_factor_authenticated
   before_action :confirm_idv_needed, only: %i[cancel fail]

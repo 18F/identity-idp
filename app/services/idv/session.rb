@@ -1,12 +1,15 @@
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
+      async_result_id
+      async_result_started_at
       address_verification_mechanism
       applicant
       financials_confirmation
       normalized_applicant_params
       params
-      phone_confirmation
+      vendor_phone_confirmation
+      user_phone_confirmation
       pii
       profile_confirmation
       profile_id
@@ -17,11 +20,13 @@ module Idv
       vendor_session_id
     ].freeze
 
+    attr_reader :current_user
+
     def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
       @current_user = current_user
       @issuer = issuer
-      @user_session[:idv] ||= new_idv_session
+      set_idv_session
     end
 
     def method_missing(method_sym, *arguments, &block)
@@ -67,8 +72,12 @@ module Idv
       user_session.delete(:idv)
     end
 
+    def phone_confirmed?
+      vendor_phone_confirmation == true && user_phone_confirmation == true
+    end
+
     def complete_session
-      complete_profile if phone_confirmation == true
+      complete_profile if phone_confirmed?
       create_usps_entry if address_verification_mechanism == 'usps'
     end
 
@@ -91,12 +100,17 @@ module Idv
     end
 
     def address_mechanism_chosen?
-      phone_confirmation == true || address_verification_mechanism == 'usps'
+      vendor_phone_confirmation == true || address_verification_mechanism == 'usps'
     end
 
     private
 
-    attr_accessor :user_session, :current_user, :issuer
+    attr_accessor :user_session, :issuer
+
+    def set_idv_session
+      return if session.present?
+      user_session[:idv] = new_idv_session
+    end
 
     def new_idv_session
       { params: {}, step_attempts: { financials: 0, phone: 0 } }
@@ -108,7 +122,7 @@ module Idv
     end
 
     def session
-      user_session[:idv]
+      user_session.fetch(:idv, {})
     end
 
     def applicant_params
@@ -123,7 +137,7 @@ module Idv
       @_profile_maker ||= Idv::ProfileMaker.new(
         applicant: Proofer::Applicant.new(applicant_params),
         normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
-        phone_confirmed: phone_confirmation || false,
+        phone_confirmed: vendor_phone_confirmation || false,
         user: current_user,
         vendor: vendor
       )

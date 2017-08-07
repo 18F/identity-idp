@@ -306,8 +306,8 @@ describe SamlIdpController do
           saml_get_auth(saml_settings)
         end
 
-        it 'deletes SP metadata from session' do
-          expect(session.key?(:sp)).to eq(false)
+        it 'does not delete SP metadata from session' do
+          expect(session.key?(:sp)).to eq(true)
         end
       end
     end

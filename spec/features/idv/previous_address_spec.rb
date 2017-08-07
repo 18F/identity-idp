@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'IdV with previous address filled in' do
+feature 'IdV with previous address filled in', idv_job: true do
   include IdvHelper
 
   let(:bad_zipcode) { '00000' }
@@ -8,7 +8,7 @@ feature 'IdV with previous address filled in' do
   let(:previous_address) { '456 Other Ave' }
 
   def expect_to_stay_on_verify_session_page
-    expect(current_path).to eq verify_session_path
+    expect(current_path).to eq verify_session_result_path
     expect(page).to have_selector("input[value='#{bad_zipcode}']")
   end
 

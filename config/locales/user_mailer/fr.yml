@@ -1,0 +1,28 @@
+---
+fr:
+  user_mailer:
+    contact_link_text: communiquez avec nous
+    email_changed:
+      help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter
+        le %{help_link} de %{app} ou %{contact_link}.
+      intro: L'adresse courriel de votre compte %{app} a été changée.
+    help_link_text: Centre d'aide
+    password_changed:
+      help: Si vous n'avez pas changé votre mot de passe, veuillez visiter le %{help_link}
+        de %{app} ou %{contact_link}.
+      intro: Le mot de passe de votre compte %{app} a été changé.
+    phone_changed:
+      help: Si vous ne souhaitiez pas changer votre numéro de téléphone, veuillez
+        visiter le %{help_link} de %{app} ou %{contact_link}.
+      intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
+      subject: Nouveau numéro de téléphone
+    signup_with_your_email:
+      help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
+        erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.
+      intro: Cette adresse courriel est déjà associée à un compte %{app}, nous ne
+        pouvons donc pas l'utiliser pour créer un nouveau compte. Pour vous connecter
+        à votre compte existant, suivez le lien ci-dessous. Si vous ne tentez pas
+        de vous connecter avec cette adresse courriel, vous pouvez ignorer ce message.
+      link_text: Allez à %{app}
+      reset_password: Si vous ne vous souvenez plus de votre mot de passe, allez à
+        %{app} pour le réinitialiser.
