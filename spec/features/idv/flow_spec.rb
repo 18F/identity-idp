@@ -69,68 +69,6 @@ feature 'IdV session', idv_job: true do
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
     end
 
-    scenario 'allows 3 attempts in 24 hours' do
-      user = sign_in_and_2fa_user
-
-      max_attempts_less_one.times do
-        visit verify_session_path
-        complete_idv_profile_fail
-
-        expect(current_path).to eq verify_session_result_path
-      end
-
-      user.reload
-      expect(user.idv_attempted_at).to_not be_nil
-
-      visit destroy_user_session_url
-      sign_in_and_2fa_user(user)
-
-      visit verify_session_path
-      complete_idv_profile_fail
-
-      expect(page).to have_css('.alert-error', text: t('idv.modal.sessions.heading'))
-
-      visit verify_session_path
-
-      expect(page).to have_content(t('idv.errors.hardfail'))
-      expect(current_url).to eq verify_fail_url
-
-      user.reload
-      expect(user.idv_attempted_at).to_not be_nil
-    end
-
-    scenario 'finance shows failure flash message after max attempts' do
-      sign_in_and_2fa_user
-      visit verify_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-
-      max_attempts_less_one.times do
-        fill_out_financial_form_fail
-        click_idv_continue
-
-        expect(current_path).to eq verify_finance_result_path
-      end
-
-      fill_out_financial_form_fail
-      click_idv_continue
-      expect(page).to have_css('.alert-error', text: t('idv.modal.financials.heading'))
-    end
-
-    scenario 'finance shows failure modal after max attempts', js: true do
-      sign_in_and_2fa_user
-      visit verify_session_path
-      max_attempts_less_one.times do
-        fill_out_idv_form_fail
-        click_idv_continue
-        click_button t('idv.modal.button.warning')
-      end
-
-      fill_out_idv_form_fail
-      click_idv_continue
-      expect(page).to have_css('.modal-fail', text: t('idv.modal.sessions.heading'))
-    end
-
     scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
       user = sign_in_and_2fa_user
 
@@ -424,11 +362,6 @@ feature 'IdV session', idv_job: true do
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
       expect(user.profiles).to be_empty
     end
-  end
-
-  def complete_idv_profile_fail
-    fill_out_idv_form_fail
-    click_button 'Continue'
   end
 
   def click_accordion
