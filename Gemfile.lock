@@ -296,7 +296,7 @@ GEM
     hiredis (0.6.1)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    httparty (0.15.4)
+    httparty (0.15.6)
       multi_xml (>= 0.5.2)
     httpi (2.4.2)
       rack
