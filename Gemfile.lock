@@ -340,7 +340,7 @@ GEM
     lumberjack (1.0.11)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    mail (2.6.5)
+    mail (2.6.6)
       mime-types (>= 1.16, < 4)
     mailcatcher (0.6.5)
       eventmachine (= 1.0.9.1)
@@ -401,7 +401,7 @@ GEM
       addressable
       css_parser (>= 1.4.10)
       htmlentities (>= 4.0.0)
-    premailer-rails (1.9.6)
+    premailer-rails (1.9.7)
       actionmailer (>= 3, < 6)
       premailer (~> 1.7, >= 1.7.9)
     pry (0.10.4)
