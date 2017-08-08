@@ -468,7 +468,7 @@ GEM
       connection_pool (~> 2.1)
       redis (~> 3.0)
     redis (3.3.3)
-    reek (4.7.1)
+    reek (4.7.2)
       codeclimate-engine-rb (~> 0.4.0)
       parser (>= 2.4.0.0, < 2.5)
       rainbow (~> 2.0)
