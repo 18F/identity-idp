@@ -657,7 +657,7 @@ GEM
     xpath (2.1.0)
       nokogiri (~> 1.3)
     zonebie (0.6.1)
-    zxcvbn-js (4.4.2)
+    zxcvbn-js (4.4.3)
       execjs
 
 PLATFORMS
