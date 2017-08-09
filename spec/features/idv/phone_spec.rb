@@ -48,6 +48,23 @@ feature 'Verify phone' do
       expect(SmsOtpSenderJob).to have_received(:perform_later)
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
+
+    scenario 'user cannot re-enter phone step and change phone after confirmation', :idv_job do
+      user = sign_in_and_2fa_user
+
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok
+      click_idv_continue
+      enter_correct_otp_code_for_user(user)
+
+      visit verify_phone_path
+      expect(current_path).to eq(verify_review_path)
+    end
   end
 
   scenario 'phone field only allows numbers', js: true, idv_job: true do

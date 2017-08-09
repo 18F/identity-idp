@@ -25,9 +25,9 @@ describe Verify::PhoneController do
       stub_verify_steps_one_and_two(user)
     end
 
-    context 'when the phone number is the same as the user phone' do
+    context 'when the phone number has been confirmed as user 2FA phone' do
       before do
-        subject.idv_session.params = { phone: user.phone }
+        subject.idv_session.user_phone_confirmation = true
       end
 
       it 'redirects to review when step is complete' do
@@ -38,20 +38,16 @@ describe Verify::PhoneController do
       end
     end
 
-    context 'when the phone number is different from the user phone' do
+    context 'when the phone number has not been confirmed as user 2FA phone' do
       before do
-        subject.idv_session.params = { phone: bad_phone }
+        subject.idv_session.user_phone_confirmation = nil
       end
 
-      it 'redirects to phone confirmation' do
+      it 'redirects renders the form' do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
-        )
+        expect(response).to render_template :new
       end
     end
 
@@ -257,6 +253,7 @@ describe Verify::PhoneController do
         before do
           user.idv_attempts = max_attempts - 1
           user.idv_attempted_at = two_days_ago
+          subject.idv_session.user_phone_confirmation = true
         end
 
         it 'allows and does not affect attempt counter' do

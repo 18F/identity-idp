@@ -50,13 +50,7 @@ module Verify
     end
 
     def phone_confirmation_required?
-      normalized_phone = idv_session.params[:phone]
-      return false if normalized_phone.blank?
-
-      formatted_phone = normalized_phone.phony_formatted(
-        format: :international, normalize: :US, spaces: ' '
-      )
-      formatted_phone != current_user.phone
+      idv_session.user_phone_confirmation != true
     end
 
     def submit_idv_job
@@ -88,7 +82,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to_next_step if idv_session.vendor_phone_confirmation == true
+      redirect_to_next_step if idv_session.user_phone_confirmation == true
     end
 
     def idv_form
