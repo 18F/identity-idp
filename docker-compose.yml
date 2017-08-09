@@ -30,6 +30,7 @@ services:
   redis:
     image: redis
   mailcatcher:
-    image: yappabe/mailcatcher
+    image: rordi/docker-mailcatcher
+    container_name: mailcatcher
     ports:
       - 1080:1080
