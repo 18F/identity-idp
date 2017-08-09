@@ -1,46 +1,35 @@
 .i18n-mobile-toggle,
 .i18n-desktop-toggle {
-  cursor: pointer;
-
   &.focused .caret {
     transform: rotateX(180deg) translateY(-1px);
-  }
-}
-
-.i18n-mobile-dropdown,
-.i18n-desktop-dropdown {
-  &.focused {
-    display: block;
   }
 }
 
 .i18n-mobile-dropdown {
   background-color: $blue-light;
   bottom: 100%;
-  display: none;
   left: 0;
   position: absolute;
   right: 0;
 }
 
 .i18n-desktop-toggle {
-  position: relative;
-  text-decoration: none;
-
   &.focused {
     background-color: $blue;
     border-radius: 0;
     margin-bottom: 0;
     margin-top: 0;
-    padding-bottom: 12px;
-    padding-top: 12px;
+
+    a {
+      padding-bottom: 12px;
+      padding-top: 12px;
+    }
   }
 }
 
 .i18n-desktop-dropdown {
   background-color: $blue;
   bottom: 100%;
-  display: none;
   left: -1px;
   position: absolute;
   width: 194px;
