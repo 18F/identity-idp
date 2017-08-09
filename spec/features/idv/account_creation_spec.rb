@@ -13,4 +13,9 @@ feature 'account creation after LOA3 request', idv_job: true do
     it_behaves_like 'selecting usps address verification method', :saml
     it_behaves_like 'selecting usps address verification method', :oidc
   end
+
+  context 'retries limited by max step attempt limits' do
+    it_behaves_like 'idv max step attempts', :saml
+    it_behaves_like 'idv max step attempts', :oidc
+  end
 end
