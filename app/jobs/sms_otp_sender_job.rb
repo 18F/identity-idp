@@ -17,7 +17,7 @@ class SmsOtpSenderJob < ActiveJob::Base
       to: phone,
       body: I18n.t('jobs.sms_otp_sender_job.message', code: code, app: APP_NAME)
     )
-  rescue Twilio::REST::RequestError => error
+  rescue Twilio::REST::RestError => error
     sanitize_phone_number(error.message)
     raise
   end
