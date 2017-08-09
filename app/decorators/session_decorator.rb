@@ -1,6 +1,9 @@
 class SessionDecorator
   include Rails.application.routes.url_helpers
+  include ActionView::Helpers
+  include ActionView::Helpers::TagHelper
   include LocaleHelper
+  include ContentHelper
 
   def return_to_service_provider_partial
     'shared/null'
@@ -40,5 +43,22 @@ class SessionDecorator
 
   def cancel_link_path
     root_path(locale: locale_url_param)
+  end
+
+  def warning_point_text(app_flow)
+    warning_qualifier = I18n.t("#{app_flow}.cancel.warning_qualifier")
+    warning_qualifier_tag = content_tag(:span, warning_qualifier, class: 'italic')
+
+    warning_point_text_t(app_flow, warning_qualifier_tag)
+  end
+
+  private
+
+  def warning_point_text_t(app_flow, warning_qualifier_tag)
+    warning_point_text = I18n.t(
+      "#{app_flow}.cancel.warning_point_no_sp",
+      warning_qualifier: warning_qualifier_tag
+    )
+    safe_join(split_tag(warning_point_text, warning_qualifier_tag))
   end
 end

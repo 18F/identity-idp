@@ -4,25 +4,28 @@ en:
     buttons:
       activate_by_mail: Activate by mail
       activate_by_phone: Activate by phone
-      cancel: Cancel and return to your profile
-      continue: Continue identity verification
+      cancel: Cancel and return to your account
+      continue: Continue verifying your identity
       continue_plain: Continue
       mail:
         resend: Send another letter
         send: Send a letter
       return_to_account: Return to account
       return_to_sp: Return to %{sp}
+      return_to_verify: "‹ Go back to seeing all options for proving my identity"
       send_confirmation_code: Send confirmation code
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
+      warning_qualifier: may not
+      warning_point: Login.gov won't be able to verify your identity and you %{warning_qualifier}
+        be able to access your information at %{sp_name}.
+      warning_point_no_sp: Login.gov won't be able to verify your identity and you
+        %{warning_qualifier} be able to access your information.
       warning_points:
-      - We won’t be able to verify your identity
-      - We won't keep a record of your name, address, birth date, or Social Security
-        number
-      - You won't be able to securely access your information using login.gov
-      - You’ll still have a login.gov account for your email address
-      - You can manage that account on your profile page
+      - Login.gov won't keep a record of your name, address, birth date, or Social
+        Security number.
+      - You’ll still have a login.gov account.
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
@@ -38,7 +41,8 @@ en:
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         zipcode: 'Your zipcode must be entered in as #####-####'
     form:
-      activate_by_mail: Activate my account by mail.
+      activate_by_mail: Get a code by letter.
+      activate_by_phone: Verify your address by phone.
       address1: Street address 1
       address2: Street address 2 (optional)
       auto_loan: Auto loan account number
@@ -60,7 +64,6 @@ en:
       select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State
-      use_ccn: Provide credit card number >
       use_financial_account: Don't have a credit card?
       zipcode: ZIP Code
     index:
@@ -113,9 +116,10 @@ en:
         again in %{hours} hours.
       hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       finance:
-        disclaimer: By continuing, you agree to let %{app_name} compare the account
-          information you provide with third-party sources in order to verify your
-          identity.
+        disclaimer_qualifier: never
+        disclaimer: By continuing, you agree to allow %{app_name} to compare the account
+          information you provide with trusted third-party sources in order to verify
+          your identity. We will %{disclaimer_qualifier} charge you.
         hint: You can use Mastercard, Visa, Diner's Club, or JCB.
         intro_account: Help us verify your identity by providing an auto loan, mortgage,
           or home equity loan number.
@@ -209,7 +213,7 @@ en:
       intro: Help us identify you
       mail:
         resend: Want another letter?
-        verify: Want a letter?
+        verify: Verify your address by letter
       otp_delivery_method: Get a code by phone
       phone: Phone number of record
       review: Review and submit

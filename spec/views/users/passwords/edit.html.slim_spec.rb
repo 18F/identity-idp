@@ -1,10 +1,13 @@
 require 'rails_helper'
 
 describe 'users/passwords/edit.html.slim' do
+  include DecoratedSessionHelper
+
   before do
     user = User.new
     allow(view).to receive(:current_user).and_return(user)
     @update_user_password_form = UpdateUserPasswordForm.new(user)
+    allow(view).to receive(:decorated_session).and_return(decorated_session)
   end
 
   it 'has a localized title' do

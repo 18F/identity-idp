@@ -25,7 +25,12 @@ p.mt-tiny.mb0
 
       .mb2.mt3
         em
-          = t('idv.messages.finance.disclaimer', app_name: APP_NAME)
+          - disclaimer_qualifier = content_tag(:span,
+            t('idv.messages.finance.disclaimer_qualifier'), class: 'bold')
+          - disclaimer = t('idv.messages.finance.disclaimer',
+            app_name: APP_NAME,
+            disclaimer_qualifier: disclaimer_qualifier)
+          = safe_join(split_tag(split_tag(disclaimer, APP_NAME), disclaimer_qualifier))
 
       = f.button :submit, t('forms.buttons.continue'), class: 'col-6'
 

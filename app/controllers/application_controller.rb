@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   include UserSessionContext
   include VerifyProfileConcern
   include LocaleHelper
+  include ContentHelper
 
   FLASH_KEYS = %w[alert error notice success warning].freeze
 

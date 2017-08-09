@@ -8,7 +8,7 @@ en:
     back_to_sp: Back to %{sp}
     cancel: Cancel
     cancel_account_creation: "‹ Cancel account creation"
-    cancel_idv: "‹ Cancel account verification"
+    cancel_idv: "‹ Cancel identity verification"
     contact: Contact
     copy: Copy
     create_account: Create account

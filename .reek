@@ -79,6 +79,7 @@ TooManyMethods:
     - Idv::Session
     - User
     - Verify::SessionsController
+    - ServiceProviderSessionDecorator
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -107,6 +108,7 @@ UtilityFunction:
     - UserEncryptedAttributeOverrides#create_fingerprint
     - LocaleHelper#locale_url_param
     - IdvSession#timed_out_vendor_error
+    - ContentHelper#split_tag
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false

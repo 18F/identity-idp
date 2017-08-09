@@ -32,7 +32,11 @@ RSpec.describe 'I18n' do
         extract_interpolation_arguments i18n.t(key, locale)
       end.compact
 
-      missing_interpolation_argument_keys.push(key) if interpolation_arguments.uniq.length > 1
+      if interpolation_arguments.uniq.length > 1
+        if [interpolation_arguments.inject(:|)].flatten.length > 1
+          missing_interpolation_argument_keys.push(key)
+        end
+      end
     end
 
     expect(missing_interpolation_argument_keys).to be_empty

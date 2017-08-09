@@ -1,5 +1,4 @@
 - app_flow = idv ? 'idv' : 'sign_up'
-
 #cancel-action-modal.display-none
   = render layout: 'shared/modal_layout' do
     .p3.sm-p4.cntnr-xxskinny.border-box.bg-white.rounded-xxl.lg.modal-warning
@@ -9,6 +8,8 @@
         p.mb1.bold
           = t("#{app_flow}.cancel.warning_header")
         ul.px2.yellow-dots
+          li.mb2
+            = decorated_session.warning_point_text(app_flow)
           - t("#{app_flow}.cancel.warning_points").each do |point|
             li.mb2
               = point

@@ -30,4 +30,7 @@ em
 - if FeatureManagement.enable_usps_verification?
     = render 'verification_options'
 
+div
+  = link_to t('idv.buttons.return_to_verify'), verify_address_path
+
 = render @view_model.modal_partial, view_model: @view_model
