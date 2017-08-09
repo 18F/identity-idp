@@ -43,7 +43,7 @@ describe Verify::PhoneController do
         subject.idv_session.user_phone_confirmation = nil
       end
 
-      it 'redirects renders the form' do
+      it 'renders the form' do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
@@ -132,7 +132,7 @@ describe Verify::PhoneController do
       end
 
       context 'when different from user phone' do
-        it 'redirects to result page and does not set phone_confirmed_at' do
+        it 'redirects to otp page and does not set phone_confirmed_at' do
           user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 

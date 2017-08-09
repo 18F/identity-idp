@@ -162,6 +162,7 @@ feature 'IdV session', idv_job: true do
 
       fill_out_phone_form_ok(good_phone_value)
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
       enter_correct_otp_code_for_user(user)
 
       page.find('.accordion').click
@@ -190,6 +191,7 @@ feature 'IdV session', idv_job: true do
       click_idv_address_choose_phone
       fill_out_phone_form_ok(phone)
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
 
       click_link t('forms.two_factor.try_again')
 
@@ -198,6 +200,7 @@ feature 'IdV session', idv_job: true do
 
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
 
       # Verify that OTP confirmation can't be skipped
       visit verify_review_path
@@ -373,6 +376,7 @@ feature 'IdV session', idv_job: true do
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
 
       click_on t('links.cancel')
 

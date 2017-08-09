@@ -75,6 +75,22 @@ module IdvHelper
     click_link t('idv.buttons.activate_by_mail')
   end
 
+  def choose_idv_otp_delivery_method_sms
+    page.find(
+      'label',
+      text: t('devise.two_factor_authentication.otp_delivery_preference.sms')
+    ).click
+    click_on t('idv.buttons.send_confirmation_code')
+  end
+
+  def choose_idv_otp_delivery_method_voice
+    page.find(
+      'label',
+      text: t('devise.two_factor_authentication.otp_delivery_preference.voice')
+    ).click
+    click_on t('idv.buttons.send_confirmation_code')
+  end
+
   def click_idv_cancel_modal
     within('.modal') do
       click_on t('idv.buttons.cancel')
