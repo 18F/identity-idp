@@ -64,14 +64,15 @@ module ApplicationHelper
   end
 
   def cancel_link_text
+    cancel_link = t('links.cancel')
     if user_unverified_and_in_2fa?
-      t('links.cancel')
+      cancel_link
     elsif user_signing_up?
       t('links.cancel_account_creation')
     elsif user_verifying_identity?
       t('links.cancel_idv')
     else
-      t('links.cancel')
+      cancel_link
     end
   end
 end
