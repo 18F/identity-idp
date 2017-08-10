@@ -33,7 +33,7 @@ module ApplicationHelper
     params[:confirmation_token].present? || (current_user && !current_user.two_factor_enabled?)
   end
 
-  def user_can_exit_early?
+  def user_unverified_and_in_2fa?
     !user_fully_authenticated? && !user_signing_up? && user_verifying_identity?
   end
 
@@ -64,7 +64,7 @@ module ApplicationHelper
   end
 
   def cancel_link_text
-    if user_can_exit_early?
+    if user_unverified_and_in_2fa?
       t('links.cancel')
     elsif user_signing_up?
       t('links.cancel_account_creation')
