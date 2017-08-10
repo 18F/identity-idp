@@ -3,7 +3,7 @@ git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
 ruby '~> 2.3.3'
 
-gem 'rails', '~> 4.2.6'
+gem 'rails', '~> 5.0.0'
 
 gem 'ahoy_matey'
 gem 'american_date'
@@ -74,7 +74,6 @@ group :development do
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
   gem 'overcommit', require: false
-  gem 'quiet_assets'
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
   gem 'rails_layout'
@@ -105,8 +104,8 @@ group :test do
   gem 'poltergeist'
   gem 'rack-test'
   gem 'rack_session_access'
+  gem 'rails-controller-testing'
   gem 'shoulda-matchers', '~> 3.0', require: false
-  gem 'test_after_commit'
   gem 'timecop'
   gem 'webmock'
   gem 'zonebie'

@@ -105,7 +105,6 @@ describe Users::ResetPasswordsController, devise: true do
     context 'user submits invalid new password' do
       it 'renders edit' do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -115,10 +114,7 @@ describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now
         )
-
-        params = { password: 'short', reset_password_token: raw_reset_token }
-        put :update, reset_password_form: params
-
+        form_params = { password: 'short', reset_password_token: raw_reset_token }
         analytics_hash = {
           success: false,
           errors: { password: ['is too short (minimum is 8 characters)'] },
@@ -127,8 +123,10 @@ describe Users::ResetPasswordsController, devise: true do
           confirmed: true,
         }
 
-        expect(@analytics).to have_received(:track_event).
+        expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+
+        put :update, params: { reset_password_form: form_params }
 
         expect(response).to render_template(:edit)
       end

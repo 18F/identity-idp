@@ -122,13 +122,10 @@ describe Users::SessionsController, devise: true do
     end
 
     it 'tracks the timeout' do
+      stub_analytics
       sign_in_as_user
-      current_user = controller.current_user
 
-      analytics = instance_double(Analytics)
-      expect(Analytics).to receive(:new).
-        with(current_user, controller.request).and_return(analytics)
-      expect(analytics).to receive(:track_event).with(Analytics::SESSION_TIMED_OUT)
+      expect(@analytics).to receive(:track_event).with(Analytics::SESSION_TIMED_OUT)
 
       get :timeout
     end
