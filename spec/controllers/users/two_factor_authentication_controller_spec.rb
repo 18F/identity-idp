@@ -19,7 +19,7 @@ describe Users::TwoFactorAuthenticationController do
       before_action :check_already_authenticated
 
       def index
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
@@ -118,7 +118,7 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via SMS' do
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
 
         expect(SmsOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
@@ -148,7 +148,7 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
 
       it 'calls OtpRateLimiter#exceeded_otp_send_limit? and #increment' do
@@ -159,14 +159,16 @@ describe Users::TwoFactorAuthenticationController do
         expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
         expect(otp_rate_limiter).to receive(:increment)
 
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
 
       it 'marks the user as locked out after too many attempts' do
         expect(@user.second_factor_locked_at).to be_nil
 
         (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
-          get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
+          get :send_code, params: {
+            otp_delivery_selection_form: { otp_delivery_preference: 'sms' },
+          }
         end
 
         expect(@user.reload.second_factor_locked_at.to_f).to be_within(0.1).of(Time.zone.now.to_f)
@@ -182,7 +184,9 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'sends OTP via voice' do
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
+        get :send_code, params: {
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+        }
 
         expect(VoiceOtpSenderJob).to have_received(:perform_later).with(
           code: subject.current_user.direct_otp,
@@ -212,7 +216,9 @@ describe Users::TwoFactorAuthenticationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
+        get :send_code, params: {
+          otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
+        }
       end
     end
 
@@ -222,7 +228,9 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'redirects user to choose a valid delivery method' do
-        get :send_code, otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' }
+        get :send_code, params: {
+          otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' },
+        }
 
         expect(response).to redirect_to user_two_factor_authentication_path(reauthn: false)
       end

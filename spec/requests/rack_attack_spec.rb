@@ -17,7 +17,7 @@ xdescribe 'throttling requests' do
 
   describe 'high requests per ip' do
     it 'reads the limit and period from ENV vars' do
-      get '/', {}, 'REMOTE_ADDR' => '1.2.3.4'
+      get '/', params: {}, headers: { 'REMOTE_ADDR' => '1.2.3.4' }
 
       data = {
         count: 1,
@@ -31,7 +31,7 @@ xdescribe 'throttling requests' do
     context 'when the number of requests is lower than the limit' do
       it 'does not throttle' do
         2.times do
-          get '/', {}, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+          get '/', params: {}, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         end
 
         expect(last_response.status).to_not eq(429)
@@ -41,7 +41,7 @@ xdescribe 'throttling requests' do
     context 'when the request is for an asset' do
       it 'does not throttle' do
         4.times do
-          get '/assets/application.js', {}, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+          get '/assets/application.js', params: {}, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         end
 
         expect(last_response.status).to_not eq(429)
@@ -53,7 +53,7 @@ xdescribe 'throttling requests' do
         allow(Rails.logger).to receive(:warn)
 
         4.times do
-          get '/', {}, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+          get '/', params: {}, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         end
       end
 
@@ -85,7 +85,13 @@ xdescribe 'throttling requests' do
 
   describe 'logins per ip' do
     it 'reads the limit and period from ENV vars' do
-      post '/', { user: { email: 'test@example.com' } }, 'REMOTE_ADDR' => '1.2.3.4'
+      post(
+        '/',
+        params: {
+          user: { email: 'test@example.com' },
+        },
+        headers: { 'REMOTE_ADDR' => '1.2.3.4' }
+      )
 
       data = {
         count: 1,
@@ -98,7 +104,9 @@ xdescribe 'throttling requests' do
 
     it 'uses an exponential backoff' do
       3.times do
-        post '/', { user: { email: 'test@example.com' } }, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+        post '/', params: {
+          user: { email: 'test@example.com' },
+        }, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         Timecop.travel(120.seconds)
       end
 
@@ -118,7 +126,9 @@ xdescribe 'throttling requests' do
     context 'when the number of requests is lower than the limit' do
       it 'does not throttle' do
         2.times do
-          post '/', { user: { email: 'test@example.com' } }, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+          post '/', params: {
+            user: { email: 'test@example.com' },
+          }, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         end
 
         expect(last_response.status).to_not eq(429)
@@ -130,7 +140,7 @@ xdescribe 'throttling requests' do
         expect(Rails.logger).to_not receive(:warn)
 
         3.times do
-          get '/', {}, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+          get '/', params: {}, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         end
       end
     end
@@ -140,7 +150,9 @@ xdescribe 'throttling requests' do
         allow(Rails.logger).to receive(:warn)
 
         3.times do
-          post '/', { user: { email: 'test@example.com' } }, 'HTTP_X_FORWARDED_FOR' => '1.2.3.4'
+          post '/', params: {
+            user: { email: 'test@example.com' },
+          }, headers: { 'HTTP_X_FORWARDED_FOR' => '1.2.3.4' }
         end
       end
 
@@ -192,14 +204,16 @@ xdescribe 'throttling requests' do
       # sign in with first user and have them trigger the throttle
       post(
         new_user_session_path,
-        'user[email]' => user.email,
-        'user[password]' => user.password
+        params: {
+          'user[email]' => user.email,
+          'user[password]' => user.password,
+        }
       )
 
       get(
         '/otp/send',
-        { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
-        'REMOTE_ADDR' => '1.2.3.4'
+        params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
+        headers: { 'REMOTE_ADDR' => '1.2.3.4' }
       )
 
       expect(last_response.status).to eq 302
@@ -207,8 +221,8 @@ xdescribe 'throttling requests' do
       over_maxretry_limit.times do
         get(
           '/otp/send',
-          { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
-          'REMOTE_ADDR' => '1.2.3.4'
+          params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
+          headers: { 'REMOTE_ADDR' => '1.2.3.4' }
         )
       end
 
@@ -229,14 +243,16 @@ xdescribe 'throttling requests' do
       # on the phone number
       post(
         new_user_session_path,
-        'user[email]' => second_user_with_same_number.email,
-        'user[password]' => second_user_with_same_number.password
+        params: {
+          'user[email]' => second_user_with_same_number.email,
+          'user[password]' => second_user_with_same_number.password,
+        }
       )
 
       get(
         '/otp/send',
-        { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
-        'REMOTE_ADDR' => '1.2.3.5'
+        params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } },
+        headers: { 'REMOTE_ADDR' => '1.2.3.5' }
       )
 
       analytics_hash = {

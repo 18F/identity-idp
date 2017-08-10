@@ -6,7 +6,7 @@ describe ReauthnRequiredController do
   describe '#confirm_recently_authenticated' do
     controller do
       def show
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 

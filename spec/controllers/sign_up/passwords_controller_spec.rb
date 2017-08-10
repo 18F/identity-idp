@@ -17,7 +17,10 @@ describe SignUp::PasswordsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::PASSWORD_CREATION, analytics_hash)
 
-      post :create, password_form: { password: 'NewVal!dPassw0rd' }, confirmation_token: token
+      post :create, params: {
+        password_form: { password: 'NewVal!dPassw0rd' },
+        confirmation_token: token,
+      }
 
       user.reload
       expect(user.valid_password?('NewVal!dPassw0rd')).to eq true
@@ -40,7 +43,7 @@ describe SignUp::PasswordsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::PASSWORD_CREATION, analytics_hash)
 
-      post :create, password_form: { password: 'NewVal' }, confirmation_token: token
+      post :create, params: { password_form: { password: 'NewVal' }, confirmation_token: token }
     end
   end
 end

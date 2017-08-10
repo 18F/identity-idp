@@ -13,7 +13,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(subject.current_user).to receive(:authenticate_totp).and_return(true)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
-        post :create, code: generate_totp_code(@secret)
+        post :create, params: { code: generate_totp_code(@secret) }
 
         expect(response).to redirect_to account_path
       end
@@ -24,7 +24,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
           attributes: { second_factor_attempts_count: 1 }
         ).call
 
-        post :create, code: generate_totp_code(@secret)
+        post :create, params: { code: generate_totp_code(@secret) }
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
@@ -38,7 +38,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         }
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
 
-        post :create, code: generate_totp_code(@secret)
+        post :create, params: { code: generate_totp_code(@secret) }
       end
     end
 
@@ -47,7 +47,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         sign_in_before_2fa
         @secret = subject.current_user.generate_totp_secret
         subject.current_user.otp_secret_key = @secret
-        post :create, code: 'abc'
+        post :create, params: { code: 'abc' }
       end
 
       it 'increments second_factor_attempts_count' do
@@ -81,7 +81,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        post :create, code: '12345'
+        post :create, params: { code: '12345' }
       end
     end
 
@@ -101,7 +101,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
       describe 'when user submits an invalid TOTP' do
         before do
-          post :create, code: '12345'
+          post :create, params: { code: '12345' }
         end
 
         it 'resets attempts count' do
@@ -115,7 +115,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
 
       describe 'when user submits a valid TOTP' do
         before do
-          post :create, code: generate_totp_code(@secret)
+          post :create, params: { code: generate_totp_code(@secret) }
         end
 
         it 'resets attempts count' do
@@ -131,7 +131,7 @@ describe TwoFactorAuthentication::TotpVerificationController do
     context 'when the user does not have an authenticator app enabled' do
       it 'redirects to user_two_factor_authentication_path' do
         stub_sign_in_before_2fa
-        post :create, code: '123456'
+        post :create, params: { code: '123456' }
 
         expect(response).to redirect_to user_two_factor_authentication_path
       end

@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe 'CORS headers for OpenID Connect endpoints' do
   describe 'configuration endpoint' do
     it 'sets CORS headers to allow all origins' do
-      get openid_connect_configuration_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+      get openid_connect_configuration_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
 
       aggregate_failures do
         expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
@@ -14,7 +14,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
   describe 'certs endpoint' do
     it 'sets CORS headers to allow all origins' do
-      get api_openid_connect_certs_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+      get api_openid_connect_certs_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
 
       aggregate_failures do
         expect(response).to be_ok
@@ -26,7 +26,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
   describe 'token endpoint' do
     it 'responds to POST requests with the right CORS headers' do
-      post api_openid_connect_token_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+      post api_openid_connect_token_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
 
       aggregate_failures do
         expect(response).to_not be_not_found
@@ -55,7 +55,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
   describe 'userinfo endpoint' do
     it 'sets CORS headers to allow all origins' do
-      get api_openid_connect_userinfo_path, nil, 'HTTP_ORIGIN' => 'https://example.com'
+      get api_openid_connect_userinfo_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
 
       aggregate_failures do
         expect(response).to_not be_not_found

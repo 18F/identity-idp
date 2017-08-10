@@ -145,7 +145,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
-      post :create, user: { email: user.email.upcase, password: user.password }
+      post :create, params: { user: { email: user.email.upcase, password: user.password } }
     end
 
     it 'tracks the unsuccessful authentication for existing user' do
@@ -161,7 +161,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
-      post :create, user: { email: user.email.upcase, password: 'invalid_password' }
+      post :create, params: { user: { email: user.email.upcase, password: 'invalid_password' } }
     end
 
     it 'tracks the authentication attempt for nonexistent user' do
@@ -175,7 +175,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
-      post :create, user: { email: 'foo@example.com', password: 'password' }
+      post :create, params: { user: { email: 'foo@example.com', password: 'password' } }
     end
 
     it 'tracks unsuccessful authentication for locked out user' do
@@ -195,7 +195,7 @@ describe Users::SessionsController, devise: true do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
-      post :create, user: { email: user.email.upcase, password: user.password }
+      post :create, params: { user: { email: user.email.upcase, password: user.password } }
     end
 
     context 'LOA1 user' do
@@ -209,7 +209,7 @@ describe Users::SessionsController, devise: true do
         expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
         expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
 
-        post :create, user: { email: user.email.upcase, password: user.password }
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
     end
 
@@ -228,7 +228,7 @@ describe Users::SessionsController, devise: true do
         expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
         expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
 
-        post :create, user: { email: user.email.upcase, password: user.password }
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
 
       it 'caches unverified PII pending confirmation' do
@@ -239,7 +239,7 @@ describe Users::SessionsController, devise: true do
           user: user, pii: { ssn: '1234' }
         )
 
-        post :create, user: { email: user.email.upcase, password: user.password }
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
         expect(controller.user_session[:decrypted_pii]).to match '1234'
       end
@@ -248,7 +248,7 @@ describe Users::SessionsController, devise: true do
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        post :create, user: { email: user.email.upcase, password: user.password }
+        post :create, params: { user: { email: user.email.upcase, password: user.password } }
 
         expect(controller.user_session[:decrypted_pii]).to match '1234'
       end
@@ -275,7 +275,7 @@ describe Users::SessionsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
 
-        post :create, user: { email: user.email, password: user.password }
+        post :create, params: { user: { email: user.email, password: user.password } }
 
         expect(controller.user_session[:decrypted_pii]).to be_nil
         expect(profile.reload).to_not be_active

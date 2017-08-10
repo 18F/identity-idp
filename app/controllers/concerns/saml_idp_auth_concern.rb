@@ -19,7 +19,7 @@ module SamlIdpAuthConcern
     return if @result.success?
 
     analytics.track_event(Analytics::SAML_AUTH, @result.to_h)
-    render nothing: true, status: :unauthorized
+    head :unauthorized
   end
 
   def store_saml_request

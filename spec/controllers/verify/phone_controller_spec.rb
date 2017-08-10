@@ -70,7 +70,7 @@ describe Verify::PhoneController do
       end
 
       it 'renders #new' do
-        put :create, idv_phone_form: { phone: '703', international_code: 'US' }
+        put :create, params: { idv_phone_form: { phone: '703', international_code: 'US' } }
 
         expect(flash[:warning]).to be_nil
         expect(subject.idv_session.params).to be_empty
@@ -79,7 +79,7 @@ describe Verify::PhoneController do
       it 'tracks form error and does not make a vendor API call' do
         expect(Idv::PhoneValidator).to_not receive(:new)
 
-        put :create, idv_phone_form: { phone: '703' }
+        put :create, params: { idv_phone_form: { phone: '703' } }
 
         result = {
           success: false,
@@ -105,7 +105,7 @@ describe Verify::PhoneController do
         user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
         stub_verify_steps_one_and_two(user)
 
-        put :create, idv_phone_form: { phone: good_phone, international_code: 'US' }
+        put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
         result = { success: true, errors: {} }
 
@@ -119,7 +119,7 @@ describe Verify::PhoneController do
           user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
-          put :create, idv_phone_form: { phone: good_phone, international_code: 'US' }
+          put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
           expect(response).to redirect_to verify_phone_result_path
 
@@ -136,7 +136,7 @@ describe Verify::PhoneController do
           user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
-          put :create, idv_phone_form: { phone: good_phone, international_code: 'US' }
+          put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
           expect(response).to redirect_to verify_phone_result_path
 
@@ -275,7 +275,7 @@ describe Verify::PhoneController do
           vendor_params: normalized_phone
         ).and_call_original
 
-        put :create, idv_phone_form: { phone: good_phone }
+        put :create, params: { idv_phone_form: { phone: good_phone } }
       end
     end
   end

@@ -4,7 +4,7 @@ describe PagesController do
   describe 'analytics' do
     controller do
       def index
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
@@ -28,7 +28,7 @@ describe PagesController do
   describe 'content expiry' do
     controller do
       def index
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 

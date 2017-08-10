@@ -66,7 +66,7 @@ describe Users::VerifyPasswordController do
         context 'with valid password' do
           before do
             allow(form).to receive(:submit).and_return(response_ok)
-            put :update, user: { password: user.password }
+            put :update, params: { user: { password: user.password } }
           end
 
           it 'redirects to the account page' do
@@ -82,7 +82,7 @@ describe Users::VerifyPasswordController do
           it 'renders the new template' do
             allow(form).to receive(:submit).and_return(response_bad)
 
-            put :update, user: { password: user.password }
+            put :update, params: { user: { password: user.password } }
 
             expect(response).to render_template(:new)
           end

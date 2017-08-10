@@ -85,7 +85,7 @@ module Idv
 
       return if date && dob_in_the_past?(date)
 
-      errors.set :dob, [I18n.t('idv.errors.bad_dob')]
+      errors.add :dob, I18n.t('idv.errors.bad_dob')
     end
 
     def dob_in_the_past?(date)
