@@ -16,7 +16,8 @@ footer.footer.bg-light-blue.sm-bg-navy
       ul.list-reset.mb0.white.center
         - I18n.available_locales.each do |locale|
           li.border-bottom
-            = link_to t("i18n.locale.#{locale}"), { locale: locale },
+            = link_to t("i18n.locale.#{locale}"),
+              request.query_parameters.merge(locale: locale),
               class: 'block py-12p px2 text-decoration-none blue fs-13p'
 
   .container.py1.px2.lg-px0(class="#{'sm-py0' if show_language_dropdown}")
@@ -36,8 +37,9 @@ footer.footer.bg-light-blue.sm-bg-navy
               ul.i18n-desktop-dropdown.list-reset.mb0.white.display-none
                 - I18n.available_locales.each do |locale|
                   li.border-bottom.border-navy
-                    = link_to t("i18n.locale.#{locale}"), { locale: locale },
-                    class: 'block pl-24p py2 text-decoration-none white'
+                    = link_to t("i18n.locale.#{locale}"),
+                      request.query_parameters.merge(locale: locale),
+                      class: 'block pl-24p py2 text-decoration-none white'
         = link_to t('links.help'), MarketingSite.help_url,
           class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank'
         = link_to t('links.contact'), MarketingSite.contact_url,
