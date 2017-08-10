@@ -74,7 +74,6 @@ group :development do
   gem 'fasterer', require: false
   gem 'guard-rspec', require: false
   gem 'overcommit', require: false
-  gem 'quiet_assets'
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
   gem 'rails_layout'
