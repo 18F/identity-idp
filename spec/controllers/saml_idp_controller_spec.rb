@@ -829,10 +829,10 @@ describe SamlIdpController do
       expect(subject).to have_actions(
         :before,
         :disable_caching,
-        [:validate_saml_request, only: :auth],
-        [:validate_service_provider_and_authn_context, only: :auth],
-        [:store_saml_request, only: :auth],
-        [:add_sp_metadata_to_session, only: :auth]
+        :validate_saml_request,
+        :validate_service_provider_and_authn_context,
+        :store_saml_request,
+        :add_sp_metadata_to_session
       )
     end
   end

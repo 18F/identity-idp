@@ -37,9 +37,12 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
     end
 
     it 'responds to OPTIONS requests with the right CORS headers' do
-      reset!
-      integration_session.__send__ :process, 'OPTIONS', api_openid_connect_token_path, nil,
-                                   'HTTP_ORIGIN' => 'https://example.com'
+      process(
+        :options,
+        api_openid_connect_token_path,
+        params: {},
+        headers: { 'HTTP_ORIGIN' => 'https://example.com' }
+      )
 
       aggregate_failures do
         expect(response).to be_ok
