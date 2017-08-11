@@ -11,7 +11,9 @@ module SamlIdpAuthConcern
   private
 
   def validate_service_provider_and_authn_context
-    @result = SamlRequestValidator.new.call(
+    @saml_request_validator = SamlRequestValidator.new
+
+    @result = @saml_request_validator.call(
       service_provider: current_service_provider,
       authn_context: requested_authn_context
     )
@@ -19,7 +21,7 @@ module SamlIdpAuthConcern
     return if @result.success?
 
     analytics.track_event(Analytics::SAML_AUTH, @result.to_h)
-    head :unauthorized
+    render 'saml_idp/auth/error', status: :bad_request
   end
 
   def store_saml_request
