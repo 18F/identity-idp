@@ -23,7 +23,7 @@ fr:
           password: Nouveau mot de passe
       show: Afficher le mot de passe
     personal_key:
-      alternative: NOT TRANSLATED YET
+      alternative: Vous n'avez pas votre clé personnelle?
       confirmation_label: Clé personnelle
       instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
         en l'entrant ci-dessous.
