@@ -3,17 +3,23 @@ fr:
   instructions:
     account:
       reactivate:
-        begin: NOT TRANSLATED YET
-        explanation: NOT TRANSLATED YET
-        intro: NOT TRANSLATED YET
+        begin: Démarrons.
+        explanation: 'Lorsque vous avez créé votre compte, nous vous avons donné une
+          liste de mots et vous avons demandé de les placer en lieu sûr. La liste
+          était similaire à ceci:'
+        intro: Nous en faisons un peu plus pour garder votre information sécurisée
+          et confidentielle, alors réinitialiser votre mot de passe demande un peu
+          plus d'effort.
         modal:
-          copy: NOT TRANSLATED YET
-          heading: NOT TRANSLATED YET
-        with_key: NOT TRANSLATED YET
+          copy: Si vous n'avez pas votre clé personnelle, vous devrez vérifier votre
+            identité de nouveau.
+          heading: Vous n'avez pas votre clé personnelle?
+        with_key: Vous n'avez pas votre clé personnelle?
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.
-    go_back_to_mobile_app: NOT TRANSLATED YET
+    go_back_to_mobile_app: Pour continuer, veuillez retourner à l'application %{friendly_name}
+      et vous connecter.
     mfa:
       authenticator:
         accordion_header: Balayez le code avec votre appareil mobile
