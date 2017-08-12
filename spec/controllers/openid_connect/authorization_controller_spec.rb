@@ -16,7 +16,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
   end
 
   describe '#index' do
-    subject(:action) { get :index, params }
+    subject(:action) { get :index, params: params }
 
     context 'user is signed in' do
       let(:user) { create(:user, :signed_up) }

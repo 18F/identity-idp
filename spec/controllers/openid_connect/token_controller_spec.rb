@@ -6,10 +6,12 @@ RSpec.describe OpenidConnect::TokenController do
   describe '#create' do
     subject(:action) do
       post :create,
-           grant_type: grant_type,
-           code: code,
-           client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
-           client_assertion: client_assertion
+           params: {
+             grant_type: grant_type,
+             code: code,
+             client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
+             client_assertion: client_assertion,
+           }
     end
 
     let(:user) { create(:user) }

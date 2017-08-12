@@ -17,7 +17,7 @@ describe 'IdvStepConcern' do
       before_action :confirm_idv_attempts_allowed
 
       def show
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
@@ -79,7 +79,7 @@ describe 'IdvStepConcern' do
       before_action :confirm_idv_session_started
 
       def show
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
@@ -121,7 +121,7 @@ describe 'IdvStepConcern' do
       before_action :confirm_idv_needed
 
       def show
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 

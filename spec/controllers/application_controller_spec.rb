@@ -4,7 +4,7 @@ describe ApplicationController do
   describe '#disable_caching' do
     controller do
       def index
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
@@ -57,7 +57,7 @@ describe ApplicationController do
       before_action :confirm_two_factor_authenticated
 
       def index
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
@@ -147,13 +147,13 @@ describe ApplicationController do
       prepend_before_action :session_expires_at
 
       def index
-        render text: 'Hello'
+        render plain: 'Hello'
       end
     end
 
     context 'when URL contains the host parameter' do
       it 'does not redirect to the host' do
-        get :index, timeout: true, host: 'www.monfresh.com'
+        get :index, params: { timeout: true, host: 'www.monfresh.com' }
 
         expect(response.header['Location']).to_not match 'www.monfresh.com'
       end
@@ -161,7 +161,7 @@ describe ApplicationController do
 
     context 'when URL does not contain the timeout parameter' do
       it 'does not redirect anywhere' do
-        get :index, host: 'www.monfresh.com'
+        get :index, params: { host: 'www.monfresh.com' }
 
         expect(response).to_not be_redirect
       end
@@ -169,7 +169,7 @@ describe ApplicationController do
 
     context 'when URL contains the request_id parameter' do
       it 'preserves the request_id parameter' do
-        get :index, timeout: true, request_id: '123'
+        get :index, params: { timeout: true, request_id: '123' }
 
         expect(response.header['Location']).to match '123'
       end

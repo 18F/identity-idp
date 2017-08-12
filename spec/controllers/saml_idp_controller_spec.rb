@@ -29,23 +29,25 @@ describe SamlIdpController do
         )
         sign_in user
 
-        post :logout, SAMLResponse: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4' \
-                                    '8c2FtbDJwOkxvZ291dFJlc3BvbnNlIHhtbG5zOnNhbWwycD0idX' \
-                                    'JuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnByb3RvY29sIiBEZ' \
-                                    'XN0aW5hdGlvbj0iaHR0cHM6Ly9teWFjY291bnQudXNjaXMuZGhz' \
-                                    'Lmdvdi9hcGkvc2FtbC9sb2dvdXQiIElEPSJhMzZkYWloNWNqYmo' \
-                                    'zMWI5NDYwZGJiajNqZDQ2N2I0IiBJblJlc3BvbnNlVG89Il81Zj' \
-                                    'dlYjU3MC01YjQ3LTRhMzAtYjUzNi0yY2YyOThhY2NmNmYiIElzc' \
-                                    '3VlSW5zdGFudD0iMjAxNS0xMi0wMlQxNToyNzo0OS4zNzFaIiBW' \
-                                    'ZXJzaW9uPSIyLjAiPjxzYW1sMjpJc3N1ZXIgeG1sbnM6c2FtbDI' \
-                                    '9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb2' \
-                                    '4iPmV4dGVybmFsYXBwX3ByXzMwYTwvc2FtbDI6SXNzdWVyPjxzY' \
-                                    'W1sMnA6U3RhdHVzPjxzYW1sMnA6U3RhdHVzQ29kZSBWYWx1ZT0i' \
-                                    'dXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnN0YXR1czpVbmt' \
-                                    'ub3duUHJpbmNpcGFsIi8+PHNhbWwycDpTdGF0dXNNZXNzYWdlPk' \
-                                    '5vIHVzZXIgaXMgbG9nZ2VkIGluPC9zYW1sMnA6U3RhdHVzTWVzc' \
-                                    '2FnZT48L3NhbWwycDpTdGF0dXM+PC9zYW1sMnA6TG9nb3V0UmVz' \
-                                        'cG9uc2U+'
+        post :logout, params: {
+          SAMLResponse: 'PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4' \
+                        '8c2FtbDJwOkxvZ291dFJlc3BvbnNlIHhtbG5zOnNhbWwycD0idX' \
+                        'JuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnByb3RvY29sIiBEZ' \
+                        'XN0aW5hdGlvbj0iaHR0cHM6Ly9teWFjY291bnQudXNjaXMuZGhz' \
+                        'Lmdvdi9hcGkvc2FtbC9sb2dvdXQiIElEPSJhMzZkYWloNWNqYmo' \
+                        'zMWI5NDYwZGJiajNqZDQ2N2I0IiBJblJlc3BvbnNlVG89Il81Zj' \
+                        'dlYjU3MC01YjQ3LTRhMzAtYjUzNi0yY2YyOThhY2NmNmYiIElzc' \
+                        '3VlSW5zdGFudD0iMjAxNS0xMi0wMlQxNToyNzo0OS4zNzFaIiBW' \
+                        'ZXJzaW9uPSIyLjAiPjxzYW1sMjpJc3N1ZXIgeG1sbnM6c2FtbDI' \
+                        '9InVybjpvYXNpczpuYW1lczp0YzpTQU1MOjIuMDphc3NlcnRpb2' \
+                        '4iPmV4dGVybmFsYXBwX3ByXzMwYTwvc2FtbDI6SXNzdWVyPjxzY' \
+                        'W1sMnA6U3RhdHVzPjxzYW1sMnA6U3RhdHVzQ29kZSBWYWx1ZT0i' \
+                        'dXJuOm9hc2lzOm5hbWVzOnRjOlNBTUw6Mi4wOnN0YXR1czpVbmt' \
+                        'ub3duUHJpbmNpcGFsIi8+PHNhbWwycDpTdGF0dXNNZXNzYWdlPk' \
+                        '5vIHVzZXIgaXMgbG9nZ2VkIGluPC9zYW1sMnA6U3RhdHVzTWVzc' \
+                        '2FnZT48L3NhbWwycDpTdGF0dXM+PC9zYW1sMnA6TG9nb3V0UmVz' \
+                        'cG9uc2U+',
+        }
         expect(response).to redirect_to root_url
       end
     end

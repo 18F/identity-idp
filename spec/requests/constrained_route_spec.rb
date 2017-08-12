@@ -2,15 +2,15 @@ require 'rails_helper'
 
 describe 'routes that require admin + 2FA' do
   def sign_in_user(user)
-    post_via_redirect(
+    post(
       new_user_session_path,
-      'user[email]' => user.email,
-      'user[password]' => user.password
+      params: { user: { email: user.email, password: user.password } }
     )
-    get_via_redirect otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
-    post_via_redirect(
-      login_two_factor_path(otp_delivery_preference: 'sms'),
-      'code' => user.reload.direct_otp
+    get otp_send_path, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+    follow_redirect!
+    post(
+      login_two_factor_path,
+      params: { otp_delivery_preference: 'sms', code: user.reload.direct_otp }
     )
   end
 
@@ -31,10 +31,9 @@ describe 'routes that require admin + 2FA' do
       it 'prompts admin to 2FA' do
         user = create(:user, :signed_up, :admin)
 
-        post_via_redirect(
+        post(
           new_user_session_path,
-          'user[email]' => user.email,
-          'user[password]' => user.password
+          params: { user: { email: user.email, password: user.password } }
         )
 
         get endpoint

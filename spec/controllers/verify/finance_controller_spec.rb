@@ -41,7 +41,7 @@ describe Verify::FinanceController do
     context 'when form is invalid' do
       context 'when finance_account is missing' do
         it 'renders #new' do
-          put :create, idv_finance_form: { foo: 'bar' }
+          put :create, params: { idv_finance_form: { foo: 'bar' } }
 
           expect(response).to render_template :new
           expect(flash[:warning]).to be_nil
@@ -51,7 +51,7 @@ describe Verify::FinanceController do
 
       context 'when finance_type is invalid' do
         it 'renders #new with error' do
-          put :create, idv_finance_form: { finance_type: 'foo', finance_account: '123' }
+          put :create, params: { idv_finance_form: { finance_type: 'foo', finance_account: '123' } }
 
           expect(response).to render_template :new
           expect(flash[:warning]).to be_nil
@@ -61,7 +61,7 @@ describe Verify::FinanceController do
 
       context 'when finance_type is ccn' do
         it 'renders verify/finance/new with error' do
-          put :create, idv_finance_form: { finance_type: 'ccn', finance_account: 'abc' }
+          put :create, params: { idv_finance_form: { finance_type: 'ccn', finance_account: 'abc' } }
 
           expect(response).to render_template :new
           expect(flash[:warning]).to be_nil
@@ -72,7 +72,9 @@ describe Verify::FinanceController do
       %w[mortgage auto_loan home_equity_line].each do |finance_type|
         context "when finance_type is #{finance_type}" do
           it 'renders verify/finance_other/new with error' do
-            put :create, idv_finance_form: { finance_type: finance_type, finance_account: 'abc' }
+            put :create, params: {
+              idv_finance_form: { finance_type: finance_type, finance_account: 'abc' },
+            }
 
             expect(response).to render_template :new
             expect(flash[:warning]).to be_nil
@@ -87,7 +89,7 @@ describe Verify::FinanceController do
 
         allow(Idv::FinancialsValidator).to receive(:new)
 
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '123' }
+        put :create, params: { idv_finance_form: { finance_type: :ccn, ccn: '123' } }
 
         result = {
           success: false,
@@ -103,7 +105,7 @@ describe Verify::FinanceController do
 
     context 'when form is valid' do
       it 'redirects to the show page' do
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+        put :create, params: { idv_finance_form: { finance_type: :ccn, ccn: '12345678' } }
 
         expect(response).to redirect_to(verify_finance_result_path)
       end
@@ -112,7 +114,7 @@ describe Verify::FinanceController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        put :create, idv_finance_form: { finance_type: :ccn, ccn: '12345678' }
+        put :create, params: { idv_finance_form: { finance_type: :ccn, ccn: '12345678' } }
 
         result = {
           success: true,
