@@ -8,6 +8,12 @@ module SamlRequestMacros
     CGI.unescape(auth_url.split("=").last)
   end
 
+  def make_invalid_saml_request(requested_saml_acs_url = "https://foo.example.com/saml/consume")
+    auth_request = OneLogin::RubySaml::Authrequest.new
+    auth_url = auth_request.create(invalid_saml_settings)
+    CGI.unescape(auth_url.split("=").last)
+  end
+
   def make_saml_logout_request(requested_saml_logout_url = 'https://foo.example.com/saml/logout')
     request_builder = SamlIdp::LogoutRequestBuilder.new(
       'some_response_id',
@@ -42,6 +48,12 @@ module SamlRequestMacros
       digest_method: 'http://www.w3.org/2001/04/xmlenc#sha256',
       signature_method: 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'
     }
+    settings
+  end
+
+  def invalid_saml_settings(saml_acs_url = "https://foo.example.com/saml/consume")
+    settings = saml_settings.dup
+    settings.issuer = ''
     settings
   end
 

@@ -20,7 +20,7 @@ module SamlIdp
 
     def validate_saml_request(raw_saml_request = params[:SAMLRequest])
       decode_request(raw_saml_request)
-      render nothing: true, status: :forbidden unless valid_saml_request?
+      head :forbidden unless valid_saml_request?
     end
 
     def decode_request(raw_saml_request)
