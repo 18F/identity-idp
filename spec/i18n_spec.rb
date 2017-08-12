@@ -57,7 +57,7 @@ RSpec.describe 'I18n' do
       end
 
       it 'is formatted as normalized YAML (run scripts/normalize-yaml)' do
-        normalized_yaml = YAML.dump(YamlNormalizer.chomp_each(YAML.load_file(full_path)))
+        normalized_yaml = YAML.dump(YamlNormalizer.handle_hash(YAML.load_file(full_path)))
 
         expect(File.read(full_path)).to eq(normalized_yaml)
       end

@@ -7,20 +7,8 @@ class YamlNormalizer
     argv.each do |file|
       $stderr.puts file
       data = YAML.load_file(file)
-      chomp_each(data)
+      handle_hash(data)
       dump(file, data)
-    end
-  end
-
-  def self.chomp_each(hash)
-    hash.each do |_key, value|
-      if value.is_a?(String)
-        trim(value)
-      elsif value.is_a?(Array)
-        strip_array(value)
-      elsif value
-        chomp_each(value)
-      end
     end
   end
 
@@ -28,8 +16,26 @@ class YamlNormalizer
     File.open(file, 'w') { |io| io.puts YAML.dump(data) }
   end
 
-  def self.strip_array(value)
-    value.each { |str| trim(str) if str }
+  def self.handle_hash(hash)
+    hash.each do |_key, value|
+      handle_value(value)
+    end
+  end
+
+  def self.handle_array(array)
+    array.each { |value| handle_value(value) }
+  end
+
+  def self.handle_value(value)
+    if value.is_a?(String)
+      trim(value)
+    elsif value.is_a?(Array)
+      handle_array(value)
+    elsif value.kind_of?(Hash)
+      handle_hash(value)
+    elsif value
+      raise ArgumentError, "unknown YAML value #{value}"
+    end
   end
 
   def self.trim(str)
