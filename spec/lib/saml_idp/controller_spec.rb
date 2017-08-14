@@ -11,6 +11,9 @@ describe SamlIdp::Controller do
     @params ||= {}
   end
 
+  def head(status, options = {})
+  end
+
   it "should find the SAML ACS URL" do
     requested_saml_acs_url = "https://example.com/saml/consume"
     params[:SAMLRequest] = make_saml_request(requested_saml_acs_url)
@@ -111,4 +114,13 @@ describe SamlIdp::Controller do
     end
   end
 
+  context 'invalid SAML Request' do
+    it 'returns headers only with a forbidden status' do
+      params[:SAMLRequest] = make_invalid_saml_request
+
+      expect(self).to receive(:head).with(:forbidden)
+
+      validate_saml_request
+    end
+  end
 end
