@@ -12,6 +12,7 @@ fr:
         send: Envoyer une lettre
       return_to_account: NOT TRANSLATED YET
       return_to_sp: NOT TRANSLATED YET
+      send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
       warning_header: Si vous annulez maintenant
@@ -136,6 +137,8 @@ fr:
         façon dont nous vérifions votre compte.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
+      otp_delivery_method:
+        phone_number_html: NOT TRANSLATED YET
       personal_details_verified: Information personnelle vérifiée!
       personal_key: Il s'agit de votre nouvelle clé personnelle. Notez-la et conservez-la
         dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot
@@ -223,6 +226,7 @@ fr:
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
+      otp_delivery_method: NOT TRANSLATED YET
       phone: Numéro de téléphone enregistré
       review: Réviser et soumettre
       select_verification: Activer votre compte

@@ -2,7 +2,13 @@ require 'rails_helper'
 
 describe OtpDeliverySelectionForm do
   let(:phone_to_deliver_to) { '+1 (202) 555-1234' }
-  subject { OtpDeliverySelectionForm.new(build_stubbed(:user), phone_to_deliver_to) }
+  subject do
+    OtpDeliverySelectionForm.new(
+      build_stubbed(:user),
+      phone_to_deliver_to,
+      'authentication'
+    )
+  end
 
   describe 'otp_delivery_preference inclusion validation' do
     it 'is invalid when otp_delivery_preference is neither sms nor voice' do
@@ -21,6 +27,7 @@ describe OtpDeliverySelectionForm do
           resend: true,
           country_code: '1',
           area_code: '202',
+          context: 'authentication',
         }
 
         result = instance_double(FormResponse)
@@ -40,6 +47,7 @@ describe OtpDeliverySelectionForm do
           resend: nil,
           country_code: '1',
           area_code: '202',
+          context: 'authentication',
         }
 
         result = instance_double(FormResponse)
@@ -50,30 +58,56 @@ describe OtpDeliverySelectionForm do
       end
     end
 
-    context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
-      it 'does not update the user' do
-        user = build_stubbed(:user, otp_delivery_preference: 'sms')
-        form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to)
+    context 'with authentication context' do
+      context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
+        it 'does not update the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'sms')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'authentication')
 
-        expect(UpdateUser).to_not receive(:new)
+          expect(UpdateUser).to_not receive(:new)
 
-        form.submit(otp_delivery_preference: 'sms')
+          form.submit(otp_delivery_preference: 'sms')
+        end
+      end
+
+      context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
+        it 'updates the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'voice')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'authentication')
+          attributes = { otp_delivery_preference: 'sms' }
+
+          updated_user = instance_double(UpdateUser)
+          allow(UpdateUser).to receive(:new).
+            with(user: user, attributes: attributes).and_return(updated_user)
+
+          expect(updated_user).to receive(:call)
+
+          form.submit(otp_delivery_preference: 'sms')
+        end
       end
     end
 
-    context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
-      it 'updates the user' do
-        user = build_stubbed(:user, otp_delivery_preference: 'voice')
-        form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to)
-        attributes = { otp_delivery_preference: 'sms' }
+    context 'with idv context' do
+      context 'when otp_delivery_preference is the same as the user otp_delivery_preference' do
+        it 'does not update the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'sms')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'idv')
 
-        updated_user = instance_double(UpdateUser)
-        allow(UpdateUser).to receive(:new).
-          with(user: user, attributes: attributes).and_return(updated_user)
+          expect(UpdateUser).to_not receive(:new)
 
-        expect(updated_user).to receive(:call)
+          form.submit(otp_delivery_preference: 'sms')
+        end
+      end
 
-        form.submit(otp_delivery_preference: 'sms')
+      context 'when otp_delivery_preference is different from the user otp_delivery_preference' do
+        it 'does not update the user' do
+          user = build_stubbed(:user, otp_delivery_preference: 'voice')
+          form = OtpDeliverySelectionForm.new(user, phone_to_deliver_to, 'idv')
+
+          expect(UpdateUser).to_not receive(:new)
+
+          form.submit(otp_delivery_preference: 'sms')
+        end
       end
     end
   end

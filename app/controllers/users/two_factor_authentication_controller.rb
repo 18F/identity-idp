@@ -14,11 +14,9 @@ module Users
     end
 
     def send_code
-      @otp_delivery_selection_form = OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to)
+      result = otp_delivery_selection_form.submit(delivery_params)
 
-      result = @otp_delivery_selection_form.submit(delivery_params)
-
-      track_otp_delivery_selection_event(result)
+      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
       if result.success?
         handle_valid_otp_delivery_preference(user_selected_otp_delivery_preference)
@@ -28,6 +26,14 @@ module Users
     end
 
     private
+
+    def otp_delivery_selection_form
+      OtpDeliverySelectionForm.new(
+        current_user,
+        phone_to_deliver_to,
+        context
+      )
+    end
 
     def reauthn_param
       otp_form = params.permit(otp_delivery_selection_form: [:reauthn])
@@ -59,11 +65,6 @@ module Users
         phone: phone_to_deliver_to,
         otp_created_at: current_user.direct_otp_sent_at.to_s
       )
-    end
-
-    def track_otp_delivery_selection_event(result)
-      attributes = result.to_h.merge(context: context)
-      analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, attributes)
     end
 
     def user_selected_otp_delivery_preference

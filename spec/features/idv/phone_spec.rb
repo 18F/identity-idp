@@ -60,6 +60,7 @@ feature 'Verify phone' do
       click_idv_address_choose_phone
       fill_out_phone_form_ok
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
       enter_correct_otp_code_for_user(user)
 
       visit verify_phone_path
@@ -105,5 +106,6 @@ feature 'Verify phone' do
     click_idv_address_choose_phone
     fill_out_phone_form_ok(phone)
     click_idv_continue
+    choose_idv_otp_delivery_method_sms
   end
 end
