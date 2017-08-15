@@ -68,7 +68,7 @@ describe Verify::OtpDeliveryMethodController do
       end
 
       it 'redirects to the review controller' do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to verify_review_path
       end
     end
@@ -79,7 +79,7 @@ describe Verify::OtpDeliveryMethodController do
       end
 
       it 'redirects to the review controller' do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to verify_review_path
       end
     end
@@ -90,14 +90,14 @@ describe Verify::OtpDeliveryMethodController do
       end
 
       it 'redirects to the review controller' do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to verify_review_path
       end
     end
 
     context 'user has selected sms' do
       it 'redirects to the otp send path for sms' do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to otp_send_path(params)
       end
     end
@@ -112,7 +112,7 @@ describe Verify::OtpDeliveryMethodController do
       end
 
       it 'redirects to the otp send path for voice' do
-        post :create, params
+        post :create, params: params
         expect(response).to redirect_to otp_send_path(params)
       end
     end
@@ -127,7 +127,7 @@ describe Verify::OtpDeliveryMethodController do
       end
 
       it 'renders the new template' do
-        post :create, params
+        post :create, params: params
         expect(response).to render_template :new
       end
     end
