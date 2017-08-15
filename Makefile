@@ -42,7 +42,6 @@ fast_test: $(CONFIG)
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
 run: $(CONFIG)
-	mailcatcher
 	foreman start -p $(PORT)
 
 load_test: $(CONFIG)
