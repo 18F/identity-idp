@@ -106,7 +106,6 @@ UtilityFunction:
     - WorkerHealthChecker::Middleware#call
     - UserEncryptedAttributeOverrides#create_fingerprint
     - LocaleHelper#locale_url_param
-    - Verify::Base#mock_vendor_partial
     - IdvSession#timed_out_vendor_error
 'app/controllers':
   InstanceVariableAssumption:
