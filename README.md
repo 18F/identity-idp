@@ -125,7 +125,12 @@ more information.
 Once it is up and running, the app will be accessible at
 `http://localhost:3000/` by default.
 
-Email messages will be visible in MailCatcher at `http://localhost:1080/`.
+To view email messages, Mailcatcher must be running. You can check if it's
+running by visiting http://localhost:1080/. To run Mailcatcher:
+
+```
+$ mailcatcher
+```
 
 If you would like to run the application on a different port:
 
