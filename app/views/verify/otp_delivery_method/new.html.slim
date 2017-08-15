@@ -12,7 +12,7 @@ p = t('idv.messages.otp_delivery_method.phone_number_html',
         span.indicator
         = t('devise.two_factor_authentication.otp_delivery_preference.sms')
     - if @set_otp_delivery_method_presenter.sms_only?
-      label.btn-border.col-12.sm-col-5.btn-disabled
+      label.btn-border.col-12.sm-col-5.mb0.btn-disabled
         .radio
           = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :voice, false,
             disabled: true,
@@ -21,7 +21,7 @@ p = t('idv.messages.otp_delivery_method.phone_number_html',
           = t('devise.two_factor_authentication.otp_delivery_preference.voice')
       p.mt2.mb0 = @set_otp_delivery_method_presenter.phone_unsupported_message
     - else
-      label.btn-border.col-12.sm-col-5
+      label.btn-border.col-12.sm-col-5.mb0
         .radio
           = radio_button_tag 'otp_delivery_selection_form[otp_delivery_preference]', :voice, false,
             class: :otp_delivery_preference_voice
