@@ -33,5 +33,6 @@ es:
       requires_phone: requiere que ingrese su número de teléfono.
       unauthorized_authn_context: Contexto de autenticación no autorizado
       unauthorized_service_provider: Proveedor de servicio no autorizado
+      usps_otp_expired: NOT TRANSLATED YET
       weak_password: Su contraseña no es suficientemente segura. %{feedback}
     not_authorized: No está autorizado para realizar esta acción.
