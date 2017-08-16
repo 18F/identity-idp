@@ -3,6 +3,7 @@ class VerifyAccountForm
 
   validates :otp, presence: true
   validate :validate_otp
+  validate :validate_otp_not_expired
   validate :validate_pending_profile
 
   attr_accessor :otp, :pii_attributes
@@ -28,6 +29,12 @@ class VerifyAccountForm
 
   def pending_profile
     @_pending_profile ||= user.decorate.pending_profile
+  end
+
+  def validate_otp_not_expired
+    return unless Idv::UspsMail.new(user).most_recent_otp_expired?
+
+    errors.add :otp, :usps_otp_expired
   end
 
   def validate_pending_profile
