@@ -195,8 +195,8 @@ feature 'IdV session', idv_job: true do
 
       click_link t('forms.two_factor.try_again')
 
-      expect(current_path).to eq(verify_phone_path)
       expect(page.find('#idv_phone_form_phone').value).to eq(phone)
+      expect(current_path).to eq(verify_phone_path)
 
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
