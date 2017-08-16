@@ -79,13 +79,4 @@ RSpec.describe OpenidConnect::TokenController do
       end
     end
   end
-
-  describe '#options' do
-    it 'is empty so it can be used as a pre-flight request' do
-      process :options, 'OPTIONS'
-
-      expect(response).to be_ok
-      expect(response.body).to be_empty
-    end
-  end
 end

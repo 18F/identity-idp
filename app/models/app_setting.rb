@@ -1,4 +1,4 @@
-class AppSetting < ActiveRecord::Base
+class AppSetting < ApplicationRecord
   validates :name, presence: true, uniqueness: true
 
   validates :value,

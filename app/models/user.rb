@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include NonNullUuid
 
   after_validation :set_default_role, if: :new_record?
