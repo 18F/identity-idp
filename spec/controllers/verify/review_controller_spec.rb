@@ -328,6 +328,46 @@ describe Verify::ReviewController do
         expect(pii.first_name.raw).to eq 'José'
         expect(pii.first_name.norm).to eq 'JOSE'
       end
+
+      context 'user picked phone confirmation' do
+        before do
+          idv_session.address_verification_mechanism = 'phone'
+          idv_session.vendor_phone_confirmation = true
+          idv_session.user_phone_confirmation = true
+        end
+
+        it 'activates profile' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          profile = idv_session.profile
+          profile.reload
+
+          expect(profile).to be_active
+        end
+
+        it 'creates an `account_verified` event once per confirmation' do
+          event_creator = instance_double(CreateVerifiedAccountEvent)
+          expect(CreateVerifiedAccountEvent).to receive(:new).and_return(event_creator)
+          expect(event_creator).to receive(:call)
+
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+        end
+      end
+
+      context 'user picked USPS confirmation' do
+        before do
+          idv_session.address_verification_mechanism = 'usps'
+        end
+
+        it 'leaves profile deactivated' do
+          put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
+
+          profile = idv_session.profile
+          profile.reload
+
+          expect(profile).to_not be_active
+        end
+      end
     end
   end
 end
