@@ -12,6 +12,8 @@ p.mt-tiny.mb2 = t('idv.messages.phone.intro')
       = t('idv.messages.phone.in_your_name')
     li
       = t('idv.messages.phone.prepaid')
+    li
+      = t('idv.messages.phone.us_country_code')
 
 em
   = t('idv.messages.phone.same_as_2fa')
@@ -22,7 +24,7 @@ em
   span.ml1
     em
      = t('idv.form.phone_label_aside')
-  = f.input :phone, required: true, input_html: { class: 'phone' }, label: false,
+  = f.input :phone, required: true, input_html: { class: 'us-phone' }, label: false,
     wrapper_html: { class: 'inline-block mr2' }
   = f.button :submit, t('forms.buttons.continue')
 

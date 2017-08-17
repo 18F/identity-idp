@@ -118,14 +118,14 @@ feature 'Sign in' do
     it 'refreshes the current page after session expires', js: true do
       allow(Devise).to receive(:timeout_in).and_return(1)
 
-      visit sign_up_email_path(foo: 'bar')
+      visit sign_up_email_path(request_id: '123abc')
       fill_in 'Email', with: 'test@example.com'
 
       expect(page).to have_content(
         t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
       )
       expect(page).to have_field('Email', with: '')
-      expect(current_url).to match Regexp.escape(sign_up_email_path(foo: 'bar'))
+      expect(current_url).to match Regexp.escape(sign_up_email_path(request_id: '123abc'))
     end
 
     it 'does not refresh the page after the session expires', js: true do

@@ -132,7 +132,7 @@ feature 'IdV session', idv_job: true do
     end
 
     scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
-      _user = sign_in_and_2fa_user
+      user = sign_in_and_2fa_user
 
       visit verify_session_path
 
@@ -221,6 +221,7 @@ feature 'IdV session', idv_job: true do
 
       fill_out_phone_form_ok(good_phone_value)
       click_idv_continue
+      enter_correct_otp_code_for_user(user)
 
       page.find('.accordion').click
 
@@ -383,11 +384,11 @@ feature 'IdV session', idv_job: true do
       end
     end
 
-    scenario 'continue phone OTP verification after cancel' do
+    scenario 'cancelling phone OTP verification redirects to verification cancel' do
       allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
-
       different_phone = '555-555-9876'
-      user = sign_in_live_with_2fa
+
+      sign_in_and_2fa_user
       visit verify_session_path
 
       fill_out_idv_form_ok
@@ -397,24 +398,13 @@ feature 'IdV session', idv_job: true do
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
-      fill_in :user_password, with: user_password
-      click_submit_default
 
       click_on t('links.cancel')
 
-      expect(current_path).to eq root_path
-
-      sign_in_live_with_2fa(user)
-
-      expect(page).to have_content('9876')
-      expect(page).to have_content(t('account.index.verification.instructions'))
-
-      enter_correct_otp_code_for_user(user)
-
-      expect(current_path).to eq account_path
+      expect(current_path).to eq verify_cancel_path
     end
 
-    scenario 'being unable to verify account without OTP phone confirmation' do
+    scenario 'attempting to skip OTP phone confirmation redirects to OTP confirmation', :js do
       different_phone = '555-555-9876'
       user = sign_in_live_with_2fa
       visit verify_session_path
@@ -426,15 +416,13 @@ feature 'IdV session', idv_job: true do
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
-      fill_in :user_password, with: user_password
-      click_submit_default
 
-      visit verify_confirmations_path
-      click_acknowledge_personal_key
-
+      # Modify URL to skip phone confirmation
+      visit verify_review_path
       user.reload
 
-      expect(user.active_profile).to be_nil
+      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(user.profiles).to be_empty
     end
   end
 

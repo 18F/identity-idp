@@ -187,7 +187,7 @@ module TwoFactorAuthenticatable
 
   def after_otp_verification_confirmation_path
     if idv_context?
-      verify_confirmations_path
+      verify_review_path
     elsif after_otp_action_required?
       after_otp_action_path
     else
@@ -231,9 +231,11 @@ module TwoFactorAuthenticatable
     user_session[:unconfirmed_phone] && idv_or_confirmation_context?
   end
 
+  # rubocop:disable MethodLength
   def phone_view_data
     {
       confirmation_for_phone_change: confirmation_for_phone_change?,
+      confirmation_for_idv: idv_context?,
       phone_number: display_phone_to_deliver_to,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
@@ -243,6 +245,7 @@ module TwoFactorAuthenticatable
       totp_enabled: current_user.totp_enabled?,
     }.merge(generic_data)
   end
+  # rubocop:enable MethodLength
 
   def authenticator_view_data
     {

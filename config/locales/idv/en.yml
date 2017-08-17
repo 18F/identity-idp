@@ -10,6 +10,8 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
+      return_to_account: Return to account
+      return_to_sp: Return to %{sp}
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -99,6 +101,8 @@ en:
         some basic personal information as well as some financial information from
         you to complete this process. If you don’t have the information we need at
         this time you can continue later.
+      come_back_later: Once your letter arrives, sign into login.gov and enter your
+        verification code when prompted.
       confirm: You have encrypted your verified data
       dupe_ssn1: If you are getting this error, you may have already created and verified
         an account, but with a different email address.
@@ -134,6 +138,7 @@ en:
         prepaid: on a contract, not prepaid
         same_as_2fa: This phone number can be the same one you used to set up your
           one-time password as long as it meets the criteria above.
+        us_country_code: have a U.S. country code to accept phone calls
       review:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
@@ -189,6 +194,7 @@ en:
     titles:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
+      come_back_later: Come back soon
       complete: Identity verification complete
       dupe: 'Error: An account may already exist'
       expectations: Next, help us identify you

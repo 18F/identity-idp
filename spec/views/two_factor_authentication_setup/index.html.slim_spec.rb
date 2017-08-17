@@ -6,7 +6,7 @@ describe 'users/two_factor_authentication_setup/index.html.slim' do
 
     allow(view).to receive(:current_user).and_return(user)
 
-    @two_factor_setup_form = TwoFactorSetupForm.new(user)
+    @user_phone_form = UserPhoneForm.new(user)
 
     render
   end

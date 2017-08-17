@@ -2,8 +2,8 @@
 en:
   notices:
     account_reactivation: Great! You have your personal key.
-    dap_html: "<!-- We participate in the US government’s analytics program. --> <!--
-      See the data at analytics.usa.gov. -->"
+    dap_participation: We participate in the US government’s analytics program. See
+      the data at analytics.usa.gov.
     forgot_password:
       first_paragraph_end: with a link to reset your password. Follow the link to
         continue resetting your password.

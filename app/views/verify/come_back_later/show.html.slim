@@ -1,0 +1,13 @@
+= image_tag(asset_url('come-back.svg'),
+  size: '140', alt: t('idv.titles.come_back_later'), class: 'block mx-auto')
+h2.center = t('idv.titles.come_back_later')
+p = t('idv.messages.come_back_later')
+.center
+  - if decorated_session.sp_return_url.present?
+    = link_to(t('idv.buttons.return_to_sp', sp: decorated_session.sp_name),
+      decorated_session.sp_return_url,
+      class: 'btn btn-bordered border-green bw2 center rounded-lg')
+  - else
+    = link_to(t('idv.buttons.return_to_account'),
+      account_path,
+      class: 'btn btn-bordered border-green bw2 center rounded-lg')

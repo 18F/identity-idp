@@ -18,14 +18,35 @@ describe 'FeatureManagement', type: :feature do
       end
     end
 
-    context 'when the server is idp.pt.login.gov' do
-      before { allow(FeatureManagement).to receive(:telephony_disabled?).and_return(true) }
-
-      it 'returns true in production mode' do
+    context 'in production servers' do
+      before do
+        allow(FeatureManagement).to receive(:telephony_disabled?).and_return(true)
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Figaro.env).to receive(:domain_name).and_return(FeatureManagement::PT_DOMAIN_NAME)
+        allow(Figaro.env).to receive(:domain_name).and_return(domain_name)
+      end
 
-        expect(FeatureManagement.prefill_otp_codes?).to eq(true)
+      context 'when the server is idp.pt.login.gov' do
+        let(:domain_name) { 'idp.pt.login.gov' }
+
+        it 'prefills codes' do
+          expect(FeatureManagement.prefill_otp_codes?).to eq(true)
+        end
+      end
+
+      context 'when the server is idp.dev.login.gov' do
+        let(:domain_name) { 'idp.dev.login.gov' }
+
+        it 'prefills codes' do
+          expect(FeatureManagement.prefill_otp_codes?).to eq(true)
+        end
+      end
+
+      context 'when the server is idp.staging.login.gov' do
+        let(:domain_name) { 'idp.staging.login.gov' }
+
+        it 'does not prefill codes' do
+          expect(FeatureManagement.prefill_otp_codes?).to eq(false)
+        end
       end
     end
 
@@ -46,7 +67,7 @@ describe 'FeatureManagement', type: :feature do
 
       it 'returns false in production mode when server is pt' do
         allow(Rails.env).to receive(:production?).and_return(true)
-        allow(Figaro.env).to receive(:domain_name).and_return(FeatureManagement::PT_DOMAIN_NAME)
+        allow(Figaro.env).to receive(:domain_name).and_return('idp.pt.login.gov')
 
         expect(FeatureManagement.prefill_otp_codes?).to eq(false)
       end

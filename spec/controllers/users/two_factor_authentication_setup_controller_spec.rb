@@ -15,8 +15,7 @@ describe Users::TwoFactorAuthenticationSetupController do
     let(:user) { create(:user) }
 
     it 'tracks an event when the number is invalid' do
-      allow(subject).to receive(:authenticate_user).and_return(true)
-      allow(subject).to receive(:authorize_otp_setup).and_return(true)
+      sign_in(user)
 
       stub_analytics
       result = {
@@ -28,7 +27,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
-      patch :set, two_factor_setup_form: {
+      patch :set, user_phone_form: {
         phone: '703-555-010',
         otp_delivery_preference: :sms,
         international_code: 'US',
@@ -53,9 +52,9 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          two_factor_setup_form: { phone: '703-555-0100',
-                                   otp_delivery_preference: 'voice',
-                                   international_code: 'US' }
+          user_phone_form: { phone: '703-555-0100',
+                             otp_delivery_preference: 'voice',
+                             international_code: 'US' }
         )
 
         expect(response).to redirect_to(
@@ -85,9 +84,9 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          two_factor_setup_form: { phone: '703-555-0100',
-                                   otp_delivery_preference: :sms,
-                                   international_code: 'US' }
+          user_phone_form: { phone: '703-555-0100',
+                             otp_delivery_preference: :sms,
+                             international_code: 'US' }
         )
 
         expect(response).to redirect_to(
@@ -116,9 +115,9 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          two_factor_setup_form: { phone: '703-555-0100',
-                                   otp_delivery_preference: :sms,
-                                   international_code: 'US' }
+          user_phone_form: { phone: '703-555-0100',
+                             otp_delivery_preference: :sms,
+                             international_code: 'US' }
         )
 
         expect(response).to redirect_to(

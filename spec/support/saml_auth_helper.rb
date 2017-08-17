@@ -161,15 +161,6 @@ module SamlAuthHelper
     get(:auth, SAMLRequest: URI.decode(saml_request(settings)))
   end
 
-  def saml_register_loa3_user(email)
-    click_link t('sign_up.registrations.create_account')
-    submit_form_with_valid_email
-    click_confirmation_link_in_email(email)
-    submit_form_with_valid_password
-    set_up_2fa_with_valid_phone
-    enter_2fa_code
-  end
-
   private
 
   def saml_request(settings)

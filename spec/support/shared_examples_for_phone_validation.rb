@@ -5,7 +5,8 @@ shared_examples 'a phone form' do
 
   describe 'phone presence validation' do
     it 'is invalid when phone is blank' do
-      subject.submit(phone: '')
+      params[:phone] = ''
+      subject.submit(params)
 
       expect(subject).to_not be_valid
     end
@@ -27,7 +28,9 @@ shared_examples 'a phone form' do
     end
 
     it 'validates that the number matches the requested international code' do
-      result = subject.submit(phone: '123 123 1234', international_code: 'MA')
+      params[:phone] = '123 123 1234'
+      params[:international_code] = 'MA'
+      result = subject.submit(params)
 
       expect(result).to be_kind_of(FormResponse)
       expect(result.success?).to eq(false)
@@ -42,7 +45,9 @@ shared_examples 'a phone form' do
         allow(User).to receive(:exists?).with(email: 'new@gmail.com').and_return(false)
         allow(User).to receive(:exists?).with(phone: second_user.phone).and_return(true)
 
-        result = subject.submit(phone: second_user.phone, international_code: 'US')
+        params[:phone] = second_user.phone
+
+        result = subject.submit(params)
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to eq(true)
       end
@@ -50,7 +55,7 @@ shared_examples 'a phone form' do
 
     context 'when phone is not already taken' do
       it 'is valid' do
-        result = subject.submit(phone: '+1 (703) 555-1212', international_code: 'US')
+        result = subject.submit(params)
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to be true
       end
@@ -58,7 +63,10 @@ shared_examples 'a phone form' do
 
     context 'when phone is same as current user' do
       it 'is valid' do
-        result = subject.submit(phone: user.phone, international_code: 'US')
+        user.phone = '+1 (555) 500-5000'
+        params[:phone] = user.phone
+        result = subject.submit(params)
+
         expect(result).to be_kind_of(FormResponse)
         expect(result.success?).to be true
       end
@@ -67,7 +75,8 @@ shared_examples 'a phone form' do
 
   describe '#submit' do
     it 'formats the phone before assigning it' do
-      subject.submit(phone: '703-555-1212', international_code: 'US')
+      params[:phone] = '703-555-1212'
+      subject.submit(params)
 
       expect(subject.phone).to eq '+1 (703) 555-1212'
     end

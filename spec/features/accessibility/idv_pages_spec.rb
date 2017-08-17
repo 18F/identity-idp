@@ -56,13 +56,13 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
     end
 
     scenario 'review page' do
-      sign_in_and_2fa_user
+      user = sign_in_and_2fa_user
       visit verify_session_path
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       fill_out_and_submit_finance_form
       click_idv_address_choose_phone
-      fill_out_phone_form_ok
+      fill_out_phone_form_ok(user.phone)
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq verify_review_path
