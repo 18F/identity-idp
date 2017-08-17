@@ -190,14 +190,15 @@ describe SamlIdpController do
     end
 
     context 'authn_context is invalid' do
-      it 'renders nothing with a 401 error' do
+      it 'renders an error page' do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
         saml_get_auth(invalid_authn_context_settings)
 
-        expect(response.status).to eq(401)
-        expect(response.body).to be_empty
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
 
         analytics_hash = {
           success: false,
@@ -236,7 +237,7 @@ describe SamlIdpController do
     end
 
     context 'service provider is invalid' do
-      it 'responds with a 401 Unauthorized error' do
+      it 'responds with an error page' do
         user = create(:user, :signed_up)
 
         stub_analytics
@@ -244,7 +245,9 @@ describe SamlIdpController do
 
         generate_saml_response(user, invalid_service_provider_settings)
 
-        expect(response.status).to eq(401)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.unauthorized_service_provider'))
 
         analytics_hash = {
           success: false,
@@ -259,7 +262,7 @@ describe SamlIdpController do
     end
 
     context 'both service provider and authn_context are invalid' do
-      it 'responds with a 401 Unauthorized error' do
+      it 'responds with an error page' do
         user = create(:user, :signed_up)
 
         stub_analytics
@@ -267,7 +270,10 @@ describe SamlIdpController do
 
         generate_saml_response(user, invalid_service_provider_and_authn_context_settings)
 
-        expect(response.status).to eq(401)
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.unauthorized_authn_context'))
+        expect(response.body).to include(t('errors.messages.unauthorized_service_provider'))
 
         analytics_hash = {
           success: false,
