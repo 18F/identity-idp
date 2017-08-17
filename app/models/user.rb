@@ -8,7 +8,6 @@ class User < ActiveRecord::Base
     :database_authenticatable,
     :recoverable,
     :registerable,
-    :session_limitable,
     :timeoutable,
     :trackable,
     :two_factor_authenticatable,
