@@ -57,6 +57,17 @@ describe 'layouts/application.html.slim' do
     end
   end
 
+  context '<title>' do
+    it 'does not double-escape HTML in the title tag' do
+      view.title("Something with 'single quotes'")
+
+      render
+
+      doc = Nokogiri::HTML(rendered)
+      expect(doc.at_css('title').text).to eq("login.gov - Something with 'single quotes'")
+    end
+  end
+
   context 'session expiration' do
     it 'renders a javascript page refresh' do
       allow(view).to receive(:user_fully_authenticated?).and_return(false)
