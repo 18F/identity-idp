@@ -46,6 +46,7 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
 
       aggregate_failures do
         expect(response).to be_ok
+        expect(response.body).to be_empty
         expect(response['Access-Control-Allow-Credentials']).to eq('true')
         expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
         expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
