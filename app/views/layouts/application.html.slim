@@ -12,7 +12,10 @@ html lang="#{I18n.locale}" class='no-js'
       meta http-equiv="refresh" content="#{yield(:meta_refresh)}"
 
     title
-      = content_for?(:title) ? APP_NAME + ' - ' + yield(:title) : APP_NAME
+      = APP_NAME
+      - if content_for?(:title)
+        = ' - '
+        = yield(:title)
 
     == stylesheet_link_tag 'application', media: 'all'
     <!--[if IE 8]>
