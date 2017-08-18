@@ -5,7 +5,7 @@ module SamlIdp
 
     unloadable unless Rails::VERSION::MAJOR >= 4
     protect_from_forgery
-    before_filter :validate_saml_request, only: [:new, :create]
+    before_action :validate_saml_request, only: [:new, :create]
 
     def new
       render template: "saml_idp/idp/new"
