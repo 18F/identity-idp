@@ -23,7 +23,7 @@ describe Verify::ConfirmationsController do
       vendor: :mock,
       phone_confirmed: true
     )
-    profile = profile_maker.profile
+    profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes
     idv_session.profile_id = profile.id
     idv_session.personal_key = profile.personal_key
