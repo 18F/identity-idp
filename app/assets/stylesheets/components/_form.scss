@@ -1,0 +1,272 @@
+$radio-checkbox-space: 1.5rem;
+
+@media #{$breakpoint-sm} {
+  input,
+  select,
+  textarea {
+    font-size: $form-field-font-size-sm;
+  }
+}
+
+label {
+  display: inline-block;
+  margin-bottom: $space-tiny;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.field {
+  background-color: #f2f9ff;
+  color: $gray;
+  font-weight: $bold-font-weight;
+
+  &[type=number],
+  &.phone {
+    font-family: $monospace-font-family;
+  }
+
+  &:focus,
+  &.is-focused {
+    border-color: $field-focus-color;
+    box-shadow: 0 0 0 2px rgba($field-focus-color, .5);
+    outline: none;
+  }
+
+  &:invalid,
+  &.is-error {
+    border-color: $border-color;
+  }
+}
+
+.radio-extra {
+  margin-left: $radio-checkbox-space;
+}
+
+
+// error states
+.has-error input {
+  background-image: url(image-path('alert/error.svg'));
+  background-position: center right $form-field-padding-x;
+  background-repeat: no-repeat;
+  background-size: 1rem 1rem;
+  border-color: $red;
+
+  &.date,
+  &.select {
+    background-image: none;
+  }
+
+  &:focus {
+    border-color: $red;
+    box-shadow: 0 0 0 2px rgba($red, .5);
+  }
+}
+
+// hide number field input spin box as per:
+// http://stackoverflow.com/questions/3790935/can-i-hide-the-html5-number-input-s-spin-box
+// and added .mfa class selector as per CodeClimate warning to:
+// 'Avoid qualifying attribute selectors with an element.'
+.mfa {
+  -moz-appearance: textfield;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+// wtf-forms.css
+.checkbox,
+.radio {
+  cursor: pointer;
+  padding-left: 24px;
+  position: relative;
+}
+
+.checkbox input,
+.radio input, {
+  opacity: 0;
+  position: absolute;
+  z-index: -1;
+}
+
+// scss-lint:disable VendorPrefix
+.indicator {
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: .5rem .5rem;
+  box-sizing: border-box;
+  display: block;
+  font-size: 65%;
+  height: 1rem;
+  left: 0;
+  line-height: 1rem;
+  position: absolute;
+  text-align: center;
+  top: .25rem;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  width: 1rem;
+}
+
+.checkbox input:focus ~ .indicator,
+.radio input:focus ~ .indicator {
+  box-shadow: 0 0 0 2px rgba($blue, .5);
+}
+
+.checkbox input:checked ~ .indicator,
+.radio input:checked ~ .indicator {
+  background-color: $blue;
+  color: $white;
+}
+
+.checkbox input:active ~ .indicator,
+.radio input:active ~ .indicator {
+  background-color: $blue-light;
+  color: $white;
+}
+
+.checkbox .indicator {
+  background-color: $white;
+  border: $border-width solid $blue;
+  border-radius: .25rem;
+}
+
+.checkbox input:checked ~ .indicator {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNy4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgOCA4IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA4IDgiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTYuNCwxTDUuNywxLjdMMi45LDQuNUwyLjEsMy43TDEuNCwzTDAsNC40bDAuNywwLjdsMS41LDEuNWwwLjcsMC43bDAuNy0wLjdsMy41LTMuNWwwLjctMC43TDYuNCwxTDYuNCwxeiINCgkvPg0KPC9zdmc+DQo=);
+}
+
+.radio .indicator {
+  background-color: #f2f9ff;
+  border: $border-width solid $blue;
+  border-radius: 50%;
+}
+
+.radio input:checked ~ .indicator {
+  background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4NCjwhLS0gR2VuZXJhdG9yOiBBZG9iZSBJbGx1c3RyYXRvciAxNy4xLjAsIFNWRyBFeHBvcnQgUGx1Zy1JbiAuIFNWRyBWZXJzaW9uOiA2LjAwIEJ1aWxkIDApICAtLT4NCjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+DQo8c3ZnIHZlcnNpb249IjEuMSIgaWQ9IkxheWVyXzEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHg9IjBweCIgeT0iMHB4Ig0KCSB2aWV3Qm94PSIwIDAgOCA4IiBlbmFibGUtYmFja2dyb3VuZD0ibmV3IDAgMCA4IDgiIHhtbDpzcGFjZT0icHJlc2VydmUiPg0KPHBhdGggZmlsbD0iI0ZGRkZGRiIgZD0iTTQsMUMyLjMsMSwxLDIuMywxLDRzMS4zLDMsMywzczMtMS4zLDMtM1M1LjcsMSw0LDF6Ii8+DQo8L3N2Zz4NCg==);
+}
+
+.radio input:disabled ~ .indicator {
+  background-color: $gray-light;
+  border-color: $gray;
+}
+
+.select-alt {
+  color: $white;
+  display: inline-block;
+  position: relative;
+  width: 100%;
+
+  select {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: $navy;
+    border-right: 1px solid $blue;
+    color: $white;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: normal;
+    line-height: 1.5;
+    padding-right: 2.25rem;
+    width: 100%;
+  }
+
+  // Undo the Firefox inner focus ring
+  select:focus:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 $white;
+  }
+
+  select:active {
+    background-color: $navy;
+    color: $white;
+  }
+
+  // Hide the arrow in IE10 and up
+  select::-ms-expand {
+    display: none;
+  }
+
+  // Separator
+  &::before {
+    border-right: 1px solid $blue;
+    content: '';
+    height: -moz-calc(3rem - 2px);
+    height: -webkit-calc(3rem - 2px);
+    height: calc(3rem - 2px);
+    position: absolute;
+    right: 3rem;
+    top: 1px;
+    width: 0;
+  }
+
+  // Dropdown arrow
+  &::after {
+    border-bottom: .35rem solid transparent;
+    border-left: .35rem solid transparent;
+    border-right: .35rem solid transparent;
+    border-top: .35rem solid;
+    content: '';
+    display: inline-block;
+    height: 0;
+    margin-top: -.15rem;
+    pointer-events: none;
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    width: 0;
+  }
+}
+
+// Media query to target Firefox only
+@-moz-document url-prefix() {
+  // Firefox hack to hide the arrow
+  .select-alt select {
+    padding-right: 1rem;
+    text-indent: .01px;
+    text-overflow: '';
+  }
+
+  // <option> elements inherit styles from <select>, so reset them.
+  .select-alt option {
+    background-color: $white;
+  }
+}
+
+// IE9 hack to hide the arrow
+@media screen and (min-width:0\0) {
+  .select-alt select {
+    padding: .5rem 1.5rem .5rem 1rem;
+    z-index: 1;
+  }
+
+  .select-alt::after {
+    z-index: 5;
+  }
+
+  .select-alt::before {
+    background-color: $navy;
+    bottom: 0;
+    content: '';
+    display: block;
+    position: absolute;
+    right: 1rem;
+    top: 0;
+    width: 1.5rem;
+    z-index: 2;
+  }
+
+  .select-alt select:hover,
+  .select-alt select:focus,
+  .select-alt select:active {
+    background-color: $navy;
+    color: $white;
+  }
+}

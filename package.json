@@ -7,21 +7,18 @@
     "npm": "~3.8.x"
   },
   "scripts": {
-    "build": "npm run clean && npm run make-dirs && npm run copy",
-    "clean": "rm -rf ./vendor/assets/fonts && rm -f ./public/*.ico && rm -f ./public/*.png && rm -f ./public/*.svg && rm -f ./public/browserconfig.xml && rm -f ./public/manifest.json",
-    "copy": "npm run copy-font && npm run copy-favicons",
-    "copy-favicons": "cp node_modules/identity-style-guide/src/favicons/* ./public",
-    "copy-font": "cp node_modules/identity-style-guide/src/font/* ./vendor/assets/fonts/",
-    "make-dirs": "mkdir -p ./vendor/assets/fonts"
+    "build": "true"
   },
   "dependencies": {
     "app": "^0.1.0",
+    "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
     "clipboard": "^1.6.1",
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
-    "identity-style-guide": "0.2.6",
+    "hint.css": "^2.3.2",
     "libphonenumber-js": "^0.4.23",
+    "normalize.css": "^4.2.0",
     "sinon": "^1.17.7",
     "zxcvbn": "^4.4.2"
   },

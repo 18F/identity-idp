@@ -1,0 +1,31 @@
+// additional, ad-hoc spacing utilities added as needed
+
+.mxn-tiny { margin-left: -$space-tiny; margin-right: -$space-tiny; }
+.mb-tiny { margin-bottom: $space-tiny; }
+.ml-tiny { margin-left: $space-tiny; }
+.mr-tiny { margin-right: $space-tiny; }
+.mt-tiny { margin-top: $space-tiny; }
+.pb-tiny { padding-bottom: $space-tiny; }
+.pt-tiny { padding-top: $space-tiny; }
+.px-tiny { padding-left: $space-tiny; padding-right: $space-tiny; }
+.py-tiny { padding-bottom: $space-tiny; padding-top: $space-tiny; }
+
+.mb-12p { margin-bottom: 12px; }
+.mt-12p { margin-top: 12px; }
+.px-12p { padding-left: 12px; padding-right: 12px; }
+.py-12p { padding-bottom: 12px; padding-top: 12px; }
+
+.pl-24p { padding-left: 24px; }
+
+.mb-40p { margin-bottom: 40px; }
+
+.mtn1 { margin-top: -$space-1; }
+.mtn2 { margin-top: -$space-2; }
+.mtn3 { margin-top: -$space-3; }
+
+@media #{$breakpoint-sm} {
+  .sm-mr-20p { margin-right: 20px; }
+  .sm-ml-28p { margin-left: 28px; }
+  .sm-mtn2 { margin-top: -$space-2; }
+  .sm-mtn3 { margin-top: -$space-3; }
+}
