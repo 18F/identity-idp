@@ -1,0 +1,91 @@
+# Ruby CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-ruby/ for more details
+#
+version: 2
+jobs:
+  build:
+    docker:
+      # Specify the Ruby version you desire here
+      - image: circleci/ruby:2.3.3-node-browsers
+        environment:
+          RAILS_ENV: test
+          CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
+          COVERAGE: true
+
+      # Specify service dependencies here if necessary
+      # CircleCI maintains a library of pre-built images
+      # documented at https://circleci.com/docs/2.0/circleci-images/
+      - image: circleci/postgres:9.4.12-alpine
+        environment:
+          POSTGRES_USER: circleci
+
+      - image: redis:4.0.1
+
+    working_directory: ~/identity-idp
+
+    steps:
+      - checkout
+
+      - restore-cache:
+          key: identity-idp-{{ checksum "Gemfile.lock" }}
+
+      - run:
+          name: Install dependencies
+          command: |
+            gem install bundler
+            bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
+      - run:
+          name: Install phantomjs
+          command: |
+            sudo curl --output /tmp/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
+            sudo chmod ugo+x /tmp/phantomjs
+            sudo ln -sf /tmp/phantomjs /usr/local/bin/phantomjs
+      - run:
+          name: Install Code Climate Test Reporter
+          command: |
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+            chmod +x ./cc-test-reporter
+
+      # Store bundle cache
+      - save-cache:
+          key: identity-idp-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - run:
+          name: Test Setup
+          command: |
+            npm install
+            npm run build
+            cp config/application.yml.example config/application.yml
+            cp certs/saml.crt.example certs/saml.crt
+            cp keys/saml.key.enc.example keys/saml.key.enc
+            cp keys/equifax_rsa.example keys/equifax_rsa
+            gpg --dearmor < keys/equifax_gpg.pub.example > keys/equifax_gpg.pub.bin
+            gpg --import keys/equifax_gpg.example
+            bundle exec rake db:setup --trace
+            bundle exec rake assets:precompile
+
+      - run:
+          name: Run Tests
+          command: |
+            mkdir /tmp/test-results
+            ./cc-test-reporter before-build
+
+            bundle exec rspec --format progress
+            bundle exec teaspoon
+            bundle exec slim-lint app/views
+
+      - run:
+          name: Upload Test Results to Code Climate
+          command: |
+            ./cc-test-reporter format-coverage -t simplecov $CIRCLE_ARTIFACTS/coverage/.resultset.json
+            ./cc-test-reporter upload-coverage
+
+      # collect reports
+      - store_test_results:
+          path: /tmp/test-results
+      - store_artifacts:
+          path: /tmp/test-results
+          destination: test-results
