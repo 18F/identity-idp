@@ -56,6 +56,19 @@ describe Idv::Session do
         expect(subject).not_to have_received(:complete_profile)
       end
     end
+
+    context 'without a confirmed phone number' do
+      before do
+        subject.address_verification_mechanism = :phone
+        subject.vendor_phone_confirmation = false
+      end
+
+      it 'does not complete the user profile' do
+        allow(subject).to receive(:complete_profile)
+        subject.complete_session
+        expect(subject).not_to have_received(:complete_profile)
+      end
+    end
   end
 
   describe '#phone_confirmed?' do

@@ -178,7 +178,7 @@ feature 'Changing authentication factor' do
   end
 
   def update_phone_number(phone = '703-555-0100')
-    fill_in 'update_user_phone_form[phone]', with: phone
+    fill_in 'user_phone_form[phone]', with: phone
     click_button t('forms.buttons.submit.confirm_change')
   end
 

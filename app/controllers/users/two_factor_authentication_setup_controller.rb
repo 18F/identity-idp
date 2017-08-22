@@ -8,14 +8,13 @@ module Users
     skip_before_action :handle_two_factor_authentication
 
     def index
-      @two_factor_setup_form = TwoFactorSetupForm.new(current_user)
-      @unsupported_area_codes = PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES
+      @user_phone_form = UserPhoneForm.new(current_user)
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 
     def set
-      @two_factor_setup_form = TwoFactorSetupForm.new(current_user)
-      result = @two_factor_setup_form.submit(params[:two_factor_setup_form])
+      @user_phone_form = UserPhoneForm.new(current_user)
+      result = @user_phone_form.submit(params[:user_phone_form])
 
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
@@ -37,7 +36,7 @@ module Users
     end
 
     def process_valid_form
-      prompt_to_confirm_phone(phone: @two_factor_setup_form.phone)
+      prompt_to_confirm_phone(phone: @user_phone_form.phone)
     end
   end
 end

@@ -4,10 +4,13 @@ feature 'LOA3 Single Sign On', idv_job: true do
   include SamlAuthHelper
   include IdvHelper
 
-  def perform_id_verification_with_usps_without_confirming_code_then_sign_out(user)
+  def perform_id_verification_with_usps_without_confirming_code(user)
+    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     visit saml_authn_request
-    sign_in_live_with_2fa(user)
+    click_link t('links.sign_in')
+    fill_in_credentials_and_submit(user.email, user.password)
+    click_submit_default
     click_idv_begin
     fill_out_idv_form_ok
     click_idv_continue
@@ -18,6 +21,10 @@ feature 'LOA3 Single Sign On', idv_job: true do
     fill_in :user_password, with: user.password
     click_submit_default
     click_acknowledge_personal_key
+    click_link t('idv.buttons.return_to_account')
+  end
+
+  def sign_out_user
     first(:link, t('links.sign_out')).click
     click_submit_default
   end
@@ -27,81 +34,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
     before do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-    end
-
-    it 'redirects to original SAML Authn Request after IdV is complete', email: true do
-      xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
-
-      visit @saml_authn_request
-
-      saml_register_loa3_user(email)
-
-      expect(current_path).to eq verify_path
-
-      click_idv_begin
-
-      user = User.find_with_email(email)
-      complete_idv_profile_ok(user.reload)
-      click_acknowledge_personal_key
-
-      expect(page).to have_content t(
-        'titles.sign_up.completion_html',
-        accent: t('titles.sign_up.loa3'),
-        app: APP_NAME
-      )
-      within('.requested-attributes') do
-        expect(page).to have_content t('help_text.requested_attributes.email')
-        expect(page).to_not have_content t('help_text.requested_attributes.address')
-        expect(page).to_not have_content t('help_text.requested_attributes.birthdate')
-        expect(page).to have_content t('help_text.requested_attributes.full_name')
-        expect(page).to have_content t('help_text.requested_attributes.phone')
-        expect(page).to have_content t('help_text.requested_attributes.social_security_number')
-      end
-
-      click_on I18n.t('forms.buttons.continue')
-      expect(current_url).to eq @saml_authn_request
-
-      user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
-      profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
-
-      expect(user.events.account_verified.size).to be(1)
-      expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
-    end
-
-    it 'allows the user to select verification via USPS letter', email: true do
-      visit @saml_authn_request
-
-      saml_register_loa3_user(email)
-
-      click_idv_begin
-
-      fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
-      click_idv_continue
-
-      click_idv_address_choose_usps
-
-      click_on t('idv.buttons.mail.send')
-
-      expect(current_path).to eq verify_review_path
-      expect(page).to_not have_content t('idv.messages.phone.phone_of_record')
-
-      fill_in :user_password, with: user_password
-
-      expect { click_submit_default }.
-        to change { UspsConfirmation.count }.from(0).to(1)
-
-      expect(current_url).to eq verify_confirmations_url
-      click_acknowledge_personal_key
-
-      expect(User.find_with_email(email).events.account_verified.size).to be(0)
-      expect(current_url).to eq(account_url)
-      expect(page).to have_content(t('account.index.verification.reactivate_button'))
-
-      usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
-      expect(usps_confirmation_entry.issuer).
-        to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
     end
 
     it 'shows user the start page with accordion' do
@@ -197,39 +129,47 @@ feature 'LOA3 Single Sign On', idv_job: true do
     context 'having previously selected USPS verification' do
       let(:phone_confirmed) { false }
 
-      it 'prompts for confirmation code at sign in' do
-        allow(FeatureManagement).to receive(:reveal_usps_code?).and_return(true)
+      context 'provides an option to send another letter' do
+        it 'without signing out' do
+          user = create(:user, :signed_up)
 
-        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-        visit saml_authn_request
-        sign_in_live_with_2fa(user)
+          perform_id_verification_with_usps_without_confirming_code(user)
 
-        expect(current_path).to eq verify_account_path
-        expect(page).to have_content t('idv.messages.usps.resend')
+          expect(current_path).to eq account_path
 
-        click_button t('forms.verify_profile.submit')
+          click_link(t('account.index.verification.reactivate_button'))
 
-        expect(user.events.account_verified.size).to be(1)
-        expect(current_path).to eq(sign_up_completed_path)
+          expect(current_path).to eq verify_account_path
 
-        find('input').click
+          click_link(t('idv.messages.usps.resend'))
 
-        expect(current_url).to eq saml_authn_request
-      end
+          expect(user.events.account_verified.size).to be(0)
+          expect(current_path).to eq(verify_usps_path)
 
-      it 'provides an option to send another letter' do
-        user = create(:user, :signed_up)
+          click_button(t('idv.buttons.mail.resend'))
 
-        perform_id_verification_with_usps_without_confirming_code_then_sign_out(user)
+          expect(current_path).to eq(account_path)
+        end
 
-        sign_in_live_with_2fa(user)
+        it 'after signing out' do
+          user = create(:user, :signed_up)
 
-        expect(current_path).to eq verify_account_path
+          perform_id_verification_with_usps_without_confirming_code(user)
+          sign_out_user
 
-        click_link(t('idv.messages.usps.resend'))
+          sign_in_live_with_2fa(user)
 
-        expect(user.events.account_verified.size).to be(0)
-        expect(current_path).to eq(verify_usps_path)
+          expect(current_path).to eq verify_account_path
+
+          click_link(t('idv.messages.usps.resend'))
+
+          expect(user.events.account_verified.size).to be(0)
+          expect(current_path).to eq(verify_usps_path)
+
+          click_button(t('idv.buttons.mail.resend'))
+
+          expect(current_path).to eq(account_path)
+        end
       end
     end
 

@@ -18,6 +18,7 @@ es:
       format_mismatch: Por favor, use el formato solicitado.
       improbable_phone: NOT TRANSLATED YET
       missing_field: Por favor, rellene este campo.
+      must_have_us_country_code: NOT TRANSLATED YET
       no_password_reset_profile: Ningún perfil ha sido desactivado recientemente por
         un restablecimiento de contraseña.
       no_pending_profile: Ningún perfil está esperando verificación

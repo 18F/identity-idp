@@ -28,7 +28,7 @@ feature 'Password Recovery' do
       open_last_email
       click_email_link_matching(/reset_password_token/)
 
-      expect(page.html).not_to include(t('notices.dap_html'))
+      expect(page.html).not_to include(t('notices.dap_participation'))
       expect(current_path).to eq edit_user_password_path
     end
   end

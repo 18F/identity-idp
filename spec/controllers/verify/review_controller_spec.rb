@@ -100,6 +100,64 @@ describe Verify::ReviewController do
     end
   end
 
+  describe '#confirm_idv_phone_confirmed' do
+    controller do
+      before_action :confirm_idv_phone_confirmed
+
+      def show
+        render text: 'Hello'
+      end
+    end
+
+    before(:each) do
+      stub_sign_in(user)
+      allow(subject).to receive(:idv_session).and_return(idv_session)
+      routes.draw do
+        get 'show' => 'verify/review#show'
+      end
+    end
+
+    context 'user is verifying by mail' do
+      before do
+        allow(idv_session).to receive(:address_verification_mechanism).and_return('usps')
+      end
+
+      it 'does not redirect' do
+        get :show
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+
+    context 'user phone is confirmed' do
+      before do
+        allow(idv_session).to receive(:address_verification_mechanism).and_return('phone')
+        allow(idv_session).to receive(:phone_confirmed?).and_return(true)
+      end
+
+      it 'does not redirect' do
+        get :show
+
+        expect(response.body).to eq 'Hello'
+      end
+    end
+
+    context 'user phone is not confirmed' do
+      before do
+        allow(idv_session).to receive(:address_verification_mechanism).and_return('phone')
+        allow(idv_session).to receive(:phone_confirmed?).and_return(false)
+      end
+
+      it 'redirects to phone confirmation' do
+        get :show
+
+        expect(response).to redirect_to otp_send_path(
+          otp_delivery_selection_form: { otp_delivery_preference: :sms }
+        )
+      end
+    end
+  end
+
   describe '#confirm_current_password' do
     controller do
       before_action :confirm_current_password
@@ -269,28 +327,6 @@ describe Verify::ReviewController do
         expect(idv_session.applicant[:first_name]).to eq 'Jose'
         expect(pii.first_name.raw).to eq 'José'
         expect(pii.first_name.norm).to eq 'JOSE'
-      end
-    end
-
-    context 'user has entered different phone number from MFA' do
-      before do
-        idv_session.params = user_attrs.merge(phone: '213-555-1000')
-        idv_session.applicant = idv_session.vendor_params
-        idv_session.address_verification_mechanism = 'phone'
-        stub_analytics
-        allow(@analytics).to receive(:track_event)
-      end
-
-      it 'redirects to phone confirmation path' do
-        put :create, user: { password: ControllerHelper::VALID_PASSWORD }
-
-        expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
-        )
-        expect(subject.user_session[:context]).to eq 'idv'
       end
     end
   end

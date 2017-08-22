@@ -17,18 +17,6 @@ feature 'verify profile with OTP' do
   context 'USPS letter' do
     let(:phone_confirmed) { false }
 
-    scenario 'received OTP via USPS' do
-      sign_in_live_with_2fa(user)
-
-      expect(current_path).to eq verify_account_path
-
-      fill_in t('forms.verify_profile.name'), with: otp
-      click_button t('forms.verify_profile.submit')
-
-      expect(current_path).to eq account_path
-      expect(page).to_not have_content(t('account.index.verification.reactivate_button'))
-    end
-
     xscenario 'OTP has expired' do
       # see https://github.com/18F/identity-private/issues/1108#issuecomment-293328267
     end

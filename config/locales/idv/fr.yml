@@ -10,6 +10,8 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
+      return_to_account: NOT TRANSLATED YET
+      return_to_sp: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
       warning_header: Si vous annulez maintenant
@@ -106,6 +108,7 @@ fr:
         financières pour compléter ce processus. Si vous n'avez pas cette information
         sous la main, vous pouvez continuer plus tard.
       confirm: Vous avez crypté vos données vérifiées
+      come_back_later: NOT TRANSLATED YET
       dupe_ssn1: Si vous recevez ce message d'erreur, il est possible que vous ayez
         déjà créé et vérifié un compte, mais avec une adresse courriel différente.
       dupe_ssn2_html: Veuillez %{link} avec l'adresse courriel que vous avez utilisée
@@ -147,6 +150,7 @@ fr:
         same_as_2fa: Ce numéro de téléphone peut être le même que celui que vous utilisez
           pour configurer votre mot de passe à usage unique, tant et aussi longtemps
           qu'il respecte les critères mentionnés plus haut.
+        us_country_code: NOT TRANSLATED YET
       review:
         financial_info: Où se trouve l'information sur mon compte bancaire?
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
@@ -208,6 +212,7 @@ fr:
     titles:
       activated: Votre identité a déjà été vérifiée
       cancel: Nous ne pouvons pas vérifier votre identité
+      come_back_later: NOT TRANSLATED YET
       complete: Vérification de votre identité complétée
       dupe: 'Erreur: un compte existe déjà'
       expectations: Ensuite, aidez-vous à vous identifier

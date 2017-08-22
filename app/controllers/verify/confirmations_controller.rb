@@ -21,6 +21,8 @@ module Verify
     def next_step
       if session[:sp] && !pending_profile?
         sign_up_completed_url
+      elsif pending_profile? && idv_session.address_verification_mechanism == 'usps'
+        verify_come_back_later_path
       else
         after_sign_in_path_for(current_user)
       end
