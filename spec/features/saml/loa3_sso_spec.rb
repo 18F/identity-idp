@@ -88,6 +88,15 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
         expect(current_path).to match(account_path)
       end
+
+      it 'returns user to profile page if they have previously signed up but have not gone through 2fa' do
+        sign_in_user
+        loa3_sp_session
+
+        click_on t('links.cancel')
+
+        expect(current_path).to match(root_path)
+      end
     end
 
     context 'without js' do
@@ -110,6 +119,15 @@ feature 'LOA3 Single Sign On', idv_job: true do
         click_idv_cancel
 
         expect(current_url).to eq(account_url)
+      end
+
+      it 'returns user to profile page if they have previously signed up but have not gone through 2fa' do
+        sign_in_user
+        loa3_sp_session
+
+        click_on t('links.cancel')
+
+        expect(current_path).to match(root_path)
       end
     end
   end
