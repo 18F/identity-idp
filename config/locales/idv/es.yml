@@ -6,7 +6,7 @@ es:
       activate_by_phone: Active por teléfono
       cancel: Cancele y regrese a su perfil
       continue: Continúe la verificación de identidad
-      help: Continúe con el Centro de Ayuda
+      continue_plain: Continúe
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
@@ -123,8 +123,8 @@ es:
         no_account: "¿Desea usar una tarjeta de crédito?"
         no_account_info: Ayúdenos a verificar su identidad proporcionando los últimos
           8 dígitos de su tarjeta de crédito.
-      hardfail: No podemos verificar su identidad en este momento.
-      hardfail4: También puede ir a %{sp} para obtener más ayuda y acceder a los servicios.
+      hardfail: NOT TRANSLATED YET
+      hardfail4_html: NOT TRANSLATED YET
       help_center: Visite nuestro Centro de Ayuda para obtener más información sobre
         la verificación de su cuenta.
       loading: NOT TRANSLATED YET

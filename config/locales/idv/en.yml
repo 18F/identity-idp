@@ -6,7 +6,7 @@ en:
       activate_by_phone: Activate by phone
       cancel: Cancel and return to your profile
       continue: Continue identity verification
-      help: Continue to Help Center
+      continue_plain: Continue
       mail:
         resend: Send another letter
         send: Send a letter
@@ -109,6 +109,9 @@ en:
         an account, but with a different email address.
       dupe_ssn2_html: Please %{link} with the email address you originally used.
       dupe_ssn2_link: sign out now and sign back in
+      hardfail: We can't log you in right now, but you can try verifying your identity
+        again in %{hours} hours.
+      hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       finance:
         disclaimer: By continuing, you agree to let %{app_name} compare the account
           information you provide with third-party sources in order to verify your
@@ -122,8 +125,6 @@ en:
         no_account: Want to use a credit card instead?
         no_account_info: Help us verify your identity by providing the last 8 digits
           of your credit card.
-      hardfail: We can’t verify your identity right now.
-      hardfail4: You can also go to %{sp} for more help in accessing services.
       help_center: Visit our Help Center to learn more about verifying your account.
       loading: Verifying your identity
       mail_sent: Your letter is on its way
@@ -203,7 +204,7 @@ en:
       expectations: Next, help us identify you
       fail: We were unable to verify your identity
       financials: Provide a financial account number
-      hardfail: We were unable to verify your identity
+      hardfail: We weren't able to verify your identity
       intro: Help us identify you
       mail:
         resend: Want another letter?

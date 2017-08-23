@@ -27,7 +27,7 @@ class SessionDecorator
   end
 
   def idv_hardfail4_partial
-    'shared/null'
+    'verify/no_sp_hardfail'
   end
 
   def sp_name; end

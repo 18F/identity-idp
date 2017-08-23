@@ -6,7 +6,7 @@ fr:
       activate_by_phone: Activer par téléphone
       cancel: Annuler et retourner à votre profil
       continue: Continuer la vérification d'identité
-      help: Continuer jusqu'au Centre d'aide
+      continue_plain: Continuer
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
@@ -130,9 +130,8 @@ fr:
         no_account: Vous préférez utiliser une carte de crédit?
         no_account_info: Aidez-nous à vérifier votre identité en fournissant les 8
           derniers chiffres de votre carte de crédit.
-      hardfail: Nous ne pouvons pas vérifier votre identité pour le moment.
-      hardfail4: Vous pouvez également aller sur %{sp} où vous trouverez davantage
-        d'aide pour accéder à nos services.
+      hardfail: NOT TRANSLATED YET
+      hardfail4_html: NOT TRANSLATED YET
       help_center: Visitez notre Centre d'aide pour en apprendre davantage sur la
         façon dont nous vérifions votre compte.
       loading: NOT TRANSLATED YET
