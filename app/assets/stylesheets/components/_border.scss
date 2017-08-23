@@ -1,0 +1,16 @@
+.bw1 { border-width: 1px; }
+.bw2 { border-width: 2px; }
+.bw3 { border-width: 3px; }
+.bw4 { border-width: 4px; }
+
+.border-dashed { border-style: dashed; }
+
+.rounded-md { border-radius: $border-radius-md; }
+.rounded-lg { border-radius: $border-radius-lg; }
+.rounded-xl { border-radius: $border-radius-xl; }
+.rounded-xxl { border-radius: $border-radius-xxl; }
+
+@media #{$breakpoint-sm} {
+  .sm-border-none { border: 0; }
+  .sm-rounded-md { border-radius: $border-radius-md; }
+}
