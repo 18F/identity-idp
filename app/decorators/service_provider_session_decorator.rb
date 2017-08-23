@@ -1,5 +1,6 @@
 class ServiceProviderSessionDecorator
   include Rails.application.routes.url_helpers
+  include LocaleHelper
 
   DEFAULT_LOGO = 'generic.svg'.freeze
 
