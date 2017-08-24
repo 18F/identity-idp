@@ -35,7 +35,6 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     Rails.application.load_seed
-    Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new
   end
 
   config.before(:each) do
@@ -44,7 +43,6 @@ RSpec.configure do |config|
 
   config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
-    Rack::Attack.cache.store.clear
   end
 
   config.before(:each, twilio: true) do

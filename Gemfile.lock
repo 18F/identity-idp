@@ -712,7 +712,6 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
-  rack-attack
   rack-cors
   rack-mini-profiler
   rack-test
