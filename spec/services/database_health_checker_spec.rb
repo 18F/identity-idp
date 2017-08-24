@@ -21,6 +21,12 @@ RSpec.describe DatabaseHealthChecker do
         expect(summary.healthy).to eq(false)
         expect(summary.result).to include('canceling statement due to statement timeout')
       end
+
+      it 'notifies NewRelic' do
+        expect(NewRelic::Agent).to receive(:notice_error)
+
+        summary
+      end
     end
   end
 end
