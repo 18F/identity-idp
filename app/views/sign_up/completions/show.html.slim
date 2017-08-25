@@ -3,7 +3,7 @@
 .clearfix
   .col-10.sm-col-8.mx-auto
     .center
-      = @view_model.image
+      = image_tag(asset_url(@view_model.image_name), width: 97, alt: '', class: 'mb2')
     h1.h3.mb3.my0.regular = @view_model.heading
 
     p = t('help_text.requested_attributes.intro_html', app_name: APP_NAME,
