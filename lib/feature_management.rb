@@ -4,7 +4,7 @@ class FeatureManagement
   ].freeze
 
   ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
-    idp.dev.login.gov idp.int.login.gov idp.qa.login.gov
+    idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
   ].freeze
 
   def self.telephony_disabled?
