@@ -157,7 +157,7 @@ es:
       sessions:
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         pii: información personal
-        success: Encontramos registros que coinciden con su %{pii_mensaje}
+        success: Encontramos registros que coinciden con su %{pii_message}
       usps:
         bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
