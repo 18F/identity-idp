@@ -55,6 +55,12 @@ RSpec.configure do |config|
       VendorValidatorJob.perform_now(*args)
     end
   end
+
+  config.around(:each, user_flow: true) do |example|
+    Capybara.current_driver = :rack_test
+    example.run
+    Capybara.use_default_driver
+  end
 end
 
 Sidekiq::Testing.inline!

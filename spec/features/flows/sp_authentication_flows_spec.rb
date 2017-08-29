@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-feature 'SP-initiated authentication with login.gov', user_flow: true do
+feature 'SP-initiated authentication with login.gov', :user_flow do
   include IdvHelper
   include SamlAuthHelper
 
   I18n.available_locales.each do |locale|
     context "with locale=#{locale}" do
       context 'with a valid SP' do
-        context 'when LOA3' do
+        context 'when LOA3', :idv_job do
           before do
             visit "#{loa3_authnrequest}&locale=#{locale}"
           end
@@ -58,7 +58,7 @@ feature 'SP-initiated authentication with login.gov', user_flow: true do
 
                   context 'with a valid phone number' do
                     before do
-                      fill_in 'user_phone_form_phone', with: Faker::PhoneNumber.cell_phone
+                      complete_phone_form_with_valid_phone
                     end
 
                     context 'with SMS delivery' do
@@ -290,7 +290,7 @@ feature 'SP-initiated authentication with login.gov', user_flow: true do
 
                   context 'with a valid phone number' do
                     before do
-                      fill_in 'user_phone_form_phone', with: Faker::PhoneNumber.cell_phone
+                      complete_phone_form_with_valid_phone
                     end
 
                     context 'with SMS delivery' do
@@ -380,5 +380,13 @@ feature 'SP-initiated authentication with login.gov', user_flow: true do
         end
       end
     end
+  end
+
+  def complete_phone_form_with_valid_phone
+    phone = Faker::PhoneNumber.cell_phone
+    until PhonyRails.plausible_number? phone, country_code: :us
+      phone = Faker::PhoneNumber.cell_phone
+    end
+    fill_in 'user_phone_form_phone', with: phone
   end
 end
