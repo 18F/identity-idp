@@ -18,7 +18,7 @@ Rails.application.configure do
     protocol: 'https',
   }
   config.action_mailer.asset_host = Figaro.env.mailer_domain_name
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.default_options = { from: Figaro.env.email_from }
   config.action_mailer.delivery_method = if Figaro.env.disable_email_sending == 'true'
                                            :test
