@@ -35,7 +35,7 @@ es:
         sign_out: Cancelar el inicio de sesión
       signed_in:
         continue: Manténgame conectado
-        message_html: Para su seguridad, terminaremos su sesión en% {time_left_in_session}
+        message_html: Para su seguridad, terminaremos su sesión en %{time_left_in_session}
           a menos que nos indique lo contrario.
         sign_out: Desconécteme
     totp_configured: Ha permitido una app de autenticación.

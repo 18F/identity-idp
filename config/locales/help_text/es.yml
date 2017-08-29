@@ -1,7 +1,7 @@
 ---
 es:
   help_text:
-    change_factor: Antes de poder editar su% {factor}, deberá confirmar su contraseña
+    change_factor: Antes de poder editar su %{factor}, deberá confirmar su contraseña
       y recibir un código de seguridad en su teléfono.
     requested_attributes:
       address: Dirección de correo postal

@@ -26,7 +26,7 @@ es:
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
-      finance_number_length: El número debe estar entre los dígitos %{mínimo} y %{máximo}.
+      finance_number_length: El número debe estar entre los dígitos %{minimum} y %{maximum}.
       hardfail: No pudimos verificar su identidad en este momento.
       incorrect_password: La contraseña que ingresó no es correcta.
       invalid_ccn: El número de la tarjeta de crédito debe ser de sólo los últimos
@@ -52,7 +52,7 @@ es:
         vivienda
       last_name: Apellido
       mortgage: Número de la cuenta de préstamo hipotecario
-      no_alternate_phone_html: No tengo otro número de teléfono. %{enlazar}
+      no_alternate_phone_html: No tengo otro número de teléfono. %{link}
       password: Contraseña
       personal_details: Detalles personales
       phone: Teléfono
@@ -147,10 +147,10 @@ es:
         us_country_code: NOT TRANSLATED YET
       review:
         financial_info: "¿Dónde está la información de mi cuenta financiera?"
-        info_verified_html: Encontramos registros que coinciden con su %{teléfono_mensaje}
+        info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
-        utilizar su cuenta en %{sp_nombre} hasta que la active ingresando un código
+        utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
         de confirmación.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.

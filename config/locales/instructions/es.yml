@@ -11,8 +11,7 @@ es:
           adicional.
         modal:
           copy: Si no tiene su clave personal, verifique su identidad nuevamente.
-          heading: Para continuar, por favor regrese a la %{friendly_name} app e inicie
-            una sesión.
+          heading: NOT TRANSLATED YET
         with_key: "¿Tiene su clave personal?"
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador después que haya restablecido
