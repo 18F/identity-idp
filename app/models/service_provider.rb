@@ -1,6 +1,6 @@
 require 'fingerprinter'
 
-class ServiceProvider < ActiveRecord::Base
+class ServiceProvider < ApplicationRecord
   scope(:active, -> { where(active: true) })
 
   def self.from_issuer(issuer)

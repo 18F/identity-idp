@@ -47,8 +47,10 @@ RSpec.describe Users::VerifyAccountController do
     subject(:action) do
       post(
         :create,
-        verify_account_form: {
-          otp: submitted_otp,
+        params: {
+          verify_account_form: {
+            otp: submitted_otp,
+          },
         }
       )
     end

@@ -134,6 +134,19 @@ feature 'LOA1 Single Sign On' do
     end
   end
 
+  context 'visiting IdP via SP, then using the language selector' do
+    it 'preserves the request_id in the url' do
+      authn_request = auth_request.create(saml_settings)
+      visit authn_request
+
+      within(:css, '.i18n-desktop-dropdown', visible: false) do
+        find_link(t('i18n.locale.es'), visible: false).click
+      end
+
+      expect(current_url).to match(%r{http://www.example.com/es/sign_up/start\?request_id=.+})
+    end
+  end
+
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
     it 'displays the branded page' do
       authn_request = auth_request.create(saml_settings)

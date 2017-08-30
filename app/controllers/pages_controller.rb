@@ -4,6 +4,6 @@ class PagesController < ApplicationController
   skip_before_action :disable_caching
 
   def page_not_found
-    render layout: false, status: 404
+    render layout: false, status: 404, formats: :html
   end
 end

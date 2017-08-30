@@ -53,7 +53,7 @@ describe Users::TotpSetupController, devise: true do
         allow(@analytics).to receive(:track_event)
 
         get :new
-        patch :confirm, code: 123
+        patch :confirm, params: { code: 123 }
       end
 
       it 'redirects with an error message' do
@@ -86,7 +86,7 @@ describe Users::TotpSetupController, devise: true do
         allow(form).to receive(:submit).and_return(response)
 
         get :new
-        patch :confirm, code: code
+        patch :confirm, params: { code: code }
       end
 
       it 'redirects to account_path with a success message' do

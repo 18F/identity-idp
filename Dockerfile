@@ -24,6 +24,7 @@ WORKDIR /upaya
 
 COPY package.json /upaya
 RUN npm install
+RUN npm run build
 
 COPY Gemfile /upaya
 COPY Gemfile.lock /upaya

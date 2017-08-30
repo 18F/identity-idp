@@ -3,7 +3,7 @@ unless Rails.env.production?
 
   module Teaspoon
     class SuiteController
-      skip_before_filter :handle_two_factor_authentication
+      skip_before_action :handle_two_factor_authentication
     end
   end
 end

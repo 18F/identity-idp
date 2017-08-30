@@ -30,7 +30,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
 
       it 'redirects to the profile' do
-        post :create, payload
+        post :create, params: payload
 
         expect(response).to redirect_to account_path
       end
@@ -38,7 +38,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       it 'calls handle_valid_otp' do
         expect(subject).to receive(:handle_valid_otp).and_call_original
 
-        post :create, payload
+        post :create, params: payload
       end
 
       it 'tracks the valid authentication event' do
@@ -48,7 +48,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, analytics_hash)
 
-        post :create, payload
+        post :create, params: payload
       end
     end
 
@@ -68,7 +68,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       end
 
       it 'renders the show page' do
-        post :create, payload
+        post :create, params: payload
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_personal_key')
@@ -90,11 +90,11 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
       it 'calls handle_invalid_otp' do
         expect(subject).to receive(:handle_invalid_otp).and_call_original
 
-        post :create, payload
+        post :create, params: payload
       end
 
       it 're-renders the personal key entry screen' do
-        post :create, payload
+        post :create, params: payload
 
         expect(response).to render_template(:show)
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_personal_key')
@@ -113,7 +113,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        post :create, payload
+        post :create, params: payload
       end
     end
   end

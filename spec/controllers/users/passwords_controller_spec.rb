@@ -12,7 +12,7 @@ describe Users::PasswordsController do
         allow(@analytics).to receive(:track_event)
 
         params = { password: 'salty new password' }
-        patch :update, update_user_password_form: params
+        patch :update, params: { update_user_password_form: params }
 
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_CHANGED, success: true, errors: {})
@@ -34,7 +34,7 @@ describe Users::PasswordsController do
         allow(updater).to receive(:personal_key).and_return(personal_key)
 
         params = { password: password }
-        patch :update, update_user_password_form: params
+        patch :update, params: { update_user_password_form: params }
 
         expect(flash[:personal_key]).to eq personal_key
         expect(updater).to have_received(:call)
@@ -50,7 +50,7 @@ describe Users::PasswordsController do
         allow(@analytics).to receive(:track_event)
 
         params = { password: 'new' }
-        patch :update, update_user_password_form: params
+        patch :update, params: { update_user_password_form: params }
 
         errors = {
           password: [

@@ -1,4 +1,4 @@
-class VoiceOtpSenderJob < ActiveJob::Base
+class VoiceOtpSenderJob < ApplicationJob
   queue_as :voice
 
   def perform(code:, phone:, otp_created_at:)

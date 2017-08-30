@@ -1,0 +1,10 @@
+version: v1.38.1
+ignore:
+  'SNYK-RUBY-NOKOGIRI-20299':
+    - '* > nokogiri':
+        reason: 'We do not opt in to DTDLOAD and do not opt out of NONET'
+        expires: '2018-01-01T00:00:00.000Z'
+  'SNYK-RUBY-ACTIONCABLE-20338':
+    - '* > actioncable':
+        reason: 'We do not use actioncable'
+        expires: '2017-09-10T00:00:00.000Z'

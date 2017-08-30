@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   include NonNullUuid
 
   after_validation :set_default_role, if: :new_record?
@@ -8,7 +8,6 @@ class User < ActiveRecord::Base
     :database_authenticatable,
     :recoverable,
     :registerable,
-    :session_limitable,
     :timeoutable,
     :trackable,
     :two_factor_authenticatable,

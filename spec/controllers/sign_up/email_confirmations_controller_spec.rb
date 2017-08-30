@@ -17,7 +17,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: nil
+      get :create, params: { confirmation_token: nil }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
       expect(response).to redirect_to sign_up_email_resend_path
@@ -34,7 +34,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: ''
+      get :create, params: { confirmation_token: '' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
       expect(response).to redirect_to sign_up_email_resend_path
@@ -51,7 +51,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: "''"
+      get :create, params: { confirmation_token: "''" }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
       expect(response).to redirect_to sign_up_email_resend_path
@@ -68,7 +68,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: '""'
+      get :create, params: { confirmation_token: '""' }
 
       expect(flash[:error]).to eq t('errors.messages.confirmation_invalid_token')
       expect(response).to redirect_to sign_up_email_resend_path
@@ -87,7 +87,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: 'foo'
+      get :create, params: { confirmation_token: 'foo' }
     end
 
     it 'tracks expired token' do
@@ -107,7 +107,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: 'foo'
+      get :create, params: { confirmation_token: 'foo' }
 
       expect(flash[:error]).
         to eq t('errors.messages.confirmation_period_expired', period: '24 hours')
@@ -131,7 +131,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: 'foo'
+      get :create, params: { confirmation_token: 'foo' }
     end
   end
 
@@ -157,7 +157,7 @@ describe SignUp::EmailConfirmationsController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::EMAIL_CONFIRMATION, analytics_hash)
 
-      get :create, confirmation_token: 'foo'
+      get :create, params: { confirmation_token: 'foo' }
     end
   end
 end

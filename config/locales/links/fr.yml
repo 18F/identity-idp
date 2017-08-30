@@ -3,8 +3,8 @@ fr:
   links:
     account:
       reactivate:
-        with_key: NOT TRANSLATED YET
-        without_key: NOT TRANSLATED YET
+        with_key: J'ai ma clé
+        without_key: Je n'ai pas ma clé
     back_to_sp: Retour à %{sp}
     cancel: Annuler
     cancel_account_creation: "‹ Annuler la création du compte"
@@ -24,7 +24,7 @@ fr:
     privacy_policy: Confidentialité et sécurité
     remove: Retirer
     resend: Envoyer le courriel de nouveau
-    reverify: NOT TRANSLATED YET
+    reverify: Veuillez vérifier votre identité de nouveau.
     sign_in: Connexion
     sign_out: Déconnexion
     two_factor_authentication:

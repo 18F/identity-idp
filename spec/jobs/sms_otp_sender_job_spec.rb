@@ -67,13 +67,15 @@ describe SmsOtpSenderJob do
 
     it 'sanitizes phone numbers embedded in error messages from Twilio' do
       raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
+      error_code = '21211'
+      status_code = 400
       sanitized_message = "The 'To' number +# (###) ###-#### is not a valid phone number"
 
       expect_any_instance_of(TwilioService).to receive(:send_sms).
-        and_raise(Twilio::REST::RequestError.new(raw_message))
+        and_raise(Twilio::REST::RestError.new(raw_message, error_code, status_code))
 
       expect { perform }.
-        to raise_error(Twilio::REST::RequestError, sanitized_message)
+        to raise_error(Twilio::REST::RestError, sanitized_message)
     end
   end
 end

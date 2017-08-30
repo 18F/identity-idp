@@ -31,7 +31,7 @@ describe MfaConfirmationController do
 
     context 'password is empty' do
       it 'redirects with error message and increments password attempts' do
-        post :create, user: { password: '' }
+        post :create, params: { user: { password: '' } }
 
         expect(response).to redirect_to(user_password_confirm_path)
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
@@ -41,7 +41,7 @@ describe MfaConfirmationController do
 
     context 'password is wrong' do
       it 'redirects with error message and increments password attempts' do
-        post :create, user: { password: 'wrong' }
+        post :create, params: { user: { password: 'wrong' } }
 
         expect(response).to redirect_to(user_password_confirm_path)
         expect(flash[:error]).to eq t('errors.confirm_password_incorrect')
@@ -51,7 +51,7 @@ describe MfaConfirmationController do
 
     context 'password is correct' do
       it 'redirects to 2FA and resets password attempts' do
-        post :create, user: { password: 'password' }
+        post :create, params: { user: { password: 'password' } }
 
         expect(response).to redirect_to(user_two_factor_authentication_path(reauthn: true))
         expect(session[:password_attempts]).to eq 0
@@ -70,7 +70,7 @@ describe MfaConfirmationController do
 
         max_allowed_attempts = Figaro.env.password_max_attempts.to_i
         max_allowed_attempts.times do
-          post :create, user: { password: 'wrong' }
+          post :create, params: { user: { password: 'wrong' } }
         end
 
         expect(response).to redirect_to(root_path)
@@ -89,10 +89,10 @@ describe MfaConfirmationController do
 
         max_allowed_attempts = Figaro.env.password_max_attempts.to_i
         (max_allowed_attempts - 1).times do
-          post :create, user: { password: 'wrong' }
+          post :create, params: { user: { password: 'wrong' } }
         end
 
-        post :create, user: { password: 'password' }
+        post :create, params: { user: { password: 'password' } }
 
         expect(response).to redirect_to user_two_factor_authentication_path(reauthn: true)
       end

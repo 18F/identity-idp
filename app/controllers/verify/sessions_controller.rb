@@ -112,7 +112,7 @@ module Verify
     end
 
     def initialize_idv_session
-      idv_session.params.merge!(profile_params)
+      idv_session.params = profile_params.to_h
       idv_session.applicant = idv_session.vendor_params
     end
 

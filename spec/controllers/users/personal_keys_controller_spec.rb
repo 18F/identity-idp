@@ -28,7 +28,7 @@ describe Users::PersonalKeysController do
       it 'populates the flash when resending code' do
         expect(flash[:sucess]).to be_nil
 
-        get :show, resend: true
+        get :show, params: { resend: true }
         expect(flash.now[:success]).to eq t('notices.send_code.personal_key')
       end
     end

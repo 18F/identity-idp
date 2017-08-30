@@ -11,26 +11,22 @@ describe 'user edits their account', email: true do
   end
 
   def sign_in_as_a_valid_user
-    post_via_redirect(
-      new_user_session_path,
-      'user[email]' => user.email,
-      'user[password]' => user.password
-    )
-    get_via_redirect otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: 'sms' })
-    post_via_redirect(
-      login_two_factor_path(otp_delivery_preference: 'sms'),
-      'code' => user.reload.direct_otp
-    )
+    post new_user_session_path, params: { user: { email: user.email, password: user.password } }
+    get otp_send_path, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+    follow_redirect!
+    post login_two_factor_path, params: {
+      otp_delivery_preference: 'sms', code: user.reload.direct_otp
+    }
   end
 
   context 'user changes email address' do
     before do
       sign_in_as_a_valid_user
-      put_via_redirect manage_email_path, update_user_email_form: { email: 'new_email@example.com' }
+      put manage_email_path, params: { update_user_email_form: { email: 'new_email@example.com' } }
     end
 
     it 'displays a notice informing the user their email has been confirmed when user confirms' do
-      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
+      get parse_email_for_link(last_email, /confirmation_token/)
 
       expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
       expect(response).to render_template('user_mailer/email_changed')
@@ -42,12 +38,12 @@ describe 'user edits their account', email: true do
       expect(EmailNotifier).to receive(:new).with(user).and_return(notifier)
       expect(notifier).to receive(:send_email_changed_email)
 
-      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
+      get parse_email_for_link(last_email, /confirmation_token/)
     end
 
     it 'confirms email when user clicks link in email while signed out' do
-      delete_via_redirect destroy_user_session_path
-      get_via_redirect parse_email_for_link(last_email, /confirmation_token/)
+      delete destroy_user_session_path
+      get parse_email_for_link(last_email, /confirmation_token/)
 
       expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
     end

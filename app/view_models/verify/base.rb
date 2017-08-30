@@ -11,14 +11,6 @@ module Verify
 
     attr_reader :error, :remaining_attempts, :idv_form
 
-    def mock_vendor_partial
-      if FeatureManagement.no_pii_mode?
-        'verify/sessions/no_pii_warning'
-      else
-        'shared/null'
-      end
-    end
-
     def title
       I18n.t("idv.titles.#{step_name}")
     end

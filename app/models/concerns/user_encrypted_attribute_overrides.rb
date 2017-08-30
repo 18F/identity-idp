@@ -27,11 +27,11 @@ module UserEncryptedAttributeOverrides
   # use email_fingerprint_changed? instead of email_changed?
   # This is necessary because email is no longer an ActiveRecord
   # attribute and all the *_changed and *_was magic no longer works.
-  def email_changed?
+  def will_save_change_to_email?
     email_fingerprint_changed?
   end
 
-  def email_was
+  def email_in_database
     EncryptedAttribute.new(encrypted_email_was).decrypted if encrypted_email_was.present?
   end
 

@@ -23,7 +23,7 @@ describe Users::EmailsController do
           email_changed: true,
         }
 
-        put :update, update_user_email_form: { email: new_email }
+        put :update, params: { update_user_email_form: { email: new_email } }
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
@@ -48,7 +48,7 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, update_user_email_form: { email: '' }
+        put :update, params: { update_user_email_form: { email: '' } }
 
         expect(user.reload.email).to be_present
         expect(@analytics).to have_received(:track_event).
@@ -70,7 +70,7 @@ describe Users::EmailsController do
           email_changed: true,
         }
 
-        put :update, update_user_email_form: { email: second_user.email.upcase }
+        put :update, params: { update_user_email_form: { email: second_user.email.upcase } }
 
         expect(response).to redirect_to account_url
         expect(flash[:notice]).to eq t('devise.registrations.email_update_needs_confirmation')
@@ -95,7 +95,7 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, update_user_email_form: { email: invalid_email }
+        put :update, params: { update_user_email_form: { email: invalid_email } }
 
         expect(user.reload.email).not_to eq invalid_email
         expect(@analytics).to have_received(:track_event).
@@ -117,7 +117,7 @@ describe Users::EmailsController do
           email_changed: false,
         }
 
-        put :update, update_user_email_form: { email: user.email }
+        put :update, params: { update_user_email_form: { email: user.email } }
 
         expect(response).to redirect_to account_url
         expect(flash.keys).to be_empty

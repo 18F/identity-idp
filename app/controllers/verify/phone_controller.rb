@@ -2,7 +2,6 @@ module Verify
   class PhoneController < ApplicationController
     include IdvStepConcern
     include IdvFailureConcern
-    include PhoneConfirmation
 
     before_action :confirm_step_needed
     before_action :confirm_step_allowed
@@ -43,20 +42,14 @@ module Verify
 
     def redirect_to_next_step
       if phone_confirmation_required?
-        prompt_to_confirm_phone(phone: idv_session.params[:phone], context: 'idv')
+        redirect_to verify_otp_delivery_method_url
       else
         redirect_to verify_review_url
       end
     end
 
     def phone_confirmation_required?
-      normalized_phone = idv_session.params[:phone]
-      return false if normalized_phone.blank?
-
-      formatted_phone = normalized_phone.phony_formatted(
-        format: :international, normalize: :US, spaces: ' '
-      )
-      formatted_phone != current_user.phone
+      idv_session.user_phone_confirmation != true
     end
 
     def submit_idv_job
@@ -88,7 +81,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to_next_step if idv_session.vendor_phone_confirmation == true
+      redirect_to_next_step if idv_session.user_phone_confirmation == true
     end
 
     def idv_form

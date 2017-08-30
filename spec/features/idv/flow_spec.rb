@@ -69,69 +69,7 @@ feature 'IdV session', idv_job: true do
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
     end
 
-    scenario 'allows 3 attempts in 24 hours' do
-      user = sign_in_and_2fa_user
-
-      max_attempts_less_one.times do
-        visit verify_session_path
-        complete_idv_profile_fail
-
-        expect(current_path).to eq verify_session_result_path
-      end
-
-      user.reload
-      expect(user.idv_attempted_at).to_not be_nil
-
-      visit destroy_user_session_url
-      sign_in_and_2fa_user(user)
-
-      visit verify_session_path
-      complete_idv_profile_fail
-
-      expect(page).to have_css('.alert-error', text: t('idv.modal.sessions.heading'))
-
-      visit verify_session_path
-
-      expect(page).to have_content(t('idv.errors.hardfail'))
-      expect(current_url).to eq verify_fail_url
-
-      user.reload
-      expect(user.idv_attempted_at).to_not be_nil
-    end
-
-    scenario 'finance shows failure flash message after max attempts' do
-      sign_in_and_2fa_user
-      visit verify_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-
-      max_attempts_less_one.times do
-        fill_out_financial_form_fail
-        click_idv_continue
-
-        expect(current_path).to eq verify_finance_result_path
-      end
-
-      fill_out_financial_form_fail
-      click_idv_continue
-      expect(page).to have_css('.alert-error', text: t('idv.modal.financials.heading'))
-    end
-
-    scenario 'finance shows failure modal after max attempts', js: true do
-      sign_in_and_2fa_user
-      visit verify_session_path
-      max_attempts_less_one.times do
-        fill_out_idv_form_fail
-        click_idv_continue
-        click_button t('idv.modal.button.warning')
-      end
-
-      fill_out_idv_form_fail
-      click_idv_continue
-      expect(page).to have_css('.modal-fail', text: t('idv.modal.sessions.heading'))
-    end
-
-    scenario 'successful steps are not re-entrant, but are sticky on failure', js: true do
+    scenario 'profile and financial steps are not re-entrant and are sticky on failure', :js do
       user = sign_in_and_2fa_user
 
       visit verify_session_path
@@ -173,7 +111,7 @@ feature 'IdV session', idv_job: true do
       expect(page).to have_css('.modal-warning', text: t('idv.modal.financials.heading'))
       click_button t('idv.modal.button.warning')
 
-      # can't go "back" to a successful step
+      # can't go "back" to a successful profile step
       visit verify_session_path
       expect(current_path).to eq verify_finance_path
 
@@ -200,8 +138,11 @@ feature 'IdV session', idv_job: true do
       fill_in :idv_finance_form_ccn, with: second_ccn_value
       click_idv_continue
 
-      # address mechanism choice
+      # can't go "back" to a successful finance step
+      visit verify_finance_path
       expect(current_path).to eq verify_address_path
+
+      # address mechanism choice
       click_idv_address_choose_phone
 
       # success advances to next step
@@ -221,6 +162,7 @@ feature 'IdV session', idv_job: true do
 
       fill_out_phone_form_ok(good_phone_value)
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
       enter_correct_otp_code_for_user(user)
 
       page.find('.accordion').click
@@ -234,6 +176,42 @@ feature 'IdV session', idv_job: true do
       expect(page).to_not have_content(first_ccn_value)
       expect(page).to have_content(good_phone_formatted)
       expect(page).to_not have_content(bad_phone_formatted)
+    end
+
+    scenario 'phone step is re-entrant', :js do
+      phone = '+1 (555) 555-5000'
+      different_phone = '+1 (777) 777-7000'
+      user = sign_in_and_2fa_user
+
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok(phone)
+      click_idv_continue
+      choose_idv_otp_delivery_method_sms
+
+      click_link t('forms.two_factor.try_again')
+
+      expect(page.find('#idv_phone_form_phone').value).to eq(phone)
+      expect(current_path).to eq(verify_phone_path)
+
+      fill_out_phone_form_ok(different_phone)
+      click_idv_continue
+      choose_idv_otp_delivery_method_sms
+
+      # Verify that OTP confirmation can't be skipped
+      visit verify_review_path
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
+
+      enter_correct_otp_code_for_user(user)
+
+      page.find('.accordion').click
+
+      expect(page).to_not have_content(phone)
+      expect(page).to have_content(different_phone)
     end
 
     scenario 'failed attempt shows flash message' do
@@ -398,6 +376,7 @@ feature 'IdV session', idv_job: true do
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
+      choose_idv_otp_delivery_method_sms
 
       click_on t('links.cancel')
 
@@ -424,11 +403,6 @@ feature 'IdV session', idv_job: true do
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
       expect(user.profiles).to be_empty
     end
-  end
-
-  def complete_idv_profile_fail
-    fill_out_idv_form_fail
-    click_button 'Continue'
   end
 
   def click_accordion

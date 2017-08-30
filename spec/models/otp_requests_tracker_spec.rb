@@ -18,9 +18,9 @@ describe OtpRequestsTracker do
         expect { OtpRequestsTracker.find_or_create_with_phone(phone) }.
           to_not change(OtpRequestsTracker, :count)
         expect { OtpRequestsTracker.find_or_create_with_phone(phone) }.
-          to_not change { existing.otp_send_count }
+          to_not change(existing, :otp_send_count)
         expect { OtpRequestsTracker.find_or_create_with_phone(phone) }.
-          to_not change { existing.otp_last_sent_at }
+          to_not change(existing, :otp_last_sent_at)
       end
     end
 

@@ -3,27 +3,6 @@ require 'rails_helper'
 feature 'Verify phone' do
   include IdvHelper
 
-  scenario 'phone step redirects to fail after max attempts', idv_job: true do
-    sign_in_and_2fa_user
-    visit verify_session_path
-    fill_out_idv_form_ok
-    click_idv_continue
-    fill_out_financial_form_ok
-    click_idv_continue
-    click_idv_address_choose_phone
-
-    max_attempts_less_one.times do
-      fill_out_phone_form_fail
-      click_idv_continue
-
-      expect(current_path).to eq verify_phone_result_path
-    end
-
-    fill_out_phone_form_fail
-    click_idv_continue
-    expect(page).to have_css('.alert-error', text: t('idv.modal.phone.heading'))
-  end
-
   context 'Idv phone and user phone are different', idv_job: true do
     scenario 'prompts to confirm phone' do
       user = create(
@@ -69,6 +48,24 @@ feature 'Verify phone' do
       expect(SmsOtpSenderJob).to have_received(:perform_later)
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
+
+    scenario 'user cannot re-enter phone step and change phone after confirmation', :idv_job do
+      user = sign_in_and_2fa_user
+
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_idv_continue
+      fill_out_financial_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok
+      click_idv_continue
+      choose_idv_otp_delivery_method_sms
+      enter_correct_otp_code_for_user(user)
+
+      visit verify_phone_path
+      expect(current_path).to eq(verify_review_path)
+    end
   end
 
   scenario 'phone field only allows numbers', js: true, idv_job: true do
@@ -109,5 +106,6 @@ feature 'Verify phone' do
     click_idv_address_choose_phone
     fill_out_phone_form_ok(phone)
     click_idv_continue
+    choose_idv_otp_delivery_method_sms
   end
 end

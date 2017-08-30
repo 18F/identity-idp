@@ -158,7 +158,7 @@ module SamlAuthHelper
 
   def saml_get_auth(settings)
     # GET redirect binding Authn Request
-    get(:auth, SAMLRequest: URI.decode(saml_request(settings)))
+    get :auth, params: { SAMLRequest: URI.decode(saml_request(settings)) }
   end
 
   private

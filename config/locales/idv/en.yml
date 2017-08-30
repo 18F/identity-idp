@@ -12,6 +12,7 @@ en:
         send: Send a letter
       return_to_account: Return to account
       return_to_sp: Return to %{sp}
+      send_confirmation_code: Send confirmation code
     cancel:
       modal_header: Are you sure you want to cancel?
       warning_header: If you cancel now
@@ -126,6 +127,8 @@ en:
       help_center: Visit our Help Center to learn more about verifying your account.
       loading: Verifying your identity
       mail_sent: Your letter is on its way
+      otp_delivery_method:
+        phone_number_html: We will send a code to <strong>%{phone}</strong>
       personal_details_verified: Personal details verified!
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
@@ -205,6 +208,7 @@ en:
       mail:
         resend: Want another letter?
         verify: Want a letter?
+      otp_delivery_method: Get a code by phone
       phone: Phone number of record
       review: Review and submit
       select_verification: Activate your account

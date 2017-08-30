@@ -25,9 +25,9 @@ describe Verify::PhoneController do
       stub_verify_steps_one_and_two(user)
     end
 
-    context 'when the phone number is the same as the user phone' do
+    context 'when the phone number has been confirmed as user 2FA phone' do
       before do
-        subject.idv_session.params = { phone: user.phone }
+        subject.idv_session.user_phone_confirmation = true
       end
 
       it 'redirects to review when step is complete' do
@@ -38,20 +38,16 @@ describe Verify::PhoneController do
       end
     end
 
-    context 'when the phone number is different from the user phone' do
+    context 'when the phone number has not been confirmed as user 2FA phone' do
       before do
-        subject.idv_session.params = { phone: bad_phone }
+        subject.idv_session.user_phone_confirmation = nil
       end
 
-      it 'redirects to phone confirmation' do
+      it 'renders the form' do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
-        )
+        expect(response).to render_template :new
       end
     end
 
@@ -74,7 +70,7 @@ describe Verify::PhoneController do
       end
 
       it 'renders #new' do
-        put :create, idv_phone_form: { phone: '703', international_code: 'US' }
+        put :create, params: { idv_phone_form: { phone: '703', international_code: 'US' } }
 
         expect(flash[:warning]).to be_nil
         expect(subject.idv_session.params).to be_empty
@@ -83,7 +79,7 @@ describe Verify::PhoneController do
       it 'tracks form error and does not make a vendor API call' do
         expect(Idv::PhoneValidator).to_not receive(:new)
 
-        put :create, idv_phone_form: { phone: '703' }
+        put :create, params: { idv_phone_form: { phone: '703' } }
 
         result = {
           success: false,
@@ -109,7 +105,7 @@ describe Verify::PhoneController do
         user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
         stub_verify_steps_one_and_two(user)
 
-        put :create, idv_phone_form: { phone: good_phone, international_code: 'US' }
+        put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
         result = { success: true, errors: {} }
 
@@ -123,7 +119,7 @@ describe Verify::PhoneController do
           user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
-          put :create, idv_phone_form: { phone: good_phone, international_code: 'US' }
+          put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
           expect(response).to redirect_to verify_phone_result_path
 
@@ -136,11 +132,11 @@ describe Verify::PhoneController do
       end
 
       context 'when different from user phone' do
-        it 'redirects to result page and does not set phone_confirmed_at' do
+        it 'redirects to otp page and does not set phone_confirmed_at' do
           user = build(:user, phone: '+1 (415) 555-0130', phone_confirmed_at: Time.zone.now)
           stub_verify_steps_one_and_two(user)
 
-          put :create, idv_phone_form: { phone: good_phone, international_code: 'US' }
+          put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
           expect(response).to redirect_to verify_phone_result_path
 
@@ -257,6 +253,7 @@ describe Verify::PhoneController do
         before do
           user.idv_attempts = max_attempts - 1
           user.idv_attempted_at = two_days_ago
+          subject.idv_session.user_phone_confirmation = true
         end
 
         it 'allows and does not affect attempt counter' do
@@ -278,7 +275,7 @@ describe Verify::PhoneController do
           vendor_params: normalized_phone
         ).and_call_original
 
-        put :create, idv_phone_form: { phone: good_phone }
+        put :create, params: { idv_phone_form: { phone: good_phone } }
       end
     end
   end

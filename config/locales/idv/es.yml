@@ -12,6 +12,7 @@ es:
         send: Enviar una carta
       return_to_account: NOT TRANSLATED YET
       return_to_sp: NOT TRANSLATED YET
+      send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
       warning_header: Si usted cancela ahora
@@ -128,6 +129,8 @@ es:
         la verificación de su cuenta.
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
+      otp_delivery_method:
+        phone_number_html: NOT TRANSLATED YET
       personal_details_verified: "¡Detalles personales verificados!"
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
@@ -211,6 +214,7 @@ es:
       mail:
         resend: "¿Desea otra carta?"
         verify: "¿Desea una carta?"
+      otp_delivery_method: NOT TRANSLATED YET
       phone: Número de teléfono del registro
       review: Revise y envíe
       select_verification: Active su cuenta

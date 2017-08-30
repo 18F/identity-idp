@@ -35,5 +35,7 @@ en:
       requires_phone: requires you to enter your phone number.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_service_provider: Unauthorized Service Provider
+      usps_otp_expired: Your confirmation code has expired. Please request another
+        letter for a new code.
       weak_password: Your password is not strong enough. %{feedback}
     not_authorized: You are not authorized to perform this action.

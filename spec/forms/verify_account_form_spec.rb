@@ -59,6 +59,19 @@ describe VerifyAccountForm do
         expect(subject.errors[:otp]).to eq [t('errors.messages.confirmation_code_incorrect')]
       end
     end
+
+    context 'when OTP is expired' do
+      before do
+        usps_mail = double(Idv::UspsMail)
+        allow(usps_mail).to receive(:most_recent_otp_expired?).and_return(true)
+        allow(Idv::UspsMail).to receive(:new).with(user).and_return(usps_mail)
+      end
+
+      it 'is invalid' do
+        expect(subject).to_not be_valid
+        expect(subject.errors[:otp]).to eq [t('errors.messages.usps_otp_expired')]
+      end
+    end
   end
 
   describe '#submit' do

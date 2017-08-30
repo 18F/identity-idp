@@ -1,18 +1,5 @@
 @import 'fonts';
 
-@import 'variables/colors';
-@import 'variables/web';
-
-// imported from node_modules
-@import 'normalize.css/normalize';
-@import 'hint.css/hint';
-
-@import 'basscss-sass/basscss';
-@import 'basscss/margin';
-@import 'basscss/padding';
-@import 'basscss/responsive-margin';
-@import 'basscss/responsive-padding';
-
-@import 'components/all';
+@import 'identity-style-guide/src/css/app';
 
 @import 'print';

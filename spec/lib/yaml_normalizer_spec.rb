@@ -32,7 +32,7 @@ RSpec.describe YamlNormalizer do
     end
   end
 
-  describe '.chomp_each' do
+  describe '.handle_hash' do
     context 'trailing newlines' do
       let(:original) do
         {
@@ -53,7 +53,7 @@ RSpec.describe YamlNormalizer do
       end
 
       it 'in-place, recursively trims trailing newlines from all strings in a hash' do
-        YamlNormalizer.chomp_each(original)
+        YamlNormalizer.handle_hash(original)
 
         expect(original).to eq(trimmed)
       end
@@ -64,7 +64,7 @@ RSpec.describe YamlNormalizer do
       let(:trimmed) { { a: 'a : ', b: 'b', c: 'c : ' } }
 
       it 'trims trailing spaces, except after a colon' do
-        YamlNormalizer.chomp_each(original)
+        YamlNormalizer.handle_hash(original)
 
         expect(original).to eq(trimmed)
       end
@@ -72,10 +72,10 @@ RSpec.describe YamlNormalizer do
 
     context 'leading newlines' do
       let(:original) { { a: "\n\na b c", b: "a\nb" } }
-      let(:trimmed) { { a: "a b c", b: "a\nb" } }
+      let(:trimmed) { { a: 'a b c', b: "a\nb" } }
 
       it 'trims leading newlines but not intermediate ones' do
-        YamlNormalizer.chomp_each(original)
+        YamlNormalizer.handle_hash(original)
 
         expect(original).to eq(trimmed)
       end
@@ -86,9 +86,28 @@ RSpec.describe YamlNormalizer do
       let(:trimmed) { { a: nil } }
 
       it 'does not blow up' do
-        YamlNormalizer.chomp_each(original)
+        YamlNormalizer.handle_hash(original)
 
         expect(original).to eq(trimmed)
+      end
+    end
+
+    context 'array of hashes' do
+      let(:original) { { a: [{ b: 'b ' }] } }
+      let(:trimmed) { { a: [{ b: 'b' }] } }
+
+      it 'does not blow up' do
+        YamlNormalizer.handle_hash(original)
+
+        expect(original).to eq(trimmed)
+      end
+    end
+
+    context 'unknown object' do
+      let(:original) { { a: Object.new } }
+
+      it 'raises' do
+        expect { YamlNormalizer.handle_hash(original) }.to raise_error(ArgumentError)
       end
     end
   end
