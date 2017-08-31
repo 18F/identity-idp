@@ -108,8 +108,8 @@ fr:
         quelques informations personnelles de base ainsi que certaines informations
         financières pour compléter ce processus. Si vous n'avez pas cette information
         sous la main, vous pouvez continuer plus tard.
-      confirm: Vous avez crypté vos données vérifiées
       come_back_later: NOT TRANSLATED YET
+      confirm: Vous avez crypté vos données vérifiées
       dupe_ssn1: Si vous recevez ce message d'erreur, il est possible que vous ayez
         déjà créé et vérifié un compte, mais avec une adresse courriel différente.
       dupe_ssn2_html: Veuillez %{link} avec l'adresse courriel que vous avez utilisée
@@ -153,6 +153,7 @@ fr:
           pour configurer votre mot de passe à usage unique, tant et aussi longtemps
           qu'il respecte les critères mentionnés plus haut.
         us_country_code: NOT TRANSLATED YET
+      return_to_profile: NOT TRANSLATED YET
       review:
         financial_info: Où se trouve l'information sur mon compte bancaire?
         info_verified_html: Nous avons trouvé des données qui correspondent à votre

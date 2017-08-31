@@ -7,5 +7,4 @@ p.mb1 = t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours
 hr.mt2
 .mt2 = link_to t('idv.messages.help_center'), MarketingSite.help_url
 .mt2
-  | <
-  = link_to ' Return to your login.gov profile', profile_path
+  = link_to t('idv.messages.return_to_profile', app: APP_NAME), profile_path
