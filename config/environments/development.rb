@@ -19,11 +19,6 @@ Rails.application.configure do
   config.action_mailer.default_options = { from: Figaro.env.email_from }
 
   config.lograge.enabled = true
-  config.lograge.custom_options = lambda do |event|
-    event.payload[:timestamp] = event.time
-    event.payload[:uuid] = SecureRandom.uuid
-    event.payload.except(:params)
-  end
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
 
