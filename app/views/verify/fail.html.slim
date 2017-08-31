@@ -1,9 +1,10 @@
 - title t('idv.titles.hardfail')
 
-h1.h3.mt0 = t('idv.titles.hardfail')
-p.mb1 = t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
+.mb1.sm-m0.center.pb1
+  = image_tag(asset_url('no-verify.svg'),
+    alt: '',
+    class: 'align-bottom',
+    width: 170)
+h1.h3.mt0.center.px6
+  = t('idv.titles.hardfail')
 = render decorated_session.idv_hardfail4_partial
-
-.mt4.p3.col-12.center.border-box.border.border-teal.rounded-xl
-  p.mb3.fs-20p = t('idv.messages.help_center')
-  = link_to t('idv.buttons.help'), MarketingSite.help_url, class: 'btn btn-primary btn-wide'

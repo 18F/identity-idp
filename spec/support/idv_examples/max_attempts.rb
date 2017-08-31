@@ -20,7 +20,9 @@ shared_examples 'idv max step attempts' do |sp|
     expect(page).to have_css('.alert-error', text: t('idv.modal.sessions.heading'))
 
     visit_idp_from_sp_with_loa3(sp)
-    expect(page).to have_content(t('idv.messages.hardfail'))
+    expect(page).to have_content(
+      t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
+    )
     expect(current_url).to eq verify_fail_url
 
     visit verify_session_path

@@ -1,0 +1,9 @@
+.mt2.p3.col-12.center.border-box.border.border-teal.rounded-xl
+  p.mb3.fs-20p
+    = t('idv.messages.help_center')
+  = link_to t('idv.buttons.continue_plain'),
+    MarketingSite.help_url,
+    class: 'btn btn-primary btn-wide'
+hr.mt2
+.mt2
+  = link_to t('idv.messages.return_to_profile', app: APP_NAME), profile_path

@@ -1,1 +1,10 @@
-p.mb1 = t('idv.messages.hardfail4', sp: decorated_session.sp_name)
+p.mb1 = t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
+.mt2.p3.col-12.center.border-box.border.border-teal.rounded-xl
+  p.mb3.fs-20p = t('idv.messages.hardfail4_html', sp: decorated_session.sp_name)
+  = link_to t('idv.buttons.continue_plain'),
+    decorated_session.sp_return_url,
+    class: 'btn btn-primary btn-wide'
+hr.mt2
+.mt2 = link_to t('idv.messages.help_center'), MarketingSite.help_url
+.mt2
+  = link_to t('idv.messages.return_to_profile', app: APP_NAME), profile_path
