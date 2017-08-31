@@ -8,21 +8,23 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
     = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,
       :first, :last,
       { include_blank: t('idv.form.select_financial_account') },
-      class: 'col-12 field js-finance-choice-select')
+      class: 'col-12 field')
   .clearfix.mxn1
     .col.col-12.sm-col-8.px1
-      = f.input :blank,
-                label: t('idv.form.select_financial_account'),
-                label_html: { class: 'hide' },
-                disabled: true,
-                wrapper_html: { class: 'js-finance-wrapper', data: { type: :blank } }
       - Idv::FinanceForm.finance_other_type_inputs.each do |key, label, html_options|
-        = f.input key,
-                  label: label,
-                  label_html: { class: 'hide' },
-                  required: false,
-                  wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
-                  input_html: html_options
+        label #{label}
+        label.btn-border.col-12.sm-mr2.mb2.sm-mb0
+          .radio.radio-with-input
+            = radio_button_tag 'test-again', key, true,
+              class: 'js-finance-choice-select'
+            span.indicator
+            = label
+            = f.input key,
+                      label: label,
+                      label_html: { class: 'hide' },
+                      required: false,
+                      wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
+                      input_html: html_options
     .col.col-12.sm-col-4.px1
       = f.button :submit,
                  t('forms.buttons.continue'),
