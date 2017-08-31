@@ -27,6 +27,12 @@ module Upaya
       end
     end
 
+    config.lograge.custom_options = lambda do |event|
+      event.payload[:timestamp] = event.time
+      event.payload[:uuid] = SecureRandom.uuid
+      event.payload.except(:params, :headers)
+    end
+
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
