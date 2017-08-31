@@ -33,6 +33,20 @@ feature 'Two Factor Authentication' do
       expect(user.voice?).to eq true
     end
 
+    context 'user enters OTP incorrectly 3 times' do
+      it 'locks the user out' do
+        sign_in_before_2fa
+
+        submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+        3.times do
+          fill_in('code', with: 'bad-code')
+          click_button t('forms.buttons.submit.default')
+        end
+
+        expect(page).to have_content t('titles.account_locked')
+      end
+    end
+
     context 'with U.S. phone that does not support phone delivery method' do
       let(:guam_phone) { '671-555-5555' }
 

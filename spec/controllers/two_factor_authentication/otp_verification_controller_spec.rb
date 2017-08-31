@@ -61,7 +61,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
   end
 
   describe '#create' do
-    context 'when the user enters an invalid OTP' do
+    context 'when the user enters an invalid OTP during authentication context' do
       before do
         sign_in_before_2fa
 
@@ -92,6 +92,17 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       it 'displays flash error message' do
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_otp')
+      end
+    end
+
+    context 'when the user enters an invalid OTP during reauthentication context' do
+      it 'increments second_factor_attempts_count' do
+        sign_in_before_2fa
+        controller.user_session[:context] = 'reauthentication'
+
+        post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
+
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
       end
     end
 
@@ -260,8 +271,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         context 'user enters an invalid code' do
           before { post :create, params: { code: '999', otp_delivery_preference: 'sms' } }
 
-          it 'does not increment second_factor_attempts_count' do
-            expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+          it 'increments second_factor_attempts_count' do
+            expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
           end
 
           it 'does not clear session data' do
@@ -419,8 +430,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'user enters an invalid code' do
         before { post :create, params: { code: '999', otp_delivery_preference: 'sms' } }
 
-        it 'does not increment second_factor_attempts_count' do
-          expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
+        it 'increments second_factor_attempts_count' do
+          expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
         end
 
         it 'does not clear session data' do
