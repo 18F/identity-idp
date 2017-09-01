@@ -26,25 +26,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const financeSelect = document.querySelector('.js-finance-choice-select');
   const financeRadios = document.querySelectorAll('.js-finance-choice-select');
   const financeChecked = document.querySelector('.js-finance-choice-select:checked');
   const submitButton = document.querySelector('.js-finance-submit');
 
-  if (financeSelect || financeRadios) {
+  if (financeRadios) {
     const inputWrappers = document.querySelectorAll('.js-finance-wrapper');
     hideAll(inputWrappers);
 
-    showInput(financeChecked.value || 'blank');
-    submitButton.disabled = !financeSelect.value;
+    if (financeChecked) {
+      showInput(financeChecked.value || '');
+    }
 
     Array.prototype.forEach.call(financeRadios, function (radio) {
-      radio.addEventListener('change', () => {
-        console.log(this)
-        // removeError();
-        // showInput(this.value || 'blank');
-        // submitButton.disabled = !financeSelect.value;
+      radio.addEventListener('change', (e) => {
+        e = e || window.event;
+        removeError();
+        showInput(e.target.value || '');
+        submitButton.disabled = false;
       });
     });
+
+    submitButton.disabled = true;
   }
 });
