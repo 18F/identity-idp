@@ -26,9 +26,11 @@ RSpec.describe OpenidConnect::LogoutController do
   describe '#index' do
     subject(:action) do
       get :index,
-          id_token_hint: id_token_hint,
-          post_logout_redirect_uri: post_logout_redirect_uri,
-          state: state
+          params: {
+            id_token_hint: id_token_hint,
+            post_logout_redirect_uri: post_logout_redirect_uri,
+            state: state,
+          }
     end
 
     context 'user is signed in' do

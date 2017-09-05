@@ -134,6 +134,8 @@ Rails.application.routes.draw do
       put '/verify/finance' => 'verify/finance#create'
       get '/verify/finance/other' => 'verify/finance_other#new'
       get '/verify/finance/result' => 'verify/finance#show'
+      get '/verify/otp_delivery_method' => 'verify/otp_delivery_method#new'
+      put '/verify/otp_delivery_method' => 'verify/otp_delivery_method#create'
       get '/verify/phone' => 'verify/phone#new'
       put '/verify/phone' => 'verify/phone#create'
       get '/verify/phone/result' => 'verify/phone#show'
@@ -161,7 +163,5 @@ Rails.application.routes.draw do
   # The line below will route all requests that aren't
   # defined route to the 404 page. Therefore, anything you put after this rule
   # will be ignored.
-  constraints(format: /html/) do
-    match '*path', via: :all, to: 'pages#page_not_found'
-  end
+  match '*path', via: :all, to: 'pages#page_not_found'
 end

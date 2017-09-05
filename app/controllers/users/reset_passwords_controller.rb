@@ -94,7 +94,7 @@ module Users
     end
 
     def handle_unsuccessful_password_reset(result)
-      if result.errors[:reset_password_token]
+      if result.errors[:reset_password_token].present?
         flash[:error] = t('devise.passwords.token_expired')
         redirect_to new_user_password_path
         return

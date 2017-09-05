@@ -34,10 +34,10 @@ describe Verify::SessionsController do
     it 'includes before_actions from AccountStateChecker' do
       expect(subject).to have_actions(
         :before,
-        [:confirm_two_factor_authenticated, except: :destroy],
+        :confirm_two_factor_authenticated,
         :confirm_idv_attempts_allowed,
         :confirm_idv_needed,
-        [:confirm_step_needed, except: :destroy]
+        :confirm_step_needed
       )
     end
   end
@@ -93,7 +93,7 @@ describe Verify::SessionsController do
 
       context 'UUID' do
         it 'assigned user UUID to applicant' do
-          post :create, profile: user_attrs
+          post :create, params: { profile: user_attrs }
 
           expect(subject.idv_session.applicant['uuid']).to eq subject.current_user.uuid
         end
@@ -111,7 +111,7 @@ describe Verify::SessionsController do
           expect(@analytics).to receive(:track_event).
             with(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result)
 
-          post :create, profile: user_attrs.merge(ssn: '666-66-1234')
+          post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
 
           expect(response).to redirect_to(verify_session_dupe_path)
           expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
@@ -120,7 +120,7 @@ describe Verify::SessionsController do
 
       context 'empty SSN' do
         it 'renders the form' do
-          post :create, profile: user_attrs.merge(ssn: '')
+          post :create, params: { profile: user_attrs.merge(ssn: '') }
 
           expect(response).to_not redirect_to(verify_session_dupe_path)
           expect(response).to render_template(:new)
@@ -133,14 +133,14 @@ describe Verify::SessionsController do
         end
 
         it 'checks for required fields' do
-          post :create, profile: partial_attrs
+          post :create, params: { profile: partial_attrs }
 
           expect(response).to render_template(:new)
           expect(flash[:warning]).to be_nil
         end
 
         it 'does not increment attempts count' do
-          expect { post :create, profile: partial_attrs }.
+          expect { post :create, params: { profile: partial_attrs } }.
             to_not change(user, :idv_attempts)
         end
       end

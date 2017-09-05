@@ -3,33 +3,42 @@
 footer.footer.bg-light-blue.sm-bg-navy
   - if show_language_dropdown
     .sm-hide.border-bottom
-      .container.py1.px2.lg-px0.h5
-        .center
-          span.i18n-mobile-toggle.block.text-decoration-none.blue.fs-13p
-            = image_tag asset_url('globe-blue.svg'), width: 12, class: 'mr1', alt: ''
+      .container.cntnr-wide.py1.px2.lg-px0.h5
+        .i18n-mobile-toggle.center
+          = link_to '#', class: 'block text-decoration-none blue fs-13p',
+            'aria-expanded': 'false' do
+            = image_tag asset_url('globe-blue.svg'), width: 12, class: 'mr1', alt: '',
+              'aria-hidden': 'true'
             = t('i18n.language')
-            span.caret.inline-block.ml-tiny
+            span.caret.inline-block.ml-tiny(aria-hidden="true")
               | &#9662;
-    .i18n-mobile-dropdown.sm-hide
+    .i18n-mobile-dropdown.sm-hide.display-none
       ul.list-reset.mb0.white.center
         - I18n.available_locales.each do |locale|
           li.border-bottom
-            = link_to t("i18n.locale.#{locale}"), { locale: locale },
+            = link_to t("i18n.locale.#{locale}"),
+              request.query_parameters.merge(locale: locale),
               class: 'block py-12p px2 text-decoration-none blue fs-13p'
+
   .container.py1.px2.lg-px0(class="#{'sm-py0' if show_language_dropdown}")
     .flex.flex-center
       .flex.flex-center
         - if show_language_dropdown
-          .i18n-desktop-toggle.sm-show.white.my1.mr3.px1.py-tiny.border.border-blue.rounded-lg
-            = image_tag asset_url('globe-white.svg'), width: 12, class: 'mr1', alt: ''
-            = t('i18n.language')
-            span.caret.inline-block.ml-tiny
-              | &#9662;
-            .i18n-desktop-dropdown
-              ul.list-reset.mb0.white
-                  - I18n.available_locales.each do |locale|
-                    li.border-bottom.border-navy
-                      = link_to t("i18n.locale.#{locale}"), { locale: locale },
+          ul.list-reset.sm-show.mb0
+            li.i18n-desktop-toggle.flex.my1.mr3.relative
+              = link_to '#',
+                class: 'white text-decoration-none border border-blue rounded-lg px1 py-tiny',
+                'aria-expanded': 'false' do
+                = image_tag asset_url('globe-white.svg'), width: 12, class: 'mr1', alt: '',
+                  'aria-hidden': 'true'
+                = t('i18n.language')
+                span.caret.inline-block.ml-tiny(aria-hidden="true")
+                  | &#9662;
+              ul.i18n-desktop-dropdown.list-reset.mb0.white.display-none
+                - I18n.available_locales.each do |locale|
+                  li.border-bottom.border-navy
+                    = link_to t("i18n.locale.#{locale}"),
+                      request.query_parameters.merge(locale: locale),
                       class: 'block pl-24p py2 text-decoration-none white'
         = link_to t('links.help'), MarketingSite.help_url,
           class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank'

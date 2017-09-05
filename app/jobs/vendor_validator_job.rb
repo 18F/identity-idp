@@ -1,4 +1,4 @@
-class VendorValidatorJob < ActiveJob::Base
+class VendorValidatorJob < ApplicationJob
   queue_as :idv
 
   def perform(result_id:, vendor_validator_class:, vendor:, vendor_params:, applicant_json:,

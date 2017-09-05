@@ -8,7 +8,6 @@ APP_NAME = 'login.gov'.freeze
 module Upaya
   class Application < Rails::Application
     config.active_job.queue_adapter = :sidekiq
-    config.active_record.raise_in_transactional_callbacks = true
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
@@ -30,7 +29,7 @@ module Upaya
       end
     end
 
-    config.middleware.insert_before 0, 'Rack::Cors' do
+    config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]

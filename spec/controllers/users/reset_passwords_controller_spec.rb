@@ -7,7 +7,7 @@ describe Users::ResetPasswordsController, devise: true do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        get :edit, reset_password_token: 'foo'
+        get :edit, params: { reset_password_token: 'foo' }
 
         analytics_hash = {
           success: false,
@@ -32,7 +32,7 @@ describe Users::ResetPasswordsController, devise: true do
         allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
         allow(user).to receive(:reset_password_period_valid?).and_return(false)
 
-        get :edit, reset_password_token: 'foo'
+        get :edit, params: { reset_password_token: 'foo' }
 
         analytics_hash = {
           success: false,
@@ -56,7 +56,7 @@ describe Users::ResetPasswordsController, devise: true do
         allow(User).to receive(:with_reset_password_token).with('foo').and_return(user)
         allow(user).to receive(:reset_password_period_valid?).and_return(true)
 
-        get :edit, reset_password_token: 'foo'
+        get :edit, params: { reset_password_token: 'foo' }
 
         expect(response).to render_template :edit
         expect(flash.keys).to be_empty
@@ -81,7 +81,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         params = { password: 'short', reset_password_token: raw_reset_token }
 
-        put :update, reset_password_form: params
+        put :update, params: { reset_password_form: params }
 
         analytics_hash = {
           success: false,
@@ -105,7 +105,6 @@ describe Users::ResetPasswordsController, devise: true do
     context 'user submits invalid new password' do
       it 'renders edit' do
         stub_analytics
-        allow(@analytics).to receive(:track_event)
 
         raw_reset_token, db_confirmation_token =
           Devise.token_generator.generate(User, :reset_password_token)
@@ -115,10 +114,7 @@ describe Users::ResetPasswordsController, devise: true do
           reset_password_token: db_confirmation_token,
           reset_password_sent_at: Time.zone.now
         )
-
-        params = { password: 'short', reset_password_token: raw_reset_token }
-        put :update, reset_password_form: params
-
+        form_params = { password: 'short', reset_password_token: raw_reset_token }
         analytics_hash = {
           success: false,
           errors: { password: ['is too short (minimum is 8 characters)'] },
@@ -127,8 +123,10 @@ describe Users::ResetPasswordsController, devise: true do
           confirmed: true,
         }
 
-        expect(@analytics).to have_received(:track_event).
+        expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
+
+        put :update, params: { reset_password_form: form_params }
 
         expect(response).to render_template(:edit)
       end
@@ -157,7 +155,7 @@ describe Users::ResetPasswordsController, devise: true do
           password = 'a really long passw0rd'
           params = { password: password, reset_password_token: raw_reset_token }
 
-          put :update, reset_password_form: params
+          put :update, params: { reset_password_form: params }
 
           analytics_hash = {
             success: true,
@@ -196,7 +194,7 @@ describe Users::ResetPasswordsController, devise: true do
         password = 'a really long passw0rd'
         params = { password: password, reset_password_token: raw_reset_token }
 
-        put :update, reset_password_form: params
+        put :update, params: { reset_password_form: params }
 
         analytics_hash = {
           success: true,
@@ -235,7 +233,7 @@ describe Users::ResetPasswordsController, devise: true do
         password = 'a really long passw0rd'
         params = { password: password, reset_password_token: raw_reset_token }
 
-        put :update, reset_password_form: params
+        put :update, params: { reset_password_form: params }
 
         analytics_hash = {
           success: true,
@@ -272,8 +270,11 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: 'nonexistent@example.com' } }.
-          to_not(change { ActionMailer::Base.deliveries.count })
+        expect do
+          put :create, params: {
+            password_reset_email_form: { email: 'nonexistent@example.com' },
+          }
+        end.to_not(change { ActionMailer::Base.deliveries.count })
 
         expect(response).to redirect_to forgot_password_path
       end
@@ -297,7 +298,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: tech_user.email } }.
+        expect { put :create, params: { password_reset_email_form: { email: tech_user.email } } }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to redirect_to forgot_password_path
@@ -322,7 +323,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: admin.email } }.
+        expect { put :create, params: { password_reset_email_form: { email: admin.email } } }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to redirect_to forgot_password_path
@@ -346,8 +347,9 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: 'Test@example.com' } }.
-          to change { ActionMailer::Base.deliveries.count }.by(1)
+        expect do
+          put :create, params: { password_reset_email_form: { email: 'Test@example.com' } }
+        end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(response).to redirect_to forgot_password_path
       end
@@ -370,7 +372,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: user.email } }.
+        expect { put :create, params: { password_reset_email_form: { email: user.email } } }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(ActionMailer::Base.deliveries.last.subject).
@@ -395,7 +397,7 @@ describe Users::ResetPasswordsController, devise: true do
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, password_reset_email_form: { email: 'foo' } }.
+        expect { put :create, params: { password_reset_email_form: { email: 'foo' } } }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to render_template :new

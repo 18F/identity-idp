@@ -17,7 +17,7 @@ fr:
         instructions: Votre profil a été récemment désactivé en raison d'une réinitialisation
           de mot passe. Vous pouvez utiliser votre clé personnelle pour réactiver
           votre profil.
-        link: NOT TRANSLATED YET
+        link: Réactivez votre profil maintenant.
       ssn: Numéro d'assurance sociale
       verification:
         instructions: Votre compte requiert la vérification d'un code secret.

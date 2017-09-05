@@ -27,10 +27,12 @@ describe Users::TwoFactorAuthenticationSetupController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
 
-      patch :set, user_phone_form: {
-        phone: '703-555-010',
-        otp_delivery_preference: :sms,
-        international_code: 'US',
+      patch :set, params: {
+        user_phone_form: {
+          phone: '703-555-010',
+          otp_delivery_preference: :sms,
+          international_code: 'US',
+        },
       }
 
       expect(response).to render_template(:index)
@@ -52,9 +54,11 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          user_phone_form: { phone: '703-555-0100',
-                             otp_delivery_preference: 'voice',
-                             international_code: 'US' }
+          params: {
+            user_phone_form: { phone: '703-555-0100',
+                               otp_delivery_preference: 'voice',
+                               international_code: 'US' },
+          }
         )
 
         expect(response).to redirect_to(
@@ -84,9 +88,11 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          user_phone_form: { phone: '703-555-0100',
-                             otp_delivery_preference: :sms,
-                             international_code: 'US' }
+          params: {
+            user_phone_form: { phone: '703-555-0100',
+                               otp_delivery_preference: :sms,
+                               international_code: 'US' },
+          }
         )
 
         expect(response).to redirect_to(
@@ -115,9 +121,11 @@ describe Users::TwoFactorAuthenticationSetupController do
 
         patch(
           :set,
-          user_phone_form: { phone: '703-555-0100',
-                             otp_delivery_preference: :sms,
-                             international_code: 'US' }
+          params: {
+            user_phone_form: { phone: '703-555-0100',
+                               otp_delivery_preference: :sms,
+                               international_code: 'US' },
+          }
         )
 
         expect(response).to redirect_to(

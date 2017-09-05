@@ -13,7 +13,7 @@ module OpenidConnect
     end
 
     def options
-      render nothing: true
+      head :ok
     end
   end
 end

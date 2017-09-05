@@ -55,13 +55,13 @@ describe Users::VerifyPersonalKeyController do
       end
 
       it 'redirects to the next step of the account recovery flow' do
-        post :create, personal_key: personal_key
+        post :create, params: { personal_key: personal_key }
 
         expect(response).to redirect_to(verify_password_url)
       end
 
       it 'stores that the personal key was entered in the user session' do
-        post :create, personal_key: personal_key
+        post :create, params: { personal_key: personal_key }
 
         expect(subject.reactivate_account_session.personal_key?).to eq(true)
       end
@@ -75,7 +75,7 @@ describe Users::VerifyPersonalKeyController do
           with(user: subject.current_user, personal_key: bad_key).
           and_return(form)
         allow(form).to receive(:submit).and_return(response_bad)
-        post :create, personal_key: bad_key
+        post :create, params: { personal_key: bad_key }
       end
 
       it 'sets an error in the flash' do

@@ -1,18 +1,36 @@
 import 'classlist.js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const mobileLink = document.querySelector('.i18n-mobile-toggle');
+  const mobileLink = document.querySelector('.i18n-mobile-toggle > a');
   const mobileDropdown = document.querySelector('.i18n-mobile-dropdown');
-  const desktopLink = document.querySelector('.i18n-desktop-toggle');
+  const desktopLink = document.querySelector('.i18n-desktop-toggle > a');
   const desktopDropdown = document.querySelector('.i18n-desktop-dropdown');
 
-  function initDropdown (trigger, dropdown) {
-    trigger.addEventListener('click', function() {
-      this.classList.toggle('focused');
-      dropdown.classList.toggle('focused');
+  function addListenerMulti(el, s, fn) {
+    s.split(' ').forEach(e => el.addEventListener(e, fn, false));
+  }
+
+  function toggleAriaExpanded(element) {
+    if (element.getAttribute('aria-expanded') === 'true') {
+      element.setAttribute('aria-expanded', 'false');
+    } else {
+      element.setAttribute('aria-expanded', 'true');
+    }
+  }
+
+  function languagePicker(trigger, dropdown) {
+    addListenerMulti(trigger, 'click keypress', function(event) {
+      const eventType = event.type;
+
+      event.preventDefault();
+      if (eventType === 'click' || (eventType === 'keypress' && event.which === 13)) {
+        this.parentNode.classList.toggle('focused');
+        dropdown.classList.toggle('display-none');
+        toggleAriaExpanded(this);
+      }
     });
   }
 
-  if (mobileLink) initDropdown(mobileLink, mobileDropdown);
-  if (desktopLink) initDropdown(desktopLink, desktopDropdown);
+  if (desktopLink) languagePicker(desktopLink, desktopDropdown);
+  if (mobileLink) languagePicker(mobileLink, mobileDropdown);
 });

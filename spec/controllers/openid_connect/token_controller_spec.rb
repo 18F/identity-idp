@@ -6,10 +6,12 @@ RSpec.describe OpenidConnect::TokenController do
   describe '#create' do
     subject(:action) do
       post :create,
-           grant_type: grant_type,
-           code: code,
-           client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
-           client_assertion: client_assertion
+           params: {
+             grant_type: grant_type,
+             code: code,
+             client_assertion_type: OpenidConnectTokenForm::CLIENT_ASSERTION_TYPE,
+             client_assertion: client_assertion,
+           }
     end
 
     let(:user) { create(:user) }
@@ -75,15 +77,6 @@ RSpec.describe OpenidConnect::TokenController do
 
         action
       end
-    end
-  end
-
-  describe '#options' do
-    it 'is empty so it can be used as a pre-flight request' do
-      process :options, 'OPTIONS'
-
-      expect(response).to be_ok
-      expect(response.body).to be_empty
     end
   end
 end

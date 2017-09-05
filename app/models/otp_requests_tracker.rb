@@ -1,4 +1,4 @@
-class OtpRequestsTracker < ActiveRecord::Base
+class OtpRequestsTracker < ApplicationRecord
   def self.find_or_create_with_phone(phone)
     tries ||= 1
     phone ||= phone.strip

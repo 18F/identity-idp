@@ -12,8 +12,10 @@
 # The first parameter passed to the `have_action` method is the kind of action,
 # such as :before for `before_action`. The rest of the parameters represent an
 # array of the expected actions.
-# If any of the actions have only: or except: options, such as:
-# before_action :check_already_authenticated, only: :new,
+# If any of the actions have if:, only:, or except: options that point to custom
+# methods (i.e. not the default :create, :new, :edit, :update, and :destroy),
+# such as:
+# before_action :require_current_password, if: :current_password_required?,
 # you can test it like this:
 #
 # it 'includes the appropriate before_actions' do
@@ -21,7 +23,7 @@
 #     :before,
 #     :authenticate_user,
 #     :handle_two_factor_authentication,
-#     [:check_already_authenticated, only: :new]
+#     [:require_current_password, if: :current_password_required?]
 #   )
 # end
 
@@ -41,11 +43,13 @@ RSpec::Matchers.define :have_actions do |kind, *names|
 end
 
 def action_has_only_option?(action)
-  if_option_for(action).present?
+  if_option = if_option_for(action)
+  if_option.present? && !if_option.first.is_a?(Proc)
 end
 
 def action_has_except_option?(action)
-  unless_option_for(action).present?
+  unless_option = unless_option_for(action)
+  unless_option.present? && !unless_option.first.is_a?(Proc)
 end
 
 def if_option_for(action)

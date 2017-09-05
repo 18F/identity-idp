@@ -17,7 +17,7 @@ class ServiceProviderController < ApplicationController
     if authorization_token == Figaro.env.dashboard_api_token
       yield
     else
-      render nothing: true, status: 401
+      head :unauthorized
     end
   end
 

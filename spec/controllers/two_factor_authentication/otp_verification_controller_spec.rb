@@ -16,7 +16,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           )
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 
-          get :show, otp_delivery_preference: 'sms'
+          get :show, params: { otp_delivery_preference: 'sms' }
 
           expect(assigns(:presenter).code_value).to eq(subject.current_user.direct_otp)
         end
@@ -25,7 +25,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       context 'when FeatureManagement.prefill_otp_codes? is false' do
         it 'does not set @code_value' do
           allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(false)
-          get :show, otp_delivery_preference: 'sms'
+          get :show, params: { otp_delivery_preference: 'sms' }
 
           expect(assigns(:code_value)).to be_nil
         end
@@ -46,14 +46,14 @@ describe TwoFactorAuthentication::OtpVerificationController do
       expect(@analytics).to receive(:track_event).
         with(Analytics::MULTI_FACTOR_AUTH_ENTER_OTP_VISIT, analytics_hash)
 
-      get :show, otp_delivery_preference: 'sms'
+      get :show, params: { otp_delivery_preference: 'sms' }
     end
 
     context 'when there is no session (signed out or locked out), and the user reloads the page' do
       it 'redirects to the home page' do
         expect(controller.user_session).to be_nil
 
-        get :show, otp_delivery_preference: 'sms'
+        get :show, params: { otp_delivery_preference: 'sms' }
 
         expect(response).to redirect_to(new_user_session_path)
       end
@@ -79,7 +79,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
           with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
-        post :create, code: '12345', otp_delivery_preference: 'sms'
+        post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
       end
 
       it 'increments second_factor_attempts_count' do
@@ -113,7 +113,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, properties)
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
 
-        post :create, code: '12345', otp_delivery_preference: 'sms'
+        post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
       end
     end
 
@@ -125,14 +125,20 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       it 'redirects to the profile' do
-        post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
+        post :create, params: {
+          code: subject.current_user.reload.direct_otp,
+          otp_delivery_preference: 'sms',
+        }
 
         expect(response).to redirect_to account_path
       end
 
       it 'resets the second_factor_attempts_count' do
         subject.current_user.update(second_factor_attempts_count: 1)
-        post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
+        post :create, params: {
+          code: subject.current_user.reload.direct_otp,
+          otp_delivery_preference: 'sms',
+        }
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
@@ -151,7 +157,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::MULTI_FACTOR_AUTH, properties)
 
-        post :create, code: subject.current_user.reload.direct_otp, otp_delivery_preference: 'sms'
+        post :create, params: {
+          code: subject.current_user.reload.direct_otp,
+          otp_delivery_preference: 'sms',
+        }
       end
     end
 
@@ -167,7 +176,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits an invalid OTP' do
         before do
-          post :create, code: '12345', otp_delivery_preference: 'sms'
+          post :create, params: { code: '12345', otp_delivery_preference: 'sms' }
         end
 
         it 'resets attempts count' do
@@ -181,7 +190,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
 
       describe 'when user submits a valid OTP' do
         before do
-          post :create, code: subject.current_user.direct_otp, otp_delivery_preference: 'sms'
+          post :create, params: {
+            code: subject.current_user.direct_otp,
+            otp_delivery_preference: 'sms',
+          }
         end
 
         it 'resets attempts count' do
@@ -215,8 +227,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
           before do
             post(
               :create,
-              code: subject.current_user.direct_otp,
-              otp_delivery_preference: 'sms'
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+              }
             )
           end
 
@@ -244,7 +258,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         end
 
         context 'user enters an invalid code' do
-          before { post :create, code: '999', otp_delivery_preference: 'sms' }
+          before { post :create, params: { code: '999', otp_delivery_preference: 'sms' } }
 
           it 'does not increment second_factor_attempts_count' do
             expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
@@ -293,8 +307,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
           before do
             post(
               :create,
-              code: subject.current_user.direct_otp,
-              otp_delivery_preference: 'sms'
+              params: {
+                code: subject.current_user.direct_otp,
+                otp_delivery_preference: 'sms',
+              }
             )
           end
 
@@ -347,8 +363,10 @@ describe TwoFactorAuthentication::OtpVerificationController do
         before do
           post(
             :create,
-            code: subject.current_user.direct_otp,
-            otp_delivery_preference: 'sms'
+            params: {
+              code: subject.current_user.direct_otp,
+              otp_delivery_preference: 'sms',
+            }
           )
         end
 
@@ -399,7 +417,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       context 'user enters an invalid code' do
-        before { post :create, code: '999', otp_delivery_preference: 'sms' }
+        before { post :create, params: { code: '999', otp_delivery_preference: 'sms' } }
 
         it 'does not increment second_factor_attempts_count' do
           expect(subject.current_user.reload.second_factor_attempts_count).to eq 0

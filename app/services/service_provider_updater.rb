@@ -23,7 +23,7 @@ class ServiceProviderUpdater
     if service_provider['active'] == true
       create_or_update_service_provider(issuer, service_provider)
     else
-      ServiceProvider.destroy_all(issuer: issuer, native: false)
+      ServiceProvider.where(issuer: issuer, native: false).destroy_all
     end
   end
 

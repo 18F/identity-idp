@@ -18,7 +18,7 @@ RSpec.describe SignUp::EmailResendController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
 
-        expect { post :create, user_params }.
+        expect { post :create, params: user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(response).to redirect_to sign_up_verify_email_path
@@ -31,7 +31,7 @@ RSpec.describe SignUp::EmailResendController do
       end
 
       it 'does not send an email and displays the same message as if the user existed' do
-        expect { post :create, @user_params }.
+        expect { post :create, params: @user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to redirect_to sign_up_verify_email_path
@@ -49,7 +49,7 @@ RSpec.describe SignUp::EmailResendController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
 
-        post :create, @user_params
+        post :create, params: @user_params
       end
     end
 
@@ -69,7 +69,7 @@ RSpec.describe SignUp::EmailResendController do
         expect(@analytics).to receive(:track_event).
           with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
 
-        expect { post :create, user_params }.
+        expect { post :create, params: user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to redirect_to sign_up_verify_email_path
@@ -80,7 +80,7 @@ RSpec.describe SignUp::EmailResendController do
       it 'renders new' do
         user_params = { resend_email_confirmation_form: { email: 'a@b.' } }
 
-        post :create, user_params
+        post :create, params: user_params
 
         expect(response).to render_template(:new)
       end
@@ -92,7 +92,7 @@ RSpec.describe SignUp::EmailResendController do
 
         user_params = { resend_email_confirmation_form: { email: 'TEST@example.com ' } }
 
-        expect { post :create, user_params }.
+        expect { post :create, params: user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
