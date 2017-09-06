@@ -13,7 +13,8 @@ module Verify
       idv_session.address_verification_mechanism = :usps
 
       if current_user.decorate.needs_profile_usps_verification?
-        redirect_to account_path
+        resend_letter
+        redirect_to verify_come_back_later_url
       else
         redirect_to verify_review_url
       end
@@ -28,6 +29,18 @@ module Verify
     def confirm_mail_not_spammed
       redirect_to verify_review_path if idv_session.address_mechanism_chosen? &&
                                         usps_mail_service.mail_spammed?
+    end
+
+    def resend_letter
+      confirmation_maker = UspsConfirmationMaker.new(
+        pii: Pii::Cacher.new(current_user, user_session).fetch,
+        issuer: sp_session[:issuer],
+        profile: current_user.decorate.pending_profile
+      )
+      confirmation_maker.perform
+
+      return unless FeatureManagement.reveal_usps_code?
+      session[:last_usps_confirmation_code] = confirmation_maker.otp
     end
   end
 end

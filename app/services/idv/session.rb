@@ -20,7 +20,7 @@ module Idv
       vendor_session_id
     ].freeze
 
-    attr_reader :current_user
+    attr_reader :current_user, :usps_otp
 
     def initialize(user_session:, current_user:, issuer:)
       @user_session = user_session
@@ -91,8 +91,10 @@ module Idv
       if pii.is_a?(String)
         self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
       end
+      confirmation_maker = UspsConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
+      confirmation_maker.perform
 
-      UspsConfirmationMaker.new(pii: pii, issuer: issuer).perform
+      @usps_otp = confirmation_maker.otp
     end
 
     def alive?

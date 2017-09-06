@@ -2,23 +2,32 @@ require 'rails_helper'
 
 feature 'verify profile with OTP' do
   let(:user) { create(:user, :signed_up) }
-  let(:otp) { 'abc123' }
+  let(:otp) { 'ABC123' }
 
   before do
-    create(
+    profile = create(
       :profile,
       deactivation_reason: :verification_pending,
-      pii: { otp: otp, ssn: '666-66-1234', dob: '1920-01-01', phone: '555-555-9999' },
+      pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '555-555-9999' },
       phone_confirmed: phone_confirmed,
       user: user
     )
+    otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)
+    create(:usps_confirmation_code, profile: profile, otp_fingerprint: otp_fingerprint)
   end
 
   context 'USPS letter' do
     let(:phone_confirmed) { false }
 
-    xscenario 'OTP has expired' do
-      # see https://github.com/18F/identity-private/issues/1108#issuecomment-293328267
+    scenario 'OTP has expired' do
+      UspsConfirmationCode.first.update(code_sent_at: 11.days.ago)
+
+      sign_in_live_with_2fa(user)
+      fill_in t('forms.verify_profile.name'), with: otp
+      click_button t('forms.verify_profile.submit')
+
+      expect(page).to have_content t('errors.messages.usps_otp_expired')
+      expect(current_path).to eq verify_account_path
     end
 
     scenario 'wrong OTP used' do

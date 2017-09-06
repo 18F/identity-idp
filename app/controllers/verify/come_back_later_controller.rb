@@ -2,19 +2,14 @@ module Verify
   class ComeBackLaterController < ApplicationController
     include IdvSession
 
-    before_action :confirm_idv_session_completed
-    before_action :confirm_usps_verification_method_chosen
+    before_action :confirm_user_needs_usps_confirmation
 
     def show; end
 
     private
 
-    def confirm_idv_session_completed
-      redirect_to account_path if idv_session.profile.blank?
-    end
-
-    def confirm_usps_verification_method_chosen
-      redirect_to account_path unless idv_session.address_verification_mechanism == 'usps'
+    def confirm_user_needs_usps_confirmation
+      redirect_to account_path unless current_user.decorate.needs_profile_usps_verification?
     end
   end
 end

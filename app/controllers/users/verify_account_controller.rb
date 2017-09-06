@@ -9,7 +9,7 @@ module Users
       @verify_account_form = VerifyAccountForm.new(user: current_user)
 
       return unless FeatureManagement.reveal_usps_code?
-      @code = JSON.parse(user_session[:decrypted_pii])['otp']['raw']
+      @code = session[:last_usps_confirmation_code]
     end
 
     def create
@@ -28,8 +28,7 @@ module Users
     def build_verify_account_form
       VerifyAccountForm.new(
         user: current_user,
-        otp: params_otp,
-        pii_attributes: decrypted_pii
+        otp: params_otp
       )
     end
 
@@ -40,13 +39,6 @@ module Users
     def confirm_verification_needed
       return if current_user.decorate.pending_profile_requires_verification?
       redirect_to account_url
-    end
-
-    def decrypted_pii
-      @_decrypted_pii ||= begin
-        cacher = Pii::Cacher.new(current_user, user_session)
-        cacher.fetch
-      end
     end
   end
 end

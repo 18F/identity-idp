@@ -44,30 +44,4 @@ describe Idv::UspsMail do
       end
     end
   end
-
-  describe '#most_recent_otp_expired?' do
-    context 'when no mail has been sent' do
-      it 'returns false' do
-        expect(subject.most_recent_otp_expired?).to eq false
-      end
-    end
-
-    context 'when the most recent mail was sent less than 10 days ago' do
-      it 'returns false' do
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 5.days.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 12.days.ago)
-
-        expect(subject.most_recent_otp_expired?).to eq false
-      end
-    end
-
-    context 'when the most recent mail was sent more than 10 days ago' do
-      it 'returns true' do
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 11.days.ago)
-        Event.create(event_type: :usps_mail_sent, user: user, updated_at: 12.days.ago)
-
-        expect(subject.most_recent_otp_expired?).to eq true
-      end
-    end
-  end
 end

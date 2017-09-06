@@ -1,11 +1,18 @@
 shared_examples 'signing in with pending USPS verification' do |sp|
-  let(:otp) { 'abc123' }
+  let(:otp) { 'ABC123' }
   let(:profile) do
     create(
       :profile,
       deactivation_reason: :verification_pending,
       phone_confirmed: false,
-      pii: { otp: otp, ssn: '123-45-6789', dob: '1970-01-01' }
+      pii: { ssn: '123-45-6789', dob: '1970-01-01' }
+    )
+  end
+  let(:usps_confirmation_code) do
+    create(
+      :usps_confirmation_code,
+      profile: profile,
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)
     )
   end
   let(:user) { profile.user }
@@ -16,6 +23,7 @@ shared_examples 'signing in with pending USPS verification' do |sp|
     expect(current_path).to eq verify_account_path
     expect(page).to have_content t('idv.messages.usps.resend')
 
+    usps_confirmation_code
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
 
@@ -42,7 +50,7 @@ shared_examples 'signing in with pending USPS verification' do |sp|
   it 'renders an error for an expired USPS OTP' do
     sign_in_from_sp(sp)
 
-    Event.create(event_type: :usps_mail_sent, user: user, updated_at: 11.days.ago)
+    usps_confirmation_code.update(code_sent_at: 11.days.ago)
 
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
@@ -54,6 +62,28 @@ shared_examples 'signing in with pending USPS verification' do |sp|
 
     expect(user.events.account_verified.size).to eq 0
     expect(user.active_profile).to be_nil
+  end
+
+  it 'allows a user to resend a letter' do
+    allow(Base32::Crockford).to receive(:encode).and_return(otp)
+
+    sign_in_from_sp(sp)
+
+    expect(UspsConfirmation.count).to eq(0)
+    expect(UspsConfirmationCode.count).to eq(0)
+
+    click_on t('idv.messages.usps.resend')
+    click_on t('idv.buttons.mail.send')
+
+    expect(UspsConfirmation.count).to eq(1)
+    expect(UspsConfirmationCode.count).to eq(1)
+    expect(current_path).to eq verify_come_back_later_path
+
+    confirmation_code = UspsConfirmationCode.first
+    otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)
+
+    expect(confirmation_code.otp_fingerprint).to eq(otp_fingerprint)
+    expect(confirmation_code.profile).to eq(profile)
   end
 
   def sign_in_from_sp(sp)
