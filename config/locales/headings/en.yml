@@ -8,6 +8,7 @@ en:
       reactivate: Reactivate your account
       two_factor: Two-factor authentication
       verified_account: Verified Account
+      account_management: Account Management
     confirmations:
       new: Send another confirmation email
     create_account_with_sp:

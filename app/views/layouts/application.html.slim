@@ -47,7 +47,9 @@ html lang="#{I18n.locale}" class='no-js'
     - if Figaro.env.newrelic_browser_key.present? && Figaro.env.newrelic_browser_app_id.present?
       = render 'shared/newrelic/browser_instrumentation'
 
-  body class="#{Rails.env}-env site sm-bg-light-blue"
+  - body_class = yield(:body_class) if content_for?(:body_class)
+
+  body class="#{Rails.env}-env site sm-bg-light-blue #{body_class}"
     .site-wrap
       = render 'shared/i18n_mode' if FeatureManagement.enable_i18n_mode?
       = render 'shared/no_pii_banner' if FeatureManagement.no_pii_mode?

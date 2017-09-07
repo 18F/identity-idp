@@ -73,6 +73,14 @@ class AccountShow
     'accounts/personal_key_item_heading'
   end
 
+  def delete_account_action_partial
+    'accounts/actions/delete_account'
+  end
+
+  def delete_account_item_partial
+    'accounts/delete_account_item_heading'
+  end
+
   def recent_event_partial
     'accounts/event_item'
   end

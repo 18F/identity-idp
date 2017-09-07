@@ -53,8 +53,16 @@ h1.hide = t('titles.account')
 = render @view_model.pii_partial, decrypted_pii: @view_model.decrypted_pii
 
 .mb3.profile-info-box
-  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps
     = t('headings.account.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
   - @view_model.recent_events.each do |event|
     = render event.event_partial, event: event
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.account.account_management')
+
+  = render 'account_item',
+    name: render(@view_model.delete_account_item_partial),
+    action: @view_model.delete_account_action_partial
