@@ -14,13 +14,17 @@ class TwilioService
   end
 
   def place_call(params = {})
-    params = params.reverse_merge(from: from_number)
-    @client.calls.create(params)
+    sanitize_errors do
+      params = params.reverse_merge(from: from_number)
+      client.calls.create(params)
+    end
   end
 
   def send_sms(params = {})
-    params = params.reverse_merge(from: from_number)
-    @client.messages.create(params)
+    sanitize_errors do
+      params = params.reverse_merge(from: from_number)
+      client.messages.create(params)
+    end
   end
 
   def account
@@ -32,6 +36,8 @@ class TwilioService
   end
 
   private
+
+  attr_reader :client
 
   def proxy_addr
     Figaro.env.proxy_addr
@@ -59,5 +65,16 @@ class TwilioService
 
   def random_account
     TWILIO_ACCOUNTS.sample
+  end
+
+  def sanitize_errors
+    yield
+  rescue Twilio::REST::RestError => error
+    sanitize_phone_number(error.message)
+    raise
+  end
+
+  def sanitize_phone_number(str)
+    str.gsub!(/\+[\d\(\)\- ]+/) { |match| match.gsub(/\d/, '#') }
   end
 end

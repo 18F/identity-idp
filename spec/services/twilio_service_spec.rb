@@ -101,6 +101,21 @@ describe TwilioService do
       expect(msg.url).to eq('https://twimlets.com/say?merp')
       expect(msg.from).to match(/(\+19999999999|\+12222222222)/)
     end
+
+    it 'sanitizes phone numbers embedded in error messages from Twilio' do
+      raw_message = 'Account not authorized to call +12345.'
+      error_code = '21211'
+      status_code = 400
+      sanitized_message = 'Account not authorized to call +#####.'
+
+      service = TwilioService.new
+
+      expect(service.send(:client).calls).to receive(:create).
+        and_raise(Twilio::REST::RestError.new(raw_message, error_code, status_code))
+
+      expect { service.place_call(to: '+1 (888) 555-5555', url: 'https://twimlet.com') }.
+        to raise_error(Twilio::REST::RestError, sanitized_message)
+    end
   end
 
   describe '#send_sms' do
@@ -120,6 +135,21 @@ describe TwilioService do
         expect(msg.to).to eq('5555555555')
         expect(msg.body).to eq('!!CODE1!!')
       end
+    end
+
+    it 'sanitizes phone numbers embedded in error messages from Twilio' do
+      raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
+      error_code = '21211'
+      status_code = 400
+      sanitized_message = "The 'To' number +# (###) ###-#### is not a valid phone number"
+
+      service = TwilioService.new
+
+      expect(service.send(:client).messages).to receive(:create).
+        and_raise(Twilio::REST::RestError.new(raw_message, error_code, status_code))
+
+      expect { service.send_sms(to: '+1 (888) 555-5555', body: 'test') }.
+        to raise_error(Twilio::REST::RestError, sanitized_message)
     end
   end
 end
