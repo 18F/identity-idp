@@ -33,6 +33,8 @@ module Upaya
       event.payload.except(:params, :headers)
     end
 
+    config.middleware.insert_before 0, Rack::HeadersFilter
+
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
