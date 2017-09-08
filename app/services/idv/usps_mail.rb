@@ -2,7 +2,6 @@ module Idv
   class UspsMail
     MAX_MAIL_EVENTS = Figaro.env.max_mail_events.to_i
     MAIL_EVENTS_WINDOW_DAYS = Figaro.env.max_mail_events_window_in_days.to_i
-    USPS_CONFIRMATION_WINDOW_DAYS = Figaro.env.usps_confirmation_max_days.to_i
 
     def initialize(current_user)
       @current_user = current_user
@@ -15,12 +14,6 @@ module Idv
 
     def any_mail_sent?
       user_mail_events.any?
-    end
-
-    def most_recent_otp_expired?
-      return false unless any_mail_sent?
-
-      user_mail_events.first.updated_at < USPS_CONFIRMATION_WINDOW_DAYS.days.ago
     end
 
     private

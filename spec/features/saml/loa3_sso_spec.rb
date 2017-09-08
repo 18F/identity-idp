@@ -116,13 +116,12 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
   context 'continuing verification' do
     let(:user) { profile.user }
-    let(:otp) { 'abc123' }
     let(:profile) do
       create(
         :profile,
         deactivation_reason: :verification_pending,
         phone_confirmed: phone_confirmed,
-        pii: { otp: otp, ssn: '6666', dob: '1920-01-01' }
+        pii: { ssn: '6666', dob: '1920-01-01' }
       )
     end
 
@@ -148,7 +147,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(current_path).to eq(account_path)
+          expect(current_path).to eq(verify_come_back_later_path)
         end
 
         it 'after signing out' do
@@ -168,7 +167,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(current_path).to eq(account_path)
+          expect(current_path).to eq(verify_come_back_later_path)
         end
       end
     end

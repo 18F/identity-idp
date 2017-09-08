@@ -5,18 +5,21 @@ RSpec.describe Users::VerifyAccountController do
 
   let(:has_pending_profile) { true }
   let(:success) { true }
-  let(:otp) { 'abc123' }
+  let(:otp) { 'ABC123' }
   let(:submitted_otp) { otp }
-  let(:pii_attributes) { Pii::Attributes.new_from_hash(otp: otp) }
   let(:pending_profile) { build(:profile) }
 
   before do
     user = stub_sign_in
     decorated_user = stub_decorated_user_with_pending_profile(user)
+    create(
+      :usps_confirmation_code,
+      profile: pending_profile,
+      otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)
+    )
     allow(decorated_user).to receive(:needs_profile_phone_verification?).and_return(false)
     allow(decorated_user).to receive(:needs_profile_usps_verification?).
       and_return(has_pending_profile)
-    allow(controller).to receive(:decrypted_pii).and_return(pii_attributes)
   end
 
   describe '#index' do

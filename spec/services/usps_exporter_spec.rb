@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe UspsExporter do
   let(:export_file) { Tempfile.new('usps_export.psv') }
+  let(:otp) { 'ABC123' }
   let(:pii_attributes) do
     Pii::Attributes.new_from_hash(
       first_name: { raw: 'Söme', norm: 'Some' },
@@ -10,8 +11,7 @@ describe UspsExporter do
       address2: { raw: 'Sté 123', norm: 'Ste 123' },
       city: { raw: 'Sömewhere', norm: 'Somewhere' },
       state: { raw: 'KS', norm: 'KS' },
-      zipcode: { raw: '66666-1234', norm: '66666-1234' },
-      otp: { raw: 123, norm: 123 }
+      zipcode: { raw: '66666-1234', norm: '66666-1234' }
     )
   end
   let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
@@ -28,7 +28,7 @@ describe UspsExporter do
       pii_attributes.city.norm,
       pii_attributes.state.norm,
       pii_attributes.zipcode.norm,
-      pii_attributes.otp.norm,
+      otp,
       "#{current_date}, #{now.year}",
       "#{due_date}, #{due.year}",
       service_provider.friendly_name,
@@ -52,7 +52,13 @@ describe UspsExporter do
 
   describe '#run' do
     before do
-      UspsConfirmationMaker.new(pii: pii_attributes, issuer: service_provider.issuer).perform
+      confirmation_maker = UspsConfirmationMaker.new(
+        pii: pii_attributes,
+        issuer: service_provider.issuer,
+        profile: build(:profile)
+      )
+      allow(confirmation_maker).to receive(:otp).and_return(otp)
+      confirmation_maker.perform
     end
 
     it 'creates encrypted file' do

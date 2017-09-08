@@ -2,7 +2,7 @@ module Pii
   Attributes = Struct.new(
     :first_name, :middle_name, :last_name,
     :address1, :address2, :city, :state, :zipcode,
-    :ssn, :dob, :phone, :otp,
+    :ssn, :dob, :phone,
     :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode
   ) do
     def self.new_from_hash(hash)
