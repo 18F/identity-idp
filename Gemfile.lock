@@ -415,6 +415,7 @@ GEM
     rack-attack (5.0.1)
       rack
     rack-cors (0.4.1)
+    rack-headers_filter (0.0.1)
     rack-mini-profiler (0.10.5)
       rack (>= 1.2.0)
     rack-protection (2.0.0)
@@ -714,6 +715,7 @@ DEPENDENCIES
   proofer!
   pry-byebug
   rack-cors
+  rack-headers_filter
   rack-mini-profiler
   rack-test
   rack-timeout
