@@ -103,6 +103,7 @@ describe TwilioService do
     end
 
     it 'sanitizes phone numbers embedded in error messages from Twilio' do
+      TwilioService.telephony_service = FakeVoiceCall
       raw_message = 'Account not authorized to call +12345.'
       error_code = '21211'
       status_code = 400
@@ -138,6 +139,7 @@ describe TwilioService do
     end
 
     it 'sanitizes phone numbers embedded in error messages from Twilio' do
+      TwilioService.telephony_service = FakeSms
       raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
       error_code = '21211'
       status_code = 400
