@@ -3,9 +3,10 @@ postgresql: &postgresql
   encoding: utf8
   database: upaya_<%= Rails.env %>
   port: 5432
+  username: <%= ENV['DOCKER_DB_USER'] %>
 
 defaults: &defaults
-  host: localhost
+  host: <%= ENV['DOCKER_DB_HOST'] || 'localhost' %>
   pool: 5
   <<: *postgresql
   # timeout settings
