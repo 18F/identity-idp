@@ -26,12 +26,6 @@ RSpec.describe Health::WorkersController do
       expect(json['statuses'].first['healthy']).to eq(true)
     end
 
-    it 'enqueues dummy jobs' do
-      expect(WorkerHealthChecker).to receive(:enqueue_dummy_jobs)
-
-      action
-    end
-
     context 'with all healthy statuses' do
       it 'is a 200' do
         action
