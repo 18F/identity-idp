@@ -26,6 +26,9 @@ password_max_attempts: '3'
 # If a queue does not have a healthy job after this many seconds, report it as unhealthy
 queue_health_check_dead_interval_seconds: '240'
 
+# How often to enqueue simple jobs to make sure the background queues are running
+queue_health_check_frequency_seconds: '120'
+
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
