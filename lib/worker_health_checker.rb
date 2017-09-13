@@ -2,9 +2,6 @@
 module WorkerHealthChecker
   module_function
 
-  # Reported directly to NewRelic when a queue appears unhealthy
-  class QueueHealthError < StandardError; end
-
   # Sidekiq server-side middleware that wraps jobs and marks the queues as healthy
   # when a job completes successfully
   class Middleware
@@ -26,12 +23,12 @@ module WorkerHealthChecker
   end
 
   Summary = Struct.new(:statuses) do
-    def all_healthy?
-      statuses.all?(&:healthy)
+    def healthy?
+      statuses.all?(&:healthy?)
     end
 
     def to_h
-      super.merge(all_healthy: all_healthy?)
+      super.merge(all_healthy: healthy?) # monitoring currently depends on "all_healthy"
     end
 
     def as_json(*args)
@@ -51,19 +48,8 @@ module WorkerHealthChecker
     @_queues ||= YAML.load_file(Rails.root.join('config', 'sidekiq.yml'))[:queues]
   end
 
-  # Called on an interval to check background queue health and report errors to NewRelic
-  # @see deploy/schedule.rb
-  def check
-    Rails.logger.info(source: "#{self}.check", event: 'checking background queues')
-    statuses.reject(&:healthy?).each do |status|
-      NewRelic::Agent.notice_error(
-        QueueHealthError.new("Background queue #{status.queue} is unhealthy")
-      )
-    end
-  end
-
   # @return [Summary]
-  def summary(now: Time.zone.now)
+  def check(now: Time.zone.now)
     Summary.new(statuses(now: now))
   end
 
