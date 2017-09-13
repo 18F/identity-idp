@@ -4,6 +4,9 @@ require 'sidekiq_logger_formatter'
 Sidekiq::Logging.logger.level = Logger::WARN
 Sidekiq::Logging.logger.formatter = SidekiqLoggerFormatter.new
 
+# for non-production logging, use:
+# Rails.logger = Sidekiq::Logging.logger
+
 redis_connection = proc do
   EncryptedSidekiqRedis.new(url: Figaro.env.redis_url)
 end
