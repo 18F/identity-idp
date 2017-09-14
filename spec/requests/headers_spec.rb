@@ -12,4 +12,16 @@ RSpec.describe 'Headers' do
 
     expect(response.code.to_i).to eq(200)
   end
+
+  it 'does not blow up with bad formats in the headers' do
+    get root_path, headers: { 'Accept' => 'acunetix/wvs' }
+
+    expect(response.code.to_i).to eq(404)
+  end
+
+  it 'does not blow up with bad formats in the path' do
+    get '/fr/users/password/new.zip'
+
+    expect(response.code.to_i).to eq(404)
+  end
 end
