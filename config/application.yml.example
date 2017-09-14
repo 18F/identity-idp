@@ -144,7 +144,7 @@ production:
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
-  mandrill_api_token: '123abc'
+  mandrill_api_token: '' # Empty string to switch to SES
   newrelic_license_key: 'xxx'
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
