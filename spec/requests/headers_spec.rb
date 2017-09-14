@@ -6,4 +6,10 @@ RSpec.describe 'Headers' do
 
     expect(response.body).to_not include('evil.com')
   end
+
+  it 'does not blow up with a malicious host value' do
+    get root_path, headers: { 'Host' => "mTpvPME6'));select pg_sleep(9); --" }
+
+    expect(response.code.to_i).to eq(200)
+  end
 end
