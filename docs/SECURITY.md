@@ -31,7 +31,6 @@ public key.
 
 #### Network security
 
-We rely on [fail2ban](http://www.fail2ban.org/wiki/index.php/Main_Page) within [Rack::Attack](https://github.com/kickstarter/rack-attack) to identify malicious requestors and ban appropriately. Rack::Attack enables throttling for prevention of DoS attacks and mitigates abusive requests, allowing us to rely less on short-term, one-off hacks to block a particular attack.
 
 ```
 @jgrevich - relevant network security? 

@@ -29,7 +29,6 @@ Rails.application.configure do
 
   config.middleware.use RackSessionAccess::Middleware
   config.lograge.enabled = true
-  config.lograge.custom_options = ->(event) { event.payload }
 
   config.after_initialize do
     Bullet.enable = true

@@ -1,0 +1,23 @@
+.card {
+  background-color: $white;
+  max-width: $container-skinny-width;
+
+  &-wide {
+    max-width: 100%;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  @media #{$breakpoint-sm} {
+    border-radius: 5px;
+
+    &-wide {
+      margin-top: $space-4;
+      max-width: 100%;
+      padding-bottom: 0;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}

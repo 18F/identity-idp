@@ -2,7 +2,7 @@
 es:
   devise:
     confirmations:
-      already_confirmed: Su email ha sido confirmado. %{acción}
+      already_confirmed: Su email ha sido confirmado. %{action}
       confirmed: Usted ha confirmado su email.
       confirmed_but_must_set_password: Usted ha confirmado su email.
       send_instructions: En pocos minutos recibirá un email con instrucciones para

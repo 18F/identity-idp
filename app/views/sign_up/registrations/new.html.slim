@@ -11,6 +11,6 @@ p.mt-tiny.mb0#email-description = t('instructions.registration.email')
   p.mb-40p.mt1
     = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
 
-  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide mb4'
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide'
 
 = render 'shared/cancel', link: decorated_session.cancel_link_path

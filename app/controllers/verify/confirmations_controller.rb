@@ -42,7 +42,6 @@ module Verify
 
     def finish_idv_session
       @code = personal_key
-      idv_session.complete_session
       idv_session.personal_key = nil
       flash.now[:success] = t('idv.messages.confirm')
       flash[:allow_confirmations_continue] = true

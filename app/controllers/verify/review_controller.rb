@@ -77,6 +77,7 @@ module Verify
     def init_profile
       idv_session.cache_applicant_profile_id
       idv_session.cache_encrypted_pii(current_user.user_access_key)
+      idv_session.complete_session
     end
 
     def idv_params

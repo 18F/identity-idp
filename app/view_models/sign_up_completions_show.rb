@@ -1,5 +1,4 @@
 class SignUpCompletionsShow
-  include ActionView::Helpers::AssetTagHelper
   include ActionView::Helpers::TagHelper
 
   def initialize(loa3_requested:, decorated_session:)
@@ -36,10 +35,8 @@ class SignUpCompletionsShow
     )
   end
 
-  def image
-    image_tag(
-      helper.asset_url("user-signup-#{requested_loa}.svg"), width: 97, alt: '', class: 'mb2'
-    )
+  def image_name
+    "user-signup-#{requested_loa}.svg"
   end
 
   def requested_attributes_partial
@@ -60,9 +57,5 @@ class SignUpCompletionsShow
 
   def requested_loa
     loa3_requested ? 'loa3' : 'loa1'
-  end
-
-  def helper
-    ActionController::Base.helpers
   end
 end

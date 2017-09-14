@@ -1,8 +1,0 @@
-applications:
-- name: ssp-wip
-  memory: 64M
-  buildpack: https://github.com/cloudfoundry/staticfile-buildpack.git
-  directory: visible
-  root: _book/
-  env:
-    FORCE_HTTPS: true

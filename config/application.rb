@@ -11,8 +11,6 @@ module Upaya
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
-    # config.middleware.use Rack::Attack unless Figaro.env.disable_email_sending == 'true'
-
     config.browserify_rails.force = true
     config.browserify_rails.commandline_options = '-t [ babelify --presets [ es2015 ] ]'
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
@@ -27,6 +25,12 @@ module Upaya
       config.browserify_rails.paths << lambda do |path|
         path.start_with?(Rails.root.join('spec', 'javascripts').to_s)
       end
+    end
+
+    config.lograge.custom_options = lambda do |event|
+      event.payload[:timestamp] = event.time
+      event.payload[:uuid] = SecureRandom.uuid
+      event.payload.except(:params, :headers)
     end
 
     config.middleware.insert_before 0, Rack::Cors do

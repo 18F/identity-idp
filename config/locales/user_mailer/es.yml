@@ -4,10 +4,10 @@ es:
     contact_link_text: Contáctenos
     email_changed:
       help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.
-      intro: El email de su cuenta de {app} ha sido cambiado.
+      intro: El email de su cuenta de %{app} ha sido cambiado.
     help_link_text: Centro de Ayuda
     password_changed:
-      help: Si no realizó este cambio, visite el %{app} % {help_link} o el %{contact_link}.
+      help: Si no realizó este cambio, visite el %{app} %{help_link} o el %{contact_link}.
       intro: Tiene una contraseña nueva para su cuenta de %{app}.
     phone_changed:
       help: Si no desea cambiar su número de teléfono, visite el %{app} %{help_link}

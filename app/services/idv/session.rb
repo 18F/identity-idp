@@ -49,7 +49,7 @@ module Idv
     end
 
     def cache_applicant_profile_id
-      profile = profile_maker.profile
+      profile = profile_maker.save_profile
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
       self.personal_key = profile.personal_key
@@ -65,7 +65,7 @@ module Idv
     end
 
     def profile
-      @_profile ||= Profile.find(profile_id)
+      @_profile ||= Profile.find_by(id: profile_id)
     end
 
     def clear
