@@ -24,4 +24,10 @@ RSpec.describe 'Headers' do
 
     expect(response.code.to_i).to eq(404)
   end
+
+  it 'ASCII encodes UTF8 headers' do
+    get root_path, headers: { 'User-Agent' => 'Mózillá/5.0' }
+
+    expect(request.env['HTTP_USER_AGENT'].ascii_only?).to eq(true)
+  end
 end
