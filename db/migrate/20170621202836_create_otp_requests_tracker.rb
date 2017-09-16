@@ -1,4 +1,4 @@
-class CreateOtpRequestsTracker < ActiveRecord::Migration
+class CreateOtpRequestsTracker < ActiveRecord::Migration[4.2]
   def change
     create_table :otp_requests_trackers do |t|
       t.text :encrypted_phone
