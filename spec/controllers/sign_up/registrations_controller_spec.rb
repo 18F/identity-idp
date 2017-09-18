@@ -35,6 +35,13 @@ describe SignUp::RegistrationsController, devise: true do
 
       expect(response).to redirect_to account_path
     end
+
+    it 'gracefully handles invalid formats' do
+      @request.env['HTTP_ACCEPT'] = "nessus=bad_bad_value'"
+      get :new
+
+      expect(response.status).to eq(200)
+    end
   end
 
   describe '#create' do
