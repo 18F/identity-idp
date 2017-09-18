@@ -93,7 +93,7 @@ module IdvHelper
 
   def click_idv_cancel_modal
     within('.modal') do
-      click_on t('idv.buttons.cancel')
+      find('.btn.border-blue', visible: false).trigger('click')
     end
   end
 

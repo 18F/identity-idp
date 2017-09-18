@@ -23,7 +23,7 @@ fr:
       forgot: Vous avez oublié votre mot de passe?
     personal_key: Voici votre clé personnelle
     registrations:
-      enter_email: Commencer à créer le compte
+      enter_email: Choisissez une adresse e-mail
     session_timeout_warning: Vous avez besoin de plus de temps?
     sign_in_with_sp: Connectez-vous pour continuer à %{sp}
     sign_in_without_sp: Connexion

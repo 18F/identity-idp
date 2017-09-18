@@ -23,7 +23,7 @@ es:
       forgot: "¿Olvidó su contraseña?"
     personal_key: Aquí está su clave personal
     registrations:
-      enter_email: Empiece creando una cuenta
+      enter_email: Elige una dirección de correo electrónico
     session_timeout_warning: "¿Necesita más tiempo?"
     sign_in_with_sp: Iniciar sesión para continuar con %{sp}
     sign_in_without_sp: Iniciar sesión

@@ -4,7 +4,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
   include SamlAuthHelper
   include IdvHelper
 
-  def perform_id_verification_with_usps_without_confirming_code(user)
+  def perform_id_verification_without_activation(user)
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
     visit saml_authn_request
@@ -16,12 +16,21 @@ feature 'LOA3 Single Sign On', idv_job: true do
     click_idv_continue
     fill_out_financial_form_ok
     click_idv_continue
+  end
+
+  def perform_id_verification_with_usps_without_confirming_code(user)
+    perform_id_verification_without_activation(user)
     click_idv_address_choose_usps
     click_on t('idv.buttons.mail.send')
     fill_in :user_password, with: user.password
     click_submit_default
     click_acknowledge_personal_key
     click_link t('idv.buttons.return_to_account')
+  end
+
+  def cancel_verification
+    click_on t('links.cancel')
+    click_on t('idv.buttons.cancel')
   end
 
   def sign_out_user
@@ -66,14 +75,36 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
   context 'canceling verification' do
     context 'with js', js: true do
+      let(:warning_qualifier) { t('idv.cancel.warning_qualifier') }
+      let(:sp_name) { 'Your friendly Government Agency' }
+
+      it 'does not show the service provider name if not signed up via a service provider' do
+        sign_in_and_2fa_user
+        loa3_sp_session
+
+        visit verify_path
+        click_idv_begin
+        click_on t('links.cancel')
+
+        modal = page.find('.modal-warning')
+        expect(modal).to have_content(
+          t(
+            'idv.cancel.warning_point_no_sp',
+            warning_qualifier: warning_qualifier,
+            sp_name: sp_name
+          )
+        )
+      end
+
       it 'returns user to personal key page if they sign up via loa3' do
         user = create(:user, phone: '1 (111) 111-1111', personal_key: nil)
         sign_in_with_warden(user)
         loa3_sp_session
 
         visit verify_path
-        click_on t('links.cancel')
-        click_on t('idv.buttons.cancel')
+
+        click_idv_begin
+        cancel_verification
 
         expect(current_path).to eq(manage_personal_key_path)
       end
@@ -83,8 +114,9 @@ feature 'LOA3 Single Sign On', idv_job: true do
         loa3_sp_session
 
         visit verify_path
-        click_on t('links.cancel')
-        click_on t('idv.buttons.cancel')
+
+        click_idv_begin
+        cancel_verification
 
         expect(current_path).to match(account_path)
       end
@@ -97,6 +129,8 @@ feature 'LOA3 Single Sign On', idv_job: true do
         loa3_sp_session
 
         visit verify_path
+
+        click_idv_begin
         click_idv_cancel
 
         expect(current_path).to eq(manage_personal_key_path)
@@ -123,6 +157,40 @@ feature 'LOA3 Single Sign On', idv_job: true do
         phone_confirmed: phone_confirmed,
         pii: { ssn: '6666', dob: '1920-01-01' }
       )
+    end
+
+    let(:return_to_verify_button) { t('idv.buttons.return_to_verify') }
+
+    context 'having selected phone option' do
+      let(:phone_confirmed) { false }
+
+      it 'includes a button that will return the user to the activation option page' do
+        user = create(:user, :signed_up)
+        perform_id_verification_without_activation(user)
+        click_idv_address_choose_phone
+
+        expect(page).to have_link(return_to_verify_button)
+
+        click_link(return_to_verify_button)
+
+        expect(current_path).to eq verify_address_path
+      end
+    end
+
+    context 'having selected mail option' do
+      let(:phone_confirmed) { false }
+
+      it 'includes a button that will return the user to the activation option page' do
+        user = create(:user, :signed_up)
+        perform_id_verification_without_activation(user)
+        click_idv_address_choose_usps
+
+        expect(page).to have_link(return_to_verify_button)
+
+        click_link(return_to_verify_button)
+
+        expect(current_path).to eq verify_address_path
+      end
     end
 
     context 'having previously selected USPS verification' do

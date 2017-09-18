@@ -28,12 +28,10 @@ p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
                  t('forms.buttons.continue'),
                  disabled: true,
                  class: 'col-12 mb3 js-finance-submit'
-
-.mb-tiny.bold = t('idv.messages.finance.no_account')
+.mb1
+  = link_to t('idv.messages.finance.no_account'), verify_finance_path, class: 'tiny'
 p.mb3
   = t('idv.messages.finance.no_account_info')
-  '
-  = link_to t('idv.form.use_ccn'), verify_finance_path
 
 = render 'shared/cancel', link: verify_cancel_path
 = render @view_model.modal_partial, view_model: @view_model

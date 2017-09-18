@@ -26,6 +26,8 @@ engines:
     - 'app/forms/password_form.rb'
     - 'lib/user_flow_exporter.rb'
     - 'lib/rspec/formatters/user_flow_formatter.rb'
+    - 'app/decorators/service_provider_session_decorator.rb'
+    - 'app/decorators/session_decorator.rb'
   eslint:
     enabled: true
   fixme:

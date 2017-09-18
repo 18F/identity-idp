@@ -3,14 +3,18 @@ en:
   sign_up:
     buttons:
       cancel: Cancel and delete your information
-      continue: Continue account creation
+      continue: Continue creating an account
     cancel:
       modal_header: Are you sure you want to cancel?
       success: Your account has been deleted. We did not save your information.
       warning_header: If you cancel now
+      warning_qualifier: may not
+      warning_point: You %{warning_qualifier} be able to access your information at
+        %{sp_name} online.
+      warning_point_no_sp: You %{warning_qualifier} be able to access your information
+        online.
       warning_points:
-      - You won’t have a login.gov account
-      - We won't keep a record of your email address, password, and phone number
-      - You won't be able to securely access your information using login.gov
+      - You won’t have a login.gov account.
+      - Login.gov won't store your email address, password, and phone number.
     registrations:
       create_account: Create an account

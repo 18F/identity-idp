@@ -5,24 +5,27 @@ es:
       activate_by_mail: Acitive por email
       activate_by_phone: Active por teléfono
       cancel: Cancele y regrese a su perfil
-      continue: Continúe la verificación de identidad
+      continue: Continuar comprobando su cuenta
       continue_plain: Continúe
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
       return_to_account: NOT TRANSLATED YET
       return_to_sp: NOT TRANSLATED YET
+      return_to_verify: "‹ Volver a ver todas las opciones para probar mi identidad"
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
       warning_header: Si usted cancela ahora
+      warning_qualifier: no pueda
+      warning_point: Login.gov no podrá verificar su identidad y es posible que %{warning_qualifier}
+        acceder a su información en %{sp_name}.
+      warning_point_no_sp: Login.gov no podrá verificar su identidad y es posible
+        que %{warning_qualifier} acceder a su información.
       warning_points:
-      - No podremos verificar su identidad
-      - No mantendremos un registro de su nombre, dirección, fecha de nacimiento o
-        número de Seguro Social
-      - No podrá acceder a su información con seguridad usando login.gov
-      - Usted todavía tiene una cuenta de login.gov con su email
-      - Puede administrar esa cuenta en su página de perfil
+      - Login.gov no mantendrá un registro de su nombre, dirección, fecha de nacimiento,
+        o número de Seguro Social.
+      - Aún tendrá una cuenta de login.gov.
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
@@ -39,7 +42,8 @@ es:
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         zipcode: 'Su código postal debe ser ingresado como #####-####'
     form:
-      activate_by_mail: Activar mi cuenta por correo.
+      activate_by_mail: Obtener un código por carta.
+      activate_by_phone: Verifique su dirección por teléfono.
       address1: Dirección de calle 1
       address2: Dirección de calle 2 (opcional)
       auto_loan: Número de cuenta de préstamo de auto
@@ -62,7 +66,6 @@ es:
       select_financial_account: Seleccione una cuenta financiera...
       ssn_label_html: Número de Seguro Social %{tooltip}
       state: Estado
-      use_ccn: Proporcione el número de tarjeta de crédito >
       use_financial_account: "¿No tiene una tarjeta de crédito?"
       zipcode: Código postal
     index:
@@ -111,8 +114,10 @@ es:
       dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
       dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
       finance:
-        disclaimer: Al continuar acepta que %{app_name} compare la información de
-          la cuenta que proporciona con fuentes de terceros para verificar su identidad.
+        disclaimer_qualifier: Nunca
+        disclaimer: Al continuar, acepta que login.gov compara la información de la
+          cuenta que proporciona con fuentes de terceros de confianza para verificar
+          su identidad. %{disclaimer_qualifier} le cobraremos.
         hint: Puede utilizar Mastercard, Visa, Diner's Club o JCB.
         intro_account: Ayúdenos a verificar su identidad proporcionando información
           sobre un préstamo de auto, una hipoteca o un número de préstamo sobre el
@@ -130,7 +135,7 @@ es:
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
-        phone_number_html: NOT TRANSLATED YET
+        phone_number_html: Enviaremos un código a <strong>%{phone}</strong>
       personal_details_verified: "¡Detalles personales verificados!"
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
@@ -214,8 +219,8 @@ es:
       intro: Ayúdenos a identificarlo
       mail:
         resend: "¿Desea otra carta?"
-        verify: "¿Desea una carta?"
-      otp_delivery_method: NOT TRANSLATED YET
+        verify: Verifique su dirección por carta
+      otp_delivery_method: Obtener un código por teléfono
       phone: Número de teléfono del registro
       review: Revise y envíe
       select_verification: Active su cuenta

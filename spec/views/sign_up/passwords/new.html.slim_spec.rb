@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 describe 'sign_up/passwords/new.html.slim' do
+  include DecoratedSessionHelper
+
+  let(:sp_name) { '🔒🌐💻' }
+
   before do
     user = build_stubbed(:user)
     allow(view).to receive(:current_user).and_return(nil)
@@ -8,6 +12,9 @@ describe 'sign_up/passwords/new.html.slim' do
     allow(view).to receive(:request_id).and_return(nil)
 
     @password_form = PasswordForm.new(user)
+
+    allow(view).to receive(:decorated_session).and_return(decorated_session)
+    allow(decorated_session).to receive(:sp_name).and_return(sp_name)
 
     render
   end
