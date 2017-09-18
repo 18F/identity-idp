@@ -90,6 +90,7 @@ Rails.application.routes.draw do
     get '/manage/phone' => 'users/phones#edit'
     match '/manage/phone' => 'users/phones#update', via: %i[patch put]
     get '/manage/personal_key' => 'users/personal_keys#show', as: :manage_personal_key
+    post '/account/personal_key' => 'users/personal_keys#create', as: :create_new_personal_key
     post '/manage/personal_key' => 'users/personal_keys#update'
 
     get '/otp/send' => 'users/two_factor_authentication#send_code'

@@ -39,7 +39,7 @@ feature 'Password recovery via personal key', idv_job: true do
 
     expect(page).not_to have_content(t('headings.account.verified_account'))
 
-    visit reactivate_account_path
+    click_link t('account.index.reactivation.link')
     click_on t('links.account.reactivate.without_key')
     click_on t('forms.buttons.continue')
     click_idv_begin
@@ -48,30 +48,6 @@ feature 'Password recovery via personal key', idv_job: true do
 
     expect(current_path).to eq(account_path)
     expect(page).to have_content(t('headings.account.verified_account'))
-  end
-
-  scenario 'resets password, makes personal key, attempts reactivate profile', email: true do
-    allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-
-    _personal_key = personal_key_from_pii(user, pii)
-
-    trigger_reset_password_and_click_email_link(user.email)
-
-    reset_password_and_sign_back_in(user, new_password)
-    click_submit_default
-
-    visit manage_personal_key_path
-
-    new_personal_key = scrape_personal_key
-    click_acknowledge_personal_key
-
-    expect(current_path).to eq reactivate_account_path
-
-    click_on t('links.account.reactivate.with_key')
-    fill_in 'personal_key', with: new_personal_key
-    click_on t('forms.buttons.continue')
-
-    expect(page).to have_content t('errors.messages.personal_key_incorrect')
   end
 
   scenario 'resets password, uses personal key as 2fa', email: true do

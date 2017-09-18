@@ -59,11 +59,9 @@ describe 'sign_up/personal_keys/show.html.slim' do
     expect(rendered).to have_content(t('users.personal_key.print'))
   end
 
-  it 'displays a button to refresh the personal key' do
+  it 'displays a button to get a new personal key' do
     render
-    expect(rendered).to have_link(
-      t('users.personal_key.get_another'),
-      href: manage_personal_key_path(resend: true)
-    )
+    expect(rendered).to have_xpath("//input[@value='#{t('users.personal_key.get_another')}']")
+    expect(rendered).to have_xpath("//form[@action='#{sign_up_personal_key_path}']")
   end
 end

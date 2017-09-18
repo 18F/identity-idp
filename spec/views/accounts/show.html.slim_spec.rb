@@ -65,7 +65,8 @@ describe 'accounts/show.html.slim' do
 
       expect(rendered).to have_content t('account.items.personal_key')
       expect(rendered).
-        to have_link(t('account.links.regenerate_personal_key'), href: manage_personal_key_path)
+        to have_button t('account.links.regenerate_personal_key')
+      expect(rendered).to have_xpath("//form[@action='#{create_new_personal_key_url}']")
     end
   end
 
