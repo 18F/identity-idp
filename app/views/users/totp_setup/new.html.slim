@@ -26,7 +26,7 @@ ul.list-reset
       = accordion('totp-info', t('instructions.mfa.authenticator.accordion_header'),
         wrapper_css: 'mb2 col-12 fs-16p') do
         .center
-          = image_tag @qrcode, alt: t('users.totp_setup.new.qr_img_alt')
+          = image_tag @qrcode, alt: t('users.totp_setup.new.qr_img_alt'), skip_pipeline: true
   li.py2.border-top
     .mb2
       .mr1.inline-block.circle.circle-number.bg-blue.white

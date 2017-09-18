@@ -1,5 +1,6 @@
 @import 'fonts';
-
-@import 'identity-style-guide/src/css/app';
-
+@import 'variables/colors';
+@import 'variables/app';
+@import 'vendor';
+@import 'components/all';
 @import 'print';

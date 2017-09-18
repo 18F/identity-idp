@@ -6,7 +6,7 @@ es:
       activate_by_phone: Active por teléfono
       cancel: Cancele y regrese a su perfil
       continue: Continúe la verificación de identidad
-      help: Continúe con el Centro de Ayuda
+      continue_plain: Continúe
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
@@ -26,7 +26,7 @@ es:
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
-      finance_number_length: El número debe estar entre los dígitos %{mínimo} y %{máximo}.
+      finance_number_length: El número debe estar entre los dígitos %{minimum} y %{maximum}.
       hardfail: No pudimos verificar su identidad en este momento.
       incorrect_password: La contraseña que ingresó no es correcta.
       invalid_ccn: El número de la tarjeta de crédito debe ser de sólo los últimos
@@ -52,7 +52,7 @@ es:
         vivienda
       last_name: Apellido
       mortgage: Número de la cuenta de préstamo hipotecario
-      no_alternate_phone_html: No tengo otro número de teléfono. %{enlazar}
+      no_alternate_phone_html: No tengo otro número de teléfono. %{link}
       password: Contraseña
       personal_details: Detalles personales
       phone: Teléfono
@@ -123,8 +123,8 @@ es:
         no_account: "¿Desea usar una tarjeta de crédito?"
         no_account_info: Ayúdenos a verificar su identidad proporcionando los últimos
           8 dígitos de su tarjeta de crédito.
-      hardfail: No podemos verificar su identidad en este momento.
-      hardfail4: También puede ir a %{sp} para obtener más ayuda y acceder a los servicios.
+      hardfail: NOT TRANSLATED YET
+      hardfail4_html: NOT TRANSLATED YET
       help_center: Visite nuestro Centro de Ayuda para obtener más información sobre
         la verificación de su cuenta.
       loading: NOT TRANSLATED YET
@@ -145,19 +145,20 @@ es:
           su contraseña de un uso único, siempre y cuando cumpla con los criterios
           anteriores.
         us_country_code: NOT TRANSLATED YET
+      return_to_profile: NOT TRANSLATED YET
       review:
         financial_info: "¿Dónde está la información de mi cuenta financiera?"
-        info_verified_html: Encontramos registros que coinciden con su %{teléfono_mensaje}
+        info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
-        utilizar su cuenta en %{sp_nombre} hasta que la active ingresando un código
+        utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
         de confirmación.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         pii: información personal
-        success: Encontramos registros que coinciden con su %{pii_mensaje}
+        success: Encontramos registros que coinciden con su %{pii_message}
       usps:
         bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección

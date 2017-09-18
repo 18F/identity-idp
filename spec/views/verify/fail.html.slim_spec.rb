@@ -17,7 +17,7 @@ describe 'verify/fail.html.slim' do
 
       expect(view).to render_template(partial: 'verify/_hardfail4')
       expect(rendered).to have_content(
-        t('idv.messages.hardfail4', sp: @decorated_session.sp_name)
+        strip_tags(t('idv.messages.hardfail4_html', sp: @decorated_session.sp_name))
       )
     end
   end
@@ -30,7 +30,7 @@ describe 'verify/fail.html.slim' do
     it 'displays the null partial' do
       render
 
-      expect(view).to render_template(partial: 'shared/_null')
+      expect(view).to render_template(partial: 'verify/_no_sp_hardfail')
     end
   end
 end

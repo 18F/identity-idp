@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: 889aad815bda2ff2a41cd2b108e2afae7f50d8b8
+  revision: 8021646f4a67216b0a1bdb99e501ad652104f889
   branch: master
   specs:
     equifax (1.0.0)
@@ -712,7 +712,6 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
-  rack-attack
   rack-cors
   rack-mini-profiler
   rack-test
@@ -759,4 +758,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.15.3
+   1.15.4

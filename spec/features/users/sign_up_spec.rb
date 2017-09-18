@@ -19,7 +19,7 @@ feature 'Sign Up' do
     end
 
     it 'redirects user to the home page' do
-      expect(current_path).to eq(root_path)
+      expect(current_path).to eq root_path
     end
   end
 
@@ -35,6 +35,14 @@ feature 'Sign Up' do
       click_on t('links.cancel_account_creation')
 
       expect(current_path).to eq root_path
+    end
+  end
+
+  context 'user cancels with language preference set' do
+    it 'redirects user to the translated home page' do
+      visit sign_up_email_path(locale: 'es')
+      click_on t('links.cancel')
+      expect(current_path).to eq '/es'
     end
   end
 

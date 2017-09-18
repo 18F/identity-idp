@@ -22,6 +22,22 @@ RSpec.describe 'I18n' do
     )
   end
 
+  it 'does not have keys with missing interpolation arguments' do
+    missing_interpolation_argument_keys = []
+
+    i18n.data[i18n.base_locale].select_keys do |key, _node|
+      next if i18n.t(key).is_a?(Array) || i18n.t(key).nil?
+
+      interpolation_arguments = i18n.locales.map do |locale|
+        extract_interpolation_arguments i18n.t(key, locale)
+      end.compact
+
+      missing_interpolation_argument_keys.push(key) if interpolation_arguments.uniq.length > 1
+    end
+
+    expect(missing_interpolation_argument_keys).to be_empty
+  end
+
   root_dir = File.expand_path(File.join(File.dirname(__FILE__), '../'))
 
   Dir[File.join(root_dir, '/config/locales/**/*.yml')].each do |full_path|
@@ -62,6 +78,12 @@ RSpec.describe 'I18n' do
         expect(File.read(full_path)).to eq(normalized_yaml)
       end
     end
+  end
+
+  def extract_interpolation_arguments(translation)
+    return if translation == 'NOT TRANSLATED YET'
+
+    translation.scan(I18n::INTERPOLATION_PATTERN).map(&:compact).map(&:first).to_set
   end
 
   def flatten_hash(hash, parent_keys: [], out_hash: {}, &block)

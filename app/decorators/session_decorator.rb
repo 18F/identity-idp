@@ -1,5 +1,6 @@
 class SessionDecorator
   include Rails.application.routes.url_helpers
+  include LocaleHelper
 
   def return_to_service_provider_partial
     'shared/null'
@@ -26,7 +27,7 @@ class SessionDecorator
   end
 
   def idv_hardfail4_partial
-    'shared/null'
+    'verify/no_sp_hardfail'
   end
 
   def sp_name; end
@@ -38,6 +39,6 @@ class SessionDecorator
   def requested_attributes; end
 
   def cancel_link_path
-    root_path
+    root_path(locale: locale_url_param)
   end
 end

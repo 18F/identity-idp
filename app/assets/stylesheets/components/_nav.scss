@@ -1,0 +1,23 @@
+.nav-branded {
+  height: 56px;
+
+  a { line-height: 14px; }
+}
+
+.nav-nonbranded {
+  height: 38px;
+
+  a { line-height: 14px; }
+}
+
+@media #{$breakpoint-sm} {
+  .nav-branded,
+  .nav-nonbranded {
+    height: 72px;
+  }
+
+  .nav-nonbranded {
+    a { line-height: 17px; }
+    img { height: 17px; }
+  }
+}
