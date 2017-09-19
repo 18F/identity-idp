@@ -1,4 +1,7 @@
 class TwilioService
+  SMS_ERROR_CODE = 21_211
+  INVALID_ERROR_CODE = 21_614
+
   cattr_accessor :telephony_service do
     Twilio::REST::Client
   end

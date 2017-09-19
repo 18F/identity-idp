@@ -48,7 +48,7 @@ feature 'User edit' do
 
     scenario 'confirms with selected OTP delivery method and updates user delivery preference' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
-      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      allow(VoiceOtpSenderJob).to receive(:perform_now)
 
       fill_in 'Phone', with: '555-555-5000'
       choose 'Phone call'
@@ -59,7 +59,7 @@ feature 'User edit' do
 
       expect(current_path).to eq(login_otp_path(otp_delivery_preference: :voice))
       expect(SmsOtpSenderJob).to_not have_received(:perform_later)
-      expect(VoiceOtpSenderJob).to have_received(:perform_later)
+      expect(VoiceOtpSenderJob).to have_received(:perform_now)
       expect(user.otp_delivery_preference).to eq('voice')
     end
   end
