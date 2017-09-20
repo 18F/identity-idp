@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_url_options
-    { locale: locale_url_param }
+    { locale: locale_url_param, host: Figaro.env.domain_name }
   end
 
   private

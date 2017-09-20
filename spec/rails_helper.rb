@@ -41,6 +41,14 @@ RSpec.configure do |config|
     I18n.locale = :en
   end
 
+  config.before(:each, js: true) do
+    allow(Figaro.env).to receive(:domain_name).and_return('127.0.0.1')
+  end
+
+  config.before(:each, type: :controller) do
+    @request.host = Figaro.env.domain_name
+  end
+
   config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
   end
