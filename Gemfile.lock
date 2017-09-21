@@ -12,6 +12,13 @@ GIT
       savon
 
 GIT
+  remote: https://github.com/18F/identity-hostdata.git
+  revision: b439d933afd8b1be0c89b3d76bb76ac73c0797cf
+  branch: master
+  specs:
+    identity-hostdata (0.2.0)
+
+GIT
   remote: https://github.com/18F/identity-proofer-gem.git
   revision: b25f4f40e6b61fc9f586d870e5aaa90f1449c5d9
   branch: master
@@ -701,6 +708,7 @@ DEPENDENCIES
   http_accept_language
   httparty
   i18n-tasks
+  identity-hostdata!
   json-jwt
   lograge
   mandrill_dm
