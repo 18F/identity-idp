@@ -246,7 +246,6 @@ GEM
     equalizer (0.0.11)
     errbase (0.0.3)
     erubi (1.6.1)
-    erubis (2.7.0)
     eventmachine (1.2.5)
     excon (0.58.0)
     execjs (2.7.0)
@@ -305,11 +304,11 @@ GEM
       rack
       socksify
     i18n (0.8.6)
-    i18n-tasks (0.9.16)
+    i18n-tasks (0.9.18)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       easy_translate (>= 0.5.0)
-      erubis
+      erubi
       highline (>= 1.7.3)
       i18n
       parser (>= 2.2.3.0)
@@ -461,7 +460,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rainbow (2.2.2)
       rake
-    rake (12.0.0)
+    rake (12.1.0)
     randexp (0.1.7)
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
