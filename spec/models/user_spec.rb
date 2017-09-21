@@ -254,5 +254,9 @@ describe User do
 
       expect(User.find_with_email(' Test1@test.com ')).to eq user
     end
+
+    it 'does not blow up with malformed input' do
+      expect(User.find_with_email(foo: 'bar')).to eq(nil)
+    end
   end
 end
