@@ -3,7 +3,7 @@ module SignUp
     include UnconfirmedUserConcern
 
     def new
-      with_unconfirmed_user
+      validate_token
     end
 
     def create
@@ -21,6 +21,24 @@ module SignUp
     end
 
     private
+
+    def process_successful_confirmation
+      if !@user.confirmed?
+        process_valid_confirmation_token
+        render_page
+      else
+        process_confirmed_user
+      end
+    end
+
+    def render_page
+      request_id = params.fetch(:_request_id, '')
+      render(
+        :new,
+        locals: { request_id: request_id, confirmation_token: @confirmation_token },
+        formats: :html
+      )
+    end
 
     def permitted_params
       params.require(:password_form).permit(:confirmation_token, :password, :request_id)

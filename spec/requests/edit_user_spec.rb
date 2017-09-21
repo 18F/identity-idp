@@ -28,7 +28,7 @@ describe 'user edits their account', email: true do
     it 'displays a notice informing the user their email has been confirmed when user confirms' do
       get parse_email_for_link(last_email, /confirmation_token/)
 
-      expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
+      expect(flash[:success]).to eq t('devise.confirmations.confirmed')
       expect(response).to render_template('user_mailer/email_changed')
     end
 
@@ -45,7 +45,7 @@ describe 'user edits their account', email: true do
       delete destroy_user_session_path
       get parse_email_for_link(last_email, /confirmation_token/)
 
-      expect(flash[:notice]).to eq t('devise.confirmations.confirmed')
+      expect(flash[:success]).to eq t('devise.confirmations.confirmed')
     end
   end
 end

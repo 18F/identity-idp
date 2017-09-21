@@ -9,6 +9,7 @@ es:
         confirmar el uso de su email.
       send_paranoid_instructions: En pocos minutos recibirá un email con instrucciones
         para confirmar el uso de su email.
+      sign_in: Inicie la sesión de nuevo.
     failure:
       already_authenticated: ''
       inactive: Su cuenta aún no está activada.
