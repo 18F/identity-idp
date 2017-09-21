@@ -535,7 +535,7 @@ GEM
       wasabi (~> 3.4)
     scrypt (3.0.5)
       ffi-compiler (>= 1.0, < 2.0)
-    secure_headers (3.6.7)
+    secure_headers (3.7.1)
       useragent
     securecompare (1.0.0)
     sexp_processor (4.10.0)
