@@ -167,6 +167,15 @@ production:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:pt':
+    acs_url: 'https://sp-sinatra.pt.login.gov/consume'
+    assertion_consumer_logout_service_url: 'https://sp-sinatra.pt.login.gov/slo_logout'
+    sp_initiated_login_url: 'https://sp-sinatra.pt.login.gov/test/saml'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_sinatra_demo'
+    attribute_bundle:
+      - email
+
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
     acs_url: 'https://sp.dev.login.gov/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://sp.dev.login.gov/auth/saml/logout'
@@ -180,16 +189,16 @@ production:
     attribute_bundle:
       - email
 
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-qa':
-    acs_url: 'https://sp.qa.login.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://sp.qa.login.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://sp.qa.login.gov/login'
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
+    acs_url: 'https://sp.demo.login.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.demo.login.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.demo.login.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
     agency: 'A Gov Agency'
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
-    return_to_sp_url: 'https://sp.qa.login.gov'
+    return_to_sp_url: 'https://sp.demo.login.gov'
     attribute_bundle:
       - email
 
@@ -206,16 +215,30 @@ production:
     attribute_bundle:
       - email
 
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
-    acs_url: 'https://sp.demo.login.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://sp.demo.login.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://sp.demo.login.gov/login'
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-pt':
+    acs_url: 'https://sp.pt.login.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.pt.login.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.pt.login.gov/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
     agency: 'A Gov Agency'
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
-    return_to_sp_url: 'https://sp.demo.login.gov'
+    return_to_sp_url: 'https://sp.pt.login.gov'
+    attribute_bundle:
+      - email
+
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-qa':
+    acs_url: 'https://sp.qa.login.gov/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.qa.login.gov/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.qa.login.gov/login'
+    block_encryption: 'aes256-cbc'
+    cert: 'sp_rails_demo'
+    agency: 'A Gov Agency'
+    friendly_name: 'Demo SP Application'
+    logo: 'generic.svg'
+    return_to_sp_url: 'https://sp.qa.login.gov'
     attribute_bundle:
       - email
 
@@ -280,6 +303,18 @@ production:
     acs_url: 'https://dashboard.int.login.gov/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'https://dashboard.int.login.gov/users/auth/saml/logout'
     sp_initiated_login_url: 'https://dashboard.int.login.gov/users/auth/saml'
+    block_encryption: 'aes256-cbc'
+    cert: 'identity_dashboard_cert'
+    attribute_bundle:
+      - email
+
+  'https://dashboard.pt.login.gov':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    logo: '18f.svg'
+    acs_url: 'https://dashboard.pt.login.gov/users/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://dashboard.pt.login.gov/users/auth/saml/logout'
+    sp_initiated_login_url: 'https://dashboard.pt.login.gov/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
     attribute_bundle:
