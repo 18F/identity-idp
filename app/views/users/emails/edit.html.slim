@@ -1,6 +1,5 @@
 - title t('titles.edit_info.email')
 
-
 h1.h3.my0 = t('headings.edit_info.email')
 = simple_form_for(@update_user_email_form, url: manage_email_path,
     html: { autocomplete: 'off', method: :patch, role: 'form' }) do |f|
