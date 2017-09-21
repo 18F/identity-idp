@@ -14,18 +14,8 @@ RSpec.describe HeadersFilter do
 
       middleware.call(env)
 
-      expect(env).to_not have_key('HTTP_HOST')
+      expect(env).to have_key('HTTP_HOST')
       expect(env).to_not have_key('HTTP_X_FORWARDED_HOST')
-    end
-
-    it 'encodes headers as 8 bit ASCII' do
-      env = {
-        'HTTP_USER_AGENT' => 'Mózillá/5.0',
-      }
-
-      middleware.call(env)
-
-      expect(env['HTTP_USER_AGENT'].ascii_only?).to eq(true)
     end
   end
 end
