@@ -9,6 +9,7 @@ fr:
         instructions pour confirmer votre adresse courriel.
       send_paranoid_instructions: Vous recevrez dans quelques instants un courriel
         avec des instructions pour confirmer votre adresse courriel.
+      sign_in: Veuillez vous connecter de nouveau.
     failure:
       already_authenticated: ''
       inactive: Votre compte n'est pas encore activé.

@@ -63,4 +63,22 @@ feature 'User edit' do
       expect(user.otp_delivery_preference).to eq('voice')
     end
   end
+
+  context "user A accesses create password page with user B's email change token" do
+    it "redirects to user A's account page", email: true do
+      sign_in_and_2fa_user(user)
+      visit manage_email_path
+      fill_in 'Email', with: 'user_b_new_email@test.com'
+      click_button 'Update'
+      confirmation_link = parse_email_for_link(last_email, /confirmation_token/)
+      token = confirmation_link.split('confirmation_token=').last
+      visit destroy_user_session_path
+      user_a = create(:user, :signed_up)
+      sign_in_and_2fa_user(user_a)
+      visit sign_up_enter_password_path(confirmation_token: token)
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to_not have_content user.email
+    end
+  end
 end

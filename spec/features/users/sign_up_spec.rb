@@ -80,4 +80,40 @@ feature 'Sign Up' do
       end
     end
   end
+
+  context 'user accesses password screen with already confirmed token', email: true do
+    it 'returns them to the home page' do
+      create(:user, :signed_up, confirmation_token: 'foo')
+
+      visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
+
+      expect(page).to have_current_path(root_path)
+
+      action = t('devise.confirmations.sign_in')
+      expect(page).
+        to have_content t('devise.confirmations.already_confirmed', action: action)
+    end
+  end
+
+  context 'user accesses password screen with invalid token', email: true do
+    it 'returns them to the resend email confirmation page' do
+      visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
+
+      expect(page).to have_current_path(sign_up_email_resend_path)
+
+      expect(page).
+        to have_content t('errors.messages.confirmation_invalid_token')
+    end
+  end
+
+  context "user A is signed in and accesses password creation page with User B's token" do
+    it "redirects to User A's account page" do
+      create(:user, :signed_up, email: 'userb@test.com', confirmation_token: 'foo')
+      sign_in_and_2fa_user
+      visit sign_up_enter_password_path(confirmation_token: 'foo')
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to_not have_content 'userb@test.com'
+    end
+  end
 end
