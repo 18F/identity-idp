@@ -1,34 +1,47 @@
 - title @view_model.title
 
 h1.h3.my0 = @view_model.title
-p.mt-tiny.mb0
-  = t('idv.messages.finance.intro_ccn_html',
-      intro_help_link: link_to(t('idv.messages.finance.intro_ccn_help'), MarketingSite.help_url))
+p.block.bold.mt2 = t('idv.messages.finance.intro_bank_account')
 
-= simple_form_for(@view_model.idv_form, url: verify_finance_path,
-    html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
-  = hidden_field_tag 'idv_finance_form[finance_type]', :ccn
+= form_tag
+  label.finance_option.block.p2.border.rounded-md.border-light-blue.mb2
+    .radio.mb2
+      = radio_button_tag 'asdf', :bank_account, true
+      span.indicator
+      span.blue = t('idv.form.finance_type.bank_account')
+    label.block.bold = t('idv.form.routing_number')
+    input.block.col-12.field.p1.mb2
+    label.block.bold = t('idv.form.bank_account')
+    input.block.col-12.field.p1.mb2
+  label.finance_option.block.p2.border.rounded-md.border-light-blue
+    .radio.mb2
+      = radio_button_tag 'asdf', :credit_card
+      span.indicator
+      span.blue = t('idv.form.finance_type.credit_card')
+    label.block.bold = t('idv.form.ccn')
+    p.italic.mb2 = t('idv.form.ccn_hint')
+    .clearfix
+      div.border.border-light-blue.col.col-2.h4.px0.py1.center
+        span.blue &#8226; &#8226; &#8226; &#8226;
+      span.col.col-1.bold.h4.p1.center -
+      div.border.border-light-blue.col.col-2.h4.px0.py1.center
+        span.blue &#8226; &#8226; &#8226; &#8226;
+      span.col.col-1.bold.h4.p1.center -
+      input.block.col.col-2.field.h4.p1.center
+      span.col.col-1.bold.h4.p1.center -
+      input.block.col.col-2.field.h4.p1.center
 
-  .mxn1.px1
-    - Idv::FinanceForm.ccn_inputs.each do |key, label, html_options|
-      = f.label key, label: label, class: 'block bold'
-      .col-12.sm-col-10
-        = f.input key,
-                  label: false,
-                  hint: t('idv.messages.finance.hint'),
-                        hint_html: { id: 'ccn-instructs', class: 'mb1 italic block' },
-                  required: false,
-                  wrapper_html: { data: { type: key } },
-                  wrapper_class: 'mb1',
-                  input_html: html_options.merge!('aria-describedby': 'ccn-instructs')
-        = link_to t('idv.form.use_financial_account'), verify_finance_other_path
+  .mb2.mt2
+    em
+      = t('idv.messages.finance.disclaimer_html', app_name: APP_NAME)
 
-      .mb2.mt3
-        em
-          = t('idv.messages.finance.disclaimer', app_name: APP_NAME)
+  = submit_tag t('forms.buttons.continue'), class: 'btn btn-primary col-6'
 
-      = f.button :submit, t('forms.buttons.continue'), class: 'col-6'
+p.mt2
+  = t('idv.messages.finance.use_another_account_number_html',
+      use_another_account_number_link: link_to(t('idv.messages.finance.use_another_account_number_link'), verify_finance_other_path))
 
 = render 'shared/cancel', link: verify_cancel_path
+
 
 = render @view_model.modal_partial, view_model: @view_model

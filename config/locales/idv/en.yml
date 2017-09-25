@@ -42,11 +42,16 @@ en:
       address1: Street address 1
       address2: Street address 2 (optional)
       auto_loan: Auto loan account number
+      bank_account: Account number
       ccn: Last 8 digits of a credit card
+      ccn_hint: You can use Mastercard, Visa, Diner's Club, or JCB.
       city: City
       dob: Date of birth
       dob_hint: 'example: 01/17/1964'
       first_name: First name
+      finance_type:
+        bank_account: Bank account (checking or savings)
+        credit_card: Credit card
       home_equity_line: Home equity line of credit account number
       last_name: Last name
       mortgage: Mortgage loan account number
@@ -57,11 +62,11 @@ en:
       phone_label_aside: Mobile or landline
       previous_address_add: Add previous address
       previous_address_html: Moved in the <strong>last 3 months</strong>?
+      routing_number: Routing number
       select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State
       use_ccn: Provide credit card number >
-      use_financial_account: Don't have a credit card?
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
@@ -113,18 +118,13 @@ en:
         again in %{hours} hours.
       hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       finance:
-        disclaimer: By continuing, you agree to let %{app_name} compare the account
+        disclaimer_html: By continuing, you agree to let %{app_name} compare the account
           information you provide with third-party sources in order to verify your
-          identity.
-        hint: You can use Mastercard, Visa, Diner's Club, or JCB.
-        intro_account: Help us verify your identity by providing an auto loan, mortgage,
-          or home equity loan number.
-        intro_ccn_help: how your information will be used
-        intro_ccn_html: Help us verify your identity by providing the last 8 digits
-          of a credit card. Learn more about %{intro_help_link}.
-        no_account: Want to use a credit card instead?
-        no_account_info: Help us verify your identity by providing the last 8 digits
-          of your credit card.
+          identity. We will <strong>never</strong> charge you.
+        intro_bank_account: Choose one of the following bank account options
+        use_another_account_number_html: I don't have a creidt card.
+          %{use_another_account_number_link}.
+        use_another_account_number_link: Provide another financial account number
       help_center: Visit our Help Center to learn more about verifying your account.
       loading: Verifying your identity
       mail_sent: Your letter is on its way
