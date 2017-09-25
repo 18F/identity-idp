@@ -16,7 +16,8 @@ describe PhoneNumberCapabilities do
 
     context 'voice is supported for the international code' do
       let(:phone) { '+55 (555) 555-5000' }
-      it { expect(subject.sms_only?).to eq(false) }
+      # pending while international voice is disabled for all international codes
+      xit { expect(subject.sms_only?).to eq(false) }
     end
 
     context 'voice is not supported for the international code' do
