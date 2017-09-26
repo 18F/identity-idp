@@ -4,20 +4,20 @@ h1.h3.my0 = @view_model.title
 p.block.bold.mt2 = t('idv.messages.finance.intro_bank_account')
 
 = form_tag
-  label.finance_option.block.p2.border.rounded-md.border-light-blue.mb2
+  label.block.p2.border.rounded-md.border-light-blue.mb2
     .radio.mb2
-      = radio_button_tag 'asdf', :bank_account, true
+      = radio_button_tag 'asdf', :bank_account
       span.indicator
       span.blue = t('idv.form.finance_type.bank_account')
     label.block.bold = t('idv.form.routing_number')
     input.block.col-12.field.p1.mb2
     label.block.bold = t('idv.form.bank_account')
     input.block.col-12.field.p1.mb2
-  label.finance_option.block.p2.border.rounded-md.border-light-blue
+  label.block.p2.border.rounded-md.border-light-blue
     .radio.mb2
       = radio_button_tag 'asdf', :credit_card
       span.indicator
-      span.blue = t('idv.form.finance_type.credit_card')
+      span.blue = t('idv.form.finance_type.ccn')
     label.block.bold = t('idv.form.ccn')
     p.italic.mb2 = t('idv.form.ccn_hint')
     .clearfix
@@ -42,6 +42,5 @@ p.mt2
       use_another_account_number_link: link_to(t('idv.messages.finance.use_another_account_number_link'), verify_finance_other_path))
 
 = render 'shared/cancel', link: verify_cancel_path
-
 
 = render @view_model.modal_partial, view_model: @view_model

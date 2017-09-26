@@ -50,8 +50,11 @@ en:
       dob_hint: 'example: 01/17/1964'
       first_name: First name
       finance_type:
+        auto_loan: Auto loan
         bank_account: Bank account (checking or savings)
-        credit_card: Credit card
+        ccn: Credit card
+        home_equity_line: Home equity line of credit
+        mortgage: Mortgage
       home_equity_line: Home equity line of credit account number
       last_name: Last name
       mortgage: Mortgage loan account number
@@ -122,9 +125,14 @@ en:
           information you provide with third-party sources in order to verify your
           identity. We will <strong>never</strong> charge you.
         intro_bank_account: Choose one of the following bank account options
-        use_another_account_number_html: I don't have a creidt card.
+        intro_other_account: Select another financial account number
+        use_another_account_number_html: I don't have any of these.
           %{use_another_account_number_link}.
         use_another_account_number_link: Provide another financial account number
+        use_bank_account_number_html: I don't want to use these accounts.
+          %{use_bank_account_number_link}.
+        use_bank_account_number_link: Provide a bank account or credit card number
+          instead
       help_center: Visit our Help Center to learn more about verifying your account.
       loading: Verifying your identity
       mail_sent: Your letter is on its way

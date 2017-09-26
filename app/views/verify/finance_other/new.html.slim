@@ -1,39 +1,40 @@
 - title @view_model.title
 
 h1.h3.my0 = @view_model.title
-p.mt-tiny.mb0 = t('idv.messages.finance.intro_account')
-= simple_form_for(@view_model.idv_form, url: verify_finance_path,
-    html: { autocomplete: 'off', method: 'put', role: 'form' }) do |f|
-  .select-alt.mb2
-    = f.collection_select(:finance_type, Idv::FinanceForm.finance_other_type_choices,
-      :first, :last,
-      { include_blank: t('idv.form.select_financial_account') },
-      class: 'col-12 field js-finance-choice-select')
-  .clearfix.mxn1
-    .col.col-12.sm-col-8.px1
-      = f.input :blank,
-                label: t('idv.form.select_financial_account'),
-                label_html: { class: 'hide' },
-                disabled: true,
-                wrapper_html: { class: 'js-finance-wrapper', data: { type: :blank } }
-      - Idv::FinanceForm.finance_other_type_inputs.each do |key, label, html_options|
-        = f.input key,
-                  label: label,
-                  label_html: { class: 'hide' },
-                  required: false,
-                  wrapper_html: { class: 'js-finance-wrapper', data: { type: key } },
-                  input_html: html_options
-    .col.col-12.sm-col-4.px1
-      = f.button :submit,
-                 t('forms.buttons.continue'),
-                 disabled: true,
-                 class: 'col-12 mb3 js-finance-submit'
+p.block.bold.mt2 = t('idv.messages.finance.intro_other_account')
 
-.mb-tiny.bold = t('idv.messages.finance.no_account')
-p.mb3
-  = t('idv.messages.finance.no_account_info')
-  '
-  = link_to t('idv.form.use_ccn'), verify_finance_path
+= form_tag
+  label.block.p2.border.rounded-md.border-light-blue.mb2
+    .radio.mb2
+      = radio_button_tag 'asdf', :auto_loan
+      span.indicator
+      span.blue = t('idv.form.finance_type.auto_loan')
+    label.block.bold = t('idv.form.auto_loan')
+    input.block.col-12.field.p1.mb2
+  label.block.p2.border.rounded-md.border-light-blue.mb2
+    .radio.mb2
+      = radio_button_tag 'asdf', :auto_loan
+      span.indicator
+      span.blue = t('idv.form.finance_type.mortgage')
+    label.block.bold = t('idv.form.mortgage')
+    input.block.col-12.field.p1.mb2
+  label.block.p2.border.rounded-md.border-light-blue.mb2
+    .radio.mb2
+      = radio_button_tag 'asdf', :auto_loan
+      span.indicator
+      span.blue = t('idv.form.finance_type.home_equity_line')
+    label.block.bold = t('idv.form.home_equity_line')
+    input.block.col-12.field.p1.mb2
+
+  .mb2.mt2
+    em
+      = t('idv.messages.finance.disclaimer_html', app_name: APP_NAME)
+
+  = submit_tag t('forms.buttons.continue'), class: 'btn btn-primary col-6'
+
+p.mt2
+  = t('idv.messages.finance.use_bank_account_number_html',
+      use_bank_account_number_link: link_to(t('idv.messages.finance.use_bank_account_number_link'), verify_finance_path))
 
 = render 'shared/cancel', link: verify_cancel_path
 = render @view_model.modal_partial, view_model: @view_model
