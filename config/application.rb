@@ -38,7 +38,11 @@ module Upaya
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
-        origins '*'
+        origins do |source, _env|
+          ServiceProvider.pluck(:redirect_uris).flatten.map do |uri|
+            URI.join(uri, '/').to_s[0..-2]
+          end.include?(source)
+        end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]
         resource '/api/openid_connect/token',
