@@ -62,13 +62,13 @@ feature 'Changing authentication factor' do
       complete_2fa_confirmation
 
       allow(VoiceOtpSenderJob).to receive(:perform_later)
-      allow(SmsOtpSenderJob).to receive(:perform_later)
+      allow(SmsOtpSenderJob).to receive(:perform_now)
 
       update_phone_number(guam_phone)
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
-      expect(SmsOtpSenderJob).to have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_now)
       expect(page).to_not have_content(t('links.two_factor_authentication.resend_code.phone'))
     end
 
@@ -133,6 +133,7 @@ feature 'Changing authentication factor' do
 
   context 'user has authenticator app enabled' do
     it 'allows them to change their email, password, or phone' do
+      stub_twilio_service
       sign_in_with_totp_enabled_user
 
       Timecop.travel(Figaro.env.reauthn_window.to_i + 1) do

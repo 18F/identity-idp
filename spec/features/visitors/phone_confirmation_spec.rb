@@ -4,12 +4,12 @@ feature 'Phone confirmation during sign up' do
   context 'visitor can sign up and confirm a valid phone for OTP' do
     before do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
-      allow(SmsOtpSenderJob).to receive(:perform_later)
+      allow(SmsOtpSenderJob).to receive(:perform_now)
       @user = sign_in_before_2fa
       fill_in 'Phone', with: '555-555-5555'
       click_send_security_code
 
-      expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+      expect(SmsOtpSenderJob).to have_received(:perform_now).with(
         code: @user.reload.direct_otp,
         phone: '+1 (555) 555-5555',
         otp_created_at: @user.direct_otp_sent_at.to_s

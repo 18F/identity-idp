@@ -15,7 +15,6 @@ module Users
 
     def send_code
       result = otp_delivery_selection_form.submit(delivery_params)
-
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
       if result.success?
@@ -23,9 +22,23 @@ module Users
       else
         redirect_to user_two_factor_authentication_path(reauthn: reauthn?)
       end
+    rescue Twilio::REST::RestError => exception
+      invalid_phone_number(exception)
     end
 
     private
+
+    def invalid_phone_number(exception)
+      flash[:error] = case exception.code
+                      when TwilioService::SMS_ERROR_CODE
+                        t('errors.messages.invalid_sms_number')
+                      when TwilioService::INVALID_ERROR_CODE
+                        t('errors.messages.invalid_phone_number')
+                      else
+                        t('errors.messages.otp_failed')
+                      end
+      redirect_back(fallback_location: account_url)
+    end
 
     def otp_delivery_selection_form
       OtpDeliverySelectionForm.new(
@@ -59,8 +72,9 @@ module Users
       current_user.create_direct_otp
 
       job = "#{method.capitalize}OtpSenderJob".constantize
-
-      job.perform_later(
+      job_priority = confirmation_context? ? :perform_now : :perform_later
+      job.send(
+        job_priority,
         code: current_user.direct_otp,
         phone: phone_to_deliver_to,
         otp_created_at: current_user.direct_otp_sent_at.to_s

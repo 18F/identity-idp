@@ -46,6 +46,18 @@ feature 'Sign Up' do
     end
   end
 
+  scenario 'renders an error when twilio api responds with an error' do
+    twilio_error = Twilio::REST::RestError.new('', TwilioService::SMS_ERROR_CODE, '400')
+
+    allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+    sign_up_and_set_password
+    fill_in 'Phone', with: '202-555-1212'
+    click_send_security_code
+
+    expect(current_path).to eq(phone_setup_path)
+    expect(page).to have_content(unsupported_sms_message)
+  end
+
   context 'with js', js: true do
     context 'sp loa1' do
       it 'allows the user to toggle the modal' do
