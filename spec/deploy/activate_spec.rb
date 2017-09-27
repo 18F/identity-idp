@@ -79,6 +79,19 @@ RSpec.describe 'deploy/activate' do
         # production key from applicaiton.yml.example, not overwritten
         expect(combined_application_yml['production']['lockout_period_in_minutes']).to eq('10')
       end
+
+      it 'sets the correct permissions on the YAML files' do
+        script.run
+
+        application_yml = File.new(File.join(config_dir, 'application.yml'))
+        expect(application_yml.stat.mode.to_s(8)).to eq('100640')
+
+        application_env_yml = File.new(File.join(config_dir, 'application_s3_env.yml'))
+        expect(application_env_yml.stat.mode.to_s(8)).to eq('100640')
+
+        database_yml = File.new(File.join(config_dir, 'database.yml'))
+        expect(database_yml.stat.mode.to_s(8)).to eq('100640')
+      end
     end
 
     context 'outside a deployed production environment' do
