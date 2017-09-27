@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UspsExporter do
+RSpec.xdescribe UspsExporter do
   let(:export_file) { Tempfile.new('usps_export.psv') }
   let(:otp) { 'ABC123' }
   let(:pii_attributes) do

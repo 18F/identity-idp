@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe FileEncryptor do
+RSpec.xdescribe FileEncryptor do
   let(:email) { Figaro.env.equifax_gpg_email }
 
   subject(:file_encryptor) do
