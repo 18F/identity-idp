@@ -473,7 +473,7 @@ YT:
 MX:
   name: Mexico
   country_code: '52'
-  sms_only: true
+  sms_only: false
 FM:
   name: Micronesia
   country_code: '691'
