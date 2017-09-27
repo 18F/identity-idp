@@ -1,69 +1,50 @@
 module FormFinanceValidator
   extend ActiveSupport::Concern
 
+  VALID_BANK_ROUTING_LENGTH = 9
+
   VALID_CCN_LENGTH = 8
+
   VALID_MINIMUM_LENGTH = 8
   VALID_MAXIMUM_LENGTH = 30
 
   included do
-    attr_reader :params
+    validates :finance_type,
+              inclusion: {
+                in: Idv::FinanceForm::FINANCE_TYPES,
+                message: I18n.t('idv.errors.missing_finance'),
+              }
 
-    validates :finance_type, presence: true
+    validates :bank_account_type,
+              presence: true,
+              inclusion: { in: %w[checking savings] },
+              if: :bank_account?
 
-    validates(
-      :ccn,
-      format: { with: /\A\d{8}\z/, message: I18n.t('idv.errors.invalid_ccn') },
-      if: :ccn?
-    )
+    validates :bank_routing,
+              presence: true,
+              length: { is: VALID_BANK_ROUTING_LENGTH },
+              format: { with: /\A\d+\z/ },
+              if: :bank_account?
 
-    validate :validate_finance_type
-    validate :validate_finance_value_presence
-    validate :validate_finance_value_length, if: :not_ccn?
-  end
+    validates :ccn,
+              presence: true,
+              length: { is: VALID_CCN_LENGTH },
+              format: { with: /\A\d{8}\z/, message: I18n.t('idv.errors.invalid_ccn') },
+              if: :ccn?
 
-  private
-
-  def ccn?
-    finance_type == :ccn
-  end
-
-  def not_ccn?
-    !ccn?
-  end
-
-  def validate_finance_type
-    return if valid_finance_type?(finance_type)
-    errors.add :finance_type, I18n.t('idv.errors.missing_finance')
-  end
-
-  def valid_finance_type?(type)
-    type.present? && Idv::FinanceForm::FINANCE_TYPES.include?(type.to_sym)
-  end
-
-  def validate_finance_value_presence
-    return unless valid_finance_type?(finance_type)
-    return if finance_value.present?
-    errors.add finance_type, I18n.t('errors.messages.blank')
-  end
-
-  def validate_finance_value_length
-    return if finance_value.blank?
-    return if valid_range.include?(finance_value.length)
-    errors.add(
-      finance_type,
-      I18n.t(
-        'idv.errors.finance_number_length',
-        minimum: VALID_MINIMUM_LENGTH,
-        maximum: VALID_MAXIMUM_LENGTH
-      )
-    )
-  end
-
-  def finance_value
-    params[finance_type]
-  end
-
-  def valid_range
-    VALID_MINIMUM_LENGTH..VALID_MAXIMUM_LENGTH
+    (Idv::FinanceForm::FINANCE_TYPES - %i[ccn]).each do |finance_type|
+      validates finance_type,
+                presence: true,
+                length: {
+                  in: VALID_MINIMUM_LENGTH..VALID_MAXIMUM_LENGTH,
+                  message: I18n.t(
+                    'idv.errors.finance_number_length',
+                    minimum: VALID_MINIMUM_LENGTH,
+                    maximum: VALID_MAXIMUM_LENGTH
+                  ),
+                },
+                format: { with: /\A\d+\z/ },
+                if: "#{finance_type}?".to_sym
+    end
   end
 end
