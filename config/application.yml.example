@@ -182,7 +182,6 @@ test:
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
   domain_name: 'www.example.com'
-  ducksboard_uid: '8VEQre2c8b62mQV0sa'
   dashboard_api_token: '123ABC'
   enable_identity_verification: 'true'
   enable_test_routes: 'true'
