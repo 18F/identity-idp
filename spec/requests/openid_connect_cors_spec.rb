@@ -23,6 +23,16 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
         end
       end
     end
+
+    context 'with a bad URI in the database' do
+      before { create(:service_provider, redirect_uris: %w[/foobar]) }
+
+      it 'does not blow up' do
+        get api_openid_connect_certs_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
+
+        expect(response).to be_ok
+      end
+    end
   end
 
   describe 'certs endpoint' do
