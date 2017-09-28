@@ -38,6 +38,14 @@ describe Pii::Attributes do
 
       expect(pii_attrs.first_name).to eq 'Jane'
     end
+
+    it 'allows deprecated attributes that are no longer added to the hash schema' do
+      deprecated_atts = described_class.new_from_hash(otp: '123abc')
+      encrypted_pii = deprecated_atts.encrypted(user_access_key)
+      pii_attrs = described_class.new_from_encrypted(encrypted_pii, user_access_key)
+
+      expect(pii_attrs[:otp]).to eq('123abc')
+    end
   end
 
   describe '#new_from_json' do
