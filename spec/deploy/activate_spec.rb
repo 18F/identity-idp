@@ -35,12 +35,11 @@ RSpec.describe 'deploy/activate' do
             'accountId' => '12345',
           }.to_json)
 
-        bucket = 'login-gov.app-secrets.12345-us-west-1'
-
         s3_client.put_object(
-          bucket: bucket, key: '/int/idp/v1/application.yml', body: application_yml
+          bucket: 'login-gov.app-secrets.12345-us-west-1',
+          key: '/int/idp/v1/application.yml',
+          body: application_yml
         )
-        s3_client.put_object(bucket: bucket, key: '/int/idp/v1/database.yml', body: database_yml)
 
         FileUtils.mkdir_p('/etc/login.gov/info')
         File.open('/etc/login.gov/info/env', 'w') { |file| file.puts 'int' }
@@ -53,18 +52,10 @@ RSpec.describe 'deploy/activate' do
         YAML
       end
 
-      let(:database_yml) do
-        <<~YAML
-          production:
-            adapter: 'postgresql'
-        YAML
-      end
-
       it 'downloads configs from s3' do
         script.run
 
         expect(File.exist?(File.join(config_dir, 'application.yml'))).to eq(true)
-        expect(File.read(File.join(config_dir, 'database.yml'))).to eq(database_yml)
       end
 
       it 'merges the application.yml from s3 over the application.yml.example' do
@@ -88,9 +79,6 @@ RSpec.describe 'deploy/activate' do
 
         application_env_yml = File.new(File.join(config_dir, 'application_s3_env.yml'))
         expect(application_env_yml.stat.mode.to_s(8)).to eq('100640')
-
-        database_yml = File.new(File.join(config_dir, 'database.yml'))
-        expect(database_yml.stat.mode.to_s(8)).to eq('100640')
       end
     end
 
