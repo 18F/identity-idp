@@ -40,7 +40,12 @@ module Upaya
       allow do
         origins do |source, _env|
           ServiceProvider.pluck(:redirect_uris).flatten.map do |uri|
-            URI.join(uri, '/').to_s[0..-2]
+            begin
+              URI.join(uri, '/').to_s[0..-2]
+            rescue URI::BadURIError => err
+              Rails.logger.warn({ warning: err.class.to_s, source: 'Rack::Cors', uri: uri }.to_json)
+              ''
+            end
           end.include?(source)
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
