@@ -1,9 +1,14 @@
 module Pii
+  DEPRECATED_PII_ATTRIBUTES = [
+    :otp, # https://github.com/18F/identity-idp/pull/1661
+  ].freeze
+
   Attributes = Struct.new(
     :first_name, :middle_name, :last_name,
     :address1, :address2, :city, :state, :zipcode,
     :ssn, :dob, :phone,
-    :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode
+    :prev_address1, :prev_address2, :prev_city, :prev_state, :prev_zipcode,
+    *DEPRECATED_PII_ATTRIBUTES
   ) do
     def self.new_from_hash(hash)
       attrs = new
