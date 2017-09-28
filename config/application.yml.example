@@ -26,6 +26,9 @@ password_max_attempts: '3'
 # If a queue does not have a healthy job after this many seconds, report it as unhealthy
 queue_health_check_dead_interval_seconds: '240'
 
+# How often to enqueue simple jobs to make sure the background queues are running
+queue_health_check_frequency_seconds: '120'
+
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
@@ -141,7 +144,7 @@ production:
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
-  mandrill_api_token: '123abc'
+  mandrill_api_token: '' # Empty string to switch to SES
   newrelic_license_key: 'xxx'
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''

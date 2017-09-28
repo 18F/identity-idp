@@ -7,8 +7,10 @@ p.mt-tiny.mb0
 = render 'partials/personal_key/key', code: code
 
 .mb3.right-align
-  = link_to t('users.personal_key.get_another'), manage_personal_key_path(resend: true),
-    class: 'btn-border ico ico-refresh text-decoration-none'
+  = button_to(t('users.personal_key.get_another'), create_new_personal_key_path(resend: true),
+            method: :post,
+            class: 'btn btn-link ml1 btn-border ico ico-refresh text-decoration-none',
+            form_class: 'inline-block')
 
   = link_to t('users.personal_key.print'), '#',
     data: { print: true },

@@ -9,10 +9,9 @@ class VerifyAccountForm
   attr_accessor :otp, :pii_attributes
   attr_reader :user
 
-  def initialize(user:, otp: nil, pii_attributes: nil)
+  def initialize(user:, otp: nil)
     @user = user
     @otp = otp
-    @pii_attributes = pii_attributes
   end
 
   def submit
@@ -31,8 +30,14 @@ class VerifyAccountForm
     @_pending_profile ||= user.decorate.pending_profile
   end
 
+  def usps_confirmation_code
+    return if otp.blank? || pending_profile.blank?
+
+    pending_profile.usps_confirmation_codes.first_with_otp(otp)
+  end
+
   def validate_otp_not_expired
-    return unless Idv::UspsMail.new(user).most_recent_otp_expired?
+    return unless usps_confirmation_code.present? && usps_confirmation_code.expired?
 
     errors.add :otp, :usps_otp_expired
   end
@@ -47,9 +52,7 @@ class VerifyAccountForm
   end
 
   def valid_otp?
-    otp.present? && ActiveSupport::SecurityUtils.secure_compare(
-      Base32::Crockford.normalize(otp), Base32::Crockford.normalize(pii_attributes.otp.to_s)
-    )
+    otp.present? && usps_confirmation_code.present?
   end
 
   def reset_sensitive_fields

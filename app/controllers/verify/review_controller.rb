@@ -47,6 +47,9 @@ module Verify
       init_profile
       redirect_to verify_confirmations_path
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
+
+      return unless FeatureManagement.reveal_usps_code?
+      session[:last_usps_confirmation_code] = idv_session.usps_otp
     end
 
     private

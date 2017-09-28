@@ -1,4 +1,4 @@
-class CreateServiceProviderRequests < ActiveRecord::Migration
+class CreateServiceProviderRequests < ActiveRecord::Migration[4.2]
   def change
     create_table :service_provider_requests do |t|
       t.string :issuer, null: false

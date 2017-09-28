@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
-ruby '~> 2.3.3'
+ruby '~> 2.3.5'
 
 gem 'rails', '~> 5.1.3'
 
@@ -31,6 +31,8 @@ gem 'phony_rails'
 gem 'premailer-rails'
 gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
 gem 'rack-cors', require: 'rack/cors'
+gem 'rack-headers_filter'
+gem 'rack-timeout'
 gem 'readthis'
 gem 'redis-session-store', github: '18F/redis-session-store', branch: 'master'
 gem 'rqrcode'

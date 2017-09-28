@@ -68,7 +68,7 @@ class ServiceProviderSessionDecorator
   end
 
   def cancel_link_path
-    sign_up_start_path(request_id: sp_session[:request_id])
+    sign_up_start_path(request_id: sp_session[:request_id], locale: locale_url_param)
   end
 
   private

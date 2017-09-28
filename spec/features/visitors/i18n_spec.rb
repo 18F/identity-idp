@@ -10,7 +10,7 @@ feature 'Internationalization' do
 
   context 'visit homepage with locale set in header' do
     before do
-      page.driver.header 'Accept-Language', locale
+      page.driver.header 'Accept-Language', locale.to_s
       visit root_path
     end
 

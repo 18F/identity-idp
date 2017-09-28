@@ -20,7 +20,7 @@ feature 'View personal key' do
         user = sign_in_and_2fa_user
         old_code = user.personal_key
 
-        click_link t('account.links.regenerate_personal_key')
+        click_button t('account.links.regenerate_personal_key')
 
         expect(user.reload.personal_key).to_not eq old_code
       end
@@ -45,7 +45,7 @@ feature 'View personal key' do
     context 'personal key actions and information' do
       before do
         @user = sign_in_and_2fa_user
-        click_link t('account.links.regenerate_personal_key')
+        click_button t('account.links.regenerate_personal_key')
       end
 
       it_behaves_like 'personal key page'
@@ -58,7 +58,7 @@ feature 'View personal key' do
 
     it 'prompts the user to enter their personal key to confirm they have it' do
       sign_in_and_2fa_user
-      click_link t('account.links.regenerate_personal_key')
+      click_button t('account.links.regenerate_personal_key')
 
       expect_accordion_content_to_be_hidden_by_default
 

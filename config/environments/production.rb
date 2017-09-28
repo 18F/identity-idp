@@ -22,8 +22,10 @@ Rails.application.configure do
   config.action_mailer.default_options = { from: Figaro.env.email_from }
   config.action_mailer.delivery_method = if Figaro.env.disable_email_sending == 'true'
                                            :test
-                                         else
+                                         elsif Figaro.env.mandrill_api_token.present?
                                            :mandrill
+                                         else
+                                           :ses
                                          end
 
   routes.default_url_options[:protocol] = :https
