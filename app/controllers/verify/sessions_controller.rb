@@ -2,6 +2,7 @@ module Verify
   class SessionsController < ApplicationController
     include IdvSession
     include IdvFailureConcern
+    include PersonalKeyConcern
 
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
@@ -75,6 +76,7 @@ module Verify
 
     def handle_idv_redirect
       redirect_to account_path and return if current_user.personal_key.present?
+      user_session[:personal_key] = create_new_code
       redirect_to manage_personal_key_path
     end
 

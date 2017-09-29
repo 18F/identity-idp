@@ -2,34 +2,13 @@ require 'rails_helper'
 
 describe Users::PersonalKeysController do
   describe '#show' do
-    context 'when user signed in' do
-      before do
+    context 'when user signed in but user_session[:personal_key] is not present' do
+      it 'redirects to account_url' do
         stub_sign_in
-      end
-
-      it 'tracks an analytics event' do
-        stub_analytics
-
-        expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_CREATE)
 
         get :show
-      end
 
-      it 'generates a new personal key' do
-        generator = instance_double(PersonalKeyGenerator)
-        allow(PersonalKeyGenerator).to receive(:new).
-          with(subject.current_user).and_return(generator)
-
-        expect(generator).to receive(:create)
-
-        get :show
-      end
-
-      it 'populates the flash when resending code' do
-        expect(flash[:sucess]).to be_nil
-
-        get :show, params: { resend: true }
-        expect(flash.now[:success]).to eq t('notices.send_code.personal_key')
+        expect(response).to redirect_to(account_url)
       end
     end
 
@@ -66,6 +45,41 @@ describe Users::PersonalKeysController do
 
         expect(response).to redirect_to reactivate_account_url
       end
+    end
+
+    it 'deletes user_session[:personal_key]' do
+      stub_sign_in
+      controller.user_session[:personal_key] = 'foo'
+
+      post :update
+
+      expect(controller.user_session[:personal_key]).to be_nil
+    end
+  end
+
+  describe '#create' do
+    it 'generates a new personal key, tracks an analytics event, and redirects' do
+      stub_sign_in
+      stub_analytics
+
+      generator = instance_double(PersonalKeyGenerator)
+      allow(PersonalKeyGenerator).to receive(:new).
+        with(subject.current_user).and_return(generator)
+
+      expect(generator).to receive(:create)
+      expect(@analytics).to receive(:track_event).with(Analytics::PROFILE_PERSONAL_KEY_CREATE)
+
+      post :create
+
+      expect(response).to redirect_to manage_personal_key_path
+    end
+
+    it 'populates the flash when resending code' do
+      stub_sign_in
+      expect(flash[:success]).to be_nil
+
+      post :create, params: { resend: true }
+      expect(flash[:success]).to eq t('notices.send_code.personal_key')
     end
   end
 end

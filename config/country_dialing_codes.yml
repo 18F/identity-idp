@@ -37,11 +37,11 @@ AW:
 AU:
   name: Australia/Cocos/Christmas Island
   country_code: '61'
-  sms_only: false
+  sms_only: true
 AT:
   name: Austria
   country_code: '43'
-  sms_only: false
+  sms_only: true
 AZ:
   name: Azerbaijan
   country_code: '994'
@@ -49,7 +49,7 @@ AZ:
 BH:
   name: Bahrain
   country_code: '973'
-  sms_only: false
+  sms_only: true
 BD:
   name: Bangladesh
   country_code: '880'
@@ -61,7 +61,7 @@ BY:
 BE:
   name: Belgium
   country_code: '32'
-  sms_only: false
+  sms_only: true
 BZ:
   name: Belize
   country_code: '501'
@@ -89,7 +89,7 @@ BW:
 BR:
   name: Brazil
   country_code: '55'
-  sms_only: false
+  sms_only: true
 BN:
   name: Brunei
   country_code: '673'
@@ -97,7 +97,7 @@ BN:
 BG:
   name: Bulgaria
   country_code: '359'
-  sms_only: false
+  sms_only: true
 BF:
   name: Burkina Faso
   country_code: '226'
@@ -117,7 +117,7 @@ CM:
 CA:
   name: Canada
   country_code: '1'
-  sms_only: true
+  sms_only: false
 CV:
   name: Cape Verde
   country_code: '238'
@@ -137,7 +137,7 @@ CL:
 CN:
   name: China
   country_code: '86'
-  sms_only: false
+  sms_only: true
 CO:
   name: Colombia
   country_code: '57'
@@ -173,15 +173,15 @@ CU:
 CY:
   name: Cyprus
   country_code: '357'
-  sms_only: false
+  sms_only: true
 CZ:
   name: Czech Republic
   country_code: '420'
-  sms_only: false
+  sms_only: true
 DK:
   name: Denmark
   country_code: '45'
-  sms_only: false
+  sms_only: true
 DJ:
   name: Djibouti
   country_code: '253'
@@ -213,7 +213,7 @@ ER:
 EE:
   name: Estonia
   country_code: '372'
-  sms_only: false
+  sms_only: true
 ET:
   name: Ethiopia
   country_code: '251'
@@ -233,11 +233,11 @@ FJ:
 FI:
   name: Finland/Aland Islands
   country_code: '358'
-  sms_only: false
+  sms_only: true
 FR:
   name: France
   country_code: '33'
-  sms_only: false
+  sms_only: true
 GF:
   name: French Guiana
   country_code: '594'
@@ -261,7 +261,7 @@ GE:
 DE:
   name: Germany
   country_code: '49'
-  sms_only: false
+  sms_only: true
 GH:
   name: Ghana
   country_code: '233'
@@ -309,7 +309,7 @@ HN:
 HK:
   name: Hong Kong
   country_code: '852'
-  sms_only: false
+  sms_only: true
 HU:
   name: Hungary
   country_code: '36'
@@ -321,7 +321,7 @@ IS:
 IN:
   name: India
   country_code: '91'
-  sms_only: false
+  sms_only: true
 ID:
   name: Indonesia
   country_code: '62'
@@ -337,15 +337,15 @@ IQ:
 IE:
   name: Ireland
   country_code: '353'
-  sms_only: false
+  sms_only: true
 IL:
   name: Israel
   country_code: '972'
-  sms_only: false
+  sms_only: true
 IT:
   name: Italy
   country_code: '39'
-  sms_only: false
+  sms_only: true
 CI:
   name: Ivory Coast
   country_code: '225'
@@ -353,7 +353,7 @@ CI:
 JP:
   name: Japan
   country_code: '81'
-  sms_only: false
+  sms_only: true
 JO:
   name: Jordan
   country_code: '962'
@@ -389,7 +389,7 @@ LA:
 LV:
   name: Latvia
   country_code: '371'
-  sms_only: false
+  sms_only: true
 LB:
   name: Lebanon
   country_code: '961'
@@ -413,11 +413,11 @@ LI:
 LT:
   name: Lithuania
   country_code: '370'
-  sms_only: false
+  sms_only: true
 LU:
   name: Luxembourg
   country_code: '352'
-  sms_only: false
+  sms_only: true
 MO:
   name: Macau
   country_code: '853'
@@ -449,7 +449,7 @@ ML:
 MT:
   name: Malta
   country_code: '356'
-  sms_only: false
+  sms_only: true
 MH:
   name: Marshall Islands
   country_code: '692'
@@ -517,7 +517,7 @@ NP:
 NL:
   name: Netherlands
   country_code: '31'
-  sms_only: false
+  sms_only: true
 BQ:
   name: Netherlands Antilles
   country_code: '599'
@@ -529,7 +529,7 @@ NC:
 NZ:
   name: New Zealand
   country_code: '64'
-  sms_only: false
+  sms_only: true
 NI:
   name: Nicaragua
   country_code: '505'
@@ -545,7 +545,7 @@ NG:
 NO:
   name: Norway
   country_code: '47'
-  sms_only: false
+  sms_only: true
 OM:
   name: Oman
   country_code: '968'
@@ -577,7 +577,7 @@ PY:
 PE:
   name: Peru
   country_code: '51'
-  sms_only: false
+  sms_only: true
 PH:
   name: Philippines
   country_code: '63'
@@ -585,7 +585,7 @@ PH:
 PL:
   name: Poland
   country_code: '48'
-  sms_only: false
+  sms_only: true
 PT:
   name: Portugal
   country_code: '351'
@@ -597,7 +597,7 @@ QA:
 RO:
   name: Romania
   country_code: '40'
-  sms_only: false
+  sms_only: true
 RU:
   name: Russia
   country_code: '7'
@@ -653,7 +653,7 @@ SG:
 SK:
   name: Slovakia
   country_code: '421'
-  sms_only: false
+  sms_only: true
 SI:
   name: Slovenia
   country_code: '386'
@@ -669,7 +669,7 @@ SO:
 ZA:
   name: South Africa
   country_code: '27'
-  sms_only: false
+  sms_only: true
 SS:
   name: South Sudan
   country_code: '211'
@@ -677,7 +677,7 @@ SS:
 ES:
   name: Spain
   country_code: '34'
-  sms_only: false
+  sms_only: true
 LK:
   name: Sri Lanka
   country_code: '94'
@@ -701,7 +701,7 @@ SE:
 CH:
   name: Switzerland
   country_code: '41'
-  sms_only: false
+  sms_only: true
 SY:
   name: Syria
   country_code: '963'
@@ -761,7 +761,7 @@ AE:
 GB:
   name: United Kingdom
   country_code: '44'
-  sms_only: false
+  sms_only: true
 UY:
   name: Uruguay
   country_code: '598'
@@ -785,11 +785,11 @@ VN:
 VG:
   name: Virgin Islands (British)
   country_code: '1'
-  sms_only: true
+  sms_only: false
 VI:
   name: Virgin Islands (U.S.)
   country_code: '1'
-  sms_only: true
+  sms_only: false
 YE:
   name: Yemen
   country_code: '967'

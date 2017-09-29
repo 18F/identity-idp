@@ -22,6 +22,7 @@ Figaro.require_keys(
   'password_pepper',
   'password_strength_enabled',
   'queue_health_check_dead_interval_seconds',
+  'queue_health_check_frequency_seconds',
   'reauthn_window',
   'recovery_code_length',
   'redis_url',

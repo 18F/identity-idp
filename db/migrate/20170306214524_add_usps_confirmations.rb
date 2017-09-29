@@ -1,4 +1,4 @@
-class AddUspsConfirmations < ActiveRecord::Migration
+class AddUspsConfirmations < ActiveRecord::Migration[4.2]
   def change
     create_table :usps_confirmations, force: :cascade do |t|
       t.text     :entry, null: false

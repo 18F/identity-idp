@@ -9,7 +9,6 @@ class Analytics
       event_properties: attributes.except(:user_id),
       user_id: attributes[:user_id] || uuid,
     }
-
     ahoy.track(event, analytics_hash.merge!(request_attributes))
   end
 

@@ -327,7 +327,7 @@ describe Users::SessionsController, devise: true do
           :profile,
           deactivation_reason: :verification_pending,
           phone_confirmed: false,
-          pii: { otp: 'abc123', ssn: '6666', dob: '1920-01-01' }
+          pii: { ssn: '6666', dob: '1920-01-01' }
         )
         user = profile.user
 
