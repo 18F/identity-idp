@@ -3,9 +3,11 @@ Attribute:
 ControlParameter:
   exclude:
     - OpenidConnectRedirector#initialize
+    - NoRetryJobs#call
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
+    - IdvFailureConcern#render_failure
     - ServiceProviderSessionDecorator#registration_heading
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
@@ -66,6 +68,7 @@ TooManyInstanceVariables:
 TooManyStatements:
   max_statements: 6
   exclude:
+    - IdvFailureConcern#render_failure
     - OpenidConnect::AuthorizationController#index
     - OpenidConnect::AuthorizationController#store_request
     - SamlIdpAuthConcern#store_saml_request

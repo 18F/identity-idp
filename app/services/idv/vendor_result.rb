@@ -28,5 +28,9 @@ module Idv
     def timed_out?
       timed_out
     end
+
+    def job_failed?
+      errors.fetch(:job_failed, false)
+    end
   end
 end
