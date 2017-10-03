@@ -6,7 +6,7 @@ class SessionEncryptor
     end
   end
 
-  def user_access_key
+  def duped_user_access_key
     # Return a clone since encryptor.decrypt mutates this key
     @user_access_key.dup
   end
