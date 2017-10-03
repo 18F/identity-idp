@@ -21,6 +21,20 @@ describe SessionEncryptor do
     expect(encryptor2.load(encrypted_text)).to eq(payload)
   end
 
+  it 'does not modify the user access key when decrypting a payload encrypted with an old key' do
+    old_encryptor = SessionEncryptor.new
+    old_payload = old_encryptor.dump('asdf' => '1234')
+
+    new_encryptor = SessionEncryptor.new
+    new_payload = new_encryptor.dump('1234' => 'asdf')
+    original_cek = new_encryptor.duped_user_access_key.cek
+
+    expect(new_encryptor.load(old_payload)).to eq('asdf' => '1234')
+    expect(new_encryptor.duped_user_access_key.cek).to eq(original_cek)
+
+    expect(new_encryptor.load(new_payload)).to eq('1234' => 'asdf')
+  end
+
   describe '#dump' do
     it 'encrypts session' do
       session = SessionEncryptor.new.dump(foo: 'bar')
