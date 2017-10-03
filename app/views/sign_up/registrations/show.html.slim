@@ -5,6 +5,15 @@
 
   = render decorated_session.registration_heading
 
+  - if decorated_session.sp_name == 'CBP Trusted Traveler Programs'
+    .alert.alert-notice.sm-left-align
+      .bold = 'Coming from Trusted Traveler Programs?'
+      p
+        = 'Your old GOES userID and password won’t work. Please create a login.gov account below.'
+      p.mb1
+        = link_to 'Learn more.',
+          'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/'
+
   = link_to t('sign_up.registrations.create_account'),
     sign_up_email_path(request_id: params[:request_id]),
     class: 'sm-col-10 col-12 btn btn-primary btn-wide mb2 fs-20p'
