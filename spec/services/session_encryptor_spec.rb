@@ -23,15 +23,14 @@ describe SessionEncryptor do
 
   it 'does not modify the user access key when decrypting a payload encrypted with an old key' do
     old_encryptor = SessionEncryptor.new
-    old_encryptor.user_access_key.unlock(Pii::Cipher.random_key)
     old_payload = old_encryptor.dump('asdf' => '1234')
 
     new_encryptor = SessionEncryptor.new
-    new_payload = old_encryptor.dump('1234' => 'asdf')
-    original_cek = new_encryptor.user_access_key.cek
+    new_payload = new_encryptor.dump('1234' => 'asdf')
+    original_cek = new_encryptor.duped_user_access_key.cek
 
     expect(new_encryptor.load(old_payload)).to eq('asdf' => '1234')
-    expect(new_encryptor.user_access_key.cek).to eq(original_cek)
+    expect(new_encryptor.duped_user_access_key.cek).to eq(original_cek)
 
     expect(new_encryptor.load(new_payload)).to eq('1234' => 'asdf')
   end
