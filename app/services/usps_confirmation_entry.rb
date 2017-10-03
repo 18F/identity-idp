@@ -10,7 +10,7 @@ UspsConfirmationEntry = Struct.new(
   :issuer
 ) do
   def self.user_access_key
-    SessionEncryptor.new.user_access_key
+    SessionEncryptor.new.duped_user_access_key
   end
 
   def self.encryptor
