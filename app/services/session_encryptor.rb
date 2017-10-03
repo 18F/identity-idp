@@ -2,11 +2,11 @@ class SessionEncryptor
   def user_access_key
     @user_access_key ||= begin
       key = Figaro.env.session_encryption_key
-      user_access_key = UserAccessKey.new(password: key, salt: key)
-      random_r = OpenSSL::Digest::SHA256.digest(key)
-      user_access_key.unlock(random_r)
-      user_access_key
+      UserAccessKey.new(password: key, salt: key)
     end
+
+    # Return a clone since encryptor.decrypt mutates this key
+    @user_access_key.dup
   end
 
   def load(value)
