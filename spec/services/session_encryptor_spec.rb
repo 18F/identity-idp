@@ -3,24 +3,30 @@ require 'rails_helper'
 describe SessionEncryptor do
   describe '#load' do
     it 'decrypts encrypted session' do
-      session = SessionEncryptor.dump(foo: 'bar')
+      session = SessionEncryptor.new.dump(foo: 'bar')
 
-      expect(SessionEncryptor.load(session)).to eq('foo' => 'bar')
+      expect(SessionEncryptor.new.load(session)).to eq('foo' => 'bar')
     end
+  end
+
+  it 'makes a round trip okay' do
+    encryptor1 = SessionEncryptor.new
+    encryptor2 = SessionEncryptor.new
+
+    encryptor1.load(encryptor1.dump('asdf' => '1234'))
+    encryptor2.load(encryptor2.dump('asdf' => '1234'))
+
+    payload = { 'hello' => 'world' }
+    encrypted_text = encryptor1.dump(payload)
+    expect(encryptor2.load(encrypted_text)).to eq(payload)
   end
 
   describe '#dump' do
     it 'encrypts session' do
-      session = SessionEncryptor.dump(foo: 'bar')
+      session = SessionEncryptor.new.dump(foo: 'bar')
 
       expect(session).to_not match 'foo'
       expect(session).to_not match 'bar'
-    end
-  end
-
-  describe '#encryptor' do
-    it 'is a Pii::Encryptor' do
-      expect(SessionEncryptor.encryptor).to be_a Pii::Encryptor
     end
   end
 end
