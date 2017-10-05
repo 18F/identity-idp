@@ -30,6 +30,7 @@ module Upaya
     config.lograge.custom_options = lambda do |event|
       event.payload[:timestamp] = event.time
       event.payload[:uuid] = SecureRandom.uuid
+      event.payload[:pid] = Process.pid
       event.payload.except(:params, :headers)
     end
 
