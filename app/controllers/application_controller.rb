@@ -15,7 +15,7 @@ class ApplicationController < ActionController::Base
   helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
   prepend_before_action :session_expires_at
-  before_action :set_locale
+  prepend_before_action :set_locale
   before_action :disable_caching
 
   def session_expires_at
