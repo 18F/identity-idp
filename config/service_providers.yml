@@ -50,6 +50,7 @@ test:
   'urn:gov:gsa:openidconnect:sp:server':
     redirect_uris:
       - 'http://localhost:7654/'
+      - 'https://example.com'
     cert: 'saml_test_sp'
     friendly_name: 'Test SP'
     assertion_consumer_logout_service_url: ''
@@ -149,75 +150,29 @@ production:
     attribute_bundle:
       - email
 
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:dev':
-    acs_url: 'https://sp-sinatra.dev.login.gov/consume'
-    assertion_consumer_logout_service_url: 'https://sp-sinatra.dev.login.gov/slo_logout'
-    sp_initiated_login_url: 'https://sp-sinatra.dev.login.gov/test/saml'
+  <% if LoginGov::Hostdata.in_datacenter? %>
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:<%= LoginGov::Hostdata.env %>':
+    acs_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/consume'
+    assertion_consumer_logout_service_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/slo_logout'
+    sp_initiated_login_url: 'https://sp-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/test/saml'
     block_encryption: 'aes256-cbc'
     cert: 'sp_sinatra_demo'
     attribute_bundle:
       - email
 
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:demo':
-    acs_url: 'https://sp-sinatra.demo.login.gov/consume'
-    assertion_consumer_logout_service_url: 'https://sp-sinatra.demo.login.gov/slo_logout'
-    sp_initiated_login_url: 'https://sp-sinatra.demo.login.gov/test/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'sp_sinatra_demo'
-    attribute_bundle:
-      - email
-
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-dev':
-    acs_url: 'https://sp.dev.login.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://sp.dev.login.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://sp.dev.login.gov/login'
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-<%= LoginGov::Hostdata.env %>':
+    acs_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/auth/saml/logout'
+    sp_initiated_login_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/login'
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
     agency: 'A Gov Agency'
     friendly_name: 'Demo SP Application'
     logo: 'generic.svg'
-    return_to_sp_url: 'https://sp.dev.login.gov'
+    return_to_sp_url: 'https://sp.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
     attribute_bundle:
       - email
-
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-qa':
-    acs_url: 'https://sp.qa.login.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://sp.qa.login.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://sp.qa.login.gov/login'
-    block_encryption: 'aes256-cbc'
-    cert: 'sp_rails_demo'
-    agency: 'A Gov Agency'
-    friendly_name: 'Demo SP Application'
-    logo: 'generic.svg'
-    return_to_sp_url: 'https://sp.qa.login.gov'
-    attribute_bundle:
-      - email
-
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-int':
-    acs_url: 'https://sp.int.login.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://sp.int.login.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://sp.int.login.gov/login'
-    block_encryption: 'aes256-cbc'
-    cert: 'sp_rails_demo'
-    agency: 'A Gov Agency'
-    friendly_name: 'Demo SP Application'
-    logo: 'generic.svg'
-    return_to_sp_url: 'https://sp.int.login.gov'
-    attribute_bundle:
-      - email
-
-  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:rails-demo':
-    acs_url: 'https://sp.demo.login.gov/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://sp.demo.login.gov/auth/saml/logout'
-    sp_initiated_login_url: 'https://sp.demo.login.gov/login'
-    block_encryption: 'aes256-cbc'
-    cert: 'sp_rails_demo'
-    agency: 'A Gov Agency'
-    friendly_name: 'Demo SP Application'
-    logo: 'generic.svg'
-    return_to_sp_url: 'https://sp.demo.login.gov'
-    attribute_bundle:
-      - email
+  <% end %>
 
 # Micro-purchase
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:localhost-micropurchase':
@@ -261,53 +216,19 @@ production:
       - email
 
   # Dashboard
-  'https://dashboard.demo.login.gov':
+  <% if LoginGov::Hostdata.in_datacenter? %>
+  'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>':
     friendly_name: 'Dashboard'
     agency: 'GSA'
     logo: '18f.svg'
-    acs_url: 'https://dashboard.demo.login.gov/users/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://dashboard.demo.login.gov/users/auth/saml/logout'
-    sp_initiated_login_url: 'https://dashboard.demo.login.gov/users/auth/saml'
+    acs_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/auth/saml/callback'
+    assertion_consumer_logout_service_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/auth/saml/logout'
+    sp_initiated_login_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/auth/saml'
     block_encryption: 'aes256-cbc'
     cert: 'identity_dashboard_cert'
     attribute_bundle:
       - email
-
-  'https://dashboard.int.login.gov':
-    friendly_name: 'Dashboard'
-    agency: 'GSA'
-    logo: '18f.svg'
-    acs_url: 'https://dashboard.int.login.gov/users/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://dashboard.int.login.gov/users/auth/saml/logout'
-    sp_initiated_login_url: 'https://dashboard.int.login.gov/users/auth/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'identity_dashboard_cert'
-    attribute_bundle:
-      - email
-
-  'https://dashboard.qa.login.gov':
-    friendly_name: 'Dashboard'
-    agency: 'GSA'
-    logo: '18f.svg'
-    acs_url: 'https://dashboard.qa.login.gov/users/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://dashboard.qa.login.gov/users/auth/saml/logout'
-    sp_initiated_login_url: 'https://dashboard.qa.login.gov/users/auth/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'identity_dashboard_cert'
-    attribute_bundle:
-      - email
-
-  'https://dashboard.dev.login.gov':
-    friendly_name: 'Dashboard'
-    agency: 'GSA'
-    logo: '18f.svg'
-    acs_url: 'https://dashboard.dev.login.gov/users/auth/saml/callback'
-    assertion_consumer_logout_service_url: 'https://dashboard.dev.login.gov/users/auth/saml/logout'
-    sp_initiated_login_url: 'https://dashboard.dev.login.gov/users/auth/saml'
-    block_encryption: 'aes256-cbc'
-    cert: 'identity_dashboard_cert'
-    attribute_bundle:
-      - email
+  <% end %>
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
     agency: 'GSA'
@@ -316,12 +237,9 @@ production:
     logo: '18f.svg'
     redirect_uris:
       - 'http://localhost:9292/'
-      - 'https://sp-oidc-sinatra.dev.login.gov/'
-      - 'https://sp-oidc-sinatra.dm.login.gov/'
-      - 'https://sp-oidc-sinatra.int.login.gov/'
-      - 'https://sp-oidc-sinatra.pt.login.gov/'
-      - 'https://sp-oidc-sinatra.qa.login.gov/'
-      - 'https://sp-oidc-sinatra.staging.login.gov/'
+      <% if LoginGov::Hostdata.in_datacenter? %>
+      - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
+      <% end %>
 
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':

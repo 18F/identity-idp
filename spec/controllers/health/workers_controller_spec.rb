@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Health::WorkersController do
   describe '#index' do
     before do
-      allow(WorkerHealthChecker).to receive(:summary).
+      allow(WorkerHealthChecker).to receive(:check).
         and_return(WorkerHealthChecker::Summary.new(statuses))
     end
 

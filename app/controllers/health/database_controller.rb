@@ -1,9 +1,9 @@
 module Health
-  class DatabaseController < ApplicationController
-    def index
-      summary = DatabaseHealthChecker.check
+  class DatabaseController < AbstractHealthController
+    private
 
-      render json: summary, status: (summary.healthy ? :ok : :internal_error)
+    def health_checker
+      DatabaseHealthChecker
     end
   end
 end

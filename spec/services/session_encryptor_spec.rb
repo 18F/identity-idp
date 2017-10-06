@@ -9,7 +9,7 @@ describe SessionEncryptor do
     end
   end
 
-  it 'makes a round trip okay' do
+  it 'makes a roundtrip okay across separate instances' do
     encryptor1 = SessionEncryptor.new
     encryptor2 = SessionEncryptor.new
 

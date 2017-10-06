@@ -1,4 +1,7 @@
 class TwilioService
+  SMS_ERROR_CODE = 21_211
+  INVALID_ERROR_CODE = 21_614
+
   cattr_accessor :telephony_service do
     Twilio::REST::Client
   end
@@ -74,7 +77,15 @@ class TwilioService
     raise
   end
 
+  DIGITS_TO_PRESERVE = 5
+
   def sanitize_phone_number(str)
-    str.gsub!(/\+[\d\(\)\- ]+/) { |match| match.gsub(/\d/, '#') }
+    str.gsub!(/\+[\d\(\)\- ]+/) do |match|
+      digits_preserved = 0
+
+      match.gsub(/\d/) do |chr|
+        (digits_preserved += 1) <= DIGITS_TO_PRESERVE ? chr : '#'
+      end
+    end
   end
 end

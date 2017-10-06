@@ -1,5 +1,6 @@
 require 'encrypted_sidekiq_redis'
 require 'sidekiq_logger_formatter'
+require 'worker_health_checker'
 
 Sidekiq::Logging.logger.level = Logger::WARN
 Sidekiq::Logging.logger.formatter = SidekiqLoggerFormatter.new

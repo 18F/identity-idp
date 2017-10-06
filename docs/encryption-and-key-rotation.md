@@ -92,7 +92,7 @@ we follow these steps to create the encryption key:
 * store `EncryptedPII` with the user record
 * do *not* store plaintext PII, `AssignedSecret` or `CEK`
 
-You can review [the tests for this model in our public repository](https://github.com/18F/identity-idp/blob/master/spec/services/pii/nist_encryption_spec.rb).
+You can review [the tests for this model in our public repository](https://github.com/18F/identity-idp/blob/master/spec/services/pii/nist_encryption_spec.rb). We have also documented some [example code](https://github.com/18F/identity-idp/blob/master/docs/encryption-examples.md) that can be used to re-create the process we use to encrypt and decrypt PII.
 
 Since the user's password is an integral part of this multi-factor
 model, if the user forgets their password, the PII may not be recovered.
@@ -175,7 +175,7 @@ Applicable keys under this scenario:
 * `attribute_encryption_key`
 * `hmac_fingerprinter_key`
 
-Some column attributes (like `User.encrypted_email`) can be bulk updated via a Rake task 
+Some column attributes (like `User.encrypted_email`) can be bulk updated via a Rake task
 because they do not require a user session. Others (like `Profile.ssn_signature`) are resistant
 to bulk updates because they involve user data only available in plain text during a user session.
 

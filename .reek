@@ -40,6 +40,7 @@ NestedIterators:
   exclude:
     - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_html
+    - TwilioService#sanitize_phone_number
 NilCheck:
   enabled: false
 LongParameterList:
