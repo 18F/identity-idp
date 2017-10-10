@@ -11,7 +11,6 @@ fr:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
       return_to_account: NOT TRANSLATED YET
-      return_to_sp: NOT TRANSLATED YET
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
@@ -109,6 +108,7 @@ fr:
         financières pour compléter ce processus. Si vous n'avez pas cette information
         sous la main, vous pouvez continuer plus tard.
       come_back_later: NOT TRANSLATED YET
+      come_back_later_sp_html: NOT TRANSLATED YET
       confirm: Vous avez crypté vos données vérifiées
       dupe_ssn1: Si vous recevez ce message d'erreur, il est possible que vous ayez
         déjà créé et vérifié un compte, mais avec une adresse courriel différente.

@@ -11,7 +11,6 @@ en:
         resend: Send another letter
         send: Send a letter
       return_to_account: Return to account
-      return_to_sp: Return to %{sp}
       send_confirmation_code: Send confirmation code
     cancel:
       modal_header: Are you sure you want to cancel?
@@ -102,8 +101,9 @@ en:
         some basic personal information as well as some financial information from
         you to complete this process. If you don’t have the information we need at
         this time you can continue later.
-      come_back_later: Once your letter arrives, sign into login.gov and enter your
+      come_back_later: Once your letter arrives, sign into %{app}, and enter your
         verification code when prompted.
+      come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       dupe_ssn1: If you are getting this error, you may have already created and verified
         an account, but with a different email address.
@@ -199,7 +199,7 @@ en:
     titles:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
-      come_back_later: Come back soon
+      come_back_later: Come back soon.
       complete: Identity verification complete
       dupe: 'Error: An account may already exist'
       expectations: Next, help us identify you
