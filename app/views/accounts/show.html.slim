@@ -57,4 +57,4 @@ h1.hide = t('titles.account')
     = t('headings.account.account_history')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
   - @view_model.recent_events.each do |event|
-    = render @view_model.recent_event_partial, event: event
+    = render event.event_partial, event: event
