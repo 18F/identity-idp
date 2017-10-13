@@ -8,6 +8,7 @@ Figaro.require_keys(
   'enable_test_routes',
   'enable_usps_verification',
   'equifax_ssh_passphrase',
+  'exception_recipients',
   'hmac_fingerprinter_key',
   'logins_per_ip_limit',
   'logins_per_ip_period',
