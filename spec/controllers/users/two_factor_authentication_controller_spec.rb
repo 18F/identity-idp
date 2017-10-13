@@ -1,4 +1,5 @@
 require 'rails_helper'
+include Features::LocalizationHelper
 
 describe Users::TwoFactorAuthenticationController do
   describe 'before_actions' do
@@ -219,6 +220,55 @@ describe Users::TwoFactorAuthenticationController do
         get :send_code, params: {
           otp_delivery_selection_form: { otp_delivery_preference: 'voice' },
         }
+      end
+    end
+
+    context 'phone is not confirmed' do
+      before do
+        @user = create(:user)
+        @unconfirmed_phone = '+1 (202) 555-1213'
+
+        sign_in_before_2fa(@user)
+        subject.user_session[:context] = 'confirmation'
+        subject.user_session[:unconfirmed_phone] = @unconfirmed_phone
+      end
+
+      it 'sends OTP inline when confirming phone' do
+        allow(SmsOtpSenderJob).to receive(:perform_now)
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(SmsOtpSenderJob).to have_received(:perform_now).with(
+          code: subject.current_user.direct_otp,
+          phone: @unconfirmed_phone,
+          otp_created_at: subject.current_user.direct_otp_sent_at.to_s
+        )
+      end
+
+      it 'flashes an sms error when twilio responds with an sms error' do
+        twilio_error = Twilio::REST::RestError.new('', TwilioService::SMS_ERROR_CODE, '400')
+
+        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(flash[:error]).to eq(unsupported_sms_message)
+      end
+
+      it 'flashes an invalid error when twilio responds with an invalid error' do
+        twilio_error = Twilio::REST::RestError.new('', TwilioService::INVALID_ERROR_CODE, '400')
+
+        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(flash[:error]).to eq(unsupported_phone_message)
+      end
+
+      it 'flashes a failed to send error when twilio responds with an unknown error' do
+        twilio_error = Twilio::REST::RestError.new('', '', '400')
+
+        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+
+        expect(flash[:error]).to eq(failed_to_send_otp)
       end
     end
 

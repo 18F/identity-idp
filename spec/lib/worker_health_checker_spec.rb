@@ -38,47 +38,6 @@ RSpec.describe WorkerHealthChecker do
     end
   end
 
-  describe '#check' do
-    let(:queue1) { 'queue1' }
-    let(:queue2) { 'queue2' }
-    subject(:check) { WorkerHealthChecker.check }
-
-    before do
-      create_sidekiq_queues(queue1, queue2)
-    end
-
-    context 'successful jobs have run in all queues' do
-      before do
-        WorkerHealthChecker::DummyJob.set(queue: queue1).perform_later
-        WorkerHealthChecker::DummyJob.set(queue: queue2).perform_later
-      end
-
-      it 'does not report anything to NewRelic' do
-        expect(NewRelic::Agent).to_not receive(:notice_error)
-        check
-      end
-
-      it 'logs a message so we can audit that the job is running in our logs' do
-        expect(Rails.logger).to receive(:info).
-          with(hash_including(event: 'checking background queues'))
-
-        check
-      end
-    end
-
-    context 'successful jobs have run in some queues' do
-      before do
-        WorkerHealthChecker::DummyJob.set(queue: queue1).perform_later
-      end
-
-      it 'reports errors to NewRelic for the failing queues' do
-        expect(NewRelic::Agent).to receive(:notice_error).
-          with(WorkerHealthChecker::QueueHealthError.new('Background queue queue2 is unhealthy'))
-        check
-      end
-    end
-  end
-
   describe '#mark_healthy!' do
     let(:queue) { 'myqueue' }
     let(:now) { Time.zone.now }
@@ -90,9 +49,9 @@ RSpec.describe WorkerHealthChecker do
     end
   end
 
-  describe '#summary' do
+  describe '.check' do
     let(:now) { Time.zone.now }
-    subject(:summary) { WorkerHealthChecker.summary(now: now) }
+    subject(:check) { WorkerHealthChecker.check(now: now) }
 
     let(:queue1) { 'queue1' }
     let(:queue2) { 'queue2' }
@@ -102,10 +61,10 @@ RSpec.describe WorkerHealthChecker do
       WorkerHealthChecker.mark_healthy!(queue1, now: now)
     end
 
-    it 'creates a snapshot summary of the queues' do
-      expect(summary.statuses.length).to eq(2)
+    it 'creates a snapshot check of the queues' do
+      expect(check.statuses.length).to eq(2)
 
-      queue1_status, queue2_status = summary.statuses.sort_by(&:queue)
+      queue1_status, queue2_status = check.statuses.sort_by(&:queue)
 
       expect(queue1_status.queue).to eq('queue1')
       expect(queue1_status.last_run_at.to_i).to eq(now.to_i)
@@ -117,14 +76,14 @@ RSpec.describe WorkerHealthChecker do
     end
 
     it 'is unhealthy when not all queues are healthy' do
-      expect(summary.all_healthy?).to eq(false)
+      expect(check.healthy?).to eq(false)
     end
 
     context 'when all queues are healthy' do
       before { WorkerHealthChecker.mark_healthy!(queue2, now: now) }
 
       it 'is all healthy' do
-        expect(summary.all_healthy?).to eq(true)
+        expect(check.healthy?).to eq(true)
       end
     end
   end

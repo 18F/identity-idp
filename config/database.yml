@@ -6,9 +6,17 @@ postgresql: &postgresql
 
 defaults: &defaults
   pool: 5
-  timeout: 5000
   host: localhost
   <<: *postgresql
+  # timeout settings
+  timeout: 5000
+  reconnect: true
+  connect_timeout: 2
+  keepalives_idle: 30
+  keepalives_interval: 10
+  keepalives_count: 2
+  checkout_timeout: 5
+  reaping_frequency: 10
 
 development:
   <<: *defaults
@@ -18,3 +26,9 @@ test:
 
 production:
   <<: *defaults
+  database: <%= Figaro.env.database_name! %>
+  username: <%= Figaro.env.database_username! %>
+  host: <%= Figaro.env.database_host! %>
+  password: <%= Figaro.env.database_password! %>
+  sslmode: 'verify-full'
+  sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'

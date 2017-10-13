@@ -11,7 +11,7 @@ module UserEncryptedAttributeOverrides
     end
 
     def find_with_email(email)
-      email = email.downcase.strip
+      email = email.try(:downcase).try(:strip)
       return nil if email.blank?
 
       email_fingerprint = create_fingerprint(email)

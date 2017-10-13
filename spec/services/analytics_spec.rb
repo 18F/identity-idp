@@ -6,6 +6,7 @@ describe Analytics do
       user_ip: FakeRequest.new.remote_ip,
       user_agent: FakeRequest.new.user_agent,
       host: FakeRequest.new.host,
+      pid: Process.pid,
     }
   end
 

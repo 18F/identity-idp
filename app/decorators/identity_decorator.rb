@@ -1,6 +1,12 @@
 IdentityDecorator = Struct.new(:identity) do
-  def pretty_event_type
-    I18n.t('event_types.authenticated_at', service_provider: identity.display_name)
+  delegate :display_name, to: :identity
+
+  def event_partial
+    'accounts/identity_item'
+  end
+
+  def return_to_sp_url
+    identity.sp_metadata[:return_to_sp_url]
   end
 
   def happened_at

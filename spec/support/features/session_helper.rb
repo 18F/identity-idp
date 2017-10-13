@@ -111,6 +111,7 @@ module Features
     end
 
     def click_send_security_code
+      stub_twilio_service
       click_button t('forms.buttons.send_security_code')
     end
 
@@ -367,6 +368,14 @@ module Features
       click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
+    end
+
+    def stub_twilio_service
+      twilio_service = instance_double(TwilioService)
+      allow(twilio_service).to receive(:send_sms)
+      allow(twilio_service).to receive(:place_call)
+
+      allow(TwilioService).to receive(:new).and_return(twilio_service)
     end
   end
 end

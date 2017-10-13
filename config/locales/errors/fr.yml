@@ -38,4 +38,7 @@ fr:
       unauthorized_service_provider: Fournisseur de service non autorisé
       usps_otp_expired: NOT TRANSLATED YET
       weak_password: Votre mot de passe n'est pas assez fort. %{feedback}
+      invalid_phone_number: NOT TRANSLATED YET
+      invalid_sms_number: NOT TRANSLATED YET
+      otp_failed: NOT TRANSLATED YET
     not_authorized: Vous n'êtes pas autorisé(e) à effectuer cette action.

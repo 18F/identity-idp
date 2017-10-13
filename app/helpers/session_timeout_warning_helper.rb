@@ -11,9 +11,9 @@ module SessionTimeoutWarningHelper
     (Figaro.env.session_timeout_warning_seconds || 30).to_i
   end
 
-  def timeout_refresh_url
+  def timeout_refresh_path
     URIService.add_params(
-      request.original_url,
+      request.original_fullpath,
       timeout: true
     ).html_safe # rubocop:disable Rails/OutputSafety
   end
