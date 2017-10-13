@@ -141,4 +141,19 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
       end
     end
   end
+
+  describe 'nil redirect_uris' do
+    it 'handles a nil value gracefully' do
+      ServiceProvider.create(issuer: 'foo', redirect_uris: nil)
+
+      post api_openid_connect_token_path, headers: { 'HTTP_ORIGIN' => 'https://example.com' }
+
+      aggregate_failures do
+        expect(response).to_not be_not_found
+        expect(response['Access-Control-Allow-Credentials']).to eq('true')
+        expect(response['Access-Control-Allow-Methods']).to eq('POST, OPTIONS')
+        expect(response['Access-Control-Allow-Origin']).to eq('https://example.com')
+      end
+    end
+  end
 end
