@@ -15,7 +15,7 @@ describe 'verify/come_back_later/show.html.slim' do
     it 'renders a return to SP button' do
       render
       expect(rendered).to have_link(
-        t('idv.buttons.return_to_sp', sp: sp_name),
+        t('idv.buttons.continue_plain'),
         href: sp_return_url
       )
     end
