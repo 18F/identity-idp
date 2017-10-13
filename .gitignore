@@ -36,7 +36,6 @@ Vagrantfile
 /certs/saml.crt
 /config/application.yml
 /config/aws.yml
-/config/newrelic.yml
 /keys/saml.key.enc
 /keys/equifax_rsa
 /keys/equifax_rsa.pub
