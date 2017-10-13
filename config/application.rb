@@ -40,7 +40,7 @@ module Upaya
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          ServiceProvider.pluck(:redirect_uris).flatten.map do |uri|
+          ServiceProvider.pluck(:redirect_uris).flatten.compact.map do |uri|
             begin
               URI.join(uri, '/').to_s[0..-2]
             rescue URI::BadURIError => err
