@@ -155,8 +155,6 @@ production:
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
   proofing_vendors: 'mock'
-  proxy_addr:
-  proxy_port:
   reauthn_window: '120'
   redis_url: 'redis://redis.login.gov.internal:6379'
   requests_per_ip_limit: '300'
