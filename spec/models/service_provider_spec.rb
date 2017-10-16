@@ -140,8 +140,8 @@ describe ServiceProvider do
         )
       end
 
-      it 'is an array of the legacy redirect_uri' do
-        expect(service_provider.redirect_uris).to eq(%w[http://a.example.com])
+      it 'ignores the old singular column and just uses the new plural one' do
+        expect(service_provider.redirect_uris).to eq([])
       end
     end
 
