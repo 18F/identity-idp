@@ -102,19 +102,19 @@ describe TwilioService do
       expect(msg.from).to match(/(\+19999999999|\+12222222222)/)
     end
 
-    it 'sanitizes phone numbers embedded in error messages from Twilio' do
+    it 'partially redacts phone numbers embedded in error messages from Twilio' do
       TwilioService.telephony_service = FakeVoiceCall
-      raw_message = 'Account not authorized to call +12345.'
-      error_code = '21211'
+      raw_message = 'Unable to create record: Account not authorized to call +123456789012.'
+      error_code = '21215'
       status_code = 400
-      sanitized_message = 'Account not authorized to call +#####.'
+      sanitized_message = 'Unable to create record: Account not authorized to call +12345#######.'
 
       service = TwilioService.new
 
       expect(service.send(:client).calls).to receive(:create).
         and_raise(Twilio::REST::RestError.new(raw_message, error_code, status_code))
 
-      expect { service.place_call(to: '+1 (888) 555-5555', url: 'https://twimlet.com') }.
+      expect { service.place_call(to: '+123456789012', url: 'https://twimlet.com') }.
         to raise_error(Twilio::REST::RestError, sanitized_message)
     end
   end
@@ -138,12 +138,12 @@ describe TwilioService do
       end
     end
 
-    it 'sanitizes phone numbers embedded in error messages from Twilio' do
+    it 'partially redacts phone numbers embedded in error messages from Twilio' do
       TwilioService.telephony_service = FakeSms
       raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
       error_code = '21211'
       status_code = 400
-      sanitized_message = "The 'To' number +# (###) ###-#### is not a valid phone number"
+      sanitized_message = "The 'To' number +1 (888) 5##-#### is not a valid phone number"
 
       service = TwilioService.new
 

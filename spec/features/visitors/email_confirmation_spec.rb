@@ -74,9 +74,9 @@ feature 'Email confirmation during sign up' do
       visit sign_up_create_email_confirmation_url(confirmation_token: @raw_confirmation_token)
 
       expect(page.html).to include(t('notices.dap_participation'))
-      expect(page).to have_content(
-        t('devise.confirmations.already_confirmed', action: 'Please sign in.')
-      )
+      action = t('devise.confirmations.sign_in')
+      expect(page).
+        to have_content t('devise.confirmations.already_confirmed', action: action)
       expect(current_url).to eq new_user_session_url
     end
   end

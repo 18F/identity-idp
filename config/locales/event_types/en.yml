@@ -4,6 +4,7 @@ en:
     account_created: Account created
     account_verified: Account verified
     authenticated_at: Signed in at %{service_provider}
+    authenticated_at_html: Signed in at %{service_provider_link}
     authenticator_disabled: Authenticator app disabled
     authenticator_enabled: Authenticator app enabled
     eastern_timestamp: "%{timestamp} (Eastern)"

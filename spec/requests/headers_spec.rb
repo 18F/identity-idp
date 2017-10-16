@@ -25,9 +25,9 @@ RSpec.describe 'Headers' do
     expect(response.code.to_i).to eq(404)
   end
 
-  it 'ASCII encodes UTF8 headers' do
-    get root_path, headers: { 'User-Agent' => 'Mózillá/5.0' }
+  it 'does not raise an error when HTTP_HOST Header is encoded with ASCII-8BIT' do
+    get root_path, headers: { 'Host' => '¿’¿”'.force_encoding(Encoding::ASCII_8BIT) }
 
-    expect(request.env['HTTP_USER_AGENT'].ascii_only?).to eq(true)
+    expect(response.status).to eq 200
   end
 end

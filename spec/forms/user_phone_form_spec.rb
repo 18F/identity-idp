@@ -89,6 +89,17 @@ describe UserPhoneForm do
         expect(result.success?).to eq(false)
       end
     end
+
+    it 'does not raise inclusion errors for Norwegian phone numbers' do
+      # ref: https://github.com/18F/identity-private/issues/2392
+      params[:phone] = '21 11 11 11'
+      params[:international_code] = 'NO'
+      result = subject.submit(params)
+
+      expect(result).to be_kind_of(FormResponse)
+      expect(result.success?).to eq(true)
+      expect(result.errors).to be_empty
+    end
   end
 
   describe '#phone_changed?' do

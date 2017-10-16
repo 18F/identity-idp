@@ -9,6 +9,7 @@ en:
         your email address in a few minutes.
       send_paranoid_instructions: You will receive an email with instructions for
         how to confirm your email address in a few minutes.
+      sign_in: Please sign in.
     failure:
       already_authenticated: ''
       inactive: Your account is not activated yet.

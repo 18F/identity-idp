@@ -1,5 +1,6 @@
 exclude:
     - 'app/views/shared/_flashes.html.slim'
+    - 'app/views/shared/_null.html.slim'
 linters:
   LineLength:
     max: 100

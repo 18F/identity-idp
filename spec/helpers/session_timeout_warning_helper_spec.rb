@@ -19,43 +19,49 @@ describe SessionTimeoutWarningHelper do
     Figaro.env.session_timeout_warning_seconds.to_i
   end
 
-  describe '#timeout_refresh_url' do
+  describe '#timeout_refresh_path' do
+    let(:http_host) { 'example.com' }
     before do
       allow(helper).to receive(:request).and_return(
-        double(original_url: original_url, query_parameters: query_parameters)
+        ActionDispatch::Request.new(
+          'HTTP_HOST' => http_host,
+          'PATH_INFO' => path_info,
+          'rack.url_scheme' => 'https'
+        )
       )
     end
 
-    let(:query_parameters) { { request_id: '123' } }
-
     context 'with no params in the request url' do
-      let(:original_url) { 'http://test.host/foo/bar' }
+      let(:path_info) { '/foo/bar' }
 
       it 'adds timeout=true params' do
-        expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?timeout=true'
-        )
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=true')
       end
     end
 
     context 'with params in the request url' do
-      let(:original_url) { 'http://test.host/foo/bar?key=value' }
+      let(:path_info) { '/foo/bar?key=value' }
 
       it 'adds timeout=true and preserves params' do
-        expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?key=value&timeout=true'
-        )
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?key=value&timeout=true')
       end
     end
 
     context 'with timeout=true and request_id=123 \
             in the query params already' do
-      let(:original_url) { 'http://test.host/foo/bar?timeout=true&request_id=123' }
+      let(:path_info) { '/foo/bar?timeout=true&request_id=123' }
 
       it 'is the same' do
-        expect(helper.timeout_refresh_url).to eq(
-          'http://test.host/foo/bar?request_id=123&timeout=true'
-        )
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?request_id=123&timeout=true')
+      end
+    end
+
+    context 'with a malicious host value' do
+      let(:path_info) { '/foo/bar' }
+      let(:http_host) { "mTpvPME6'));select pg_sleep(9); --" }
+
+      it 'does not blow up' do
+        expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=true')
       end
     end
   end

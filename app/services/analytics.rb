@@ -25,6 +25,7 @@ class Analytics
       user_ip: request.remote_ip,
       user_agent: request.user_agent,
       host: request.host,
+      pid: Process.pid,
     }
   end
 

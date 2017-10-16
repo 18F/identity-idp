@@ -1,11 +1,9 @@
 module Health
-  class WorkersController < ApplicationController
-    def index
-      summary = WorkerHealthChecker.summary
+  class WorkersController < AbstractHealthController
+    private
 
-      status = summary.all_healthy? ? :ok : :internal_error
-
-      render json: summary, status: status
+    def health_checker
+      WorkerHealthChecker
     end
   end
 end

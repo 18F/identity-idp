@@ -46,6 +46,18 @@ feature 'Sign Up' do
     end
   end
 
+  scenario 'renders an error when twilio api responds with an error' do
+    twilio_error = Twilio::REST::RestError.new('', TwilioService::SMS_ERROR_CODE, '400')
+
+    allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+    sign_up_and_set_password
+    fill_in 'Phone', with: '202-555-1212'
+    click_send_security_code
+
+    expect(current_path).to eq(phone_setup_path)
+    expect(page).to have_content(unsupported_sms_message)
+  end
+
   context 'with js', js: true do
     context 'sp loa1' do
       it 'allows the user to toggle the modal' do
@@ -78,6 +90,42 @@ feature 'Sign Up' do
 
         expect(page).to have_xpath("//input[@value=\"#{t('sign_up.buttons.cancel')}\"]")
       end
+    end
+  end
+
+  context 'user accesses password screen with already confirmed token', email: true do
+    it 'returns them to the home page' do
+      create(:user, :signed_up, confirmation_token: 'foo')
+
+      visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
+
+      expect(page).to have_current_path(root_path)
+
+      action = t('devise.confirmations.sign_in')
+      expect(page).
+        to have_content t('devise.confirmations.already_confirmed', action: action)
+    end
+  end
+
+  context 'user accesses password screen with invalid token', email: true do
+    it 'returns them to the resend email confirmation page' do
+      visit sign_up_enter_password_path(confirmation_token: 'foo', request_id: 'bar')
+
+      expect(page).to have_current_path(sign_up_email_resend_path)
+
+      expect(page).
+        to have_content t('errors.messages.confirmation_invalid_token')
+    end
+  end
+
+  context "user A is signed in and accesses password creation page with User B's token" do
+    it "redirects to User A's account page" do
+      create(:user, :signed_up, email: 'userb@test.com', confirmation_token: 'foo')
+      sign_in_and_2fa_user
+      visit sign_up_enter_password_path(confirmation_token: 'foo')
+
+      expect(page).to have_current_path(account_path)
+      expect(page).to_not have_content 'userb@test.com'
     end
   end
 end

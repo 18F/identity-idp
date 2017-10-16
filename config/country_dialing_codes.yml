@@ -542,7 +542,7 @@ NG:
   name: Nigeria
   country_code: '234'
   sms_only: true
-NO:
+'NO':
   name: Norway
   country_code: '47'
   sms_only: true

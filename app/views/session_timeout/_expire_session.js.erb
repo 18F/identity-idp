@@ -1,7 +1,7 @@
 var sessionTimeoutIn = <%= session_timeout_in %> * 1000;
 
 function refreshPage() {
-  document.location = "<%= j timeout_refresh_url %>";
+  document.location = "<%= j timeout_refresh_path %>";
 }
 
 setTimeout(refreshPage, sessionTimeoutIn);
