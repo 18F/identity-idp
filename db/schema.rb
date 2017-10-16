@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905144239) do
+ActiveRecord::Schema.define(version: 20171016185939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,7 +121,6 @@ ActiveRecord::Schema.define(version: 20170905144239) do
     t.text "return_to_sp_url"
     t.string "agency"
     t.json "attribute_bundle"
-    t.string "redirect_uri"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "active", default: false, null: false
