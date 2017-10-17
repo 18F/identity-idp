@@ -1,0 +1,7 @@
+doctype xml
+Response
+  Say = @message
+  - if @action_url
+    Gather numDigits="1" action=@action_url
+      Say = t('voice.otp.repeat_instructions')
+  Hangup /

@@ -21,18 +21,7 @@ describe VoiceOtpSenderJob do
       call = calls.first
       expect(call.to).to eq('555-5555')
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
-
-      code = '1234'.scan(/\d/).join(', ')
-      query = URIService.params(call.url)
-      expect(query['Message']).to eq(t('jobs.voice_otp_sender_job.message_repeat', code: code))
-
-      nested_query = query
-      while nested_query['Options']
-        nested_url = URI(nested_query['Options']['1'])
-        nested_query = URIService.params(nested_url)
-      end
-      expect(nested_query['Message']['0']).
-        to eq(t('jobs.voice_otp_sender_job.message_final', code: code))
+      expect(call.url).to include('1234')
     end
 
     context 'recording calls' do
