@@ -1,5 +1,6 @@
 class VoiceOtpSenderJob < ApplicationJob
   include Rails.application.routes.url_helpers
+  include LocaleHelper
 
   queue_as :voice
 
@@ -17,7 +18,7 @@ class VoiceOtpSenderJob < ApplicationJob
   def send_otp(twilio_service, code, phone)
     twilio_service.place_call(
       to: phone,
-      url: BasicAuthUrl.build(voice_otp_url(code: code)),
+      url: BasicAuthUrl.build(voice_otp_url(code: code, locale: locale_url_param)),
       record: Figaro.env.twilio_record_voice == 'true'
     )
   end

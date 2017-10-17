@@ -9,18 +9,8 @@ RSpec.describe BasicAuthUrl do
       expect(external_url).to eq(url)
     end
 
-    context 'with SP_NAME and SP_PASS set in the ENV' do
-      before do
-        ENV['SP_NAME'] = 'user'
-        ENV['SP_PASS'] = 'secret'
-      end
-
-      after do
-        ENV.delete('SP_NAME')
-        ENV.delete('SP_PASS')
-      end
-
-      it 'uses the values in the ENV' do
+    context 'with basic auth username and pass set in the config' do
+      it 'uses the values in from application.yml/Figaro' do
         url = 'https://foo.example.com/bar'
         external_url = BasicAuthUrl.build(url)
 

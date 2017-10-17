@@ -12,6 +12,7 @@ DuplicateMethodCall:
     - WorkerHealthChecker#status
     - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
+    - BasicAuthUrl#build
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for

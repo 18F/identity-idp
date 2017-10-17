@@ -3,9 +3,3 @@ es:
   jobs:
     sms_otp_sender_job:
       message: "%{code} es su %{app} código de seguridad de sólo un uso."
-    voice_otp_sender_job:
-      message_final: "¡Hola! Su código de seguridad de login.gov para uso único es,
-        %{code}, nuevamente, su código de seguridad es, % {code}, ¡adiós!"
-      message_repeat: "¡Hola! Su código de seguridad de login.gov para uso único es
-        %{code}, nuevamente, su código de seguridad es % {code}. Presione 1 para repetir
-        su código."

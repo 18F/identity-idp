@@ -29,7 +29,7 @@ module Voice
     end
 
     def repeat_count
-      (params[:repeat_count] || NUMBER_OF_TIMES_USER_CAN_REPEAT_CODE).to_i
+      (params[:repeat_count].presence || NUMBER_OF_TIMES_USER_CAN_REPEAT_CODE).to_i
     end
 
     def action_url

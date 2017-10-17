@@ -9,11 +9,13 @@ describe VoiceOtpSenderJob do
     end
 
     it 'initiates the phone call to deliver the OTP', twilio: true do
-      VoiceOtpSenderJob.perform_now(
-        code: '1234',
-        phone: '555-5555',
-        otp_created_at: Time.zone.now.to_s
-      )
+      I18n.with_locale(:fr) do
+        VoiceOtpSenderJob.perform_now(
+          code: '1234',
+          phone: '555-5555',
+          otp_created_at: Time.zone.now.to_s
+        )
+      end
 
       calls = FakeVoiceCall.calls
 
@@ -21,7 +23,10 @@ describe VoiceOtpSenderJob do
       call = calls.first
       expect(call.to).to eq('555-5555')
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
+
       expect(call.url).to include('1234')
+      params = URIService.params(call.url)
+      expect(params[:locale]).to eq('fr')
     end
 
     context 'recording calls' do
