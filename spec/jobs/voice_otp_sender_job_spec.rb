@@ -8,6 +8,8 @@ describe VoiceOtpSenderJob do
       FakeVoiceCall.calls = []
     end
 
+    let(:cipher) { Gibberish::AES.new(Figaro.env.attribute_encryption_key) }
+
     it 'initiates the phone call to deliver the OTP', twilio: true do
       I18n.with_locale(:fr) do
         VoiceOtpSenderJob.perform_now(
@@ -24,8 +26,8 @@ describe VoiceOtpSenderJob do
       expect(call.to).to eq('555-5555')
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
 
-      expect(call.url).to include('1234')
       params = URIService.params(call.url)
+      expect(cipher.decrypt(params[:encrypted_code])).to eq('1234')
       expect(params[:locale]).to eq('fr')
     end
 

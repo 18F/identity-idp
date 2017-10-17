@@ -4,23 +4,15 @@ RSpec.describe Voice::OtpController do
   describe '#show' do
     subject(:action) do
       get :show,
-          params: { code: code, repeat_count: repeat_count, locale: locale },
+          params: { encrypted_code: encrypted_code, repeat_count: repeat_count, locale: locale },
           format: :xml
     end
-    let(:code) { nil }
     let(:locale) { nil }
     let(:repeat_count) { nil }
+    let(:cipher) { Gibberish::AES.new(Figaro.env.attribute_encryption_key) }
 
-    context 'without a code in the URL' do
-      let(:code) { nil }
-
-      it 'cannot route to the controller' do
-        expect { action }.to raise_error(ActionController::UrlGenerationError)
-      end
-    end
-
-    context 'with a blank code in the URL' do
-      let(:code) { '' }
+    context 'with a blank encrypted_code in the URL' do
+      let(:encrypted_code) { '' }
 
       it 'renders a blank 400' do
         action
@@ -30,10 +22,11 @@ RSpec.describe Voice::OtpController do
       end
     end
 
-    context 'with a code in the URL' do
+    context 'with an encrypted_code in the URL' do
       render_views
 
-      let(:code) { 1234 }
+      let(:code) { '1234' }
+      let(:encrypted_code) { cipher.encrypt(code) }
 
       it 'tells Twilio to <Say> the code with pauses in between' do
         action
@@ -105,6 +98,16 @@ RSpec.describe Voice::OtpController do
         gather = doc.css('Gather').first
 
         expect(gather[:action]).to include('repeat_count=4')
+      end
+
+      it 'puts the encrypted code in the <Gather> action' do
+        action
+
+        doc = Nokogiri::XML(response.body)
+        gather = doc.css('Gather').first
+        params = URIService.params(gather[:action])
+
+        expect(cipher.decrypt(params[:encrypted_code])).to eq(code)
       end
 
       context 'when repeat_count counts down to 1' do

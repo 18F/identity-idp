@@ -16,8 +16,14 @@ module Voice
 
     protected
 
+    def encrypted_code
+      params[:encrypted_code].to_s
+    end
+
     def code
-      params[:code].to_s
+      return unless encrypted_code.present?
+
+      cipher.decrypt(encrypted_code)
     end
 
     def message
@@ -37,10 +43,14 @@ module Voice
 
       BasicAuthUrl.build(
         voice_otp_url(
-          code: code,
+          encrypted_code: encrypted_code,
           repeat_count: repeat_count - 1
         )
       )
+    end
+
+    def cipher
+      Gibberish::AES.new(Figaro.env.attribute_encryption_key)
     end
   end
 end

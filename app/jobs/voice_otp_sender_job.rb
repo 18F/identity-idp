@@ -18,8 +18,17 @@ class VoiceOtpSenderJob < ApplicationJob
   def send_otp(twilio_service, code, phone)
     twilio_service.place_call(
       to: phone,
-      url: BasicAuthUrl.build(voice_otp_url(code: code, locale: locale_url_param)),
+      url: BasicAuthUrl.build(
+        voice_otp_url(
+          encrypted_code: cipher.encrypt(code),
+          locale: locale_url_param
+        )
+      ),
       record: Figaro.env.twilio_record_voice == 'true'
     )
+  end
+
+  def cipher
+    Gibberish::AES.new(Figaro.env.attribute_encryption_key)
   end
 end

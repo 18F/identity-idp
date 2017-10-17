@@ -17,7 +17,7 @@ Rails.application.routes.draw do
   match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
 
   post '/api/service_provider' => 'service_provider#update'
-  match '/api/voice/otp/:code' => 'voice/otp#show',
+  match '/api/voice/otp' => 'voice/otp#show',
         via: [:get, :post],
         as: :voice_otp,
         defaults: { format: :xml }
