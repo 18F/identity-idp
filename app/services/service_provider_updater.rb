@@ -1,3 +1,4 @@
+# Update ServiceProvider table by pulling from the Dashboard app API (lower environments only)
 class ServiceProviderUpdater
   PROTECTED_ATTRIBUTES = %i[
     created_at
