@@ -14,6 +14,7 @@ options = {
     key_prefix: "#{Figaro.env.domain_name}:session:",
     url: Figaro.env.redis_url,
   },
+  on_session_load_error: SessionEncryptorErrorHandler,
   serializer: SessionEncryptor.new,
 }
 
