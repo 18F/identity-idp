@@ -29,6 +29,7 @@ FeatureEnvy:
     - Idv::ProfileMaker#pii_from_applicant
     - Idv::Step#vendor_validator_result
     - IdvSession#vendor_result_timed_out?
+    - ServiceProviderSeeder#run
 InstanceVariableAssumption:
   exclude:
     - User
@@ -42,6 +43,7 @@ NestedIterators:
     - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_html
     - TwilioService#sanitize_phone_number
+    - ServiceProviderSeeder#run
 NilCheck:
   enabled: false
 LongParameterList:
