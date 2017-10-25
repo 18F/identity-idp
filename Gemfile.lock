@@ -37,8 +37,8 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f9917394698a3671e08058cf743e25a276887a79
-  tag: v0.4.3-18f
+  revision: c9ebcd99af6aa15b12bb171f19852bfd2aaf9a80
+  branch: brody/name-id-format
   specs:
     saml_idp (0.4.3.pre.18f)
       activesupport
@@ -312,7 +312,8 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.6)
+    i18n (0.9.0)
+      concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.18)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)

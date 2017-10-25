@@ -43,4 +43,31 @@ class ServiceProvider < ApplicationRecord
   def live?
     active? && approved?
   end
+
+  def name_id_format
+    # default to persistent if name_id_format_type is nil
+    key = name_id_format_type || 'persistent'
+
+    NAME_ID_FORMAT_TYPE_OPTIONS.fetch(key)
+  end
+
+  # Mapping of string name_id_format_type String values to the Hash that
+  # the saml_idp gem expects to find in order to select a NameID format and
+  # NameID getter function, which is called with the principal to get the value
+  # to be used for the NameID in SAML messages.
+  NAME_ID_FORMAT_TYPE_OPTIONS = {
+    'persistent' => {
+      name: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
+      getter: proc { |principal|
+        principal.asserted_attributes.fetch(:uuid).fetch(:getter).call(principal)
+      },
+    }.freeze,
+    'email' => {
+      name: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
+      getter: :email,
+    }.freeze,
+    nil => nil,
+  }.freeze
+
+  validates :name_id_format_type, inclusion: { in: NAME_ID_FORMAT_TYPE_OPTIONS }
 end

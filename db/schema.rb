@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170905144239) do
+ActiveRecord::Schema.define(version: 20171025025213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 20170905144239) do
     t.boolean "approved", default: false, null: false
     t.boolean "native", default: false, null: false
     t.string "redirect_uris", default: [], array: true
+    t.string "name_id_format_type"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
