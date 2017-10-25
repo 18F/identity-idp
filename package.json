@@ -7,7 +7,9 @@
     "npm": "~3.8.x"
   },
   "scripts": {
-    "build": "true"
+    "build": "true",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "dependencies": {
     "app": "^0.1.0",
@@ -20,7 +22,8 @@
     "libphonenumber-js": "^0.4.23",
     "normalize.css": "^4.2.0",
     "sinon": "^1.17.7",
-    "zxcvbn": "^4.4.2"
+    "zxcvbn": "^4.4.2",
+    "snyk": "^1.41.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
@@ -34,5 +37,6 @@
     "eslint-config-airbnb-base": "^11.2.0",
     "eslint-plugin-import": "^2.2.0",
     "proxyquireify": "^3.2.1"
-  }
+  },
+  "snyk": true
 }
