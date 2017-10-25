@@ -1,6 +1,7 @@
 require 'encrypted_sidekiq_redis'
 require 'sidekiq_logger_formatter'
 require 'worker_health_checker'
+require 'no_retry_jobs'
 
 Sidekiq::Logging.logger.level = Logger::WARN
 Sidekiq::Logging.logger.formatter = SidekiqLoggerFormatter.new
@@ -18,6 +19,7 @@ Sidekiq.configure_server do |config|
   # middleware to spec/rails_helper.rb to run in tests as well
   config.server_middleware do |chain|
     chain.add WorkerHealthChecker::Middleware
+    chain.add NoRetryJobs
   end
 end
 

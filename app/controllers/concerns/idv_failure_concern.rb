@@ -1,10 +1,14 @@
 module IdvFailureConcern
   extend ActiveSupport::Concern
 
+  # rubocop:disable Metrics/MethodLength
   def render_failure
     if step_attempts_exceeded?
       @view_model = view_model(error: 'fail')
       flash_message(type: :error)
+    elsif step.vendor_validator_job_failed?
+      @view_model = view_model(error: 'jobfail')
+      flash_message(type: :warning)
     elsif form_valid_but_vendor_validation_failed?
       @view_model = view_model(error: 'warning', timed_out: step.vendor_validation_timed_out?)
       flash_message(type: :warning)
@@ -12,6 +16,7 @@ module IdvFailureConcern
       @view_model = view_model
     end
   end
+  # rubocop:enable Metrics/MethodLength
 
   def form_valid_but_vendor_validation_failed?
     idv_form.valid? && !step.vendor_validation_passed?

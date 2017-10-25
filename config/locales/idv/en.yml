@@ -169,12 +169,15 @@ en:
         other: You have <strong>%{count} attempts remaining.</strong>
       button:
         fail: Okay
+        jobfail: Try again tomorrow
         warning: Try again
       financials:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again. Check our Help section for more information about identity
           verification.
         heading: We could not find records matching your financial information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       phone:
@@ -182,12 +185,16 @@ en:
           try to verify again. Check our Help section for more information about identity
           verification.
         heading: We could not find records matching your phone information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       sessions:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again.
         heading: We could not find records matching your personal information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.

@@ -24,7 +24,7 @@ module Verify
     end
 
     def warning_partial
-      if error == 'warning'
+      if %w[warning jobfail].include?(error)
         'shared/modal_verification_warning'
       else
         'shared/null'
@@ -37,7 +37,7 @@ module Verify
     end
 
     def button
-      if error == 'warning'
+      if %w[warning jobfail].include?(error)
         helper.content_tag(
           :button, button_link_text, id: 'js-close-modal', class: button_css_classes
         )
@@ -52,6 +52,11 @@ module Verify
       )
       flash_body = message
       flash_heading + flash_body + attempts
+    end
+
+    def modal_class_name
+      return 'modal-warning' if %w[warning jobfail].include?(error)
+      "modal-#{error}"
     end
 
     private
@@ -69,7 +74,7 @@ module Verify
     end
 
     def attempts
-      if error == 'warning'
+      if %w[warning jobfail].include?(error)
         html_paragraph(text: I18n.t('idv.modal.attempts', count: remaining_attempts))
       else
         ''
