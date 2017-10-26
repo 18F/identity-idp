@@ -16,7 +16,8 @@ describe AttributeAsserter do
     instance_double(
       ServiceProvider,
       issuer: 'http://localhost:3000',
-      metadata: {}
+      metadata: {},
+      name_id_format: {}
     )
   end
   let(:raw_loa1_authn_request) { URI.decode sp1_authnrequest.split('SAMLRequest').last }
@@ -210,6 +211,17 @@ describe AttributeAsserter do
 
         it 'silently skips invalid attribute name' do
           expect(user.asserted_attributes.keys).to eq(%i[uuid email])
+        end
+      end
+
+      context 'passing through name_id_format' do
+        before do
+          expect(service_provider).to receive(:name_id_format).and_return(:sentinel)
+          subject.build
+        end
+
+        it 'passes through name_id_format to user' do
+          expect(user.name_id_format).to eq :sentinel
         end
       end
     end

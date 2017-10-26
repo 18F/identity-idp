@@ -56,17 +56,17 @@ class ServiceProvider < ApplicationRecord
   # NameID getter function, which is called with the principal to get the value
   # to be used for the NameID in SAML messages.
   NAME_ID_FORMAT_TYPE_OPTIONS = {
+    nil => nil,
     'persistent' => {
       name: Saml::XML::Namespaces::Formats::NameId::PERSISTENT,
-      getter: proc { |principal|
+      getter: proc do |principal|
         principal.asserted_attributes.fetch(:uuid).fetch(:getter).call(principal)
-      },
+      end,
     }.freeze,
     'email' => {
       name: Saml::XML::Namespaces::Formats::NameId::EMAIL_ADDRESS,
       getter: :email,
     }.freeze,
-    nil => nil,
   }.freeze
 
   validates :name_id_format_type, inclusion: { in: NAME_ID_FORMAT_TYPE_OPTIONS }

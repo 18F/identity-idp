@@ -39,7 +39,7 @@ gem 'redis-session-store', github: '18F/redis-session-store', branch: 'master'
 gem 'rqrcode'
 gem 'ruby-progressbar'
 gem 'ruby-saml'
-#gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: 'v0.4.3-18f'
+# gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: 'v0.4.3-18f'
 gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', branch: 'brody/name-id-format' # TMP
 gem 'sass-rails', '~> 5.0'
 gem 'savon'
