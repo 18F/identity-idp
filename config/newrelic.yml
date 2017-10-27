@@ -1,0 +1,23 @@
+production:
+  agent_enabled: true
+  app_name: <%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>
+  audit_log:
+    enabled: false
+  browser_monitoring:
+    auto_instrument: false
+  capture_params:
+  developer_mode:
+  error_collector:
+    capture_source: true
+    enabled: true
+    ignore_errors: "ActionController::RoutingError,ActionController::BadRequest"
+  license_key: <%= Figaro.env.newrelic_license_key! %>
+  log_level: info
+  monitor_mode: true
+  transaction_tracer:
+    enabled: true
+    record_sql: obfuscated
+    stack_trace_threshold: 0.500
+    transaction_threshold: apdex_f
+  proxy_host:
+  proxy_port:
