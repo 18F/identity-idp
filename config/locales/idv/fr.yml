@@ -154,6 +154,7 @@ fr:
           qu'il respecte les critères mentionnés plus haut.
         us_country_code: NOT TRANSLATED YET
       return_to_profile: NOT TRANSLATED YET
+      return_to_sp_html: NOT TRANSLATED YET
       review:
         financial_info: Où se trouve l'information sur mon compte bancaire?
         info_verified_html: Nous avons trouvé des données qui correspondent à votre

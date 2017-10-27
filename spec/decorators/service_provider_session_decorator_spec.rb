@@ -74,6 +74,25 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
+  describe '#sp_agency' do
+    it 'returns the SP agency if present' do
+      expect(subject.sp_agency).to eq sp.agency
+      expect(subject.sp_agency).to_not be_nil
+    end
+
+    it 'returns the friendly name if the agency is not present' do
+      sp = build_stubbed(:service_provider, friendly_name: 'friend', agency: nil)
+      subject = ServiceProviderSessionDecorator.new(
+        sp: sp,
+        view_context: view_context,
+        sp_session: {},
+        service_provider_request: ServiceProviderRequest.new
+      )
+      expect(subject.sp_agency).to eq sp.friendly_name
+      expect(subject.sp_agency).to_not be_nil
+    end
+  end
+
   describe '#sp_logo' do
     context 'service provider has a logo' do
       it 'returns the logo' do
