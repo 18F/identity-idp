@@ -320,6 +320,64 @@ describe SamlIdpController do
       end
     end
 
+    context 'service provider uses email NameID format and is allowed to use email' do
+      let(:user) { create(:user, :signed_up) }
+
+      before do
+        generate_saml_response(user, email_nameid_saml_settings_for_allowed_issuer)
+      end
+
+      # Testing the <saml:Subject> element when the SP is configured to use a
+      # NameID format of emailAddress rather than the default persistent UUID.
+      context 'Subject' do
+        let(:subject) { xmldoc.subject_nodeset[0] }
+
+        it 'has a saml:Subject element' do
+          expect(subject).to_not be_nil
+        end
+
+        context 'NameID' do
+          let(:name_id) { subject.at('//ds:NameID', ds: Saml::XML::Namespaces::ASSERTION) }
+
+          it 'has a saml:NameID element' do
+            expect(name_id).to_not be_nil
+          end
+
+          it 'has a format attribute defining the NameID to be email' do
+            expect(name_id.attributes['Format'].value).
+              to eq('urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress')
+          end
+
+          it 'has NameID value of the email address of the user making the AuthN Request' do
+            expect(name_id.children.first.to_s).to eq(user.email)
+          end
+        end
+      end
+    end
+
+    context 'service provider uses email NameID format but is not allowed to use email' do
+      it 'returns an error' do
+        stub_analytics
+        allow(@analytics).to receive(:track_event)
+
+        saml_get_auth(email_nameid_saml_settings_for_disallowed_issuer)
+
+        expect(controller).to render_template('saml_idp/auth/error')
+        expect(response.status).to eq(400)
+        expect(response.body).to include(t('errors.messages.unauthorized_nameid_format'))
+
+        analytics_hash = {
+          success: false,
+          errors: { nameid_format: [t('errors.messages.unauthorized_nameid_format')] },
+          authn_context: 'http://idmanagement.gov/ns/assurance/loa/1',
+          service_provider: 'http://localhost:3000',
+        }
+
+        expect(@analytics).to have_received(:track_event).
+          with(Analytics::SAML_AUTH, analytics_hash)
+      end
+    end
+
     describe 'HEAD /api/saml/auth', type: :request do
       it 'responds with "403 Forbidden"' do
         head '/api/saml/auth?SAMLRequest=bang!'

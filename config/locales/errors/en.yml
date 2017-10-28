@@ -34,6 +34,7 @@ en:
       personal_key_incorrect: Incorrect personal key
       requires_phone: requires you to enter your phone number.
       unauthorized_authn_context: Unauthorized authentication context
+      unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider
       usps_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
