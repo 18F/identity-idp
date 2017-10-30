@@ -1,8 +1,0 @@
-rvm:
-  - 2.3.1
-  - 2.3.3
-notifications:
-  email:
-    on_success: change
-    on_failure: always
-sudo: false
