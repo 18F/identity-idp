@@ -100,22 +100,11 @@ CERT
 
   # Principal (e.g. User) is passed in when you `encode_response`
   #
-  # config.name_id.formats # =>
-  #   {                         # All 2.0
-  #     email_address: -> (principal) { principal.email_address },
-  #     transient: -> (principal) { principal.id },
-  #     persistent: -> (p) { p.id },
-  #   }
-  #   OR
-  #
+  # config.name_id.formats =
   #   {
-  #     "1.1" => {
-  #       email_address: -> (principal) { principal.email_address },
-  #     },
-  #     "2.0" => {
-  #       transient: -> (principal) { principal.email_address },
-  #       persistent: -> (p) { p.id },
-  #     },
+  #     email_address: ->(principal) { principal.email_address },
+  #     transient: ->(principal) { principal.id },
+  #     persistent: ->(principal) { principal.uuid },
   #   }
 
   # If Principal responds to a method called `asserted_attributes`

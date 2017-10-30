@@ -13,12 +13,13 @@ module SamlIdp
     attr_accessor :saml_acs_url
     attr_accessor :raw_algorithm
     attr_accessor :authn_context_classref
+    attr_accessor :name_id_format
     attr_accessor :expiry
     attr_accessor :encryption_opts
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, expiry=60*60, encryption_opts=nil)
+    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, name_id_format, expiry=60*60, encryption_opts=nil)
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
       self.principal = principal
@@ -27,6 +28,7 @@ module SamlIdp
       self.saml_acs_url = saml_acs_url
       self.raw_algorithm = raw_algorithm
       self.authn_context_classref = authn_context_classref
+      self.name_id_format = name_id_format
       self.expiry = expiry
       self.encryption_opts = encryption_opts
     end
@@ -40,7 +42,7 @@ module SamlIdp
           assertion.Issuer issuer_uri
           sign assertion
           assertion.Subject do |subject|
-            subject.NameID name_id, Format: name_id_format[:name]
+            subject.NameID name_id, Format: sp_name_id_format.fetch(:name)
             subject.SubjectConfirmation Method: Saml::XML::Namespaces::Methods::BEARER do |confirmation|
               confirmation.SubjectConfirmationData "", InResponseTo: saml_request_id,
                 NotOnOrAfter: not_on_or_after_subject,
@@ -117,7 +119,7 @@ module SamlIdp
     private :name_id
 
     def name_id_getter
-      getter = name_id_format[:getter]
+      getter = sp_name_id_format.fetch(:getter)
       if getter.respond_to? :call
         getter
       else
@@ -126,10 +128,10 @@ module SamlIdp
     end
     private :name_id_getter
 
-    def name_id_format
-      @name_id_format ||= NameIdFormatter.new(config.name_id.formats).chosen
+    def sp_name_id_format
+      @sp_name_id_format ||= NameIdFormatter.new(config.name_id.formats, name_id_format).chosen
     end
-    private :name_id_format
+    private :sp_name_id_format
 
     def reference_string
       "_#{reference_id}"

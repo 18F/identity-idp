@@ -15,6 +15,7 @@ module SamlIdp
     let(:authn_context_classref) {
       Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
     }
+    let(:name_id_format) { 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress' }
     let(:expiry) { 3 * 60 * 60 }
     let (:encryption_opts) do
       {
@@ -32,6 +33,7 @@ module SamlIdp
                                   saml_acs_url,
                                   algorithm,
                                   authn_context_classref,
+                                  name_id_format,
                                   expiry,
                                   encryption_opts
                                  )
@@ -46,6 +48,7 @@ module SamlIdp
                                   saml_acs_url,
                                   algorithm,
                                   authn_context_classref,
+                                  name_id_format,
                                   expiry
                                  )
     }

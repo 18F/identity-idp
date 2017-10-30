@@ -50,6 +50,7 @@ module SamlIdp
         saml_acs_url,
         (opts[:algorithm] || algorithm || default_algorithm),
         my_authn_context_classref,
+        saml_request.name_id_format,
         expiry,
         encryption_opts
       ).build

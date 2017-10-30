@@ -1,8 +1,11 @@
 module SamlIdp
   class NameIdFormatter
     attr_accessor :list
-    def initialize(list)
+    attr_accessor :sp_name_id_format
+
+    def initialize(list, sp_name_id_format = 'persistent')
       self.list = (list || {})
+      self.sp_name_id_format = sp_name_id_format
     end
 
     def all
@@ -15,23 +18,45 @@ module SamlIdp
     end
 
     def chosen
-      if split?
-        version, choose = "1.1", one_one.first
-        version, choose = "2.0", two_zero.first unless choose
-        version, choose = "2.0", "persistent" unless choose
-        build(version, choose)
-      else
-        choose = list.first || "persistent"
-        build("2.0", choose)
-      end
+      return default_name_getter_hash unless list.key?(symbolized_name_id_format)
+
+      version = one_one_nameid_format? ? '1.1' : '2.0'
+      requested = list.find { |k, _| k == symbolized_name_id_format }
+
+      build(version, requested)
+    end
+
+    def default_name_getter_hash
+      {
+        name: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
+        getter: 'id'
+      }
+    end
+
+    def symbolized_name_id_format
+      @symbolized_name_id_format ||= sp_name_id_format.split(':').last.underscore.to_sym
+    end
+
+    def one_one_nameid_format?
+      one_one_nameid_formats = %i[
+        email_address
+        unspecified
+        windows_domain_qualified_name
+        x509_subject_name
+      ]
+
+      one_one_nameid_formats.include?(symbolized_name_id_format)
     end
 
     def build(version, key_val)
       key_val = Array(key_val)
-      name = key_val.first.to_s.underscore
+      name = key_val.first.to_s
       getter = build_getter key_val.last || name
+      name = name.camelize if %w[windows_domain_qualified_name x509_subject_name].include?(name)
+      name = 'emailAddress' if name == 'email_address'
+
       {
-        name: "urn:oasis:names:tc:SAML:#{version}:nameid-format:#{name.camelize(:lower)}",
+        name: "urn:oasis:names:tc:SAML:#{version}:nameid-format:#{name}",
         getter: getter
       }
     end

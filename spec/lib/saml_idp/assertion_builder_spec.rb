@@ -11,6 +11,7 @@ module SamlIdp
     let(:authn_context_classref) {
       Saml::XML::Namespaces::AuthnContext::ClassRef::PASSWORD
     }
+    let(:name_id_format) { 'urn:oasis:names:tc:SAML:2.0:nameid-format:emailAddress' }
     let(:expiry) { 3*60*60 }
     let (:encryption_opts) do
       {
@@ -28,6 +29,7 @@ module SamlIdp
       saml_acs_url,
       algorithm,
       authn_context_classref,
+      name_id_format,
       expiry
     ) }
 
@@ -41,9 +43,7 @@ module SamlIdp
       let(:config) { SamlIdp::Configurator.new }
       before do
         config.name_id.formats = {
-          "1.1" => {
-            email_address: ->(p) { "foo@example.com" }
-          }
+          email_address: ->(p) { "foo@example.com" }
         }
         allow(SamlIdp).to receive_messages(config: config)
       end
@@ -68,6 +68,7 @@ module SamlIdp
           saml_acs_url,
           algorithm,
           authn_context_classref,
+          name_id_format,
           expiry
         )
         Timecop.travel(Time.zone.local(2010, 6, 1, 13, 0, 0)) do
@@ -86,6 +87,7 @@ module SamlIdp
         saml_acs_url,
         algorithm,
         authn_context_classref,
+        name_id_format,
         expiry,
         encryption_opts
       )

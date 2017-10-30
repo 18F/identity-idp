@@ -14,6 +14,7 @@ module SamlIdp
     attr_accessor :secret_key
     attr_accessor :x509_certificate
     attr_accessor :authn_context_classref
+    attr_accessor :name_id_format
     attr_accessor :expiry
     attr_accessor :encryption_opts
 
@@ -26,6 +27,7 @@ module SamlIdp
           saml_acs_url,
           algorithm,
           authn_context_classref,
+          name_id_format,
           expiry=60*60,
           encryption_opts=nil
           )
@@ -40,6 +42,7 @@ module SamlIdp
       self.secret_key = secret_key
       self.x509_certificate = x509_certificate
       self.authn_context_classref = authn_context_classref
+      self.name_id_format = name_id_format
       self.expiry = expiry
       self.encryption_opts = encryption_opts
     end
@@ -71,6 +74,7 @@ module SamlIdp
         saml_acs_url,
         algorithm,
         authn_context_classref,
+        name_id_format,
         expiry,
         encryption_opts
     end
