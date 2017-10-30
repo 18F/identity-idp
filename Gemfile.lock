@@ -37,10 +37,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f9917394698a3671e08058cf743e25a276887a79
-  tag: v0.4.3-18f
+  revision: bd77c74edc0943dac77cbc0fb07dabc8f9860176
+  tag: v0.5.0-18f
   specs:
-    saml_idp (0.4.3.pre.18f)
+    saml_idp (0.5.0.pre.18f)
       activesupport
       builder
       httparty
@@ -312,7 +312,8 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.6)
+    i18n (0.9.0)
+      concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.18)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
@@ -615,7 +616,7 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.5)
       libxml-ruby (>= 2.0, < 4.0)
-    tzinfo (1.2.3)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)

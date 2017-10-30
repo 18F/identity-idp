@@ -9,6 +9,7 @@ Figaro.require_keys(
   'enable_usps_verification',
   'equifax_ssh_passphrase',
   'hmac_fingerprinter_key',
+  'issuers_with_email_nameid_format',
   'logins_per_ip_limit',
   'logins_per_ip_period',
   'max_mail_events',
