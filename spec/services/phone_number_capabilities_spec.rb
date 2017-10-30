@@ -37,4 +37,32 @@ describe PhoneNumberCapabilities do
       expect(locality).to eq('Morocco')
     end
   end
+
+  describe 'list of unsupported area codes' do
+    it 'is up to date' do
+      unsupported_area_codes = {
+        '648' => 'American Samoa',
+        '264' => 'Anguilla',
+        '268' => 'Antigua and Barbuda',
+        '246' => 'Barbados',
+        '441' => 'Bermuda',
+        '345' => 'Cayman Islands',
+        '767' => 'Dominica',
+        '809' => 'Dominican Republic',
+        '473' => 'Grenada',
+        '671' => 'Guam',
+        '876' => 'Jamaica',
+        '664' => 'Montserrat',
+        '670' => 'Northern Mariana Islands',
+        '869' => 'Saint Kitts and Nevis',
+        '758' => 'Saint Lucia',
+        '784' => 'Saint Vincent Grenadines',
+        '868' => 'Trinidad and Tobago',
+        '649' => 'Turks and Caicos Islands',
+        '284' => 'British Virgin Islands',
+        '340' => 'United States Virgin Islands',
+      }
+      expect(PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES).to eq unsupported_area_codes
+    end
+  end
 end

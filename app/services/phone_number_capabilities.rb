@@ -11,6 +11,7 @@ class PhoneNumberCapabilities
     '473' => 'Grenada',
     '671' => 'Guam',
     '876' => 'Jamaica',
+    '664' => 'Montserrat',
     '670' => 'Northern Mariana Islands',
     '869' => 'Saint Kitts and Nevis',
     '758' => 'Saint Lucia',

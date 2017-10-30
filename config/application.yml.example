@@ -88,6 +88,7 @@ development:
   logins_per_ip_period: '8'
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
+  newrelic_license_key: ''
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '5'
@@ -146,8 +147,9 @@ production:
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
   mandrill_api_token: '' # Empty string to switch to SES
-  newrelic_browser_key:
-  newrelic_browser_app_id:
+  newrelic_browser_key: ''
+  newrelic_browser_app_id: ''
+  newrelic_license_key: ''
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '5'
