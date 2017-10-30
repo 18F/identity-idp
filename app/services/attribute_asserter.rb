@@ -21,6 +21,9 @@ class AttributeAsserter
   end
 
   def build
+    # pass through SP's preferred name_id_format to the saml_idp gem
+    user.name_id_format = service_provider.name_id_format
+
     attrs = default_attrs
     add_email(attrs) if bundle.include? :email
     add_bundle(attrs) if user.active_profile.present? && loa3_authn_context?

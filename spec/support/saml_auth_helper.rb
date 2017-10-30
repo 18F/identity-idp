@@ -89,6 +89,12 @@ module SamlAuthHelper
     settings
   end
 
+  def email_nameid_saml_settings
+    settings = saml_settings.dup
+    settings.issuer = 'http://localhost:3000/email-nameid'
+    settings
+  end
+
   def sp1_saml_settings
     settings = saml_settings.dup
     settings.issuer = 'https://rp1.serviceprovider.com/auth/saml/metadata'

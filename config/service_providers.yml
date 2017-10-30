@@ -13,6 +13,21 @@ test:
       - email
       - phone
 
+  'http://localhost:3000/email-nameid':
+    acs_url: 'http://localhost:3000/test/saml/decode_assertion'
+    assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
+    sp_initiated_login_url: 'http://localhost:3000/test/saml'
+    block_encryption: 'none'
+    cert: 'saml_test_sp'
+    agency: 'Test Government Agency'
+    friendly_name: 'Your friendly Government Agency, Email NameID'
+    logo: 'generic.svg'
+    return_to_sp_url: 'http://localhost:3000'
+    attribute_bundle:
+      - email
+      - phone
+    name_id_format_type: 'email'
+
   'https://rp1.serviceprovider.com/auth/saml/metadata':
     acs_url: 'http://example.com/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'

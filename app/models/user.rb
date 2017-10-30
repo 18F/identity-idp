@@ -36,6 +36,10 @@ class User < ApplicationRecord
 
   attr_accessor :asserted_attributes
 
+  # This is used to pass through the SP's desired name_id_format into the
+  # saml_idp gem.
+  attr_accessor :name_id_format
+
   def personal_key
     recovery_code
   end

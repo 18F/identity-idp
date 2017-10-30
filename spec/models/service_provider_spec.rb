@@ -155,4 +155,42 @@ describe ServiceProvider do
       end
     end
   end
+
+  describe '#name_id_format' do
+    let(:principal) do
+      double('principal',
+             asserted_attributes: { uuid: { getter: proc { |p| p.stub_get_uuid } } })
+    end
+
+    it 'uses persistent format with default, nil, or persistent set' do
+      [
+        ServiceProvider.new,
+        ServiceProvider.new(name_id_format_type: nil),
+        ServiceProvider.new(name_id_format_type: 'persistent'),
+      ].each do |service_provider|
+
+        format = service_provider.name_id_format
+        expect(format[:name]).to eq('urn:oasis:names:tc:SAML:2.0:nameid-format:persistent')
+        expect(format[:getter]).to be_a(Proc)
+        expect(principal).to receive(:stub_get_uuid).once.and_return('my-sample-uuid')
+
+        expect(format.fetch(:getter).call(principal)).to eq('my-sample-uuid')
+      end
+    end
+
+    it 'uses email format when email type is set' do
+      service_provider = ServiceProvider.new(name_id_format_type: 'email')
+      format = service_provider.name_id_format
+      expect(format[:name]).to eq('urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress')
+      expect(format[:getter]).to eq(:email)
+    end
+
+    it 'raises with invalid type' do
+      service_provider = ServiceProvider.new(name_id_format_type: 'nonexistent')
+
+      expect {
+        service_provider.name_id_format
+      }.to raise_error(KeyError, /"nonexistent"/)
+    end
+  end
 end
