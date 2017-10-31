@@ -107,11 +107,13 @@ class ApplicationController < ActionController::Base
     params[:reauthn]
   end
 
-  def invalid_auth_token
+  def invalid_auth_token(exception)
     analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN)
     sign_out
     flash[:error] = t('errors.invalid_authenticity_token')
     redirect_to root_url
+
+    ExceptionNotifier.notify_exception(exception, env: request.env)
   end
 
   def user_fully_authenticated?

@@ -255,6 +255,9 @@ GEM
     errbase (0.0.3)
     erubi (1.6.1)
     eventmachine (1.2.5)
+    exception_notification (4.2.2)
+      actionmailer (>= 4.0, < 6)
+      activesupport (>= 4.0, < 6)
     excon (0.58.0)
     execjs (2.7.0)
     factory_girl (4.8.0)
@@ -694,6 +697,7 @@ DEPENDENCIES
   dotiw
   email_spec
   equifax!
+  exception_notification
   factory_girl_rails
   fakefs
   faker
