@@ -1,7 +1,8 @@
 class Analytics
-  def initialize(user, request)
+  def initialize(user:, request:, sp:)
     @user = user
     @request = request
+    @sp = sp
   end
 
   def track_event(event, attributes = {})
@@ -14,7 +15,7 @@ class Analytics
 
   private
 
-  attr_reader :user, :request
+  attr_reader :user, :request, :sp
 
   def ahoy
     @ahoy ||= Rails.env.test? ? FakeAhoyTracker.new : Ahoy::Tracker.new(request: request)
@@ -26,6 +27,7 @@ class Analytics
       user_agent: request.user_agent,
       host: request.host,
       pid: Process.pid,
+      service_provider: sp,
     }
   end
 

@@ -93,11 +93,13 @@ describe ApplicationController do
 
   describe '#analytics' do
     context 'when a current_user is present' do
-      it 'calls the Analytics class by default with current_user and request parameters' do
+      it 'calls the Analytics class by default with current_user, request, and issuer' do
         user = build_stubbed(:user)
+        sp = ServiceProvider.new(issuer: 'http://localhost:3000')
         allow(controller).to receive(:current_user).and_return(user)
+        allow(controller).to receive(:current_sp).and_return(sp)
 
-        expect(Analytics).to receive(:new).with(user, request)
+        expect(Analytics).to receive(:new).with(user: user, request: request, sp: sp.issuer)
 
         controller.analytics
       end
@@ -110,7 +112,7 @@ describe ApplicationController do
         user = instance_double(AnonymousUser)
         allow(AnonymousUser).to receive(:new).and_return(user)
 
-        expect(Analytics).to receive(:new).with(user, request)
+        expect(Analytics).to receive(:new).with(user: user, request: request, sp: nil)
 
         controller.analytics
       end
