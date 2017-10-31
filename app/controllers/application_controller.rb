@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   attr_writer :analytics
 
   def analytics
-    @analytics ||= Analytics.new(analytics_user, request)
+    @analytics ||= Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer)
   end
 
   def analytics_user
