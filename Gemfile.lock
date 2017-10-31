@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: 8021646f4a67216b0a1bdb99e501ad652104f889
-  branch: master
+  revision: de42d3c344f42f00c942219d0b35d5b0773050cd
+  tag: v1.0.1
   specs:
-    equifax (1.0.0)
+    equifax (1.0.1)
       activesupport
       dotenv
       gyoku
@@ -21,10 +21,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: b25f4f40e6b61fc9f586d870e5aaa90f1449c5d9
-  branch: master
+  revision: f4487732707719951e862c2f649377c72f08ca85
+  tag: v1.0.1
   specs:
-    proofer (1.0.0)
+    proofer (1.0.1)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
