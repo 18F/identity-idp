@@ -31,7 +31,7 @@ gem 'pg'
 gem 'phonelib'
 gem 'phony_rails'
 gem 'premailer-rails'
-gem 'proofer', github: '18F/identity-proofer-gem', branch: 'master'
+gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v1.0.1'
 gem 'rack-cors', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout'
@@ -115,6 +115,6 @@ group :test do
 end
 
 group :production do
-  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', branch: 'master'
+  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.0.1'
   gem 'mandrill_dm'
 end
