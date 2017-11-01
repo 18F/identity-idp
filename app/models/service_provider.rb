@@ -54,9 +54,10 @@ class ServiceProvider < ApplicationRecord
     redirect_uris.each do |uri|
       begin
         next if uri =~ URI::DEFAULT_PARSER.regexp[:ABS_URI] && URI.parse(uri)
-        errors.add(:redirect_uris, :invalid)
+        raise URI::InvalidURIError
       rescue URI::BadURIError, URI::InvalidURIError
         errors.add(:redirect_uris, :invalid)
+        break
       end
     end
   end
