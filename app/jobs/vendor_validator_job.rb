@@ -10,13 +10,19 @@ class VendorValidatorJob < ApplicationJob
       vendor_session_id: vendor_session_id
     )
 
-    VendorValidatorResultStorage.new.store(
-      result_id: result_id,
-      result: extract_result(vendor_validator.result)
-    )
+    extract_result_and_store_if_job_passed(result_id, vendor_validator)
+  rescue StandardError
+    store_failed_job_result(result_id)
+    raise
   end
 
   private
+
+  def extract_result_and_store_if_job_passed(result_id, validator)
+    validator_result = extract_result(validator.result)
+
+    VendorValidatorResultStorage.new.store(result_id: result_id, result: validator_result)
+  end
 
   def extract_result(result)
     vendor_resp = result.vendor_resp
@@ -28,6 +34,12 @@ class VendorValidatorJob < ApplicationJob
       normalized_applicant: vendor_resp.try(:normalized_applicant),
       session_id: result.try(:session_id)
     )
+  end
+
+  def store_failed_job_result(result_id)
+    job_failed_result = Idv::VendorResult.new(errors: { job_failed: true })
+
+    VendorValidatorResultStorage.new.store(result_id: result_id, result: job_failed_result)
   end
 
   def indifferent_access(params)

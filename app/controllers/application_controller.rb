@@ -35,7 +35,7 @@ class ApplicationController < ActionController::Base
   attr_writer :analytics
 
   def analytics
-    @analytics ||= Analytics.new(analytics_user, request)
+    @analytics ||= Analytics.new(user: analytics_user, request: request, sp: current_sp&.issuer)
   end
 
   def analytics_user
@@ -107,11 +107,13 @@ class ApplicationController < ActionController::Base
     params[:reauthn]
   end
 
-  def invalid_auth_token
+  def invalid_auth_token(exception)
     analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN)
     sign_out
     flash[:error] = t('errors.invalid_authenticity_token')
     redirect_to root_url
+
+    ExceptionNotifier.notify_exception(exception, env: request.env)
   end
 
   def user_fully_authenticated?

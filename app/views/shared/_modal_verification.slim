@@ -1,6 +1,6 @@
 #verification-modal.display-none
   = render layout: '/shared/modal_layout' do
-    .p3.sm-p4.cntnr-xxskinny.border-box.bg-white.rounded-xxl(class="modal-#{view_model.error}")
+    .p3.sm-p4.cntnr-xxskinny.border-box.bg-white.rounded-xxl(class="#{view_model.modal_class_name}")
       h2.my2.fs-20p.sans-serif.regular.center = t("idv.modal.#{view_model.step_name}.heading")
       hr.mb3.bw4.rounded
       .mb4

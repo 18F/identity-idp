@@ -63,5 +63,20 @@ RSpec.describe VendorValidatorJob do
         expect(result.reasons).to eq([exception_msg])
       end
     end
+
+    context 'when parsing the vendor response throws an exception' do
+      it 'rescues the error and stores the job failed result' do
+        allow(Idv::PhoneValidator).to receive(:new).and_raise(StandardError)
+
+        storage = instance_double(VendorValidatorResultStorage)
+        result =  instance_double(Idv::VendorResult, errors: { job_failed: true })
+        allow(Idv::VendorResult).to receive(:new).and_return(result)
+
+        expect(VendorValidatorResultStorage).to receive(:new).and_return(storage)
+        expect(storage).to receive(:store).with(result_id: result_id, result: result)
+
+        expect { perform }.to raise_error StandardError
+      end
+    end
   end
 end
