@@ -328,3 +328,22 @@ production:
     redirect_uris:
       - 'gov.dhs.cbp.pspd.oars.user.prod://result'
     restrict_to_deploy_env: 'prod'
+
+  # USAJOBS
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS':
+    friendly_name: 'USAJOBS'
+    agency: 'OPM'
+    logo: 'usajobs.svg'
+    redirect_uris:
+      - 'https://login.test.usajobs.gov/openid'
+      - 'https://login.test.usajobs.gov/externalloggedout'
+    restrict_to_deploy_env: 'staging'
+
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
+    friendly_name: 'USAJOBS'
+    agency: 'OPM'
+    logo: 'usajobs.svg'
+    redirect_uris:
+      - 'https://login.uat.usajobs.gov/openid'
+      - 'https://login.uat.usajobs.gov/externalloggedout'
+    restrict_to_deploy_env: 'staging'
