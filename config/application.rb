@@ -43,10 +43,10 @@ module Upaya
           next if source == Figaro.env.domain_name
 
           ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
-            match = URI::DEFAULT_PARSER.regexp[:ABS_URI].match(uri)
-            parsed_uri = "#{match[1]}://#{match[4]}"
-            parsed_uri += ":#{match[5]}" if match[5].present?
-            source == parsed_uri
+            split_uri = uri.split('//')
+            protocol = split_uri[0]
+            domain = split_uri[1].split('/')[0]
+            source == "#{protocol}//#{domain}"
           end.present?
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]

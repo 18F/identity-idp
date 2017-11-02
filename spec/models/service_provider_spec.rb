@@ -4,11 +4,13 @@ describe ServiceProvider do
   describe 'validations' do
     it 'validates that all redirect_uris are absolute, parsable uris' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
+      missing_protocol_sp = build(:service_provider, redirect_uris: ['foo.com'])
       empty_uri_sp = build(:service_provider, redirect_uris: [''])
       relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
       bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
 
       expect(valid_sp).to be_valid
+      expect(missing_protocol_sp).to_not be_valid
       expect(empty_uri_sp).to_not be_valid
       expect(relative_uri_sp).to_not be_valid
       expect(bad_uri_sp).to_not be_valid

@@ -52,13 +52,16 @@ class ServiceProvider < ApplicationRecord
     return if redirect_uris.blank?
 
     redirect_uris.each do |uri|
-      begin
-        next if uri =~ URI::DEFAULT_PARSER.regexp[:ABS_URI] && URI.parse(uri)
-        raise URI::InvalidURIError
-      rescue URI::BadURIError, URI::InvalidURIError
-        errors.add(:redirect_uris, :invalid)
-        break
-      end
+      next if redirect_uri_valid?(uri)
+      errors.add(:redirect_uris, :invalid)
+      break
     end
+  end
+
+  def redirect_uri_valid?(redirect_uri)
+    parsed_uri = URI.parse(redirect_uri)
+    parsed_uri.scheme.present? || parsed_uri.host.present?
+  rescue URI::BadURIError, URI::InvalidURIError
+    false
   end
 end
