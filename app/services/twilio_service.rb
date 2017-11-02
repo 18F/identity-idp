@@ -9,8 +9,6 @@ class TwilioService
   def initialize
     @client = if FeatureManagement.telephony_disabled?
                 NullTwilioClient.new
-              elsif proxy_addr.present?
-                twilio_proxy_client
               else
                 twilio_client
               end
@@ -41,23 +39,6 @@ class TwilioService
   private
 
   attr_reader :client
-
-  def proxy_addr
-    Figaro.env.proxy_addr
-  end
-
-  def proxy_port
-    Figaro.env.proxy_port
-  end
-
-  def twilio_proxy_client
-    telephony_service.new(
-      account['sid'],
-      account['auth_token'],
-      proxy_addr: proxy_addr,
-      proxy_port: proxy_port
-    )
-  end
 
   def twilio_client
     telephony_service.new(

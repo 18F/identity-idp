@@ -1,33 +1,6 @@
 require 'rails_helper'
 
 describe TwilioService do
-  describe 'proxy configuration' do
-    it 'ignores the proxy configuration if not set' do
-      TwilioService.telephony_service = Twilio::REST::Client
-
-      expect(Figaro.env).to receive(:proxy_addr).and_return(nil)
-      expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/)
-
-      TwilioService.new
-    end
-
-    it 'passes the proxy configuration if set' do
-      TwilioService.telephony_service = Twilio::REST::Client
-
-      expect(Figaro.env).to receive(:proxy_addr).at_least(:once).and_return('123.456.789')
-      expect(Figaro.env).to receive(:proxy_port).and_return('6000')
-
-      expect(Twilio::REST::Client).to receive(:new).with(
-        /sid(1|2)/,
-        /token(1|2)/,
-        proxy_addr: '123.456.789',
-        proxy_port: '6000'
-      )
-
-      TwilioService.new
-    end
-  end
-
   context 'when telephony is disabled' do
     before do
       expect(FeatureManagement).to receive(:telephony_disabled?).at_least(:once).and_return(true)
@@ -35,17 +8,6 @@ describe TwilioService do
 
     it 'uses NullTwilioClient' do
       TwilioService.telephony_service = Twilio::REST::Client
-
-      expect(NullTwilioClient).to receive(:new)
-      expect(Twilio::REST::Client).to_not receive(:new)
-
-      TwilioService.new
-    end
-
-    it 'uses NullTwilioClient when proxy is set' do
-      TwilioService.telephony_service = Twilio::REST::Client
-
-      allow(Figaro.env).to receive(:proxy_addr).and_return('123.456.789')
 
       expect(NullTwilioClient).to receive(:new)
       expect(Twilio::REST::Client).to_not receive(:new)
