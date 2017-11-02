@@ -43,7 +43,7 @@ module Upaya
           ServiceProvider.pluck(:redirect_uris).flatten.compact.map do |uri|
             begin
               URI.join(uri, '/').to_s[0..-2]
-            rescue URI::BadURIError => err
+            rescue URI::Error => err
               Rails.logger.warn({ warning: err.class.to_s, source: 'Rack::Cors', uri: uri }.to_json)
               ''
             end
