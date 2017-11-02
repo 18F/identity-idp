@@ -40,9 +40,14 @@ module Upaya
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          ServiceProvider.pluck(:redirect_uris).flatten.compact.map do |uri|
-            URI.join(uri, '/').to_s[0..-2]
-          end.include?(source)
+          next if source == Figaro.env.domain_name
+
+          ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
+            match = URI::DEFAULT_PARSER.regexp[:ABS_URI].match(uri)
+            parsed_uri = "#{match[1]}://#{match[4]}"
+            parsed_uri += ":#{match[5]}" if match[5].present?
+            source == parsed_uri
+          end.present?
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]

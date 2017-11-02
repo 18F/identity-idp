@@ -146,4 +146,16 @@ RSpec.describe 'CORS headers for OpenID Connect endpoints' do
       end
     end
   end
+
+  describe 'domain name as the origin' do
+    it 'does not load any ServiceProvider objects' do
+      stub_const 'ServiceProvider', double
+      get openid_connect_configuration_path, headers: { 'HTTP_ORIGIN' => Figaro.env.domain_name }
+
+      aggregate_failures do
+        expect(response).to be_ok
+        expect(response['Access-Control-Allow-Origin']).to be_nil
+      end
+    end
+  end
 end
