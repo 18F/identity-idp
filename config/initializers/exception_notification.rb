@@ -9,6 +9,7 @@ ExceptionNotification.configure do |config|
     email_prefix: "[#{APP_NAME} EXCEPTION - #{LoginGov::Hostdata.env}] ",
     sender_address: %("Exception Notifier" <notifier@login.gov>),
     exception_recipients: EXCEPTION_RECIPIENTS,
-    error_grouping: true
+    error_grouping: true,
+    sections: %w[request backtrace]
   )
 end
