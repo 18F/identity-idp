@@ -13,7 +13,7 @@ class ServiceProviderSeeder
         sp.approved = true
         sp.active = true
         sp.native = true
-      end.update(config.except('restrict_to_deploy_env'))
+      end.update!(config.except('restrict_to_deploy_env'))
     end
   end
 

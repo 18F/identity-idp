@@ -176,7 +176,7 @@ describe ServiceProviderUpdater do
           status: 200,
           body: dashboard_service_providers.to_json
         )
-        subject.run
+        expect { subject.run }.to raise_error(ActiveRecord::RecordInvalid)
       end
     end
 
