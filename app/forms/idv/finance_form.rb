@@ -1,95 +1,68 @@
 module Idv
   class FinanceForm
     include ActiveModel::Model
+
+    BANK_ACCOUNT_FINANCE_TYPES = %w[bank_account ccn].freeze
+    OTHER_FINANCE_TYPES = %w[mortgage home_equity_line auto_loan].freeze
+
+    FINANCE_TYPES = BANK_ACCOUNT_FINANCE_TYPES + OTHER_FINANCE_TYPES
+    FINANCE_VALUES = FINANCE_TYPES + %w[bank_routing bank_account_type]
+
     include FormFinanceValidator
 
-    FINANCE_TYPES = %i[ccn mortgage home_equity_line auto_loan].freeze
-    FINANCE_OTHER_TYPES = FINANCE_TYPES - [:ccn]
+    attr_accessor :finance_type, *FINANCE_VALUES
 
-    FINANCE_HTML_OPTIONS = {
-      ccn: {
-        class: 'ccn',
-        pattern: '[0-9]*',
-        minlength: FormFinanceValidator::VALID_CCN_LENGTH,
-        maxlength: FormFinanceValidator::VALID_CCN_LENGTH,
-      },
-      mortgage: {
-        class: 'mortgage',
-        pattern: '[0-9]*',
-        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH,
-      },
-      home_equity_line: {
-        class: 'home_equity_line',
-        pattern: '[0-9]*',
-        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH,
-      },
-      auto_loan: {
-        class: 'auto_loan',
-        pattern: '[0-9]*',
-        minlength: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-        maxlength: FormFinanceValidator::VALID_MAXIMUM_LENGTH,
-      },
-    }.freeze
-
-    attr_reader :idv_params, :finance_type, :blank, *FINANCE_TYPES
-
-    def initialize(idv_params)
-      @idv_params = idv_params
-      @params = nil
-      finance_type = FINANCE_TYPES.find { |param| idv_params.key? param }
-      update_finance_values(idv_params.merge(finance_type: finance_type))
+    def initialize(params = {})
+      assign_finance_type(params)
+      assign_finance_values(params)
     end
 
     def submit(params)
-      @params = params
-      finance_value = update_finance_values(params)
+      clear_finance_values
 
-      success = valid?
-      if success
-        clear_idv_params_finance
-        idv_params[finance_type] = finance_value
+      self.finance_type = params[:finance_type]
+      assign_finance_values(params)
+
+      FormResponse.new(success: valid?, errors: errors.messages)
+    end
+
+    # Defines bank_account?, #ccn?, auto_loan?, etc
+    FINANCE_TYPES.each do |finance_type|
+      define_method("#{finance_type}?") do
+        self.finance_type == finance_type
       end
-
-      FormResponse.new(success: success, errors: errors.messages)
     end
 
-    def self.finance_other_type_choices
-      FINANCE_OTHER_TYPES.map { |choice| [choice, I18n.t("idv.form.#{choice}")] }
-    end
-
-    def self.ccn_inputs
-      [
-        [:ccn, I18n.t('idv.form.ccn'), FINANCE_HTML_OPTIONS.fetch(:ccn, {})],
-      ]
-    end
-
-    def self.finance_other_type_inputs
-      FINANCE_OTHER_TYPES.map do |choice|
-        [choice, I18n.t("idv.form.#{choice}"), FINANCE_HTML_OPTIONS.fetch(choice, {})]
-      end
+    def idv_params
+      return unless FINANCE_TYPES.include?(finance_type)
+      return bank_account_idv_params if bank_account?
+      { finance_type.to_sym => send(finance_type) }
     end
 
     private
 
-    attr_writer :finance_type, *FINANCE_TYPES
-
-    def params
-      @params.presence || idv_params
+    def assign_finance_type(params)
+      finance_type_key = params.keys.find { |key| FINANCE_TYPES.include?(key.to_s) }
+      self.finance_type = finance_type_key.to_s if finance_type_key.present?
     end
 
-    def update_finance_values(params)
-      type = params[:finance_type]
-      return false unless valid_finance_type?(type)
-
-      self.finance_type = type.to_sym
-      send("#{finance_type}=", params[finance_type])
+    def assign_finance_values(params)
+      params.each do |key, value|
+        send("#{key}=", value) if FINANCE_VALUES.include?(key.to_s)
+      end
     end
 
-    def clear_idv_params_finance
-      FINANCE_TYPES.each do |finance_param|
-        idv_params.delete(finance_param)
+    def bank_account_idv_params
+      {
+        bank_account: bank_account,
+        bank_routing: bank_routing,
+        bank_account_type: bank_account_type,
+      }
+    end
+
+    def clear_finance_values
+      FINANCE_VALUES.each do |finance_value|
+        send("#{finance_value}=", nil)
       end
     end
   end
