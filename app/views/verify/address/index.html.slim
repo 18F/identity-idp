@@ -3,13 +3,17 @@ h1.h2
 p
   = decorated_session.verification_method_choice
 
-.clearfix
-  .sm-col.sm-col-12.md-col-6
-    = link_to t('idv.buttons.activate_by_phone'), verify_phone_path,
-      class: 'btn btn-primary mb2 center inline-block'
+
+= form_tag
+  label.block.p2.border.rounded-md.border-light-blue.mb2
+    = radio_button_tag 'phone', :phone
+    span.blue = t('idv.form.finance_type.bank_account')
+
+    //= link_to t('idv.buttons.activate_by_phone'), verify_phone_path,
+    //  class: 'btn btn-primary mb2 center inline-block'
   - if FeatureManagement.enable_usps_verification?
     .sm-col.sm-col-12.md-col-6
-      = link_to t('idv.buttons.activate_by_mail'), verify_usps_path,
-        class: 'btn btn-outline rounded-lg mb2 center'
+     // = link_to t('idv.buttons.activate_by_mail'), verify_usps_path,
+     //   class: 'btn btn-outline rounded-lg mb2 center'
 
 = render 'shared/cancel', link: verify_cancel_path

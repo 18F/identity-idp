@@ -2,8 +2,6 @@
 en:
   idv:
     buttons:
-      activate_by_mail: Activate by mail
-      activate_by_phone: Activate by phone
       cancel: Cancel and return to your profile
       continue: Continue identity verification
       continue_plain: Continue
@@ -11,7 +9,6 @@ en:
         resend: Send another letter
         send: Send a letter
       return_to_account: Return to account
-      return_to_sp: Return to %{sp}
       send_confirmation_code: Send confirmation code
     cancel:
       modal_header: Are you sure you want to cancel?
@@ -102,8 +99,9 @@ en:
         some basic personal information as well as some financial information from
         you to complete this process. If you don’t have the information we need at
         this time you can continue later.
-      come_back_later: Once your letter arrives, sign into login.gov and enter your
+      come_back_later: Once your letter arrives, sign into %{app}, and enter your
         verification code when prompted.
+      come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       dupe_ssn1: If you are getting this error, you may have already created and verified
         an account, but with a different email address.
@@ -148,11 +146,16 @@ en:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
-      select_verification_with_sp: To protect you from identity fraud, you can't use
-        your account at %{sp_name} until you activate it by entering a confirmation
-        code.
-      select_verification_without_sp: In order to protect your account from identity
-        fraud, your profile will not be activated until you enter a confirmation code.
+      select_verification_with_sp: To protect you from identity fraud, 
+        we will contact you to confirm that this %{sp_name} account is legitimate.
+      select_verification_without_sp: To protect you from identity fraud, 
+        we will contact you to confirm that this account is legitimate.
+      select_verification_form: 
+        phone_header: Get a code by phone
+        phone_message: The billing address for your phone must match the address you gave us.
+        mail_header: Get a code by letter
+        mail_message: We'll mail a code to the address you gave us.
+          It will take 5-10 days to reach  you.
       sessions:
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
@@ -169,12 +172,15 @@ en:
         other: You have <strong>%{count} attempts remaining.</strong>
       button:
         fail: Okay
+        jobfail: Try again tomorrow
         warning: Try again
       financials:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again. Check our Help section for more information about identity
           verification.
         heading: We could not find records matching your financial information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       phone:
@@ -182,12 +188,16 @@ en:
           try to verify again. Check our Help section for more information about identity
           verification.
         heading: We could not find records matching your phone information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       sessions:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again.
         heading: We could not find records matching your personal information.
+        jobfail: Something went wrong and we cannot process your request at this time.
+          Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered. Common mistakes are an
           incorrect Social Security Number, ZIP Code, or date of birth.
@@ -199,7 +209,7 @@ en:
     titles:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
-      come_back_later: Come back soon
+      come_back_later: Come back soon.
       complete: Identity verification complete
       dupe: 'Error: An account may already exist'
       expectations: Next, help us identify you
@@ -213,7 +223,7 @@ en:
       otp_delivery_method: Get a code by phone
       phone: Phone number of record
       review: Review and submit
-      select_verification: Activate your account
+      select_verification: Choose how to confirm your address
       session:
         phone: Get a code by telephone
         review: Encrypt your verified data by entering your password
