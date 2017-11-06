@@ -50,6 +50,7 @@ section of the README.
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"
   s.add_development_dependency "rspec"
+  s.add_development_dependency "rubocop"
   s.add_development_dependency "ruby-saml", "~> 1.4.1"
   s.add_development_dependency("rails", "~> 4.2")
   s.add_development_dependency("capybara")
