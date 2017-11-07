@@ -130,29 +130,4 @@ describe ServiceProvider do
       end
     end
   end
-
-  describe '#redirect_uris' do
-    context 'when a legacy single redirect_uri is set but not redirect_uris' do
-      let(:service_provider) do
-        ServiceProvider.new(
-          redirect_uri: 'http://a.example.com',
-          redirect_uris: []
-        )
-      end
-
-      it 'ignores the old singular column and just uses the new plural one' do
-        expect(service_provider.redirect_uris).to eq([])
-      end
-    end
-
-    context 'when there are new-style multiple redirect_uris' do
-      let(:service_provider) do
-        ServiceProvider.new(redirect_uris: %w[http://b.example.com my-app://result])
-      end
-
-      it 'is the new-style multiple redirect_uris' do
-        expect(service_provider.redirect_uris).to eq(%w[http://b.example.com my-app://result])
-      end
-    end
-  end
 end

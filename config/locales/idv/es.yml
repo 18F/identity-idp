@@ -146,6 +146,7 @@ es:
           anteriores.
         us_country_code: NOT TRANSLATED YET
       return_to_profile: NOT TRANSLATED YET
+      return_to_sp_html: NOT TRANSLATED YET
       review:
         financial_info: "¿Dónde está la información de mi cuenta financiera?"
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}

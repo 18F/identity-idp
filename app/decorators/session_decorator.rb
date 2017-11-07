@@ -32,6 +32,8 @@ class SessionDecorator
 
   def sp_name; end
 
+  def sp_agency; end
+
   def sp_logo; end
 
   def sp_return_url; end

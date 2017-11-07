@@ -239,6 +239,7 @@ feature 'Sign in' do
     it 'redirects to root_path with user-friendly error message, not a 500 error' do
       allow(FeatureManagement).to receive(:use_kms?).and_return(true)
       stub_aws_kms_client_invalid_ciphertext
+      allow(SessionEncryptorErrorHandler).to receive(:call)
 
       user = create(:user)
       signin(user.email, 'invalid')
