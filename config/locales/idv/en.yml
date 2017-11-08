@@ -144,6 +144,7 @@ en:
           one-time password as long as it meets the criteria above.
         us_country_code: have a U.S. country code to accept phone calls
       return_to_profile: "‹ Return to your login.gov profile"
+      return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}

@@ -1,12 +1,12 @@
 class SessionEncryptor
   def initialize
-    @user_access_key ||= begin
-      key = Figaro.env.session_encryption_key
-      UserAccessKey.new(password: key, salt: key)
-    end
+    @user_access_key = reload_user_access_key
   end
 
   def duped_user_access_key
+    # Reload if UserAccessKey constant has been reloaded
+    @user_access_key = reload_user_access_key unless @user_access_key.is_a? UserAccessKey
+
     # Return a clone since encryptor.decrypt mutates this key
     @user_access_key.dup
   end
@@ -26,5 +26,10 @@ class SessionEncryptor
 
   def encryptor
     Pii::PasswordEncryptor.new
+  end
+
+  def reload_user_access_key
+    key = Figaro.env.session_encryption_key
+    UserAccessKey.new(password: key, salt: key)
   end
 end

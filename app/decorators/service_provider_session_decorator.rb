@@ -59,6 +59,10 @@ class ServiceProviderSessionDecorator
     sp.friendly_name || sp.agency
   end
 
+  def sp_agency
+    sp.agency || sp.friendly_name
+  end
+
   def sp_return_url
     if sp.redirect_uris.present? && openid_connect_redirector.valid?
       openid_connect_redirector.decline_redirect_uri
