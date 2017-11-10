@@ -40,7 +40,7 @@ class SessionDecorator
 
   def requested_attributes; end
 
-  def cancel_link_path
-    root_path(locale: locale_url_param)
+  def cancel_link_url
+    root_url(locale: locale_url_param)
   end
 end

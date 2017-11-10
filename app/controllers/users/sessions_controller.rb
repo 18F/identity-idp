@@ -44,7 +44,7 @@ module Users
 
     def check_user_needs_redirect
       if user_fully_authenticated?
-        redirect_to signed_in_path
+        redirect_to signed_in_url
       elsif current_user
         sign_out
       end

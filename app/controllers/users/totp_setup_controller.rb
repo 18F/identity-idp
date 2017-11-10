@@ -3,7 +3,7 @@ module Users
     before_action :confirm_two_factor_authenticated
 
     def new
-      return redirect_to account_path if current_user.totp_enabled?
+      return redirect_to account_url if current_user.totp_enabled?
 
       user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
 
@@ -30,20 +30,20 @@ module Users
         UpdateUser.new(user: current_user, attributes: { otp_secret_key: nil }).call
         flash[:success] = t('notices.totp_disabled')
       end
-      redirect_to account_path
+      redirect_to account_url
     end
 
     private
 
     def process_valid_code
       flash[:success] = t('notices.totp_configured')
-      redirect_to account_path
+      redirect_to account_url
       user_session.delete(:new_totp_secret)
     end
 
     def process_invalid_code
       flash[:error] = t('errors.invalid_totp')
-      redirect_to authenticator_setup_path
+      redirect_to authenticator_setup_url
     end
 
     def new_totp_secret

@@ -27,8 +27,8 @@ module Verify
     private
 
     def confirm_mail_not_spammed
-      redirect_to verify_review_path if idv_session.address_mechanism_chosen? &&
-                                        usps_mail_service.mail_spammed?
+      redirect_to verify_review_url if idv_session.address_mechanism_chosen? &&
+                                       usps_mail_service.mail_spammed?
     end
 
     def resend_letter
