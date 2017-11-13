@@ -41,7 +41,7 @@ module SignUp
     end
 
     def verify_confirmed
-      redirect_to verify_path if current_user.decorate.identity_not_verified?
+      redirect_to verify_url if current_user.decorate.identity_not_verified?
     end
 
     def loa3?

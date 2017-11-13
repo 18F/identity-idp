@@ -9,7 +9,7 @@ module Verify
     private
 
     def confirm_user_needs_usps_confirmation
-      redirect_to account_path unless current_user.decorate.needs_profile_usps_verification?
+      redirect_to account_url unless current_user.decorate.needs_profile_usps_verification?
     end
   end
 end
