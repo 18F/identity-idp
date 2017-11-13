@@ -3,9 +3,3 @@ fr:
   jobs:
     sms_otp_sender_job:
       message: "%{code} est votre %{app} code de sécurité à utilisation unique."
-    voice_otp_sender_job:
-      message_final: Bonjour! Votre code de sécurité à utilisation unique de login.gov
-        est, %{code}, de nouveau, votre code de sécurité est, %{code}, au revoir!
-      message_repeat: Bonjour! Votre code de sécurité à utilisation unique de login.gov
-        est, %{code}, de nouveau, votre code de sécurité est, %{code}. Appuyez sur 1
-        pour répéter votre code.
