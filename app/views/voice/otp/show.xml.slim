@@ -4,5 +4,6 @@ Response
     = @message
   - if @action_url
     Gather numDigits="1" action=@action_url
-      Say = t('voice.otp.repeat_instructions')
+      Say language="#{I18n.locale}"
+        = t('voice.otp.repeat_instructions')
   Hangup /
