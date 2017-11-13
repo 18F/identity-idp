@@ -8,6 +8,6 @@ en:
       birthdate: Date of birth
       email: Email address
       full_name: Full name
-      intro_html: This is the only information %{app_name} will share with %{sp}
+      intro_html: 'This is the only information %{app_name} will share with %{sp}:'
       phone: Phone number
       social_security_number: Social Security number

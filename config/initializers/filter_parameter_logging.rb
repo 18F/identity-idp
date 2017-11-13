@@ -2,6 +2,7 @@
 
 # Configure sensitive parameters which will be filtered from the log file.
 Rails.application.config.filter_parameters += %i[
+  authenticity_token
   code
   email
   idv_finance_form

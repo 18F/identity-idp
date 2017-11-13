@@ -115,6 +115,6 @@ group :test do
 end
 
 group :production do
-  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.0.1'
+  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.0.2'
   gem 'mandrill_dm'
 end
