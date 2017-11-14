@@ -53,7 +53,7 @@ shared_examples 'idv max step attempts' do |sp|
     expect(current_path).to eq verify_session_result_path
   end
 
-  scenario 'fincance shows failure flash message after max attempts', :email do
+  scenario 'finance shows failure flash message after max attempts', :email do
     visit_idp_from_sp_with_loa3(sp)
     register_user
 

@@ -16,8 +16,12 @@ feature 'LOA3 Single Sign On', idv_job: true do
     click_idv_continue
     fill_out_financial_form_ok
     click_idv_continue
+    #binding.pry
     click_idv_address_choose_usps
+    #click_on t('forms.buttons.continue')
     click_on t('idv.buttons.mail.send')
+    #click_idv_begin
+
     fill_in :user_password, with: user.password
     click_submit_default
     click_acknowledge_personal_key

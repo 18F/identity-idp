@@ -2,8 +2,6 @@
 fr:
   idv:
     buttons:
-      activate_by_mail: Activer par la poste
-      activate_by_phone: Activer par téléphone
       cancel: Annuler et retourner à votre profil
       continue: Continuer la vérification d'identité
       continue_plain: Continuer
@@ -159,6 +157,11 @@ fr:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}
         intro: Vos informations vérifiées
+      select_verification_form:
+        phone_header: NOT TRANSLATED YET
+        phone_message: NOT TRANSLATED YET
+        usps_header: NOT TRANSLATED YET
+        usps_message: NOT TRANSLATED YET
       select_verification_with_sp: Afin de vous protéger des fraudes d'identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne l'aurez
         pas activé en entrant votre code de confirmation.
@@ -182,12 +185,14 @@ fr:
         other: Il ne vous reste que strong%{count} tentatives./strong
       button:
         fail: OK
+        jobfail: NOT TRANSLATED YET
         warning: Essayez à nouveau
       financials:
         fail: Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles
           vous ne pourrez pas y accéder. Consultez notre Centre d'aide pour plus d'information
           sur la vérification de votre identité.
         heading: Nous ne trouvons pas de données qui correspondent à vos données financières.
+        jobfail: NOT TRANSLATED YET
         timeout: NOT TRANSLATED YET
         warning: Veuillez vérifier l'information que vous avez fournie.
       phone:
@@ -196,6 +201,7 @@ fr:
           sur la vérification de votre identité.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
+        jobfail: NOT TRANSLATED YET
         timeout: NOT TRANSLATED YET
         warning: Veuillez vérifier l'information que vous avez fournie.
       sessions:
@@ -203,6 +209,7 @@ fr:
           vous ne pourrez pas y accéder.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
+        jobfail: NOT TRANSLATED YET
         timeout: NOT TRANSLATED YET
         warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
           de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont

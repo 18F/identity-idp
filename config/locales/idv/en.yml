@@ -9,6 +9,7 @@ en:
         resend: Send another letter
         send: Send a letter
       return_to_account: Return to account
+      return_to_sp: Return to %{sp}
       send_confirmation_code: Send confirmation code
     cancel:
       modal_header: Are you sure you want to cancel?
@@ -101,7 +102,6 @@ en:
         this time you can continue later.
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
         verification code when prompted.
-      come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       dupe_ssn1: If you are getting this error, you may have already created and verified
         an account, but with a different email address.
@@ -146,16 +146,17 @@ en:
         financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
-      select_verification_with_sp: To protect you from identity fraud, 
-        we will contact you to confirm that this %{sp_name} account is legitimate.
-      select_verification_without_sp: To protect you from identity fraud, 
-        we will contact you to confirm that this account is legitimate.
-      select_verification_form: 
+      select_verification_form:
         phone_header: Get a code by phone
-        phone_message: The billing address for your phone must match the address you gave us.
-        mail_header: Get a code by letter
-        mail_message: We'll mail a code to the address you gave us.
-          It will take 5-10 days to reach  you.
+        phone_message: The billing address for your phone must match the address you
+          gave us.
+        usps_header: Get a code by letter
+        usps_message: We'll mail a code to the address you gave us. It will take 5-10
+          days to reach you.
+      select_verification_with_sp: To protect you from identity fraud, we will contact
+        you to confirm that this %{sp_name} account is legitimate.
+      select_verification_without_sp: To protect you from identity fraud, we will
+        contact you to confirm that this account is legitimate.
       sessions:
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
