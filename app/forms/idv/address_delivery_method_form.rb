@@ -11,7 +11,7 @@ module Idv
     private
 
     def valid_address_delivery_method?
-      %w[phone usps].include? self.address_delivery_method
+      %w[phone usps].include? address_delivery_method
     end
   end
 end
