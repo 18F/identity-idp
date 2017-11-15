@@ -210,7 +210,7 @@ en:
     titles:
       activated: Your identity has already been verified
       cancel: We cannot verify your identity
-      come_back_later: Come back soon.
+      come_back_later: Come back soon
       complete: Identity verification complete
       dupe: 'Error: An account may already exist'
       expectations: Next, help us identify you

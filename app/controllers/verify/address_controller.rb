@@ -1,7 +1,6 @@
 module Verify
   class AddressController < ApplicationController
     include IdvStepConcern
-    require 'pry'
 
     before_action :confirm_step_needed
 
