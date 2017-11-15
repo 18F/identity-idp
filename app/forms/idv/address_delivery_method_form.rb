@@ -1,6 +1,5 @@
 module Idv
   class AddressDeliveryMethodForm
-
     def submit(address_delivery_method: '')
       @address_delivery_method = address_delivery_method
 
