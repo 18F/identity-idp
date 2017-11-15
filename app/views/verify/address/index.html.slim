@@ -10,7 +10,7 @@ p
       span.indicator
       strong.blue.block = t('idv.messages.select_verification_form.phone_header')
       span = t('idv.messages.select_verification_form.phone_message')
-  
+
   // USPS verification should always be enabled in prod.
   // This check is a convenience for lower envs.
   - if FeatureManagement.enable_usps_verification?
