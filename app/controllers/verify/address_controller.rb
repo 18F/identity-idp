@@ -25,9 +25,10 @@ module Verify
     end
 
     def address_delivery_destination
-      if address_delivery_params[:address_delivery_method] == 'phone'
+      destination = address_delivery_params[:address_delivery_method]
+      if destination == 'phone'
         verify_phone_path
-      elsif address_delivery_params[:address_delivery_method] == 'usps'
+      elsif destination == 'usps'
         verify_usps_path
       end
     end

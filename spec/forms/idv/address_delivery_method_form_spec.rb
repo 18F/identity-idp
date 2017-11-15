@@ -12,7 +12,7 @@ describe Idv::AddressDeliveryMethodForm do
         expect(response.success?).to eq(true)
       end
     end
-    
+
     context 'when delivery method is usps' do
       it 'submits without error' do
         response = subject.submit(address_delivery_method: 'usps')
@@ -21,7 +21,7 @@ describe Idv::AddressDeliveryMethodForm do
         expect(response.success?).to eq(true)
       end
     end
-    
+
     context 'when delivery method is invalid' do
       it 'submits with error' do
         response = subject.submit(address_delivery_method: 'nonsense')
