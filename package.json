@@ -18,7 +18,6 @@
     "hint.css": "^2.3.2",
     "libphonenumber-js": "^0.4.23",
     "normalize.css": "^4.2.0",
-    "package.json": "^2.0.1",
     "sinon": "^1.17.7",
     "zxcvbn": "^4.4.2"
   },

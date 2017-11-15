@@ -185,7 +185,7 @@ fr:
         other: Il ne vous reste que strong%{count} tentatives./strong
       button:
         fail: OK
-        jobfail: NOT TRANSLATED YET
+        jobfail: Essayez à nouveau demain
         warning: Essayez à nouveau
       financials:
         fail: Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles

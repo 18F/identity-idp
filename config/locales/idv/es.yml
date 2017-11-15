@@ -174,7 +174,7 @@ es:
         other: Tiene usted <strong>%{count} intentos restantes.</strong>
       button:
         fail: Bueno
-        jobfail: NOT TRANSLATED YET
+        jobfail: Inténtelo de nuevo mañana
         warning: Inténtelo de nuevo
       financials:
         fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
