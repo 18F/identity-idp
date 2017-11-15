@@ -68,20 +68,18 @@ module IdvHelper
   end
 
   def click_idv_address_choose_phone
-
     # we're capturing the click on the label element via the unique "for" attribute
-    # which matches against the radio button's ID.
-    #find(:css, "[for='address_delivery_method_phone']").click
-    #binding.pry
-    find(:css, "#address_delivery_method_phone").set(true)
-    
+    # which matches against the radio button's ID, 
+    # so that we can capture any click within the label.
+    find("label[for='address_delivery_method_phone']").click    
     click_on t('forms.buttons.continue')
   end
 
   def click_idv_address_choose_usps
-    #binding.pry
-    find(:css, "#address_delivery_method_usps").set(true)
-    #find(:css, "[for='address_delivery_method_usps']").click
+    # we're capturing the click on the label element via the unique "for" attribute
+    # which matches against the radio button's ID,
+    # so that we can capture any click within the label.
+    find("label[for='address_delivery_method_usps']").click
     click_on t('forms.buttons.continue')
   end
 

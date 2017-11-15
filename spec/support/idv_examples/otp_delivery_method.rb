@@ -7,7 +7,6 @@ shared_examples 'idv otp delivery method selection' do |sp|
     click_idv_begin
     fill_out_idv_form_ok
     click_idv_continue
-    #binding.pry
     fill_out_financial_form_ok
     click_idv_continue
     

@@ -8,9 +8,6 @@ module Verify
     def index; end
 
     def create
-      puts "address_delivery_params on post:"
-      puts address_delivery_params # this is where I see address_delivery_params is as expected
-      #binding.pry
       response = Idv::AddressDeliveryMethodForm.new.submit(address_delivery_params.to_h.symbolize_keys)
 
       if response.success? 
