@@ -9,7 +9,6 @@ shared_examples 'idv otp delivery method selection' do |sp|
     click_idv_continue
     fill_out_financial_form_ok
     click_idv_continue
-    
     click_idv_address_choose_phone
     fill_out_phone_form_ok(phone)
     click_idv_continue
