@@ -16,7 +16,7 @@ class UserBehavior(locust.TaskSet):
     @locust.task
     def signup(self):
         # visit home page
-        self.client.get('/', auth=auth)
+        self.client.get('/sign_up/start', auth=auth)
 
         # visit create account page and submit email
         resp = self.client.get('/sign_up/enter_email', auth=auth)
