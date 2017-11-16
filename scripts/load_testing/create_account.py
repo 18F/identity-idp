@@ -1,10 +1,11 @@
 import os
+import random
 
 from faker import Factory
-import foney
 import locust
 import pyquery
-import random
+
+import foney
 
 fake = Factory.create()
 
