@@ -1,13 +1,17 @@
 import os
 
 from faker import Factory
+import foney
 import locust
 import pyquery
+import random
 
 fake = Factory.create()
 
 username, password = os.getenv('AUTH_USER'), os.getenv('AUTH_PASS')
 auth = (username, password) if username and password else ()
+
+phone_numbers = foney.phone_numbers()
 
 def authenticity_token(dom):
     return dom.find('input[name="authenticity_token"]')[0].attrib['value']
@@ -53,7 +57,7 @@ class UserBehavior(locust.TaskSet):
         data = {
             '_method': 'patch',
             'user_phone_form[international_code]': 'US',
-            'user_phone_form[phone]': '7035550001',
+            'user_phone_form[phone]': phone_numbers[random.randint(1,1000)],
             'user_phone_form[otp_delivery_preference]': 'sms',
             'authenticity_token': authenticity_token(dom),
             'commit': 'Send security code',
