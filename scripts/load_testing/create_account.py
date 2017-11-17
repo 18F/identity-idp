@@ -40,6 +40,7 @@ class UserBehavior(locust.TaskSet):
                 Consult https://github.com/18F/identity-idp#load-testing
                 and check your application config."""
             )
+            return
 
         # Follow email confirmation link and submit password
         resp = self.client.get(link, auth=auth)
