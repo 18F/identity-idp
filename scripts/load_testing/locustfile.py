@@ -123,7 +123,8 @@ def change_pass(t):
             }
         )
         resp.raise_for_status()
-        dom = pyquery.PyQuery(resp.content)
+        pdb.set_trace()
+        
         # Now change it back
         resp = t.client.post(
             resp.url,
@@ -134,6 +135,7 @@ def change_pass(t):
                 'commit': 'update'
             }
         )
+        
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
         print(dom.find('div.alert-notice').eq(0).text())
@@ -192,6 +194,21 @@ class UserBehavior(locust.TaskSet):
         )
         For now, we're taking advantage of login() going to host + /sign_in
         """
+        login(self)
+        change_pass(self)
+        logout(self)
+
+    
+    @locust.task
+    def usajobs_change_pass(self): 
+        print("Task: Change pass from usajobs")
+        resp = self.client.get('https://www.test.usajobs.gov/')
+        resp.raise_for_status()
+        resp = self.client.get('https://www.test.usajobs.gov/Applicant/ProfileDashboard/Home')
+        resp.raise_for_status()
+        # we should now have been redirected to https://login.test.usajobs.gov/Access/Transition
+        # we could put a resp.url check in here to verify that
+        # We'll now navigate into the regular IDP login flow.
         login(self)
         change_pass(self)
         logout(self)

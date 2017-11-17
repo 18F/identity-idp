@@ -1,4 +1,5 @@
 import os
+import pdb
 
 from faker import Factory
 import locust
@@ -30,15 +31,22 @@ class UserBehavior(locust.TaskSet):
         resp = self.client.post('/sign_up/enter_email', data=data, auth=auth)
         resp.raise_for_status()
 
-        # capture email confirmation link on resulting page
         dom = pyquery.PyQuery(resp.content)
-        link = dom.find("a[href*='confirmation_token']")[0].attrib['href']
+        try:
+            link = dom.find("a[href*='confirmation_token']")[0].attrib['href']
+        except IndexError:
+            print("""
+                Failed to get confirmation token. 
+                Consult https://github.com/18F/identity-idp#load-testing
+                and check your application config."""
+            )
 
-        # click email confirmation link and submit password
+        # Follow email confirmation link and submit password
         resp = self.client.get(link, auth=auth)
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
         confirmation_token = dom.find('input[name="confirmation_token"]')[0].attrib['value']
+
         data = {
             'password_form[password]': 'salty pickles',
             'authenticity_token': authenticity_token(dom),
@@ -90,3 +98,8 @@ class WebsiteUser(locust.HttpLocust):
     task_set = UserBehavior
     min_wait = 5000
     max_wait = 10000
+    host = os.getenv('TARGET_HOST') or 'http://localhost:3000'
+
+
+if __name__ == '__main__':
+    WebsiteUser().run()
