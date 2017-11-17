@@ -47,8 +47,12 @@ then
     echo "running locust with concurrency of $num_clients, new user hatch rate"\
     "of $hatch_rate, and a total number of $num_requests requests" && \
     locust -f scripts/load_testing/$test_to_run.py -H "$target" --no-web \
-    -c $num_clients -n $hatch_rate -r $num_requests
+    -c $num_clients -n $num_requests -r $hatch_rate
   deactivate
 else
   echo "Usage: NUM_CLIENTS=3 NUM_REQUESTS=100 HATCH_RATE=1 load_test [name_of_file]"
+  echo "Usage:"
+  echo "load_test [name_of_file]"
+  echo "or, if you'd like to set the arguments"
+  echo "NUM_CLIENTS=3 NUM_REQUESTS=100 HATCH_RATE=1 load_test [name_of_file]"
 fi
