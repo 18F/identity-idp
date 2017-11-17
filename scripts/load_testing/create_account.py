@@ -40,7 +40,7 @@ class UserBehavior(locust.TaskSet):
         link = dom.find("a[href*='confirmation_token']")[0].attrib['href']
 
         # click email confirmation link and submit password
-        resp = self.client.get(link, auth=auth)
+        resp = self.client.get(link, auth=auth, name='/sign_up/email/confirm?confirmation_token=')
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
         confirmation_token = dom.find('input[name="confirmation_token"]')[0].attrib['value']
