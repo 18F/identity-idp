@@ -116,38 +116,34 @@ def change_pass(t):
     # Note that if you follow the form action it may take you
     # to /reauthn and we would need to handle that case. 
     # To keep it simple for now we're skipping reauth
-
-    if resp.url == '/manage/password':
+    if '/manage/password' in resp.url:
         resp = t.client.post(
-            '/manage/password',
+            resp.url,
             data = {
-                'update_user_password_form[password]': "Thisisanewpass",
+                'update_user_password_form[password]': "thisisanewpass",
                 'authenticity_token': authenticity_token(dom),
-                'commit': 'Submit',
+                '_method': 'patch',
+                'commit': 'update'
             }
         )
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
-        print(dom.find('div.alert-notice').eq(0).text())
         # Now change it back
         resp = t.client.post(
-            '/manage/password',
+            resp.url,
             data = {
                 'update_user_password_form[password]': t.temp_pass,
                 'authenticity_token': authenticity_token(dom),
-                'commit': 'Submit',
+                '_method': 'patch',
+                'commit': 'update'
             }
         )
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
         print(dom.find('div.alert-notice').eq(0).text())
-        pdb.set_trace()
     else:
         # To-do: handle reauthn case
         print(resp.url)
-    
-
-    
 
 
 class UserBehavior(locust.TaskSet): 
