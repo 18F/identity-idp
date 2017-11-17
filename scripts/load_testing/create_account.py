@@ -43,7 +43,12 @@ class UserBehavior(locust.TaskSet):
         resp = self.client.get(link, auth=auth, name='/sign_up/email/confirm?confirmation_token=')
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
-        confirmation_token = dom.find('input[name="confirmation_token"]')[0].attrib['value']
+
+        if dom.find('input[name="confirmation_token"]')[0].attrib['value']:
+            confirmation_token = dom.find('input[name="confirmation_token"]')[0].attrib['value']
+        else:
+            print(dom)
+
         data = {
             'password_form[password]': 'salty pickles',
             'authenticity_token': authenticity_token(dom),
@@ -68,7 +73,12 @@ class UserBehavior(locust.TaskSet):
 
         # visit enter security code page and submit pre-filled OTP
         dom = pyquery.PyQuery(resp.content)
-        otp_code = dom.find('input[name="code"]')[0].attrib['value']
+
+        if dom.find('input[name="code"]'):
+            otp_code = dom.find('input[name="code"]')[0].attrib['value']
+        else:
+            print(dom)
+
         data = {
             'code': otp_code,
             'authenticity_token': authenticity_token(dom),
