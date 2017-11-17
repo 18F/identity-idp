@@ -81,6 +81,7 @@ group :development do
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
+  gem 'sqlite3'
 end
 
 group :development, :test do

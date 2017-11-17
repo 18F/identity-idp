@@ -593,6 +593,7 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    sqlite3 (1.3.13)
     sshkit (1.13.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
@@ -756,6 +757,7 @@ DEPENDENCIES
   sinatra
   slim-rails
   slim_lint
+  sqlite3
   stringex
   teaspoon-mocha
   thin
