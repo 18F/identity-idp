@@ -82,7 +82,7 @@ def logout(t):
         print(error)
 
 
-def change_pass(t):
+def change_pass(t, password):
     """
     Takes a locustTask and naively expects an already logged in person,
     this navigates to the account (which they should already be on, post-login)
@@ -116,26 +116,12 @@ def change_pass(t):
         resp = t.client.post(
             resp.url,
             data = {
-                'update_user_password_form[password]': "thisisanewpass",
+                'update_user_password_form[password]': password,
                 'authenticity_token': authenticity_token(dom),
                 '_method': 'patch',
                 'commit': 'update'
             }
         )
-        resp.raise_for_status()
-        pdb.set_trace()
-        
-        # Now change it back
-        resp = t.client.post(
-            resp.url,
-            data = {
-                'update_user_password_form[password]': t.temp_pass,
-                'authenticity_token': authenticity_token(dom),
-                '_method': 'patch',
-                'commit': 'update'
-            }
-        )
-        
         resp.raise_for_status()
         dom = pyquery.PyQuery(resp.content)
         print(dom.find('div.alert-notice').eq(0).text())
@@ -157,6 +143,7 @@ class UserBehavior(locust.TaskSet):
     """
     temp_email = 'test1@test.com'
     temp_pass = 'thisisapass'
+    new_pass = 'thisisanewpass'
 
     def on_start(self):
         pass
@@ -165,7 +152,9 @@ class UserBehavior(locust.TaskSet):
     def idp_change_pass(self): 
         print("Task: Change pass from IDP")
         login(self)
-        change_pass(self)
+        change_pass(self, self.new_pass)
+        # now change it back.
+        change_pass(self, self.temp_pass)
         logout(self)
 
     @locust.task
@@ -195,7 +184,9 @@ class UserBehavior(locust.TaskSet):
         For now, we're taking advantage of login() going to host + /sign_in
         """
         login(self)
-        change_pass(self)
+        change_pass(self, self.new_pass)
+        # now change it back.
+        change_pass(self, self.temp_pass)
         logout(self)
 
     
@@ -210,7 +201,9 @@ class UserBehavior(locust.TaskSet):
         # we could put a resp.url check in here to verify that
         # We'll now navigate into the regular IDP login flow.
         login(self)
-        change_pass(self)
+        change_pass(self, self.new_pass)
+        # now change it back.
+        change_pass(self, self.temp_pass)
         logout(self)
 
 
