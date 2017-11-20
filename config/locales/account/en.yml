@@ -24,8 +24,10 @@ en:
         with_phone_button: Verify with your phone
     items:
       personal_key: Personal key
+      delete_your_account: Delete your account
     links:
       regenerate_personal_key: Get a new key
+      delete_account: Delete
     security:
       link: Learn more at the Help Center
       text: Your profile information is locked for your security.

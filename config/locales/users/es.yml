@@ -1,6 +1,16 @@
 ---
 es:
   users:
+    delete:
+      actions:
+        cancel: NOT TRANSLATED YET
+        delete: NOT TRANSLATED YET
+      bullet_1: NOT TRANSLATED YET
+      bullet_2_loa1: NOT TRANSLATED YET
+      bullet_2_loa3: NOT TRANSLATED YET
+      bullet_3: NOT TRANSLATED YET
+      heading: NOT TRANSLATED YET
+      subheading: NOT TRANSLATED YET
     personal_key:
       close: Cerrar
       confirmation_error: Ha ingresado una clave personal incorrecta.

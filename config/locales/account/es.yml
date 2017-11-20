@@ -23,8 +23,10 @@ es:
         success: Su cuenta ha sido verificada.
         with_phone_button: Verifique con su teléfono.
     items:
+      delete_your_account: NOT TRANSLATED YET
       personal_key: Clave personal
     links:
+      delete_account: NOT TRANSLATED YET
       regenerate_personal_key: Obtenga una clave nueva.
     security:
       link: Obtenga más información en el Centro de ayuda
