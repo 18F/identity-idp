@@ -70,7 +70,6 @@ namespace :dev do
         User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
           setup_user(user, ee: ee, pw: pw, num: num_created)
         end
-
         if ENV['VERIFIED']
           user = User.find_by(email_fingerprint: ee.fingerprint)
           user.unlock_user_access_key(pw)
@@ -85,13 +84,12 @@ namespace :dev do
           profile.verified_at = Time.zone.now
           profile.activate
 
-          unless ENV['DB'] == 'no'
-            db.execute("INSERT INTO users (email, personal_key) VALUES (?, ?)", [email_addr, personal_key])
-          end
-
           Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
         end
 
+        unless ENV['DB'] == 'no'
+          db.execute("INSERT INTO users (email, personal_key) VALUES (?, ?)", [email_addr, personal_key])
+        end
         num_created += 1
         progress&.increment
       end
