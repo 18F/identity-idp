@@ -81,7 +81,6 @@ group :development do
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
-  gem 'sqlite3'
 end
 
 group :development, :test do
@@ -91,6 +90,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.5.2'
   gem 'slim_lint'
+  gem 'sqlite3'
   gem 'teaspoon-mocha'
   gem 'thin'
 end
