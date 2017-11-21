@@ -1,8 +1,30 @@
 import os
 import pdb
+from random import randint
 
 import locust
 import pyquery
+
+
+def random_cred():
+    """
+    Given the rake task:
+    rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$'
+    
+    We should have 1000 existing users with credentials matching:
+    * email address testuser1@example.com through testuser1000@example.com
+    * the password "salty pickles"
+    * a phone number between +1 (415) 555-0001 and +1 (415) 555-1000.
+
+    This will generate a set of credentials to match one of those entries.
+    Note that YOU MUST run the rake task to put these users in the DB first.
+
+    """
+    return {
+        'email': 'testuser{}@example.com'.format(randint(1, 1000)),
+        'password': "salty pickles"
+    }
+    
 
 
 def authenticity_token(dom):
@@ -12,7 +34,9 @@ def authenticity_token(dom):
     return dom.find('input[name="authenticity_token"]').eq(0).attr('value')
 
 
-def login(t):
+
+
+def login(t, credentials):
     """
     Takes a locustTask object and signs you in.
 
@@ -21,7 +45,7 @@ def login(t):
     2. figure out how to handle invalid login attempts.
     3. Handle account locks
     """
-    print('beginning login')
+    print('beginning sign in')
     # begin at splash page
     t.client.get('/sign_up/start')
 
@@ -33,8 +57,8 @@ def login(t):
     resp = t.client.post(
         '/',
         data = {
-            'user[email]': t.temp_email,
-            'user[password]': t.temp_pass,
+            'user[email]': credentials['email'],
+            'user[password]': credentials['password'],
             'authenticity_token': authenticity_token(dom),
             'commit': 'Submit',
         }
@@ -94,7 +118,7 @@ def change_pass(t, password):
     edit_link = dom.find('a[href="/manage/password"]')
 
     try:
-        resp = t.client.get(edit_link.eq(0).attr('href'))
+        resp = t.client.get(edit_link[0].attrib['href'])
     except Exception as error:
         print("""
             There was a problem finding the edit pass link.
@@ -141,23 +165,20 @@ class UserBehavior(locust.TaskSet):
         # https://github.com/locustio/locust/pull/658
 
     """
-    temp_email = 'test1@test.com'
-    temp_pass = 'thisisapass'
-    new_pass = 'thisisanewpass'
-
     def on_start(self):
         pass
 
-    @locust.task
+    @locust.task(1)
     def idp_change_pass(self): 
         print("Task: Change pass from IDP")
-        login(self)
-        change_pass(self, self.new_pass)
+        credentials = random_cred()
+        login(self, credentials)
+        change_pass(self, "thisisanewpass")
         # now change it back.
-        change_pass(self, self.temp_pass)
+        change_pass(self, credentials['password'])
         logout(self)
 
-    @locust.task
+    @locust.task(2)
     def sp_rails_change_pass(self): 
         print("Task: Change pass from sp_rails")
         resp = self.client.get('http://localhost:3003')
@@ -183,14 +204,15 @@ class UserBehavior(locust.TaskSet):
         )
         For now, we're taking advantage of login() going to host + /sign_in
         """
-        login(self)
-        change_pass(self, self.new_pass)
+        credentials = random_cred()
+        login(self, credentials)
+        change_pass(self, "thisisanewpass")
         # now change it back.
-        change_pass(self, self.temp_pass)
+        change_pass(self, credentials['password'])
         logout(self)
 
     
-    @locust.task
+    @locust.task(100)
     def usajobs_change_pass(self): 
         print("Task: Change pass from usajobs")
         resp = self.client.get('https://www.test.usajobs.gov/')
@@ -200,10 +222,11 @@ class UserBehavior(locust.TaskSet):
         # we should now have been redirected to https://login.test.usajobs.gov/Access/Transition
         # we could put a resp.url check in here to verify that
         # We'll now navigate into the regular IDP login flow.
-        login(self)
-        change_pass(self, self.new_pass)
+        credentials = random_cred()
+        login(self, credentials)
+        change_pass(self, "thisisanewpass")
         # now change it back.
-        change_pass(self, self.temp_pass)
+        change_pass(self, credentials['password'])
         logout(self)
 
 
