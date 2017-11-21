@@ -65,5 +65,19 @@ describe 'sign_up/registrations/show.html.slim' do
         href: @decorated_session.sp_return_url
       )
     end
+
+    it 'has sp alert for certain service providers' do
+      @sp.friendly_name = ServiceProviderSessionDecorator::SP_ALERTS.keys.first
+
+      render
+
+      expect(rendered).to have_selector('.alert')
+    end
+    
+    it 'does not have an sp alert for service providers without alert messages' do
+      render
+
+      expect(rendered).to_not have_selector('.alert')
+    end
   end
 end
