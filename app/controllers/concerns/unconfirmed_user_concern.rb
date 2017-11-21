@@ -32,15 +32,15 @@ module UnconfirmedUserConcern
     create_user_event(:email_changed, @user)
 
     flash[:success] = t('devise.confirmations.confirmed')
-    redirect_to after_confirmation_path_for(@user)
+    redirect_to after_confirmation_url_for(@user)
     EmailNotifier.new(@user).send_email_changed_email
   end
 
-  def after_confirmation_path_for(user)
+  def after_confirmation_url_for(user)
     if !user_signed_in?
       new_user_session_url
     elsif user.two_factor_enabled?
-      account_path
+      account_url
     else
       phone_setup_url
     end
@@ -58,7 +58,7 @@ module UnconfirmedUserConcern
     action_text = t('devise.confirmations.sign_in') unless user_signed_in?
     flash[:error] = t('devise.confirmations.already_confirmed', action: action_text)
 
-    redirect_to user_signed_in? ? account_path : new_user_session_url
+    redirect_to user_signed_in? ? account_url : new_user_session_url
   end
 
   def unsuccessful_confirmation_error

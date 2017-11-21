@@ -35,9 +35,9 @@ describe 'sign_up/registrations/new.html.slim' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
-  it 'includes a link to return to the decorated_session cancel_link_path' do
+  it 'includes a link to return to the decorated_session cancel_link_url' do
     render
 
-    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_path)
+    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
   end
 end

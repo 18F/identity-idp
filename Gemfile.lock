@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: de42d3c344f42f00c942219d0b35d5b0773050cd
-  tag: v1.0.1
+  revision: 42306567808c2bdf2ea60000099f3138ab6e41e4
+  tag: v1.0.2
   specs:
-    equifax (1.0.1)
+    equifax (1.0.2)
       activesupport
       dotenv
       gyoku
@@ -21,10 +21,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: f4487732707719951e862c2f649377c72f08ca85
-  tag: v1.0.1
+  revision: d569f5b41ca0b693a39611fde8a1e44c4b66e0f4
+  tag: v1.1.1
   specs:
-    proofer (1.0.1)
+    proofer (1.1.1)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
@@ -315,7 +315,7 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.9.0)
+    i18n (0.9.1)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.18)
       activesupport (>= 4.0.2)
@@ -775,4 +775,4 @@ RUBY VERSION
    ruby 2.3.5p376
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

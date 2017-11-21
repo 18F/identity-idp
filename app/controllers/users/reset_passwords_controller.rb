@@ -58,12 +58,12 @@ module Users
       session[:email] = email
       resend_confirmation = params[:password_reset_email_form][:resend]
 
-      redirect_to forgot_password_path(resend: resend_confirmation)
+      redirect_to forgot_password_url(resend: resend_confirmation)
     end
 
     def handle_invalid_or_expired_token(result)
       flash[:error] = t("devise.passwords.#{result.errors[:user].first}")
-      redirect_to new_user_password_path
+      redirect_to new_user_password_url
     end
 
     def user_matching_token(token)
@@ -88,7 +88,7 @@ module Users
 
       flash[:notice] = t('devise.passwords.updated_not_active') if is_flashing_format?
 
-      redirect_to new_user_session_path
+      redirect_to new_user_session_url
 
       EmailNotifier.new(resource).send_password_changed_email
     end
@@ -96,7 +96,7 @@ module Users
     def handle_unsuccessful_password_reset(result)
       if result.errors[:reset_password_token].present?
         flash[:error] = t('devise.passwords.token_expired')
-        redirect_to new_user_password_path
+        redirect_to new_user_password_url
         return
       end
 

@@ -1,9 +1,9 @@
 class UsersController < ApplicationController
   def destroy
-    path_after_cancellation = decorated_session.cancel_link_path
+    url_after_cancellation = decorated_session.cancel_link_url
     destroy_user
     flash[:success] = t('sign_up.cancel.success')
-    redirect_to path_after_cancellation
+    redirect_to url_after_cancellation
   end
 
   private

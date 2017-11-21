@@ -46,8 +46,6 @@ module Features
       end
 
       visit account_path
-      fill_in 'Phone', with: '202-555-1212'
-      click_send_security_code
       user
     end
 
