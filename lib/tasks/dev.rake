@@ -39,9 +39,22 @@ namespace :dev do
 
   desc 'Create N random User records'
   task random_users: :environment do
-    pw = 'salty pickles'
     num_users = (ENV['NUM_USERS'] || 100).to_i
     num_created = 0
+    pw = 'salty pickles'
+
+    unless ENV['DB'] == 'no'
+      # Create a db
+      db = SQLite3::Database.new "#{Time.now.strftime("%Y%m%d%H%M%S")}_test_users.db"
+      # Create a table
+      db.execute <<-SQL
+        create table users (
+          email varchar(320),
+          personal_key varchar(19)
+        );
+      SQL
+    end
+
     unless ENV['PROGRESS'] == 'no'
       progress = ProgressBar.create(
         title: 'Users',
@@ -57,7 +70,6 @@ namespace :dev do
         User.find_or_create_by!(email_fingerprint: ee.fingerprint) do |user|
           setup_user(user, ee: ee, pw: pw, num: num_created)
         end
-
         if ENV['VERIFIED']
           user = User.find_by(email_fingerprint: ee.fingerprint)
           user.unlock_user_access_key(pw)
@@ -75,6 +87,9 @@ namespace :dev do
           Rails.logger.warn "email=#{email_addr} personal_key=#{personal_key}"
         end
 
+        unless ENV['DB'] == 'no'
+          db.execute("INSERT INTO users (email, personal_key) VALUES (?, ?)", [email_addr, personal_key])
+        end
         num_created += 1
         progress&.increment
       end
