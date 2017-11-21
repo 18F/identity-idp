@@ -94,6 +94,25 @@ RSpec.describe ServiceProviderSeeder do
             to be_present
         end
       end
+
+      context 'when a service provider is invalid' do
+        let(:invalid_service_providers) do
+          {
+            'https://rp2.serviceprovider.com/auth/saml/metadata' => {
+              acs_url: 'http://example.com/test/saml/decode_assertion',
+              assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request',
+              block_encryption: 'aes256-cbc',
+              cert: 'saml_test_sp',
+              redirect_uris: [''],
+            },
+          }
+        end
+
+        it 'raises an error' do
+          expect(instance).to receive(:service_providers).and_return(invalid_service_providers)
+          expect { run }.to raise_error(ActiveRecord::RecordInvalid)
+        end
+      end
     end
   end
 end
