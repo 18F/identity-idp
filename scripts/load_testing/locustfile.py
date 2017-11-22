@@ -332,6 +332,7 @@ class UserBehavior(locust.TaskSet):
     def idp_create_account(self):
         print("Task: Create account from idp")
         signup(self)
+        logout(self)
 
     @locust.task(25)
     def usajobs_create_account(self):
@@ -341,6 +342,7 @@ class UserBehavior(locust.TaskSet):
         resp = self.client.get('https://www.test.usajobs.gov/Applicant/ProfileDashboard/Home')
         resp.raise_for_status()
         signup(self)
+        logout(self)
 
 
 class WebsiteUser(locust.HttpLocust):
