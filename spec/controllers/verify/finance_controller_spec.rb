@@ -87,7 +87,7 @@ describe Verify::FinanceController do
         stub_analytics
         allow(@analytics).to receive(:track_event)
 
-        allow(Idv::FinancialsValidator).to receive(:new)
+        expect(Idv::SubmitIdvJob).to_not receive(:submit_finance_job)
 
         put :create, params: { idv_finance_form: { finance_type: :ccn, ccn: '123' } }
 
@@ -99,7 +99,6 @@ describe Verify::FinanceController do
         expect(@analytics).to have_received(:track_event).
           with(Analytics::IDV_FINANCE_CONFIRMATION_FORM, result)
         expect(subject.idv_session.financials_confirmation).to be_falsy
-        expect(Idv::FinancialsValidator).to_not have_received(:new)
       end
     end
 

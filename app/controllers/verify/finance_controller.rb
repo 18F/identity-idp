@@ -41,11 +41,10 @@ module Verify
     private
 
     def submit_idv_job
-      SubmitIdvJob.new(
-        vendor_validator_class: Idv::FinancialsValidator,
+      Idv::SubmitIdvJob.new(
         idv_session: idv_session,
         vendor_params: vendor_params
-      ).call
+      ).submit_finance_job
     end
 
     def step_name
