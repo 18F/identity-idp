@@ -148,6 +148,38 @@ describe ServiceProviderUpdater do
       end
     end
 
+    context 'a non-native servce provider is invalid' do
+      let(:dashboard_service_providers) do
+        [
+          {
+            id: 'big number',
+            created_at: '2010-01-01 00:00:00'.to_datetime,
+            updated_at: '2010-01-01 00:00:00'.to_datetime,
+            issuer: dashboard_sp_issuer,
+            agency: 'a service provider',
+            friendly_name: 'a friendly service provider',
+            description: 'user friendly login.gov dashboard',
+            acs_url: 'http://sp.example.org/saml/login',
+            assertion_consumer_logout_service_url: 'http://sp.example.org/saml/logout',
+            block_encryption: 'aes256-cbc',
+            cert: saml_test_sp_cert,
+            active: true,
+            native: false,
+            approved: true,
+            redirect_uris: [''],
+          },
+        ]
+      end
+
+      it 'raises an error' do
+        stub_request(:get, fake_dashboard_url).to_return(
+          status: 200,
+          body: dashboard_service_providers.to_json
+        )
+        expect { subject.run }.to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
     context 'GET request to dashboard raises an error' do
       it 'logs error and does not affect registry' do
         allow(Rails.logger).to receive(:error)

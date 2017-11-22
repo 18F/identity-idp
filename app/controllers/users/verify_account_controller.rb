@@ -7,7 +7,6 @@ module Users
       usps_mail = Idv::UspsMail.new(current_user)
       @mail_spammed = usps_mail.mail_spammed?
       @verify_account_form = VerifyAccountForm.new(user: current_user)
-
       return unless FeatureManagement.reveal_usps_code?
       @code = session[:last_usps_confirmation_code]
     end

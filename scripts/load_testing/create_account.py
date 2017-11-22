@@ -1,18 +1,22 @@
 import os
 import pdb
+import random
 
 from faker import Factory
 import locust
 import pyquery
+
+import foney
 
 fake = Factory.create()
 
 username, password = os.getenv('AUTH_USER'), os.getenv('AUTH_PASS')
 auth = (username, password) if username and password else ()
 
+phone_numbers = foney.phone_numbers()
+
 def authenticity_token(dom):
     return dom.find('input[name="authenticity_token"]')[0].attrib['value']
-
 
 def signup(t):
     # visit home page
@@ -42,7 +46,11 @@ def signup(t):
         return
 
     # Follow email confirmation link and submit password
-    resp = t.client.get(link, auth=auth)
+    resp = self.client.get(
+        link, 
+        auth=auth, 
+        name='/sign_up/email/confirm?confirmation_token='
+    )
     resp.raise_for_status()
     dom = pyquery.PyQuery(resp.content)
     confirmation_token = dom.find('input[name="confirmation_token"]')[0].attrib['value']
@@ -61,7 +69,7 @@ def signup(t):
     data = {
         '_method': 'patch',
         'user_phone_form[international_code]': 'US',
-        'user_phone_form[phone]': '7035550001',
+        'user_phone_form[phone]': phone_numbers[random.randint(1,1000)],
         'user_phone_form[otp_delivery_preference]': 'sms',
         'authenticity_token': authenticity_token(dom),
         'commit': 'Send security code',
