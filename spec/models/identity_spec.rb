@@ -129,4 +129,18 @@ describe Identity do
       expect(identity_with_sp.agency_name).to eq(service_provider.issuer)
     end
   end
+
+  describe 'uniqueness validation for service provider per user' do
+    it 'raises an error when uniqueness constraint is broken' do
+      Identity.create(user_id: user.id, service_provider: 'externalapp')
+      expect { Identity.create(user_id: user.id, service_provider: 'externalapp') }.
+        to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
+    it 'does not raise an error for a different service provider' do
+      Identity.create(user_id: user.id, service_provider: 'externalapp')
+      expect { Identity.create(user_id: user.id, service_provider: 'externalapp2') }.
+        to_not raise_error
+    end
+  end
 end
