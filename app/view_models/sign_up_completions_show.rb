@@ -1,10 +1,9 @@
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(loa3_requested:, decorated_session:, current_user:)
+  def initialize(loa3_requested:, decorated_session:)
     @loa3_requested = loa3_requested
     @decorated_session = decorated_session
-    @current_user = current_user
   end
 
   attr_reader :loa3_requested, :decorated_session
@@ -17,8 +16,6 @@ class SignUpCompletionsShow
     [[:birthdate], :birthdate],
     [[:social_security_number], :social_security_number],
   ].freeze
-
-  MAX_RECENT_IDENTITIES = 5
 
   # rubocop:disable Rails/OutputSafety
   def heading
@@ -50,36 +47,6 @@ class SignUpCompletionsShow
     SORTED_ATTRIBUTE_MAPPING.map do |raw_attribute, display_attribute|
       display_attribute if (requested_attributes & raw_attribute).present?
     end.compact
-  end
-
-  def identities_partial
-    'shared/user_identities'
-  end
-
-  def service_provider_partial
-    if @decorated_session.is_a?(ServiceProviderSessionDecorator)
-      'sign_up/completions/show_sp'
-    else
-      'sign_up/completions/show_identities'
-    end
-  end
-
-  def identities
-    if @current_user
-      @identities ||= @current_user.identities.order(
-        last_authenticated_at: :desc
-      ).limit(MAX_RECENT_IDENTITIES).map(&:decorate)
-    else
-      false
-    end
-  end
-
-  def user_has_identities?
-    if identities
-      identities.length.positive?
-    else
-      false
-    end
   end
 
   private

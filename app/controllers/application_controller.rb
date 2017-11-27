@@ -96,11 +96,11 @@ class ApplicationController < ActionController::Base
   end
 
   def after_sign_in_path_for(user)
-    stored_location_for(user) || sp_session[:request_url] || signed_in_url
+    stored_location_for(user) || sp_session[:request_url] || signed_in_path
   end
 
-  def signed_in_url
-    user_fully_authenticated? ? account_or_verify_profile_url : user_two_factor_authentication_url
+  def signed_in_path
+    user_fully_authenticated? ? account_or_verify_profile_path : user_two_factor_authentication_path
   end
 
   def reauthn_param
@@ -136,11 +136,11 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_set_up_2fa
-    redirect_to phone_setup_url
+    redirect_to phone_setup_path
   end
 
   def prompt_to_enter_otp
-    redirect_to user_two_factor_authentication_url
+    redirect_to user_two_factor_authentication_path
   end
 
   def skip_session_expiration

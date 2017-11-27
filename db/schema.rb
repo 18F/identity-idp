@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171122194214) do
+ActiveRecord::Schema.define(version: 20171016185939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,7 +58,7 @@ ActiveRecord::Schema.define(version: 20171122194214) do
     t.string "rails_session_id"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
-    t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
+    t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider"
     t.index ["user_id"], name: "index_identities_on_user_id"
     t.index ["uuid"], name: "index_identities_on_uuid", unique: true
   end

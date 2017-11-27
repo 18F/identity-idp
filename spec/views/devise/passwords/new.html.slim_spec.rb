@@ -36,9 +36,9 @@ describe 'devise/passwords/new.html.slim' do
     expect(rendered).to have_xpath("//form[@autocomplete='off']")
   end
 
-  it 'has a cancel link that points to the decorated_session cancel_link_url' do
+  it 'has a cancel link that points to the decorated_session cancel_link_path' do
     render
 
-    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
+    expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_path)
   end
 end
