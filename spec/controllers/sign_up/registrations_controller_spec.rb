@@ -6,26 +6,11 @@ describe SignUp::RegistrationsController, devise: true do
   include Features::ActiveJobHelper
 
   describe '#new' do
-    context 'When registrations are disabled' do
-      it 'prevents users from visiting sign up page' do
-        allow(AppSetting).to(receive(:registrations_enabled?)).and_return(false)
+    it 'allows user to visit the sign up page' do
+      get :new
 
-        get :new
-
-        expect(response.status).to eq(302)
-        expect(response).to redirect_to root_url
-      end
-    end
-
-    context 'When registrations are enabled' do
-      it 'allows user to visit the sign up page' do
-        allow(AppSetting).to(receive(:registrations_enabled?)).and_return(true)
-
-        get :new
-
-        expect(response.status).to eq(200)
-        expect(response).to render_template(:new)
-      end
+      expect(response.status).to eq(200)
+      expect(response).to render_template(:new)
     end
 
     it 'cannot be viewed by signed in users' do

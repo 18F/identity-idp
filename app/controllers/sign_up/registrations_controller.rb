@@ -5,7 +5,6 @@ module SignUp
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
     before_action :skip_session_expiration, only: [:show]
-    prepend_before_action :disable_account_creation, only: %i[new create]
 
     def show
       return redirect_to sign_up_email_url if params[:request_id].blank?
@@ -61,10 +60,6 @@ module SignUp
       return if request_id.empty?
 
       ServiceProviderRequest.from_uuid(request_id).uuid
-    end
-
-    def disable_account_creation
-      redirect_to root_url if AppSetting.registrations_disabled?
     end
   end
 end
