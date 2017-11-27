@@ -37,20 +37,44 @@ describe SignUp::CompletionsController do
       end
     end
 
-    it 'requires user to be logged in' do
+    it 'requires user with session to be logged in' do
       subject.session[:sp] = { dog: 'max' }
       get :show
 
-      expect(response).to redirect_to(new_user_session_url)
+      expect(response).to redirect_to(account_url)
     end
 
-    it 'requires service provider info in session' do
+    it 'requires user with no session to be logged in' do
+      get :show
+
+      expect(response).to redirect_to(account_url)
+    end
+
+    it 'requires service provider or identity info in session' do
       stub_sign_in
       subject.session[:sp] = {}
 
       get :show
 
-      expect(response).to redirect_to(new_user_session_url)
+      expect(response).to redirect_to(account_url)
+    end
+
+    it 'renders show if the user has an sp in the active session' do
+      stub_sign_in
+      subject.session[:sp] = { loa3: false }
+      get :show
+
+      expect(response).to render_template(:show)
+    end
+
+    it 'renders show if the user has identities and no active session' do
+      user = create(:user)
+      create(:identity, user: user)
+      stub_sign_in(user)
+      subject.session[:sp] = {}
+      get :show
+
+      expect(response).to render_template(:show)
     end
   end
 

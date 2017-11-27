@@ -7,21 +7,18 @@ module SignUp
 
     def show
       @view_model = view_model
-
-      if user_fully_authenticated? && session[:sp].present?
-        analytics.track_event(
-          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT,
-          service_provider_attributes
+      if show_completions_page?
+        track_agency_handoff(
+          Analytics::USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT
         )
       else
-        redirect_to new_user_session_url
+        redirect_to account_url
       end
     end
 
     def update
-      analytics.track_event(
-        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
-        service_provider_attributes
+      track_agency_handoff(
+        Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE
       )
 
       if decider.go_back_to_mobile_app?
@@ -33,15 +30,21 @@ module SignUp
 
     private
 
+    def show_completions_page?
+      service_providers = session[:sp].present? || @view_model.user_has_identities?
+      user_fully_authenticated? && service_providers
+    end
+
     def view_model
       SignUpCompletionsShow.new(
         loa3_requested: loa3?,
-        decorated_session: decorated_session
+        decorated_session: decorated_session,
+        current_user: current_user
       )
     end
 
     def verify_confirmed
-      redirect_to verify_path if current_user.decorate.identity_not_verified?
+      redirect_to verify_url if current_user.decorate.identity_not_verified?
     end
 
     def loa3?
@@ -65,6 +68,13 @@ module SignUp
         friendly_name: view_model.decorated_session.sp_name
       )
       redirect_to new_user_session_url
+    end
+
+    def track_agency_handoff(analytic)
+      analytics.track_event(
+        analytic,
+        service_provider_attributes
+      )
     end
   end
 end

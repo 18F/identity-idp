@@ -17,6 +17,10 @@ Rails.application.routes.draw do
   match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
 
   post '/api/service_provider' => 'service_provider#update'
+  match '/api/voice/otp' => 'voice/otp#show',
+        via: [:get, :post],
+        as: :voice_otp,
+        defaults: { format: :xml }
 
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'

@@ -21,9 +21,9 @@ class MfaConfirmationController < ApplicationController
 
   def handle_valid_password
     if current_user.totp_enabled?
-      redirect_to login_two_factor_authenticator_path(reauthn: true)
+      redirect_to login_two_factor_authenticator_url(reauthn: true)
     else
-      redirect_to user_two_factor_authentication_path(reauthn: true)
+      redirect_to user_two_factor_authentication_url(reauthn: true)
     end
     session[:password_attempts] = 0
     user_session[:current_password_required] = false
@@ -34,7 +34,7 @@ class MfaConfirmationController < ApplicationController
 
     if session[:password_attempts] < Figaro.env.password_max_attempts.to_i
       flash[:error] = t('errors.confirm_password_incorrect')
-      redirect_to user_password_confirm_path
+      redirect_to user_password_confirm_url
     else
       handle_max_password_attempts_reached
     end

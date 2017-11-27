@@ -2,12 +2,6 @@ require 'rails_helper'
 require 'axe/rspec'
 
 feature 'Accessibility on pages that do not require authentication', :js do
-  scenario 'contact page' do
-    visit MarketingSite.contact_url
-
-    expect(page).to be_accessible
-  end
-
   scenario 'login / root path' do
     visit root_path
 
