@@ -28,7 +28,7 @@ module SignUp
 
     def handle_valid_email
       session[:email] = form_email
-      redirect_to sign_up_verify_email_path
+      redirect_to sign_up_verify_email_url
     end
 
     def request_id

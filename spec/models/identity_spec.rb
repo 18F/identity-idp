@@ -80,4 +80,67 @@ describe Identity do
       expect(identity.decorate).to be_a(IdentityDecorator)
     end
   end
+
+  let(:service_provider) do
+    create(:service_provider)
+  end
+
+  let(:identity_with_sp) do
+    Identity.create(
+      user_id: user.id,
+      service_provider: service_provider.issuer
+    )
+  end
+
+  describe '#display_name' do
+    it 'returns service provider friendly name first' do
+      expect(identity_with_sp.display_name).to eq(service_provider.friendly_name)
+    end
+
+    it 'returns service_provider agency if friendly_name is missing' do
+      service_provider.friendly_name = nil
+      service_provider.save
+      expect(identity_with_sp.display_name).to eq(service_provider.agency)
+    end
+
+    it 'returns service_provider issuer if friendly_name and agency are missing' do
+      service_provider.friendly_name = nil
+      service_provider.agency = nil
+      service_provider.save
+      expect(identity_with_sp.display_name).to eq(service_provider.issuer)
+    end
+  end
+
+  describe '#agency_name' do
+    it 'returns service provider agency first' do
+      expect(identity_with_sp.agency_name).to eq(service_provider.agency)
+    end
+
+    it 'returns service_provider friendly_name if agency is missing' do
+      service_provider.agency = nil
+      service_provider.save
+      expect(identity_with_sp.agency_name).to eq(service_provider.friendly_name)
+    end
+
+    it 'returns service_provider issuer if friendly_name and agency are missing' do
+      service_provider.friendly_name = nil
+      service_provider.agency = nil
+      service_provider.save
+      expect(identity_with_sp.agency_name).to eq(service_provider.issuer)
+    end
+  end
+
+  describe 'uniqueness validation for service provider per user' do
+    it 'raises an error when uniqueness constraint is broken' do
+      Identity.create(user_id: user.id, service_provider: 'externalapp')
+      expect { Identity.create(user_id: user.id, service_provider: 'externalapp') }.
+        to raise_error(ActiveRecord::RecordNotUnique)
+    end
+
+    it 'does not raise an error for a different service provider' do
+      Identity.create(user_id: user.id, service_provider: 'externalapp')
+      expect { Identity.create(user_id: user.id, service_provider: 'externalapp2') }.
+        to_not raise_error
+    end
+  end
 end

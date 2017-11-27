@@ -26,12 +26,12 @@ module Verify
     private
 
     def confirm_phone_step_complete
-      redirect_to verify_review_path if idv_session.vendor_phone_confirmation != true
+      redirect_to verify_review_url if idv_session.vendor_phone_confirmation != true
     end
 
     def confirm_step_needed
-      redirect_to verify_review_path if idv_session.address_verification_mechanism != 'phone' ||
-                                        idv_session.user_phone_confirmation == true
+      redirect_to verify_review_url if idv_session.address_verification_mechanism != 'phone' ||
+                                       idv_session.user_phone_confirmation == true
     end
 
     def otp_delivery_selection_params

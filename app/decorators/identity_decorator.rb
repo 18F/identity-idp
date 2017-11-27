@@ -1,5 +1,6 @@
 IdentityDecorator = Struct.new(:identity) do
   delegate :display_name, to: :identity
+  delegate :agency_name, to: :identity
 
   def event_partial
     'accounts/identity_item'

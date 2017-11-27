@@ -1,4 +1,7 @@
 class VoiceOtpSenderJob < ApplicationJob
+  include Rails.application.routes.url_helpers
+  include LocaleHelper
+
   queue_as :voice
 
   def perform(code:, phone:, otp_created_at:)
@@ -13,45 +16,19 @@ class VoiceOtpSenderJob < ApplicationJob
   end
 
   def send_otp(twilio_service, code, phone)
-    code_with_pauses = code.scan(/\d/).join(', ')
     twilio_service.place_call(
       to: phone,
-      url: twimlet_url(code_with_pauses),
+      url: BasicAuthUrl.build(
+        voice_otp_url(
+          encrypted_code: cipher.encrypt(code),
+          locale: locale_url_param
+        )
+      ),
       record: Figaro.env.twilio_record_voice == 'true'
     )
   end
 
-  def twimlet_url(code) # rubocop:disable Metrics/MethodLength
-    repeat = message_repeat(code)
-
-    twimlet_menu(
-      repeat,
-      1 => twimlet_menu(
-        repeat,
-        1 => twimlet_menu(
-          repeat,
-          1 => twimlet_menu(repeat, 1 => twimlet_message(message_final(code)))
-        )
-      )
-    )
-  end
-
-  def message_repeat(code)
-    I18n.t('jobs.voice_otp_sender_job.message_repeat', code: code)
-  end
-
-  def message_final(code)
-    I18n.t('jobs.voice_otp_sender_job.message_final', code: code)
-  end
-
-  def twimlet_message(message)
-    'https://twimlets.com/message?' + { Message: { 0 => message } }.to_query
-  end
-
-  def twimlet_menu(message, options)
-    'https://twimlets.com/menu?' + {
-      Message: message,
-      Options: options.to_h,
-    }.to_query
+  def cipher
+    Gibberish::AES.new(Figaro.env.attribute_encryption_key)
   end
 end

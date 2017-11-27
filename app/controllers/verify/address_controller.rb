@@ -9,7 +9,7 @@ module Verify
     private
 
     def confirm_step_needed
-      redirect_to verify_review_path if idv_session.address_mechanism_chosen?
+      redirect_to verify_review_url if idv_session.address_mechanism_chosen?
     end
   end
 end

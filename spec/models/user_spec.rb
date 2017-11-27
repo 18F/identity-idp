@@ -139,7 +139,7 @@ describe User do
       Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
     end
     let(:inactive_identity) do
-      Identity.create(service_provider: 'entity_id', session_uuid: nil)
+      Identity.create(service_provider: 'entity_id2', session_uuid: nil)
     end
 
     describe '#active_identities' do
