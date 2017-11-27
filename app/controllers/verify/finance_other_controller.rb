@@ -17,7 +17,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_phone_path if idv_session.financials_confirmation.try(:success?)
+      redirect_to verify_phone_url if idv_session.financials_confirmation.try(:success?)
     end
 
     def view_model

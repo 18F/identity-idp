@@ -126,7 +126,7 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#cancel_link_path' do
+  describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSessionDecorator.new(
         sp: sp,
@@ -137,14 +137,16 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
 
     it 'returns sign_up_start_url with the request_id as a param' do
-      expect(decorator.cancel_link_path).to eq '/sign_up/start?request_id=foo'
+      expect(decorator.cancel_link_url).
+        to eq 'http://www.example.com/sign_up/start?request_id=foo'
     end
 
     context 'in another language' do
       before { I18n.locale = :fr }
 
       it 'keeps the language' do
-        expect(decorator.cancel_link_path).to eq '/fr/sign_up/start?request_id=foo'
+        expect(decorator.cancel_link_url).
+          to eq 'http://www.example.com/fr/sign_up/start?request_id=foo'
       end
     end
   end

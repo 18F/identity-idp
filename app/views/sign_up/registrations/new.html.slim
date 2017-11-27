@@ -13,4 +13,4 @@ p.mt-tiny.mb0#email-description = t('instructions.registration.email')
 
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide'
 
-= render 'shared/cancel', link: decorated_session.cancel_link_path
+= render 'shared/cancel', link: decorated_session.cancel_link_url

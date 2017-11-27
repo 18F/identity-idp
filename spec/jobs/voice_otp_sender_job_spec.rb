@@ -8,12 +8,16 @@ describe VoiceOtpSenderJob do
       FakeVoiceCall.calls = []
     end
 
+    let(:cipher) { Gibberish::AES.new(Figaro.env.attribute_encryption_key) }
+
     it 'initiates the phone call to deliver the OTP', twilio: true do
-      VoiceOtpSenderJob.perform_now(
-        code: '1234',
-        phone: '555-5555',
-        otp_created_at: Time.zone.now.to_s
-      )
+      I18n.with_locale(:fr) do
+        VoiceOtpSenderJob.perform_now(
+          code: '1234',
+          phone: '555-5555',
+          otp_created_at: Time.zone.now.to_s
+        )
+      end
 
       calls = FakeVoiceCall.calls
 
@@ -22,17 +26,9 @@ describe VoiceOtpSenderJob do
       expect(call.to).to eq('555-5555')
       expect(call.from).to match(/(\+19999999999|\+12222222222)/)
 
-      code = '1234'.scan(/\d/).join(', ')
-      query = URIService.params(call.url)
-      expect(query['Message']).to eq(t('jobs.voice_otp_sender_job.message_repeat', code: code))
-
-      nested_query = query
-      while nested_query['Options']
-        nested_url = URI(nested_query['Options']['1'])
-        nested_query = URIService.params(nested_url)
-      end
-      expect(nested_query['Message']['0']).
-        to eq(t('jobs.voice_otp_sender_job.message_final', code: code))
+      params = URIService.params(call.url)
+      expect(cipher.decrypt(params[:encrypted_code])).to eq('1234')
+      expect(params[:locale]).to eq('fr')
     end
 
     context 'recording calls' do
