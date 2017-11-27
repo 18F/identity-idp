@@ -142,6 +142,7 @@ describe Verify::PhoneController do
 
           expected_params = {
             phone: normalized_phone,
+            phone_confirmed_at: nil,
           }
           expect(subject.idv_session.params).to eq expected_params
         end
