@@ -30,20 +30,14 @@ describe 'sign_up/completions/show.html.slim' do
 
   private
 
-  def create_identities(user, n = 0)
-    identities = []
-    (0..n).each do |i|
+  def create_identities(user, count = 0)
+    (0..count).map do |index|
       sp = create(
         :service_provider,
-        friendly_name: "SP app #{i}",
-        agency: "Agency #{i}"
+        friendly_name: "SP app #{index}",
+        agency: "Agency #{index}"
       )
-      identities[i] = create(
-        :identity,
-        service_provider: sp.issuer,
-        user: user
-      )
+      create(:identity, service_provider: sp.issuer, user: user)
     end
-    identities
   end
 end
