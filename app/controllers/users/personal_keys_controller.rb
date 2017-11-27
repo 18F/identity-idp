@@ -21,7 +21,7 @@ module Users
       user_session[:personal_key] = create_new_code
       analytics.track_event(Analytics::PROFILE_PERSONAL_KEY_CREATE)
       flash[:success] = t('notices.send_code.personal_key') if params[:resend].present?
-      redirect_to manage_personal_key_url
+      redirect_to manage_personal_key_path
     end
 
     private

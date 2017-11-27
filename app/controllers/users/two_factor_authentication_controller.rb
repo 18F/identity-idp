@@ -5,11 +5,11 @@ module Users
 
     def show
       if current_user.totp_enabled?
-        redirect_to login_two_factor_authenticator_url
+        redirect_to login_two_factor_authenticator_path
       elsif current_user.two_factor_enabled?
         handle_valid_otp_delivery_preference(current_user.otp_delivery_preference)
       else
-        redirect_to phone_setup_url
+        redirect_to phone_setup_path
       end
     end
 
@@ -20,7 +20,7 @@ module Users
       if result.success?
         handle_valid_otp_delivery_preference(user_selected_otp_delivery_preference)
       else
-        redirect_to user_two_factor_authentication_url(reauthn: reauthn?)
+        redirect_to user_two_factor_authentication_path(reauthn: reauthn?)
       end
     rescue Twilio::REST::RestError => exception
       invalid_phone_number(exception)
@@ -64,7 +64,7 @@ module Users
 
       send_user_otp(method)
       session[:code_sent] = 'true'
-      redirect_to login_two_factor_url(otp_delivery_preference: method, reauthn: reauthn?)
+      redirect_to login_two_factor_path(otp_delivery_preference: method, reauthn: reauthn?)
     end
 
     def send_user_otp(method)

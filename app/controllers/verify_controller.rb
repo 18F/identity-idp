@@ -8,7 +8,7 @@ class VerifyController < ApplicationController
 
   def index
     if active_profile?
-      redirect_to verify_activated_url
+      redirect_to verify_activated_path
     elsif idv_attempter.exceeded?
       redirect_to verify_fail_url
     else

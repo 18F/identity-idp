@@ -166,8 +166,6 @@ es:
           verificada en el archivo.
         resend: Envíeme otra carta.
         success: Debe llegar en 5 a 10 días laborales.
-      agencies_login: NOT TRANSLATED YET
-      agency_login_html: NOT TRANSLATED YET
     modal:
       attempts:
         one: Tiene usted <strong> 1 intento restante.</ strong>

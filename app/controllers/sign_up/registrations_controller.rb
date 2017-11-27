@@ -8,7 +8,7 @@ module SignUp
     prepend_before_action :disable_account_creation, only: %i[new create]
 
     def show
-      return redirect_to sign_up_email_url if params[:request_id].blank?
+      return redirect_to sign_up_email_path if params[:request_id].blank?
 
       analytics.track_event(Analytics::USER_REGISTRATION_INTRO_VISIT)
     end
@@ -51,7 +51,7 @@ module SignUp
       resend_confirmation = params[:user][:resend]
       session[:email] = user.email
 
-      redirect_to sign_up_verify_email_url(
+      redirect_to sign_up_verify_email_path(
         resend: resend_confirmation, request_id: permitted_params[:request_id]
       )
     end
@@ -64,7 +64,7 @@ module SignUp
     end
 
     def disable_account_creation
-      redirect_to root_url if AppSetting.registrations_disabled?
+      redirect_to root_path if AppSetting.registrations_disabled?
     end
   end
 end

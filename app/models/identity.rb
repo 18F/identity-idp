@@ -16,10 +16,6 @@ class Identity < ApplicationRecord
     sp_metadata[:friendly_name] || sp_metadata[:agency] || service_provider
   end
 
-  def agency_name
-    sp_metadata[:agency] || sp_metadata[:friendly_name] || service_provider
-  end
-
   def decorate
     IdentityDecorator.new(self)
   end

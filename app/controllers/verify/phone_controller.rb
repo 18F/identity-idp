@@ -18,7 +18,7 @@ module Verify
 
       if result.success?
         submit_idv_job
-        redirect_to verify_phone_result_url
+        redirect_to verify_phone_result_path
       else
         @view_model = view_model
         render :new

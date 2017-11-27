@@ -32,9 +32,9 @@ module SignUp
 
     def next_step
       if session[:sp]
-        sign_up_completed_url
+        sign_up_completed_path
       elsif current_user.decorate.password_reset_profile.present?
-        reactivate_account_url
+        reactivate_account_path
       else
         after_sign_in_path_for(current_user)
       end
