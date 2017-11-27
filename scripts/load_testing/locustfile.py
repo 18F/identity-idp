@@ -121,12 +121,13 @@ def change_pass(t, password):
         resp = t.client.get(edit_link[0].attrib['href'])
     except Exception as error:
         print("""
-            There was a problem finding the edit pass link.
-            Most likely, you're hitting an OTP cap with this user.
-            We are unable to change the password and are exiting.
-            """
+            There was a problem finding the edit pass link: {}
+            Most likely, you're hitting an OTP cap with this user, 
+            or did not run the rake task to generate users.
+            Since we can't change the password, we'll exit.
+            Here is the content we're seeing: {}
+            """.format(error, resp.content)
         )
-        print(error)
         return
 
     resp.raise_for_status()
