@@ -154,13 +154,21 @@ def change_pass(t, password):
         # To-do: handle reauthn case
         print(resp.url)
 
-def signup(t, signup_url='/sign_up/start'):
+def signup(t, signup_url=None):
     """
     Creates a new account.
     """
     # start at home page,
     # then navigate to create account page and submit email
-    t.client.get(signup_url, auth=auth)
+    # we're checking for signup_url to pass name and group results
+    if signup_url:
+        t.client.get(
+            signup_url,
+            auth=auth,
+            name=signup_url.split("=")[0]
+        )
+    else:
+        t.client.get('/sign_up/start', auth=auth)
     resp = t.client.get('/sign_up/enter_email', auth=auth)
     resp.raise_for_status()
 
@@ -256,7 +264,7 @@ class UserBehavior(locust.TaskSet):
     def on_start(self):
         pass
 
-    #@locust.task(1)
+    @locust.task(1)
     def idp_change_pass(self):
         """
         Login, change pass, change it back and logout from IDP.
@@ -272,7 +280,7 @@ class UserBehavior(locust.TaskSet):
         change_pass(self, credentials['password'])
         logout(self)
 
-    #@locust.task(2)
+    @locust.task(2)
     def sp_rails_change_pass(self):
         """
         Login, change pass, change it back and logout from
@@ -312,7 +320,7 @@ class UserBehavior(locust.TaskSet):
         change_pass(self, credentials['password'])
         logout(self)
 
-    #@locust.task(70)
+    @locust.task(70)
     def usajobs_change_pass(self):
         """
         Login, change pass, change it back and logout from USAjobs.
@@ -333,7 +341,7 @@ class UserBehavior(locust.TaskSet):
         change_pass(self, credentials['password'])
         logout(self)
 
-    #@locust.task(2)
+    @locust.task(2)
     def idp_create_account(self):
         print("Task: Create account from idp")
         signup(self)
