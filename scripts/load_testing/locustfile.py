@@ -33,7 +33,7 @@ def random_cred():
 
     """
     return {
-        'email': 'testuser{}@example.com'.format(randint(1, NUM_USERS)),
+        'email': 'testuser{}@example.com'.format(randint(1, NUM_USERS-1)),
         'password': "salty pickles"
     }
 
@@ -165,7 +165,7 @@ def signup(t, signup_url=None):
         t.client.get(
             signup_url,
             auth=auth,
-            name=signup_url.split("=")[0]
+            name="/sign_up/start?request_id"
         )
     else:
         t.client.get('/sign_up/start', auth=auth)
