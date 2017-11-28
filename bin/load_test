@@ -36,7 +36,7 @@ then
   test_to_run="$1"
   target="${TARGET_HOST:-http://localhost:3000}"
   num_clients=${NUM_CLIENTS:-3}
-  num_requests=${NUM_REQUESTS:-100}
+  run_time=${RUN_TIME:-'180s'}
   hatch_rate=${HATCH_RATE:-1}
 
   brew_install_or_upgrade 'libevent'
@@ -45,14 +45,14 @@ then
     workon locust &&  \
     pip install -r scripts/load_testing/requirements.txt && \
     echo "running locust with concurrency of $num_clients, new user hatch rate"\
-    "of $hatch_rate, and a total number of $num_requests requests" && \
+    "of $hatch_rate, and a run time of $run_time" && \
     locust -f scripts/load_testing/$test_to_run.py -H "$target" --no-web \
-    -c $num_clients -n $num_requests -r $hatch_rate
+    -c $num_clients -t $run_time -r $hatch_rate
   deactivate
 else
   echo "Usage: NUM_CLIENTS=3 NUM_REQUESTS=100 HATCH_RATE=1 load_test [name_of_file]"
   echo "Usage:"
   echo "load_test [name_of_file]"
   echo "or, if you'd like to set the arguments"
-  echo "NUM_CLIENTS=3 NUM_REQUESTS=100 HATCH_RATE=1 load_test [name_of_file]"
+  echo "NUM_CLIENTS=3 RUN_TIME=180s HATCH_RATE=1 load_test [name_of_file]"
 fi
