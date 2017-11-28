@@ -14,6 +14,10 @@ phone_numbers = foney.phone_numbers()
 username, password = os.getenv('AUTH_USER'), os.getenv('AUTH_PASS')
 auth = (username, password) if username and password else ()
 
+# This should match however many users were created
+# for the DB by the rake task.
+NUM_USERS = 100
+
 def random_cred():
     """
     Given the rake task:
@@ -29,7 +33,7 @@ def random_cred():
 
     """
     return {
-        'email': 'testuser{}@example.com'.format(randint(1, 1000)),
+        'email': 'testuser{}@example.com'.format(randint(1, NUM_USERS)),
         'password': "salty pickles"
     }
 
@@ -48,7 +52,7 @@ def login(t, credentials):
     2. figure out how to handle invalid login attempts.
     3. Handle account locks
     """
-    print('beginning sign in')
+    print('beginning sign in with credentials: {}'.format(credentials))
     t.client.get('/sign_up/start')
 
     # then go from splash page to sign-in page and submit credentials
@@ -79,7 +83,7 @@ def login(t, credentials):
             }
         )
         resp.raise_for_status()
-        print('Sign in complete.')
+        print('Sign in complete. Currently at {}.'.format(resp.url))
     except Exception as error:
         print(error)
 
@@ -125,8 +129,8 @@ def change_pass(t, password):
             Most likely, you're hitting an OTP cap with this user, 
             or did not run the rake task to generate users.
             Since we can't change the password, we'll exit.
-            Here is the content we're seeing: {}
-            """.format(error, resp.content)
+            Here is the content we're seeing at {}: {}
+            """.format(error, resp.url, dom('.container').eq(0).text())
         )
         return
 
@@ -150,13 +154,13 @@ def change_pass(t, password):
         # To-do: handle reauthn case
         print(resp.url)
 
-def signup(t):
+def signup(t, signup_url='/sign_up/start'):
     """
     Creates a new account.
     """
     # start at home page,
     # then navigate to create account page and submit email
-    t.client.get('/sign_up/start', auth=auth)
+    t.client.get(signup_url, auth=auth)
     resp = t.client.get('/sign_up/enter_email', auth=auth)
     resp.raise_for_status()
 
@@ -252,7 +256,7 @@ class UserBehavior(locust.TaskSet):
     def on_start(self):
         pass
 
-    @locust.task(1)
+    #@locust.task(1)
     def idp_change_pass(self):
         """
         Login, change pass, change it back and logout from IDP.
@@ -268,7 +272,7 @@ class UserBehavior(locust.TaskSet):
         change_pass(self, credentials['password'])
         logout(self)
 
-    @locust.task(2)
+    #@locust.task(2)
     def sp_rails_change_pass(self):
         """
         Login, change pass, change it back and logout from
@@ -308,7 +312,7 @@ class UserBehavior(locust.TaskSet):
         change_pass(self, credentials['password'])
         logout(self)
 
-    @locust.task(70)
+    #@locust.task(70)
     def usajobs_change_pass(self):
         """
         Login, change pass, change it back and logout from USAjobs.
@@ -329,7 +333,7 @@ class UserBehavior(locust.TaskSet):
         change_pass(self, credentials['password'])
         logout(self)
 
-    @locust.task(2)
+    #@locust.task(2)
     def idp_create_account(self):
         print("Task: Create account from idp")
         signup(self)
@@ -342,7 +346,11 @@ class UserBehavior(locust.TaskSet):
         resp.raise_for_status()
         resp = self.client.get('https://www.test.usajobs.gov/Applicant/ProfileDashboard/Home')
         resp.raise_for_status()
-        signup(self)
+        # A quick post to setup for the SP handshake
+        resp = self.client.post('https://login.test.usajobs.gov/Access/Transition')
+        resp.raise_for_status()
+        signup_url = resp.url
+        signup(self, signup_url)
         logout(self)
 
 
