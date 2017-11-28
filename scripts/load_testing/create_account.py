@@ -46,7 +46,7 @@ def signup(t):
         return
 
     # Follow email confirmation link and submit password
-    resp = self.client.get(
+    resp = t.client.get(
         link, 
         auth=auth, 
         name='/sign_up/email/confirm?confirmation_token='
