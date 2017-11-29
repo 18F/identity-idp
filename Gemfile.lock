@@ -649,7 +649,7 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    whenever (0.9.7)
+    whenever (0.10.0)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
     xmlenc (0.6.9)
