@@ -66,7 +66,6 @@ TooManyInstanceVariables:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
     - Idv::VendorResult
-    - Idv::ProoferJob
 TooManyStatements:
   max_statements: 6
   exclude:

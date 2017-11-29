@@ -33,10 +33,6 @@ module IdvSession
     )
   end
 
-  def idv_vendor
-    @_idv_vendor ||= Idv::Vendor.new
-  end
-
   def idv_attempter
     @_idv_attempter ||= Idv::Attempter.new(current_user)
   end

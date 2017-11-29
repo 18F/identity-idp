@@ -2,10 +2,9 @@ module Idv
   class ProfileMaker
     attr_reader :pii_attributes
 
-    def initialize(applicant:, user:, normalized_applicant:, vendor:, phone_confirmed:)
+    def initialize(applicant:, user:, normalized_applicant:, phone_confirmed:)
       self.pii_attributes = pii_from_applicant(applicant, normalized_applicant)
       self.user = user
-      self.vendor = vendor
       self.phone_confirmed = phone_confirmed
     end
 
@@ -13,8 +12,7 @@ module Idv
       profile = Profile.new(
         deactivation_reason: :verification_pending,
         phone_confirmed: phone_confirmed,
-        user: user,
-        vendor: vendor
+        user: user
       )
       profile.encrypt_pii(user.user_access_key, pii_attributes)
       profile.save!
@@ -23,7 +21,7 @@ module Idv
 
     private
 
-    attr_accessor :user, :vendor, :phone_confirmed
+    attr_accessor :user, :phone_confirmed
     attr_writer :pii_attributes
 
     # rubocop:disable MethodLength, AbcSize
