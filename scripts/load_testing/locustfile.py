@@ -315,15 +315,47 @@ class UserBehavior(locust.TaskSet):
 
         This is most common task and is heavily weighted.
         """
-        resp = self.client.get('https://www.test.usajobs.gov/')
-        resp.raise_for_status()
-        resp = self.client.get('https://www.test.usajobs.gov/Applicant/ProfileDashboard/Home')
-        resp.raise_for_status()
+        resp = self.client.get(
+            'https://www.test.usajobs.gov/',
+            catch_response=True
+        )
+        dom = pyquery.PyQuery(resp.content)
+        signin_link = dom.find('a.user-logged-out[href="/Applicant/ProfileDashboard/Home"]:first')
+
+        if not signin_link:
+            resp.failure("We could not find a signin link at {}".format(resp.url))
+
+        resp = self.client.get(
+            signin_link[0].attrib['href'],
+            catch_response=True
+        )
         # we should have been redirected to
-        # https://login.test.usajobs.gov/Access/Transition
-        # 
-        # We'll now navigate into the regular IDP login flow.
-        credentials = random_cred()
+        # https://login.test.usajobs.gov/Access/Transition. Let's do a quick check.
+        if (resp.url is not "https://login.test.usajobs.gov/Access/Transition" or 
+            "usajobs-landing--login-transition-submit" not in resp.content):
+            resp.failure(
+                """"
+                We do not appear to have been redirected to 
+                https://login.test.usajobs.gov/Access/Transition.
+                """
+            )
+        # Now that we've confirmed we're at the right URL
+        # we need to POST to it, per USAjobs.
+        resp = self.client.post(
+            resp.url,
+            catch_response=True
+        )
+        # Now check to make sure we redirected to the right place
+        # which should match our target host, where the login takes place.
+        if resp.url is not os.getenv('TARGET_HOST'):  
+            resp.failure(
+                """"
+                We do not appear to have been redirected to the IDP host.
+                Instead, we are at {}.
+                """.format(resp.url)
+            )    
+
+        credentials = random_cred()        
         login(self, credentials)
         change_pass(self, "thisisanewpass")
         # now change it back.
