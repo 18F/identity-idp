@@ -396,7 +396,7 @@ GEM
     parser (2.4.0.2)
       ast (~> 2.3)
     pg (0.21.0)
-    phonelib (0.6.15)
+    phonelib (0.6.17)
     phony (2.15.44)
     phony_rails (0.14.6)
       activesupport (>= 3.0)
