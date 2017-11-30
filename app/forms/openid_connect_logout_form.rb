@@ -82,6 +82,8 @@ class OpenidConnectLogoutForm
     {
       client_id: service_provider.issuer,
       redirect_uri: redirect_uri,
+      sp_initiated: true,
+      oidc: true,
     }
   end
 

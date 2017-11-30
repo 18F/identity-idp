@@ -52,8 +52,12 @@ RSpec.describe OpenidConnect::LogoutController do
         it 'tracks analytics' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_LOGOUT,
-                 success: true, client_id: service_provider, errors: {})
+            with(Analytics::LOGOUT_INITIATED,
+                 success: true,
+                 client_id: service_provider,
+                 errors: {},
+                 sp_initiated: true,
+                 oidc: true)
 
           action
         end
@@ -77,10 +81,12 @@ RSpec.describe OpenidConnect::LogoutController do
         it 'tracks analytics' do
           stub_analytics
           expect(@analytics).to receive(:track_event).
-            with(Analytics::OPENID_CONNECT_LOGOUT,
+            with(Analytics::LOGOUT_INITIATED,
                  success: false,
                  client_id: service_provider,
-                 errors: hash_including(:post_logout_redirect_uri))
+                 errors: hash_including(:post_logout_redirect_uri),
+                 sp_initiated: true,
+                 oidc: true)
 
           action
         end
