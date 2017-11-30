@@ -16,7 +16,6 @@ module Idv
       personal_key
       resolution_successful
       step_attempts
-      vendor
       vendor_session_id
     ].freeze
 
@@ -140,8 +139,7 @@ module Idv
         applicant: Proofer::Applicant.new(applicant_params),
         normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
         phone_confirmed: vendor_phone_confirmation || false,
-        user: current_user,
-        vendor: vendor
+        user: current_user
       )
     end
   end

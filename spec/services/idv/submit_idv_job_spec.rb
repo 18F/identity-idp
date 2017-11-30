@@ -16,7 +16,6 @@ RSpec.describe Idv::SubmitIdvJob do
         idv: {
           applicant: applicant,
           vendor_session_id: vendor_session_id,
-          vendor: :mock,
         },
       }
     )
@@ -33,7 +32,6 @@ RSpec.describe Idv::SubmitIdvJob do
       expect(Idv::ProfileJob).to receive(:perform_later).
         with(
           result_id: result_id,
-          vendor: 'mock',
           vendor_params: vendor_params,
           vendor_session_id: vendor_session_id,
           applicant_json: applicant.to_json
@@ -58,7 +56,6 @@ RSpec.describe Idv::SubmitIdvJob do
       expect(Idv::FinanceJob).to receive(:perform_later).
         with(
           result_id: result_id,
-          vendor: 'mock',
           vendor_params: vendor_params,
           vendor_session_id: vendor_session_id,
           applicant_json: applicant.to_json
@@ -83,7 +80,6 @@ RSpec.describe Idv::SubmitIdvJob do
       expect(Idv::PhoneJob).to receive(:perform_later).
         with(
           result_id: result_id,
-          vendor: 'mock',
           vendor_params: vendor_params,
           vendor_session_id: vendor_session_id,
           applicant_json: applicant.to_json

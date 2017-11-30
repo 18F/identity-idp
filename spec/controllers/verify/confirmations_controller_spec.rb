@@ -11,7 +11,6 @@ describe Verify::ConfirmationsController do
       current_user: user,
       issuer: nil
     )
-    idv_session.vendor = :mock
     idv_session.applicant = idv_session.vendor_params
     idv_session.normalized_applicant_params = { first_name: 'Somebody' }
     idv_session.resolution_successful = resolution.success?
@@ -20,7 +19,6 @@ describe Verify::ConfirmationsController do
       applicant: applicant,
       user: user,
       normalized_applicant: normalized_applicant,
-      vendor: :mock,
       phone_confirmed: true
     )
     profile = profile_maker.save_profile
