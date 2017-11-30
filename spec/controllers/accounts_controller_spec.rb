@@ -13,6 +13,7 @@ describe AccountsController do
   describe '#show' do
     context 'when user has an active identity' do
       it 'renders the profile and does not redirect out of the app' do
+        stub_analytics
         user = create(:user, :signed_up)
         user.identities << Identity.create(
           service_provider: 'http://localhost:3000',
@@ -20,6 +21,8 @@ describe AccountsController do
         )
 
         sign_in user
+
+        expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_VISIT)
 
         get :show
 
