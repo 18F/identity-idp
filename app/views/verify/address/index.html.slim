@@ -5,8 +5,8 @@ p
 
 = form_tag
   label.block.p2.border.rounded-md.border-light-blue.mb2 for="address_delivery_method_phone"
-    .radio.mb2
-      = radio_button_tag 'address_delivery_method', :phone
+    .radio
+      = radio_button_tag 'address_delivery_method', :phone, true
       span.indicator
       strong.blue.block = t('idv.messages.select_verification_form.phone_header')
       span = t('idv.messages.select_verification_form.phone_message')
@@ -15,7 +15,7 @@ p
   // This check is a convenience for lower envs.
   - if FeatureManagement.enable_usps_verification?
     label.block.p2.border.rounded-md.border-light-blue.mb2 for="address_delivery_method_usps"
-      .radio.mb2
+      .radio
         = radio_button_tag 'address_delivery_method', :usps
         span.indicator
         strong.blue.block = t('idv.messages.select_verification_form.usps_header')
