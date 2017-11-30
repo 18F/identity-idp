@@ -275,7 +275,7 @@ production:
     logo: 'cbp.png'
     restrict_to_deploy_env: 'prod'
 
-  # RRB
+  # RRB Online Retirement Application
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:RRB:BOS-Pre-Prod':
     friendly_name: 'Railroad Retirement Board'
     agency: 'RRB'
@@ -299,6 +299,16 @@ production:
       - dob
       - ssn
       - phone
+
+  # RRB Benefit Connect
+  'urn:gov:rrb:OIDC:V0.1:BenefitConnnect:app-stg':
+    friendly_name: 'U.S. Railroad Retirement Board Benefit Connect'
+    agency: 'RRB'
+    logo: 'rrb.svg'
+    cert: 'rrb_benefit_connect_staging'
+    redirect_uris:
+      - 'https://usrrbsecuredev2.rrb.gov/BenefitOnlineServices'
+    restrict_to_deploy_env: 'staging'
 
   # CBP GOES
   'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
