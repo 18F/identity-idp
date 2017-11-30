@@ -18,4 +18,12 @@ class FakeSamlRequest
   def name_id_format
     'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent'
   end
+
+  def response_url
+    'http://localhost:3000'
+  end
+
+  def request_id
+    '123'
+  end
 end
