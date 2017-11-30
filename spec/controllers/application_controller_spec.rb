@@ -117,6 +117,14 @@ describe ApplicationController do
         controller.analytics
       end
     end
+
+    context 'when a current_sp is not present' do
+      it 'does not perform a DB lookup' do
+        expect(ServiceProvider).to_not receive(:find_by)
+
+        controller.analytics
+      end
+    end
   end
 
   describe '#create_user_event' do
