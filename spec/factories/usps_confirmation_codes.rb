@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   Faker::Config.locale = :en
 
   factory :usps_confirmation_code do

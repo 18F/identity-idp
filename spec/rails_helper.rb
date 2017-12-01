@@ -3,7 +3,7 @@ require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'email_spec'
-require 'factory_girl'
+require 'factory_bot'
 require 'sidekiq/testing'
 
 # Checks for pending migrations before tests are run.
