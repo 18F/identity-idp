@@ -60,7 +60,7 @@ module Rack
         limit: Figaro.env.requests_per_ip_limit.to_i,
         period: Figaro.env.requests_per_ip_period.to_i
       ) do |req|
-        req.remote_ip unless req.path.starts_with?('/assets')
+        req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
     else
       throttle(
@@ -68,7 +68,7 @@ module Rack
         limit: Figaro.env.requests_per_ip_limit.to_i,
         period: Figaro.env.requests_per_ip_period.to_i
       ) do |req|
-        req.remote_ip unless req.path.starts_with?('/assets')
+        req.remote_ip unless req.path.starts_with?('/assets') || req.path.starts_with?('/packs')
       end
     end
 

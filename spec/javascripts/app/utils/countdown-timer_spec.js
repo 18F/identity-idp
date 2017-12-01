@@ -1,8 +1,9 @@
-const proxyquire = require('proxyquireify')(require);
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
 const spy = sinon.spy();
-const countdownTimer = proxyquire('app/utils/countdown-timer.js', {
-  './ms-formatter': spy,
+const countdownTimer = proxyquire('../../../../app/javascript/app/utils/countdown-timer.js', {
+  './ms-formatter': { default: spy },
   '@noCallThru': true,
 }).default;
 
