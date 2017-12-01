@@ -24,15 +24,33 @@ class Analytics
   def request_attributes
     {
       user_ip: request.remote_ip,
-      user_agent: request.user_agent,
       host: request.host,
       pid: Process.pid,
       service_provider: sp,
+    }.merge!(browser_attributes)
+  end
+
+  # rubocop:disable Metrics/AbcSize
+  def browser_attributes
+    {
+      user_agent: request.user_agent,
+      browser_name: browser.name,
+      browser_version: browser.full_version,
+      browser_platform_name: browser.os_name,
+      browser_platform_version: browser.os_full_version,
+      browser_device_name: browser.device_name,
+      browser_device_type: browser.device_type,
+      browser_bot: browser.bot?,
     }
   end
+  # rubocop:enable Metrics/AbcSize
 
   def uuid
     user.uuid
+  end
+
+  def browser
+    @browser ||= DeviceDetector.new(request.user_agent)
   end
 
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
