@@ -16,6 +16,7 @@ module Upaya
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
     config.i18n.available_locales = Figaro.env.available_locales.try(:split, ' ') || %w[en]
     config.i18n.default_locale = :en
+    config.action_controller.per_form_csrf_tokens = true
 
     routes.default_url_options[:host] = Figaro.env.domain_name
 

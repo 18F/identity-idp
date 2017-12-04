@@ -1,8 +1,8 @@
-<% browser = Browser.new(@request.user_agent) %>
+<% browser = DeviceDetector.new(@request.user_agent) %>
 Browser Name: <%= browser.name %>
 Browser Version: <%= browser.full_version %>
-Browser Platform: <%= browser.platform %> <%= browser.platform.version %>
-Browser Device: <%= browser.device.name %>
+Browser Platform: <%= browser.os_name %> <%= browser.os_full_version %>
+Browser Device: <%= browser.device_name %>
 Browser Bot?: <%= browser.bot? %>
 
 Referer: <%= @request.referer %>

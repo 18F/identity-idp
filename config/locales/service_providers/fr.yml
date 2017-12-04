@@ -1,0 +1,19 @@
+---
+fr:
+  service_providers:
+    trusted_traveler:
+      header: NOT TRANSLATED YET
+      account_page:
+        body: NOT TRANSLATED YET
+      body_html: NOT TRANSLATED YET
+      create_account_link: NOT TRANSLATED YET
+    usa_jobs:
+      header: Êtes-vous venu de USAJOBS?
+      account_page:
+        body: Vous devrez créer un nouveau compte login.gov en utilisant la même adresse
+          e-mail que vous avez utilisée pour USAJobs (soit votre adresse e-mail principale
+          ou secondaire).
+      body_html: Vous devrez %{link} en utilisant la même adresse e-mail que vous
+        avez utilisée pour USAJobs (soit votre adresse e-mail principale ou secondaire).
+      create_account_link: créer un nouveau compte login.gov
+    learn_more: Not translated yet

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :profile do
     association :user, factory: %i[user signed_up]
     transient do

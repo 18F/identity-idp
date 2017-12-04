@@ -19,5 +19,9 @@ module Idv
         session_id: resolution.session_id
       )
     end
+
+    def vendor
+      Figaro.env.profile_proofing_vendor.to_sym
+    end
   end
 end

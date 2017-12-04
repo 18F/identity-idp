@@ -4,6 +4,17 @@ class ServiceProviderSessionDecorator
 
   DEFAULT_LOGO = 'generic.svg'.freeze
 
+  SP_ALERTS = {
+    'CBP Trusted Traveler Programs' => {
+      i18n_name: 'trusted_traveler',
+      learn_more: 'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/',
+    },
+    'USAJOBS' => {
+      i18n_name: 'usa_jobs',
+      learn_more: 'https://login.gov/help/',
+    },
+  }.freeze
+
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)
     @sp = sp
     @view_context = view_context
@@ -73,6 +84,18 @@ class ServiceProviderSessionDecorator
 
   def cancel_link_url
     sign_up_start_url(request_id: sp_session[:request_id], locale: locale_url_param)
+  end
+
+  def sp_alert?
+    SP_ALERTS[sp_name].present?
+  end
+
+  def sp_alert_name
+    sp_alert? ? SP_ALERTS[sp_name][:i18n_name] : nil
+  end
+
+  def sp_alert_learn_more
+    sp_alert? ? SP_ALERTS[sp_name][:learn_more] : nil
   end
 
   private

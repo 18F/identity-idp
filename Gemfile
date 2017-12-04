@@ -101,7 +101,7 @@ group :test do
   gem 'coffee-script'
   gem 'database_cleaner'
   gem 'email_spec'
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
   gem 'poltergeist'
@@ -115,6 +115,6 @@ group :test do
 end
 
 group :production do
-  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.0.2'
+  gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
   gem 'mandrill_dm'
 end

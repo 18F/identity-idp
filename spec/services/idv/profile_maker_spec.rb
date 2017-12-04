@@ -12,7 +12,6 @@ describe Idv::ProfileMaker do
         applicant: applicant,
         user: user,
         normalized_applicant: normalized_applicant,
-        vendor: :mock,
         phone_confirmed: false
       )
 

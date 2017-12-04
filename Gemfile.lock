@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: 42306567808c2bdf2ea60000099f3138ab6e41e4
-  tag: v1.0.2
+  revision: de4258c7608997f72e119b16718eeead4d39db70
+  tag: v1.1.0
   specs:
-    equifax (1.0.2)
+    equifax (1.1.0)
       activesupport
       dotenv
       gyoku
@@ -211,7 +211,7 @@ GEM
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    css_parser (1.5.0)
+    css_parser (1.6.0)
       addressable
     daemons (1.2.4)
     database_cleaner (1.6.1)
@@ -260,10 +260,10 @@ GEM
       activesupport (>= 4.0, < 6)
     excon (0.58.0)
     execjs (2.7.0)
-    factory_girl (4.8.0)
+    factory_bot (4.8.2)
       activesupport (>= 3.0.0)
-    factory_girl_rails (4.8.0)
-      factory_girl (~> 4.8.0)
+    factory_bot_rails (4.8.2)
+      factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
     fakefs (0.11.2)
     faker (1.8.4)
@@ -696,7 +696,7 @@ DEPENDENCIES
   email_spec
   equifax!
   exception_notification
-  factory_girl_rails
+  factory_bot_rails
   fakefs
   faker
   fasterer
