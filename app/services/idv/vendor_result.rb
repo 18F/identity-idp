@@ -22,11 +22,15 @@ module Idv
     end
 
     def success?
-      success
+      success == true
     end
 
     def timed_out?
-      timed_out
+      timed_out == true
+    end
+
+    def job_failed?
+      errors.fetch(:job_failed, false)
     end
   end
 end

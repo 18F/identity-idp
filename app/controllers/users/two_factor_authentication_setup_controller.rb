@@ -31,7 +31,7 @@ module Users
       if user_fully_authenticated?
         redirect_to(request.referer || root_url)
       elsif current_user && current_user.two_factor_enabled?
-        redirect_to user_two_factor_authentication_path
+        redirect_to user_two_factor_authentication_url
       end
     end
 

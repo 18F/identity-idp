@@ -8,9 +8,9 @@ module Verify
     before_action :confirm_current_password, only: [:create]
 
     def confirm_idv_steps_complete
-      return redirect_to(verify_session_path) unless idv_profile_complete?
-      return redirect_to(verify_finance_path) unless idv_finance_complete?
-      return redirect_to(verify_address_path) unless idv_address_complete?
+      return redirect_to(verify_session_url) unless idv_profile_complete?
+      return redirect_to(verify_finance_url) unless idv_finance_complete?
+      return redirect_to(verify_address_url) unless idv_address_complete?
     end
 
     def confirm_idv_phone_confirmed
@@ -27,7 +27,7 @@ module Verify
       return if valid_password?
 
       flash[:error] = t('idv.errors.incorrect_password')
-      redirect_to verify_review_path
+      redirect_to verify_review_url
     end
 
     def new
@@ -45,7 +45,7 @@ module Verify
 
     def create
       init_profile
-      redirect_to verify_confirmations_path
+      redirect_to verify_confirmations_url
       analytics.track_event(Analytics::IDV_REVIEW_COMPLETE)
 
       return unless FeatureManagement.reveal_usps_code?

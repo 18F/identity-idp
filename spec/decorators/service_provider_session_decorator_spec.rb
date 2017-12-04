@@ -74,6 +74,25 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
+  describe '#sp_agency' do
+    it 'returns the SP agency if present' do
+      expect(subject.sp_agency).to eq sp.agency
+      expect(subject.sp_agency).to_not be_nil
+    end
+
+    it 'returns the friendly name if the agency is not present' do
+      sp = build_stubbed(:service_provider, friendly_name: 'friend', agency: nil)
+      subject = ServiceProviderSessionDecorator.new(
+        sp: sp,
+        view_context: view_context,
+        sp_session: {},
+        service_provider_request: ServiceProviderRequest.new
+      )
+      expect(subject.sp_agency).to eq sp.friendly_name
+      expect(subject.sp_agency).to_not be_nil
+    end
+  end
+
   describe '#sp_logo' do
     context 'service provider has a logo' do
       it 'returns the logo' do
@@ -107,7 +126,7 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
-  describe '#cancel_link_path' do
+  describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSessionDecorator.new(
         sp: sp,
@@ -118,14 +137,16 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
 
     it 'returns sign_up_start_url with the request_id as a param' do
-      expect(decorator.cancel_link_path).to eq '/sign_up/start?request_id=foo'
+      expect(decorator.cancel_link_url).
+        to eq 'http://www.example.com/sign_up/start?request_id=foo'
     end
 
     context 'in another language' do
       before { I18n.locale = :fr }
 
       it 'keeps the language' do
-        expect(decorator.cancel_link_path).to eq '/fr/sign_up/start?request_id=foo'
+        expect(decorator.cancel_link_url).
+          to eq 'http://www.example.com/fr/sign_up/start?request_id=foo'
       end
     end
   end

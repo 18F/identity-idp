@@ -22,14 +22,14 @@ module Verify
       if session[:sp] && !pending_profile?
         sign_up_completed_url
       elsif pending_profile? && idv_session.address_verification_mechanism == 'usps'
-        verify_come_back_later_path
+        verify_come_back_later_url
       else
         after_sign_in_path_for(current_user)
       end
     end
 
     def confirm_profile_has_been_created
-      redirect_to account_path if idv_session.profile.blank?
+      redirect_to account_url if idv_session.profile.blank?
     end
 
     def track_final_idv_event

@@ -6,6 +6,8 @@ describe Analytics do
       user_ip: FakeRequest.new.remote_ip,
       user_agent: FakeRequest.new.user_agent,
       host: FakeRequest.new.host,
+      pid: Process.pid,
+      service_provider: 'http://localhost:3000',
     }
   end
 
@@ -17,7 +19,7 @@ describe Analytics do
     it 'identifies the user and sends the event to the backend' do
       user = build_stubbed(:user, uuid: '123')
 
-      analytics = Analytics.new(user, FakeRequest.new)
+      analytics = Analytics.new(user: user, request: FakeRequest.new, sp: 'http://localhost:3000')
 
       analytics_hash = {
         event_properties: {},
@@ -34,7 +36,11 @@ describe Analytics do
       current_user = build_stubbed(:user, uuid: '123')
       tracked_user = build_stubbed(:user, uuid: '456')
 
-      analytics = Analytics.new(current_user, FakeRequest.new)
+      analytics = Analytics.new(
+        user: current_user,
+        request: FakeRequest.new,
+        sp: 'http://localhost:3000'
+      )
 
       analytics_hash = {
         event_properties: {},

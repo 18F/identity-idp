@@ -3,15 +3,18 @@ Attribute:
 ControlParameter:
   exclude:
     - OpenidConnectRedirector#initialize
+    - NoRetryJobs#call
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
+    - IdvFailureConcern#render_failure
     - ServiceProviderSessionDecorator#registration_heading
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
     - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
+    - BasicAuthUrl#build
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -28,6 +31,7 @@ FeatureEnvy:
     - Idv::ProfileMaker#pii_from_applicant
     - Idv::Step#vendor_validator_result
     - IdvSession#vendor_result_timed_out?
+    - ServiceProviderSeeder#run
 InstanceVariableAssumption:
   exclude:
     - User
@@ -41,12 +45,13 @@ NestedIterators:
     - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_html
     - TwilioService#sanitize_phone_number
+    - ServiceProviderSeeder#run
 NilCheck:
   enabled: false
 LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
-    - VendorValidatorJob#perform
+    - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
 RepeatedConditional:
   exclude:
@@ -61,9 +66,11 @@ TooManyInstanceVariables:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
     - Idv::VendorResult
+    - Idv::ProoferJob
 TooManyStatements:
   max_statements: 6
   exclude:
+    - IdvFailureConcern#render_failure
     - OpenidConnect::AuthorizationController#index
     - OpenidConnect::AuthorizationController#store_request
     - SamlIdpAuthConcern#store_saml_request
@@ -81,6 +88,7 @@ TooManyMethods:
     - Idv::Session
     - User
     - Verify::SessionsController
+    - ServiceProviderSessionDecorator
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

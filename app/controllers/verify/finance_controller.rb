@@ -18,7 +18,7 @@ module Verify
 
       if result.success?
         submit_idv_job
-        redirect_to verify_finance_result_path
+        redirect_to verify_finance_result_url
       else
         @view_model = view_model
         render_form
@@ -41,11 +41,10 @@ module Verify
     private
 
     def submit_idv_job
-      SubmitIdvJob.new(
-        vendor_validator_class: Idv::FinancialsValidator,
+      Idv::SubmitIdvJob.new(
         idv_session: idv_session,
         vendor_params: vendor_params
-      ).call
+      ).submit_finance_job
     end
 
     def step_name
@@ -53,7 +52,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_address_path if idv_session.financials_confirmation == true
+      redirect_to verify_address_url if idv_session.financials_confirmation == true
     end
 
     def view_model_class

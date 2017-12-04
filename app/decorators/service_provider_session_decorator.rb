@@ -59,6 +59,10 @@ class ServiceProviderSessionDecorator
     sp.friendly_name || sp.agency
   end
 
+  def sp_agency
+    sp.agency || sp.friendly_name
+  end
+
   def sp_return_url
     if sp.redirect_uris.present? && openid_connect_redirector.valid?
       openid_connect_redirector.decline_redirect_uri
@@ -67,8 +71,8 @@ class ServiceProviderSessionDecorator
     end
   end
 
-  def cancel_link_path
-    sign_up_start_path(request_id: sp_session[:request_id], locale: locale_url_param)
+  def cancel_link_url
+    sign_up_start_url(request_id: sp_session[:request_id], locale: locale_url_param)
   end
 
   private

@@ -3,6 +3,8 @@ require 'fingerprinter'
 class ServiceProvider < ApplicationRecord
   scope(:active, -> { where(active: true) })
 
+  validate :redirect_uris_are_parsable
+
   def self.from_issuer(issuer)
     find_by(issuer: issuer) || NullServiceProvider.new(issuer: issuer)
   end
@@ -44,7 +46,22 @@ class ServiceProvider < ApplicationRecord
     active? && approved?
   end
 
-  def redirect_uris
-    super.presence || Array(redirect_uri)
+  private
+
+  def redirect_uris_are_parsable
+    return if redirect_uris.blank?
+
+    redirect_uris.each do |uri|
+      next if redirect_uri_valid?(uri)
+      errors.add(:redirect_uris, :invalid)
+      break
+    end
+  end
+
+  def redirect_uri_valid?(redirect_uri)
+    parsed_uri = URI.parse(redirect_uri)
+    parsed_uri.scheme.present? || parsed_uri.host.present?
+  rescue URI::BadURIError, URI::InvalidURIError
+    false
   end
 end

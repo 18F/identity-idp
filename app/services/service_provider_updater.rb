@@ -1,3 +1,4 @@
+# Update ServiceProvider table by pulling from the Dashboard app API (lower environments only)
 class ServiceProviderUpdater
   PROTECTED_ATTRIBUTES = %i[
     created_at
@@ -35,7 +36,7 @@ class ServiceProviderUpdater
 
   def sync_model(sp, cleaned_attributes)
     if sp.is_a?(NullServiceProvider)
-      ServiceProvider.create(cleaned_attributes)
+      ServiceProvider.create!(cleaned_attributes)
     else
       sp.attributes = cleaned_attributes
       sp.save!

@@ -15,7 +15,8 @@ module SamlIdpAuthConcern
 
     @result = @saml_request_validator.call(
       service_provider: current_service_provider,
-      authn_context: requested_authn_context
+      authn_context: requested_authn_context,
+      nameid_format: saml_request.name_id_format
     )
 
     return if @result.success?

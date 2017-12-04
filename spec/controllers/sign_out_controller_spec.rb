@@ -2,9 +2,9 @@ require 'rails_helper'
 
 describe SignOutController do
   describe '#destroy' do
-    it 'redirects to decorated_session.cancel_link_path with flash message' do
+    it 'redirects to decorated_session.cancel_link_url with flash message' do
       stub_sign_in_before_2fa
-      allow(controller.decorated_session).to receive(:cancel_link_path).and_return('foo')
+      allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
 
       get :destroy
 

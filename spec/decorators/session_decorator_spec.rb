@@ -61,9 +61,9 @@ RSpec.describe SessionDecorator do
     end
   end
 
-  describe '#cancel_link_path' do
-    it 'returns root path' do
-      expect(subject.cancel_link_path).to eq '/'
+  describe '#cancel_link_url' do
+    it 'returns root url' do
+      expect(subject.cancel_link_url).to eq 'http://www.example.com/'
     end
   end
 end

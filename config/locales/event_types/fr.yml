@@ -4,6 +4,7 @@ fr:
     account_created: Compte créé
     account_verified: Compte vérifié
     authenticated_at: Connecté à %{service_provider}
+    authenticated_at_html: Connecté à %{service_provider_link}
     authenticator_disabled: Application d'authentification désactivée
     authenticator_enabled: Application d'authentification activée
     eastern_timestamp: "%{timestamp} (Eastern)"

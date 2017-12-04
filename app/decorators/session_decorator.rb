@@ -32,13 +32,15 @@ class SessionDecorator
 
   def sp_name; end
 
+  def sp_agency; end
+
   def sp_logo; end
 
   def sp_return_url; end
 
   def requested_attributes; end
 
-  def cancel_link_path
-    root_path(locale: locale_url_param)
+  def cancel_link_url
+    root_url(locale: locale_url_param)
   end
 end

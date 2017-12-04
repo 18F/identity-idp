@@ -25,7 +25,7 @@ module Verify
 
       if result.success?
         submit_idv_job
-        redirect_to verify_session_result_path
+        redirect_to verify_session_result_url
       else
         process_failure
       end
@@ -51,11 +51,10 @@ module Verify
     private
 
     def submit_idv_job
-      SubmitIdvJob.new(
-        vendor_validator_class: Idv::ProfileValidator,
+      Idv::SubmitIdvJob.new(
         idv_session: idv_session,
         vendor_params: idv_session.vendor_params
-      ).call
+      ).submit_profile_job
     end
 
     def step_name
@@ -63,7 +62,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_finance_path if idv_session.profile_confirmation == true
+      redirect_to verify_finance_url if idv_session.profile_confirmation == true
     end
 
     def step
@@ -75,9 +74,9 @@ module Verify
     end
 
     def handle_idv_redirect
-      redirect_to account_path and return if current_user.personal_key.present?
+      redirect_to account_url and return if current_user.personal_key.present?
       user_session[:personal_key] = create_new_code
-      redirect_to manage_personal_key_path
+      redirect_to manage_personal_key_url
     end
 
     def process_success
@@ -88,13 +87,13 @@ module Verify
       flash[:success] = t('idv.messages.sessions.success',
                           pii_message: pii_msg)
 
-      redirect_to verify_finance_path
+      redirect_to verify_finance_url
     end
 
     def process_failure
       if idv_form.duplicate_ssn?
         flash[:error] = t('idv.errors.duplicate_ssn')
-        redirect_to verify_session_dupe_path
+        redirect_to verify_session_dupe_url
       else
         render_failure
         render :new

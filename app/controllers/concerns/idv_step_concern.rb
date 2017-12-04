@@ -24,11 +24,11 @@ module IdvStepConcern
   end
 
   def confirm_step_allowed
-    redirect_to_fail_path if step_attempts_exceeded?
+    redirect_to_fail_url if step_attempts_exceeded?
   end
 
-  def redirect_to_fail_path
+  def redirect_to_fail_url
     flash[:max_attempts_exceeded] = true
-    redirect_to verify_fail_path
+    redirect_to verify_fail_url
   end
 end

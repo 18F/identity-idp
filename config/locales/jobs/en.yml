@@ -3,8 +3,3 @@ en:
   jobs:
     sms_otp_sender_job:
       message: "%{code} is your %{app} one-time security code."
-    voice_otp_sender_job:
-      message_final: Hello! Your login.gov one time security code is, %{code}, again,
-        your security code is, %{code}, goodbye!
-      message_repeat: Hello! Your login.gov one time security code is, %{code}, again,
-        your security code is, %{code}. Press 1 to repeat your code.

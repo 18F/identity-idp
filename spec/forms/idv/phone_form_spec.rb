@@ -23,6 +23,7 @@ describe Idv::PhoneForm do
 
         expected_params = {
           phone: '7035551212',
+          phone_confirmed_at: nil,
         }
 
         expect(subject.idv_params).to eq expected_params

@@ -8,11 +8,16 @@ module Idv
     end
 
     def vendor_validation_passed?
+      return false if vendor_validator_job_failed?
       vendor_validator_result.success?
     end
 
     def vendor_validation_timed_out?
       vendor_validator_result.timed_out?
+    end
+
+    def vendor_validator_job_failed?
+      vendor_validator_result&.job_failed?
     end
 
     private

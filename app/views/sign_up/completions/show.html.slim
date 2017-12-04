@@ -1,14 +1,11 @@
 -title @view_model.title
 
 .clearfix
-  .col-10.sm-col-8.mx-auto
+  .col-10.sm-col-12.mx-auto
     .center
-      = image_tag(asset_url(@view_model.image_name), width: 97, alt: '', class: 'mb2')
-    h1.h3.mb3.my0.regular = @view_model.heading
+      = image_tag(asset_url(@view_model.image_name), width: 140, alt: '', class: 'mb2')
+    h1.h3.mb3.my0.regular.center = @view_model.heading
 
-    p = t('help_text.requested_attributes.intro_html', app_name: APP_NAME,
-        sp: content_tag(:strong, decorated_session.sp_name))
-    = render @view_model.requested_attributes_partial, view_model: @view_model
+    = render @view_model.service_provider_partial
 
-    = button_to t('forms.buttons.continue'), sign_up_completed_path, \
-                class: 'col-12 btn btn-wide px2 py-12p rounded-lg border border-green bw2'
+    = link_to t('idv.messages.return_to_profile'), profile_path

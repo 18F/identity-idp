@@ -1,5 +1,15 @@
 - title t('titles.visitors.index')
 
+- if decorated_session.sp_name == 'CBP Trusted Traveler Programs'
+  .alert.alert-notice
+    .bold = 'Coming from Trusted Traveler Programs?'
+    p
+      = 'Your old GOES userID and password won’t work. Please '
+      = link_to 'create a login.gov account.', sign_up_email_url(request_id: params[:request_id])
+    p.mb1
+      = link_to 'Learn more.',
+                'https://login.gov/help/trusted-traveler-programs/sign-in-doesnt-work/'
+
 h1.h3.my0 = decorated_session.new_session_heading
 = simple_form_for(resource,
                   as: resource_name,

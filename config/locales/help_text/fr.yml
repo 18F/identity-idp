@@ -8,7 +8,7 @@ fr:
       birthdate: Date de naissance
       email: Adresse courriel
       full_name: Nom complet
-      intro_html: Il s'agit de la seule information que %{app_name} partagera avec
-        %{sp}
+      intro_html: 'Il s''agit de la seule information que %{app_name} partagera avec
+        %{sp}:'
       phone: Numéro de téléphone
       social_security_number: Numéro de sécurité sociale

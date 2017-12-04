@@ -68,7 +68,7 @@ module SignUp
 
     def sign_in_and_redirect_user
       sign_in @user
-      redirect_to after_confirmation_path_for(@user)
+      redirect_to after_confirmation_url_for(@user)
     end
   end
 end

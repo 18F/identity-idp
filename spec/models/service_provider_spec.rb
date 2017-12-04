@@ -1,6 +1,27 @@
 require 'rails_helper'
 
 describe ServiceProvider do
+  describe 'validations' do
+    it 'validates that all redirect_uris are absolute, parsable uris' do
+      valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
+      missing_protocol_sp = build(:service_provider, redirect_uris: ['foo.com'])
+      empty_uri_sp = build(:service_provider, redirect_uris: [''])
+      relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
+      bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
+
+      expect(valid_sp).to be_valid
+      expect(missing_protocol_sp).to_not be_valid
+      expect(empty_uri_sp).to_not be_valid
+      expect(relative_uri_sp).to_not be_valid
+      expect(bad_uri_sp).to_not be_valid
+    end
+
+    it 'allows redirect_uris to be blank' do
+      sp = build(:service_provider, redirect_uris: nil)
+      expect(sp).to be_valid
+    end
+  end
+
   describe '#issuer' do
     it 'returns the constructor value' do
       sp = ServiceProvider.from_issuer('http://localhost:3000')
@@ -127,31 +148,6 @@ describe ServiceProvider do
         sp.update(approved: false)
 
         expect(sp.live?).to be false
-      end
-    end
-  end
-
-  describe '#redirect_uris' do
-    context 'when a legacy single redirect_uri is set but not redirect_uris' do
-      let(:service_provider) do
-        ServiceProvider.new(
-          redirect_uri: 'http://a.example.com',
-          redirect_uris: []
-        )
-      end
-
-      it 'is an array of the legacy redirect_uri' do
-        expect(service_provider.redirect_uris).to eq(%w[http://a.example.com])
-      end
-    end
-
-    context 'when there are new-style multiple redirect_uris' do
-      let(:service_provider) do
-        ServiceProvider.new(redirect_uris: %w[http://b.example.com my-app://result])
-      end
-
-      it 'is the new-style multiple redirect_uris' do
-        expect(service_provider.redirect_uris).to eq(%w[http://b.example.com my-app://result])
       end
     end
   end

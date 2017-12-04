@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
-  revision: 8021646f4a67216b0a1bdb99e501ad652104f889
-  branch: master
+  revision: 42306567808c2bdf2ea60000099f3138ab6e41e4
+  tag: v1.0.2
   specs:
-    equifax (1.0.0)
+    equifax (1.0.2)
       activesupport
       dotenv
       gyoku
@@ -21,10 +21,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: b25f4f40e6b61fc9f586d870e5aaa90f1449c5d9
-  branch: master
+  revision: adcd6e33942f4452af925352c9d29ba39f912628
+  tag: v1.1.2
   specs:
-    proofer (1.0.0)
+    proofer (1.1.2)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
@@ -37,10 +37,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: f9917394698a3671e08058cf743e25a276887a79
-  tag: v0.4.3-18f
+  revision: bd77c74edc0943dac77cbc0fb07dabc8f9860176
+  tag: v0.5.0-18f
   specs:
-    saml_idp (0.4.3.pre.18f)
+    saml_idp (0.5.0.pre.18f)
       activesupport
       builder
       httparty
@@ -107,8 +107,8 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    addressable (2.5.1)
-      public_suffix (~> 2.0, >= 2.0.2)
+    addressable (2.5.2)
+      public_suffix (>= 2.0.2, < 4.0)
     ahoy_matey (1.6.0)
       addressable
       browser (~> 2.0)
@@ -195,7 +195,7 @@ GEM
     chronic (0.10.2)
     chunky_png (1.3.8)
     cliver (0.3.2)
-    codeclimate-engine-rb (0.4.0)
+    codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
     codeclimate-test-reporter (1.0.8)
       simplecov (<= 0.13)
@@ -255,6 +255,9 @@ GEM
     errbase (0.0.3)
     erubi (1.6.1)
     eventmachine (1.2.5)
+    exception_notification (4.2.2)
+      actionmailer (>= 4.0, < 6)
+      activesupport (>= 4.0, < 6)
     excon (0.58.0)
     execjs (2.7.0)
     factory_girl (4.8.0)
@@ -282,7 +285,7 @@ GEM
     geocoder (1.4.4)
     get_process_mem (0.2.1)
     gibberish (2.1.0)
-    globalid (0.4.0)
+    globalid (0.4.1)
       activesupport (>= 4.2.0)
     guard (2.14.1)
       formatador (>= 0.2.4)
@@ -300,10 +303,10 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     gyoku (1.3.1)
       builder (>= 2.1.2)
-    hashdiff (0.3.2)
+    hashdiff (0.3.7)
     hashie (3.5.6)
     heapy (0.1.2)
-    highline (1.7.8)
+    highline (1.7.10)
     hiredis (0.6.1)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
@@ -312,8 +315,9 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.8.6)
-    i18n-tasks (0.9.18)
+    i18n (0.9.1)
+      concurrent-ruby (~> 1.0)
+    i18n-tasks (0.9.19)
       activesupport (>= 4.0.2)
       ast (>= 2.1.0)
       easy_translate (>= 0.5.0)
@@ -327,16 +331,14 @@ GEM
     iniparse (1.4.4)
     jmespath (1.3.1)
     json (1.8.6)
-    json-jwt (1.7.2)
+    json-jwt (1.8.0)
       activesupport
       bindata
-      multi_json (>= 1.3)
       securecompare
       url_safe_base64
-    jwt (1.5.6)
+    jwt (2.1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    libxml-ruby (3.0.0)
     listen (3.1.5)
       rb-fsevent (~> 0.9, >= 0.9.4)
       rb-inotify (~> 0.9, >= 0.9.7)
@@ -352,8 +354,8 @@ GEM
     lumberjack (1.0.11)
     macaddr (1.7.1)
       systemu (~> 2.6.2)
-    mail (2.6.6)
-      mime-types (>= 1.16, < 4)
+    mail (2.7.0)
+      mini_mime (>= 0.1.1)
     mandrill-api (1.0.53)
       excon (>= 0.16.0, < 1.0)
       json (>= 1.7.7, < 2.0)
@@ -361,14 +363,10 @@ GEM
       mail (~> 2.6)
       mandrill-api (~> 1.0.53)
     memory_profiler (0.9.8)
-    method_source (0.8.2)
-    mime-types (3.1)
-      mime-types-data (~> 3.2015)
-    mime-types-data (3.2016.0521)
+    method_source (0.9.0)
     mini_mime (0.1.3)
     mini_portile2 (2.3.0)
     minitest (5.10.3)
-    multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
     mustermann (1.0.0)
@@ -378,7 +376,7 @@ GEM
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    newrelic_rpm (4.4.0.336)
+    newrelic_rpm (4.6.0.338)
     nio4r (2.1.0)
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
@@ -391,10 +389,10 @@ GEM
       childprocess (~> 0.6, >= 0.6.3)
       iniparse (~> 1.4)
     parallel (1.12.0)
-    parser (2.4.0.0)
-      ast (~> 2.2)
+    parser (2.4.0.2)
+      ast (~> 2.3)
     pg (0.21.0)
-    phonelib (0.6.15)
+    phonelib (0.6.17)
     phony (2.15.44)
     phony_rails (0.14.6)
       activesupport (>= 3.0)
@@ -404,26 +402,26 @@ GEM
       cliver (~> 0.3.1)
       websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
-    premailer (1.10.4)
+    premailer (1.11.1)
       addressable
-      css_parser (>= 1.4.10)
+      css_parser (>= 1.6.0)
       htmlentities (>= 4.0.0)
-    premailer-rails (1.9.7)
+    premailer-rails (1.10.1)
       actionmailer (>= 3, < 6)
       premailer (~> 1.7, >= 1.7.9)
-    pry (0.11.0)
+    pry (0.11.3)
       coderay (~> 1.1.0)
-      method_source (~> 0.8.1)
-    pry-byebug (3.5.0)
+      method_source (~> 0.9.0)
+    pry-byebug (3.5.1)
       byebug (~> 9.1)
       pry (~> 0.10)
-    public_suffix (2.0.5)
+    public_suffix (3.0.1)
     rack (2.0.3)
     rack-attack (5.0.1)
       rack
-    rack-cors (1.0.1)
+    rack-cors (1.0.2)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (0.10.5)
+    rack-mini-profiler (0.10.7)
       rack (>= 1.2.0)
     rack-protection (2.0.0)
       rack
@@ -473,11 +471,11 @@ GEM
     rb-fsevent (0.9.8)
     rb-inotify (0.9.8)
       ffi (>= 0.5.0)
-    readthis (2.0.2)
+    readthis (2.1.0)
       connection_pool (~> 2.1)
-      redis (~> 3.0)
-    redis (3.3.3)
-    reek (4.7.2)
+      redis (>= 3.0, < 5.0)
+    redis (3.3.5)
+    reek (4.7.3)
       codeclimate-engine-rb (~> 0.4.0)
       parser (>= 2.4.0.0, < 2.5)
       rainbow (~> 2.0)
@@ -510,7 +508,7 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubocop (0.50.0)
+    rubocop (0.51.0)
       parallel (~> 1.10)
       parser (>= 2.3.3.1, < 3.0)
       powerpack (~> 0.1)
@@ -518,8 +516,8 @@ GEM
       ruby-progressbar (~> 1.7)
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-graphviz (1.2.3)
-    ruby-progressbar (1.8.3)
-    ruby-saml (1.5.0)
+    ruby-progressbar (1.9.0)
+    ruby-saml (1.6.0)
       nokogiri (>= 1.5.10)
     ruby_dep (1.5.0)
     ruby_parser (3.10.1)
@@ -527,8 +525,12 @@ GEM
     safe_yaml (1.0.4)
     safely_block (0.2.0)
       errbase
-    sass (3.4.23)
-    sass-rails (5.0.6)
+    sass (3.5.3)
+      sass-listen (~> 4.0.0)
+    sass-listen (4.0.0)
+      rb-fsevent (~> 0.9, >= 0.9.4)
+      rb-inotify (~> 0.9, >= 0.9.7)
+    sass-rails (5.0.7)
       railties (>= 4.0.0, < 6)
       sass (~> 3.1)
       sprockets (>= 2.8, < 4.0)
@@ -544,18 +546,18 @@ GEM
       wasabi (~> 3.4)
     scrypt (3.0.5)
       ffi-compiler (>= 1.0, < 2.0)
-    secure_headers (3.7.1)
+    secure_headers (3.7.3)
       useragent
     securecompare (1.0.0)
     sexp_processor (4.10.0)
     shellany (0.0.1)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
-    sidekiq (5.0.4)
+    sidekiq (5.0.5)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
-      redis (~> 3.3, >= 3.3.3)
+      redis (>= 3.3.4, < 5)
     simple_form (3.5.0)
       actionpack (> 4, < 5.2)
       activemodel (> 4, < 5.2)
@@ -569,14 +571,14 @@ GEM
       rack (~> 2.0)
       rack-protection (= 2.0.0)
       tilt (~> 2.0)
-    slim (3.0.8)
+    slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
       tilt (>= 1.3.3, < 2.1)
-    slim-rails (3.1.2)
+    slim-rails (3.1.3)
       actionpack (>= 3.1)
       railties (>= 3.1)
       slim (~> 3.0)
-    slim_lint (0.14.0)
+    slim_lint (0.15.1)
       rake (>= 10, < 13)
       rubocop (>= 0.50.0)
       slim (~> 3.0)
@@ -611,11 +613,11 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.8)
     timecop (0.9.1)
-    twilio-ruby (5.2.3)
+    twilio-ruby (5.5.0)
       faraday (~> 0.9)
-      jwt (~> 1.5)
-      libxml-ruby (>= 2.0, < 4.0)
-    tzinfo (1.2.3)
+      jwt (>= 1.5, <= 2.5)
+      nokogiri (>= 1.6, < 2.0)
+    tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
       execjs (>= 0.3.0, < 3)
@@ -627,9 +629,9 @@ GEM
     uuid (2.3.8)
       macaddr (~> 1.0)
     uuidtools (2.1.5)
-    valid_email (0.0.13)
+    valid_email (0.1.0)
       activemodel
-      mail (~> 2.6.1)
+      mail (>= 2.6.1)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -640,14 +642,14 @@ GEM
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
-    webmock (3.0.1)
+    webmock (3.1.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    whenever (0.9.7)
+    whenever (0.10.0)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
     xmlenc (0.6.9)
@@ -693,6 +695,7 @@ DEPENDENCIES
   dotiw
   email_spec
   equifax!
+  exception_notification
   factory_girl_rails
   fakefs
   faker
@@ -770,4 +773,4 @@ RUBY VERSION
    ruby 2.3.5p376
 
 BUNDLED WITH
-   1.15.4
+   1.16.0

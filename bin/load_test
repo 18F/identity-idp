@@ -35,14 +35,24 @@ if [ $1 ]
 then
   test_to_run="$1"
   target="${TARGET_HOST:-http://localhost:3000}"
+  num_clients=${NUM_CLIENTS:-3}
+  run_time=${RUN_TIME:-'180s'}
+  hatch_rate=${HATCH_RATE:-1}
 
   brew_install_or_upgrade 'libevent'
   source /usr/local/bin/virtualenvwrapper.sh
   mkvirtualenv locust && \
     workon locust &&  \
     pip install -r scripts/load_testing/requirements.txt && \
-    locust -f scripts/load_testing/$test_to_run.py -H "$target" --no-web -c 3 -n 27 -r 1
+    echo "running locust with concurrency of $num_clients, new user hatch rate"\
+    "of $hatch_rate, and a run time of $run_time" && \
+    locust -f scripts/load_testing/$test_to_run.py -H "$target" --no-web \
+    -c $num_clients -t $run_time -r $hatch_rate
   deactivate
 else
-  echo "Usage: load_test [name_of_file]"
+  echo "Usage: NUM_CLIENTS=3 NUM_REQUESTS=100 HATCH_RATE=1 load_test [name_of_file]"
+  echo "Usage:"
+  echo "load_test [name_of_file]"
+  echo "or, if you'd like to set the arguments"
+  echo "NUM_CLIENTS=3 RUN_TIME=180s HATCH_RATE=1 load_test [name_of_file]"
 fi

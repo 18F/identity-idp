@@ -60,6 +60,8 @@ development:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
+  basic_auth_user_name: 'user'
+  basic_auth_password: 'secret'
   dashboard_api_token: 'test_token'
   dashboard_url: 'http://localhost:3001/api/service_providers'
   database_host: ''
@@ -81,13 +83,16 @@ development:
   equifax_sftp_host: 'example.com'
   equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
+  exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  issuers_with_email_nameid_format: ''
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
+  newrelic_license_key: ''
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '5'
@@ -122,6 +127,8 @@ production:
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
+  basic_auth_user_name:
+  basic_auth_password:
   disable_email_sending: 'false'
   dashboard_api_token:
   domain_name: 'login.gov'
@@ -139,15 +146,18 @@ production:
   equifax_sftp_host: # 'example.com'
   equifax_sftp_username:
   equifax_ssh_passphrase:
+  exception_recipients: 'user1@example.com,user2@example.com'
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
+  issuers_with_email_nameid_format: 'sp1,sp2'
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '20'
   logins_per_ip_period: '8'
   mandrill_api_token: '' # Empty string to switch to SES
-  newrelic_browser_key:
-  newrelic_browser_app_id:
+  newrelic_browser_key: ''
+  newrelic_browser_app_id: ''
+  newrelic_license_key: ''
   otp_delivery_blocklist_findtime: '5'
   otp_delivery_blocklist_maxretry: '10'
   otp_valid_for: '5'
@@ -155,8 +165,6 @@ production:
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
   proofing_vendors: 'mock'
-  proxy_addr:
-  proxy_port:
   reauthn_window: '120'
   redis_url: 'redis://redis.login.gov.internal:6379'
   requests_per_ip_limit: '300'
@@ -182,6 +190,8 @@ test:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
+  basic_auth_user_name: 'user'
+  basic_auth_password: 'secret'
   domain_name: 'www.example.com'
   database_host: ''
   database_name: ''
@@ -202,8 +212,10 @@ test:
   equifax_sftp_host: 'example.com'
   equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
+  exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
   lockout_period_in_minutes: '5'
   logins_per_ip_limit: '2'
   logins_per_ip_period: '60'

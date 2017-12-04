@@ -44,7 +44,7 @@ shared_examples 'selecting usps address verification method' do |sp|
       expect(usps_confirmation_entry.issuer).
         to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
     elsif sp == :oidc
-      expect(page).to have_link(t('idv.buttons.return_to_sp', sp: 'Test SP'))
+      expect(page).to have_link(t('idv.buttons.continue_plain'))
       expect(usps_confirmation_entry.issuer).
         to eq('urn:gov:gsa:openidconnect:sp:server')
     end
