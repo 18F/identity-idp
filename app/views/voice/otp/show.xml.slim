@@ -1,9 +1,9 @@
 doctype xml
 response
-  say language="#{I18n.locale}"
+  Say language="#{I18n.locale}"
     = @message
   - if @action_url
-    gather numDigits="1" action=@action_url
-      say language="#{I18n.locale}"
+    Gather numDigits="1" action=@action_url
+      Say language="#{I18n.locale}"
         = t('voice.otp.repeat_instructions')
-  hangup /
+  Hangup /

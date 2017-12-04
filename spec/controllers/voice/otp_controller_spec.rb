@@ -28,11 +28,11 @@ RSpec.describe Voice::OtpController do
       let(:code) { '1234' }
       let(:encrypted_code) { cipher.encrypt(code) }
 
-      it 'tells Twilio to <say> the code with pauses in between' do
+      it 'tells Twilio to <Say> the code with pauses in between' do
         action
 
         doc = Nokogiri::XML(response.body)
-        say = doc.css('say').first
+        say = doc.css('Say').first
         expect(say.text).to include('1, 2, 3, 4,')
       end
 
@@ -40,7 +40,7 @@ RSpec.describe Voice::OtpController do
         action
 
         doc = Nokogiri::XML(response.body)
-        say = doc.css('say').first
+        say = doc.css('Say').first
 
         expect(say[:language]).to eq('en')
       end
@@ -52,16 +52,16 @@ RSpec.describe Voice::OtpController do
           action
 
           doc = Nokogiri::XML(response.body)
-          say = doc.css('say').first
+          say = doc.css('Say').first
 
           expect(say[:language]).to eq('es')
         end
 
-        it 'passes locale into the <gather> action URL' do
+        it 'passes locale into the <Gather> action URL' do
           action
 
           doc = Nokogiri::XML(response.body)
-          gather = doc.css('gather').first
+          gather = doc.css('Gather').first
 
           params = URIService.params(gather[:action])
           expect(params[:locale]).to eq('es')
@@ -75,36 +75,36 @@ RSpec.describe Voice::OtpController do
           action
 
           doc = Nokogiri::XML(response.body)
-          say = doc.css('say').first
+          say = doc.css('Say').first
 
           expect(say[:language]).to eq('fr')
         end
 
-        it 'passes locale into the <gather> action URL' do
+        it 'passes locale into the <Gather> action URL' do
           action
 
           doc = Nokogiri::XML(response.body)
-          gather = doc.css('gather').first
+          gather = doc.css('Gather').first
 
           params = URIService.params(gather[:action])
           expect(params[:locale]).to eq('fr')
         end
       end
 
-      it 'has a <gather> with instructions to repeat with a repeat_count' do
+      it 'has a <Gather> with instructions to repeat with a repeat_count' do
         action
 
         doc = Nokogiri::XML(response.body)
-        gather = doc.css('gather').first
+        gather = doc.css('Gather').first
 
         expect(gather[:action]).to include('repeat_count=4')
       end
 
-      it 'puts the encrypted code in the <gather> action' do
+      it 'puts the encrypted code in the <Gather> action' do
         action
 
         doc = Nokogiri::XML(response.body)
-        gather = doc.css('gather').first
+        gather = doc.css('Gather').first
         params = URIService.params(gather[:action])
 
         expect(cipher.decrypt(params[:encrypted_code])).to eq(code)
@@ -113,11 +113,11 @@ RSpec.describe Voice::OtpController do
       context 'when repeat_count counts down to 1' do
         let(:repeat_count) { 1 }
 
-        it 'does not have a <gather> in the response' do
+        it 'does not have a <Gather> in the response' do
           action
 
           doc = Nokogiri::XML(response.body)
-          expect(doc.css('gather')).to be_empty
+          expect(doc.css('Gather')).to be_empty
         end
       end
     end
