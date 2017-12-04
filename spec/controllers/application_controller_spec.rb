@@ -28,7 +28,9 @@ describe ApplicationController do
       expect(subject.current_user).to be_present
 
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(Analytics::INVALID_AUTHENTICITY_TOKEN)
+      event_properties = { controller: 'anonymous#index' }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::INVALID_AUTHENTICITY_TOKEN, event_properties)
 
       get :index
 
