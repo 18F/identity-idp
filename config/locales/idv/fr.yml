@@ -130,8 +130,8 @@ fr:
           derniers chiffres de votre carte de crédit.
       hardfail: NOT TRANSLATED YET
       hardfail4_html: NOT TRANSLATED YET
-      help_center: Visitez notre Centre d'aide pour en apprendre davantage sur la
-        façon dont nous vérifions votre compte.
+      help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
+        davantage sur la façon dont nous vérifions votre compte.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:

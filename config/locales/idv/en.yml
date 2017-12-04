@@ -123,7 +123,8 @@ en:
         no_account: Want to use a credit card instead?
         no_account_info: Help us verify your identity by providing the last 8 digits
           of your credit card.
-      help_center: Visit our Help Center to learn more about verifying your account.
+      help_center_html: Visit our <strong>Help Center</strong> to learn more about
+        verifying your account.
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
