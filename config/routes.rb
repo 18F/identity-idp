@@ -132,6 +132,7 @@ Rails.application.routes.draw do
       get '/verify' => 'verify#index'
       get '/verify/activated' => 'verify#activated'
       get '/verify/address' => 'verify/address#index'
+      post '/verify/address' => 'verify/address#create'
       get '/verify/cancel' => 'verify#cancel'
       get '/verify/come_back_later' => 'verify/come_back_later#show'
       get '/verify/confirmations' => 'verify/confirmations#show'

@@ -33,7 +33,7 @@ module IdvHelper
     fill_in 'profile_prev_address1', with: '456 Other Ave'
     fill_in 'profile_prev_city', with: 'Elsewhere'
     select 'Missouri', from: 'profile_prev_state'
-    fill_in 'profile_prev_zipcode', with: '12345'
+    fill_in 'profile_prev_zipcode', with: '64000'
   end
 
   def fill_out_idv_previous_address_fail
@@ -68,11 +68,19 @@ module IdvHelper
   end
 
   def click_idv_address_choose_phone
-    click_link t('idv.buttons.activate_by_phone')
+    # we're capturing the click on the label element via the unique "for" attribute
+    # which matches against the radio button's ID,
+    # so that we can capture any click within the label.
+    find("label[for='address_delivery_method_phone']").click
+    click_on t('forms.buttons.continue')
   end
 
   def click_idv_address_choose_usps
-    click_link t('idv.buttons.activate_by_mail')
+    # we're capturing the click on the label element via the unique "for" attribute
+    # which matches against the radio button's ID,
+    # so that we can capture any click within the label.
+    find("label[for='address_delivery_method_usps']").click
+    click_on t('forms.buttons.continue')
   end
 
   def choose_idv_otp_delivery_method_sms

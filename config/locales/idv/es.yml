@@ -2,8 +2,6 @@
 es:
   idv:
     buttons:
-      activate_by_mail: Acitive por email
-      activate_by_phone: Active por teléfono
       cancel: Cancele y regrese a su perfil
       continue: Continúe la verificación de identidad
       continue_plain: Continúe
@@ -151,6 +149,11 @@ es:
         financial_info: "¿Dónde está la información de mi cuenta financiera?"
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
+      select_verification_form:
+        phone_header: NOT TRANSLATED YET
+        phone_message: NOT TRANSLATED YET
+        usps_header: NOT TRANSLATED YET
+        usps_message: NOT TRANSLATED YET
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
         de confirmación.
@@ -197,9 +200,9 @@ es:
       sessions:
         fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de que
           pueda intentar verificarla de nuevo.
-        jobfail: NOT TRANSLATED YET
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
+        jobfail: NOT TRANSLATED YET
         timeout: NOT TRANSLATED YET
         warning: Compruebe la información que ingresó. Los errores comunes son números
           incorrectos de Seguro Social, código postal o fecha de nacimiento.

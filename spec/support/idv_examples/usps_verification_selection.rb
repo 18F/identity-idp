@@ -11,7 +11,6 @@ shared_examples 'selecting usps address verification method' do |sp|
     click_idv_continue
 
     click_idv_address_choose_usps
-
     click_on t('idv.buttons.mail.send')
 
     expect(current_path).to eq verify_review_path
