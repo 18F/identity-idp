@@ -200,7 +200,6 @@ es:
       sessions:
         fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de que
           pueda intentar verificarla de nuevo.
-        jobfail: NOT TRANSLATED YET
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         jobfail: NOT TRANSLATED YET
