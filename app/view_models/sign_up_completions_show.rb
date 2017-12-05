@@ -23,7 +23,7 @@ class SignUpCompletionsShow
   # rubocop:disable Rails/OutputSafety
   def heading
     if requested_loa == 'loa3'
-      content_tag(:strong, I18n.t('titles.sign_up.verified'))
+      content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
     else
       safe_join([I18n.t(
         'titles.sign_up.completion_html',

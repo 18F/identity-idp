@@ -220,7 +220,7 @@ es:
       expectations: A continuación, ayúdenos a identificarlo.
       fail: No pudimos verificar su identidad.
       financials: Proporcione un número de cuenta financiera.
-      hardfail: No pudimos verificar su identidad.
+      hardfail: No pudimos verificar su identidad con %{app}.
       intro: Ayúdenos a identificarlo
       mail:
         resend: "¿Desea otra carta?"

@@ -231,7 +231,7 @@ fr:
       expectations: Ensuite, aidez-vous à vous identifier
       fail: Nous sommes dans l'incapacité de vérifier votre identité pour le moment
       financials: Veuillez fournir un numéro de compte bancaire
-      hardfail: Nous sommes dans l'incapacité de vérifier votre identité
+      hardfail: Nous sommes dans l'incapacité de vérifier votre identité avec %{app}
       intro: Aidez-nous à vous identifier
       mail:
         resend: Vous voulez une autre lettre?
