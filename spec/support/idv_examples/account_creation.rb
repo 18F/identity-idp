@@ -15,7 +15,8 @@ shared_examples 'idv account creation' do |sp|
     click_acknowledge_personal_key
 
     expect(page).to have_content t(
-      'titles.sign_up.verified'
+      'titles.sign_up.verified',
+      app: APP_NAME
     )
     within('.requested-attributes') do
       expect(page).to have_content t('help_text.requested_attributes.email')

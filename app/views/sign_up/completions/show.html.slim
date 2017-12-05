@@ -1,11 +1,9 @@
 -title @view_model.title
+.clearfix.col-10.sm-col-12.mx-auto
+  .center
+    = image_tag(asset_url(@view_model.image_name), width: 140, alt: '', class: 'mb2')
+  h1.h3.mb2.my0.px1.center = @view_model.heading
 
-.clearfix
-  .col-10.sm-col-12.mx-auto
-    .center
-      = image_tag(asset_url(@view_model.image_name), width: 140, alt: '', class: 'mb2')
-    h1.h3.mb3.my0.regular.center = @view_model.heading
+  = render @view_model.service_provider_partial
 
-    = render @view_model.service_provider_partial
-
-    = link_to t('idv.messages.return_to_profile'), profile_path
+  = link_to t('idv.messages.return_to_profile'), profile_path

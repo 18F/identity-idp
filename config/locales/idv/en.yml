@@ -220,7 +220,7 @@ en:
       expectations: Next, help us identify you
       fail: We were unable to verify your identity
       financials: Provide a financial account number
-      hardfail: We weren't able to verify your identity
+      hardfail: We weren't able to verify your identity with %{app}
       intro: Help us identify you
       mail:
         resend: Want another letter?
