@@ -36,6 +36,15 @@ RSpec.describe Voice::OtpController do
         expect(say.text).to include('1, 2, 3, 4,')
       end
 
+      it 'includes a capitalized Response tag' do
+        action
+
+        doc = Nokogiri::XML(response.body)
+        response = doc.css('Response').first
+
+        expect(response).to be_present
+      end
+
       it 'sets the lang attribute to english' do
         action
 
