@@ -41,8 +41,8 @@ describe 'FeatureManagement', type: :feature do
         end
       end
 
-      context 'when the server is idp.staging.login.gov' do
-        let(:domain_name) { 'idp.staging.login.gov' }
+      context 'when the server is secure.login.gov' do
+        let(:domain_name) { 'secure.login.gov' }
 
         it 'does not prefill codes' do
           expect(FeatureManagement.prefill_otp_codes?).to eq(false)
