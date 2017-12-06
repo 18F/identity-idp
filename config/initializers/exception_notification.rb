@@ -10,6 +10,6 @@ ExceptionNotification.configure do |config|
     sender_address: %("Exception Notifier" <notifier@login.gov>),
     exception_recipients: EXCEPTION_RECIPIENTS,
     error_grouping: true,
-    sections: %w[request backtrace]
+    sections: %w[request backtrace session]
   )
 end

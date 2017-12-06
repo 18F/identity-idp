@@ -270,6 +270,29 @@ describe Users::TwoFactorAuthenticationController do
 
         expect(flash[:error]).to eq(failed_to_send_otp)
       end
+
+      it 'records an analytics event when Twilio responds with an error' do
+        stub_analytics
+        twilio_error = Twilio::REST::RestError.new('error message', '', '400')
+        allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+        analytics_hash = {
+          success: true,
+          errors: {},
+          otp_delivery_preference: 'sms',
+          resend: nil,
+          context: 'confirmation',
+          country_code: '1',
+          area_code: '202',
+        }
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
+
+        expect(@analytics).to receive(:track_event).
+          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: 'error message')
+
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
+      end
     end
 
     context 'when selecting an invalid delivery method' do

@@ -4,7 +4,6 @@ describe Idv::FinancialsStep do
   let(:user) { build(:user) }
   let(:idv_session) do
     idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)
-    idvs.vendor = :mock
     idvs
   end
   let(:idv_form_params) { idv_session.params }

@@ -23,7 +23,7 @@ en:
     sign_up:
       completion_html: You have %{accent} with %{app}
       loa1: created your account
-      loa3: verified your identity
+      verified: You have verified your identity.
     totp_setup:
       new: Set up two-factor authentication
     two_factor_setup: Two-factor authentication setup

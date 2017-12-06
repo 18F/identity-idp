@@ -1,6 +1,27 @@
 require 'rails_helper'
 
 describe ServiceProvider do
+  describe 'validations' do
+    it 'validates that all redirect_uris are absolute, parsable uris' do
+      valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
+      missing_protocol_sp = build(:service_provider, redirect_uris: ['foo.com'])
+      empty_uri_sp = build(:service_provider, redirect_uris: [''])
+      relative_uri_sp = build(:service_provider, redirect_uris: ['/asdf/hjkl'])
+      bad_uri_sp = build(:service_provider, redirect_uris: [' http://foo.com'])
+
+      expect(valid_sp).to be_valid
+      expect(missing_protocol_sp).to_not be_valid
+      expect(empty_uri_sp).to_not be_valid
+      expect(relative_uri_sp).to_not be_valid
+      expect(bad_uri_sp).to_not be_valid
+    end
+
+    it 'allows redirect_uris to be blank' do
+      sp = build(:service_provider, redirect_uris: nil)
+      expect(sp).to be_valid
+    end
+  end
+
   describe '#issuer' do
     it 'returns the constructor value' do
       sp = ServiceProvider.from_issuer('http://localhost:3000')

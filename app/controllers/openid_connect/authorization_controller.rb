@@ -3,6 +3,7 @@ module OpenidConnect
     include FullyAuthenticatable
     include VerifyProfileConcern
 
+    skip_before_action :handle_two_factor_authentication
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
     before_action :store_request, only: [:index]

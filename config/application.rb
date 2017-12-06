@@ -16,6 +16,7 @@ module Upaya
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{yml}')]
     config.i18n.available_locales = Figaro.env.available_locales.try(:split, ' ') || %w[en]
     config.i18n.default_locale = :en
+    config.action_controller.per_form_csrf_tokens = true
 
     routes.default_url_options[:host] = Figaro.env.domain_name
 
@@ -40,14 +41,14 @@ module Upaya
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins do |source, _env|
-          ServiceProvider.pluck(:redirect_uris).flatten.compact.map do |uri|
-            begin
-              URI.join(uri, '/').to_s[0..-2]
-            rescue URI::Error => err
-              Rails.logger.warn({ warning: err.class.to_s, source: 'Rack::Cors', uri: uri }.to_json)
-              ''
-            end
-          end.include?(source)
+          next if source == Figaro.env.domain_name
+
+          ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
+            split_uri = uri.split('//')
+            protocol = split_uri[0]
+            domain = split_uri[1].split('/')[0]
+            source == "#{protocol}//#{domain}"
+          end.present?
         end
         resource '/.well-known/openid-configuration', headers: :any, methods: [:get]
         resource '/api/openid_connect/certs', headers: :any, methods: [:get]

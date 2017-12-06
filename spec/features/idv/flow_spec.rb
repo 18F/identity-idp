@@ -63,9 +63,22 @@ feature 'IdV session', idv_job: true do
 
       fill_out_idv_form_ok
       fill_in 'profile_first_name', with: first_name_to_trigger_exception
+
+      expect(Idv::ProfileJob).to receive(:perform_now).and_wrap_original do |perform, *args|
+        exception_raised = false
+        begin
+          perform.call(*args)
+        rescue RuntimeError => err
+          expect(err.message).to eq('Failed to contact proofing vendor')
+          exception_raised = true
+        ensure
+          expect(exception_raised).to eq(true)
+        end
+      end
+
       click_idv_continue
 
-      expect(current_path).to eq verify_session_result_path
+      expect(current_path).to eq(verify_session_result_path)
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
     end
 
