@@ -58,6 +58,15 @@ describe TwoFactorAuthentication::OtpVerificationController do
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    it 'redirects to phone setup page if user does not have a phone yet' do
+      user = build_stubbed(:user)
+      stub_sign_in_before_2fa(user)
+
+      get :show, params: { otp_delivery_preference: 'sms' }
+
+      expect(response).to redirect_to(phone_setup_url)
+    end
   end
 
   describe '#create' do
