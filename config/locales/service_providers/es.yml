@@ -10,10 +10,10 @@ es:
     usa_jobs:
       header: "¿Has venido de USAJOBS?"
       account_page:
-        body: Tendrá que crear una nueva cuenta de login.gov usando la misma dirección
-          de correo electrónico que usó para USAJOBS (su dirección de correo electrónico
-          primaria o secundaria).
-      body_html: Tendrá que %{link} usando la misma dirección de correo electrónico
-        que usó para USAJOBS (su dirección de correo electrónico primaria o secundaria).
-      create_account_link: crear una nueva cuenta de login.gov
+        body: Si tiene un perfil de USAJOBS existente, favor de usar la dirección
+          direccióncorreo electrónico primaria o secundaria que usó para USAJOBS para
+          crear su nueva cuenta de login.gov.
+      body_html: Si tiene un perfil de USAJOBS existente, favor de usar la dirección
+        de correo electrónico primaria o secundaria que usó para USAJOBS para %{link}.
+      create_account_link: crear su nueva cuenta de login.gov
     learn_more: Not translated yet
