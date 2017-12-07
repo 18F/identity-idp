@@ -53,36 +53,12 @@ shared_examples 'idv max step attempts' do |sp|
     expect(current_path).to eq verify_session_result_path
   end
 
-  scenario 'finance shows failure flash message after max attempts', :email do
-    visit_idp_from_sp_with_loa3(sp)
-    register_user
-
-    click_idv_begin
-    fill_out_idv_form_ok
-    click_idv_continue
-
-    max_attempts_less_one.times do
-      fill_out_financial_form_fail
-      click_idv_continue
-
-      expect(current_path).to eq verify_finance_result_path
-    end
-
-    fill_out_financial_form_fail
-    click_idv_continue
-
-    expect(page).to have_css('.alert-error', text: t('idv.modal.financials.heading'))
-    expect(current_path).to eq verify_finance_result_path
-  end
-
   scenario 'phone shows failure flash after max attempts', :email do
     visit_idp_from_sp_with_loa3(sp)
     register_user
 
     click_idv_begin
     fill_out_idv_form_ok
-    click_idv_continue
-    fill_out_financial_form_ok
     click_idv_continue
     click_idv_address_choose_phone
 

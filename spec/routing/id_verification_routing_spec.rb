@@ -8,8 +8,6 @@ describe 'Identity Verification Routes', type: :routing do
     verify/cancel
     verify/confirmations
     verify/fail
-    verify/finance
-    verify/finance/other
     verify/phone
     verify/review
     verify/session
@@ -17,7 +15,6 @@ describe 'Identity Verification Routes', type: :routing do
   ].freeze
 
   PUT_ROUTES = %w[
-    verify/finance
     verify/phone
     verify/review
     verify/session

@@ -5,7 +5,6 @@ module Idv
       async_result_started_at
       address_verification_mechanism
       applicant
-      financials_confirmation
       normalized_applicant_params
       params
       vendor_phone_confirmation
@@ -114,7 +113,7 @@ module Idv
     end
 
     def new_idv_session
-      { params: {}, step_attempts: { financials: 0, phone: 0 } }
+      { params: {}, step_attempts: { phone: 0 } }
     end
 
     def move_pii_to_user_session

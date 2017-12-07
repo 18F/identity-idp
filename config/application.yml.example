@@ -84,7 +84,6 @@ development:
   equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
-  finance_proofing_vendor: 'mock'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: ''
@@ -149,7 +148,6 @@ production:
   equifax_sftp_username:
   equifax_ssh_passphrase:
   exception_recipients: 'user1@example.com,user2@example.com'
-  finance_proofing_vendor: 'mock'
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
@@ -217,7 +215,6 @@ test:
   equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
-  finance_proofing_vendor: 'mock'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'

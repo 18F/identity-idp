@@ -7,8 +7,6 @@ shared_examples 'selecting usps address verification method' do |sp|
     click_idv_begin
     fill_out_idv_form_ok
     click_idv_continue
-    fill_out_financial_form_ok
-    click_idv_continue
 
     click_idv_address_choose_usps
     click_on t('idv.buttons.mail.send')
@@ -89,8 +87,6 @@ shared_examples 'selecting usps address verification method' do |sp|
   def complete_idv_profile_ok_with_usps
     click_idv_begin
     fill_out_idv_form_ok
-    click_idv_continue
-    fill_out_financial_form_ok
     click_idv_continue
     click_idv_address_choose_usps
     click_on t('idv.buttons.mail.send')

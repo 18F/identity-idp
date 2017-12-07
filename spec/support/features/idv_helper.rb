@@ -43,14 +43,6 @@ module IdvHelper
     fill_in 'profile_prev_zipcode', with: '00000'
   end
 
-  def fill_out_financial_form_ok
-    fill_in :idv_finance_form_ccn, with: '12345678'
-  end
-
-  def fill_out_financial_form_fail
-    fill_in :idv_finance_form_ccn, with: '00000000'
-  end
-
   def fill_out_phone_form_ok(phone = '415-555-0199')
     fill_in :idv_phone_form_phone, with: phone
   end
@@ -111,8 +103,6 @@ module IdvHelper
 
   def complete_idv_profile_ok(user, password = user_password)
     fill_out_idv_form_ok
-    click_idv_continue
-    fill_out_financial_form_ok
     click_idv_continue
     click_idv_address_choose_phone
     fill_out_phone_form_ok(user.phone)

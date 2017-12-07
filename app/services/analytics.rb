@@ -63,10 +63,6 @@ class Analytics
   IDV_BASIC_INFO_SUBMITTED_VENDOR = 'IdV: basic info vendor submitted'.freeze
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
-  IDV_FINANCE_CCN_VISIT = 'IdV: finance ccn visited'.freeze
-  IDV_FINANCE_CONFIRMATION_FORM = 'IdV: finance confirmation form'.freeze
-  IDV_FINANCE_CONFIRMATION_VENDOR = 'IdV: finance confirmation vendor'.freeze
-  IDV_FINANCE_OTHER_VISIT = 'IdV: finance other visited'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'.freeze
   IDV_PHONE_CONFIRMATION_VENDOR = 'IdV: phone confirmation vendor'.freeze
