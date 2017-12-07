@@ -147,6 +147,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
           click_button(t('idv.buttons.mail.resend'))
 
+          expect(user.events.usps_mail_sent.size).to eq 2
           expect(current_path).to eq(verify_come_back_later_path)
         end
 
