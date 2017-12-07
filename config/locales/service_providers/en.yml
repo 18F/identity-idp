@@ -12,8 +12,8 @@ en:
       header: Coming from USAJOBS?
       account_page:
         body: You'll need to create a new login.gov account using the same email address
-          you used for USAJobs (either your primary or secondary email address).
+          you used for USAJOBS (either your primary or secondary email address).
       body_html: You'll need to %{link} using the same email address you used for
-        USAJobs (either your primary or secondary email address).
+        USAJOBS (either your primary or secondary email address).
       create_account_link: create a new login.gov account
     learn_more: Learn more.
