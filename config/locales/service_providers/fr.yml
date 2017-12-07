@@ -8,12 +8,12 @@ fr:
       body_html: NOT TRANSLATED YET
       create_account_link: NOT TRANSLATED YET
     usa_jobs:
-      header: Êtes-vous venu de USAJOBS?
+      header: Êtes-vous venu(e) de USAJOBS?
       account_page:
-        body: Vous devrez créer un nouveau compte login.gov en utilisant la même adresse
-          e-mail que vous avez utilisée pour USAJOBS (soit votre adresse e-mail principale
-          ou secondaire).
-      body_html: Vous devrez %{link} en utilisant la même adresse e-mail que vous
-        avez utilisée pour USAJOBS (soit votre adresse e-mail principale ou secondaire).
-      create_account_link: créer un nouveau compte login.gov
+        body: Si vous avez un profil USAJOBS existant, veuillez utiliser l'adresse
+          e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour
+          créer votre nouveau compte login.gov.
+      body_html: Si vous avez un profil USAJOBS existant, veuillez utiliser l'adresse
+        e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
+      create_account_link: créer votre nouveau compte login.gov
     learn_more: Not translated yet
