@@ -20,6 +20,8 @@ RSpec.describe YamlNormalizer do
     after { tempfile.unlink }
 
     it 'normalizes a YAML files in-place' do
+      expect(YamlNormalizer).to receive(:warn).with(tempfile.path)
+
       YamlNormalizer.run([tempfile.path])
 
       expect(File.read(tempfile.path)).to eq <<~YAML
