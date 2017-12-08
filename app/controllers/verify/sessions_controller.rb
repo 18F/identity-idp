@@ -62,7 +62,7 @@ module Verify
     end
 
     def confirm_step_needed
-      redirect_to verify_finance_url if idv_session.profile_confirmation == true
+      redirect_to verify_address_url if idv_session.profile_confirmation == true
     end
 
     def step
@@ -87,7 +87,7 @@ module Verify
       flash[:success] = t('idv.messages.sessions.success',
                           pii_message: pii_msg)
 
-      redirect_to verify_finance_url
+      redirect_to verify_address_url
     end
 
     def process_failure

@@ -9,7 +9,6 @@ module Verify
 
     def confirm_idv_steps_complete
       return redirect_to(verify_session_url) unless idv_profile_complete?
-      return redirect_to(verify_finance_url) unless idv_finance_complete?
       return redirect_to(verify_address_url) unless idv_address_complete?
     end
 
@@ -67,10 +66,6 @@ module Verify
 
     def idv_profile_complete?
       idv_session.profile_confirmation == true
-    end
-
-    def idv_finance_complete?
-      idv_session.financials_confirmation == true
     end
 
     def idv_address_complete?

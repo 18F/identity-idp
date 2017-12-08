@@ -59,7 +59,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, idv_job: true) do
-    [Idv::ProfileJob, Idv::FinanceJob, Idv::PhoneJob].each do |job_class|
+    [Idv::ProfileJob, Idv::PhoneJob].each do |job_class|
       allow(job_class).to receive(:perform_later) do |*args|
         job_class.perform_now(*args)
       end

@@ -55,8 +55,6 @@ feature 'Verify phone' do
       visit verify_session_path
       fill_out_idv_form_ok
       click_idv_continue
-      fill_out_financial_form_ok
-      click_idv_continue
       click_idv_address_choose_phone
       fill_out_phone_form_ok
       click_idv_continue
@@ -80,8 +78,6 @@ feature 'Verify phone' do
       sign_in_and_2fa_user(user)
       visit verify_session_path
       fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
       click_idv_continue
       click_idv_address_choose_phone
 
@@ -108,8 +104,6 @@ feature 'Verify phone' do
     visit verify_session_path
     fill_out_idv_form_ok
     click_idv_continue
-    fill_out_financial_form_ok
-    click_idv_continue
 
     visit verify_phone_path
     fill_in 'Phone', with: ''
@@ -123,8 +117,6 @@ feature 'Verify phone' do
     visit verify_session_path
     fill_out_idv_form_ok
     click_idv_continue
-    fill_out_financial_form_ok
-    click_idv_continue
 
     visit verify_phone_path
     fill_in 'Phone', with: ''
@@ -135,8 +127,6 @@ feature 'Verify phone' do
 
   def complete_idv_profile_with_phone(phone)
     fill_out_idv_form_ok
-    click_idv_continue
-    fill_out_financial_form_ok
     click_idv_continue
     click_idv_address_choose_phone
     fill_out_phone_form_ok(phone)

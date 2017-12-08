@@ -49,30 +49,6 @@ RSpec.describe Idv::SubmitIdvJob do
     end
   end
 
-  describe '#submit_finance_job' do
-    let(:vendor_params) { { ccn: '88888888' } }
-
-    it 'generates a UUID and enqueues a Idv::FinanceJob and saves the UUID in the session' do
-      expect(Idv::FinanceJob).to receive(:perform_later).
-        with(
-          result_id: result_id,
-          vendor_params: vendor_params,
-          vendor_session_id: vendor_session_id,
-          applicant_json: applicant.to_json
-        )
-
-      expect(idv_session.async_result_id).to eq(nil)
-      expect(idv_session.async_result_started_at).to eq(nil)
-
-      expect(SecureRandom).to receive(:uuid).and_return(result_id).once
-
-      service.submit_finance_job
-
-      expect(idv_session.async_result_id).to eq(result_id)
-      expect(idv_session.async_result_started_at).to be_within(1).of(Time.zone.now.to_i)
-    end
-  end
-
   describe '#submit_phone_job' do
     let(:vendor_params) { '5555550000' }
 

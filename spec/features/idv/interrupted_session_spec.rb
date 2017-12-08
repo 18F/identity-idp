@@ -20,7 +20,7 @@ feature 'Interrupted IdV session' do
         fill_out_idv_form_ok
         click_button t('forms.buttons.continue')
 
-        expect(page).to have_content(t('idv.form.ccn'))
+        expect(page).to have_content(t('idv.messages.select_verification_form.phone_message'))
       end
     end
   end

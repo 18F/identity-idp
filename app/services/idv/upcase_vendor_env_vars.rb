@@ -12,7 +12,6 @@ module Idv
       env = Figaro.env
       [
         env.profile_proofing_vendor,
-        env.finance_proofing_vendor,
         env.phone_proofing_vendor,
       ]
     end

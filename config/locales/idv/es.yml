@@ -23,13 +23,9 @@ es:
     errors:
       bad_dob: Su fecha de nacimiento debe ser una fecha válida.
       duplicate_ssn: Ya existe una cuenta con la información que proporcionó.
-      finance_number_length: El número debe estar entre los dígitos %{minimum} y %{maximum}.
       hardfail: No pudimos verificar su identidad en este momento.
       incorrect_password: La contraseña que ingresó no es correcta.
-      invalid_ccn: El número de la tarjeta de crédito debe ser de sólo los últimos
-        8 dígitos.
       mail_limit_reached: Usted ha solicitado demasiado correo en el último mes.
-      missing_finance: Debe proporcionar un número de cuenta financiera.
       pattern_mismatch:
         dob: Su fecha de nacimiento debe ser ingresada en este formato mes/día/año.
         personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
@@ -39,16 +35,11 @@ es:
       activate_by_mail: Activar mi cuenta por correo.
       address1: Dirección de calle 1
       address2: Dirección de calle 2 (opcional)
-      auto_loan: Número de cuenta de préstamo de auto
-      ccn: Últimos 8 dígitos de una tarjeta de crédito
       city: Ciudad
       dob: Fecha de nacimiento
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
-      home_equity_line: Número de la cuenta del préstamo sobre el valor neto de la
-        vivienda
       last_name: Apellido
-      mortgage: Número de la cuenta de préstamo hipotecario
       no_alternate_phone_html: No tengo otro número de teléfono. %{link}
       password: Contraseña
       personal_details: Detalles personales
@@ -56,11 +47,8 @@ es:
       phone_label_aside: Celular o teléfono fijo
       previous_address_add: Añadir la dirección anterior
       previous_address_html: "¿Se mudó en los <strong>últimos 3 meses</ strong>?"
-      select_financial_account: Seleccione una cuenta financiera...
       ssn_label_html: Número de Seguro Social %{tooltip}
       state: Estado
-      use_ccn: Proporcione el número de tarjeta de crédito >
-      use_financial_account: "¿No tiene una tarjeta de crédito?"
       zipcode: Código postal
     index:
       continue_link: Sí, continuar
@@ -108,19 +96,6 @@ es:
         una cuenta, pero con un email diferente.
       dupe_ssn2_html: Por favor %{link} con el email que utilizó originalmente.
       dupe_ssn2_link: Cerrar ahora y volver a iniciar sesión
-      finance:
-        disclaimer: Al continuar acepta que %{app_name} compare la información de
-          la cuenta que proporciona con fuentes de terceros para verificar su identidad.
-        hint: Puede utilizar Mastercard, Visa, Diner's Club o JCB.
-        intro_account: Ayúdenos a verificar su identidad proporcionando información
-          sobre un préstamo de auto, una hipoteca o un número de préstamo sobre el
-          valor neto de su casa.
-        intro_ccn_help: cómo se utilizará su información
-        intro_ccn_html: Ayúdenos a verificar su identidad proporcionando los últimos
-          8 dígitos de una tarjeta de crédito. Obtenga más información sobre %{intro_help_link}.
-        no_account: "¿Desea usar una tarjeta de crédito?"
-        no_account_info: Ayúdenos a verificar su identidad proporcionando los últimos
-          8 dígitos de su tarjeta de crédito.
       hardfail: NOT TRANSLATED YET
       hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visite nuestro <strong>Centro de Ayuda</strong> para obtener
@@ -129,7 +104,6 @@ es:
       mail_sent: Su carta está en camino
       otp_delivery_method:
         phone_number_html: NOT TRANSLATED YET
-      personal_details_verified: "¡Detalles personales verificados!"
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
@@ -146,7 +120,6 @@ es:
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
-        financial_info: "¿Dónde está la información de mi cuenta financiera?"
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
       select_verification_form:
@@ -179,15 +152,6 @@ es:
         fail: Bueno
         jobfail: Inténtelo de nuevo mañana
         warning: Inténtelo de nuevo
-      financials:
-        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
-          verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más
-          información sobre la verificación de identidad.
-        heading: No hemos podido encontrar registros que coincidan con su información
-          financiera.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Compruebe la información que ingresó.
       phone:
         fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
           verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más
@@ -219,7 +183,6 @@ es:
       dupe: 'Error: Una cuenta puede que ya exista.'
       expectations: A continuación, ayúdenos a identificarlo.
       fail: No pudimos verificar su identidad.
-      financials: Proporcione un número de cuenta financiera.
       hardfail: No pudimos verificar su identidad con %{app}.
       intro: Ayúdenos a identificarlo
       mail:

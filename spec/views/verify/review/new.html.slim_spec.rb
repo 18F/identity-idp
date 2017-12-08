@@ -46,10 +46,5 @@ describe 'verify/review/new.html.slim' do
     it 'renders the correct header for the accordion' do
       expect(rendered).to have_content(t('idv.messages.review.intro'))
     end
-
-    it 'renders a link telling user why financial info is not visible' do
-      expect(rendered).
-        to have_link(t('idv.messages.review.financial_info'), href: MarketingSite.help_url)
-    end
   end
 end
