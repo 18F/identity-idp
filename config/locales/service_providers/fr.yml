@@ -10,10 +10,10 @@ fr:
     usa_jobs:
       header: Êtes-vous venu(e) de USAJOBS?
       account_page:
-        body: Si vous avez un profil USAJOBS existant, veuillez utiliser l'adresse
-          e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour
-          créer votre nouveau compte login.gov.
-      body_html: Si vous avez un profil USAJOBS existant, veuillez utiliser l'adresse
+        body: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse e-mail
+          principale ou secondaire que vous avez utilisée pour USAJOBS pour créer
+          votre nouveau compte login.gov.
+      body_html: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse
         e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
       create_account_link: créer votre nouveau compte login.gov
-    learn_more: Not translated yet
+    learn_more: En savoir plus.
