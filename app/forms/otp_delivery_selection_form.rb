@@ -4,6 +4,7 @@ class OtpDeliverySelectionForm
   attr_reader :otp_delivery_preference
 
   validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
+  validates :phone_to_deliver_to, presence: true
 
   def initialize(user, phone_to_deliver_to, context)
     @user = user
