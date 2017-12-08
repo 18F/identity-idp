@@ -8,12 +8,12 @@ es:
       body_html: NOT TRANSLATED YET
       create_account_link: NOT TRANSLATED YET
     usa_jobs:
-      header: "¿Has venido de USAJOBS?"
+      header: "¿Ha venido de USAJOBS?"
       account_page:
         body: Si tiene un perfil de USAJOBS existente, favor de usar la dirección
-          direccióncorreo electrónico primaria o secundaria que usó para USAJOBS para
-          crear su nueva cuenta de login.gov.
+          de correo electrónico primaria o secundaria que usó para USAJOBS para crear
+          su nueva cuenta de login.gov.
       body_html: Si tiene un perfil de USAJOBS existente, favor de usar la dirección
         de correo electrónico primaria o secundaria que usó para USAJOBS para %{link}.
       create_account_link: crear su nueva cuenta de login.gov
-    learn_more: Not translated yet
+    learn_more: Obtenga más información.
