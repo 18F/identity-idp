@@ -40,17 +40,25 @@ describe OtpDeliverySelectionForm do
 
     context 'when the form is invalid' do
       it 'returns false for success? and includes errors' do
-        errors = { otp_delivery_preference: ['is not included in the list'] }
+        errors = {
+          otp_delivery_preference: ['is not included in the list'],
+          phone_to_deliver_to: ['Please fill in this field.'],
+        }
 
         extra = {
           otp_delivery_preference: 'foo',
           resend: nil,
-          country_code: '1',
-          area_code: '202',
+          country_code: nil,
+          area_code: nil,
           context: 'authentication',
         }
 
         result = instance_double(FormResponse)
+        subject = OtpDeliverySelectionForm.new(
+          build_stubbed(:user),
+          nil,
+          'authentication'
+        )
 
         expect(FormResponse).to receive(:new).
           with(success: false, errors: errors, extra: extra).and_return(result)
