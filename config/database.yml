@@ -5,8 +5,8 @@ postgresql: &postgresql
   port: 5432
 
 defaults: &defaults
-  pool: 5
   host: localhost
+  pool: 5
   <<: *postgresql
   # timeout settings
   timeout: 5000
@@ -30,5 +30,6 @@ production:
   username: <%= Figaro.env.database_username! %>
   host: <%= Figaro.env.database_host! %>
   password: <%= Figaro.env.database_password! %>
+  pool: <%= (File.exist?('/etc/login.gov/info') && File.read('/etc/login.gov/info/role').chomp == 'worker') ? 26 : 5 %>
   sslmode: 'verify-full'
   sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
