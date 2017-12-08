@@ -27,6 +27,7 @@ class SamlIdpController < ApplicationController
   end
 
   def logout
+    track_logout_event
     prepare_saml_logout_response_and_request
 
     return handle_saml_logout_response if slo.successful_saml_response?
@@ -63,5 +64,13 @@ class SamlIdpController < ApplicationController
       locals: { action_url: action_url, message: message, type: type },
       layout: false
     )
+  end
+
+  def track_logout_event
+    result = {
+      sp_initiated: params[:SAMLRequest].present?,
+      oidc: false,
+    }
+    analytics.track_event(Analytics::LOGOUT_INITIATED, result)
   end
 end

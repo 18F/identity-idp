@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :generic_otp_presenter, class: Hash do
     otp_delivery_preference 'sms'
     phone_number '***-***-1212'

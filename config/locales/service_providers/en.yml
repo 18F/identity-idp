@@ -1,0 +1,19 @@
+---
+en:
+  service_providers:
+    trusted_traveler:
+      header: Coming from Trusted Traveler Programs?
+      account_page:
+        body: Your old GOES userID and password won’t work. Please create a login.gov
+          account below.
+      body_html: Your old GOES userID and password won't work. Please %{link}
+      create_account_link: create a login.gov account.
+    usa_jobs:
+      header: Coming from USAJOBS?
+      account_page:
+        body: If you have an existing USAJOBS profile, please use the primary or secondary
+          email address you used for USAJOBS to create your new login.gov account.
+      body_html: If you have an existing USAJOBS profile, please use the primary or
+        secondary email address you used for USAJOBS to %{link}.
+      create_account_link: create your new login.gov account
+    learn_more: Learn more.

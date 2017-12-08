@@ -23,7 +23,7 @@ es:
     sign_up:
       completion_html: Tiene %{accent} con %{app}
       loa1: creó su cuenta
-      loa3: verificó su identidad
+      verified: Tiene verificó su identidad.
     totp_setup:
       new: Configure la autenticación de dos factores
     two_factor_setup: Configuración de autenticación de dos factores

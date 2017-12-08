@@ -21,3 +21,7 @@ ask a teammate.
 and invalid formats.
 
 - [ ] When calling `redirect_to` in a controller, use `_url`, not `_path`.
+
+- [ ] When adding user data to the session, use the `user_session` helper
+instead of the `session` helper so the data does not persist beyond the user's
+session.

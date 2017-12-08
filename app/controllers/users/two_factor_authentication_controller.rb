@@ -29,6 +29,7 @@ module Users
     private
 
     def invalid_phone_number(exception)
+      analytics.track_event(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message)
       flash[:error] = case exception.code
                       when TwilioService::SMS_ERROR_CODE
                         t('errors.messages.invalid_sms_number')

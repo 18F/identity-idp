@@ -84,7 +84,7 @@ we follow these steps to create the encryption key:
 * calculate the [XOR](https://en.wikipedia.org/wiki/Exclusive_or)
   of `EncryptedAssignedSecret` and `Z1` as `MaskedCiphertext` (`D`)
 * store `MaskedCiphertext` with the user record
-* create a SHA-256 hash of the concatenation of `Z2` and `MaskedCiphertext` called `CEK` (`E`)
+* create a SHA-256 hash of the concatenation of `Z2` and `AssignedSecret` called `CEK` (`E`)
 * create a SHA-256 hash of `CEK` called `PasswordHash`
 * store `PasswordHash` with the user record
 * using the key `CEK`, encrypt the PII using AES GCM 256-bit encryption

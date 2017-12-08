@@ -28,7 +28,9 @@ describe ApplicationController do
       expect(subject.current_user).to be_present
 
       stub_analytics
-      expect(@analytics).to receive(:track_event).with(Analytics::INVALID_AUTHENTICITY_TOKEN)
+      event_properties = { controller: 'anonymous#index' }
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::INVALID_AUTHENTICITY_TOKEN, event_properties)
 
       get :index
 
@@ -113,6 +115,14 @@ describe ApplicationController do
         allow(AnonymousUser).to receive(:new).and_return(user)
 
         expect(Analytics).to receive(:new).with(user: user, request: request, sp: nil)
+
+        controller.analytics
+      end
+    end
+
+    context 'when a current_sp is not present' do
+      it 'does not perform a DB lookup' do
+        expect(ServiceProvider).to_not receive(:find_by)
 
         controller.analytics
       end
