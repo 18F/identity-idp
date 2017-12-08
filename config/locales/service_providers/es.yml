@@ -2,11 +2,13 @@
 es:
   service_providers:
     trusted_traveler:
-      header: NOT TRANSLATED YET
+      header: "¿Ha venido de Trusted Traveler Programs?"
       account_page:
-        body: NOT TRANSLATED YET
-      body_html: NOT TRANSLATED YET
-      create_account_link: NOT TRANSLATED YET
+        body: Su antiguo ID de usuario y contraseña de GOES no funcionarán. Favor
+          de crear un nueva cuenta de login.gov.
+      body_html: Su antiguo ID de usuario y contraseña de GOES no funcionarán. Favor
+        de %{link}
+      create_account_link: crear un nueva cuenta de login.gov.
     usa_jobs:
       header: "¿Ha venido de USAJOBS?"
       account_page:
