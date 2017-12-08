@@ -184,3 +184,4 @@ UtilityFunction:
 exclude_paths:
   - db/migrate
   - spec
+  - lib/tasks/
