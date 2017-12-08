@@ -1,3 +1,24 @@
+checks:
+  argument-count:
+    enabled: false
+  complex-logic:
+    enabled: false
+  file-lines:
+    enabled: false
+  method-complexity:
+    enabled: false
+  method-count:
+    enabled: false
+  method-lines:
+    enabled: false
+  nested-control-flow:
+    enabled: false
+  return-statements:
+    enabled: false
+  similar-code:
+    enabled: false
+  identical-code:
+    enabled: false
 engines:
   brakeman:
     enabled: true
@@ -51,13 +72,3 @@ engines:
     enabled: true
   scss-lint:
     enabled: true
-
-ratings:
-  paths:
-  - app/**
-  - lib/**
-  - '**.rb'
-  - '**.go'
-  exclude_paths:
-    - 'lib/user_flow_exporter.rb'
-    - 'lib/rspec/formatters/user_flow_formatter.rb'
