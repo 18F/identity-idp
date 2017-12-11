@@ -5,7 +5,6 @@ module Users
 
     before_action :authorize_otp_setup
     before_action :authenticate_user
-    skip_before_action :handle_two_factor_authentication
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)

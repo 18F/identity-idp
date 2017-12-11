@@ -1,8 +1,6 @@
 class SignOutController < ApplicationController
   include FullyAuthenticatable
 
-  skip_before_action :handle_two_factor_authentication
-
   def destroy
     url_after_cancellation = decorated_session.cancel_link_url
     sign_out

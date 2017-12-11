@@ -6,7 +6,6 @@ module Users
 
     skip_before_action :session_expires_at, only: [:active]
     skip_before_action :require_no_authentication, only: [:new]
-    before_action :confirm_two_factor_authenticated, only: [:update]
     before_action :check_user_needs_redirect, only: [:new]
 
     def new

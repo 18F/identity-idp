@@ -3,7 +3,6 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
 
     prepend_before_action :authenticate_user
-    skip_before_action :handle_two_factor_authentication
 
     def show
       @personal_key_form = PersonalKeyForm.new(current_user)

@@ -10,7 +10,6 @@ class SamlIdpController < ApplicationController
   include VerifyProfileConcern
 
   skip_before_action :verify_authenticity_token
-  skip_before_action :handle_two_factor_authentication, only: :logout
 
   def auth
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
