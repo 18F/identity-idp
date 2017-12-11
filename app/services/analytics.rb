@@ -53,6 +53,7 @@ class Analytics
     @browser ||= DeviceDetector.new(request.user_agent)
   end
 
+  ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze

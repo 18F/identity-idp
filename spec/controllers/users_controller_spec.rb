@@ -34,5 +34,33 @@ describe UsersController do
       expect(response).
         to redirect_to sign_up_start_path(request_id: 'foo')
     end
+
+    it 'tracks the event in analytics when referer is nil' do
+      stub_analytics
+      properties = { request_came_from: 'no referer' }
+
+      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_DELETION, properties)
+
+      delete :destroy
+    end
+
+    it 'tracks the event in analytics when referer is present' do
+      stub_analytics
+      request.env['HTTP_REFERER'] = 'http://example.com/'
+      properties = { request_came_from: 'users/sessions#new' }
+
+      expect(@analytics).to receive(:track_event).with(Analytics::ACCOUNT_DELETION, properties)
+
+      delete :destroy
+    end
+
+    it 'calls ParseControllerFromReferer' do
+      parser = instance_double(ParseControllerFromReferer)
+
+      expect(ParseControllerFromReferer).to receive(:new).and_return(parser)
+      expect(parser).to receive(:call)
+
+      delete :destroy
+    end
   end
 end
