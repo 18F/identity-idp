@@ -2,11 +2,13 @@
 fr:
   service_providers:
     trusted_traveler:
-      header: NOT TRANSLATED YET
+      header: Êtes-vous venu(e) de Trusted Traveler Programs?
       account_page:
-        body: NOT TRANSLATED YET
-      body_html: NOT TRANSLATED YET
-      create_account_link: NOT TRANSLATED YET
+        body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
+          Veuillez créer un nouveau compte login.gov.
+      body_html: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
+        Veuillez %{link}
+      create_account_link: créer un nouveau compte login.gov.
     usa_jobs:
       header: Êtes-vous venu(e) de USAJOBS?
       account_page:
