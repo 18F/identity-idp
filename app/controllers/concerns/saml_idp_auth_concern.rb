@@ -49,15 +49,18 @@ module SamlIdpAuthConcern
 
   def link_identity_from_session_data
     IdentityLinker.new(
-      current_user,
-      current_issuer
+      current_user, current_issuer
     ).link_identity(
-      ial: loa3_requested? ? 3 : 1
+      ial: ial_level
     )
   end
 
   def identity_needs_verification?
     loa3_requested? && current_user.decorate.identity_not_verified?
+  end
+
+  def ial_level
+    loa3_requested? ? 3 : 1
   end
 
   def loa3_requested?
