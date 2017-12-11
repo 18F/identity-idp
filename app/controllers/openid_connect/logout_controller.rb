@@ -5,7 +5,7 @@ module OpenidConnect
 
       result = @logout_form.submit
 
-      analytics.track_event(Analytics::OPENID_CONNECT_LOGOUT, result.to_h.except(:redirect_uri))
+      analytics.track_event(Analytics::LOGOUT_INITIATED, result.to_h.except(:redirect_uri))
 
       if (redirect_uri = result.extra[:redirect_uri])
         sign_out

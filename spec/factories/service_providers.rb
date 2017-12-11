@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   Faker::Config.locale = :en
 
   factory :service_provider do

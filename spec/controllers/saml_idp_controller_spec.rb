@@ -16,6 +16,25 @@ describe SamlIdpController do
       delete :logout
       expect(subject.session[:foo]).to be_nil
     end
+
+    it 'tracks the event when idp-initiated' do
+      stub_analytics
+      result = { sp_initiated: false, oidc: false }
+
+      expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
+
+      delete :logout
+    end
+
+    it 'tracks the event when sp-initiated' do
+      allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
+      stub_analytics
+      result = { sp_initiated: true, oidc: false }
+
+      expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
+
+      delete :logout, params: { SAMLRequest: 'foo' }
+    end
   end
 
   describe 'POST /api/saml/logout' do

@@ -51,7 +51,7 @@ NilCheck:
 LongParameterList:
   exclude:
     - IdentityLinker#optional_attributes
-    - VendorValidatorJob#perform
+    - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
 RepeatedConditional:
   exclude:
@@ -88,6 +88,7 @@ TooManyMethods:
     - User
     - Verify::SessionsController
     - ServiceProviderSessionDecorator
+    - SessionDecorator
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

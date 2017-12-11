@@ -48,8 +48,7 @@ module Idv
       normalized_phone = phone.gsub(/\D/, '')[1..-1]
       idv_params[:phone] = normalized_phone
 
-      return if phone != user.phone
-
+      return idv_params[:phone_confirmed_at] = nil unless phone == user.phone
       idv_params[:phone_confirmed_at] = user.phone_confirmed_at
     end
   end

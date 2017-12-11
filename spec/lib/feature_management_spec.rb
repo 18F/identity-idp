@@ -41,8 +41,8 @@ describe 'FeatureManagement', type: :feature do
         end
       end
 
-      context 'when the server is idp.staging.login.gov' do
-        let(:domain_name) { 'idp.staging.login.gov' }
+      context 'when the server is secure.login.gov' do
+        let(:domain_name) { 'secure.login.gov' }
 
         it 'does not prefill codes' do
           expect(FeatureManagement.prefill_otp_codes?).to eq(false)
@@ -186,7 +186,8 @@ describe 'FeatureManagement', type: :feature do
     let(:enable_identity_verification) { false }
 
     before do
-      allow_any_instance_of(Idv::Vendor).to receive(:pick).and_return(proofing_vendor)
+      allow_any_instance_of(Figaro.env).to receive(:profile_proofing_vendor).
+        and_return(proofing_vendor)
       allow(Figaro.env).to receive(:enable_identity_verification).
         and_return(enable_identity_verification.to_json)
     end

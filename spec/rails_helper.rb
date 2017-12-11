@@ -3,7 +3,7 @@ require 'spec_helper'
 require File.expand_path('../../config/environment', __FILE__)
 require 'rspec/rails'
 require 'email_spec'
-require 'factory_girl'
+require 'factory_bot'
 require 'sidekiq/testing'
 
 # Checks for pending migrations before tests are run.
@@ -59,8 +59,10 @@ RSpec.configure do |config|
   end
 
   config.before(:each, idv_job: true) do
-    allow(VendorValidatorJob).to receive(:perform_later) do |*args|
-      VendorValidatorJob.perform_now(*args)
+    [Idv::ProfileJob, Idv::FinanceJob, Idv::PhoneJob].each do |job_class|
+      allow(job_class).to receive(:perform_later) do |*args|
+        job_class.perform_now(*args)
+      end
     end
   end
 

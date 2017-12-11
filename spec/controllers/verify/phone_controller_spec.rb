@@ -77,7 +77,7 @@ describe Verify::PhoneController do
       end
 
       it 'tracks form error and does not make a vendor API call' do
-        expect(Idv::PhoneValidator).to_not receive(:new)
+        expect(Idv::SubmitIdvJob).to_not receive(:submit_phone_job)
 
         put :create, params: { idv_phone_form: { phone: '703' } }
 
@@ -142,6 +142,7 @@ describe Verify::PhoneController do
 
           expected_params = {
             phone: normalized_phone,
+            phone_confirmed_at: nil,
           }
           expect(subject.idv_session.params).to eq expected_params
         end
@@ -269,8 +270,7 @@ describe Verify::PhoneController do
         user = build(:user, phone: good_phone, phone_confirmed_at: Time.zone.now)
         stub_verify_steps_one_and_two(user)
 
-        expect(SubmitIdvJob).to receive(:new).with(
-          vendor_validator_class: Idv::PhoneValidator,
+        expect(Idv::SubmitIdvJob).to receive(:new).with(
           idv_session: subject.idv_session,
           vendor_params: normalized_phone
         ).and_call_original

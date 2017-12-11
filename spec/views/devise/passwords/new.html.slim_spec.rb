@@ -3,14 +3,14 @@ require 'rails_helper'
 describe 'devise/passwords/new.html.slim' do
   before do
     @password_reset_email_form = PasswordResetEmailForm.new('')
-    sp = build_stubbed(
+    @sp = build_stubbed(
       :service_provider,
       friendly_name: 'Awesome Application!',
       return_to_sp_url: 'www.awesomeness.com'
     )
     view_context = ActionController::Base.new.view_context
     @decorated_session = DecoratedSession.new(
-      sp: sp,
+      sp: @sp,
       view_context: view_context,
       sp_session: {},
       service_provider_request: ServiceProviderRequest.new
@@ -40,5 +40,19 @@ describe 'devise/passwords/new.html.slim' do
     render
 
     expect(rendered).to have_link(t('links.cancel'), href: @decorated_session.cancel_link_url)
+  end
+
+  it 'has sp alert for certain service providers' do
+    @sp.friendly_name = ServiceProviderSessionDecorator::SP_ALERTS.keys.first
+
+    render
+
+    expect(rendered).to have_selector('.alert')
+  end
+
+  it 'does not have an sp alert for service providers without alert messages' do
+    render
+
+    expect(rendered).to_not have_selector('.alert')
   end
 end

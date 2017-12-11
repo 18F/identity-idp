@@ -1,10 +1,12 @@
 class FeatureManagement
   ENVS_WHERE_PREFILLING_OTP_ALLOWED = %w[
-    idp.dev.login.gov idp.pt.login.gov
+    idp.dev.login.gov idp.pt.login.gov idp.dev.identitysandbox.gov idp.pt.identitysandbox.gov
   ].freeze
 
   ENVS_WHERE_PREFILLING_USPS_CODE_ALLOWED = %w[
     idp.dev.login.gov idp.int.login.gov idp.qa.login.gov idp.pt.login.gov
+    idp.dev.identitysandbox.gov idp.qa.identitysandbox.gov idp.int.identitysandbox.gov
+    idp.pt.identitysandbox.gov
   ].freeze
 
   def self.telephony_disabled?
@@ -63,6 +65,6 @@ class FeatureManagement
   end
 
   def self.no_pii_mode?
-    enable_identity_verification? && Idv::Vendor.new.pick == :mock
+    enable_identity_verification? && Figaro.env.profile_proofing_vendor == :mock
   end
 end

@@ -1,0 +1,21 @@
+<% browser = DeviceDetector.new(@request.user_agent) %>
+Browser Name: <%= browser.name %>
+Browser Version: <%= browser.full_version %>
+Browser Platform: <%= browser.os_name %> <%= browser.os_full_version %>
+Browser Device: <%= browser.device_name %>
+Browser Bot?: <%= browser.bot? %>
+
+Referer: <%= @request.referer %>
+
+<% keys_to_keep = %w[session_expires_at pinged_at sp user_return_to] %>
+<% session = @request.session.to_hash.select { |k, _| keys_to_keep.include?(k) } %>
+<% if session['sp'] %>
+  <% session['sp'] = session['sp'].except('request_url') %>
+  <% session['sp']['request_id'] = 'FILTERED' if session['sp']['request_id'] %>
+<% end %>
+<% session['user_return_to'] = session['user_return_to']&.split('?')&.first %>
+Session: <%= session %>
+
+User UUID: <%= @kontroller.analytics_user.uuid %>
+
+Visitor ID: <%= @request.cookies['ahoy_visitor'] %>

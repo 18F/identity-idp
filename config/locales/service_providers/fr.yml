@@ -1,0 +1,21 @@
+---
+fr:
+  service_providers:
+    trusted_traveler:
+      header: Êtes-vous venu(e) de Trusted Traveler Programs?
+      account_page:
+        body: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
+          Veuillez créer un nouveau compte login.gov.
+      body_html: Votre ancien nom d'utilisateur et mot de passe GOES ne marchera pas.
+        Veuillez %{link}
+      create_account_link: créer un nouveau compte login.gov.
+    usa_jobs:
+      header: Êtes-vous venu(e) de USAJOBS?
+      account_page:
+        body: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse e-mail
+          principale ou secondaire que vous avez utilisée pour USAJOBS pour créer
+          votre nouveau compte login.gov.
+      body_html: Si vous avez déjà un profil USAJOBS, veuillez utiliser l'adresse
+        e-mail principale ou secondaire que vous avez utilisée pour USAJOBS pour %{link}.
+      create_account_link: créer votre nouveau compte login.gov
+    learn_more: En savoir plus.

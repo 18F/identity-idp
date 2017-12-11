@@ -94,6 +94,22 @@ feature 'LOA1 Single Sign On' do
       expect(current_path).to eq sign_up_completed_path
     end
 
+    it 'redirects user to SP after asking for new personal key during sign up' do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+
+      saml_authn_request = auth_request.create(saml_settings)
+      visit saml_authn_request
+      register_user
+      click_on t('users.personal_key.get_another')
+      click_acknowledge_personal_key
+
+      expect(current_path).to eq sign_up_completed_path
+
+      click_on t('forms.buttons.continue')
+
+      expect(current_url).to eq saml_authn_request
+    end
+
     it 'after session timeout, signing in takes user back to SP' do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
 

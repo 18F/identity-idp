@@ -3,7 +3,7 @@ require 'rails_helper'
 feature 'IdV session' do
   include IdvHelper
 
-  context 'VendorValidatorJob raises an error', idv_job: true do
+  context 'Idv job raises an error', idv_job: true do
     it 'displays a warning that something went wrong' do
       sign_in_and_2fa_user
 
