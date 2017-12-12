@@ -35,6 +35,7 @@ fr:
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
+      unsupported_jurisdiction: NOT TRANSLATED YET
     form:
       activate_by_mail: Activer mon compte par la poste.
       address1: Adresse 1
@@ -53,6 +54,11 @@ fr:
       previous_address_html: Avez-vous déménagé au cours des strong3 derniers mois/strong?
       ssn_label_html: Numéro de sécurité sociale %{tooltip}
       state: État
+      state_id: NOT TRANSLATED YET
+      state_id_type:
+        drivers_license: NOT TRANSLATED YET
+        drivers_permit: NOT TRANSLATED YET
+        state_id_card: NOT TRANSLATED YET
       zipcode: Code ZIP
     index:
       continue_link: Oui, continuer

@@ -57,6 +57,11 @@ h1.h3.my0 = @view_model.title
       required: true,
       pattern: '^\d{3}-?\d{2}-?\d{4}$',
       input_html: { class: 'ssn', value: @view_model.idv_form.ssn }
+  fieldset.m0.p0.border-none
+    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('idv.form.state_id')
+    = f.input :state_id_type, as: :select, include_blank: false,
+      collection: state_id_types
+    = f.input :state_id_number, required: true
   .mt3
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
 = render 'shared/cancel', link: verify_cancel_path

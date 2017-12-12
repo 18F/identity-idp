@@ -2,7 +2,7 @@ module Idv
   class ProoferJob < ApplicationJob
     queue_as :idv
 
-    attr_reader :result_id, :vendor_params, :applicant, :vendor_session_id
+    attr_reader :result_id, :applicant, :vendor_params, :vendor_session_id
 
     def perform(result_id:, vendor_params:, applicant_json:, vendor_session_id: nil)
       @result_id = result_id

@@ -31,6 +31,7 @@ es:
         personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         zipcode: 'Su código postal debe ser ingresado como #####-####'
+      unsupported_jurisdiction: NOT TRANSLATED YET
     form:
       activate_by_mail: Activar mi cuenta por correo.
       address1: Dirección de calle 1
@@ -49,6 +50,11 @@ es:
       previous_address_html: "¿Se mudó en los <strong>últimos 3 meses</ strong>?"
       ssn_label_html: Número de Seguro Social %{tooltip}
       state: Estado
+      state_id: NOT TRANSLATED YET
+      state_id_type:
+        drivers_license: NOT TRANSLATED YET
+        drivers_permit: NOT TRANSLATED YET
+        state_id_card: NOT TRANSLATED YET
       zipcode: Código postal
     index:
       continue_link: Sí, continuar
