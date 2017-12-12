@@ -283,12 +283,13 @@ module TwoFactorAuthenticatable
   end
 
   def reenter_phone_number_path
+    locale = LinkLocaleResolver.locale
     if idv_context?
-      verify_phone_path
+      verify_phone_path(locale: locale)
     elsif current_user.phone.present?
-      manage_phone_path
+      manage_phone_path(locale: locale)
     else
-      phone_setup_path
+      phone_setup_path(locale: locale)
     end
   end
 
