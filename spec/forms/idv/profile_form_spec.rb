@@ -14,8 +14,10 @@ describe Idv::ProfileForm do
       address1: '123 Main St',
       address2: '',
       city: 'Somewhere',
-      state: 'KS',
+      state: 'VA',
       zipcode: '66044',
+      state_id_number: '123456789',
+      state_id_type: 'drivers_license',
     }
   end
 
@@ -39,11 +41,24 @@ describe Idv::ProfileForm do
         expect(result.errors).to include(:dob)
       end
     end
+
+    context 'when the form has invalid attributes' do
+      let(:profile_attrs) { super().merge(im_invalid: 'foobar') }
+
+      it 'raises an error' do
+        expect { subject.submit(profile_attrs) }.to raise_error(
+          ArgumentError, 'im_invalid is an invalid profile attribute'
+        )
+      end
+    end
   end
 
   describe 'presence validations' do
     it 'is invalid when required attribute is not present' do
-      %i[first_name last_name ssn dob address1 city state zipcode].each do |attr|
+      %i[
+        first_name last_name ssn dob address1 city state zipcode
+        state_id_number state_id_type
+      ].each do |attr|
         subject.submit(profile_attrs.merge(attr => nil))
         expect(subject).to_not be_valid
       end
@@ -145,6 +160,22 @@ describe Idv::ProfileForm do
         expect(subject.valid?).to eq false
         expect(subject.errors[:ssn]).to eq [I18n.t('idv.errors.pattern_mismatch.ssn')]
       end
+    end
+  end
+
+  describe 'state id jurisdction validity' do
+    it 'populates error for unsupported jurisdiction ' do
+      subject.submit(profile_attrs.merge(state: 'AL'))
+      expect(subject.valid?).to eq false
+      expect(subject.errors[:state]).to eq [I18n.t('idv.errors.unsupported_jurisdiction')]
+    end
+  end
+
+  describe 'state id type validity' do
+    it 'populates error for invalid state id type ' do
+      subject.submit(profile_attrs.merge(state_id_type: 'passport'))
+      expect(subject.valid?).to eq false
+      expect(subject.errors).to include(:state_id_type)
     end
   end
 end

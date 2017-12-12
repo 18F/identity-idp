@@ -118,7 +118,7 @@ module Verify
     end
 
     def profile_params
-      params.require(:profile).permit(*Pii::Attributes.members)
+      params.require(:profile).permit(Idv::ProfileForm::PROFILE_ATTRIBUTES)
     end
   end
 end

@@ -12,8 +12,10 @@ describe Verify::SessionsController do
       address1: '123 Main St',
       address2: '',
       city: 'Somewhere',
-      state: 'KS',
+      state: 'VA',
       zipcode: '66044',
+      state_id_type: 'drivers_license',
+      state_id_number: '123456789',
     }
   end
   let(:previous_address) do
