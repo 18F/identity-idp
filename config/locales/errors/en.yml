@@ -2,7 +2,7 @@
 en:
   errors:
     confirm_password_incorrect: Incorrect password.
-    invalid_authenticity_token: Oops, something went wrong. Please sign in again.
+    invalid_authenticity_token: Oops, something went wrong. Please try again.
     invalid_totp: Invalid code. Please try again.
     max_password_attempts_reached: You've entered too many incorrect passwords. You
       can reset your password using the "Forgot your password?" link.

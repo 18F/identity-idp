@@ -2,13 +2,15 @@ module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
 
+    rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
+
     skip_before_action :session_expires_at, only: [:active]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :confirm_two_factor_authenticated, only: [:update]
     before_action :check_user_needs_redirect, only: [:new]
 
     def new
-      analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT)
+      analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT, flash: flash[:alert])
       super
     end
 
@@ -41,6 +43,14 @@ module Users
     end
 
     private
+
+    def redirect_to_signin
+      controller_info = 'users/sessions#create'
+      analytics.track_event(Analytics::INVALID_AUTHENTICITY_TOKEN, controller: controller_info)
+      sign_out
+      flash[:alert] = t('errors.invalid_authenticity_token')
+      redirect_back fallback_location: new_user_session_url
+    end
 
     def check_user_needs_redirect
       if user_fully_authenticated?

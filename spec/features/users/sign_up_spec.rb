@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 feature 'Sign Up' do
+  include SamlAuthHelper
+
   context 'confirmation token error message does not persist on success' do
     scenario 'with no or invalid token' do
       visit sign_up_create_email_confirmation_url(confirmation_token: '')
@@ -128,4 +130,7 @@ feature 'Sign Up' do
       expect(page).to_not have_content 'userb@test.com'
     end
   end
+
+  it_behaves_like 'csrf error when acknowledging personal key', :saml
+  it_behaves_like 'csrf error when acknowledging personal key', :oidc
 end

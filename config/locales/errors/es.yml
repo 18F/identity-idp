@@ -2,7 +2,7 @@
 es:
   errors:
     confirm_password_incorrect: La contraseña es incorrecta.
-    invalid_authenticity_token: "¡Oops! Algo salió mal. Inicie la sesión de nuevo."
+    invalid_authenticity_token: "¡Oops! Algo salió mal. Inténtelo de nuevo."
     invalid_totp: El código es inválido. Vuelva a intentarlo.
     max_password_attempts_reached: Ha ingresado demasiadas contraseñas incorrectas.
       Puede restablecer su contraseña usando el enlace "¿Olvidó su contraseña?".

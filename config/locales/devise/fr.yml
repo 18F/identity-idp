@@ -21,7 +21,8 @@ fr:
         Veuillez vous connecter de nouveau pour continuer avec ce navigateur.
       timeout: Votre session est expirée. Veuillez vous connecter de nouveau pour
         continuer.
-      unauthenticated: ''
+      unauthenticated: Votre session est expirée. Veuillez vous connecter de nouveau
+        pour continuer.
       unconfirmed: Vous devez confirmer votre adresse courriel avant de continuer.
     mailer:
       account_locked:

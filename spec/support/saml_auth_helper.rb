@@ -184,4 +184,29 @@ module SamlAuthHelper
   def authn_request(settings = saml_settings, params = {})
     OneLogin::RubySaml::Authrequest.new.create(settings, params)
   end
+
+  def visit_idp_from_sp_with_loa1(sp)
+    if sp == :saml
+      @saml_authn_request = auth_request.create(saml_settings)
+      visit @saml_authn_request
+    elsif sp == :oidc
+      @state = SecureRandom.hex
+      @client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      @nonce = SecureRandom.hex
+      visit_idp_from_oidc_sp_with_loa1(state: @state, client_id: @client_id, nonce: @nonce)
+    end
+  end
+
+  def visit_idp_from_oidc_sp_with_loa1(state: SecureRandom.hex, client_id:, nonce:)
+    visit openid_connect_authorize_path(
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      prompt: 'select_account',
+      nonce: nonce
+    )
+  end
 end
