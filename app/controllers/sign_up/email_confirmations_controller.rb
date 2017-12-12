@@ -2,6 +2,8 @@ module SignUp
   class EmailConfirmationsController < ApplicationController
     include UnconfirmedUserConcern
 
+    skip_before_action :handle_two_factor_authentication
+
     def create
       validate_token
     end
