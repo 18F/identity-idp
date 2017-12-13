@@ -22,6 +22,8 @@ class ServiceProviderSessionDecorator
     @service_provider_request = service_provider_request
   end
 
+  delegate :redirect_uris, to: :sp, :prefix => true
+
   def sp_logo
     sp.logo || DEFAULT_LOGO
   end
@@ -80,10 +82,6 @@ class ServiceProviderSessionDecorator
     else
       sp.return_to_sp_url
     end
-  end
-
-  def sp_redirect_uris
-    sp.redirect_uris
   end
 
   def cancel_link_url

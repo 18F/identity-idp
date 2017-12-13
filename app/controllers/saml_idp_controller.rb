@@ -20,7 +20,7 @@ class SamlIdpController < ApplicationController
     end
     delete_branded_experience
 
-    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse', decorated_session.sp_redirect_uris)
+    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
   def metadata
@@ -56,10 +56,10 @@ class SamlIdpController < ApplicationController
     redirect_to url
   end
 
-  def render_template_for(message, action_url, type, additional_csp_uris)
+  def render_template_for(message, action_url, type)
     domain = SecureHeadersWhitelister.extract_domain(action_url)
     csp_uris = ["'self'", domain]
-    csp_uris = csp_uris | additional_csp_uris.compact unless additional_csp_uris.empty?
+    csp_uris |= decorated_session.sp_redirect_uris.compact unless decorated_session.sp_redirect_uris.empty?
 
     override_content_security_policy_directives(form_action: csp_uris)
 
