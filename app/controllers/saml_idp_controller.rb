@@ -59,7 +59,9 @@ class SamlIdpController < ApplicationController
   def render_template_for(message, action_url, type)
     domain = SecureHeadersWhitelister.extract_domain(action_url)
     csp_uris = ["'self'", domain]
-    csp_uris |= decorated_session.sp_redirect_uris.compact unless decorated_session.sp_redirect_uris.empty?
+
+    additional_csp_uris = decorated_session.sp_redirect_uris.compact
+    csp_uris |= additional_csp_uris unless additional_csp_uris.empty?
 
     override_content_security_policy_directives(form_action: csp_uris)
 
