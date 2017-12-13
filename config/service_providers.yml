@@ -9,6 +9,8 @@ test:
     friendly_name: 'Your friendly Government Agency'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
+    redirect_uris:
+      - 'x-example-app://idp_return'
     attribute_bundle:
       - email
       - phone

@@ -82,6 +82,10 @@ class ServiceProviderSessionDecorator
     end
   end
 
+  def sp_redirect_uris
+    sp.redirect_uris
+  end
+
   def cancel_link_url
     sign_up_start_url(request_id: sp_session[:request_id], locale: locale_url_param)
   end
