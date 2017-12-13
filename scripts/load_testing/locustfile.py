@@ -24,9 +24,9 @@ NUM_USERS = 1000
 def random_cred():
     """
     Given the rake task:
-    rake dev:random_users NUM_USERS=100 SCRYPT_COST='800$8$1$'
+    rake dev:random_users NUM_USERS=1000 SCRYPT_COST='800$8$1$'
 
-    We should have 100 existing users with credentials matching:
+    We should have 1000 existing users with credentials matching:
     * email address testuser1@example.com through testuser1000@example.com
     * the password "salty pickles"
     * a phone number between +1 (415) 555-0001 and +1 (415) 555-1000.
