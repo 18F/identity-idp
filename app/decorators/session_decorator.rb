@@ -40,6 +40,8 @@ class SessionDecorator
 
   def sp_logo; end
 
+  def sp_redirect_uris; end
+
   def sp_return_url; end
 
   def requested_attributes; end
