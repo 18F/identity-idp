@@ -9,12 +9,8 @@ import ZipCodeFormatter from './modules/zip-code-formatter';
 
 function formatForm() {
   const formats = [
-    ['.auto_loan', new NumericFormatter()],
-    ['.ccn', new NumericFormatter()],
     ['.dob', new DateFormatter()],
-    ['.home_equity_line', new NumericFormatter()],
     ['.mfa', new NumericFormatter()],
-    ['.mortgage', new NumericFormatter()],
     ['.phone', new InternationalPhoneFormatter()],
     ['.us-phone', new USPhoneFormatter()],
     ['.personal-key', new PersonalKeyFormatter()],

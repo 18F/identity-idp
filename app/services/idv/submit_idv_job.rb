@@ -10,11 +10,6 @@ module Idv
       ProfileJob.perform_later(proofer_job_params)
     end
 
-    def submit_finance_job
-      update_idv_session
-      FinanceJob.perform_later(proofer_job_params)
-    end
-
     def submit_phone_job
       update_idv_session
       PhoneJob.perform_later(proofer_job_params)

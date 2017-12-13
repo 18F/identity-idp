@@ -3,6 +3,7 @@ require 'rails_helper'
 feature 'View personal key' do
   include XPathHelper
   include PersonalKeyHelper
+  include SamlAuthHelper
 
   context 'during sign up' do
     scenario 'user refreshes personal key page' do
@@ -89,6 +90,9 @@ feature 'View personal key' do
       expect(current_path).to eq account_path
     end
   end
+
+  it_behaves_like 'csrf error when asking for new personal key', :saml
+  it_behaves_like 'csrf error when asking for new personal key', :oidc
 end
 
 def sign_up_and_view_personal_key

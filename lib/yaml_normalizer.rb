@@ -5,7 +5,7 @@ class YamlNormalizer
   # Reads in YAML at a path, trims whitespace from each key, and writes it back to the file
   def self.run(argv)
     argv.each do |file|
-      $stderr.puts file
+      warn file
       data = YAML.load_file(file)
       handle_hash(data)
       dump(file, data)

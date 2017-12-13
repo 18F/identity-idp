@@ -2,8 +2,6 @@
 en:
   idv:
     buttons:
-      activate_by_mail: Activate by mail
-      activate_by_phone: Activate by phone
       cancel: Cancel and return to your profile
       continue: Continue identity verification
       continue_plain: Continue
@@ -25,30 +23,25 @@ en:
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
-      finance_number_length: Number must be between %{minimum} and %{maximum} digits.
       hardfail: We were unable to verify your identity at this time.
       incorrect_password: The password you entered is not correct.
-      invalid_ccn: Credit card number should be only last 8 digits.
       mail_limit_reached: You have have requested too much mail in the last month.
-      missing_finance: You must provide a financial account number.
       pattern_mismatch:
         dob: Your date of birth must be entered in as mm/dd/yyyy
         personal_key: 'Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         zipcode: 'Your zipcode must be entered in as #####-####'
+      unsupported_jurisdiction: Sorry, we don't currently verify anyone from this
+        state
     form:
       activate_by_mail: Activate my account by mail.
       address1: Street address 1
       address2: Street address 2 (optional)
-      auto_loan: Auto loan account number
-      ccn: Last 8 digits of a credit card
       city: City
       dob: Date of birth
       dob_hint: 'example: 01/17/1964'
       first_name: First name
-      home_equity_line: Home equity line of credit account number
       last_name: Last name
-      mortgage: Mortgage loan account number
       no_alternate_phone_html: I don't have another phone number. %{link}
       password: Password
       personal_details: Personal details
@@ -56,11 +49,13 @@ en:
       phone_label_aside: Mobile or landline
       previous_address_add: Add previous address
       previous_address_html: Moved in the <strong>last 3 months</strong>?
-      select_financial_account: Select a financial account…
       ssn_label_html: Social Security Number %{tooltip}
       state: State
-      use_ccn: Provide credit card number >
-      use_financial_account: Don't have a credit card?
+      state_id: Identification number
+      state_id_type:
+        drivers_license: Driver's license
+        drivers_permit: Driver's permit
+        state_id_card: State ID card
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
@@ -112,25 +107,12 @@ en:
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
       hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
-      finance:
-        disclaimer: By continuing, you agree to let %{app_name} compare the account
-          information you provide with third-party sources in order to verify your
-          identity.
-        hint: You can use Mastercard, Visa, Diner's Club, or JCB.
-        intro_account: Help us verify your identity by providing an auto loan, mortgage,
-          or home equity loan number.
-        intro_ccn_help: how your information will be used
-        intro_ccn_html: Help us verify your identity by providing the last 8 digits
-          of a credit card. Learn more about %{intro_help_link}.
-        no_account: Want to use a credit card instead?
-        no_account_info: Help us verify your identity by providing the last 8 digits
-          of your credit card.
-      help_center: Visit our Help Center to learn more about verifying your account.
+      help_center_html: Visit our <strong>Help Center</strong> to learn more about
+        verifying your account.
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
         phone_number_html: We will send a code to <strong>%{phone}</strong>
-      personal_details_verified: Personal details verified!
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
@@ -146,14 +128,19 @@ en:
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
-        financial_info: Where is my financial account information?
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
-      select_verification_with_sp: To protect you from identity fraud, you can't use
-        your account at %{sp_name} until you activate it by entering a confirmation
-        code.
-      select_verification_without_sp: In order to protect your account from identity
-        fraud, your profile will not be activated until you enter a confirmation code.
+      select_verification_form:
+        phone_header: Get a code by phone
+        phone_message: The billing address for your phone must match the address you
+          gave us.
+        usps_header: Get a code by letter
+        usps_message: We'll mail a code to the address you gave us. It will take 5-10
+          days to reach you.
+      select_verification_with_sp: To protect you from identity fraud, we will contact
+        you to confirm that this %{sp_name} account is legitimate.
+      select_verification_without_sp: To protect you from identity fraud, we will
+        contact you to confirm that this account is legitimate.
       sessions:
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
@@ -174,15 +161,6 @@ en:
         fail: Okay
         jobfail: Try again tomorrow
         warning: Try again
-      financials:
-        fail: Your account is <strong>locked for 24 hours</strong> before you can
-          try to verify again. Check our Help section for more information about identity
-          verification.
-        heading: We could not find records matching your financial information.
-        jobfail: Something went wrong and we cannot process your request at this time.
-          Please try again tomorrow.
-        timeout: Our request to verify your information timed out.
-        warning: Please check the information you entered.
       phone:
         fail: Your account is <strong>locked for 24 hours</strong> before you can
           try to verify again. Check our Help section for more information about identity
@@ -214,8 +192,7 @@ en:
       dupe: 'Error: An account may already exist'
       expectations: Next, help us identify you
       fail: We were unable to verify your identity
-      financials: Provide a financial account number
-      hardfail: We weren't able to verify your identity
+      hardfail: We weren't able to verify your identity with %{app}
       intro: Help us identify you
       mail:
         resend: Want another letter?
@@ -223,7 +200,7 @@ en:
       otp_delivery_method: Get a code by phone
       phone: Phone number of record
       review: Review and submit
-      select_verification: Activate your account
+      select_verification: Choose how to confirm your address
       session:
         phone: Get a code by telephone
         review: Encrypt your verified data by entering your password

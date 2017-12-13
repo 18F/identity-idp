@@ -281,6 +281,21 @@ describe Users::SessionsController, devise: true do
         expect(profile.reload).to_not be_active
       end
     end
+
+    it 'tracks CSRF errors' do
+      user = create(:user, :signed_up)
+      stub_analytics
+      analytics_hash = { controller: 'users/sessions#create' }
+      allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+
+      post :create, params: { user: { email: user.email, password: user.password } }
+
+      expect(response).to redirect_to new_user_session_url
+      expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
+    end
   end
 
   describe '#new' do
@@ -312,10 +327,12 @@ describe Users::SessionsController, devise: true do
         expect(response).to render_template(:new)
       end
 
-      it 'tracks page visit' do
+      it 'tracks page visit and any alert flashes' do
         stub_analytics
+        allow(controller).to receive(:flash).and_return(alert: 'hello')
+        properties = { flash: 'hello' }
 
-        expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT)
+        expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT, properties)
 
         get :new
       end

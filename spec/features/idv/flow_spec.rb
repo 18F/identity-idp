@@ -30,14 +30,11 @@ feature 'IdV session', idv_job: true do
       fill_out_idv_form_ok
       click_idv_continue
 
-      expect(page).to have_content(t('idv.form.ccn'))
       expect(page).to have_content(
         t('idv.messages.sessions.success',
           pii_message: t('idv.messages.sessions.pii'))
       )
 
-      fill_out_financial_form_ok
-      click_idv_continue
       click_idv_address_choose_phone
       fill_out_phone_form_ok(user.phone)
       click_idv_continue
@@ -82,16 +79,13 @@ feature 'IdV session', idv_job: true do
       expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
     end
 
-    scenario 'profile and financial steps are not re-entrant and are sticky on failure', :js do
+    scenario 'profile steps is not re-entrant and are sticky on failure', :js do
       user = sign_in_and_2fa_user
 
       visit verify_session_path
 
       first_ssn_value = '666-66-6666'
       second_ssn_value = '666-66-1234'
-      first_ccn_value = '00000000'
-      second_ccn_value = '12345678'
-      mortgage_value = '00000000'
       good_phone_value = '415-555-9999'
       good_phone_formatted = '+1 (415) 555-9999'
       bad_phone_formatted = '+1 (555) 555-5555'
@@ -109,51 +103,6 @@ feature 'IdV session', idv_job: true do
 
       fill_out_idv_form_ok
       click_idv_continue
-
-      # success advances to next step
-      expect(current_path).to eq verify_finance_path
-
-      # we start with blank form
-      expect(page).to_not have_selector("input[value='#{first_ccn_value}']")
-
-      fill_in :idv_finance_form_ccn, with: first_ccn_value
-      click_idv_continue
-
-      # failure reloads the form and shows warning modal
-      expect(current_path).to eq verify_finance_result_path
-      expect(page).to have_css('.modal-warning', text: t('idv.modal.financials.heading'))
-      click_button t('idv.modal.button.warning')
-
-      # can't go "back" to a successful profile step
-      visit verify_session_path
-      expect(current_path).to eq verify_finance_path
-
-      # re-entering a failed step is sticky
-      expect(page).to have_content(t('idv.form.ccn'))
-      expect(page).to have_selector("input[value='#{first_ccn_value}']")
-
-      # try again, but with different finance type
-      click_link t('idv.form.use_financial_account')
-
-      expect(current_path).to eq verify_finance_other_path
-
-      select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
-      fill_in :idv_finance_form_mortgage, with: mortgage_value
-      click_idv_continue
-
-      # failure reloads the same sticky form (different path) and shows warning modal
-      expect(current_path).to eq verify_finance_result_path
-      click_button t('idv.modal.button.warning')
-      expect(page).to have_selector("input[value='#{mortgage_value}']")
-
-      # try again with CCN
-      click_link t('idv.form.use_ccn')
-      fill_in :idv_finance_form_ccn, with: second_ccn_value
-      click_idv_continue
-
-      # can't go "back" to a successful finance step
-      visit verify_finance_path
-      expect(current_path).to eq verify_address_path
 
       # address mechanism choice
       click_idv_address_choose_phone
@@ -184,9 +133,6 @@ feature 'IdV session', idv_job: true do
       expect(page).to have_content(t('idv.titles.session.review'))
       expect(page).to have_content(second_ssn_value)
       expect(page).to_not have_content(first_ssn_value)
-      expect(page).to_not have_content(second_ccn_value)
-      expect(page).to_not have_content(mortgage_value)
-      expect(page).to_not have_content(first_ccn_value)
       expect(page).to have_content(good_phone_formatted)
       expect(page).to_not have_content(bad_phone_formatted)
     end
@@ -198,8 +144,6 @@ feature 'IdV session', idv_job: true do
 
       visit verify_session_path
       fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
       click_idv_continue
       click_idv_address_choose_phone
       fill_out_phone_form_ok(phone)
@@ -255,61 +199,6 @@ feature 'IdV session', idv_job: true do
       expect(find('#profile_prev_address1').value).to eq ''
     end
 
-    scenario 'clicking finance option changes input label', js: true do
-      _user = sign_in_and_2fa_user
-
-      visit verify_session_path
-
-      fill_out_idv_form_ok
-      click_idv_continue
-
-      expect(page).to_not have_css('.js-finance-wrapper', text: t('idv.form.mortgage'))
-
-      click_link t('idv.form.use_financial_account')
-
-      expect(page).to_not have_content(t('idv.form.ccn'))
-      expect(page).to have_css('input[type=submit][disabled]')
-      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.auto_loan'), visible: false)
-
-      select t('idv.form.auto_loan'), from: 'idv_finance_form_finance_type'
-
-      expect(page).to have_css('.js-finance-wrapper', text: t('idv.form.auto_loan'), visible: true)
-    end
-
-    scenario 'enters invalid finance value', js: true do
-      _user = sign_in_and_2fa_user
-      visit verify_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-      click_link t('idv.form.use_financial_account')
-
-      select t('idv.form.mortgage'), from: 'idv_finance_form_finance_type'
-      short_value = '1' * (FormFinanceValidator::VALID_MINIMUM_LENGTH - 1)
-      fill_in :idv_finance_form_mortgage, with: short_value
-      click_button t('forms.buttons.continue')
-
-      expect(page).to have_content(
-        t(
-          'idv.errors.finance_number_length',
-          minimum: FormFinanceValidator::VALID_MINIMUM_LENGTH,
-          maximum: FormFinanceValidator::VALID_MAXIMUM_LENGTH
-        )
-      )
-    end
-
-    scenario 'credit card field only allows numbers', js: true do
-      _user = sign_in_and_2fa_user
-
-      visit verify_session_path
-
-      fill_out_idv_form_ok
-      click_idv_continue
-
-      find('#idv_finance_form_ccn').native.send_keys('abcd1234')
-
-      expect(find('#idv_finance_form_ccn').value).to eq '1234'
-    end
-
     context 'personal keys information and actions' do
       before do
         personal_key = 'a1b2c3d4e5f6g7h8'
@@ -347,8 +236,6 @@ feature 'IdV session', idv_job: true do
 
           fill_out_idv_form_ok
           click_idv_continue
-          fill_out_financial_form_ok
-          click_idv_continue
 
           click_idv_cancel
 
@@ -363,8 +250,6 @@ feature 'IdV session', idv_job: true do
           visit verify_session_path
 
           fill_out_idv_form_ok
-          click_idv_continue
-          fill_out_financial_form_ok
           click_idv_continue
 
           click_on t('links.cancel_idv')
@@ -384,8 +269,6 @@ feature 'IdV session', idv_job: true do
 
       fill_out_idv_form_ok
       click_idv_continue
-      fill_out_financial_form_ok
-      click_idv_continue
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)
       click_idv_continue
@@ -402,8 +285,6 @@ feature 'IdV session', idv_job: true do
       visit verify_session_path
 
       fill_out_idv_form_ok
-      click_idv_continue
-      fill_out_financial_form_ok
       click_idv_continue
       click_idv_address_choose_phone
       fill_out_phone_form_ok(different_phone)

@@ -3,8 +3,7 @@ require 'rails_helper'
 describe Idv::UpcaseVendorEnvVars do
   describe '#call' do
     before do
-      allow(Figaro.env).to receive(:profile_proofing_vendor).and_return('equifax')
-      allow(Figaro.env).to receive(:finance_proofing_vendor).and_return('aamva')
+      allow(Figaro.env).to receive(:profile_proofing_vendor).and_return('aamva')
       allow(Figaro.env).to receive(:phone_proofing_vendor).and_return('equifax')
       stub_const 'ENV', ENV.to_h.merge(
         'equifax_thing' => 'some value',

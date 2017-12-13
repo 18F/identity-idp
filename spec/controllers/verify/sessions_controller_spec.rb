@@ -12,8 +12,10 @@ describe Verify::SessionsController do
       address1: '123 Main St',
       address2: '',
       city: 'Somewhere',
-      state: 'KS',
+      state: 'VA',
       zipcode: '66044',
+      state_id_type: 'drivers_license',
+      state_id_number: '123456789',
     }
   end
   let(:previous_address) do
@@ -62,7 +64,7 @@ describe Verify::SessionsController do
 
         get :new
 
-        expect(response).to redirect_to verify_finance_path
+        expect(response).to redirect_to verify_address_path
       end
 
       context 'max attempts exceeded' do
@@ -378,7 +380,7 @@ describe Verify::SessionsController do
           it 'allows and resets attempt counter' do
             get :show
 
-            expect(response).to redirect_to verify_finance_path
+            expect(response).to redirect_to verify_address_path
             expect(user.idv_attempts).to eq 1
           end
         end
