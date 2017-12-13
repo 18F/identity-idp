@@ -1,5 +1,6 @@
 # thanks to https://gist.github.com/ifnull/a32fcc90cd60f6e85b57
 
+
 def area_codes(count_start=200, count=1000):
     """
     NPA (Area Code) Rules:
