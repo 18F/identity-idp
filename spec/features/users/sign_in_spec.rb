@@ -260,4 +260,27 @@ feature 'Sign in' do
       expect(current_path).to eq account_path
     end
   end
+
+  context 'CSRF error' do
+    it 'redirects to sign in page with flash message' do
+      user = create(:user, :signed_up)
+      visit new_user_session_path(request_id: '123')
+      allow_any_instance_of(Users::SessionsController).
+        to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
+
+      fill_in_credentials_and_submit(user.email, user.password)
+
+      expect(current_url).to eq new_user_session_url(request_id: '123')
+      expect(page).to have_content t('errors.invalid_authenticity_token')
+    end
+  end
+
+  context 'visiting a page that requires authentication while signed out' do
+    it 'redirects to sign in page with relevant flash message' do
+      visit account_path
+
+      expect(current_path).to eq new_user_session_path
+      expect(page).to have_content(t('devise.failure.unauthenticated'))
+    end
+  end
 end

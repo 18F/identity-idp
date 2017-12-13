@@ -2,7 +2,7 @@
 fr:
   errors:
     confirm_password_incorrect: Mot de passe incorrect.
-    invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez vous connecter
+    invalid_authenticity_token: Oups, une erreur s'est produite. Veuillez essayer
       de nouveau.
     invalid_totp: Code non valide. Veuillez essayer de nouveau.
     max_password_attempts_reached: Vous avez inscrit des mots de passe incorrects
