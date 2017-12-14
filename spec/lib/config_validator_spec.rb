@@ -6,6 +6,7 @@ describe ConfigValidator do
       {
         'phone_proofing_vendor' => 'mock',
         'profile_proofing_vendor' => 'mock',
+        'state_id_proofing_vendor' => 'mock',
       }
     end
 
