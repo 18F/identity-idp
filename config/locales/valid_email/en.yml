@@ -3,5 +3,5 @@ en:
   valid_email:
     validations:
       email:
-        invalid: Invalid email address format or domain entered. Correct the address
-          and re-enter it.
+        invalid: Invalid email address format or domain entered. Please enter a valid
+          email address.

@@ -12,15 +12,15 @@ en:
       sign_in: Please sign in.
     failure:
       already_authenticated: ''
-      inactive: Your account is not activated yet.
+      inactive: Your account hasn't been activated.
       invalid: Invalid email or password.
       last_attempt: You have one more attempt before your account is locked.
-      locked: Your account is now locked.
+      locked: Your account has been locked.
       not_found_in_database: Invalid email or password.
       session_limited: Your login credentials were used in another browser. Please
         sign in again to continue in this browser.
-      timeout: Your session expired. Please sign in again to continue.
-      unauthenticated: ''
+      timeout: Your session has expired. Please sign in again to continue.
+      unauthenticated: Your session has expired. Please sign in again to continue.
       unconfirmed: You need to confirm your email address before continuing.
     mailer:
       account_locked:
@@ -34,9 +34,9 @@ en:
     passwords:
       choose_new_password: Choose a new password.
       invalid_token: The reset password token is invalid. Try again.
-      no_token: You can’t access this page without coming from a password reset email.
-        If you do come from a password reset email, please make sure you used the
-        full link provided.
+      no_token: To reset your password please use the link in the <strong>Password
+        Reset</strong> email you received. If you're pasting the link into your browser,
+        please make sure you've pasted the entire link.
       send_instructions: You will receive an email with instructions on how to reset
         your password in a few minutes.
       send_paranoid_instructions: You will receive an email with instructions on how
@@ -48,16 +48,15 @@ en:
     registrations:
       close_window: You can close this window if you are done.
       destroy_confirm: Deleting your account cannot be undone. All data associated
-        with your account will be removed. Are you sure you’d like to delete your
-        account?
+        with your account will be removed. Are you sure you want to delete your account?
       destroyed: Your account has been successfully deleted.
       email_and_phone_need_confirmation: Before we finish updating your account, we
-        need to confirm both your new number and new email. Please follow the instructions
-        below to confirm your new number, then check for an email from us. Follow
-        the link in the email to confirm your new email address.
-      email_update_needs_confirmation: You updated your account, but we need to confirm
-        your new email address. Check for an email from us, then follow the link in
-        the email to confirm your new address.
+        need to confirm both your new phone number and your new email address. Please
+        follow the instructions below to confirm your phone number. To confirm your
+        new email address, check for an email from us and follow the link provided.
+      email_update_needs_confirmation: You have updated your account, but we need
+        to confirm your new email address. Check for an email from us, then follow
+        the link in the email to confirm your new address.
       enabled_twofactor: You have enabled two-factor authentication.
       phone_update_needs_confirmation: Your request to update your phone number was
         processed, but we need to confirm your new number first. Please follow the
@@ -117,8 +116,8 @@ en:
         title: How would you like to receive your security code?
         voice: Phone call
       otp_phone_label: Phone number
-      otp_phone_label_info: Mobile or landline okay
-      otp_phone_label_info_modile_only: Mobile only
+      otp_phone_label_info: Mobile phone or landline
+      otp_phone_label_info_modile_only: Mobile phone
       otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
         one-time security code via text message or phone call. This helps safeguard
         your account."
@@ -136,7 +135,7 @@ en:
         sms_link_text: get a code via text message
         text_html: If you can’t use your authenticator app right now you can %{sms_link}
           or %{voice_link}.
-        voice_link_text: get a code with a phone call
+        voice_link_text: Receive a code via phone call
       totp_header_text: Enter your authentication app code
       totp_info: Use any authenticator app to scan the QR code below.
       two_factor_setup: Add a phone number

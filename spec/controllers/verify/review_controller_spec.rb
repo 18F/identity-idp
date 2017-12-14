@@ -37,7 +37,6 @@ describe Verify::ReviewController do
     )
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true
-    idv_session.financials_confirmation = true
     idv_session.params = user_attrs
     idv_session.normalized_applicant_params = user_attrs.merge(
       zipcode: norm_zipcode, first_name: normalized_first_name
@@ -84,18 +83,6 @@ describe Verify::ReviewController do
         get :show
 
         expect(response).to redirect_to verify_address_path
-      end
-    end
-
-    context 'user has missed finance step' do
-      before do
-        idv_session.financials_confirmation = false
-      end
-
-      it 'redirects to finance step' do
-        get :show
-
-        expect(response).to redirect_to verify_finance_path
       end
     end
   end

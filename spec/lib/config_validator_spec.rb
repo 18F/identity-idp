@@ -4,7 +4,6 @@ describe ConfigValidator do
   describe '#validate' do
     let(:env) do
       {
-        'finance_proofing_vendor' => 'mock',
         'phone_proofing_vendor' => 'mock',
         'profile_proofing_vendor' => 'mock',
       }
@@ -31,13 +30,12 @@ describe ConfigValidator do
     end
 
     it 'raises if a non empty key is empty' do
-      env.delete('finance_proofing_vendor')
       env.delete('phone_proofing_vendor')
       mimic_figaro
 
       expect { ConfigValidator.new.validate(env) }.to raise_error(
         RuntimeError,
-        'These configs are required and were empty: finance_proofing_vendor, phone_proofing_vendor'
+        'These configs are required and were empty: phone_proofing_vendor'
       )
     end
 

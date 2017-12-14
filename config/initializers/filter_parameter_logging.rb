@@ -5,7 +5,6 @@ Rails.application.config.filter_parameters += %i[
   authenticity_token
   code
   email
-  idv_finance_form
   idv_phone_form
   password
   phone

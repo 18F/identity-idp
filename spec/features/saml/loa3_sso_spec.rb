@@ -14,8 +14,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
     click_idv_begin
     fill_out_idv_form_ok
     click_idv_continue
-    fill_out_financial_form_ok
-    click_idv_continue
     click_idv_address_choose_usps
     click_on t('idv.buttons.mail.send')
     fill_in :user_password, with: user.password
@@ -147,6 +145,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
           click_button(t('idv.buttons.mail.resend'))
 
+          expect(user.events.usps_mail_sent.size).to eq 2
           expect(current_path).to eq(verify_come_back_later_path)
         end
 
@@ -204,7 +203,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
         fill_out_idv_form_ok
         click_idv_continue
 
-        expect(current_path).to eq verify_finance_path
+        expect(current_path).to eq verify_address_path
       end
     end
   end

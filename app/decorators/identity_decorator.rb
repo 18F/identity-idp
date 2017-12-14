@@ -11,6 +11,10 @@ IdentityDecorator = Struct.new(:identity) do
   end
 
   def happened_at
-    EasternTimePresenter.new(identity.last_authenticated_at).to_s
+    identity.last_authenticated_at
+  end
+
+  def happened_at_in_words
+    EasternTimePresenter.new(happened_at).to_s
   end
 end

@@ -8,6 +8,10 @@ EventDecorator = Struct.new(:event) do
   end
 
   def happened_at
-    EasternTimePresenter.new(event.created_at).to_s
+    event.created_at
+  end
+
+  def happened_at_in_words
+    EasternTimePresenter.new(happened_at).to_s
   end
 end

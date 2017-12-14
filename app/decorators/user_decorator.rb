@@ -116,9 +116,9 @@ class UserDecorator
   end
 
   def recent_events
-    events = user.events.order('updated_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
+    events = user.events.order('created_at DESC').limit(MAX_RECENT_EVENTS).map(&:decorate)
     identities = user.identities.order('last_authenticated_at DESC').map(&:decorate)
-    (events + identities).sort { |thing_a, thing_b| thing_b.happened_at <=> thing_a.happened_at }
+    (events + identities).sort_by(&:happened_at).reverse
   end
 
   def verified_account_partial

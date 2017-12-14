@@ -185,7 +185,7 @@ describe Verify::PhoneController do
         get :show
 
         expect(response).to render_template :new
-        expect(flash[:warning]).to include(t('idv.modal.financials.timeout'))
+        expect(flash[:warning]).to include(t('idv.modal.phone.timeout'))
       end
 
       it 'tracks the failure as a timeout' do

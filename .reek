@@ -124,6 +124,7 @@ UtilityFunction:
   ControlParameter:
     exclude:
       - complete_idv_session
+      - visit_idp_from_sp_with_loa1
       - visit_idp_from_sp_with_loa3
   DuplicateMethodCall:
     enabled: false
@@ -149,6 +150,7 @@ UtilityFunction:
       - visit_idp_from_sp_with_loa1
       - visit_idp_from_sp_with_loa3
       - visit_idp_from_mobile_app_with_loa1
+      - visit_idp_from_oidc_sp_with_loa1
       - visit_idp_from_oidc_sp_with_loa3
   UncommunicativeParameterName:
     exclude:

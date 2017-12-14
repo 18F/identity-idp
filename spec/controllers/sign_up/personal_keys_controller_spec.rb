@@ -57,5 +57,24 @@ describe SignUp::PersonalKeysController do
         expect(response).to redirect_to account_path
       end
     end
+
+    it 'tracks CSRF errors' do
+      subject.session[:sp] = 'true'
+      stub_sign_in
+      stub_analytics
+      analytics_hash = {
+        controller: 'sign_up/personal_keys#update',
+        user_signed_in: true,
+      }
+      allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+
+      patch :update
+
+      expect(response).to redirect_to new_user_session_url
+      expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
+    end
   end
 end

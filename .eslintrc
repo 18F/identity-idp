@@ -36,7 +36,6 @@
       'app/pw-toggle',
       'app/form-validation',
       'app/form-field-format',
-      'app/idv-finance-helper',
       'app/radio-btn',
       'app/print-personal-key',
       'app/utils/ms-formatter',

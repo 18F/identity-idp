@@ -20,7 +20,7 @@ es:
       session_limited: Sus credenciales para iniciar una sesión se utilizaron en otro
         navegador. Inicie una sesión nueva para continuar en este navegador.
       timeout: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
-      unauthenticated: ''
+      unauthenticated: Su sesión ha caducado. Vuelva a iniciar la sesión para continuar.
       unconfirmed: Debe confirmar su email antes de continuar.
     mailer:
       account_locked:

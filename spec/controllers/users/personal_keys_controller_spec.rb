@@ -55,6 +55,24 @@ describe Users::PersonalKeysController do
 
       expect(controller.user_session[:personal_key]).to be_nil
     end
+
+    it 'tracks CSRF errors' do
+      stub_sign_in
+      stub_analytics
+      analytics_hash = {
+        controller: 'users/personal_keys#update',
+        user_signed_in: true,
+      }
+      allow(controller).to receive(:update).and_raise(ActionController::InvalidAuthenticityToken)
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+
+      post :update
+
+      expect(response).to redirect_to new_user_session_url
+      expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
+    end
   end
 
   describe '#create' do
@@ -80,6 +98,24 @@ describe Users::PersonalKeysController do
 
       post :create, params: { resend: true }
       expect(flash[:success]).to eq t('notices.send_code.personal_key')
+    end
+
+    it 'tracks CSRF errors' do
+      stub_sign_in
+      stub_analytics
+      analytics_hash = {
+        controller: 'users/personal_keys#create',
+        user_signed_in: true,
+      }
+      allow(controller).to receive(:create).and_raise(ActionController::InvalidAuthenticityToken)
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::INVALID_AUTHENTICITY_TOKEN, analytics_hash)
+
+      post :create
+
+      expect(response).to redirect_to new_user_session_url
+      expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
     end
   end
 end

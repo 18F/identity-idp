@@ -84,7 +84,6 @@ development:
   equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
-  finance_proofing_vendor: 'mock'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: ''
@@ -111,6 +110,7 @@ development:
   secret_key_base: 'development_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
+  state_id_proofing_vendor: 'mock'
   telephony_disabled: 'true'
   twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'true'
@@ -149,7 +149,6 @@ production:
   equifax_sftp_username:
   equifax_ssh_passphrase:
   exception_recipients: 'user1@example.com,user2@example.com'
-  finance_proofing_vendor: 'mock'
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
@@ -178,6 +177,7 @@ production:
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '8'
+  state_id_proofing_vendor: 'mock'
   twilio_accounts: # '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
   twilio_record_voice: 'false'
   use_kms: 'true'
@@ -217,7 +217,6 @@ test:
   equifax_sftp_username: 'user'
   equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
-  finance_proofing_vendor: 'mock'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
@@ -241,6 +240,7 @@ test:
   secret_key_base: 'test_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '8'
+  state_id_proofing_vendor: 'mock'
   twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
   twilio_record_voice: 'true'
   use_kms: 'false'
