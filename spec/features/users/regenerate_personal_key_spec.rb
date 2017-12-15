@@ -72,7 +72,7 @@ feature 'View personal key' do
 
       press_shift_tab
 
-      expect_back_button_to_be_in_focus
+      expect_continue_button_to_be_in_focus
 
       click_back_button
 
@@ -127,9 +127,9 @@ def press_shift_tab
   body_element.send_keys %i[shift tab]
 end
 
-def expect_back_button_to_be_in_focus
+def expect_continue_button_to_be_in_focus
   expect(page.evaluate_script('document.activeElement.innerText')).to eq(
-    t('forms.buttons.back')
+    t('forms.buttons.continue')
   )
 end
 
