@@ -491,7 +491,9 @@ describe SamlIdpController do
       end
 
       it 'sets correct CSP config that includes any custom app scheme uri from SP redirect_uris' do
-        expect(response.request.headers.env['secure_headers_request_config'].csp.form_action).to match_array(["'self'", "localhost:3000", "x-example-app://idp_return"])
+        form_action = response.request.headers.env['secure_headers_request_config'].csp.form_action
+        csp_array = ["'self'", 'localhost:3000', 'x-example-app://idp_return']
+        expect(form_action).to match_array(csp_array)
       end
 
       # http://en.wikipedia.org/wiki/SAML_2.0#SAML_2.0_Assertions

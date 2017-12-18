@@ -18,7 +18,7 @@ feature 'Session Timeout' do
     it 'displays the branded experience' do
       issuer = 'http://localhost:3000'
       sp = ServiceProvider.from_issuer(issuer)
-      sp_session = { issuer: issuer }
+      sp_session = { issuer: issuer, request_url: 'http://localhost:3000/api/saml/auth' }
       page.set_rack_session(sp: sp_session)
       visit root_path
 
