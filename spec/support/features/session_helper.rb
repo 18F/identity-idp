@@ -346,7 +346,7 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
-      fill_in 'Phone', with: '202-555-1212'
+      fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
     end
 

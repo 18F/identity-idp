@@ -283,4 +283,7 @@ feature 'Sign in' do
       expect(page).to have_content(t('devise.failure.unauthenticated'))
     end
   end
+
+  it_behaves_like 'signing in with the site in Spanish', :saml
+  it_behaves_like 'signing in with the site in Spanish', :oidc
 end
