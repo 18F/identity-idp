@@ -59,6 +59,7 @@ Metrics/ClassLength:
   - app/controllers/application_controller.rb
   - app/controllers/openid_connect/authorization_controller.rb
   - app/controllers/users/confirmations_controller.rb
+  - app/controllers/users/sessions_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
   - app/decorators/user_decorator.rb
   - app/services/idv/session.rb

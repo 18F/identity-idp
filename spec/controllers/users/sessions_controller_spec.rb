@@ -134,12 +134,14 @@ describe Users::SessionsController, devise: true do
   describe 'POST /' do
     it 'tracks the successful authentication for existing user' do
       user = create(:user, :signed_up)
+      subject.session['user_return_to'] = 'http://example.com'
 
       stub_analytics
       analytics_hash = {
         success: true,
         user_id: user.uuid,
         user_locked_out: false,
+        stored_location: 'http://example.com',
       }
 
       expect(@analytics).to receive(:track_event).
@@ -156,6 +158,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: false,
+        stored_location: nil,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -170,6 +173,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: 'anonymous-uuid',
         user_locked_out: false,
+        stored_location: nil,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -190,6 +194,7 @@ describe Users::SessionsController, devise: true do
         success: false,
         user_id: user.uuid,
         user_locked_out: true,
+        stored_location: nil,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -263,6 +268,7 @@ describe Users::SessionsController, devise: true do
           success: true,
           user_id: user.uuid,
           user_locked_out: false,
+          stored_location: nil,
         }
 
         expect(@analytics).to receive(:track_event).
@@ -327,10 +333,11 @@ describe Users::SessionsController, devise: true do
         expect(response).to render_template(:new)
       end
 
-      it 'tracks page visit and any alert flashes' do
+      it 'tracks page visit, any alert flashes, and the Devise stored location' do
         stub_analytics
         allow(controller).to receive(:flash).and_return(alert: 'hello')
-        properties = { flash: 'hello' }
+        subject.session['user_return_to'] = 'http://example.com'
+        properties = { flash: 'hello', stored_location: 'http://example.com' }
 
         expect(@analytics).to receive(:track_event).with(Analytics::SIGN_IN_PAGE_VISIT, properties)
 
