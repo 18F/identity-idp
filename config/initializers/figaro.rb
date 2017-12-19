@@ -5,6 +5,7 @@ Figaro.require_keys(
   'attribute_encryption_key',
   'domain_name',
   'enable_identity_verification',
+  'enable_rate_limiting',
   'enable_test_routes',
   'enable_usps_verification',
   'equifax_ssh_passphrase',
