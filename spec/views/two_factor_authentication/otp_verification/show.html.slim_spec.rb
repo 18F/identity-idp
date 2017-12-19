@@ -49,6 +49,7 @@ describe 'two_factor_authentication/otp_verification/show.html.slim' do
         code_link = link_to(
           t('links.two_factor_authentication.resend_code.sms'),
           otp_send_path(
+            locale: LinkLocaleResolver.locale,
             otp_delivery_selection_form: {
               otp_delivery_preference: 'sms',
               resend: true,

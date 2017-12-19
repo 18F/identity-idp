@@ -45,7 +45,8 @@ module TwoFactorAuthCode
     attr_reader :personal_key_unavailable, :view, :reauthn
 
     def personal_key_tag
-      view.link_to(t("#{personal_key}.link"), login_two_factor_personal_key_path)
+      view.link_to(t("#{personal_key}.link"),
+                   login_two_factor_personal_key_path(locale: LinkLocaleResolver.locale))
     end
 
     def personal_key
