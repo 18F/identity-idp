@@ -51,7 +51,7 @@ gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'stringex'
 gem 'twilio-ruby'
-gem 'two_factor_authentication', github: 'Houdini/two_factor_authentication', ref: '1d6abe3'
+gem 'two_factor_authentication'
 gem 'uglifier', '>= 1.3.0'
 gem 'valid_email'
 gem 'whenever', require: false
