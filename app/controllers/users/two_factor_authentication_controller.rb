@@ -1,7 +1,6 @@
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
-    skip_before_action :handle_two_factor_authentication
 
     def show
       if current_user.totp_enabled?
