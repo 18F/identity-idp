@@ -52,10 +52,12 @@ en:
       ssn_label_html: Social Security Number %{tooltip}
       state: State
       state_id: Identification number
+      state_id_number: Identification number
       state_id_type:
         drivers_license: Driver's license
         drivers_permit: Driver's permit
         state_id_card: State ID card
+      state_id_type_label: State ID Type
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
