@@ -3,6 +3,7 @@ class ConfigValidator
   NON_EMPTY_KEYS = %w[
     phone_proofing_vendor
     profile_proofing_vendor
+    state_id_proofing_vendor
   ].freeze
 
   def validate(env = ENV)
