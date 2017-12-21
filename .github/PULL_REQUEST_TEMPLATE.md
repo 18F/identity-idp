@@ -25,3 +25,6 @@ and invalid formats.
 - [ ] When adding user data to the session, use the `user_session` helper
 instead of the `session` helper so the data does not persist beyond the user's
 session.
+
+- [ ] When adding a new controller that requires the user to be fully
+authenticated, make sure to add `before_action :confirm_two_factor_authenticated`.
