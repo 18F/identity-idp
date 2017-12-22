@@ -130,6 +130,15 @@ development:
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
+  'urn:gov:gsa:openidconnect:sp:expressjs':
+    agency: 'GSA'
+    cert: 'sp_expressjs_demo'
+    friendly_name: 'Example OIDC Client (Express.js)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9393/'
+      - 'http://localhost:9393/auth/login-gov/callback'
+
 production:
   'https://idp.dev.login.gov':
     metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
@@ -242,6 +251,15 @@ production:
       <% if LoginGov::Hostdata.in_datacenter? %>
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
       <% end %>
+
+  'urn:gov:gsa:openidconnect:sp:expressjs':
+    agency: 'GSA'
+    cert: 'sp_expressjs_demo'
+    friendly_name: 'Example OIDC Client (Express.js)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9393/'
+      - 'http://localhost:9393/auth/login-gov/callback'
 
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':
