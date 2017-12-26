@@ -12,6 +12,10 @@ module Features
       t('errors.messages.invalid_sms_number')
     end
 
+    def unsupported_calling_area
+      t('errors.messages.invalid_calling_area')
+    end
+
     def failed_to_send_otp
       t('errors.messages.otp_failed')
     end
