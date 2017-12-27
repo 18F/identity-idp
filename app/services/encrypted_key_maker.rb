@@ -83,7 +83,11 @@ class EncryptedKeyMaker
   end
 
   def aws_client
-    @_aws_client ||= Aws::KMS::Client.new(region: Figaro.env.aws_region)
+    @_aws_client ||= Aws::KMS::Client.new(
+      region: Figaro.env.aws_region,
+      instance_profile_credentials_timeout: 1, # defaults to 1 second
+      instance_profile_credentials_retries: 5 # defaults to 0 retries
+    )
   end
 
   def encryptor
