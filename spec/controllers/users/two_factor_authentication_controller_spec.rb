@@ -1,7 +1,8 @@
 require 'rails_helper'
-include Features::LocalizationHelper
 
 describe Users::TwoFactorAuthenticationController do
+  include Features::LocalizationHelper
+
   describe 'before_actions' do
     it 'includes the appropriate before_actions' do
       expect(subject).to have_actions(

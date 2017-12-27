@@ -12,6 +12,4 @@ Rails.application.config.assets.precompile += %w[
   misc/*.js email.css ie*.css es5-shim.min.js html5shiv.js respond.min.js
 ]
 
-if Rails.env.test?
-  Rails.application.config.assets.precompile += %w[spec_helper.js]
-end
+Rails.application.config.assets.precompile += %w[spec_helper.js] if Rails.env.test?

@@ -86,9 +86,7 @@ module Idv
 
     def create_usps_entry
       move_pii_to_user_session
-      if pii.is_a?(String)
-        self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii])
-      end
+      self.pii = Pii::Attributes.new_from_json(user_session[:decrypted_pii]) if pii.is_a?(String)
       confirmation_maker = UspsConfirmationMaker.new(pii: pii, issuer: issuer, profile: profile)
       confirmation_maker.perform
 

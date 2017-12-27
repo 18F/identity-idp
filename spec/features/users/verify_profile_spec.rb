@@ -19,7 +19,6 @@ feature 'verify profile with OTP' do
   context 'USPS letter' do
     let(:phone_confirmed) { false }
 
-
     scenario 'profile phone not confirmed' do
       sign_in_live_with_2fa(user)
       expect(page).to have_link(t('idv.buttons.cancel'), account_path)

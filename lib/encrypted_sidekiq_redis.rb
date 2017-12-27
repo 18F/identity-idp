@@ -68,7 +68,7 @@ class EncryptedSidekiqRedis
     # if job is JSON, possibly ActiveJob format, possibly Gibberish format.
     begin
       job = JSON.parse(job_json)
-    rescue
+    rescue StandardError
       return job_json
     end
     if encrypted?(job)

@@ -1,6 +1,4 @@
 class OpenidConnectAuthorizeDecorator
-  attr_reader :requested_attributes
-
   def initialize(scopes:)
     @scopes = scopes
   end

@@ -17,9 +17,7 @@ class YamlNormalizer
   end
 
   def self.handle_hash(hash)
-    hash.each do |_key, value|
-      handle_value(value)
-    end
+    hash.each_value { |value| handle_value(value) }
   end
 
   def self.handle_array(array)
@@ -31,7 +29,7 @@ class YamlNormalizer
       trim(value)
     elsif value.is_a?(Array)
       handle_array(value)
-    elsif value.kind_of?(Hash)
+    elsif value.is_a?(Hash)
       handle_hash(value)
     elsif value
       raise ArgumentError, "unknown YAML value #{value}"

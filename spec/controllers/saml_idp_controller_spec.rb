@@ -145,7 +145,7 @@ describe SamlIdpController do
         )
       end
       let(:this_authn_request) do
-        raw_req = URI.decode loa3_authnrequest.split('SAMLRequest').last
+        raw_req = CGI.unescape loa3_authnrequest.split('SAMLRequest').last
         SamlIdp::Request.from_deflated_request(raw_req)
       end
       let(:asserter) do

@@ -38,13 +38,10 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
 
     click_on t('forms.buttons.continue')
 
-    if sp == :saml
-      expect(current_url).to eq @saml_authn_request
-    end
+    expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)
-      redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end

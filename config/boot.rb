@@ -1,7 +1,5 @@
 # if we're on a server, always default to production
-if File.exist?('/etc/login.gov/info/domain')
-  ENV['RAILS_ENV'] ||= 'production'.freeze
-end
+ENV['RAILS_ENV'] ||= 'production'.freeze if File.exist?('/etc/login.gov/info/domain')
 
 ENV['BUNDLE_GEMFILE'] ||= File.expand_path('../../Gemfile', __FILE__)
 

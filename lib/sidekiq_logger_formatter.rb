@@ -15,7 +15,7 @@ class SidekiqLoggerFormatter < Logger::Formatter
   def filter_msg_string(msg)
     parsed = JSON.parse(msg)
     filter_msg_hash(parsed)
-  rescue
+  rescue StandardError
     msg
   end
 

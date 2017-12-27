@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-include SamlAuthHelper
-include IdvHelper
-
 feature 'SP-initiated logout' do
+  include SamlAuthHelper
+  include IdvHelper
+
   let(:user) { create(:user, :signed_up) }
 
   context 'when SP uses embed_sign:false' do

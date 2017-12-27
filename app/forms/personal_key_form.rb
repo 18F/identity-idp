@@ -3,7 +3,6 @@ class PersonalKeyForm
   include PersonalKeyValidator
 
   attr_accessor :personal_key
-  attr_reader :user
 
   validate :check_personal_key
 

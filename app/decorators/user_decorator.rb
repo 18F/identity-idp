@@ -1,6 +1,6 @@
-include ActionView::Helpers::DateHelper
-
 class UserDecorator
+  include ActionView::Helpers::DateHelper
+
   MAX_RECENT_EVENTS = 5
   DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
