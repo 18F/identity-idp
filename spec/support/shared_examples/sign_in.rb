@@ -1,5 +1,3 @@
-include SamlAuthHelper
-
 shared_examples 'signing in with the site in Spanish' do |sp|
   it 'redirects to the SP' do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)

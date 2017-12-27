@@ -1,9 +1,10 @@
 require 'rails_helper'
 
-include SessionTimeoutWarningHelper
-include ActionView::Helpers::DateHelper
-
 feature 'Sign in' do
+  include SessionTimeoutWarningHelper
+  include ActionView::Helpers::DateHelper
+  include SamlAuthHelper
+
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
     expect(page).to have_content t('devise.failure.not_found_in_database')
