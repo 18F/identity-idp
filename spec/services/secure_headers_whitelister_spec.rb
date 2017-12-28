@@ -29,10 +29,10 @@ RSpec.describe SecureHeadersWhitelister do
 
         expect(csp_with_sp_redirect_uris(domain, test_sp_uris)).to eq(full_return)
 
-        expect(csp_with_sp_redirect_uris(domain, test_sp_uris[0..0])).to eq(full_return[0...3])
+        expect(csp_with_sp_redirect_uris(domain, test_sp_uris[0..0])).to eq(full_return[0..2])
 
-        expect(csp_with_sp_redirect_uris(domain, [])).to eq(full_return[0...2])
-        expect(csp_with_sp_redirect_uris(domain, nil)).to eq(full_return[0...2])
+        expect(csp_with_sp_redirect_uris(domain, [])).to eq(full_return[0..1])
+        expect(csp_with_sp_redirect_uris(domain, nil)).to eq(full_return[0..1])
       end
     end
   end
