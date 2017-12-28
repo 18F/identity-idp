@@ -171,7 +171,7 @@ module SamlAuthHelper
 
   def saml_get_auth(settings)
     # GET redirect binding Authn Request
-    get :auth, params: { SAMLRequest: URI.decode(saml_request(settings)) }
+    get :auth, params: { SAMLRequest: CGI.unescape(saml_request(settings)) }
   end
 
   private

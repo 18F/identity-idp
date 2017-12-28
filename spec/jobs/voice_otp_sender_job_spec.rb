@@ -1,7 +1,8 @@
 require 'rails_helper'
-include Features::ActiveJobHelper
 
 describe VoiceOtpSenderJob do
+  include Features::ActiveJobHelper
+
   describe '.perform' do
     before do
       TwilioService.telephony_service = FakeVoiceCall

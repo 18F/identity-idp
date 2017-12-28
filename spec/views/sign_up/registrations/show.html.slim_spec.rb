@@ -73,7 +73,7 @@ describe 'sign_up/registrations/show.html.slim' do
 
       expect(rendered).to have_selector('.alert')
     end
-    
+
     it 'does not have an sp alert for service providers without alert messages' do
       render
 

@@ -322,11 +322,16 @@ describe UserDecorator do
     let!(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
     let(:decorated_user) { user.decorate }
     let!(:event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
-    let!(:identity) { create(:identity, :active, user: user, last_authenticated_at: Time.zone.now - 60.days) }
-    let!(:another_event) { create(:event, user: user, event_type: :email_changed, created_at: Time.zone.now - 30.days) }
+    let!(:identity) do
+      create(:identity, :active, user: user, last_authenticated_at: Time.zone.now - 60.days)
+    end
+    let!(:another_event) do
+      create(:event, user: user, event_type: :email_changed, created_at: Time.zone.now - 30.days)
+    end
 
     it 'interleaves identities and events, decorates them, and sorts them in descending order' do
-      expect(decorated_user.recent_events).to eq [another_event.decorate, identity.decorate, event.decorate]
+      expect(decorated_user.recent_events).
+        to eq [another_event.decorate, identity.decorate, event.decorate]
     end
   end
 

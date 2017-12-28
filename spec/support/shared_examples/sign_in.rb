@@ -15,13 +15,10 @@ shared_examples 'signing in with the site in Spanish' do |sp|
 
     click_submit_default
 
-    if sp == :saml
-      expect(current_url).to eq @saml_authn_request
-    end
+    expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc
       redirect_uri = URI(current_url)
-      redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
     end

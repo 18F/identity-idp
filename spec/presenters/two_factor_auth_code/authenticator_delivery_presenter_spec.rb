@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
-
   it 'handles multiple locales' do
     I18n.available_locales.each do |locale|
       I18n.locale = locale
@@ -21,7 +20,7 @@ describe TwoFactorAuthCode::AuthenticatorDeliveryPresenter do
   end
 
   def presenter
-    TwoFactorAuthCode::AuthenticatorDeliveryPresenter.new(data: {}, view: ActionController::Base.new.view_context)
+    TwoFactorAuthCode::AuthenticatorDeliveryPresenter.
+      new(data: {}, view: ActionController::Base.new.view_context)
   end
-
 end

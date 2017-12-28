@@ -22,6 +22,8 @@ class VerifyController < ApplicationController
     idv_session.clear
   end
 
+  def cancel; end
+
   def fail
     redirect_to verify_url unless ok_to_fail?
   end

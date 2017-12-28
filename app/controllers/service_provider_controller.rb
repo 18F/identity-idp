@@ -3,9 +3,7 @@ class ServiceProviderController < ApplicationController
 
   def update
     authorize do
-      if FeatureManagement.use_dashboard_service_providers?
-        ServiceProviderUpdater.new.run
-      end
+      ServiceProviderUpdater.new.run if FeatureManagement.use_dashboard_service_providers?
 
       render json: { status: 'If the feature is enabled, service providers have been updated.' }
     end
