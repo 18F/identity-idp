@@ -725,6 +725,7 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
+  rack-attack
   rack-cors
   rack-headers_filter
   rack-mini-profiler
