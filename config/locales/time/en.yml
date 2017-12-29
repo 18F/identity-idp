@@ -1,5 +1,23 @@
 ---
 en:
+  date:
+    month_names:
+    - 
+    - January
+    - February
+    - March
+    - April
+    - May
+    - June
+    - July
+    - August
+    - September
+    - October
+    - November
+    - December
   time:
+    am: AM
     formats:
       event_timestamp: "%B %e, %Y at %-l:%M %p"
+      event_timestamp_utc: "%B %e, %Y at %-l:%M %p UTC"
+    pm: PM
