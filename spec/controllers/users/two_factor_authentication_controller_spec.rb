@@ -263,6 +263,15 @@ describe Users::TwoFactorAuthenticationController do
         expect(flash[:error]).to eq(unsupported_phone_message)
       end
 
+      it 'flashes an invalid calling area error when twilio responds with an invalid calling area error' do
+        twilio_error = Twilio::REST::RestError.new('', TwilioService::INVALID_CALLING_AREA_ERROR_CODE, '400')
+
+        allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+        get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }
+
+        expect(flash[:error]).to eq(unsupported_calling_area)
+      end
+
       it 'flashes a failed to send error when twilio responds with an unknown error' do
         twilio_error = Twilio::REST::RestError.new('', '', '400')
 
@@ -290,7 +299,7 @@ describe Users::TwoFactorAuthenticationController do
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: 'error message')
+          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: 'error message', code: '')
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end
