@@ -18,6 +18,7 @@ class SamlIdpController < ApplicationController
       return redirect_to(account_or_verify_profile_url) if needs_profile_finish
     end
     delete_branded_experience
+
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
@@ -51,7 +52,12 @@ class SamlIdpController < ApplicationController
 
   def render_template_for(message, action_url, type)
     domain = SecureHeadersWhitelister.extract_domain(action_url)
-    override_content_security_policy_directives(form_action: ["'self'", domain])
+
+    # Returns fully formed CSP array w/"'self'", domain, and ServiceProvider#redirect_uris
+    csp_uris = SecureHeadersWhitelister.csp_with_sp_redirect_uris(
+      domain, decorated_session.sp_redirect_uris
+    )
+    override_content_security_policy_directives(form_action: csp_uris)
 
     render(
       template: 'saml_idp/shared/saml_post_binding',
