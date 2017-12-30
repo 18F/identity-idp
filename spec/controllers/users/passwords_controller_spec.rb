@@ -23,13 +23,13 @@ describe Users::PasswordsController do
 
       it 'calls UpdateUserPassword' do
         stub_sign_in
-        updater = instance_double(UpdateUserPassword)
+        updater = instance_double(UpdateUserPasswordForm)
         password = 'strong password'
-        allow(UpdateUserPassword).to receive(:new).
-          with(user: subject.current_user, user_session: subject.user_session, password: password).
+        allow(UpdateUserPasswordForm).to receive(:new).
+          with(subject.current_user, subject.user_session).
           and_return(updater)
         response = FormResponse.new(success: true, errors: {})
-        allow(updater).to receive(:call).and_return(response)
+        allow(updater).to receive(:submit).and_return(response)
         personal_key = 'five random words for test'
         allow(updater).to receive(:personal_key).and_return(personal_key)
 
@@ -37,7 +37,7 @@ describe Users::PasswordsController do
         patch :update, params: { update_user_password_form: params }
 
         expect(flash[:personal_key]).to eq personal_key
-        expect(updater).to have_received(:call)
+        expect(updater).to have_received(:submit)
         expect(updater).to have_received(:personal_key)
       end
     end
