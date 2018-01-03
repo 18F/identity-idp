@@ -2,7 +2,6 @@ module TwoFactorAuthentication
   class TotpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    skip_before_action :handle_two_factor_authentication
     before_action :confirm_totp_enabled
 
     def show

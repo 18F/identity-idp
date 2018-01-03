@@ -1,5 +1,23 @@
 ---
 es:
+  date:
+    month_names:
+    - 
+    - enero
+    - febrero
+    - marzo
+    - abril
+    - mayo
+    - junio
+    - julio
+    - agosto
+    - septiembre
+    - octubre
+    - noviembre
+    - diciembre
   time:
+    am: NOT TRANSLATED YET
     formats:
-      event_timestamp: "%B %e, %Y a las %-l:%M %p"
+      event_timestamp: "%e de %B de %Y a las %H:%M"
+      event_timestamp_utc: "%e de %B de %Y a las %H:%M UTC"
+    pm: NOT TRANSLATED YET

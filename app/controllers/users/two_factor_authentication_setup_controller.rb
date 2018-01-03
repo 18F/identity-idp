@@ -5,7 +5,6 @@ module Users
 
     before_action :authorize_otp_setup
     before_action :authenticate_user
-    skip_before_action :handle_two_factor_authentication
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)
@@ -30,7 +29,7 @@ module Users
     def authorize_otp_setup
       if user_fully_authenticated?
         redirect_to(request.referer || root_url)
-      elsif current_user && current_user.two_factor_enabled?
+      elsif current_user&.two_factor_enabled?
         redirect_to user_two_factor_authentication_url
       end
     end

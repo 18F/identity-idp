@@ -4,7 +4,6 @@ module TwoFactorAuthenticatable
 
   included do
     before_action :authenticate_user
-    before_action :handle_two_factor_authentication
     before_action :require_current_password, if: :current_password_required?
     before_action :check_already_authenticated
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :create
@@ -283,12 +282,13 @@ module TwoFactorAuthenticatable
   end
 
   def reenter_phone_number_path
+    locale = LinkLocaleResolver.locale
     if idv_context?
-      verify_phone_path
+      verify_phone_path(locale: locale)
     elsif current_user.phone.present?
-      manage_phone_path
+      manage_phone_path(locale: locale)
     else
-      phone_setup_path
+      phone_setup_path(locale: locale)
     end
   end
 

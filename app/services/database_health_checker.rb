@@ -12,7 +12,7 @@ module DatabaseHealthChecker
   # @return [Summary]
   def check
     Summary.new(true, simple_query)
-  rescue => err
+  rescue StandardError => err
     NewRelic::Agent.notice_error(err)
     Summary.new(false, err.message)
   end

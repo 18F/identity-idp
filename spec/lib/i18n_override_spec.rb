@@ -12,7 +12,7 @@ describe 'i18n override' do
       file_path = '/18F/identity-idp/blob/master/config/locales/shared/en.yml'
 
       expect(localized_str).to match regex
-      expect(localized_str.scan(URI.regexp).flatten).to include(file_path)
+      expect(localized_str.scan(URI::DEFAULT_PARSER.make_regexp).flatten).to include(file_path)
     end
   end
 end

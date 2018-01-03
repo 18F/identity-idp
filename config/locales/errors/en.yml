@@ -18,6 +18,11 @@ en:
       format_mismatch: Please match the requested format.
       improbable_phone: Invalid phone number. Please make sure you enter a valid phone
         number.
+      invalid_calling_area: Calls to that phone number are not supported.  Please
+        try SMS if you have an SMS-capable phone.
+      invalid_phone_number: The phone number entered is not valid.
+      invalid_sms_number: The phone number entered doesn't support text messaging.
+        Try the Phone call option.
       missing_field: Please fill in this field.
       must_have_us_country_code: Invalid phone number. Please make sure you enter
         a phone number with a U.S. country code.
@@ -29,6 +34,7 @@ en:
       not_saved:
         one: '1 error prohibited this %{resource} from being saved:'
         other: "%{count} errors prohibited this %{resource} from being saved:"
+      otp_failed: Your one time password failed to send.
       otp_incorrect: Incorrect code. Did you type it correctly?
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
@@ -39,7 +45,4 @@ en:
       usps_otp_expired: Your confirmation code has expired. Please request another
         letter for a new code.
       weak_password: Your password is not strong enough. %{feedback}
-      invalid_phone_number: The phone number entered is not valid.
-      invalid_sms_number: The phone number entered doesn't support text messaging.
-      otp_failed: Your one time password failed to send.
     not_authorized: You are not authorized to perform this action.

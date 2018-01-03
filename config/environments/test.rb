@@ -19,11 +19,11 @@ Rails.application.configure do
 
   config.assets.debug = true
 
-  if ENV.key?('RAILS_ASSET_HOST')
-    config.action_controller.asset_host = ENV['RAILS_ASSET_HOST']
-  else
-    config.action_controller.asset_host = '//'
-  end
+  config.action_controller.asset_host = if ENV.key?('RAILS_ASSET_HOST')
+                                          ENV['RAILS_ASSET_HOST']
+                                        else
+                                          '//'
+                                        end
 
   config.assets.digest = ENV.key?('RAILS_DISABLE_ASSET_DIGEST') ? false : true
 

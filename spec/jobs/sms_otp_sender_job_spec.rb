@@ -1,7 +1,8 @@
 require 'rails_helper'
-include Features::ActiveJobHelper
 
 describe SmsOtpSenderJob do
+  include Features::ActiveJobHelper
+
   describe '.perform' do
     before do
       reset_job_queues

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-include Features::LocalizationHelper
-include Features::MailerHelper
-
 describe Users::EmailsController do
+  include Features::LocalizationHelper
+  include Features::MailerHelper
+
   describe '#update' do
     let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
     let(:second_user) { create(:user, :signed_up, email: 'another@example.com') }

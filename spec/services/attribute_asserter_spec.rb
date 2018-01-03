@@ -19,8 +19,8 @@ describe AttributeAsserter do
       metadata: {}
     )
   end
-  let(:raw_loa1_authn_request) { URI.decode sp1_authnrequest.split('SAMLRequest').last }
-  let(:raw_loa3_authn_request) { URI.decode loa3_authnrequest.split('SAMLRequest').last }
+  let(:raw_loa1_authn_request) { CGI.unescape sp1_authnrequest.split('SAMLRequest').last }
+  let(:raw_loa3_authn_request) { CGI.unescape loa3_authnrequest.split('SAMLRequest').last }
   let(:loa1_authn_request) do
     SamlIdp::Request.from_deflated_request(raw_loa1_authn_request)
   end
@@ -96,7 +96,9 @@ describe AttributeAsserter do
 
         context 'authn request specifies bundle' do
           let(:raw_loa3_authn_request) do
-            URI.decode auth_request.create(loa3_with_bundle_saml_settings).split('SAMLRequest').last
+            CGI.unescape(
+              auth_request.create(loa3_with_bundle_saml_settings).split('SAMLRequest').last
+            )
           end
 
           it 'uses authn request bundle' do
@@ -179,7 +181,9 @@ describe AttributeAsserter do
 
         context 'authn request specifies bundle with first_name, last_name, email, ssn, phone' do
           let(:raw_loa1_authn_request) do
-            URI.decode auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last
+            CGI.unescape(
+              auth_request.create(loa1_with_bundle_saml_settings).split('SAMLRequest').last
+            )
           end
 
           it 'only returns uuid + email' do

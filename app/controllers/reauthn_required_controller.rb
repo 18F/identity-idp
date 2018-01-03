@@ -19,7 +19,7 @@ class ReauthnRequiredController < ApplicationController
   end
 
   def prompt_for_current_password
-    store_location_for(:user, request.url)
+    store_location(request.url)
     user_session[:context] = 'reauthentication'
     user_session[:factor_to_change] = factor_from_request_path(request.path)
     user_session[:current_password_required] = true
@@ -28,5 +28,9 @@ class ReauthnRequiredController < ApplicationController
 
   def factor_from_request_path(path)
     path.split('/')[-1]
+  end
+
+  def store_location(url)
+    user_session[:stored_location] = url
   end
 end

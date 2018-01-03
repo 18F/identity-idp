@@ -14,7 +14,7 @@ module WorkerHealthChecker
 
   # Empty job that we put in each background queue to make sure the queue is running
   # Relies on the Middleware to mark the queue as healthy
-  class DummyJob < ActiveJob::Base
+  class DummyJob < ApplicationJob
     def perform; end
   end
 

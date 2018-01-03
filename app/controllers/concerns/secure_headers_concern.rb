@@ -2,7 +2,7 @@ module SecureHeadersConcern
   extend ActiveSupport::Concern
 
   def apply_secure_headers_override
-    return unless stored_url_for_user&.start_with?(openid_connect_authorize_url)
+    return if stored_url_for_user.blank?
 
     authorize_params = URIService.params(stored_url_for_user)
 
