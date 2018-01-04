@@ -15,7 +15,9 @@ SAFE_KEYS = %w[
 SANITIZED_VALUE = '[FILTERED]'.freeze
 
 Rails.application.config.filter_parameters << lambda do |key, value|
-  value.replace(SANITIZED_VALUE) unless SAFE_KEYS.include?(key)
+  if value.respond_to?(:replace)
+    value.replace(SANITIZED_VALUE) unless SAFE_KEYS.include?(key)
+  end
 end
 
 # Configure redirect URLs to be filtered based on a matching string.
