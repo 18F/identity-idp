@@ -243,49 +243,6 @@ feature 'OpenID Connect' do
     end
   end
 
-  context 'LOA3 continuation' do
-    let(:user) { profile.user }
-    let(:otp) { 'abc123' }
-    let(:profile) do
-      create(
-        :profile,
-        deactivation_reason: :verification_pending,
-        phone_confirmed: phone_confirmed,
-        pii: { ssn: '6666', dob: '1920-01-01' }
-      )
-    end
-    let(:oidc_auth_url) do
-      client_id = 'urn:gov:gsa:openidconnect:sp:server'
-      state = SecureRandom.hex
-      nonce = SecureRandom.hex
-
-      openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email profile:name social_security_number',
-        redirect_uri: 'http://localhost:7654/auth/result',
-        state: state,
-        prompt: 'select_account',
-        nonce: nonce
-      )
-    end
-
-    context 'phone verification' do
-      let(:phone_confirmed) { true }
-
-      it 'prompts to finish verifying profile, then redirects to SP' do
-        visit oidc_auth_url
-
-        sign_in_live_with_2fa(user)
-        enter_correct_otp_code_for_user(user)
-
-        redirect_uri = URI(current_url)
-        expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-      end
-    end
-  end
-
   context 'visiting IdP via SP, then going back to SP and visiting IdP again' do
     it 'displays the branded page' do
       visit_idp_from_sp_with_loa1
