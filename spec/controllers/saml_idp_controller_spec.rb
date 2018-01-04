@@ -145,7 +145,7 @@ describe SamlIdpController do
         )
       end
       let(:this_authn_request) do
-        raw_req = URI.decode loa3_authnrequest.split('SAMLRequest').last
+        raw_req = CGI.unescape loa3_authnrequest.split('SAMLRequest').last
         SamlIdp::Request.from_deflated_request(raw_req)
       end
       let(:asserter) do
@@ -488,6 +488,12 @@ describe SamlIdpController do
       it 'returns a Success status code' do
         # https://msdn.microsoft.com/en-us/library/hh269642.aspx
         expect(status_code['Value']).to eq(Saml::XML::Namespaces::Statuses::SUCCESS)
+      end
+
+      it 'sets correct CSP config that includes any custom app scheme uri from SP redirect_uris' do
+        form_action = response.request.headers.env['secure_headers_request_config'].csp.form_action
+        csp_array = ["'self'", 'localhost:3000', 'x-example-app://idp_return']
+        expect(form_action).to match_array(csp_array)
       end
 
       # http://en.wikipedia.org/wiki/SAML_2.0#SAML_2.0_Assertions

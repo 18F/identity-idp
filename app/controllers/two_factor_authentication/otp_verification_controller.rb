@@ -2,7 +2,6 @@ module TwoFactorAuthentication
   class OtpVerificationController < ApplicationController
     include TwoFactorAuthenticatable
 
-    skip_before_action :handle_two_factor_authentication
     before_action :confirm_two_factor_enabled
 
     def show

@@ -3,7 +3,9 @@ require 'rails_helper'
 describe 'Account history' do
   let(:user) { create(:user, :signed_up, created_at: Time.zone.now - 100.days) }
   let(:account_created_event) { create(:event, user: user, created_at: Time.zone.now - 98.days) }
-  let(:usps_mail_sent_event) { create(:event, user: user, event_type: :usps_mail_sent, created_at: Time.zone.now - 90.days) }
+  let(:usps_mail_sent_event) do
+    create(:event, user: user, event_type: :usps_mail_sent, created_at: Time.zone.now - 90.days)
+  end
   let(:identity_with_link) do
     create(
       :identity,
@@ -13,7 +15,9 @@ describe 'Account history' do
       service_provider: 'http://localhost:3000'
     )
   end
-  let(:usps_mail_sent_again_event) { create(:event, user: user, event_type: :usps_mail_sent, created_at: Time.zone.now - 60.days) }
+  let(:usps_mail_sent_again_event) do
+    create(:event, user: user, event_type: :usps_mail_sent, created_at: Time.zone.now - 60.days)
+  end
   let(:identity_without_link) do
     create(
       :identity,

@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
   prepend_before_action :set_locale
   before_action :disable_caching
 
+  skip_before_action :handle_two_factor_authentication
+
   def session_expires_at
     now = Time.zone.now
     session[:session_expires_at] = now + Devise.timeout_in
@@ -95,8 +97,8 @@ class ApplicationController < ActionController::Base
     @service_provider_request ||= ServiceProviderRequest.from_uuid(params[:request_id])
   end
 
-  def after_sign_in_path_for(user)
-    stored_location_for(user) || sp_session[:request_url] || signed_in_url
+  def after_sign_in_path_for(_user)
+    user_session[:stored_location] || sp_session[:request_url] || signed_in_url
   end
 
   def signed_in_url

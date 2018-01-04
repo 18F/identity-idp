@@ -53,6 +53,25 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   end
 
   describe '#fallback_links' do
+    it 'handles multiple locales' do
+      I18n.available_locales.each do |locale|
+        presenter_for_locale = presenter_with_locale(locale)
+        I18n.locale = locale
+        presenter_for_locale.fallback_links.each do |html|
+          if locale == :en
+            expect(html).not_to match(%r{href="/en/})
+          else
+            expect(html).to match(%r{href="/#{locale}/})
+          end
+        end
+        if locale == :en
+          expect(presenter_for_locale.cancel_link).not_to match(%r{/en/})
+        else
+          expect(presenter_for_locale.cancel_link).to match(%r{/#{locale}/})
+        end
+      end
+    end
+
     context 'with totp enabled' do
       before do
         data[:totp_enabled] = true
@@ -124,5 +143,13 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
         end
       end
     end
+  end
+
+  def presenter_with_locale(locale)
+    TwoFactorAuthCode::PhoneDeliveryPresenter.new(
+      data: data.clone.merge(reenter_phone_number_path:
+                               "#{locale == :en ? nil : '/' + locale.to_s}/verify/phone"),
+      view: view
+    )
   end
 end

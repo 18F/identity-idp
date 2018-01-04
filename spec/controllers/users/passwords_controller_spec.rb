@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-include Features::LocalizationHelper
-include Features::MailerHelper
-
 describe Users::PasswordsController do
+  include Features::LocalizationHelper
+  include Features::MailerHelper
+
   describe '#update' do
     context 'form returns success' do
       it 'redirects to profile and sends a password change email' do

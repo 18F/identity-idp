@@ -10,15 +10,15 @@ class SamlIdpController < ApplicationController
   include VerifyProfileConcern
 
   skip_before_action :verify_authenticity_token
-  skip_before_action :handle_two_factor_authentication, only: :logout
 
   def auth
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
     process_fully_authenticated_user do |needs_idv, needs_profile_finish|
-      return store_location_and_redirect_to(verify_url) if needs_idv && !needs_profile_finish
-      return store_location_and_redirect_to(account_or_verify_profile_url) if needs_profile_finish
+      return redirect_to(verify_url) if needs_idv && !needs_profile_finish
+      return redirect_to(account_or_verify_profile_url) if needs_profile_finish
     end
     delete_branded_experience
+
     render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
@@ -50,14 +50,14 @@ class SamlIdpController < ApplicationController
     yield needs_idv, needs_profile_finish
   end
 
-  def store_location_and_redirect_to(url)
-    store_location_for(:user, request.original_url)
-    redirect_to url
-  end
-
   def render_template_for(message, action_url, type)
     domain = SecureHeadersWhitelister.extract_domain(action_url)
-    override_content_security_policy_directives(form_action: ["'self'", domain])
+
+    # Returns fully formed CSP array w/"'self'", domain, and ServiceProvider#redirect_uris
+    csp_uris = SecureHeadersWhitelister.csp_with_sp_redirect_uris(
+      domain, decorated_session.sp_redirect_uris
+    )
+    override_content_security_policy_directives(form_action: csp_uris)
 
     render(
       template: 'saml_idp/shared/saml_post_binding',

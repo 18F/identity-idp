@@ -59,5 +59,7 @@ module Upaya
         resource '/api/openid_connect/userinfo', headers: :any, methods: [:get]
       end
     end
+
+    config.middleware.use Rack::Attack if Figaro.env.enable_rate_limiting == 'true'
   end
 end

@@ -6,11 +6,14 @@ module Users
 
     skip_before_action :session_expires_at, only: [:active]
     skip_before_action :require_no_authentication, only: [:new]
-    before_action :confirm_two_factor_authenticated, only: [:update]
     before_action :check_user_needs_redirect, only: [:new]
 
     def new
-      analytics.track_event(Analytics::SIGN_IN_PAGE_VISIT, flash: flash[:alert])
+      analytics.track_event(
+        Analytics::SIGN_IN_PAGE_VISIT,
+        flash: flash[:alert],
+        stored_location: session['user_return_to']
+      )
       super
     end
 
@@ -90,6 +93,7 @@ module Users
         success: user_signed_in_and_not_locked_out?(user),
         user_id: user.uuid,
         user_locked_out: user_locked_out?(user),
+        stored_location: session['user_return_to'],
       }
 
       analytics.track_event(Analytics::EMAIL_AND_PASSWORD_AUTH, properties)

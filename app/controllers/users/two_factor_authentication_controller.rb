@@ -1,7 +1,6 @@
 module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
-    skip_before_action :handle_two_factor_authentication
 
     def show
       if current_user.totp_enabled?
@@ -29,24 +28,28 @@ module Users
     private
 
     def invalid_phone_number(exception)
-      analytics.track_event(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message)
+      analytics.track_event(
+        Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message, code: exception.code
+      )
+      flash_error_for_exception(exception)
+      redirect_back(fallback_location: account_url)
+    end
+
+    def flash_error_for_exception(exception)
       flash[:error] = case exception.code
                       when TwilioService::SMS_ERROR_CODE
                         t('errors.messages.invalid_sms_number')
                       when TwilioService::INVALID_ERROR_CODE
                         t('errors.messages.invalid_phone_number')
+                      when TwilioService::INVALID_CALLING_AREA_ERROR_CODE
+                        t('errors.messages.invalid_calling_area')
                       else
                         t('errors.messages.otp_failed')
                       end
-      redirect_back(fallback_location: account_url)
     end
 
     def otp_delivery_selection_form
-      OtpDeliverySelectionForm.new(
-        current_user,
-        phone_to_deliver_to,
-        context
-      )
+      OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to, context)
     end
 
     def reauthn_param
@@ -74,12 +77,10 @@ module Users
 
       job = "#{method.capitalize}OtpSenderJob".constantize
       job_priority = confirmation_context? ? :perform_now : :perform_later
-      job.send(
-        job_priority,
-        code: current_user.direct_otp,
-        phone: phone_to_deliver_to,
-        otp_created_at: current_user.direct_otp_sent_at.to_s
-      )
+      job.send(job_priority,
+               code: current_user.direct_otp,
+               phone: phone_to_deliver_to,
+               otp_created_at: current_user.direct_otp_sent_at.to_s)
     end
 
     def user_selected_otp_delivery_preference

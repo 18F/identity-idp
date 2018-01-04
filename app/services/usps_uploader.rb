@@ -3,7 +3,7 @@ class UspsUploader
     build_file
     upload_file
     clear_file
-  rescue => error
+  rescue StandardError => error
     NewRelic::Agent.notice_error(error)
   end
 

@@ -19,12 +19,13 @@ module TwoFactorAuthCode
     end
 
     def cancel_link
+      locale = LinkLocaleResolver.locale
       if confirmation_for_phone_change || reauthn
-        account_path
+        account_path(locale: locale)
       elsif confirmation_for_idv
-        verify_cancel_path
+        verify_cancel_path(locale: locale)
       else
-        sign_out_path
+        sign_out_path(locale: locale)
       end
     end
 
@@ -75,7 +76,8 @@ module TwoFactorAuthCode
     def phone_link_tag
       view.link_to(
         t("links.two_factor_authentication.#{fallback_method}"),
-        otp_send_path(otp_delivery_selection_form: { otp_delivery_preference: fallback_method })
+        otp_send_path(locale: LinkLocaleResolver.locale, otp_delivery_selection_form:
+          { otp_delivery_preference: fallback_method })
       )
     end
 
@@ -86,7 +88,7 @@ module TwoFactorAuthCode
     def auth_app_fallback_tag
       view.link_to(
         t('links.two_factor_authentication.app'),
-        login_two_factor_authenticator_path
+        login_two_factor_authenticator_path(locale: LinkLocaleResolver.locale)
       )
     end
 
@@ -105,12 +107,9 @@ module TwoFactorAuthCode
     def resend_code_link
       view.link_to(
         t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
-        otp_send_path(
-          otp_delivery_selection_form: {
-            otp_delivery_preference: otp_delivery_preference,
-            resend: true,
-          }
-        )
+        otp_send_path(locale: LinkLocaleResolver.locale,
+                      otp_delivery_selection_form:
+                        { otp_delivery_preference: otp_delivery_preference, resend: true })
       )
     end
   end

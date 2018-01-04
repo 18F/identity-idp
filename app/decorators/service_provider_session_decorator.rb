@@ -22,6 +22,8 @@ class ServiceProviderSessionDecorator
     @service_provider_request = service_provider_request
   end
 
+  delegate :redirect_uris, to: :sp, prefix: true
+
   def sp_logo
     sp.logo || DEFAULT_LOGO
   end

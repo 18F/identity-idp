@@ -51,10 +51,12 @@ es:
       ssn_label_html: Número de Seguro Social %{tooltip}
       state: Estado
       state_id: NOT TRANSLATED YET
+      state_id_number: NOT TRANSLATED YET
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
         state_id_card: NOT TRANSLATED YET
+      state_id_type_label: NOT TRANSLATED YET
       zipcode: Código postal
     index:
       continue_link: Sí, continuar

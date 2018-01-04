@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-include SamlAuthHelper
-include IdvHelper
-
 feature 'saml api' do
+  include SamlAuthHelper
+  include IdvHelper
+
   let(:user) { create(:user, :signed_up) }
 
   context 'SAML Assertions' do

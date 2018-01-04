@@ -18,7 +18,7 @@ AllCops:
     - 'lib/rspec/user_flow_formatter.rb'
     - 'lib/user_flow_exporter.rb'
   TargetRubyVersion: 2.3
-  TargetRailsVersion: 4.0
+  TargetRailsVersion: 5.0
   UseCache: true
 
 Rails:
@@ -59,6 +59,7 @@ Metrics/ClassLength:
   - app/controllers/application_controller.rb
   - app/controllers/openid_connect/authorization_controller.rb
   - app/controllers/users/confirmations_controller.rb
+  - app/controllers/users/sessions_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
   - app/decorators/user_decorator.rb
   - app/services/idv/session.rb
@@ -104,6 +105,11 @@ Rails/HttpPositionalArguments:
   Include:
     - 'spec/**/*'
     - 'test/**/*'
+
+Rails/LexicallyScopedActionFilter:
+  Exclude:
+    - 'app/controllers/concerns/saml_idp_auth_concern.rb'
+    - 'app/controllers/concerns/two_factor_authenticatable.rb'
 
 Rails/OutputSafety:
   Exclude:
@@ -203,7 +209,6 @@ Style/IfUnlessModifier:
   Description: Favor modifier if/unless usage when you have a single-line body.
   StyleGuide: https://github.com/bbatsov/ruby-style-guide#if-as-a-modifier
   Enabled: true
-  MaxLineLength: 80
 
 # Checks the indentation of the first element in an array literal.
 Layout/IndentArray:
@@ -235,6 +240,9 @@ Layout/MultilineOperationIndentation:
   # By default, the indentation width from Style/IndentationWidth is used
   # But it can be overridden by setting this parameter
   IndentationWidth: ~
+
+Style/FormatStringToken:
+  Enabled: false
 
 Style/PercentLiteralDelimiters:
   # Specify the default preferred delimiter for all types with the 'default' key

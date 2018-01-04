@@ -44,7 +44,7 @@ module Verify
 
     def destroy
       idv_session = user_session[:idv]
-      idv_session && idv_session.clear
+      idv_session&.clear
       handle_idv_redirect
     end
 

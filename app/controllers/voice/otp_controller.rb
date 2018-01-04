@@ -21,7 +21,7 @@ module Voice
     end
 
     def code
-      return unless encrypted_code.present?
+      return if encrypted_code.blank?
 
       cipher.decrypt(encrypted_code)
     end
