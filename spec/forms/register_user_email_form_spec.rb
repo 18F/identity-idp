@@ -18,6 +18,7 @@ describe RegisterUserEmailForm do
         extra = {
           email_already_exists: true,
           user_id: existing_user.uuid,
+          domain_name: 'gmail.com',
         }
 
         result = instance_double(FormResponse)
@@ -40,6 +41,7 @@ describe RegisterUserEmailForm do
         extra = {
           email_already_exists: true,
           user_id: user.uuid,
+          domain_name: 'test.com',
         }
 
         result = instance_double(FormResponse)
@@ -58,6 +60,7 @@ describe RegisterUserEmailForm do
         extra = {
           email_already_exists: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
+          domain_name: 'gmail.com',
         }
 
         expect(FormResponse).to have_received(:new).
@@ -73,6 +76,7 @@ describe RegisterUserEmailForm do
         extra = {
           email_already_exists: false,
           user_id: 'anonymous-uuid',
+          domain_name: 'invalid_email',
         }
 
         result = instance_double(FormResponse)
