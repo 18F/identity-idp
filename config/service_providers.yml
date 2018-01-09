@@ -341,6 +341,15 @@ production:
       - 'gov.dhs.cbp.pspd.oars.user.prod://result'
     restrict_to_deploy_env: 'prod'
 
+  # CBP I'm Ready
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:cbp:imready':
+    friendly_name: "CBP I'm Ready"
+    agency: 'DHS'
+    logo: 'cbp.png'
+    redirect_uris:
+      - 'gov.dhs.cbp.pspd.imready.user.prod://result'
+    restrict_to_deploy_env: 'prod'
+
   # USAJOBS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS':
     friendly_name: 'USAJOBS'
