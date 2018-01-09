@@ -171,22 +171,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
       end
     end
 
-    context 'having previously cancelled phone verification' do
-      let(:phone_confirmed) { true }
-
-      it 'prompts for OTP at sign in, then continues' do
-        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-
-        visit saml_authn_request
-
-        sign_in_live_with_2fa(user)
-
-        enter_correct_otp_code_for_user(user)
-
-        expect(current_url).to eq saml_authn_request
-      end
-    end
-
     context 'returning to verify after canceling during the same session' do
       it 'allows the user to verify' do
         user = create(:user, :signed_up)

@@ -287,4 +287,87 @@ feature 'Sign in' do
 
   it_behaves_like 'signing in with the site in Spanish', :saml
   it_behaves_like 'signing in with the site in Spanish', :oidc
+
+  context 'user signs in with Voice OTP delivery preference to an unsupported country' do
+    it 'falls back to SMS with an error message' do
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'voice')
+      signin(user.email, user.password)
+
+      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_later)
+      expect(page).
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+      expect(page).to have_content t(
+        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'India'
+      )
+      expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+  end
+
+  context 'user tries to visit /login/two_factor/voice with an unsupported phone' do
+    it 'displays an error message but does not send an SMS' do
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'sms')
+      signin(user.email, user.password)
+      visit login_two_factor_path(otp_delivery_preference: 'voice', reauthn: false)
+
+      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(page).
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false))
+      expect(page).to have_content t(
+        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'India'
+      )
+      expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+  end
+
+  context 'user tries to visit /otp/send with voice delivery to an unsupported phone' do
+    it 'displays an error message but does not send an SMS' do
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'sms')
+      signin(user.email, user.password)
+      visit otp_send_path(
+        otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true }
+      )
+
+      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(page).
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page).to have_content t(
+        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'India'
+      )
+      expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+  end
+
+  context 'user with voice delivery preference visits /otp/send' do
+    it 'displays an error message but does not send an SMS' do
+      allow(SmsOtpSenderJob).to receive(:perform_later)
+      allow(VoiceOtpSenderJob).to receive(:perform_later)
+      user = create(:user, :signed_up, phone: '+91 1234567890', otp_delivery_preference: 'voice')
+      signin(user.email, user.password)
+      visit otp_send_path(
+        otp_delivery_selection_form: { otp_delivery_preference: 'voice', resend: true }
+      )
+
+      expect(VoiceOtpSenderJob).to_not have_received(:perform_later)
+      expect(SmsOtpSenderJob).to have_received(:perform_later).exactly(:once)
+      expect(page).
+        to have_current_path(login_two_factor_path(otp_delivery_preference: 'sms'))
+      expect(page).to have_content t(
+        'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
+        location: 'India'
+      )
+      expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+  end
 end

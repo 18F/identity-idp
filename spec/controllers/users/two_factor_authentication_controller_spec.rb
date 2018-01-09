@@ -315,7 +315,7 @@ describe Users::TwoFactorAuthenticationController do
           otp_delivery_selection_form: { otp_delivery_preference: 'pigeon' },
         }
 
-        expect(response).to redirect_to user_two_factor_authentication_path(reauthn: false)
+        expect(response).to redirect_to login_two_factor_url(otp_delivery_preference: 'sms')
       end
     end
   end
