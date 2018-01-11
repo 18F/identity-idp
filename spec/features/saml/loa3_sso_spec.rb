@@ -19,7 +19,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
     fill_in :user_password, with: user.password
     click_submit_default
     click_acknowledge_personal_key
-    click_link t('idv.buttons.return_to_account')
+    click_link t('idv.buttons.continue_plain')
   end
 
   def sign_out_user
