@@ -3,7 +3,10 @@ require 'rails_helper'
 feature 'Sign in' do
   include SessionTimeoutWarningHelper
   include ActionView::Helpers::DateHelper
+  include PersonalKeyHelper
   include SamlAuthHelper
+  include SpAuthHelper
+  include IdvHelper
 
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
@@ -368,6 +371,31 @@ feature 'Sign in' do
         location: 'India'
       )
       expect(user.reload.otp_delivery_preference).to eq 'sms'
+    end
+  end
+
+  it_behaves_like 'signing in as LOA1 with personal key', :saml
+  it_behaves_like 'signing in as LOA1 with personal key', :oidc
+  it_behaves_like 'signing in as LOA3 with personal key', :saml
+  it_behaves_like 'signing in as LOA3 with personal key', :oidc
+
+  context 'user signs in with personal key, visits account page before viewing new key' do |sp|
+    # this can happen if you submit the personal key form multiple times quickly
+    it 'redirects to the personal key page' do
+      user = create(:user, :signed_up)
+      old_personal_key = PersonalKeyGenerator.new(user).create
+      signin(user.email, user.password)
+      click_link t('devise.two_factor_authentication.personal_key_fallback.link')
+      enter_personal_key(personal_key: old_personal_key)
+      click_submit_default
+      visit account_path
+
+      expect(page).to have_current_path(manage_personal_key_path)
+
+      new_personal_key = scrape_personal_key
+      click_acknowledge_personal_key
+
+      expect(page).to have_current_path(account_path)
     end
   end
 end

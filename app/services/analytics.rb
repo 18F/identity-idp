@@ -53,6 +53,7 @@ class Analytics
     @browser ||= DeviceDetector.new(request.user_agent)
   end
 
+  # rubocop:disable Metrics/LineLength
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
@@ -75,6 +76,7 @@ class Analytics
   LOGOUT_INITIATED = 'Logout Initiated'.freeze
   MULTI_FACTOR_AUTH = 'Multi-Factor Authentication'.freeze
   MULTI_FACTOR_AUTH_ENTER_OTP_VISIT = 'Multi-Factor Authentication: enter OTP visited'.freeze
+  MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT = 'Multi-Factor Authentication: enter personal key visited'.freeze
   MULTI_FACTOR_AUTH_MAX_ATTEMPTS = 'Multi-Factor Authentication: max attempts reached'.freeze
   MULTI_FACTOR_AUTH_PHONE_SETUP = 'Multi-Factor Authentication: phone setup'.freeze
   MULTI_FACTOR_AUTH_MAX_SENDS = 'Multi-Factor Authentication: max otp sends reached'.freeze
@@ -88,6 +90,7 @@ class Analytics
   PASSWORD_RESET_EMAIL = 'Password Reset: Email Submitted'.freeze
   PASSWORD_RESET_PASSWORD = 'Password Reset: Password Submitted'.freeze
   PASSWORD_RESET_TOKEN = 'Password Reset: Token Submitted'.freeze
+  PERSONAL_KEY_VIEWED = 'Personal Key Viewed'.freeze
   PHONE_CHANGE_REQUESTED = 'Phone Number Change: requested'.freeze
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
@@ -104,4 +107,5 @@ class Analytics
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'.freeze
+  # rubocop:enable Metrics/LineLength
 end

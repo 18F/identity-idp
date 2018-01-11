@@ -7,7 +7,7 @@ module SignUp
 
     def show
       user_session.delete(:first_time_personal_key_view)
-      @code = new_code
+      @code = create_new_code
       analytics.track_event(Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT)
     end
 
@@ -16,14 +16,6 @@ module SignUp
     end
 
     private
-
-    def new_code
-      if session[:new_personal_key].present?
-        session.delete(:new_personal_key)
-      else
-        create_new_code
-      end
-    end
 
     def confirm_has_not_already_viewed_personal_key
       return if user_session[:first_time_personal_key_view].present?

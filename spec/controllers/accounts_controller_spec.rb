@@ -53,5 +53,16 @@ describe AccountsController do
         expect(response).to_not be_redirect
       end
     end
+
+    context 'user has not acknowledged new personal key' do
+      it 'redirects to manage_personal_key_url' do
+        stub_sign_in
+        allow(subject).to receive(:user_session).and_return(personal_key: 'new key')
+
+        get :show
+
+        expect(response).to redirect_to(manage_personal_key_url)
+      end
+    end
   end
 end

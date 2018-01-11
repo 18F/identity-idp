@@ -108,7 +108,7 @@ class UserDecorator
   end
 
   def should_acknowledge_personal_key?(session)
-    return true if session[:new_personal_key]
+    return true if session[:personal_key]
 
     sp_session = session[:sp]
 
