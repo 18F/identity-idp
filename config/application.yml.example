@@ -52,6 +52,9 @@ valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://id
 usps_mail_batch_hours: '24'
 
 development:
+  aamva_public_key: '123abc'
+  aamva_private_key: '123abc'
+  aamva_verification_url: 'https://example.org:12345/verification/url'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -123,6 +126,9 @@ development:
   enable_load_testing_mode: 'false'
 
 production:
+  aamva_public_key: '123abc'
+  aamva_private_key: '123abc'
+  aamva_verification_url: 'https://example.org:12345/verification/url'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -190,6 +196,9 @@ production:
   enable_load_testing_mode: 'false'
 
 test:
+  aamva_public_key: '123abc'
+  aamva_private_key: '123abc'
+  aamva_verification_url: 'https://example.org:12345/verification/url'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
