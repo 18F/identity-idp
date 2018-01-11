@@ -99,7 +99,7 @@ en:
         this time you can continue later.
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
         verification code when prompted.
-      come_back_later_no_sp_html: You can return to your %{app} <strong>account</strong>
+      come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong>
         for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
