@@ -31,6 +31,10 @@ module SignUp
     private
 
     def show_completions_page?
+      # error may be occurring here at user_has_identities?
+      
+      # session[:sp] is checked here
+      # in SignUpCompletionsShow partial conditional is on decorated_session class typ
       service_providers = session[:sp].present? || @view_model.user_has_identities?
       user_fully_authenticated? && service_providers
     end
