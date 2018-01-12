@@ -21,6 +21,41 @@ describe Users::PersonalKeysController do
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    it 'tracks the page visit when there is a personal key in the user session' do
+      stub_sign_in
+      controller.user_session[:personal_key] = 'foo'
+      stub_analytics
+      analytics_hash = { personal_key_present: true }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::PERSONAL_KEY_VIEWED, analytics_hash)
+
+      get :show
+    end
+
+    it 'tracks the page visit when there is no personal key in the user session' do
+      stub_sign_in
+      stub_analytics
+      analytics_hash = { personal_key_present: false }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::PERSONAL_KEY_VIEWED, analytics_hash)
+
+      get :show
+    end
+
+    it 'does not generate a new personal key to avoid CSRF attacks' do
+      stub_sign_in
+
+      generator = instance_double(PersonalKeyGenerator)
+      allow(PersonalKeyGenerator).to receive(:new).
+        with(subject.current_user).and_return(generator)
+
+      expect(generator).to_not receive(:create)
+
+      get :show
+    end
   end
 
   describe '#update' do
