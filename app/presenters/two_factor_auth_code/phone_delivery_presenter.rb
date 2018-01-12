@@ -4,9 +4,12 @@ module TwoFactorAuthCode
       t('devise.two_factor_authentication.header_text')
     end
 
+    def phone_number_message
+      t(contact_message, number: content_tag(:strong, phone_number))
+    end
+
     def help_text
       t("instructions.mfa.#{otp_delivery_preference}.confirm_code_html",
-        number: phone_number_tag,
         resend_code_link: resend_code_link)
     end
 
@@ -41,10 +44,6 @@ module TwoFactorAuthCode
       :voice_otp_delivery_unsupported,
       :confirmation_for_idv
     )
-
-    def phone_number_tag
-      content_tag(:strong, phone_number)
-    end
 
     def otp_fallback_options
       if totp_enabled
@@ -90,6 +89,12 @@ module TwoFactorAuthCode
         t('links.two_factor_authentication.app'),
         login_two_factor_authenticator_path(locale: LinkLocaleResolver.locale)
       )
+    end
+
+    def contact_message
+      # i18n-tasks-use t("instructions.mfa.voice.number_message")
+      # i18n-tasks-use t("instructions.mfa.sms.number_message")
+      "instructions.mfa.#{otp_delivery_preference}.number_message"
     end
 
     def fallback_instructions

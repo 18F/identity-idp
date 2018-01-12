@@ -12,7 +12,7 @@ module Idv
       validates :state,
                 inclusion: {
                   in: SUPPORTED_JURISDICTIONS,
-                  message: I18n.t('idv.errors.unsupported_jurisdiction'),
+                  message: I18n.t('idv.errors.unsupported_jurisdiction', :sp_name),
                 }
       validates :state_id_type, inclusion: { in: STATE_ID_TYPES }
     end

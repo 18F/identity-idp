@@ -33,7 +33,7 @@ es:
         zipcode: 'Su código postal debe ser ingresado como #####-####'
       unsupported_jurisdiction: NOT TRANSLATED YET
     form:
-      activate_by_mail: Activar mi cuenta por correo.
+      activate_by_mail: obtenga un código por carta.
       address1: Dirección de calle 1
       address2: Dirección de calle 2 (opcional)
       city: Ciudad
@@ -41,7 +41,7 @@ es:
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
       last_name: Apellido
-      no_alternate_phone_html: No tengo otro número de teléfono. %{link}
+      no_alternate_phone_html: Si no tiene otro número de teléfono, %{link}
       password: Contraseña
       personal_details: Detalles personales
       phone: Teléfono
@@ -51,6 +51,7 @@ es:
       ssn_label_html: Número de Seguro Social %{tooltip}
       state: Estado
       state_id: NOT TRANSLATED YET
+      state_id_type_label: Tipo de número de identificación
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
@@ -58,6 +59,9 @@ es:
       zipcode: Código postal
     index:
       continue_link: Sí, continuar
+      id:
+        need_html: Si está creando una cuenta, necesitará una <strong>identificación
+          emitida por el estado actual</strong>.
       paragraph_1: Nos hemos asociado con una empresa externa confiable para verificar
         esta información y su identidad.
       prompt: "¿Tiene toda esta información disponible ahora mismo?"
@@ -106,6 +110,9 @@ es:
       hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visite nuestro <strong>Centro de Ayuda</strong> para obtener
         más información sobre la verificación de su cuenta.
+      id_number: Ingrese un número de identificación del estado o un número de licencia
+        de conducir válidos. El nombre, la fecha de nacimiento y la dirección en su
+        ID <strong>deben coincidir</ strong> la información proporcionada arriba.
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
@@ -139,9 +146,20 @@ es:
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
+        access_sp: "<strong>%{sp_name}</strong> requiere que <em>solo tú</em> puedas
+                    acceda a sus beneficios."
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         pii: información personal
         success: Encontramos registros que coinciden con su %{pii_message}
+      state_id_accordion_header: "¿Qué sucede si no tengo un número de identificación
+        válido?"
+      state_id_accordion_message: "Debe proporcionar un número de identificación válido
+        para continuar verificando \nen línea. No puede estar vencido El nombre, la
+        fecha de nacimiento y la dirección \nen su identificación deben coincidir
+        con la información que proporcionó anteriormente.\n\nSi se mudó recientemente
+        y la dirección que figura en su ID no coincide con su \ndirección oficial
+        actual, no podemos verificarlo en línea en este momento.\n\nSi no tiene un
+        número de identificación válido, regrese a %{sp} para acceder a sus \nbeneficios."
       usps:
         bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
@@ -201,4 +219,4 @@ es:
       session:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
-      sessions: Primero, cuéntenos sobre usted
+      sessions: Verifica tu identidad

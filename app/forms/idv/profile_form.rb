@@ -13,15 +13,16 @@ module Idv
       ActiveModel::Name.new(self, nil, 'Profile')
     end
 
-    def initialize(params, user)
+    def initialize(params, user, sp_name)
       @user = user
       consume_params(params)
+      @sp_name = sp_name
     end
 
-    def submit(params)
+    def submit(params, sp_name)
       consume_params(params)
 
-      FormResponse.new(success: valid?, errors: errors.messages)
+      FormResponse.new(success: valid?, errors: errors.messages, sp_name: sp_name)
     end
 
     private
