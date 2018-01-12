@@ -1,6 +1,13 @@
 ---
 en:
   user_mailer:
+    account_does_not_exist:
+      intro: This email address is not yet associated with a %{app} account. If you’d
+        like to create a login.gov account using this email address, please click
+        the link below or copy and paste the entire link into your browser. If you
+        didn't request a password reset, you can ignore this message.
+      link_text: Create your account
+      subject: Your login.gov password reset request
     contact_link_text: contact us
     email_changed:
       help: If you did not want to change your email address, please visit the %{app}

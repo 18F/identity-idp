@@ -48,17 +48,25 @@ module Users
 
     protected
 
+    def email_params
+      params.require(:password_reset_email_form).permit(:email, :resend, :request_id)
+    end
+
     def email
-      params[:password_reset_email_form][:email]
+      email_params[:email]
+    end
+
+    def request_id
+      email_params[:request_id]
     end
 
     def handle_valid_email
-      RequestPasswordReset.new(email).perform
+      RequestPasswordReset.new(email, request_id).perform
 
       session[:email] = email
-      resend_confirmation = params[:password_reset_email_form][:resend]
+      resend_confirmation = email_params[:resend]
 
-      redirect_to forgot_password_url(resend: resend_confirmation)
+      redirect_to forgot_password_url(resend: resend_confirmation, request_id: request_id)
     end
 
     def handle_invalid_or_expired_token(result)
