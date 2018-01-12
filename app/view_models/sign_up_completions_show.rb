@@ -65,6 +65,7 @@ class SignUpCompletionsShow
   end
 
   def service_provider_partial
+    # maybe @decorated_session is just a SessionDecorator, but session[:sp] is set
     if @decorated_session.is_a?(ServiceProviderSessionDecorator)
       'sign_up/completions/show_sp'
     else
@@ -83,6 +84,7 @@ class SignUpCompletionsShow
   end
 
   def user_has_identities?
+    # possible error source
     if identities
       identities.length.positive?
     else

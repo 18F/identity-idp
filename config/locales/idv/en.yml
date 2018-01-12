@@ -155,7 +155,7 @@ en:
         resend: Send me another letter.
         success: It should arrive in 5 to 10 business days.
       agencies_login: You can now continue to and log into these agencies.
-      agency_login_html: You can now continue to and into <br><strong>%{sp}</strong>.
+      agency_login_html: You can now continue to and log into <br><strong>%{sp}</strong>.
     modal:
       attempts:
         one: You have <strong>1 attempt remaining.</strong>
