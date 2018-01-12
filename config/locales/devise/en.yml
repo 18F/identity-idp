@@ -119,7 +119,8 @@ en:
         title: How would you like to receive your security code?
         voice: Phone call
       otp_phone_label: Phone number
-      otp_phone_label_info: Mobile phone or landline
+      otp_phone_label_info: Mobile phone or landline. If you enter a landline, please
+        select “Phone call” below.
       otp_phone_label_info_modile_only: Mobile phone
       otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
         one-time security code via text message or phone call. This helps safeguard

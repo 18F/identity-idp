@@ -129,7 +129,8 @@ fr:
         title: Comment souhaitez-vous recevoir votre code de sécurité?
         voice: Appel téléphonique
       otp_phone_label: Numéro de téléphone
-      otp_phone_label_info: Cellulaire ou ligne fixe est acceptable
+      otp_phone_label_info: Cellulaire ou ligne fixe. Si vous entrez une ligne fixe,
+        veuillez choisir l'option "Appel téléphonique" ci-dessous.
       otp_phone_label_info_modile_only: NOT TRANSLATED YET
       otp_setup_html: "<strong>Chaque fois que vous vous connecterez,</strong> nous
         vous enverrons un code de sécurité à utilisation unique par message texte
