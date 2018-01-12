@@ -16,6 +16,7 @@ describe PasswordForm, type: :model do
 
         extra = {
           user_id: user.uuid,
+          request_id_present: false,
         }
 
         result = instance_double(FormResponse)
@@ -40,6 +41,7 @@ describe PasswordForm, type: :model do
 
         extra = {
           user_id: '123',
+          request_id_present: false,
         }
 
         result = instance_double(FormResponse)
@@ -70,6 +72,7 @@ describe PasswordForm, type: :model do
         passwords.each do |password|
           extra = {
             user_id: '123',
+            request_id_present: false,
           }
           result = instance_double(FormResponse)
 
@@ -77,6 +80,23 @@ describe PasswordForm, type: :model do
             with(success: false, errors: errors, extra: extra).and_return(result)
           expect(form.submit(password: password)).to eq result
         end
+      end
+    end
+
+    context 'when the request_id is passed in the params' do
+      it 'tracks that it is present' do
+        user = build_stubbed(:user)
+        form = PasswordForm.new(user)
+        password = 'valid password'
+        extra = {
+          user_id: user.uuid,
+          request_id_present: true,
+        }
+        result = instance_double(FormResponse)
+
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit(password: password, request_id: 'foo')).to eq result
       end
     end
   end
