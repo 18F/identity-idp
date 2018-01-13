@@ -368,3 +368,12 @@ production:
       - 'https://login.uat.usajobs.gov/openid'
       - 'https://login.uat.usajobs.gov/externalloggedout'
     restrict_to_deploy_env: 'staging'
+
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
+    friendly_name: 'USAJOBS'
+    agency: 'OPM'
+    logo: 'usajobs.svg'
+    redirect_uris:
+      - 'https://login.usajobs.gov/openid'
+      - 'https://login.usajobs.gov/externalloggedout'
+    restrict_to_deploy_env: 'prod'
