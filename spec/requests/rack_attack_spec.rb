@@ -4,6 +4,10 @@ describe 'throttling requests' do
   before(:all) { Rack::Attack.cache.store = ActiveSupport::Cache::MemoryStore.new }
   before(:each) { Rack::Attack.cache.store.clear }
 
+  let(:requests_per_ip_limit) { Figaro.env.requests_per_ip_limit.to_i }
+  let(:logins_per_ip_limit) { Figaro.env.logins_per_ip_limit.to_i }
+  let(:logins_per_email_and_ip_limit) { Figaro.env.logins_per_email_and_ip_limit.to_i }
+
   describe 'safelists' do
     it 'allows all requests from localhost' do
       get '/'
@@ -19,7 +23,7 @@ describe 'throttling requests' do
       data = {
         count: 1,
         limit: Figaro.env.requests_per_ip_limit.to_i,
-        period: Figaro.env.requests_per_ip_period.to_i.seconds,
+        period: Figaro.env.requests_per_ip_period.to_i,
       }
 
       expect(request.env['rack.attack.throttle_data']['req/ip']).to eq(data)
@@ -27,7 +31,7 @@ describe 'throttling requests' do
 
     context 'when the number of requests is lower than the limit' do
       it 'does not throttle' do
-        2.times do
+        (requests_per_ip_limit - 1).times do
           get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
@@ -37,7 +41,7 @@ describe 'throttling requests' do
 
     context 'when the request is for an asset' do
       it 'does not throttle' do
-        4.times do
+        (requests_per_ip_limit + 1).times do
           get '/assets/application.js', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
@@ -46,43 +50,29 @@ describe 'throttling requests' do
     end
 
     context 'when the number of requests is higher than the limit' do
-      before do
-        allow(Rails.logger).to receive(:warn)
+      it 'throttles with a custom response' do
+        analytics = instance_double(Analytics)
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
 
-        4.times do
+        (requests_per_ip_limit + 1).times do
           get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
-      end
 
-      it 'throttles' do
         expect(response.status).to eq(429)
-      end
-
-      it 'returns a custom body' do
         expect(response.body).
-          to include('Your request was denied because of unusual activity.')
-      end
-
-      it 'returns text/html for Content-type' do
+          to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
-      end
-
-      it 'logs the throttle' do
-        analytics_hash = {
-          event: 'throttle',
-          type: 'req/ip',
-          user_ip: '1.2.3.4',
-          user_uuid: nil,
-          visitor_id: request.cookies['ahoy_visitor'],
-        }
-
-        expect(Rails.logger).to have_received(:warn).with(analytics_hash.to_json)
+        expect(analytics).
+          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'req/ip')
       end
     end
 
     context 'when the user is signed in' do
       it 'logs the user UUID' do
-        allow(Rails.logger).to receive(:warn)
+        analytics = instance_double(Analytics)
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
 
         user = create(:user, :signed_up)
 
@@ -91,22 +81,19 @@ describe 'throttling requests' do
           params: {
             'user[email]' => user.email,
             'user[password]' => user.password,
-          }
+          },
+          headers: { REMOTE_ADDR: '1.2.3.4' }
         )
 
-        4.times do
+        requests_per_ip_limit.times do
           get '/account', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
-        analytics_hash = {
-          event: 'throttle',
-          type: 'req/ip',
-          user_ip: '1.2.3.4',
-          user_uuid: user.uuid,
-          visitor_id: request.cookies['ahoy_visitor'],
-        }
-
-        expect(Rails.logger).to have_received(:warn).with(analytics_hash.to_json)
+        expect(Analytics).to have_received(:new).twice do |arguments|
+          expect(arguments[:user]).to eq user
+        end
+        expect(analytics).
+          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'req/ip')
       end
     end
   end
@@ -126,11 +113,12 @@ describe 'throttling requests' do
 
     context 'when the number of requests is lower than the limit' do
       it 'does not throttle' do
-        2.times do
-          post '/', params: {
-            user: { email: 'test@example.com' },
-          }, headers: { REMOTE_ADDR: '1.2.3.4' }
-        end
+        headers = { REMOTE_ADDR: '1.2.3.4' }
+        first_email = 'test1@example.com'
+        second_email = 'test2@example.com'
+
+        post '/', params: { user: { email: first_email } }, headers: headers
+        post '/', params: { user: { email: second_email } }, headers: headers
 
         expect(response.status).to eq(200)
       end
@@ -140,7 +128,7 @@ describe 'throttling requests' do
       it 'does not throttle' do
         expect(Rails.logger).to_not receive(:warn)
 
-        3.times do
+        (logins_per_ip_limit + 1).times do
           get '/', headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 
@@ -149,40 +137,80 @@ describe 'throttling requests' do
     end
 
     context 'when the number of logins per ip is higher than the limit per period' do
-      before do
-        allow(Rails.logger).to receive(:warn)
+      it 'throttles with a custom response' do
+        analytics = instance_double(Analytics)
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
 
-        3.times do
+        headers = { REMOTE_ADDR: '1.2.3.4' }
+        first_email = 'test1@example.com'
+        second_email = 'test2@example.com'
+        third_email = 'test3@example.com'
+        fourth_email = 'test4@example.com'
+
+        post '/', params: { user: { email: first_email } }, headers: headers
+        post '/', params: { user: { email: second_email } }, headers: headers
+        post '/', params: { user: { email: third_email } }, headers: headers
+        post '/', params: { user: { email: fourth_email } }, headers: headers
+
+        expect(response.status).to eq(429)
+        expect(response.body).
+          to include('Please wait a few minutes before you try again.')
+        expect(response.header['Content-type']).to include('text/html')
+        expect(analytics).
+          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, type: 'logins/ip')
+      end
+    end
+  end
+
+  describe 'logins per email and ip' do
+    context 'when the number of requests is lower or equal to the limit' do
+      it 'does not throttle' do
+        (logins_per_email_and_ip_limit - 1).times do
           post '/', params: {
             user: { email: 'test@example.com' },
           }, headers: { REMOTE_ADDR: '1.2.3.4' }
         end
-      end
 
-      it 'throttles' do
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context 'when the email is nil, an empty string, or not a String' do
+      it 'does not blow up' do
+        [nil, '', :xml, 1].each do |email|
+          post '/', params: { user: { email: email } }, headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
         expect(response.status).to eq(429)
       end
+    end
 
-      it 'returns a custom body' do
+    context 'when the number of logins per email and ip is higher than the limit per period' do
+      it 'throttles with a custom response' do
+        analytics = instance_double(Analytics)
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
+
+        (logins_per_email_and_ip_limit + 1).times do
+          post '/', params: {
+            user: { email: 'test@example.com' },
+          }, headers: { REMOTE_ADDR: '1.2.3.4' }
+        end
+
+        analytics_hash = { type: 'logins/email+ip' }
+
+        expect(response.status).to eq(429)
         expect(response.body).
-          to include('Your request was denied because of unusual activity.')
-      end
-
-      it 'returns text/html for Content-type' do
+          to include('Please wait a few minutes before you try again.')
         expect(response.header['Content-type']).to include('text/html')
+        expect(analytics).
+          to have_received(:track_event).with(Analytics::RATE_LIMIT_TRIGGERED, analytics_hash)
       end
+    end
 
-      it 'logs the throttle' do
-        analytics_hash = {
-          event: 'throttle',
-          type: 'logins/ip',
-          user_ip: '1.2.3.4',
-          user_uuid: nil,
-          visitor_id: request.cookies['ahoy_visitor'],
-        }
-
-        expect(Rails.logger).to have_received(:warn).with(analytics_hash.to_json)
-      end
+    it 'uses the throttled_response for the blocklisted_response' do
+      expect(Rack::Attack.blocklisted_response).to eq Rack::Attack.throttled_response
     end
   end
 
