@@ -21,6 +21,9 @@ max_mail_events_window_in_days: '30'
 # https://github.com/dropbox/zxcvbn#usage
 min_password_score: '3'
 
+# How long to wait for the MX validator to get a response from the DNS server
+mx_timeout: '3'
+
 password_max_attempts: '3'
 
 # If a queue does not have a healthy job after this many seconds, report it as unhealthy

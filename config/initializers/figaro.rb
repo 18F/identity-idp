@@ -21,6 +21,7 @@ Figaro.require_keys(
   'max_mail_events',
   'max_mail_events_window_in_days',
   'min_password_score',
+  'mx_timeout',
   'otp_delivery_blocklist_findtime',
   'otp_delivery_blocklist_maxretry',
   'otp_valid_for',
