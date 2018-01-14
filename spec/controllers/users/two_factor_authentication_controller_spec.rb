@@ -272,6 +272,18 @@ describe Users::TwoFactorAuthenticationController do
         expect(flash[:error]).to eq(unsupported_calling_area)
       end
 
+      it 'flashes an error when twilio responds with an invalid voice number' do
+        twilio_error = Twilio::REST::RestError.new(
+          '', TwilioService::INVALID_VOICE_NUMBER_ERROR_CODE, '400'
+        )
+
+        allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
+        params = { otp_delivery_selection_form: { otp_delivery_preference: 'voice' } }
+        get :send_code, params: params
+
+        expect(flash[:error]).to eq t('errors.messages.invalid_voice_number')
+      end
+
       it 'flashes a failed to send error when twilio responds with an unknown error' do
         twilio_error = Twilio::REST::RestError.new('', '', '400')
 

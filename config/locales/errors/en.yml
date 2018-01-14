@@ -23,6 +23,8 @@ en:
       invalid_phone_number: The phone number entered is not valid.
       invalid_sms_number: The phone number entered doesn't support text messaging.
         Try the Phone call option.
+      invalid_voice_number: Invalid phone number. Check that you've entered the correct
+        country code or area code.
       missing_field: Please fill in this field.
       must_have_us_country_code: Invalid phone number. Please make sure you enter
         a phone number with a U.S. country code.

@@ -23,6 +23,8 @@ fr:
       invalid_calling_area: NOT TRANSLATED YET
       invalid_phone_number: NOT TRANSLATED YET
       invalid_sms_number: NOT TRANSLATED YET
+      invalid_voice_number: Numéro de téléphone invalide. Vérifiez que vous avez entré
+        le bon indicatif international ou régional.
       missing_field: Veuillez remplir ce champ.
       must_have_us_country_code: NOT TRANSLATED YET
       no_password_reset_profile: Aucun profil récemment désactivé en raison d'une
