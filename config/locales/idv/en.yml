@@ -31,8 +31,8 @@ en:
         personal_key: 'Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         zipcode: 'Your zipcode must be entered in as #####-####'
-      unsupported_jurisdiction: Sorry, we can't verify people from this state. Please
-        visit %{sp_name} to access your account.
+      unsupported_jurisdiction: Sorry, we can't verify people from this state.
+      unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
     form:
       activate_by_mail: get a code by letter.
       address1: Street address 1
@@ -128,7 +128,7 @@ en:
         intro: We can only send a confirmation code to a telephone number linked to
           you.
         phone_of_record: Phone of record
-        prepaid: on a contract, not prepaid
+        prepaid: not prepaid
         same_as_2fa: This phone number can be the same one you used to set up your
           one-time password as long as it meets the criteria above.
         us_country_code: based in the United States
@@ -153,6 +153,8 @@ en:
           access your benefits."
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
+        review_message: When you enter your password, login.gov will secure your personal
+          information. We do this to make sure no one else can access your information.
         success: We found records matching your %{pii_message}
       state_id_accordion_header: What if I don't have a valid ID number?
       state_id_accordion_message: "You must provide a valid ID number to continue
@@ -219,5 +221,5 @@ en:
       select_verification: Choose how to confirm your address
       session:
         phone: Get a code by telephone
-        review: Encrypt your verified data by entering your password
+        review: Enter your login.gov password
       sessions: Verify your identity

@@ -35,7 +35,10 @@ fr:
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
-      unsupported_jurisdiction: NOT TRANSLATED YET
+      unsupported_jurisdiction: Désolé, nous ne pouvons pas vérifier les personnes
+        de cet état.
+      unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
+        compte.
     form:
       activate_by_mail: obtenez un code par lettre.
       address1: Adresse 1
@@ -132,7 +135,7 @@ fr:
         intro: Le seul numéro de téléphone auquel nous pouvons envoyer un code de
           confirmation est celui qui est lié à votre identité légale.
         phone_of_record: numéro de téléphone enregistré
-        prepaid: avec un contrat, et non prépayé
+        prepaid: et non prépayé
         same_as_2fa: Ce numéro de téléphone peut être le même que celui que vous utilisez
           pour configurer votre mot de passe à usage unique, tant et aussi longtemps
           qu'il respecte les critères mentionnés plus haut.
@@ -160,6 +163,9 @@ fr:
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
         pii: Information personnelle
+        review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
+          vos informations personnelles. Nous faisons cela pour nous assurer que personne
+          d'autre ne puisse accéder à vos informations.
         success: Nous avons trouvé des données qui correspondent à %{pii_message}
       state_id_accordion_header: Que faire si je n'ai pas de numéro d'identification
         valide?

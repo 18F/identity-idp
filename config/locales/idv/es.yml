@@ -31,7 +31,9 @@ es:
         personal_key: 'Introduzca su clave personal para esta cuenta. Ejemplo: ABC1-DEF2-G3HI-J456'
         ssn: 'Su número de Seguro Social debe ser ingresado como ### - ## - ####'
         zipcode: 'Su código postal debe ser ingresado como #####-####'
-      unsupported_jurisdiction: NOT TRANSLATED YET
+      unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
+        estado.
+      unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
     form:
       activate_by_mail: obtenga un código por carta.
       address1: Dirección de calle 1
@@ -125,7 +127,7 @@ es:
         intro: Sólo podemos enviar el código de confirmación al número de teléfono
           vinculado a su identidad legal.
         phone_of_record: Teléfono del registro
-        prepaid: en un contrato, no prepago
+        prepaid: no prepago
         same_as_2fa: Este número de teléfono puede ser el mismo que utilizó para configurar
           su contraseña de un uso único, siempre y cuando cumpla con los criterios
           anteriores.
@@ -150,6 +152,9 @@ es:
                     acceda a sus beneficios."
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         pii: información personal
+        review_message: Cuando ingrese su contraseña, login.gov protegerá su información
+          personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
+          su información.
         success: Encontramos registros que coinciden con su %{pii_message}
       state_id_accordion_header: "¿Qué sucede si no tengo un número de identificación
         válido?"

@@ -22,7 +22,7 @@ en:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    personal_key: Here is your personal key
+    personal_key: Store your personal key
     registrations:
       enter_email: Enter your email address
     session_timeout_warning: Need more time?

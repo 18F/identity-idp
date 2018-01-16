@@ -20,7 +20,7 @@ module Verify
     end
 
     def create
-      result = idv_form.submit(profile_params, user_session[:sp_name])
+      result = idv_form.submit(profile_params)
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
 
       if result.success?
@@ -96,8 +96,26 @@ module Verify
         redirect_to verify_session_dupe_url
       else
         render_failure
+        set_unsupported_jurisdiction_error
         render :new
       end
+    end
+
+    def set_unsupported_jurisdiction_error
+      return unless idv_form.unsupported_jurisdiction?
+      idv_form.errors.delete(:state)
+      idv_form.errors.add(:state, unsupported_jurisdiction_error_message)
+    end
+
+    def unsupported_jurisdiction_error_message
+      error_message = t('idv.errors.unsupported_jurisdiction')
+      if decorated_session.sp_name.present?
+        error_message = [
+          error_message,
+          t('idv.errors.unsupported_jurisdiction_sp', sp_name: decorated_session.sp_name),
+        ].join(' ')
+      end
+      error_message
     end
 
     def view_model_class
@@ -111,8 +129,7 @@ module Verify
     def idv_form
       @_idv_form ||= Idv::ProfileForm.new((
         idv_session.params || {}),
-        current_user, 
-        user_session[:sp_name]
+        current_user
       )
     end
 
