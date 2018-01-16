@@ -14,4 +14,12 @@ class NonexistentUser
   def persisted?
     false
   end
+
+  def admin?
+    false
+  end
+
+  def tech?
+    false
+  end
 end
