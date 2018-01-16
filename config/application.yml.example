@@ -35,6 +35,9 @@ queue_health_check_frequency_seconds: '30'
 # The number of words in the personal key phrase
 recovery_code_length: '4'
 
+# How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
+service_timeout: '15'
+
 # Set the number of seconds before the session times out that the timeout
 # warning should appear.
 # NOTE: session_timeout_warning_seconds + session_check_delay % 60 should == 0
@@ -118,6 +121,7 @@ development:
   saml_passphrase: 'trust-but-verify'
   scrypt_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   secret_key_base: 'development_secret_key_base'
+  service_timeout: '30'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   state_id_proofing_vendor: 'mock'

@@ -41,6 +41,7 @@ Figaro.require_keys(
   'saml_passphrase',
   'scrypt_cost',
   'secret_key_base',
+  'service_timeout',
   'session_encryption_key',
   'session_timeout_in_minutes',
   'state_id_proofing_vendor',
