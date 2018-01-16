@@ -13,7 +13,6 @@ module Idv
       [
         env.profile_proofing_vendor,
         env.phone_proofing_vendor,
-        env.state_id_proofing_vendor,
       ]
     end
 

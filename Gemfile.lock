@@ -1,15 +1,4 @@
 GIT
-  remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: 2ede830efe106e8b1ec63d323dd14e681b1bca5a
-  tag: v1.0.0
-  specs:
-    aamva (0.1.0)
-      dotenv
-      hashie
-      httpi
-      xmldsig
-
-GIT
   remote: git@github.com:18F/identity-equifax-api-client-gem.git
   revision: de4258c7608997f72e119b16718eeead4d39db70
   tag: v1.1.0
@@ -657,8 +646,6 @@ GEM
     whenever (0.10.0)
       chronic (>= 0.6.3)
     xml-simple (1.1.5)
-    xmldsig (0.6.5)
-      nokogiri (>= 1.6.8, < 2.0.0)
     xmlenc (0.6.9)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -676,7 +663,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  aamva!
   ahoy_matey
   american_date
   aws-sdk-core
