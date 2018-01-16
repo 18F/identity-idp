@@ -2,4 +2,5 @@
 es:
   jobs:
     sms_otp_sender_job:
-      message: "%{code} es su %{app} código de seguridad de sólo un uso."
+      message: "%{code} es su %{app} código de seguridad de sólo un uso. Este código
+        caducará en cinco minutos."

@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   post '/api/service_provider' => 'service_provider#update'
   match '/api/voice/otp' => 'voice/otp#show',
-        via: [:get, :post],
+        via: %i[get post],
         as: :voice_otp,
         defaults: { format: :xml }
 

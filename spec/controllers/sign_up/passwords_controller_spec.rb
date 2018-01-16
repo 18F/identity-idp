@@ -12,6 +12,7 @@ describe SignUp::PasswordsController do
         success: true,
         errors: {},
         user_id: user.uuid,
+        request_id_present: false,
       }
 
       expect(@analytics).to receive(:track_event).
@@ -38,6 +39,7 @@ describe SignUp::PasswordsController do
         success: false,
         errors: { password: ['is too short (minimum is 8 characters)'] },
         user_id: user.uuid,
+        request_id_present: false,
       }
 
       expect(@analytics).to receive(:track_event).

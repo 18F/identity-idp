@@ -6,7 +6,7 @@ class ServiceProvider < ApplicationRecord
   validate :redirect_uris_are_parsable
 
   def self.from_issuer(issuer)
-    return NullServiceProvider.new(issuer: nil) unless issuer.present?
+    return NullServiceProvider.new(issuer: nil) if issuer.blank?
     find_by(issuer: issuer) || NullServiceProvider.new(issuer: issuer)
   end
 

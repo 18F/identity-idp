@@ -38,7 +38,7 @@ shared_examples 'selecting usps address verification method' do |sp|
     expect(current_path).to eq(verify_come_back_later_path)
 
     if sp == :saml
-      expect(page).to have_link(t('idv.buttons.return_to_account'))
+      expect(page).to have_link(t('idv.buttons.continue_plain'))
       expect(usps_confirmation_entry.issuer).
         to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
     elsif sp == :oidc

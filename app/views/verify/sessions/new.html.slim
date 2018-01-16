@@ -79,7 +79,6 @@ p.mb2 = link_to t('links.access_help'), 'https://login.gov/help/privacy-and-secu
     = f.input :state_id_number, label: t('idv.form.state_id'), required: true
     = accordion('state-id', t('idv.messages.state_id_accordion_header'), 
       wrapper_css: 'mb0 col-12 fs-16p') do
-      
       =simple_format(t('idv.messages.state_id_accordion_message', sp: decorated_session.sp_name))
 
   .mt3

@@ -3,7 +3,6 @@ class PersonalKeyForm
   include PersonalKeyValidator
 
   attr_accessor :personal_key
-  attr_reader :user
 
   validate :check_personal_key
 
@@ -15,11 +14,7 @@ class PersonalKeyForm
   def submit
     @success = valid?
 
-    if success
-      UpdateUser.new(user: user, attributes: { personal_key: nil }).call
-    else
-      reset_sensitive_fields
-    end
+    reset_sensitive_fields unless success
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end

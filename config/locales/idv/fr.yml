@@ -8,7 +8,6 @@ fr:
       mail:
         resend: Envoyer une autre lettre
         send: Envoyer une lettre
-      return_to_account: NOT TRANSLATED YET
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: Souhaitez-vous vraiment annuler?
@@ -58,11 +57,12 @@ fr:
       ssn_label_html: Numéro de sécurité sociale %{tooltip}
       state: État
       state_id: NOT TRANSLATED YET
-      state_id_type_label: Type de numéro d'identification
+      state_id_number: NOT TRANSLATED YET
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
         state_id_card: NOT TRANSLATED YET
+      state_id_type_label: Type de numéro d'identification
       zipcode: Code ZIP
     index:
       continue_link: Oui, continuer
@@ -108,6 +108,7 @@ fr:
         financières pour compléter ce processus. Si vous n'avez pas cette information
         sous la main, vous pouvez continuer plus tard.
       come_back_later: NOT TRANSLATED YET
+      come_back_later_no_sp_html: NOT TRANSLATED YET
       come_back_later_sp_html: NOT TRANSLATED YET
       confirm: Vous avez crypté vos données vérifiées
       dupe_ssn1: Si vous recevez ce message d'erreur, il est possible que vous ayez

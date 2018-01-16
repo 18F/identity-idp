@@ -8,6 +8,7 @@ class PasswordForm
 
   def submit(params)
     submitted_password = params[:password]
+    @request_id = params[:request_id]
 
     self.password = submitted_password
 
@@ -16,9 +17,12 @@ class PasswordForm
 
   private
 
+  attr_reader :request_id
+
   def extra_analytics_attributes
     {
       user_id: user.uuid,
+      request_id_present: request_id.present?,
     }
   end
 end

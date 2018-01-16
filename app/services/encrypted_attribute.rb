@@ -18,7 +18,7 @@ class EncryptedAttribute
   def initialize(encrypted, decrypted: nil, cost: nil, user_access_key: nil)
     self.encrypted = encrypted
     self.user_access_key = user_access_key
-    self.decrypted = decrypted.present? ? decrypted : decrypt(cost)
+    self.decrypted = decrypted.presence || decrypt(cost)
   end
 
   def fingerprint

@@ -6,7 +6,7 @@ module Pii
 
     def valid_base64_encoding?(text)
       Base64.strict_decode64(text)
-    rescue
+    rescue StandardError
       false
     end
 

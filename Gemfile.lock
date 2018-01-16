@@ -48,18 +48,6 @@ GIT
       uuid
 
 GIT
-  remote: https://github.com/Houdini/two_factor_authentication.git
-  revision: 1d6abe30a61c849863d6ec3f6f9e44f978d7b181
-  ref: 1d6abe3
-  specs:
-    two_factor_authentication (1.1.5)
-      devise
-      encryptor
-      rails (>= 3.1.1)
-      randexp
-      rotp
-
-GIT
   remote: https://github.com/mattheworiordan/capybara-screenshot.git
   revision: fe47a6816677d573fd5428dae60a31bc8898f623
   specs:
@@ -617,6 +605,12 @@ GEM
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
+    two_factor_authentication (2.0.1)
+      devise
+      encryptor
+      rails (>= 3.1.1)
+      randexp
+      rotp (>= 3.2.0)
     tzinfo (1.2.4)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -725,6 +719,7 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
+  rack-attack
   rack-cors
   rack-headers_filter
   rack-mini-profiler
@@ -759,7 +754,7 @@ DEPENDENCIES
   thin
   timecop
   twilio-ruby
-  two_factor_authentication!
+  two_factor_authentication
   uglifier (>= 1.3.0)
   valid_email
   webmock

@@ -1,6 +1,6 @@
 class Profile < ApplicationRecord
   belongs_to :user
-  has_many :usps_confirmation_codes
+  has_many :usps_confirmation_codes, dependent: :destroy
 
   validates :active, uniqueness: { scope: :user_id, if: :active? }
   validates :ssn_signature, uniqueness: { scope: :active, if: :active? }

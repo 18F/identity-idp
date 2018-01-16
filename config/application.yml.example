@@ -21,6 +21,9 @@ max_mail_events_window_in_days: '30'
 # https://github.com/dropbox/zxcvbn#usage
 min_password_score: '3'
 
+# How long to wait for the MX validator to get a response from the DNS server
+mx_timeout: '3'
+
 password_max_attempts: '3'
 
 # If a queue does not have a healthy job after this many seconds, report it as unhealthy
@@ -31,6 +34,9 @@ queue_health_check_frequency_seconds: '30'
 
 # The number of words in the personal key phrase
 recovery_code_length: '4'
+
+# How long (in seconds) to wait for requests before dropping them (via the rack_timeout gem).
+service_timeout: '15'
 
 # Set the number of seconds before the session times out that the timeout
 # warning should appear.
@@ -70,6 +76,7 @@ development:
   database_username: ''
   domain_name: 'localhost:3000'
   enable_identity_verification: 'true'
+  enable_rate_limiting: 'false'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   equifax_avs_username: 'sekret'
@@ -88,8 +95,12 @@ development:
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: ''
   lockout_period_in_minutes: '10'
-  logins_per_ip_limit: '20'
-  logins_per_ip_period: '8'
+  logins_per_ip_limit: '5'
+  logins_per_ip_period: '60'
+  logins_per_ip_track_only_mode: 'false'
+  logins_per_email_and_ip_bantime: '60'
+  logins_per_email_and_ip_limit: '5'
+  logins_per_email_and_ip_period: '60'
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
   newrelic_license_key: ''
@@ -103,11 +114,14 @@ development:
   rack_mini_profiler: 'off'
   reauthn_window: '120'
   redis_url: 'redis://localhost:6379/0'
+  redis_throttle_url: 'redis://localhost:6379/1'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
+  requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
   scrypt_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   secret_key_base: 'development_secret_key_base'
+  service_timeout: '30'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
   state_id_proofing_vendor: 'mock'
@@ -135,6 +149,7 @@ production:
   dashboard_api_token:
   domain_name: 'login.gov'
   enable_identity_verification: 'false'
+  enable_rate_limiting: 'true'
   enable_test_routes: 'false'
   enable_usps_verification: 'false'
   equifax_avs_username:
@@ -154,8 +169,12 @@ production:
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: 'sp1,sp2'
   lockout_period_in_minutes: '10'
-  logins_per_ip_limit: '20'
-  logins_per_ip_period: '8'
+  logins_per_ip_limit: '5'
+  logins_per_ip_period: '60'
+  logins_per_ip_track_only_mode: 'true'
+  logins_per_email_and_ip_bantime: '60'
+  logins_per_email_and_ip_limit: '5'
+  logins_per_email_and_ip_period: '60'
   mandrill_api_token: '' # Empty string to switch to SES
   newrelic_browser_key: ''
   newrelic_browser_app_id: ''
@@ -170,8 +189,10 @@ production:
   profile_proofing_vendor: 'mock'
   reauthn_window: '120'
   redis_url: 'redis://redis.login.gov.internal:6379'
+  redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
+  requests_per_ip_track_only_mode: 'true'
   saml_passphrase:
   scrypt_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   secret_key_base: # generate via `rake secret`
@@ -203,6 +224,7 @@ test:
   database_username: ''
   dashboard_api_token: '123ABC'
   enable_identity_verification: 'true'
+  enable_rate_limiting: 'true'
   enable_test_routes: 'true'
   enable_usps_verification: 'true'
   equifax_avs_username: 'sekret'
@@ -221,8 +243,12 @@ test:
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
   lockout_period_in_minutes: '5'
-  logins_per_ip_limit: '2'
+  logins_per_ip_limit: '3'
   logins_per_ip_period: '60'
+  logins_per_ip_track_only_mode: 'false'
+  logins_per_email_and_ip_bantime: '60'
+  logins_per_email_and_ip_limit: '2'
+  logins_per_email_and_ip_period: '60'
   max_mail_events: '2'
   otp_delivery_blocklist_findtime: '1'
   otp_delivery_blocklist_maxretry: '2'
@@ -233,8 +259,10 @@ test:
   profile_proofing_vendor: 'mock'
   reauthn_window: '120'
   redis_url: 'redis://localhost:6379/0'
-  requests_per_ip_limit: '3'
+  redis_throttle_url: 'redis://localhost:6379/1'
+  requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
+  requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'

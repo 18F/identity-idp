@@ -8,7 +8,6 @@ en:
       mail:
         resend: Send another letter
         send: Send a letter
-      return_to_account: Return to account
       send_confirmation_code: Send confirmation code
     cancel:
       modal_header: Are you sure you want to cancel?
@@ -52,11 +51,12 @@ en:
       ssn_label_html: Social Security Number %{tooltip}
       state: State
       state_id: Identification number
-      state_id_type_label: Type of ID number
+      state_id_number: Identification number
       state_id_type:
         drivers_license: Driver's license
         drivers_permit: Driver's permit
         state_id_card: State ID card
+      state_id_type_label: Type of ID number
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
@@ -102,6 +102,8 @@ en:
         this time you can continue later.
       come_back_later: Once your letter arrives, sign into %{app}, and enter your
         verification code when prompted.
+      come_back_later_no_sp_html: You can return to your <strong>%{app} account</strong>
+        for now.
       come_back_later_sp_html: You can return to <strong>%{sp}</strong> for now.
       confirm: You have encrypted your verified data
       dupe_ssn1: If you are getting this error, you may have already created and verified

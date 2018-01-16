@@ -145,7 +145,7 @@ describe SamlIdpController do
         )
       end
       let(:this_authn_request) do
-        raw_req = URI.decode loa3_authnrequest.split('SAMLRequest').last
+        raw_req = CGI.unescape loa3_authnrequest.split('SAMLRequest').last
         SamlIdp::Request.from_deflated_request(raw_req)
       end
       let(:asserter) do
@@ -166,6 +166,11 @@ describe SamlIdpController do
         expect(asserter).to receive(:build).at_least(:once).and_call_original
 
         saml_get_auth(loa3_saml_settings)
+      end
+
+      it 'sets identity loa to 3' do
+        saml_get_auth(loa3_saml_settings)
+        expect(user.identities.last.ial).to eq(3)
       end
 
       it 'does not redirect the user to the IdV URL' do
@@ -327,14 +332,23 @@ describe SamlIdpController do
         )
       end
 
-      context 'after successful assertion' do
+      context 'after successful assertion of loa1' do
         before do
           sign_in(@user)
           saml_get_auth(saml_settings)
+          @user_identity = @user.identities.find_by(service_provider: saml_settings.issuer)
         end
 
         it 'does not delete SP metadata from session' do
           expect(session.key?(:sp)).to eq(true)
+        end
+
+        it 'links the user to the service provider' do
+          expect(@user_identity).to_not be_nil
+        end
+
+        it 'sets user identity loa value to 1' do
+          expect(@user_identity.ial).to eq(1)
         end
       end
     end
@@ -488,6 +502,12 @@ describe SamlIdpController do
       it 'returns a Success status code' do
         # https://msdn.microsoft.com/en-us/library/hh269642.aspx
         expect(status_code['Value']).to eq(Saml::XML::Namespaces::Statuses::SUCCESS)
+      end
+
+      it 'sets correct CSP config that includes any custom app scheme uri from SP redirect_uris' do
+        form_action = response.request.headers.env['secure_headers_request_config'].csp.form_action
+        csp_array = ["'self'", 'localhost:3000', 'x-example-app://idp_return']
+        expect(form_action).to match_array(csp_array)
       end
 
       # http://en.wikipedia.org/wiki/SAML_2.0#SAML_2.0_Assertions

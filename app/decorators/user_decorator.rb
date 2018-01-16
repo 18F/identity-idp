@@ -1,6 +1,6 @@
-include ActionView::Helpers::DateHelper
-
 class UserDecorator
+  include ActionView::Helpers::DateHelper
+
   MAX_RECENT_EVENTS = 5
   DEFAULT_LOCKOUT_PERIOD = 10.minutes
 
@@ -108,7 +108,7 @@ class UserDecorator
   end
 
   def should_acknowledge_personal_key?(session)
-    return true if session[:new_personal_key]
+    return true if session[:personal_key]
 
     sp_session = session[:sp]
 

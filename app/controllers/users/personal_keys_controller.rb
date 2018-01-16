@@ -1,11 +1,17 @@
 module Users
   class PersonalKeysController < ApplicationController
     include PersonalKeyConcern
+    include SecureHeadersConcern
 
     before_action :confirm_two_factor_authenticated
+    before_action :apply_secure_headers_override, only: :show
 
     def show
       personal_key = user_session[:personal_key]
+
+      analytics.track_event(
+        Analytics::PERSONAL_KEY_VIEWED, personal_key_present: personal_key.present?
+      )
 
       return redirect_to account_url if personal_key.blank?
 
@@ -27,13 +33,17 @@ module Users
     private
 
     def next_step
-      if session[:sp]
-        sign_up_completed_url
-      elsif current_user.decorate.password_reset_profile.present?
+      if current_user.decorate.password_reset_profile.present?
         reactivate_account_url
+      elsif session[:sp] && user_has_not_visited_any_sp_yet?
+        sign_up_completed_url
       else
-        account_url
+        after_sign_in_path_for(current_user)
       end
+    end
+
+    def user_has_not_visited_any_sp_yet?
+      current_user.identities.pluck(:last_authenticated_at).compact.empty?
     end
   end
 end

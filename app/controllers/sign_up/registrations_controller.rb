@@ -32,6 +32,8 @@ module SignUp
       end
     end
 
+    def destroy_confirm; end
+
     protected
 
     def require_no_authentication
