@@ -377,3 +377,13 @@ production:
       - 'https://login.usajobs.gov/openid'
       - 'https://login.usajobs.gov/externalloggedout'
     restrict_to_deploy_env: 'prod'
+
+  # NGA NSG Open Mapping Enclave (NOME)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:VGITeam:NOME':
+    friendly_name: 'NSG Open Mapping Enclave (NOME)'
+    agency: 'NGA'
+    logo: 'nome.png'
+    cert: 'nome_prod'
+    redirect_uris:
+      - 'https://nome.vgihub.geointservices.io/op_redirect'
+    restrict_to_deploy_env: 'prod'
