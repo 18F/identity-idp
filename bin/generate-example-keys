@@ -11,7 +11,7 @@ end
 
 def generate_equifax_gpg_private_key
   if equifax_gpg_private_exists?
-    puts 'Equifax private key exists. Skipping.'
+    puts 'Equifax GPG private key exists. Skipping.'
     return
   end
   parameters = '
@@ -27,14 +27,15 @@ def generate_equifax_gpg_private_key
     %echo done
   '
   run "echo '#{parameters}' | gpg --batch --gen-key"
+  run 'gpg --export --output keys/equifax_gpg.pub.bin logs@login.gov'
 end
 
-def export_equifax_gpg_public_key
-  if File.exists? 'keys/equifax_gpg.pub.bin'
-    puts 'Equifax public key exists. Skipping.'
+def generate_equifax_rsa_private_key
+  if File.exists? 'keys/equifax_rsa'
+    puts 'Equifax RSA private key exists. Skipping.'
     return
   end
-  run 'gpg --export --output keys/equifax_gpg.pub.bin logs@login.gov'
+  run 'ssh-keygen -t rsa -b 4096 -C "logs@login.gov" -N "sekret" -f "keys/equifax_rsa"'
 end
 
 puts "Note: This script is meant for local development use only."
@@ -42,4 +43,4 @@ puts "      Under no circumstances should this be used to generate keys"
 puts "      for a production system."
 
 generate_equifax_gpg_private_key
-export_equifax_gpg_public_key
+generate_equifax_rsa_private_key
