@@ -19,7 +19,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
     fill_in :user_password, with: user.password
     click_submit_default
     click_acknowledge_personal_key
-    click_link t('idv.buttons.return_to_account')
+    click_link t('idv.buttons.continue_plain')
   end
 
   def sign_out_user
@@ -168,22 +168,6 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
           expect(current_path).to eq(verify_come_back_later_path)
         end
-      end
-    end
-
-    context 'having previously cancelled phone verification' do
-      let(:phone_confirmed) { true }
-
-      it 'prompts for OTP at sign in, then continues' do
-        saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
-
-        visit saml_authn_request
-
-        sign_in_live_with_2fa(user)
-
-        enter_correct_otp_code_for_user(user)
-
-        expect(current_url).to eq saml_authn_request
       end
     end
 

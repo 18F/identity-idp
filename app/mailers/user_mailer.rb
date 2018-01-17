@@ -20,4 +20,9 @@ class UserMailer < ActionMailer::Base
   def phone_changed(user)
     mail(to: user.email, subject: t('user_mailer.phone_changed.subject'))
   end
+
+  def account_does_not_exist(email, request_id)
+    @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
+    mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
+  end
 end

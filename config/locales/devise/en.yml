@@ -111,12 +111,16 @@ en:
       otp_delivery_preference:
         instruction: You can change your choice the next time you sign in
         phone_unsupported: We're unable to make phone calls to people in %{location}
-          at this time. You will receive your security code via text message
+          at this time. We have sent your security code via text message. If you don't
+          receive the message in a few minutes, click "get another text message" to
+          try again. If that doesn't work, check that your phone or cellular operator
+          is not blocking messages from US phone numbers.
         sms: Text message (SMS)
         title: How would you like to receive your security code?
         voice: Phone call
       otp_phone_label: Phone number
-      otp_phone_label_info: Mobile phone or landline
+      otp_phone_label_info: Mobile phone or landline. If you enter a landline, please
+        select “Phone call” below.
       otp_phone_label_info_modile_only: Mobile phone
       otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
         one-time security code via text message or phone call. This helps safeguard

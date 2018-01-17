@@ -11,7 +11,7 @@ describe SignUp::CompletionsController do
       context 'LOA1' do
         it 'tracks page visit' do
           stub_sign_in
-          subject.session[:sp] = { loa3: false }
+          subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
           get :show
 
           expect(@analytics).to have_received(:track_event).with(
@@ -25,7 +25,7 @@ describe SignUp::CompletionsController do
         it 'tracks page visit' do
           user = create(:user, profiles: [create(:profile, :verified, :active)])
           stub_sign_in(user)
-          subject.session[:sp] = { loa3: true }
+          subject.session[:sp] = { issuer: 'awesome sp', loa3: true }
 
           get :show
 
@@ -59,9 +59,18 @@ describe SignUp::CompletionsController do
       expect(response).to redirect_to(account_url)
     end
 
+    it 'requires service provider issuer in session' do
+      stub_sign_in
+      subject.session[:sp] = { issuer: nil }
+
+      get :show
+
+      expect(response).to redirect_to(account_url)
+    end
+
     it 'renders show if the user has an sp in the active session' do
       stub_sign_in
-      subject.session[:sp] = { loa3: false }
+      subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
       get :show
 
       expect(response).to render_template(:show)

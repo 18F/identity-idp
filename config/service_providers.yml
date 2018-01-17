@@ -341,6 +341,15 @@ production:
       - 'gov.dhs.cbp.pspd.oars.user.prod://result'
     restrict_to_deploy_env: 'prod'
 
+  # CBP I'm Ready
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:cbp:imready':
+    friendly_name: "CBP I'm Ready"
+    agency: 'DHS'
+    logo: 'cbp.png'
+    redirect_uris:
+      - 'gov.dhs.cbp.pspd.imready.user.prod://result'
+    restrict_to_deploy_env: 'prod'
+
   # USAJOBS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS':
     friendly_name: 'USAJOBS'
@@ -359,3 +368,22 @@ production:
       - 'https://login.uat.usajobs.gov/openid'
       - 'https://login.uat.usajobs.gov/externalloggedout'
     restrict_to_deploy_env: 'staging'
+
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
+    friendly_name: 'USAJOBS'
+    agency: 'OPM'
+    logo: 'usajobs.svg'
+    redirect_uris:
+      - 'https://login.usajobs.gov/openid'
+      - 'https://login.usajobs.gov/externalloggedout'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA NSG Open Mapping Enclave (NOME)
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:VGITeam:NOME':
+    friendly_name: 'NSG Open Mapping Enclave (NOME)'
+    agency: 'NGA'
+    logo: 'nome.png'
+    cert: 'nome_prod'
+    redirect_uris:
+      - 'https://nome.vgihub.geointservices.io/op_redirect'
+    restrict_to_deploy_env: 'prod'

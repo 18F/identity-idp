@@ -14,6 +14,17 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         expect(response).to redirect_to(new_user_session_path)
       end
     end
+
+    it 'tracks the page visit' do
+      stub_sign_in_before_2fa
+      stub_analytics
+      analytics_hash = { context: 'authentication', method: 'personal key' }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, analytics_hash)
+
+      get :show
+    end
   end
 
   describe '#create' do
@@ -29,14 +40,14 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
         allow(form).to receive(:submit).and_return(response)
       end
 
-      it 'redirects to the profile' do
+      it 'redirects to the manage_personal_key_url so the user can see their new personal key' do
         post :create, params: payload
 
-        expect(response).to redirect_to account_path
+        expect(response).to redirect_to manage_personal_key_url
       end
 
-      it 'calls handle_valid_otp' do
-        expect(subject).to receive(:handle_valid_otp).and_call_original
+      it 'calls handle_valid_otp_for_authentication_context' do
+        expect(subject).to receive(:handle_valid_otp_for_authentication_context).and_call_original
 
         post :create, params: payload
       end
@@ -50,6 +61,17 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         post :create, params: payload
       end
+    end
+
+    it 'generates a new personal key after the user signs in with their old one' do
+      user = create(:user)
+      old_key = PersonalKeyGenerator.new(user).create
+      stub_sign_in_before_2fa(user)
+      post :create, params: { personal_key_form: { personal_key: old_key } }
+      user.reload
+
+      expect(user.personal_key).to_not be_nil
+      expect(user.personal_key).to_not eq old_key
     end
 
     context 'when the personal key field is empty' do
@@ -115,6 +137,15 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
 
         post :create, params: payload
       end
+    end
+
+    it 'does not generate a new personal key if the user enters an invalid key' do
+      user = create(:user, personal_key: 'ABCD-EFGH-IJKL-MNOP')
+      stub_sign_in_before_2fa(user)
+      post :create, params: payload
+      user.reload
+
+      expect(user.personal_key).to eq 'ABCD-EFGH-IJKL-MNOP'
     end
   end
 end

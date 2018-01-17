@@ -31,7 +31,7 @@ module SignUp
     private
 
     def show_completions_page?
-      service_providers = session[:sp].present? || @view_model.user_has_identities?
+      service_providers = sp_session[:issuer].present? || @view_model.user_has_identities?
       user_fully_authenticated? && service_providers
     end
 

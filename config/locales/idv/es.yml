@@ -8,7 +8,6 @@ es:
       mail:
         resend: Enviar otra carta
         send: Enviar una carta
-      return_to_account: NOT TRANSLATED YET
       send_confirmation_code: NOT TRANSLATED YET
     cancel:
       modal_header: "¿Está seguro que desea cancelar?"
@@ -98,6 +97,7 @@ es:
         este proceso. Si no tiene la información que necesitamos en este momento,
         puede continuar más tarde.
       come_back_later: NOT TRANSLATED YET
+      come_back_later_no_sp_html: NOT TRANSLATED YET
       come_back_later_sp_html: NOT TRANSLATED YET
       confirm: Usted ha encriptado sus datos verificados.
       dupe_ssn1: Si recibe este error, es posible que ya haya creado y verificado

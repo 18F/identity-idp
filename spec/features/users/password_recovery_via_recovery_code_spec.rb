@@ -3,6 +3,8 @@ require 'rails_helper'
 feature 'Password recovery via personal key', idv_job: true do
   include PersonalKeyHelper
   include IdvHelper
+  include SamlAuthHelper
+  include SpAuthHelper
 
   let(:user) { create(:user, :signed_up) }
   let(:new_password) { 'some really awesome new password' }
@@ -54,17 +56,12 @@ feature 'Password recovery via personal key', idv_job: true do
     personal_key = personal_key_from_pii(user, pii)
 
     trigger_reset_password_and_click_email_link(user.email)
-
     reset_password_and_sign_back_in(user, new_password)
-    click_submit_default
-
     click_link t('devise.two_factor_authentication.personal_key_fallback.link')
-
     enter_personal_key(personal_key: personal_key)
-
     click_submit_default
 
-    expect(current_path).to eq sign_up_personal_key_path
+    expect(current_path).to eq manage_personal_key_path
 
     new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
@@ -75,6 +72,7 @@ feature 'Password recovery via personal key', idv_job: true do
 
     expect(page).to_not have_content t('errors.messages.personal_key_incorrect')
     expect(page).to have_content t('idv.messages.personal_key')
+    expect(page).to have_current_path(account_path)
   end
 
   context 'account recovery alternative paths' do
@@ -101,13 +99,10 @@ feature 'Password recovery via personal key', idv_job: true do
     end
   end
 
-  def scrape_personal_key
-    new_personal_key_words = []
-    page.all(:css, '[data-personal-key]').each do |node|
-      new_personal_key_words << node.text
-    end
-    new_personal_key_words.join('-')
-  end
+  it_behaves_like 'signing in as LOA1 with personal key after resetting password', :saml
+  it_behaves_like 'signing in as LOA1 with personal key after resetting password', :oidc
+  it_behaves_like 'signing in as LOA3 with personal key after resetting password', :saml
+  it_behaves_like 'signing in as LOA3 with personal key after resetting password', :oidc
 
   def reactivate_profile(password, personal_key)
     click_on t('links.account.reactivate.with_key')

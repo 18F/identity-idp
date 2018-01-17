@@ -1,4 +1,5 @@
 - title t('titles.visitors.index')
+- request_id = params[:request_id] || sp_session[:request_id]
 
 = render 'shared/sp_alert'
 
@@ -9,7 +10,7 @@ h1.h3.my0 = decorated_session.new_session_heading
                   html: { autocomplete: 'off', role: 'form' }) do |f|
   = f.input :email, label: t('account.index.email'), required: true, input_html: { class: 'mb4' }
   = f.input :password, label: t('account.index.password'), required: true
-  = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] }
+  = f.input :request_id, as: :hidden, input_html: { value: request_id }
   = f.button :submit, t('links.next'), class: 'btn-wide'
 
 p.my3
@@ -18,6 +19,7 @@ p.my3
 .clearfix.pt1.border-top
   = render decorated_session.return_to_service_provider_partial
   .sm-col-right.mxn1
-    = link_to t('links.passwords.forgot'), new_password_path(resource_name), class: 'px1'
-    = link_to t('links.create_account'), sign_up_email_url(request_id: params[:request_id]), \
+    = link_to t('links.passwords.forgot'), new_user_password_url(request_id: request_id), \
+      class: 'px1'
+    = link_to t('links.create_account'), sign_up_email_url(request_id: request_id), \
       class: 'px1 border-left border-silver'

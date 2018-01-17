@@ -3,7 +3,7 @@ require 'sidekiq_logger_formatter'
 require 'worker_health_checker'
 require 'no_retry_jobs'
 
-Sidekiq::Logging.logger.level = Logger::WARN
+Sidekiq::Logging.logger.level = Logger::INFO
 Sidekiq::Logging.logger.formatter = SidekiqLoggerFormatter.new
 
 redis_connection = proc do

@@ -1,3 +1,9 @@
+class FakeAhoyTracker
+  def track(_name, _properties = {}, _options = {})
+    # no-op
+  end
+end
+
 Teaspoon.configure do |config|
   config.mount_at = '/teaspoon'
   config.root = nil

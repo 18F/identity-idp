@@ -30,4 +30,27 @@ describe Verify::AddressController do
       expect(response).to be_ok
     end
   end
+
+  describe '#create' do
+    it 'tracks the address delivery method event when phone is selected' do
+      stub_analytics
+      analytics_hash = {address_delivery_method: 'phone', success: true, errors: {}
+      }
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_ADDRESS_VERIFICATION_SELECTION, analytics_hash)
+
+      post :create, params: {address_delivery_method: 'phone'}
+    end
+
+    it 'tracks the address delivery method event when usps is selected' do
+      stub_analytics
+      analytics_hash = {address_delivery_method: 'usps', success: true, errors: {}}
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::IDV_ADDRESS_VERIFICATION_SELECTION, analytics_hash)
+
+      post :create, params: {address_delivery_method: 'usps'}
+    end
+  end
 end
