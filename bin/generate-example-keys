@@ -26,7 +26,7 @@ def generate_equifax_gpg_private_key
     %commit
     %echo done
   '
-  run "echo '#{parameters}' | gpg --batch --generate-key"
+  run "echo '#{parameters}' | gpg --batch --gen-key"
 end
 
 def export_equifax_gpg_public_key
