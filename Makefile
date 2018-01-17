@@ -12,6 +12,9 @@ all: check
 setup $(CONFIG): config/application.yml.example
 	bin/setup
 
+fast_setup:
+	bin/fast_setup
+
 check: lint test
 
 lint:
@@ -38,10 +41,10 @@ brakeman:
 test: $(CONFIG)
 	bundle exec rspec && RAILS_ENV=test bundle exec teaspoon
 
-fast_test: $(CONFIG)
+fast_test:
 	bundle exec rspec --exclude-pattern "**/features/accessibility/*_spec.rb"
 
-run: $(CONFIG)
+run:
 	foreman start -p $(PORT)
 
 load_test: $(CONFIG)
