@@ -15,8 +15,8 @@ def generate_equifax_gpg_private_key
     return
   end
   parameters = '
-    Key-Type: default
-    Subkey-Type: default
+    Key-Type: 1
+    Subkey-Type: 1
     Name-Real: login dot gov
     Name-Comment: development only
     Name-Email: logs@login.gov
@@ -26,7 +26,7 @@ def generate_equifax_gpg_private_key
     %commit
     %echo done
   '
-  run "echo '#{parameters}' | gpg2 --batch --gen-key"
+  run "echo '#{parameters}' | gpg --batch --gen-key"
 end
 
 def export_equifax_gpg_public_key
