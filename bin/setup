@@ -31,8 +31,6 @@ Dir.chdir APP_ROOT do
 
   puts "== Copying sample certs and keys =="
   run "cp keys/saml.key.enc.example keys/saml.key.enc"
-  run "cp keys/equifax_rsa.example keys/equifax_rsa"
-  run "cp keys/equifax_rsa.pub.example keys/equifax_rsa.pub"
   run "cp certs/saml.crt.example certs/saml.crt"
 
   if ARGV.shift == "--docker" then
@@ -43,7 +41,7 @@ Dir.chdir APP_ROOT do
     exit
   end
 
-  puts "\n== GPG Setup =="
+  puts "\n== Example Key Generation =="
   run "which gpg || brew install gpg"
   run "bin/generate-example-keys"
 
