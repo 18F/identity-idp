@@ -83,10 +83,8 @@ module Verify
       pii_msg = ActionController::Base.helpers.content_tag(
         :strong, t('idv.messages.sessions.pii')
       )
-
       flash[:success] = t('idv.messages.sessions.success',
                           pii_message: pii_msg)
-
       redirect_to verify_address_url
     end
 
@@ -108,11 +106,11 @@ module Verify
     end
 
     def unsupported_jurisdiction_error_message
-      error_message = t('idv.errors.unsupported_jurisdiction')
-      if decorated_session.sp_name.present?
+      sp_name = decorated_session.sp_name
+      if sp_name.present?
         error_message = [
-          error_message,
-          t('idv.errors.unsupported_jurisdiction_sp', sp_name: decorated_session.sp_name),
+          t('idv.errors.unsupported_jurisdiction'),
+          t('idv.errors.unsupported_jurisdiction_sp', sp_name: sp_name),
         ].join(' ')
       end
       error_message

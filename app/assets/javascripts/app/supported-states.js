@@ -1,5 +1,5 @@
 function validateStateSelection() {
-  /********************************************************
+  /* *******************************************************
   * Checks current option in select field against a space-separated string
   * of options passed in via a `data-supported-jurisdictions` attribute.
   *
@@ -8,14 +8,14 @@ function validateStateSelection() {
   *
   * The check happens onchange. If the value is acceptable, any existing
   * error message is removed.
-  **********************************************************/
-  const state_fields = document.querySelectorAll('[data-supported-jurisdictions]');
+  ********************************************************* */
+  const stateFields = document.querySelectorAll('[data-supported-jurisdictions]');
 
-  if (state_fields) {
-    [].slice.call(state_fields).forEach((input, i) => {
+  if (stateFields) {
+    [].slice.call(stateFields).forEach((input) => {
       // Check if an error div is already present. If so, use it.
       const sibling = input.nextElementSibling;
-      if (sibling && sibling.classlist.contains('error-message') == true) {
+      if (sibling && sibling.classlist.contains('error-message') === true) {
         const errorDiv = sibling;
       } else {
         const errorDiv = '<div class="mt-tiny h6 red error-message"></div>';
@@ -23,14 +23,14 @@ function validateStateSelection() {
       }
 
       input.addEventListener('change', function() {
-        if (this.dataset.supportedJurisdictions.indexOf(input.value) == -1) {
+        if (this.dataset.supportedJurisdictions.indexOf(input.value) === -1) {
           this.nextElementSibling.innerHTML = [this.dataset.errorMessage, this.dataset.errorMessageSp].join(' ');
         } else {
           this.nextElementSibling.innerHTML = '';
         }
       });
     });
-  };
+  }
 }
 
 document.addEventListener('DOMContentLoaded', validateStateSelection);
