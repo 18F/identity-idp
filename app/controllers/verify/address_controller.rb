@@ -7,11 +7,11 @@ module Verify
     def index; end
 
     def create
-      response = Idv::AddressDeliveryMethodForm.new.submit(
-        address_delivery_params.to_h.symbolize_keys
-      )
+      result = Idv::AddressDeliveryMethodForm.new.submit(address_delivery_params)
 
-      if response.success?
+      analytics.track_event(Analytics::IDV_ADDRESS_VERIFICATION_SELECTION, result.to_h)
+
+      if result.success?
         redirect_to address_delivery_destination
       else
         render :index

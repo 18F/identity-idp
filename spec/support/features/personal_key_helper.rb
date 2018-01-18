@@ -22,4 +22,12 @@ module PersonalKeyHelper
     open_last_email
     click_email_link_matching(/reset_password_token/)
   end
+
+  def scrape_personal_key
+    new_personal_key_words = []
+    page.all(:css, '[data-personal-key]').each do |node|
+      new_personal_key_words << node.text
+    end
+    new_personal_key_words.join('-')
+  end
 end

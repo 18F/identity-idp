@@ -42,7 +42,7 @@ describe OtpDeliverySelectionForm do
       it 'returns false for success? and includes errors' do
         errors = {
           otp_delivery_preference: ['is not included in the list'],
-          phone_to_deliver_to: ['Please fill in this field.'],
+          phone: ['Please fill in this field.'],
         }
 
         extra = {

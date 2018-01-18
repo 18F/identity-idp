@@ -1,6 +1,10 @@
 ---
 fr:
   user_mailer:
+    account_does_not_exist:
+      intro: NOT TRANSLATED YET
+      link_text: NOT TRANSLATED YET
+      subject: NOT TRANSLATED YET
     contact_link_text: communiquez avec nous
     email_changed:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter

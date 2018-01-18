@@ -32,6 +32,7 @@ FeatureEnvy:
     - Idv::Step#vendor_validator_result
     - IdvSession#vendor_result_timed_out?
     - ServiceProviderSeeder#run
+    - OtpDeliverySelectionForm#unsupported_phone?
 InstanceVariableAssumption:
   exclude:
     - User

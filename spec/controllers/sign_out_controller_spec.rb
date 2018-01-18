@@ -18,5 +18,16 @@ describe SignOutController do
 
       get :destroy
     end
+
+    it 'tracks the event' do
+      stub_sign_in_before_2fa
+      stub_analytics
+      allow(controller.decorated_session).to receive(:cancel_link_url).and_return('foo')
+
+      expect(@analytics).
+        to receive(:track_event).with(Analytics::LOGOUT_INITIATED, method: 'cancel link')
+
+      get :destroy
+    end
   end
 end
