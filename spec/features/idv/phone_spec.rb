@@ -21,7 +21,7 @@ feature 'Verify phone' do
 
       enter_correct_otp_code_for_user(user)
       fill_in :user_password, with: user_password
-      click_submit_default
+      click_continue
       click_acknowledge_personal_key
 
       expect(current_path).to eq account_path
@@ -92,7 +92,7 @@ feature 'Verify phone' do
       choose_idv_otp_delivery_method_sms
       enter_correct_otp_code_for_user(user)
       fill_in :user_password, with: user_password
-      click_submit_default
+      click_continue
       click_acknowledge_personal_key
 
       expect(current_path).to eq account_path

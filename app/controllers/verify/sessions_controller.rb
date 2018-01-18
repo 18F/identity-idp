@@ -127,10 +127,7 @@ module Verify
     end
 
     def idv_form
-      @_idv_form ||= Idv::ProfileForm.new((
-        idv_session.params || {}),
-        current_user
-      )
+      @_idv_form ||= Idv::ProfileForm.new((idv_session.params || {}), current_user)
     end
 
     def initialize_idv_session

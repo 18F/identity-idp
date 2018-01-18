@@ -57,7 +57,6 @@ fr:
       ssn_label_html: Numéro de sécurité sociale %{tooltip}
       state: État
       state_id: NOT TRANSLATED YET
-      state_id_number: NOT TRANSLATED YET
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
