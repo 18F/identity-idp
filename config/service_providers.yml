@@ -376,6 +376,7 @@ production:
     redirect_uris:
       - 'https://login.test.usajobs.gov/openid'
       - 'https://login.test.usajobs.gov/externalloggedout'
+    return_to_sp_url: 'https://www.test.usajobs.gov/'
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
@@ -385,6 +386,7 @@ production:
     redirect_uris:
       - 'https://login.uat.usajobs.gov/openid'
       - 'https://login.uat.usajobs.gov/externalloggedout'
+    return_to_sp_url: 'https://www.uat.usajobs.gov/'
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
@@ -394,6 +396,7 @@ production:
     redirect_uris:
       - 'https://login.usajobs.gov/openid'
       - 'https://login.usajobs.gov/externalloggedout'
+    return_to_sp_url:  'https://www.usajobs.gov/'
     restrict_to_deploy_env: 'prod'
 
   # NGA NSG Open Mapping Enclave (NOME)
