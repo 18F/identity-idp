@@ -4,8 +4,8 @@ h1.h3 = @view_model.title
 
 p.mb1 = t('idv.messages.sessions.access_sp', sp_name: decorated_session.sp_name).html_safe
 
-p.mb2 = link_to t('links.access_help'), 'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
-
+p.mb2 = link_to t('links.access_help'),
+  'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
 
 = simple_form_for(@view_model.idv_form, url: verify_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
@@ -14,7 +14,7 @@ p.mb2 = link_to t('links.access_help'), 'https://login.gov/help/privacy-and-secu
     legend.col-12.mb2.pb-tiny.border-bottom.border-teal = t('account.index.full_name')
     = f.input :first_name, label: t('idv.form.first_name'), required: true
     = f.input :last_name, label: t('idv.form.last_name'), required: true
-  
+
   fieldset.m0.p0.border-none
     p.mb1.fs-13p = t('forms.messages.current_address')
     legend.col-12.mb2.pb-tiny.border-bottom.border-teal = t('account.index.address')
@@ -24,10 +24,16 @@ p.mb2 = link_to t('links.access_help'), 'https://login.gov/help/privacy-and-secu
 
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
-        -sp_error = (t('idv.errors.unsupported_jurisdiction_sp', sp_name: decorated_session.sp_name) if decorated_session.sp_name)
+        -sp_error = t('idv.errors.unsupported_jurisdiction_sp',
+          sp_name: decorated_session.sp_name) if decorated_session.sp_name
+        
         = f.input :state, collection: us_states_territories,
           label: t('idv.form.state'), required: true,
-          input_html: {"data-supported-jurisdictions": supported_jurisdictions, "data-error-message": t('idv.errors.unsupported_jurisdiction'), "data-error-message-sp": sp_error}
+          input_html: {\
+          "data-supported-jurisdictions": supported_jurisdictions,
+          "data-error-message": t('idv.errors.unsupported_jurisdiction'),
+          "data-error-message-sp": sp_error\
+        }
 
       .sm-col.sm-col-4.px1
         / using :tel for mobile numeric keypad
@@ -47,7 +53,7 @@ p.mb2 = link_to t('links.access_help'), 'https://login.gov/help/privacy-and-secu
           .sm-col.sm-col-6.px1
             = f.input :prev_state, collection: us_states_territories,
               label: t('idv.form.state'),
-              input_html: {"data-supported-jurisdictions": supported_jurisdictions}
+              input_html: { "data-supported-jurisdictions": supported_jurisdictions }
           .sm-col.sm-col-4.px1
             / using :tel for mobile numeric keypad
             = f.input :prev_zipcode, as: :tel,
@@ -77,7 +83,7 @@ p.mb2 = link_to t('links.access_help'), 'https://login.gov/help/privacy-and-secu
       as: :select, include_blank: true, required: true,
       collection: state_id_types
     = f.input :state_id_number, label: t('idv.form.state_id'), required: true
-    = accordion('state-id', t('idv.messages.state_id_accordion_header'), 
+    = accordion('state-id', t('idv.messages.state_id_accordion_header'),
       wrapper_css: 'mb0 col-12 fs-16p') do
       =simple_format(t('idv.messages.state_id_accordion_message', sp: decorated_session.sp_name))
 
