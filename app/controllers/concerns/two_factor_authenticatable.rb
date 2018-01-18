@@ -202,7 +202,6 @@ module TwoFactorAuthenticatable
 
   def after_otp_action_url
     if decorated_user.should_acknowledge_personal_key?(user_session)
-      user_session[:first_time_personal_key_view] = 'true'
       sign_up_personal_key_url
     elsif @updating_existing_number
       account_url
