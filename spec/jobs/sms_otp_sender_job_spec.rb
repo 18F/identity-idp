@@ -21,6 +21,8 @@ describe SmsOtpSenderJob do
     let(:otp_created_at) { Time.zone.now.to_s }
 
     it 'sends a message containing the OTP code to the mobile number', twilio: true do
+      allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
+
       TwilioService.telephony_service = FakeSms
 
       perform
@@ -31,7 +33,7 @@ describe SmsOtpSenderJob do
 
       msg = messages.first
 
-      expect(msg.from).to match(/(\+19999999999|\+12222222222)/)
+      expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (888) 555-5555')
       expect(msg.body).to eq(I18n.t('jobs.sms_otp_sender_job.message', code: '1234', app: APP_NAME))
     end
