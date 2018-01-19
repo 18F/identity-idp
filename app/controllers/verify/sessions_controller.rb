@@ -101,8 +101,9 @@ module Verify
 
     def set_unsupported_jurisdiction_error
       return unless idv_form.unsupported_jurisdiction?
-      idv_form.errors.delete(:state)
-      idv_form.errors.add(:state, unsupported_jurisdiction_error_message)
+      errors = idv_form.errors
+      errors.delete(:state)
+      errors.add(:state, unsupported_jurisdiction_error_message)
     end
 
     def unsupported_jurisdiction_error_message
