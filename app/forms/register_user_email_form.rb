@@ -50,6 +50,7 @@ class RegisterUserEmailForm
     {
       email_already_exists: email_taken?,
       user_id: existing_user.uuid,
+      domain_name: email&.split('@')&.last,
     }
   end
 
