@@ -14,6 +14,7 @@ idv_attempt_window_in_hours: '24'
 mailer_domain_name: 'http://localhost:3000'
 max_mail_events: '4'
 max_mail_events_window_in_days: '30'
+aws_http_timeout: '5'
 
 # The scores 0, 1, 2, 3 or 4 are given when the number of guesses to crack the
 # password are less than 10^3, 10^6, 10^8, 10^10, and >= 10^10 respectively.
