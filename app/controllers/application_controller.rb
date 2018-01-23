@@ -71,7 +71,9 @@ class ApplicationController < ActionController::Base
   def redirect_on_timeout
     return unless params[:timeout]
 
-    flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+    unless current_user
+      flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+    end
     redirect_to url_for(permitted_timeout_params)
   end
 
