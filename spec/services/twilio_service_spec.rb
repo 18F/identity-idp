@@ -41,9 +41,9 @@ describe TwilioService do
     end
   end
 
-  describe '#account' do
-    it 'randomly samples one of the accounts' do
-      expect(TWILIO_ACCOUNTS).to include(TwilioService.new.account)
+  describe '#phone_number' do
+    it 'randomly samples one of the numbers' do
+      expect(TWILIO_NUMBERS).to include(TwilioService.new.phone_number)
     end
   end
 
