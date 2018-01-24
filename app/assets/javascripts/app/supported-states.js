@@ -15,13 +15,13 @@ function validateStateSelection() {
     [].slice.call(stateFields).forEach((input) => {
       // Check if an error div is already present. If so, use it.
       const sibling = input.nextElementSibling;
-      const errorClasses = "mt-tiny h6 red error-message";
+      const errorClasses = 'mt-tiny h6 red error-message';
       let errorDiv;
       if (sibling && sibling.classlist.contains(errorClasses) === true) {
         errorDiv = sibling;
       } else {
         errorDiv = document.createElement('div');
-        errorDiv.setAttribute("class", errorClasses);
+        errorDiv.setAttribute('class', errorClasses);
         input.parentNode.appendChild(errorDiv);
       }
 
