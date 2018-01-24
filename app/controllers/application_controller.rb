@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
 
   helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
+  prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
   before_action :disable_caching
@@ -62,6 +63,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  # These attributes show up in New Relic traces for all requests.
+  # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
+  def add_new_relic_trace_attributes
+    ::NewRelic::Agent.add_custom_attributes(
+      amzn_trace_id: request.headers['X-Amzn-Trace-Id']
+    )
+  end
 
   def disable_caching
     response.headers['Cache-Control'] = 'no-store'
