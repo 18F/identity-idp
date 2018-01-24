@@ -5,7 +5,9 @@ module TwoFactorAuthCode
     end
 
     def phone_number_message
-      t(contact_message, number: content_tag(:strong, phone_number))
+      t("instructions.mfa.#{otp_delivery_preference}.number_message",
+        number: content_tag(:strong, phone_number)
+      )
     end
 
     def help_text
@@ -89,12 +91,6 @@ module TwoFactorAuthCode
         t('links.two_factor_authentication.app'),
         login_two_factor_authenticator_path(locale: LinkLocaleResolver.locale)
       )
-    end
-
-    def contact_message
-      # i18n-tasks-use t("instructions.mfa.voice.number_message")
-      # i18n-tasks-use t("instructions.mfa.sms.number_message")
-      "instructions.mfa.#{otp_delivery_preference}.number_message"
     end
 
     def fallback_instructions
