@@ -15,18 +15,21 @@ function validateStateSelection() {
     [].slice.call(stateFields).forEach((input) => {
       // Check if an error div is already present. If so, use it.
       const sibling = input.nextElementSibling;
-      if (sibling && sibling.classlist.contains('error-message') === true) {
-        const errorDiv = sibling;
+      const errorClasses = "mt-tiny h6 red error-message";
+      let errorDiv;
+      if (sibling && sibling.classlist.contains(errorClasses) === true) {
+        errorDiv = sibling;
       } else {
-        const errorDiv = '<div class="mt-tiny h6 red error-message"></div>';
-        input.insertAdjacentHTML('afterend', errorDiv);
+        errorDiv = document.createElement('div');
+        errorDiv.setAttribute("class", errorClasses);
+        input.parentNode.appendChild(errorDiv);
       }
 
       input.addEventListener('change', function() {
         if (this.dataset.supportedJurisdictions.indexOf(input.value) === -1) {
-          this.nextElementSibling.innerHTML = [this.dataset.errorMessage, this.dataset.errorMessageSp].join(' ');
+          errorDiv.innerHTML = [this.dataset.errorMessage, this.dataset.errorMessageSp].join(' ');
         } else {
-          this.nextElementSibling.innerHTML = '';
+          errorDiv.innerHTML = '';
         }
       });
     });
