@@ -26,13 +26,13 @@ p.mb2 = link_to t('links.access_help'),
       .sm-col.sm-col-6.px1
         -sp_error = t('idv.errors.unsupported_jurisdiction_sp',
           sp_name: decorated_session.sp_name) if decorated_session.sp_name
-        
+
         = f.input :state, collection: us_states_territories,
           label: t('idv.form.state'), required: true,
           input_html: {\
-          "data-supported-jurisdictions": supported_jurisdictions,
-          "data-error-message": t('idv.errors.unsupported_jurisdiction'),
-          "data-error-message-sp": sp_error\
+            "data-supported-jurisdictions": supported_jurisdictions,
+            "data-error-message": t('idv.errors.unsupported_jurisdiction'),
+            "data-error-message-sp": sp_error,\
         }
 
       .sm-col.sm-col-4.px1
