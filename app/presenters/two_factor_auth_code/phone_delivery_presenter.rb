@@ -6,8 +6,7 @@ module TwoFactorAuthCode
 
     def phone_number_message
       t("instructions.mfa.#{otp_delivery_preference}.number_message",
-        number: content_tag(:strong, phone_number)
-      )
+        number: content_tag(:strong, phone_number))
     end
 
     def help_text
