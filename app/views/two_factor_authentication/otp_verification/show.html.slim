@@ -2,7 +2,7 @@
 
 h1.h3.my0 = @presenter.header
 
-p = @presenter.phone_number_message.html_safe
+p == @presenter.phone_number_message
 
 = form_tag(:login_otp, method: :post, role: 'form', class: 'mt3') do
   = render @presenter.reauthn_hidden_field_partial

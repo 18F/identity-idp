@@ -2,7 +2,7 @@
 
 h1.h3 = @view_model.title
 
-p.mb1 = t('idv.messages.sessions.access_sp', sp_name: decorated_session.sp_name).html_safe
+p.mb1 == t('idv.messages.sessions.access_sp', sp_name: decorated_session.sp_name)
 
 p.mb2 = link_to t('links.access_help'),
   'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
@@ -24,16 +24,16 @@ p.mb2 = link_to t('links.access_help'),
 
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
-        -sp_error = t('idv.errors.unsupported_jurisdiction_sp',
-          sp_name: decorated_session.sp_name) if decorated_session.sp_name
-
+        - if decorated_session.sp_name
+          -sp_error = t('idv.errors.unsupported_jurisdiction_sp',
+            sp_name: decorated_session.sp_name)
+        -data_attrs = { "data-supported-jurisdictions": supported_jurisdictions,
+          "data-error-message": t('idv.errors.unsupported_jurisdiction'),
+          "data-error-message-sp": sp_error,\
+        }
         = f.input :state, collection: us_states_territories,
           label: t('idv.form.state'), required: true,
-          input_html: {\
-            "data-supported-jurisdictions": supported_jurisdictions,
-            "data-error-message": t('idv.errors.unsupported_jurisdiction'),
-            "data-error-message-sp": sp_error,\
-          }
+          input_html: data_attrs
 
       .sm-col.sm-col-4.px1
         / using :tel for mobile numeric keypad
@@ -78,7 +78,7 @@ p.mb2 = link_to t('links.access_help'),
       input_html: { class: 'ssn', value: @view_model.idv_form.ssn }
   fieldset.m0.p0.border-none
     legend.col-12.pb-tiny.border-bottom.border-teal = t('idv.form.state_id')
-    p = t('idv.messages.id_number').html_safe
+    p == t('idv.messages.id_number')
     = f.input :state_id_type, label: t('idv.form.state_id_type_label'),
       as: :select, include_blank: true, required: true,
       collection: state_id_types
