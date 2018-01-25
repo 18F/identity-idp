@@ -233,7 +233,6 @@ feature 'LOA1 Single Sign On' do
       session = proxy.env['rack.session']
       session['warden.user.user.session'] = {
         'need_two_factor_authentication' => true,
-        first_time_personal_key_view: true,
       }
     end
 
