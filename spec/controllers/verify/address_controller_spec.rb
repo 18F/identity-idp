@@ -34,11 +34,7 @@ describe Verify::AddressController do
   describe '#create' do
     it 'tracks the address delivery method event when phone is selected' do
       stub_analytics
-      analytics_hash = {
-        address_delivery_method: 'phone',
-        success: true,
-        errors: {},
-      }
+      analytics_hash = { address_delivery_method: 'phone', success: true, errors: {} }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::IDV_ADDRESS_VERIFICATION_SELECTION, analytics_hash)

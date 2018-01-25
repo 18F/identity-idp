@@ -1,0 +1,46 @@
+#!/usr/bin/env ruby
+
+def run(command)
+  abort "command failed (#{$?}): #{command}" unless system command
+end
+
+def equifax_gpg_private_exists?
+  list_keys_output = `gpg --list-secret-keys`
+  list_keys_output.include? 'login dot gov (development only) <logs@login.gov>'
+end
+
+def generate_equifax_gpg_private_key
+  if equifax_gpg_private_exists?
+    puts 'Equifax GPG private key exists. Skipping.'
+    return
+  end
+  parameters = '
+    Key-Type: 1
+    Subkey-Type: 1
+    Name-Real: login dot gov
+    Name-Comment: development only
+    Name-Email: logs@login.gov
+    Expire-Date: 0
+    Passphrase: sekret
+    # Do a commit here, so that we can later print "done"
+    %commit
+    %echo done
+  '
+  run "echo '#{parameters}' | gpg --batch --gen-key"
+  run 'gpg --export --output keys/equifax_gpg.pub.bin logs@login.gov'
+end
+
+def generate_equifax_rsa_private_key
+  if File.exists? 'keys/equifax_rsa'
+    puts 'Equifax RSA private key exists. Skipping.'
+    return
+  end
+  run 'ssh-keygen -t rsa -b 4096 -C "logs@login.gov" -N "sekret" -f "keys/equifax_rsa"'
+end
+
+puts "Note: This script is meant for local development use only."
+puts "      Under no circumstances should this be used to generate keys"
+puts "      for a production system."
+
+generate_equifax_gpg_private_key
+generate_equifax_rsa_private_key

@@ -2,6 +2,7 @@ module SignUp
   class CompletionsController < ApplicationController
     include SecureHeadersConcern
 
+    before_action :confirm_two_factor_authenticated
     before_action :verify_confirmed, if: :loa3?
     before_action :apply_secure_headers_override, only: :show
 

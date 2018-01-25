@@ -42,7 +42,6 @@ shared_examples 'signing in as LOA1 with personal key' do |sp|
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
@@ -69,7 +68,6 @@ shared_examples 'signing in as LOA3 with personal key' do |sp|
 
     expect(page).to have_current_path(manage_personal_key_path)
 
-    new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
@@ -99,7 +97,6 @@ shared_examples 'signing in as LOA1 with personal key after resetting password' 
         to(include('form-action \'self\' http://localhost:7654'))
     end
 
-    new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
@@ -132,7 +129,6 @@ shared_examples 'signing in as LOA3 with personal key after resetting password' 
 
     expect(current_path).to eq manage_personal_key_path
 
-    new_personal_key = scrape_personal_key
     click_acknowledge_personal_key
 
     expect(current_url).to eq @saml_authn_request if sp == :saml

@@ -15,6 +15,7 @@ DuplicateMethodCall:
     - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
     - BasicAuthUrl#build
+    - fallback_to_english
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -33,6 +34,7 @@ FeatureEnvy:
     - IdvSession#vendor_result_timed_out?
     - ServiceProviderSeeder#run
     - OtpDeliverySelectionForm#unsupported_phone?
+    - fallback_to_english
 InstanceVariableAssumption:
   exclude:
     - User

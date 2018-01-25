@@ -4,85 +4,53 @@ feature 'OpenID Connect' do
   include IdvHelper
 
   context 'with client_secret_jwt' do
-    it 'succeeds' do
-      client_id = 'urn:gov:gsa:openidconnect:sp:server'
-      state = SecureRandom.hex
-      nonce = SecureRandom.hex
+    it 'succeeds with prompt select_account and no prior session' do
+      oidc_end_client_secret_jwt(prompt: 'select_account')
+    end
 
-      visit openid_connect_authorize_path(
-        client_id: client_id,
-        response_type: 'code',
-        acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
-        scope: 'openid email profile:name social_security_number',
-        redirect_uri: 'http://localhost:7654/auth/result',
-        state: state,
-        prompt: 'select_account',
-        nonce: nonce
-      )
+    it 'succeeds in returning back to sp with prompt select_account and prior session' do
+      user = oidc_end_client_secret_jwt(prompt: 'select_account')
+      oidc_end_client_secret_jwt(prompt: 'select_account', user: user, redirs_to: '/auth/result')
+      expect(current_url).to include('?code=')
+    end
 
-      user = create(:profile, :active, :verified,
-                    pii: { first_name: 'John', ssn: '111223333' }).user
+    it 'succeeds with no prompt and no prior session like select_account' do
+      oidc_end_client_secret_jwt
+    end
 
-      sign_in_live_with_2fa(user)
+    it 'succeeds in returning back to sp with no prompt and prior session like select_account' do
+      user = oidc_end_client_secret_jwt
+      oidc_end_client_secret_jwt(user: user, redirs_to: '/auth/result')
+      expect(current_url).to include('?code=')
+    end
 
-      redirect_uri = URI(current_url)
-      redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
+    it 'succeeds with prompt login and no prior session' do
+      oidc_end_client_secret_jwt(prompt: 'login')
+    end
 
-      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-      expect(redirect_params[:state]).to eq(state)
+    it 'succeeds in forcing login with prompt login and prior session' do
+      user = oidc_end_client_secret_jwt(prompt: 'login')
+      oidc_end_client_secret_jwt(prompt: 'login', user: user)
+    end
 
-      code = redirect_params[:code]
-      expect(code).to be_present
+    it 'succeeds with prompt select_account no prior session and bad Referer' do
+      Capybara.current_session.driver.header 'Referer', 'bad'
+      oidc_end_client_secret_jwt(prompt: 'select_account')
+    end
 
-      jwt_payload = {
-        iss: client_id,
-        sub: client_id,
-        aud: api_openid_connect_token_url,
-        jti: SecureRandom.hex,
-        exp: 5.minutes.from_now.to_i,
-      }
+    it 'succeeds with prompt login no prior session and bad Referer' do
+      Capybara.current_session.driver.header 'Referer', 'bad'
+      oidc_end_client_secret_jwt(prompt: 'login')
+    end
 
-      client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
-      client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+    it 'returns invalid request with bad prompt parameter' do
+      oidc_end_client_secret_jwt(prompt: 'aaa', redirs_to: '/auth/result')
+      expect(current_url).to include('?error=invalid_request')
+    end
 
-      page.driver.post api_openid_connect_token_path,
-                       grant_type: 'authorization_code',
-                       code: code,
-                       client_assertion_type: client_assertion_type,
-                       client_assertion: client_assertion
-
-      expect(page.status_code).to eq(200)
-      token_response = JSON.parse(page.body).with_indifferent_access
-
-      id_token = token_response[:id_token]
-      expect(id_token).to be_present
-
-      decoded_id_token, _headers = JWT.decode(
-        id_token, sp_public_key, true, algorithm: 'RS256'
-      ).map(&:with_indifferent_access)
-
-      sub = decoded_id_token[:sub]
-      expect(sub).to be_present
-      expect(decoded_id_token[:nonce]).to eq(nonce)
-      expect(decoded_id_token[:aud]).to eq(client_id)
-      expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
-      expect(decoded_id_token[:iss]).to eq(root_url)
-      expect(decoded_id_token[:email]).to eq(user.email)
-      expect(decoded_id_token[:given_name]).to eq('John')
-      expect(decoded_id_token[:social_security_number]).to eq('111223333')
-
-      access_token = token_response[:access_token]
-      expect(access_token).to be_present
-
-      page.driver.get api_openid_connect_userinfo_path,
-                      {},
-                      'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
-
-      userinfo_response = JSON.parse(page.body).with_indifferent_access
-      expect(userinfo_response[:sub]).to eq(sub)
-      expect(userinfo_response[:email]).to eq(user.email)
-      expect(userinfo_response[:given_name]).to eq('John')
-      expect(userinfo_response[:social_security_number]).to eq('111223333')
+    it 'returns invalid request with a blank prompt parameter' do
+      oidc_end_client_secret_jwt(prompt: '', redirs_to: '/auth/result')
+      expect(current_url).to include('?error=invalid_request')
     end
 
     it 'auto-allows with a second authorization and sets the correct CSP headers' do
@@ -455,5 +423,93 @@ feature 'OpenID Connect' do
         File.read(Rails.root.join('keys', 'saml_test_sp.key'))
       )
     end
+  end
+
+  def oidc_end_client_secret_jwt(prompt: nil, user: nil, redirs_to: nil)
+    client_id = 'urn:gov:gsa:openidconnect:sp:server'
+    state = SecureRandom.hex
+    nonce = SecureRandom.hex
+
+    params = {
+      client_id: client_id,
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email profile:name social_security_number',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: state,
+      nonce: nonce,
+    }
+    params[:prompt] = prompt if prompt
+    visit openid_connect_authorize_path(params)
+    if redirs_to
+      expect(current_path).to eq(redirs_to)
+      return
+    end
+    expect(current_path).to eq('/sign_up/start')
+
+    user ||= create(:profile, :active, :verified,
+                    pii: { first_name: 'John', ssn: '111223333' }).user
+
+    sign_in_live_with_2fa(user)
+
+    redirect_uri = URI(current_url)
+    redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
+
+    expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+    expect(redirect_params[:state]).to eq(state)
+
+    code = redirect_params[:code]
+    expect(code).to be_present
+
+    jwt_payload = {
+      iss: client_id,
+      sub: client_id,
+      aud: api_openid_connect_token_url,
+      jti: SecureRandom.hex,
+      exp: 5.minutes.from_now.to_i,
+    }
+
+    client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
+    client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
+
+    page.driver.post api_openid_connect_token_path,
+                     grant_type: 'authorization_code',
+                     code: code,
+                     client_assertion_type: client_assertion_type,
+                     client_assertion: client_assertion
+
+    expect(page.status_code).to eq(200)
+    token_response = JSON.parse(page.body).with_indifferent_access
+
+    id_token = token_response[:id_token]
+    expect(id_token).to be_present
+
+    decoded_id_token, _headers = JWT.decode(
+      id_token, sp_public_key, true, algorithm: 'RS256'
+    ).map(&:with_indifferent_access)
+
+    sub = decoded_id_token[:sub]
+    expect(sub).to be_present
+    expect(decoded_id_token[:nonce]).to eq(nonce)
+    expect(decoded_id_token[:aud]).to eq(client_id)
+    expect(decoded_id_token[:acr]).to eq(Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF)
+    expect(decoded_id_token[:iss]).to eq(root_url)
+    expect(decoded_id_token[:email]).to eq(user.email)
+    expect(decoded_id_token[:given_name]).to eq('John')
+    expect(decoded_id_token[:social_security_number]).to eq('111223333')
+
+    access_token = token_response[:access_token]
+    expect(access_token).to be_present
+
+    page.driver.get api_openid_connect_userinfo_path,
+                    {},
+                    'HTTP_AUTHORIZATION' => "Bearer #{access_token}"
+
+    userinfo_response = JSON.parse(page.body).with_indifferent_access
+    expect(userinfo_response[:sub]).to eq(sub)
+    expect(userinfo_response[:email]).to eq(user.email)
+    expect(userinfo_response[:given_name]).to eq('John')
+    expect(userinfo_response[:social_security_number]).to eq('111223333')
+    user
   end
 end

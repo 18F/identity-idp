@@ -11,6 +11,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (forms.length !== 0) {
     [].forEach.call(forms, function(form) {
+      const buttons = form.querySelectorAll('[type="submit"]');
+      form.addEventListener('submit', function() {
+        if (buttons.length !== 0) {
+          [].forEach.call(buttons, function (button) {
+            button.disabled = true;
+          });
+        }
+      }, false);
+      const elements = form.querySelectorAll('input');
+      if (elements.length !== 0) {
+        [].forEach.call(elements, function(input) {
+          input.addEventListener('input', function () {
+            if (buttons.length !== 0) {
+              [].forEach.call(buttons, function(button) {
+                if (button.disabled) {
+                  button.disabled = false;
+                }
+              });
+            }
+          });
+        });
+      }
+
       const inputs = form.querySelectorAll('.field');
 
       if (inputs.length !== 0) {

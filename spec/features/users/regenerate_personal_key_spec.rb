@@ -89,6 +89,34 @@ feature 'View personal key' do
 
       expect(current_path).to eq account_path
     end
+
+    it 'confirms personal key on mobile' do
+      Capybara.current_session.current_window.resize_to(414, 736)
+      sign_in_and_2fa_user
+      click_button t('account.links.regenerate_personal_key')
+
+      click_acknowledge_personal_key
+
+      expect_confirmation_modal_to_appear_with_first_code_field_in_focus
+
+      press_tab
+
+      expect_continue_button_to_be_in_focus
+
+      click_back_button
+
+      expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
+
+      click_acknowledge_personal_key
+      submit_form_without_entering_the_code
+
+      expect(current_path).not_to eq account_path
+
+      visit manage_personal_key_path
+      acknowledge_and_confirm_personal_key
+
+      expect(current_path).to eq account_path
+    end
   end
 
   it_behaves_like 'csrf error when asking for new personal key', :saml
@@ -129,6 +157,11 @@ end
 def press_shift_tab
   body_element = page.find('body')
   body_element.send_keys %i[shift tab]
+end
+
+def press_tab
+  body_element = page.find('body')
+  body_element.send_keys %i[tab]
 end
 
 def expect_continue_button_to_be_in_focus
