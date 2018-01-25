@@ -209,10 +209,10 @@ production:
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '8'
   state_id_proofing_vendor: 'mock'
-  twilio_numbers: '["9999999999","2222222222"]'
-  twilio_sid: 'sid1'
-  twilio_auth_token: 'token1'
-  twilio_messaging_service_sid: '123abc'
+  twilio_numbers: # Add JSON encoded array of phone numbers
+  twilio_sid: # Twilio SID
+  twilio_auth_token: # Twilio auth token
+  twilio_messaging_service_sid: # Twilio CoPilot SID
   twilio_record_voice: 'false'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
