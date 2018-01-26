@@ -495,6 +495,29 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq root_path
     end
+
+    scenario 'attempting to reuse a TOTP code results in an error' do
+      secret = 'abcdefghi'
+      user = build(:user, :signed_up, otp_secret_key: secret)
+      otp = generate_totp_code(secret)
+
+      Timecop.freeze do
+        sign_in_user(user)
+        fill_in 'code', with: otp
+        click_submit_default
+
+        expect(current_path).to eq(account_path)
+
+        first(:link, t('links.sign_out')).click
+
+        sign_in_user(user)
+        fill_in 'code', with: otp
+        click_submit_default
+
+        expect(page).to have_content(t('devise.two_factor_authentication.invalid_otp'))
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :authenticator)
+      end
+    end
   end
 
   # TODO: readd profile redirect, modal tests
