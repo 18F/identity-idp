@@ -48,25 +48,25 @@ feature 'Two Factor Authentication' do
     end
 
     context 'with U.S. phone that does not support phone delivery method' do
-      let(:guam_phone) { '671-555-5555' }
+      let(:unsupported_phone) { '242-555-5555' }
 
       scenario 'renders an error if a user submits with phone selected' do
         sign_in_before_2fa
-        fill_in 'Phone', with: guam_phone
+        fill_in 'Phone', with: unsupported_phone
         choose 'Phone call'
         click_send_security_code
 
         expect(current_path).to eq(phone_setup_path)
         expect(page).to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Guam'
+          location: 'Bahamas'
         )
       end
 
       scenario 'disables the phone option and displays a warning with js', :js do
         sign_in_before_2fa
 
-        fill_in 'Phone', with: guam_phone
+        fill_in 'Phone', with: unsupported_phone
         phone_radio_button = page.find(
           '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
@@ -74,7 +74,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Guam'
+          location: 'Bahamas'
         )
         expect(phone_radio_button).to be_disabled
 
@@ -82,7 +82,7 @@ feature 'Two Factor Authentication' do
 
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Guam'
+          location: 'Bahamas'
         )
         expect(phone_radio_button).to_not be_disabled
       end
@@ -235,8 +235,8 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
-      guam_phone = '+1 (671) 555-5000'
-      user = create(:user, :signed_up, phone: guam_phone)
+      unsupported_phone = '+1 (242) 555-5000'
+      user = create(:user, :signed_up, phone: unsupported_phone)
       sign_in_before_2fa(user)
 
       expect(page).to_not have_link t('links.two_factor_authentication.voice')
