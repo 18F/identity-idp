@@ -16,5 +16,10 @@ module Idv
                 }
       validates :state_id_type, inclusion: { in: STATE_ID_TYPES }
     end
+
+    def unsupported_jurisdiction?
+      return false if SUPPORTED_JURISDICTIONS.include?(state)
+      true
+    end
   end
 end

@@ -13,7 +13,7 @@ module Features
       user = sign_up_and_set_password
       fill_in 'Phone', with: '202-555-1212'
       click_send_security_code
-      enter_2fa_code
+      click_submit_default
       click_acknowledge_personal_key
       user
     end
@@ -113,10 +113,6 @@ module Features
       click_button t('forms.buttons.send_security_code')
     end
 
-    def enter_2fa_code
-      click_button t('forms.buttons.submit.default')
-    end
-
     def sign_in_live_with_2fa(user = user_with_2fa)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)
@@ -126,6 +122,10 @@ module Features
 
     def click_submit_default
       click_button t('forms.buttons.submit.default')
+    end
+
+    def click_continue
+      click_button t('forms.buttons.continue')
     end
 
     def enter_correct_otp_code_for_user(user)
@@ -279,7 +279,7 @@ module Features
 
       expect(page).to have_css('img[src*=sp-logos]')
 
-      enter_2fa_code
+      click_submit_default
 
       # expect(page).to have_css('img[src*=sp-logos]')
 
@@ -316,7 +316,7 @@ module Features
     end
 
     def click_link_to_resend_the_email
-      click_button 'Resend email'
+      click_button 'Resend'
     end
 
     def attempt_to_confirm_email_with_invalid_token(request_id)
@@ -357,7 +357,7 @@ module Features
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
       set_up_2fa_with_valid_phone
-      enter_2fa_code
+      click_submit_default
       User.find_with_email(email)
     end
 

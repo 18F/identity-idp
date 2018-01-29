@@ -1,6 +1,7 @@
 ---
 en:
   links:
+    access_help: Learn about how we make sure only you have access.
     account:
       reactivate:
         with_key: I have my key
@@ -23,7 +24,7 @@ en:
         a security code via %{link}
     privacy_policy: Privacy & security
     remove: Remove
-    resend: Resend email
+    resend: Resend
     reverify: Please verify your identity again.
     sign_in: Sign in
     sign_out: Sign out

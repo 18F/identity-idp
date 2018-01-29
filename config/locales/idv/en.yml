@@ -30,10 +30,10 @@ en:
         personal_key: 'Please enter your personal key for this account. Example: ABC1-DEF2-G3HI-J456'
         ssn: 'Your Social Security Number must be entered in as ###-##-####'
         zipcode: 'Your zipcode must be entered in as #####-####'
-      unsupported_jurisdiction: Sorry, we don't currently verify anyone from this
-        state
+      unsupported_jurisdiction: Sorry, we can't verify people from this state.
+      unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
     form:
-      activate_by_mail: Activate my account by mail.
+      activate_by_mail: get a code by letter.
       address1: Street address 1
       address2: Street address 2 (optional)
       city: City
@@ -41,25 +41,27 @@ en:
       dob_hint: 'example: 01/17/1964'
       first_name: First name
       last_name: Last name
-      no_alternate_phone_html: I don't have another phone number. %{link}
+      no_alternate_phone_html: If you don't have another phone number, %{link}
       password: Password
       personal_details: Personal details
       phone: Phone Number
-      phone_label_aside: Mobile or landline
+      phone_label_aside: Mobile phone or landline
       previous_address_add: Add previous address
       previous_address_html: Moved in the <strong>last 3 months</strong>?
       ssn_label_html: Social Security Number %{tooltip}
       state: State
       state_id: Identification number
-      state_id_number: Identification number
       state_id_type:
         drivers_license: Driver's license
         drivers_permit: Driver's permit
         state_id_card: State ID card
-      state_id_type_label: State ID Type
+      state_id_type_label: Type of ID number
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
+      id:
+        need_html: If you're creating an account, you'll need a <strong>current state-issued
+          ID</strong>.
       paragraph_1: We have partnered with a trusted third party company to verify
         this information and your identity.
       prompt: Do you have all of this information available right now?
@@ -112,6 +114,9 @@ en:
       hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       help_center_html: Visit our <strong>Help Center</strong> to learn more about
         verifying your account.
+      id_number: Enter a valid state identification number or driver's license number.
+        The name, date of birth and address on your ID <strong>must</strong> match
+        the information provided above.
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
@@ -120,14 +125,14 @@ en:
         safe place. You will need it if you ever lose your password.
       phone:
         alert: This phone line must be
-        in_your_name: in your name or a family member's name
+        in_your_name: in your name, or a family member's name
         intro: We can only send a confirmation code to a telephone number linked to
-          your legal identity.
+          you.
         phone_of_record: Phone of record
-        prepaid: on a contract, not prepaid
+        prepaid: not prepaid
         same_as_2fa: This phone number can be the same one you used to set up your
           one-time password as long as it meets the criteria above.
-        us_country_code: have a U.S. country code to accept phone calls
+        us_country_code: based in the United States
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -145,9 +150,20 @@ en:
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
+        access_sp: "<strong>%{sp_name}</strong> requires that <em>only you</em> can
+          access your benefits."
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
+        review_message: When you enter your password, login.gov will secure your personal
+          information. We do this to make sure no one else can access your information.
         success: We found records matching your %{pii_message}
+      state_id_accordion_header: What if I don't have a valid ID number?
+      state_id_accordion_message: "You must provide a valid ID number to continue
+        verifying online.\nIt cannot be expired. The name, date of birth and address
+        on \nyour ID must match the information you provided above.\n\nIf you've recently
+        moved and the address on your ID doesn't \nmatch your current official address,
+        we can't verify you online at \nthis time.\n\nIf you don't have a valid ID
+        number, please return to %{sp} to access your benefits."
       usps:
         bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified address
@@ -206,5 +222,5 @@ en:
       select_verification: Choose how to confirm your address
       session:
         phone: Get a code by telephone
-        review: Encrypt your verified data by entering your password
-      sessions: First, tell us about yourself
+        review: Enter your login.gov password
+      sessions: Verify your identity
