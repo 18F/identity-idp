@@ -18,13 +18,12 @@ module Users
     end
 
     def create
-      track_authentication_attempt(params[:user][:email])
+      track_authentication_attempt(auth_params[:email])
 
       return process_locked_out_user if current_user && user_locked_out?(current_user)
 
-      super
-      cache_active_profile
-      store_sp_metadata_in_session unless request_id.empty?
+      self.resource = warden.authenticate!(auth_options)
+      handle_valid_authentication
     end
 
     def active
@@ -63,6 +62,10 @@ module Users
       end
     end
 
+    def auth_params
+      params.require(:user).permit(:email, :password, :request_id)
+    end
+
     def process_locked_out_user
       decorator = current_user.decorate
       sign_out
@@ -70,6 +73,13 @@ module Users
         'two_factor_authentication/shared/max_login_attempts_reached',
         locals: { type: 'generic', decorator: decorator }
       )
+    end
+
+    def handle_valid_authentication
+      sign_in(resource_name, resource)
+      cache_active_profile
+      store_sp_metadata_in_session unless request_id.empty?
+      redirect_to user_two_factor_authentication_url
     end
 
     def now

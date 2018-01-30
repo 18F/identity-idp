@@ -110,6 +110,24 @@ describe SignUp::RegistrationsController, devise: true do
 
       post :create, params: { user: { email: 'invalid@', request_id: '' } }
     end
+
+    it 'renders new if email is nil' do
+      post :create, params: { user: { request_id: '123789' } }
+
+      expect(response).to render_template(:new)
+    end
+
+    it 'renders new if email is a Hash' do
+      put :create, params: { user: { email: { foo: 'bar' } } }
+
+      expect(response).to render_template(:new)
+    end
+
+    it 'renders new if request_id is blank' do
+      post :create, params: { user: { email: 'invalid@' } }
+
+      expect(response).to render_template(:new)
+    end
   end
 
   describe '#show' do

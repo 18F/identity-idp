@@ -15,7 +15,7 @@ module SessionTimeoutWarningHelper
     URIService.add_params(
       request.original_fullpath,
       timeout: true
-    ).html_safe # rubocop:disable Rails/OutputSafety
+    )&.html_safe # rubocop:disable Rails/OutputSafety
   end
 
   def auto_session_timeout_js
