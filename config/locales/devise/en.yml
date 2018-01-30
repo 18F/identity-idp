@@ -68,18 +68,16 @@ en:
       signed_up_but_locked: You have created an account. However, we could not sign
         you in because your account is locked.
       start:
-        accordion: You will need
-        bullet_1_html: Provide your <strong>email address</strong> and create a <strong>strong
-          password</strong>.
-        bullet_2_html: Enable <strong>two-step authentication</strong>. This adds
-          a second layer of security to your account by requiring you to enter a new
-          code that’s sent to your phone every time you log in.
-        bullet_3_html: Provide <strong>basic information</strong>, such as your name,
-          address, phone number, and social security number.
-        bullet_4_html: Provide a <strong>financial account number</strong>, such as
-          your  credit card number. This number will only be used to verify your identity.
-        bullet_5_html: When you are finished with this process we’ll give you a personal
-          key. <strong>Write it down and store it in a safe place; it’s important.</strong>
+        accordion: You will also need
+        bullet_1_html: An <strong>email address</strong>.
+        bullet_2_html: Enable <strong>two-step authentication</strong>.
+        bullet_3_html: To provide <strong>basic information</strong>, such as your
+          name, address and phone number.
+        bullet_4_html: Your <strong>Social Security number</strong>.
+        bullet_5_html: To verify your address by providing a <strong>phone number
+          or mailing address where you receive mail</strong>.
+        bullet_6_html: When you are finished with this process we’ll give you a <strong>personal
+          key</strong>. Write it down and store it in a safe place; it’s important.
           You’ll be asked for the personal key every time you make changes to your
           account.
         learn_more: Learn more about verifying your identity
