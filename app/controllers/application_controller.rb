@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def analytics_user
-    current_user || AnonymousUser.new
+    warden.user || AnonymousUser.new
   end
 
   def create_user_event(event_type, user = current_user)

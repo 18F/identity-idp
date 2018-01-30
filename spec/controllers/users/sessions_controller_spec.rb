@@ -302,6 +302,12 @@ describe Users::SessionsController, devise: true do
       expect(response).to redirect_to new_user_session_url
       expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
     end
+
+    it 'returns to sign in page if email is a Hash' do
+      post :create, params: { user: { email: { foo: 'bar' }, password: 'password' } }
+
+      expect(response).to render_template(:new)
+    end
   end
 
   describe '#new' do

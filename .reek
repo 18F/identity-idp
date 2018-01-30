@@ -35,6 +35,9 @@ FeatureEnvy:
     - ServiceProviderSeeder#run
     - OtpDeliverySelectionForm#unsupported_phone?
     - fallback_to_english
+    - UserEncryptedAttributeOverrides#find_with_email
+    - Utf8Sanitizer#event_attributes
+    - Utf8Sanitizer#remote_ip
 InstanceVariableAssumption:
   exclude:
     - User
@@ -61,6 +64,7 @@ RepeatedConditional:
     - Users::ResetPasswordsController
     - VerifyController
     - Verify::Base
+    - Rack::Attack
 TooManyConstants:
   exclude:
     - Analytics

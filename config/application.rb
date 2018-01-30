@@ -37,6 +37,8 @@ module Upaya
 
     require 'headers_filter'
     config.middleware.insert_before 0, HeadersFilter
+    require 'utf8_sanitizer'
+    config.middleware.use Utf8Sanitizer
 
     config.middleware.insert_before 0, Rack::Cors do
       allow do
