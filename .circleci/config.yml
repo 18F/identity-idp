@@ -61,9 +61,7 @@ jobs:
             cp config/application.yml.example config/application.yml
             cp certs/saml.crt.example certs/saml.crt
             cp keys/saml.key.enc.example keys/saml.key.enc
-            cp keys/equifax_rsa.example keys/equifax_rsa
-            gpg --dearmor < keys/equifax_gpg.pub.example > keys/equifax_gpg.pub.bin
-            gpg --import keys/equifax_gpg.example
+            bin/generate-example-keys
             bundle exec rake db:setup --trace
             bundle exec rake assets:precompile
 

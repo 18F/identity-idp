@@ -82,7 +82,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       end
 
       context 'with invalid params that do not interfere with the redirect_uri' do
-        before { params.delete(:prompt) }
+        before { params[:prompt] = '' }
 
         it 'redirects to the redirect_uri immediately with an invalid_request' do
           action

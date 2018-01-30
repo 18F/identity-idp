@@ -130,6 +130,15 @@ development:
     cert: 'sp_sinatra_demo'
     friendly_name: 'Example Sinatra App'
 
+  'urn:gov:gsa:openidconnect:sp:expressjs':
+    agency: 'GSA'
+    cert: 'sp_expressjs_demo'
+    friendly_name: 'Example OIDC Client (Express.js)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9393/'
+      - 'http://localhost:9393/auth/login-gov/callback'
+
 production:
   'https://idp.dev.login.gov':
     metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
@@ -242,6 +251,15 @@ production:
       <% if LoginGov::Hostdata.in_datacenter? %>
       - 'https://sp-oidc-sinatra.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/'
       <% end %>
+
+  'urn:gov:gsa:openidconnect:sp:expressjs':
+    agency: 'GSA'
+    cert: 'sp_expressjs_demo'
+    friendly_name: 'Example OIDC Client (Express.js)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:9393/'
+      - 'http://localhost:9393/auth/login-gov/callback'
 
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':
@@ -358,6 +376,7 @@ production:
     redirect_uris:
       - 'https://login.test.usajobs.gov/openid'
       - 'https://login.test.usajobs.gov/externalloggedout'
+    return_to_sp_url: 'https://www.test.usajobs.gov/'
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
@@ -367,6 +386,7 @@ production:
     redirect_uris:
       - 'https://login.uat.usajobs.gov/openid'
       - 'https://login.uat.usajobs.gov/externalloggedout'
+    return_to_sp_url: 'https://www.uat.usajobs.gov/'
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
@@ -376,6 +396,7 @@ production:
     redirect_uris:
       - 'https://login.usajobs.gov/openid'
       - 'https://login.usajobs.gov/externalloggedout'
+    return_to_sp_url:  'https://www.usajobs.gov/'
     restrict_to_deploy_env: 'prod'
 
   # NGA NSG Open Mapping Enclave (NOME)

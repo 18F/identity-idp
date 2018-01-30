@@ -25,17 +25,17 @@ class TwilioService
 
   def send_sms(params = {})
     sanitize_errors do
-      params = params.reverse_merge(from: from_number)
+      params = params.reverse_merge(messaging_service_sid: Figaro.env.twilio_messaging_service_sid)
       client.messages.create(params)
     end
   end
 
-  def account
-    @account ||= random_account
+  def phone_number
+    @phone_number ||= random_phone_number
   end
 
   def from_number
-    "+1#{account['number']}"
+    "+1#{phone_number}"
   end
 
   private
@@ -44,13 +44,13 @@ class TwilioService
 
   def twilio_client
     telephony_service.new(
-      account['sid'],
-      account['auth_token']
+      TWILIO_SID,
+      TWILIO_AUTH_TOKEN
     )
   end
 
-  def random_account
-    TWILIO_ACCOUNTS.sample
+  def random_phone_number
+    TWILIO_NUMBERS.sample
   end
 
   def sanitize_errors
