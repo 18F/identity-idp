@@ -379,7 +379,7 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA3 with personal key', :saml
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
 
-  context 'user signs in with personal key, visits account page before viewing new key' do |sp|
+  context 'user signs in with personal key, visits account page before viewing new key' do
     # this can happen if you submit the personal key form multiple times quickly
     it 'redirects to the personal key page' do
       user = create(:user, :signed_up)
@@ -392,7 +392,6 @@ feature 'Sign in' do
 
       expect(page).to have_current_path(manage_personal_key_path)
 
-      new_personal_key = scrape_personal_key
       click_acknowledge_personal_key
 
       expect(page).to have_current_path(account_path)

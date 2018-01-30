@@ -785,7 +785,7 @@ VN:
 VG:
   name: Virgin Islands (British)
   country_code: '1'
-  sms_only: false
+  sms_only: true
 VI:
   name: Virgin Islands (U.S.)
   country_code: '1'

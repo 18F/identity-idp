@@ -7,7 +7,8 @@ gem 'rails', '~> 5.1.3'
 
 gem 'ahoy_matey'
 gem 'american_date'
-gem 'aws-sdk-core'
+gem 'aws-sdk-kms', '~> 1.4'
+gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
 gem 'browserify-rails'
 gem 'device_detector'
@@ -116,6 +117,7 @@ group :test do
 end
 
 group :production do
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v1.0.1'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
   gem 'mandrill_dm'
 end

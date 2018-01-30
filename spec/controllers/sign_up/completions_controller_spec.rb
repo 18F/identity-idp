@@ -41,13 +41,13 @@ describe SignUp::CompletionsController do
       subject.session[:sp] = { dog: 'max' }
       get :show
 
-      expect(response).to redirect_to(account_url)
+      expect(response).to redirect_to(new_user_session_url)
     end
 
     it 'requires user with no session to be logged in' do
       get :show
 
-      expect(response).to redirect_to(account_url)
+      expect(response).to redirect_to(new_user_session_url)
     end
 
     it 'requires service provider or identity info in session' do

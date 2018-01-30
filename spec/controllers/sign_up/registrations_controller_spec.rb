@@ -16,6 +16,8 @@ describe SignUp::RegistrationsController, devise: true do
     it 'cannot be viewed by signed in users' do
       stub_sign_in
 
+      subject.session[:sp] = { request_url: 'http://test.com' }
+
       get :new
 
       expect(response).to redirect_to account_path
@@ -46,6 +48,7 @@ describe SignUp::RegistrationsController, devise: true do
           errors: {},
           email_already_exists: false,
           user_id: user.uuid,
+          domain_name: 'example.com',
         }
 
         expect(@analytics).to have_received(:track_event).
@@ -81,6 +84,7 @@ describe SignUp::RegistrationsController, devise: true do
         errors: {},
         email_already_exists: true,
         user_id: existing_user.uuid,
+        domain_name: 'example.com',
       }
 
       expect(@analytics).to receive(:track_event).
@@ -98,6 +102,7 @@ describe SignUp::RegistrationsController, devise: true do
         errors: { email: [t('valid_email.validations.email.invalid')] },
         email_already_exists: false,
         user_id: 'anonymous-uuid',
+        domain_name: 'invalid',
       }
 
       expect(@analytics).to receive(:track_event).

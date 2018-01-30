@@ -24,7 +24,7 @@ RSpec.describe 'deploy/activate' do
 
   let(:logger) { @logger }
   let(:s3_client) { LoginGov::Hostdata::FakeS3Client.new }
-  let(:set_up_files!){}
+  let(:set_up_files!) {}
 
   describe '#run' do
     context 'in a deployed production environment' do

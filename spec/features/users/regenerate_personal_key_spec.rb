@@ -9,7 +9,14 @@ feature 'View personal key' do
     scenario 'user refreshes personal key page' do
       sign_up_and_view_personal_key
 
+      personal_key = scrape_personal_key
+
       visit sign_up_personal_key_path
+
+      expect(current_path).to eq(sign_up_personal_key_path)
+      expect(scrape_personal_key).to eq(personal_key)
+
+      click_acknowledge_personal_key
 
       expect(current_path).to eq(account_path)
     end
@@ -51,6 +58,20 @@ feature 'View personal key' do
 
       it_behaves_like 'personal key page'
     end
+
+    context 'visitting the personal key path' do
+      scenario 'does not regenerate the personal and redirects to account' do
+        user = sign_in_and_2fa_user
+        old_code = user.personal_key
+
+        visit sign_up_personal_key_path
+
+        user.reload
+
+        expect(user.personal_key).to eq(old_code)
+        expect(current_path).to eq(account_path)
+      end
+    end
   end
 
   context 'with javascript enabled', js: true do
@@ -72,6 +93,34 @@ feature 'View personal key' do
       expect_confirmation_modal_to_appear_with_first_code_field_in_focus
 
       press_shift_tab
+
+      expect_continue_button_to_be_in_focus
+
+      click_back_button
+
+      expect_to_be_back_on_manage_personal_key_page_with_continue_button_in_focus
+
+      click_acknowledge_personal_key
+      submit_form_without_entering_the_code
+
+      expect(current_path).not_to eq account_path
+
+      visit manage_personal_key_path
+      acknowledge_and_confirm_personal_key
+
+      expect(current_path).to eq account_path
+    end
+
+    it 'confirms personal key on mobile' do
+      Capybara.current_session.current_window.resize_to(414, 736)
+      sign_in_and_2fa_user
+      click_button t('account.links.regenerate_personal_key')
+
+      click_acknowledge_personal_key
+
+      expect_confirmation_modal_to_appear_with_first_code_field_in_focus
+
+      press_tab
 
       expect_continue_button_to_be_in_focus
 
@@ -129,6 +178,11 @@ end
 def press_shift_tab
   body_element = page.find('body')
   body_element.send_keys %i[shift tab]
+end
+
+def press_tab
+  body_element = page.find('body')
+  body_element.send_keys %i[tab]
 end
 
 def expect_continue_button_to_be_in_focus
