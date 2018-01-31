@@ -1,7 +1,7 @@
 GIT
   remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: a5316df89664e3cc539c9c63d8e07e652f9509f4
-  tag: v1.0.1
+  revision: 4239d0acb76637710e6f0cce8c1c32483fe01921
+  tag: v1.0.2
   specs:
     aamva (0.1.0)
       dotenv
