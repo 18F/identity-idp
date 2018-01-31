@@ -9,7 +9,14 @@ feature 'View personal key' do
     scenario 'user refreshes personal key page' do
       sign_up_and_view_personal_key
 
+      personal_key = scrape_personal_key
+
       visit sign_up_personal_key_path
+
+      expect(current_path).to eq(sign_up_personal_key_path)
+      expect(scrape_personal_key).to eq(personal_key)
+
+      click_acknowledge_personal_key
 
       expect(current_path).to eq(account_path)
     end
@@ -50,6 +57,20 @@ feature 'View personal key' do
       end
 
       it_behaves_like 'personal key page'
+    end
+
+    context 'visitting the personal key path' do
+      scenario 'does not regenerate the personal and redirects to account' do
+        user = sign_in_and_2fa_user
+        old_code = user.personal_key
+
+        visit sign_up_personal_key_path
+
+        user.reload
+
+        expect(user.personal_key).to eq(old_code)
+        expect(current_path).to eq(account_path)
+      end
     end
   end
 

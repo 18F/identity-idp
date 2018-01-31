@@ -28,7 +28,7 @@ feature 'Verify phone' do
     end
 
     scenario 'phone number with no voice otp support only allows sms delivery' do
-      guam_phone = '671-555-5000'
+      unsupported_phone = '242-555-5000'
       user = create(
         :user, :signed_up,
         otp_delivery_preference: 'voice',
@@ -41,7 +41,7 @@ feature 'Verify phone' do
       allow(VoiceOtpSenderJob).to receive(:perform_later)
       allow(SmsOtpSenderJob).to receive(:perform_later)
 
-      complete_idv_profile_with_phone(guam_phone)
+      complete_idv_profile_with_phone(unsupported_phone)
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)

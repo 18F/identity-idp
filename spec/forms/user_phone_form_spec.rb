@@ -74,10 +74,10 @@ describe UserPhoneForm do
     end
 
     context 'when otp_delivery_preference is voice and phone number does not support voice' do
-      let(:guam_phone) { '671-555-5000' }
+      let(:unsupported_phone) { '242-555-5000' }
       let(:params) do
         {
-          phone: guam_phone,
+          phone: unsupported_phone,
           international_code: 'US',
           otp_delivery_preference: 'voice',
         }
