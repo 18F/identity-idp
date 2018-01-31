@@ -128,6 +128,10 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def click_continue
+      click_button t('forms.buttons.continue')
+    end
+
     def enter_correct_otp_code_for_user(user)
       fill_in 'code', with: user.reload.direct_otp
       click_submit_default

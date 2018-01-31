@@ -39,7 +39,7 @@ feature 'IdV session', idv_job: true do
       fill_out_phone_form_ok(user.phone)
       click_idv_continue
       fill_in :user_password, with: user_password
-      click_submit_default
+      click_continue
 
       expect(current_url).to eq verify_confirmations_url
       expect(page).to have_content(t('headings.personal_key'))
