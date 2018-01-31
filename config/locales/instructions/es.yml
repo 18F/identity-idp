@@ -30,10 +30,12 @@ es:
           otro código? %{resend_code_link}. Puede estar sujeto a cargos de mensajería
           y datos.
         fallback_html: Si no puede recibir mensajes de texto ahora, puede %{link}
+        number_message: Enviamos un código de seguridad al %{number}.
       voice:
         confirm_code_html: Acabamos de llamarle al %{number}. ¿Desea que le llamemos
           de nuevo? %{resend_code_link}
         fallback_html: Si no puede recibir una llamada de teléfono ahora, puede %{link}
+        number_message: Acabamos de llamarte en %{number}.
       wrong_number_html: "¿Ingresó el número de teléfono equivocado? %{link}"
     password:
       forgot: "¿No sabe su contraseña? Restablézcala después de confirmar su email."
@@ -54,6 +56,3 @@ es:
     personal_key_accent: Anótelo o imprímalo.
     personal_key_html: Esta es la única manera de recuperar el acceso a su cuenta
       si pierde el teléfono donde enviamos su código de seguridad. %{accent}
-    registration:
-      email: Elija una dirección que desee usar para manejar las comunicaciones del
-        Gobierno.

@@ -28,10 +28,12 @@ en:
         confirm_code_html: We sent it in a text message to %{number}. Need another
           code? %{resend_code_link}. Message rates may apply.
         fallback_html: If you can't get text messages right now, you can %{link}
+        number_message: We sent a security code to %{number}.
       voice:
         confirm_code_html: We just called you at %{number}. Want us to call you again?
           %{resend_code_link}
         fallback_html: If you can't take a phone call right now, you can %{link}
+        number_message: We just called you at %{number}.
       wrong_number_html: Entered the wrong phone number? %{link}
     password:
       forgot: Don’t know your password? Reset it after confirming your email address.
@@ -52,5 +54,3 @@ en:
     personal_key_accent: Write it down or print it out.
     personal_key_html: This is the only way to regain access to your account if you
       lose the phone where we send your security code. %{accent}
-    registration:
-      email: Pick an address you want to use for government communications.

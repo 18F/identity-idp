@@ -4,6 +4,11 @@ module TwoFactorAuthCode
       t('devise.two_factor_authentication.header_text')
     end
 
+    def phone_number_message
+      t("instructions.mfa.#{otp_delivery_preference}.number_message",
+      number: content_tag(:strong, phone_number))
+    end
+
     def help_text
       t("instructions.mfa.#{otp_delivery_preference}.confirm_code_html",
         number: phone_number_tag,
