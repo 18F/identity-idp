@@ -160,7 +160,7 @@ GEM
     bindata (2.4.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    brakeman (3.7.2)
+    brakeman (4.1.1)
     browser (2.4.0)
     browserify-rails (4.2.0)
       addressable (>= 2.4.0)
