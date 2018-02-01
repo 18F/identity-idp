@@ -111,6 +111,7 @@ UtilityFunction:
     - AnalyticsEventJob#perform
     - ApplicationController#default_url_options
     - ApplicationHelper#step_class
+    - NullTwilioClient#http_client
     - PersonalKeyFormatter#regexp
     - SessionTimeoutWarningHelper#frequency
     - SessionTimeoutWarningHelper#start
