@@ -225,7 +225,7 @@ GEM
     css_parser (1.6.0)
       addressable
     daemons (1.2.4)
-    database_cleaner (1.6.1)
+    database_cleaner (1.6.2)
     debug_inspector (0.0.3)
     derailed (0.1.0)
       derailed_benchmarks
