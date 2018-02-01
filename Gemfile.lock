@@ -607,7 +607,7 @@ GEM
     sshkit (1.13.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    stringex (2.7.1)
+    stringex (2.8.2)
     sysexits (1.2.0)
     systemu (2.6.5)
     teaspoon (1.1.5)
