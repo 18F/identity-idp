@@ -71,7 +71,7 @@ Dir.chdir APP_ROOT do
   run "rm -rf tmp/cache"
 
   puts "\n== Adding git hooks via Overcommit =="
-  run 'overcommit --install'
+  run 'bundle exec overcommit --install'
 
   puts "\n== Restarting application server =="
   run "mkdir -p tmp"

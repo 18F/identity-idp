@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Pii::Encryptor do
-  let(:aes_cek) { SecureRandom.uuid }
+  let(:aes_cek) { SecureRandom.random_bytes(32) }
   let(:plaintext) { 'four score and seven years ago' }
 
   describe '#encrypt' do
@@ -21,7 +21,7 @@ describe Pii::Encryptor do
 
     it 'requires same password used for encrypt' do
       encrypted = subject.encrypt(plaintext, aes_cek)
-      diff_cek = aes_cek.tr('-', 'z')
+      diff_cek = SecureRandom.random_bytes(32)
 
       expect { subject.decrypt(encrypted, diff_cek) }.to raise_error Pii::EncryptionError
     end

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Pii::Cipher do
   let(:plaintext) { 'some long secret' }
-  let(:cek) { SecureRandom.uuid }
+  let(:cek) { SecureRandom.random_bytes(32) }
 
   describe '#encrypt' do
     it 'returns JSON string containing AES-encrypted ciphertext' do
