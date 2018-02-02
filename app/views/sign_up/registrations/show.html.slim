@@ -1,19 +1,20 @@
 - title t('titles.registrations.start')
 
-.sm-px3.mb0.center
-  = image_tag(asset_url('user-access.svg'), width: '352', alt: '')
+.center
+  = image_tag(asset_url('user-access.svg'), width: '280', alt: '')
 
   = render decorated_session.registration_heading
 
   = render 'shared/sp_alert'
 
-  = link_to t('sign_up.registrations.create_account'),
-    sign_up_email_path(request_id: params[:request_id]),
-    class: 'sm-col-10 col-12 btn btn-primary btn-wide mb2 fs-20p'
+  .sm-px4
+    = link_to t('sign_up.registrations.create_account'),
+      sign_up_email_path(request_id: params[:request_id]),
+      class: 'sm-col-10 col-12 btn btn-primary btn-wide mb2 fs-20p'
 
-  = link_to t('links.sign_in'),
-    new_user_session_path(request_id: params[:request_id]),
-    class: 'sm-col-10 col-12 btn btn-secondary btn-wide mb1 fs-20p'
+    = link_to t('links.sign_in'),
+      new_user_session_path(request_id: params[:request_id]),
+      class: 'sm-col-10 col-12 btn btn-secondary btn-wide mb1 fs-20p'
 
   = render decorated_session.return_to_sp_from_start_page_partial
 

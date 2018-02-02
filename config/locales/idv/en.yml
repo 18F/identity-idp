@@ -60,6 +60,9 @@ en:
       zipcode: ZIP Code
     index:
       continue_link: Yes, continue
+      id:
+        need_html: If you're creating an account, you'll need a <strong>current state-issued
+          ID</strong>.
       paragraph_1: We have partnered with a trusted third party company to verify
         this information and your identity.
       prompt: Do you have all of this information available right now?

@@ -5,7 +5,6 @@ describe SignUp::PersonalKeysController do
     it 'tracks an analytics event' do
       stub_analytics
       stub_sign_in
-      subject.user_session[:first_time_personal_key_view] = 'true'
 
       expect(@analytics).to receive(:track_event).with(
         Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT
@@ -14,25 +13,19 @@ describe SignUp::PersonalKeysController do
       get :show
     end
 
-    it 'redirects the user on subsequent views' do
-      stub_sign_in
-      subject.user_session[:first_time_personal_key_view] = 'true'
+    it "does not reset the user's personal key on subsequent views" do
+      user = build(:user)
+      stub_sign_in(user)
 
-      expect(get(:show)).not_to redirect_to(account_path)
-      expect(get(:show)).to redirect_to(account_path)
-    end
+      get :show
+      personal_key = subject.user_session[:personal_key]
 
-    it 're-encrypts PII with new code if active profile exists' do
-      user = stub_sign_in
-      profile = create(:profile, :active, :verified, pii: { ssn: '1234' }, user: user)
-      subject.user_session[:decrypted_pii] = { ssn: '1234' }.to_json
-      subject.user_session[:first_time_personal_key_view] = 'true'
-
-      old_encrypted_pii = profile.encrypted_pii_recovery
+      expect(PersonalKeyGenerator.new(user).verify(personal_key)).to eq(true)
 
       get :show
 
-      expect(profile.reload.encrypted_pii_recovery).to_not eq old_encrypted_pii
+      expect(subject.user_session[:personal_key]).to eq(personal_key)
+      expect(PersonalKeyGenerator.new(user).verify(personal_key)).to eq(true)
     end
   end
 
@@ -75,6 +68,18 @@ describe SignUp::PersonalKeysController do
 
       expect(response).to redirect_to new_user_session_url
       expect(flash[:alert]).to eq t('errors.invalid_authenticity_token')
+    end
+
+    it 'deletes the personal key from the session' do
+      stub_sign_in
+
+      get :show
+
+      expect(subject.user_session[:personal_key]).to_not be_nil
+
+      patch :update
+
+      expect(subject.user_session[:personal_key]).to be_nil
     end
   end
 end

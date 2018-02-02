@@ -4,6 +4,7 @@ Figaro.require_keys(
   'attribute_cost',
   'attribute_encryption_key',
   'domain_name',
+  'enable_agency_based_uuids',
   'enable_identity_verification',
   'enable_rate_limiting',
   'enable_test_routes',
@@ -45,8 +46,11 @@ Figaro.require_keys(
   'session_encryption_key',
   'session_timeout_in_minutes',
   'state_id_proofing_vendor',
-  'twilio_accounts',
+  'twilio_numbers',
+  'twilio_sid',
+  'twilio_auth_token',
   'twilio_record_voice',
+  'twilio_messaging_service_sid',
   'use_kms',
   'valid_authn_contexts'
 )

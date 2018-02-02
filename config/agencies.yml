@@ -1,0 +1,23 @@
+test:
+  1:
+    name: 'CBP'
+  2:
+    name: 'OPM'
+  3:
+    name: 'EOP'
+
+development:
+  1:
+    name: 'CBP'
+  2:
+    name: 'OPM'
+  3:
+    name: 'EOP'
+
+production:
+  1:
+    name: 'CBP'
+  2:
+    name: 'OPM'
+  3:
+    name: 'EOP'

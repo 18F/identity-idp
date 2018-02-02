@@ -14,6 +14,7 @@ idv_attempt_window_in_hours: '24'
 mailer_domain_name: 'http://localhost:3000'
 max_mail_events: '4'
 max_mail_events_window_in_days: '30'
+aws_http_timeout: '5'
 
 # The scores 0, 1, 2, 3 or 4 are given when the number of guesses to crack the
 # password are less than 10^3, 10^6, 10^8, 10^10, and >= 10^10 respectively.
@@ -58,6 +59,7 @@ valid_authn_contexts: '["http://idmanagement.gov/ns/assurance/loa/1", "http://id
 usps_mail_batch_hours: '24'
 
 development:
+  aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
@@ -78,6 +80,7 @@ development:
   database_password: ''
   database_username: ''
   domain_name: 'localhost:3000'
+  enable_agency_based_uuids: 'false'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
@@ -129,7 +132,9 @@ development:
   session_timeout_in_minutes: '15'
   state_id_proofing_vendor: 'mock'
   telephony_disabled: 'true'
-  twilio_accounts: '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
+  twilio_numbers: '["9999999999","2222222222"]'
+  twilio_sid: 'sid1'
+  twilio_auth_token: 'token1'
   twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
   use_dashboard_service_providers: 'true'
@@ -139,9 +144,10 @@ development:
   enable_load_testing_mode: 'false'
 
 production:
-  aamva_public_key: '123abc'
-  aamva_private_key: '123abc'
-  aamva_verification_url: 'https://example.org:12345/verification/url'
+  aamva_cert_enabled: 'true'
+  aamva_public_key: # Base64 encoded public key for AAMVA
+  aamva_private_key: # Base64 encoded private key for AAMVA
+  aamva_verification_url: # DLDV Verification URL
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -155,6 +161,7 @@ production:
   disable_email_sending: 'false'
   dashboard_api_token:
   domain_name: 'login.gov'
+  enable_agency_based_uuids: 'false'
   enable_identity_verification: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
@@ -206,8 +213,10 @@ production:
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '8'
   state_id_proofing_vendor: 'mock'
-  twilio_accounts: # '[{"sid":"sid", "auth_token":"token", "number":"9999999999"}]'
-  twilio_messaging_service_sid: '123abc'
+  twilio_numbers: # Add JSON encoded array of phone numbers
+  twilio_sid: # Twilio SID
+  twilio_auth_token: # Twilio auth token
+  twilio_messaging_service_sid: # Twilio CoPilot SID
   twilio_record_voice: 'false'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
@@ -215,6 +224,7 @@ production:
   enable_load_testing_mode: 'false'
 
 test:
+  aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
@@ -234,6 +244,7 @@ test:
   database_password: ''
   database_username: ''
   dashboard_api_token: '123ABC'
+  enable_agency_based_uuids: 'true'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
@@ -280,7 +291,9 @@ test:
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '8'
   state_id_proofing_vendor: 'mock'
-  twilio_accounts: '[{"sid":"sid1", "auth_token":"token1", "number":"9999999999"}, {"sid":"sid2", "auth_token":"token2", "number":"2222222222"}]'
+  twilio_numbers: '["9999999999","2222222222"]'
+  twilio_sid: 'sid1'
+  twilio_auth_token: 'token1'
   twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
   use_kms: 'false'

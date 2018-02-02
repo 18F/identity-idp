@@ -78,21 +78,18 @@ fr:
       signed_up_but_locked: Vous avez créé un compte. Cependant, nous n'avons pu vous
         connecter, car votre compte est verrouillé.
       start:
-        accordion: Vous devrez
-        bullet_1_html: fournir votre <strong>adresse courriel</strong> et créer un
-          <strong> mot de passe fort</strong>.
+        accordion: Vous aurez aussi besoin
+        bullet_1_html: Une <strong>adresse e-mail</strong>.
         bullet_2_html: Activez <strong>l'authentification à deux facteurs</strong>.
-          Cela permet d'ajouter un degré de sécurité à votre compte, car vous devez
-          entrer un nouveau code envoyé à votre téléphone chaque fois que vous vous
-          connectez.
-        bullet_3_html: Fournissez <strong>de l'information de base</strong>, comme
-          votre nom, adresse et numéro de sécurité sociale.
-        bullet_4_html: Fournissez un <strong>numéro de compte bancaire</strong>, comme
-          votre numéro de carte de crédit.
-        bullet_5_html: 'Lorsque vous aurez terminé ce processus, nous vous donnerons
-          une clé personnelle. <strong>Notez-la et placez-la en lieu sûr : c''est
-          important.</strong> On vous demandera la clé personnelle chaque fois que
-          vous apporterez des changements à votre compte.'
+        bullet_3_html: Pour fournir des <strong>informations de base</strong>, telles
+          que votre nom, adresse et numéro de téléphone.
+        bullet_4_html: Votre <strong>numéro de Sécurité Sociale</strong>.
+        bullet_5_html: Pour vérifier votre adresse en fournissant un <strong>numéro
+          de téléphone ou adresse postale où vous recevez du courrier électronique</strong>.
+        bullet_6_html: Lorsque vous avez terminé ce processus, nous allons vous donner
+          un <strong>clé personnelle</strong>. Ecrivez-le et rangez-le dans un endroit
+          sûr. C'est important. La clé personnelle vous sera demandée chaque fois
+          que vous apportez des modifications à votre compte.
         learn_more: En savoir plus sur la vérification de votre identité
       updated: Votre compte a été mis à jour!
     sessions:

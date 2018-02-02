@@ -197,4 +197,37 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#redirect_on_timeout' do
+    before { routes.draw { get 'index' => 'anonymous#index' } }
+    after { Rails.application.reload_routes! }
+
+    controller do
+      def index
+        render plain: 'Hello'
+      end
+    end
+    let(:user) { build_stubbed(:user) }
+
+    context 'when the current user is present' do
+      it 'does not display flash message' do
+        allow(subject).to receive(:current_user).and_return(user)
+
+        get :index, params: { timeout: true, request_id: '123' }
+
+        expect(flash[:notice]).to be_nil
+      end
+    end
+
+    context 'when there is no current user' do
+      it 'displays a flash message' do
+        allow(subject).to receive(:current_user).and_return(nil)
+
+        get :index, params: { timeout: true, request_id: '123' }
+
+        expect(flash[:notice]).
+          to eq t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
+      end
+    end
+  end
 end
