@@ -14,9 +14,7 @@ class LinkAgencyIdentities
     service_providers.each do |issuer, config|
       priority = config['uuid_priority']
       agency_id = config['agency_id']
-      if priority && agency_id
-        sps << AGENCY_INFO.new(issuer, priority, agency_id)
-      end
+      sps << AGENCY_INFO.new(issuer, priority, agency_id) if priority && agency_id
     end
     sps
   end
