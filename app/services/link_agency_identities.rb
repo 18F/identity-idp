@@ -12,11 +12,14 @@ class LinkAgencyIdentities
   def sps_to_link
     sps = []
     service_providers.each do |issuer, config|
-      priority = config['uuid_priority']
-      agency_id = config['agency_id']
+      priority, agency_id = agency_info(config)
       sps << AGENCY_INFO.new(issuer, priority, agency_id) if priority && agency_id
     end
     sps
+  end
+
+  def agency_info(config)
+    [config['uuid_priority'], config['agency_id']]
   end
 
   def link_service_provider(agency_id, service_provider)
