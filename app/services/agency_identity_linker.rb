@@ -32,11 +32,9 @@ class AgencyIdentityLinker
 
   def create_agency_identity_for_sp
     return unless @agency_id
-    return AgencyIdentity.create(agency_id: @agency_id,
+    AgencyIdentity.create(agency_id: @agency_id,
                                  user_id: @sp_identity.user_id,
                                  uuid: @sp_identity.uuid)
-  rescue ActiveRecord::RecordNotUnique
-    return agency_identity_from_sp_identity
   end
 
   def agency_identity_from_sp_identity
