@@ -12,4 +12,15 @@ ExceptionNotification.configure do |config|
     error_grouping: true,
     sections: %w[request backtrace session]
   )
+
+  config.ignored_exceptions << 'ActionController::BadRequest'
+  config.ignore_if do |exception, _options|
+    exception.message.start_with?('string contains null byte')
+  end
+  config.ignore_if do |exception, _options|
+    exception.message.start_with?('invalid byte sequence in UTF-8')
+  end
+  config.ignore_if do |exception, _options|
+    exception.code == 21_614 if exception.respond_to?(:code)
+  end
 end

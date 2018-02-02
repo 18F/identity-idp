@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180125101934) do
+ActiveRecord::Schema.define(version: 20180201161105) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(version: 20180125101934) do
     t.string "scope"
     t.string "code_challenge"
     t.string "rails_session_id"
+    t.json "verified_attributes"
     t.index ["access_token"], name: "index_identities_on_access_token", unique: true
     t.index ["session_uuid"], name: "index_identities_on_session_uuid", unique: true
     t.index ["user_id", "service_provider"], name: "index_identities_on_user_id_and_service_provider", unique: true
@@ -177,7 +178,7 @@ ActiveRecord::Schema.define(version: 20180125101934) do
     t.string "attribute_cost"
     t.text "encrypted_phone"
     t.integer "otp_delivery_preference", default: 0, null: false
-    t.datetime "totp_timestamp"
+    t.integer "totp_timestamp"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true

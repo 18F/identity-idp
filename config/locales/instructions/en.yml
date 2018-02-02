@@ -51,6 +51,4 @@ en:
         v: Great!
     personal_key_accent: Write it down or print it out.
     personal_key_html: This is the only way to regain access to your account if you
-      lose your password or phone. %{accent}
-    registration:
-      email: Pick an address you want to use for government communications.
+      lose the phone where we send your security code. %{accent}
