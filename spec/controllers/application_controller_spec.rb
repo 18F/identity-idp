@@ -16,6 +16,31 @@ describe ApplicationController do
     end
   end
 
+  #
+  # We don't test *every* exception we try to capture since we handle all such exceptions the same
+  # way. This test doesn't ensure we have the right set of exceptions caught, but that, if caught,
+  # we handle the exception with the proper response.
+  #
+  describe 'handling RequestTimeoutException exceptions' do
+    controller do
+      def index
+        raise Rack::Timeout::RequestTimeoutException, {}
+      end
+    end
+
+    it 'returns a proper status' do
+      get :index
+
+      expect(response.status).to eq 503
+    end
+
+    it 'returns an html page' do
+      get :index
+
+      expect(response.content_type).to eq 'text/html'
+    end
+  end
+
   describe 'handling InvalidAuthenticityToken exceptions' do
     controller do
       def index
