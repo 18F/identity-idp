@@ -71,5 +71,4 @@ class FeatureManagement
   def self.enable_agency_based_uuids?
     Figaro.env.enable_agency_based_uuids == 'true'
   end
-
 end
