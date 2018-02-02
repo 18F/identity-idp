@@ -107,38 +107,6 @@ describe ResetPasswordForm, type: :model do
       end
     end
 
-    context 'when the password is not strong enough' do
-      it 'returns false and adds user errors to the form errors' do
-        allow(Figaro.env).to receive(:password_strength_enabled).and_return('true')
-
-        user = build_stubbed(:user, email: 'custom@benevolent.com')
-        allow(user).to receive(:reset_password_period_valid?).and_return(true)
-
-        form = ResetPasswordForm.new(user)
-
-        passwords = ['custom!@', 'benevolent', 'custom benevolent comcast']
-
-        passwords.each do |password|
-          errors = {
-            password: ['Your password is not strong enough.' \
-              ' This is similar to a commonly used password.' \
-              ' Add another word or two.' \
-              ' Uncommon words are better'],
-          }
-
-          extra = {
-            user_id: nil,
-            active_profile: false,
-            confirmed: true,
-          }
-
-          result = instance_double(FormResponse)
-          expect(FormResponse).to receive(:new).
-            with(success: false, errors: errors, extra: extra).and_return(result)
-          expect(form.submit(password: password)).
-            to eq result
-        end
-      end
-    end
+    it_behaves_like 'strong password', 'ResetPasswordForm'
   end
 end
