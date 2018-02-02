@@ -43,17 +43,23 @@ class OpenidConnectLogoutForm
               :success
 
   def load_identity
-    payload, _headers = JWT.decode(
-      id_token_hint, RequestKeyManager.private_key.public_key, true,
-      algorithm: 'RS256', leeway: Float::INFINITY
-    ).map(&:with_indifferent_access)
+    payload, _headers = JWT.decode(id_token_hint, RequestKeyManager.private_key.public_key, true,
+                                   algorithm: 'RS256',
+                                   leeway: Float::INFINITY).map(&:with_indifferent_access)
 
-    Identity.where(
-      uuid: payload[:sub],
-      service_provider: payload[:aud]
-    ).first
+    identity_from_payload(payload)
   rescue JWT::DecodeError
     nil
+  end
+
+  def identity_from_payload(payload)
+    uuid = payload[:sub]
+    sp = payload[:aud]
+    if FeatureManagement.enable_agency_based_uuids?
+      AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
+    else
+      Identity.where(uuid: uuid, service_provider: sp).first
+    end
   end
 
   def build_openid_connect_redirector

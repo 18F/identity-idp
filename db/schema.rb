@@ -10,10 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171219042656) do
+ActiveRecord::Schema.define(version: 20180125101934) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "agencies", force: :cascade do |t|
+    t.string "name", null: false
+    t.index ["name"], name: "index_agencies_on_name", unique: true
+  end
+
+  create_table "agency_identities", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "agency_id", null: false
+    t.string "uuid", null: false
+    t.index ["user_id", "agency_id"], name: "index_agency_identities_on_user_id_and_agency_id", unique: true
+    t.index ["uuid"], name: "index_agency_identities_on_uuid", unique: true
+  end
 
   create_table "authorizations", force: :cascade do |t|
     t.string "provider", limit: 255
@@ -118,6 +131,7 @@ ActiveRecord::Schema.define(version: 20171219042656) do
     t.boolean "approved", default: false, null: false
     t.boolean "native", default: false, null: false
     t.string "redirect_uris", default: [], array: true
+    t.integer "agency_id"
     t.index ["issuer"], name: "index_service_providers_on_issuer", unique: true
   end
 
