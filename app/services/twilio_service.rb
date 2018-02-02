@@ -1,3 +1,5 @@
+require 'typhoeus/adapters/faraday'
+
 class TwilioService
   INVALID_VOICE_NUMBER_ERROR_CODE = 13_224
   SMS_ERROR_CODE = 21_614
@@ -14,6 +16,7 @@ class TwilioService
               else
                 twilio_client
               end
+    @client.http_client.adapter = :typhoeus
   end
 
   def place_call(params = {})
@@ -30,12 +33,12 @@ class TwilioService
     end
   end
 
-  def account
-    @account ||= random_account
+  def phone_number
+    @phone_number ||= random_phone_number
   end
 
   def from_number
-    "+1#{account['number']}"
+    "+1#{phone_number}"
   end
 
   private
@@ -44,13 +47,13 @@ class TwilioService
 
   def twilio_client
     telephony_service.new(
-      account['sid'],
-      account['auth_token']
+      TWILIO_SID,
+      TWILIO_AUTH_TOKEN
     )
   end
 
-  def random_account
-    TWILIO_ACCOUNTS.sample
+  def random_phone_number
+    TWILIO_NUMBERS.sample
   end
 
   def sanitize_errors

@@ -53,7 +53,4 @@ es:
         v: "¡Muy buena!"
     personal_key_accent: Anótelo o imprímalo.
     personal_key_html: Esta es la única manera de recuperar el acceso a su cuenta
-      si pierde su contraseña o teléfono. %{accent}
-    registration:
-      email: Elija una dirección que desee usar para manejar las comunicaciones del
-        Gobierno.
+      si pierde el teléfono donde enviamos su código de seguridad. %{accent}

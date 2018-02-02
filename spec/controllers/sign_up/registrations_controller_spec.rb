@@ -16,6 +16,8 @@ describe SignUp::RegistrationsController, devise: true do
     it 'cannot be viewed by signed in users' do
       stub_sign_in
 
+      subject.session[:sp] = { request_url: 'http://test.com' }
+
       get :new
 
       expect(response).to redirect_to account_path

@@ -56,7 +56,7 @@ feature 'Changing authentication factor' do
 
     scenario 'editing phone number with no voice otp support only allows sms delivery' do
       user.update(otp_delivery_preference: 'voice')
-      guam_phone = '671-555-5000'
+      unsupported_phone = '242-555-5000'
 
       visit manage_phone_path
       complete_2fa_confirmation
@@ -64,7 +64,7 @@ feature 'Changing authentication factor' do
       allow(VoiceOtpSenderJob).to receive(:perform_later)
       allow(SmsOtpSenderJob).to receive(:perform_now)
 
-      update_phone_number(guam_phone)
+      update_phone_number(unsupported_phone)
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)

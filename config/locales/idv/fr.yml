@@ -63,6 +63,9 @@ fr:
       zipcode: Code ZIP
     index:
       continue_link: Oui, continuer
+      id:
+        need_html: Si vous créez un compte, vous aurez besoin d'un <strong>identifiant
+          actuel émis par l'état</strong>.
       paragraph_1: Nous avons un partenariat avec une entreprise de confiance afin
         de vérifier cette information ainsi que votre identité.
       prompt: Est-ce que vous avez accès à toute cette information en ce moment?

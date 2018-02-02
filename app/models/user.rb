@@ -68,7 +68,7 @@ class User < ApplicationRecord
   end
 
   def confirmation_period_expired?
-    confirmation_sent_at && confirmation_sent_at.utc <= self.class.confirm_within.ago
+    confirmation_sent_at.present? && confirmation_sent_at.utc <= self.class.confirm_within.ago
   end
 
   def first_identity

@@ -2,24 +2,29 @@ module SignUp
   class PersonalKeysController < ApplicationController
     include PersonalKeyConcern
 
+    before_action :confirm_user_needs_initial_personal_key, only: [:show]
+    before_action :assign_initial_personal_key, only: [:show]
     before_action :confirm_two_factor_authenticated
-    before_action :confirm_has_not_already_viewed_personal_key, only: [:show]
 
     def show
-      user_session.delete(:first_time_personal_key_view)
-      @code = create_new_code
+      @code = user_session[:personal_key]
       analytics.track_event(Analytics::USER_REGISTRATION_PERSONAL_KEY_VISIT)
     end
 
     def update
+      user_session.delete(:personal_key)
       redirect_to next_step
     end
 
     private
 
-    def confirm_has_not_already_viewed_personal_key
-      return if user_session[:first_time_personal_key_view].present?
-      redirect_to after_sign_in_path_for(current_user)
+    def confirm_user_needs_initial_personal_key
+      redirect_to(account_url) if user_session[:personal_key].nil? &&
+                                  current_user.personal_key.present?
+    end
+
+    def assign_initial_personal_key
+      user_session[:personal_key] = create_new_code if current_user.personal_key.nil?
     end
 
     def next_step

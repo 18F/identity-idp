@@ -23,7 +23,7 @@ describe 'user signs in partially and visits openid_connect/authorize' do
       to redirect_to login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
   end
 
-  def openid_test(prompt=nil)
+  def openid_test(prompt = nil)
     client_id = 'urn:gov:gsa:openidconnect:sp:server'
     state = SecureRandom.hex
     nonce = SecureRandom.hex
