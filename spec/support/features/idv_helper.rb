@@ -110,7 +110,7 @@ module IdvHelper
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
     fill_in 'Password', with: password
-    click_submit_default
+    click_continue
   end
 
   def visit_idp_from_sp_with_loa3(sp)
