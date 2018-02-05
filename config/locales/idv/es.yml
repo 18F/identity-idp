@@ -144,8 +144,13 @@ es:
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
+        access_sp: "<strong>%{sp_name}</strong> requiere que <em>solo tú</em> puedas
+          acceda a sus beneficios."
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         pii: información personal
+        review_message: Cuando ingrese su contraseña, login.gov protegerá su información
+          personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
+          su información.
         success: Encontramos registros que coinciden con su %{pii_message}
       usps:
         bad_address: No puedo recibir correo en esta dirección

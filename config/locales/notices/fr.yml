@@ -26,7 +26,7 @@ fr:
       first_paragraph_end: avec un lien pour confirmer votre adresse courriel. Suivez
         le lien pour continuer à créer votre compte.
       first_paragraph_start: Nous avons envoyé un courriel à
-      no_email_sent_explanation_start: Vous n'avez pas reçu de courriel?
+      no_email_sent_explanation_start: Vous n'avez pas reçu d'e-mail?
     terms_of_service:
       link: Pratiques en matière de sécurité et énoncé concernant la Loi sur la protection
         des renseignements personnels

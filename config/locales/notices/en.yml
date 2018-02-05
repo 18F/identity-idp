@@ -24,7 +24,7 @@ en:
       first_paragraph_end: with a link to confirm your email address. Follow the link
         to continue creating your account.
       first_paragraph_start: We sent an email to
-      no_email_sent_explanation_start: Didn’t receive it?
+      no_email_sent_explanation_start: Didn’t receive an email?
     terms_of_service:
       link: Security Practices and Privacy Act Statement
     timeout_warning:
