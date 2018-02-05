@@ -1,3 +1,5 @@
+require 'typhoeus/adapters/faraday'
+
 class TwilioService
   INVALID_VOICE_NUMBER_ERROR_CODE = 13_224
   SMS_ERROR_CODE = 21_614
@@ -14,6 +16,7 @@ class TwilioService
               else
                 twilio_client
               end
+    @client.http_client.adapter = :typhoeus
   end
 
   def place_call(params = {})

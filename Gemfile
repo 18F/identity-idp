@@ -54,6 +54,7 @@ gem 'slim-rails'
 gem 'stringex'
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
+gem 'typhoeus'
 gem 'uglifier', '>= 1.3.0'
 gem 'valid_email'
 gem 'whenever', require: false

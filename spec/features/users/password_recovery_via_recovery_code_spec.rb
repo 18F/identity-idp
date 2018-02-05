@@ -110,11 +110,11 @@ feature 'Password recovery via personal key', idv_job: true do
     expect(current_path).to eq verify_personal_key_path
 
     fill_in 'personal_key', with: personal_key
-    click_on t('forms.buttons.continue')
+    click_continue
 
     expect(current_path).to eq verify_password_path
 
     fill_in 'Password', with: password
-    click_on t('forms.buttons.continue')
+    click_continue
   end
 end
