@@ -47,7 +47,7 @@ shared_examples 'idv otp delivery method selection' do |sp|
   end
 
   context 'with a phone number that does not support voice calling' do
-    let(:phone) { '671-555-5000' }
+    let(:phone) { '242-555-5000' }
 
     scenario 'voice call option is disabled', :email do
       voice_radio_button = page.find(
@@ -58,7 +58,7 @@ shared_examples 'idv otp delivery method selection' do |sp|
       expect(voice_radio_button.disabled?).to eq(true)
       expect(page).to have_content t(
         'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-        location: 'Guam'
+        location: 'Bahamas'
       )
     end
   end

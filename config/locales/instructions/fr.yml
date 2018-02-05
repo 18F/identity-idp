@@ -59,7 +59,5 @@ fr:
         v: Excellente!
     personal_key_accent: Notez-la ou imprimez-la.
     personal_key_html: Il s'agit de la seule façon de récupérer l'accès à votre compte
-      si vous perdez votre mot de passe ou votre téléphone. %{accent}
-    registration:
-      email: Choisissez une adresse que vous souhaitez utiliser pour les communications
-        avec le gouvernement.
+      si vous perdez le téléphone sur lequel nous envoyons votre code de sécurité.
+      %{accent}

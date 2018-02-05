@@ -13,6 +13,9 @@ read, not written.
 - [ ] For encryption changes, make sure it is compatible with data that was
 encrypted with the old code.
 
+- [ ] For secrets changes, [make sure to update the S3 secrets bucket](https://github.com/18F/identity-private/wiki/Secrets-S3-buckets) with the 
+new configs in **all** environments. 
+
 - [ ] Do not disable Rubocop or Reek offenses unless you are absolutely sure
 they are false positives. If you're not sure how to fix the offense, please
 ask a teammate.
