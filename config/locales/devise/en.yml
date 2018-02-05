@@ -46,7 +46,7 @@ en:
       updated_not_active: Your password has been changed. Please sign in with your
         new password.
     registrations:
-      close_window: You can close this window if you are done.
+      close_window: You can close this window if you're done.
       destroy_confirm: Deleting your account cannot be undone. All data associated
         with your account will be removed. Are you sure you want to delete your account?
       destroyed: Your account has been successfully deleted.
@@ -107,14 +107,14 @@ en:
       max_personal_key_login_attempts_reached: Your account is temporarily locked
         because you have entered the personal key incorrectly too many times.
       otp_delivery_preference:
-        instruction: You can change your choice the next time you sign in
+        instruction: You can change this selection the next time you log in.
         phone_unsupported: We're unable to make phone calls to people in %{location}
           at this time. We have sent your security code via text message. If you don't
           receive the message in a few minutes, click "get another text message" to
           try again. If that doesn't work, check that your phone or cellular operator
           is not blocking messages from US phone numbers.
         sms: Text message (SMS)
-        title: How would you like to receive your security code?
+        title: How should we send you a code?
         voice: Phone call
       otp_phone_label: Phone number
       otp_phone_label_info: Mobile phone or landline. If you enter a landline, please
