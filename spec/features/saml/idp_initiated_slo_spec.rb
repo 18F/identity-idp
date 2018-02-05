@@ -14,6 +14,7 @@ feature 'IDP-initiated logout' do
     before do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
+      click_continue
 
       @asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       visit destroy_user_session_url
@@ -51,12 +52,14 @@ feature 'IDP-initiated logout' do
     before do
       sign_in_and_2fa_user(logout_user)
       visit sp1_authnrequest
+      click_continue
 
       @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
 
       click_button t('forms.buttons.submit.default')
 
       visit sp2_authnrequest
+      click_continue
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
     end

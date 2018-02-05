@@ -24,6 +24,7 @@ es:
       completion_html: Tiene %{accent} con %{app}
       loa1: creó su cuenta
       verified: Tiene verificó su identidad con %{app}
+      new_sp: NOT TRANSLATED YET
     totp_setup:
       new: Configure la autenticación de dos factores
     two_factor_setup: Configuración de autenticación de dos factores
