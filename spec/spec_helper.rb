@@ -13,6 +13,7 @@ require "rails_app/config/environment"
 require 'rspec'
 require 'capybara/rspec'
 require 'capybara/rails'
+require 'pry-byebug'
 
 require 'ruby-saml'
 require 'saml_idp'
@@ -24,6 +25,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.order = "random"
 
+  config.include CertificateHelpers
   config.include SamlRequestMacros
   config.include SecurityHelpers
 

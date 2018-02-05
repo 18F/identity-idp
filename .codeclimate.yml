@@ -8,6 +8,8 @@ engines:
         ruby:
     exclude_paths:
     - 'spec/**/*'
+    - 'lib/saml_idp/logout_response_builder.rb'
+    - 'lib/saml_idp/logout_request_builder.rb'
   fixme:
     enabled: true
     exclude_paths:

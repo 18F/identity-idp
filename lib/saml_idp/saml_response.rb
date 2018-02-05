@@ -18,19 +18,24 @@ module SamlIdp
     attr_accessor :expiry
     attr_accessor :encryption_opts
 
-    def initialize(reference_id,
-          response_id,
-          issuer_uri,
-          principal,
-          audience_uri,
-          saml_request_id,
-          saml_acs_url,
-          algorithm,
-          authn_context_classref,
-          name_id_format,
-          expiry=60*60,
-          encryption_opts=nil
-          )
+    # rubocop:disable Metrics/ParameterLists
+    def initialize(
+      reference_id,
+      response_id,
+      issuer_uri,
+      principal,
+      audience_uri,
+      saml_request_id,
+      saml_acs_url,
+      algorithm,
+      authn_context_classref,
+      name_id_format,
+      x509_certificate = nil,
+      secret_key = nil,
+      expiry = 60*60,
+      encryption_opts = nil
+    )
+      # rubocop:enable Metrics/ParameterLists
       self.reference_id = reference_id
       self.response_id = response_id
       self.issuer_uri = issuer_uri
@@ -66,7 +71,8 @@ module SamlIdp
     private :response_builder
 
     def assertion_builder
-      @assertion_builder ||= AssertionBuilder.new reference_id,
+      @assertion_builder ||= AssertionBuilder.new(
+        reference_id,
         issuer_uri,
         principal,
         audience_uri,
@@ -75,8 +81,11 @@ module SamlIdp
         algorithm,
         authn_context_classref,
         name_id_format,
+        x509_certificate,
+        secret_key,
         expiry,
         encryption_opts
+      )
     end
     private :assertion_builder
   end
