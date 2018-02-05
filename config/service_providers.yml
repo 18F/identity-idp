@@ -6,6 +6,8 @@ test:
     block_encryption: 'none'
     cert: 'saml_test_sp'
     agency: 'Test Government Agency'
+    agency_id: 1
+    uuid_priority: 10
     friendly_name: 'Your friendly Government Agency'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
@@ -47,6 +49,8 @@ test:
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:server':
@@ -99,6 +103,8 @@ development:
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
     agency: '18F'
+    agency_id: 1
+    uuid_priority: 10
     friendly_name: '18F Test Service Provider'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3003'
@@ -108,6 +114,8 @@ development:
   'https://dashboard.login.gov':
     friendly_name: 'Dashboard'
     agency: 'GSA'
+    agency_id: 2
+    uuid_priority: 30
     logo: '18f.svg'
     acs_url: 'http://localhost:3001/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
@@ -122,6 +130,8 @@ development:
       - 'gov.gsa.openidconnect.development://result'
     friendly_name: 'Example iOS App'
     agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
@@ -225,6 +235,7 @@ production:
     redirect_uris:
       - 'https://careers-cert.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
+    agency_id: 1
     agency: 'DHS'
     logo: 'cbp.png'
     restrict_to_deploy_env: 'staging'
@@ -233,6 +244,7 @@ production:
     redirect_uris:
       - 'gov.dhs.cbp.jobs.applicant.cert://result'
     friendly_name: 'CBP Jobs'
+    agency_id: 1
     agency: 'DHS'
     logo: 'cbp.png'
     restrict_to_deploy_env: 'staging'
@@ -241,6 +253,7 @@ production:
     redirect_uris:
       - 'https://careers.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
+    agency_id: 1
     agency: 'DHS'
     logo: 'cbp.png'
     restrict_to_deploy_env: 'prod'
@@ -250,6 +263,7 @@ production:
     redirect_uris:
       - 'gov.dhs.cbp.jobs.applicant://result'
     friendly_name: 'CBP Jobs'
+    agency_id: 1
     agency: 'DHS'
     logo: 'cbp.png'
     restrict_to_deploy_env: 'prod'
@@ -292,6 +306,7 @@ production:
   # CBP GOES
   'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
     friendly_name: 'CBP PSPD Trusted Traveler Programs'
+    agency_id: 1
     agency: 'DHS'
     logo: 'cbp-ttp.png'
     cert: 'cbp_goes_pre_prod'
@@ -299,6 +314,8 @@ production:
       - 'http://10.156.152.27/login'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp':
+    agency_id: 1
+    uuid_priority: 40
     agency: 'DHS'
     restrict_to_deploy_env: 'prod'
     block_encryption: 'aes256-cbc'
@@ -312,6 +329,8 @@ production:
   # CBP OARS
   'urn:gov:dhs.cbp.pspd.oars:openidconnect:prod:app':
     friendly_name: 'CBP OARS'
+    agency_id: 1
+    uuid_priority: 40
     agency: 'DHS'
     logo: 'cbp.png'
     redirect_uris:
@@ -322,6 +341,7 @@ production:
   'urn:gov:gsa:openidconnect.profiles:sp:sso:cbp:imready':
     friendly_name: "CBP I'm Ready"
     agency: 'DHS'
+    uuid_priority: 40
     logo: 'cbp.png'
     redirect_uris:
       - 'gov.dhs.cbp.pspd.imready.user.prod://result'
@@ -330,6 +350,8 @@ production:
   # USAJOBS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS':
     friendly_name: 'USAJOBS'
+    agency_id: 2
+    uuid_priority: 40
     agency: 'OPM'
     logo: 'usajobs.svg'
     redirect_uris:
@@ -340,6 +362,8 @@ production:
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
     friendly_name: 'USAJOBS'
+    agency_id: 2
+    uuid_priority: 40
     agency: 'OPM'
     logo: 'usajobs.svg'
     redirect_uris:
@@ -350,6 +374,8 @@ production:
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
     friendly_name: 'USAJOBS'
+    agency_id: 2
+    uuid_priority: 40
     agency: 'OPM'
     logo: 'usajobs.svg'
     redirect_uris:
