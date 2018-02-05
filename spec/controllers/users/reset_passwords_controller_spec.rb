@@ -402,6 +402,20 @@ describe Users::ResetPasswordsController, devise: true do
         expect(response).to render_template :new
       end
     end
+
+    it 'renders new if email is nil' do
+      expect do
+        post :create, params: { password_reset_email_form: { resend: false } }
+      end.to change { ActionMailer::Base.deliveries.count }.by(0)
+
+      expect(response).to render_template :new
+    end
+
+    it 'renders new if email is a Hash' do
+      post :create, params: { password_reset_email_form: { email: { foo: 'bar' } } }
+
+      expect(response).to render_template(:new)
+    end
   end
 
   def stub_email_notifier(user)

@@ -38,5 +38,11 @@ RSpec.describe URIService do
 
       expect(uri).to be_nil
     end
+
+    it 'is nil with a bad uri' do
+      uri = URIService.add_params('https://example.com/new.2;;9429"{+![$]`}9839')
+
+      expect(uri).to be_nil
+    end
   end
 end

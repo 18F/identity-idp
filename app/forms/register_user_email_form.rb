@@ -2,8 +2,6 @@ class RegisterUserEmailForm
   include ActiveModel::Model
   include FormEmailValidator
 
-  attr_reader :request_id
-
   def self.model_name
     ActiveModel::Name.new(self, nil, 'User')
   end

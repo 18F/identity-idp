@@ -31,10 +31,6 @@ module SignUp
       redirect_to sign_up_verify_email_url
     end
 
-    def request_id
-      permitted_params[:request_id]
-    end
-
     def form_email
       @resend_email_confirmation_form.email
     end

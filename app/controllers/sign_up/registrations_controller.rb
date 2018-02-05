@@ -58,8 +58,7 @@ module SignUp
     end
 
     def sp_request_id
-      request_id = permitted_params.fetch(:request_id)
-      return if request_id.empty?
+      request_id = permitted_params.fetch(:request_id, '')
 
       ServiceProviderRequest.from_uuid(request_id).uuid
     end

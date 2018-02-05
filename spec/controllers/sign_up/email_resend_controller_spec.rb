@@ -96,5 +96,14 @@ RSpec.describe SignUp::EmailResendController do
           to change { ActionMailer::Base.deliveries.count }.by(1)
       end
     end
+
+    it 'renders new if email is a Hash' do
+      user_params = {
+        resend_email_confirmation_form: { email: { foo: 'bar' } },
+      }
+      post :create, params: user_params
+
+      expect(response).to render_template(:new)
+    end
   end
 end

@@ -7,6 +7,7 @@ class ResendEmailConfirmationForm
   def initialize(params = {})
     @params = params
     self.email = params[:email]
+    @request_id = params[:request_id]
   end
 
   def submit
@@ -22,16 +23,12 @@ class ResendEmailConfirmationForm
   private
 
   attr_writer :email
-  attr_reader :params, :success
+  attr_reader :params, :success, :request_id
 
   def send_confirmation_email_if_necessary
     return unless valid? && user.persisted? && !user.confirmed?
 
     user.send_custom_confirmation_instructions(request_id)
-  end
-
-  def request_id
-    params[:request_id]
   end
 
   def extra_analytics_attributes

@@ -22,7 +22,7 @@ module FormEmailValidator
   private
 
   def downcase_and_strip
-    self.email = email.downcase.strip
+    self.email = email&.downcase&.strip
   end
 
   def email_is_unique
