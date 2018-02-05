@@ -244,7 +244,7 @@ test:
   database_password: ''
   database_username: ''
   dashboard_api_token: '123ABC'
-  enable_agency_based_uuids: 'true'
+  enable_agency_based_uuids: 'false'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
