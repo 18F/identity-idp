@@ -64,5 +64,13 @@ describe SessionTimeoutWarningHelper do
         expect(helper.timeout_refresh_path).to eq('/foo/bar?timeout=true')
       end
     end
+
+    context 'with an invalid URI' do
+      let(:path_info) { '/foo/bar/new.bac"938260%40' }
+
+      it 'does not blow up' do
+        expect(helper.timeout_refresh_path).to be_nil
+      end
+    end
   end
 end

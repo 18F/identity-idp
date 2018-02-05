@@ -125,5 +125,12 @@ describe Users::EmailsController do
           with(Analytics::EMAIL_CHANGE_REQUEST, analytics_hash)
       end
     end
+
+    it 'renders edit if email is a Hash' do
+      stub_sign_in(user)
+      put :update, params: { update_user_email_form: { email: { foo: 'bar' } } }
+
+      expect(response).to render_template(:edit)
+    end
   end
 end

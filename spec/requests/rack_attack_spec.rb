@@ -186,6 +186,15 @@ describe 'throttling requests' do
       end
     end
 
+    context 'when the email is not properly encoded' do
+      it 'returns a 400' do
+        params = { user: { email: "test@\xFFbar\xF8.com" } }
+        post '/', params: params, headers: { REMOTE_ADDR: '1.2.3.4' }
+
+        expect(response.status).to eq(400)
+      end
+    end
+
     context 'when the number of logins per email and ip is higher than the limit per period' do
       it 'throttles with a custom response' do
         analytics = instance_double(Analytics)
