@@ -1,6 +1,4 @@
 class NullTwilioClient
-  HttpClient = Struct.new(:adapter)
-
   def messages
     self
   end
@@ -11,9 +9,5 @@ class NullTwilioClient
 
   def create(_params)
     # noop
-  end
-
-  def http_client
-    HttpClient.new(adapter: 'foo')
   end
 end

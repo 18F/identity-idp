@@ -24,14 +24,14 @@ Dir.chdir APP_ROOT do
   ]
 
   puts "== Copying application.yml =="
-  run "test -L config/application.yml || cp config/application.yml.example config/application.yml"
+  run "cp config/application.yml.example config/application.yml"
 
   puts "== Copying logstash.conf =="
   run "cat logstash.conf.example | sed 's/path_to_repo/#{APP_ROOT.to_s.gsub('/', '\/')}/g' > logstash.conf"
 
   puts "== Copying sample certs and keys =="
-  run "test -L keys/saml.key.enc || cp keys/saml.key.enc.example keys/saml.key.enc"
-  run "test -L certs/saml.crt || cp certs/saml.crt.example certs/saml.crt"
+  run "cp keys/saml.key.enc.example keys/saml.key.enc"
+  run "cp certs/saml.crt.example certs/saml.crt"
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'

@@ -17,7 +17,7 @@ module Aws
       private
 
       def ses_client
-        @ses_client ||= Aws::SES::Client.new
+        @ses_client ||= Aws::SES::Client.new(region: Figaro.env.aws_region)
       end
     end
   end

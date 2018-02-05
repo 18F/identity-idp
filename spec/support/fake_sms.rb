@@ -1,6 +1,5 @@
 class FakeSms
   Message = Struct.new(:to, :body, :messaging_service_sid)
-  HttpClient = Struct.new(:adapter)
 
   cattr_accessor :messages
   self.messages = []
@@ -17,9 +16,5 @@ class FakeSms
       opts[:body],
       opts[:messaging_service_sid]
     )
-  end
-
-  def http_client
-    HttpClient.new(adapter: 'foo')
   end
 end

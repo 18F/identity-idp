@@ -14,7 +14,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
-  prepend_before_action :add_new_relic_trace_attributes
   prepend_before_action :session_expires_at
   prepend_before_action :set_locale
   before_action :disable_caching
@@ -64,14 +63,6 @@ class ApplicationController < ActionController::Base
 
   private
 
-  # These attributes show up in New Relic traces for all requests.
-  # https://docs.newrelic.com/docs/agents/manage-apm-agents/agent-data/collect-custom-attributes
-  def add_new_relic_trace_attributes
-    ::NewRelic::Agent.add_custom_attributes(
-      amzn_trace_id: request.headers['X-Amzn-Trace-Id']
-    )
-  end
-
   def disable_caching
     response.headers['Cache-Control'] = 'no-store'
     response.headers['Pragma'] = 'no-cache'
@@ -80,9 +71,7 @@ class ApplicationController < ActionController::Base
   def redirect_on_timeout
     return unless params[:timeout]
 
-    unless current_user
-      flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
-    end
+    flash[:notice] = t('notices.session_cleared', minutes: Figaro.env.session_timeout_in_minutes)
     redirect_to url_for(permitted_timeout_params)
   end
 
