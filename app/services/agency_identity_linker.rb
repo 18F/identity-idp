@@ -7,7 +7,8 @@ class AgencyIdentityLinker
   def link_identity
     ai = agency_identity_from_sp_identity
     return ai if ai
-    create_agency_identity_for_sp
+    create_agency_identity_for_sp || AgencyIdentity.new(user_id: @sp_identity.user_id,
+                                                        uuid: @sp_identity.uuid)
   end
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
