@@ -148,8 +148,12 @@ en:
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
+        access_sp: "<strong>%{sp_name}</strong> requires that <em>only you</em> can
+          access your benefits."
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
+        review_message: When you enter your password, login.gov will secure your personal
+          information. We do this to make sure no one else can access your information.
         success: We found records matching your %{pii_message}
       usps:
         bad_address: I can't get mail at this address

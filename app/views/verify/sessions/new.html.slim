@@ -1,15 +1,22 @@
 - title @view_model.title
 
-h1.h3.my0 = @view_model.title
+h1.h3 = @view_model.title
+
+p.mb1 == t('idv.messages.sessions.access_sp', sp_name: decorated_session.sp_name)
+
+p.mb2 = link_to t('links.access_help'),
+  'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
+
 = simple_form_for(@view_model.idv_form, url: verify_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   fieldset.mb3.ml0.p0.border-none
-    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('account.index.full_name')
+    legend.col-12.mb2.pb-tiny.border-bottom.border-teal = t('account.index.full_name')
     = f.input :first_name, label: t('idv.form.first_name'), required: true
     = f.input :last_name, label: t('idv.form.last_name'), required: true
   fieldset.m0.p0.border-none
-    legend.col-12.mb3.pb-tiny.border-bottom.border-teal = t('account.index.address')
+    p.mb1.fs-13p = t('forms.messages.current_address')
+    legend.col-12.mb2.pb-tiny.border-bottom.border-teal = t('account.index.address')
     = f.input :address1, label: t('idv.form.address1'), required: true
     = f.input :address2, label: t('idv.form.address2')
     = f.input :city, label: t('idv.form.city'), required: true
