@@ -2,9 +2,9 @@ module SignUp
   class PersonalKeysController < ApplicationController
     include PersonalKeyConcern
 
+    before_action :confirm_two_factor_authenticated
     before_action :confirm_user_needs_initial_personal_key, only: [:show]
     before_action :assign_initial_personal_key, only: [:show]
-    before_action :confirm_two_factor_authenticated
 
     def show
       @code = user_session[:personal_key]

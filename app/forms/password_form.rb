@@ -8,7 +8,7 @@ class PasswordForm
 
   def submit(params)
     submitted_password = params[:password]
-    @request_id = params[:request_id]
+    @request_id = params.fetch(:request_id, '')
 
     self.password = submitted_password
 
@@ -22,7 +22,7 @@ class PasswordForm
   def extra_analytics_attributes
     {
       user_id: user.uuid,
-      request_id_present: request_id.present?,
+      request_id_present: !request_id.empty?,
     }
   end
 end
