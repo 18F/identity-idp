@@ -65,7 +65,7 @@ class ServiceProviderSessionDecorator
   end
 
   def requested_attributes
-    sp_session[:requested_attributes]
+    sp_session[:requested_attributes].sort
   end
 
   def sp_name

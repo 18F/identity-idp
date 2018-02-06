@@ -159,7 +159,7 @@ fr:
         votre code de confirmation.
       sessions:
         access_sp: "<strong>%{sp_name}</strong> ne nécessite que <em>que vous</em>
-                    accéder à vos avantages."
+          accéder à vos avantages."
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
         pii: Information personnelle

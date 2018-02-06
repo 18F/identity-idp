@@ -58,6 +58,7 @@ feature 'OpenID Connect' do
       user = user_with_2fa
 
       IdentityLinker.new(user, client_id).link_identity
+      user.identities.last.update!(verified_attributes: ["email"])
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -87,6 +88,7 @@ feature 'OpenID Connect' do
       user = user_with_2fa
 
       IdentityLinker.new(user, client_id).link_identity
+      user.identities.last.update!(verified_attributes: ["email"])
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -125,6 +127,10 @@ feature 'OpenID Connect' do
       nonce = SecureRandom.hex
       code_verifier = SecureRandom.hex
       code_challenge = Digest::SHA256.base64digest(code_verifier)
+      user = user_with_2fa
+
+      link_identity(user, client_id)
+      user.identities.last.update!(verified_attributes: ['email'])
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -139,7 +145,7 @@ feature 'OpenID Connect' do
         code_challenge_method: 'S256'
       )
 
-      _user = sign_in_live_with_2fa
+      _user = sign_in_live_with_2fa(user)
       expect(page.html).to_not include(code_challenge)
 
       redirect_uri = URI(current_url)
@@ -220,6 +226,43 @@ feature 'OpenID Connect' do
       visit_idp_from_sp_with_loa1
 
       expect(current_url).to match(%r{http://www.example.com/sign_up/start\?request_id=.+})
+    end
+  end
+
+  context 'logging into an SP for the first time' do
+    it 'displays shared attributes page once' do
+      client_id = 'urn:gov:gsa:openidconnect:sp:server'
+      
+      user = user_with_2fa
+
+      oidc_path =  openid_connect_authorize_path(
+        client_id: client_id,
+        response_type: 'code',
+        acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+        scope: 'openid email',
+        redirect_uri: 'http://localhost:7654/auth/result',
+        state: SecureRandom.hex,
+        nonce: SecureRandom.hex,
+        prompt: 'select_account'
+      )
+      visit oidc_path
+      
+      sign_in_live_with_2fa(user)
+      
+
+      expect(current_url).to eq(sign_up_completed_url)
+      expect(page).to have_content(t('titles.sign_up.new_sp'))
+      
+      click_continue
+      expect(current_url).to start_with('http://localhost:7654/auth/result')
+      visit sign_out_url
+      visit oidc_path
+      sign_in_live_with_2fa(user)
+
+      redirect_uri = URI(current_url)
+
+      expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+
     end
   end
 
@@ -377,6 +420,10 @@ feature 'OpenID Connect' do
     nonce = SecureRandom.hex
     code_verifier = SecureRandom.hex
     code_challenge = Digest::SHA256.base64digest(code_verifier)
+    user = user_with_2fa
+
+    link_identity(user, client_id)
+    user.identities.last.update!(verified_attributes: ["email"])
 
     visit openid_connect_authorize_path(
       client_id: client_id,
@@ -391,7 +438,7 @@ feature 'OpenID Connect' do
       code_challenge_method: 'S256'
     )
 
-    _user = sign_in_live_with_2fa
+    _user = sign_in_live_with_2fa(user)
 
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
@@ -451,7 +498,7 @@ feature 'OpenID Connect' do
                     pii: { first_name: 'John', ssn: '111223333' }).user
 
     sign_in_live_with_2fa(user)
-
+    click_continue
     redirect_uri = URI(current_url)
     redirect_params = Rack::Utils.parse_query(redirect_uri.query).with_indifferent_access
 

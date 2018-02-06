@@ -149,7 +149,7 @@ es:
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
         access_sp: "<strong>%{sp_name}</strong> requiere que <em>solo tú</em> puedas
-                    acceda a sus beneficios."
+          acceda a sus beneficios."
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
         pii: información personal
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información

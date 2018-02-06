@@ -2,6 +2,7 @@ module OpenidConnect
   class AuthorizationController < ApplicationController
     include FullyAuthenticatable
     include VerifyProfileConcern
+    include VerifySPAttributesConcern
 
     before_action :build_authorize_form_from_params, only: [:index]
     before_action :validate_authorize_form, only: [:index]
@@ -12,18 +13,22 @@ module OpenidConnect
 
     def index
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-      return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
-
       @authorize_form.link_identity_to_service_provider(current_user, session.id)
-      redirect_to @authorize_form.success_redirect_uri
-      delete_branded_experience
+      return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
+      return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
+      handle_successful_handoff
     end
 
     private
 
+    def handle_successful_handoff
+      redirect_to @authorize_form.success_redirect_uri
+      delete_branded_experience
+    end
+
     def redirect_to_account_or_verify_profile_url
-      return redirect_to account_or_verify_profile_url if profile_needs_verification?
-      redirect_to verify_url if identity_needs_verification?
+      return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
+      redirect_to(verify_url) if identity_needs_verification?
     end
 
     def profile_or_identity_needs_verification?

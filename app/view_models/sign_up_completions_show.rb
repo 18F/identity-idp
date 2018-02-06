@@ -1,10 +1,11 @@
 class SignUpCompletionsShow
   include ActionView::Helpers::TagHelper
 
-  def initialize(loa3_requested:, decorated_session:, current_user:)
+  def initialize(loa3_requested:, decorated_session:, current_user:, handoff:)
     @loa3_requested = loa3_requested
     @decorated_session = decorated_session
     @current_user = current_user
+    @handoff = handoff
   end
 
   attr_reader :loa3_requested, :decorated_session
@@ -22,15 +23,16 @@ class SignUpCompletionsShow
 
   # rubocop:disable Rails/OutputSafety
   def heading
+    return content_tag(:strong, I18n.t('titles.sign_up.new_sp')) if handoff?
     if requested_loa == 'loa3'
-      content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
-    else
-      safe_join([I18n.t(
-        'titles.sign_up.completion_html',
-        accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
-        app: APP_NAME
-      ).html_safe])
+      return content_tag(:strong, I18n.t('titles.sign_up.verified', app: APP_NAME))
     end
+
+    safe_join([I18n.t(
+      'titles.sign_up.completion_html',
+      accent: content_tag(:strong, I18n.t('titles.sign_up.loa1')),
+      app: APP_NAME
+    ).html_safe])
   end
   # rubocop:enable Rails/OutputSafety
 
@@ -91,6 +93,10 @@ class SignUpCompletionsShow
   end
 
   private
+
+  def handoff?
+    @handoff
+  end
 
   def requested_attributes
     decorated_session.requested_attributes.map(&:to_sym)
