@@ -11,6 +11,14 @@ class ApplicationController < ActionController::Base
 
   rescue_from ActionController::InvalidAuthenticityToken, with: :invalid_auth_token
   rescue_from ActionController::UnknownFormat, with: :render_not_found
+  [
+    ActiveRecord::ConnectionTimeoutError,
+    PG::ConnectionBad, # raised when a Postgres connection times out
+    Rack::Timeout::RequestTimeoutException,
+    Redis::BaseConnectionError,
+  ].each do |error|
+    rescue_from error, with: :render_timeout
+  end
 
   helper_method :decorated_session, :reauthn?, :user_fully_authenticated?
 
@@ -172,5 +180,18 @@ class ApplicationController < ActionController::Base
 
   def render_not_found
     render template: 'pages/page_not_found', layout: false, status: 404, formats: :html
+  end
+
+  def render_timeout(exception)
+    analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
+    render template: 'pages/page_took_too_long', layout: false, status: 503, formats: :html
+  end
+
+  def analytics_exception_info(exception)
+    {
+      backtrace: Rails.backtrace_cleaner.send(:filter, exception.backtrace),
+      exception_message: exception.to_s,
+      exception_class: exception.class.name,
+    }
   end
 end

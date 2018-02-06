@@ -4,3 +4,6 @@ fr:
     page_not_found:
       body: Vous pouvez revérifier votre lien et essayer de nouveau. (404)
       header: La page que vous recherchez n'existe pas.
+    page_took_too_long:
+      body: Veuillez réessayer dans quelques minutes. (503)
+      header: Le système d'information a pris trop de temps à traiter votre demande.
