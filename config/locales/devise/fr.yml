@@ -119,11 +119,11 @@ fr:
         car vous avez entré le code de sécurité à utilisation unique de façon erronée
         à de trop nombreuses reprises.
       otp_delivery_preference:
-        instruction: Vous pourrez changer votre choix la prochaine fois que vous vous
-          connecterez
+        instruction: Vous pouvez changer cette sélection la prochaine fois que vous
+          vous connectez.
         phone_unsupported: NOT TRANSLATED YET
         sms: Message texte (SMS)
-        title: Comment souhaitez-vous recevoir votre code de sécurité?
+        title: Comment devrions-nous vous envoyer un code?
         voice: Appel téléphonique
       otp_phone_label: Numéro de téléphone
       otp_phone_label_info: Cellulaire ou ligne fixe. Si vous entrez une ligne fixe,

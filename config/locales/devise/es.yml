@@ -48,7 +48,7 @@ es:
       updated_not_active: Su contraseña ha sido cambiada. Inicie sesión con su contraseña
         nueva.
     registrations:
-      close_window: Puede cerrar esta ventana del navegador una vez que haya finalizado.
+      close_window: Puedes cerrar esta ventana si terminaste.
       destroy_confirm: No se puede deshacer la eliminación de su cuenta. Todos los
         datos asociados a su cuenta se eliminarán. ¿Confirma que desea eliminar su
         cuenta?
@@ -112,10 +112,10 @@ es:
       max_personal_key_login_attempts_reached: Su cuenta ha sido bloqueada temporalmente
         porque ha ingresado incorrectamente la clave personal demasiadas veces.
       otp_delivery_preference:
-        instruction: Puede cambiar su elección la próxima vez que inicie una sesión.
+        instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
         phone_unsupported: NOT TRANSLATED YET
         sms: Mensaje de texto (SMS, sigla en inglés)
-        title: "¿Cómo le gustaría recibir su código de seguridad?"
+        title: "¿Cómo deberíamos enviarle un código?"
         voice: Llamada telefónica
       otp_phone_label: Número de teléfono
       otp_phone_label_info: El móvil o teléfono fijo. Si tiene un teléfono fijo, seleccione

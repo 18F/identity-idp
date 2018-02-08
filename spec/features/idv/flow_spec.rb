@@ -300,6 +300,6 @@ feature 'IdV session', idv_job: true do
   end
 
   def click_accordion
-    find('.accordion-header-controls').click
+    find('.accordion-header-controls[aria-controls="previous-address"]').click
   end
 end
