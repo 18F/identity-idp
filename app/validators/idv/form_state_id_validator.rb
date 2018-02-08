@@ -18,7 +18,7 @@ module Idv
     end
 
     def unsupported_jurisdiction?
-      return !SUPPORTED_JURISDICTIONS.include?(state)
+      !SUPPORTED_JURISDICTIONS.include?(state)
     end
   end
 end
