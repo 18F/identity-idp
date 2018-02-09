@@ -18,12 +18,13 @@ module Users
     end
 
     def edit
-      result = PasswordResetTokenValidator.new(token_user(params)).submit
+      result = PasswordResetTokenValidator.new(token_user).submit
 
       analytics.track_event(Analytics::PASSWORD_RESET_TOKEN, result.to_h)
 
       if result.success?
         @reset_password_form = ResetPasswordForm.new(build_user)
+        @forbidden_passwords = ForbiddenPasswords.new(token_user.email).call
       else
         handle_invalid_or_expired_token(result)
       end
@@ -82,7 +83,7 @@ module Users
       user
     end
 
-    def token_user(params)
+    def token_user
       @_token_user ||= User.with_reset_password_token(params[:reset_password_token])
     end
 

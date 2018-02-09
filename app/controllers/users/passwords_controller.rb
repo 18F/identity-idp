@@ -4,6 +4,7 @@ module Users
 
     def edit
       @update_user_password_form = UpdateUserPasswordForm.new(current_user)
+      @forbidden_passwords = ForbiddenPasswords.new(current_user.email).call
     end
 
     def update
