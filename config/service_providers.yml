@@ -287,6 +287,18 @@ production:
     cert: 'rrb_benefit_connect_staging'
     redirect_uris:
       - 'https://usrrbsecuredev2.rrb.gov/BenefitOnlineServices'
+    attribute_bundle:
+      - email
+      - first_name
+      - last_name
+      - address1
+      - address2
+      - city
+      - state
+      - zipcode
+      - phone
+      - dob
+      - ssn
     restrict_to_deploy_env: 'staging'
 
   # CBP GOES
