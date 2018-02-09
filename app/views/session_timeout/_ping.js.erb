@@ -32,15 +32,19 @@ function success(data) {
       show_warning = time_timeout < (time_cutoff + warning),
       time_remaining = time_timeout - time_cutoff;
 
+  if (!data.live || time_remaining <= 0) {
+    window.LoginGov.autoLogout();
+    return;
+  }
+
   if (show_warning && !modal.shown) {
     modal.show();
-    window.LoginGov.countdownTimer(document.getElementById('countdown'), time_remaining);
+    window.LoginGov.countdownTimer(
+      document.getElementById('countdown'), time_remaining, time_timeout
+    );
   }
 
   if (!show_warning && modal.shown) modal.hide();
-  if (!data.live) {
-    window.LoginGov.autoLogout();
-  }
 
   if (time_remaining < frequency){
     time_remaining = time_remaining < 0 ? 0 : time_remaining
