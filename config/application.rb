@@ -48,7 +48,7 @@ module Upaya
           ServiceProvider.pluck(:redirect_uris).flatten.compact.find do |uri|
             split_uri = uri.split('//')
             protocol = split_uri[0]
-            domain = split_uri[1].split('/')[0]
+            domain = split_uri[1].split('/')[0] if split_uri.size > 1
             source == "#{protocol}//#{domain}"
           end.present?
         end
