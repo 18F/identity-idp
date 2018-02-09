@@ -23,7 +23,8 @@ module UserAccessKeyOverrides
     return false if encrypted_password.blank?
     begin
       unlock_user_access_key(password)
-    rescue Pii::EncryptionError => _err
+    rescue Pii::EncryptionError => err
+      log_error(err)
       return false
     end
     Devise.secure_compare(encrypted_password, user_access_key.encrypted_password)
@@ -56,5 +57,15 @@ module UserAccessKeyOverrides
 
   def encrypted_key_maker
     @_key_maker ||= EncryptedKeyMaker.new
+  end
+
+  def log_error(err)
+    metadata = {
+      event: 'Pii::EncryptionError when validating password',
+      error: err.to_s,
+      uuid: uuid,
+      timestamp: Time.zone.now,
+    }
+    Rails.logger.info(metadata.to_json)
   end
 end
