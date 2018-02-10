@@ -10,7 +10,10 @@ feature 'Sign in' do
 
   scenario 'user cannot sign in if not registered' do
     signin('test@example.com', 'Please123!')
-    expect(page).to have_content t('devise.failure.not_found_in_database')
+    link_url = new_user_password_url
+
+    expect(page).
+      to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
   it 'does not throw an exception if the email contains invalid bytes' do
@@ -21,25 +24,37 @@ feature 'Sign in' do
   scenario 'user cannot sign in with wrong email' do
     user = create(:user)
     signin('invalid@email.com', user.password)
-    expect(page).to have_content t('devise.failure.not_found_in_database')
+    link_url = new_user_password_url
+
+    expect(page).
+      to have_link t('devise.failure.invalid_link_text', href: link_url)
   end
 
   scenario 'user cannot sign in with empty email' do
     signin('', 'foo')
 
-    expect(page).to have_content t('devise.failure.invalid')
+    link_url = new_user_password_url
+
+    expect(page).
+      to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
   scenario 'user cannot sign in with empty password' do
     signin('test@example.com', '')
 
-    expect(page).to have_content t('devise.failure.invalid')
+    link_url = new_user_password_url
+
+    expect(page).
+      to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
   end
 
   scenario 'user cannot sign in with wrong password' do
     user = create(:user)
     signin(user.email, 'invalidpass')
-    expect(page).to have_content t('devise.failure.invalid')
+    link_url = new_user_password_url
+
+    expect(page).
+      to have_link t('devise.failure.invalid_link_text', href: link_url)
   end
 
   scenario 'user can see and use password visibility toggle', js: true do
@@ -255,8 +270,12 @@ feature 'Sign in' do
 
       user = create(:user)
       signin(user.email, 'invalid')
+
+      link_url = new_user_password_url
+
+      expect(page).
+        to have_link t('devise.failure.invalid_link_text', href: link_url)
       expect(current_path).to eq root_path
-      expect(page).to have_content t('devise.failure.invalid')
     end
   end
 
@@ -386,6 +405,8 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA1 with personal key', :oidc
   it_behaves_like 'signing in as LOA3 with personal key', :saml
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
+  it_behaves_like 'signing in with wrong credentials', :saml
+  it_behaves_like 'signing in with wrong credentials', :oidc
 
   context 'user signs in with personal key, visits account page before viewing new key' do
     # this can happen if you submit the personal key form multiple times quickly

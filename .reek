@@ -2,6 +2,7 @@ Attribute:
   enabled: false
 ControlParameter:
   exclude:
+    - CustomDeviseFailureApp#i18n_message
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
 DuplicateMethodCall:
@@ -20,6 +21,8 @@ FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
     - Aws::SES::Base#deliver
+    - CustomDeviseFailureApp#build_options
+    - CustomDeviseFailureApp#keys
     - track_registration
     - append_info_to_payload
     - generate_slo_request

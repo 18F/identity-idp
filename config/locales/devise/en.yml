@@ -13,10 +13,13 @@ en:
     failure:
       already_authenticated: ''
       inactive: Your account hasn't been activated.
-      invalid: Invalid email or password.
+      invalid_link_text: resetting your password
+      invalid_html: The email or password you've entered is wrong. Try %{link}.
       last_attempt: You have one more attempt before your account is locked.
       locked: Your account has been locked.
-      not_found_in_database: Invalid email or password.
+      not_found_in_database_link_text: resetting your password
+      not_found_in_database_html: The email or password you've entered is wrong. Try
+        %{link}.
       session_limited: Your login credentials were used in another browser. Please
         sign in again to continue in this browser.
       timeout: Your session has expired. Please sign in again to continue.
