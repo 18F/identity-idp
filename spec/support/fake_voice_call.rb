@@ -1,4 +1,6 @@
 class FakeVoiceCall
+  HttpClient = Struct.new(:adapter)
+
   cattr_accessor :calls
   self.calls = []
 
@@ -10,5 +12,9 @@ class FakeVoiceCall
 
   def create(opts = {})
     self.class.calls << OpenStruct.new(opts)
+  end
+
+  def http_client
+    HttpClient.new(adapter: 'foo')
   end
 end

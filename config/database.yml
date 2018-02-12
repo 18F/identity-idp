@@ -12,11 +12,13 @@ defaults: &defaults
   timeout: 5000
   reconnect: true
   connect_timeout: 2
-  keepalives_idle: 30
+  keepalives_idle: 10
   keepalives_interval: 10
   keepalives_count: 2
   checkout_timeout: 5
   reaping_frequency: 10
+  variables:
+    statement_timeout: 2500 # ms
 
 development:
   <<: *defaults

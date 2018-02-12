@@ -93,6 +93,19 @@ feature 'Sign Up' do
         expect(page).to have_xpath("//input[@value=\"#{t('sign_up.buttons.cancel')}\"]")
       end
     end
+
+    context 'user enters their email as their password', email: true do
+      it 'treats it as a weak password' do
+        email = 'test@test.com'
+
+        visit sign_up_email_path
+        submit_form_with_valid_email(email)
+        click_confirmation_link_in_email(email)
+
+        fill_in 'Password', with: email
+        expect(page).to have_content('Very weak')
+      end
+    end
   end
 
   context 'user accesses password screen with already confirmed token', email: true do

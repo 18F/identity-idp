@@ -1,0 +1,21 @@
+doctype html
+html lang="#{I18n.locale}"
+
+  head
+    meta[name='viewport' content='width=device-width, initial-scale=1.0']
+    title
+      = 'The server took too long to process your request. (503)'
+
+    == stylesheet_link_tag '/css/static.css'
+
+  body
+    .site-wrapper
+      .site-wrapper-inner
+        .cover-container
+          .masthead.clearfix
+            .inner
+              = image_tag asset_url('logo-white.svg'), width: 150, alt: APP_NAME,
+                class: 'masthead-brand'
+          .inner.cover
+            h1 = t('pages.page_took_too_long.header')
+            p = t('pages.page_took_too_long.body')

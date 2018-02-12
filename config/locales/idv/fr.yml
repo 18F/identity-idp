@@ -34,9 +34,12 @@ fr:
         ssn: 'Votre numéro de sécurité sociale doit être inscrit de cette façon :
           ###-##-####'
         zipcode: 'Votre code ZIP doit être inscrit de cette façon : #####-####'
-      unsupported_jurisdiction: NOT TRANSLATED YET
+      unsupported_jurisdiction: Désolé, nous ne pouvons pas vérifier les personnes
+        de cet état.
+      unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
+        compte.
     form:
-      activate_by_mail: Activer mon compte par la poste.
+      activate_by_mail: obtenez un code par lettre.
       address1: Adresse 1
       address2: Adresse 2 (optional)
       city: Ville
@@ -44,7 +47,7 @@ fr:
       dob_hint: 'exemple : 01/17/1964'
       first_name: Prénom
       last_name: Nom de famille
-      no_alternate_phone_html: Je n'ai pas de numéro de téléphone. %{link}
+      no_alternate_phone_html: Si vous n'avez pas d'autre numéro de téléphone, %{link}
       password: Mot de passe
       personal_details: Information personnelle
       phone: Numéro de téléphone
@@ -54,15 +57,17 @@ fr:
       ssn_label_html: Numéro de sécurité sociale %{tooltip}
       state: État
       state_id: NOT TRANSLATED YET
-      state_id_number: NOT TRANSLATED YET
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
         state_id_card: NOT TRANSLATED YET
-      state_id_type_label: NOT TRANSLATED YET
+      state_id_type_label: Type de numéro d'identification
       zipcode: Code ZIP
     index:
       continue_link: Oui, continuer
+      id:
+        need_html: Si vous créez un compte, vous aurez besoin d'un <strong>identifiant
+          actuel émis par l'état</strong>.
       paragraph_1: Nous avons un partenariat avec une entreprise de confiance afin
         de vérifier cette information ainsi que votre identité.
       prompt: Est-ce que vous avez accès à toute cette information en ce moment?
@@ -114,6 +119,9 @@ fr:
       hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
         davantage sur la façon dont nous vérifions votre compte.
+      id_number: Entrez un numéro d'identification d'état ou un numéro de permis de
+        conduire valide. Le nom, la date de naissance et l'adresse de votre ID <strong>doivent</strong>
+        correspondent les informations fournies ci-dessus.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:
@@ -127,7 +135,7 @@ fr:
         intro: Le seul numéro de téléphone auquel nous pouvons envoyer un code de
           confirmation est celui qui est lié à votre identité légale.
         phone_of_record: numéro de téléphone enregistré
-        prepaid: avec un contrat, et non prépayé
+        prepaid: et non prépayé
         same_as_2fa: Ce numéro de téléphone peut être le même que celui que vous utilisez
           pour configurer votre mot de passe à usage unique, tant et aussi longtemps
           qu'il respecte les critères mentionnés plus haut.
@@ -150,10 +158,25 @@ fr:
         à l'identité, votre profil ne sera pas activé tant que vous n'aurez pas entré
         votre code de confirmation.
       sessions:
+        access_sp: "<strong>%{sp_name}</strong> ne nécessite que <em>que vous</em>
+          accéder à vos avantages."
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
         pii: Information personnelle
+        review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
+          vos informations personnelles. Nous faisons cela pour nous assurer que personne
+          d'autre ne puisse accéder à vos informations.
         success: Nous avons trouvé des données qui correspondent à %{pii_message}
+      state_id_accordion_header: Que faire si je n'ai pas de numéro d'identification
+        valide?
+      state_id_accordion_message: "Vous devez fournir un numéro d'identification valide
+        pour continuer à vérifier en ligne. \nIl ne peut pas être expiré. Le nom,
+        la date de naissance et l'adresse de votre pièce \nd'identité doivent correspondre
+        aux informations que vous avez fournies ci-dessus.\n\nSi vous avez récemment
+        déménagé et que l'adresse figurant sur votre carte d'identité \nne correspond
+        pas à votre adresse officielle actuelle, nous ne pouvons pas vous \nconfirmer
+        en ligne pour le moment.\n\nSi vous n'avez pas de numéro d'identification
+        valide, retournez à %{sp} pour accéder \nà vos avantages."
       usps:
         bad_address: Je ne peux pas recevoir de courrier à cette adresse
         byline: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
@@ -214,4 +237,4 @@ fr:
       session:
         phone: Obtenez un code par téléphone
         review: Encryptez vos données personnelles en entrant votre mot de passe
-      sessions: D'abord, dites-nous qui vous êtes
+      sessions: Vérifier votre identité

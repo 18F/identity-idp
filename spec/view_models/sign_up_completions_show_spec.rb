@@ -9,7 +9,8 @@ describe SignUpCompletionsShow do
     SignUpCompletionsShow.new(
       current_user: @user,
       loa3_requested: false,
-      decorated_session: decorated_session
+      decorated_session: decorated_session,
+      handoff: false
     )
   end
 

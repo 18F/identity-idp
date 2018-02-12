@@ -23,7 +23,7 @@ module FormPasswordValidator
   end
 
   def password_score
-    @pass_score ||= ZXCVBN_TESTER.test(password)
+    @password_score = ZXCVBN_TESTER.test(password, ForbiddenPasswords.new(user.email).call)
   end
 
   def min_password_score
@@ -37,7 +37,7 @@ module FormPasswordValidator
   end
 
   def zxcvbn_feedback
-    feedback = @pass_score.feedback.values.flatten.reject(&:empty?)
+    feedback = @password_score.feedback.values.flatten.reject(&:empty?)
 
     feedback.map do |error|
       I18n.t("zxcvbn.feedback.#{i18n_key(error)}")

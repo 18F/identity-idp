@@ -3,7 +3,7 @@
 h1.h2.my0 = t('idv.titles.session.phone')
 p.mt-tiny.mb2 = t('idv.messages.phone.intro')
 
-.alert.alert-warning
+.alert.alert-warning.mb1
   strong
     = t('idv.messages.phone.alert')
   ul.py1.m0.px0
@@ -14,8 +14,7 @@ p.mt-tiny.mb2 = t('idv.messages.phone.intro')
     li
       = t('idv.messages.phone.us_country_code')
 
-em
-  = t('idv.messages.phone.same_as_2fa')
+p = t('idv.messages.phone.same_as_2fa')
 
 = simple_form_for(@view_model.idv_form, url: verify_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
