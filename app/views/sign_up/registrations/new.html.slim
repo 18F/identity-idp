@@ -1,14 +1,13 @@
 - title t('titles.registrations.new')
 
 h1.h3.my0 = t('headings.registrations.enter_email')
-p.mt-tiny.mb0#email-description = t('instructions.registration.email')
+
 = simple_form_for(@register_user_email_form,
     html: { autocomplete: 'off', role: 'form' },
     url: sign_up_register_path) do |f|
-  = f.input :email, label: t('forms.registration.labels.email'), required: true,
-            input_html: { 'aria-describedby' => 'email-description' }
+  = f.input :email, label: t('forms.registration.labels.email'), required: true
   = f.input :request_id, as: :hidden, input_html: { value: params[:request_id] || request_id }
-  p.mb-40p.mt1
+  p.mt1
     = link_to t('notices.terms_of_service.link'), MarketingSite.privacy_url, target: '_blank'
 
   = f.button :submit, t('forms.buttons.submit.default'), class: 'btn-wide'

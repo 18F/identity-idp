@@ -4,3 +4,7 @@ es:
     page_not_found:
       body: Es posible que desee comprobar su enlace e intentar nuevamente. (404)
       header: La página que buscaba no existe.
+    page_took_too_long:
+      body: Por favor, es posible que desee esperar unos minutos y vuelva a intentarlo.
+        (503)
+      header: El sistema de información tomó demasiado tiempo procesar su solicitud.

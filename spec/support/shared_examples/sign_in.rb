@@ -14,6 +14,9 @@ shared_examples 'signing in with the site in Spanish' do |sp|
     end
 
     click_submit_default
+    expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
+
+    click_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
@@ -136,6 +139,40 @@ shared_examples 'signing in as LOA3 with personal key after resetting password' 
       redirect_uri = URI(current_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
+    end
+  end
+end
+
+shared_examples 'signing in with wrong credentials' do |sp|
+  # This tests the custom Devise error message defined in lib/custom_devise_failure_app.rb
+  context 'when the user does not exist' do
+    it 'links to forgot password page with locale and request_id' do
+      Capybara.current_session.driver.header('Accept-Language', 'es')
+
+      visit_idp_from_sp_with_loa1(sp)
+      sp_request_id = ServiceProviderRequest.last.uuid
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit('test@test.com', 'foo')
+
+      link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
+      expect(page).
+        to have_link t('devise.failure.not_found_in_database_link_text', href: link_url)
+    end
+  end
+
+  context 'when the user exists' do
+    it 'links to forgot password page with locale and request_id' do
+      Capybara.current_session.driver.header('Accept-Language', 'es')
+
+      user = create(:user, :signed_up)
+      visit_idp_from_sp_with_loa1(sp)
+      sp_request_id = ServiceProviderRequest.last.uuid
+      click_link t('links.sign_in')
+      fill_in_credentials_and_submit(user.email, 'password')
+
+      link_url = new_user_password_url(locale: 'es', request_id: sp_request_id)
+      expect(page).
+        to have_link t('devise.failure.invalid_link_text', href: link_url)
     end
   end
 end

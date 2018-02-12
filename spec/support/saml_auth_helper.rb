@@ -163,8 +163,9 @@ module SamlAuthHelper
   end
 
   # generates a SAML response and returns a parsed Nokogiri XML document
-  def generate_saml_response(user, settings = saml_settings)
+  def generate_saml_response(user, settings = saml_settings, link: true)
     # user needs to be signed in in order to generate an assertion
+    link_user_to_identity(user, link, settings)
     sign_in(user)
     saml_get_auth(settings)
   end
@@ -175,6 +176,22 @@ module SamlAuthHelper
   end
 
   private
+
+  def link_user_to_identity(user, link, settings)
+    if link
+      IdentityLinker.new(
+        user,
+        settings.issuer
+      ).link_identity(
+        ial: loa3_requested?(settings) ? true : nil,
+        verified_attributes: ['email']
+      )
+    end
+  end
+
+  def loa3_requested?(settings)
+    settings.authn_context != Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
+  end
 
   def saml_request(settings)
     authn_request(settings).split('SAMLRequest=').last
