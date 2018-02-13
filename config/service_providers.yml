@@ -6,6 +6,8 @@ test:
     block_encryption: 'none'
     cert: 'saml_test_sp'
     agency: 'Test Government Agency'
+    agency_id: 1
+    uuid_priority: 10
     friendly_name: 'Your friendly Government Agency'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3000'
@@ -16,6 +18,7 @@ test:
       - phone
 
   'https://rp1.serviceprovider.com/auth/saml/metadata':
+    agency_id: 2
     acs_url: 'http://example.com/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://example.com/test/saml/decode_slo_request'
     block_encryption: 'aes256-cbc'
@@ -47,9 +50,12 @@ test:
     cert: 'saml_test_sp'
     friendly_name: 'Example iOS App'
     agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:server':
+    agency_id: 2
     redirect_uris:
       - 'http://localhost:7654/'
       - 'https://example.com'
@@ -59,6 +65,7 @@ test:
 
 development:
   'https://rp1.serviceprovider.com/auth/saml/metadata':
+    agency_id: 2
     metadata_url: 'http://localhost:3000/test/saml/metadata'
     acs_url: 'http://localhost:3000/test/saml/decode_assertion'
     assertion_consumer_logout_service_url: 'http://localhost:3000/test/saml/decode_slo_request'
@@ -99,6 +106,8 @@ development:
     block_encryption: 'aes256-cbc'
     cert: 'sp_rails_demo'
     agency: '18F'
+    agency_id: 1
+    uuid_priority: 10
     friendly_name: '18F Test Service Provider'
     logo: 'generic.svg'
     return_to_sp_url: 'http://localhost:3003'
@@ -108,6 +117,8 @@ development:
   'https://dashboard.login.gov':
     friendly_name: 'Dashboard'
     agency: 'GSA'
+    agency_id: 2
+    uuid_priority: 30
     logo: '18f.svg'
     acs_url: 'http://localhost:3001/users/auth/saml/callback'
     assertion_consumer_logout_service_url: 'http://localhost:3001/users/auth/saml/logout'
@@ -122,9 +133,12 @@ development:
       - 'gov.gsa.openidconnect.development://result'
     friendly_name: 'Example iOS App'
     agency: '18F'
+    agency_id: 1
+    uuid_priority: 20
     logo: 'generic.svg'
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
+    agency_id: 1
     redirect_uris:
       - 'http://localhost:9292/'
     cert: 'sp_sinatra_demo'
@@ -222,6 +236,8 @@ production:
 
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':
+    agency_id: 1
+    uuid_priority: 30
     redirect_uris:
       - 'https://careers-cert.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
@@ -230,6 +246,8 @@ production:
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:cert:app':
+    agency_id: 1
+    uuid_priority: 30
     redirect_uris:
       - 'gov.dhs.cbp.jobs.applicant.cert://result'
     friendly_name: 'CBP Jobs'
@@ -238,6 +256,8 @@ production:
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod':
+    agency_id: 1
+    uuid_priority: 30
     redirect_uris:
       - 'https://careers.cbp.dhs.gov/hrm/app'
     friendly_name: 'CBP Jobs'
@@ -247,6 +267,8 @@ production:
     return_to_sp_url: 'https://careers.cbp.dhs.gov'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:prod:app':
+    agency_id: 1
+    uuid_priority: 30
     redirect_uris:
       - 'gov.dhs.cbp.jobs.applicant://result'
     friendly_name: 'CBP Jobs'
@@ -256,6 +278,7 @@ production:
 
   # RRB Online Retirement Application
   'urn:gov:gsa:SAML:2.0.profiles:sp:sso:RRB:BOS-Pre-Prod':
+    agency_id: 4
     friendly_name: 'Railroad Retirement Board'
     agency: 'RRB'
     logo: 'rrb.svg'
@@ -281,6 +304,7 @@ production:
 
   # RRB Benefit Connect
   'urn:gov:rrb:OIDC:V0.1:BenefitConnnect:app-stg':
+    agency_id: 4
     friendly_name: 'U.S. Railroad Retirement Board Benefit Connect'
     agency: 'RRB'
     logo: 'rrb.svg'
@@ -303,6 +327,8 @@ production:
 
   # CBP GOES
   'urn:gov:dhs.cbp.jobs:openidconnect:jenkins-pspd-credential-service':
+    agency_id: 1
+    uuid_priority: 15
     friendly_name: 'CBP PSPD Trusted Traveler Programs'
     agency: 'DHS'
     logo: 'cbp-ttp.png'
@@ -311,6 +337,8 @@ production:
       - 'http://10.156.152.27/login'
 
   'urn:gov:dhs.cbp.jobs:openidconnect:aws-cbp-ttp':
+    agency_id: 1
+    uuid_priority: 10
     agency: 'DHS'
     restrict_to_deploy_env: 'prod'
     block_encryption: 'aes256-cbc'
@@ -323,6 +351,8 @@ production:
 
   # CBP OARS
   'urn:gov:dhs.cbp.pspd.oars:openidconnect:prod:app':
+    agency_id: 1
+    uuid_priority: 20
     friendly_name: 'CBP OARS'
     agency: 'DHS'
     logo: 'cbp.png'
@@ -332,6 +362,8 @@ production:
 
   # CBP I'm Ready
   'urn:gov:gsa:openidconnect.profiles:sp:sso:cbp:imready':
+    agency_id: 1
+    uuid_priority: 40
     friendly_name: "CBP I'm Ready"
     agency: 'DHS'
     logo: 'cbp.png'
@@ -341,6 +373,7 @@ production:
 
   # USAJOBS
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS':
+    agency_id: 2
     friendly_name: 'USAJOBS'
     agency: 'OPM'
     logo: 'usajobs.svg'
@@ -351,6 +384,7 @@ production:
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:UAT':
+    agency_id: 2
     friendly_name: 'USAJOBS'
     agency: 'OPM'
     logo: 'usajobs.svg'
@@ -361,6 +395,7 @@ production:
     restrict_to_deploy_env: 'staging'
 
   'urn:gov:gsa:openidconnect.profiles:sp:sso:OPM:USAJOBS:PROD':
+    agency_id: 2
     friendly_name: 'USAJOBS'
     agency: 'OPM'
     logo: 'usajobs.svg'
@@ -372,6 +407,7 @@ production:
 
   # NGA NSG Open Mapping Enclave (NOME)
   'urn:gov:gsa:openidconnect.profiles:sp:sso:VGITeam:NOME':
+    agency_id: 5
     friendly_name: 'NSG Open Mapping Enclave (NOME)'
     agency: 'NGA'
     logo: 'nome.png'
