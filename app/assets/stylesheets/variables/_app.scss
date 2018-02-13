@@ -3,6 +3,7 @@ $sans-serif-font-family: "Source Sans Pro", "Helvetica Neue", "Helvetica", "Robo
 $monospace-font-family: 'Source Code Pro', Consolas, monospace !default;
 
 $base-font-size: 16px !default;
+$small-font-size: 14px !default;
 
 $body-color: $gray !default;
 $body-background-color: $white !default;
@@ -15,6 +16,7 @@ $heading-font-weight: bold !default;
 $heading-line-height: 1.3 !default;
 $caps-letter-spacing: 1px !default;
 
+$line-height-0: .75 !default; // For when a tighter-than-normal leading is desired.
 $line-height-1: 1 !default;
 $line-height-2: 1.3 !default;
 $line-height-3: 1.75 !default;

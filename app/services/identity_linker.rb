@@ -9,6 +9,7 @@ class IdentityLinker
   def link_identity(**extra_attrs)
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
+    AgencyIdentityLinker.new(identity).link_identity if FeatureManagement.enable_agency_based_uuids?
     identity
   end
 
@@ -43,7 +44,8 @@ class IdentityLinker
     ial: nil,
     nonce: nil,
     rails_session_id: nil,
-    scope: nil
+    scope: nil,
+    verified_attributes: nil
   )
     {
       code_challenge: code_challenge,
@@ -51,6 +53,12 @@ class IdentityLinker
       nonce: nonce,
       rails_session_id: rails_session_id,
       scope: scope,
+      verified_attributes: merge_attributes(verified_attributes),
     }
+  end
+
+  def merge_attributes(verified_attributes)
+    verified_attributes = verified_attributes.to_a.map(&:to_s)
+    (identity.verified_attributes.to_a + verified_attributes).uniq.sort
   end
 end

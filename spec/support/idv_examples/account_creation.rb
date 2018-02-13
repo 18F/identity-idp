@@ -1,5 +1,7 @@
 shared_examples 'idv account creation' do |sp|
   it 'redirects to SP after IdV is complete', email: true do
+    allow(Figaro.env).to receive(:enable_agency_based_uuids).and_return('true')
+    allow(Figaro.env).to receive(:agencies_with_agency_based_uuids).and_return('1,2,3')
     email = 'test@test.com'
 
     visit_idp_from_sp_with_loa3(sp)
@@ -41,6 +43,7 @@ shared_examples 'idv account creation' do |sp|
       profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
       xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
+      expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)
       expect(current_url).to eq @saml_authn_request
       expect(xmldoc.phone_number.children.children.to_s).to eq(profile_phone)
     end
@@ -101,6 +104,7 @@ shared_examples 'idv account creation' do |sp|
 
       userinfo_response = JSON.parse(page.body).with_indifferent_access
       expect(userinfo_response[:sub]).to eq(sub)
+      expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(sub)
       expect(userinfo_response[:email]).to eq(user.email)
       expect(userinfo_response[:given_name]).to eq('José')
       expect(userinfo_response[:social_security_number]).to eq('666-66-1234')

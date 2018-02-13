@@ -6,4 +6,5 @@ import 'app/form-field-format';
 import 'app/radio-btn';
 import 'app/phone-internationalization';
 import 'app/print-personal-key';
+import 'app/supported-states';
 import 'app/i18n-dropdown';

@@ -9,7 +9,11 @@ describe TwilioService do
     it 'uses NullTwilioClient' do
       TwilioService.telephony_service = Twilio::REST::Client
 
-      expect(NullTwilioClient).to receive(:new)
+      client = instance_double(NullTwilioClient)
+      expect(NullTwilioClient).to receive(:new).and_return(client)
+      http_client = Struct.new(:adapter)
+      expect(client).to receive(:http_client).and_return(http_client)
+      expect(http_client).to receive(:adapter=).with(:typhoeus)
       expect(Twilio::REST::Client).to_not receive(:new)
 
       TwilioService.new
@@ -36,7 +40,11 @@ describe TwilioService do
     end
 
     it 'uses a real Twilio client' do
-      expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/)
+      client = instance_double(Twilio::REST::Client)
+      expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/).and_return(client)
+      http_client = Struct.new(:adapter)
+      expect(client).to receive(:http_client).and_return(http_client)
+      expect(http_client).to receive(:adapter=).with(:typhoeus)
       TwilioService.new
     end
   end

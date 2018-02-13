@@ -8,13 +8,15 @@ es:
       edit: Editar
       enable: Permitir
       resend_confirmation: Reenviar instrucciones de confirmación
-      send_security_code: Enviar código de seguridad
+      send_security_code: Enviar código
       submit:
         confirm_change: Confirmar cambio
         default: Enviar
         update: Actualización
     confirmation:
       show_hdr: Crear una contraseña segura
+    messages:
+      current_address: Debería poder recibir correo en esta dirección.
     passwords:
       edit:
         buttons:

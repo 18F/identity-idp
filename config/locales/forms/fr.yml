@@ -8,13 +8,16 @@ fr:
       edit: Modifier
       enable: Activer
       resend_confirmation: Envoyer les instructions de confirmation de nouveau
-      send_security_code: Envoyer le code de sécurité
+      send_security_code: Envoyer le code
       submit:
         confirm_change: Confirmer le changement
         default: Soumettre
         update: Mettre à jour
     confirmation:
       show_hdr: Créez un mot de passe fort
+    messages:
+      current_address: Vous devriez être en mesure de recevoir du courrier à cette
+        adresse.
     passwords:
       edit:
         buttons:

@@ -64,7 +64,7 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       fill_out_phone_form_ok(user.phone)
       click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
-      click_submit_default
+      click_continue
 
       expect(current_path).to eq verify_confirmations_path
       expect(page).to be_accessible
