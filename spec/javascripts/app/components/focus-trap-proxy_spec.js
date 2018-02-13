@@ -1,6 +1,5 @@
-/* eslint-disable */
-const proxyquire = require('proxyquireify')(require);
-/* eslint-enable */
+const proxyquire = require('proxyquire');
+const sinon = require('sinon');
 
 const stub = sinon.stub;
 
@@ -19,7 +18,7 @@ describe('focusTrap', () => {
   };
 
   beforeEach(() => {
-    proxy = proxyquire('app/components/focus-trap-proxy', {
+    proxy = proxyquire('../../../../app/javascript/app/components/focus-trap-proxy', {
       // jump through this crazy hoop so we can spy on the method and ensure
       // the proxy object is calling the underlying `focusTrap` constructor
       'focus-trap': () => (fakeFocusTrap.build())(),

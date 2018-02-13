@@ -10,7 +10,6 @@ gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
 gem 'base32-crockford'
-gem 'browserify-rails'
 gem 'device_detector'
 gem 'devise', '~> 4.1'
 gem 'dotiw'
@@ -57,6 +56,7 @@ gem 'two_factor_authentication'
 gem 'typhoeus'
 gem 'uglifier', '>= 1.3.0'
 gem 'valid_email'
+gem 'webpacker', '~> 3.0'
 gem 'whenever', require: false
 gem 'xml-simple'
 gem 'xmlenc', '~> 0.6.4'
@@ -93,7 +93,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.5.2'
   gem 'slim_lint'
-  gem 'teaspoon-mocha'
   gem 'thin'
 end
 

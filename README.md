@@ -15,7 +15,7 @@ A Identity Management System powering login.gov.
 - Ruby 2.3
 - [Postgresql](http://www.postgresql.org/download/)
 - [Redis 2.8+](http://redis.io/)
-- [Node.js v4.4.x](https://nodejs.org)
+- [Node.js v8.x.x](https://nodejs.org)
 
 Testing dependencies:
 - [PhantomJS](http://phantomjs.org)
@@ -177,8 +177,8 @@ $ make fast_test
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
-JavaScript unit tests will run automatically. However, when authoring JS specs, it is significantly faster to run them in the browser,
-as the whole test environment doesn't have to boot up each time. To view JS tests in the browser, visit /teaspoon/default while the application server is running.
+JavaScript unit tests run using the mocha test runner. Check out the
+[mocha documentation](https://mochajs.org/) for more details.
 
 Run security scanner
 

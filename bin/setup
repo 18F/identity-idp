@@ -43,14 +43,15 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Example Key Generation =="
   run "which gpg || brew install gpg"
+  run "which yarn || brew install yarn"
   run "bin/generate-example-keys"
 
   puts "\n== Installing dependencies =="
   run "gem install bundler --conservative"
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
-  run "npm install"
-  run "npm run build"
+  run "yarn install"
+  run "yarn build"
   run "gem install mailcatcher"
 
   puts "\n== Preparing database =="

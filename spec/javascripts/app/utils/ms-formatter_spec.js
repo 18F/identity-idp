@@ -1,4 +1,4 @@
-import msFormatter from 'app/utils/ms-formatter';
+import msFormatter from '../../../../app/javascript/app/utils/ms-formatter';
 
 describe('#msFormatter', () => {
   it('formats milliseconds as X:XX', () => {
