@@ -24,7 +24,7 @@ es:
       first_paragraph_end: con un enlace para confirmar su email. Siga el enlace para
         continuar creando su cuenta.
       first_paragraph_start: Enviamos un email a
-      no_email_sent_explanation_start: "¿No lo recibió?"
+      no_email_sent_explanation_start: "¿No recibió un email?"
     terms_of_service:
       link: Prácticas de Seguridad y Declaración de Privacidad
     timeout_warning:

@@ -4,3 +4,6 @@ en:
     page_not_found:
       body: You might want to double-check your link and try again. (404)
       header: The page you were looking for doesn’t exist.
+    page_took_too_long:
+      body: You might want to wait a few minutes and try again. (503)
+      header: The server took too long to process your request.

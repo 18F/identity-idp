@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+require File.expand_path('../../config/environment', __FILE__)
+
+LinkAgencyIdentities.new.link
+puts "agency, old_uuid, new_uuid"
+LinkAgencyIdentities.report.each do |row|
+  puts "#{row['name']}, #{row['old_uuid']}, #{row['new_uuid']}"
+end
+

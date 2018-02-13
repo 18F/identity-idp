@@ -8,6 +8,12 @@ $radio-checkbox-space: 1.5rem;
   }
 }
 
+legend {
+  // short-circuits line-height to stop inheritance
+  font: $small-font-size $serif-font-family;
+  font-weight: $heading-font-weight;
+}
+
 label {
   display: inline-block;
   margin-bottom: $space-tiny;

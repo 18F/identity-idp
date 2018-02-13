@@ -21,7 +21,7 @@ feature 'verify profile with OTP' do
 
     scenario 'profile phone not confirmed' do
       sign_in_live_with_2fa(user)
-      expect(page).to have_link(t('idv.buttons.cancel'), account_path)
+      expect(page).to have_link(t('idv.buttons.cancel'), href: account_path)
     end
 
     scenario 'OTP has expired' do

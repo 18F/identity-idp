@@ -1,6 +1,8 @@
 ---
 es:
   links:
+    access_help: Obtenga información sobre cómo nos aseguramos de que solo usted tenga
+      acceso.
     account:
       reactivate:
         with_key: Tengo mi clave
@@ -23,7 +25,7 @@ es:
         puede obtener un código de seguridad a través de %{link}
     privacy_policy: Privacidad y seguridad
     remove: Retirar
-    resend: Enviar de nuevo
+    resend: Reenviar
     reverify: Verifique su identidad nuevamente.
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión

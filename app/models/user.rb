@@ -31,6 +31,7 @@ class User < ApplicationRecord
 
   has_many :authorizations, dependent: :destroy
   has_many :identities, dependent: :destroy
+  has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
 
@@ -68,7 +69,7 @@ class User < ApplicationRecord
   end
 
   def confirmation_period_expired?
-    confirmation_sent_at && confirmation_sent_at.utc <= self.class.confirm_within.ago
+    confirmation_sent_at.present? && confirmation_sent_at.utc <= self.class.confirm_within.ago
   end
 
   def first_identity

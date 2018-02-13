@@ -67,4 +67,12 @@ class FeatureManagement
   def self.no_pii_mode?
     enable_identity_verification? && Figaro.env.profile_proofing_vendor == :mock
   end
+
+  def self.enable_agency_based_uuids?
+    Figaro.env.enable_agency_based_uuids == 'true'
+  end
+
+  def self.agencies_with_agency_based_uuids
+    (Figaro.env.agencies_with_agency_based_uuids || '').split(',').map(&:to_i)
+  end
 end

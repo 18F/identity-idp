@@ -18,7 +18,7 @@ class UpdateUserPasswordForm
 
   private
 
-  attr_reader :user, :user_session, :password
+  attr_reader :user, :user_session
 
   def process_valid_submission
     update_user_password

@@ -9,14 +9,14 @@ feature 'IdV max attempts' do
 
     max_attempts_less_one.times do
       fill_out_idv_form_fail
-      click_idv_continue
+      click_continue
       click_button t('idv.modal.button.warning')
 
       expect(current_path).to eq verify_session_result_path
     end
 
     fill_out_idv_form_fail
-    click_idv_continue
+    click_continue
 
     expect(page).to have_css('.modal-fail', text: t('idv.modal.sessions.heading'))
   end
