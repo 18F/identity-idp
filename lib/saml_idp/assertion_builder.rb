@@ -19,7 +19,23 @@ module SamlIdp
 
     delegate :config, to: :SamlIdp
 
-    def initialize(reference_id, issuer_uri, principal, audience_uri, saml_request_id, saml_acs_url, raw_algorithm, authn_context_classref, name_id_format, expiry=60*60, encryption_opts=nil)
+    # rubocop:disable Metrics/ParameterLists
+    def initialize(
+      reference_id,
+      issuer_uri,
+      principal,
+      audience_uri,
+      saml_request_id,
+      saml_acs_url,
+      raw_algorithm,
+      authn_context_classref,
+      name_id_format,
+      x509_certificate,
+      secret_key,
+      expiry = 60*60,
+      encryption_opts = nil
+    )
+      # rubocop:enable Metrics/ParameterLists
       self.reference_id = reference_id
       self.issuer_uri = issuer_uri
       self.principal = principal
@@ -29,6 +45,8 @@ module SamlIdp
       self.raw_algorithm = raw_algorithm
       self.authn_context_classref = authn_context_classref
       self.name_id_format = name_id_format
+      self.x509_certificate = x509_certificate
+      self.secret_key = secret_key
       self.expiry = expiry
       self.encryption_opts = encryption_opts
     end

@@ -23,10 +23,11 @@ module SamlIdp
     attr_accessor :digest_value
     attr_accessor :raw_algorithm
 
-    def initialize(reference_id, digest_value, raw_algorithm)
+    def initialize(reference_id, digest_value, raw_algorithm, secret_key)
       self.reference_id = reference_id
       self.digest_value = digest_value
       self.raw_algorithm = raw_algorithm
+      @secret_key = secret_key
     end
 
     def raw
@@ -64,21 +65,19 @@ module SamlIdp
     end
     private :clean_algorithm_name
 
-    def secret_key
-      SamlIdp.config.secret_key
-    end
-    private :secret_key
-
-    def password
-      SamlIdp.config.password
-    end
-    private :password
-
     def encoded
-      key = OpenSSL::PKey::RSA.new(secret_key, password)
+      key = OpenSSL::PKey::RSA.new(@secret_key, password)
       Base64.strict_encode64(key.sign(algorithm.new, raw))
     end
     private :encoded
+
+    def using_config_secret_key?
+      @secret_key == SamlIdp.config.secret_key
+    end
+
+    def password
+      SamlIdp.config.password if using_config_secret_key?
+    end
 
     def reference_string
       "#_#{reference_id}"

@@ -1,0 +1,4 @@
+LongParameterList:
+  exclude:
+    - LogoutRequestBuilder#initialize
+    - LogoutResponseBuilder#initialize

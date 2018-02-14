@@ -67,6 +67,7 @@ Metrics/ModuleLength:
   Enabled: true
   Exclude:
   - spec/**/*
+  - lib/saml_idp/signable.rb
 
 Metrics/ParameterLists:
   CountKeywordArgs: false

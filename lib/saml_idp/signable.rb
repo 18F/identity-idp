@@ -10,6 +10,8 @@ module SamlIdp
     def self.included(base)
       base.extend ClassMethods
       base.send :attr_accessor, :reference_id
+      base.send :attr_writer, :x509_certificate
+      base.send :attr_writer, :secret_key
     end
 
     def signed
@@ -65,12 +67,14 @@ module SamlIdp
     private :sign?
 
     def signature
-      SignatureBuilder.new(signed_info_builder).raw
+      SignatureBuilder.new(signed_info_builder, x509_certificate).raw
     end
     private :signature
 
     def signed_info_builder
-      SignedInfoBuilder.new(get_reference_id, get_digest, get_algorithm)
+      SignedInfoBuilder.new(
+        get_reference_id, get_digest, get_algorithm, secret_key
+      )
     end
     private :signed_info_builder
 
@@ -95,6 +99,20 @@ module SamlIdp
       send(self.class.raw_method)
     end
     private :get_raw
+
+    def secret_key
+      @secret_key || SamlIdp.config.secret_key
+    end
+    private :secret_key
+
+    def x509_certificate
+      (@x509_certificate || SamlIdp.config.x509_certificate).
+        to_s.
+        gsub(/-----BEGIN CERTIFICATE-----/, '').
+        gsub(/-----END CERTIFICATE-----/, '').
+        delete("\n")
+    end
+    private :x509_certificate
 
     def noko_raw
       Nokogiri::XML::Document.parse(get_raw)
