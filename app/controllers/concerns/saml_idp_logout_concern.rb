@@ -48,7 +48,13 @@ module SamlIdpLogoutConcern
   end
 
   def sp_slo_identity
-    @_sp_slo_identity ||= Identity.includes(:user).find_by(uuid: name_id)
+    @_sp_slo_identity ||= begin
+      if FeatureManagement.enable_agency_based_uuids?
+        AgencyIdentityLinker.sp_identity_from_uuid(name_id)
+      else
+        Identity.includes(:user).find_by(uuid: name_id)
+      end
+    end
   end
 
   def name_id

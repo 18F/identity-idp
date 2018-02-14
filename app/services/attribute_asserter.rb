@@ -51,7 +51,14 @@ class AttributeAsserter
   end
 
   def uuid_getter_function
-    ->(principal) { principal.decorate.active_identity_for(service_provider).uuid }
+    lambda do |principal|
+      identity = principal.decorate.active_identity_for(service_provider)
+      if FeatureManagement.enable_agency_based_uuids?
+        AgencyIdentityLinker.new(identity).link_identity.uuid
+      else
+        identity.uuid
+      end
+    end
   end
 
   def verified_at_getter_function

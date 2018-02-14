@@ -7,7 +7,7 @@ describe ServiceProviderUpdater do
   let(:dashboard_sp_issuer) { 'some-dashboard-service-provider' }
   let(:inactive_dashboard_sp_issuer) { 'old-dashboard-service-provider' }
   let(:openid_connect_issuer) { 'sp:test:foo:bar' }
-  let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app:/result] }
+  let(:openid_connect_redirect_uris) { %w[http://localhost:1234 my-app://result] }
   let(:dashboard_service_providers) do
     [
       {

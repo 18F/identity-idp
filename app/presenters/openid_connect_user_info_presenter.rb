@@ -9,7 +9,7 @@ class OpenidConnectUserInfoPresenter
 
   def user_info
     info = {
-      sub: identity.uuid,
+      sub: uuid_from_sp_identity(identity),
       iss: root_url,
       email: identity.user.email,
       email_verified: true,
@@ -19,6 +19,14 @@ class OpenidConnectUserInfoPresenter
   end
 
   private
+
+  def uuid_from_sp_identity(identity)
+    if FeatureManagement.enable_agency_based_uuids?
+      AgencyIdentityLinker.new(identity).link_identity.uuid
+    else
+      identity.uuid
+    end
+  end
 
   # rubocop:disable Metrics/AbcSize
   def loa3_attributes

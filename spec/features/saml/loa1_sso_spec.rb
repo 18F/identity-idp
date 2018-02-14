@@ -44,6 +44,7 @@ feature 'LOA1 Single Sign On' do
       click_link t('links.sign_in')
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
+      click_continue
 
       expect(current_url).to eq saml_authn_request
 
@@ -122,13 +123,61 @@ feature 'LOA1 Single Sign On' do
       visit new_user_session_url(request_id: sp_request_id)
       fill_in_credentials_and_submit(user.email, user.password)
       click_submit_default
+      click_continue
 
       expect(current_url).to eq saml_authn_request
     end
   end
 
+  context 'fully signed up user authenticates new sp' do
+    let(:user){ create(:user, :signed_up) }
+    let(:saml_authn_request){ auth_request.create(saml_settings) }
+    
+    before do
+      allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+      sign_in_user(user)
+      click_submit_default
+      visit saml_authn_request
+    end
+
+    it 'redirects user to verify attributes page' do
+      expect(current_url).to eq(sign_up_completed_url)
+      expect(page).to have_content(t('titles.sign_up.new_sp'))
+    end
+
+    it 'returns to sp after clicking continue' do
+      click_continue
+      expect(current_url).to eq(saml_authn_request)
+    end
+
+    it 'it immediately returns to the SP after signing in again' do
+      click_continue
+
+      visit sign_out_url
+
+      sign_in_user(user)
+      click_submit_default
+
+      visit saml_authn_request
+      expect(current_url).to eq(saml_authn_request)
+    end
+  end
+
   context 'fully signed up user is signed in with email and password only' do
     it 'prompts to enter OTP' do
+      user = create(:user, :signed_up)
+      sign_in_user(user)
+
+      saml_authn_request = auth_request.create(saml_settings)
+      visit saml_authn_request
+
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+    end
+  end
+
+  context 'fully signed up user is signed in with email/pwd and new agency based uuids' do
+    it 'prompts to enter OTP' do
+      allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
       user = create(:user, :signed_up)
       sign_in_user(user)
 

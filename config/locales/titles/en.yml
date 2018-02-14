@@ -24,6 +24,7 @@ en:
       completion_html: You have %{accent} with %{app}
       loa1: created your account
       verified: You have verified your identity with %{app}
+      new_sp: You are now logging in for the first time
     totp_setup:
       new: Set up two-factor authentication
     two_factor_setup: Two-factor authentication setup

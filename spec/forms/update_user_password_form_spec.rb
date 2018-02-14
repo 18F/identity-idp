@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe UpdateUserPasswordForm do
+describe UpdateUserPasswordForm, type: :model do
   let(:user) { User.new(password: 'old strong password') }
   let(:user_session) { {} }
   let(:password) { 'salty new password' }
@@ -8,6 +8,9 @@ describe UpdateUserPasswordForm do
   let(:subject) do
     UpdateUserPasswordForm.new(user, user_session)
   end
+
+  it_behaves_like 'password validation'
+  it_behaves_like 'strong password', 'UpdateUserPasswordForm'
 
   describe '#submit' do
     context 'when the password is invalid' do
