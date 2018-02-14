@@ -31,7 +31,9 @@ Dir.chdir APP_ROOT do
 
   puts "== Copying sample certs and keys =="
   run "test -L keys/saml.key.enc || cp keys/saml.key.enc.example keys/saml.key.enc"
+  run "test -L keys/saml2018.key.enc || cp keys/saml2018.key.enc.example keys/saml2018.key.enc"
   run "test -L certs/saml.crt || cp certs/saml.crt.example certs/saml.crt"
+  run "test -L certs/saml2018.crt || cp certs/saml2018.crt.example certs/saml2018.crt"
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'

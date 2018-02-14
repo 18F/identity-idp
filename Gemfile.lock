@@ -48,10 +48,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: bd77c74edc0943dac77cbc0fb07dabc8f9860176
-  tag: v0.5.0-18f
+  revision: 6277eb7c796cd94ce29e9405bb5a5d60a643bb98
+  tag: v0.6.0-18f
   specs:
-    saml_idp (0.5.0.pre.18f)
+    saml_idp (0.6.0.pre.18f)
       activesupport
       builder
       httparty
@@ -319,7 +319,7 @@ GEM
     hiredis (0.6.1)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    httparty (0.15.6)
+    httparty (0.15.7)
       multi_xml (>= 0.5.2)
     httpi (2.4.2)
       rack

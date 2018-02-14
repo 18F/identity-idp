@@ -22,7 +22,7 @@ class SamlIdpController < ApplicationController
   end
 
   def metadata
-    render inline: SamlIdp.metadata.signed, content_type: 'text/xml'
+    render inline: saml_metadata.signed, content_type: 'text/xml'
   end
 
   def logout
@@ -37,6 +37,18 @@ class SamlIdpController < ApplicationController
   end
 
   private
+
+  def saml_metadata
+    if SamlCertRotationManager.use_new_secrets_for_request?(request)
+      SamlIdp::MetadataBuilder.new(
+        SamlIdp.config,
+        SamlCertRotationManager.new_certificate,
+        SamlCertRotationManager.new_secret_key
+      )
+    else
+      SamlIdp.metadata
+    end
+  end
 
   def redirect_to_account_or_verify_profile_url
     return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
