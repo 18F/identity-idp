@@ -35,8 +35,12 @@ Dir.chdir APP_ROOT do
 
   if ARGV.shift == "--docker" then
     run 'docker-compose build'
+    run 'docker-compose run --rm web bin/generate-example-keys'
+    run 'docker-compose run --rm web yarn install'
+    run 'docker-compose run --rm web yarn build'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
+    run 'docker-compose run --rm web rake dev:prime'
     run 'docker-compose up'
     exit
   end
@@ -55,9 +59,9 @@ Dir.chdir APP_ROOT do
   run "gem install mailcatcher"
 
   puts "\n== Preparing database =="
-  run 'bin/rake db:environment:set RAILS_ENV=development db:reset'
+  run 'bin/rake db:reset RAILS_ENV=development'
   run 'bin/rake dev:prime RAILS_ENV=development'
-  run 'bin/rake db:environment:set RAILS_ENV=test db:reset'
+  run 'bin/rake db:reset RAILS_ENV=test'
 
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"
