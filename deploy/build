@@ -8,9 +8,14 @@
 
 set -euo pipefail
 
+echo "deploy/build starting"
+echo "HOME: ${HOME-}"
+cd "$(dirname "$0")/.."
+
 set -x
 
-cd "$(dirname "$0")/.."
+id
+which bundle
 
 bundle_dir=/srv/idp/shared
 
@@ -22,4 +27,6 @@ bundle install --deployment --jobs 4 \
 bundle exec yarn install
 bundle exec yarn build
 
-bundle exec rake assets:precompile
+set +x
+
+echo "deploy/build finished"
