@@ -27,7 +27,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
       context 'with valid params' do
         it 'redirects back to the client app with a code' do
           IdentityLinker.new(user, client_id).link_identity(ial: 1)
-          user.identities.last.update!(verified_attributes: ["given_name", "family_name", "birthdate"])
+          user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           action
 
           expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -57,7 +57,9 @@ RSpec.describe OpenidConnect::AuthorizationController do
 
             it 'redirects to the redirect_uri immediately' do
               IdentityLinker.new(user, client_id).link_identity(ial: 3)
-              user.identities.last.update!(verified_attributes: ["given_name", "family_name", "birthdate"])
+              user.identities.last.update!(
+                verified_attributes: %w[given_name family_name birthdate]
+              )
               action
 
               expect(response).to redirect_to(/^#{params[:redirect_uri]}/)
@@ -89,7 +91,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
         context 'user has already approved this application' do
           before do
             IdentityLinker.new(user, client_id).link_identity
-            user.identities.last.update!(verified_attributes: ["given_name", "family_name", "birthdate"])
+            user.identities.last.update!(verified_attributes: %w[given_name family_name birthdate])
           end
 
           it 'redirects back to the client app with a code' do

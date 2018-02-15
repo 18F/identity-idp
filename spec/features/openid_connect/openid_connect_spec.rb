@@ -63,7 +63,7 @@ feature 'OpenID Connect' do
       user = user_with_2fa
 
       IdentityLinker.new(user, client_id).link_identity
-      user.identities.last.update!(verified_attributes: ["email"])
+      user.identities.last.update!(verified_attributes: ['email'])
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -93,7 +93,7 @@ feature 'OpenID Connect' do
       user = user_with_2fa
 
       IdentityLinker.new(user, client_id).link_identity
-      user.identities.last.update!(verified_attributes: ["email"])
+      user.identities.last.update!(verified_attributes: ['email'])
 
       visit openid_connect_authorize_path(
         client_id: client_id,
@@ -237,7 +237,7 @@ feature 'OpenID Connect' do
   context 'logging into an SP for the first time' do
     it 'displays shared attributes page once' do
       client_id = 'urn:gov:gsa:openidconnect:sp:server'
-      
+
       user = user_with_2fa
 
       oidc_path =  openid_connect_authorize_path(
@@ -251,13 +251,12 @@ feature 'OpenID Connect' do
         prompt: 'select_account'
       )
       visit oidc_path
-      
+
       sign_in_live_with_2fa(user)
-      
 
       expect(current_url).to eq(sign_up_completed_url)
       expect(page).to have_content(t('titles.sign_up.new_sp'))
-      
+
       click_continue
       expect(current_url).to start_with('http://localhost:7654/auth/result')
       visit sign_out_url
@@ -267,7 +266,6 @@ feature 'OpenID Connect' do
       redirect_uri = URI(current_url)
 
       expect(redirect_uri.to_s).to start_with('http://localhost:7654/auth/result')
-
     end
   end
 
@@ -428,7 +426,7 @@ feature 'OpenID Connect' do
     user = user_with_2fa
 
     link_identity(user, client_id)
-    user.identities.last.update!(verified_attributes: ["email"])
+    user.identities.last.update!(verified_attributes: ['email'])
 
     visit openid_connect_authorize_path(
       client_id: client_id,

@@ -132,9 +132,13 @@ UtilityFunction:
   InstanceVariableAssumption:
     enabled: false
 'spec':
+  BooleanParameter:
+    exclude:
+     - SamlAuthHelper#generate_saml_response
   ControlParameter:
     exclude:
       - complete_idv_session
+      - SamlAuthHelper#link_user_to_identity
       - visit_idp_from_sp_with_loa1
       - visit_idp_from_sp_with_loa3
   DuplicateMethodCall:

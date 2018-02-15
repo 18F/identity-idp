@@ -160,7 +160,9 @@ describe SamlIdpController do
       before do
         stub_sign_in(user)
         IdentityLinker.new(user, loa3_saml_settings.issuer).link_identity(ial: 3)
-        user.identities.last.update!(verified_attributes: ["given_name", "family_name", "social_security_number", "address"])
+        user.identities.last.update!(
+          verified_attributes: %w[given_name family_name social_security_number address]
+        )
         allow(subject).to receive(:attribute_asserter) { asserter }
       end
 
@@ -338,9 +340,9 @@ describe SamlIdpController do
       end
 
       context 'after successful assertion of loa1' do
-        let(:user_identity){
+        let(:user_identity) do
           @user.identities.find_by(service_provider: saml_settings.issuer)
-        }
+        end
         before do
           sign_in(@user)
           saml_get_auth(saml_settings)
@@ -370,7 +372,7 @@ describe SamlIdpController do
 
         it 'does not redirect after verifying attributes' do
           IdentityLinker.new(@user, saml_settings.issuer).link_identity(
-            verified_attributes: ["email"]
+            verified_attributes: ['email']
           )
           saml_get_auth(saml_settings)
 
@@ -382,7 +384,7 @@ describe SamlIdpController do
 
           user_identity.update!(verified_attributes: nil)
           saml_get_auth(saml_settings)
-          expect(response).to redirect_to sign_up_completed_url          
+          expect(response).to redirect_to sign_up_completed_url
         end
       end
     end
@@ -481,17 +483,15 @@ describe SamlIdpController do
     end
 
     context 'after signing in' do
-      before do
+      it 'calls IdentityLinker' do
         user = create(:user, :signed_up)
-        generate_saml_response(user, link: false)
-      end
-
-      it 'does not call IdentityLinker' do
-        user = create(:user, :signed_up)
-        
         linker = instance_double(IdentityLinker)
 
-        expect(IdentityLinker).to_not receive(:new)
+        expect(IdentityLinker).to receive(:new).once.
+          with(user, saml_settings.issuer).and_return(linker)
+        expect(linker).to receive(:link_identity)
+
+        generate_saml_response(user, link: false)
       end
     end
 

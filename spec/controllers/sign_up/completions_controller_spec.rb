@@ -119,9 +119,9 @@ describe SignUp::CompletionsController do
         subject.session[:sp] = {
           loa3: false,
           request_url: 'http://example.com',
-          requested_attributes: ["email"]
+          requested_attributes: ['email'],
         }
-        expect(@linker).to receive(:link_identity).with(ial: 1 , verified_attributes: ["email"])
+        expect(@linker).to receive(:link_identity).with(ial: 1, verified_attributes: ['email'])
         patch :update
       end
     end
@@ -149,9 +149,10 @@ describe SignUp::CompletionsController do
         subject.session[:sp] = {
           loa3: true,
           request_url: 'http://example.com',
-          requested_attributes: ["email", "first_name"]
+          requested_attributes: %w[email first_name],
         }
-        expect(@linker).to receive(:link_identity).with(ial: 3 , verified_attributes: ["email", "first_name"])
+        expect(@linker).to receive(:link_identity).
+          with(ial: 3, verified_attributes: %w[email first_name])
         patch :update
       end
     end

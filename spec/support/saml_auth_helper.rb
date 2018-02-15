@@ -178,15 +178,15 @@ module SamlAuthHelper
   private
 
   def link_user_to_identity(user, link, settings)
-    if link
-      IdentityLinker.new(
-        user,
-        settings.issuer
-      ).link_identity(
-        ial: loa3_requested?(settings) ? true : nil,
-        verified_attributes: ['email']
-      )
-    end
+    return unless link
+
+    IdentityLinker.new(
+      user,
+      settings.issuer
+    ).link_identity(
+      ial: loa3_requested?(settings) ? true : nil,
+      verified_attributes: ['email']
+    )
   end
 
   def loa3_requested?(settings)
