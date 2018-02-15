@@ -5,7 +5,7 @@ class LinkAgencyIdentities
     sps = sps_to_link
     sps.sort! { |spa, spb| spa.priority <=> spb.priority }
     sps.each { |sp| link_service_provider(sp.agency_id, sp.issuer) }
-    self
+    log 'Complete'
   end
 
   def self.report
@@ -21,11 +21,15 @@ class LinkAgencyIdentities
 
   private
 
+  def log(msg)
+    Rails.logger.info(msg)
+  end
+
   def sps_to_link
     sps = []
     service_providers.each do |issuer, config|
       priority, agency_id = agency_info(config)
-      sps << AGENCY_INFO.new(issuer, priority, agency_id) if priority && agency_id
+      sps << AGENCY_INFO.new(issuer, priority, agency_id) if priority && (agency_id != 0)
     end
     sps
   end
@@ -36,13 +40,11 @@ class LinkAgencyIdentities
   end
 
   def link_service_provider(agency_id, service_provider)
+    log "agency_id=#{agency_id} sp=#{service_provider}"
     linker_sql = <<~SQL
       INSERT INTO agency_identities (user_id,agency_id,uuid)
-      SELECT user_id,%d,MAX(uuid)
-      FROM identities
-      WHERE service_provider='%s'
-      AND user_id NOT IN (SELECT user_id FROM agency_identities WHERE agency_id=%d)
-      GROUP BY user_id
+      (SELECT user_id,%d,MAX(uuid) FROM identities WHERE service_provider='%s' GROUP BY user_id)
+      ON CONFLICT DO NOTHING
     SQL
     sql = format(linker_sql, agency_id, service_provider, agency_id)
     ActiveRecord::Base.connection.execute(sql)
