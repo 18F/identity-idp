@@ -130,9 +130,9 @@ feature 'LOA1 Single Sign On' do
   end
 
   context 'fully signed up user authenticates new sp' do
-    let(:user){ create(:user, :signed_up) }
-    let(:saml_authn_request){ auth_request.create(saml_settings) }
-    
+    let(:user) { create(:user, :signed_up) }
+    let(:saml_authn_request) { auth_request.create(saml_settings) }
+
     before do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       sign_in_user(user)

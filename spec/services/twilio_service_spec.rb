@@ -41,7 +41,8 @@ describe TwilioService do
 
     it 'uses a real Twilio client' do
       client = instance_double(Twilio::REST::Client)
-      expect(Twilio::REST::Client).to receive(:new).with(/sid(1|2)/, /token(1|2)/).and_return(client)
+      expect(Twilio::REST::Client).
+        to receive(:new).with(/sid(1|2)/, /token(1|2)/).and_return(client)
       http_client = Struct.new(:adapter)
       expect(client).to receive(:http_client).and_return(http_client)
       expect(http_client).to receive(:adapter=).with(:typhoeus)
