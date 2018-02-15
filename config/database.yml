@@ -10,7 +10,7 @@ defaults: &defaults
   pool: 5
   <<: *postgresql
   # timeout settings
-  timeout: 5000
+  timeout: <%= Figaro.env.database_timeout.to_i %>
   reconnect: true
   connect_timeout: 2
   keepalives_idle: 10
