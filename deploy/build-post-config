@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# This script is called by identity-devops cookbooks as part of the deployment
+# process. It runs build steps needed to complete building the application. It
+# runs *after* deploy/activate is called to download secrets. This allows us to
+# rely on the full configuration being available.
+
+set -euo pipefail
+
+echo "deploy/build-post-config starting"
+echo "HOME: ${HOME-}"
+cd "$(dirname "$0")/.."
+
+set -x
+
+id
+which bundle
+
+export NODE_ENV=production
+
+bundle exec rake assets:precompile
+
+set +x
+
+echo "deploy/build-post-config finished"

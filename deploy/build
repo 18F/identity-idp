@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# This script is called by identity-devops cookbooks as part of the deployment
+# process. It runs build steps needed to complete building the application,
+# such as vendoring ruby/nodejs libraries and compiling static assets.
+# Then the deploy/activate script is called to instantiate live configuration
+# and take steps at runtime.
+
+set -euo pipefail
+
+echo "deploy/build starting"
+echo "HOME: ${HOME-}"
+cd "$(dirname "$0")/.."
+
+set -x
+
+id
+which bundle
+
+bundle_dir=/srv/idp/shared
+
+bundle install --deployment --jobs 4 \
+    --path "$bundle_dir/bundle" \
+    --binstubs "$bundle_dir/bin" \
+    --without 'deploy development doc test'
+
+bundle exec yarn install
+bundle exec yarn build
+
+set +x
+
+echo "deploy/build finished"
