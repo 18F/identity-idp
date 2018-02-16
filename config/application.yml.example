@@ -79,6 +79,10 @@ development:
   database_host: ''
   database_name: ''
   database_password: ''
+  database_pool_idp: '5'
+  database_pool_worker: '5'
+  database_readonly_password: ''
+  database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
   domain_name: 'localhost:3000'
@@ -256,6 +260,10 @@ test:
   database_host: ''
   database_name: ''
   database_password: ''
+  database_pool_idp:
+  database_pool_worker:
+  database_readonly_password: ''
+  database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
   dashboard_api_token: '123ABC'
