@@ -159,10 +159,6 @@ describe SamlIdpController do
 
       before do
         stub_sign_in(user)
-        IdentityLinker.new(user, loa3_saml_settings.issuer).link_identity(ial: 3)
-        user.identities.last.update!(
-          verified_attributes: %w[given_name family_name social_security_number address]
-        )
         allow(subject).to receive(:attribute_asserter) { asserter }
       end
 
@@ -246,10 +242,7 @@ describe SamlIdpController do
         allow(@analytics).to receive(:track_event)
 
         user = create(:user, :signed_up)
-        auth_settings = missing_authn_context_saml_settings
-        IdentityLinker.new(user, auth_settings.issuer).link_identity
-        user.identities.last.update!(verified_attributes: ['email'])
-        generate_saml_response(user, auth_settings)
+        generate_saml_response(user, missing_authn_context_saml_settings)
 
         expect(response.status).to eq(200)
 
@@ -340,51 +333,22 @@ describe SamlIdpController do
       end
 
       context 'after successful assertion of loa1' do
-        let(:user_identity) do
-          @user.identities.find_by(service_provider: saml_settings.issuer)
-        end
         before do
           sign_in(@user)
           saml_get_auth(saml_settings)
+          @user_identity = @user.identities.find_by(service_provider: saml_settings.issuer)
         end
 
         it 'does not delete SP metadata from session' do
           expect(session.key?(:sp)).to eq(true)
         end
 
-        it 'does links the user to the service provider' do
-          expect(user_identity).to_not be_nil
+        it 'links the user to the service provider' do
+          expect(@user_identity).to_not be_nil
         end
 
-        it 'sets verified attributes on the identity to nothing' do
-          expect(user_identity.verified_attributes).to eq([])
-        end
-
-        it 'sets user identity loa value to 1 after verifying attributes' do
-          saml_get_auth(saml_settings)
-          expect(user_identity.ial).to eq(1)
-        end
-
-        it 'redirects to verify attributes' do
-          expect(response).to redirect_to sign_up_completed_url
-          expect(subject.user_session.key?(:verify_shared_attributes)).to eq(true)
-        end
-
-        it 'does not redirect after verifying attributes' do
-          IdentityLinker.new(@user, saml_settings.issuer).link_identity(
-            verified_attributes: ['email']
-          )
-          saml_get_auth(saml_settings)
-
-          expect(response).to_not redirect_to sign_up_completed_url
-        end
-
-        it 'redirects if verified attributes dont match requested attributes' do
-          saml_get_auth(saml_settings)
-
-          user_identity.update!(verified_attributes: nil)
-          saml_get_auth(saml_settings)
-          expect(response).to redirect_to sign_up_completed_url
+        it 'sets user identity loa value to 1' do
+          expect(@user_identity.ial).to eq(1)
         end
       end
     end
@@ -485,13 +449,14 @@ describe SamlIdpController do
     context 'after signing in' do
       it 'calls IdentityLinker' do
         user = create(:user, :signed_up)
+        generate_saml_response(user)
         linker = instance_double(IdentityLinker)
 
         expect(IdentityLinker).to receive(:new).once.
           with(user, saml_settings.issuer).and_return(linker)
         expect(linker).to receive(:link_identity)
 
-        generate_saml_response(user, link: false)
+        generate_saml_response(user)
       end
     end
 

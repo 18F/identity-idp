@@ -8,17 +8,18 @@ class SamlIdpController < ApplicationController
   include SamlIdpLogoutConcern
   include FullyAuthenticatable
   include VerifyProfileConcern
-  include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
 
   def auth
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-    link_identity_from_session_data
-    capture_analytics
-    return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
-    return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
-    handle_successful_handoff
+    process_fully_authenticated_user do |needs_idv, needs_profile_finish|
+      return redirect_to(verify_url) if needs_idv && !needs_profile_finish
+      return redirect_to(account_or_verify_profile_url) if needs_profile_finish
+    end
+    delete_branded_experience
+
+    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
   def metadata
@@ -50,26 +51,15 @@ class SamlIdpController < ApplicationController
     end
   end
 
-  def redirect_to_account_or_verify_profile_url
-    return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
-    redirect_to(verify_url) if identity_needs_verification?
-  end
+  def process_fully_authenticated_user
+    link_identity_from_session_data
 
-  def profile_or_identity_needs_verification?
-    profile_needs_verification? || identity_needs_verification?
-  end
-
-  def capture_analytics
-    analytics_payload = @result.to_h.merge(
-      idv: identity_needs_verification?,
-      finish_profile: profile_needs_verification?
-    )
+    needs_idv = identity_needs_verification?
+    needs_profile_finish = profile_needs_verification?
+    analytics_payload =  @result.to_h.merge(idv: needs_idv, finish_profile: needs_profile_finish)
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
-  end
 
-  def handle_successful_handoff
-    delete_branded_experience
-    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
+    yield needs_idv, needs_profile_finish
   end
 
   def render_template_for(message, action_url, type)
