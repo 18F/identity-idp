@@ -6,8 +6,7 @@ describe 'sign_up/completions/show.html.slim' do
     @view_model = SignUpCompletionsShow.new(
       current_user: @user,
       loa3_requested: false,
-      decorated_session: SessionDecorator.new,
-      handoff: false
+      decorated_session: SessionDecorator.new
     )
   end
 
@@ -27,22 +26,6 @@ describe 'sign_up/completions/show.html.slim' do
       t('idv.messages.agency_login_html', sp: identity.display_name)
     )
     expect(rendered).to have_content(content)
-  end
-
-  context 'loging into sp for the first time after account creation' do
-    before do
-      @view_model = SignUpCompletionsShow.new(
-        current_user: @user,
-        loa3_requested: false,
-        decorated_session: SessionDecorator.new,
-        handoff: true
-      )
-      create_identities(@user)
-    end
-    it 'informs user they are logging into an SP for the first time' do
-      render
-      expect(rendered).to have_content(t('titles.sign_up.new_sp'))
-    end
   end
 
   private
