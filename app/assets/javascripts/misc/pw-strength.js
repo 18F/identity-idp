@@ -55,6 +55,8 @@ function analyzePw() {
   const pwStrength = document.getElementById('pw-strength-txt');
   const pwFeedback = document.getElementById('pw-strength-feedback');
   const submit = document.querySelector('input[type="submit"]');
+  const forbiddenPasswordsElement = document.querySelector('[data-forbidden-passwords]');
+  const forbiddenPasswords = forbiddenPasswordsElement.dataset.forbiddenPasswords;
 
   disableSubmit(submit);
 
@@ -64,7 +66,7 @@ function analyzePw() {
   pwCntnr.className = '';
 
   function checkPasswordStrength(e) {
-    const z = zxcvbn(e.target.value);
+    const z = zxcvbn(e.target.value, JSON.parse(forbiddenPasswords));
     const [cls, strength] = getStrength(z);
     const feedback = getFeedback(z);
     pwCntnr.className = cls;

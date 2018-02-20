@@ -62,7 +62,7 @@ class EncryptedKeyMaker
     ciphertext = user_access_key.xor(decode(encryption_key)).sub(KEY_TYPE[:KMS], '')
     user_access_key.unlock(aws_client.decrypt(ciphertext_blob: ciphertext).plaintext)
   rescue Aws::KMS::Errors::InvalidCiphertextException
-    raise Pii::EncryptionError
+    raise Pii::EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
   end
 
   def make_local(user_access_key)

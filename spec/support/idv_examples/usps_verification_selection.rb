@@ -16,7 +16,7 @@ shared_examples 'selecting usps address verification method' do |sp|
 
     fill_in :user_password, with: user_password
 
-    expect { click_submit_default }.
+    expect { click_continue }.
       to change { UspsConfirmation.count }.from(0).to(1)
 
     expect(current_path).to eq verify_confirmations_path
@@ -91,6 +91,6 @@ shared_examples 'selecting usps address verification method' do |sp|
     click_idv_address_choose_usps
     click_on t('idv.buttons.mail.send')
     fill_in :user_password, with: user_password
-    click_submit_default
+    click_continue
   end
 end

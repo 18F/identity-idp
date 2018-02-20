@@ -2,7 +2,7 @@
 SimpleForm.setup do |config|
   config.button_class = 'btn btn-primary'
   config.boolean_label_class = nil
-  config.default_form_class = 'mt3 sm-mt4'
+  config.default_form_class = 'mt3 sm-mt3'
   config.error_notification_tag = :div
   config.error_notification_class = 'alert alert-error'
   config.wrapper_mappings = { inline: :append }

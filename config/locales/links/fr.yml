@@ -1,6 +1,7 @@
 ---
 fr:
   links:
+    access_help: Découvrez comment nous nous assurons que vous seul avez accès.
     account:
       reactivate:
         with_key: J'ai ma clé
@@ -23,7 +24,7 @@ fr:
         moment, vous pouvez obtenir un code de sécurité par %{link}
     privacy_policy: Confidentialité et sécurité
     remove: Retirer
-    resend: Envoyer le courriel de nouveau
+    resend: Renvoyer
     reverify: Veuillez vérifier votre identité de nouveau.
     sign_in: Connexion
     sign_out: Déconnexion

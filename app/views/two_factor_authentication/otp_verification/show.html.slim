@@ -2,7 +2,9 @@
 
 h1.h3.my0 = @presenter.header
 
-= form_tag(:login_otp, method: :post, role: 'form', class: 'mt3 sm-mt4') do
+p == @presenter.phone_number_message
+
+= form_tag(:login_otp, method: :post, role: 'form', class: 'mt3') do
   = render @presenter.reauthn_hidden_field_partial
   = label_tag 'code', \
     t('simple_form.required.html') + t('forms.two_factor.code'), \

@@ -87,6 +87,10 @@ module FormHelper
     PhoneNumberCapabilities::VOICE_UNSUPPORTED_US_AREA_CODES
   end
 
+  def supported_jurisdictions
+    Idv::FormStateIdValidator::SUPPORTED_JURISDICTIONS
+  end
+
   private
 
   def international_phone_code_label(code_data)

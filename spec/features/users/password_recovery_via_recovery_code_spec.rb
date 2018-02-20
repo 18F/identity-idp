@@ -48,8 +48,8 @@ feature 'Password recovery via personal key', idv_job: true do
     complete_idv_profile_ok(user, new_password)
     acknowledge_and_confirm_personal_key
 
-    expect(current_path).to eq(account_path)
     expect(page).to have_content(t('headings.account.verified_account'))
+    expect(current_path).to eq(account_path)
   end
 
   scenario 'resets password, uses personal key as 2fa', email: true do
@@ -110,11 +110,11 @@ feature 'Password recovery via personal key', idv_job: true do
     expect(current_path).to eq verify_personal_key_path
 
     fill_in 'personal_key', with: personal_key
-    click_on t('forms.buttons.continue')
+    click_continue
 
     expect(current_path).to eq verify_password_path
 
     fill_in 'Password', with: password
-    click_on t('forms.buttons.submit.default')
+    click_continue
   end
 end

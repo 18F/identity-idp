@@ -83,6 +83,29 @@ feature 'SP-initiated logout' do
     end
   end
 
+  context 'when logged in to a single SP and using new agency based UUIDs' do
+    let(:user) { create(:user, :signed_up) }
+
+    before do
+      allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
+      sign_in_and_2fa_user(user)
+      visit sp1_authnrequest
+
+      sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
+      settings = sp1_saml_settings
+      settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
+
+      request = OneLogin::RubySaml::Logoutrequest.new
+      visit request.create(settings)
+    end
+
+    it 'signs out the user from IdP' do
+      visit account_path
+
+      expect(current_path).to eq root_path
+    end
+  end
+
   context 'with multiple SP sessions' do
     let(:user) { create(:user, :signed_up) }
     let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }

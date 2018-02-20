@@ -8,13 +8,15 @@ en:
       edit: Edit
       enable: Enable
       resend_confirmation: Resend confirmation instructions
-      send_security_code: Send security code
+      send_security_code: Send code
       submit:
         confirm_change: Confirm change
         default: Submit
         update: Update
     confirmation:
       show_hdr: Create a strong password
+    messages:
+      current_address: You should be be able to receive mail at this address.
     passwords:
       edit:
         buttons:
