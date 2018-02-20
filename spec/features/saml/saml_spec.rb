@@ -44,7 +44,6 @@ feature 'saml api' do
       before do
         sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-        click_continue
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -58,7 +57,6 @@ feature 'saml api' do
       before do
         sign_in_and_2fa_user(user)
         visit authnrequest_get
-        click_continue
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -209,7 +207,6 @@ feature 'saml api' do
       it 'creates a valid auth request' do
         sign_in_and_2fa_user(user)
         visit new_cert_authn_request
-        click_continue
 
         response_node = page.find('#SAMLResponse', visible: false)
         decoded_response = Base64.decode64(response_node.value)
@@ -227,7 +224,6 @@ feature 'saml api' do
       it 'create a valid logout request' do
         sign_in_and_2fa_user(user)
         visit new_cert_authn_request
-        click_continue
 
         service_provider = ServiceProvider.from_issuer(new_cert_saml_settings.issuer)
         uuid = user.decorate.active_identity_for(service_provider).uuid

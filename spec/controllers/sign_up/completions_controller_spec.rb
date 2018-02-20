@@ -10,8 +10,7 @@ describe SignUp::CompletionsController do
 
       context 'LOA1' do
         it 'tracks page visit' do
-          user = create(:user)
-          stub_sign_in(user)
+          stub_sign_in
           subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
           get :show
 
@@ -70,8 +69,7 @@ describe SignUp::CompletionsController do
     end
 
     it 'renders show if the user has an sp in the active session' do
-      user = create(:user)
-      stub_sign_in(user)
+      stub_sign_in
       subject.session[:sp] = { issuer: 'awesome sp', loa3: false }
       get :show
 
@@ -93,9 +91,6 @@ describe SignUp::CompletionsController do
     before do
       stub_analytics
       allow(@analytics).to receive(:track_event)
-      @linker = instance_double(IdentityLinker)
-      allow(@linker).to receive(:link_identity).and_return(true)
-      allow(IdentityLinker).to receive(:new).and_return(@linker)
     end
 
     context 'LOA1' do
@@ -112,17 +107,6 @@ describe SignUp::CompletionsController do
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
           loa3: false, service_provider_name: subject.decorated_session.sp_name
         )
-      end
-
-      it 'updates verified attributes' do
-        stub_sign_in
-        subject.session[:sp] = {
-          loa3: false,
-          request_url: 'http://example.com',
-          requested_attributes: ['email'],
-        }
-        expect(@linker).to receive(:link_identity).with(ial: 1, verified_attributes: ['email'])
-        patch :update
       end
     end
 
@@ -141,19 +125,6 @@ describe SignUp::CompletionsController do
           Analytics::USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE,
           loa3: true, service_provider_name: subject.decorated_session.sp_name
         )
-      end
-
-      it 'updates verified attributes' do
-        user = create(:user, profiles: [create(:profile, :verified, :active)])
-        stub_sign_in(user)
-        subject.session[:sp] = {
-          loa3: true,
-          request_url: 'http://example.com',
-          requested_attributes: %w[email first_name],
-        }
-        expect(@linker).to receive(:link_identity).
-          with(ial: 3, verified_attributes: %w[email first_name])
-        patch :update
       end
     end
   end
