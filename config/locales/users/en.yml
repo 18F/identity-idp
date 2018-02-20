@@ -20,3 +20,15 @@ en:
     totp_setup:
       new:
         qr_img_alt: QR Code for Authenticator App
+    delete:
+      heading: Are you sure you want to delete your account?
+      subheading: If you delete your account
+      actions:
+        delete: Delete account
+        cancel: Cancel and return to your profile
+      bullet_1: You won't have a %{app} account.
+      bullet_2_loa1: "%{app} will delete your email address, password, and phone number
+        from our system."
+      bullet_2_loa3: "%{app} will delete your email address, password, phone number,
+        name, address, date of birth and Social Security number from our system."
+      bullet_3: You won't be able to securely access your information using %{app}.

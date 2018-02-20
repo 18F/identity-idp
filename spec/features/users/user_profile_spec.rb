@@ -18,17 +18,64 @@ feature 'User profile' do
     end
   end
 
-  context 'user clicks the delete account button' do
-    xit 'deletes the account and signs the user out with a flash message' do
-      pending 'temporarily disabled until we figure out the MBUN to SSN mapping'
-      sign_in_and_2fa_user
+  context 'loa1 user clicks the delete account button' do
+    it 'deletes the account and signs the user out with a flash message' do
+      user = sign_in_and_2fa_user
+      user.agency_identities << AgencyIdentity.create(user_id: user.id, agency_id: 1, uuid: '1234')
       visit account_path
-      click_button t('forms.buttons.delete_account')
 
-      click_button t('forms.buttons.delete_account_confirm')
+      click_link(t('account.links.delete_account'))
+      expect(User.count).to eq 1
+      expect(AgencyIdentity.count).to eq 1
+
+      click_button t('users.delete.actions.delete')
       expect(page).to have_content t('devise.registrations.destroyed')
       expect(current_path).to eq root_path
       expect(User.count).to eq 0
+      expect(AgencyIdentity.count).to eq 0
+    end
+  end
+
+  it 'prevents a user from using the same credentials to sign up' do
+    pii = { ssn: '1234', dob: '1920-01-01' }
+    profile = create(:profile, :active, :verified, pii: pii)
+    sign_in_live_with_2fa(profile.user)
+    click_link(t('links.sign_out'), match: :first)
+
+    expect do
+      create(:profile, :active, :verified, pii: pii)
+    end.to raise_error(ActiveRecord::RecordInvalid)
+  end
+
+  context 'loa3 user clicks the delete account button' do
+    it 'deletes the account and signs the user out with a flash message' do
+      profile = create(:profile, :active, :verified, pii: { ssn: '1234', dob: '1920-01-01' })
+      sign_in_live_with_2fa(profile.user)
+      visit account_path
+
+      click_link(t('account.links.delete_account'))
+      expect(User.count).to eq 1
+      expect(Profile.count).to eq 1
+
+      click_button t('users.delete.actions.delete')
+      expect(page).to have_content t('devise.registrations.destroyed')
+      expect(current_path).to eq root_path
+      expect(User.count).to eq 0
+      expect(Profile.count).to eq 0
+    end
+
+    it 'allows credentials to be reused for sign up' do
+      pii = { ssn: '1234', dob: '1920-01-01' }
+      profile = create(:profile, :active, :verified, pii: pii)
+      sign_in_live_with_2fa(profile.user)
+      visit account_path
+      click_link(t('account.links.delete_account'))
+      click_button t('users.delete.actions.delete')
+
+      profile = create(:profile, :active, :verified, pii: pii)
+      sign_in_live_with_2fa(profile.user)
+      expect(User.count).to eq 1
+      expect(Profile.count).to eq 1
     end
   end
 
