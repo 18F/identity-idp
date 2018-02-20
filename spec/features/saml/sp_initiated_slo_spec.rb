@@ -10,7 +10,7 @@ feature 'SP-initiated logout' do
     before do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
-
+      click_continue
       sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
       settings.security[:embed_sign] = false
@@ -34,6 +34,7 @@ feature 'SP-initiated logout' do
     before do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
+      click_continue
 
       sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
       settings = sp1_saml_settings
@@ -114,11 +115,13 @@ feature 'SP-initiated logout' do
     before do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest # sp1
+      click_continue
 
       @sp1_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
 
       visit sp2_authnrequest # sp2
+      click_continue
       @sp2_asserted_session_index = response_xmldoc.assertion_statement_node['SessionIndex']
       click_button t('forms.buttons.submit.default')
 
@@ -166,11 +169,13 @@ feature 'SP-initiated logout' do
     before do
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest # sp1
+      click_continue
 
       @sp1_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
       visit sp2_authnrequest # sp2
+      click_continue
       @sp2_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
@@ -205,11 +210,13 @@ feature 'SP-initiated logout' do
     before do
       sign_in_and_2fa_user(user)
       visit sp2_authnrequest # sp2
+      click_continue
 
       @sp2_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
       visit sp1_authnrequest # sp1
+      click_continue
       @sp1_session_index = response_xmldoc.response_session_index_assertion
       click_button t('forms.buttons.submit.default')
 
@@ -250,10 +257,12 @@ feature 'SP-initiated logout' do
         sign_in_and_2fa_user(user)
 
         visit sp1_authnrequest # sp1
+        click_continue
         @browser_one_sp1_session_index = response_xmldoc.response_session_index_assertion
         click_submit_default
 
         visit sp2_authnrequest # sp2
+        click_continue
         @browser_one_sp2_session_index = response_xmldoc.response_session_index_assertion
         click_submit_default
       end
@@ -304,6 +313,7 @@ feature 'SP-initiated logout' do
     before do
       sign_in_and_2fa_user(logout_user)
       visit sp1_authnrequest
+      click_continue
 
       click_button t('forms.buttons.submit.default')
     end
@@ -326,9 +336,10 @@ feature 'SP-initiated logout' do
       before do
         sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-
+        click_continue
         sp1 = ServiceProvider.from_issuer(sp1_saml_settings.issuer)
         settings = sp1_saml_settings
+
         settings.name_identifier_value = user.decorate.active_identity_for(sp1).uuid
 
         Timecop.travel(Devise.timeout_in + 1.second)

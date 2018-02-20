@@ -125,7 +125,7 @@ module Features
     end
 
     def click_continue
-      click_button t('forms.buttons.continue')
+      click_button t('forms.buttons.continue') if page.has_button?(t('forms.buttons.continue'))
     end
 
     def enter_correct_otp_code_for_user(user)
@@ -374,6 +374,15 @@ module Features
       allow(twilio_service).to receive(:place_call)
 
       allow(TwilioService).to receive(:new).and_return(twilio_service)
+    end
+
+    def link_identity(user, client_id, ial = nil)
+      IdentityLinker.new(
+        user,
+        client_id
+      ).link_identity(
+        ial: ial
+      )
     end
   end
 end
