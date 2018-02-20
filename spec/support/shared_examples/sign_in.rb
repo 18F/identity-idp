@@ -14,9 +14,6 @@ shared_examples 'signing in with the site in Spanish' do |sp|
     end
 
     click_submit_default
-    expect(current_url).to eq(sign_up_completed_url(locale: 'es'))
-
-    click_continue
 
     expect(current_url).to eq @saml_authn_request if sp == :saml
 

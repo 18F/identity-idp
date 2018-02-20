@@ -51,6 +51,7 @@ shared_examples 'signing in with pending USPS verification' do |sp|
     sign_in_from_sp(sp)
 
     usps_confirmation_code.update(code_sent_at: 11.days.ago)
+
     fill_in t('forms.verify_profile.name'), with: otp
     click_button t('forms.verify_profile.submit')
 
