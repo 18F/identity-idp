@@ -44,7 +44,6 @@ feature 'saml api' do
       before do
         sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-        click_continue
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -58,7 +57,6 @@ feature 'saml api' do
       before do
         sign_in_and_2fa_user(user)
         visit authnrequest_get
-        click_continue
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -178,6 +176,79 @@ feature 'saml api' do
         visit destroy_user_session_url
         expect(page.current_path).to eq('/')
         Timecop.return
+      end
+    end
+  end
+
+  context 'SAML secret rotation' do
+    before do
+      allow(FeatureManagement).to receive(:enable_saml_cert_rotation?).and_return(true)
+    end
+
+    let(:new_cert_saml_settings) do
+      settings = saml_settings
+      settings.idp_sso_target_url = "http://#{Figaro.env.domain_name}/api/saml/auth2018"
+      settings.idp_slo_target_url = "http://#{Figaro.env.domain_name}/api/saml/logout2018"
+      settings.issuer = 'http://localhost:3000'
+      settings.idp_cert_fingerprint = Fingerprinter.fingerprint_cert(new_x509_cert)
+      settings
+    end
+
+    let(:new_cert_authn_request) do
+      auth_request.create(new_cert_saml_settings)
+    end
+
+    let(:new_x509_cert) do
+      file = File.read(Rails.root.join('certs', 'saml2018.crt.example'))
+      OpenSSL::X509::Certificate.new(file)
+    end
+
+    context 'for an auth request' do
+      it 'creates a valid auth request' do
+        sign_in_and_2fa_user(user)
+        visit new_cert_authn_request
+
+        response_node = page.find('#SAMLResponse', visible: false)
+        decoded_response = Base64.decode64(response_node.value)
+        saml_response = OneLogin::RubySaml::Response.new(
+          decoded_response,
+          settings: new_cert_saml_settings
+        )
+        saml_response.soft = false
+
+        expect(saml_response.is_valid?).to eq(true)
+      end
+    end
+
+    context 'for a logout request' do
+      it 'create a valid logout request' do
+        sign_in_and_2fa_user(user)
+        visit new_cert_authn_request
+
+        service_provider = ServiceProvider.from_issuer(new_cert_saml_settings.issuer)
+        uuid = user.decorate.active_identity_for(service_provider).uuid
+        new_cert_saml_settings = saml_settings
+        new_cert_saml_settings.name_identifier_value = uuid
+
+        logout_url = OneLogin::RubySaml::Logoutrequest.new.create(new_cert_saml_settings)
+        visit logout_url
+
+        response_node = page.find('#SAMLResponse', visible: false)
+        decoded_response = Base64.decode64(response_node.value)
+        saml_response = OneLogin::RubySaml::Logoutresponse.new(
+          decoded_response,
+          new_cert_saml_settings
+        )
+        expect(saml_response.validate).to eq(true)
+      end
+    end
+
+    context 'for a metadata request' do
+      it 'includes the cert' do
+        visit api_saml_metadata2018_path
+        document = REXML::Document.new(page.html)
+        cert_base64 = REXML::XPath.first(document, '//X509Certificate').text
+        expect(cert_base64).to eq(Base64.strict_encode64(new_x509_cert.to_der))
       end
     end
   end
