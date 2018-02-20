@@ -51,10 +51,6 @@ module ControllerHelper
       and_return(has_pending_profile)
     decorated_user
   end
-
-  def stub_identity(user, params)
-    Identity.new(params.merge({user: user})).save
-  end
 end
 
 RSpec.configure do |config|

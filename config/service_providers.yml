@@ -310,7 +310,7 @@ production:
     logo: 'rrb.svg'
     cert: 'rrb_benefit_connect_staging'
     redirect_uris:
-      - 'https://usrrbsecuredev2.rrb.gov/BenefitOnlineServices'
+      - 'https://usrrbsecuredev2.rrb.gov/BenefitOnlineServices/Account/SignInCallback'
     attribute_bundle:
       - email
       - first_name

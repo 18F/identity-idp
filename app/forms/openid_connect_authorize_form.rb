@@ -56,7 +56,7 @@ class OpenidConnectAuthorizeForm
   end
 
   def loa3_requested?
-    loa == 3
+    ial == 3
   end
 
   def sp_redirect_uri
@@ -87,11 +87,6 @@ class OpenidConnectAuthorizeForm
 
   attr_reader :identity, :success, :openid_connect_redirector, :already_linked
 
-  def requested_attributes
-    @requested_attributes ||=
-      OpenidConnectAuthorizeDecorator.new(scopes: scope).requested_attributes
-  end
-
   def parse_to_values(param_value, possible_values)
     return [] if param_value.blank?
     param_value.split(' ').compact & possible_values
@@ -116,17 +111,13 @@ class OpenidConnectAuthorizeForm
     errors.add(:scope, t('openid_connect.authorization.errors.no_valid_scope'))
   end
 
-  def loa
+  def ial
     case acr_values.sort.max
     when Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF
       1
     when Saml::Idp::Constants::LOA3_AUTHN_CONTEXT_CLASSREF
       3
     end
-  end
-
-  def ial
-    loa == 3 ? 3 : 1
   end
 
   def extra_analytics_attributes

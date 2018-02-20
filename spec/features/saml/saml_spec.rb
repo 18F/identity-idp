@@ -44,7 +44,6 @@ feature 'saml api' do
       before do
         sign_in_and_2fa_user(user)
         visit sp1_authnrequest
-        click_continue
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
@@ -58,7 +57,6 @@ feature 'saml api' do
       before do
         sign_in_and_2fa_user(user)
         visit authnrequest_get
-        click_continue
       end
 
       let(:xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
