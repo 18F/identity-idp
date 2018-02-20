@@ -1,4 +1,5 @@
 require 'saml_idp_constants'
+require 'custom_devise_failure_app'
 
 Devise.setup do |config|
   include Mailable
@@ -27,4 +28,8 @@ Devise.setup do |config|
   config.direct_otp_valid_for = Figaro.env.otp_valid_for.to_i.minutes
   config.max_login_attempts = 3 # max OTP login attempts, not devise strategies (e.g. pw auth)
   config.otp_length = 6
+
+  config.warden do |manager|
+    manager.failure_app = CustomDeviseFailureApp
+  end
 end

@@ -239,6 +239,13 @@ class SamlResponseDoc
     )
   end
 
+  def uuid
+    response_doc.at(
+      '//ds:Attribute[@Name="uuid"]',
+      ds: Saml::XML::Namespaces::ASSERTION
+    ).children.children.to_s
+  end
+
   def attribute_node_for(name)
     response_doc.at(
       %(//ds:Attribute[@Name="#{name}"]),

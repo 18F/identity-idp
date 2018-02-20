@@ -1,0 +1,35 @@
+test:
+  1:
+    name: 'CBP'
+  2:
+    name: 'OPM'
+  3:
+    name: 'EOP'
+  4:
+    name: 'RRB'
+  5:
+    name: 'NGA'
+
+development:
+  1:
+    name: 'CBP'
+  2:
+    name: 'OPM'
+  3:
+    name: 'EOP'
+  4:
+    name: 'RRB'
+  5:
+    name: 'NGA'
+
+production:
+  1:
+    name: 'CBP'
+  2:
+    name: 'OPM'
+  3:
+    name: 'EOP'
+  4:
+    name: 'RRB'
+  5:
+    name: 'NGA'

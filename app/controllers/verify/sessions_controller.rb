@@ -52,13 +52,8 @@ module Verify
 
     def submit_idv_job
       Idv::SubmitIdvJob.new(
-        idv_session: idv_session,
-        vendor_params: idv_session.vendor_params
+        idv_session: idv_session, vendor_params: idv_session.vendor_params
       ).submit_profile_job
-    end
-
-    def step_name
-      :sessions
     end
 
     def confirm_step_needed
@@ -83,10 +78,7 @@ module Verify
       pii_msg = ActionController::Base.helpers.content_tag(
         :strong, t('idv.messages.sessions.pii')
       )
-
-      flash[:success] = t('idv.messages.sessions.success',
-                          pii_message: pii_msg)
-
+      flash[:success] = t('idv.messages.sessions.success', pii_message: pii_msg)
       redirect_to verify_address_url
     end
 
@@ -96,6 +88,7 @@ module Verify
         redirect_to verify_session_dupe_url
       else
         render_failure
+        @view_model.unsupported_jurisdiction_error(decorated_session.sp_name)
         render :new
       end
     end

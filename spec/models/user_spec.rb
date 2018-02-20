@@ -7,6 +7,7 @@ describe User do
   describe 'Associations' do
     it { is_expected.to have_many(:authorizations) }
     it { is_expected.to have_many(:identities) }
+    it { is_expected.to have_many(:agency_identities) }
     it { is_expected.to have_many(:profiles) }
     it { is_expected.to have_many(:events) }
   end

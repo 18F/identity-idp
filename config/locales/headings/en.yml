@@ -11,7 +11,8 @@ en:
     confirmations:
       new: Send another confirmation email
     create_account_with_sp:
-      sp_text: is using login.gov to make signing in easy and secure.
+      sp_text: is using login.gov to allow you to sign in to your account safely and
+        securely.
     create_account_without_sp: Create a login.gov account
     edit_info:
       email: Change your email
@@ -21,9 +22,9 @@ en:
       change: Change your password
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
-    personal_key: Here is your personal key
+    personal_key: Store your personal key
     registrations:
-      enter_email: Start creating an account
+      enter_email: Enter your email address
     session_timeout_warning: Need more time?
     sign_in_with_sp: Sign in to continue to %{sp}
     sign_in_without_sp: Sign in
