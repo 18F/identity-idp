@@ -32,10 +32,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: adcd6e33942f4452af925352c9d29ba39f912628
-  tag: v1.1.2
+  revision: cdf16d24294f183160b93b8d418b294fe836e66d
+  tag: v1.1.3
   specs:
-    proofer (1.1.2)
+    proofer (1.1.3)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
