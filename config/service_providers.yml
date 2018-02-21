@@ -153,6 +153,14 @@ development:
       - 'http://localhost:9393/'
       - 'http://localhost:9393/auth/login-gov/callback'
 
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:ustranscom:mymovemil':
+    agency: 'DHS'
+    cert: 'mymovemil'
+    friendly_name: 'my.move.mil'
+    logo: 'mymovemil.svg'
+    redirect_uris:
+      - 'https://my.move.mil/login/callback'
+
 production:
   'https://idp.dev.login.gov':
     metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
