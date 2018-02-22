@@ -453,3 +453,11 @@ production:
       - 'https://training.vgihub.geointservices.io/op_redirect'
       - 'https://wiki.vgihub.geointservices.io/op_redirect'
     restrict_to_deploy_env: 'prod'
+
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:ustranscom:mymovemil':
+    agency: 'DHS'
+    cert: 'mymovemil'
+    friendly_name: 'my.move.mil'
+    logo: 'mymovemil.svg'
+    redirect_uris:
+      - 'https://my.move.mil/login/callback'
