@@ -94,10 +94,10 @@ development:
   equifax_gpg_email: 'logs@login.gov'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
-  equifax_sftp_directory: '/directory'
-  equifax_sftp_host: 'example.com'
-  equifax_sftp_username: 'user'
-  equifax_ssh_passphrase: 'sekret'
+  gpo_sftp_directory: '/directory'
+  gpo_sftp_host: 'example.com'
+  gpo_sftp_username: 'user'
+  gpo_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
@@ -181,10 +181,10 @@ production:
   equifax_gpg_email:
   equifax_password:
   equifax_phone_username:
-  equifax_sftp_directory: # '/directory'
-  equifax_sftp_host: # 'example.com'
-  equifax_sftp_username:
-  equifax_ssh_passphrase:
+  gpo_sftp_directory: # '/directory'
+  gpo_sftp_host: # 'example.com'
+  gpo_sftp_username:
+  gpo_ssh_passphrase:
   exception_recipients: 'user1@example.com,user2@example.com'
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
@@ -271,10 +271,10 @@ test:
   equifax_gpg_email: 'logs@login.gov'
   equifax_password: 'sekret'
   equifax_phone_username: 'sekret'
-  equifax_sftp_directory: '/directory'
-  equifax_sftp_host: 'example.com'
-  equifax_sftp_username: 'user'
-  equifax_ssh_passphrase: 'sekret'
+  gpo_sftp_directory: '/directory'
+  gpo_sftp_host: 'example.com'
+  gpo_sftp_username: 'user'
+  gpo_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
