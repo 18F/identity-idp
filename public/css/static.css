@@ -12,6 +12,10 @@ body {
   text-shadow: 0 1px 3px rgba(0, 0, 0, .5);
 }
 
+h1 {
+  line-height: 40px;
+}
+
 a,
 a:focus,
 a:hover {
@@ -48,24 +52,10 @@ a:hover {
   margin-top: 10px;
 }
 
-@media (min-width: 768px) {
-  .masthead {
-    position: fixed;
-    top: 0;
-  }
 
-  .site-wrapper-inner {
-    vertical-align: middle;
-  }
-
-  .cover-container {
-    width: 100%;
-  }
-}
-
-@media (min-width: 992px) {
+@media (min-width: 471px) {
   .cover-container,
   .masthead {
-    width: 720px;
+    width: 470px;
   }
 }
