@@ -97,5 +97,24 @@ describe UpdateUserEmailForm do
         expect(subject.submit(email: 'invalid_email')).to eq result
       end
     end
+
+    context 'when email is same as current email' do
+      it 'it does not send an email' do
+        user = create(:user, :signed_up, email: 'taken@gmail.com')
+        form = UpdateUserEmailForm.new(user)
+
+        result = instance_double(FormResponse)
+        extra = {
+          email_already_exists: false,
+          email_changed: false,
+        }
+
+        expect(user).to_not receive(:send_custom_confirmation_instructions)
+        expect(FormResponse).to receive(:new).
+          with(success: true, errors: {}, extra: extra).and_return(result)
+        expect(form.submit(email: 'taken@gmail.com')).to eq result
+        expect(form.email).to eq 'taken@gmail.com'
+      end
+    end
   end
 end
