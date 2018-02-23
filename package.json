@@ -7,7 +7,6 @@
     "npm": "~5.x.x"
   },
   "scripts": {
-    "build": "true",
     "test": "NODE_ENV=test mocha --require babel-core/register --require spec/javascripts/spec_helper.js spec/javascripts/**/*.js"
   },
   "dependencies": {
