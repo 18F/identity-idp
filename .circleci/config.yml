@@ -57,7 +57,6 @@ jobs:
           name: Test Setup
           command: |
             yarn install
-            yarn build
             cp config/application.yml.example config/application.yml
             cp certs/saml.crt.example certs/saml.crt
             cp certs/saml2018.crt.example certs/saml2018.crt

@@ -39,7 +39,6 @@ Dir.chdir APP_ROOT do
     run 'docker-compose build'
     run 'docker-compose run --rm web bin/generate-example-keys'
     run 'docker-compose run --rm web yarn install'
-    run 'docker-compose run --rm web yarn build'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
     run 'docker-compose run --rm web rake dev:prime'
@@ -57,7 +56,6 @@ Dir.chdir APP_ROOT do
   run 'gem install foreman --conservative && gem update foreman'
   run "bundle check || bundle install --without deploy production"
   run "yarn install"
-  run "yarn build"
   run "gem install mailcatcher"
 
   puts "\n== Preparing database =="
