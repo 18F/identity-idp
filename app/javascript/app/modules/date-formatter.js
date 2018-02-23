@@ -27,6 +27,7 @@ class DateFormatter extends DelimitedTextFormatter {
    * @param {function(string)} error
    * @returns {boolean}
    */
+   
   isChangeValid(change, error) {
     if (!error) { error = function() {}; } // eslint-disable-line no-param-reassign
 
