@@ -6,7 +6,9 @@ class EncryptedAttribute
     env = Figaro.env
     key ||= env.attribute_encryption_key
     cost ||= env.attribute_cost
-    UserAccessKey.new(password: key, salt: key, cost: cost)
+    @_uaks_by_key ||= {}
+    uak_lookup = "#{key}:#{cost}"
+    (@_uaks_by_key[uak_lookup] ||= UserAccessKey.new(password: key, salt: key, cost: cost)).dup
   end
 
   def self.new_from_decrypted(decrypted, user_access_key = new_user_access_key)
