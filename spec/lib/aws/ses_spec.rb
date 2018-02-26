@@ -37,5 +37,28 @@ describe Aws::SES::Base do
       subject.deliver!(mail)
       expect(mail.message_id).to eq('123abc@email.amazonses.com')
     end
+
+    context 'with an ses region in the configuration' do
+      before do
+        allow(Figaro.env).to receive(:aws_ses_region).and_return('us-fake-1')
+      end
+
+      it 'should initialize the AWS client with the configured region' do
+        subject.deliver!(mail)
+        expect(Aws::SES::Client).to have_received(:new).with(region: 'us-fake-1')
+      end
+    end
+
+    context 'without an ses region in the configuration' do
+      it 'should initialize the AWS client without a region argument' do
+        allow(Figaro.env).to receive(:aws_ses_region).and_return(nil)
+        Aws::SES::Base.new.deliver!(mail)
+
+        allow(Figaro.env).to receive(:aws_ses_region).and_return('')
+        Aws::SES::Base.new.deliver!(mail)
+
+        expect(Aws::SES::Client).to have_received(:new).with(hash_excluding(:region)).twice
+      end
+    end
   end
 end
