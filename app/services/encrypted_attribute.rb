@@ -6,9 +6,9 @@ class EncryptedAttribute
     env = Figaro.env
     key ||= env.attribute_encryption_key
     cost ||= env.attribute_cost
-    @_uaks_by_key ||= {}
-    uak_lookup = "#{key}:#{cost}"
-    (@_uaks_by_key[uak_lookup] ||= UserAccessKey.new(password: key, salt: key, cost: cost)).dup
+    new_key = load_or_build_user_access_key(cost: cost, key: key).dup
+    new_key.random_r = Pii::Cipher.random_key
+    new_key
   end
 
   def self.new_from_decrypted(decrypted, user_access_key = new_user_access_key)
@@ -34,6 +34,12 @@ class EncryptedAttribute
   private
 
   attr_writer :encrypted, :decrypted
+
+  private_class_method def self.load_or_build_user_access_key(cost:, key:)
+    @_uaks_by_key ||= {}
+    uak_lookup = "#{key}:#{cost}"
+    @_uaks_by_key[uak_lookup] ||= UserAccessKey.new(password: key, salt: key, cost: cost)
+  end
 
   def current_salt
     user_access_key.cost + OpenSSL::Digest::SHA256.hexdigest(Figaro.env.attribute_encryption_key)
