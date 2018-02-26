@@ -17,7 +17,14 @@ module Aws
       private
 
       def ses_client
-        @ses_client ||= Aws::SES::Client.new
+        @ses_client ||= Aws::SES::Client.new(ses_client_options)
+      end
+
+      def ses_client_options
+        region = Figaro.env.aws_ses_region
+        opts = {}
+        opts[:region] = region if region.present?
+        opts
       end
     end
   end
