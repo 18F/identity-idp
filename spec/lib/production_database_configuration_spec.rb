@@ -52,7 +52,7 @@ describe ProductionDatabaseConfiguration do
 
     context 'when the app is running on a host without a role config file' do
       before do
-        allow(File).to receive(:exist?).with('/etc/login.gov/info').and_return(false)
+        allow(File).to receive(:exist?).with('/etc/login.gov/info/role').and_return(false)
       end
 
       it 'returns 5 and does not read the role config' do
@@ -63,7 +63,7 @@ describe ProductionDatabaseConfiguration do
   end
 
   def stub_role_config(role)
-    allow(File).to receive(:exist?).with('/etc/login.gov/info').and_return(true)
-    allow(File).to receive(:read).with('/etc/login.gov/info').and_return(role)
+    allow(File).to receive(:exist?).with('/etc/login.gov/info/role').and_return(true)
+    allow(File).to receive(:read).with('/etc/login.gov/info/role').and_return(role)
   end
 end
