@@ -72,6 +72,7 @@ development:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
+  aws_ses_region:
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   dashboard_api_token: 'test_token'
@@ -159,6 +160,7 @@ production:
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
+  aws_ses_region:
   basic_auth_user_name:
   basic_auth_password:
   disable_email_sending: 'false'
@@ -240,6 +242,7 @@ test:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
+  aws_ses_region:
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   domain_name: 'www.example.com'
