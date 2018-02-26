@@ -1,7 +1,7 @@
 class ProductionDatabaseConfiguration
   def self.pool
     env = Figaro.env
-    role = File.read('/etc/login.gov/info') if File.exist?('/etc/login.gov/info')
+    role = File.read('/etc/login.gov/info/role') if File.exist?('/etc/login.gov/info/role')
     case role
     when 'idp'
       env.database_pool_idp.presence || 5
