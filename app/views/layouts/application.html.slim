@@ -21,9 +21,8 @@ html lang="#{I18n.locale}" class='no-js'
     <!--[if IE 8]>
       = javascript_include_tag 'es5-shim.min'
     <![endif]-->
-    == javascript_include_tag 'misc/i18n-strings'
-    - unless controller_name == 'home'
-      == javascript_include_tag 'application'
+    == javascript_include_tag 'i18n-strings'
+    == javascript_pack_tag 'application'
     == csrf_meta_tags
 
     link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png'
@@ -69,7 +68,7 @@ html lang="#{I18n.locale}" class='no-js'
       = auto_session_expired_js
 
     - if FeatureManagement.enable_i18n_mode?
-      == javascript_include_tag 'misc/i18n-mode'
+      == javascript_pack_tag 'i18n-mode'
 
     - if Figaro.env.participate_in_dap == 'true' && !session_with_trust?
       = render 'shared/dap_analytics'

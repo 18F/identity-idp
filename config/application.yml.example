@@ -72,6 +72,7 @@ development:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
+  aws_ses_region:
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   dashboard_api_token: 'test_token'
@@ -79,6 +80,10 @@ development:
   database_host: ''
   database_name: ''
   database_password: ''
+  database_pool_idp: '5'
+  database_pool_worker: '5'
+  database_readonly_password: ''
+  database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
   domain_name: 'localhost:3000'
@@ -127,6 +132,11 @@ development:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
+  saml_secret_rotation_certificate:
+  saml_secret_rotation_enabled: 'false'
+  saml_secret_rotation_path_suffix:
+  saml_secret_rotation_secret_key:
+  saml_secret_rotation_secret_key_password:
   scrypt_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   secret_key_base: 'development_secret_key_base'
   service_timeout: '30'
@@ -159,6 +169,7 @@ production:
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
+  aws_ses_region:
   basic_auth_user_name:
   basic_auth_password:
   disable_email_sending: 'false'
@@ -211,6 +222,11 @@ production:
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'true'
   saml_passphrase:
+  saml_secret_rotation_certificate:
+  saml_secret_rotation_enabled: 'false'
+  saml_secret_rotation_path_suffix:
+  saml_secret_rotation_secret_key:
+  saml_secret_rotation_secret_key_password:
   scrypt_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
@@ -240,12 +256,17 @@ test:
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
+  aws_ses_region:
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   domain_name: 'www.example.com'
   database_host: ''
   database_name: ''
   database_password: ''
+  database_pool_idp:
+  database_pool_worker:
+  database_readonly_password: ''
+  database_readonly_username: ''
   database_timeout: '5000'
   database_username: ''
   dashboard_api_token: '123ABC'
@@ -291,6 +312,11 @@ test:
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
+  saml_secret_rotation_certificate: 'saml2018.crt'
+  saml_secret_rotation_enabled: 'true'
+  saml_secret_rotation_path_suffix: '2018'
+  saml_secret_rotation_secret_key: 'saml2018.key.enc'
+  saml_secret_rotation_secret_key_password: 'asdf1234'
   scrypt_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   secret_key_base: 'test_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'

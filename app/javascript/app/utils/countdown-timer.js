@@ -1,4 +1,4 @@
-import msFormatter from './ms-formatter';
+const msFormatter = require('./ms-formatter').default;
 
 export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
   let remaining = timeLeft;
@@ -6,7 +6,7 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
 
   if (!el || !('innerHTML' in el)) return;
 
-  (function tick() {
+  function tick() {
     /* eslint-disable no-param-reassign */
     if (endTime) {
       currentTime = new Date().getTime();
@@ -20,5 +20,6 @@ export default (el, timeLeft = 0, endTime = null, interval = 1000) => {
     }
     remaining -= interval;
     setTimeout(tick, interval);
-  }());
+  }
+  tick();
 };

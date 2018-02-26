@@ -86,22 +86,5 @@ describe PasswordForm, type: :model do
         expect(form.submit(password: password, request_id: "\xFFbar\xF8")).to eq result
       end
     end
-
-    context 'when the request_id is not properly encoded' do
-      it 'does not throw an exception' do
-        user = build_stubbed(:user)
-        form = PasswordForm.new(user)
-        password = 'valid password'
-        extra = {
-          user_id: user.uuid,
-          request_id_present: true,
-        }
-        result = instance_double(FormResponse)
-
-        expect(FormResponse).to receive(:new).
-          with(success: true, errors: {}, extra: extra).and_return(result)
-        expect(form.submit(password: password, request_id: "\xFFbar\xF8")).to eq result
-      end
-    end
   end
 end

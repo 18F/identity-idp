@@ -1,4 +1,4 @@
-const Events = require('../../../../app/assets/javascripts/app/utils/events').default;
+const Events = require('../../../../app/javascript/app/utils/events').default;
 /*eslint-disable */
 const sinon = require('sinon');
 /*eslint-enable */

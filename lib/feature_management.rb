@@ -75,4 +75,8 @@ class FeatureManagement
   def self.agencies_with_agency_based_uuids
     (Figaro.env.agencies_with_agency_based_uuids || '').split(',').map(&:to_i)
   end
+
+  def self.enable_saml_cert_rotation?
+    Figaro.env.saml_secret_rotation_enabled == 'true'
+  end
 end
