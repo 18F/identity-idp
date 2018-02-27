@@ -1,7 +1,39 @@
-engines:
+version: "2" # required to adjust maintainability checks
+checks:
+  argument-count:
+    config:
+      threshold: 4
+  complex-logic:
+    config:
+      threshold: 4
+  file-lines:
+    enabled: false
+  method-complexity:
+    config:
+      threshold: 5
+  method-count:
+    enabled: false
+  method-lines:
+    enabled: false
+  nested-control-flow:
+    config:
+      threshold: 4
+  return-statements:
+    config:
+      threshold: 4
+  similar-code:
+    enabled: false
+    config:
+      threshold: # language-specific defaults. an override will affect all languages.
+  identical-code:
+    enabled: false
+    config:
+      threshold: # language-specific defaults. an override will affect all languages.
+
+plugins:
   brakeman:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
     # Excluding User Flows tools since these are not loaded
     # except when explicitly called from the User Flow rake tasks
     - 'lib/user_flow_exporter.rb'
@@ -19,7 +51,7 @@ engines:
         ruby:
         javascript:
           mass_threshold: 50
-    exclude_paths:
+    exclude_patterns:
     - 'spec/**/*'
     - 'node_modules/**/*'
     - 'db/schema.rb'
@@ -30,7 +62,7 @@ engines:
     enabled: true
   fixme:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
     - 'public/build/bundle.js'
     - '.codeclimate.yml'
     config:
@@ -41,10 +73,10 @@ engines:
       - BUG
       - XXX
   pep8:
-    enabled: true    
+    enabled: true
   reek:
     enabled: true
-    exclude_paths:
+    exclude_patterns:
     - 'spec/**/*'
     - 'db/migrate/*'
     - 'lib/user_flow_exporter.rb'
@@ -52,13 +84,14 @@ engines:
   rubocop:
     enabled: true
   scss-lint:
-    enabled: true 
-ratings:
-  paths:
-  - app/**
-  - lib/**
-  - '**.rb'
-  - '**.go'
-  exclude_paths:
-    - 'lib/user_flow_exporter.rb'
-    - 'lib/rspec/formatters/user_flow_formatter.rb'
+    enabled: true
+
+exclude_patterns:
+  - 'db/schema.rb'
+  - 'node_modules/'
+  - 'lib/rspec/formatters/user_flow_formatter.rb'
+  - 'lib/user_flow_exporter.rb'
+  - 'scripts/load_testing/'
+  - 'spec/'
+  - 'tmp/'
+

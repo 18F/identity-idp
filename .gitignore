@@ -33,10 +33,12 @@ rerun.txt
 Vagrantfile
 
 # folders
-/certs/saml.crt
+/certs/*.crt
+!/cert/*.crt.example
 /config/application.yml
 /config/aws.yml
-/keys/saml.key.enc
+/keys/*.key.enc
+!/keys/*.key.enc.example
 /keys/equifax_rsa
 /keys/equifax_rsa.pub
 /keys/equifax_gpg.pub.bin
@@ -54,8 +56,8 @@ Vagrantfile
 /spec/tmp
 /test
 /tmp/*
+/.tmp/
 /vendor/bundle
-/node_modules
 
 # This is a hack to keep the files that are added to the repo and to prevent git from worrying about
 # new (transient) files that may be created in those dirs.
@@ -63,3 +65,8 @@ Vagrantfile
 /kitchen/nodes/*.json
 /kitchen/data_bags/config/*.yml
 /kitchen/data_bags/config/databag_secrets.json
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity

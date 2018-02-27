@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   web:
     build: .
@@ -9,6 +9,8 @@ services:
     environment:
       REDIS_URL: "redis://redis"
       DATABASE_URL: "postgres://postgres@db"
+      DOCKER_DB_HOST: 'db'
+      DOCKER_DB_USER: 'postgres'
     depends_on:
       - db
       - redis

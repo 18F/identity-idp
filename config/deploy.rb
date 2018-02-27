@@ -49,11 +49,11 @@ server 'worker', roles: %w[app job_creator]
 #########
 # rubocop:disable Metrics/BlockLength
 namespace :deploy do
-  desc 'Install npm packages required for asset compilation with browserify'
-  task :browserify do
+  desc 'Install npm packages required for asset compilation with webpacker'
+  task :webpack do
     on roles(:app, :web), in: :sequence do
       within release_path do
-        execute :npm, 'install'
+        execute :yarn, 'install'
       end
     end
   end
@@ -100,11 +100,11 @@ namespace :deploy do
   desc 'Clean NPM cache'
   task :clean_npm_cache do
     on roles(:app, :web), in: :parallel do
-      execute :npm, 'cache clean'
+      execute :yarn, 'cache clean'
     end
   end
 
-  before 'assets:precompile', :browserify
+  before 'assets:precompile', :webpack
   after 'deploy:updated', 'newrelic:notice_deployment'
   after 'deploy:log_revision', :deploy_json
   after 'deploy', 'deploy:post_deploy'

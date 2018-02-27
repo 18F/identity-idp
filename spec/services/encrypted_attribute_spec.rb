@@ -8,6 +8,22 @@ describe EncryptedAttribute do
     encryptor.encrypt(email, EncryptedAttribute.new_user_access_key)
   end
 
+  describe '.new_user_access_key' do
+    it 'does not return the same key twice' do
+      key1 = EncryptedAttribute.new_user_access_key
+      key2 = EncryptedAttribute.new_user_access_key
+
+      expect(key1).to_not eq(key2)
+    end
+
+    it 'does not return successive keys with the same random_r value' do
+      key1 = EncryptedAttribute.new_user_access_key
+      key2 = EncryptedAttribute.new_user_access_key
+
+      expect(key1.random_r).to_not eq(key2.random_r)
+    end
+  end
+
   describe '#new' do
     it 'automatically decrypts' do
       ee = EncryptedAttribute.new(encrypted_email)

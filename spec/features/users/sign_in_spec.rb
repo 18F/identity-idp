@@ -21,11 +21,6 @@ feature 'Sign in' do
     expect(page).to have_content 'Bad request'
   end
 
-  it 'does not throw an exception if the email contains invalid bytes' do
-    signin("test@\xFFbar\xF8.com", 'Please123!')
-    expect(page).to have_content 'Bad request'
-  end
-
   scenario 'user cannot sign in with wrong email' do
     user = create(:user)
     signin('invalid@email.com', user.password)

@@ -4,7 +4,7 @@ module Idv
 
     STATE_ID_TYPES = %w[drivers_license drivers_permit state_id_card].freeze
     SUPPORTED_JURISDICTIONS = %w[
-      AR AZ CA DC DE FL IA ID IL IN KY MD ME MI MS NA ND NE NM PA SD TX VA WA WI
+      AR AZ CO DC DE FL IA ID IL IN KY MA MD ME MI MS MT ND NE NJ NM PA SD TX VA WA WI WY
     ].freeze
 
     included do
