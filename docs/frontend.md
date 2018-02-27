@@ -14,11 +14,11 @@
 
 ### JavaScript
 
-- site should work if JS is off (and have enhanced features if JS is on) 
+- site should work if JS is off (and have enhanced features if JS is on)
 - uses AirBnB's ESLint config
-- JS modules are installed & managed via `npm` (see `package.json`)
-- JS is transpiled, bundled, and minified via `browserify` (using
-  `browserify-rails` gem to utilize Rails asset pipeline)
+- JS modules are installed & managed via `yarn` (see `package.json`)
+- JS is transpiled, bundled, and minified via `webpacker` (using
+  `rails-webpacker` gem to utilize Rails asset pipeline)
 
 ### Testing
 

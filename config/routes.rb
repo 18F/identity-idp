@@ -16,6 +16,16 @@ Rails.application.routes.draw do
         as: :destroy_user_session
   match '/api/saml/auth' => 'saml_idp#auth', via: %i[get post]
 
+  # SAML secret rotation paths
+  if FeatureManagement.enable_saml_cert_rotation?
+    suffix = SamlCertRotationManager.rotation_path_suffix
+    get "/api/saml/metadata#{suffix}" => 'saml_idp#metadata'
+    match "/api/saml/logout#{suffix}" => 'saml_idp#logout',
+          via: %i[get post delete],
+          as: "destroy_user_session#{suffix}"
+    match "/api/saml/auth#{suffix}" => 'saml_idp#auth', via: %i[get post]
+  end
+
   post '/api/service_provider' => 'service_provider#update'
   match '/api/voice/otp' => 'voice/otp#show',
         via: %i[get post],

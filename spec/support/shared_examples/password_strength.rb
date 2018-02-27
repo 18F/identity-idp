@@ -7,7 +7,7 @@ shared_examples 'strong password' do |form_class|
     user = build_stubbed(:user, email: 'test@test.com', uuid: '123')
     allow(user).to receive(:reset_password_period_valid?).and_return(true)
     form = form_class.constantize.new(user)
-    password = 'custom!@'
+    password = 'custom!@Z'
     errors = {
       password: ['Your password is not strong enough.' \
         ' This is similar to a commonly used password.' \

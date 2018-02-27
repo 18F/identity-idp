@@ -37,7 +37,6 @@ shared_examples 'creating an account with the site in Spanish' do |sp|
     end
 
     click_on t('forms.buttons.continue')
-
     expect(current_url).to eq @saml_authn_request if sp == :saml
 
     if sp == :oidc

@@ -8,22 +8,21 @@ class SamlIdpController < ApplicationController
   include SamlIdpLogoutConcern
   include FullyAuthenticatable
   include VerifyProfileConcern
+  include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
 
   def auth
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-    process_fully_authenticated_user do |needs_idv, needs_profile_finish|
-      return redirect_to(verify_url) if needs_idv && !needs_profile_finish
-      return redirect_to(account_or_verify_profile_url) if needs_profile_finish
-    end
-    delete_branded_experience
-
-    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
+    link_identity_from_session_data
+    capture_analytics
+    return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
+    return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
+    handle_successful_handoff
   end
 
   def metadata
-    render inline: SamlIdp.metadata.signed, content_type: 'text/xml'
+    render inline: saml_metadata.signed, content_type: 'text/xml'
   end
 
   def logout
@@ -39,15 +38,38 @@ class SamlIdpController < ApplicationController
 
   private
 
-  def process_fully_authenticated_user
-    link_identity_from_session_data
+  def saml_metadata
+    if SamlCertRotationManager.use_new_secrets_for_request?(request)
+      SamlIdp::MetadataBuilder.new(
+        SamlIdp.config,
+        SamlCertRotationManager.new_certificate,
+        SamlCertRotationManager.new_secret_key
+      )
+    else
+      SamlIdp.metadata
+    end
+  end
 
-    needs_idv = identity_needs_verification?
-    needs_profile_finish = profile_needs_verification?
-    analytics_payload =  @result.to_h.merge(idv: needs_idv, finish_profile: needs_profile_finish)
+  def redirect_to_account_or_verify_profile_url
+    return redirect_to(account_or_verify_profile_url) if profile_needs_verification?
+    redirect_to(verify_url) if identity_needs_verification?
+  end
+
+  def profile_or_identity_needs_verification?
+    profile_needs_verification? || identity_needs_verification?
+  end
+
+  def capture_analytics
+    analytics_payload = @result.to_h.merge(
+      idv: identity_needs_verification?,
+      finish_profile: profile_needs_verification?
+    )
     analytics.track_event(Analytics::SAML_AUTH, analytics_payload)
+  end
 
-    yield needs_idv, needs_profile_finish
+  def handle_successful_handoff
+    delete_branded_experience
+    render_template_for(saml_response, saml_request.response_url, 'SAMLResponse')
   end
 
   def render_template_for(message, action_url, type)

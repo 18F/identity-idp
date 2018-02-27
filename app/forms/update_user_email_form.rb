@@ -18,8 +18,7 @@ class UpdateUserEmailForm
 
     if valid_form?
       @success = true
-      UpdateUser.new(user: @user, attributes: { email: email }).call
-      @user.send_custom_confirmation_instructions
+      update_user_email if email_changed?
     else
       @success = process_errors
     end
@@ -53,5 +52,10 @@ class UpdateUserEmailForm
       email_already_exists: email_taken?,
       email_changed: email_changed?,
     }
+  end
+
+  def update_user_email
+    UpdateUser.new(user: @user, attributes: { email: email }).call
+    @user.send_custom_confirmation_instructions
   end
 end
