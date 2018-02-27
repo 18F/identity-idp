@@ -7,7 +7,7 @@ module FormPasswordValidator
 
     validates :password,
               presence: true,
-              length: { in: Devise.password_length }
+              length: Devise.password_length
 
     validate :strong_password, if: :password_strength_enabled?
   end
