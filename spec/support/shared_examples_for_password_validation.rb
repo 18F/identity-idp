@@ -5,12 +5,7 @@ shared_examples 'password validation' do
 
   it do
     is_expected.to validate_length_of(:password).
-      is_at_least(Devise.password_length.first)
-  end
-
-  it do
-    is_expected.to validate_length_of(:password).
-      is_at_most(Devise.password_length.last)
+      is_at_least(Devise.password_length.first).is_at_most(Devise.password_length.last)
   end
 
   it do

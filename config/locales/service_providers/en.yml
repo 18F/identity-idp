@@ -9,11 +9,11 @@ en:
       body_html: Your old GOES userID and password won't work. Please %{link}
       create_account_link: create a login.gov account.
     usa_jobs:
-      header: Coming from USAJOBS?
+      header: First time here from USAJOBS?
       account_page:
-        body: If you have an existing USAJOBS profile, please use the primary or secondary
-          email address you used for USAJOBS to create your new login.gov account.
-      body_html: If you have an existing USAJOBS profile, please use the primary or
-        secondary email address you used for USAJOBS to %{link}.
-      create_account_link: create your new login.gov account
+        body: Your old USAJOBS username and password won’t work. Please create a login.gov
+          account using the same email address you use for USAJOBS.
+      body_html: Your old USAJOBS username and password won’t work. Please %{link}
+        using the same email address you use for USAJOBS.
+      create_account_link: create a login.gov account
     learn_more: Learn more.

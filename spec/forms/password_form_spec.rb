@@ -37,7 +37,7 @@ describe PasswordForm, type: :model do
         password = 'invalid'
 
         errors = {
-          password: ['is too short (minimum is 8 characters)'],
+          password: ['is too short (minimum is 9 characters)'],
         }
 
         extra = {
