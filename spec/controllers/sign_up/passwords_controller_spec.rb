@@ -37,7 +37,7 @@ describe SignUp::PasswordsController do
 
       analytics_hash = {
         success: false,
-        errors: { password: ['is too short (minimum is 8 characters)'] },
+        errors: { password: ['is too short (minimum is 9 characters)'] },
         user_id: user.uuid,
         request_id_present: false,
       }
