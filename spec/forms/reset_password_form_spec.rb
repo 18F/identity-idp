@@ -40,7 +40,7 @@ describe ResetPasswordForm, type: :model do
 
         password = 'invalid'
 
-        errors = { password: ['is too short (minimum is 8 characters)'] }
+        errors = { password: ['is too short (minimum is 9 characters)'] }
 
         extra = {
           user_id: '123',
@@ -89,7 +89,7 @@ describe ResetPasswordForm, type: :model do
         password = 'short'
 
         errors = {
-          password: ['is too short (minimum is 8 characters)'],
+          password: ['is too short (minimum is 9 characters)'],
           reset_password_token: ['token_expired'],
         }
 
