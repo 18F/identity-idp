@@ -54,7 +54,7 @@ feature 'Visitor sets password during signup' do
     it 'has dynamic password strength feedback' do
       expect(page).to have_content '...'
 
-      fill_in 'password_form_password', with: 'password'
+      fill_in 'password_form_password', with: '123456789'
       expect(page).to have_content t('zxcvbn.feedback.this_is_a_top_10_common_password')
     end
   end
@@ -88,7 +88,7 @@ feature 'Visitor sets password during signup' do
 
       create(:user, :unconfirmed)
       confirm_last_user
-      fill_in 'password_form_password', with: 'password'
+      fill_in 'password_form_password', with: '123456789'
 
       click_button t('forms.buttons.continue')
 
