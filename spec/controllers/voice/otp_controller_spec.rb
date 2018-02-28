@@ -129,6 +129,14 @@ RSpec.describe Voice::OtpController do
           expect(doc.css('Gather')).to be_empty
         end
       end
+
+      it 'includes the otp expiration in the message' do
+        locale = :en # rubocop:disable Lint/UselessAssignment
+        allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
+
+        action
+        expect(response.body).to include('4 minutes')
+      end
     end
   end
 end

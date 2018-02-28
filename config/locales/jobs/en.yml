@@ -3,4 +3,4 @@ en:
   jobs:
     sms_otp_sender_job:
       message: "%{code} is your %{app} one-time security code. This code will expire
-        in five minutes."
+        in %{expiration} minutes."
