@@ -143,6 +143,26 @@ feature 'Two Factor Authentication' do
 
         expect(find('#user_phone_form_phone').value).to include '+81'
       end
+
+      scenario 'does not allow the user to remove the international code after entering it', :js do
+        sign_in_before_2fa
+        fill_in 'Phone', with: '+81 54 354 3643'
+
+        input = find('#user_phone_form_phone')
+        input.send_keys(*([:backspace] * input.value.length))
+
+        expect(input.value).to eq('+81 ')
+      end
+
+      scenario 'allows a user to continue typing even if a number is invalid', :js do
+        sign_in_before_2fa
+        select 'United States of America +1', from: 'International code'
+
+        input = find('#user_phone_form_phone')
+        input.send_keys('12345678901234567890')
+
+        expect(input.value).to eq('+1 2345678901234567890')
+      end
     end
   end
 
