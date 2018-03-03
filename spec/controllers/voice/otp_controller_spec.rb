@@ -22,6 +22,17 @@ RSpec.describe Voice::OtpController do
       end
     end
 
+    context 'with an invalid encrypted_code in the URL' do
+      let(:encrypted_code) { '%25' }
+
+      it 'renders a blank 400' do
+        action
+
+        expect(response).to be_bad_request
+        expect(response.body).to be_empty
+      end
+    end
+
     context 'with an encrypted_code in the URL' do
       render_views
 
