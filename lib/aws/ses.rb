@@ -4,6 +4,8 @@
 module Aws
   module SES
     class Base
+      cattr_accessor :region_pool
+
       def initialize(*); end
 
       def deliver(mail)
@@ -21,10 +23,20 @@ module Aws
       end
 
       def ses_client_options
-        region = Figaro.env.aws_ses_region
         opts = {}
-        opts[:region] = region if region.present?
+        opts[:region] = pick_region_from_pool if Figaro.env.aws_ses_region_pool.present?
         opts
+      end
+
+      def pick_region_from_pool
+        self.class.region_pool ||= build_region_pool
+        region_pool.sample
+      end
+
+      def build_region_pool
+        JSON.parse(Figaro.env.aws_ses_region_pool).flat_map do |region, weight|
+          [region] * weight
+        end
       end
     end
   end
