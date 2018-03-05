@@ -24,6 +24,8 @@ module Voice
       return if encrypted_code.blank?
 
       cipher.decrypt(encrypted_code)
+    rescue StandardError
+      nil
     end
 
     def message
