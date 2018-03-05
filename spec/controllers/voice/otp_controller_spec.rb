@@ -22,6 +22,17 @@ RSpec.describe Voice::OtpController do
       end
     end
 
+    context 'with an invalid encrypted_code in the URL' do
+      let(:encrypted_code) { '%25' }
+
+      it 'renders a blank 400' do
+        action
+
+        expect(response).to be_bad_request
+        expect(response.body).to be_empty
+      end
+    end
+
     context 'with an encrypted_code in the URL' do
       render_views
 
@@ -128,6 +139,14 @@ RSpec.describe Voice::OtpController do
           doc = Nokogiri::XML(response.body)
           expect(doc.css('Gather')).to be_empty
         end
+      end
+
+      it 'includes the otp expiration in the message' do
+        locale = :en # rubocop:disable Lint/UselessAssignment
+        allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
+
+        action
+        expect(response.body).to include('4 minutes')
       end
     end
   end

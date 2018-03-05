@@ -24,10 +24,13 @@ module Voice
       return if encrypted_code.blank?
 
       cipher.decrypt(encrypted_code)
+    rescue StandardError
+      nil
     end
 
     def message
-      t('voice.otp.message', code: code_with_pauses)
+      expiration = Devise.direct_otp_valid_for.to_i / 60
+      t('voice.otp.message', code: code_with_pauses, expiration: expiration)
     end
 
     def code_with_pauses

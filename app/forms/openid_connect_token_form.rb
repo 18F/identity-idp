@@ -74,7 +74,8 @@ class OpenidConnectTokenForm
   end
 
   def validate_code
-    errors.add :code, t('openid_connect.token.errors.invalid_code') if identity.blank?
+    errors.add :code, t('openid_connect.token.errors.invalid_code') if identity.blank? ||
+                                                                       !identity.user
   end
 
   def validate_code_verifier

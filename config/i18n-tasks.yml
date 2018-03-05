@@ -110,6 +110,7 @@ ignore_unused:
   - 'account.index.auth_app_disabled'
   - 'tooltips.authentication_app'
   - 'titles.sign_up.*'
+  - 'users.delete.bullet_2_loa*'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'

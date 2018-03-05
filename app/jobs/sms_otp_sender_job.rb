@@ -15,7 +15,14 @@ class SmsOtpSenderJob < ApplicationJob
   def send_otp(twilio_service, code, phone)
     twilio_service.send_sms(
       to: phone,
-      body: I18n.t('jobs.sms_otp_sender_job.message', code: code, app: APP_NAME)
+      body: I18n.t(
+        'jobs.sms_otp_sender_job.message',
+        code: code, app: APP_NAME, expiration: otp_valid_for_minutes
+      )
     )
+  end
+
+  def otp_valid_for_minutes
+    Devise.direct_otp_valid_for.to_i / 60
   end
 end
