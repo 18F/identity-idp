@@ -27,12 +27,11 @@ function success(data) {
   var el = document.getElementById('session-timeout-msg'),
       cntnr = document.getElementById('session-timeout-cntnr');
 
-  var time_timeout = new Date(data.timeout).getTime(),
-      time_cutoff = new Date().getTime(),
-      show_warning = time_timeout < (time_cutoff + warning),
-      time_remaining = time_timeout - time_cutoff;
+  var time_remaining = data.remaining * 1000,
+      time_timeout = new Date().getTime() + time_remaining,
+      show_warning = time_remaining < warning
 
-  if (!data.live || time_remaining <= 0) {
+  if (!data.live) {
     window.LoginGov.autoLogout();
     return;
   }

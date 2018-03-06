@@ -1,3 +1,4 @@
+# rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
   include NonNullUuid
 
@@ -30,7 +31,7 @@ class User < ApplicationRecord
   has_one_time_password
 
   has_many :authorizations, dependent: :destroy
-  has_many :identities, dependent: :destroy
+  has_many :identities # identities need to be orphaned to prevent UUID reuse
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
@@ -148,3 +149,4 @@ class User < ApplicationRecord
     send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
   end
 end
+# rubocop:enable Rails/HasManyOrHasOneDependent

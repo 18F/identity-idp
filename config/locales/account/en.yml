@@ -23,8 +23,10 @@ en:
         success: Your account has been verified.
         with_phone_button: Verify with your phone
     items:
+      delete_your_account: Delete your account
       personal_key: Personal key
     links:
+      delete_account: Delete
       regenerate_personal_key: Get a new key
     security:
       link: Learn more at the Help Center
