@@ -4,3 +4,7 @@ es:
     sms_otp_sender_job:
       message: "%{code} es su %{app} código de seguridad de sólo un uso. Este código
         caducará en %{expiration} minutos."
+    sms_reset_device_notifier_job:
+      message: Su solicitud para cambiar el número de teléfono asociado con su cuenta
+        ha sido procesada. Inicie sesión en %{app} para completar este proceso. Si
+        no hizo esta solicitud, por favor clic aquí %{cancel_link}.

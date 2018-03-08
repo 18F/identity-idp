@@ -10,6 +10,7 @@ describe User do
     it { is_expected.to have_many(:agency_identities) }
     it { is_expected.to have_many(:profiles) }
     it { is_expected.to have_many(:events) }
+    it { is_expected.to have_one(:change_phone_request) }
   end
 
   it 'does not send an email when #create is called' do
@@ -196,7 +197,8 @@ describe User do
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :signed_up)
-      user.identities << Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
+      user.identities <<
+        Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
       user_id = user.id
       user.destroy!
       expect(Identity.where(user_id: user_id).length).to eq 1

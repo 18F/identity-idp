@@ -136,6 +136,22 @@ en:
       please_confirm: Your phone number has been set. Confirm it by entering the security
         code below.
       please_try_again_html: Please try again in %{time_remaining}.
+      reset_device:
+        successful_cancel: Thank you. Your request to add or change your phone number
+          has been canceled.
+        instructions: You can request to change the phone number associated with your
+          account by pressing the button below. After you make the request wait 72
+          hours before registering a new phone number. The phone registration page
+          will appear when you log in.
+        link: Add a new phone number
+        text_html: Lost your phone or want to use a different number? %{link}.
+        cancel_link: Cancel your request
+        pending_html: You currently have a pending request to change your phone number
+          or add a new one. It takes 72 hours from the time you made the request to
+          complete the process. Please check back later. %{cancel_link}
+        header_text: Add A New Phone Number
+        success_message: Your request to change your phone number was successful.
+          Please wait 72 hours before signing in and registering your new device.
       totp_fallback:
         sms_link_text: get a code via text message
         text_html: If you can’t use your authenticator app right now you can %{sms_link}

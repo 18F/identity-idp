@@ -139,6 +139,23 @@ es:
       please_confirm: Su número de teléfono ha sido establecido. Confírmelo ingresando
         el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en %{time_remaining}.
+      reset_device:
+        successful_cancel: Gracias. Su solicitud para agregar o cambiar su número
+          de teléfono ha sido anulada.
+        instructions: Puede solicitar el cambio de teléfono asociado con su cuenta
+          presionando el botón a continuación. Después de realizar la solicitud, espere
+          72 horas antes de registrar un nuevo número de teléfono. La página para
+          registrar el teléfono aparecerá cuando ingrese a su cuenta.
+        link: Añada un número de teléfono nuevo.
+        text_html: "¿Ha perdido su teléfono o quiere usar un número diferente? %{link}."
+        cancel_link: Anule su solicitud
+        pending_html: Actualmente tiene una solicitud pendiente para cambiar su número
+          de teléfono o agregar uno nuevo. Se requieren 72 horas desde el momento
+          en que realizó la solicitud para completar el proceso. Por favor, vuelva
+          más tarde. %{cancel_link}
+        header_text: Añada un número de teléfono nuevo.
+        success_message: Su solicitud para cambiar su número de teléfono ha sido aceptada.
+          Espere 72 horas antes de iniciar sesión y registrar su nuevo teléfono.
       totp_fallback:
         sms_link_text: Recibir un código por mensaje de texto
         text_html: Si no puede usar su app de autenticación ahora, puede %{sms_link}

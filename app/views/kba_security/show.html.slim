@@ -1,0 +1,16 @@
+- title t('kba_security.title')
+
+h1.h3.my0 = t('kba_security.title')
+
+p = t('kba_security.description')
+= simple_form_for(@kba_security_form,
+        html: { autocomplete: 'off', method: :post, role: 'form' },
+        url: change_phone_path) do |f|
+  = f.input :answer,
+          selected: @kba_security_form.selected_answer,
+          collection: KbaSecurityShow.answers,
+          label: t('kba_security.question'),
+          include_blank: false
+  = f.input :token, as: :hidden, input_html: { value: params[:token] }
+  = f.button :submit, t('forms.buttons.submit.default'), class: 'mt2'
+= render 'shared/cancel', link: account_path

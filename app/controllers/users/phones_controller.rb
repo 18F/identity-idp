@@ -26,6 +26,7 @@ module Users
     end
 
     def process_updates
+      ResetDevice.new(current_user).process_complete
       if @user_phone_form.phone_changed?
         analytics.track_event(Analytics::PHONE_CHANGE_REQUESTED)
         flash[:notice] = t('devise.registrations.phone_update_needs_confirmation')

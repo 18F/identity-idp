@@ -4,3 +4,7 @@ en:
     sms_otp_sender_job:
       message: "%{code} is your %{app} one-time security code. This code will expire
         in %{expiration} minutes."
+    sms_reset_device_notifier_job:
+      message: You’ve requested to change the phone number associated with your %{app}
+        account. This request will be processed within 72 hours. If you didn’t make
+        this request, please click here %{cancel_link}.

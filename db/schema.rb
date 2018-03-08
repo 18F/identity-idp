@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180201161105) do
+ActiveRecord::Schema.define(version: 20180319151931) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -37,6 +37,37 @@ ActiveRecord::Schema.define(version: 20180201161105) do
     t.datetime "authorized_at"
     t.index ["provider", "uid"], name: "index_authorizations_on_provider_and_uid"
     t.index ["user_id"], name: "index_authorizations_on_user_id"
+  end
+
+  create_table "change_phone_events", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.integer "event_type", null: false
+    t.string "data"
+    t.index ["user_id", "created_at"], name: "index_change_phone_events_on_user_id_created_at"
+  end
+
+  create_table "change_phone_requests", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "requested_at"
+    t.string "request_token"
+    t.integer "request_count", default: 0
+    t.datetime "cancelled_at"
+    t.integer "cancel_count", default: 0
+    t.datetime "reported_fraud_at"
+    t.integer "reported_fraud_count", default: 0
+    t.datetime "granted_at"
+    t.string "granted_token"
+    t.boolean "security_answer_correct"
+    t.integer "wrong_answer_count", default: 0
+    t.datetime "answered_at"
+    t.integer "phone_changed_count", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_change_phone_requests_on_cancel_request_and_granted_at"
+    t.index ["granted_token"], name: "index_change_phone_requests_on_granted_token", unique: true
+    t.index ["request_token"], name: "index_change_phone_requests_on_request_token", unique: true
+    t.index ["user_id"], name: "index_change_phone_requests_on_user_id", unique: true
   end
 
   create_table "events", force: :cascade do |t|

@@ -141,12 +141,30 @@ fr:
         link: Utlisez plutôt une clé personnelle
         text_html: Vous n'avez pas accès à votre téléphone? %{link}.
       personal_key_header_text: Entrez votre clé personnelle
-      personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
-        Si vous avez toujours besoin d'un code après votre connexion, allez à la page
-        des réglages de votre compte pour en obtenir un nouveau.
+      personal_key_prompt: You can use this personal key once. If you still need a
+        code after signing in, go to your account settings page to get a new one.
       please_confirm: Votre numéro de téléphone a été entré. Confirmez-le en entrant
         le code de sécurité ci-dessous.
       please_try_again_html: Veuillez essayer de nouveau dans %{time_remaining}.
+      reset_device:
+        successful_cancel: Je vous remercie. Votre demande d'ajout ou de modification
+          de votre numéro de téléphone a été annulée.
+        instructions: Vous pouvez demander à changer le numéro de téléphone associé
+          à votre compte en appuyant sur le bouton ci-dessous. Après avoir fait la
+          demande, attendez 72 heures avant d'enregistrer un nouveau numéro de téléphone.
+          La page d'enregistrement du téléphone apparaît lorsque vous vous connectez.
+        link: Ajouter un nouveau numéro de téléphone
+        text_html: Avez-vous perdu votre téléphone ou voulez-vous utiliser un numéro
+          différent? %{link}.
+        cancel_link: Annuler votre demande.
+        pending_html: Vous avez actuellement une demande en attente pour modifier
+          votre numéro de téléphone ou en ajouter un nouveau. Il faut 72 heures à
+          partir du moment où vous avez fait la demande pour terminer le processus.
+          Veuillez vérifier plus tard. %{cancel_link}
+        header_text: Ajouter un nouveau numéro de téléphone
+        success_message: Votre demande de modification de votre numéro de téléphone
+          a été acceptée. Veuillez patienter 72 heures avant de vous connecter et
+          d'enregistrer votre nouvel appareil.
       totp_fallback:
         sms_link_text: Obtenir un code via message texte
         text_html: Si vous ne pouvez utiliser votre application d'authentification

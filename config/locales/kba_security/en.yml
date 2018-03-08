@@ -1,0 +1,12 @@
+---
+en:
+  kba_security:
+    description: For added security please answer the following security question.
+    dropdown_message: Select an answer...
+    dropdown_other: Other
+    question: Which agency have you logged into most recently?
+    select_answer_error: Please select an answer
+    success: You may now sign in and change your phone number.
+    title: Change Your Phone Number
+    wrong_answer: Your security answer was not correct.  You must create a new request
+      to change your phone number.

@@ -18,6 +18,19 @@ es:
         o el %{contact_link}.
       intro: El número de teléfono asociado a su cuenta de %{app} ha sido cambiado.
       subject: Nuevo número de teléfono
+    reset_device:
+      cancel_link_text: Clic aquí
+      help: Si no hizo esta solicitud, por favor %{cancel_reset_device}.
+      intro: Usted ha solicitado cambiar el número de teléfono asociado con su cuenta
+        de login.gov. Esta solicitud será procesada dentro de 72 horas.
+      subject: Añada un número de teléfono nuevo.
+    reset_device_granted:
+      cancel_link_text: Clic aquí
+      help: Si no hizo esta solicitud, por favor %{cancel_reset_device}.
+      intro: Su solicitud para cambiar el número de teléfono asociado con su cuenta
+        ha sido procesada. Inicie sesión en login.gov para completar este proceso.
+      button: Cambiar su número de teléfono
+      subject: Añada un número de teléfono nuevo.
     signup_with_your_email:
       help: Si no solicitó una cuenta nueva o sospecha un error, visite el %{app}
         %{help_link} o el %{contact_link}.

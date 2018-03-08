@@ -20,6 +20,20 @@ fr:
         visiter le %{help_link} de %{app} ou %{contact_link}.
       intro: Le numéro de téléphone associé à votre compte %{app} a été changé.
       subject: Nouveau numéro de téléphone
+    reset_device:
+      cancel_link_text: cliquez ici
+      help: Si vous n'avez pas fait cette demande, veuillez %{cancel_reset_device}.
+      intro: Vous avez demandé à modifier le numéro de téléphone associé à votre compte
+        login.gov. Cette demande sera traitée dans les 72 heures.
+      subject: Ajouter un nouveau numéro de téléphone
+    reset_device_granted:
+      cancel_link_text: cliquez ici
+      help: Si vous n'avez pas fait cette demande, veuillez %{cancel_reset_device}.
+      intro: Votre demande de modification du numéro de téléphone associé à votre
+        compte a été traitée. Veuillez vous connecter à login.gov pour compléter ce
+        processus.
+      button: Votre numéro de téléphone
+      subject: Ajouter un nouveau numéro de téléphone
     signup_with_your_email:
       help: Si vous n'avez pas demandé un nouveau compte ou que vous soupçonnez qu'une
         erreur s'est produite, veuillez visiter le %{help_link} de %{app} ou %{contact_link}.

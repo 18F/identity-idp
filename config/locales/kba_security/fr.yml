@@ -1,0 +1,13 @@
+---
+fr:
+  kba_security:
+    description: Pour plus de sécurité, veuillez répondre à la question de sécurité
+      suivante.
+    dropdown_message: Choisissez une réponse ...
+    dropdown_other: Autre
+    question: Dans quelle agence vous êtes-vous connecté récemment?
+    select_answer_error: Veuillez sélectionner une réponse
+    success: Vous pouvez maintenant vous connecter et modifier votre numéro de téléphone.
+    title: Changer votre numéro de téléphone
+    wrong_answer: Votre réponse de sécurité n'était pas correcte. Vous devez créer
+      une nouvelle demande pour changer votre numéro de téléphone.

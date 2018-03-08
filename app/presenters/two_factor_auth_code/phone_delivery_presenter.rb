@@ -12,15 +12,16 @@ module TwoFactorAuthCode
 
     def help_text
       t("instructions.mfa.#{otp_delivery_preference}.confirm_code_html",
-        resend_code_link: resend_code_link)
+        resend_code_link: view.link_to(
+          t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
+          otp_send_path(locale: LinkLocaleResolver.locale,
+                        otp_delivery_selection_form:
+                          { otp_delivery_preference: otp_delivery_preference, resend: true })
+        ))
     end
 
     def fallback_links
-      [
-        otp_fallback_options,
-        update_phone_link,
-        personal_key_link,
-      ].compact
+      [otp_fallback_options, update_phone_link, personal_key_link, reset_2fa_device_link].compact
     end
 
     def cancel_link
@@ -40,8 +41,10 @@ module TwoFactorAuthCode
       :totp_enabled,
       :reenter_phone_number_path,
       :phone_number,
+      :phone_confirmed_at,
       :unconfirmed_phone,
       :otp_delivery_preference,
+      :reset_device_token,
       :confirmation_for_phone_change,
       :voice_otp_delivery_unsupported,
       :confirmation_for_idv
@@ -65,21 +68,34 @@ module TwoFactorAuthCode
 
     def update_phone_link
       return unless unconfirmed_phone
-
       link = view.link_to(t('forms.two_factor.try_again'), reenter_phone_number_path)
       t('instructions.mfa.wrong_number_html', link: link)
     end
 
     def phone_fallback_link
-      t(fallback_instructions, link: phone_link_tag)
+      t("instructions.mfa.#{otp_delivery_preference}.fallback_html",
+        link: view.link_to(
+          t("links.two_factor_authentication.#{fallback_method}"),
+          otp_send_path(locale: LinkLocaleResolver.locale, otp_delivery_selection_form:
+            { otp_delivery_preference: fallback_method })
+        ))
     end
 
-    def phone_link_tag
-      view.link_to(
-        t("links.two_factor_authentication.#{fallback_method}"),
-        otp_send_path(locale: LinkLocaleResolver.locale, otp_delivery_selection_form:
-          { otp_delivery_preference: fallback_method })
-      )
+    def reset_2fa_device_link
+      return unless show_reset_device_info?
+      if reset_device_token
+        t('devise.two_factor_authentication.reset_device.pending_html', cancel_link:
+          view.link_to(t('devise.two_factor_authentication.reset_device.cancel_link'),
+                       reset_device_cancel_url(token: reset_device_token, only: 1)))
+      else
+        t('devise.two_factor_authentication.reset_device.text_html', link:
+          view.link_to(t('devise.two_factor_authentication.reset_device.link'),
+                       login_two_factor_reset_device_path(locale: LinkLocaleResolver.locale)))
+      end
+    end
+
+    def show_reset_device_info?
+      phone_confirmed_at && Figaro.env.reset_device_enabled == 'true'
     end
 
     def auth_app_fallback_link
@@ -93,25 +109,9 @@ module TwoFactorAuthCode
       )
     end
 
-    def fallback_instructions
-      "instructions.mfa.#{otp_delivery_preference}.fallback_html"
-    end
-
     def fallback_method
-      if otp_delivery_preference == 'voice'
-        'sms'
-      elsif otp_delivery_preference == 'sms'
-        'voice'
-      end
-    end
-
-    def resend_code_link
-      view.link_to(
-        t("links.two_factor_authentication.resend_code.#{otp_delivery_preference}"),
-        otp_send_path(locale: LinkLocaleResolver.locale,
-                      otp_delivery_selection_form:
-                        { otp_delivery_preference: otp_delivery_preference, resend: true })
-      )
+      return 'sms' if otp_delivery_preference == 'voice'
+      return 'voice' if otp_delivery_preference == 'sms'
     end
   end
 end

@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class Analytics
   def initialize(user:, request:, sp:)
     @user = user
@@ -95,6 +96,9 @@ class Analytics
   PROFILE_ENCRYPTION_INVALID = 'Profile Encryption: Invalid'.freeze
   PROFILE_PERSONAL_KEY_CREATE = 'Profile: Created new personal key'.freeze
   RATE_LIMIT_TRIGGERED = 'Rate Limit Triggered'.freeze
+  RESET_DEVICE_CANCELLED = 'Reset Device: cancelled'.freeze
+  RESET_DEVICE_REQUESTED = 'Reset Device: requested'.freeze
+  RESET_DEVICE_SECURITY_ANSWER = 'Reset Device: security answer'.freeze
   RESPONSE_TIMED_OUT = 'Response Timed Out'.freeze
   SAML_AUTH = 'SAML Auth'.freeze
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
@@ -111,3 +115,4 @@ class Analytics
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'.freeze
   # rubocop:enable Metrics/LineLength
 end
+# rubocop:enable Metrics/ClassLength

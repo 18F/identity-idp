@@ -72,6 +72,49 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       end
     end
 
+    context 'with no confirmed phone' do
+      before do
+        data[:phone_confirmed_at] = nil
+      end
+
+      it 'does not mention resetting authentication device' do
+        expect(presenter.fallback_links.index(
+          I18n.t('devise.two_factor_authentication.reset_device.text_html')
+        )).to be_nil
+      end
+    end
+
+    context 'with a confirmed phone' do
+      before do
+        data[:phone_confirmed_at] = Time.zone.now
+      end
+
+      it 'does not mention resetting authentication device if system is disabled' do
+        allow(Figaro.env).to receive(:reset_device_enabled).and_return('false')
+        expect(presenter.fallback_links.index(
+          I18n.t('devise.two_factor_authentication.reset_device.text_html')
+        )).to be_nil
+      end
+
+      it 'mentions resetting authentication device if there is no request pending' do
+        expect(presenter.fallback_links.index(
+          I18n.t('devise.two_factor_authentication.reset_device.text_html', link:
+            view.link_to(t('devise.two_factor_authentication.reset_device.link'),
+                         login_two_factor_reset_device_path(locale: LinkLocaleResolver.locale)))
+        )).to be_present
+      end
+
+      it 'mentions pending authentication device if there is a request pending' do
+        data[:reset_device_token] = 'UUID1'
+        data[:phone_confirmed_at] = Time.zone.now
+        expect(presenter.fallback_links.index(
+          I18n.t('devise.two_factor_authentication.reset_device.pending_html', cancel_link:
+            view.link_to(t('devise.two_factor_authentication.reset_device.cancel_link'),
+                         reset_device_cancel_url(token: 'UUID1', only: 1)))
+        )).to be_present
+      end
+    end
+
     context 'with totp enabled' do
       before do
         data[:totp_enabled] = true

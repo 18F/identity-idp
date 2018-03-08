@@ -249,35 +249,15 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
-  describe 'agencies_with_agency_based_uuids' do
-    context 'when multiple agencies are enabled' do
-      before do
-        allow(Figaro.env).to receive(:agencies_with_agency_based_uuids).and_return('1,2,3')
-      end
-
-      it 'it returns an array of agencies' do
-        expect(FeatureManagement.agencies_with_agency_based_uuids).to eq([1, 2, 3])
-      end
+  describe '#reset_device_wait_period_days' do
+    it 'it returns nil when the wait period is not set' do
+      allow(Figaro.env).to receive(:reset_device_wait_period_days).and_return(nil)
+      expect(FeatureManagement.reset_device_wait_period_days).to be_nil
     end
 
-    context 'when one agency is enabled' do
-      before do
-        allow(Figaro.env).to receive(:agencies_with_agency_based_uuids).and_return('1')
-      end
-
-      it 'returns an array containing a single agency' do
-        expect(FeatureManagement.agencies_with_agency_based_uuids).to eq([1])
-      end
-    end
-
-    context 'when blank' do
-      before do
-        allow(Figaro.env).to receive(:agencies_with_agency_based_uuids).and_return('')
-      end
-
-      it 'returns an empty array' do
-        expect(FeatureManagement.agencies_with_agency_based_uuids).to eq([])
-      end
+    it 'it returns wait period in days' do
+      allow(Figaro.env).to receive(:reset_device_wait_period_days).and_return('1')
+      expect(FeatureManagement.reset_device_wait_period_days).to eq(1)
     end
   end
 end

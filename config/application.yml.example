@@ -131,6 +131,10 @@ development:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'false'
+  reset_device_enabled: 'true'
+  reset_device_show_security_answer: 'true'
+  reset_device_valid_for_hours: '24'
+  reset_device_wait_period_days: '0'
   saml_passphrase: 'trust-but-verify'
   saml_secret_rotation_certificate:
   saml_secret_rotation_enabled: 'false'
@@ -220,6 +224,10 @@ production:
   requests_per_ip_limit: '300'
   requests_per_ip_period: '300'
   requests_per_ip_track_only_mode: 'true'
+  reset_device_enabled: 'true'
+  reset_device_show_security_answer: 'false'
+  reset_device_valid_for_hours: '24'
+  reset_device_wait_period_days: '3'
   saml_passphrase:
   saml_secret_rotation_certificate:
   saml_secret_rotation_enabled: 'false'
@@ -310,6 +318,10 @@ test:
   requests_per_ip_limit: '4'
   requests_per_ip_period: '60'
   requests_per_ip_track_only_mode: 'false'
+  reset_device_enabled: 'true'
+  reset_device_show_security_answer: 'false'
+  reset_device_valid_for_hours: '24'
+  reset_device_wait_period_days: '3'
   saml_passphrase: 'trust-but-verify'
   saml_secret_rotation_certificate: 'saml2018.crt'
   saml_secret_rotation_enabled: 'true'

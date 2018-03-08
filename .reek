@@ -71,6 +71,7 @@ RepeatedConditional:
 TooManyConstants:
   exclude:
     - Analytics
+    - ChangePhoneEvent
 TooManyInstanceVariables:
   exclude:
     - OpenidConnectAuthorizeForm

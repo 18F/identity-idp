@@ -25,4 +25,16 @@ class UserMailer < ActionMailer::Base
     @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
+
+  def reset_device(user)
+    cpr = user.change_phone_request
+    @token = cpr&.request_token
+    mail(to: user.email, subject: t('user_mailer.reset_device.subject'))
+  end
+
+  def reset_device_granted(user, cpr)
+    @token = cpr&.request_token
+    @granted_token = cpr&.granted_token
+    mail(to: user.email, subject: t('user_mailer.reset_device_granted.subject'))
+  end
 end
