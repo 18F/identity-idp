@@ -36,7 +36,7 @@ describe SmsOtpSenderJob do
       expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (888) 555-5555')
       expect(msg.body).to eq(
-        I18n.t('jobs.sms_otp_sender_job.message', code: '1234', app: APP_NAME, expiration: '5')
+        I18n.t('jobs.sms_otp_sender_job.message', code: '1234', app: APP_NAME, expiration: '10')
       )
     end
 
