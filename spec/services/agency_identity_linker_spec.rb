@@ -14,6 +14,35 @@ describe AgencyIdentityLinker do
       expect(ai.uuid).to eq('UUID1')
     end
 
+    it 'does not allow 2 sp uuids to be reused after user deletes account' do
+      create_identity(user, 'http://localhost:3000', 'UUID1')
+      create_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
+      user.destroy!
+      expect(User.where(id: user.id).count).to eq(0)
+      user2 = create(:user)
+      expect { create_identity(user2, 'sp3', 'UUID1') }.
+        to raise_error ActiveRecord::RecordNotUnique
+      expect { create_identity(user2, 'sp4', 'UUID2') }.
+        to raise_error ActiveRecord::RecordNotUnique
+    end
+
+    it 'does not allow agency_identity uuid to be reused after user deletes account' do
+      sp1 = create_identity(user, 'http://localhost:3000', 'UUID1')
+      create_identity(user, 'urn:gov:gsa:openidconnect:test', 'UUID2')
+      AgencyIdentityLinker.new(sp1).link_identity
+      expect(AgencyIdentity.where(user_id: user.id).count).to eq(1)
+      expect(AgencyIdentity.where(uuid: 'UUID1').count).to eq(1)
+      user.destroy!
+      expect(User.where(id: user.id).count).to eq(0)
+      expect(AgencyIdentity.where(user_id: user.id).count).to eq(0)
+      expect(AgencyIdentity.where(uuid: 'UUID1').count).to eq(0)
+      user2 = create(:user)
+      expect { create_identity(user2, 'sp3', 'UUID1') }.
+        to raise_error ActiveRecord::RecordNotUnique
+      expect { create_identity(user2, 'sp4', 'UUID2') }.
+        to raise_error ActiveRecord::RecordNotUnique
+    end
+
     it 'links identity with 1 sp' do
       sp1 = create_identity(user, 'http://localhost:3000', 'UUID1')
       ai = AgencyIdentityLinker.new(sp1).link_identity

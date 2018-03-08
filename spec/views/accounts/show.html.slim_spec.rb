@@ -27,13 +27,12 @@ describe 'accounts/show.html.slim' do
       expect(rendered).not_to have_xpath("//input[@value='Disable']")
     end
 
-    xit 'contains link to delete account' do
-      pending 'temporarily disabled until we figure out the MBUN to SSN mapping'
+    it 'contains link to delete account' do
       render
 
-      expect(rendered).to have_content t('headings.delete_account', app: APP_NAME)
+      expect(rendered).to have_content t('account.items.delete_your_account', app: APP_NAME)
       expect(rendered).
-        to have_xpath("//input[@value='#{t('forms.buttons.delete_account')}']")
+        to have_link(t('account.links.delete_account'), href: account_delete_path )
     end
   end
 
@@ -135,5 +134,11 @@ describe 'accounts/show.html.slim' do
     render
 
     expect(view).to render_template(partial: '_nav_auth')
+  end
+
+  it 'shows the delete account bar' do
+    render
+
+    expect(view).to render_template(partial: '_delete_account_item_heading')
   end
 end

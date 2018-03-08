@@ -1,6 +1,8 @@
 import { Formatter } from 'field-kit';
 import { asYouType as AsYouType } from 'libphonenumber-js';
 
+const INTERNATIONAL_CODE_REGEX = /^\+\d{1,3} /;
+
 const fixCountryCodeSpacing = (text, countryCode) => {
   // If the text is `+123456`, make it `+123 456`
   if (text[countryCode.length + 1] !== ' ') {
@@ -29,6 +31,15 @@ const getFormattedTextData = (text) => {
   };
 };
 
+const changeRemovesInternationalCode = (current, previous) => {
+  if (previous.text.match(INTERNATIONAL_CODE_REGEX) &&
+     !current.text.match(INTERNATIONAL_CODE_REGEX)
+  ) {
+    return true;
+  }
+  return false;
+};
+
 const cursorPosition = (formattedTextData) => {
   // If the text is `(23 )` the cursor goes after the 3
   const match = formattedTextData.text.match(/\d[^\d]*$/);
@@ -53,10 +64,7 @@ class InternationalPhoneFormatter extends Formatter {
     const formattedTextData = getFormattedTextData(change.proposed.text);
     const previousFormattedTextData = getFormattedTextData(change.current.text);
 
-    if (previousFormattedTextData.template &&
-      !formattedTextData.template &&
-      change.inserted.text.length === 1
-    ) {
+    if (changeRemovesInternationalCode(formattedTextData, previousFormattedTextData)) {
       return false;
     }
 

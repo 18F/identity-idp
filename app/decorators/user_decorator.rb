@@ -129,6 +129,14 @@ class UserDecorator
     end
   end
 
+  def delete_account_bullet_key
+    if identity_verified?
+      'users.delete.bullet_2_loa3'
+    else
+      'users.delete.bullet_2_loa1'
+    end
+  end
+
   private
 
   attr_reader :user

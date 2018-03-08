@@ -9,8 +9,6 @@
 # Store F (User.encrypted_password) and D (User.encryption_key) in db
 
 class UserAccessKey
-  include ::NewRelic::Agent::MethodTracer
-
   attr_accessor :cost, :encrypted_d, :salt, :z1, :z2, :random_r
 
   def initialize(password:, salt:, cost: nil)
@@ -86,7 +84,6 @@ class UserAccessKey
     self.z1, self.z2 = build_segments(scrypted)
     self.random_r = Pii::Cipher.random_key
   end
-  add_method_tracer :build, 'Custom/UserAccessKey/build'
 
   def build_segments(scrypted)
     hashed = SCrypt::Password.new(scrypted).digest

@@ -193,6 +193,16 @@ describe User do
     end
   end
 
+  describe 'deleting identities' do
+    it 'does not delete identities when the user is destroyed preventing uuid reuse' do
+      user = create(:user, :signed_up)
+      user.identities << Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
+      user_id = user.id
+      user.destroy!
+      expect(Identity.where(user_id: user_id).length).to eq 1
+    end
+  end
+
   describe 'OTP length' do
     it 'uses Devise setting when set' do
       allow(Devise).to receive(:direct_otp_length).and_return(10)

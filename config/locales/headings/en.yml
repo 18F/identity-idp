@@ -3,6 +3,7 @@ en:
   headings:
     account:
       account_history: Account history
+      account_management: Account Management
       login_info: Your account
       profile_info: Profile information
       reactivate: Reactivate your account

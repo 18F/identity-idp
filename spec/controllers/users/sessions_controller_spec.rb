@@ -17,28 +17,52 @@ describe Users::SessionsController, devise: true do
     context 'when user is present' do
       before do
         stub_sign_in
-
-        get :active
       end
 
       it 'returns a 200 status code' do
+        get :active
+
         expect(response.status).to eq(200)
       end
 
       it 'clears the Etag header' do
+        get :active
+
         expect(response.headers['Etag']).to eq ''
       end
 
       it 'renders json' do
+        get :active
+
         expect(response.content_type).to eq('application/json')
       end
 
-      it 'sets the timeout key' do
+      it 'sets live key to true' do
+        controller.session[:session_expires_at] = Time.zone.now + 10
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['timeout']).to_not be_nil
+        expect(json['live']).to eq true
+      end
+
+      it 'includes the timeout key' do
+        timeout =  Time.zone.now + 10
+        controller.session[:session_expires_at] = timeout
+        get :active
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['timeout'].to_datetime.to_i).to be_within(0.5).of(timeout.to_i)
+      end
+
+      it 'includes the remaining key' do
+        controller.session[:session_expires_at] = Time.zone.now + 10
+        get :active
+
+        json ||= JSON.parse(response.body)
+
+        expect(json['remaining']).to eq(10)
       end
     end
 
@@ -50,39 +74,34 @@ describe Users::SessionsController, devise: true do
 
         expect(json['live']).to eq false
       end
-    end
 
-    context 'when user is present' do
-      it 'sets live key to true' do
-        stub_sign_in
-        session[:session_expires_at] = Time.zone.now + 10
+      it 'includes session_expires_at' do
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['live']).to eq true
+        expect(json['timeout'].to_datetime.to_i).to be_within(0.5).of(Time.zone.now.to_i - 1)
       end
 
-      it 'respects session_expires_at' do
-        stub_sign_in
-        session[:session_expires_at] = Time.zone.now - 1
+      it 'includes the remaining time' do
         get :active
 
         json ||= JSON.parse(response.body)
 
-        expect(json['live']).to eq false
+        expect(json['remaining']).to eq(-1)
       end
 
-      it 'updates pinged_at session key' do
+      it 'updates the pinged_at session key' do
         stub_sign_in
         now = Time.zone.now
+        expected_time = now + 10
         session[:pinged_at] = now
 
         Timecop.travel(Time.zone.now + 10)
         get :active
         Timecop.return
 
-        expect(session[:pinged_at]).to_not eq(now)
+        expect(session[:pinged_at].to_i).to be_within(1).of(expected_time.to_i)
       end
     end
 

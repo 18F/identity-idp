@@ -58,3 +58,11 @@ h1.hide = t('titles.account')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
   - @view_model.recent_events.each do |event|
     = render event.event_partial, event: event
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.account.account_management')
+
+  = render 'account_item',
+          name: render('accounts/actions/delete_account'),
+          action: 'accounts/delete_account_item_heading'

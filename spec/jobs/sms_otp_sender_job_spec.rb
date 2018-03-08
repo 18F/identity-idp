@@ -35,7 +35,22 @@ describe SmsOtpSenderJob do
 
       expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (888) 555-5555')
-      expect(msg.body).to eq(I18n.t('jobs.sms_otp_sender_job.message', code: '1234', app: APP_NAME))
+      expect(msg.body).to eq(
+        I18n.t('jobs.sms_otp_sender_job.message', code: '1234', app: APP_NAME, expiration: '5')
+      )
+    end
+
+    it 'includes the expiration period in the message body' do
+      allow(I18n).to receive(:locale).and_return(:en).at_least(:once)
+      allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
+
+      TwilioService.telephony_service = FakeSms
+
+      perform
+
+      message = FakeSms.messages.first
+
+      expect(message.body).to include('4 minutes')
     end
 
     context 'if the OTP code is expired' do
