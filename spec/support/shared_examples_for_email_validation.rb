@@ -4,6 +4,6 @@ shared_examples 'email validation' do
                       detect { |v| v.class == EmailValidator }
 
     expect(email_validator.options).
-      to eq(mx: true, ban_disposable_email: true)
+      to eq(mx_with_fallback: true, ban_disposable_email: true)
   end
 end
