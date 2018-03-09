@@ -23,7 +23,7 @@ describe StoreSpMetadataInSession do
         allow(Rails.logger).to receive(:info)
 
         app_session = {}
-        request_id = SecureRandom.uuid
+        request_id = SecureRandom.urlsafe_base64
         ServiceProviderRequest.find_or_create_by(uuid: request_id) do |sp_request|
           sp_request.issuer = 'issuer'
           sp_request.loa = 'loa1'

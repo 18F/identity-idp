@@ -95,7 +95,7 @@ module OpenidConnect
     def store_request
       client_id = @authorize_form.client_id
 
-      @request_id = SecureRandom.uuid
+      @request_id = SecureRandom.urlsafe_base64
       ServiceProviderRequest.find_or_create_by(uuid: @request_id) do |sp_request|
         sp_request.issuer = client_id
         sp_request.loa = @authorize_form.acr_values.sort.max
