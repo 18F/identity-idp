@@ -145,6 +145,17 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     end
   end
 
+  describe '#phone_number_message' do
+    it 'specifies when the code will expire' do
+      text = t(
+        'instructions.mfa.sms.number_message',
+        number: "<strong>#{data[:phone_number]}</strong>",
+        expiration: Figaro.env.otp_valid_for
+      )
+      expect(presenter.phone_number_message).to eq text
+    end
+  end
+
   def presenter_with_locale(locale)
     TwoFactorAuthCode::PhoneDeliveryPresenter.new(
       data: data.clone.merge(reenter_phone_number_path:
