@@ -32,9 +32,9 @@ test:
 production:
   <<: *defaults
   database: <%= Figaro.env.database_name! %>
-  username: <%= Figaro.env.database_username! %>
+  username: <%= ProductionDatabaseConfiguration.username %>
   host: <%= Figaro.env.database_host! %>
-  password: <%= Figaro.env.database_password! %>
+  password: <%= ProductionDatabaseConfiguration.password %>
   pool: <%= ProductionDatabaseConfiguration.pool %>
   sslmode: 'verify-full'
   sslrootcert: '/usr/local/share/aws/rds-combined-ca-bundle.pem'
