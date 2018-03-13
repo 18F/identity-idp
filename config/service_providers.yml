@@ -153,6 +153,15 @@ development:
       - 'http://localhost:9393/'
       - 'http://localhost:9393/auth/login-gov/callback'
 
+  'urn:gov:gsa:openidconnect:sp:gin':
+    agency: 'GSA'
+    cert: 'sp_gin_demo'
+    friendly_name: 'Example OIDC Client (Gin)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:8080/'
+      - 'http://localhost:8080/auth/login-gov/callback'
+
 production:
   'https://idp.dev.login.gov':
     metadata_url: 'https://idp.dev.login.gov/api/saml/metadata'
@@ -233,6 +242,15 @@ production:
     redirect_uris:
       - 'http://localhost:9393/'
       - 'http://localhost:9393/auth/login-gov/callback'
+
+  'urn:gov:gsa:openidconnect:sp:gin':
+    agency: 'GSA'
+    cert: 'sp_gin_demo'
+    friendly_name: 'Example OIDC Client (Gin)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:8080/'
+      - 'http://localhost:8080/auth/login-gov/callback'
 
   # CBP Jobs
   'urn:gov:dhs.cbp.jobs:openidconnect:cert':
