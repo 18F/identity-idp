@@ -62,7 +62,7 @@ describe Users::SessionsController, devise: true do
 
         json ||= JSON.parse(response.body)
 
-        expect(json['remaining']).to eq(10)
+        expect(json['remaining']).to be_within(1).of(10)
       end
     end
 

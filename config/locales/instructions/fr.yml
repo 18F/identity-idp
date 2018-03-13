@@ -32,7 +32,8 @@ fr:
           Les frais liés aux messages texte peuvent s'appliquer.
         fallback_html: Si vous ne pouvez recevoir de messages texte pour le moment,
           vous pouvez %{link}
-        number_message: Nous avons envoyé un code de sécurité au %{number}.
+        number_message: Nous avons envoyé un code de sécurité au %{number}. Ce code
+          expirera dans %{expiration} minutes.
       voice:
         confirm_code_html: Vous voulez que nous vous appelions de nouveau? %{resend_code_link}
         fallback_html: Si vous ne pouvez recevoir d'appels pour le moment, vous pouvez
