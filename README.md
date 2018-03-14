@@ -174,6 +174,10 @@ To run a subset of tests excluding slow tests (such as accessibility specs):
 $ make fast_test
 ```
 
+If you are on a mac, if you receive the following prompt the first time you run the test suite, enter `sekret` as the passphrase:
+
+![alt text][mac-test-passphrase-prompt]
+
 See RSpec [docs](https://relishapp.com/rspec/rspec-core/docs/command-line) for
 more information.
 
@@ -274,3 +278,5 @@ To help us handle extra newlines and make sure we wrap lines consistently, we ha
 ```
 $ make normalize_yaml
 ```
+
+[mac-test-passphrase-prompt]: mac-test-passphrase-prompt.png "Mac Test Passphrase Prompt"
