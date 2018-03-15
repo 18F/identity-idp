@@ -429,7 +429,7 @@ GEM
       pry (~> 0.10)
     public_suffix (3.0.2)
     rack (2.0.4)
-    rack-attack (5.0.1)
+    rack-attack (5.1.0)
       rack
     rack-cors (1.0.2)
     rack-headers_filter (0.0.1)
