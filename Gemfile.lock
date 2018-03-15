@@ -120,8 +120,6 @@ GEM
       safely_block (>= 0.1.1)
       user_agent_parser
       uuidtools
-    airbrussh (1.2.0)
-      sshkit (>= 1.6.1, != 1.7.0)
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
@@ -171,25 +169,6 @@ GEM
       rainbow
       thor
     byebug (10.0.0)
-    capistrano (3.8.1)
-      airbrussh (>= 1.0.0)
-      i18n
-      rake (>= 10.0.0)
-      sshkit (>= 1.9.0)
-    capistrano-bundler (1.2.0)
-      capistrano (~> 3.1)
-      sshkit (~> 1.2)
-    capistrano-passenger (0.2.0)
-      capistrano (~> 3.0)
-    capistrano-rails (1.2.3)
-      capistrano (~> 3.1)
-      capistrano-bundler (~> 1.1)
-    capistrano-rbenv (2.1.1)
-      capistrano (~> 3.1)
-      sshkit (~> 1.3)
-    capistrano-sidekiq (0.10.0)
-      capistrano
-      sidekiq (>= 3.4)
     capybara (2.17.0)
       addressable
       mini_mime (>= 0.1.3)
@@ -210,10 +189,6 @@ GEM
     coderay (1.1.2)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     colorize (0.8.1)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.1)
@@ -268,7 +243,6 @@ GEM
     exception_notification (4.2.2)
       actionmailer (>= 4.0, < 6)
       activesupport (>= 4.0, < 6)
-    excon (0.58.0)
     execjs (2.7.0)
     factory_bot (4.8.2)
       activesupport (>= 3.0.0)
@@ -368,12 +342,6 @@ GEM
       systemu (~> 2.6.2)
     mail (2.7.0)
       mini_mime (>= 0.1.1)
-    mandrill-api (1.0.53)
-      excon (>= 0.16.0, < 1.0)
-      json (>= 1.7.7, < 2.0)
-    mandrill_dm (1.3.4)
-      mail (~> 2.6)
-      mandrill-api (~> 1.0.53)
     memory_profiler (0.9.8)
     method_source (0.9.0)
     mini_mime (1.0.0)
@@ -383,8 +351,6 @@ GEM
     multipart-post (2.0.0)
     mustermann (1.0.2)
     nenv (0.3.0)
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
@@ -471,7 +437,6 @@ GEM
       ruby-graphviz (~> 1.2)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails_layout (1.0.42)
     railties (5.1.5)
       actionpack (= 5.1.5)
       activesupport (= 5.1.5)
@@ -605,9 +570,6 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
-    sshkit (1.13.1)
-      net-scp (>= 1.1.2)
-      net-ssh (>= 2.8.0)
     stringex (2.8.4)
     sysexits (1.2.0)
     systemu (2.6.5)
@@ -705,14 +667,8 @@ DEPENDENCIES
   brakeman
   bullet
   bummr
-  capistrano
-  capistrano-passenger
-  capistrano-rails
-  capistrano-rbenv
-  capistrano-sidekiq
   capybara-screenshot!
   codeclimate-test-reporter
-  coffee-script
   database_cleaner
   derailed
   device_detector
@@ -739,7 +695,6 @@ DEPENDENCIES
   identity-hostdata!
   json-jwt
   lograge
-  mandrill_dm
   net-sftp
   newrelic_rpm
   overcommit
@@ -760,7 +715,6 @@ DEPENDENCIES
   rails (~> 5.1.3)
   rails-controller-testing
   rails-erd
-  rails_layout
   readthis
   redis-session-store!
   reek
