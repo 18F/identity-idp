@@ -5,7 +5,7 @@ ruby '~> 2.3.5'
 
 gem 'rails', '~> 5.1.3'
 
-gem 'ahoy_matey'
+gem 'ahoy_matey', '~> 1.6.1'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
@@ -54,9 +54,9 @@ gem 'stringex'
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier', '~> 3.2'
 gem 'valid_email'
-gem 'webpacker', '~> 3.0'
+gem 'webpacker', '~> 3.2.2'
 gem 'whenever', require: false
 gem 'xml-simple'
 gem 'xmlenc', '~> 0.6.4'
@@ -97,7 +97,7 @@ group :development, :test do
 end
 
 group :test do
-  gem 'axe-matchers'
+  gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'codeclimate-test-reporter', require: false
   gem 'coffee-script'
