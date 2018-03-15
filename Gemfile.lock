@@ -163,7 +163,7 @@ GEM
     brakeman (4.2.0)
     browser (2.5.3)
     builder (3.2.3)
-    bullet (5.7.2)
+    bullet (5.7.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
     bummr (0.2.1)
@@ -324,7 +324,7 @@ GEM
     httpi (2.4.2)
       rack
       socksify
-    i18n (0.9.4)
+    i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.20)
       activesupport (>= 4.0.2)
