@@ -53,5 +53,10 @@ module Upaya
     end
 
     config.middleware.use Rack::Attack if Figaro.env.enable_rate_limiting == 'true'
+
+    config.middleware.use(
+      Rack::TwilioWebhookAuthentication,
+      Figaro.env.twilio_auth_token, '/api/voice/otp'
+    )
   end
 end

@@ -25,9 +25,8 @@ feature 'User edit' do
 
     scenario 'user sees error message if form is submitted without phone number', js: true do
       fill_in 'Phone', with: ''
-      click_button t('forms.buttons.submit.confirm_change')
 
-      expect(page).to have_content t('errors.messages.improbable_phone')
+      expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: true)
     end
 
     scenario 'updates international code as user types', :js do

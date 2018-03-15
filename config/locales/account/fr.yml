@@ -25,10 +25,10 @@ fr:
         success: Votre compte a été vérifié.
         with_phone_button: Verifiez avec votre téléphone
     items:
-      delete_your_account: NOT TRANSLATED YET
+      delete_your_account: Supprimer votre compte
       personal_key: Clé personnelle
     links:
-      delete_account: NOT TRANSLATED YET
+      delete_account: Effacer
       regenerate_personal_key: Obtenez une nouvelle clé
     security:
       link: En apprendre davantage dans le Centre d'aide
