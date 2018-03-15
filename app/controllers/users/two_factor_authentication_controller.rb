@@ -2,6 +2,8 @@ module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
 
+    before_action :check_remember_device_preference
+
     def show
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
@@ -26,6 +28,21 @@ module Users
     end
 
     private
+
+    def check_remember_device_preference
+      return unless authentication_context?
+      return if remember_device_cookie.nil?
+      return unless remember_device_cookie.valid_for_user?(current_user)
+      handle_valid_otp_for_authentication_context
+    end
+
+    def remember_device_cookie
+      remember_device_cookie_contents = cookies.encrypted[:remember_device]
+      return if remember_device_cookie_contents.blank?
+      @remember_device_cookie ||= RememberDeviceCookie.from_json(
+        remember_device_cookie_contents
+      )
+    end
 
     def validate_otp_delivery_preference_and_send_code
       delivery_preference = current_user.otp_delivery_preference

@@ -121,8 +121,17 @@ module TwoFactorAuthenticatable
   def handle_valid_otp_for_authentication_context
     mark_user_session_authenticated
     bypass_sign_in current_user
+    save_remember_device_preference
 
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
+  end
+
+  def save_remember_device_preference
+    return unless params[:remember_device] == 'true'
+    cookies.encrypted[:remember_device] = RememberDeviceCookie.new(
+      user_id: current_user.id,
+      created_at: Time.zone.now
+    ).to_json
   end
 
   def assign_phone
@@ -241,6 +250,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
+      remember_device_available: authentication_context?,
     }.merge(generic_data)
   end
   # rubocop:enable MethodLength
@@ -249,6 +259,7 @@ module TwoFactorAuthenticatable
     {
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
+      remember_device_available: false,
     }.merge(generic_data)
   end
 

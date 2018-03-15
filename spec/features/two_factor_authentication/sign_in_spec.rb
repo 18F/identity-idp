@@ -203,6 +203,7 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
+      check 'remember_device'
       submit_prefilled_otp_code
 
       expect(current_path).to eq account_path
