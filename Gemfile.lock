@@ -608,7 +608,7 @@ GEM
     sshkit (1.13.1)
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
-    stringex (2.8.2)
+    stringex (2.8.4)
     sysexits (1.2.0)
     systemu (2.6.5)
     temple (0.8.0)
