@@ -50,7 +50,7 @@ gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
-gem 'stringex'
+gem 'stringex', require: false
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
