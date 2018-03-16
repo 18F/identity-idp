@@ -33,6 +33,7 @@ en:
       no_pending_profile: No profile is waiting for verification
       not_found: not found
       not_locked: was not locked
+      not_pwned: has been found %{count} times in a list of breached passwords
       not_saved:
         one: '1 error prohibited this %{resource} from being saved:'
         other: "%{count} errors prohibited this %{resource} from being saved:"

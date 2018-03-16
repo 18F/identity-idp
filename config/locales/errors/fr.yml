@@ -32,6 +32,7 @@ fr:
       no_pending_profile: Aucun profil en attente de vérification
       not_found: introuvable
       not_locked: n'a pas été verrouillé
+      not_pwned: NOT TRANSLATED YET
       not_saved:
         one: '1 erreur a interdit la sauvegarde de cette %{resource} :'
         other: "%{count} des erreurs ont empêché la sauvegarde de cette %{resource} :"

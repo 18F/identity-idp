@@ -428,6 +428,7 @@ GEM
       byebug (~> 10.0)
       pry (~> 0.10)
     public_suffix (3.0.2)
+    pwned (1.2.0)
     rack (2.0.4)
     rack-attack (5.1.0)
       rack
@@ -750,6 +751,7 @@ DEPENDENCIES
   premailer-rails
   proofer!
   pry-byebug
+  pwned
   rack-attack
   rack-cors
   rack-headers_filter

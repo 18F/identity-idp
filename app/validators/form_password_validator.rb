@@ -7,7 +7,15 @@ module FormPasswordValidator
 
     validates :password,
               presence: true,
-              length: { in: Devise.password_length }
+              length: { in: Devise.password_length },
+              not_pwned: {
+                request_options: {
+                  read_timeout: 5,
+                  open_timeout: 1,
+                  'User-Agent' => 'login.gov',
+                },
+                on_error: :invalid,
+              }
 
     validate :strong_password, if: :password_strength_enabled?
   end

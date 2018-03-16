@@ -51,6 +51,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     allow(ValidateEmail).to receive(:mx_valid?).and_return(true)
+    allow_any_instance_of(Pwned::Password).to receive(:pwned_count).and_return 0
   end
 
   config.before(:each, twilio: true) do
