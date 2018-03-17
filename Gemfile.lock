@@ -322,6 +322,8 @@ GEM
       securecompare
       url_safe_base64
     jwt (2.1.0)
+    knapsack (1.16.0)
+      rake
     launchy (2.4.3)
       addressable (~> 2.3)
     listen (3.1.5)
@@ -694,6 +696,7 @@ DEPENDENCIES
   i18n-tasks
   identity-hostdata!
   json-jwt
+  knapsack
   lograge
   net-sftp
   newrelic_rpm
