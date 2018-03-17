@@ -62,14 +62,6 @@ gem 'xml-simple'
 gem 'xmlenc', '~> 0.6.4'
 gem 'zxcvbn-js'
 
-group :deploy do
-  gem 'capistrano'
-  gem 'capistrano-passenger'
-  gem 'capistrano-rails'
-  gem 'capistrano-rbenv'
-  gem 'capistrano-sidekiq'
-end
-
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -81,7 +73,6 @@ group :development do
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
-  gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
 end
@@ -100,7 +91,6 @@ group :test do
   gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'codeclimate-test-reporter', require: false
-  gem 'coffee-script'
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails'
@@ -119,5 +109,4 @@ end
 group :production do
   gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v1.0.3'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
-  gem 'mandrill_dm'
 end
