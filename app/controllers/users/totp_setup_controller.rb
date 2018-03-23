@@ -1,6 +1,10 @@
 module Users
   class TotpSetupController < ApplicationController
-    before_action :confirm_two_factor_authenticated
+    # Because we allow initial auth through an app,
+    # so a user is not required to have a phone, we are
+    # not using the normal confirm_two_factor_authenticated method
+    # and instead are only checking that they are signed in
+    before_action :confirm_sign_in
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
@@ -34,6 +38,10 @@ module Users
     end
 
     private
+
+    def confirm_sign_in
+      redirect_to sign_up_start_url(request_id: id) unless user_signed_in?
+    end
 
     def process_valid_code
       flash[:success] = t('notices.totp_configured')
