@@ -1,5 +1,6 @@
 module TwoFactorAuthenticatable
   extend ActiveSupport::Concern
+  include RememberDeviceConcern
   include SecureHeadersConcern
 
   included do
@@ -124,14 +125,6 @@ module TwoFactorAuthenticatable
     save_remember_device_preference
 
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
-  end
-
-  def save_remember_device_preference
-    return unless params[:remember_device] == 'true'
-    cookies.encrypted[:remember_device] = RememberDeviceCookie.new(
-      user_id: current_user.id,
-      created_at: Time.zone.now
-    ).to_json
   end
 
   def assign_phone
