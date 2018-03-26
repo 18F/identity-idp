@@ -1,3 +1,6 @@
+require 'stringex/unidecoder'
+require 'stringex/core_ext'
+
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
