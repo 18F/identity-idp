@@ -11,3 +11,6 @@ en:
       intro_html: 'This is the only information %{app_name} will share with %{sp}:'
       phone: Phone number
       social_security_number: Social Security number
+    no_factor:
+      delete_account: To delete your account, please confirm your password and security
+        code.
