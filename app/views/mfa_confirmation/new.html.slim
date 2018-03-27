@@ -1,7 +1,8 @@
 - title t('titles.passwords.confirm')
 
 h1.h3.my0 = t('headings.passwords.confirm')
-p.mt-tiny.mb0 = t('help_text.change_factor', factor: user_session[:factor_to_change])
+p.mt-tiny.mb0 = user_session[:no_factor_message] || t('help_text.change_factor',
+        factor: user_session[:factor_to_change])
 = simple_form_for(current_user,
                   url: reauthn_user_password_path,
                   html: { autocomplete: 'off', role: 'form', method: 'post' }) do |f|

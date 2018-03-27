@@ -586,6 +586,10 @@ PL:
   name: Poland
   country_code: '48'
   sms_only: true
+PR:
+  name: Puerto Rico (U.S.)
+  country_code: '1'
+  sms_only: false
 PT:
   name: Portugal
   country_code: '351'

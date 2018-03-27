@@ -29,6 +29,13 @@ feature 'User edit' do
       expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: true)
     end
 
+    scenario 'user is able to submit with a Puerto Rico phone number as a US number', js: true do
+      fill_in 'Phone', with: '787 555-1234'
+      expect(page.find('#user_phone_form_international_code').value).to eq 'US'
+
+      expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: false)
+    end
+
     scenario 'updates international code as user types', :js do
       fill_in 'Phone', with: '+81 54 354 3643'
 

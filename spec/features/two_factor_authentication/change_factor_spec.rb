@@ -129,6 +129,15 @@ feature 'Changing authentication factor' do
 
       expect(current_path).to eq manage_email_path
     end
+
+    scenario 'deleting account' do
+      visit account_delete_path
+
+      expect(page).to have_content t('help_text.no_factor.delete_account')
+      complete_2fa_confirmation
+
+      expect(current_path).to eq account_delete_path
+    end
   end
 
   context 'user has authenticator app enabled' do

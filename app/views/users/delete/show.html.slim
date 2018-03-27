@@ -1,21 +1,17 @@
-= content_for :body_class do
-  ' modal-open
+.p0.cntnr-xxskinny.border-box.bg-white.rounded-xxl.modal-warning
+  h2.my2.fs-20p.sans-serif.regular.center
+    = t('users.delete.heading')
+  hr.mb3.bw4.rounded
+  .mb1.bold
+    = t('users.delete.subheading')
 
-= render layout: '/shared/modal_layout' do
-  .p4.cntnr-xxskinny.border-box.bg-white.rounded-xxl.modal-warning
-    h2.my2.fs-20p.sans-serif.regular.center
-      = t('users.delete.heading')
-    hr.mb3.bw4.rounded
-    .mb1.bold
-      = t('users.delete.subheading')
+  ul.px2.yellow-dots
+    li.mb1 = t('users.delete.bullet_1', app: APP_NAME)
+    li.mb1 = t(current_user.decorate.delete_account_bullet_key, app: APP_NAME)
+    li.mb1 = t('users.delete.bullet_3', app: APP_NAME)
+  .center
+    = button_to t('users.delete.actions.delete'), account_delete_path,
+            class: 'btn btn-primary col-12 mb2 p2 rounded-lg', method: 'delete'
 
-    ul.px2.yellow-dots
-      li.mb1 = t('users.delete.bullet_1', app: APP_NAME)
-      li.mb1 = t(current_user.decorate.delete_account_bullet_key, app: APP_NAME)
-      li.mb1 = t('users.delete.bullet_3', app: APP_NAME)
-    .center
-      = button_to t('users.delete.actions.delete'), account_delete_path,
-                  class: 'btn btn-primary col-12 mb2 p2 rounded-lg', method: 'delete'
-
-      = link_to t('users.delete.actions.cancel'), account_path,
-              class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
+    = link_to t('users.delete.actions.cancel'), account_path,
+            class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
