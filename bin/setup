@@ -39,9 +39,11 @@ Dir.chdir APP_ROOT do
     run 'docker-compose build'
     run 'docker-compose run --rm web bin/generate-example-keys'
     run 'docker-compose run --rm web yarn install'
-    run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
-    run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
-    run 'docker-compose run --rm web rake dev:prime'
+    run 'docker-compose run --rm web rake db:migrate:reset RAILS_ENV=development'
+    run 'docker-compose run --rm web rake db:seed RAILS_ENV=development'
+    run 'docker-compose run --rm web rake db:migrate:reset RAILS_ENV=test'
+    run 'docker-compose run --rm web rake db:seed RAILS_ENV=test'
+    run 'docker-compose run --rm web rake dev:prime RAILS_ENV=development'
     run 'docker-compose up'
     exit
   end
@@ -59,9 +61,15 @@ Dir.chdir APP_ROOT do
   run "gem install mailcatcher"
 
   puts "\n== Preparing database =="
-  run 'bin/rake db:reset RAILS_ENV=development'
+  run 'dropdb upaya_development'
+  run 'bin/rake db:create RAILS_ENV=development'
+  run 'bin/rake db:migrate RAILS_ENV=development'
+  run 'bin/rake db:seed RAILS_ENV=development'
+  run 'dropdb upaya_development'
+  run 'bin/rake db:create RAILS_ENV=test'
+  run 'bin/rake db:migrate RAILS_ENV=test'
+  run 'bin/rake db:seed RAILS_ENV=test'
   run 'bin/rake dev:prime RAILS_ENV=development'
-  run 'bin/rake db:reset RAILS_ENV=test'
 
   puts "\n== Removing old logs and tempfiles =="
   run "rm -f log/*"
