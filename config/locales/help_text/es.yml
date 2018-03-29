@@ -11,3 +11,6 @@ es:
       intro_html: 'Esta es la única información que %{app_name} compartirá con %{sp}:'
       phone: Teléfono
       social_security_number: Número de Seguro Social
+    no_factor:
+      delete_account: Para eliminar su cuenta, confirme su contraseña y código de
+        seguridad.

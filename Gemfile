@@ -5,7 +5,7 @@ ruby '~> 2.3.5'
 
 gem 'rails', '~> 5.1.3'
 
-gem 'ahoy_matey'
+gem 'ahoy_matey', '~> 1.6.1'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
@@ -50,25 +50,17 @@ gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
-gem 'stringex'
+gem 'stringex', require: false
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
-gem 'uglifier', '>= 1.3.0'
+gem 'uglifier', '~> 3.2'
 gem 'valid_email'
-gem 'webpacker', '~> 3.0'
+gem 'webpacker', '~> 3.2.2'
 gem 'whenever', require: false
 gem 'xml-simple'
 gem 'xmlenc', '~> 0.6.4'
 gem 'zxcvbn-js'
-
-group :deploy do
-  gem 'capistrano'
-  gem 'capistrano-passenger'
-  gem 'capistrano-rails'
-  gem 'capistrano-rbenv'
-  gem 'capistrano-sidekiq'
-end
 
 group :development do
   gem 'better_errors'
@@ -81,7 +73,6 @@ group :development do
   gem 'overcommit', require: false
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
-  gem 'rails_layout'
   gem 'reek'
   gem 'rubocop', require: false
 end
@@ -97,10 +88,9 @@ group :development, :test do
 end
 
 group :test do
-  gem 'axe-matchers'
+  gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
   gem 'codeclimate-test-reporter', require: false
-  gem 'coffee-script'
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails'
@@ -119,5 +109,4 @@ end
 group :production do
   gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v1.0.3'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
-  gem 'mandrill_dm'
 end

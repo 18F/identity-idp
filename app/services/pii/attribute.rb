@@ -1,3 +1,6 @@
+require 'stringex/unidecoder'
+require 'stringex/core_ext'
+
 module Pii
   class Attribute
     attr_accessor :raw, :norm
