@@ -46,14 +46,6 @@ Dir.chdir APP_ROOT do
     run 'docker-compose run --rm web rake dev:prime'
     run 'docker-compose run --rm web rake db:create RAILS_ENV=test'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
-    run 'docker-compose up'
-    exit
-  end
-
-  puts "\n== Example Key Generation =="
-  run "which gpg || brew install gpg"
-  run "which yarn || brew install yarn"
-  run "bin/generate-example-keys"
 
   puts "\n== Installing dependencies =="
   run "gem install bundler --conservative"
