@@ -46,6 +46,7 @@ Dir.chdir APP_ROOT do
     run 'docker-compose run --rm web rake dev:prime'
     run 'docker-compose run --rm web rake db:create RAILS_ENV=test'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
+  end
 
   puts "\n== Installing dependencies =="
   run "gem install bundler --conservative"
