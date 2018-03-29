@@ -39,12 +39,12 @@ Dir.chdir APP_ROOT do
     run 'docker-compose build'
     run 'docker-compose run --rm web bin/generate-example-keys'
     run 'docker-compose run --rm web yarn install'
-    run 'docker-compose run web rake db:create'
-    run 'docker-compose run --rm web rake db:environment:set RAILS_ENV=development'
-    run 'docker-compose run --rm web rake db:reset RAILS_ENV=development'
-    run 'docker-compose run --rm web rake db:environment:set RAILS_ENV=development'
-    run 'docker-compose run --rm web rake dev:prime RAILS_ENV=development'
-    run 'docker-compose run web rake db:create RAILS_ENV=test'
+    run 'docker-compose run --rm web rake db:create'
+    run 'docker-compose run --rm web rake db:environment:set'
+    run 'docker-compose run --rm web rake db:reset'
+    run 'docker-compose run --rm web rake db:environment:set'
+    run 'docker-compose run --rm web rake dev:prime'
+    run 'docker-compose run --rm web rake db:create RAILS_ENV=test'
     run 'docker-compose run --rm web rake db:reset RAILS_ENV=test'
     run 'docker-compose up'
     exit
@@ -64,10 +64,10 @@ Dir.chdir APP_ROOT do
 
   puts "\n== Preparing database =="
   run 'bin/rake db:create'
-  run 'bin/rake db:environment:set RAILS_ENV=development'
-  run 'bin/rake db:reset RAILS_ENV=development'
-  run 'bin/rake db:environment:set RAILS_ENV=development'
-  run 'bin/rake dev:prime RAILS_ENV=development'
+  run 'bin/rake db:environment:set'
+  run 'bin/rake db:reset'
+  run 'bin/rake db:environment:set'
+  run 'bin/rake dev:prime'
   run 'bin/rake db:create RAILS_ENV=test'
   run 'bin/rake db:reset RAILS_ENV=test'
 
