@@ -389,11 +389,11 @@ production:
       - 'https://ttp.cbp.dhs.gov'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
-  # CBP OARS
+  # CBP ROAM (formerly OARS)
   'urn:gov:dhs.cbp.pspd.oars:openidconnect:prod:app':
     agency_id: 1
     uuid_priority: 20
-    friendly_name: 'CBP OARS'
+    friendly_name: 'CBP ROAM'
     agency: 'DHS'
     logo: 'cbp.png'
     redirect_uris:
