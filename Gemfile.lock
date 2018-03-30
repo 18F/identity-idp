@@ -465,7 +465,7 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
-    rotp (3.3.0)
+    rotp (3.3.1)
     rqrcode (0.10.1)
       chunky_png (~> 1.0)
     rspec (3.5.0)
@@ -591,7 +591,7 @@ GEM
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
-    two_factor_authentication (2.0.1)
+    two_factor_authentication (2.1.0)
       devise
       encryptor
       rails (>= 3.1.1)
