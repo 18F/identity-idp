@@ -159,7 +159,7 @@ GEM
     bindata (2.4.3)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    brakeman (4.2.0)
+    brakeman (4.2.1)
     browser (2.5.3)
     builder (3.2.3)
     bullet (5.7.5)
@@ -757,4 +757,4 @@ RUBY VERSION
    ruby 2.3.5p376
 
 BUNDLED WITH
-   1.16.0
+   1.16.1
