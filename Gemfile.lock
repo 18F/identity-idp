@@ -401,7 +401,7 @@ GEM
       rack
     rack-cors (1.0.2)
     rack-headers_filter (0.0.1)
-    rack-mini-profiler (0.10.7)
+    rack-mini-profiler (1.0.0)
       rack (>= 1.2.0)
     rack-protection (2.0.1)
       rack
