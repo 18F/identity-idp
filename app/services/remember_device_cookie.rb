@@ -1,5 +1,5 @@
 class RememberDeviceCookie
-  COOKIE_ROLE = 'remember_me'
+  COOKIE_ROLE = 'remember_me'.freeze
 
   attr_reader :user_id, :created_at
 
