@@ -3,10 +3,10 @@ module RememberDeviceConcern
 
   def save_remember_device_preference
     return unless params[:remember_device] == 'true'
-    cookies.encrypted[:remember_device] = RememberDeviceCookie.new(
-      user_id: current_user.id,
-      created_at: Time.zone.now
-    ).to_json
+    cookies.encrypted[:remember_device] = {
+      value: RememberDeviceCookie.new(user_id: current_user.id, created_at: Time.zone.now).to_json,
+      expires: remember_device_cookie_expiration,
+    }
   end
 
   def check_remember_device_preference
@@ -22,5 +22,11 @@ module RememberDeviceConcern
     @remember_device_cookie ||= RememberDeviceCookie.from_json(
       remember_device_cookie_contents
     )
+  end
+
+  private
+
+  def remember_device_cookie_expiration
+    Figaro.env.remember_device_expiration_days.to_i.days.from_now
   end
 end
