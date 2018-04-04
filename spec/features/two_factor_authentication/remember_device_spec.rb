@@ -54,7 +54,6 @@ feature 'Remembering a 2FA device' do
 
       # Sign in as second user and expect otp confirmation
       sign_in_before_2fa(second_user)
-      # TODO: Figure out how to incrase 2FA limit
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
 
       # Setup remember device as second user
