@@ -12,11 +12,40 @@ describe RememberDeviceCookie do
       json = {
         user_id: 1,
         created_at: created_at.iso8601,
+        role: 'remember_me',
+        entropy: '123abc',
       }.to_json
       subject = described_class.from_json(json)
 
       expect(subject.user_id).to eq(1)
       expect(subject.created_at.iso8601).to eq(created_at.iso8601)
+    end
+
+    it 'should raise an error if the role in the JSON string is not "remember_me"' do
+      json = {
+        user_id: 1,
+        created_at: created_at.iso8601,
+        role: 'something_else',
+        entropy: '123abc',
+      }.to_json
+
+      expect { described_class.from_json(json) }.to raise_error(
+        RuntimeError,
+        "RememberDeviceCookie role 'something_else' did not match 'remember_me'"
+      )
+    end
+
+    it 'should raise an error if the role in the JSON string is missing' do
+      json = {
+        user_id: 1,
+        created_at: created_at.iso8601,
+        entropy: '123abc',
+      }.to_json
+
+      expect { described_class.from_json(json) }.to raise_error(
+        RuntimeError,
+        "RememberDeviceCookie role '' did not match 'remember_me'"
+      )
     end
   end
 
@@ -27,6 +56,8 @@ describe RememberDeviceCookie do
 
       expect(parsed_json['user_id']).to eq(user.id)
       expect(parsed_json['created_at']).to eq(created_at.iso8601)
+      expect(parsed_json['role']).to eq('remember_me')
+      expect(parsed_json['entropy']).to_not be_nil
     end
   end
 
