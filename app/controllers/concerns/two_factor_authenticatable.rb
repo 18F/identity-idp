@@ -243,7 +243,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
-      remember_device_available: authentication_context?,
+      remember_device_available: !idv_context?,
     }.merge(generic_data)
   end
   # rubocop:enable MethodLength

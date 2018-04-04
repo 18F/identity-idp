@@ -8,6 +8,22 @@ feature 'Remembering a 2FA device' do
 
   let(:user) { user_with_2fa }
 
+  context 'sign in' do
+    it_behaves_like 'remember device'
+  end
+
+  context 'sign up' do
+    it_behaves_like 'remember device'
+  end
+
+  context 'update phone number' do
+    it_behaves_like 'remember device'
+  end
+
+  context 'identity verification' do
+    it 'does not offer the option to remember device'
+  end
+
   context 'sms or voice' do
     scenario 'choosing remember device does not require 2fa on sign in' do
       sign_in_after_remembering_device
