@@ -183,7 +183,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         }
       end
 
-      context 'with remember_device selected' do
+      context 'with remember_device in the params' do
         it 'saves an encrypted cookie' do
           remember_device_cookie = instance_double(RememberDeviceCookie)
           allow(remember_device_cookie).to receive(:to_json).and_return('asdf1234')
@@ -202,7 +202,7 @@ describe TwoFactorAuthentication::OtpVerificationController do
         end
       end
 
-      context 'without remember_device selected' do
+      context 'without remember_device in the params' do
         it 'does not save an encrypted cookie' do
           post(
             :create,
@@ -393,8 +393,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         end
       end
 
-      context 'when the user chooses to remember their device' do
-        it 'does not save a remember_device cookie' do
+      context 'with remember_device in the params' do
+        it 'ignores the param and does not save an encrypted cookie' do
           post(
             :create,
             params: {
@@ -523,8 +523,8 @@ describe TwoFactorAuthentication::OtpVerificationController do
         end
       end
 
-      context 'when the user chooses to remember their device' do
-        it 'does not save a remember_device cookie' do
+      context 'with remember_device in the params' do
+        it 'ignores the param and does not save an encrypted cookie' do
           post(
             :create,
             params: {
