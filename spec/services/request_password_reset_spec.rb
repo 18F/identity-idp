@@ -3,15 +3,12 @@ require 'rails_helper'
 describe RequestPasswordReset do
   describe '#perform' do
     context 'when the user is not found' do
-      it 'sends the account does not exist email' do
+      it 'sends the account registration email' do
         email = 'nonexistent@example.com'
-
-        mailer = instance_double(ActionMailer::MessageDelivery, deliver_later: true)
-        allow(UserMailer).to receive(:account_does_not_exist).
-          with(email, 'request_id').and_return(mailer)
-        expect(mailer).to receive(:deliver_later)
-
-        RequestPasswordReset.new(email, 'request_id').perform
+        expect_any_instance_of(User).to receive(:send_custom_confirmation_instructions).
+          with(nil, I18n.t('mailer.confirmation_instructions.first_sentence.forgot_password'))
+        RequestPasswordReset.new(email).perform
+        expect(User.find_with_email(email)).to be_present
       end
     end
 

@@ -5,6 +5,10 @@ es:
     confirmation_instructions:
       first_sentence:
         confirmed: "¿Desea cambiar su email?"
+        forgot_password: Intentó restablecer su contraseña de login.gov pero no tenemos
+          una cuenta vinculada a esta dirección de correo electrónico. Si desea configurar
+          una nueva cuenta vinculada a este correo electrónico, confirme su dirección
+          de correo electrónico a continuación.
         reset_requested: Su cuenta de %{app} ha sido restablecida por un representante
           de soporte técnico. Para continuar, debe confirmar su email.
         unconfirmed: Gracias por crear una cuenta.
