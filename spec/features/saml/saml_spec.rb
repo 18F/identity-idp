@@ -254,6 +254,16 @@ feature 'saml api' do
         cert_base64 = REXML::XPath.first(document, '//X509Certificate').text
         expect(cert_base64).to eq(Base64.strict_encode64(new_x509_cert.to_der))
       end
+
+      it 'includes the correct auth and logout urls' do
+        visit api_saml_metadata2018_path
+        document = REXML::Document.new(page.html)
+        auth_node = REXML::XPath.first(document, '//SingleSignOnService')
+        logout_node = REXML::XPath.first(document, '//SingleLogoutService')
+
+        expect(auth_node.attributes['Location']).to include(api_saml_auth2018_path)
+        expect(logout_node.attributes['Location']).to include(destroy_user_session2018_path)
+      end
     end
   end
 end
