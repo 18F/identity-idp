@@ -1,97 +1,112 @@
 require 'rails_helper'
 
 feature 'Remembering a 2FA device' do
+  include IdvHelper
+
   before do
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
     allow(SmsOtpSenderJob).to receive(:perform_now)
+    allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('1000')
   end
 
   let(:user) { user_with_2fa }
 
   context 'sign in' do
+    def remember_device_and_sign_out_user
+      user = user_with_2fa
+      sign_in_user(user)
+      check :remember_device
+      click_submit_default
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
     it_behaves_like 'remember device'
   end
 
   context 'sign up' do
+    def remember_device_and_sign_out_user
+      user = sign_up_and_set_password
+      user.password = Features::SessionHelper::VALID_PASSWORD
+      fill_in :user_phone_form_phone, with: '5551231234'
+      click_send_security_code
+      check :remember_device
+      click_submit_default
+      click_acknowledge_personal_key
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
     it_behaves_like 'remember device'
   end
 
   context 'update phone number' do
+    def remember_device_and_sign_out_user
+      user = user_with_2fa
+      sign_in_and_2fa_user(user)
+      visit manage_phone_path
+      fill_in 'user_phone_form_phone', with: '5552347193'
+      click_button t('forms.buttons.submit.confirm_change')
+      check :remember_device
+      click_submit_default
+      first(:link, t('links.sign_out')).click
+      user
+    end
+
     it_behaves_like 'remember device'
-  end
 
-  context 'identity verification' do
-    it 'does not offer the option to remember device'
-  end
-
-  context 'sms or voice' do
-    scenario 'choosing remember device does not require 2fa on sign in' do
-      sign_in_after_remembering_device
-
-      expect(current_path).to eq(account_path)
-    end
-
-    scenario 'after remember this device expiration passes 2fa required on sign in' do
-      sign_in_after_remembering_device(user)
-      first(:link, t('links.sign_out')).click
-
-      Timecop.travel Figaro.env.remember_device_expiration_days.to_i.days.from_now do
-        sign_in_before_2fa(user)
-
-        expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
-      end
-    end
-
-    scenario 'after changing phone number 2fa is required on sign in' do
-      sign_in_after_remembering_device(user) do
-        visit manage_phone_path
-        fill_in 'user_phone_form_phone', with: '5551234567'
-        click_button t('forms.buttons.submit.confirm_change')
-        click_submit_default
-      end
-
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
-    end
-  end
-
-  context 'a user signs in after a different user has remembered a device' do
-    scenario 'the second user must 2FA' do
-      allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).
-        and_return(10).at_least(1).times
-
-      first_user = user_with_2fa
-      second_user = user_with_2fa
-
-      # Sign in as first user and setup remember device
-      sign_in_after_remembering_device(first_user)
-      expect(current_path).to eq(account_path)
-
-      first(:link, t('links.sign_out')).click
-
-      # Sign in as second user and expect otp confirmation
-      sign_in_before_2fa(second_user)
-      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
-
-      # Setup remember device as second user
+    it 'requires the user to confirm the new phone number' do
+      user = user_with_2fa
+      sign_in_user(user)
       check :remember_device
       click_submit_default
 
-      first(:link, t('links.sign_out')).click
+      visit manage_phone_path
+      fill_in 'user_phone_form_phone', with: '5552347193'
+      click_button t('forms.buttons.submit.confirm_change')
 
-      # Sign in as first user again and expect otp confirmation
-      sign_in_before_2fa(first_user)
       expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
     end
   end
 
-  def sign_in_after_remembering_device(user = user_with_2fa)
-    sign_in_before_2fa(user)
-    check :remember_device
-    click_submit_default
+  context 'identity verification', :idv_job do
+    let(:user) { user_with_2fa }
 
-    yield if block_given?
+    before do
+      sign_in_user(user)
+      check :remember_device
+      click_submit_default
+      visit verify_session_path
+      fill_out_idv_form_ok
+      click_idv_continue
+      click_idv_address_choose_phone
+      fill_out_phone_form_ok('5551603829')
+      click_idv_continue
+      choose_idv_otp_delivery_method_sms
+    end
 
-    first(:link, t('links.sign_out')).click
-    sign_in_before_2fa(user)
+    it 'requires 2FA and does not offer the option to remember device' do
+      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
+      expect(page).to_not have_content(
+        t('forms.messages.remember_device', duration: Figaro.env.remember_device_expiration_days!)
+      )
+    end
+  end
+
+  context 'totp' do
+    let(:user) do
+      user = build(:user, :signed_up, password: 'super strong password')
+      @secret = user.generate_totp_secret
+      UpdateUser.new(user: user, attributes: { otp_secret_key: @secret }).call
+      user
+    end
+
+    it 'does not offer the option to remember device' do
+      sign_in_user(user)
+      expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :authenticator))
+      expect(page).to_not have_content(
+        t('forms.messages.remember_device', duration: Figaro.env.remember_device_expiration_days!)
+      )
+    end
   end
 end

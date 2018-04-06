@@ -75,6 +75,7 @@ module TwoFactorAuthenticatable
     elsif idv_or_confirmation_context? || profile_context?
       handle_valid_otp_for_confirmation_context
     end
+    save_remember_device_preference
 
     redirect_to after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -122,7 +123,6 @@ module TwoFactorAuthenticatable
   def handle_valid_otp_for_authentication_context
     mark_user_session_authenticated
     bypass_sign_in current_user
-    save_remember_device_preference
 
     UpdateUser.new(user: current_user, attributes: { second_factor_attempts_count: 0 }).call
   end

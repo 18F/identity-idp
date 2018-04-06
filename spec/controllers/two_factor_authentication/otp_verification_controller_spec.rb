@@ -394,13 +394,31 @@ describe TwoFactorAuthentication::OtpVerificationController do
       end
 
       context 'with remember_device in the params' do
-        it 'ignores the param and does not save an encrypted cookie' do
+        it 'saves an encrypted cookie' do
+          remember_device_cookie = instance_double(RememberDeviceCookie)
+          allow(remember_device_cookie).to receive(:to_json).and_return('asdf1234')
+          allow(RememberDeviceCookie).to receive(:new).and_return(remember_device_cookie)
+
           post(
             :create,
             params: {
               code: subject.current_user.direct_otp,
               otp_delivery_preference: 'sms',
               remember_device: 'true',
+            }
+          )
+
+          expect(cookies.encrypted[:remember_device]).to eq('asdf1234')
+        end
+      end
+
+      context 'without remember_device in the params' do
+        it 'does not save an encrypted cookie' do
+          post(
+            :create,
+            params: {
+              code: subject.current_user.direct_otp,
+              otp_delivery_preference: 'sms',
             }
           )
 
