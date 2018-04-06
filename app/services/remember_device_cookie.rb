@@ -34,7 +34,7 @@ class RememberDeviceCookie
 
   def valid_for_user?(user)
     return false if user.id != user_id
-    return false if user_has_changed_phone?(phone)
+    return false if user_has_changed_phone?(user)
     return false if expired?
     true
   end
