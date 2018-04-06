@@ -34,8 +34,18 @@ class RememberDeviceCookie
 
   def valid_for_user?(user)
     return false if user.id != user_id
-    return false if user.phone_confirmed_at.to_i > created_at.to_i
-    return false if created_at < Figaro.env.remember_device_expiration_days.to_i.days.ago
+    return false if user_has_changed_phone?(phone)
+    return false if expired?
     true
+  end
+
+  private
+
+  def expired?
+    created_at < Figaro.env.remember_device_expiration_days.to_i.days.ago
+  end
+
+  def user_has_changed_phone?(user)
+    user.phone_confirmed_at.to_i > created_at.to_i
   end
 end
