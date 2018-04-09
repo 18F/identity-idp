@@ -1,6 +1,6 @@
 namespace :dev do
   desc 'Sample data for local development environment'
-  task prime: 'db:setup' do
+  task prime: :environment do
     pw = 'salty pickles'
     %w[test1@test.com test2@test.com].each_with_index do |email, index|
       ee = EncryptedAttribute.new_from_decrypted(email)

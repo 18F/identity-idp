@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+
+load File.expand_path('../lib/deploy/activate.rb', File.dirname(__FILE__))
+
+Deploy::Activate.new.run

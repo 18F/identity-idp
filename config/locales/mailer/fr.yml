@@ -5,6 +5,10 @@ fr:
     confirmation_instructions:
       first_sentence:
         confirmed: Vous tentez de changer votre adresse courriel?
+        forgot_password: Vous avez essayé de réinitialiser le mot de passe de votre
+          compte login.gov, mais nous ne possédons pas de compte associé à cette adresse
+          courriel. Si vous souhaitez créer un nouveau compte associé à cette adresse
+          courriel, confirmez votre adresse courriel ci-dessous.
         reset_requested: Votre compte %{app} a été réinitialisé par un représentant
           du soutien technique. Pour continuer, vous devez confirmer votre adresse
           courriel.

@@ -178,3 +178,4 @@ UtilityFunction:
     enabled: false
 exclude_paths:
   - db/migrate
+  - spec

@@ -142,11 +142,13 @@ class User < ApplicationRecord
     # no-op
   end
 
-  def send_custom_confirmation_instructions(id = nil)
+  def send_custom_confirmation_instructions(id = nil, instructions = nil)
     generate_confirmation_token! unless @raw_confirmation_token
 
     opts = pending_reconfirmation? ? { to: unconfirmed_email, request_id: id } : { request_id: id }
-    send_devise_notification(:confirmation_instructions, @raw_confirmation_token, opts)
+    opts[:first_sentence] = instructions if instructions
+    send_devise_notification(:confirmation_instructions,
+                             @raw_confirmation_token, opts)
   end
 end
 # rubocop:enable Rails/HasManyOrHasOneDependent
