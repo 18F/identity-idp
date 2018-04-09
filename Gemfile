@@ -74,7 +74,7 @@ group :development do
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
   gem 'reek'
-  gem 'rubocop', require: false
+  gem 'rubocop', '~> 0.52.0', require: false
 end
 
 group :development, :test do

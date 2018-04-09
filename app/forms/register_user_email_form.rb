@@ -16,12 +16,12 @@ class RegisterUserEmailForm
     'true'
   end
 
-  def submit(params)
+  def submit(params, instructions = nil)
     user.email = params[:email]
     request_id = params[:request_id]
 
     if valid_form?
-      process_successful_submission(request_id)
+      process_successful_submission(request_id, instructions)
     else
       @success = process_errors(request_id)
     end
@@ -38,10 +38,10 @@ class RegisterUserEmailForm
     valid? && !email_taken?
   end
 
-  def process_successful_submission(request_id)
+  def process_successful_submission(request_id, instructions)
     @success = true
     user.save!
-    user.send_custom_confirmation_instructions(request_id)
+    user.send_custom_confirmation_instructions(request_id, instructions)
   end
 
   def extra_analytics_attributes

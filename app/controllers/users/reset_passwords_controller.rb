@@ -62,12 +62,20 @@ module Users
     end
 
     def handle_valid_email
-      RequestPasswordReset.new(email, request_id).perform
+      create_account_if_email_not_found
 
       session[:email] = email
       resend_confirmation = email_params[:resend]
 
       redirect_to forgot_password_url(resend: resend_confirmation, request_id: request_id)
+    end
+
+    def create_account_if_email_not_found
+      user, result = RequestPasswordReset.new(email, request_id).perform
+      return unless result
+
+      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL, result.to_h)
+      create_user_event(:account_created, user)
     end
 
     def handle_invalid_or_expired_token(result)

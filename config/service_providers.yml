@@ -493,3 +493,40 @@ production:
       - 'https://training.vgihub.geointservices.io/op_redirect'
       - 'https://wiki.vgihub.geointservices.io/op_redirect'
     restrict_to_deploy_env: 'prod'
+
+  # NGA GEOWorks Landing Page
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:landingpage':
+    agency_id: 5
+    friendly_name: 'GEOWorks Landing Page'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_geoworks_prod'
+    return_to_sp_url: 'https://geoworks.nga-geoworks.com'
+    redirect_uris:
+      - 'https://geoworks.nga-geoworks.com/auth/login-gov/callback/loa-1'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA GEOINT Viewer
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:geoint_viewer':
+    agency_id: 5
+    friendly_name: 'GEOINT Viewer'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_geoint_viewer_prod'
+    return_to_sp_url: 'https://gv-geoworks.nga-geoworks.com'
+    redirect_uris:
+      - 'https://gv-geoworks.nga-geoworks.com/protected/callback'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA HiPER CLOUD
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:hiper_look':
+    agency_id: 5
+    friendly_name: 'HiPER CLOUD'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_hiper_look_prod'
+    return_to_sp_url: 'https://hiperlook-ppp.nga-geoworks.com'
+    redirect_uris:
+      - 'https://hiperlook-ppp.nga-geoworks.com/auth_redirect'
+      - 'https://hiperlook-ppp.nga-geoworks.com:443/auth_redirect'
+    restrict_to_deploy_env: 'prod'
