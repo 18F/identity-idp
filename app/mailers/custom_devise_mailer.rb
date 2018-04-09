@@ -12,7 +12,7 @@ class CustomDeviseMailer < Devise::Mailer
 
   def confirmation_instructions(record, token, options = {})
     presenter = ConfirmationEmailPresenter.new(record, view_context)
-    @first_sentence = presenter.first_sentence
+    @first_sentence = options[:first_sentence] || presenter.first_sentence
     @confirmation_period = presenter.confirmation_period
     @request_id = options[:request_id]
     @locale = locale_url_param
