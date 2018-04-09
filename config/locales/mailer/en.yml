@@ -5,6 +5,9 @@ en:
     confirmation_instructions:
       first_sentence:
         confirmed: Trying to change your email address?
+        forgot_password: You tried to reset your login.gov password but we don't have
+          an account linked to this  email address. If you'd like to set up a new
+          account linked to this email, confirm your email address below.
         reset_requested: Your %{app} account has been reset by a tech support representative.
           To continue, you must confirm your email address.
         unconfirmed: Thanks for creating an account.
