@@ -20,7 +20,7 @@ class RememberDeviceCookie
   private_class_method def self.check_cookie_role(parsed_json)
     role = parsed_json['role']
     return if role == COOKIE_ROLE
-    raise "RememberDeviceCookie role '#{role}' did not match 'remember_me'"
+    raise "RememberDeviceCookie role '#{role}' did not match '#{COOKIE_ROLE}'"
   end
 
   def to_json
