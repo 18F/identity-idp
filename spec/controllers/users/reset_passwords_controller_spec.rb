@@ -261,7 +261,16 @@ describe Users::ResetPasswordsController, devise: true do
   describe '#create' do
     context 'no user matches email' do
       it 'send an email to tell the user they do not have an account yet' do
-        stub_analytics
+        analytics = instance_double(Analytics)
+        allow(Analytics).to receive(:new).and_return(analytics)
+        allow(analytics).to receive(:track_event)
+        email = 'nonexistent@example.com'
+
+        expect do
+          put :create, params: {
+            password_reset_email_form: { email: email },
+          }
+        end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
         analytics_hash = {
           success: true,
@@ -270,15 +279,18 @@ describe Users::ResetPasswordsController, devise: true do
           role: 'nonexistent',
           confirmed: false,
         }
-
-        expect(@analytics).to receive(:track_event).
+        expect(analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect do
-          put :create, params: {
-            password_reset_email_form: { email: 'nonexistent@example.com' },
-          }
-        end.to(change { ActionMailer::Base.deliveries.count }.by(1))
+        analytics_hash = {
+          success: true,
+          errors: {},
+          email_already_exists: false,
+          user_id: User.find_with_email(email).uuid,
+          domain_name: 'example.com',
+        }
+        expect(analytics).to have_received(:track_event).
+          with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
         expect(response).to redirect_to forgot_password_path
       end
