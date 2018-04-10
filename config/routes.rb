@@ -55,6 +55,10 @@ Rails.application.routes.draw do
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
+      get '/login/two_factor/reset_device' => 'two_factor_authentication/reset_device#show'
+      post '/login/two_factor/reset_device' => 'two_factor_authentication/reset_device#create'
+      get '/login/two_factor/reset_device_cancel' => 'two_factor_authentication/cancel_reset_device#cancel',
+          as: :reset_device_cancel
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',
@@ -99,6 +103,9 @@ Rails.application.routes.draw do
     get '/authenticator_start' => 'users/totp_setup#start'
 
     get '/forgot_password' => 'forgot_password#show'
+
+    get '/change_phone' => 'kba_security#show'
+    post '/change_phone' => 'kba_security#update'
 
     get '/manage/email' => 'users/emails#edit'
     match '/manage/email' => 'users/emails#update', via: %i[patch put]

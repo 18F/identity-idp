@@ -4,3 +4,7 @@ fr:
     sms_otp_sender_job:
       message: "%{code} est votre %{app} code de sécurité à utilisation unique. Ce
         code expirera dans %{expiration} minutes."
+    sms_reset_device_notifier_job:
+      message: Vous avez demandé à modifier le numéro de téléphone associé à votre
+        compte %{app}. Cette demande sera traitée dans les 72 heures. Si vous n'avez
+        pas fait cette demande, veuillez cliquez ici %{cancel_link}.

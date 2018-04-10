@@ -3,7 +3,9 @@ module Users
     include TwoFactorAuthenticatable
 
     def show
-      if current_user.totp_enabled?
+      if current_user&.change_phone_request&.change_phone_allowed?
+        change_phone
+      elsif current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
       elsif current_user.two_factor_enabled?
         validate_otp_delivery_preference_and_send_code
@@ -17,7 +19,7 @@ module Users
       analytics.track_event(Analytics::OTP_DELIVERY_SELECTION, result.to_h)
 
       if result.success?
-        handle_valid_otp_delivery_preference(user_selected_otp_delivery_preference)
+        handle_valid_otp_delivery_preference(delivery_params[:otp_delivery_preference])
       else
         handle_invalid_otp_delivery_preference(result)
       end
@@ -99,14 +101,8 @@ module Users
 
       job = "#{method.capitalize}OtpSenderJob".constantize
       job_priority = confirmation_context? ? :perform_now : :perform_later
-      job.send(job_priority,
-               code: current_user.direct_otp,
-               phone: phone_to_deliver_to,
-               otp_created_at: current_user.direct_otp_sent_at.to_s)
-    end
-
-    def user_selected_otp_delivery_preference
-      delivery_params[:otp_delivery_preference]
+      job.send(job_priority, code: current_user.direct_otp, phone: phone_to_deliver_to,
+                             otp_created_at: current_user.direct_otp_sent_at.to_s)
     end
 
     def delivery_params
@@ -121,6 +117,12 @@ module Users
 
     def otp_rate_limiter
       @_otp_rate_limited ||= OtpRateLimiter.new(phone: phone_to_deliver_to, user: current_user)
+    end
+
+    def change_phone
+      mark_user_session_authenticated
+      bypass_sign_in current_user
+      redirect_to manage_phone_url
     end
   end
 end

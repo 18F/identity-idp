@@ -1,0 +1,12 @@
+---
+es:
+  kba_security:
+    description: Para mayor seguridad, responda la siguiente pregunta de seguridad.
+    dropdown_message: Seleccione una respuesta ...
+    dropdown_other: Otro
+    question: "¿En qué agencia has iniciado sesión recientemente?"
+    select_answer_error: Por favor seleccione una respuesta.
+    success: Ahora puede iniciar sesión y cambiar su número de teléfono.
+    title: Cambia tu número de teléfono
+    wrong_answer: Su respuesta de seguridad no era correcta. Debes crear una nueva
+      solicitud para cambiar tu número de teléfono.

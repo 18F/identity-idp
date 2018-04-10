@@ -79,4 +79,9 @@ class FeatureManagement
   def self.enable_saml_cert_rotation?
     Figaro.env.saml_secret_rotation_enabled == 'true'
   end
+
+  def self.reset_device_wait_period_days
+    days = Figaro.env.reset_device_wait_period_days
+    days ? days.to_i : nil
+  end
 end

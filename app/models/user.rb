@@ -35,6 +35,8 @@ class User < ApplicationRecord
   has_many :agency_identities, dependent: :destroy
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
+  has_one :change_phone_request, dependent: :destroy
+  has_many :change_phone_events, dependent: :destroy
 
   attr_accessor :asserted_attributes
 

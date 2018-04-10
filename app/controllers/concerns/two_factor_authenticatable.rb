@@ -229,19 +229,25 @@ module TwoFactorAuthenticatable
     user_session[:unconfirmed_phone] && idv_or_confirmation_context?
   end
 
-  # rubocop:disable MethodLength
   def phone_view_data
+    phone_view_hash.merge(generic_data)
+  end
+
+  # rubocop:disable MethodLength
+  def phone_view_hash
     {
       confirmation_for_phone_change: confirmation_for_phone_change?,
       confirmation_for_idv: idv_context?,
       phone_number: display_phone_to_deliver_to,
+      phone_confirmed_at: current_user.phone_confirmed_at,
       code_value: direct_otp_code,
       otp_delivery_preference: two_factor_authentication_method,
       voice_otp_delivery_unsupported: voice_otp_delivery_unsupported?,
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
-    }.merge(generic_data)
+      reset_device_token: current_user&.change_phone_request&.request_token,
+    }
   end
   # rubocop:enable MethodLength
 

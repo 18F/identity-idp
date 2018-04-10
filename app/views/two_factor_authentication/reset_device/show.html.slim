@@ -1,0 +1,9 @@
+- title t('devise.two_factor_authentication.reset_device.header_text')
+
+h1.h3.my0 = t('devise.two_factor_authentication.reset_device.header_text')
+p.mt-tiny.mb0 = t('devise.two_factor_authentication.reset_device.instructions')
+br
+= button_to t('devise.two_factor_authentication.reset_device.header_text'),
+    login_two_factor_reset_device_path, method: :post,
+    class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
+= render 'shared/cancel', link: sign_out_path

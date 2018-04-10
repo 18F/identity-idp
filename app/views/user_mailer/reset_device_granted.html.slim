@@ -1,0 +1,35 @@
+p.lead == t('.intro', app: link_to(APP_NAME, Figaro.env.mailer_domain_name, class: 'gray'))
+
+table.button.expanded.large.radius
+  tbody
+    tr
+      td
+        table
+          tbody
+            tr
+              td
+                center
+                  = link_to t('user_mailer.reset_device_granted.button'), \
+                    change_phone_url(token: @granted_token), \
+                    target: '_blank', \
+                    class: 'float-center', align: 'center'
+      td.expander
+
+p = link_to change_phone_url(token: @granted_token),
+        change_phone_url(token: @granted_token), target: '_blank'
+
+table.spacer
+  tbody
+    tr
+      td.s10 height="10px"
+        | &nbsp;
+table.hr
+  tr
+    th
+      | &nbsp;
+
+p= t('mailer.confirmation_instructions.footer', confirmation_period: '24 hours')
+
+p== t('user_mailer.reset_device_granted.help',
+        cancel_reset_device: link_to(t('user_mailer.reset_device_granted.cancel_link_text'),
+                reset_device_cancel_url(token: @token)))

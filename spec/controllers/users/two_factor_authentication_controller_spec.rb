@@ -108,6 +108,20 @@ describe Users::TwoFactorAuthenticationController do
         expect(response).to redirect_to phone_setup_url
       end
     end
+
+    context 'when the user has requested authentication device reset' do
+      it 'renders the :manage_reset view if they have waited 72 hours' do
+        user = create(:user, :signed_up)
+        sign_in_before_2fa(user)
+        user = subject.current_user
+        ResetDevice.new(user).create_request
+        cpr = user.change_phone_request
+        allow(cpr).to receive(:change_phone_allowed?).and_return(true)
+        get :show
+
+        expect(response).to redirect_to manage_phone_url
+      end
+    end
   end
 
   describe '#send_code' do
