@@ -18,7 +18,6 @@ module Idv
       personal_key
       resolution_successful
       step_attempts
-      vendor_session_id
     ].freeze
 
     attr_reader :current_user, :usps_otp
