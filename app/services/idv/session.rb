@@ -1,3 +1,6 @@
+require 'stringex/unidecoder'
+require 'stringex/core_ext'
+
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
@@ -15,7 +18,6 @@ module Idv
       personal_key
       resolution_successful
       step_attempts
-      vendor_session_id
     ].freeze
 
     attr_reader :current_user, :usps_otp

@@ -128,6 +128,17 @@ development:
     attribute_bundle:
       - email
 
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    agency_id: 2
+    uuid_priority: 30
+    logo: '18f.svg'
+    cert: 'identity_dashboard_cert'
+    return_to_sp_url: 'http://localhost:3001'
+    redirect_uris:
+      - 'http://localhost:3001/users/result'
+
   'urn:gov:gsa:openidconnect:development':
     redirect_uris:
       - 'gov.gsa.openidconnect.development://result'
@@ -161,6 +172,14 @@ development:
     redirect_uris:
       - 'http://localhost:8080/'
       - 'http://localhost:8080/auth/login-gov/callback'
+
+  'urn:gov:gsa:openidconnect:sp:phoenix':
+    agency: 'GSA'
+    cert: 'sp_phoenix_demo'
+    friendly_name: 'Example OIDC Client (Phoenix)'
+    logo: '18f.svg'
+    redirect_uris:
+      - 'http://localhost:4000/'
 
 production:
   'https://idp.dev.login.gov':
@@ -221,6 +240,17 @@ production:
     cert: 'identity_dashboard_cert'
     attribute_bundle:
       - email
+
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:dashboard':
+    friendly_name: 'Dashboard'
+    agency: 'GSA'
+    agency_id: 2
+    uuid_priority: 30
+    logo: '18f.svg'
+    cert: 'identity_dashboard_cert'
+    return_to_sp_url: 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>'
+    redirect_uris:
+      - 'https://dashboard.<%= LoginGov::Hostdata.env %>.<%= LoginGov::Hostdata.domain %>/users/result'
   <% end %>
 
   'urn:gov:gsa:openidconnect:sp:sinatra':
@@ -367,11 +397,11 @@ production:
       - 'https://ttp.cbp.dhs.gov'
     return_to_sp_url: https://ttp.cbp.dhs.gov/
 
-  # CBP OARS
+  # CBP ROAM (formerly OARS)
   'urn:gov:dhs.cbp.pspd.oars:openidconnect:prod:app':
     agency_id: 1
     uuid_priority: 20
-    friendly_name: 'CBP OARS'
+    friendly_name: 'CBP ROAM'
     agency: 'DHS'
     logo: 'cbp.png'
     redirect_uris:
@@ -462,4 +492,41 @@ production:
       - 'https://tasks.vgihub.geointservices.io/op_redirect'
       - 'https://training.vgihub.geointservices.io/op_redirect'
       - 'https://wiki.vgihub.geointservices.io/op_redirect'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA GEOWorks Landing Page
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:landingpage':
+    agency_id: 5
+    friendly_name: 'GEOWorks Landing Page'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_geoworks_prod'
+    return_to_sp_url: 'https://geoworks.nga-geoworks.com'
+    redirect_uris:
+      - 'https://geoworks.nga-geoworks.com/auth/login-gov/callback/loa-1'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA GEOINT Viewer
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:geoint_viewer':
+    agency_id: 5
+    friendly_name: 'GEOINT Viewer'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_geoint_viewer_prod'
+    return_to_sp_url: 'https://gv-geoworks.nga-geoworks.com'
+    redirect_uris:
+      - 'https://gv-geoworks.nga-geoworks.com/protected/callback'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA HiPER CLOUD
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:hiper_look':
+    agency_id: 5
+    friendly_name: 'HiPER CLOUD'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_hiper_look_prod'
+    return_to_sp_url: 'https://hiperlook-ppp.nga-geoworks.com'
+    redirect_uris:
+      - 'https://hiperlook-ppp.nga-geoworks.com/auth_redirect'
+      - 'https://hiperlook-ppp.nga-geoworks.com:443/auth_redirect'
     restrict_to_deploy_env: 'prod'

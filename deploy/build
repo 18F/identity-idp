@@ -14,10 +14,15 @@ cd "$(dirname "$0")/.."
 
 set -x
 
+env
+
 id
 which bundle
 
 bundle_dir=/srv/idp/shared
+
+# use system libxml2, not the one vendored with nokogiri
+bundle config build.nokogiri --use-system-libraries
 
 bundle install --deployment --jobs 4 \
     --path "$bundle_dir/bundle" \

@@ -7,7 +7,6 @@ describe Idv::PhoneJob do
     let(:result_id) { SecureRandom.uuid }
     let(:applicant_json) { { first_name: 'Jean-Luc', last_name: 'Picard' }.to_json }
     let(:vendor_params) { '5555550000' }
-    let(:vendor_session_id) { SecureRandom.uuid }
 
     context 'when verification succeeds' do
       it 'should save a successful result' do
@@ -15,7 +14,6 @@ describe Idv::PhoneJob do
           result_id: result_id,
           vendor_params: vendor_params,
           applicant_json: applicant_json,
-          vendor_session_id: vendor_session_id
         )
         result = VendorValidatorResultStorage.new.load(result_id)
 
@@ -35,7 +33,6 @@ describe Idv::PhoneJob do
           result_id: result_id,
           vendor_params: vendor_params,
           applicant_json: applicant_json,
-          vendor_session_id: vendor_session_id
         )
         result = VendorValidatorResultStorage.new.load(result_id)
 
@@ -60,7 +57,6 @@ describe Idv::PhoneJob do
             result_id: result_id,
             vendor_params: vendor_params,
             applicant_json: applicant_json,
-            vendor_session_id: vendor_session_id
           )
         end.to raise_error(RuntimeError, '🔥🔥🔥')
         result = VendorValidatorResultStorage.new.load(result_id)
@@ -78,7 +74,6 @@ describe Idv::PhoneJob do
         result_id: result_id,
         vendor_params: vendor_params,
         applicant_json: applicant_json,
-        vendor_session_id: vendor_session_id
       )
       result = VendorValidatorResultStorage.new.load(result_id)
 

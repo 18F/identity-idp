@@ -1,5 +1,13 @@
 import { isValidNumber } from 'libphonenumber-js';
 
+const isPhoneValid = (phone, countryCode) => {
+  let phoneValid = isValidNumber(phone, countryCode);
+  if (!phoneValid && countryCode === 'US') {
+    phoneValid = isValidNumber(`+1 ${phone}`, countryCode);
+  }
+  return phoneValid;
+};
+
 const checkPhoneValidity = () => {
   const sendCodeButton = document.querySelector('[data-international-phone-form] input[name=commit]');
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
@@ -9,13 +17,12 @@ const checkPhoneValidity = () => {
     const phone = phoneInput.value;
     const countryCode = countryCodeInput.value;
 
-    const phoneValid = isValidNumber(phone, countryCode);
+    const phoneValid = isPhoneValid(phone, countryCode);
 
-    if (phoneValid) {
-      sendCodeButton.disabled = false;
-    } else {
+    sendCodeButton.disabled = !phoneValid;
+
+    if (!phoneValid) {
       phoneInput.dispatchEvent(new Event('invalid'));
-      sendCodeButton.disabled = true;
     }
   }
 };
