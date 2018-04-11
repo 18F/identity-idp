@@ -1,4 +1,8 @@
 module IdvHelper
+  def self.included(base)
+    base.class_eval { include JavascriptDriverHelper }
+  end
+
   def max_attempts_less_one
     Idv::Attempter.idv_max_attempts - 1
   end
@@ -127,7 +131,14 @@ module IdvHelper
 
   def visit_idp_from_sp_with_loa3(sp)
     if sp == :saml
-      @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+      settings = loa3_with_bundle_saml_settings
+      settings.security[:embed_sign] = false
+      if javascript_enabled?
+        idp_domain_name = "#{page.server.host}:#{page.server.port}"
+        settings.idp_sso_target_url = "http://#{idp_domain_name}/api/saml/auth"
+        settings.idp_slo_target_url = "http://#{idp_domain_name}/api/saml/logout"
+      end
+      @saml_authn_request = auth_request.create(settings)
       visit @saml_authn_request
     elsif sp == :oidc
       @state = SecureRandom.hex
