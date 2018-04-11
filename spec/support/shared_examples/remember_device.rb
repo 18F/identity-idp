@@ -51,4 +51,31 @@ shared_examples 'remember device' do
     sign_in_user(first_user)
     expect(current_path).to eq(login_two_factor_path(otp_delivery_preference: :sms))
   end
+
+  it 'redirects to an SP from the sign in page' do
+    oidc_url = openid_connect_authorize_url(
+      client_id: 'urn:gov:gsa:openidconnect:sp:server',
+      response_type: 'code',
+      acr_values: Saml::Idp::Constants::LOA1_AUTHN_CONTEXT_CLASSREF,
+      scope: 'openid email',
+      redirect_uri: 'http://localhost:7654/auth/result',
+      state: SecureRandom.hex,
+      nonce: SecureRandom.hex
+    )
+    user = remember_device_and_sign_out_user
+
+    IdentityLinker.new(
+      user, 'urn:gov:gsa:openidconnect:sp:server'
+    ).link_identity(verified_attributes: %w[email])
+
+    visit oidc_url
+    click_link t('links.sign_in')
+
+    expect(page.response_headers['Content-Security-Policy']).
+      to(include('form-action \'self\' http://localhost:7654'))
+
+    sign_in_user(user)
+
+    expect(current_url).to start_with('http://localhost:7654/auth/result')
+  end
 end
