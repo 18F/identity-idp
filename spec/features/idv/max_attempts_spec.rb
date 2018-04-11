@@ -1,44 +1,34 @@
 require 'rails_helper'
 
-feature 'IdV max attempts' do
-  include IdvHelper
+feature 'IdV max attempts', :idv_job, :email do
+  include IdvStepHelper
+  include JavascriptDriverHelper
 
-  scenario 'profile shows failure modal after max attempts', :email, :idv_job, :js do
-    sign_in_and_2fa_user
-    visit verify_session_path
-
-    max_attempts_less_one.times do
-      fill_out_idv_form_fail
-      click_continue
-      click_button t('idv.modal.button.warning')
-
-      expect(current_path).to eq verify_session_result_path
+  context 'profile step' do
+    before do
+      start_idv_at_profile_step
+      perfom_maximum_allowed_idv_step_attempts { fill_out_idv_form_fail }
     end
 
-    fill_out_idv_form_fail
-    click_continue
-
-    expect(page).to have_css('.modal-fail', text: t('idv.modal.sessions.heading'))
+    it_behaves_like 'verification step max attempts', :sessions
   end
 
-  scenario 'phone shows failure modal after max attempts', :email, :idv_job, :js do
-    sign_in_and_2fa_user
-    visit verify_session_path
-    fill_out_idv_form_ok
-    click_idv_continue
-    click_idv_address_choose_phone
-
-    max_attempts_less_one.times do
-      fill_out_phone_form_fail
-      click_idv_continue
-      click_button t('idv.modal.button.warning')
-
-      expect(current_path).to eq verify_phone_result_path
+  context 'phone step' do
+    before do
+      complete_idv_steps_before_phone_step
+      perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
     end
 
-    fill_out_phone_form_fail
-    click_idv_continue
+    it_behaves_like 'verification step max attempts', :phone
+  end
 
-    expect(page).to have_css('.modal-fail', text: t('idv.modal.phone.heading'))
+  def perfom_maximum_allowed_idv_step_attempts(&fill_out_form_fail_block)
+    max_attempts_less_one.times do
+      fill_out_form_fail_block.call
+      click_idv_continue
+      click_button t('idv.modal.button.warning') if javascript_enabled?
+    end
+    fill_out_form_fail_block.call
+    click_idv_continue
   end
 end
