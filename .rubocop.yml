@@ -302,3 +302,12 @@ Style/TrailingCommaInHashLiteral:
 
 Style/SingleLineBlockParams:
   Enabled: false
+
+Naming/MemoizedInstanceVariableName:
+  Enabled: false
+
+Naming/UncommunicativeMethodParamName:
+  MinNameLength: 2
+
+Style/ExpandPathArguments:
+  Enabled: false
