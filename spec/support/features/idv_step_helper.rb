@@ -4,8 +4,8 @@ module IdvStepHelper
   end
 
   def start_idv_at_profile_step(user = user_with_2fa)
-    visit_idp_from_sp_with_loa3(:oidc)
     sign_in_live_with_2fa(user)
+    visit verify_url unless current_url != verify_url
     click_idv_begin
   end
 

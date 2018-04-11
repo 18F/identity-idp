@@ -6,6 +6,11 @@ feature 'IdV max attempts', :idv_job, :email do
 
   let(:user) { user_with_2fa }
 
+  before do
+    visit_idp_from_sp_with_loa3(:oidc)
+    click_link t('links.sign_in')
+  end
+
   context 'profile step' do
     before do
       start_idv_at_profile_step(user)
