@@ -12,9 +12,11 @@ shared_examples 'verification step max attempts' do |step|
     )
     expect(current_url).to eq(verify_fail_url)
 
-    user.reload
+    if step == :sessions
+      user.reload
 
-    expect(user.idv_attempted_at).to_not be_nil
+      expect(user.idv_attempted_at).to_not be_nil
+    end
   end
 
   scenario 'after 24 hours the user can retry and complete idv' do
