@@ -4,9 +4,11 @@ feature 'IdV max attempts', :idv_job, :email do
   include IdvStepHelper
   include JavascriptDriverHelper
 
+  let(:user) { user_with_2fa }
+
   context 'profile step' do
     before do
-      start_idv_at_profile_step
+      start_idv_at_profile_step(user)
       perfom_maximum_allowed_idv_step_attempts { fill_out_idv_form_fail }
     end
 
