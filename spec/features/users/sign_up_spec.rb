@@ -148,4 +148,26 @@ feature 'Sign Up' do
   it_behaves_like 'csrf error when acknowledging personal key', :oidc
   it_behaves_like 'creating an account with the site in Spanish', :saml
   it_behaves_like 'creating an account with the site in Spanish', :oidc
+
+  it 'allows a user to choose TOTP as 2FA method during sign up' do
+    sign_in_user
+    click_link t('links.two_factor_authentication.app_option')
+
+    expect(page).to have_current_path authenticator_setup_path
+  end
+
+  it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
+    user = create(:user, :signed_up)
+    sign_in_user(user)
+    visit authenticator_setup_path
+
+    expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+  end
+
+  it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
+    user = create(:user, :signed_up)
+    visit authenticator_setup_path
+
+    expect(page).to have_current_path root_path
+  end
 end
