@@ -9,9 +9,14 @@ feature 'Two Factor Authentication' do
 
       attempt_to_bypass_2fa_setup
 
-      expect(current_path).to eq phone_setup_path
+      expect(current_path).to eq two_factor_options_path
+
+      select_2fa_option('sms')
+
+      click_continue
+
       expect(page).
-        to have_content t('devise.two_factor_authentication.two_factor_setup')
+        to have_content t('titles.phone_setup.sms')
 
       send_security_code_without_entering_phone_number
 
@@ -25,19 +30,20 @@ feature 'Two Factor Authentication' do
 
       expect(page).to have_content invalid_phone_message
 
-      submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+      submit_2fa_setup_form_with_valid_phone
 
       expect(page).to_not have_content invalid_phone_message
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
       expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
-      expect(user.voice?).to eq true
+      expect(user.sms?).to eq true
     end
 
     context 'user enters OTP incorrectly 3 times' do
       it 'locks the user out' do
         sign_in_before_2fa
 
-        submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+        select_2fa_option('sms')
+        submit_2fa_setup_form_with_valid_phone
         3.times do
           fill_in('code', with: 'bad-code')
           click_button t('forms.buttons.submit.default')
@@ -47,89 +53,52 @@ feature 'Two Factor Authentication' do
       end
     end
 
-    context 'with U.S. phone that does not support phone delivery method' do
+    context 'with U.S. phone that does not support voice delivery method' do
       let(:unsupported_phone) { '242-555-5555' }
 
-      scenario 'renders an error if a user submits with phone selected' do
+      scenario 'renders an error if a user submits with voice selected' do
         sign_in_before_2fa
+        select_2fa_option('voice')
         fill_in 'Phone', with: unsupported_phone
-        choose 'Phone call'
         click_send_security_code
 
-        expect(current_path).to eq(phone_setup_path)
-        expect(page).to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Bahamas'
-        )
-      end
 
-      scenario 'disables the phone option and displays a warning with js', :js do
-        sign_in_before_2fa
-
-        select_country_and_type_phone_number(country: 'bs', number: '7035551212')
-        phone_radio_button = page.find(
-          '#user_phone_form_otp_delivery_preference_voice',
-          visible: :all
-        )
+        expect(current_path).to eq phone_setup_path
 
         expect(page).to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
         )
-        expect(phone_radio_button).to be_disabled
 
-        select_country_and_type_phone_number(country: 'us', number: '7035551212')
-        
-        expect(page).not_to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Bahamas'
-        )
-        expect(phone_radio_button).to_not be_disabled
+        click_on t('devise.two_factor_authentication.two_factor_choice_cancel')
+
+        expect(current_path).to eq two_factor_options_path
       end
     end
 
-    context 'with international phone that does not support phone delivery' do
-      scenario 'renders an error if a user submits with phone selected' do
+    context 'with international phone that does not support voice delivery' do
+      scenario 'updates international code as user types', :js do
         sign_in_before_2fa
+        select_2fa_option('voice')
+        fill_in 'Phone', with: '+81 54 354 3643'
 
-        select 'Turkey +90', from: 'International code'
-        fill_in 'Phone', with: '555-555-5000'
-        choose 'Phone call'
-        click_send_security_code
+        expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
 
-        expect(current_path).to eq(phone_setup_path)
-        expect(page).to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Turkey'
-        )
-      end
+        fill_in 'Phone', with: ''
+        fill_in 'Phone', with: '+212 5376'
 
-      scenario 'disables the phone option and displays a warning with js', :js do
-        sign_in_before_2fa
-        select_country_and_type_phone_number(country: 'tr', number: '3122132965')
+        expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'MA'
 
-        phone_radio_button = page.find(
-          '#user_phone_form_otp_delivery_preference_voice',
-          visible: :all
-        )
+        fill_in 'Phone', with: ''
+        fill_in 'Phone', with: '+81 54354'
 
-        expect(page).to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Turkey'
-        )
-        expect(phone_radio_button).to be_disabled
-
-        select_country_and_type_phone_number(country: 'ca', number: '3122132965')
-
-        expect(page).not_to have_content t(
-          'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
-          location: 'Turkey'
-        )
-        expect(phone_radio_button).to_not be_disabled
+        expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'JP'
       end
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
+        select_2fa_option('voice')
+
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
         expect(phone_field.value).to eq('12345678901234567890')
@@ -156,18 +125,17 @@ feature 'Two Factor Authentication' do
   end
 
   def submit_2fa_setup_form_with_empty_string_phone
-    fill_in 'Phone', with: ''
+    fill_in 'user_phone_form_phone', with: ''
     click_send_security_code
   end
 
   def submit_2fa_setup_form_with_invalid_phone
-    fill_in 'Phone', with: 'five one zero five five five four three two one'
+    fill_in 'user_phone_form_phone', with: 'five one zero five five five four three two one'
     click_send_security_code
   end
 
-  def submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
-    fill_in 'Phone', with: '555-555-1212'
-    choose 'Phone call'
+  def submit_2fa_setup_form_with_valid_phone
+    fill_in 'user_phone_form_phone', with: '555-555-1212'
     click_send_security_code
   end
 
@@ -406,15 +374,16 @@ feature 'Two Factor Authentication' do
 
     context 'When setting up 2FA for the first time' do
       it 'enforces rate limiting only for current phone' do
-        second_user = create(:user, :signed_up, phone: '+1 202-555-1212')
+        second_user = create(:user, :signed_up, phone: '202-555-1212')
 
         sign_in_before_2fa
         max_attempts = Figaro.env.otp_delivery_blocklist_maxretry.to_i
 
-        submit_2fa_setup_form_with_valid_phone_and_choose_phone_call_delivery
+        select_2fa_option('sms')
+        submit_2fa_setup_form_with_valid_phone
 
         max_attempts.times do
-          click_link t('links.two_factor_authentication.resend_code.voice')
+          click_link t('links.two_factor_authentication.resend_code.sms')
         end
 
         expect(page).to have_content t('titles.account_locked')

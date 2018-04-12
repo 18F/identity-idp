@@ -122,7 +122,6 @@ es:
         sms: Mensaje de texto (SMS, sigla en inglés)
         title: "¿Cómo deberíamos enviarle un código?"
         voice: Llamada telefónica
-      otp_phone_label: Número de teléfono
       otp_phone_label_info: El móvil o teléfono fijo. Si tiene un teléfono fijo, seleccione
         "Llamada telefónica" en la siguiente pregunta.
       otp_phone_label_info_mobile_only: NOT TRANSLATED YET
@@ -137,6 +136,12 @@ es:
       personal_key_prompt: Puede usar esta clave personal una vez. Si todavía necesita
         un código después de iniciar una sesión, vaya a la página de configuración
         de su cuenta para obtener una clave nueva.
+      phone_sms_label: Número de teléfono móvil
+      phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
+        <strong>cada vez que inicie sesión</strong>.
+      phone_voice_label: Número de teléfono
+      phone_voice_info_html: Te llamaremos con un código de seguridad <strong>cada
+        vez que inicies sesión</strong>.
       piv_cac_fallback:
         link: Use su PIV/CAC en su lugar
         text_html: "¿Tiene usted PIV/CAC? %{link}"
@@ -152,6 +157,20 @@ es:
       totp_header_text: Ingrese su código de la app de autenticación
       totp_info: Use cualquier app de autenticación para escanear el código QR que
         aparece a continuación.
+      two_factor_choice: Asegure su cuenta
+      two_factor_choice_options:
+        voice: Llamada telefónica
+        voice_info: Obtenga su código de seguridad a través de una llamada telefónica.
+        sms: Mensaje de texto / SMS
+        sms_info: Obtenga su código de seguridad a través de mensajes de texto / SMS.
+        auth_app: Aplicación de autenticación
+        auth_app_info: Configure una aplicación de autenticación para obtener su código
+          de seguridad sin proporcionar un número de teléfono.
+        piv_cac: Empleados del Gobierno
+        piv_cac_info: Use su tarjeta PIV / CAC para asegurar su cuenta.
+      two_factor_choice_intro: login.gov se asegura de que pueda acceder a su cuenta
+        agregando una segunda capa de seguridad.
+      two_factor_choice_cancel: "‹ Elige otra opción"
       two_factor_setup: Añada un número de teléfono
       user:
         new_otp_sent: Le enviamos un nuevo código de sólo un uso

@@ -182,7 +182,7 @@ feature 'LOA1 Single Sign On' do
       saml_authn_request = auth_request.create(saml_settings)
       visit saml_authn_request
 
-      expect(current_path).to eq phone_setup_path
+      expect(current_path).to eq two_factor_options_path
     end
   end
 

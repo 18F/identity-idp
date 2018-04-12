@@ -2,6 +2,16 @@ require 'rails_helper'
 
 describe Users::TwoFactorAuthenticationSetupController do
   describe 'GET index' do
+    it 'tracks the visit in analytics' do
+      stub_sign_in_before_2fa
+      stub_analytics
+
+      expect(@analytics).to receive(:track_event).
+        with(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
+
+      get :index
+    end
+
     context 'when signed out' do
       it 'redirects to sign in page' do
         get :index
@@ -9,165 +19,125 @@ describe Users::TwoFactorAuthenticationSetupController do
         expect(response).to redirect_to(new_user_session_url)
       end
     end
+
+    context 'when fully authenticated' do
+      it 'redirects to account page' do
+        stub_sign_in
+
+        get :index
+
+        expect(response).to redirect_to(account_url)
+      end
+    end
+
+    context 'already two factor enabled but not fully authenticated' do
+      it 'prompts for 2FA' do
+        user = build(:user, :signed_up)
+        stub_sign_in_before_2fa(user)
+
+        get :index
+
+        expect(response).to redirect_to(user_two_factor_authentication_url)
+      end
+    end
   end
 
-  describe 'PATCH set' do
-    let(:user) { create(:user) }
+  describe 'PATCH create' do
+    it 'submits the TwoFactorOptionsForm' do
+      user = build(:user)
+      stub_sign_in_before_2fa(user)
 
-    it 'tracks an event when the number is invalid' do
-      sign_in(user)
+      voice_params = {
+        two_factor_options_form: {
+          selection: 'voice',
+        }
+      }
+      params = ActionController::Parameters.new(voice_params)
+      response = FormResponse.new(success: true, errors: {}, extra: { selection: 'voice' })
 
+      form = instance_double(TwoFactorOptionsForm)
+      allow(TwoFactorOptionsForm).to receive(:new).with(user).and_return(form)
+      expect(form).to receive(:submit).
+        with(params.require(:two_factor_options_form).permit(:selection)).
+        and_return(response)
+      expect(form).to receive(:selection).and_return('voice')
+
+      patch :create, params: voice_params
+    end
+
+    it 'tracks analytics event' do
+      stub_sign_in_before_2fa
       stub_analytics
+
       result = {
-        success: false,
-        errors: { phone: [t('errors.messages.improbable_phone')] },
-        otp_delivery_preference: 'sms',
+        selection: 'voice',
+        success: true,
+        errors: {},
       }
 
       expect(@analytics).to receive(:track_event).
-        with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
+        with(Analytics::USER_REGISTRATION_2FA_SETUP, result)
 
-      patch :set, params: {
-        user_phone_form: {
-          phone: '703-555-010',
-          otp_delivery_preference: :sms,
-          international_code: 'US',
+      patch :create, params: {
+        two_factor_options_form: {
+          selection: 'voice',
         },
       }
-
-      expect(response).to render_template(:index)
     end
 
-    context 'with voice' do
-      it 'prompts to confirm the number' do
-        sign_in(user)
+    context 'when the selection is sms' do
+      it 'redirects to phone setup page' do
+        stub_sign_in_before_2fa
 
-        stub_analytics
-        result = {
-          success: true,
-          errors: {},
-          otp_delivery_preference: 'voice',
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'sms',
+          },
         }
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
-
-        patch(
-          :set,
-          params: {
-            user_phone_form: { phone: '703-555-0100',
-                               otp_delivery_preference: 'voice',
-                               international_code: 'US' },
-          }
-        )
-
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'voice' }
-          )
-        )
-
-        expect(subject.user_session[:context]).to eq 'confirmation'
+        expect(response).to redirect_to phone_setup_url
       end
     end
 
-    context 'with SMS' do
-      it 'prompts to confirm the number' do
-        sign_in(user)
+    context 'when the selection is voice' do
+      it 'redirects to phone setup page' do
+        stub_sign_in_before_2fa
 
-        stub_analytics
-
-        result = {
-          success: true,
-          errors: {},
-          otp_delivery_preference: 'sms',
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'voice',
+          },
         }
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
-
-        patch(
-          :set,
-          params: {
-            user_phone_form: { phone: '703-555-0100',
-                               otp_delivery_preference: :sms,
-                               international_code: 'US' },
-          }
-        )
-
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
-        )
-
-        expect(subject.user_session[:context]).to eq 'confirmation'
+        expect(response).to redirect_to phone_setup_url
       end
     end
 
-    context 'without selection' do
-      it 'prompts to confirm via SMS by default' do
-        sign_in(user)
+    context 'when the selection is auth_app' do
+      it 'redirects to authentication app setup page' do
+        stub_sign_in_before_2fa
 
-        stub_analytics
-        result = {
-          success: true,
-          errors: {},
-          otp_delivery_preference: 'sms',
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'auth_app',
+          },
         }
 
-        expect(@analytics).to receive(:track_event).
-          with(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result)
-
-        patch(
-          :set,
-          params: {
-            user_phone_form: { phone: '703-555-0100',
-                               otp_delivery_preference: :sms,
-                               international_code: 'US' },
-          }
-        )
-
-        expect(response).to redirect_to(
-          otp_send_path(
-            otp_delivery_selection_form: { otp_delivery_preference: 'sms' }
-          )
-        )
-
-        expect(subject.user_session[:context]).to eq 'confirmation'
-      end
-    end
-  end
-
-  describe 'before_actions' do
-    it 'includes the appropriate before_actions' do
-      expect(subject).to have_actions(
-        :before,
-        :authenticate_user,
-        :authorize_otp_setup
-      )
-    end
-  end
-
-  describe '#authorize_otp_setup' do
-    context 'when the user is fully authenticated' do
-      it 'redirects to root url' do
-        user = create(:user, :signed_up)
-        sign_in(user)
-
-        get :index
-
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to authenticator_setup_url
       end
     end
 
-    context 'when the user is two_factor_enabled but not fully authenticated' do
-      it 'prompts to enter OTP' do
-        sign_in_before_2fa
+    context 'when the selection is not valid' do
+      it 'renders index page' do
+        stub_sign_in_before_2fa
 
-        get :index
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'foo',
+          },
+        }
 
-        expect(response).to redirect_to(user_two_factor_authentication_path)
+        expect(response).to render_template(:index)
       end
     end
   end
