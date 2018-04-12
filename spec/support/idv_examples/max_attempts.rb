@@ -1,16 +1,14 @@
 shared_examples 'verification step max attempts' do |step|
   scenario 'more than 3 attempts in 24 hours prevents further attempts' do
+    # Blocked if visiting directly from the IDP
+    visit verify_url
+    advance_to_phone_step if step == :phone
+    expect_user_to_be_unable_to_perform_idv
+
+    # Blocked if visiting from an SP
     visit_idp_from_sp_with_loa3(:oidc)
-
-    if step == :phone
-      click_idv_begin
-      click_idv_address_choose_phone
-    end
-
-    expect(page).to have_content(
-      t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
-    )
-    expect(current_url).to eq(verify_fail_url)
+    advance_to_phone_step if step == :phone
+    expect_user_to_be_unable_to_perform_idv
 
     if step == :sessions
       user.reload
@@ -57,5 +55,17 @@ shared_examples 'verification step max attempts' do |step|
         text: ActionController::Base.helpers.strip_tags(t("idv.modal.#{step}.fail"))
       )
     end
+  end
+
+  def expect_user_to_be_unable_to_perform_idv
+    expect(page).to have_content(
+      t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
+    )
+    expect(current_url).to eq(verify_fail_url)
+  end
+
+  def advance_to_phone_step
+    click_idv_begin
+    click_idv_address_choose_phone
   end
 end
