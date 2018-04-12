@@ -270,4 +270,12 @@ describe User do
       expect(User.find_with_email(foo: 'bar')).to eq(nil)
     end
   end
+
+  describe 'x509_dn_uuid' do
+    it 'validates uniqueness' do
+      user = create(:user, :with_piv_or_cac, email: 'test1@test.com')
+
+      expect(user).to validate_uniqueness_of(:x509_dn_uuid).allow_nil
+    end
+  end
 end
