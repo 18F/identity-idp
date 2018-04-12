@@ -9,6 +9,8 @@ test:
     name: 'RRB'
   5:
     name: 'NGA'
+  6:
+    name: 'DOT'
 
 development:
   1:
@@ -21,6 +23,8 @@ development:
     name: 'RRB'
   5:
     name: 'NGA'
+  6:
+    name: 'DOT'
 
 production:
   1:
@@ -33,3 +37,5 @@ production:
     name: 'RRB'
   5:
     name: 'NGA'
+  6:
+    name: 'DOT'
