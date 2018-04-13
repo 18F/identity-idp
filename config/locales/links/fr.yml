@@ -29,6 +29,7 @@ fr:
     sign_in: Connexion
     sign_out: Déconnexion
     two_factor_authentication:
+      app_option: Utilisez une application d'authentification à la place.
       app: obtenir un code de sécurité par l'application d'authentification
       resend_code:
         sms: Recevoir un autre SMS

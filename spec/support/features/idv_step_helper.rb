@@ -1,6 +1,10 @@
 module IdvStepHelper
   def self.included(base)
-    base.class_eval { include IdvHelper }
+    base.class_eval do
+      include IdvHelper
+      include JavascriptDriverHelper
+      include SamlAuthHelper
+    end
   end
 
   def start_idv_from_sp(sp = :oidc)
