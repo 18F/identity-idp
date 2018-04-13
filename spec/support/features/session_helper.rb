@@ -375,10 +375,7 @@ module Features
 
       expect(page).to have_current_path authenticator_setup_path
 
-      secret = page.get_rack_session_key("warden.user.user.session")["new_totp_secret"]
-      # accessing the session with the rack_session_access gem redirects away
-      # from the current page, so we must visit the page we were on again
-      visit authenticator_setup_path
+      secret = find('#qr-code').text
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
     end
