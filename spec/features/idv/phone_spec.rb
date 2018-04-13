@@ -99,32 +99,6 @@ feature 'Verify phone' do
     end
   end
 
-  scenario 'phone field only allows numbers', js: true, idv_job: true do
-    sign_in_and_2fa_user
-    visit verify_session_path
-    fill_out_idv_form_ok
-    click_idv_continue
-
-    visit verify_phone_path
-    fill_in 'Phone', with: ''
-    find('#idv_phone_form_phone').native.send_keys('abcd1234')
-
-    expect(find('#idv_phone_form_phone').value).to eq '1 (234) '
-  end
-
-  scenario 'phone field does not format international numbers', :js, idv_job: true do
-    sign_in_and_2fa_user
-    visit verify_session_path
-    fill_out_idv_form_ok
-    click_idv_continue
-
-    visit verify_phone_path
-    fill_in 'Phone', with: ''
-    find('#idv_phone_form_phone').native.send_keys('+81543543643')
-
-    expect(find('#idv_phone_form_phone').value).to eq '+1 (815) 435-4364'
-  end
-
   def complete_idv_profile_with_phone(phone)
     fill_out_idv_form_ok
     click_idv_continue

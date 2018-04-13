@@ -9,11 +9,6 @@ feature 'IdV session', idv_job: true do
       visit verify_path
     end
 
-    scenario 'decline to verify identity' do
-      click_link t('links.cancel')
-      expect(page).to have_content(t('idv.titles.cancel'))
-    end
-
     scenario 'proceed to verify identity' do
       click_link 'Yes'
 
@@ -225,58 +220,6 @@ feature 'IdV session', idv_job: true do
 
         expect(page).to have_content(t('headings.personal_key'))
       end
-    end
-
-    context 'cancel from USPS/Phone verification screen' do
-      context 'without js' do
-        it 'returns user to profile path' do
-          sign_in_and_2fa_user
-          loa3_sp_session
-          visit verify_session_path
-
-          fill_out_idv_form_ok
-          click_idv_continue
-
-          click_idv_cancel
-
-          expect(current_path).to eq(account_path)
-        end
-      end
-
-      context 'with js', js: true do
-        it 'redirects to profile from a modal' do
-          sign_in_and_2fa_user
-          loa3_sp_session
-          visit verify_session_path
-
-          fill_out_idv_form_ok
-          click_idv_continue
-
-          click_on t('links.cancel_idv')
-          click_idv_cancel_modal
-
-          expect(current_path).to eq(account_path)
-        end
-      end
-    end
-
-    scenario 'cancelling phone OTP verification redirects to verification cancel' do
-      allow(Figaro.env).to receive(:otp_delivery_blocklist_maxretry).and_return('4')
-      different_phone = '555-555-9876'
-
-      sign_in_and_2fa_user
-      visit verify_session_path
-
-      fill_out_idv_form_ok
-      click_idv_continue
-      click_idv_address_choose_phone
-      fill_out_phone_form_ok(different_phone)
-      click_idv_continue
-      choose_idv_otp_delivery_method_sms
-
-      click_on t('links.cancel')
-
-      expect(current_path).to eq verify_cancel_path
     end
 
     scenario 'attempting to skip OTP phone confirmation redirects to OTP confirmation', :js do
