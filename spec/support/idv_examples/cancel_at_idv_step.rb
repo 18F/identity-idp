@@ -1,4 +1,4 @@
-shared_examples 'cancel at idv step' do |sp|
+shared_examples 'cancel at idv step' do |step, sp|
   include SamlAuthHelper
 
   before do
@@ -8,7 +8,7 @@ shared_examples 'cancel at idv step' do |sp|
     else
       visit root_path
     end
-    complete_previous_idv_steps
+    complete_idv_steps_before_step(step)
   end
 
   context 'without js' do
