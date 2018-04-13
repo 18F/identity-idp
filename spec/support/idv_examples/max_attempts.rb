@@ -104,8 +104,4 @@ shared_examples 'verification step max attempts' do |step, sp|
     click_idv_begin
     click_idv_address_choose_phone
   end
-
-  def strip_tags(*args)
-    ActionController::Base.helpers.strip_tags(*args)
-  end
 end

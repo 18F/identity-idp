@@ -33,7 +33,7 @@ shared_examples 'failed idv job' do |step|
         expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
         expect(page).to have_css(
           '.modal-warning',
-          text: ActionController::Base.helpers.strip_tags(t("idv.modal.#{step_locale_key}.jobfail"))
+          text: strip_tags(t("idv.modal.#{step_locale_key}.jobfail"))
         )
         expect(page).to have_current_path(verify_session_result_path) if step == :profile
         expect(page).to have_current_path(verify_phone_result_path) if step == :phone
@@ -72,7 +72,7 @@ shared_examples 'failed idv job' do |step|
         expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
         expect(page).to have_css(
           '.modal-warning',
-          text: ActionController::Base.helpers.strip_tags(t("idv.modal.#{step_locale_key}.timeout"))
+          text: strip_tags(t("idv.modal.#{step_locale_key}.timeout"))
         )
         expect(page).to have_current_path(verify_session_result_path) if step == :profile
         expect(page).to have_current_path(verify_phone_result_path) if step == :phone
