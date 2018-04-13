@@ -1,25 +1,15 @@
 require 'rails_helper'
 
-feature 'IdV session' do
-  include IdvHelper
+feature 'IdV session', :idv_job do
+  include IdvStepHelper
 
-  context 'Idv job raises an error', idv_job: true do
-    it 'displays a warning that something went wrong' do
-      sign_in_and_2fa_user
+  context 'profile job' do
+    let(:idv_job_class) { Idv::ProfileJob }
+    it_behaves_like 'failed idv job', :profile
+  end
 
-      step = instance_double(
-        Idv::ProfileStep, attempts_exceeded?: false, vendor_validator_job_failed?: true
-      )
-      allow(Idv::ProfileStep).to receive(:new).and_return(step)
-      allow(step).to receive(:submit).
-        and_return(FormResponse.new(success: false, errors: {}, extra: {}))
-
-      visit verify_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-
-      expect(page).to have_current_path(verify_session_result_path)
-      expect(page).to have_content t('idv.modal.sessions.jobfail')
-    end
+  context 'phone job' do
+    let(:idv_job_class) { Idv::PhoneJob }
+    it_behaves_like 'failed idv job', :phone
   end
 end
