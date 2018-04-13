@@ -2,12 +2,7 @@ shared_examples 'cancel at idv step' do |step, sp|
   include SamlAuthHelper
 
   before do
-    if sp.present?
-      visit_idp_from_sp_with_loa3(sp)
-      click_link t('links.sign_in')
-    else
-      visit root_path
-    end
+    start_idv_from_sp(sp)
     complete_idv_steps_before_step(step)
   end
 

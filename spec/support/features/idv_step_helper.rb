@@ -3,6 +3,15 @@ module IdvStepHelper
     base.class_eval { include IdvHelper }
   end
 
+  def start_idv_from_sp(sp = :oidc)
+    if sp.present?
+      visit_idp_from_sp_with_loa3(sp)
+      click_link t('links.sign_in')
+    else
+      visit root_path
+    end
+  end
+
   def complete_idv_steps_before_verify_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
     visit verify_path unless current_path == verify_path
