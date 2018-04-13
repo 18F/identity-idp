@@ -201,7 +201,7 @@ GEM
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    crass (1.0.3)
+    crass (1.0.4)
     css_parser (1.6.0)
       addressable
     daemons (1.2.4)
@@ -409,7 +409,7 @@ GEM
       rack (>= 1.2.0)
     rack-protection (2.0.1)
       rack
-    rack-proxy (0.6.3)
+    rack-proxy (0.6.4)
       rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
@@ -636,7 +636,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpacker (3.2.2)
+    webpacker (3.4.3)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -755,7 +755,7 @@ DEPENDENCIES
   uglifier (~> 3.2)
   valid_email
   webmock
-  webpacker (~> 3.2.2)
+  webpacker (~> 3.4)
   whenever
   xml-simple
   xmlenc (~> 0.6.4)

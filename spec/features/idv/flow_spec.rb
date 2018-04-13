@@ -65,7 +65,7 @@ feature 'IdV session', idv_job: true do
 
       # failure reloads the form and shows warning modal
       expect(current_path).to eq verify_session_result_path
-      expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
+      expect(find('.modal-warning').text).to match t('idv.modal.sessions.heading')
       click_button t('idv.modal.button.warning')
 
       fill_out_idv_form_ok
