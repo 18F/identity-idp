@@ -351,14 +351,36 @@ module Features
     end
 
     def register_user(email = 'test@test.com')
+      confirm_email_and_password(email)
+      set_up_2fa_with_valid_phone
+      click_submit_default
+      User.find_with_email(email)
+    end
+
+    def confirm_email_and_password(email)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       click_link t('sign_up.registrations.create_account')
       submit_form_with_valid_email(email)
       click_confirmation_link_in_email(email)
       submit_form_with_valid_password
-      set_up_2fa_with_valid_phone
-      click_submit_default
-      User.find_with_email(email)
+    end
+
+    def register_user_with_authenticator_app(email = 'test@test.com')
+      confirm_email_and_password(email)
+      set_up_2fa_with_authenticator_app
+    end
+
+    def set_up_2fa_with_authenticator_app
+      click_link t('links.two_factor_authentication.app_option')
+
+      expect(page).to have_current_path authenticator_setup_path
+
+      secret = page.get_rack_session_key("warden.user.user.session")["new_totp_secret"]
+      # accessing the session with the rack_session_access gem redirects away
+      # from the current page, so we must visit the page we were on again
+      visit authenticator_setup_path
+      fill_in 'code', with: generate_totp_code(secret)
+      click_button 'Submit'
     end
 
     def sign_in_via_branded_page(user)

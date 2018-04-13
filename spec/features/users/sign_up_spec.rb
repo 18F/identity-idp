@@ -149,11 +149,16 @@ feature 'Sign Up' do
   it_behaves_like 'creating an account with the site in Spanish', :saml
   it_behaves_like 'creating an account with the site in Spanish', :oidc
 
-  it 'allows a user to choose TOTP as 2FA method during sign up' do
-    sign_in_user
-    click_link t('links.two_factor_authentication.app_option')
+  it_behaves_like 'creating an account using authenticator app for 2FA', :saml
+  it_behaves_like 'creating an account using authenticator app for 2FA', :oidc
 
-    expect(page).to have_current_path authenticator_setup_path
+  it 'allows a user to choose TOTP as 2FA method during sign up' do
+    user = create(:user)
+    sign_in_user(user)
+    set_up_2fa_with_authenticator_app
+    click_acknowledge_personal_key
+
+    expect(page).to have_current_path account_path
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do

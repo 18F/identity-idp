@@ -57,7 +57,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_enabled?
-    phone.present?
+    phone.present? || totp_enabled?
   end
 
   def send_two_factor_authentication_code(_code)
