@@ -6,6 +6,7 @@ module Users
 
     def delete
       current_user.destroy!
+      sign_out
       flash[:success] = t('devise.registrations.destroyed')
       redirect_to root_url
     end
