@@ -46,34 +46,6 @@ feature 'IdV session', idv_job: true do
       expect(user.reload.active_profile).to be_a(Profile)
     end
 
-    scenario 'vendor agent throws exception' do
-      first_name_to_trigger_exception = 'Fail'
-
-      sign_in_and_2fa_user
-
-      visit verify_session_path
-
-      fill_out_idv_form_ok
-      fill_in 'profile_first_name', with: first_name_to_trigger_exception
-
-      expect(Idv::ProfileJob).to receive(:perform_now).and_wrap_original do |perform, *args|
-        exception_raised = false
-        begin
-          perform.call(*args)
-        rescue RuntimeError => err
-          expect(err.message).to eq('Failed to contact proofing vendor')
-          exception_raised = true
-        ensure
-          expect(exception_raised).to eq(true)
-        end
-      end
-
-      click_idv_continue
-
-      expect(current_path).to eq(verify_session_result_path)
-      expect(page).to have_css('.modal-warning', text: t('idv.modal.sessions.heading'))
-    end
-
     scenario 'profile steps is not re-entrant and are sticky on failure', :js do
       user = sign_in_and_2fa_user
 
@@ -164,15 +136,6 @@ feature 'IdV session', idv_job: true do
 
       expect(page).to_not have_content(phone)
       expect(page).to have_content(different_phone)
-    end
-
-    scenario 'failed attempt shows flash message' do
-      sign_in_and_2fa_user
-      visit verify_session_path
-      fill_out_idv_form_fail
-      click_idv_continue
-
-      expect(page).to have_content t('idv.modal.sessions.warning')
     end
 
     scenario 'closing previous address accordion clears inputs and toggles header', js: true do
