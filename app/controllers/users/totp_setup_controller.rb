@@ -6,6 +6,9 @@ module Users
     def new
       return redirect_to account_url if current_user.totp_enabled?
 
+      properties = { user_signed_up: current_user.two_factor_enabled? }
+      analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
+
       user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
 
       @code = new_totp_secret
