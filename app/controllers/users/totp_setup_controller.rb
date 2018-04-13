@@ -6,10 +6,8 @@ module Users
     def new
       return redirect_to account_url if current_user.totp_enabled?
 
-      properties = { user_signed_up: current_user.two_factor_enabled? }
-      analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
-
-      user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
+      track_event
+      store_totp_secret_in_session
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
@@ -41,6 +39,15 @@ module Users
 
     def two_factor_enabled?
       current_user.two_factor_enabled?
+    end
+
+    def track_event
+      properties = { user_signed_up: current_user.two_factor_enabled? }
+      analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
+    end
+
+    def store_totp_secret_in_session
+      user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
     end
 
     def process_valid_code
