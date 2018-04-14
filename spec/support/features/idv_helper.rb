@@ -52,10 +52,6 @@ module IdvHelper
   end
 
   def fill_out_idv_state_fail
-    fill_in 'profile_state_id_number', with: '0000000000'
-  end
-
-  def fill_out_idv_state_fail
     select 'Alabama', from: 'profile_state'
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
   end
