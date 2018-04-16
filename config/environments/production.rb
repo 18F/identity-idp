@@ -38,4 +38,5 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.ignore_actions = ['Users::SessionsController#active']
   config.lograge.formatter = Lograge::Formatters::Json.new
+  config.force_ssl = true
 end
