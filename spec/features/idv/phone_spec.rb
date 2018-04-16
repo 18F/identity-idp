@@ -44,39 +44,6 @@ feature 'Verify phone' do
     end
   end
 
-  context 'failing to verify 2FA phone' do
-    scenario 'requires verifying and confirming a different phone', :idv_job do
-      phone_number_that_will_fail_verification = '+1 (555) 555-5555'
-
-      user = create(
-        :user, :signed_up,
-        phone: phone_number_that_will_fail_verification,
-        password: Features::SessionHelper::VALID_PASSWORD
-      )
-      sign_in_and_2fa_user(user)
-      visit verify_session_path
-      fill_out_idv_form_ok
-      click_idv_continue
-      click_idv_address_choose_phone
-
-      fill_in 'Phone', with: user.phone
-      click_idv_continue
-
-      expect(page).to have_content(t('idv.modal.phone.heading'))
-
-      fill_in 'Phone', with: '+1 (555) 555-5000'
-      click_idv_continue
-
-      choose_idv_otp_delivery_method_sms
-      enter_correct_otp_code_for_user(user)
-      fill_in :user_password, with: user_password
-      click_continue
-      click_acknowledge_personal_key
-
-      expect(current_path).to eq account_path
-    end
-  end
-
   def complete_idv_profile_with_phone(phone)
     fill_out_idv_form_ok
     click_idv_continue
