@@ -21,10 +21,6 @@ feature 'cancel at IdV step', :idv_job do
     it_behaves_like 'cancel at idv step', :address, :saml
   end
 
-  xcontext 'phone step' do
-    # Phone step doesn't have a cancel button :(
-  end
-
   xcontext 'phone otp delivery method selection step' do
     # Phone OTP delivery method step doesn't have a cancel button :(
   end
