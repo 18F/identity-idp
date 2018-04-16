@@ -133,8 +133,8 @@ feature 'IdV session', idv_job: true do
     end
 
     scenario 'phone step is re-entrant', :js do
-      phone = '+1 (555) 555-5000'
-      different_phone = '+1 (777) 777-7000'
+      phone = '(555) 555-5000'
+      different_phone = '(777) 777-7000'
       user = sign_in_and_2fa_user
 
       visit verify_session_path
@@ -147,7 +147,7 @@ feature 'IdV session', idv_job: true do
 
       click_link t('forms.two_factor.try_again')
 
-      expect(page.find('#idv_phone_form_phone').value).to eq(phone)
+      expect(page.find('#idv_phone_form_phone').value).to eq("+1 #{phone}")
       expect(current_path).to eq(verify_phone_path)
 
       fill_out_phone_form_ok(different_phone)
