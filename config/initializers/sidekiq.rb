@@ -15,6 +15,12 @@ size = (Sidekiq.server? ? (Sidekiq.options[:concurrency] + 2) : 5)
 Sidekiq.configure_server do |config|
   config.redis = ConnectionPool.new(size: size, &redis_connection)
 
+  # Enable reliable job processing on production servers
+  if LoginGov::Hostdata.in_datacenter?
+    # https://github.com/mperham/sidekiq/wiki/Reliability
+    config.super_fetch!
+  end
+
   # NOTE: Sidekiq does not run middleware in tests by default. Make sure to also add
   # middleware to spec/rails_helper.rb to run in tests as well
   config.server_middleware do |chain|
