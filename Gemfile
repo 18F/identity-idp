@@ -56,7 +56,7 @@ gem 'two_factor_authentication'
 gem 'typhoeus'
 gem 'uglifier', '~> 3.2'
 gem 'valid_email'
-gem 'webpacker', '~> 3.2.2'
+gem 'webpacker', '~> 3.4'
 gem 'whenever', require: false
 gem 'xml-simple'
 gem 'xmlenc', '~> 0.6.4'
