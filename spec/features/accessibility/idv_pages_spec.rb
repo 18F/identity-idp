@@ -48,7 +48,6 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       click_idv_address_choose_phone
-      fill_out_phone_form_ok(user.phone)
       click_button t('forms.buttons.continue')
 
       expect(current_path).to eq verify_review_path
@@ -61,7 +60,6 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       fill_out_idv_form_ok
       click_idv_continue
       click_idv_address_choose_phone
-      fill_out_phone_form_ok(user.phone)
       click_idv_continue
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue

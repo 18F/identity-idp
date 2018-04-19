@@ -79,6 +79,7 @@ feature 'View personal key' do
     let(:accordion_control_selector) { generate_class_selector('accordion-header-controls') }
 
     it 'prompts the user to enter their personal key to confirm they have it' do
+      Capybara.current_session.current_window.resize_to(2560, 1600)
       sign_in_and_2fa_user
       click_button t('account.links.regenerate_personal_key')
 
@@ -92,9 +93,8 @@ feature 'View personal key' do
 
       expect_confirmation_modal_to_appear_with_first_code_field_in_focus
 
-      press_shift_tab
-
-      expect_continue_button_to_be_in_focus
+      expected_button_order = %w[Back Continue]
+      expect(all(:button).map(&:text).reject(&:empty?)).to eq expected_button_order
 
       click_back_button
 
@@ -119,10 +119,8 @@ feature 'View personal key' do
       click_acknowledge_personal_key
 
       expect_confirmation_modal_to_appear_with_first_code_field_in_focus
-
-      press_tab
-
-      expect_continue_button_to_be_in_focus
+      expected_button_order = %w[Continue Back]
+      expect(all(:button).map(&:text).reject(&:empty?)).to eq expected_button_order
 
       click_back_button
 
@@ -173,22 +171,6 @@ def expect_confirmation_modal_to_appear_with_first_code_field_in_focus
   expect(page).not_to have_xpath("//div[@id='personal-key-confirm'][@class='display-none']")
   expect(page).not_to have_xpath("//#{invisible_selector}[@id='personal-key']")
   expect(page.evaluate_script('document.activeElement.name')).to eq 'personal_key'
-end
-
-def press_shift_tab
-  body_element = page.find('body')
-  body_element.send_keys %i[shift tab]
-end
-
-def press_tab
-  body_element = page.find('body')
-  body_element.send_keys %i[tab]
-end
-
-def expect_continue_button_to_be_in_focus
-  expect(page.evaluate_script('document.activeElement.innerText')).to eq(
-    t('forms.buttons.continue')
-  )
 end
 
 def click_back_button

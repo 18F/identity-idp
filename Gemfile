@@ -91,13 +91,14 @@ end
 group :test do
   gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
+  gem 'capybara-selenium'
+  gem 'chromedriver-helper'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
-  gem 'poltergeist'
   gem 'rack-test'
   gem 'rack_session_access'
   gem 'rails-controller-testing'

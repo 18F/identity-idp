@@ -124,6 +124,8 @@ GEM
       gyoku (>= 0.4.0)
       nokogiri
     american_date (1.1.1)
+    archive-zip (0.11.0)
+      io-like (~> 0.3.0)
     arel (8.0.0)
     ast (2.4.0)
     aws-partitions (1.70.0)
@@ -176,12 +178,17 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     choice (0.2.0)
+    chromedriver-helper (1.2.0)
+      archive-zip (~> 0.10)
+      nokogiri (~> 1.8)
     chronic (0.10.2)
     chunky_png (1.3.8)
-    cliver (0.3.2)
     codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
     codeclimate-test-reporter (1.0.8)
@@ -313,6 +320,7 @@ GEM
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
     iniparse (1.4.4)
+    io-like (0.3.0)
     jmespath (1.3.1)
     json (1.8.6)
     json-jwt (1.9.2)
@@ -377,10 +385,6 @@ GEM
     phony_rails (0.14.6)
       activesupport (>= 3.0)
       phony (> 2.15)
-    poltergeist (1.17.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
     premailer (1.11.1)
       addressable
@@ -503,6 +507,7 @@ GEM
     ruby_dep (1.5.0)
     ruby_parser (3.10.1)
       sexp_processor (~> 4.9)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     safely_block (0.2.1)
       errbase
@@ -530,6 +535,9 @@ GEM
     secure_headers (3.7.3)
       useragent
     securecompare (1.0.0)
+    selenium-webdriver (3.11.0)
+      childprocess (~> 0.5)
+      rubyzip (~> 1.2)
     sexp_processor (4.10.0)
     shellany (0.0.1)
     shoulda-matchers (3.1.2)
@@ -670,6 +678,8 @@ DEPENDENCIES
   bullet
   bummr
   capybara-screenshot!
+  capybara-selenium
+  chromedriver-helper
   codeclimate-test-reporter
   database_cleaner
   derailed
@@ -704,7 +714,6 @@ DEPENDENCIES
   pg
   phonelib
   phony_rails
-  poltergeist
   premailer-rails
   proofer!
   pry-byebug

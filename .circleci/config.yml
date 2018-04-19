@@ -54,14 +54,6 @@ jobs:
           key: identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-
-      - run:
-          name: Install phantomjs
-          command: |
-            sudo curl --output /tmp/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
-            sudo chmod ugo+x /tmp/phantomjs
-            sudo ln -sf /tmp/phantomjs /usr/local/bin/phantomjs
-
       - run:
           name: Install AWS CLI
           command: |

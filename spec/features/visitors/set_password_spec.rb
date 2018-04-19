@@ -65,7 +65,7 @@ feature 'Visitor sets password during signup' do
 
     expect(page).to have_css('input.password[type="password"]')
 
-    find('#pw-toggle-0', visible: false).trigger('click')
+    find('.checkbox').click
 
     expect(page).to_not have_css('input.password[type="password"]')
     expect(page).to have_css('input.password[type="text"]')

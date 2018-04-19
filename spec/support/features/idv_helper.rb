@@ -94,11 +94,9 @@ module IdvHelper
   end
 
   def choose_idv_otp_delivery_method_sms
-    page.find(
-      'label',
-      text: t('devise.two_factor_authentication.otp_delivery_preference.sms')
-    ).click
-    click_on t('idv.buttons.send_confirmation_code')
+    using_wait_time(5) do
+      click_on t('idv.buttons.send_confirmation_code')
+    end
   end
 
   def choose_idv_otp_delivery_method_voice
@@ -123,7 +121,6 @@ module IdvHelper
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_address_choose_phone
-    fill_out_phone_form_ok(user.phone)
     click_idv_continue
     fill_in 'Password', with: password
     click_continue
