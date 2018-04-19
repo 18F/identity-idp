@@ -23,10 +23,6 @@ export IDP_SIDEKIQ_PRO=1
 az="$(run ec2metadata --availability-zone)"
 export AWS_DEFAULT_REGION="${az::-1}"
 
-# enable sidekiq pro
-sidekiq_license="$(run aws secretsmanager get-secret-value --secret-id global/idp/sidekiq-pro --query SecretString --output text)"
-bundle config enterprise.contribsys.com "$sidekiq_license"
-
 set -x
 
 env

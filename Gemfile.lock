@@ -23,6 +23,24 @@ GIT
       savon
 
 GIT
+  remote: git@github.com:18F/sidekiq-ent
+  revision: 2c7d738656f7eec25e96d79ac5d9c2dd5bf7b9c7
+  tag: v1.7.1
+  specs:
+    sidekiq-ent (1.7.1)
+      einhorn (= 0.7.4)
+      sidekiq (>= 5.1.0)
+      sidekiq-pro (>= 3.7.0)
+
+GIT
+  remote: git@github.com:18F/sidekiq-pro
+  revision: e90dae59cae5faabe3f85430d8776ab092fe0a0e
+  tag: v4.0.2
+  specs:
+    sidekiq-pro (4.0.2)
+      sidekiq (>= 5.0.5)
+
+GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: 4340185470fdf07c5d06658c2aa5ce6c904bb898
   branch: master
@@ -229,6 +247,7 @@ GEM
     easy_translate (0.5.1)
       thread
       thread_safe
+    einhorn (0.7.4)
     email_spec (2.1.1)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
@@ -733,6 +752,8 @@ DEPENDENCIES
   secure_headers (~> 3.0)
   shoulda-matchers (~> 3.0)
   sidekiq
+  sidekiq-ent!
+  sidekiq-pro!
   simple_form
   sinatra
   slim-rails
