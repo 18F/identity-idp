@@ -2,6 +2,8 @@ module Users
   class TwoFactorAuthenticationController < ApplicationController
     include TwoFactorAuthenticatable
 
+    before_action :check_remember_device_preference
+
     def show
       if current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
