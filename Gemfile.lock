@@ -234,10 +234,10 @@ GEM
     easy_translate (0.5.1)
       thread
       thread_safe
-    email_spec (2.1.1)
+    email_spec (2.2.0)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
-      mail (~> 2.6)
+      mail (~> 2.7)
     encryptor (3.0.0)
     equalizer (0.0.11)
     errbase (0.1.0)
