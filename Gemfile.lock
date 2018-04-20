@@ -412,7 +412,7 @@ GEM
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.4.2)
-    rack_session_access (0.1.1)
+    rack_session_access (0.2.0)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
     rails (5.1.6)
