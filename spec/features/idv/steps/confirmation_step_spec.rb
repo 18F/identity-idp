@@ -26,11 +26,6 @@ feature 'idv confirmation step', :idv_job do
 
     it 'allows the user to refresh and still displays the personal key' do
       visit current_path
-
-      expect(page).to have_content(t('headings.personal_key'))
-
-      visit current_path
-
       expect(page).to have_content(t('headings.personal_key'))
     end
 
