@@ -28,6 +28,8 @@ development:
 
 test:
   <<: *defaults
+  pool: 10
+  checkout_timeout: 10
 
 production:
   <<: *defaults
