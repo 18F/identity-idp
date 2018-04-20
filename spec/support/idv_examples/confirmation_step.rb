@@ -8,21 +8,14 @@ shared_examples 'idv confirmation step' do |sp|
     it 'redirects to the come back later url then to the sp or account' do
       click_acknowledge_personal_key
 
+      expect(page).to have_current_path(verify_come_back_later_path)
+      click_on t('forms.buttons.continue')
+
       # SAML test SP does not have a return URL, so it does not have a link
       # back to the SP
       if sp == :oidc
-        expect(page).to have_content(
-          strip_tags(t('idv.messages.come_back_later_sp_html', sp: 'Test SP'))
-        )
-        expect(page).to have_current_path(verify_come_back_later_path)
-        click_on t('forms.buttons.continue')
         expect(current_url).to start_with('http://localhost:7654/auth/result')
       else
-        expect(page).to have_content(
-          strip_tags(t('idv.messages.come_back_later_no_sp_html', app: 'login.gov'))
-        )
-        expect(page).to have_current_path(verify_come_back_later_path)
-        click_on t('forms.buttons.continue')
         expect(page).to have_current_path(account_path)
       end
     end
@@ -37,9 +30,6 @@ shared_examples 'idv confirmation step' do |sp|
     it 'redirects to the completions page and then to the SP', if: sp.present? do
       click_acknowledge_personal_key
 
-      expect(page).to have_content(
-        strip_tags(t('idv.messages.return_to_sp_html', sp: 'Test SP'))
-      )
       expect(page).to have_current_path(sign_up_completed_path)
 
       click_on t('forms.buttons.continue')
