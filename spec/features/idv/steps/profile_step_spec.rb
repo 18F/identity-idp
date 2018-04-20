@@ -4,23 +4,23 @@ feature 'idv profile step', :idv_job do
   include IdvStepHelper
 
   context 'with valid information' do
-    it 'allows the user to continue to the address step' do
+    it 'requires the user to complete to continue to the address step and is not re-entrant'
       start_idv_from_sp
       complete_idv_steps_before_profile_step
+
+      # Try to skip ahead to address step
+      visit verify_address_path
+
+      # Get redirected to the profile step
+      expect(page).to have_current_path(verify_session_path)
+
+      # Complete the idv form
       fill_out_idv_form_ok
       click_idv_continue
 
+      # Expect to be on the address step
       expect(page).to have_content(t('idv.titles.select_verification'))
       expect(page).to have_current_path(verify_address_path)
-    end
-  end
-
-  context 'after submitting valid information' do
-    it 'is not re-entrant' do
-      start_idv_from_sp
-      complete_idv_steps_before_profile_step
-      fill_out_idv_form_ok
-      click_idv_continue
 
       # Attempt to go back to profile step
       visit verify_session_path
@@ -29,17 +29,6 @@ feature 'idv profile step', :idv_job do
       expect(page).to have_content(t('idv.titles.select_verification'))
       expect(page).to have_current_path(verify_address_path)
     end
-  end
-
-  it 'does not allow the user to advance without completing' do
-    start_idv_from_sp
-    complete_idv_steps_before_profile_step
-
-    # Try to skip ahead to address step
-    visit verify_address_path
-
-    # Get redirect to the profile step
-    expect(page).to have_current_path(verify_session_path)
   end
 
   context 'cancelling IdV' do
