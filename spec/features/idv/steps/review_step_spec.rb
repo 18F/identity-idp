@@ -7,6 +7,14 @@ feature 'idv review step', :idv_job do
     start_idv_from_sp
     complete_idv_steps_before_review_step
 
+    expect(page).to have_content('José')
+    expect(page).to have_content('One')
+    expect(page).to have_content('123 Main St')
+    expect(page).to have_content('Nowhere, VA 6604')
+    expect(page).to have_content('January 02, 1980')
+    expect(page).to have_content('666-66-1234')
+    expect(page).to have_content('+1 (555) 555-0000')
+
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue
 
@@ -18,19 +26,6 @@ feature 'idv review step', :idv_job do
 
     expect(page).to have_content(t('headings.personal_key'))
     expect(page).to have_current_path(verify_confirmations_path)
-  end
-
-  it 'displays the profile information for the user' do
-    start_idv_from_sp
-    complete_idv_steps_before_review_step
-
-    expect(page).to have_content('José')
-    expect(page).to have_content('One')
-    expect(page).to have_content('123 Main St')
-    expect(page).to have_content('Nowhere, VA 6604')
-    expect(page).to have_content('January 02, 1980')
-    expect(page).to have_content('666-66-1234')
-    expect(page).to have_content('+1 (555) 555-0000')
   end
 
   context 'choosing to confirm address with phone' do

@@ -4,14 +4,8 @@ feature 'idv confirmation step', :idv_job do
   include IdvStepHelper
 
   it_behaves_like 'idv confirmation step'
-
-  context 'with oidc' do
-    it_behaves_like 'idv confirmation step', :oidc
-  end
-
-  context 'with saml' do
-    it_behaves_like 'idv confirmation step', :saml
-  end
+  it_behaves_like 'idv confirmation step', :oidc
+  it_behaves_like 'idv confirmation step', :saml
 
   context 'personal key information and actions' do
     before do
