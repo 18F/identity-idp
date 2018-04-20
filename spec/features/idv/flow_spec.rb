@@ -138,16 +138,6 @@ feature 'IdV session', idv_job: true do
       expect(page).to have_content(different_phone)
     end
 
-    # TODO replace and delete
-    scenario 'failed attempt shows flash message' do
-      sign_in_and_2fa_user
-      visit verify_session_path
-      fill_out_idv_form_fail
-      click_idv_continue
-
-      expect(page).to have_content t('idv.modal.sessions.warning')
-    end
-
     scenario 'closing previous address accordion clears inputs and toggles header', js: true do
       _user = sign_in_and_2fa_user
 

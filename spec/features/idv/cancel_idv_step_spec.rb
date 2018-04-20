@@ -3,20 +3,6 @@ require 'rails_helper'
 feature 'cancel at IdV step', :idv_job do
   include IdvStepHelper
 
-  context 'address step' do
-    it_behaves_like 'cancel at idv step', :address
-    it_behaves_like 'cancel at idv step', :address, :oidc
-    it_behaves_like 'cancel at idv step', :address, :saml
-  end
-
-  xcontext 'phone step' do
-    # Phone step doesn't have a cancel button :(
-  end
-
-  xcontext 'phone otp delivery method selection step' do
-    # Phone OTP delivery method step doesn't have a cancel button :(
-  end
-
   context 'phone otp verification step' do
     it_behaves_like 'cancel at idv step', :phone_otp_verification
     it_behaves_like 'cancel at idv step', :phone_otp_verification, :oidc
