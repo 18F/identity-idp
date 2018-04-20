@@ -1,0 +1,96 @@
+#!/bin/bash
+set -euo pipefail
+
+GIT_REPO_PREFIX=git@github.com:18F/
+
+usage() {
+    cat >&2 <<EOM
+usage: $(basename "$0") LICENSE_KEY <sidekiq-pro|sidekiq-ent> [GIT_REPO_PREFIX]
+
+Download a new version of sidekiq pro or enterprise and upload it to a private
+git repo, tagging the new version.
+
+For example:
+
+    $(basename "$0") abcd1234:ef567890 sidekiq-pro
+    $(basename "$0") abcd1234:ef567890 sidekiq-ent
+
+LICENSE_KEY should be the license key for your sidekiq subscription.
+
+GIT_REPO_PREFIX defaults to: $GIT_REPO_PREFIX
+
+You can inspect the available versions by running a command like this:
+
+    gem list -a -r sidekiq-pro --clear-sources -s https://\$LICENSE_KEY@enterprise.contribsys.com/
+
+EOM
+}
+
+run() {
+    echo >&2 "+ $*"
+    "$@"
+}
+
+if [ $# -lt 2 ]; then
+    usage
+    exit 1
+fi
+
+license_key="$1"
+gem_name="$2"
+
+if [ $# -ge 3 ]; then
+    GIT_REPO_PREFIX="$3"
+fi
+
+case "$gem_name" in
+    sidekiq-pro|sidekiq-ent)
+        ;;
+    *)
+        echo >&2 "Unknown gem name $gem_name, expected sidekiq-pro or -ent"
+        exit 2
+        ;;
+esac
+
+cleanup() {
+    echo >&2 "ERROR"
+    echo >&2 "Not cleaning up temporary directory: $tmpdir"
+}
+
+tmpdir="$(run mktemp -d)"
+cd "$tmpdir"
+trap 'cleanup' EXIT
+
+run gem fetch "$gem_name" -v '>= 1.0' \
+    -s "https://$license_key@enterprise.contribsys.com/"
+
+gem_filename="$(ls "$gem_name"*)"
+
+echo "Got $gem_filename"
+
+# assume $gem_filename is foo-version.gem
+version="$(basename "${gem_filename##*-}" .gem)"
+
+run gem unpack --spec "$gem_filename"
+run gem unpack "$gem_filename"
+
+run mv -iv "${gem_filename}spec" "$gem_name-$version/"
+
+cd "$gem_name-$version"
+
+origin_url="${GIT_REPO_PREFIX}$gem_name"
+
+run git init
+run git checkout -b "$version"
+run git remote add origin "$origin_url"
+run git add .
+run git commit -m "Import $gem_name version $version"
+run git tag "v$version"
+run git push --tags origin "$version"
+
+cd ../..
+trap - EXIT
+
+run rm -rf "$tmpdir"
+
+echo "Successfully pushed new version $version of $gem_name to $origin_url"
