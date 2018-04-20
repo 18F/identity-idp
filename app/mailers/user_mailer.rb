@@ -25,4 +25,8 @@ class UserMailer < ActionMailer::Base
     @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
+
+  def reset_password(email)
+    mail(to: email, subject: 'Please reset your password')
+  end
 end
