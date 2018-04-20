@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 feature 'IdV with previous address filled in', idv_job: true do
-  include IdvHelper
+  include IdvStepHelper
 
   let(:bad_zipcode) { '00000' }
   let(:current_address) { '123 Main St' }
@@ -43,11 +43,35 @@ feature 'IdV with previous address filled in', idv_job: true do
   end
 
   it 'fails when either address has bad value, prefers current address in profile' do
-    user = sign_in_and_2fa_user
-    visit verify_session_path
+    user = user_with_2fa
+    start_idv_from_sp
+    complete_idv_steps_before_profile_step(user)
 
     expect_bad_previous_address_to_fail
     expect_bad_current_address_to_fail
     expect_current_address_in_profile(user)
+  end
+
+  it 'closing previous address accordion clears inputs and toggles header', :js do
+    start_idv_from_sp
+    complete_idv_steps_before_profile_step
+
+    expect(page).to have_css('.accordion-header-controls',
+                             text: t('idv.form.previous_address_add'))
+
+    click_accordion
+    expect(page).to have_css('.accordion-header', text: t('links.remove'))
+
+    fill_out_idv_previous_address_ok
+    expect(find('#profile_prev_address1').value).to eq '456 Other Ave'
+
+    click_accordion
+    click_accordion
+
+    expect(find('#profile_prev_address1').value).to eq ''
+  end
+
+  def click_accordion
+    find('.accordion-header-controls[aria-controls="previous-address"]').click
   end
 end
