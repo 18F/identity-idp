@@ -49,7 +49,9 @@ feature 'Sign Up' do
   end
 
   scenario 'renders an error when twilio api responds with an error' do
-    twilio_error = Twilio::REST::RestError.new('', TwilioService::SMS_ERROR_CODE, '400')
+    twilio_error = Twilio::REST::RestError.new(
+      '', FakeTwilioErrorResponse.new(TwilioService::SMS_ERROR_CODE)
+    )
 
     allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
     sign_up_and_set_password
