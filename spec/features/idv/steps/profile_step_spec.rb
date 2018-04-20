@@ -4,7 +4,7 @@ feature 'idv profile step', :idv_job do
   include IdvStepHelper
 
   context 'with valid information' do
-    it 'requires the user to complete to continue to the address step and is not re-entrant'
+    it 'requires the user to complete to continue to the address step and is not re-entrant' do
       start_idv_from_sp
       complete_idv_steps_before_profile_step
 
