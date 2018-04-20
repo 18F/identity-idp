@@ -2,45 +2,29 @@ module Idv
   class ProoferJob < ApplicationJob
     queue_as :idv
 
-    attr_reader :result_id, :applicant, :vendor_params
+    attr_reader :result_id, :applicant, :vendor_params, :stages
 
-    def perform(result_id:, vendor_params:, applicant_json:)
+    def perform(result_id:, vendor_params:, applicant_json:, stages:)
       @result_id = result_id
       @vendor_params = vendor_params
       @applicant = applicant_from_json(applicant_json)
-      perform_identity_proofing
-    end
-
-    def verify_identity_with_vendor
-      raise NotImplementedError, "subclass must implement #{__method__}"
+      @stages = stages
+      perform_proofing
     end
 
     private
 
-    def agent
-      Idv::Agent.new(applicant: applicant, vendor: vendor)
-    end
-
     def applicant_from_json(applicant_json)
-      applicant_attributes = JSON.parse(applicant_json, symbolize_names: true)
-      Proofer::Applicant.new(applicant_attributes)
+      JSON.parse(applicant_json, symbolize_names: true)
     end
 
-    def perform_identity_proofing
-      verify_identity_with_vendor
+    def perform_proofing
+      agent = Idv::Agent.new(applicant)
+      result = agent.proof(vendor_params, *stages)
+      store_result(Idv::VendorResult.new(result))
     rescue StandardError
       store_failed_job_result
       raise
-    end
-
-    def extract_result(confirmation)
-      vendor_resp = confirmation.vendor_resp
-
-      Idv::VendorResult.new(
-        success: confirmation.success?,
-        errors: confirmation.errors,
-        reasons: vendor_resp.reasons
-      )
     end
 
     def store_failed_job_result

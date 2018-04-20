@@ -1,29 +1,26 @@
 module Idv
   class SubmitIdvJob
-    def initialize(idv_session:, vendor_params:)
+    def initialize(idv_session:, vendor_params:, stages:)
       @idv_session = idv_session
       @vendor_params = vendor_params
+      @stages = stages
     end
 
-    def submit_profile_job
+    def submit
       update_idv_session
-      ProfileJob.perform_later(proofer_job_params)
-    end
-
-    def submit_phone_job
-      update_idv_session
-      PhoneJob.perform_later(proofer_job_params)
+      ProoferJob.perform_later(proofer_job_params)
     end
 
     private
 
-    attr_reader :idv_session, :vendor_params
+    attr_reader :idv_session, :vendor_params, :stages
 
     def proofer_job_params
       {
         result_id: result_id,
         vendor_params: vendor_params,
         applicant_json: idv_session.applicant.to_json,
+        stages: stages,
       }
     end
 
