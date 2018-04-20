@@ -1,12 +1,14 @@
 module Users
   class SessionsController < Devise::SessionsController
     include ::ActionView::Helpers::DateHelper
+    include SecureHeadersConcern
 
     rescue_from ActionController::InvalidAuthenticityToken, with: :redirect_to_signin
 
     skip_before_action :session_expires_at, only: [:active]
     skip_before_action :require_no_authentication, only: [:new]
     before_action :check_user_needs_redirect, only: [:new]
+    before_action :apply_secure_headers_override, only: [:new]
 
     def new
       analytics.track_event(

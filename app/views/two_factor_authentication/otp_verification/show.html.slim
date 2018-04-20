@@ -9,12 +9,18 @@ p == @presenter.phone_number_message
   = label_tag 'code', \
     t('simple_form.required.html') + t('forms.two_factor.code'), \
     class: 'block bold'
-  .col-12.sm-col-5.mb4.sm-mb0.sm-mr-20p.inline-block
+  .col-12.sm-col-5.mb2.sm-mb0.sm-mr-20p.inline-block
     = text_field_tag(:code, '', value: @presenter.code_value, required: true,
       autofocus: true, pattern: '[0-9]*', class: 'col-12 field monospace mfa',
       'aria-describedby': 'code-instructs', maxlength: Devise.direct_otp_length,
       autocomplete: 'off', type: 'tel')
   = submit_tag t('forms.buttons.submit.default'), class: 'btn btn-primary align-top'
+  - if @presenter.remember_device_available?
+    .border.col-9.rounded-lg.mt2
+      = check_box_tag 'remember_device', true, false, class: 'my2 ml2 mr1'
+      = label_tag 'remember_device',
+        t('forms.messages.remember_device', duration: Figaro.env.remember_device_expiration_days),
+        class: 'blue'
 
 = render 'shared/fallback_links', presenter: @presenter
 = render 'shared/cancel', link: @presenter.cancel_link

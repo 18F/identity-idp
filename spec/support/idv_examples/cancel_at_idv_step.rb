@@ -40,7 +40,7 @@ shared_examples 'cancel at idv step' do |step, sp|
       expect(page).to have_content(t('idv.cancel.modal_header'))
 
       # Clicking return to account takes us to the account page
-      page.find_button(t('idv.buttons.cancel')).trigger('click')
+      click_button t('idv.buttons.cancel')
       expect(page).to have_content(t('headings.account.login_info'))
       expect(current_path).to eq(account_path)
     end

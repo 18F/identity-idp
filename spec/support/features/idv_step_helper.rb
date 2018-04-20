@@ -53,14 +53,30 @@ module IdvStepHelper
     choose_idv_otp_delivery_method_sms
   end
 
-  def complete_idv_steps_before_review_step(user = user_with_2fa)
+  def complete_idv_steps_with_phone_before_review_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
   end
 
-  def complete_idv_steps_before_confirmation_step(user = user_with_2fa)
-    complete_idv_steps_before_review_step(user)
+  def complete_idv_steps_with_phone_before_confirmation_step(user = user_with_2fa)
+    complete_idv_steps_with_phone_before_review_step(user)
+    password = user.password || user_password
+    fill_in 'Password', with: password
+    click_continue
+  end
+
+  alias complete_idv_steps_before_review_step complete_idv_steps_with_phone_before_review_step
+  alias complete_idv_steps_before_confirmation_step complete_idv_steps_with_phone_before_confirmation_step
+
+  def complete_idv_steps_with_usps_before_review_step(user = user_with_2fa)
+    complete_idv_steps_before_usps_step(user)
+    click_on t('idv.buttons.mail.send')
+  end
+
+  def complete_idv_steps_with_usps_before_confirmation_step(user = user_with_2fa)
+    complete_idv_steps_with_usps_before_review_step(user)
+    password = user.password || user_password
     fill_in 'Password', with: password
     click_continue
   end

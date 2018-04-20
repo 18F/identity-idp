@@ -1,5 +1,6 @@
 module TwoFactorAuthenticatable
   extend ActiveSupport::Concern
+  include RememberDeviceConcern
   include SecureHeadersConcern
 
   included do
@@ -74,6 +75,7 @@ module TwoFactorAuthenticatable
     elsif idv_or_confirmation_context? || profile_context?
       handle_valid_otp_for_confirmation_context
     end
+    save_remember_device_preference
 
     redirect_to after_otp_verification_confirmation_url
     reset_otp_session_data
@@ -241,6 +243,7 @@ module TwoFactorAuthenticatable
       reenter_phone_number_path: reenter_phone_number_path,
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
+      remember_device_available: !idv_context?,
     }.merge(generic_data)
   end
   # rubocop:enable MethodLength
@@ -249,6 +252,7 @@ module TwoFactorAuthenticatable
     {
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
+      remember_device_available: false,
     }.merge(generic_data)
   end
 
