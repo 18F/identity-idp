@@ -13,8 +13,8 @@ shared_examples 'idv state id data entry' do |sp|
   end
 
   it 'renders an error for blank state id number and does not submit a job', :email do
-    expect(Idv::ProfileJob).to_not receive(:perform_now)
-    expect(Idv::ProfileJob).to_not receive(:perform_later)
+    expect(Idv::ProoferJob).to_not receive(:perform_now)
+    expect(Idv::ProoferJob).to_not receive(:perform_later)
 
     visit_idp_from_sp_with_loa3(sp)
     register_user
@@ -29,8 +29,8 @@ shared_examples 'idv state id data entry' do |sp|
   end
 
   it 'renders an error for unsupported jurisdiction and does not submit a job', :email do
-    expect(Idv::ProfileJob).to_not receive(:perform_now)
-    expect(Idv::ProfileJob).to_not receive(:perform_later)
+    expect(Idv::ProoferJob).to_not receive(:perform_now)
+    expect(Idv::ProoferJob).to_not receive(:perform_later)
 
     visit_idp_from_sp_with_loa3(sp)
     register_user

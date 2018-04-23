@@ -10,7 +10,7 @@ module Idv
       @applicant = Proofer::Applicant.new(applicant)
     end
 
-    def proof(vendor_params, *stages)
+    def proof(*stages)
       initial_value = {
         errors: {},
         normalized_applicant: {},
@@ -19,36 +19,43 @@ module Idv
       }
 
       stages.reduce(initial_value) do |results, stage|
-        proofer_result = proof_one(vendor_params, stage)
+        proofer_result = proof_one(stage)
 
-        results[:errors] = results[:errors].merge(proofer_result.errors)
-        results[:normalized_applicant] = proofer_result.normalized_applicant if proofer_result.normalized_applicant
-        results[:reasons] = results[:reasons] + proofer_result.vendor_resp.reasons
-        results[:success] = proofer_result.success?
+        break results unless proofer_result.success?
 
-        break unless proofer_result.success?
+        vr = proofer_result.vendor_resp
+        normalized_applicant = vr.respond_to?(:normalized_applicant) ? vr.normalized_applicant : nil
+
+        {
+          errors: results[:errors].merge(proofer_result.errors),
+          normalized_applicant: normalized_applicant || results[:normalized_applicant],
+          reasons: results[:reasons] + vr.reasons,
+          success: proofer_result.success?,
+        }
       end
     end
 
-    def proof_one(vendor_params, stage)
-      v_params = vendor_params.with_indifferent_access
+    def proof_one(stage)
       case stage
 
       when :phone
-        Proofer::Agent.
-          new(applicant: @applicant, vendor: Figaro.env.phone_proofing_vendor.to_sym, kbv: false).
-          submit_phone(v_params)
+        get_agent(:phone_proofing_vendor).
+          submit_phone(@applicant.phone)
 
       when :profile
-        Proofer::Agent.
-          new(applicant: @applicant, vendor: Figaro.env.profile_proofing_vendor.to_sym, kbv: false).
-          start(v_params)
+        get_agent(:profile_proofing_vendor).
+          start(@applicant.to_hash)
 
       when :state_id
-        Proofer::Agent.
-          new(applicant: @applicant, vendor: Figaro.env.state_id_proofing_vendor.to_sym, kbv: false).
-          submit_state_id(v_params.merge(state_id_jurisdiction: v_params[:state]))
+        get_agent(:state_id_proofing_vendor).
+          submit_state_id(@applicant.to_hash.merge(state_id_jurisdiction: @applicant.state))
       end
+    end
+
+    private
+
+    def get_agent(vendor)
+      Proofer::Agent.new(applicant: @applicant, vendor: Figaro.env.send(vendor).to_sym, kbv: false)
     end
   end
 end

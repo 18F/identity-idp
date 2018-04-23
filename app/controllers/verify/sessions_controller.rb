@@ -53,7 +53,7 @@ module Verify
     def submit_idv_job
       Idv::SubmitIdvJob.new(
         idv_session: idv_session, vendor_params: idv_session.vendor_params,
-        stages: [:profile, :state_id]
+        stages: %i[profile state_id]
       ).submit
     end
 

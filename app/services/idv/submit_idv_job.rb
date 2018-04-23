@@ -18,9 +18,8 @@ module Idv
     def proofer_job_params
       {
         result_id: result_id,
-        vendor_params: vendor_params,
-        applicant_json: idv_session.applicant.to_json,
-        stages: stages,
+        applicant_json: idv_session.applicant.merge(vendor_params).to_json,
+        stages: stages.to_json,
       }
     end
 

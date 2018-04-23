@@ -1,8 +1,5 @@
 shared_examples 'failed idv job' do |step|
-  let(:idv_job_class) do
-    return Idv::ProfileJob if step == :profile
-    return Idv::PhoneJob if step == :phone
-  end
+  let(:idv_job_class) { Idv::ProoferJob }
   let(:step_locale_key) do
     return :sessions if step == :profile
     step

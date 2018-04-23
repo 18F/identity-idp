@@ -30,7 +30,7 @@ describe Verify::SessionsController do
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
   end
-  let(:normalized_applicant) { Proofer::Applicant.new(user_attrs) }
+  let(:normalized_applicant) { user_attrs }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
