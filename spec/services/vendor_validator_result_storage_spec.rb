@@ -3,12 +3,10 @@ require 'rails_helper'
 RSpec.describe VendorValidatorResultStorage do
   subject(:service) { VendorValidatorResultStorage.new }
 
-  let(:session_id) { SecureRandom.uuid }
   let(:result_id) { SecureRandom.uuid }
   let(:original_result) do
     Idv::VendorResult.new(
       success: false,
-      session_id: session_id,
       normalized_applicant: Proofer::Applicant.new(first_name: 'First')
     )
   end

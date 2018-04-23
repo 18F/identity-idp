@@ -17,9 +17,6 @@ A Identity Management System powering login.gov.
 - [Redis 2.8+](http://redis.io/)
 - [Node.js v8.x.x](https://nodejs.org)
 
-Testing dependencies:
-- [PhantomJS](http://phantomjs.org)
-
 #### Setting up and running the app
 
 1. Make sure you have a working development environment with all the
@@ -157,11 +154,6 @@ Currently, you'll need to add `?locale=es` to each URL manually. We are working
 on a more robust and user-friendly way to switch between locales.
 
 ### Running Tests
-
-Make sure you have [PhantomJS](http://phantomjs.org) installed prior to running
-tests. On OS X, PhantomJS can be installed with Homebrew via: `brew install
-phantomjs`. For other platforms, refer to the [PhantomJS download
-page](http://phantomjs.org/download.html).
 
 To run all the tests:
 

@@ -30,6 +30,7 @@ es:
     sign_in: Iniciar sesión
     sign_out: Cerrar sesión
     two_factor_authentication:
+      app_option: Use una aplicación de autenticación en su lugar.
       app: Obtener un código de seguridad mediante la app de autenticación
       resend_code:
         sms: Obtener otro mensaje de texto

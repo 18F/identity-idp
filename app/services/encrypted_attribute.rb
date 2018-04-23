@@ -69,7 +69,7 @@ class EncryptedAttribute
   end
 
   def try_decrypt_with_uak(encryptor)
-    return encryptor.decrypt(encrypted, user_access_key)
+    encryptor.decrypt(encrypted, user_access_key)
   rescue Pii::EncryptionError => _err
     nil
   end

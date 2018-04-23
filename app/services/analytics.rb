@@ -100,6 +100,7 @@ class Analytics
   SESSION_TIMED_OUT = 'Session Timed Out'.freeze
   SIGN_IN_PAGE_VISIT = 'Sign in page visited'.freeze
   TOTP_SETUP = 'TOTP Setup'.freeze
+  TOTP_SETUP_VISIT = 'TOTP Setup Visited'.freeze
   TOTP_USER_DISABLED = 'TOTP: User Disabled TOTP'.freeze
   TWILIO_PHONE_VALIDATION_FAILED = 'Twilio Phone Validation Failed'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze

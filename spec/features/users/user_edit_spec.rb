@@ -9,11 +9,11 @@ feature 'User edit' do
       visit manage_email_path
     end
 
-    scenario 'user sees error message if form is submitted without email', :js, idv_job: true do
+    scenario 'user is not able to submit form without entering an email' do
       fill_in 'Email', with: ''
       click_button 'Update'
 
-      expect(page).to have_content t('valid_email.validations.email.invalid')
+      expect(page).to have_current_path manage_email_path
     end
   end
 
@@ -44,7 +44,7 @@ feature 'User edit' do
       fill_in 'Phone', with: '5376'
       select 'Morocco +212', from: 'International code'
 
-      expect(find('#user_phone_form_phone').value).to eq '+212 5376'
+      expect(find('#user_phone_form_phone').value).to eq '+212 (537) 6'
 
       fill_in 'Phone', with: '54354'
       select 'Japan +81', from: 'International code'

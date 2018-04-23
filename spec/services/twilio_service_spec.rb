@@ -78,12 +78,17 @@ describe TwilioService do
       raw_message = 'Unable to create record: Account not authorized to call +123456789012.'
       error_code = '21215'
       status_code = 400
-      sanitized_message = 'Unable to create record: Account not authorized to call +12345#######.'
+      sanitized_message = "[HTTP #{status_code}] #{error_code} : Unable to create record: Account " \
+                          "not authorized to call +12345#######.\n\n"
 
       service = TwilioService.new
 
+      raw_error = Twilio::REST::RestError.new(
+        raw_message, FakeTwilioErrorResponse.new(error_code)
+      )
+
       expect(service.send(:client).calls).to receive(:create).
-        and_raise(Twilio::REST::RestError.new(raw_message, error_code, status_code))
+        and_raise(raw_error)
 
       expect { service.place_call(to: '+123456789012', url: 'https://twimlet.com') }.
         to raise_error(Twilio::REST::RestError, sanitized_message)
@@ -116,12 +121,16 @@ describe TwilioService do
       raw_message = "The 'To' number +1 (888) 555-5555 is not a valid phone number"
       error_code = '21211'
       status_code = 400
-      sanitized_message = "The 'To' number +1 (888) 5##-#### is not a valid phone number"
+      sanitized_message = "[HTTP #{status_code}] #{error_code} : The 'To' " \
+                          "number +1 (888) 5##-#### is not a valid phone number\n\n"
 
       service = TwilioService.new
+      raw_error = Twilio::REST::RestError.new(
+        raw_message, FakeTwilioErrorResponse.new(error_code)
+      )
 
       expect(service.send(:client).messages).to receive(:create).
-        and_raise(Twilio::REST::RestError.new(raw_message, error_code, status_code))
+        and_raise(raw_error)
 
       expect { service.send_sms(to: '+1 (888) 555-5555', body: 'test') }.
         to raise_error(Twilio::REST::RestError, sanitized_message)
