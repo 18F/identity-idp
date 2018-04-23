@@ -111,4 +111,12 @@ end
 group :production do
   gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v1.0.3'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
+
+  if ENV['IDP_SIDEKIQ_PRO']
+    # sidekiq enterprise
+    source 'https://enterprise.contribsys.com/' do
+      gem 'sidekiq-ent'
+      gem 'sidekiq-pro'
+    end
+  end
 end
