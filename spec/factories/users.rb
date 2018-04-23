@@ -11,6 +11,10 @@ FactoryBot.define do
       phone_confirmed_at Time.zone.now
     end
 
+    trait :with_piv_or_cac do
+      x509_dn_uuid { SecureRandom.uuid }
+    end
+
     trait :admin do
       role :admin
     end

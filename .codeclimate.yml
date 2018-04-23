@@ -83,6 +83,7 @@ plugins:
     - 'lib/rspec/formatters/user_flow_formatter.rb'
   rubocop:
     enabled: true
+    channel: rubocop-0-54
   scss-lint:
     enabled: true
 

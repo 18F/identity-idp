@@ -5,7 +5,7 @@ ruby '~> 2.3.7'
 
 gem 'rails', '~> 5.1.3'
 
-gem 'ahoy_matey', '~> 1.6.1'
+gem 'ahoy_matey', '~> 2.0'
 gem 'american_date'
 gem 'aws-sdk-kms', '~> 1.4'
 gem 'aws-sdk-ses', '~> 1.6'
@@ -56,7 +56,7 @@ gem 'two_factor_authentication'
 gem 'typhoeus'
 gem 'uglifier', '~> 3.2'
 gem 'valid_email'
-gem 'webpacker', '~> 3.2.2'
+gem 'webpacker', '~> 3.4'
 gem 'whenever', require: false
 gem 'xml-simple'
 gem 'xmlenc', '~> 0.6.4'
@@ -74,7 +74,7 @@ group :development do
   gem 'rack-mini-profiler', require: false
   gem 'rails-erd'
   gem 'reek'
-  gem 'rubocop', '~> 0.52.0', require: false
+  gem 'rubocop', '~> 0.54.0', require: false
 end
 
 group :development, :test do
@@ -91,13 +91,14 @@ end
 group :test do
   gem 'axe-matchers', '~> 1.3.4'
   gem 'capybara-screenshot', github: 'mattheworiordan/capybara-screenshot'
+  gem 'capybara-selenium'
+  gem 'chromedriver-helper'
   gem 'codeclimate-test-reporter', require: false
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_bot_rails'
   gem 'fakefs', require: 'fakefs/safe'
   gem 'faker'
-  gem 'poltergeist'
   gem 'rack-test'
   gem 'rack_session_access'
   gem 'rails-controller-testing'

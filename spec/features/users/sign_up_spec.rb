@@ -49,7 +49,9 @@ feature 'Sign Up' do
   end
 
   scenario 'renders an error when twilio api responds with an error' do
-    twilio_error = Twilio::REST::RestError.new('', TwilioService::SMS_ERROR_CODE, '400')
+    twilio_error = Twilio::REST::RestError.new(
+      '', FakeTwilioErrorResponse.new(TwilioService::SMS_ERROR_CODE)
+    )
 
     allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
     sign_up_and_set_password
@@ -148,4 +150,31 @@ feature 'Sign Up' do
   it_behaves_like 'csrf error when acknowledging personal key', :oidc
   it_behaves_like 'creating an account with the site in Spanish', :saml
   it_behaves_like 'creating an account with the site in Spanish', :oidc
+
+  it_behaves_like 'creating an account using authenticator app for 2FA', :saml
+  it_behaves_like 'creating an account using authenticator app for 2FA', :oidc
+
+  it 'allows a user to choose TOTP as 2FA method during sign up' do
+    user = create(:user)
+    sign_in_user(user)
+    set_up_2fa_with_authenticator_app
+    click_acknowledge_personal_key
+
+    expect(page).to have_current_path account_path
+  end
+
+  it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
+    user = create(:user, :signed_up)
+    sign_in_user(user)
+    visit authenticator_setup_path
+
+    expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+  end
+
+  it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
+    user = create(:user, :signed_up)
+    visit authenticator_setup_path
+
+    expect(page).to have_current_path root_path
+  end
 end

@@ -246,7 +246,9 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'flashes an sms error when twilio responds with an sms error' do
-        twilio_error = Twilio::REST::RestError.new('', TwilioService::SMS_ERROR_CODE, '400')
+        twilio_error = Twilio::REST::RestError.new(
+          '', FakeTwilioErrorResponse.new(TwilioService::SMS_ERROR_CODE)
+        )
 
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
@@ -255,7 +257,9 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'flashes an invalid error when twilio responds with an invalid error' do
-        twilio_error = Twilio::REST::RestError.new('', TwilioService::INVALID_ERROR_CODE, '400')
+        twilio_error = Twilio::REST::RestError.new(
+          '', FakeTwilioErrorResponse.new(TwilioService::INVALID_ERROR_CODE)
+        )
 
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
@@ -265,7 +269,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'flashes an error when twilio responds with an invalid calling area error' do
         twilio_error = Twilio::REST::RestError.new(
-          '', TwilioService::INVALID_CALLING_AREA_ERROR_CODE, '400'
+          '', FakeTwilioErrorResponse.new(TwilioService::INVALID_CALLING_AREA_ERROR_CODE)
         )
 
         allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
@@ -277,7 +281,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'flashes an error when twilio responds with an invalid voice number' do
         twilio_error = Twilio::REST::RestError.new(
-          '', TwilioService::INVALID_VOICE_NUMBER_ERROR_CODE, '400'
+          '', FakeTwilioErrorResponse.new(TwilioService::INVALID_VOICE_NUMBER_ERROR_CODE)
         )
 
         allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
@@ -288,7 +292,9 @@ describe Users::TwoFactorAuthenticationController do
       end
 
       it 'flashes a failed to send error when twilio responds with an unknown error' do
-        twilio_error = Twilio::REST::RestError.new('', '', '400')
+        twilio_error = Twilio::REST::RestError.new(
+          '', FakeTwilioErrorResponse.new
+        )
 
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
@@ -298,7 +304,9 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'records an analytics event when Twilio responds with an error' do
         stub_analytics
-        twilio_error = Twilio::REST::RestError.new('error message', '', '400')
+        twilio_error = Twilio::REST::RestError.new(
+          'error message', FakeTwilioErrorResponse.new
+        )
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
         analytics_hash = {
           success: true,
@@ -309,12 +317,13 @@ describe Users::TwoFactorAuthenticationController do
           country_code: '1',
           area_code: '202',
         }
+        twilio_error = "[HTTP 400]  : error message\n\n"
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::OTP_DELIVERY_SELECTION, analytics_hash)
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: 'error message', code: '')
+          with(Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: twilio_error, code: '')
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
       end

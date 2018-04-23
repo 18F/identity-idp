@@ -18,6 +18,7 @@ fr:
     messages:
       current_address: Vous devriez être en mesure de recevoir du courrier à cette
         adresse.
+      remember_device: NOT TRANSLATED YET
     passwords:
       edit:
         buttons:

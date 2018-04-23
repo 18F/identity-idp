@@ -19,18 +19,6 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update && apt-get install yarn
 
-# PhantomJS is required for running tests
-# TOOD(sbc): Create a separate production container without this.
-ENV PHANTOMJS_SHA256 86dd9a4bf4aee45f1a84c9f61cf1947c1d6dce9b9e8d2a907105da7852460d2f
-
-RUN mkdir /usr/local/phantomjs \
-    && curl -o phantomjs.tar.bz2 -L https://bitbucket.org/ariya/phantomjs/downloads/phantomjs-2.1.1-linux-x86_64.tar.bz2 \
-    && echo "$PHANTOMJS_SHA256 *phantomjs.tar.bz2" | sha256sum -c - \
-    && tar -xjf phantomjs.tar.bz2 -C /usr/local/phantomjs --strip-components=1 \
-    && rm phantomjs.tar.bz2
-
-RUN ln -s ../phantomjs/bin/phantomjs /usr/local/bin/
-
 WORKDIR /upaya
 
 COPY package.json /upaya

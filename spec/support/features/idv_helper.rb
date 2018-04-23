@@ -1,4 +1,8 @@
 module IdvHelper
+  def self.included(base)
+    base.class_eval { include JavascriptDriverHelper }
+  end
+
   def max_attempts_less_one
     Idv::Attempter.idv_max_attempts - 1
   end
@@ -90,11 +94,9 @@ module IdvHelper
   end
 
   def choose_idv_otp_delivery_method_sms
-    page.find(
-      'label',
-      text: t('devise.two_factor_authentication.otp_delivery_preference.sms')
-    ).click
-    click_on t('idv.buttons.send_confirmation_code')
+    using_wait_time(5) do
+      click_on t('idv.buttons.send_confirmation_code')
+    end
   end
 
   def choose_idv_otp_delivery_method_voice
@@ -119,7 +121,6 @@ module IdvHelper
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_address_choose_phone
-    fill_out_phone_form_ok(user.phone)
     click_idv_continue
     fill_in 'Password', with: password
     click_continue
@@ -127,7 +128,14 @@ module IdvHelper
 
   def visit_idp_from_sp_with_loa3(sp)
     if sp == :saml
-      @saml_authn_request = auth_request.create(loa3_with_bundle_saml_settings)
+      settings = loa3_with_bundle_saml_settings
+      settings.security[:embed_sign] = false
+      if javascript_enabled?
+        idp_domain_name = "#{page.server.host}:#{page.server.port}"
+        settings.idp_sso_target_url = "http://#{idp_domain_name}/api/saml/auth"
+        settings.idp_slo_target_url = "http://#{idp_domain_name}/api/saml/logout"
+      end
+      @saml_authn_request = auth_request.create(settings)
       visit @saml_authn_request
     elsif sp == :oidc
       @state = SecureRandom.hex
