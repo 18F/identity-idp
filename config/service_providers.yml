@@ -579,7 +579,8 @@ production:
     logo: 'dot.svg'
     cert: 'dot_portal_prod'
     redirect_uris:
-      - 'https://acquia-stage.portal.dot.gov/openid-connect/dot_login'
+      - 'https://portal.dot.gov/openid-connect/dot_login'
+      - 'https://fmcsa.portal.dot.gov/openid-connect/dot_login'
       - 'https://portal.dot.gov/'
     restrict_to_deploy_env: 'prod'
 
