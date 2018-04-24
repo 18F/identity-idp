@@ -32,9 +32,8 @@ RSpec.describe Idv::SubmitIdvJob do
       expect(Idv::ProoferJob).to receive(:perform_later).
         with(
           result_id: result_id,
-          vendor_params: vendor_params,
-          applicant_json: applicant.to_json,
-          stages: stages
+          applicant_json: applicant.merge(vendor_params).to_json,
+          stages: stages.to_json
         )
 
       expect(idv_session.async_result_id).to eq(nil)

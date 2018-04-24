@@ -7,7 +7,7 @@ module Idv
     def perform(result_id:, applicant_json:, stages:)
       @result_id = result_id
       @applicant = from_json(applicant_json)
-      @stages = stages
+      @stages = from_json(stages).map(&:to_sym)
       verify_identity_with_vendor
     end
 

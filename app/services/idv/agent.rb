@@ -11,28 +11,30 @@ module Idv
     end
 
     def proof(*stages)
-      initial_value = {
+      results = {
         errors: {},
         normalized_applicant: {},
         reasons: [],
         success: false,
       }
 
-      stages.reduce(initial_value) do |results, stage|
+      stages.each do |stage|
         proofer_result = proof_one(stage)
-
-        break results unless proofer_result.success?
-
         vr = proofer_result.vendor_resp
+
         normalized_applicant = vr.respond_to?(:normalized_applicant) ? vr.normalized_applicant : nil
 
-        {
+        results = {
           errors: results[:errors].merge(proofer_result.errors),
           normalized_applicant: normalized_applicant || results[:normalized_applicant],
           reasons: results[:reasons] + vr.reasons,
           success: proofer_result.success?,
         }
+
+        break unless proofer_result.success?
       end
+
+      results
     end
 
     def proof_one(stage)
@@ -44,11 +46,11 @@ module Idv
 
       when :profile
         get_agent(:profile_proofing_vendor).
-          start(@applicant.to_hash)
+          start(@applicant.to_hash.with_indifferent_access)
 
       when :state_id
         get_agent(:state_id_proofing_vendor).
-          submit_state_id(@applicant.to_hash.merge(state_id_jurisdiction: @applicant.state))
+          submit_state_id(@applicant.to_hash.with_indifferent_access.merge(state_id_jurisdiction: @applicant.state))
       end
     end
 
