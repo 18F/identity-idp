@@ -36,6 +36,8 @@ class User < ApplicationRecord
   has_many :profiles, dependent: :destroy
   has_many :events, dependent: :destroy
 
+  validates :x509_dn_uuid, uniqueness: true, allow_nil: true
+
   attr_accessor :asserted_attributes
 
   def personal_key
@@ -55,7 +57,7 @@ class User < ApplicationRecord
   end
 
   def two_factor_enabled?
-    phone.present?
+    phone.present? || totp_enabled?
   end
 
   def send_two_factor_authentication_code(_code)

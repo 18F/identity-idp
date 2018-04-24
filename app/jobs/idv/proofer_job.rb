@@ -2,13 +2,12 @@ module Idv
   class ProoferJob < ApplicationJob
     queue_as :idv
 
-    attr_reader :result_id, :applicant, :vendor_params, :vendor_session_id
+    attr_reader :result_id, :applicant, :vendor_params
 
-    def perform(result_id:, vendor_params:, applicant_json:, vendor_session_id: nil)
+    def perform(result_id:, vendor_params:, applicant_json:)
       @result_id = result_id
       @vendor_params = vendor_params
       @applicant = applicant_from_json(applicant_json)
-      @vendor_session_id = vendor_session_id
       perform_identity_proofing
     end
 

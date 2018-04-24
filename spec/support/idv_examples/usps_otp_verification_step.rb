@@ -1,4 +1,4 @@
-shared_examples 'signing in with pending USPS verification' do |sp|
+shared_examples 'usps otp verfication step' do |sp|
   let(:otp) { 'ABC123' }
   let(:profile) do
     create(

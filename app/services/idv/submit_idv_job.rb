@@ -23,7 +23,6 @@ module Idv
       {
         result_id: result_id,
         vendor_params: vendor_params,
-        vendor_session_id: idv_session.vendor_session_id,
         applicant_json: idv_session.applicant.to_json,
       }
     end

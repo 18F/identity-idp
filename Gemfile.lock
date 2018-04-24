@@ -109,21 +109,21 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     aes_key_wrap (1.0.1)
-    ahoy_matey (1.6.1)
+    ahoy_matey (2.0.2)
       addressable
       browser (~> 2.0)
-      geocoder
-      rack-attack (< 6)
-      railties
-      referer-parser (>= 0.3.0)
+      geocoder (>= 1.4.5)
+      railties (>= 4.2)
+      referer-parser (>= 0.3)
       request_store
-      safely_block (>= 0.1.1)
+      safely_block (>= 0.2.1)
       user_agent_parser
-      uuidtools
     akami (1.3.1)
       gyoku (>= 0.4.0)
       nokogiri
     american_date (1.1.1)
+    archive-zip (0.11.0)
+      io-like (~> 0.3.0)
     arel (8.0.0)
     ast (2.4.0)
     aws-partitions (1.70.0)
@@ -165,7 +165,7 @@ GEM
     bullet (5.7.5)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.11.0)
-    bummr (0.2.1)
+    bummr (0.3.2)
       rainbow
       thor
     byebug (10.0.0)
@@ -176,12 +176,17 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (>= 2.0, < 4.0)
+    capybara-selenium (0.0.6)
+      capybara
+      selenium-webdriver
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     choice (0.2.0)
+    chromedriver-helper (1.2.0)
+      archive-zip (~> 0.10)
+      nokogiri (~> 1.8)
     chronic (0.10.2)
     chunky_png (1.3.8)
-    cliver (0.3.2)
     codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
     codeclimate-test-reporter (1.0.8)
@@ -194,11 +199,11 @@ GEM
     connection_pool (2.2.1)
     crack (0.4.3)
       safe_yaml (~> 1.0.0)
-    crass (1.0.3)
+    crass (1.0.4)
     css_parser (1.6.0)
       addressable
     daemons (1.2.4)
-    database_cleaner (1.6.2)
+    database_cleaner (1.7.0)
     debug_inspector (0.0.3)
     derailed (0.1.0)
       derailed_benchmarks
@@ -229,10 +234,10 @@ GEM
     easy_translate (0.5.1)
       thread
       thread_safe
-    email_spec (2.1.1)
+    email_spec (2.2.0)
       htmlentities (~> 4.3.3)
       launchy (~> 2.1)
-      mail (~> 2.6)
+      mail (~> 2.7)
     encryptor (3.0.0)
     equalizer (0.0.11)
     errbase (0.1.0)
@@ -252,11 +257,11 @@ GEM
     fakefs (0.13.3)
     faker (1.8.7)
       i18n (>= 0.7)
-    faraday (0.14.0)
+    faraday (0.15.0)
       multipart-post (>= 1.2, < 3)
-    fasterer (0.4.0)
+    fasterer (0.4.1)
       colorize (~> 0.7)
-      ruby_parser (~> 3.9)
+      ruby_parser (~> 3.11.0)
     ffi (1.9.23)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
@@ -294,12 +299,12 @@ GEM
     hiredis (0.6.1)
     htmlentities (4.3.4)
     http_accept_language (2.1.1)
-    httparty (0.16.1)
+    httparty (0.16.2)
       multi_xml (>= 0.5.2)
     httpi (2.4.2)
       rack
       socksify
-    i18n (1.0.0)
+    i18n (1.0.1)
       concurrent-ruby (~> 1.0)
     i18n-tasks (0.9.21)
       activesupport (>= 4.0.2)
@@ -313,6 +318,7 @@ GEM
       terminal-table (>= 1.5.1)
     ice_nine (0.11.2)
     iniparse (1.4.4)
+    io-like (0.3.0)
     jmespath (1.3.1)
     json (1.8.6)
     json-jwt (1.9.2)
@@ -365,22 +371,18 @@ GEM
       nenv (~> 0.1)
       shellany (~> 0.0)
     orm_adapter (0.5.0)
-    overcommit (0.44.0)
+    overcommit (0.45.0)
       childprocess (~> 0.6, >= 0.6.3)
       iniparse (~> 1.4)
     parallel (1.12.1)
-    parser (2.5.0.5)
+    parser (2.5.1.0)
       ast (~> 2.4.0)
     pg (1.0.0)
-    phonelib (0.6.19)
+    phonelib (0.6.21)
     phony (2.15.44)
     phony_rails (0.14.6)
       activesupport (>= 3.0)
       phony (> 2.15)
-    poltergeist (1.17.0)
-      capybara (~> 2.1)
-      cliver (~> 0.3.1)
-      websocket-driver (>= 0.2.0)
     powerpack (0.1.1)
     premailer (1.11.1)
       addressable
@@ -405,12 +407,12 @@ GEM
       rack (>= 1.2.0)
     rack-protection (2.0.1)
       rack
-    rack-proxy (0.6.3)
+    rack-proxy (0.6.4)
       rack
     rack-test (1.0.0)
       rack (>= 1.0, < 3)
     rack-timeout (0.4.2)
-    rack_session_access (0.1.1)
+    rack_session_access (0.2.0)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
     rails (5.1.6)
@@ -455,10 +457,10 @@ GEM
       connection_pool (~> 2.1)
       redis (>= 3.0, < 5.0)
     redis (3.3.5)
-    reek (4.8.0)
+    reek (4.8.1)
       codeclimate-engine-rb (~> 0.4.0)
       parser (>= 2.5.0.0, < 2.6)
-      rainbow (~> 3.0)
+      rainbow (>= 2.0, < 4.0)
     referer-parser (0.3.0)
     request_store (1.4.1)
       rack (>= 1.4)
@@ -489,9 +491,9 @@ GEM
       rspec-mocks (~> 3.5.0)
       rspec-support (~> 3.5.0)
     rspec-support (3.5.0)
-    rubocop (0.52.1)
+    rubocop (0.54.0)
       parallel (~> 1.10)
-      parser (>= 2.4.0.2, < 3.0)
+      parser (>= 2.5)
       powerpack (~> 0.1)
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
@@ -501,8 +503,9 @@ GEM
     ruby-saml (1.7.2)
       nokogiri (>= 1.5.10)
     ruby_dep (1.5.0)
-    ruby_parser (3.10.1)
+    ruby_parser (3.11.0)
       sexp_processor (~> 4.9)
+    rubyzip (1.2.1)
     safe_yaml (1.0.4)
     safely_block (0.2.1)
       errbase
@@ -530,18 +533,21 @@ GEM
     secure_headers (3.7.3)
       useragent
     securecompare (1.0.0)
-    sexp_processor (4.10.0)
+    selenium-webdriver (3.11.0)
+      childprocess (~> 0.5)
+      rubyzip (~> 1.2)
+    sexp_processor (4.11.0)
     shellany (0.0.1)
     shoulda-matchers (3.1.2)
       activesupport (>= 4.0.0)
-    sidekiq (5.1.2)
+    sidekiq (5.1.3)
       concurrent-ruby (~> 1.0)
       connection_pool (~> 2.2, >= 2.2.0)
       rack-protection (>= 1.5.0)
       redis (>= 3.3.5, < 5)
-    simple_form (3.5.1)
-      actionpack (> 4, < 5.2)
-      activemodel (> 4, < 5.2)
+    simple_form (4.0.0)
+      actionpack (> 4)
+      activemodel (> 4)
     simplecov (0.13.0)
       docile (~> 1.1.0)
       json (>= 1.8, < 3)
@@ -587,7 +593,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.8)
     timecop (0.9.1)
-    twilio-ruby (5.7.2)
+    twilio-ruby (5.8.0)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
@@ -610,7 +616,6 @@ GEM
     useragent (0.16.8)
     uuid (2.3.8)
       macaddr (~> 1.0)
-    uuidtools (2.1.5)
     valid_email (0.1.0)
       activemodel
       mail (>= 2.6.1)
@@ -628,7 +633,7 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpacker (3.2.2)
+    webpacker (3.4.3)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)
@@ -658,7 +663,7 @@ PLATFORMS
 
 DEPENDENCIES
   aamva!
-  ahoy_matey (~> 1.6.1)
+  ahoy_matey (~> 2.0)
   american_date
   aws-sdk-kms (~> 1.4)
   aws-sdk-ses (~> 1.6)
@@ -670,6 +675,8 @@ DEPENDENCIES
   bullet
   bummr
   capybara-screenshot!
+  capybara-selenium
+  chromedriver-helper
   codeclimate-test-reporter
   database_cleaner
   derailed
@@ -704,7 +711,6 @@ DEPENDENCIES
   pg
   phonelib
   phony_rails
-  poltergeist
   premailer-rails
   proofer!
   pry-byebug
@@ -723,7 +729,7 @@ DEPENDENCIES
   reek
   rqrcode
   rspec-rails (~> 3.5.2)
-  rubocop (~> 0.52.0)
+  rubocop (~> 0.54.0)
   ruby-progressbar
   ruby-saml
   saml_idp!
@@ -746,7 +752,7 @@ DEPENDENCIES
   uglifier (~> 3.2)
   valid_email
   webmock
-  webpacker (~> 3.2.2)
+  webpacker (~> 3.4)
   whenever
   xml-simple
   xmlenc (~> 0.6.4)
