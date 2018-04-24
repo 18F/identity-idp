@@ -501,9 +501,15 @@ production:
     agency: 'NGA'
     logo: 'nga.png'
     cert: 'nga_geoworks_prod'
-    return_to_sp_url: 'https://geoworks.nga-geoworks.com'
+    return_to_sp_url: 'https://nga-geoworks.com'
     redirect_uris:
+      - 'https://geoworks.geointservices.io/auth/login-gov/callback/loa-1'
       - 'https://geoworks.nga-geoworks.com/auth/login-gov/callback/loa-1'
+      - 'https://nga-geoworks.com/auth/login-gov/callback/loa-1'
+      - 'https://ngageoworks.org/auth/login-gov/callback/loa-1'
+      - 'https://nga-geoworks.org/auth/login-gov/callback/loa-1'
+      - 'https://nga-geoworks.io/auth/login-gov/callback/loa-1'
+      - 'https://ngageoworks.io/auth/login-gov/callback/loa-1'
     restrict_to_deploy_env: 'prod'
 
   # NGA GEOINT Viewer
@@ -513,9 +519,14 @@ production:
     agency: 'NGA'
     logo: 'nga.png'
     cert: 'nga_geoint_viewer_prod'
-    return_to_sp_url: 'https://gv-geoworks.nga-geoworks.com'
+    return_to_sp_url: 'https://gv.nga-geoworks.com'
     redirect_uris:
-      - 'https://gv-geoworks.nga-geoworks.com/protected/callback'
+      - 'https://gv.geointservices.io/protected/callback'
+      - 'https://gv.nga-geoworks.com/protected/callback'
+      - 'https://gv.ngageoworks.org/protected/callback'
+      - 'https://gv.nga-geoworks.org/protected/callback'
+      - 'https://gv.nga-geoworks.io/protected/callback'
+      - 'https://gv.ngageoworks.io/protected/callback'
     restrict_to_deploy_env: 'prod'
 
   # NGA HiPER CLOUD
@@ -525,8 +536,65 @@ production:
     agency: 'NGA'
     logo: 'nga.png'
     cert: 'nga_hiper_look_prod'
-    return_to_sp_url: 'https://hiperlook-ppp.nga-geoworks.com'
+    return_to_sp_url: 'https://hiperlook.nga-geoworks.com'
     redirect_uris:
       - 'https://hiperlook-ppp.nga-geoworks.com/auth_redirect'
       - 'https://hiperlook-ppp.nga-geoworks.com:443/auth_redirect'
+      - 'https://hiperlook-ppp.geointservices.io/auth_redirect'
+      - 'https://hiperlook-ppp.geointservices.io:443/auth_redirect'
+      - 'https://hiperlook.ngageoworks.org/auth_redirect'
+      - 'https://hiperlook.ngageoworks.org:443/auth_redirect'
+      - 'https://hiperlook.nga-geoworks.org/auth_redirect'
+      - 'https://hiperlook.nga-geoworks.org:443/auth_redirect'
+      - 'https://hiperlook.nga-geoworks.io/auth_redirect'
+      - 'https://hiperlook.nga-geoworks.io:443/auth_redirect'
+      - 'https://hiperlook.ngageoworks.io/auth_redirect'
+      - 'https://hiperlook.ngageoworks.io:443/auth_redirect'
+      - 'https://hiperlook.nga-geoworks.com/auth_redirect'
+      - 'https://hiperlook.nga-geoworks.com:443/auth_redirect'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA MAGE
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:nga:mage':
+    agency_id: 5
+    friendly_name: 'MAGE'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_mage_prod'
+    return_to_sp_url: 'https://mage.nga-geoworks.com'
+    redirect_uris:
+      - 'https://mage-geoworks.geointservices.io/auth/login-gov/callback/loa-1'
+      - 'https://mage.nga-geoworks.com/auth/login-gov/callback/loa-1'
+      - 'https://mage.ngageoworks.org/auth/login-gov/callback/loa-1'
+      - 'https://mage.nga-geoworks.org/auth/login-gov/callback/loa-1'
+      - 'https://mage.nga-geoworks.io/auth/login-gov/callback/loa-1'
+      - 'https://mage.ngageoworks.io/auth/login-gov/callback/loa-1'
+    restrict_to_deploy_env: 'prod'
+
+  # DOT
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dot:login':
+    agency_id: 6
+    friendly_name: 'DOT Portal'
+    agency: 'DOT'
+    logo: 'dot.svg'
+    cert: 'dot_portal_prod'
+    redirect_uris:
+      - 'https://portal.dot.gov/openid-connect/dot_login'
+      - 'https://fmcsa.portal.dot.gov/openid-connect/dot_login'
+      - 'https://portal.dot.gov/'
+    restrict_to_deploy_env: 'prod'
+
+  # NGA GEOWorks Symphony 
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:mitre:symphony':
+    agency_id: 5
+    friendly_name: 'GEOWorks/Symphony'
+    agency: 'NGA'
+    logo: 'nga.png'
+    cert: 'nga_geoworks_symphony_prod'
+    return_to_sp_url: 'https://symphony.nga-geoworks.com'
+    redirect_uris:
+      - 'https://symphony.nga-geoworks.com/'
+      - 'https://symphony.nga-geoworks.com/guacamole'
+      - 'https://symphony.nga-geoworks.com/guacamole/#/'
+      - 'https://symphony.nga-geoworks.com/secured'
     restrict_to_deploy_env: 'prod'

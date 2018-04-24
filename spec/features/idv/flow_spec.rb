@@ -157,34 +157,6 @@ feature 'IdV session', idv_job: true do
       expect(find('#profile_prev_address1').value).to eq ''
     end
 
-    context 'personal keys information and actions' do
-      before do
-        personal_key = 'a1b2c3d4e5f6g7h8'
-
-        @user = sign_in_and_2fa_user
-        visit verify_session_path
-
-        allow(RandomPhrase).to receive(:to_s).and_return(personal_key)
-        complete_idv_profile_ok(@user)
-      end
-
-      scenario 'personal key presented on success' do
-        expect(page).to have_content(t('headings.personal_key'))
-      end
-
-      it_behaves_like 'personal key page'
-
-      scenario 'reload personal key page' do
-        visit current_path
-
-        expect(page).to have_content(t('headings.personal_key'))
-
-        visit current_path
-
-        expect(page).to have_content(t('headings.personal_key'))
-      end
-    end
-
     scenario 'attempting to skip OTP phone confirmation redirects to OTP confirmation', :js do
       different_phone = '555-555-9876'
       user = sign_in_live_with_2fa
