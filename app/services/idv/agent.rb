@@ -20,16 +20,8 @@ module Idv
 
       stages.each do |stage|
         proofer_result = proof_one(stage)
-        vr = proofer_result.vendor_resp
 
-        normalized_applicant = vr.respond_to?(:normalized_applicant) ? vr.normalized_applicant : nil
-
-        results = {
-          errors: results[:errors].merge(proofer_result.errors),
-          normalized_applicant: normalized_applicant || results[:normalized_applicant],
-          reasons: results[:reasons] + vr.reasons,
-          success: proofer_result.success?,
-        }
+        results = merge_results(results, proofer_result)
 
         break unless proofer_result.success?
       end
@@ -55,6 +47,19 @@ module Idv
     end
 
     private
+
+    def merge_results(results, proofer_result)
+        vr = proofer_result.vendor_resp
+
+        normalized_applicant = vr.respond_to?(:normalized_applicant) ? vr.normalized_applicant : {}
+
+        {
+          errors: results[:errors].merge(proofer_result.errors),
+          normalized_applicant: results[:normalized_applicant].merge(normalized_applicant),
+          reasons: results[:reasons] + vr.reasons,
+          success: proofer_result.success?,
+        }
+    end
 
     def get_agent(vendor)
       Proofer::Agent.new(applicant: @applicant, vendor: Figaro.env.send(vendor).to_sym, kbv: false)
