@@ -13,6 +13,17 @@ feature 'idv profile step', :idv_job do
       expect(page).to have_content(t('idv.titles.otp_delivery_method'))
       expect(page).to have_current_path(verify_otp_delivery_method_path)
     end
+
+    it 'redirects to the confirmation step when the phone matches the 2fa phone number' do
+      user = user_with_2fa
+      start_idv_from_sp
+      complete_idv_steps_before_phone_step(user)
+      fill_out_phone_form_ok(user.phone)
+      click_idv_continue
+
+      expect(page).to have_content(t('idv.titles.session.review'))
+      expect(page).to have_current_path(verify_review_path)
+    end
   end
 
   context 'after submitting valid information' do
