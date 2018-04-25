@@ -6,7 +6,7 @@ module Idv
       parsed = JSON.parse(json, symbolize_names: true)
 
       applicant = parsed[:normalized_applicant]
-      parsed[:normalized_applicant] = Proofer::Applicant.new(applicant) if applicant
+      parsed[:normalized_applicant] = applicant if applicant
 
       new(**parsed)
     end

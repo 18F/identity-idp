@@ -5,6 +5,7 @@ ControlParameter:
     - CustomDeviseFailureApp#i18n_message
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
+    - Idv::Agent#proof_one
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching

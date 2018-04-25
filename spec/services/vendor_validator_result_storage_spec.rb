@@ -7,7 +7,7 @@ RSpec.describe VendorValidatorResultStorage do
   let(:original_result) do
     Idv::VendorResult.new(
       success: false,
-      normalized_applicant: Proofer::Applicant.new(first_name: 'First')
+      normalized_applicant: { first_name: 'First' }
     )
   end
 

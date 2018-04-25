@@ -43,7 +43,7 @@ describe Idv::ProfileStep do
           success: true,
           errors: {},
           reasons: reasons,
-          normalized_applicant: Proofer::Applicant.new(first_name: 'Some')
+          normalized_applicant: { first_name: 'Some' }
         )
       )
 

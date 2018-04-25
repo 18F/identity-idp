@@ -18,8 +18,8 @@ feature 'idv state id data entry', :idv_job do
   end
 
   it 'renders an error for blank state id number and does not submit a job', :email do
-    expect(Idv::ProfileJob).to_not receive(:perform_now)
-    expect(Idv::ProfileJob).to_not receive(:perform_later)
+    expect(Idv::ProoferJob).to_not receive(:perform_now)
+    expect(Idv::ProoferJob).to_not receive(:perform_later)
 
     fill_in :profile_state_id_number, with: ''
     click_idv_continue
@@ -29,8 +29,8 @@ feature 'idv state id data entry', :idv_job do
   end
 
   it 'renders an error for unsupported jurisdiction and does not submit a job', :email do
-    expect(Idv::ProfileJob).to_not receive(:perform_now)
-    expect(Idv::ProfileJob).to_not receive(:perform_later)
+    expect(Idv::ProoferJob).to_not receive(:perform_now)
+    expect(Idv::ProoferJob).to_not receive(:perform_later)
 
     select 'Alabama', from: 'profile_state'
     click_idv_continue

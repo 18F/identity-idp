@@ -55,8 +55,9 @@ module Verify
     def submit_idv_job
       Idv::SubmitIdvJob.new(
         idv_session: idv_session,
-        vendor_params: idv_session.params[:phone]
-      ).submit_phone_job
+        vendor_params: { phone: idv_session.params[:phone] },
+        stages: [:phone]
+      ).submit
     end
 
     def step_name

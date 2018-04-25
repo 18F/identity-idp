@@ -272,7 +272,8 @@ describe Verify::PhoneController do
 
         expect(Idv::SubmitIdvJob).to receive(:new).with(
           idv_session: subject.idv_session,
-          vendor_params: normalized_phone
+          vendor_params: { phone: normalized_phone },
+          stages: [:phone]
         ).and_call_original
 
         put :create, params: { idv_phone_form: { phone: good_phone } }

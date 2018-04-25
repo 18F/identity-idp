@@ -3,7 +3,10 @@ module Idv
     attr_reader :pii_attributes
 
     def initialize(applicant:, user:, normalized_applicant:, phone_confirmed:)
-      self.pii_attributes = pii_from_applicant(applicant, normalized_applicant)
+      self.pii_attributes = pii_from_applicant(
+        OpenStruct.new(applicant),
+        OpenStruct.new(normalized_applicant)
+      )
       self.user = user
       self.phone_confirmed = phone_confirmed
     end

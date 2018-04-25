@@ -6,7 +6,7 @@ describe Idv::PhoneStep do
   let(:user) { build(:user) }
   let(:idv_session) do
     idvs = Idv::Session.new(user_session: {}, current_user: user, issuer: nil)
-    idvs.applicant = Proofer::Applicant.new first_name: 'Some'
+    idvs.applicant = { first_name: 'Some' }
     idvs
   end
   let(:idv_form_params) { { phone: '555-555-0000', phone_confirmed_at: nil } }
