@@ -20,6 +20,7 @@ DuplicateMethodCall:
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
+    - Ahoy::Store#track_event
     - Aws::SES::Base#deliver
     - CustomDeviseFailureApp#build_options
     - CustomDeviseFailureApp#keys

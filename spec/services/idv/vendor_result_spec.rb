@@ -4,7 +4,6 @@ RSpec.describe Idv::VendorResult do
   let(:success) { true }
   let(:errors) { { foo: ['is not valid'] } }
   let(:reasons) { %w[foo bar baz] }
-  let(:session_id) { SecureRandom.uuid }
   let(:normalized_applicant) do
     Proofer::Applicant.new(
       last_name: 'Ever',
@@ -18,7 +17,6 @@ RSpec.describe Idv::VendorResult do
       success: success,
       errors: errors,
       reasons: reasons,
-      session_id: session_id,
       normalized_applicant: normalized_applicant,
       timed_out: timed_out
     )
@@ -52,7 +50,6 @@ RSpec.describe Idv::VendorResult do
       expect(new_from_json.success?).to eq(vendor_result.success?)
       expect(new_from_json.errors).to eq(vendor_result.errors)
       expect(new_from_json.reasons).to eq(vendor_result.reasons)
-      expect(new_from_json.session_id).to eq(vendor_result.session_id)
     end
 
     it 'turns applicant into a full object' do

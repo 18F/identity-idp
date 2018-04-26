@@ -81,7 +81,7 @@ feature 'LOA1 Single Sign On' do
     it 'user can view and confirm personal key during sign up', :js do
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = create(:user, :with_phone)
-      code = '1234'
+      code = 'ABC1-DEF2-GHI3-JKL4'
       stub_personal_key(user: user, code: code)
 
       loa1_sp_session

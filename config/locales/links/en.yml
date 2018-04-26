@@ -29,6 +29,7 @@ en:
     sign_in: Sign in
     sign_out: Sign out
     two_factor_authentication:
+      app_option: Use an authentication application instead.
       app: get a security code via authentication app
       resend_code:
         sms: Get another text message

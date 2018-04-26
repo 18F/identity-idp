@@ -28,6 +28,7 @@ module Users
     end
 
     def handle_success
+      create_user_event(:password_changed)
       bypass_sign_in current_user
 
       flash[:personal_key] = @update_user_password_form.personal_key

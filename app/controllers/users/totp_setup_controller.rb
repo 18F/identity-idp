@@ -1,11 +1,13 @@
 module Users
   class TotpSetupController < ApplicationController
-    before_action :confirm_two_factor_authenticated
+    before_action :authenticate_user!
+    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def new
       return redirect_to account_url if current_user.totp_enabled?
 
-      user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
+      track_event
+      store_totp_secret_in_session
 
       @code = new_totp_secret
       @qrcode = current_user.decorate.qrcode(new_totp_secret)
@@ -35,10 +37,37 @@ module Users
 
     private
 
+    def two_factor_enabled?
+      current_user.two_factor_enabled?
+    end
+
+    def track_event
+      properties = { user_signed_up: current_user.two_factor_enabled? }
+      analytics.track_event(Analytics::TOTP_SETUP_VISIT, properties)
+    end
+
+    def store_totp_secret_in_session
+      user_session[:new_totp_secret] = current_user.generate_totp_secret if new_totp_secret.nil?
+    end
+
     def process_valid_code
+      mark_user_as_fully_authenticated
       flash[:success] = t('notices.totp_configured')
-      redirect_to account_url
+      redirect_to url_after_entering_valid_code
       user_session.delete(:new_totp_secret)
+    end
+
+    def mark_user_as_fully_authenticated
+      user_session[TwoFactorAuthentication::NEED_AUTHENTICATION] = false
+      user_session[:authn_at] = Time.zone.now
+    end
+
+    def url_after_entering_valid_code
+      if current_user.decorate.should_acknowledge_personal_key?(user_session)
+        sign_up_personal_key_url
+      else
+        account_url
+      end
     end
 
     def process_invalid_code

@@ -13,7 +13,6 @@ jobs:
           RAILS_ENV: test
           CC_TEST_REPORTER_ID: faecd27e9aed532634b3f4d3e251542d7de9457cfca96a94208a63270ef9b42e
           COVERAGE: true
-          PATH: "/opt/yarn/yarn-v1.5.1/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -45,23 +44,15 @@ jobs:
 
       - restore-cache:
           keys:
-            - identity-idp-yarn-{{ checksum "yarn.lock" }}
-            - identity-idp-yarn-
+            - v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
+            - v1-identity-idp-yarn-
       - run:
           name: Install Yarn
           command: yarn install --cache-folder ~/.cache/yarn
       - save-cache:
-          key: identity-idp-yarn-{{ checksum "yarn.lock" }}
+          key: v1-identity-idp-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.cache/yarn
-
-      - run:
-          name: Install phantomjs
-          command: |
-            sudo curl --output /tmp/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
-            sudo chmod ugo+x /tmp/phantomjs
-            sudo ln -sf /tmp/phantomjs /usr/local/bin/phantomjs
-
       - run:
           name: Install AWS CLI
           command: |

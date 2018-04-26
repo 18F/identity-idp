@@ -60,7 +60,7 @@ feature 'Sign in' do
   scenario 'user can see and use password visibility toggle', js: true do
     visit new_user_session_path
 
-    find('#pw-toggle-0', visible: false).trigger('click')
+    find('.checkbox').click
 
     expect(page).to have_css('input.password[type="text"]')
   end
@@ -99,10 +99,6 @@ feature 'Sign in' do
     scenario 'user sees warning before session times out' do
       expect(page).to have_css('#session-timeout-msg')
 
-      request_headers = page.driver.network_traffic.flat_map(&:headers).uniq
-      ajax_headers = { 'name' => 'X-Requested-With', 'value' => 'XMLHttpRequest' }
-
-      expect(request_headers).to include ajax_headers
       time1 = page.text[/14:5[0-9]/]
       expect(page).to have_content(time1)
       sleep(1)
@@ -111,7 +107,7 @@ feature 'Sign in' do
     end
 
     scenario 'user can continue browsing' do
-      find_link(t('notices.timeout_warning.signed_in.continue')).trigger('click')
+      find_link(t('notices.timeout_warning.signed_in.continue')).click
 
       expect(current_path).to eq account_path
     end

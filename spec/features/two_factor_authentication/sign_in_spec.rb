@@ -136,7 +136,7 @@ feature 'Two Factor Authentication' do
         fill_in 'Phone', with: '5376'
         select 'Morocco +212', from: 'International code'
 
-        expect(find('#user_phone_form_phone').value).to eq '+212 5376'
+        expect(find('#user_phone_form_phone').value).to eq '+212 (537) 6'
 
         fill_in 'Phone', with: '54354'
         select 'Japan +81', from: 'International code'
@@ -203,6 +203,7 @@ feature 'Two Factor Authentication' do
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
 
+      check 'remember_device'
       submit_prefilled_otp_code
 
       expect(current_path).to eq account_path
@@ -264,16 +265,14 @@ feature 'Two Factor Authentication' do
 
     context 'user enters OTP incorrectly 3 times', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
-        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
-        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
         lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
         user = create(:user, :signed_up)
-        sign_in_before_2fa(user)
+        sign_in_user(user)
 
         3.times do
-          fill_in('code', with: 'bad-code')
+          fill_in('code', with: '000000')
           click_button t('forms.buttons.submit.default')
         end
 
@@ -284,21 +283,20 @@ feature 'Two Factor Authentication' do
         UpdateUser.new(
           user: user,
           attributes: {
-            second_factor_locked_at: Time.zone.now - (lockout_period + 1.second),
+            second_factor_locked_at: Time.zone.now - (lockout_period + 1.minute),
           }
         ).call
 
-        sign_in_before_2fa(user)
+        sign_in_user(user)
+        fill_in('code', with: user.reload.direct_otp)
         click_button t('forms.buttons.submit.default')
 
-        expect(current_path).to eq account_path
+        expect(page).to have_current_path account_path
       end
     end
 
     context 'user requests an OTP too many times within `findtime` minutes', js: true do
       it 'locks the user out and leaves user on the page during entire lockout period' do
-        allow(Figaro.env).to receive(:session_check_frequency).and_return('0')
-        allow(Figaro.env).to receive(:session_check_delay).and_return('0')
         lockout_period = Figaro.env.lockout_period_in_minutes.to_i.minutes
         five_minute_countdown_regex = /4:5\d/
 
