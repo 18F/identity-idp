@@ -101,6 +101,7 @@ module Verify
 
     def initialize_idv_session
       idv_session.params = profile_params.to_h
+      idv_session.params[:state_id_jurisdiction] = profile_params[:state]
       idv_session.applicant = idv_session.vendor_params
     end
 

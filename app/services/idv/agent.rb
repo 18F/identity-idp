@@ -2,7 +2,7 @@ module Idv
   class Agent
     class << self
       def proofer_attribute?(key)
-        Idv::Proofer::ATTRIBUTES.include?(key)
+        Idv::Proofer::ATTRIBUTES.include?(key&.to_sym)
       end
     end
 

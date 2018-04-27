@@ -36,7 +36,6 @@ module Idv
         raise_invalid_profile_parameter_error(key) unless PROFILE_ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
       end
-      self.state_id_jurisdiction = state
     end
 
     def raise_invalid_profile_parameter_error(key)

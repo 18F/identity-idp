@@ -8,7 +8,7 @@ module Idv
       ssn dob phone email
       ccn mortgage home_equity_line auto_loan
       bank_account bank_account_type bank_routing
-      state_id_number state_id_type
+      state_id_number state_id_type state_id_jurisdiction
     ]
 
     VENDORS = {

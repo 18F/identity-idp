@@ -31,7 +31,7 @@ module Idv
 
     def update_idv_session
       idv_session.profile_confirmation = true
-      idv_session.normalized_applicant_params = vendor_validator_result.normalized_applicant.to_hash
+      idv_session.normalized_applicant_params = vendor_validator_result.normalized_applicant&.to_hash
       idv_session.resolution_successful = true
     end
 
