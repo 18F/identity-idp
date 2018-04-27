@@ -38,12 +38,8 @@ module Idv
     def extra_analytics_attributes
       {
         idv_attempts_exceeded: attempts_exceeded?,
-        vendor: { reasons: vendor_reasons },
+        vendor: { messages: vendor_validator_result.messages },
       }
-    end
-
-    def vendor_reasons
-      vendor_validator_result.reasons
     end
   end
 end

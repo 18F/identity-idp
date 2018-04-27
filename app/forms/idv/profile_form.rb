@@ -4,7 +4,12 @@ module Idv
     include FormProfileValidator
     include FormStateIdValidator
 
-    PROFILE_ATTRIBUTES = [:state_id_number, :state_id_type, *Pii::Attributes.members].freeze
+    PROFILE_ATTRIBUTES = [
+      :state_id_number,
+      :state_id_type,
+      :state_id_jurisdiction,
+      *Pii::Attributes.members
+    ].freeze
 
     attr_reader :user
     attr_accessor(*PROFILE_ATTRIBUTES)
@@ -31,6 +36,7 @@ module Idv
         raise_invalid_profile_parameter_error(key) unless PROFILE_ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
       end
+      self.state_id_jurisdiction = state
     end
 
     def raise_invalid_profile_parameter_error(key)

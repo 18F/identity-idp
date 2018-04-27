@@ -32,10 +32,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: cdf16d24294f183160b93b8d418b294fe836e66d
-  tag: v1.1.3
+  revision: 5706b128fc6030c12ba5db97cc564fa8f43e6887
+  branch: dmc-add-new-architecture
   specs:
-    proofer (1.1.3)
+    proofer (2.1.0)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git

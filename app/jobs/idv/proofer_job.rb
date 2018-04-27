@@ -20,7 +20,7 @@ module Idv
     def verify_identity_with_vendor
       agent = Idv::Agent.new(applicant)
       result = agent.proof(*stages)
-      store_result(Idv::VendorResult.new(result))
+      store_result(Idv::VendorResult.new(result.to_h))
     rescue StandardError
       store_failed_job_result
       raise
