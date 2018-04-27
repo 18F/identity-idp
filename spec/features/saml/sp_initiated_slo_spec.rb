@@ -88,7 +88,6 @@ feature 'SP-initiated logout' do
     let(:user) { create(:user, :signed_up) }
 
     before do
-      allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
 

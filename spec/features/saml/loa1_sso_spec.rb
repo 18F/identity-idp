@@ -175,19 +175,6 @@ feature 'LOA1 Single Sign On' do
     end
   end
 
-  context 'fully signed up user is signed in with email/pwd and new agency based uuids' do
-    it 'prompts to enter OTP' do
-      allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
-      user = create(:user, :signed_up)
-      sign_in_user(user)
-
-      saml_authn_request = auth_request.create(saml_settings)
-      visit saml_authn_request
-
-      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-    end
-  end
-
   context 'user that has not yet set up 2FA is signed in with email and password only' do
     it 'prompts to set up 2FA' do
       sign_in_user

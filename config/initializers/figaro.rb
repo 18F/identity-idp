@@ -4,7 +4,6 @@ Figaro.require_keys(
   'attribute_cost',
   'attribute_encryption_key',
   'domain_name',
-  'enable_agency_based_uuids',
   'enable_identity_verification',
   'enable_rate_limiting',
   'enable_test_routes',
