@@ -64,6 +64,7 @@ Metrics/ClassLength:
   - app/controllers/users/sessions_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
   - app/decorators/user_decorator.rb
+  - app/services/analytics.rb
   - app/services/idv/session.rb
 
 Metrics/LineLength:

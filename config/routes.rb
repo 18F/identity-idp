@@ -72,6 +72,10 @@ Rails.application.routes.draw do
         get '/saml/decode_assertion' => 'saml_test#start'
         post '/saml/decode_assertion' => 'saml_test#decode_response'
         post '/saml/decode_slo_request' => 'saml_test#decode_slo_request'
+        if FeatureManagement.piv_cac_enabled?
+          get '/piv_cac_entry' => 'piv_cac_authentication_test_subject#new'
+          post '/piv_cac_entry' => 'piv_cac_authentication_test_subject#create'
+        end
       end
     end
 
@@ -92,6 +96,11 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
     post '/account/verify_phone' => 'users/verify_profile_phone#create'
+
+    if FeatureManagement.piv_cac_enabled?
+      get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
+      delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
+    end
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
     get '/authenticator_setup' => 'users/totp_setup#new'
