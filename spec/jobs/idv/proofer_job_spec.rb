@@ -31,8 +31,7 @@ describe Idv::ProoferJob do
     end
 
     context 'when verification succeeds' do
-
-      let(:proofer_results) { { success: true, reasons: ['a reason'] } }
+      let(:proofer_results) { { success: true, messages: ['a reason'] } }
 
       it_behaves_like 'a proofer job'
 
@@ -44,17 +43,16 @@ describe Idv::ProoferJob do
         expect(result.success?).to eq(true)
         expect(result.timed_out?).to eq(false)
         expect(result.job_failed?).to eq(false)
-        expect(result.reasons).to eq(['a reason'])
+        expect(result.messages).to eq(['a reason'])
         expect(result.errors).to eq({})
       end
     end
 
     context 'when verification fails' do
-
       let(:proofer_results) do
         {
           success: false,
-          reasons: ['Bad number'],
+          messages: ['Bad number'],
           errors: { phone: 'The phone number could not be verified.' }
         }
       end
@@ -69,7 +67,7 @@ describe Idv::ProoferJob do
         expect(result.success?).to eq(false)
         expect(result.timed_out?).to eq(false)
         expect(result.job_failed?).to eq(false)
-        expect(result.reasons).to eq(['Bad number'])
+        expect(result.messages).to eq(['Bad number'])
         expect(result.errors).to eq(phone: 'The phone number could not be verified.')
       end
     end

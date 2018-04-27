@@ -9,12 +9,22 @@ module Idv
       ccn mortgage home_equity_line auto_loan
       bank_account bank_account_type bank_routing
       state_id_number state_id_type state_id_jurisdiction
-    ]
+    ].freeze
 
     VENDORS = {
       resolution: Idv::Proofer::Mocks::ResolutionMock,
       state_id: Idv::Proofer::Mocks::StateIdMock,
-      address: Idv::Proofer::Mocks::AddressMock
-    }
+      address: Idv::Proofer::Mocks::AddressMock,
+    }.freeze
+  end
+
+  class << self
+    def is_attribute?(key)
+      ATTRIBUTES.include?(key&.to_sym)
+    end
+
+    def get_vendor(stage)
+      VENDORS[stage]
+    end
   end
 end

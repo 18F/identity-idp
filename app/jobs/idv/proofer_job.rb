@@ -21,13 +21,15 @@ module Idv
       agent = Idv::Agent.new(applicant)
       result = agent.proof(*stages)
       store_result(Idv::VendorResult.new(result.to_h))
-    rescue StandardError => e
-      store_failed_job_result(e)
+    rescue StandardError => error
+      store_failed_job_result(error)
       raise
     end
 
     def store_failed_job_result(error)
-      job_failed_result = Idv::VendorResult.new(errors: { job_failed: true, message: error.message })
+      job_failed_result = Idv::VendorResult.new(
+        errors: { job_failed: true, message: error.message }
+      )
       VendorValidatorResultStorage.new.store(result_id: result_id, result: job_failed_result)
     end
 

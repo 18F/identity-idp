@@ -4,8 +4,8 @@ require 'ostruct'
 describe Idv::Agent do
   describe '.proofer_attribute?' do
     it 'returns whether the attribute is available in Idv::Proofer::ATTRIBUTES' do
-      key = 'foobarbaz'
-      expect(Idv::Proofer::ATTRIBUTES).to receive(:include?).with(key)
+      key = :foobarbaz
+      expect(Idv::Proofer).to receive(:is_attribute?).with(key)
       Idv::Agent.proofer_attribute?(key)
     end
   end
@@ -62,15 +62,15 @@ describe Idv::Agent do
       subject { agent.proof(*stages) }
 
       before do
-        allow(Idv::Proofer::VENDORS).to receive(:[]) do |stage|
+        allow(Idv::Proofer).to receive(:get_vendor) do |stage|
           logic = case stage
-          when :resolution
-            proc { |_, r| r.add_message(resolution_message) }
-          when :state_id
-            proc { |_, r| r.add_message(state_id_message) }
-          when :failed
-            proc { |_, r| r.add_message(failed_message).add_error(:bad, 'stuff') }
-          end
+                  when :resolution
+                    proc { |_, r| r.add_message('reason 1') }
+                  when :state_id
+                    proc { |_, r| r.add_message('reason 2') }
+                  when :failed
+                    proc { |_, r| r.add_message('bah humbug').add_error(:bad, 'stuff') }
+                  end
           Class.new(Proofer::Base) do
             attributes(:foo)
             proof(&logic)
@@ -82,12 +82,12 @@ describe Idv::Agent do
         let(:stages) { %i[resolution state_id] }
 
         it 'results from all stages are included' do
-          expect(subject.to_h).to eq({
+          expect(subject.to_h).to eq(
             errors: {},
             messages: [resolution_message, state_id_message],
             success: true,
             exception: nil,
-          })
+          )
         end
       end
 
@@ -95,12 +95,12 @@ describe Idv::Agent do
         let(:stages) { %i[failed state_id] }
 
         it 'only the results from the first stage are included' do
-          expect(subject.to_h).to eq({
+          expect(subject.to_h).to eq(
             errors: { bad: ['stuff'] },
             messages: [failed_message],
             success: false,
             exception: nil,
-          })
+          )
         end
       end
     end

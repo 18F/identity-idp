@@ -8,7 +8,7 @@ module Idv
       :state_id_number,
       :state_id_type,
       :state_id_jurisdiction,
-      *Pii::Attributes.members
+      *Pii::Attributes.members,
     ].freeze
 
     attr_reader :user
