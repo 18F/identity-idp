@@ -63,7 +63,6 @@ development:
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
-  agencies_with_agency_based_uuids: '1,2,3,4,5'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -87,7 +86,6 @@ development:
   database_timeout: '5000'
   database_username: ''
   domain_name: 'localhost:3000'
-  enable_agency_based_uuids: 'true'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'false'
   enable_test_routes: 'true'
@@ -158,7 +156,6 @@ production:
   aamva_public_key: # Base64 encoded public key for AAMVA
   aamva_private_key: # Base64 encoded private key for AAMVA
   aamva_verification_url: # DLDV Verification URL
-  agencies_with_agency_based_uuids: '1,2,3,4,5'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
@@ -173,7 +170,6 @@ production:
   disable_email_sending: 'false'
   dashboard_api_token:
   domain_name: 'login.gov'
-  enable_agency_based_uuids: 'true'
   enable_identity_verification: 'false'
   enable_rate_limiting: 'true'
   enable_test_routes: 'false'
@@ -242,7 +238,6 @@ test:
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
-  agencies_with_agency_based_uuids: '1,2,3,4,5'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
@@ -265,7 +260,6 @@ test:
   database_timeout: '5000'
   database_username: ''
   dashboard_api_token: '123ABC'
-  enable_agency_based_uuids: 'true'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
