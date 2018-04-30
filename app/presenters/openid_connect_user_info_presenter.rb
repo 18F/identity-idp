@@ -21,11 +21,7 @@ class OpenidConnectUserInfoPresenter
   private
 
   def uuid_from_sp_identity(identity)
-    if FeatureManagement.enable_agency_based_uuids?
-      AgencyIdentityLinker.new(identity).link_identity.uuid
-    else
-      identity.uuid
-    end
+    AgencyIdentityLinker.new(identity).link_identity.uuid
   end
 
   # rubocop:disable Metrics/AbcSize

@@ -9,7 +9,7 @@ class IdentityLinker
   def link_identity(**extra_attrs)
     attributes = merged_attributes(extra_attrs)
     identity.update!(attributes)
-    AgencyIdentityLinker.new(identity).link_identity if FeatureManagement.enable_agency_based_uuids?
+    AgencyIdentityLinker.new(identity).link_identity
     identity
   end
 
