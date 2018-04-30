@@ -2,7 +2,7 @@ module Idv
   class Agent
     class << self
       def proofer_attribute?(key)
-        Idv::Proofer.is_attribute?(key)
+        Idv::Proofer.attribute?(key)
       end
     end
 
@@ -11,7 +11,7 @@ module Idv
     end
 
     def proof(*stages)
-      results = { errors: [], messages: [], exception: nil, success: false }
+      results = { errors: {}, messages: [], exception: nil, success: false }
 
       stages.each do |stage|
         vendor = Idv::Proofer.get_vendor(stage).new
@@ -26,8 +26,8 @@ module Idv
     private
 
     def merge_results(results, proofer_result)
-      results.merge(proofer_result.to_h) do |key, v1, v2|
-        key == :messages ? v1 + v2 : v2
+      results.merge(proofer_result.to_h) do |key, orig, current|
+        key == :messages ? orig + current : current
       end
     end
   end

@@ -5,7 +5,7 @@ describe Idv::Agent do
   describe '.proofer_attribute?' do
     it 'returns whether the attribute is available in Idv::Proofer::ATTRIBUTES' do
       key = :foobarbaz
-      expect(Idv::Proofer).to receive(:is_attribute?).with(key)
+      expect(Idv::Proofer).to receive(:attribute?).with(key)
       Idv::Agent.proofer_attribute?(key)
     end
   end
