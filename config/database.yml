@@ -21,7 +21,7 @@ defaults: &defaults
   checkout_timeout: 5
   reaping_frequency: 10
   variables:
-    statement_timeout: 2500 # ms
+    statement_timeout: <%= Figaro.env.database_statement_timeout.to_i %>
 
 development:
   <<: *defaults

@@ -83,6 +83,7 @@ development:
   database_pool_worker: '5'
   database_readonly_password: ''
   database_readonly_username: ''
+  database_statement_timeout: '2500'
   database_timeout: '5000'
   database_username: ''
   domain_name: 'localhost:3000'
@@ -169,6 +170,7 @@ production:
   basic_auth_password:
   disable_email_sending: 'false'
   dashboard_api_token:
+  database_statement_timeout: '2500'
   domain_name: 'login.gov'
   enable_identity_verification: 'false'
   enable_rate_limiting: 'true'
@@ -257,6 +259,7 @@ test:
   database_pool_worker:
   database_readonly_password: ''
   database_readonly_username: ''
+  database_statement_timeout: '2500'
   database_timeout: '5000'
   database_username: ''
   dashboard_api_token: '123ABC'
