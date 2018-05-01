@@ -3,8 +3,8 @@ module Users
     include UserAuthenticator
     include PhoneConfirmation
 
-    before_action :authorize_otp_setup
-    before_action :authenticate_user
+    # before_action :authorize_otp_setup
+    # before_action :authenticate_user
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)
