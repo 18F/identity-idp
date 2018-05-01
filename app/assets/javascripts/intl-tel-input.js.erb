@@ -1,0 +1,8 @@
+var telInput = $("#phone")
+  // errorMsg = $("#error-msg"),
+  // validMsg = $("#valid-msg");
+
+// initialise plugin
+telInput.intlTelInput({
+  utilsScript: "<%= asset_path 'intl-tel-number/utils.js' %>"
+});
