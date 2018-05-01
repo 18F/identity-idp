@@ -3,6 +3,7 @@ require Rails.root.join('lib', 'config_validator.rb')
 Figaro.require_keys(
   'attribute_cost',
   'attribute_encryption_key',
+  'database_statement_timeout',
   'domain_name',
   'enable_identity_verification',
   'enable_rate_limiting',
