@@ -226,4 +226,173 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe 'piv/cac feature' do
+    describe '#piv_cac_enabled?' do
+      context 'when enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.piv_cac_enabled?).to be_truthy
+        end
+      end
+
+      context 'when disabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.piv_cac_enabled?).to be_falsey
+        end
+      end
+    end
+
+    describe '#identity_pki_disabled?' do
+      context 'when enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.identity_pki_disabled?).to be_truthy
+        end
+      end
+
+      context 'when disabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.identity_pki_disabled?).to be_falsey
+        end
+      end
+    end
+
+    describe '#development_and_piv_cac_entry_enabled?' do
+      context 'in development environment' do
+        before(:each) do
+          allow(Rails.env).to receive(:development?).and_return(true)
+        end
+
+        context 'has piv/cac enabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+          end
+
+          it 'has piv/cac test entry enabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_truthy
+          end
+        end
+
+        context 'has piv/cac disabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
+          end
+
+          it 'has piv/cac test entry disabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+          end
+        end
+      end
+
+      context 'in production environment' do
+        before(:each) do
+          allow(Rails.env).to receive(:production?).and_return(true)
+          allow(Rails.env).to receive(:development?).and_return(false)
+        end
+
+        context 'has piv/cac enabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+          end
+
+          it 'has piv/cac test entry disabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+          end
+        end
+
+        context 'has piv/cac disabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
+          end
+
+          it 'has piv/cac test entry disabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+          end
+        end
+      end
+    end
+
+    describe '#recaptcha_enabled?' do
+      context 'when recaptcha is enabled 100 percent' do
+        before do
+          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('100')
+        end
+
+        it 'enables the feature when the session is new' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+        end
+
+        it 'enables the feature when the session is old' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(true)
+        end
+      end
+
+      context 'when recaptcha is enabled 0 percent' do
+        before do
+          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('0')
+        end
+
+        it 'disables the feature when the session is new' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+        end
+
+        it 'disables the feature when the session is old' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(false)
+        end
+      end
+
+      context 'when recaptcha is enabled 50 percent' do
+        before do
+          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('50')
+        end
+
+        it 'enables the feature when the session is new and random number is 70' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(70)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+        end
+
+        it 'disables the feature when the session is new and random number is 30' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(30)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+        end
+
+        it 'enables the feature when the session is old and the random number is 70' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(70)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(true)
+        end
+
+        it 'disables the feature when the session is old and the random number is 30' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(30)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(false)
+        end
+      end
+    end
+  end
 end
