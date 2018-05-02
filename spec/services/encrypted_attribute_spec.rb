@@ -16,9 +16,13 @@ describe EncryptedAttribute do
       expect(key1).to_not eq(key2)
     end
 
-    it 'does not return successive keys with the same random_r value' do
-      key1 = EncryptedAttribute.new_user_access_key
+    it 'does not return successive keys that are unlocked or have the same random_r value' do
+      key1 = EncryptedAttribute.new_user_access_key.build
+
       key2 = EncryptedAttribute.new_user_access_key
+
+      expect(key2.unlocked?).to eq(false)
+      key2.build
 
       expect(key1.random_r).to_not eq(key2.random_r)
     end
