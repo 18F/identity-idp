@@ -34,13 +34,18 @@
     top: 0;
     bottom: 0;
     right: 0;
-    padding: 1px; }
+    padding: 1px;
+
+  }
   .intl-tel-input .selected-flag {
     z-index: 1;
     position: relative;
     width: 36px;
     height: 100%;
-    padding: 0 0 0 8px; }
+    padding: 0 0 0 8px;
+    background-color: white;
+    border-right: 1px solid #cedced;
+   }
     .intl-tel-input .selected-flag .iti-flag {
       position: absolute;
       top: 0;
@@ -92,7 +97,7 @@
     .intl-tel-input .country-list .country.highlight {
       background-color: rgba(0, 0, 0, 0.05); }
     .intl-tel-input .country-list .flag-box, .intl-tel-input .country-list .country-name, .intl-tel-input .country-list .dial-code {
-      vertical-align: middle; }
+      vertical-align: middle; font-weight: bold;}
     .intl-tel-input .country-list .flag-box, .intl-tel-input .country-list .country-name {
       margin-right: 6px; }
   .intl-tel-input.allow-dropdown input, .intl-tel-input.allow-dropdown input[type=text], .intl-tel-input.allow-dropdown input[type=tel], .intl-tel-input.separate-dial-code input, .intl-tel-input.separate-dial-code input[type=text], .intl-tel-input.separate-dial-code input[type=tel] {

@@ -9,7 +9,10 @@ p.mt-tiny.mb0
       international_phone_form: true },
     method: :patch,
     url: phone_setup_path) do |f|
-  input#phone type='tel'
+  .mb3
+    = f.label :phone, class: 'bold block'
+      = t('devise.two_factor_authentication.otp_phone_label')
+    input.field.block.col-12#phone type='tel'
   / .clearfix
   /   .sm-col.sm-col-8
   /     = f.input :international_code,
@@ -22,7 +25,7 @@ p.mt-tiny.mb0
   /     = t('devise.two_factor_authentication.otp_phone_label_info')
   / = f.input :phone, as: :tel, label: false, required: true,
   /     input_html: { class: 'phone sm-col-8 mb4' }
-  = render 'users/shared/otp_delivery_preference_selection'
+  / = render 'users/shared/otp_delivery_preference_selection'
   = f.button :submit, t('forms.buttons.send_security_code')
 
 = render 'shared/cancel', link: destroy_user_session_path
