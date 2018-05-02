@@ -9,6 +9,7 @@ en:
     authenticator_enabled: Authenticator app enabled
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Email address changed
+    password_changed: Password changed
     phone_changed: Phone number changed
     phone_confirmed: Phone confirmed
     usps_mail_sent: Letter sent
