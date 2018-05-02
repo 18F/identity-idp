@@ -138,6 +138,10 @@ Rails.application.routes.draw do
 
     match '/sign_out' => 'sign_out#destroy', via: %i[get post delete]
 
+    get '/support' => 'call_center_support#index'
+    get '/support/:uuid' => 'call_center_support#show', as: :support_user
+    post '/support/find' => 'call_center_support#search'
+
     delete '/users' => 'users#destroy', as: :destroy_user
 
     if FeatureManagement.enable_identity_verification?

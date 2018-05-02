@@ -1,0 +1,61 @@
+- content_for(:nav) do
+  = render 'accounts/nav_auth', greeting: current_user.email
+
+- title t('titles.call_center_support')
+
+h1.hide = t('titles.call_center_support')
+
+.clearfix.py2.sm-py0.mb2.bg-lightest-blue.sm-bg-none
+  .sm-col.sm-col-8
+    h2.h3.my0.mx2.center.sm-left-align
+      .sm-hide.regular.sans-serif.inline
+        span
+          = t('account.welcome')
+          ',
+        p.mb0.bold.truncate
+          = current_user.email
+      span.sm-show
+        = t('headings.call_center_support.show', email: user.email)
+
+.px2.pb1.bold.h3.sm-hide.serif
+  = t('headings.call_center_support.show', email: user.email)
+
+.mb3.profile-info-box
+  .bg-lightest-blue.py1.px2.h6.caps
+    = t('headings.account.two_factor')
+    = image_tag asset_url('2fa-account.svg'), width: 8, class: 'ml1'
+
+  = render 'accounts/account_item',
+    name: t('account.index.phone'),
+    content: user.phone
+
+  = render 'accounts/account_item',
+    name: t('account.index.authentication_app'),
+    content: content_tag(:em, t(@view_model.totp_content))
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = t('headings.account.account_history')
+    = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
+  - @view_model.recent_events.each do |event|
+    = render event.event_partial, event: event
+
+.mb3.profile-info-box
+  .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
+    = 'Account Access Details'
+  = render 'accounts/account_item',
+    name: 'Current sign in time',
+    content: user.current_sign_in_at
+
+  = render 'accounts/account_item',
+    name: 'Current sign in IP',
+    content: user.current_sign_in_ip
+
+  = render 'accounts/account_item',
+    name: 'Last sign in time',
+    content: user.last_sign_in_at
+
+  = render 'accounts/account_item',
+    name: 'Last sign in IP',
+    content: user.last_sign_in_ip
+

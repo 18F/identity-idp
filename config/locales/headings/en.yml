@@ -9,6 +9,10 @@ en:
       reactivate: Reactivate your account
       two_factor: Two-factor authentication
       verified_account: Verified Account
+    call_center_support:
+      index: Call Center Support
+      search: Search for a user by email
+      show: Details for user with email %{email}
     confirmations:
       new: Send another confirmation email
     create_account_with_sp:

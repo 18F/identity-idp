@@ -3,6 +3,7 @@ en:
   titles:
     account: Account
     account_locked: Account locked
+    call_center_support: Call Center Support
     confirmations:
       new: Resend confirmation instructions for your account
       show: Choose a password

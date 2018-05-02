@@ -1,0 +1,10 @@
+- title t('titles.call_center_support')
+
+h2 = t('headings.call_center_support.index')
+
+
+= form_tag support_find_path, class: 'mt3', method: 'post', role: 'form' do
+  = label_tag :email, t('headings.call_center_support.search'), class: 'block bold'
+  .col-12.sm-col-5.mb2.sm-mb0.sm-mr-20p.inline-block
+    = email_field_tag :email, '', class: 'col-12 field monospace'
+  = submit_tag 'Search', id: 'user_search', class: 'btn btn-primary align-top'
