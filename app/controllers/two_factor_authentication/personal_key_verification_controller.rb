@@ -6,7 +6,7 @@ module TwoFactorAuthentication
 
     def show
       analytics.track_event(
-        Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, analytics_properties
+        Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, context: context
       )
 
       @personal_key_form = PersonalKeyForm.new(current_user)
@@ -65,13 +65,6 @@ module TwoFactorAuthentication
       handle_valid_otp_for_authentication_context
       redirect_to manage_personal_key_url
       reset_otp_session_data
-    end
-
-    def analytics_properties
-      {
-        context: context,
-        method: 'personal key',
-      }
     end
   end
 end
