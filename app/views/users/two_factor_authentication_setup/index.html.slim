@@ -14,9 +14,9 @@ p.mt-tiny.mb0
       collection: international_phone_codes,
       include_blank: false,
       input_html: { class: 'international-code' }
+  = f.input :international_code, disabled: true, as: :hidden,
+    input_html: { id: :user_phone_form_international_code_hidden }
   .sm-col-8.mb3
-    = f.input :international_code, as: :hidden, class: 'js-intl-tel-code'
-
     = f.label :phone, class: 'bold block'
       = t('devise.two_factor_authentication.otp_phone_label')
       = f.input :phone, as: :tel, label: false, required: true,
@@ -29,6 +29,6 @@ p.mt-tiny.mb0
 = render 'shared/cancel', link: destroy_user_session_path
 
 = stylesheet_link_tag 'intl-tel-number/intlTelInput'
-= javascript_include_tag 'jquery.min', nonce: content_security_policy_script_nonce
+= javascript_include_tag 'jquery.min', content_security_policy_nonce(:script)
 = javascript_include_tag 'intl-tel-number/intlTelInput.min'
 = javascript_include_tag 'intl-tel-input'
