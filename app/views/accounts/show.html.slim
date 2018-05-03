@@ -73,6 +73,21 @@ h1.hide = t('titles.account')
     = image_tag asset_url('history.svg'), width: 12, class: 'ml1'
   - @view_model.recent_events.each do |event|
     = render event.event_partial, event: event
+  = render 'accounts/sign_in_timestamp',
+    description: t('account.index.current_sign_in'),
+    timestamp: current_user.current_sign_in_at || Time.zone.now
+
+  = render 'accounts/sign_in_ip',
+    description: t('account.index.current_ip'),
+    ip: current_user.current_sign_in_ip
+
+  = render 'accounts/sign_in_timestamp',
+    description: t('account.index.last_sign_in'),
+    timestamp: current_user.last_sign_in_at || Time.zone.now
+
+  = render 'accounts/sign_in_ip',
+    description: t('account.index.last_ip'),
+    ip: current_user.last_sign_in_ip
 
 .mb3.profile-info-box
   .bg-lightest-blue.pb1.pt1.px2.h6.caps.clearfix
