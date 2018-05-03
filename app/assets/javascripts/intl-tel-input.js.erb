@@ -1,8 +1,12 @@
 var telInput = $("#phone")
-  // errorMsg = $("#error-msg"),
-  // validMsg = $("#valid-msg");
 
 // initialise plugin
 telInput.intlTelInput({
   utilsScript: "<%= asset_path 'intl-tel-number/utils.js' %>"
+});
+
+// getting country code
+$("#phone").on("countrychange", function(e, countryData) {
+  $(".js-intl-tel-code").val(countryData.dialCode);
+  console.log(countryData.dialCode);
 });

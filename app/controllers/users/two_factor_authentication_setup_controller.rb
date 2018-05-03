@@ -2,7 +2,7 @@ module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
     include PhoneConfirmation
-    
+
     before_action :authorize_otp_setup
     before_action :authenticate_user
 
