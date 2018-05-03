@@ -31,6 +31,8 @@ en:
       instructions: Please confirm you have a copy of your personal key by entering
         it below.
       title: Enter your personal key
+    piv_cac_mfa:
+      submit: Present PIV/CAC card
     piv_cac_setup:
       certificate:
         bad_html: Please choose a different certificate from your PIV/CAC or contact

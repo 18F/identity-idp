@@ -19,6 +19,7 @@ module TwoFactorAuthCode
       [
         otp_fallback_options,
         update_phone_link,
+        piv_cac_option,
         personal_key_link,
       ].compact
     end

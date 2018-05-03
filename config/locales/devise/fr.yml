@@ -113,6 +113,7 @@ fr:
       invalid_otp: Ce code de sécurité est non valide. Vous pouvez essayer de l'entrer
         de nouveau ou demander un nouveau code de sécurité à utilisation unique.
       invalid_personal_key: Cette clé personnelle est non valide.
+      invalid_piv_cac: NOT TRANSLATED YET
       max_generic_login_attempts_reached: Votre compte est temporairement verrouillé.
       max_otp_login_attempts_reached: Votre compte est temporairement verrouillé,
         car vous avez entré le code de sécurité à utilisation unique de façon erronée
@@ -144,6 +145,10 @@ fr:
       personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
         Si vous avez toujours besoin d'un code après votre connexion, allez à la page
         des réglages de votre compte pour en obtenir un nouveau.
+      piv_cac_fallback:
+        link: Utilisez plutôt votre PIV/CAC
+        text_html: Avez-vous votre PIV/CAC? %{link}
+      piv_cac_header_text: NOT TRANSLATED YET
       please_confirm: Votre numéro de téléphone a été entré. Confirmez-le en entrant
         le code de sécurité ci-dessous.
       please_try_again_html: Veuillez essayer de nouveau dans %{time_remaining}.

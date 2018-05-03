@@ -55,6 +55,9 @@ Rails.application.routes.draw do
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'
       post '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#create'
+      if FeatureManagement.piv_cac_enabled?
+        get '/login/two_factor/piv_cac' => 'two_factor_authentication/piv_cac_verification#show'
+      end
       get  '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#show',
            as: :login_two_factor
       post '/login/two_factor/:otp_delivery_preference' => 'two_factor_authentication/otp_verification#create',

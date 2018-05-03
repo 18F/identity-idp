@@ -107,6 +107,7 @@ es:
       invalid_otp: Ese código de seguridad no es válido. Puede intentar ingresarlo
         de nuevo o solicitar un nuevo código de seguridad de sólo un uso.
       invalid_personal_key: Esa clave personal no es válida.
+      invalid_piv_cac: NOT TRANSLATED YET
       max_generic_login_attempts_reached: Su cuenta está bloqueada temporalmente.
       max_otp_login_attempts_reached: Su cuenta ha sido bloqueada temporalmente porque
         ha ingresado incorrectamente el código de seguridad de sólo un uso demasiadas
@@ -136,6 +137,10 @@ es:
       personal_key_prompt: Puede usar esta clave personal una vez. Si todavía necesita
         un código después de iniciar una sesión, vaya a la página de configuración
         de su cuenta para obtener una clave nueva.
+      piv_cac_fallback:
+        link: Use su PIV/CAC en su lugar
+        text_html: "¿Tiene usted PIV/CAC? %{link}"
+      piv_cac_header_text: NOT TRANSLATED YET
       please_confirm: Su número de teléfono ha sido establecido. Confírmelo ingresando
         el código de seguridad a continuación.
       please_try_again_html: Inténtelo de nuevo en %{time_remaining}.

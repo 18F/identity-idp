@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe PivCacService do
+  include Rails.application.routes.url_helpers
+
   describe '#decode_token' do
     context 'when configured for local development' do
       before(:each) do
@@ -33,24 +35,43 @@ describe PivCacService do
     end
 
     context 'when communicating with piv/cac service' do
-      before(:each) do
-        allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?) { false }
-      end
-
-      it 'raises an error if no token provided' do
-        expect {
-          PivCacService.decode_token
-        }.to raise_error ArgumentError
-      end
-
-      describe 'when configured with a user-facing endpoint' do
+      context 'when in non-development mode' do
         before(:each) do
-          allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
-          allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
-          allow(Figaro.env).to receive(:piv_cac_service_url) { 'http://localhost:1234' }
+          allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?) { false }
         end
 
-        it { expect(PivCacService.piv_cac_service_link).to eq 'http://localhost:1234' }
+        it 'raises an error if no token provided' do
+          expect {
+            PivCacService.decode_token
+          }.to raise_error ArgumentError
+        end
+
+        describe 'when configured with a user-facing endpoint' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+            allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+            allow(Figaro.env).to receive(:piv_cac_service_url) { base_url }
+          end
+
+          let(:nonce) { 'once' }
+          let(:base_url) { 'http://localhost:1234/' }
+          let(:url_with_nonce) { "#{base_url}?nonce=#{nonce}" }
+
+          it do
+            expect(PivCacService.piv_cac_service_link(nonce)).to eq url_with_nonce
+          end
+        end
+
+        context 'when in development mode' do
+          before(:each) do
+            allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?) { true }
+          end
+          let(:nonce) { 'once' }
+
+          it 'directs the user to a local page' do
+            expect(PivCacService.piv_cac_service_link(nonce)).to eq test_piv_cac_entry_url
+          end
+        end
       end
 
       describe 'when configured to contact remote service' do

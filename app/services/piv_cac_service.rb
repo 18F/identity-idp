@@ -1,14 +1,24 @@
+require 'cgi'
 require 'net/https'
 
 module PivCacService
   class << self
+    include Rails.application.routes.url_helpers
+
     def decode_token(token)
       token_present(token) &&
         token_decoded(token)
     end
 
-    def piv_cac_service_link
-      Figaro.env.piv_cac_service_url
+    def piv_cac_service_link(nonce)
+      if FeatureManagement.development_and_piv_cac_entry_enabled?
+        test_piv_cac_entry_url
+      else
+        uri = URI(Figaro.env.piv_cac_service_url)
+        # add the nonce
+        uri.query = "nonce=#{CGI.escape(nonce)}"
+        uri.to_s
+      end
     end
 
     def piv_cac_verify_token_link

@@ -31,6 +31,8 @@ es:
       instructions: Confirme que tiene una copia de su clave personal ingresándola
         a continuación.
       title: Ingrese su clave personal
+    piv_cac_mfa:
+      submit: NOT TRANSLATED YET
     piv_cac_setup:
       certificate:
         bad_html: Elija un certificado diferente de su PIV/CAC o póngase en contacto

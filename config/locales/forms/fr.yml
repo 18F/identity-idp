@@ -32,6 +32,8 @@ fr:
       instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
+    piv_cac_mfa:
+      submit: NOT TRANSLATED YET
     piv_cac_setup:
       certificate:
         bad_html: Veuillez choisir un certificat différent de votre PIV/CAC ou contactez

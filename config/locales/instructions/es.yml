@@ -25,6 +25,8 @@ es:
           varias cuentas configuradas en su app, ingrese el código correspondiente
           a %{email} en %{app}.%{tooltip}
         or: o
+      piv_cac:
+        confirm_piv_cac_html: NOT TRANSLATED YET
       sms:
         confirm_code_html: "¿Necesita otro código? %{resend_code_link}. Puede estar
           sujeto a cargos de mensajería y datos."
