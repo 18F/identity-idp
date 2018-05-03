@@ -13,10 +13,22 @@ module Idv
 
     STAGES = %i[resolution state_id address].freeze
 
-    @vendors = {}
-
     class << self
       attr_accessor :configuration
+
+      @vendors = {}
+
+      def attribute?(key)
+        ATTRIBUTES.include?(key&.to_sym)
+      end
+
+      def init
+        @vendors = configure_vendors(STAGES, configuration)
+      end
+
+      def get_vendor(stage)
+        @vendors[stage]
+      end
 
       def configure
         self.configuration ||= Configuration.new
@@ -24,47 +36,55 @@ module Idv
       end
 
       class Configuration
-        attr_accessor :mock_fallback, :raise_on_missing_proofers
+        attr_accessor :mock_fallback, :raise_on_missing_proofers, :vendors
         def initialize
-          @mock_fallback = true
+          @mock_fallback = false
           @raise_on_missing_proofers = true
+          @vendors = []
         end
       end
 
-      def attribute?(key)
-        ATTRIBUTES.include?(key&.to_sym)
-      end
+      def configure_vendors(stages, config)
+        external_vendors = loaded_vendors
+        available_external_vendors = available_vendors(config.vendors, external_vendors)
+        require_mock_vendors if config.mock_fallback
+        mock_vendors = loaded_vendors - external_vendors
 
-      def get_vendor(stage)
-        @vendors[stage]
-      end
+        vendors = assign_vendors(stages, available_external_vendors, mock_vendors)
 
-      def load_vendors!
-        external_vendors = ::Proofer::Base.subclasses
-        require_mock_vendors if configuration.mock_fallback
-        mock_vendors = ::Proofer::Base.subclasses - external_vendors
+        validate_vendors(stages, vendors) if config.raise_on_missing_proofers
 
-        STAGES.each do |stage|
-          vendor = find_vendor(stage, external_vendors) || find_vendor(stage, mock_vendors)
-          @vendors[stage] = vendor if vendor
-        end
-
-        validate_vendors! if configuration.raise_on_missing_proofers
+        vendors
       end
 
       private
+
+      def loaded_vendors
+        ::Proofer::Base.subclasses
+      end
+
+      def available_vendors(configured_vendors, vendors)
+        vendors.select { |vendor| configured_vendors.include?(vendor.vendor_name) }
+      end
 
       def require_mock_vendors
         Dir[Rails.root.join('lib', 'proofer_mocks', '*')].each { |file| require file }
       end
 
-      def find_vendor(stage, vendors)
-        vendors.find { |vendor| vendor.supported_stage == stage }
+      def assign_vendors(stages, external_vendors, mock_vendors)
+        stages.each_with_object({}) do |stage, vendors|
+          vendor = stage_vendor(stage, external_vendors) || stage_vendor(stage, mock_vendors)
+          vendors[stage] = vendor if vendor
+        end
       end
 
-      def validate_vendors!
-        missing_stages = STAGES - @vendors.keys
-        return unless missing_stages.any?
+      def stage_vendor(stage, vendors)
+        vendors.find { |vendor| stage == vendor.supported_stage&.to_sym }
+      end
+
+      def validate_vendors(stages, vendors)
+        missing_stages = stages - vendors.keys
+        return if missing_stages.empty?
         raise "No proofer vendor configured for stage(s): #{missing_stages.join(', ')}"
       end
     end
