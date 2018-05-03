@@ -13,20 +13,6 @@
  *     @import "bower_component/intl-tel-input/src/css/intlTelInput";
  */
 
- .js-intl-tel-code-select {
-   display: none;
- }
-
-
-.no-js {
-  .js-intl-tel-code-select {
-    display: block;
-  }
-  .js-intl-tel-code {
-   display: none;
-  }
-}
-
 .intl-tel-input {
   position: relative;
   display: inline-block; }
