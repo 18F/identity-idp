@@ -8,9 +8,13 @@ fr:
       auth_app_disabled: non activée
       auth_app_enabled: activée
       authentication_app: Application d'authentification
+      current_ip: Adresse IP actuelle
+      current_sign_in: Heure de connexion actuelle
       dob: Date de naissance
       email: Adresse courriel
       full_name: Nom complet
+      last_ip: Adresse IP précédente
+      last_sign_in: Heure de connexion précédente
       login: Information de connexion
       password: Mot de passe
       phone: Numéro de téléphone
