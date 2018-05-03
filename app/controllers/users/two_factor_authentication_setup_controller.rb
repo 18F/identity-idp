@@ -12,6 +12,7 @@ module Users
     end
 
     def set
+      warn params
       @user_phone_form = UserPhoneForm.new(current_user)
       result = @user_phone_form.submit(params[:user_phone_form])
 
