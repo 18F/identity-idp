@@ -57,19 +57,19 @@ RSpec.describe MarketingSite do
     end
   end
 
-  describe '.help_authenticator_app_url' do
-    it 'points to the authenticator app section of the help page' do
-      expect(MarketingSite.help_authenticator_app_url).to eq(
-        'https://www.login.gov/help/signing-in/what-is-an-authenticator-app/'
+  describe '.help_authentication_app_url' do
+    it 'points to the authentication app section of the help page' do
+      expect(MarketingSite.help_authentication_app_url).to eq(
+        'https://www.login.gov/help/signing-in/what-is-an-authentication-app/'
       )
     end
 
     context 'when the user has set their locale to :es' do
       before { I18n.locale = :es }
 
-      it 'points to the authenticator app section of the help page with the locale appended' do
-        expect(MarketingSite.help_authenticator_app_url).to eq(
-          'https://www.login.gov/es/help/signing-in/what-is-an-authenticator-app/'
+      it 'points to the authentication app section of the help page with the locale appended' do
+        expect(MarketingSite.help_authentication_app_url).to eq(
+          'https://www.login.gov/es/help/signing-in/what-is-an-authentication-app/'
         )
       end
     end

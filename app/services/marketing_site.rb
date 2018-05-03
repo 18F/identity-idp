@@ -22,7 +22,7 @@ class MarketingSite
     URI.join(BASE_URL, locale_segment, 'help').to_s
   end
 
-  def self.help_authenticator_app_url
-    URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-an-authenticator-app/').to_s
+  def self.help_authentication_app_url
+    URI.join(BASE_URL, locale_segment, 'help/signing-in/what-is-an-authentication-app/').to_s
   end
 end
