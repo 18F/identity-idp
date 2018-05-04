@@ -5,6 +5,7 @@ ControlParameter:
     - CustomDeviseFailureApp#i18n_message
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
+    - PhoneFormatter#self.format
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching

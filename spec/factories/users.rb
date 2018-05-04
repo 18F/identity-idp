@@ -7,7 +7,7 @@ FactoryBot.define do
     password '!1a Z@6s' * 16 # Maximum length password.
 
     trait :with_phone do
-      phone '+1 (202) 555-1212'
+      phone '+1 202-555-1212'
       phone_confirmed_at Time.zone.now
     end
 

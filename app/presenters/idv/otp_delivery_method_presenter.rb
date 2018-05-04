@@ -5,7 +5,7 @@ module Idv
     delegate :sms_only?, to: :phone_number_capabilites
 
     def initialize(phone)
-      @phone = PhoneFormatter.new.format(phone)
+      @phone = PhoneFormatter.format(phone)
     end
 
     def phone_unsupported_message

@@ -388,10 +388,6 @@ GEM
       ast (~> 2.4.0)
     pg (1.0.0)
     phonelib (0.6.21)
-    phony (2.15.44)
-    phony_rails (0.14.6)
-      activesupport (>= 3.0)
-      phony (> 2.15)
     pkcs11 (0.2.7)
     powerpack (0.1.1)
     premailer (1.11.1)
@@ -723,7 +719,6 @@ DEPENDENCIES
   overcommit
   pg
   phonelib
-  phony_rails
   pkcs11
   premailer-rails
   proofer!

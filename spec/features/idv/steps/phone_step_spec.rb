@@ -2,6 +2,7 @@ require 'rails_helper'
 
 feature 'idv profile step', :idv_job do
   include IdvStepHelper
+  include IdvHelper
 
   context 'with valid information' do
     it 'allows the user to continue to the phone otp delivery selection step' do
@@ -28,8 +29,8 @@ feature 'idv profile step', :idv_job do
 
   context 'after submitting valid information' do
     it 'is re-entrant before confirming OTP' do
-      first_phone_number = '5551231234'
-      second_phone_number = '5557897890'
+      first_phone_number = '7032231234'
+      second_phone_number = '7037897890'
 
       start_idv_from_sp
       complete_idv_steps_before_phone_step
@@ -37,7 +38,7 @@ feature 'idv profile step', :idv_job do
       click_idv_continue
       choose_idv_otp_delivery_method_sms
 
-      expect(page).to have_content(first_phone_number)
+      expect(page).to have_content('+1 703-223-1234')
 
       click_link t('forms.two_factor.try_again')
 
@@ -48,7 +49,7 @@ feature 'idv profile step', :idv_job do
       click_idv_continue
       choose_idv_otp_delivery_method_sms
 
-      expect(page).to have_content(second_phone_number)
+      expect(page).to have_content('+1 703-789-7890')
     end
 
     it 'is not re-entrant after confirming OTP' do

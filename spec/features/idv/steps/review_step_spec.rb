@@ -13,7 +13,7 @@ feature 'idv review step', :idv_job do
     expect(page).to have_content('Nowhere, VA 6604')
     expect(page).to have_content('January 02, 1980')
     expect(page).to have_content('666-66-1234')
-    expect(page).to have_content('+1 (555) 555-0000')
+    expect(page).to have_content('+1 202-555-1212')
 
     fill_in 'Password', with: 'this is not the right password'
     click_idv_continue

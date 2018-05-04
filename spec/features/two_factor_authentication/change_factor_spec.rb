@@ -21,7 +21,7 @@ feature 'Changing authentication factor' do
       allow(UserMailer).to receive(:phone_changed).with(user).and_return(mailer)
 
       @previous_phone_confirmed_at = user.reload.phone_confirmed_at
-      new_phone = '+1 (703) 555-0100'
+      new_phone = '+1 703-555-0100'
 
       visit manage_phone_path
 
@@ -56,7 +56,7 @@ feature 'Changing authentication factor' do
 
     scenario 'editing phone number with no voice otp support only allows sms delivery' do
       user.update(otp_delivery_preference: 'voice')
-      unsupported_phone = '242-555-5000'
+      unsupported_phone = '242-327-0143'
 
       visit manage_phone_path
       complete_2fa_confirmation
@@ -64,7 +64,9 @@ feature 'Changing authentication factor' do
       allow(VoiceOtpSenderJob).to receive(:perform_later)
       allow(SmsOtpSenderJob).to receive(:perform_now)
 
-      update_phone_number(unsupported_phone)
+      select 'Bahamas', from: 'user_phone_form_international_code'
+      fill_in 'Phone', with: unsupported_phone
+      click_button t('forms.buttons.submit.confirm_change')
 
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: :sms)
       expect(VoiceOtpSenderJob).to_not have_received(:perform_later)

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Idv::PhoneForm do
   let(:user) { build_stubbed(:user, :signed_up) }
-  let(:params) { { phone: '555-555-5000' } }
+  let(:params) { { phone: '703-555-5000' } }
 
   subject { Idv::PhoneForm.new({}, user) }
 
@@ -52,10 +52,10 @@ describe Idv::PhoneForm do
     end
 
     it 'uses the user phone number as the initial phone value' do
-      user = build_stubbed(:user, :signed_up, phone: '555-555-1234')
+      user = build_stubbed(:user, :signed_up, phone: '7035551234')
       subject = Idv::PhoneForm.new({}, user)
 
-      expect(subject.phone).to eq('+1 (555) 555-1234')
+      expect(subject.phone).to eq('+1 703-555-1234')
     end
 
     it 'does not use an international number as the initial phone value' do
@@ -65,11 +65,14 @@ describe Idv::PhoneForm do
       expect(subject.phone).to eq(nil)
     end
 
-    it 'does not allow numbers with a non-US country code' do
-      result = subject.submit(phone: '+81 54 354 3643')
+    it 'does not allow non-US numbers' do
+      invalid_phones = ['+81 54 354 3643', '+12423270143']
+      invalid_phones.each do |phone|
+        result = subject.submit(phone: phone)
 
-      expect(result.success?).to eq(false)
-      expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+        expect(result.success?).to eq(false)
+        expect(result.errors[:phone]).to include(t('errors.messages.must_have_us_country_code'))
+      end
     end
   end
 end

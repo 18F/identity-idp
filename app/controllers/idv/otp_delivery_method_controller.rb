@@ -14,7 +14,7 @@ module Idv
       result = @otp_delivery_selection_form.submit(otp_delivery_selection_params)
       if result.success?
         prompt_to_confirm_phone(
-          phone: idv_session.params[:phone],
+          phone: @otp_delivery_selection_form.phone,
           context: 'idv',
           selected_delivery_method: @otp_delivery_selection_form.otp_delivery_preference
         )

@@ -334,7 +334,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
   def complete_phone_form_with_valid_phone
     phone = Faker::PhoneNumber.cell_phone
-    until PhonyRails.plausible_number? phone, country_code: :us
+    until Phonelib.valid_for_country?(phone, 'US')
       phone = Faker::PhoneNumber.cell_phone
     end
     fill_in 'user_phone_form_phone', with: phone

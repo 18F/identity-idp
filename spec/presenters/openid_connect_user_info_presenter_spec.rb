@@ -84,7 +84,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           city: 'Washington',
           state: 'DC',
           zipcode: '12345',
-          phone: '+1 (555) 555-5555',
+          phone: '+1 (703) 555-5555',
           ssn: '666661234',
         }
       end
@@ -102,7 +102,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:given_name]).to eq('John')
               expect(user_info[:family_name]).to eq('Smith')
               expect(user_info[:birthdate]).to eq('1970-01-01')
-              expect(user_info[:phone]).to eq('+1 (555) 555-5555')
+              expect(user_info[:phone]).to eq('+1 (703) 555-5555')
               expect(user_info[:phone_verified]).to eq(true)
               expect(user_info[:address]).to eq(
                 formatted: "123 Fake St Apt 456\nWashington, DC 12345",
@@ -132,7 +132,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
               expect(user_info[:given_name]).to eq(nil)
               expect(user_info[:family_name]).to eq(nil)
               expect(user_info[:birthdate]).to eq(nil)
-              expect(user_info[:phone]).to eq('+1 (555) 555-5555')
+              expect(user_info[:phone]).to eq('+1 (703) 555-5555')
               expect(user_info[:phone_verified]).to eq(true)
               expect(user_info[:address]).to eq(nil)
               expect(user_info[:social_security_number]).to eq(nil)
