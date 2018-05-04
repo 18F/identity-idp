@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Idv::VendorResult do
   let(:success) { true }
   let(:errors) { { foo: ['is not valid'] } }
-  let(:reasons) { %w[foo bar baz] }
+  let(:messages) { %w[foo bar baz] }
   let(:normalized_applicant) { { last_name: 'Ever', first_name: 'Greatest' } }
   let(:timed_out) { false }
 
@@ -11,7 +11,7 @@ RSpec.describe Idv::VendorResult do
     Idv::VendorResult.new(
       success: success,
       errors: errors,
-      reasons: reasons,
+      messages: messages,
       normalized_applicant: normalized_applicant,
       timed_out: timed_out
     )
@@ -44,7 +44,7 @@ RSpec.describe Idv::VendorResult do
     it 'has simple attributes' do
       expect(new_from_json.success?).to eq(vendor_result.success?)
       expect(new_from_json.errors).to eq(vendor_result.errors)
-      expect(new_from_json.reasons).to eq(vendor_result.reasons)
+      expect(new_from_json.messages).to eq(vendor_result.messages)
     end
 
     it 'turns applicant into a full object' do

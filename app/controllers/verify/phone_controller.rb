@@ -17,7 +17,7 @@ module Verify
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
 
       if result.success?
-        submit_idv_job
+        Idv::Job.submit(idv_session, [:address])
         redirect_to verify_phone_result_url
       else
         @view_model = view_model
@@ -50,14 +50,6 @@ module Verify
 
     def phone_confirmation_required?
       idv_session.user_phone_confirmation != true
-    end
-
-    def submit_idv_job
-      Idv::SubmitIdvJob.new(
-        idv_session: idv_session,
-        vendor_params: { phone: idv_session.params[:phone] },
-        stages: [:phone]
-      ).submit
     end
 
     def step_name

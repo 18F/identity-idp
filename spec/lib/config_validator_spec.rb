@@ -2,13 +2,7 @@ require 'rails_helper'
 
 describe ConfigValidator do
   describe '#validate' do
-    let(:env) do
-      {
-        'phone_proofing_vendor' => 'mock',
-        'profile_proofing_vendor' => 'mock',
-        'state_id_proofing_vendor' => 'mock',
-      }
-    end
+    let(:env) { {} }
 
     it 'raises if one or more candidate key values is set to yes or no' do
       env.merge!(
@@ -27,16 +21,6 @@ describe ConfigValidator do
       expect { ConfigValidator.new.validate(env) }.to raise_error(
         RuntimeError,
         %r{You have invalid values \(yes\/no\) for #{list}}
-      )
-    end
-
-    it 'raises if a non empty key is empty' do
-      env.delete('phone_proofing_vendor')
-      mimic_figaro
-
-      expect { ConfigValidator.new.validate(env) }.to raise_error(
-        RuntimeError,
-        'These configs are required and were empty: phone_proofing_vendor'
       )
     end
 

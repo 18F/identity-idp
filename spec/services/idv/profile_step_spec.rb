@@ -31,10 +31,10 @@ describe Idv::ProfileStep do
 
   describe '#submit' do
     it 'succeeds with good params' do
-      reasons = ['Everything looks good']
+      messages = ['Everything looks good']
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: reasons },
+        vendor: { messages: messages },
       }
 
       step = build_step(
@@ -42,7 +42,7 @@ describe Idv::ProfileStep do
         Idv::VendorResult.new(
           success: true,
           errors: {},
-          reasons: reasons,
+          messages: messages,
           normalized_applicant: { first_name: 'Some' }
         )
       )
@@ -57,16 +57,16 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid SSN' do
-      reasons = ['The SSN was suspicious']
+      messages = ['The SSN was suspicious']
       errors = { ssn: ['Unverified SSN.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: reasons },
+        vendor: { messages: messages },
       }
 
       step = build_step(
         user_attrs.merge(ssn: '666-66-6666'),
-        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+        Idv::VendorResult.new(success: false, errors: errors, messages: messages)
       )
 
       result = step.submit
@@ -80,15 +80,15 @@ describe Idv::ProfileStep do
 
     it 'fails with invalid first name' do
       errors = { first_name: ['Unverified first name.'] }
-      reasons = ['The name was suspicious']
+      messages = ['The name was suspicious']
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: reasons },
+        vendor: { messages: messages },
       }
 
       step = build_step(
         user_attrs.merge(first_name: 'Bad'),
-        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+        Idv::VendorResult.new(success: false, errors: errors, messages: messages)
       )
 
       result = step.submit
@@ -101,16 +101,16 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid ZIP code on current address' do
-      reasons = ['The ZIP code was suspicious']
+      messages = ['The ZIP code was suspicious']
       errors = { zipcode: ['Unverified ZIP code.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: reasons },
+        vendor: { messages: messages },
       }
 
       step = build_step(
         user_attrs.merge(zipcode: '00000'),
-        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+        Idv::VendorResult.new(success: false, errors: errors, messages: messages)
       )
 
       result = step.submit
@@ -123,16 +123,16 @@ describe Idv::ProfileStep do
     end
 
     it 'fails with invalid ZIP code on previous address' do
-      reasons = ['The ZIP code was suspicious']
+      messages = ['The ZIP code was suspicious']
       errors = { zipcode: ['Unverified ZIP code.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { reasons: reasons },
+        vendor: { messages: messages },
       }
 
       step = build_step(
         user_attrs.merge(prev_zipcode: '00000'),
-        Idv::VendorResult.new(success: false, errors: errors, reasons: reasons)
+        Idv::VendorResult.new(success: false, errors: errors, messages: messages)
       )
 
       result = step.submit

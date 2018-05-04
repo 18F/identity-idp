@@ -121,8 +121,7 @@ development:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
   password_strength_enabled: 'true'
-  phone_proofing_vendor: 'mock'
-  profile_proofing_vendor: 'mock'
+  proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
   reauthn_window: '120'
   redis_url: 'redis://localhost:6379/0'
@@ -142,7 +141,6 @@ development:
   service_timeout: '30'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
-  state_id_proofing_vendor: 'mock'
   telephony_disabled: 'true'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
@@ -211,8 +209,6 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
-  phone_proofing_vendor: 'mock'
-  profile_proofing_vendor: 'mock'
   reauthn_window: '120'
   redis_url: 'redis://redis.login.gov.internal:6379'
   redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
@@ -230,7 +226,6 @@ production:
   secret_key_base: # generate via `rake secret`
   session_encryption_key: # generate via `rake secret`
   session_timeout_in_minutes: '15'
-  state_id_proofing_vendor: 'mock'
   twilio_numbers: # Add JSON encoded array of phone numbers
   twilio_sid: # Twilio SID
   twilio_auth_token: # Twilio auth token
@@ -301,8 +296,7 @@ test:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
   password_strength_enabled: 'false'
-  phone_proofing_vendor: 'mock'
-  profile_proofing_vendor: 'mock'
+  proofer_mock_fallback: 'true'
   reauthn_window: '120'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
@@ -320,7 +314,6 @@ test:
   secret_key_base: 'test_secret_key_base'
   session_encryption_key: '27bad3c25711099429c1afdfd1890910f3b59f5a4faec1c85e945cb8b02b02f261ba501d99cfbb4fab394e0102de6fecf8ffe260f322f610db3e96b2a775c120'
   session_timeout_in_minutes: '15'
-  state_id_proofing_vendor: 'mock'
   twilio_numbers: '["9999999999","2222222222"]'
   twilio_sid: 'sid1'
   twilio_auth_token: 'token1'

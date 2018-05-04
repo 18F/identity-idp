@@ -4,7 +4,12 @@ module Idv
     include FormProfileValidator
     include FormStateIdValidator
 
-    PROFILE_ATTRIBUTES = [:state_id_number, :state_id_type, *Pii::Attributes.members].freeze
+    PROFILE_ATTRIBUTES = [
+      :state_id_number,
+      :state_id_type,
+      :state_id_jurisdiction,
+      *Pii::Attributes.members,
+    ].freeze
 
     attr_reader :user
     attr_accessor(*PROFILE_ATTRIBUTES)
