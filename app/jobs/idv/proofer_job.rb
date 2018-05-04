@@ -20,14 +20,16 @@ module Idv
     def verify_identity_with_vendor
       agent = Idv::Agent.new(applicant)
       result = agent.proof(*stages)
-      store_result(Idv::VendorResult.new(result))
-    rescue StandardError
-      store_failed_job_result
+      store_result(Idv::VendorResult.new(result.to_h))
+    rescue StandardError => error
+      store_failed_job_result(error)
       raise
     end
 
-    def store_failed_job_result
-      job_failed_result = Idv::VendorResult.new(errors: { job_failed: true })
+    def store_failed_job_result(error)
+      job_failed_result = Idv::VendorResult.new(
+        errors: { job_failed: true, message: error.message }
+      )
       VendorValidatorResultStorage.new.store(result_id: result_id, result: job_failed_result)
     end
 

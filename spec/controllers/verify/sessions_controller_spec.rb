@@ -194,7 +194,7 @@ describe Verify::SessionsController do
             success: false,
             errors: { timed_out: ['Timed out waiting for vendor response'] },
             idv_attempts_exceeded: false,
-            vendor: { reasons: [] },
+            vendor: { messages: [] },
           }
 
           expect(@analytics).to have_received(:track_event).with(
@@ -221,7 +221,7 @@ describe Verify::SessionsController do
             Idv::VendorResult.new(
               success: false,
               errors: { first_name: ['Unverified first name.'] },
-              reasons: ['The name was suspicious']
+              messages: ['The name was suspicious']
             )
           end
 
@@ -242,7 +242,7 @@ describe Verify::SessionsController do
               errors: {
                 first_name: ['Unverified first name.'],
               },
-              vendor: { reasons: ['The name was suspicious'] },
+              vendor: { messages: ['The name was suspicious'] },
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -296,7 +296,7 @@ describe Verify::SessionsController do
             Idv::VendorResult.new(
               success: false,
               errors: { agent: [exception_msg] },
-              reasons: [exception_msg]
+              messages: [exception_msg]
             )
           end
 
@@ -309,7 +309,7 @@ describe Verify::SessionsController do
               errors: {
                 agent: [exception_msg],
               },
-              vendor: { reasons: [exception_msg] },
+              vendor: { messages: [exception_msg] },
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -322,7 +322,7 @@ describe Verify::SessionsController do
           let(:result) do
             Idv::VendorResult.new(
               success: true,
-              reasons: ['Everything looks good'],
+              messages: ['Everything looks good'],
               normalized_applicant: normalized_applicant
             )
           end
@@ -334,7 +334,7 @@ describe Verify::SessionsController do
               success: true,
               idv_attempts_exceeded: false,
               errors: {},
-              vendor: { reasons: ['Everything looks good'] },
+              vendor: { messages: ['Everything looks good'] },
             }
 
             expect(@analytics).to have_received(:track_event).

@@ -35,7 +35,7 @@ RSpec.describe VendorValidatorResultStorage do
 
       expect(result.success?).to eq(original_result.success?)
       expect(result.errors).to eq(original_result.errors)
-      expect(result.reasons).to eq(original_result.reasons)
+      expect(result.messages).to eq(original_result.messages)
       expect(result.normalized_applicant.as_json).
         to eq(original_result.normalized_applicant.as_json)
     end
