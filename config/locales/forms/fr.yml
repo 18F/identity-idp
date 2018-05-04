@@ -18,7 +18,7 @@ fr:
     messages:
       current_address: Vous devriez être en mesure de recevoir du courrier à cette
         adresse.
-      remember_device: Rappelez-vous ce navigateur pendant %{duration} jours
+      remember_device: Enregistrer ce navigateur pendant %{duration} jours
     passwords:
       edit:
         buttons:
