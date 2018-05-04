@@ -105,7 +105,8 @@ feature 'Two Factor Authentication' do
 
       scenario 'disables the phone option and displays a warning with js', :js do
         sign_in_before_2fa
-        select 'Turkey +90', from: 'International code'
+        find('.selected-flag').click
+        find('.country[data-country-code="tr"]').click
         fill_in 'Phone', with: '+90 312 213 29 65'
         phone_radio_button = page.find(
           '#user_phone_form_otp_delivery_preference_voice',
@@ -118,7 +119,8 @@ feature 'Two Factor Authentication' do
         )
         expect(phone_radio_button).to be_disabled
 
-        select 'Canada +1', from: 'International code'
+        find('.selected-flag').click
+        find('.country[data-country-code="ca"]').click
 
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
@@ -127,26 +129,11 @@ feature 'Two Factor Authentication' do
         expect(phone_radio_button).to_not be_disabled
       end
 
-      scenario 'updates international code as user types', :js do
-        sign_in_before_2fa
-        fill_in 'Phone', with: '+81 54 354 3643'
-
-        expect(page.find('#user_phone_form_international_code').value).to eq 'JP'
-
-        fill_in 'Phone', with: '5376'
-        select 'Morocco +212', from: 'International code'
-
-        expect(find('#user_phone_form_phone').value).to eq '+212 (537) 6'
-
-        fill_in 'Phone', with: '54354'
-        select 'Japan +81', from: 'International code'
-
-        expect(find('#user_phone_form_phone').value).to include '+81'
-      end
-
       scenario 'does not allow the user to remove the international code after entering it', :js do
         sign_in_before_2fa
-        fill_in 'Phone', with: '+81 54 354 3643'
+        find('.selected-flag').click
+        find('.country[data-country-code="jp"]').click
+        fill_in 'Phone', with: '54 354 3643'
 
         input = find('#user_phone_form_phone')
         input.send_keys(*([:backspace] * input.value.length))
@@ -156,7 +143,8 @@ feature 'Two Factor Authentication' do
 
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
-        select 'United States of America +1', from: 'International code'
+        find('.selected-flag').click
+        find('.country[data-country-code="us"]:not(.preferred)').click
 
         input = find('#user_phone_form_phone')
         input.send_keys('12345678901234567890')
