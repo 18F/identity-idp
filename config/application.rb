@@ -3,11 +3,13 @@ require 'rails/all'
 
 Bundler.require(*Rails.groups)
 
+require_relative '../lib/queue_config.rb'
+
 APP_NAME = 'login.gov'.freeze
 
 module Upaya
   class Application < Rails::Application
-    config.active_job.queue_adapter = :sidekiq
+    config.active_job.queue_adapter = Upaya::QueueConfig.choose_queue_adapter
     config.autoload_paths << Rails.root.join('app', 'mailers', 'concerns')
     config.time_zone = 'UTC'
 
