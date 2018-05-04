@@ -210,7 +210,6 @@ production:
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
   proofer_mock_fallback: 'true'
-  proofer_vendors: '["aamva:state_id"]'
   reauthn_window: '120'
   redis_url: 'redis://redis.login.gov.internal:6379'
   redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
