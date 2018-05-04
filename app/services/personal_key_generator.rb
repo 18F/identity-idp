@@ -48,7 +48,11 @@ class PersonalKeyGenerator
   end
 
   def make_user_access_key(code)
-    Encryption::UserAccessKey.new(password: code, salt: user.recovery_salt, cost: user.recovery_cost)
+    Encryption::UserAccessKey.new(
+      password: code,
+      salt: user.recovery_salt,
+      cost: user.recovery_cost
+    )
   end
 
   def hashed_code
