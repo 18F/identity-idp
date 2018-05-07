@@ -16,7 +16,8 @@ en:
         invalid_aud: Invalid audience claim, expected %{url}
         invalid_authentication: Client must authenticate via PKCE or private_key_jwt,
           missing either code_challenge or client_assertion
-        invalid_code: invalid code
+        invalid_code: is invalid either because it expired, or it doesn't match any
+          user. Please see our documentation at https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier did not match code_challenge
     user_info:
       errors:

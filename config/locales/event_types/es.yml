@@ -9,6 +9,7 @@ es:
     authenticator_enabled: App de autenticación permitido
     eastern_timestamp: "%{timestamp} (hora del Este)"
     email_changed: Email cambiado
+    password_changed: Contraseña cambiada
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
     usps_mail_sent: Carta enviada

@@ -36,7 +36,7 @@ module ControllerHelper
     user_session = {}
     stub_sign_in(user)
     idv_session = Idv::Session.new(user_session: user_session, current_user: user, issuer: nil)
-    idv_session.applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
+    idv_session.applicant = { first_name: 'Some', last_name: 'One' }
     allow(subject).to receive(:confirm_idv_session_started).and_return(true)
     allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)
     allow(subject).to receive(:idv_session).and_return(idv_session)

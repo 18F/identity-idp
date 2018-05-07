@@ -49,11 +49,7 @@ module SamlIdpLogoutConcern
 
   def sp_slo_identity
     @_sp_slo_identity ||= begin
-      if FeatureManagement.enable_agency_based_uuids?
-        AgencyIdentityLinker.sp_identity_from_uuid(name_id)
-      else
-        Identity.includes(:user).find_by(uuid: name_id)
-      end
+      AgencyIdentityLinker.sp_identity_from_uuid(name_id)
     end
   end
 
@@ -85,7 +81,6 @@ module SamlIdpLogoutConcern
   end
 
   def prepare_saml_logout_request
-    validate_saml_request
     return if slo_session[:logout_response]
     # store originating SP's logout response in the user session
     # for final step in SLO

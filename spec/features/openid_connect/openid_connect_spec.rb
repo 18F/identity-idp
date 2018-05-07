@@ -8,11 +8,6 @@ feature 'OpenID Connect' do
       oidc_end_client_secret_jwt(prompt: 'select_account')
     end
 
-    it 'succeeds with new agency based uuids' do
-      allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
-      oidc_end_client_secret_jwt(prompt: 'select_account')
-    end
-
     it 'succeeds in returning back to sp with prompt select_account and prior session' do
       user = oidc_end_client_secret_jwt(prompt: 'select_account')
       oidc_end_client_secret_jwt(prompt: 'select_account', user: user, redirs_to: '/auth/result')

@@ -11,6 +11,8 @@ test:
     name: 'NGA'
   6:
     name: 'DOT'
+  7:
+    name: 'DHS'
 
 development:
   1:
@@ -25,6 +27,8 @@ development:
     name: 'NGA'
   6:
     name: 'DOT'
+  7:
+    name: 'USSS'
 
 production:
   1:
@@ -39,3 +43,5 @@ production:
     name: 'NGA'
   6:
     name: 'DOT'
+  7:
+    name: 'USSS'

@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# This script is called by identity-devops cookbooks as part of the deployment
+# process. It runs any pending migrations.
+
+set -euo pipefail
+
+echo "deploy/migrate starting"
+echo "HOME: ${HOME-}"
+cd "$(dirname "$0")/.."
+
+set -x
+
+id
+which bundle
+
+export RAILS_ENV=production
+export MIGRATION_STATEMENT_TIMEOUT=60000
+
+bundle exec rake db:create db:migrate db:seed --trace
+
+set +x
+
+echo "deploy/migrate finished"

@@ -70,6 +70,11 @@ class ApplicationController < ActionController::Base
     { locale: locale_url_param, host: Figaro.env.domain_name }
   end
 
+  def sign_out
+    request.cookie_jar.delete('ahoy_visit')
+    super
+  end
+
   private
 
   # These attributes show up in New Relic traces for all requests.

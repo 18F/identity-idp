@@ -6,8 +6,8 @@ EXCEPTION_RECIPIENTS = Figaro.env.exception_recipients.split(',').freeze
 ExceptionNotification.configure do |config|
   config.add_notifier(
     :email,
-    email_prefix: "[#{APP_NAME} EXCEPTION - #{LoginGov::Hostdata.env}] ",
-    sender_address: %("Exception Notifier" <notifier@login.gov>),
+    email_prefix: "[#{LoginGov::Hostdata.domain} EXCEPTION - #{LoginGov::Hostdata.env}] ",
+    sender_address: %("Exception Notifier" <notifier@#{LoginGov::Hostdata.domain}>),
     exception_recipients: EXCEPTION_RECIPIENTS,
     error_grouping: true,
     sections: %w[request backtrace session]
