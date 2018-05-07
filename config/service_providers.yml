@@ -598,3 +598,18 @@ production:
       - 'https://symphony.nga-geoworks.com/guacamole/#/'
       - 'https://symphony.nga-geoworks.com/secured'
     restrict_to_deploy_env: 'prod'
+
+  # Secret Service PIX
+  'urn:gov:gsa:SAML:2.0.profiles:sp:sso:usss:pix':
+    agency_id: 7
+    friendly_name: 'PIX'
+    agency: 'USSS'
+    logo: 'usss_pix.png'
+    acs_url: 'https://pix.secretservice.gov/auth'
+    sp_initiated_login_url: 'https://pix.secretservice.gov/logingov'
+    return_to_sp_url: 'https://pix.secretservice.gov/'
+    block_encryption: 'aes256-cbc'
+    cert: 'usss_prod'
+    attribute_bundle:
+      - email
+    restrict_to_deploy_env: 'prod'
