@@ -14,8 +14,6 @@ p.mt-tiny.mb0
       collection: international_phone_codes,
       include_blank: false,
       input_html: { class: 'international-code' }
-    = f.input :international_code, disabled: true,
-      input_html: { id: :user_phone_form_international_code_hidden }
   .sm-col-8.mb3
     = f.label :phone, class: 'bold block'
       = t('devise.two_factor_authentication.otp_phone_label')
