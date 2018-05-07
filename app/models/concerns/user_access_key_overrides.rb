@@ -52,10 +52,6 @@ module UserAccessKeyOverrides
 
   private
 
-  def encrypted_key_maker
-    @_key_maker ||= EncryptedKeyMaker.new
-  end
-
   def log_error(err)
     metadata = {
       event: 'Pii::EncryptionError when validating password',

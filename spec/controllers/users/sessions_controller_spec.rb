@@ -259,8 +259,6 @@ describe Users::SessionsController, devise: true do
         # exceeding expected call count
         attribute_access_key = EncryptedAttribute.new_user_access_key
 
-        #encrypted_key_maker = EncryptedKeyMaker.new
-        #allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 

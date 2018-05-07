@@ -31,9 +31,7 @@ describe 'NIST Encryption Model' do
       # Generate and store a 128-bit salt S.
       ## (ours is actually 256 bits)
       password = 'a long sekrit'
-      salt = Pii::Cipher.random_key
-
-      expect(salt.bytes.length).to eq 32
+      salt = SecureRandom.random_bytes(32)
 
       # Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
       user_access_key = Encryption::UserAccessKey.new(password: password, salt: salt)
