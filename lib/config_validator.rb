@@ -1,14 +1,8 @@
 class ConfigValidator
   ENV_PREFIX = Figaro::Application::FIGARO_ENV_PREFIX
-  NON_EMPTY_KEYS = %w[
-    phone_proofing_vendor
-    profile_proofing_vendor
-    state_id_proofing_vendor
-  ].freeze
 
   def validate(env = ENV)
     validate_boolean_keys(env)
-    validate_non_empty_keys(env)
   end
 
   private
@@ -32,10 +26,6 @@ class ConfigValidator
     env.include?(key) and env.include?(ENV_PREFIX + key)
   end
 
-  def empty_keys_warning(empty_keys)
-    'These configs are required and were empty: ' + empty_keys.join(', ')
-  end
-
   def keys_with_bad_boolean_values(env, keys)
     # Configuration settings for boolean values need to be "true/false"
     # and not "yes/no".
@@ -47,11 +37,5 @@ class ConfigValidator
     bad_keys = keys_with_bad_boolean_values(env, candidate_keys(env))
     return unless bad_keys.any?
     raise boolean_warning(bad_keys).tr("\n", ' ')
-  end
-
-  def validate_non_empty_keys(env)
-    empty_keys = NON_EMPTY_KEYS - env.keys
-    return if empty_keys.empty?
-    raise empty_keys_warning(empty_keys)
   end
 end
