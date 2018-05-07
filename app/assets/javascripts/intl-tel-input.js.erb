@@ -1,6 +1,4 @@
 // Setting hidden input for intl code
-$("#user_phone_form_international_code").prop('disabled', true);
-$("#user_phone_form_international_code_hidden").prop('disabled', false);
 
 var countryData = $.fn.intlTelInput.getCountryData(),
   telInput = $("#user_phone_form_phone");
@@ -13,5 +11,5 @@ telInput.intlTelInput({
 // inserting country code on dropdown change
 telInput.on("countrychange", function(e, countryData) {
   $('#user_phone_form_phone').val("+" + countryData.dialCode);
-  $('#user_phone_form_international_code_hidden').val(countryData.iso2.toUpperCase());
+  $('#user_phone_form_international_code').val(countryData.iso2.toUpperCase());
 });

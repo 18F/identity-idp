@@ -121,6 +121,7 @@ feature 'Two Factor Authentication' do
 
         find('.selected-flag').click
         find('.country[data-country-code="ca"]').click
+        fill_in 'Phone', with: '+1 312 213 29 65'
 
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
@@ -133,7 +134,7 @@ feature 'Two Factor Authentication' do
         sign_in_before_2fa
         find('.selected-flag').click
         find('.country[data-country-code="jp"]').click
-        fill_in 'Phone', with: '54 354 3643'
+        fill_in 'Phone', with: '+81 54 354 3643'
 
         input = find('#user_phone_form_phone')
         input.send_keys(*([:backspace] * input.value.length))
