@@ -45,11 +45,6 @@ RSpec.describe OpenidConnectLogoutForm do
       it 'has a successful response' do
         expect(result).to be_success
       end
-
-      it 'has a successful response when agency based uuids are enabled' do
-        allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
-        expect(result).to be_success
-      end
     end
 
     context 'with an invalid form' do
@@ -114,13 +109,6 @@ RSpec.describe OpenidConnectLogoutForm do
         end
 
         it 'is not valid' do
-          expect(valid?).to eq(false)
-          expect(form.errors[:id_token_hint]).
-            to include(t('openid_connect.logout.errors.id_token_hint'))
-        end
-
-        it 'is not valid when agency based uuids are enabled' do
-          allow(FeatureManagement).to receive(:enable_agency_based_uuids?).and_return(true)
           expect(valid?).to eq(false)
           expect(form.errors[:id_token_hint]).
             to include(t('openid_connect.logout.errors.id_token_hint'))

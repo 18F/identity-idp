@@ -5,14 +5,13 @@ class AgencyIdentityLinker
   end
 
   def link_identity
-    ai = find_or_create_agency_identity
-    return ai if ai&.agency_enabled?
-    AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
+    find_or_create_agency_identity ||
+      AgencyIdentity.new(user_id: @sp_identity.user_id, uuid: @sp_identity.uuid)
   end
 
   def self.sp_identity_from_uuid_and_sp(uuid, service_provider)
     ai = AgencyIdentity.where(uuid: uuid).first
-    criteria = if ai&.agency_enabled?
+    criteria = if ai
                  { user_id: ai.user_id, service_provider: service_provider }
                else
                  { uuid: uuid, service_provider: service_provider }
@@ -31,9 +30,7 @@ class AgencyIdentityLinker
   private
 
   def find_or_create_agency_identity
-    ai = agency_identity
-    return ai if ai
-    create_agency_identity_for_sp
+    agency_identity || create_agency_identity_for_sp
   end
 
   def create_agency_identity_for_sp

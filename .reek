@@ -17,6 +17,7 @@ DuplicateMethodCall:
     - UserFlowExporter#self.massage_assets
     - BasicAuthUrl#build
     - fallback_to_english
+    - Idv::Proofer#load_vendors!
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -42,6 +43,7 @@ FeatureEnvy:
     - UserEncryptedAttributeOverrides#find_with_email
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
+    - Idv::Proofer#validate_vendors
 InstanceVariableAssumption:
   exclude:
     - User
@@ -89,6 +91,8 @@ TooManyStatements:
     - UserFlowExporter#self.massage_assets
     - UserFlowExporter#self.massage_html
     - UserFlowExporter#self.run
+    - Idv::Agent#proof
+    - Idv::Proofer#configure_vendors
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController

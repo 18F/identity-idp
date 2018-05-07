@@ -18,7 +18,7 @@ describe TwoFactorAuthentication::PersonalKeyVerificationController do
     it 'tracks the page visit' do
       stub_sign_in_before_2fa
       stub_analytics
-      analytics_hash = { context: 'authentication', method: 'personal key' }
+      analytics_hash = { context: 'authentication' }
 
       expect(@analytics).to receive(:track_event).
         with(Analytics::MULTI_FACTOR_AUTH_ENTER_PERSONAL_KEY_VISIT, analytics_hash)

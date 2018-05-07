@@ -265,7 +265,7 @@ login.gov team for credentials and other values.
 
 ### Managing translation files
 
-To help us handle extra newlines and make sure we wrap lines consistently, we have a script called `./script/normalize-yaml` that helps format YAML consistently. After importing translations (or making changes to the *.yml files with strings, run this for the IDP app:
+To help us handle extra newlines and make sure we wrap lines consistently, we have a script called `./scripts/normalize-yaml` that helps format YAML consistently. After importing translations (or making changes to the *.yml files with strings, run this for the IDP app:
 
 ```
 $ make normalize_yaml

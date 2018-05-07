@@ -13,7 +13,7 @@ describe Verify::ConfirmationsController do
     )
     idv_session.applicant = idv_session.vendor_params
     idv_session.normalized_applicant_params = { first_name: 'Somebody' }
-    idv_session.resolution_successful = resolution.success?
+    idv_session.resolution_successful = true
     user.unlock_user_access_key(password)
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
@@ -32,7 +32,7 @@ describe Verify::ConfirmationsController do
   let(:password) { 'sekrit phrase' }
   let(:user) { create(:user, :signed_up, password: password) }
   let(:applicant) do
-    Proofer::Applicant.new(
+    {
       first_name: 'Some',
       last_name: 'One',
       address1: '123 Any St',
@@ -40,11 +40,9 @@ describe Verify::ConfirmationsController do
       city: 'Anywhere',
       state: 'KS',
       zipcode: '66666'
-    )
+    }
   end
-  let(:normalized_applicant) { Proofer::Applicant.new first_name: 'Somebody' }
-  let(:agent) { Proofer::Agent.new vendor: :mock }
-  let(:resolution) { agent.start applicant }
+  let(:normalized_applicant) { { first_name: 'Somebody' } }
   let(:profile) { subject.idv_session.profile }
 
   describe 'before_actions' do

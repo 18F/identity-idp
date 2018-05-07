@@ -3,20 +3,15 @@ require 'rails_helper'
 RSpec.describe Idv::VendorResult do
   let(:success) { true }
   let(:errors) { { foo: ['is not valid'] } }
-  let(:reasons) { %w[foo bar baz] }
-  let(:normalized_applicant) do
-    Proofer::Applicant.new(
-      last_name: 'Ever',
-      first_name: 'Greatest'
-    )
-  end
+  let(:messages) { %w[foo bar baz] }
+  let(:normalized_applicant) { { last_name: 'Ever', first_name: 'Greatest' } }
   let(:timed_out) { false }
 
   subject(:vendor_result) do
     Idv::VendorResult.new(
       success: success,
       errors: errors,
-      reasons: reasons,
+      messages: messages,
       normalized_applicant: normalized_applicant,
       timed_out: timed_out
     )
@@ -39,7 +34,7 @@ RSpec.describe Idv::VendorResult do
       json = vendor_result.to_json
 
       parsed = JSON.parse(json, symbolize_names: true)
-      expect(parsed[:normalized_applicant][:last_name]).to eq(normalized_applicant.last_name)
+      expect(parsed[:normalized_applicant][:last_name]).to eq(normalized_applicant[:last_name])
     end
   end
 
@@ -49,11 +44,11 @@ RSpec.describe Idv::VendorResult do
     it 'has simple attributes' do
       expect(new_from_json.success?).to eq(vendor_result.success?)
       expect(new_from_json.errors).to eq(vendor_result.errors)
-      expect(new_from_json.reasons).to eq(vendor_result.reasons)
+      expect(new_from_json.messages).to eq(vendor_result.messages)
     end
 
     it 'turns applicant into a full object' do
-      expect(new_from_json.normalized_applicant.last_name).to eq(normalized_applicant.last_name)
+      expect(new_from_json.normalized_applicant[:last_name]).to eq(normalized_applicant[:last_name])
     end
 
     context 'without an applicant' do

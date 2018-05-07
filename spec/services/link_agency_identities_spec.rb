@@ -78,8 +78,6 @@ describe LinkAgencyIdentities do
   end
 
   def init_env(user)
-    allow(Figaro.env).to receive(:enable_agency_based_uuids).and_return('true')
-    allow(Figaro.env).to receive(:agencies_with_agency_based_uuids).and_return('1,2,3')
     AgencySeeder.new(rails_env: Rails.env, deploy_env: Rails.env).run
     Identity.where(user_id: user.id).delete_all
     AgencyIdentity.where(user_id: user.id).delete_all

@@ -2,49 +2,34 @@ module Idv
   class ProoferJob < ApplicationJob
     queue_as :idv
 
-    attr_reader :result_id, :applicant, :vendor_params
+    attr_reader :result_id, :applicant, :stages
 
-    def perform(result_id:, vendor_params:, applicant_json:)
+    def perform(result_id:, applicant_json:, stages:)
       @result_id = result_id
-      @vendor_params = vendor_params
-      @applicant = applicant_from_json(applicant_json)
-      perform_identity_proofing
-    end
-
-    def verify_identity_with_vendor
-      raise NotImplementedError, "subclass must implement #{__method__}"
+      @applicant = from_json(applicant_json)
+      @stages = from_json(stages).map(&:to_sym)
+      verify_identity_with_vendor
     end
 
     private
 
-    def agent
-      Idv::Agent.new(applicant: applicant, vendor: vendor)
+    def from_json(applicant_json)
+      JSON.parse(applicant_json, symbolize_names: true)
     end
 
-    def applicant_from_json(applicant_json)
-      applicant_attributes = JSON.parse(applicant_json, symbolize_names: true)
-      Proofer::Applicant.new(applicant_attributes)
-    end
-
-    def perform_identity_proofing
-      verify_identity_with_vendor
-    rescue StandardError
-      store_failed_job_result
+    def verify_identity_with_vendor
+      agent = Idv::Agent.new(applicant)
+      result = agent.proof(*stages)
+      store_result(Idv::VendorResult.new(result.to_h))
+    rescue StandardError => error
+      store_failed_job_result(error)
       raise
     end
 
-    def extract_result(confirmation)
-      vendor_resp = confirmation.vendor_resp
-
-      Idv::VendorResult.new(
-        success: confirmation.success?,
-        errors: confirmation.errors,
-        reasons: vendor_resp.reasons
+    def store_failed_job_result(error)
+      job_failed_result = Idv::VendorResult.new(
+        errors: { job_failed: true, message: error.message }
       )
-    end
-
-    def store_failed_job_result
-      job_failed_result = Idv::VendorResult.new(errors: { job_failed: true })
       VendorValidatorResultStorage.new.store(result_id: result_id, result: job_failed_result)
     end
 

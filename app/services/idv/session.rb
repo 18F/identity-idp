@@ -126,7 +126,7 @@ module Idv
     end
 
     def applicant_params
-      params.select { |key, _value| Proofer::Applicant.method_defined?(key) }
+      params.select { |key, _value| Idv::Agent.proofer_attribute?(key) }
     end
 
     def applicant_params_ascii
@@ -135,8 +135,8 @@ module Idv
 
     def profile_maker
       @_profile_maker ||= Idv::ProfileMaker.new(
-        applicant: Proofer::Applicant.new(applicant_params),
-        normalized_applicant: Proofer::Applicant.new(normalized_applicant_params),
+        applicant: applicant_params,
+        normalized_applicant: normalized_applicant_params,
         phone_confirmed: vendor_phone_confirmation || false,
         user: current_user
       )

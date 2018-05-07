@@ -1,10 +1,15 @@
-shared_examples 'idv state id data entry' do |sp|
-  it 'renders an error for unverifiable state id number', :email do
-    visit_idp_from_sp_with_loa3(sp)
-    register_user
+require 'rails_helper'
 
-    visit verify_session_path
+feature 'idv state id data entry', :idv_job do
+  include IdvStepHelper
+
+  before do
+    start_idv_from_sp
+    complete_idv_steps_before_profile_step
     fill_out_idv_form_ok
+  end
+
+  it 'renders an error for unverifiable state id number', :email do
     fill_in :profile_state_id_number, with: '000000000'
     click_idv_continue
 
@@ -13,14 +18,9 @@ shared_examples 'idv state id data entry' do |sp|
   end
 
   it 'renders an error for blank state id number and does not submit a job', :email do
-    expect(Idv::ProfileJob).to_not receive(:perform_now)
-    expect(Idv::ProfileJob).to_not receive(:perform_later)
+    expect(Idv::ProoferJob).to_not receive(:perform_now)
+    expect(Idv::ProoferJob).to_not receive(:perform_later)
 
-    visit_idp_from_sp_with_loa3(sp)
-    register_user
-
-    visit verify_session_path
-    fill_out_idv_form_ok
     fill_in :profile_state_id_number, with: ''
     click_idv_continue
 
@@ -29,14 +29,9 @@ shared_examples 'idv state id data entry' do |sp|
   end
 
   it 'renders an error for unsupported jurisdiction and does not submit a job', :email do
-    expect(Idv::ProfileJob).to_not receive(:perform_now)
-    expect(Idv::ProfileJob).to_not receive(:perform_later)
+    expect(Idv::ProoferJob).to_not receive(:perform_now)
+    expect(Idv::ProoferJob).to_not receive(:perform_later)
 
-    visit_idp_from_sp_with_loa3(sp)
-    register_user
-
-    visit verify_session_path
-    fill_out_idv_form_ok
     select 'Alabama', from: 'profile_state'
     click_idv_continue
 
@@ -45,11 +40,6 @@ shared_examples 'idv state id data entry' do |sp|
   end
 
   it 'allows selection of different state id types', :email do
-    visit_idp_from_sp_with_loa3(sp)
-    register_user
-
-    visit verify_session_path
-    fill_out_idv_form_ok
     select t('idv.form.state_id_type.drivers_permit'), from: 'profile_state_id_type'
     click_idv_continue
 
