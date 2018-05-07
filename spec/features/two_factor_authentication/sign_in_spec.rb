@@ -120,7 +120,7 @@ feature 'Two Factor Authentication' do
         expect(phone_radio_button).to be_disabled
 
         find('.selected-flag').click
-        find('.country[data-country-code="ca"]').click
+        find('.country[data-country-code="jp"]').click
         fill_in 'Phone', with: '+1 312 213 29 65'
 
         expect(page).not_to have_content t(
