@@ -43,7 +43,14 @@ describe Pii::Cacher do
 
       rotate_all_keys
 
-      subject.save(user_access_key)
+      # Create a new user object to drop the memoized encrypted attributes
+      user_id = user.id
+      reloaded_user = User.find(user_id)
+      reloaded_profile = user.profiles.first
+
+      described_class.new(reloaded_user, user_session).save(user_access_key)
+
+      user.reload
       profile.reload
 
       expect(user.email_fingerprint).to_not eq old_email_fingerprint
