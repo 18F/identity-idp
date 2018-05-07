@@ -3,10 +3,17 @@
 var countryData = $.fn.intlTelInput.getCountryData(),
   telInput = $("#user_phone_form_phone");
 
+
 // initialise plugin
 telInput.intlTelInput({
-  utilsScript: "<%= asset_path 'intl-tel-number/utils.js' %>"
+  utilsScript: "<%= asset_path 'intl-tel-number/utils.js' %>",
+  preferredCountries: ["us", "ca"]
+
 });
+
+// set it's initial value
+var initialCountry = telInput.intlTelInput("getSelectedCountryData").dialCode;
+telInput.val("+" + initialCountry);
 
 // inserting country code on dropdown change
 telInput.on("countrychange", function(e, countryData) {
