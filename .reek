@@ -68,7 +68,7 @@ LongParameterList:
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
-    - VerifyController
+    - IdvController
     - Idv::Base
     - Rack::Attack
 TooManyConstants:
