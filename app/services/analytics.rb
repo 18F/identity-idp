@@ -110,5 +110,8 @@ class Analytics
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'.freeze
+  USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'.freeze
+  USER_REGISTRATION_PIV_CAC_ENABLED = 'User Registration: piv cac enabled'.freeze
+  USER_REGISTRATION_PIV_CAC_SETUP_VISIT = 'User Registration: piv cac setup visited'.freeze
   # rubocop:enable Metrics/LineLength
 end

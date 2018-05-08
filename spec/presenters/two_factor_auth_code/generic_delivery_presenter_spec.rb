@@ -30,4 +30,25 @@ describe TwoFactorAuthCode::GenericDeliveryPresenter do
       end
     end
   end
+
+  describe '#piv_cac_option' do
+    context 'for a user without a piv/cac enabled' do
+      let(:presenter) { presenter_with(has_piv_cac_configured: false) }
+
+      it 'returns nothing' do
+        expect(presenter.send(:piv_cac_option)).to be_nil
+      end
+    end
+
+    context 'for a user with a piv/cac enabled' do
+      let(:presenter) { presenter_with(has_piv_cac_configured: true) }
+
+      it 'returns a link to the piv/cac option' do
+        expect(presenter.send(:piv_cac_option)).to eq t(
+          'devise.two_factor_authentication.piv_cac_fallback.text_html',
+          link: presenter.send(:piv_cac_link)
+        )
+      end
+    end
+  end
 end

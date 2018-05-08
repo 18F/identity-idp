@@ -102,6 +102,7 @@ en:
       invalid_otp: That security code is invalid. You can try entering it again or
         request a new one-time security code.
       invalid_personal_key: That personal key is invalid.
+      invalid_piv_cac: That PIV/CAC is incorrect.
       max_generic_login_attempts_reached: Your account is temporarily locked.
       max_otp_login_attempts_reached: Your account is temporarily locked because you
         have entered the one-time security code incorrectly too many times.
@@ -133,6 +134,10 @@ en:
       personal_key_header_text: Enter your personal key
       personal_key_prompt: You can use this personal key once. If you still need a
         code after signing in, go to your account settings page to get a new one.
+      piv_cac_fallback:
+        link: Use your PIV/CAC instead
+        text_html: Do you have your PIV/CAC? %{link}
+      piv_cac_header_text: Present your PIV/CAC
       please_confirm: Your phone number has been set. Confirm it by entering the security
         code below.
       please_try_again_html: Please try again in %{time_remaining}.

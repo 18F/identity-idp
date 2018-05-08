@@ -14,6 +14,7 @@ module TwoFactorAuthCode
     def fallback_links
       [
         otp_fallback_options,
+        piv_cac_link,
         personal_key_link,
       ].compact
     end

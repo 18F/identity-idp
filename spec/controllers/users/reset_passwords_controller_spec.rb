@@ -266,9 +266,10 @@ describe Users::ResetPasswordsController, devise: true do
         allow(analytics).to receive(:track_event)
         email = 'nonexistent@example.com'
 
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         expect do
           put :create, params: {
-            password_reset_email_form: { email: email },
+            password_reset_email_form: { email: email }, 'g-recaptcha-response': 'foo'
           }
         end.to(change { ActionMailer::Base.deliveries.count }.by(1))
 
@@ -278,7 +279,8 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
-        }
+        }.merge(captcha_h)
+
         expect(analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
@@ -303,18 +305,21 @@ describe Users::ResetPasswordsController, devise: true do
         tech_user = build_stubbed(:user, :tech_support)
         allow(User).to receive(:find_with_email).with(tech_user.email).and_return(tech_user)
 
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: tech_user.uuid,
           role: 'tech',
           confirmed: true,
-        }
+        }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, params: { password_reset_email_form: { email: tech_user.email } } }.
+        params = { password_reset_email_form: { email: tech_user.email },
+                   'g-recaptcha-response': 'foo' }
+        expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to redirect_to forgot_password_path
@@ -328,18 +333,21 @@ describe Users::ResetPasswordsController, devise: true do
         admin = build_stubbed(:user, :admin)
         allow(User).to receive(:find_with_email).with(admin.email).and_return(admin)
 
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: admin.uuid,
           role: 'admin',
           confirmed: true,
-        }
+        }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, params: { password_reset_email_form: { email: admin.email } } }.
+        params = { password_reset_email_form: { email: admin.email },
+                   'g-recaptcha-response': 'foo' }
+        expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to redirect_to forgot_password_path
@@ -352,19 +360,21 @@ describe Users::ResetPasswordsController, devise: true do
 
         user = build(:user, :signed_up, role: :user, email: 'test@example.com')
 
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
           role: 'user',
           confirmed: true,
-        }
+        }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
         expect do
-          put :create, params: { password_reset_email_form: { email: 'Test@example.com' } }
+          put :create, params: { password_reset_email_form: { email: 'Test@example.com' },
+                                 'g-recaptcha-response': 'foo' }
         end.to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(response).to redirect_to forgot_password_path
@@ -377,18 +387,21 @@ describe Users::ResetPasswordsController, devise: true do
 
         user = create(:user, :unconfirmed, role: :user)
 
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
           role: 'user',
           confirmed: false,
-        }
+        }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, params: { password_reset_email_form: { email: user.email } } }.
+        params = { password_reset_email_form: { email: user.email },
+                   'g-recaptcha-response': 'foo' }
+        expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
 
         expect(ActionMailer::Base.deliveries.last.subject).
@@ -402,18 +415,21 @@ describe Users::ResetPasswordsController, devise: true do
       it 'displays an error and tracks event' do
         stub_analytics
 
+        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
-        }
+        }.merge(captcha_h)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
 
-        expect { put :create, params: { password_reset_email_form: { email: 'foo' } } }.
+        params = { password_reset_email_form: { email: 'foo' },
+                   'g-recaptcha-response': 'foo' }
+        expect { put :create, params: params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
 
         expect(response).to render_template :new
@@ -439,5 +455,16 @@ describe Users::ResetPasswordsController, devise: true do
     notifier = instance_double(EmailNotifier)
     allow(EmailNotifier).to receive(:new).with(user).and_return(notifier)
     expect(notifier).to receive(:send_password_changed_email)
+  end
+
+  def mock_captcha(enabled:, present:, valid:)
+    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(enabled)
+    allow_any_instance_of(SignUp::RegistrationsController).to receive(:verify_recaptcha).
+      and_return(valid)
+    {
+      recaptcha_valid: valid,
+      recaptcha_present: present,
+      recaptcha_enabled: enabled,
+    }
   end
 end

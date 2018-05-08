@@ -456,6 +456,8 @@ GEM
     readthis (2.2.0)
       connection_pool (~> 2.1)
       redis (>= 3.0, < 5.0)
+    recaptcha (4.8.0)
+      json
     redis (3.3.5)
     reek (4.8.1)
       codeclimate-engine-rb (~> 0.4.0)
@@ -727,6 +729,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-erd
   readthis
+  recaptcha
   redis-session-store!
   reek
   rqrcode
