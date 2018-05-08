@@ -9,7 +9,7 @@ feature 'idv usps step', :idv_job do
     click_on t('idv.buttons.mail.send')
 
     expect(page).to have_content(t('idv.titles.session.review'))
-    expect(page).to have_current_path(verify_review_path)
+    expect(page).to have_current_path(idv_review_path)
   end
 
   it 'redirects to the phone step when the user says they cannot receive mail' do
@@ -19,7 +19,7 @@ feature 'idv usps step', :idv_job do
     click_on t('idv.messages.usps.bad_address')
 
     expect(page).to have_content(t('idv.titles.session.phone'))
-    expect(page).to have_current_path(verify_phone_path)
+    expect(page).to have_current_path(idv_phone_path)
   end
 
   context 'the user has sent a letter but not verified an OTP' do
@@ -32,7 +32,7 @@ feature 'idv usps step', :idv_job do
         to change { UspsConfirmation.count }.from(1).to(2)
       expect_user_to_be_unverified(user)
       expect(page).to have_content(t('idv.titles.come_back_later'))
-      expect(page).to have_current_path(verify_come_back_later_path)
+      expect(page).to have_current_path(idv_come_back_later_path)
     end
 
     def complete_idv_and_return_to_usps_step

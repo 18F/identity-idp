@@ -76,7 +76,7 @@ shared_examples 'usps otp verfication step' do |sp|
 
     expect(UspsConfirmation.count).to eq(1)
     expect(UspsConfirmationCode.count).to eq(1)
-    expect(current_path).to eq verify_come_back_later_path
+    expect(current_path).to eq idv_come_back_later_path
 
     confirmation_code = UspsConfirmationCode.first
     otp_fingerprint = Pii::Fingerprinter.fingerprint(otp)

@@ -10,8 +10,8 @@ p.mt-tiny.mb0 = t('forms.verify_profile.instructions')
     = f.input_field :otp, as: :inline, autofocus: true, type: 'text', maxlength: '10', value: @code
     = f.button :submit, t('forms.verify_profile.submit')
 - unless @mail_spammed
-  = link_to t('idv.messages.usps.resend'), verify_usps_path,
+  = link_to t('idv.messages.usps.resend'), idv_usps_path,
     class: 'block mb2'
-= link_to t('idv.messages.usps.bad_address'), verify_phone_path
+= link_to t('idv.messages.usps.bad_address'), idv_phone_path
 .mt2.pt1.border-top
   = link_to t('idv.buttons.cancel'), account_path

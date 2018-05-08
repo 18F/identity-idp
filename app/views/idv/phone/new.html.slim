@@ -16,7 +16,7 @@ p.mt-tiny.mb2 = t('idv.messages.phone.intro')
 
 p = t('idv.messages.phone.same_as_2fa')
 
-= simple_form_for(@view_model.idv_form, url: verify_phone_path,
+= simple_form_for(@view_model.idv_form, url: idv_phone_path,
     html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
   = f.label :phone, label: t('idv.form.phone'), class: 'bold'
   span.ml1

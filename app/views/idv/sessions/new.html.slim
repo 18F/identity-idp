@@ -7,7 +7,7 @@ p.mb1 == t('idv.messages.sessions.access_sp', sp_name: decorated_session.sp_name
 p.mb2 = link_to t('links.access_help'),
   'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
 
-= simple_form_for(@view_model.idv_form, url: verify_session_path,
+= simple_form_for(@view_model.idv_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   fieldset.mb3.ml0.p0.border-none
@@ -89,7 +89,7 @@ p.mb2 = link_to t('links.access_help'),
 
   .mt3
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
-= render 'shared/cancel', link: verify_cancel_path
+= render 'shared/cancel', link: idv_cancel_path
 = render @view_model.modal_partial, view_model: @view_model
 
 == javascript_pack_tag 'previous-address'

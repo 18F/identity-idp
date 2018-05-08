@@ -18,7 +18,7 @@ module Idv
 
       if result.success?
         Idv::Job.submit(idv_session, [:address])
-        redirect_to verify_phone_result_url
+        redirect_to idv_phone_result_url
       else
         @view_model = view_model
         render :new
@@ -42,9 +42,9 @@ module Idv
 
     def redirect_to_next_step
       if phone_confirmation_required?
-        redirect_to verify_otp_delivery_method_url
+        redirect_to idv_otp_delivery_method_url
       else
-        redirect_to verify_review_url
+        redirect_to idv_review_url
       end
     end
 

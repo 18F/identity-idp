@@ -27,14 +27,14 @@ module Idv
     def address_delivery_destination
       destination = address_delivery_params[:address_delivery_method]
       if destination == 'phone'
-        verify_phone_path
+        idv_phone_path
       elsif destination == 'usps'
-        verify_usps_path
+        idv_usps_path
       end
     end
 
     def confirm_step_needed
-      redirect_to verify_review_url if idv_session.address_mechanism_chosen?
+      redirect_to idv_review_url if idv_session.address_mechanism_chosen?
     end
   end
 end

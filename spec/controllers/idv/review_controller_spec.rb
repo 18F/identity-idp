@@ -82,7 +82,7 @@ describe Idv::ReviewController do
       it 'redirects to address step' do
         get :show
 
-        expect(response).to redirect_to verify_address_path
+        expect(response).to redirect_to idv_address_path
       end
     end
   end
@@ -170,7 +170,7 @@ describe Idv::ReviewController do
         post :show, params: { user: { password: '' } }
 
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to verify_review_path
+        expect(response).to redirect_to idv_review_path
       end
     end
 
@@ -179,7 +179,7 @@ describe Idv::ReviewController do
         post :show, params: { user: { password: 'wrong' } }
 
         expect(flash[:error]).to eq t('idv.errors.incorrect_password')
-        expect(response).to redirect_to verify_review_path
+        expect(response).to redirect_to idv_review_path
       end
     end
 
@@ -282,7 +282,7 @@ describe Idv::ReviewController do
       it 'redirects to original path' do
         put :create, params: { user: { password: 'wrong' } }
 
-        expect(response).to redirect_to verify_review_path
+        expect(response).to redirect_to idv_review_path
       end
     end
 
@@ -298,7 +298,7 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         expect(@analytics).to have_received(:track_event).with(Analytics::IDV_REVIEW_COMPLETE)
-        expect(response).to redirect_to verify_confirmations_path
+        expect(response).to redirect_to idv_confirmations_path
       end
 
       it 'creates Profile with applicant and normalized_applicant attributes' do

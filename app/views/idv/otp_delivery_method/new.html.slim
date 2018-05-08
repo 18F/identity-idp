@@ -1,7 +1,7 @@
 h1.h3.my0 = t('idv.titles.otp_delivery_method')
 p = t('idv.messages.otp_delivery_method.phone_number_html',
       phone: @set_otp_delivery_method_presenter.phone)
-= simple_form_for(@otp_delivery_selection_form, url: verify_otp_delivery_method_url,
+= simple_form_for(@otp_delivery_selection_form, url: idv_otp_delivery_method_url,
   html: { autocomplete: 'off', method: 'put', role: 'form', class: 'mt2' }) do |f|
   fieldset.mb3.p0.border-none
     legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_delivery_preference.title')
@@ -30,4 +30,4 @@ p = t('idv.messages.otp_delivery_method.phone_number_html',
   = f.submit t('idv.buttons.send_confirmation_code'), type: :submit, class: 'btn btn-primary'
 .mt2.pt1.border-top
   = t('instructions.mfa.wrong_number_html',
-    link: link_to(t('forms.two_factor.try_again'), verify_phone_path))
+    link: link_to(t('forms.two_factor.try_again'), idv_phone_path))

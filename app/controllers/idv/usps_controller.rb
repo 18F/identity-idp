@@ -14,9 +14,9 @@ module Idv
 
       if current_user.decorate.needs_profile_usps_verification?
         resend_letter
-        redirect_to verify_come_back_later_url
+        redirect_to idv_come_back_later_url
       else
-        redirect_to verify_review_url
+        redirect_to idv_review_url
       end
     end
 
@@ -27,7 +27,7 @@ module Idv
     private
 
     def confirm_mail_not_spammed
-      redirect_to verify_review_url if idv_session.address_mechanism_chosen? &&
+      redirect_to idv_review_url if idv_session.address_mechanism_chosen? &&
                                        usps_mail_service.mail_spammed?
     end
 

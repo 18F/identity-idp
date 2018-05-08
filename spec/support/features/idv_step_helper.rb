@@ -18,7 +18,7 @@ module IdvStepHelper
 
   def complete_idv_steps_before_verify_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
-    visit verify_path unless current_path == verify_path
+    visit idv_path unless current_path == idv_path
   end
 
   def complete_idv_steps_before_profile_step(user = user_with_2fa)

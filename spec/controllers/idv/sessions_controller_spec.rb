@@ -64,7 +64,7 @@ describe Idv::SessionsController do
 
         get :new
 
-        expect(response).to redirect_to verify_address_path
+        expect(response).to redirect_to idv_address_path
       end
 
       context 'max attempts exceeded' do
@@ -77,12 +77,12 @@ describe Idv::SessionsController do
           get :new
 
           result = {
-            request_path: verify_session_path,
+            request_path: idv_session_path,
           }
 
           expect(@analytics).to have_received(:track_event).
             with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-          expect(response).to redirect_to verify_fail_url
+          expect(response).to redirect_to idv_fail_url
         end
       end
     end
@@ -115,7 +115,7 @@ describe Idv::SessionsController do
 
           post :create, params: { profile: user_attrs.merge(ssn: '666-66-1234') }
 
-          expect(response).to redirect_to(verify_session_dupe_path)
+          expect(response).to redirect_to(idv_session_dupe_path)
           expect(flash[:error]).to match t('idv.errors.duplicate_ssn')
         end
       end
@@ -124,7 +124,7 @@ describe Idv::SessionsController do
         it 'renders the form' do
           post :create, params: { profile: user_attrs.merge(ssn: '') }
 
-          expect(response).to_not redirect_to(verify_session_dupe_path)
+          expect(response).to_not redirect_to(idv_session_dupe_path)
           expect(response).to render_template(:new)
         end
       end
@@ -358,12 +358,12 @@ describe Idv::SessionsController do
             get :show
 
             result = {
-              request_path: verify_session_result_path,
+              request_path: idv_session_result_path,
             }
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, result)
-            expect(response).to redirect_to verify_fail_url
+            expect(response).to redirect_to idv_fail_url
           end
         end
 
@@ -380,7 +380,7 @@ describe Idv::SessionsController do
           it 'allows and resets attempt counter' do
             get :show
 
-            expect(response).to redirect_to verify_address_path
+            expect(response).to redirect_to idv_address_path
             expect(user.idv_attempts).to eq 1
           end
         end

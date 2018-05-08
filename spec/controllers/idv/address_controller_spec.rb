@@ -13,7 +13,7 @@ describe Idv::AddressController do
 
       get :index
 
-      expect(response).to redirect_to verify_review_path
+      expect(response).to redirect_to idv_review_path
     end
 
     it 'redirects if usps mechanism selected' do
@@ -21,7 +21,7 @@ describe Idv::AddressController do
 
       get :index
 
-      expect(response).to redirect_to verify_review_path
+      expect(response).to redirect_to idv_review_path
     end
 
     it 'renders index if no mechanism selected' do

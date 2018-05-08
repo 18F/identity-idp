@@ -70,7 +70,7 @@ RSpec.describe OpenidConnect::AuthorizationController do
           context 'account is not already verified' do
             it 'redirects to have the user verify their account' do
               action
-              expect(controller).to redirect_to(verify_url)
+              expect(controller).to redirect_to(idv_url)
             end
           end
         end

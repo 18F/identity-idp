@@ -32,7 +32,7 @@ describe IdvController do
 
       get :index
 
-      expect(response).to redirect_to verify_fail_url
+      expect(response).to redirect_to idv_fail_url
     end
 
     it 'redirects to account recovery if user has a password reset profile' do
@@ -79,7 +79,7 @@ describe IdvController do
 
         get :activated
 
-        expect(response).to redirect_to verify_url
+        expect(response).to redirect_to idv_url
       end
     end
   end
@@ -93,7 +93,7 @@ describe IdvController do
 
         get :cancel
 
-        expect(response).to redirect_to verify_activated_url
+        expect(response).to redirect_to idv_activated_url
       end
     end
 
@@ -117,7 +117,7 @@ describe IdvController do
 
         get :fail
 
-        expect(response).to redirect_to verify_activated_url
+        expect(response).to redirect_to idv_activated_url
       end
     end
 
@@ -127,7 +127,7 @@ describe IdvController do
 
         get :fail
 
-        expect(response).to redirect_to verify_url
+        expect(response).to redirect_to idv_url
       end
     end
 

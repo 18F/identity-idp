@@ -8,12 +8,12 @@ feature 'idv verify step' do
     complete_idv_steps_before_verify_step
 
     expect(page).to have_content(t('idv.titles.expectations'))
-    expect(page).to have_current_path(verify_path)
+    expect(page).to have_current_path(idv_path)
 
     click_idv_begin
 
     expect(page).to have_content(t('idv.titles.sessions'))
-    expect(page).to have_current_path(verify_session_path)
+    expect(page).to have_current_path(idv_session_path)
   end
 
   context 'cancelling idv' do

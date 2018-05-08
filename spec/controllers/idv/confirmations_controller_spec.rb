@@ -191,7 +191,7 @@ describe Idv::ConfirmationsController do
       it 'redirects to come back later path' do
         patch :update
 
-        expect(response).to redirect_to verify_come_back_later_path
+        expect(response).to redirect_to idv_come_back_later_path
       end
     end
   end

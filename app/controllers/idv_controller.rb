@@ -8,16 +8,16 @@ class IdvController < ApplicationController
 
   def index
     if active_profile?
-      redirect_to verify_activated_url
+      redirect_to idv_activated_url
     elsif idv_attempter.exceeded?
-      redirect_to verify_fail_url
+      redirect_to idv_fail_url
     else
       analytics.track_event(Analytics::IDV_INTRO_VISIT)
     end
   end
 
   def activated
-    redirect_to verify_url unless active_profile?
+    redirect_to idv_url unless active_profile?
     idv_attempter.reset
     idv_session.clear
   end
@@ -25,7 +25,7 @@ class IdvController < ApplicationController
   def cancel; end
 
   def fail
-    redirect_to verify_url unless ok_to_fail?
+    redirect_to idv_url unless ok_to_fail?
   end
 
   private

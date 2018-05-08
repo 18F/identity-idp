@@ -88,7 +88,7 @@ feature 'Password recovery via personal key', idv_job: true do
       click_on t('links.account.reactivate.with_key')
       click_on t('links.reverify')
 
-      expect(current_path).to eq(verify_path)
+      expect(current_path).to eq(idv_path)
     end
 
     scenario 'resets password, view modal and close it', email: true, js: true do

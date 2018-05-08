@@ -10,7 +10,7 @@ feature 'IdV address step', :idv_job do
       click_idv_address_choose_phone
 
       expect(page).to have_content(t('idv.titles.session.phone'))
-      expect(page).to have_current_path(verify_phone_path)
+      expect(page).to have_current_path(idv_phone_path)
     end
   end
 
@@ -21,7 +21,7 @@ feature 'IdV address step', :idv_job do
       click_idv_address_choose_usps
 
       expect(page).to have_content(t('idv.titles.mail.verify'))
-      expect(page).to have_current_path(verify_usps_path)
+      expect(page).to have_current_path(idv_usps_path)
     end
   end
 

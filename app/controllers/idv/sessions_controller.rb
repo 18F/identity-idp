@@ -25,7 +25,7 @@ module Idv
 
       if result.success?
         Idv::Job.submit(idv_session, %i[resolution state_id])
-        redirect_to verify_session_result_url
+        redirect_to idv_session_result_url
       else
         process_failure
       end
@@ -51,7 +51,7 @@ module Idv
     private
 
     def confirm_step_needed
-      redirect_to verify_address_url if idv_session.profile_confirmation == true
+      redirect_to idv_address_url if idv_session.profile_confirmation == true
     end
 
     def step
@@ -73,13 +73,13 @@ module Idv
         :strong, t('idv.messages.sessions.pii')
       )
       flash[:success] = t('idv.messages.sessions.success', pii_message: pii_msg)
-      redirect_to verify_address_url
+      redirect_to idv_address_url
     end
 
     def process_failure
       if idv_form.duplicate_ssn?
         flash[:error] = t('idv.errors.duplicate_ssn')
-        redirect_to verify_session_dupe_url
+        redirect_to idv_session_dupe_url
       else
         render_failure
         @view_model.unsupported_jurisdiction_error(decorated_session.sp_name)

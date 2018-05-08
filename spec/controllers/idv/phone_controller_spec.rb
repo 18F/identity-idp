@@ -34,7 +34,7 @@ describe Idv::PhoneController do
         subject.idv_session.vendor_phone_confirmation = true
         get :new
 
-        expect(response).to redirect_to verify_review_path
+        expect(response).to redirect_to idv_review_path
       end
     end
 
@@ -56,7 +56,7 @@ describe Idv::PhoneController do
 
       get :new
 
-      expect(response).to redirect_to verify_fail_path
+      expect(response).to redirect_to idv_fail_path
     end
   end
 
@@ -121,7 +121,7 @@ describe Idv::PhoneController do
 
           put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
-          expect(response).to redirect_to verify_phone_result_path
+          expect(response).to redirect_to idv_phone_result_path
 
           expected_params = {
             phone: normalized_phone,
@@ -138,7 +138,7 @@ describe Idv::PhoneController do
 
           put :create, params: { idv_phone_form: { phone: good_phone, international_code: 'US' } }
 
-          expect(response).to redirect_to verify_phone_result_path
+          expect(response).to redirect_to idv_phone_result_path
 
           expected_params = {
             phone: normalized_phone,
@@ -260,7 +260,7 @@ describe Idv::PhoneController do
         it 'allows and does not affect attempt counter' do
           get :show
 
-          expect(response).to redirect_to verify_review_path
+          expect(response).to redirect_to idv_review_path
           expect(user.idv_attempts).to eq(max_attempts - 1)
           expect(user.idv_attempted_at).to eq two_days_ago
         end

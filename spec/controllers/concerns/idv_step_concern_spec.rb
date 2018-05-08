@@ -38,7 +38,7 @@ describe 'IdvStepConcern' do
       it 'redirects to hardfail page' do
         get :show
 
-        expect(response).to redirect_to verify_fail_url
+        expect(response).to redirect_to idv_fail_url
       end
     end
 
@@ -52,7 +52,7 @@ describe 'IdvStepConcern' do
       it 'redirects to hardfail page' do
         get :show
 
-        expect(response).to redirect_to verify_fail_url
+        expect(response).to redirect_to idv_fail_url
       end
     end
 
@@ -98,7 +98,7 @@ describe 'IdvStepConcern' do
       it 'redirects to idv session url' do
         get :show
 
-        expect(response).to redirect_to(verify_session_url)
+        expect(response).to redirect_to(idv_session_url)
       end
     end
 
@@ -143,7 +143,7 @@ describe 'IdvStepConcern' do
       it 'redirects to activated page' do
         get :show
 
-        expect(response).to redirect_to verify_activated_url
+        expect(response).to redirect_to idv_activated_url
       end
     end
 
@@ -158,7 +158,7 @@ describe 'IdvStepConcern' do
         get :show
 
         expect(response.body).to eq 'Hello'
-        expect(response).to_not redirect_to verify_activated_url
+        expect(response).to_not redirect_to idv_activated_url
         expect(response.status).to eq 200
       end
     end

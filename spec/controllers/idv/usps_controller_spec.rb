@@ -33,7 +33,7 @@ describe Idv::UspsController do
         and_return(true)
       get :index
 
-      expect(response).to redirect_to verify_review_path
+      expect(response).to redirect_to idv_review_path
     end
 
     it 'allows a user to request another letter' do
@@ -55,7 +55,7 @@ describe Idv::UspsController do
 
         put :create
 
-        expect(response).to redirect_to verify_review_path
+        expect(response).to redirect_to idv_review_path
         expect(subject.idv_session.address_verification_mechanism).to eq :usps
       end
     end
@@ -87,7 +87,7 @@ describe Idv::UspsController do
 
         put :create
 
-        expect(response).to redirect_to verify_come_back_later_path
+        expect(response).to redirect_to idv_come_back_later_path
       end
     end
   end
