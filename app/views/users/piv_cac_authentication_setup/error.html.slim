@@ -13,7 +13,7 @@ p.mt-tiny.mb3 = @presenter.description
 .mt2.pt1.border-top
   - if @presenter.may_select_another_certificate?
     = link_to t('forms.piv_cac_setup.choose_different_certificate'),
-              test_piv_cac_entry_url, class: 'h5'
+              setup_piv_cac_url, class: 'h5'
     br
   - if user_signing_up? || user_verifying_identity?
     - method = user_signing_up? ? :delete : :get

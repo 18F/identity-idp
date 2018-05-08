@@ -1,20 +1,25 @@
 module TwoFactorAuthCode
-  class AuthenticatorDeliveryPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+  class PivCacAuthenticationPresenter < TwoFactorAuthCode::GenericDeliveryPresenter
+    include Rails.application.routes.url_helpers
+    include ActionView::Helpers::TranslationHelper
+
     def header
-      t('devise.two_factor_authentication.totp_header_text')
+      t('devise.two_factor_authentication.piv_cac_header_text')
     end
 
     def help_text
-      t("instructions.mfa.#{two_factor_authentication_method}.confirm_code_html",
+      t('instructions.mfa.piv_cac.confirm_piv_cac_html',
         email: content_tag(:strong, user_email),
-        app: content_tag(:strong, APP_NAME),
-        tooltip: view.tooltip(t('tooltips.authentication_app')))
+        app: content_tag(:strong, APP_NAME))
+    end
+
+    def piv_cac_capture_text
+      t('forms.piv_cac_mfa.submit')
     end
 
     def fallback_links
       [
         otp_fallback_options,
-        piv_cac_link,
         personal_key_link,
       ].compact
     end

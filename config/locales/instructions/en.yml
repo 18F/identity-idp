@@ -30,6 +30,8 @@ en:
         fallback_html: If you can't get text messages right now, you can %{link}
         number_message: We sent a security code to %{number}. This code will expire
           in %{expiration} minutes.
+      piv_cac:
+        confirm_piv_cac_html: Present the PIV/CAC that you associated with your account.
       voice:
         confirm_code_html: Want us to call you again? %{resend_code_link}
         fallback_html: If you can't take a phone call right now, you can %{link}

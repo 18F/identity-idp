@@ -15,6 +15,7 @@ module TwoFactorAuthenticatable
     authenticator: 'authenticator',
     sms: 'phone',
     voice: 'phone',
+    piv_cac: 'piv_cac',
   }.freeze
 
   private
@@ -259,6 +260,7 @@ module TwoFactorAuthenticatable
   def generic_data
     {
       personal_key_unavailable: personal_key_unavailable?,
+      has_piv_cac_configured: current_user.piv_cac_enabled?,
       reauthn: reauthn?,
     }
   end
