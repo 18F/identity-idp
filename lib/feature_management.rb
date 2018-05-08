@@ -88,4 +88,9 @@ class FeatureManagement
   def self.enable_saml_cert_rotation?
     Figaro.env.saml_secret_rotation_enabled == 'true'
   end
+
+  def self.recaptcha_enabled?(session, reset)
+    AbTest.new(:ab_test_recaptcha_enabled, Figaro.env.recaptcha_enabled_percent).
+      enabled?(session, reset)
+  end
 end

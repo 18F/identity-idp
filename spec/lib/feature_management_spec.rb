@@ -326,5 +326,73 @@ describe 'FeatureManagement', type: :feature do
         end
       end
     end
+
+    describe '#recaptcha_enabled?' do
+      context 'when recaptcha is enabled 100 percent' do
+        before do
+          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('100')
+        end
+
+        it 'enables the feature when the session is new' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+        end
+
+        it 'enables the feature when the session is old' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(true)
+        end
+      end
+
+      context 'when recaptcha is enabled 0 percent' do
+        before do
+          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('0')
+        end
+
+        it 'disables the feature when the session is new' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+        end
+
+        it 'disables the feature when the session is old' do
+          session = {}
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(false)
+        end
+      end
+
+      context 'when recaptcha is enabled 50 percent' do
+        before do
+          allow(Figaro.env).to receive(:recaptcha_enabled_percent).and_return('50')
+        end
+
+        it 'enables the feature when the session is new and random number is 70' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(70)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+        end
+
+        it 'disables the feature when the session is new and random number is 30' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(30)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+        end
+
+        it 'enables the feature when the session is old and the random number is 70' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(70)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(true)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(true)
+        end
+
+        it 'disables the feature when the session is old and the random number is 30' do
+          session = {}
+          allow(SecureRandom).to receive(:random_number).and_return(30)
+          expect(FeatureManagement.recaptcha_enabled?(session, true)).to eq(false)
+          expect(FeatureManagement.recaptcha_enabled?(session, false)).to eq(false)
+        end
+      end
+    end
   end
 end
