@@ -150,7 +150,7 @@ feature 'Two Factor Authentication' do
         input = find('#user_phone_form_phone')
         input.send_keys('12345678901234567890')
 
-        expect(input.value).to eq('+1 2345678901234567890')
+        expect(input.value).to eq('+1 12345678901234567890')
       end
     end
   end
