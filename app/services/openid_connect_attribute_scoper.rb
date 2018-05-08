@@ -8,6 +8,9 @@ class OpenidConnectAttributeScoper
     profile:birthdate
     profile:name
     social_security_number
+    x509
+    x509:subject
+    x509:presented
   ].freeze
 
   ATTRIBUTE_SCOPES_MAP = {
@@ -20,6 +23,8 @@ class OpenidConnectAttributeScoper
     family_name: %w[profile profile:name],
     birthdate: %w[profile profile:birthdate],
     social_security_number: %w[social_security_number],
+    x509_subject: %w[x509 x509:subject],
+    x509_presented: %w[x509 x509:presented],
   }.with_indifferent_access.freeze
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
