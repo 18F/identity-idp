@@ -16,9 +16,10 @@ SecureHeaders::Configuration.default do |config|
       "'self'",
       '*.newrelic.com',
       '*.nr-data.net',
+      '*.google-analytics.com',
     ],
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', '*.google-analytics.com'],
+    img_src: ["'self'", 'data:'],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [

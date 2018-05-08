@@ -20,6 +20,7 @@ module Ahoy
 
     def exclude?
       return if FeatureManagement.enable_load_testing_mode?
+      return if FeatureManagement.use_dashboard_service_providers?
       super
     end
 

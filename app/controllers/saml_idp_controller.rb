@@ -11,6 +11,7 @@ class SamlIdpController < ApplicationController
   include VerifySPAttributesConcern
 
   skip_before_action :verify_authenticity_token
+  before_action :validate_saml_logout_request, only: :logout
 
   def auth
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
@@ -26,7 +27,6 @@ class SamlIdpController < ApplicationController
   end
 
   def logout
-    track_logout_event
     prepare_saml_logout_response_and_request
 
     return handle_saml_logout_response if slo.successful_saml_response?
@@ -37,6 +37,21 @@ class SamlIdpController < ApplicationController
   end
 
   private
+
+  def validate_saml_logout_request(raw_saml_request = params[:SAMLRequest])
+    request_valid = saml_request_valid?(raw_saml_request)
+
+    track_logout_event(request_valid)
+    return unless raw_saml_request
+
+    head :bad_request unless request_valid
+  end
+
+  def saml_request_valid?(saml_request)
+    return false unless saml_request
+    decode_request(saml_request)
+    valid_saml_request?
+  end
 
   def saml_metadata
     if SamlCertRotationManager.use_new_secrets_for_request?(request)
@@ -96,11 +111,14 @@ class SamlIdpController < ApplicationController
     )
   end
 
-  def track_logout_event
+  def track_logout_event(saml_request_valid)
+    saml_request = params[:SAMLRequest]
     result = {
-      sp_initiated: params[:SAMLRequest].present?,
+      sp_initiated: saml_request.present?,
       oidc: false,
     }
+    result[:saml_request_valid] = saml_request_valid
+
     analytics.track_event(Analytics::LOGOUT_INITIATED, result)
   end
 end

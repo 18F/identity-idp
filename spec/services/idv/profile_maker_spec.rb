@@ -3,8 +3,8 @@ require 'rails_helper'
 describe Idv::ProfileMaker do
   describe '#save_profile' do
     it 'creates Profile with encrypted PII' do
-      applicant = Proofer::Applicant.new first_name: 'Some', last_name: 'One'
-      normalized_applicant = Proofer::Applicant.new first_name: 'Somebody', last_name: 'Oneatatime'
+      applicant = { first_name: 'Some', last_name: 'One' }
+      normalized_applicant = { first_name: 'Somebody', last_name: 'Oneatatime' }
       user = create(:user, :signed_up)
       user.unlock_user_access_key(user.password)
 

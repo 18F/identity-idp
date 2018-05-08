@@ -55,11 +55,7 @@ class OpenidConnectLogoutForm
   def identity_from_payload(payload)
     uuid = payload[:sub]
     sp = payload[:aud]
-    if FeatureManagement.enable_agency_based_uuids?
-      AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
-    else
-      Identity.where(uuid: uuid, service_provider: sp).first
-    end
+    AgencyIdentityLinker.sp_identity_from_uuid_and_sp(uuid, sp)
   end
 
   def build_openid_connect_redirector

@@ -1,4 +1,5 @@
 - show_language_dropdown = I18n.available_locales.count > 1
+- sanitized_requested_url = request.query_parameters.slice(:request_id)
 
 footer.footer.bg-light-blue.sm-bg-navy
   - if show_language_dropdown
@@ -17,7 +18,7 @@ footer.footer.bg-light-blue.sm-bg-navy
         - I18n.available_locales.each do |locale|
           li.border-bottom
             = link_to t("i18n.locale.#{locale}"),
-              request.query_parameters.merge(locale: locale),
+              sanitized_requested_url.merge(locale: locale),
               class: 'block py-12p px2 text-decoration-none blue fs-13p'
 
   .container.py1.px2.lg-px0(class="#{'sm-py0' if show_language_dropdown}")
@@ -38,7 +39,7 @@ footer.footer.bg-light-blue.sm-bg-navy
                 - I18n.available_locales.each do |locale|
                   li.border-bottom.border-navy
                     = link_to t("i18n.locale.#{locale}"),
-                      request.query_parameters.merge(locale: locale),
+                      sanitized_requested_url.merge(locale: locale),
                       class: 'block pl-24p py2 text-decoration-none white'
         = link_to t('links.help'), MarketingSite.help_url,
           class: 'caps h6 blue sm-white text-decoration-none mr3', target: '_blank'

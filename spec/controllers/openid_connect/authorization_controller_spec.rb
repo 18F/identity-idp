@@ -44,7 +44,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: true,
                  client_id: client_id,
-                 errors: {})
+                 errors: {},
+                 user_fully_authenticated: true)
 
           action
         end
@@ -128,7 +129,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: client_id,
-                 errors: hash_including(:prompt))
+                 errors: hash_including(:prompt),
+                 user_fully_authenticated: true)
 
           action
         end
@@ -148,7 +150,8 @@ RSpec.describe OpenidConnect::AuthorizationController do
             with(Analytics::OPENID_CONNECT_REQUEST_AUTHORIZATION,
                  success: false,
                  client_id: nil,
-                 errors: hash_including(:client_id))
+                 errors: hash_including(:client_id),
+                 user_fully_authenticated: true)
 
           action
         end
