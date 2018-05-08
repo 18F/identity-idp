@@ -31,7 +31,7 @@ module Idv
 
     def confirm_step_needed
       redirect_to idv_review_url if idv_session.address_verification_mechanism != 'phone' ||
-                                       idv_session.user_phone_confirmation == true
+                                    idv_session.user_phone_confirmation == true
     end
 
     def otp_delivery_selection_params
