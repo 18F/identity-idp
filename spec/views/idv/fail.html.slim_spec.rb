@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'verify/fail.html.slim' do
+describe 'idv/fail.html.slim' do
   let(:view_context) { ActionController::Base.new.view_context }
 
   context 'when SP is present' do
@@ -15,7 +15,7 @@ describe 'verify/fail.html.slim' do
     it 'displays the hardfail4 partial' do
       render
 
-      expect(view).to render_template(partial: 'verify/_hardfail4')
+      expect(view).to render_template(partial: 'idv/_hardfail4')
       expect(rendered).to have_content(
         strip_tags(t('idv.messages.hardfail4_html', sp: @decorated_session.sp_name))
       )
@@ -30,7 +30,7 @@ describe 'verify/fail.html.slim' do
     it 'displays the null partial' do
       render
 
-      expect(view).to render_template(partial: 'verify/_no_sp_hardfail')
+      expect(view).to render_template(partial: 'idv/_no_sp_hardfail')
     end
   end
 end

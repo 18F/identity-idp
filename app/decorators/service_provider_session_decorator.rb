@@ -61,7 +61,7 @@ class ServiceProviderSessionDecorator
   end
 
   def idv_hardfail4_partial
-    'verify/hardfail4'
+    'idv/hardfail4'
   end
 
   def requested_attributes

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'verify/review/new.html.slim' do
+describe 'idv/review/new.html.slim' do
   include XPathHelper
 
   context 'user has completed all steps' do

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'verify/_hardfail4.html.slim' do
+RSpec.describe 'idv/_hardfail4.html.slim' do
   let(:decorated_session) do
     instance_double('SessionDecorator', sp_name: 'Example SP', sp_return_url: 'test.host')
   end

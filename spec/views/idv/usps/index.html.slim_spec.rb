@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'verify/usps/index.html.slim' do
+describe 'idv/usps/index.html.slim' do
   it 'calls UspsDecorator#title and #button' do
     user = build_stubbed(:user, :signed_up)
     usps_mail_service = Idv::UspsMail.new(user)

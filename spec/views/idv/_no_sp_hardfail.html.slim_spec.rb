@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'verify/_no_sp_hardfail.html.slim' do
+RSpec.describe 'idv/_no_sp_hardfail.html.slim' do
   it 'links to the profile' do
     render
 
