@@ -2,7 +2,7 @@ require 'rails_helper'
 
 require 'proofer/vendor/mock'
 
-describe Verify::ReviewController do
+describe Idv::ReviewController do
   let(:user) do
     create(
       :user,
@@ -67,7 +67,7 @@ describe Verify::ReviewController do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'verify/review#show'
+        get 'show' => 'idv/review#show'
       end
       idv_session.params = user_attrs
       allow(subject).to receive(:idv_session).and_return(idv_session)
@@ -100,7 +100,7 @@ describe Verify::ReviewController do
       stub_sign_in(user)
       allow(subject).to receive(:idv_session).and_return(idv_session)
       routes.draw do
-        get 'show' => 'verify/review#show'
+        get 'show' => 'idv/review#show'
       end
     end
 
@@ -157,7 +157,7 @@ describe Verify::ReviewController do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        post 'show' => 'verify/review#show'
+        post 'show' => 'idv/review#show'
       end
       allow(subject).to receive(:confirm_idv_steps_complete).and_return(true)
       allow(subject).to receive(:confirm_idv_attempts_allowed).and_return(true)

@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class ReviewController < ApplicationController
     include IdvStepConcern
     include PhoneConfirmation

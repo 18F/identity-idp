@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class SessionsController < ApplicationController
     include IdvSession
     include IdvFailureConcern

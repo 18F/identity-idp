@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class OtpDeliveryMethodController < ApplicationController
     include IdvSession
     include PhoneConfirmation

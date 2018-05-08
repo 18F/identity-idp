@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Verify::AddressController do
+describe Idv::AddressController do
   let(:user) { build(:user) }
 
   before do

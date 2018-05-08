@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Verify::SessionsController do
+describe Idv::SessionsController do
   let(:max_attempts) { Idv::Attempter.idv_max_attempts }
   let(:user) { create(:user, :signed_up, email: 'old_email@example.com') }
   let(:user_attrs) do

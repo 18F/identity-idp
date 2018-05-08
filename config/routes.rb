@@ -142,12 +142,12 @@ Rails.application.routes.draw do
 
     if FeatureManagement.enable_identity_verification?
       scope '/verify', as: 'verify' do
-        get '/' => 'verify#index'
-        get '/activated' => 'verify#activated'
-        get '/cancel' => 'verify#cancel'
-        get '/fail' => 'verify#fail'
+        get '/' => 'idv#index'
+        get '/activated' => 'idv#activated'
+        get '/cancel' => 'idv#cancel'
+        get '/fail' => 'idv#fail'
       end
-      scope '/verify', module: 'verify', as: 'verify' do
+      scope '/verify', module: 'idv', as: 'verify' do
         get '/address' => 'address#index'
         post '/address' => 'address#create'
         get '/come_back_later' => 'come_back_later#show'
@@ -171,7 +171,7 @@ Rails.application.routes.draw do
     if FeatureManagement.enable_usps_verification?
       get '/account/verify' => 'users/verify_account#index', as: :verify_account
       post '/account/verify' => 'users/verify_account#create'
-      scope '/verify', module: 'verify', as: 'verify' do
+      scope '/verify', module: 'idv', as: 'verify' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'
       end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Verify::OtpDeliveryMethodController do
+describe Idv::OtpDeliveryMethodController do
   let(:user) { build(:user) }
 
   before do

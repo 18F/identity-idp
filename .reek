@@ -101,7 +101,7 @@ TooManyMethods:
     - OpenidConnect::AuthorizationController
     - Idv::Session
     - User
-    - Verify::SessionsController
+    - Idv::SessionsController
     - ServiceProviderSessionDecorator
     - SessionDecorator
 UncommunicativeMethodName:

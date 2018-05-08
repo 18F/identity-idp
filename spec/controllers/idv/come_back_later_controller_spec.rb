@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Verify::ComeBackLaterController do
+describe Idv::ComeBackLaterController do
   let(:user) { build_stubbed(:user, :signed_up) }
   let(:needs_profile_usps_verification) { true }
 

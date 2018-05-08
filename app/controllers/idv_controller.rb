@@ -1,4 +1,4 @@
-class VerifyController < ApplicationController
+class IdvController < ApplicationController
   include IdvSession
   include AccountReactivationConcern
 

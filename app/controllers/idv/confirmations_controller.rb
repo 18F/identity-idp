@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class ConfirmationsController < ApplicationController
     include IdvSession
 

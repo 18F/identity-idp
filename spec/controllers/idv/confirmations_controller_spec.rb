@@ -1,7 +1,7 @@
 require 'rails_helper'
 require 'proofer/vendor/mock'
 
-describe Verify::ConfirmationsController do
+describe Idv::ConfirmationsController do
   include SamlAuthHelper
 
   def stub_idv_session

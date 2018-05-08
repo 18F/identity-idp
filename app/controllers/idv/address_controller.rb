@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class AddressController < ApplicationController
     include IdvStepConcern
 

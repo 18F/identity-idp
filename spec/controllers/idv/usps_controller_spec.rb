@@ -2,7 +2,7 @@ require 'rails_helper'
 
 require 'proofer/vendor/mock'
 
-describe Verify::UspsController do
+describe Idv::UspsController do
   let(:user) { create(:user) }
 
   describe 'before_actions' do

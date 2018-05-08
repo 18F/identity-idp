@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class PhoneController < ApplicationController
     include IdvStepConcern
     include IdvFailureConcern

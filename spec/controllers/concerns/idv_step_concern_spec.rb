@@ -6,14 +6,14 @@ describe 'IdvStepConcern' do
     Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
   end
 
-  module Verify
+  module Idv
     class StepController < ApplicationController
       include IdvStepConcern
     end
   end
 
   describe '#confirm_idv_attempts_allowed' do
-    controller Verify::StepController do
+    controller Idv::StepController do
       before_action :confirm_idv_attempts_allowed
 
       def show
@@ -24,7 +24,7 @@ describe 'IdvStepConcern' do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'verify/step#show'
+        get 'show' => 'idv/step#show'
       end
     end
 
@@ -75,7 +75,7 @@ describe 'IdvStepConcern' do
   end
 
   describe '#confirm_idv_session_started' do
-    controller Verify::StepController do
+    controller Idv::StepController do
       before_action :confirm_idv_session_started
 
       def show
@@ -86,7 +86,7 @@ describe 'IdvStepConcern' do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'verify/step#show'
+        get 'show' => 'idv/step#show'
       end
     end
 
@@ -117,7 +117,7 @@ describe 'IdvStepConcern' do
   end
 
   describe '#confirm_idv_needed' do
-    controller Verify::StepController do
+    controller Idv::StepController do
       before_action :confirm_idv_needed
 
       def show
@@ -128,7 +128,7 @@ describe 'IdvStepConcern' do
     before(:each) do
       sign_in(user)
       routes.draw do
-        get 'show' => 'verify/step#show'
+        get 'show' => 'idv/step#show'
       end
     end
 

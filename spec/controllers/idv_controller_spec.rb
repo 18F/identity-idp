@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe VerifyController do
+describe IdvController do
   describe '#index' do
     it 'tracks page visit' do
       stub_sign_in
