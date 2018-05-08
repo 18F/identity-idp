@@ -41,7 +41,7 @@ module Verify
     end
 
     def set_otp_delivery_method_presenter
-      @set_otp_delivery_method_presenter = OtpDeliveryMethodPresenter.new(
+      @set_otp_delivery_method_presenter = Idv::OtpDeliveryMethodPresenter.new(
         idv_session.params[:phone]
       )
     end
