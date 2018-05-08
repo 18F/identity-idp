@@ -25,9 +25,9 @@ class UspsUploader
     env = Figaro.env
 
     Net::SFTP.start(
-      env.equifax_sftp_host,
-      env.equifax_sftp_username,
-      key_data: [RequestKeyManager.equifax_ssh_key.to_pem]
+      env.gpo_sftp_host,
+      env.gpo_sftp_username,
+      key_data: [RequestKeyManager.gpo_ssh_key.to_pem]
     ) do |sftp|
       sftp.upload!(local_path.to_s, remote_path)
     end

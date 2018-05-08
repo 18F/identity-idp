@@ -14,8 +14,8 @@ class RequestKeyManager
     read_key_file(key_file, Figaro.env.saml_passphrase)
   end
 
-  cattr_accessor :equifax_ssh_key do
+  cattr_accessor :gpo_ssh_key do
     key_file = Rails.root.join('keys', 'equifax_rsa')
-    read_key_file(key_file, Figaro.env.equifax_ssh_passphrase)
+    read_key_file(key_file, Figaro.env.gpo_ssh_passphrase)
   end
 end
