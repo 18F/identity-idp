@@ -9,7 +9,7 @@ class UserDecorator
   end
 
   delegate :email, to: :user
-  delegate :totp_enabled?, to: :user
+  delegate :totp_enabled?, :piv_cac_enabled?, to: :user
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now

@@ -226,4 +226,105 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe 'piv/cac feature' do
+    describe '#piv_cac_enabled?' do
+      context 'when enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.piv_cac_enabled?).to be_truthy
+        end
+      end
+
+      context 'when disabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.piv_cac_enabled?).to be_falsey
+        end
+      end
+    end
+
+    describe '#identity_pki_disabled?' do
+      context 'when enabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:identity_pki_disabled) { 'true' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.identity_pki_disabled?).to be_truthy
+        end
+      end
+
+      context 'when disabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:identity_pki_disabled) { 'false' }
+        end
+
+        it 'has the feature disabled' do
+          expect(FeatureManagement.identity_pki_disabled?).to be_falsey
+        end
+      end
+    end
+
+    describe '#development_and_piv_cac_entry_enabled?' do
+      context 'in development environment' do
+        before(:each) do
+          allow(Rails.env).to receive(:development?).and_return(true)
+        end
+
+        context 'has piv/cac enabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+          end
+
+          it 'has piv/cac test entry enabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_truthy
+          end
+        end
+
+        context 'has piv/cac disabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
+          end
+
+          it 'has piv/cac test entry disabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+          end
+        end
+      end
+
+      context 'in production environment' do
+        before(:each) do
+          allow(Rails.env).to receive(:production?).and_return(true)
+          allow(Rails.env).to receive(:development?).and_return(false)
+        end
+
+        context 'has piv/cac enabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'true' }
+          end
+
+          it 'has piv/cac test entry disabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+          end
+        end
+
+        context 'has piv/cac disabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled) { 'false' }
+          end
+
+          it 'has piv/cac test entry disabled' do
+            expect(FeatureManagement.development_and_piv_cac_entry_enabled?).to be_falsey
+          end
+        end
+      end
+    end
+  end
 end

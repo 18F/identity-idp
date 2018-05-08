@@ -1,0 +1,14 @@
+- title t('titles.piv_cac_setup.new')
+
+h1.h3.my0 = t('headings.piv_cac_setup.new')
+p.mt-tiny.mb3 = t('forms.piv_cac_setup.piv_cac_intro_html')
+
+- if FeatureManagement.development_and_piv_cac_entry_enabled?
+  = link_to t('forms.piv_cac_setup.submit'), test_piv_cac_entry_url, class: 'btn btn-primary'
+- else
+  = link_to t('forms.piv_cac_setup.submit'),
+                PivCacService.piv_cac_service_link,
+                class: 'btn btn-primary'
+= render 'shared/cancel', link: account_path
+
+== javascript_pack_tag 'clipboard'
