@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'USPS verification routes' do
   GET_ROUTES = %w[
     account/verify
-    verify/usps
+    idv/usps
   ].freeze
 
   CREATE_ROUTES = %w[
@@ -11,7 +11,7 @@ describe 'USPS verification routes' do
   ].freeze
 
   PUT_ROUTES = %w[
-    verify/usps
+    idv/usps
   ].freeze
 
   context 'when FeatureManagement.enable_usps_verification? is false' do
