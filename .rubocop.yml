@@ -19,6 +19,7 @@ AllCops:
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'db/migrate/*'
+    - 'lib/tasks/create_test_accounts.rb'
   TargetRubyVersion: 2.3
   TargetRailsVersion: 5.1
   UseCache: true
