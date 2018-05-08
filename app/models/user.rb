@@ -52,12 +52,20 @@ class User < ApplicationRecord
     self.role ||= :user
   end
 
+  def confirm_piv_cac?(proposed_uuid)
+    x509_dn_uuid == proposed_uuid if proposed_uuid
+  end
+
+  def piv_cac_enabled?
+    x509_dn_uuid.present?
+  end
+
   def need_two_factor_authentication?(_request)
     two_factor_enabled?
   end
 
   def two_factor_enabled?
-    phone.present? || totp_enabled?
+    phone.present? || totp_enabled? || piv_cac_enabled?
   end
 
   def send_two_factor_authentication_code(_code)

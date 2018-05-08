@@ -18,7 +18,7 @@ fr:
     messages:
       current_address: Vous devriez être en mesure de recevoir du courrier à cette
         adresse.
-      remember_device: NOT TRANSLATED YET
+      remember_device: Enregistrer ce navigateur pendant %{duration} jours
     passwords:
       edit:
         buttons:
@@ -32,6 +32,36 @@ fr:
       instructions: Veuillez confirmer que vous avez une copie de votre clé personnelle
         en l'entrant ci-dessous.
       title: Entrez votre clé personnelle
+    piv_cac_setup:
+      certificate:
+        bad_html: Veuillez choisir un certificat différent de votre PIV/CAC ou contactez
+          votre administrateur pour vous assurer que votre certificat est à jour.
+        expired_html: Veuillez choisir un certificat différent de votre PIV/CAC ou
+          contactez votre administrateur pour vous assurer que votre certificat est
+          à jour.
+        invalid_html: Veuillez choisir un certificat différent de votre PIV/CAC ou
+          contactez votre administrateur pour vous assurer que votre certificat est
+          à jour.
+        none_html: Veuillez contacter votre administrateur pour vous assurer que votre
+          certificat est à jour.
+        revoked_html: Veuillez choisir un certificat différent de votre PIV/CAC ou
+          contactez votre administrateur pour vous assurer que votre certificat est
+          à jour.
+        unverified_html: Veuillez choisir un certificat différent de votre PIV/CAC
+          ou contactez votre administrateur pour vous assurer que votre certificat
+          est à jour.
+      piv_cac:
+        already_associated_html: NOT TRANSLATED YET
+      token:
+        bad_html: NOT TRANSLATED YET
+        invalid_html: NOT TRANSLATED YET
+        missing_html: NOT TRANSLATED YET
+      choose_different_certificate: Choisissez un certificat différent
+      piv_cac_intro_html: Nous vous demanderons de présenter votre carte PIV/CAC chaque
+        <strong>fois que vous vous connecterez</strong> dans le cadre de l'authentification
+        à deux facteurs.<br><br>Après avoir cliqué sur "Ajouter PIV/CAC", votre navigateur
+        vous demandera votre code PIN PIV/CAC et vous choisirez un certificat.
+      submit: Ajouter une carte PIV/CAC
     registration:
       labels:
         email: Adresse courriel

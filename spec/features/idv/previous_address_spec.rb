@@ -12,14 +12,6 @@ feature 'IdV with previous address filled in', idv_job: true do
     expect(page).to have_selector("input[value='#{bad_zipcode}']")
   end
 
-  def expect_bad_previous_address_to_fail
-    fill_out_idv_form_ok
-    fill_out_idv_previous_address_fail
-    click_idv_continue
-
-    expect_to_stay_on_verify_session_page
-  end
-
   def expect_bad_current_address_to_fail
     fill_out_idv_previous_address_ok
     fill_out_idv_form_fail
@@ -42,12 +34,11 @@ feature 'IdV with previous address filled in', idv_job: true do
     expect(page).to_not have_content(previous_address)
   end
 
-  it 'fails when either address has bad value, prefers current address in profile' do
+  it 'fails when current address has bad value, prefers current address in profile' do
     user = user_with_2fa
     start_idv_from_sp
     complete_idv_steps_before_profile_step(user)
 
-    expect_bad_previous_address_to_fail
     expect_bad_current_address_to_fail
     expect_current_address_in_profile(user)
   end

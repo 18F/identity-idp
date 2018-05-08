@@ -255,4 +255,12 @@ describe ApplicationController do
       end
     end
   end
+
+  describe '#sign_out' do
+    it 'deletes the ahoy_visit cookie when signing out' do
+      expect(request.cookie_jar).to receive(:delete).with('ahoy_visit')
+
+      subject.sign_out
+    end
+  end
 end

@@ -9,6 +9,9 @@ es:
     authenticator_enabled: App de autenticación permitido
     eastern_timestamp: "%{timestamp} (hora del Este)"
     email_changed: Email cambiado
+    password_changed: Contraseña cambiada
     phone_changed: Número de teléfono cambiado
     phone_confirmed: Teléfono confirmado
+    piv_cac_disabled: Tarjeta PIV/CAC no asociada
+    piv_cac_enabled: Tarjeta PIV/CAC asociada
     usps_mail_sent: Carta enviada

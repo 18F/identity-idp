@@ -9,6 +9,9 @@ fr:
     authenticator_enabled: Application d'authentification activée
     eastern_timestamp: "%{timestamp} (Eastern)"
     email_changed: Adresse courriel modifiée
+    password_changed: Mot de passe modifié
     phone_changed: Numéro de téléphone modifié
     phone_confirmed: Numéro de téléphone confirmé
+    piv_cac_disabled: Carte PIV/CAC non associée
+    piv_cac_enabled: Carte PIV/CAC associée
     usps_mail_sent: Lettre envoyée

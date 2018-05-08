@@ -31,7 +31,7 @@ gem 'pg'
 gem 'phonelib'
 gem 'phony_rails'
 gem 'premailer-rails'
-gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v1.1.3'
+gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.3.0'
 gem 'rack-attack'
 gem 'rack-cors', require: 'rack/cors'
 gem 'rack-headers_filter'
@@ -86,6 +86,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.5.2'
   gem 'slim_lint'
+  gem 'strong_migrations'
   gem 'thin'
 end
 
@@ -110,6 +111,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v1.0.3'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v2.1.0'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
 end

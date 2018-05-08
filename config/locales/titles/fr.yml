@@ -16,6 +16,21 @@ fr:
       confirm: Confirmez le mot de passe de votre compte
       forgot: Réinitialisez le mot de passe de votre compte
     personal_key: Juste au cas
+    piv_cac_setup:
+      new: Utilisez votre carte PIV/CAC pour sécuriser votre compte
+      certificate:
+        bad: Erreur de certificat PIV/CAC
+        expired: Erreur de certificat PIV/CAC
+        invalid: Erreur de certificat PIV/CAC
+        none: Erreur de certificat PIV/CAC
+        revoked: Erreur de certificat PIV/CAC
+        unverified: Erreur de certificat PIV/CAC
+      piv_cac:
+        already_associated: NOT TRANSLATED YET
+      token:
+        bad: NOT TRANSLATED YET
+        invalid: NOT TRANSLATED YET
+        missing: NOT TRANSLATED YET
     reactivate_account: Réactiver le profil
     registrations:
       new: S'inscrire et créer un compte
