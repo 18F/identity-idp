@@ -65,7 +65,7 @@ module Verify
     end
 
     def view_model_class
-      Verify::PhoneNew
+      Idv::PhoneNew
     end
 
     def step_params

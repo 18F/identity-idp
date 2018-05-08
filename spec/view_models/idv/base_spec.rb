@@ -1,10 +1,10 @@
 require 'rails_helper'
 
-RSpec.describe Verify::Base do
+RSpec.describe Idv::Base do
   describe '#message' do
     let(:timed_out) { false }
     let(:view_model) do
-      Verify::Base.new(
+      Idv::Base.new(
         error: error,
         remaining_attempts: 1,
         idv_form: nil,
@@ -35,7 +35,7 @@ RSpec.describe Verify::Base do
 
   describe '#modal_class_name' do
     let(:view_model) do
-      Verify::Base.new(
+      Idv::Base.new(
         error: error,
         remaining_attempts: 1,
         idv_form: nil,

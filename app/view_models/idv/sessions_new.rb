@@ -1,5 +1,5 @@
-module Verify
-  class SessionsNew < Verify::Base
+module Idv
+  class SessionsNew < Idv::Base
     def step_name
       :sessions
     end

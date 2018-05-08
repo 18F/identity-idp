@@ -1,4 +1,4 @@
-module Verify
+module Idv
   class Base
     include Rails.application.routes.url_helpers
 

@@ -88,7 +88,7 @@ module Verify
     end
 
     def view_model_class
-      Verify::SessionsNew
+      Idv::SessionsNew
     end
 
     def remaining_step_attempts
