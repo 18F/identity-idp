@@ -115,6 +115,10 @@ es:
       id_number: Ingrese un número de identificación del estado o un número de licencia
         de conducir válidos. El nombre, la fecha de nacimiento y la dirección en su
         ID <strong>deben coincidir</ strong> la información proporcionada arriba.
+      jurisdiction:
+        why: TODO
+        where: TODO
+        no_id: TODO
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
@@ -214,9 +218,11 @@ es:
       fail: No pudimos verificar su identidad.
       hardfail: No pudimos verificar su identidad con %{app}.
       intro: Ayúdenos a identificarlo
+      jurisdiction: TODO
       mail:
         resend: "¿Desea otra carta?"
         verify: "¿Desea una carta?"
+      no_id: TODO
       otp_delivery_method: NOT TRANSLATED YET
       phone: Número de teléfono del registro
       review: Revise y envíe
@@ -225,3 +231,4 @@ es:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
       sessions: Verifica tu identidad
+      unsupported_jurisdiction: TODO

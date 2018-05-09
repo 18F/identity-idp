@@ -1,5 +1,5 @@
 module Idv
-  module FormStateValidator
+  module FormJurisdictionValidator
     extend ActiveSupport::Concern
 
     SUPPORTED_JURISDICTIONS = %w[

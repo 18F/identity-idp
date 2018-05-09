@@ -13,6 +13,7 @@ class IdvController < ApplicationController
       redirect_to idv_fail_url
     else
       analytics.track_event(Analytics::IDV_INTRO_VISIT)
+      redirect_to idv_jurisdiction_url
     end
   end
 

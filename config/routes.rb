@@ -177,8 +177,9 @@ Rails.application.routes.draw do
         get '/session/result' => 'sessions#show'
         delete '/session' => 'sessions#destroy'
         get '/session/dupe' => 'sessions#dupe'
-        get '/state' => 'state#new'
-        put '/state' => 'state#create'
+        get '/jurisdiction' => 'jurisdiction#new'
+        post '/jurisdiction' => 'jurisdiction#create'
+        get '/jurisdiction/:reason' => 'jurisdiction#show', as: :jurisdiction_fail
       end
     end
 

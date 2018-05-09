@@ -1,14 +1,14 @@
 module Idv
-  class StateForm
+  class JurisdictionForm
     include ActiveModel::Model
-    include FormStateValidator
+    include FormJurisdictionValidator
 
     ATTRIBUTES = [:state].freeze
 
     attr_accessor :state
 
     def self.model_name
-      ActiveModel::Name.new(self, nil, 'State')
+      ActiveModel::Name.new(self, nil, 'Jurisdiction')
     end
 
     def submit(params)
@@ -21,13 +21,13 @@ module Idv
 
     def consume_params(params)
       params.each do |key, value|
-        raise_invalid_state_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
+        raise_invalid_jurisdiction_parameter_error(key) unless ATTRIBUTES.include?(key.to_sym)
         send("#{key}=", value)
       end
     end
 
-    def raise_invalid_state_parameter_error(key)
-      raise ArgumentError, "#{key} is an invalid state attribute"
+    def raise_invalid_jurisdiction_parameter_error(key)
+      raise ArgumentError, "#{key} is an invalid jurisdiction attribute"
     end
   end
 end

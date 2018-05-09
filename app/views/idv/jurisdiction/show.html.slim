@@ -1,0 +1,11 @@
+- title t("idv.titles.#{@reason}")
+.clearfix.col-10.sm-col-12.mx-auto
+  .center
+    = image_tag(asset_url('no-verify.svg'),
+      alt: '',
+      class: 'mb2',
+      width: 140)
+
+  h1.h3.mb2.my0.px1.center = t("idv.titles.#{@reason}", state: state_name_for_abbrev(@state))
+
+  = render decorated_session.idv_hardfail4_partial

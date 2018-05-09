@@ -1,5 +1,7 @@
 module Idv
   class SessionsNew < Idv::Base
+    attr_accessor :selected_state
+
     def step_name
       :sessions
     end

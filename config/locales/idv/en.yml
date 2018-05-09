@@ -117,6 +117,10 @@ en:
       id_number: Enter a valid state identification number or driver's license number.
         The name, date of birth and address on your ID <strong>must</strong> match
         the information provided above.
+      jurisdiction:
+        why: To verify your identity, we'll need information from your state-issued ID
+        where: Where was your driver's license, driver's permit, or state ID issued?
+        no_id: I don't have a state-issued ID
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
@@ -213,9 +217,11 @@ en:
       fail: We were unable to verify your identity
       hardfail: We weren't able to verify your identity with %{app}
       intro: Help us identify you
+      jurisdiction: Choose your state
       mail:
         resend: Want another letter?
         verify: Want a letter?
+      no_id: We are unable to verify your identity without a state-issued ID
       otp_delivery_method: Get a code by phone
       phone: Phone number of record
       review: Review and submit
@@ -224,3 +230,4 @@ en:
         phone: Get a code by telephone
         review: Enter your login.gov password
       sessions: Verify your identity
+      unsupported_jurisdiction: We are unable to verify identities using IDs issued from %{state}
