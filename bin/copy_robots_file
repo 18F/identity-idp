@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require 'login_gov/hostdata'
+
+if LoginGov::Hostdata.in_datacenter? && LoginGov::Hostdata.env != 'prod'
+  FileUtils.cp('public/ban-robots.txt', 'public/robots.txt')
+end

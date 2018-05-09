@@ -10,6 +10,8 @@ html lang="#{I18n.locale}" class='no-js'
     meta name="format-detection" content="telephone=no"
     - if content_for?(:meta_refresh)
       meta http-equiv="refresh" content="#{yield(:meta_refresh)}"
+    - if session_with_trust? || FeatureManagement.disallow_all_web_crawlers?
+      meta name='robots' content='noindex,nofollow'
 
     title
       = APP_NAME

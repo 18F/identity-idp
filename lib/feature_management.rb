@@ -93,4 +93,8 @@ class FeatureManagement
     AbTest.new(:ab_test_recaptcha_enabled, Figaro.env.recaptcha_enabled_percent).
       enabled?(session, reset)
   end
+
+  def self.disallow_all_web_crawlers?
+    Figaro.env.disallow_all_web_crawlers == 'true'
+  end
 end
