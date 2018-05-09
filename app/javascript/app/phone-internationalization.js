@@ -72,12 +72,12 @@ const updateOTPDeliveryMethods = () => {
     phoneLabel.classList.add('btn-disabled');
     smsRadio.click();
     deliveryMethodHint.innerText = warningMessage;
-    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_modile_only');
+    optPhoneLabelInfo && (optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_modile_only'));
   } else {
     phoneRadio.disabled = false;
     phoneLabel.classList.remove('btn-disabled');
     deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
-    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
+    optPhoneLabelInfo && (optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info'));
   }
 };
 
@@ -124,6 +124,11 @@ const updateInternationalCodeInput = () => {
 document.addEventListener('DOMContentLoaded', () => {
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
+  const telInput = $('#user_phone_form_phone');
+  if (telInput) {
+    telInput.on('countrychange', updateOTPDeliveryMethods);
+    telInput.on('countrychange', updateInternationalCodeSelection);
+  }
   if (phoneInput) {
     phoneInput.addEventListener('keyup', updateOTPDeliveryMethods);
     phoneInput.addEventListener('keyup', updateInternationalCodeSelection);
