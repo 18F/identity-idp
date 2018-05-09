@@ -1,0 +1,23 @@
+
+- title 'State'
+
+h1.h3 To verify your identity, we'll need information from your state-issued ID
+
+= simple_form_for(@state_form, url: idv_state_path,
+    html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
+
+  fieldset.m0.p0.border-none
+    legend.col-12.mb2.pb-tiny Where was your driver's license, driver's permit, or state ID issued?
+
+    .clearfix.mxn1
+      .sm-col.sm-col-6.px1
+        = f.input :state, collection: us_states_territories,
+          label: t('idv.form.state'), required: true
+
+  p = link_to "I don't have a state-issued ID",
+    'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
+
+  .mt3
+    button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
+
+= render 'shared/cancel', link: idv_cancel_path

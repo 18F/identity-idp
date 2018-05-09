@@ -177,6 +177,8 @@ Rails.application.routes.draw do
         get '/session/result' => 'sessions#show'
         delete '/session' => 'sessions#destroy'
         get '/session/dupe' => 'sessions#dupe'
+        get '/state' => 'state#new'
+        put '/state' => 'state#create'
       end
     end
 
