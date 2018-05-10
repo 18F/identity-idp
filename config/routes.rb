@@ -153,13 +153,13 @@ Rails.application.routes.draw do
     delete '/users' => 'users#destroy', as: :destroy_user
 
     if FeatureManagement.enable_identity_verification?
-      scope '/idv', as: 'idv' do
+      scope '/verify', as: 'idv' do
         get '/' => 'idv#index'
         get '/activated' => 'idv#activated'
         get '/cancel' => 'idv#cancel'
         get '/fail' => 'idv#fail'
       end
-      namespace :idv do
+      scope '/verify', module: 'idv', as: 'idv' do
         get '/address' => 'address#index'
         post '/address' => 'address#create'
         get '/come_back_later' => 'come_back_later#show'
@@ -183,7 +183,7 @@ Rails.application.routes.draw do
     if FeatureManagement.enable_usps_verification?
       get '/account/verify' => 'users/verify_account#index', as: :verify_account
       post '/account/verify' => 'users/verify_account#create'
-      namespace :idv do
+      scope '/verify', module: 'idv', as: 'idv' do
         get '/usps' => 'usps#index'
         put '/usps' => 'usps#create'
       end
