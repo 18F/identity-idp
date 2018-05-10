@@ -55,7 +55,10 @@ const updateOTPDeliveryMethods = () => {
   const phoneRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_voice');
   const smsRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_sms');
 
-  if (!phoneRadio || !smsRadio) {
+  if (!phoneRadio) {
+    return;
+  }
+  if (!smsRadio) {
     return;
   }
 
@@ -80,7 +83,7 @@ const updateOTPDeliveryMethods = () => {
   if (optPhoneLabelInfo) {
     optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_modile_only');
   } else {
-    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
+    optPhoneLabelInfo && (optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info'));
   }
 };
 
