@@ -5,14 +5,13 @@ module Idv
     before_action :confirm_two_factor_authenticated
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
+    before_action :jurisdiction_form, only: %i[new create]
 
     def new
-      @jurisdiction_form = Idv::JurisdictionForm.new
       analytics.track_event(Analytics::IDV_JURISDICTION_VISIT)
     end
 
     def create
-      @jurisdiction_form = Idv::JurisdictionForm.new
       result = @jurisdiction_form.submit(jurisdiction_params)
       analytics.track_event(Analytics::IDV_JURISDICTION_FORM, result.to_h)
       user_session[:jurisdiction] = @jurisdiction_form.state
@@ -33,6 +32,12 @@ module Idv
 
     def jurisdiction_params
       params.require(:jurisdiction).permit(*Idv::JurisdictionForm::ATTRIBUTES)
+    end
+
+    private
+
+    def jurisdiction_form
+      @jurisdiction_form ||= Idv::JurisdictionForm.new
     end
   end
 end
