@@ -79,4 +79,17 @@ feature 'Internationalization' do
       expect(page).to have_content t('headings.sign_in_without_sp', locale: 'es')
     end
   end
+
+  context 'visit homepage with host parameter' do
+    it 'does not include the host parameter in the language link URLs' do
+      visit '/fr?host=test.com'
+
+      %w[en es fr].each do |locale|
+        expect(page).to_not have_link(
+          t("i18n.locale.#{locale}"),
+          href: "http://test.com/#{locale}"
+        )
+      end
+    end
+  end
 end

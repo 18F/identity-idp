@@ -16,7 +16,8 @@ es:
         invalid_aud: Solicitud de audiencia no válida, esperada %{url}
         invalid_authentication: El cliente debe autenticarse a través de PKCE o private_key_jwt,
           faltando code_challenge o client_assertion
-        invalid_code: código inválido
+        invalid_code: no es válido porque ha caducado o no coincide con ningún usuario.
+          Consulte nuestra documentación en https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier no coincide con code_challenge
     user_info:
       errors:

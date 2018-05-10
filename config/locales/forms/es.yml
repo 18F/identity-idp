@@ -17,7 +17,7 @@ es:
       show_hdr: Crear una contraseña segura
     messages:
       current_address: Debería poder recibir correo en esta dirección.
-      remember_device: NOT TRANSLATED YET
+      remember_device: Recuerde este navegador por %{duration} días
     passwords:
       edit:
         buttons:

@@ -24,7 +24,7 @@ module Verify
       analytics.track_event(Analytics::IDV_BASIC_INFO_SUBMITTED_FORM, result.to_h)
 
       if result.success?
-        submit_idv_job
+        Idv::Job.submit(idv_session, %i[resolution state_id])
         redirect_to verify_session_result_url
       else
         process_failure
@@ -49,12 +49,6 @@ module Verify
     end
 
     private
-
-    def submit_idv_job
-      Idv::SubmitIdvJob.new(
-        idv_session: idv_session, vendor_params: idv_session.vendor_params
-      ).submit_profile_job
-    end
 
     def confirm_step_needed
       redirect_to verify_address_url if idv_session.profile_confirmation == true
@@ -107,6 +101,7 @@ module Verify
 
     def initialize_idv_session
       idv_session.params = profile_params.to_h
+      idv_session.params[:state_id_jurisdiction] = profile_params[:state]
       idv_session.applicant = idv_session.vendor_params
     end
 

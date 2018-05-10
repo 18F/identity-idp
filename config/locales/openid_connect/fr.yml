@@ -16,7 +16,9 @@ fr:
         invalid_aud: Affirmation liée à l'auditoire non valide, attendu %{url}
         invalid_authentication: Le client doit s'authentifier par PKCE ou private_key_jwt,
           code_challenge ou client_assertion manquant
-        invalid_code: code non valide
+        invalid_code: est non valide soit parce qu'il est périmé, soit parce qu'il
+          ne correspond à aucun utilisateur. Veuillez consulter notre documentation
+          à https://developers.login.gov/oidc/#token
         invalid_code_verifier: code_verifier ne correspondait pas à code_challenge
     user_info:
       errors:

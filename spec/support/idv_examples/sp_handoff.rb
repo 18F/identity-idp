@@ -3,8 +3,6 @@ shared_examples 'sp handoff after identity verification' do |sp|
   include IdvHelper
 
   before do
-    allow(Figaro.env).to receive(:enable_agency_based_uuids).and_return('true')
-    allow(Figaro.env).to receive(:agencies_with_agency_based_uuids).and_return('1,2,3')
     allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
   end
 

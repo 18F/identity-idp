@@ -19,7 +19,7 @@ describe SamlIdpController do
 
     it 'tracks the event when idp-initiated' do
       stub_analytics
-      result = { sp_initiated: false, oidc: false }
+      result = { sp_initiated: false, oidc: false, saml_request_valid: false }
 
       expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
 
@@ -29,7 +29,16 @@ describe SamlIdpController do
     it 'tracks the event when sp-initiated' do
       allow(controller).to receive(:saml_request).and_return(FakeSamlRequest.new)
       stub_analytics
-      result = { sp_initiated: true, oidc: false }
+      result = { sp_initiated: true, oidc: false, saml_request_valid: true }
+
+      expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
+
+      delete :logout, params: { SAMLRequest: 'foo' }
+    end
+
+    it 'tracks the event when sp-initiated and the saml request is not valid' do
+      stub_analytics
+      result = { sp_initiated: true, oidc: false, saml_request_valid: false }
 
       expect(@analytics).to receive(:track_event).with(Analytics::LOGOUT_INITIATED, result)
 
@@ -38,6 +47,16 @@ describe SamlIdpController do
   end
 
   describe 'POST /api/saml/logout' do
+    context 'when there is an invalid SAML packet' do
+      let(:user) { create(:user, :signed_up) }
+
+      it 'responds with "400 Bad Request"' do
+        sign_in user
+
+        post :logout, params: { SAMLRequest: 'foo' }
+        expect(response.status).to eq(400)
+      end
+    end
     context 'when SAML response is not successful' do
       let(:user) { create(:user, :signed_up) }
 
