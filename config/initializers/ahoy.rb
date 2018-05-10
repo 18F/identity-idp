@@ -21,7 +21,11 @@ module Ahoy
     def exclude?
       return if FeatureManagement.enable_load_testing_mode?
       return if FeatureManagement.use_dashboard_service_providers?
-      super
+      # Ahoy visitor_token and visit_token are read from request headers
+      # and cookies, and pentesters often send cURL requests with
+      # bogus token values. We want to exclude events where tokens are
+      # invalid UUIDs.
+      super || invalid_uuid?(ahoy.visitor_token) || invalid_uuid?(ahoy.visit_token)
     end
 
     protected
@@ -40,6 +44,16 @@ module Ahoy
 
     def event_logger
       @event_logger ||= ActiveSupport::Logger.new(Rails.root.join('log', 'events.log'))
+    end
+
+    def invalid_uuid?(token)
+      # The match? method does not exist for the Regexp class in Ruby < 2.4
+      # Here, it comes from Active Support. Once we upgrade to Ruby 2.5,
+      # we probably want to ignore the Rails definition and use Ruby's.
+      # To do that, we'll need to set `config.active_support.bare = true`,
+      # and then only require the extensions we use.
+      uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
+      !uuid_regex.match?(token)
     end
   end
 end
