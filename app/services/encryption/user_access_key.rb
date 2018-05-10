@@ -1,3 +1,13 @@
+# UserAccessKey outputs various key hashing related to NIST encryption.
+#
+# Generate and store a 128-bit salt S.
+# Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
+# Generate random R.
+# D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) xor Z1
+# E = hash( Z2 + R )
+# F = hash(E)
+# Store F (User.encrypted_password) and D (User.encryption_key) in db
+#
 module Encryption
   class UserAccessKey
     attr_reader :cost, :salt, :z1, :z2, :random_r, :masked_ciphertext, :cek
