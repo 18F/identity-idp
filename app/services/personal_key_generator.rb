@@ -6,7 +6,6 @@ class PersonalKeyGenerator
   def initialize(user, length: 4)
     @user = user
     @length = length
-    @key_maker = EncryptedKeyMaker.new
   end
 
   def create
@@ -22,7 +21,7 @@ class PersonalKeyGenerator
     @user_access_key = make_user_access_key(normalize(plaintext_code))
     encryption_key, encrypted_code = user.personal_key.split(Pii::Encryptor::DELIMITER)
     begin
-      key_maker.unlock(user_access_key, encryption_key)
+      user_access_key.unlock(encryption_key)
     rescue Pii::EncryptionError => _err
       return false
     end
@@ -41,7 +40,7 @@ class PersonalKeyGenerator
 
   private
 
-  attr_reader :user, :key_maker
+  attr_reader :user
 
   def encode_code(code:, length:, split:)
     decoded = Base32::Crockford.decode(code)
@@ -49,11 +48,15 @@ class PersonalKeyGenerator
   end
 
   def make_user_access_key(code)
-    UserAccessKey.new(password: code, salt: user.recovery_salt, cost: user.recovery_cost)
+    Encryption::UserAccessKey.new(
+      password: code,
+      salt: user.recovery_salt,
+      cost: user.recovery_cost
+    )
   end
 
   def hashed_code
-    key_maker.make(user_access_key)
+    user_access_key.build
     [
       user_access_key.encryption_key,
       user_access_key.encrypted_password,

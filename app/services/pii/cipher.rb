@@ -16,10 +16,6 @@ module Pii
       decipher(payload)
     end
 
-    def self.random_key
-      SecureRandom.random_bytes(32)
-    end
-
     private
 
     attr_accessor :cipher

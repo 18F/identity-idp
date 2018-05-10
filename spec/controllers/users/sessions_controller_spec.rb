@@ -226,16 +226,24 @@ describe Users::SessionsController, devise: true do
       it 'hashes and unlocks password once, unlocks attribute access key once' do
         # Memoize encrypted attribute key to keep UserAccessKey#new calls from
         # exceeding expected call count
-        EncryptedAttribute.new_user_access_key
+        attribute_access_key = EncryptedAttribute.new_user_access_key
 
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
-        encrypted_key_maker = EncryptedKeyMaker.new
-        allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
 
-        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
-        expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
+        user_access_key = Encryption::UserAccessKey.new(
+          password: user.password,
+          salt: user.password_salt,
+          cost: user.password_cost
+        )
+        expect(Encryption::UserAccessKey).to receive(:new).
+          exactly(:once).
+          and_return(user_access_key)
+        expect(user_access_key).to receive(:unlock).exactly(:once).and_call_original
+        expect(EncryptedAttribute).to receive(:new_user_access_key).
+          exactly(:once).
+          and_return(attribute_access_key)
+        expect(attribute_access_key).to receive(:unlock).exactly(:once).and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
@@ -249,16 +257,24 @@ describe Users::SessionsController, devise: true do
       it 'hashes and unlocks password once, unlocks attribute access key once' do
         # Memoize encrypted attribute key to keep UserAccessKey#new calls from
         # exceeding expected call count
-        EncryptedAttribute.new_user_access_key
+        attribute_access_key = EncryptedAttribute.new_user_access_key
 
-        encrypted_key_maker = EncryptedKeyMaker.new
-        allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
-        expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
+        user_access_key = Encryption::UserAccessKey.new(
+          password: user.password,
+          salt: user.password_salt,
+          cost: user.password_cost
+        )
+        expect(Encryption::UserAccessKey).to receive(:new).
+          exactly(:once).
+          and_return(user_access_key)
+        expect(user_access_key).to receive(:unlock).exactly(:once).and_call_original
+        expect(EncryptedAttribute).to receive(:new_user_access_key).
+          exactly(:once).
+          and_return(attribute_access_key)
+        expect(attribute_access_key).to receive(:unlock).exactly(:once).and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
