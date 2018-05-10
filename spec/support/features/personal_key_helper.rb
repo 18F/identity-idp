@@ -8,8 +8,7 @@ module PersonalKeyHelper
   def personal_key_from_pii(user, pii)
     profile = create(:profile, :active, :verified, user: user)
     pii_attrs = Pii::Attributes.new_from_hash(pii)
-    user_access_key = user.unlock_user_access_key(user.password)
-    personal_key = profile.encrypt_pii(user_access_key, pii_attrs)
+    personal_key = profile.encrypt_pii(pii_attrs, user.password)
     profile.save!
 
     personal_key

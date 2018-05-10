@@ -10,7 +10,6 @@ namespace :dev do
     end
 
     loa3_user = User.find_by(email_fingerprint: fingerprint('test2@test.com'))
-    loa3_user.unlock_user_access_key(pw)
     profile = Profile.new(user: loa3_user)
     pii = Pii::Attributes.new_from_hash(
       ssn: '660-00-1234',
@@ -18,7 +17,7 @@ namespace :dev do
       first_name: 'Some',
       last_name: 'One'
     )
-    personal_key = profile.encrypt_pii(loa3_user.user_access_key, pii)
+    personal_key = profile.encrypt_pii(pii, pw)
     profile.verified_at = Time.zone.now
     profile.activate
 
@@ -60,7 +59,6 @@ namespace :dev do
 
         if ENV['VERIFIED']
           user = User.find_by(email_fingerprint: ee.fingerprint)
-          user.unlock_user_access_key(pw)
           profile = Profile.new(user: user)
           pii = Pii::Attributes.new_from_hash(
             first_name: 'Test',
@@ -68,7 +66,7 @@ namespace :dev do
             dob: '1970-05-01',
             ssn: "666-#{num_created}" # doesn't need to be legit 9 digits, just unique
           )
-          personal_key = profile.encrypt_pii(user.user_access_key, pii)
+          personal_key = profile.encrypt_pii(pii, pw)
           profile.verified_at = Time.zone.now
           profile.activate
 

@@ -18,7 +18,7 @@ describe ActiveProfileEncryptor do
 
       ActiveProfileEncryptor.new(user, user_session, password).call
 
-      expect(profile).to have_received(:encrypt_pii).with(user.user_access_key, current_pii)
+      expect(profile).to have_received(:encrypt_pii).with(current_pii, password)
       expect(profile).to have_received(:save!)
     end
   end

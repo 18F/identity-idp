@@ -305,8 +305,7 @@ describe Idv::ReviewController do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         profile = idv_session.profile
-        uak = user.unlock_user_access_key(ControllerHelper::VALID_PASSWORD)
-        pii = profile.decrypt_pii(uak)
+        pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
 
         expect(pii.zipcode.raw).to eq raw_zipcode
         expect(pii.zipcode.norm).to eq norm_zipcode
