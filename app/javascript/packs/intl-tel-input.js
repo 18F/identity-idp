@@ -7,9 +7,9 @@ const intlCode = $('#user_phone_form_international_code');
 telInput.intlTelInput({
   preferredCountries: ['us', 'ca'],
   excludeCountries: ['as', 'ai', 'ag', 'bs', 'bb', 'bm', 'io', 'vg', 'ky', 'cx', 'cc',
-  'cw', 'dm', 'do', 'gd', 'gu', 'gg', 'im', 'jm', 'je', 'ki', 'xk', 'ms', 'nr', 'nu', 'nf', 'mp',
-  'bl', 'sh', 'kn', 'lc', 'mf', 'vc', 'sx', 'sj', 'tl', 'tk', 'tt', 'tc', 'vi', 'va', 'wf', 'eh',
-  'ax' ],
+    'cw', 'dm', 'do', 'gd', 'gu', 'gg', 'im', 'jm', 'je', 'ki', 'xk', 'ms', 'nr', 'nu', 'nf', 'mp',
+    'bl', 'sh', 'kn', 'lc', 'mf', 'vc', 'sx', 'sj', 'tl', 'tk', 'tt', 'tc', 'vi', 'va', 'wf', 'eh',
+    'ax'],
 });
 
 // set it's initial value
