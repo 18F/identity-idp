@@ -72,17 +72,16 @@ const updateOTPDeliveryMethods = () => {
     phoneLabel.classList.add('btn-disabled');
     smsRadio.click();
     deliveryMethodHint.innerText = warningMessage;
-    if (optPhoneLabelInfo) {
-      optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_modile_only');
-    }
   } else {
     phoneRadio.disabled = false;
     phoneLabel.classList.remove('btn-disabled');
     deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
-    if (optPhoneLabelInfo) {
-      optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
-    }
+}
+  if (optPhoneLabelInfo) {
+    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_modile_only');
   }
+  else {
+    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');}
 };
 
 const internationalCodeFromPhone = (phone) => {
