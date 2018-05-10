@@ -1,0 +1,37 @@
+- title t('idv.titles.intro')
+
+h1.h3.my0 = t('idv.titles.expectations')
+
+.mb-40p
+  .mb-40p = t('idv.index.subheader')
+  h2.mb1.pb-tiny.h5.border-bottom.border-teal = t('idv.index.section_1.header')
+  .mb-12p.h6 = t('idv.index.section_1.subheader')
+  ul.mb0.teal-dots
+    li.mb1 = t('idv.index.section_1.bullet_1')
+    li.mb1 = t('idv.index.section_1.bullet_2')
+    li.mb1 = t('idv.index.section_1.bullet_3')
+    li.mb1 = t('idv.index.section_1.bullet_4')
+
+.mb-40p
+  h2.mb1.pb-tiny.h5.border-bottom.border-teal = t('idv.index.section_2.header')
+  .mb-12p.h6 = t('idv.index.section_2.subheader')
+  ul.mb-12p.teal-dots
+    li.mb1 = t('idv.index.section_2.bullet_1')
+    li.mb1 = t('idv.index.section_2.bullet_2')
+    li.mb1 = t('idv.index.section_2.bullet_3')
+    li.mb1 = t('idv.index.section_2.bullet_4')
+  .h6.italic = t('idv.index.section_2.footnote')
+
+.mb-40p
+  h2.mb1.pb-tiny.h5.border-bottom.border-teal = t('idv.index.section_3.header')
+  .mb-12p.h6 = t('idv.index.section_3.subheader')
+  ul.mb0.teal-dots
+    li.mb1 = t('idv.index.section_3.bullet_1')
+    li.mb1 = t('idv.index.section_3.bullet_2_html')
+    li.mb1 = t('idv.index.section_3.bullet_3_html')
+
+p.mb3 = t('idv.index.paragraph_1')
+p.mb3.bold = t('idv.index.prompt')
+= link_to t('idv.index.continue_link'), idv_session_path, class: 'btn btn-primary btn-wide'
+
+= render 'shared/cancel', link: idv_cancel_path

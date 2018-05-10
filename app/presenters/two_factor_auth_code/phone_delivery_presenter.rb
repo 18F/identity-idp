@@ -29,7 +29,7 @@ module TwoFactorAuthCode
       if confirmation_for_phone_change || reauthn
         account_path(locale: locale)
       elsif confirmation_for_idv
-        verify_cancel_path(locale: locale)
+        idv_cancel_path(locale: locale)
       else
         sign_out_path(locale: locale)
       end

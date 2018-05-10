@@ -153,35 +153,40 @@ Rails.application.routes.draw do
     delete '/users' => 'users#destroy', as: :destroy_user
 
     if FeatureManagement.enable_identity_verification?
-      get '/verify' => 'verify#index'
-      get '/verify/activated' => 'verify#activated'
-      get '/verify/address' => 'verify/address#index'
-      post '/verify/address' => 'verify/address#create'
-      get '/verify/cancel' => 'verify#cancel'
-      get '/verify/come_back_later' => 'verify/come_back_later#show'
-      get '/verify/confirmations' => 'verify/confirmations#show'
-      post '/verify/confirmations' => 'verify/confirmations#update'
-      get '/verify/fail' => 'verify#fail'
-      get '/verify/otp_delivery_method' => 'verify/otp_delivery_method#new'
-      put '/verify/otp_delivery_method' => 'verify/otp_delivery_method#create'
-      get '/verify/phone' => 'verify/phone#new'
-      put '/verify/phone' => 'verify/phone#create'
-      get '/verify/phone/result' => 'verify/phone#show'
-      get '/verify/review' => 'verify/review#new'
-      put '/verify/review' => 'verify/review#create'
-      get '/verify/session' => 'verify/sessions#new'
-      put '/verify/session' => 'verify/sessions#create'
-      get '/verify/session/result' => 'verify/sessions#show'
-      delete '/verify/session' => 'verify/sessions#destroy'
-      get '/verify/session/dupe' => 'verify/sessions#dupe'
-
+      scope '/verify', as: 'idv' do
+        get '/' => 'idv#index'
+        get '/activated' => 'idv#activated'
+        get '/cancel' => 'idv#cancel'
+        get '/fail' => 'idv#fail'
+      end
+      scope '/verify', module: 'idv', as: 'idv' do
+        get '/address' => 'address#index'
+        post '/address' => 'address#create'
+        get '/come_back_later' => 'come_back_later#show'
+        get '/confirmations' => 'confirmations#show'
+        post '/confirmations' => 'confirmations#update'
+        get '/otp_delivery_method' => 'otp_delivery_method#new'
+        put '/otp_delivery_method' => 'otp_delivery_method#create'
+        get '/phone' => 'phone#new'
+        put '/phone' => 'phone#create'
+        get '/phone/result' => 'phone#show'
+        get '/review' => 'review#new'
+        put '/review' => 'review#create'
+        get '/session' => 'sessions#new'
+        put '/session' => 'sessions#create'
+        get '/session/result' => 'sessions#show'
+        delete '/session' => 'sessions#destroy'
+        get '/session/dupe' => 'sessions#dupe'
+      end
     end
 
     if FeatureManagement.enable_usps_verification?
       get '/account/verify' => 'users/verify_account#index', as: :verify_account
       post '/account/verify' => 'users/verify_account#create'
-      get '/verify/usps' => 'verify/usps#index'
-      put '/verify/usps' => 'verify/usps#create'
+      scope '/verify', module: 'idv', as: 'idv' do
+        get '/usps' => 'usps#index'
+        put '/usps' => 'usps#create'
+      end
     end
 
     root to: 'users/sessions#new'

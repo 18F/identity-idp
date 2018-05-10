@@ -6,14 +6,14 @@ describe 'IdvStepConcern' do
     Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
   end
 
-  module Verify
+  module Idv
     class StepController < ApplicationController
       include IdvStepConcern
     end
   end
 
   describe '#confirm_idv_attempts_allowed' do
-    controller Verify::StepController do
+    controller Idv::StepController do
       before_action :confirm_idv_attempts_allowed
 
       def show
@@ -24,7 +24,7 @@ describe 'IdvStepConcern' do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'verify/step#show'
+        get 'show' => 'idv/step#show'
       end
     end
 
@@ -38,7 +38,7 @@ describe 'IdvStepConcern' do
       it 'redirects to hardfail page' do
         get :show
 
-        expect(response).to redirect_to verify_fail_url
+        expect(response).to redirect_to idv_fail_url
       end
     end
 
@@ -52,7 +52,7 @@ describe 'IdvStepConcern' do
       it 'redirects to hardfail page' do
         get :show
 
-        expect(response).to redirect_to verify_fail_url
+        expect(response).to redirect_to idv_fail_url
       end
     end
 
@@ -75,7 +75,7 @@ describe 'IdvStepConcern' do
   end
 
   describe '#confirm_idv_session_started' do
-    controller Verify::StepController do
+    controller Idv::StepController do
       before_action :confirm_idv_session_started
 
       def show
@@ -86,7 +86,7 @@ describe 'IdvStepConcern' do
     before(:each) do
       stub_sign_in(user)
       routes.draw do
-        get 'show' => 'verify/step#show'
+        get 'show' => 'idv/step#show'
       end
     end
 
@@ -98,7 +98,7 @@ describe 'IdvStepConcern' do
       it 'redirects to idv session url' do
         get :show
 
-        expect(response).to redirect_to(verify_session_url)
+        expect(response).to redirect_to(idv_session_url)
       end
     end
 
@@ -117,7 +117,7 @@ describe 'IdvStepConcern' do
   end
 
   describe '#confirm_idv_needed' do
-    controller Verify::StepController do
+    controller Idv::StepController do
       before_action :confirm_idv_needed
 
       def show
@@ -128,7 +128,7 @@ describe 'IdvStepConcern' do
     before(:each) do
       sign_in(user)
       routes.draw do
-        get 'show' => 'verify/step#show'
+        get 'show' => 'idv/step#show'
       end
     end
 
@@ -143,7 +143,7 @@ describe 'IdvStepConcern' do
       it 'redirects to activated page' do
         get :show
 
-        expect(response).to redirect_to verify_activated_url
+        expect(response).to redirect_to idv_activated_url
       end
     end
 
@@ -158,7 +158,7 @@ describe 'IdvStepConcern' do
         get :show
 
         expect(response.body).to eq 'Hello'
-        expect(response).to_not redirect_to verify_activated_url
+        expect(response).to_not redirect_to idv_activated_url
         expect(response.status).to eq 200
       end
     end

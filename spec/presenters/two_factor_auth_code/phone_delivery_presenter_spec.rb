@@ -48,7 +48,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
 
     it 'returns the verification cancel path during identity verification' do
       data[:confirmation_for_idv] = true
-      expect(presenter.cancel_link).to eq verify_cancel_path
+      expect(presenter.cancel_link).to eq idv_cancel_path
     end
   end
 

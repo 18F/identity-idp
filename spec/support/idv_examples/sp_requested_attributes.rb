@@ -15,7 +15,7 @@ shared_examples 'sp requesting attributes' do |sp|
       sign_in_user(user)
       click_submit_default
 
-      expect(current_path).to eq verify_path
+      expect(current_path).to eq idv_path
 
       click_idv_begin
       complete_idv_profile_ok(user)

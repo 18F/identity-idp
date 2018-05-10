@@ -9,10 +9,10 @@ feature 'idv profile step', :idv_job do
       complete_idv_steps_before_profile_step
 
       # Try to skip ahead to address step
-      visit verify_address_path
+      visit idv_address_path
 
       # Get redirected to the profile step
-      expect(page).to have_current_path(verify_session_path)
+      expect(page).to have_current_path(idv_session_path)
 
       # Complete the idv form
       fill_out_idv_form_ok
@@ -20,14 +20,14 @@ feature 'idv profile step', :idv_job do
 
       # Expect to be on the address step
       expect(page).to have_content(t('idv.titles.select_verification'))
-      expect(page).to have_current_path(verify_address_path)
+      expect(page).to have_current_path(idv_address_path)
 
       # Attempt to go back to profile step
-      visit verify_session_path
+      visit idv_session_path
 
       # Get redirected to the address step
       expect(page).to have_content(t('idv.titles.select_verification'))
-      expect(page).to have_current_path(verify_address_path)
+      expect(page).to have_current_path(idv_address_path)
     end
   end
 
