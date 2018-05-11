@@ -35,12 +35,11 @@ class Profile < ApplicationRecord
   end
 
   def recover_pii(personal_key)
-    rc_user_access_key = UserAccessKey.new(
+    rc_user_access_key = Encryption::UserAccessKey.new(
       password: personal_key,
       salt: user.recovery_salt,
       cost: user.recovery_cost
     )
-    EncryptedKeyMaker.new.make(rc_user_access_key)
     Pii::Attributes.new_from_encrypted(encrypted_pii_recovery, rc_user_access_key)
   end
 

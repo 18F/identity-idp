@@ -1,9 +1,5 @@
 require 'rails_helper'
 
-def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
-  TwoFactorAuthCode::PivCacAuthenticationPresenter.new(data: arguments, view: view)
-end
-
 describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TagHelper
@@ -58,5 +54,9 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
         expect(presenter.cancel_link).to eq sign_out_path(locale: locale)
       end
     end
+  end
+
+  def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
+    TwoFactorAuthCode::PivCacAuthenticationPresenter.new(data: arguments, view: view)
   end
 end
