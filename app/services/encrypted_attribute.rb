@@ -1,4 +1,6 @@
 class EncryptedAttribute
+  extend Forwardable
+
   attr_reader :encrypted, :decrypted
 
   def self.new_from_decrypted(decrypted)
@@ -15,9 +17,7 @@ class EncryptedAttribute
     Pii::Fingerprinter.fingerprint(decrypted)
   end
 
-  def stale?
-    encryptor.stale?
-  end
+  def_delegators :encryptor, :stale?
 
   private
 
