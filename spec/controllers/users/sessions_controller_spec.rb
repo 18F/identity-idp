@@ -223,27 +223,11 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'LOA1 user' do
-      it 'hashes and unlocks password once, unlocks attribute access key once' do
-        # Memoize encrypted attribute key to keep UserAccessKey#new calls from
-        # exceeding expected call count
-        attribute_access_key = EncryptedAttribute.new_user_access_key
-
-        allow(FeatureManagement).to receive(:use_kms?).and_return(false)
+      it 'computes only one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        user_access_key = Encryption::UserAccessKey.new(
-          password: user.password,
-          salt: user.password_salt,
-          cost: user.password_cost
-        )
-        expect(Encryption::UserAccessKey).to receive(:new).
-          exactly(:once).
-          and_return(user_access_key)
-        expect(user_access_key).to receive(:unlock).exactly(:once).and_call_original
-        expect(EncryptedAttribute).to receive(:new_user_access_key).
-          exactly(:once).
-          and_return(attribute_access_key)
-        expect(attribute_access_key).to receive(:unlock).exactly(:once).and_call_original
+        expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
@@ -254,27 +238,11 @@ describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end
 
-      it 'hashes and unlocks password once, unlocks attribute access key once' do
-        # Memoize encrypted attribute key to keep UserAccessKey#new calls from
-        # exceeding expected call count
-        attribute_access_key = EncryptedAttribute.new_user_access_key
-
+      it 'computes only one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        user_access_key = Encryption::UserAccessKey.new(
-          password: user.password,
-          salt: user.password_salt,
-          cost: user.password_cost
-        )
-        expect(Encryption::UserAccessKey).to receive(:new).
-          exactly(:once).
-          and_return(user_access_key)
-        expect(user_access_key).to receive(:unlock).exactly(:once).and_call_original
-        expect(EncryptedAttribute).to receive(:new_user_access_key).
-          exactly(:once).
-          and_return(attribute_access_key)
-        expect(attribute_access_key).to receive(:unlock).exactly(:once).and_call_original
+        expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
