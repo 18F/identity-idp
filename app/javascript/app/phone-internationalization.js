@@ -55,7 +55,7 @@ const updateOTPDeliveryMethods = () => {
   const phoneRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_voice');
   const smsRadio = document.querySelector('[data-international-phone-form] .otp_delivery_preference_sms');
 
-  if (!phoneRadio || !smsRadio) {
+  if (!(phoneRadio && smsRadio)) {
     return;
   }
 
@@ -72,16 +72,16 @@ const updateOTPDeliveryMethods = () => {
     phoneLabel.classList.add('btn-disabled');
     smsRadio.click();
     deliveryMethodHint.innerText = warningMessage;
-    if (optPhoneLabelInfo) {
-      optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_mobile_only');
-    }
   } else {
     phoneRadio.disabled = false;
     phoneLabel.classList.remove('btn-disabled');
     deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
-    if (optPhoneLabelInfo) {
-      optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
-    }
+  }
+  if (optPhoneLabelInfo) {
+    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
+  }
+  if (warningMessage && optPhoneLabelInfo) {
+    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_mobile_only');
   }
 };
 
