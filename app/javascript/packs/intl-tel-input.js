@@ -6,10 +6,7 @@ const intlCode = $('#user_phone_form_international_code');
 // initialise plugin
 telInput.intlTelInput({
   preferredCountries: ['us', 'ca'],
-  excludeCountries: ['ag', 'ai', 'as', 'ax', 'bb', 'bl', 'bm', 'bs', 'cc', 'cw', 'cx', 'dm', 'do',
-    'eh', 'gd', 'gg', 'gu', 'im', 'io', 'je', 'jm', 'ki', 'kn', 'ky', 'lc', 'mf',
-    'mp', 'ms', 'nf', 'nr', 'nu', 'sh', 'sj', 'sx', 'tc', 'tk', 'tl', 'tt',
-    'va', 'vc', 'vg', 'vi', 'wf', 'xk'],
+  excludeCountries: ['io', 'ki', 'nf', 'nr', 'nu', 'sh', 'sx', 'tk', 'wf'],
 });
 
 // set its initial value
