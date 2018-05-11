@@ -75,9 +75,6 @@ const updateOTPDeliveryMethods = () => {
     phoneLabel.classList.remove('btn-disabled');
     deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
   }
-  if (optPhoneLabelInfo) {
-    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
-  }
   if (warningMessage && optPhoneLabelInfo) {
     optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_mobile_only');
   }
