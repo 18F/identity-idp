@@ -7,10 +7,11 @@ feature 'idv verify step' do
     start_idv_from_sp
     complete_idv_steps_before_verify_step
 
-    expect(page).to have_content(t('idv.titles.expectations'))
-    expect(page).to have_current_path(idv_path)
+    expect(page).to have_current_path(idv_jurisdiction_path)
+    expect(page).to have_content(t('idv.messages.jurisdiction.why'))
 
-    click_idv_begin
+    select 'Virginia', from: 'jurisdiction_state'
+    click_idv_continue
 
     expect(page).to have_content(t('idv.titles.sessions'))
     expect(page).to have_current_path(idv_session_path)

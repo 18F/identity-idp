@@ -118,7 +118,8 @@ en:
         The name, date of birth and address on your ID <strong>must</strong> match
         the information provided above.
       jurisdiction:
-        why: To verify your identity, we'll need information from your state-issued ID
+        why: To verify your identity, we'll need information from your state-issued
+          ID
         where: Where was your driver's license, driver's permit, or state ID issued?
         no_id: I don't have a state-issued ID
       loading: Verifying your identity
@@ -230,4 +231,5 @@ en:
         phone: Get a code by telephone
         review: Enter your login.gov password
       sessions: Verify your identity
-      unsupported_jurisdiction: We are unable to verify identities using IDs issued from %{state}
+      unsupported_jurisdiction: We are unable to verify identities using IDs issued
+        from %{state}

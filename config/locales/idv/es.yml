@@ -116,8 +116,10 @@ es:
         de conducir válidos. El nombre, la fecha de nacimiento y la dirección en su
         ID <strong>deben coincidir</ strong> la información proporcionada arriba.
       jurisdiction:
-        why: Para verificar su identidad, necesitaremos información de su identificación emitida por el estado
-        where: ¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación del estado?
+        why: Para verificar su identidad, necesitaremos información de su identificación
+          emitida por el estado
+        where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
+          del estado?"
         no_id: No tengo una identificación emitida por el estado
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
@@ -222,7 +224,8 @@ es:
       mail:
         resend: "¿Desea otra carta?"
         verify: "¿Desea una carta?"
-      no_id: No podemos verificar su identidad sin una identificación emitida por el estado
+      no_id: No podemos verificar su identidad sin una identificación emitida por
+        el estado
       otp_delivery_method: NOT TRANSLATED YET
       phone: Número de teléfono del registro
       review: Revise y envíe
@@ -231,4 +234,5 @@ es:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
       sessions: Verifica tu identidad
-      unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos desde %{state}
+      unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos
+        desde %{state}

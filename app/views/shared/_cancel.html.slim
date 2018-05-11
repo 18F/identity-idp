@@ -10,4 +10,4 @@
       idv: user_verifying_identity?,
       user_signing_up: user_signing_up?
   - else
-    = link_to cancel_link_text, cancel, class: 'h5'
+    = link_to cancel_link_text, link || decorated_session&.sp_return_url || profile_path, class: 'h5'

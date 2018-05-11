@@ -21,7 +21,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       click_link t('forms.buttons.back')
 
-      expect(current_url).to eq(idv_url)
+      expect(current_url).to eq(idv_jurisdiction_url)
     end
   end
 
@@ -54,7 +54,7 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       click_link t('forms.buttons.back')
 
-      expect(current_path).to eq(idv_path)
+      expect(current_path).to eq(idv_jurisdiction_path)
     end
   end
 end

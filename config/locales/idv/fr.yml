@@ -123,8 +123,10 @@ fr:
         conduire valide. Le nom, la date de naissance et l'adresse de votre ID <strong>doivent</strong>
         correspondent les informations fournies ci-dessus.
       jurisdiction:
-        why: Pour vérifier votre identité, nous aurons besoin d'informations provenant de votre carte d'identité officielle
-        where: Où a été délivré votre permis de conduire, votre permis de conduire ou votre carte d'identité?
+        why: Pour vérifier votre identité, nous aurons besoin d'informations provenant
+          de votre carte d'identité officielle
+        where: Où a été délivré votre permis de conduire, votre permis de conduire
+          ou votre carte d'identité?
         no_id: Je n'ai pas de carte d'identité officielle
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
@@ -235,7 +237,8 @@ fr:
       mail:
         resend: Vous voulez une autre lettre?
         verify: Vous voulez une lettre?
-      no_id: Nous ne sommes pas en mesure de vérifier votre identité sans une pièce d'identité officielle
+      no_id: Nous ne sommes pas en mesure de vérifier votre identité sans une pièce
+        d'identité officielle
       otp_delivery_method: NOT TRANSLATED YET
       phone: Numéro de téléphone enregistré
       review: Réviser et soumettre
@@ -244,4 +247,5 @@ fr:
         phone: Obtenez un code par téléphone
         review: Encryptez vos données personnelles en entrant votre mot de passe
       sessions: Vérifier votre identité
-      unsupported_jurisdiction: Nous ne sommes pas en mesure de vérifier les identités à l'aide d'identifiants provenant de %{state}
+      unsupported_jurisdiction: Nous ne sommes pas en mesure de vérifier les identités
+        à l'aide d'identifiants provenant de %{state}

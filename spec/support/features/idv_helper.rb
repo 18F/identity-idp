@@ -51,6 +51,11 @@ module IdvHelper
     fill_in 'profile_prev_zipcode', with: '00000'
   end
 
+  def fill_out_idv_jurisdiction_ok
+    select 'Washington', from: 'jurisdiction_state'
+    expect(page).to have_no_content t('idv.errors.unsupported_jurisdiction')
+  end
+
   def fill_out_idv_state_fail
     select 'Alabama', from: 'profile_state'
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')

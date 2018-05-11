@@ -15,9 +15,13 @@ shared_examples 'sp handoff after identity verification' do |sp|
       visit_idp_from_sp_with_loa3(sp)
       register_user(email)
 
-      expect(current_path).to eq idv_path
+      expect(current_path).to eq idv_jurisdiction_path
 
-      click_idv_begin
+      fill_out_idv_jurisdiction_ok
+      click_idv_continue
+
+      expect(current_path).to eq idv_session_path
+
       complete_idv_profile_ok(user)
       click_acknowledge_personal_key
 
@@ -44,9 +48,10 @@ shared_examples 'sp handoff after identity verification' do |sp|
       sign_in_user(user)
       click_submit_default
 
-      expect(current_path).to eq idv_path
+      expect(current_path).to eq idv_jurisdiction_path
 
-      click_idv_begin
+      fill_out_idv_jurisdiction_ok
+      click_idv_continue
       complete_idv_profile_ok(user)
       click_acknowledge_personal_key
 
@@ -98,7 +103,8 @@ shared_examples 'sp handoff after identity verification' do |sp|
       click_link t('links.sign_in')
       sign_in_user(user)
       click_submit_default
-      click_idv_begin
+      fill_out_idv_jurisdiction_ok
+      click_idv_continue
       complete_idv_profile_ok(user)
       click_acknowledge_personal_key
       click_on I18n.t('forms.buttons.continue')
