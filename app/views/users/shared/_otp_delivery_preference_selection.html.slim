@@ -1,6 +1,8 @@
 .mb3
   fieldset.m0.p0.border-none
     legend.mb1.h4.serif.bold = t('devise.two_factor_authentication.otp_delivery_preference.title')
+    p#otp_delivery_preference_instruction.mt0.mb2
+      = t('devise.two_factor_authentication.otp_delivery_preference.instruction')
     label.btn-border.col-12.sm-col-5.sm-mr2.mb2.sm-mb0
       .radio
         = radio_button_tag 'user_phone_form[otp_delivery_preference]', :sms, true,
@@ -13,7 +15,5 @@
           class: :otp_delivery_preference_voice
         span.indicator
         = t('devise.two_factor_authentication.otp_delivery_preference.voice')
-    p#otp_delivery_preference_instruction.mt1.mb0
-      = t('devise.two_factor_authentication.otp_delivery_preference.instruction')
-    p.mb0
+    p.mb0.mt1
       = link_to t('links.two_factor_authentication.app_option'), authenticator_setup_path
