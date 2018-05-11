@@ -18,10 +18,11 @@ module Idv
 
       if result.success?
         redirect_to idv_session_url
-      elsif @jurisdiction_form.unsupported_jurisdiction?
-        redirect_to idv_jurisdiction_fail_url(:unsupported_jurisdiction)
       else
-        render :new
+        # The only invalid result here is due to an unsupported jurisdiction
+        # and if it is missing from the params, it will be stopped by
+        # `strong_params`.
+        redirect_to idv_jurisdiction_fail_url(:unsupported_jurisdiction)
       end
     end
 
