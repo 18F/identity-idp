@@ -73,7 +73,7 @@ const updateOTPDeliveryMethods = () => {
     smsRadio.click();
     deliveryMethodHint.innerText = warningMessage;
     if (optPhoneLabelInfo) {
-      optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_modile_only');
+      optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info_mobile_only');
     }
   } else {
     phoneRadio.disabled = false;

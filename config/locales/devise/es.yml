@@ -125,7 +125,7 @@ es:
       otp_phone_label: Número de teléfono
       otp_phone_label_info: El móvil o teléfono fijo. Si tiene un teléfono fijo, seleccione
         "Llamada telefónica" en la siguiente pregunta.
-      otp_phone_label_info_modile_only: NOT TRANSLATED YET
+      otp_phone_label_info_mobile_only: NOT TRANSLATED YET
       otp_setup_html: "<strong>Cada vez que inicie una sesión,</ strong> le enviaremos
         un código de seguridad de sólo un uso por mensaje de texto o llamada telefónica.
         Esto ayuda a proteger su cuenta."

@@ -133,7 +133,7 @@ fr:
       otp_phone_label: Numéro de téléphone
       otp_phone_label_info: Cellulaire ou ligne fixe. Si vous entrez une ligne fixe,
         veuillez choisir l'option "Appel téléphonique" ci-dessous.
-      otp_phone_label_info_modile_only: NOT TRANSLATED YET
+      otp_phone_label_info_mobile_only: NOT TRANSLATED YET
       otp_setup_html: "<strong>Chaque fois que vous vous connecterez,</strong> nous
         vous enverrons un code de sécurité à utilisation unique par message texte
         ou par appel téléphonique. Cela aide à protéger votre compte."
