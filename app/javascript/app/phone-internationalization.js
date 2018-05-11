@@ -57,9 +57,9 @@ const updateOTPDeliveryMethods = () => {
   const phoneInput = document.querySelector('.phone');
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
   const optPhoneLabelInfo = document.querySelector('#otp_phone_label_info');
-  const warningMessage = unsupportedPhoneOTPDeliveryWarningMessage(phone);
-  const phoneLabel = phoneRadio.parentNode.parentNode;
   const phone = phoneInput.value;
+  const phoneLabel = phoneRadio.parentNode.parentNode;
+  const warningMessage = unsupportedPhoneOTPDeliveryWarningMessage(phone);
 
   if (!(phoneRadio && smsRadio)) {
     return;
@@ -73,6 +73,7 @@ const updateOTPDeliveryMethods = () => {
   } else {
     phoneRadio.disabled = false;
     phoneLabel.classList.remove('btn-disabled');
+    deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
   }
   if (optPhoneLabelInfo) {
     optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
