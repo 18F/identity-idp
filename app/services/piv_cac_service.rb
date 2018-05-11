@@ -43,7 +43,7 @@ module PivCacService
     end
 
     def decode_token_response(res)
-      return { 'error' => 'token.bad' } unless res.code == '200'
+      return { 'error' => 'token.bad' } unless res.code.to_i == 200
       result = res.body
       JSON.parse(result)
     rescue JSON::JSONError

@@ -1,10 +1,10 @@
-- title t('titles.piv_cac_setup.new')
+- title @presenter.title
 
-h1.h3.my0 = t('headings.piv_cac_setup.new')
-p.mt-tiny.mb3 = t('forms.piv_cac_setup.piv_cac_intro_html')
+h1.h3.my0 = @presenter.heading
+p.mt-tiny.mb3 = @presenter.description
 
-= link_to t('forms.piv_cac_setup.submit'),
-              PivCacService.piv_cac_service_link(@piv_cac_nonce),
+= link_to @presenter.piv_cac_capture_text,
+              @presenter.piv_cac_service_link,
               class: 'btn btn-primary'
 = render 'shared/cancel', link: account_path
 

@@ -1,6 +1,7 @@
 module TwoFactorAuthentication
   class PivCacVerificationController < ApplicationController
     include TwoFactorAuthenticatable
+    include PivCacConcern
 
     before_action :confirm_piv_cac_enabled
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
@@ -9,8 +10,7 @@ module TwoFactorAuthentication
       if params[:token]
         process_token
       else
-        @piv_cac_nonce = SecureRandom.base64(10)
-        user_session[:piv_cac_nonce] = @piv_cac_nonce
+        create_piv_cac_nonce
         @presenter = presenter_for_two_factor_authentication_method
       end
     end
@@ -21,8 +21,11 @@ module TwoFactorAuthentication
       result = piv_cac_verfication_form.submit
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
       if result.success?
+        clear_piv_cac_nonce
         handle_valid_piv_cac
       else
+        # create new nonce for retry
+        create_piv_cac_nonce
         handle_invalid_otp(type: 'piv_cac')
       end
     end
@@ -39,6 +42,8 @@ module TwoFactorAuthentication
         two_factor_authentication_method: two_factor_authentication_method,
         user_email: current_user.email,
         remember_device_available: false,
+        totp_enabled: current_user.totp_enabled?,
+        piv_cac_nonce: piv_cac_nonce,
       }.merge(generic_data)
     end
 
@@ -46,7 +51,7 @@ module TwoFactorAuthentication
       @piv_cac_verification_form ||= UserPivCacVerificationForm.new(
         user: current_user,
         token: params[:token],
-        nonce: user_session[:piv_cac_nonce]
+        nonce: piv_cac_nonce
       )
     end
 
