@@ -19,7 +19,6 @@ module Encryption
       end
 
       def stale?
-        return false if stale.nil?
         stale
       end
 
@@ -40,7 +39,7 @@ module Encryption
         user_access_key = self.class.load_or_init_user_access_key(key: key, cost: cost)
         begin
           result = UserAccessKeyEncryptor.new(user_access_key).decrypt(ciphertext)
-          self.stale = true if key != current_key
+          self.stale = key != current_key
           result
         rescue Pii::EncryptionError
           nil
