@@ -177,4 +177,24 @@ feature 'Sign Up' do
 
     expect(page).to have_current_path root_path
   end
+
+  context 'CSP whitelists recaptcha for style-src' do
+    scenario 'recaptcha is disabled' do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
+
+      visit sign_up_email_path
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('style-src \'self\''))
+    end
+
+    scenario 'recaptcha is enabled' do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
+
+      visit sign_up_email_path
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('style-src \'self\' \'unsafe-inline\''))
+    end
+  end
 end

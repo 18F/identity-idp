@@ -1,4 +1,6 @@
 - if FeatureManagement.recaptcha_enabled?(session, true)
+  - SecureHeaders.append_content_security_policy_directives(\
+    request, style_src: ['\'unsafe-inline\''])
   script [nonce="#{content_security_policy_script_nonce}"
     src='https://www.google.com/recaptcha/api.js']
 
