@@ -68,8 +68,8 @@ LongParameterList:
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
-    - VerifyController
-    - Verify::Base
+    - IdvController
+    - Idv::Base
     - Rack::Attack
 TooManyConstants:
   exclude:
@@ -101,7 +101,7 @@ TooManyMethods:
     - OpenidConnect::AuthorizationController
     - Idv::Session
     - User
-    - Verify::SessionsController
+    - Idv::SessionsController
     - ServiceProviderSessionDecorator
     - SessionDecorator
 UncommunicativeMethodName:
@@ -184,3 +184,4 @@ UtilityFunction:
 exclude_paths:
   - db/migrate
   - spec
+  - lib/tasks/

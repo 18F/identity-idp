@@ -16,6 +16,22 @@ en:
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
     personal_key: Just in case
+    piv_cac_setup:
+      new: Use your PIV/CAC card to secure your account
+      certificate:
+        bad: PIV/CAC certificate error
+        expired: PIV/CAC certificate error
+        invalid: PIV/CAC certificate error
+        none: PIV/CAC certificate error
+        revoked: PIV/CAC certificate error
+        unverified: PIV/CAC certificate error
+      piv_cac:
+        already_associated: PIV/CAC in use by another account
+      token:
+        bad: Internal error
+        missing: Internal error
+        invalid: PIV/CAC certificate error
+    present_piv_cac: Present your PIV/CAC
     reactivate_account: Reactivate your account
     registrations:
       new: Sign up for a account

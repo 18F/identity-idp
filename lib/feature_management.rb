@@ -13,6 +13,23 @@ class FeatureManagement
     Figaro.env.telephony_disabled == 'true'
   end
 
+  def self.piv_cac_enabled?
+    Figaro.env.piv_cac_enabled == 'true'
+  end
+
+  def self.identity_pki_disabled?
+    env = Figaro.env
+    env.identity_pki_disabled == 'true' ||
+      !env.piv_cac_service_url ||
+      !env.piv_cac_verify_token_url
+  end
+
+  def self.development_and_piv_cac_entry_enabled?
+    # This controls if we try to hop over to identity-pki or just throw up
+    # a screen asking for a Subject or one of a list of error conditions.
+    Rails.env.development? && piv_cac_enabled? && identity_pki_disabled?
+  end
+
   def self.prefill_otp_codes?
     # In development, when SMS is disabled we pre-fill the correct codes so that
     # developers can log in without needing to configure SMS delivery.
@@ -70,6 +87,11 @@ class FeatureManagement
 
   def self.enable_saml_cert_rotation?
     Figaro.env.saml_secret_rotation_enabled == 'true'
+  end
+
+  def self.recaptcha_enabled?(session, reset)
+    AbTest.new(:ab_test_recaptcha_enabled, Figaro.env.recaptcha_enabled_percent).
+      enabled?(session, reset)
   end
 
   def self.use_cloudhsm?

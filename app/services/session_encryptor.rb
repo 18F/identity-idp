@@ -5,7 +5,7 @@ class SessionEncryptor
 
   def duped_user_access_key
     # Reload if UserAccessKey constant has been reloaded
-    @user_access_key = reload_user_access_key unless @user_access_key.is_a? UserAccessKey
+    @user_access_key = reload_user_access_key if should_reload_user_access_key
 
     # Return a clone since encryptor.decrypt mutates this key
     @user_access_key.dup
@@ -30,6 +30,10 @@ class SessionEncryptor
 
   def reload_user_access_key
     key = Figaro.env.session_encryption_key
-    UserAccessKey.new(password: key, salt: key)
+    Encryption::UserAccessKey.new(password: key, salt: key)
+  end
+
+  def should_reload_user_access_key
+    !@user_access_key.is_a? Encryption::UserAccessKey
   end
 end

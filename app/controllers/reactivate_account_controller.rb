@@ -8,6 +8,6 @@ class ReactivateAccountController < ApplicationController
 
   def update
     reactivate_account_session.suspend
-    redirect_to verify_url
+    redirect_to idv_url
   end
 end

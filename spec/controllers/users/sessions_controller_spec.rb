@@ -223,19 +223,11 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'LOA1 user' do
-      it 'hashes and unlocks password once, unlocks attribute access key once' do
-        # Memoize encrypted attribute key to keep UserAccessKey#new calls from
-        # exceeding expected call count
-        EncryptedAttribute.new_user_access_key
-
-        allow(FeatureManagement).to receive(:use_kms?).and_return(false)
-        encrypted_key_maker = EncryptedKeyMaker.new
-        allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
+      it 'computes only one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
+        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
-        expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
+        expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
@@ -246,19 +238,11 @@ describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end
 
-      it 'hashes and unlocks password once, unlocks attribute access key once' do
-        # Memoize encrypted attribute key to keep UserAccessKey#new calls from
-        # exceeding expected call count
-        EncryptedAttribute.new_user_access_key
-
-        encrypted_key_maker = EncryptedKeyMaker.new
-        allow(EncryptedKeyMaker).to receive(:new).and_return(encrypted_key_maker)
+      it 'computes only one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        expect(UserAccessKey).to receive(:new).exactly(:once).and_call_original
-        expect(encrypted_key_maker).to receive(:unlock).exactly(:twice).and_call_original
-        expect(EncryptedAttribute).to receive(:new_user_access_key).exactly(:once).and_call_original
+        expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end

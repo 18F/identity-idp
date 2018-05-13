@@ -12,4 +12,6 @@ en:
     password_changed: Password changed
     phone_changed: Phone number changed
     phone_confirmed: Phone confirmed
+    piv_cac_disabled: PIV/CAC card unassociated
+    piv_cac_enabled: PIV/CAC card associated
     usps_mail_sent: Letter sent

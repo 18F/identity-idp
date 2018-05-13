@@ -8,7 +8,7 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
     scenario 'home page' do
       sign_in_and_2fa_user
 
-      visit verify_path
+      visit idv_path
 
       expect(page).to be_accessible
     end
@@ -16,47 +16,47 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
     scenario 'basic info' do
       sign_in_and_2fa_user
 
-      visit verify_session_path
+      visit idv_session_path
 
-      expect(current_path).to eq verify_session_path
+      expect(current_path).to eq idv_session_path
       expect(page).to be_accessible
     end
 
     scenario 'cancel idv' do
       sign_in_and_2fa_user
 
-      visit verify_cancel_path
+      visit idv_cancel_path
 
-      expect(current_path).to eq verify_cancel_path
+      expect(current_path).to eq idv_cancel_path
       expect(page).to be_accessible
     end
 
     scenario 'phone info' do
       sign_in_and_2fa_user
-      visit verify_session_path
+      visit idv_session_path
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       click_idv_address_choose_phone
 
-      expect(current_path).to eq verify_phone_path
+      expect(current_path).to eq idv_phone_path
       expect(page).to be_accessible
     end
 
     scenario 'review page' do
       user = sign_in_and_2fa_user
-      visit verify_session_path
+      visit idv_session_path
       fill_out_idv_form_ok
       click_button t('forms.buttons.continue')
       click_idv_address_choose_phone
       click_button t('forms.buttons.continue')
 
-      expect(current_path).to eq verify_review_path
+      expect(current_path).to eq idv_review_path
       expect(page).to be_accessible
     end
 
     scenario 'personal key / confirmation page' do
       user = sign_in_and_2fa_user
-      visit verify_session_path
+      visit idv_session_path
       fill_out_idv_form_ok
       click_idv_continue
       click_idv_address_choose_phone
@@ -64,7 +64,7 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       fill_in :user_password, with: Features::SessionHelper::VALID_PASSWORD
       click_continue
 
-      expect(current_path).to eq verify_confirmations_path
+      expect(current_path).to eq idv_confirmations_path
       expect(page).to be_accessible
     end
   end

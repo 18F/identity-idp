@@ -8,12 +8,11 @@ module UserAccessKeyOverrides
   attr_accessor :user_access_key
 
   def password_digest(password)
-    user_access_key = UserAccessKey.new(
+    user_access_key = Encryption::UserAccessKey.new(
       password: password,
       salt: authenticatable_salt,
       cost: password_cost
-    )
-    encrypted_key_maker.make(user_access_key)
+    ).build
     self.encryption_key ||= user_access_key.encryption_key
     self.password_cost ||= user_access_key.cost
     user_access_key.encrypted_password
@@ -31,13 +30,11 @@ module UserAccessKeyOverrides
   end
 
   def unlock_user_access_key(password)
-    self.user_access_key = UserAccessKey.new(
+    self.user_access_key = Encryption::UserAccessKey.new(
       password: password,
       salt: authenticatable_salt,
       cost: password_cost
-    )
-    encrypted_key_maker.unlock(user_access_key, encryption_key)
-    user_access_key
+    ).unlock(encryption_key)
   end
 
   def password=(new_password)
@@ -54,10 +51,6 @@ module UserAccessKeyOverrides
   end
 
   private
-
-  def encrypted_key_maker
-    @_key_maker ||= EncryptedKeyMaker.new
-  end
 
   def log_error(err)
     metadata = {

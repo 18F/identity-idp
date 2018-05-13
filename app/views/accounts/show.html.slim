@@ -45,6 +45,12 @@ h1.hide = t('titles.account')
     content: content_tag(:em, t(@view_model.totp_content)),
     action: @view_model.totp_partial
 
+  - if FeatureManagement.piv_cac_enabled?
+    = render 'account_item',
+      name: t('account.index.piv_cac_card'),
+      content: content_tag(:em, t(@view_model.piv_cac_content)),
+      action: @view_model.piv_cac_partial
+
   - @view_model.manage_personal_key_partial do
     = render 'account_item',
       name: render(@view_model.personal_key_item_partial),

@@ -24,8 +24,8 @@ shared_examples 'failed idv job' do |step|
       it 'shows a warning' do
         expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
         expect(page).to have_content t("idv.modal.#{step_locale_key}.jobfail")
-        expect(page).to have_current_path(verify_session_result_path) if step == :profile
-        expect(page).to have_current_path(verify_phone_result_path) if step == :phone
+        expect(page).to have_current_path(idv_session_result_path) if step == :profile
+        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
       end
     end
 
@@ -36,8 +36,8 @@ shared_examples 'failed idv job' do |step|
           '.modal-warning',
           text: strip_tags(t("idv.modal.#{step_locale_key}.jobfail"))
         )
-        expect(page).to have_current_path(verify_session_result_path) if step == :profile
-        expect(page).to have_current_path(verify_phone_result_path) if step == :phone
+        expect(page).to have_current_path(idv_session_result_path) if step == :profile
+        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
       end
     end
   end
@@ -63,8 +63,8 @@ shared_examples 'failed idv job' do |step|
       it 'shows a warning' do
         expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
         expect(page).to have_content t("idv.modal.#{step_locale_key}.timeout")
-        expect(page).to have_current_path(verify_session_result_path) if step == :profile
-        expect(page).to have_current_path(verify_phone_result_path) if step == :phone
+        expect(page).to have_current_path(idv_session_result_path) if step == :profile
+        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
       end
     end
 
@@ -75,8 +75,8 @@ shared_examples 'failed idv job' do |step|
           '.modal-warning',
           text: strip_tags(t("idv.modal.#{step_locale_key}.timeout"))
         )
-        expect(page).to have_current_path(verify_session_result_path) if step == :profile
-        expect(page).to have_current_path(verify_phone_result_path) if step == :phone
+        expect(page).to have_current_path(idv_session_result_path) if step == :profile
+        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
       end
     end
   end

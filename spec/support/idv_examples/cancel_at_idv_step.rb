@@ -17,11 +17,11 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('idv.titles.cancel'))
       expect(page).to have_content(t('idv.messages.cancel', app: 'login.gov'))
-      expect(current_path).to eq(verify_cancel_path)
+      expect(current_path).to eq(idv_cancel_path)
 
       click_link t('forms.buttons.back')
 
-      expect(current_url).to eq(verify_url)
+      expect(current_url).to eq(idv_url)
     end
   end
 
@@ -50,11 +50,11 @@ shared_examples 'cancel at idv step' do |step, sp|
 
       expect(page).to have_content(t('idv.titles.cancel'))
       expect(page).to have_content(t('idv.messages.cancel', app: 'login.gov'))
-      expect(current_path).to eq(verify_cancel_path)
+      expect(current_path).to eq(idv_cancel_path)
 
       click_link t('forms.buttons.back')
 
-      expect(current_path).to eq(verify_path)
+      expect(current_path).to eq(idv_path)
     end
   end
 end

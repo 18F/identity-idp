@@ -4,24 +4,8 @@ describe EncryptedAttribute do
   let(:email) { 'someone@example.com' }
   let(:fingerprint) { Pii::Fingerprinter.fingerprint(email) }
   let(:encrypted_email) do
-    encryptor = Pii::PasswordEncryptor.new
-    encryptor.encrypt(email, EncryptedAttribute.new_user_access_key)
-  end
-
-  describe '.new_user_access_key' do
-    it 'does not return the same key twice' do
-      key1 = EncryptedAttribute.new_user_access_key
-      key2 = EncryptedAttribute.new_user_access_key
-
-      expect(key1).to_not eq(key2)
-    end
-
-    it 'does not return successive keys with the same random_r value' do
-      key1 = EncryptedAttribute.new_user_access_key
-      key2 = EncryptedAttribute.new_user_access_key
-
-      expect(key1.random_r).to_not eq(key2.random_r)
-    end
+    encryptor = Encryption::Encryptors::AttributeEncryptor.new
+    encryptor.encrypt(email)
   end
 
   describe '#new' do

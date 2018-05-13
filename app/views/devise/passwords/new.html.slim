@@ -12,6 +12,7 @@ p.mt-tiny.mb0#email-description
 
   = f.input :email, required: true, input_html: { 'aria-describedby': 'email-description' }
   = f.input :request_id, as: :hidden, input_html: { value: request_id }
+  = render 'shared/recaptcha'
   = f.button :submit, t('forms.buttons.continue'), class: 'mt2'
 
 .mt2.pt1.border-top

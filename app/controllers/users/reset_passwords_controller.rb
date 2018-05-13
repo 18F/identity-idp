@@ -1,11 +1,13 @@
 module Users
   class ResetPasswordsController < Devise::PasswordsController
+    include RecaptchaConcern
+
     def new
       @password_reset_email_form = PasswordResetEmailForm.new('')
     end
 
     def create
-      @password_reset_email_form = PasswordResetEmailForm.new(email)
+      @password_reset_email_form = PasswordResetEmailForm.new(email, validate_recaptcha)
       result = @password_reset_email_form.submit
 
       analytics.track_event(Analytics::PASSWORD_RESET_EMAIL, result.to_h)

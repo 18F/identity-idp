@@ -8,7 +8,7 @@ SecureHeaders::Configuration.default do |config|
 
   default_csp_config = {
     default_src: ["'self'"],
-    child_src: ["'self'"], # CSP 2.0 only; replaces frame_src
+    child_src: ["'self'", 'www.google.com'], # CSP 2.0 only; replaces frame_src
     # frame_ancestors: %w('self'), # CSP 2.0 only; overriden by x_frame_options in some browsers
     form_action: ["'self'"], # CSP 2.0 only
     block_all_mixed_content: true, # CSP 2.0 only;
@@ -16,9 +16,10 @@ SecureHeaders::Configuration.default do |config|
       "'self'",
       '*.newrelic.com',
       '*.nr-data.net',
+      '*.google-analytics.com',
     ],
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:', '*.google-analytics.com'],
+    img_src: ["'self'", 'data:'],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [
@@ -27,6 +28,8 @@ SecureHeaders::Configuration.default do |config|
       '*.nr-data.net',
       'dap.digitalgov.gov',
       '*.google-analytics.com',
+      'www.google.com',
+      'www.gstatic.com',
     ],
     style_src: ["'self'"],
     base_uri: ["'self'"],

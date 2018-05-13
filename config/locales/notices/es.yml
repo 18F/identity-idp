@@ -14,6 +14,8 @@ es:
         link: crear una cuenta nueva
         text_html: O, %{link} utilizando un email diferente.
     password_changed: Ha cambiado su contraseña.
+    piv_cac_configured: Tarjeta PIV/CAC vinculada con éxito.
+    piv_cac_disabled: Tarjeta PIV/CAC desvinculada con éxito.
     resend_confirmation_email:
       success: Enviamos otro email de confirmación.
     send_code:

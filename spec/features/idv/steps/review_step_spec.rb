@@ -19,13 +19,13 @@ feature 'idv review step', :idv_job do
     click_idv_continue
 
     expect(page).to have_content(t('idv.errors.incorrect_password'))
-    expect(page).to have_current_path(verify_review_path)
+    expect(page).to have_current_path(idv_review_path)
 
     fill_in 'Password', with: user_password
     click_idv_continue
 
     expect(page).to have_content(t('headings.personal_key'))
-    expect(page).to have_current_path(verify_confirmations_path)
+    expect(page).to have_current_path(idv_confirmations_path)
   end
 
   context 'choosing to confirm address with phone' do

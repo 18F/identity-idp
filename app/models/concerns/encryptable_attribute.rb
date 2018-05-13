@@ -1,8 +1,6 @@
 module EncryptableAttribute
   extend ActiveSupport::Concern
 
-  attr_accessor :attribute_user_access_key
-
   module ClassMethods
     cattr_accessor :encryptable_attributes do
       []
@@ -67,12 +65,7 @@ module EncryptableAttribute
   end
 
   def build_encrypted_attribute(name, encrypted_string)
-    encrypted_attribute = EncryptedAttribute.new(
-      encrypted_string,
-      cost: attribute_cost,
-      user_access_key: attribute_user_access_key
-    )
-    self.attribute_user_access_key ||= encrypted_attribute.user_access_key
+    encrypted_attribute = EncryptedAttribute.new(encrypted_string)
     encrypted_attributes[name] = encrypted_attribute
   end
 
@@ -87,18 +80,10 @@ module EncryptableAttribute
   end
 
   def build_encrypted_attribute_from_plain(name, plain_value)
-    self.attribute_user_access_key ||= new_attribute_user_access_key
-    encrypted_attributes[name] = EncryptedAttribute.new_from_decrypted(
-      plain_value.downcase.strip,
-      attribute_user_access_key
-    )
+    encrypted_attributes[name] = EncryptedAttribute.new_from_decrypted(plain_value.downcase.strip)
   end
 
   def encrypted_attribute_name(name)
     "encrypted_#{name}".to_sym
-  end
-
-  def new_attribute_user_access_key
-    EncryptedAttribute.new_user_access_key(cost: attribute_cost)
   end
 end
