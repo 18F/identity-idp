@@ -45,3 +45,8 @@ UserAccessKey.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :build, "Custom/#{name}/build"
 end
+
+SamlIdp::SignedInfoBuilder.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encoded, "Custom/#{name}/encoded"
+end

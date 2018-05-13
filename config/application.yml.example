@@ -78,6 +78,10 @@ development:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  cloudhsm_current_saml_key_label: 'key1'
+  cloudhsm_enabled: 'false'
+  cloudhsm_pin: 'pin1'
+  cloudhsm_previous_saml_key_label: 'key2'
   dashboard_api_token: 'test_token'
   dashboard_url: 'http://localhost:3001/api/service_providers'
   database_host: ''
@@ -125,6 +129,7 @@ development:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
   password_strength_enabled: 'true'
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
   reauthn_window: '120'
@@ -173,6 +178,10 @@ production:
   aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
+  cloudhsm_current_saml_key_label: 'key1'
+  cloudhsm_enabled: 'false'
+  cloudhsm_pin: 'pin1'
+  cloudhsm_previous_saml_key_label: 'key2'
   disable_email_sending: 'false'
   dashboard_api_token:
   database_statement_timeout: '2500'
@@ -213,6 +222,7 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   reauthn_window: '120'
   redis_url: 'redis://redis.login.gov.internal:6379'
   redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
@@ -256,6 +266,10 @@ test:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  cloudhsm_current_saml_key_label: 'key1'
+  cloudhsm_enabled: 'false'
+  cloudhsm_pin: 'pin1'
+  cloudhsm_previous_saml_key_label: 'key2'
   domain_name: 'www.example.com'
   database_host: ''
   database_name: ''
@@ -300,6 +314,7 @@ test:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
   password_strength_enabled: 'false'
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
   redis_url: 'redis://localhost:6379/0'

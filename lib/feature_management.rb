@@ -71,4 +71,8 @@ class FeatureManagement
   def self.enable_saml_cert_rotation?
     Figaro.env.saml_secret_rotation_enabled == 'true'
   end
+
+  def self.use_cloudhsm?
+    Figaro.env.cloudhsm_enabled == 'true'
+  end
 end

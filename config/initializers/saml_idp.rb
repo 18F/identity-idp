@@ -1,5 +1,6 @@
 require 'service_provider'
 
+# rubocop:disable Metrics/BlockLength
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
   api_base = protocol + Figaro.env.domain_name + '/api'
@@ -7,7 +8,11 @@ SamlIdp.configure do |config|
   config.x509_certificate = OpenSSL::X509::Certificate.new(
     File.read(Rails.root.join('certs', 'saml.crt'))
   ).to_pem
-  config.secret_key = RequestKeyManager.private_key.to_pem
+  config.secret_key = if FeatureManagement.use_cloudhsm?
+                        Figaro.env.cloudhsm_previous_saml_key_label
+                      else
+                        RequestKeyManager.private_key.to_pem
+                      end
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'
@@ -24,6 +29,9 @@ SamlIdp.configure do |config|
   config.attribute_service_location = "#{api_base}/saml/attributes"
   config.single_service_post_location = "#{api_base}/saml/auth"
   config.single_logout_service_post_location = "#{api_base}/saml/logout"
+  config.cloudhsm_enabled = ::FeatureManagement.use_cloudhsm?
+  config.cloudhsm_pin = ::Figaro.env.cloudhsm_pin
+  config.pkcs11 = PKCS11.open(::Figaro.env.pkcs11_lib) if config.cloudhsm_enabled
 
   # Name ID
   config.name_id.formats =
@@ -46,3 +54,4 @@ SamlIdp.configure do |config|
     sp_config.sp_attributes.merge(fingerprint: sp.fingerprint, cert: sp.ssl_cert)
   end
 end
+# rubocop:enable Metrics/BlockLength
