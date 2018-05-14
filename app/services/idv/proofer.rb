@@ -13,11 +13,9 @@ module Idv
 
     STAGES = %i[resolution state_id address].freeze
 
+    @vendors = {}
+
     class << self
-      attr_accessor :configuration
-
-      @vendors = {}
-
       def attribute?(key)
         ATTRIBUTES.include?(key&.to_sym)
       end
@@ -31,8 +29,11 @@ module Idv
       end
 
       def configure
-        self.configuration ||= Configuration.new
         yield(configuration)
+      end
+
+      def configuration
+        @configuration ||= Configuration.new
       end
 
       class Configuration
