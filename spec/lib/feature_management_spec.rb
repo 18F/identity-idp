@@ -395,4 +395,18 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
+
+  describe '#disallow_all_web_crawlers?' do
+    it 'returns true when Figaro setting is true' do
+      allow(Figaro.env).to receive(:disallow_all_web_crawlers) { 'true' }
+
+      expect(FeatureManagement.disallow_all_web_crawlers?).to eq(true)
+    end
+
+    it 'returns false when Figaro setting is false' do
+      allow(Figaro.env).to receive(:disallow_all_web_crawlers) { 'false' }
+
+      expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
+    end
+  end
 end
