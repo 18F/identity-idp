@@ -14,7 +14,7 @@ Capybara.register_driver :headless_chrome do |app|
 end
 
 Capybara.javascript_driver = :headless_chrome
-Chromedriver.set_version '2.37'
+Chromedriver.set_version '2.38'
 
 Capybara.default_max_wait_time = 5
 Capybara::Screenshot.autosave_on_failure = false
