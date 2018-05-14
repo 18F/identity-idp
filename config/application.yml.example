@@ -71,7 +71,7 @@ development:
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
+  attribute_encryption_key_queue: '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
@@ -90,6 +90,7 @@ development:
   database_statement_timeout: '2500'
   database_timeout: '5000'
   database_username: ''
+  disallow_all_web_crawlers: 'true'
   domain_name: 'localhost:3000'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'false'
@@ -173,7 +174,7 @@ production:
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: # generate via `rake secret`
-  attribute_encryption_key_queue: # '["old-key-one", "old-key-two"]'
+  attribute_encryption_key_queue: # '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
@@ -183,6 +184,7 @@ production:
   disable_email_sending: 'false'
   dashboard_api_token:
   database_statement_timeout: '2500'
+  disallow_all_web_crawlers: 'false'
   domain_name: 'login.gov'
   enable_identity_verification: 'false'
   enable_rate_limiting: 'true'
@@ -262,7 +264,7 @@ test:
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
+  attribute_encryption_key_queue: '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
@@ -281,6 +283,7 @@ test:
   database_timeout: '5000'
   database_username: ''
   dashboard_api_token: '123ABC'
+  disallow_all_web_crawlers: 'true'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
