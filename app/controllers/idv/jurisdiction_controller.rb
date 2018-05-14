@@ -14,7 +14,7 @@ module Idv
     def create
       result = @jurisdiction_form.submit(jurisdiction_params)
       analytics.track_event(Analytics::IDV_JURISDICTION_FORM, result.to_h)
-      user_session[:jurisdiction] = @jurisdiction_form.state
+      user_session[:idv_jurisdiction] = @jurisdiction_form.state
 
       if result.success?
         redirect_to idv_session_url
@@ -27,7 +27,7 @@ module Idv
     end
 
     def show
-      @state = user_session[:jurisdiction]
+      @state = user_session[:idv_jurisdiction]
       @reason = params[:reason]
     end
 
