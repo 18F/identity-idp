@@ -8,7 +8,6 @@ module Idv
       async_result_started_at
       address_verification_mechanism
       applicant
-      normalized_applicant_params
       params
       vendor_phone_confirmation
       user_phone_confirmation
@@ -136,7 +135,6 @@ module Idv
     def profile_maker
       @_profile_maker ||= Idv::ProfileMaker.new(
         applicant: applicant_params,
-        normalized_applicant: normalized_applicant_params,
         phone_confirmed: vendor_phone_confirmation || false,
         user: current_user
       )

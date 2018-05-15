@@ -66,7 +66,7 @@ class AttributeAsserter
   end
 
   def attribute_getter_function_ascii(attr)
-    ->(_principal) { decrypted_pii[attr].ascii }
+    ->(_principal) { decrypted_pii[attr].to_ascii }
   end
 
   def add_email(attrs)

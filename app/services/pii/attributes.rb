@@ -12,7 +12,9 @@ module Pii
   ) do
     def self.new_from_hash(hash)
       attrs = new
-      hash.each { |key, val| attrs[key] = val }
+      hash.
+        select { |key| members.include?(key&.to_sym) }.
+        each { |key, val| attrs[key] = val }
       attrs
     end
 
@@ -44,16 +46,6 @@ module Pii
 
     def ==(other)
       eql?(other)
-    end
-
-    def []=(key, value)
-      if value.is_a?(Hash)
-        super(key, Pii::Attribute.new(value))
-      elsif value.is_a?(Pii::Attribute)
-        super(key, value)
-      else
-        super(key, Pii::Attribute.new(raw: value))
-      end
     end
 
     private

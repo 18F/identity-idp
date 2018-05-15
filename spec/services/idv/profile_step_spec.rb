@@ -43,7 +43,7 @@ describe Idv::ProfileStep do
           success: true,
           errors: {},
           messages: messages,
-          normalized_applicant: { first_name: 'Some' }
+          applicant: { first_name: 'Some' }
         )
       )
 

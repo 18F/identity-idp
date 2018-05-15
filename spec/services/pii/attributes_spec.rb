@@ -12,20 +12,18 @@ describe Pii::Attributes do
 
     it 'initializes from complex Hash' do
       pii = described_class.new_from_hash(
-        first_name: { raw: 'José', norm: 'Jose' },
-        last_name: Pii::Attribute.new(raw: 'Foo')
+        first_name: 'José',
+        last_name: 'Foo'
       )
 
       expect(pii.first_name.to_s).to eq 'José'
-      expect(pii.first_name).to be_a Pii::Attribute
-      expect(pii.last_name).to be_a Pii::Attribute
+      expect(pii.first_name).to be_a String
+      expect(pii.last_name).to be_a String
     end
 
     it 'assigns to all members' do
       pii = described_class.new_from_hash(first_name: 'Jane')
 
-      expect(pii.last_name).to be_a Pii::Attribute
-      expect(pii.last_name.raw).to eq nil
       expect(pii.last_name).to eq nil
     end
   end
