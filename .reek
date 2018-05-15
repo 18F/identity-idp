@@ -93,6 +93,7 @@ TooManyStatements:
     - UserFlowExporter#self.run
     - Idv::Agent#proof
     - Idv::Proofer#configure_vendors
+    - Idv::VendorResult#initialize
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
