@@ -13,7 +13,7 @@ module Pii
     def self.new_from_hash(hash)
       attrs = new
       hash.
-        select { |key| members.include?(key&.to_sym) }.
+        select { |key, _val| members.include?(key&.to_sym) }.
         each { |key, val| attrs[key] = val }
       attrs
     end

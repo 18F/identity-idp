@@ -1,3 +1,6 @@
+require 'stringex/unidecoder'
+require 'stringex/core_ext'
+
 class AttributeAsserter
   VALID_ATTRIBUTES = %i[
     first_name
