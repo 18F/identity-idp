@@ -78,10 +78,9 @@ development:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
-  cloudhsm_current_saml_key_label: 'key1'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'pin1'
-  cloudhsm_previous_saml_key_label: 'key2'
+  cloudhsm_saml_key_label: 'key1'
   dashboard_api_token: 'test_token'
   dashboard_url: 'http://localhost:3001/api/service_providers'
   database_host: ''
@@ -148,6 +147,7 @@ development:
   requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
   saml_secret_rotation_certificate:
+  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
   saml_secret_rotation_enabled: 'false'
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
@@ -185,10 +185,9 @@ production:
   aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
-  cloudhsm_current_saml_key_label: 'key1'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'pin1'
-  cloudhsm_previous_saml_key_label: 'key2'
+  cloudhsm_saml_key_label: 'key1'
   disable_email_sending: 'false'
   dashboard_api_token:
   database_statement_timeout: '2500'
@@ -245,6 +244,7 @@ production:
   requests_per_ip_track_only_mode: 'true'
   saml_passphrase:
   saml_secret_rotation_certificate:
+  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
   saml_secret_rotation_enabled: 'false'
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
@@ -279,10 +279,9 @@ test:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
-  cloudhsm_current_saml_key_label: 'key1'
   cloudhsm_enabled: 'false'
   cloudhsm_pin: 'pin1'
-  cloudhsm_previous_saml_key_label: 'key2'
+  cloudhsm_saml_key_label: 'key1'
   domain_name: 'www.example.com'
   database_host: ''
   database_name: ''
@@ -345,6 +344,7 @@ test:
   requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
   saml_secret_rotation_certificate: 'saml2018.crt'
+  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
   saml_secret_rotation_enabled: 'true'
   saml_secret_rotation_path_suffix: '2018'
   saml_secret_rotation_secret_key: 'saml2018.key.enc'

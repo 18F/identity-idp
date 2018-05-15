@@ -9,7 +9,7 @@ SamlIdp.configure do |config|
     File.read(Rails.root.join('certs', 'saml.crt'))
   ).to_pem
   config.secret_key = if FeatureManagement.use_cloudhsm?
-                        Figaro.env.cloudhsm_previous_saml_key_label
+                        Figaro.env.cloudhsm_saml_key_label
                       else
                         RequestKeyManager.private_key.to_pem
                       end
