@@ -31,7 +31,6 @@ module Idv
 
     def update_idv_session
       idv_session.profile_confirmation = true
-      idv_session.normalized_applicant_params = vendor_result
       idv_session.resolution_successful = true
     end
 
@@ -40,10 +39,6 @@ module Idv
         idv_attempts_exceeded: attempts_exceeded?,
         vendor: { messages: vendor_validator_result.messages },
       }
-    end
-
-    def vendor_result
-      vendor_validator_result.normalized_applicant&.to_hash
     end
   end
 end

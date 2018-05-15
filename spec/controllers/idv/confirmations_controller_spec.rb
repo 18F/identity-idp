@@ -12,12 +12,10 @@ describe Idv::ConfirmationsController do
       issuer: nil
     )
     idv_session.applicant = idv_session.vendor_params
-    idv_session.normalized_applicant_params = { first_name: 'Somebody' }
     idv_session.resolution_successful = true
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
-      normalized_applicant: normalized_applicant,
       phone_confirmed: true,
       user_password: password
     )
@@ -42,7 +40,6 @@ describe Idv::ConfirmationsController do
       zipcode: '66666'
     }
   end
-  let(:normalized_applicant) { { first_name: 'Somebody' } }
   let(:profile) { subject.idv_session.profile }
 
   describe 'before_actions' do

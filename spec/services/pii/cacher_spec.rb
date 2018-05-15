@@ -19,7 +19,7 @@ describe Pii::Cacher do
       decrypted_pii_json = subject.save(password)
       decrypted_pii = JSON.parse(decrypted_pii_json, symbolize_names: true)
 
-      expect(decrypted_pii[:ssn][:raw]).to eq '1234'
+      expect(decrypted_pii[:ssn]).to eq '1234'
       expect(user_session[:decrypted_pii]).to eq decrypted_pii_json
     end
 
@@ -28,8 +28,8 @@ describe Pii::Cacher do
       decrypted_pii_json = subject.save(password, diff_profile)
       decrypted_pii = JSON.parse(decrypted_pii_json, symbolize_names: true)
 
-      expect(decrypted_pii[:ssn][:raw]).to_not eq '1234'
-      expect(decrypted_pii[:ssn][:raw]).to eq '5678'
+      expect(decrypted_pii[:ssn]).to_not eq '1234'
+      expect(decrypted_pii[:ssn]).to eq '5678'
       expect(user_session[:decrypted_pii]).to eq decrypted_pii_json
     end
 

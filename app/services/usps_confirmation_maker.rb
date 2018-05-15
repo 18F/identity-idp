@@ -26,14 +26,14 @@ class UspsConfirmationMaker
   # This method is single statement spread across many lines for readability
   def attributes
     {
-      address1: pii[:address1].norm,
-      address2: pii[:address2].norm,
-      city: pii[:city].norm,
+      address1: pii[:address1],
+      address2: pii[:address2],
+      city: pii[:city],
       otp: otp,
-      first_name: pii[:first_name].norm,
-      last_name: pii[:last_name].norm,
-      state: pii[:state].norm,
-      zipcode: pii[:zipcode].norm,
+      first_name: pii[:first_name],
+      last_name: pii[:last_name],
+      state: pii[:state],
+      zipcode: pii[:zipcode],
       issuer: issuer,
     }
   end
