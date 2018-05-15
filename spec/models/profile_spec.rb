@@ -12,7 +12,7 @@ describe Profile do
       last_name: 'Doe'
     )
   end
-  let(:user_access_key) { user.unlock_user_access_key(user.password) }
+  #let(:user_access_key) { user.unlock_user_access_key(user.password) }
 
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:usps_confirmation_codes).dependent(:destroy) }
@@ -21,7 +21,7 @@ describe Profile do
     it 'encrypts PII' do
       expect(profile.encrypted_pii).to be_nil
 
-      profile.encrypt_pii(user_access_key, pii)
+      profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii).to_not be_nil
       expect(profile.encrypted_pii).to_not match 'Jane'
@@ -33,7 +33,7 @@ describe Profile do
 
       initial_personal_key = user.personal_key
 
-      profile.encrypt_pii(user_access_key, pii)
+      profile.encrypt_pii(pii, user.password)
 
       expect(profile.encrypted_pii_recovery).to_not be_nil
       expect(user.personal_key).to_not eq initial_personal_key
@@ -58,9 +58,9 @@ describe Profile do
     it 'decrypts PII' do
       expect(profile.encrypted_pii).to be_nil
 
-      profile.encrypt_pii(user_access_key, pii)
+      profile.encrypt_pii(pii, user.password)
 
-      decrypted_pii = profile.decrypt_pii(user_access_key)
+      decrypted_pii = profile.decrypt_pii(user.password)
 
       expect(decrypted_pii).to eq pii
     end
@@ -70,11 +70,12 @@ describe Profile do
     it 'decrypts the encrypted_pii_recovery using a personal key' do
       expect(profile.encrypted_pii_recovery).to be_nil
 
-      personal_key = profile.encrypt_pii(user_access_key, pii)
+      profile.encrypt_pii(pii, user.password)
+      personal_key = profile.personal_key
 
-      normalize_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
+      normalized_personal_key = PersonalKeyGenerator.new(user).normalize(personal_key)
 
-      expect(profile.recover_pii(normalize_personal_key)).to eq pii
+      expect(profile.recover_pii(normalized_personal_key)).to eq pii
     end
   end
 
@@ -100,29 +101,29 @@ describe Profile do
     it 'allows multiple records per user if only one is active' do
       profile.active = true
       pii_attrs = Pii::Attributes.new_from_hash(ssn: '1234')
-      profile.encrypt_pii(user_access_key, pii_attrs)
+      profile.encrypt_pii(pii_attrs, user.password)
       profile.save!
       expect { create(:profile, pii: { ssn: '1234' }, user: user) }.to_not raise_error
     end
 
     it 'prevents save! via ActiveRecord uniqueness validation' do
       profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(user_access_key, pii)
+      profile.encrypt_pii(pii, user.password)
       profile.save!
       expect do
         another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(user_access_key, pii)
+        another_profile.encrypt_pii(pii, user.password)
         another_profile.save!
       end.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'prevents save! via psql unique partial index' do
       profile = Profile.new(active: true, user: user)
-      profile.encrypt_pii(user_access_key, pii)
+      profile.encrypt_pii(pii, user.password)
       profile.save!
       expect do
         another_profile = Profile.new(active: true, user: another_user)
-        another_profile.encrypt_pii(user_access_key, pii)
+        another_profile.encrypt_pii(pii, another_user.password)
         another_profile.save!(validate: false)
       end.to raise_error(ActiveRecord::RecordNotUnique)
     end

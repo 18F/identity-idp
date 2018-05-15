@@ -30,7 +30,7 @@ describe Idv::SessionsController do
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
   end
-  let(:normalized_applicant) { user_attrs }
+  let(:applicant) { user_attrs }
 
   describe 'before_actions' do
     it 'includes before_actions from AccountStateChecker' do
@@ -277,7 +277,7 @@ describe Idv::SessionsController do
 
           context 'with multiple addresses' do
             let(:result) do
-              Idv::VendorResult.new(success: true, normalized_applicant: normalized_applicant)
+              Idv::VendorResult.new(success: true, applicant: applicant)
             end
             let(:params) { user_attrs.merge(previous_address) }
 
@@ -323,7 +323,7 @@ describe Idv::SessionsController do
             Idv::VendorResult.new(
               success: true,
               messages: ['Everything looks good'],
-              normalized_applicant: normalized_applicant
+              applicant: applicant
             )
           end
 
@@ -369,7 +369,7 @@ describe Idv::SessionsController do
 
         context 'attempt window has expired, previous attempts == max-1' do
           let(:result) do
-            Idv::VendorResult.new(success: true, normalized_applicant: normalized_applicant)
+            Idv::VendorResult.new(success: true, applicant: applicant)
           end
 
           before do

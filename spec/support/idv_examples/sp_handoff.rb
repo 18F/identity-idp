@@ -195,8 +195,7 @@ shared_examples 'sp handoff after identity verification' do |sp|
   end
 
   def expect_successful_saml_handoff
-    user_access_key = user.unlock_user_access_key(Features::SessionHelper::VALID_PASSWORD)
-    profile_phone = user.active_profile.decrypt_pii(user_access_key).phone
+    profile_phone = user.active_profile.decrypt_pii(Features::SessionHelper::VALID_PASSWORD).phone
     xmldoc = SamlResponseDoc.new('feature', 'response_assertion')
 
     expect(AgencyIdentity.where(user_id: user.id, agency_id: 2).first.uuid).to eq(xmldoc.uuid)

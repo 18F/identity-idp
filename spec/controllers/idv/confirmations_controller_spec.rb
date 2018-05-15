@@ -12,14 +12,12 @@ describe Idv::ConfirmationsController do
       issuer: nil
     )
     idv_session.applicant = idv_session.vendor_params
-    idv_session.normalized_applicant_params = { first_name: 'Somebody' }
     idv_session.resolution_successful = true
-    user.unlock_user_access_key(password)
     profile_maker = Idv::ProfileMaker.new(
       applicant: applicant,
       user: user,
-      normalized_applicant: normalized_applicant,
-      phone_confirmed: true
+      phone_confirmed: true,
+      user_password: password
     )
     profile = profile_maker.save_profile
     idv_session.pii = profile_maker.pii_attributes
@@ -42,7 +40,6 @@ describe Idv::ConfirmationsController do
       zipcode: '66666'
     }
   end
-  let(:normalized_applicant) { { first_name: 'Somebody' } }
   let(:profile) { subject.idv_session.profile }
 
   describe 'before_actions' do
@@ -95,7 +92,7 @@ describe Idv::ConfirmationsController do
     end
 
     it 'sets code instance variable' do
-      subject.idv_session.cache_applicant_profile_id
+      subject.idv_session.create_profile_from_applicant_with_password(password)
       code = subject.idv_session.personal_key
 
       get :show
