@@ -16,6 +16,9 @@ module SamlIdp
     attr_accessor :single_logout_service_post_location
     attr_accessor :attributes
     attr_accessor :service_provider
+    attr_accessor :pkcs11
+    attr_accessor :cloudhsm_enabled
+    attr_accessor :cloudhsm_pin
 
     def initialize
       self.x509_certificate = Default::X509_CERTIFICATE

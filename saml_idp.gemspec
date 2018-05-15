@@ -46,6 +46,7 @@ section of the README.
   s.add_dependency('builder')
   s.add_dependency('httparty')
   s.add_dependency('nokogiri', '>= 1.6.2')
+  s.add_dependency("pkcs11")
 
   s.add_development_dependency "rake"
   s.add_development_dependency "simplecov"

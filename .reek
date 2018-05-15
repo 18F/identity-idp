@@ -2,3 +2,5 @@ LongParameterList:
   exclude:
     - LogoutRequestBuilder#initialize
     - LogoutResponseBuilder#initialize
+Attribute:
+  enabled: false
