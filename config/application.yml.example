@@ -79,7 +79,7 @@ development:
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   cloudhsm_enabled: 'false'
-  cloudhsm_pin: 'pin1'
+  cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
   dashboard_api_token: 'test_token'
   dashboard_url: 'http://localhost:3001/api/service_providers'
@@ -187,7 +187,7 @@ production:
   basic_auth_user_name:
   basic_auth_password:
   cloudhsm_enabled: 'false'
-  cloudhsm_pin: 'pin1'
+  cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
   disable_email_sending: 'false'
   dashboard_api_token:
@@ -282,7 +282,7 @@ test:
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
   cloudhsm_enabled: 'false'
-  cloudhsm_pin: 'pin1'
+  cloudhsm_pin: 'user:password'
   cloudhsm_saml_key_label: 'key1'
   domain_name: 'www.example.com'
   database_host: ''
