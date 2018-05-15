@@ -74,10 +74,6 @@ module IdvHelper
     fill_in :idv_phone_form_phone, with: '(555) 555-5555'
   end
 
-  def click_idv_begin
-    click_on t('idv.index.continue_link')
-  end
-
   def click_idv_continue
     click_button t('forms.buttons.continue')
   end

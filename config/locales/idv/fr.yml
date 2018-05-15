@@ -64,7 +64,6 @@ fr:
       state_id_type_label: Type de numéro d'identification
       zipcode: Code ZIP
     index:
-      continue_link: Oui, continuer
       id:
         need_html: Si vous créez un compte, vous aurez besoin d'un <strong>identifiant
           actuel émis par l'état</strong>.

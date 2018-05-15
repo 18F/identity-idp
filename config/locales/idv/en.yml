@@ -58,7 +58,6 @@ en:
       state_id_type_label: Type of ID number
       zipcode: ZIP Code
     index:
-      continue_link: Yes, continue
       id:
         need_html: If you're creating an account, you'll need a <strong>current state-issued
           ID</strong>.

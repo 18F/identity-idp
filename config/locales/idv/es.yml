@@ -59,7 +59,6 @@ es:
       state_id_type_label: Tipo de número de identificación
       zipcode: Código postal
     index:
-      continue_link: Sí, continuar
       id:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
           emitida por el estado actual</strong>.
