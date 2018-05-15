@@ -1,4 +1,5 @@
 require 'rack_request_parser'
+require 'utf8_cleaner'
 
 class Utf8Sanitizer
   def initialize(app)
@@ -6,7 +7,8 @@ class Utf8Sanitizer
   end
 
   def call(env)
-    parser = RackRequestParser.new(env)
+    request = Rack::Request.new(env)
+    parser = RackRequestParser.new(request)
     values_to_check = parser.values_to_check
 
     if invalid_strings(values_to_check)
@@ -50,7 +52,7 @@ class Utf8Sanitizer
   end
 
   def sanitized_visitor_id(request)
-    request.cookies['ahoy_visitor']&.
-      encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
+    string_to_clean = request.cookies['ahoy_visitor']
+    Utf8Cleaner.new(string_to_clean).remove_invalid_utf8_bytes
   end
 end

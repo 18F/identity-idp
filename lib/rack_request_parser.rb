@@ -1,16 +1,12 @@
 class RackRequestParser
-  attr_reader :env
+  attr_reader :request
 
-  def initialize(env)
-    @env = env
+  def initialize(request)
+    @request = request
   end
 
   def values_to_check
     param_values + ahoy_headers + ahoy_cookies
-  end
-
-  def request
-    @request ||= Rack::Request.new(env)
   end
 
   private
