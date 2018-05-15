@@ -3,18 +3,36 @@ require 'rails_helper'
 feature 'idv jurisdiction step' do
   include IdvStepHelper
 
-  it 'allows the user to continue to the profile step' do
-    start_idv_from_sp
-    complete_idv_steps_before_jurisdiction_step
+  context 'when on the jurisdiction page' do
+    before do
+      start_idv_from_sp
+      complete_idv_steps_before_jurisdiction_step
+    end
 
-    expect(page).to have_current_path(idv_jurisdiction_path)
-    expect(page).to have_content(t('idv.messages.jurisdiction.why'))
+    it 'is on the correct page' do
+      expect(page).to have_current_path(idv_jurisdiction_path)
+      expect(page).to have_content(t('idv.messages.jurisdiction.why'))
+    end
 
-    select 'Virginia', from: 'jurisdiction_state'
-    click_idv_continue
+    context 'and selecting a supported jurisdiction' do
+      it 'allows the user to continue to the profile step' do
+        select 'Virginia', from: 'jurisdiction_state'
+        click_idv_continue
 
-    expect(page).to have_content(t('idv.titles.sessions'))
-    expect(page).to have_current_path(idv_session_path)
+        expect(page).to have_current_path(idv_session_path)
+        expect(page).to have_content(t('idv.titles.sessions'))
+      end
+    end
+
+    context 'and selecting an unsupported jurisdiction' do
+      it 'fails the user' do
+        select 'Alabama', from: 'jurisdiction_state'
+        click_idv_continue
+
+        expect(page).to have_current_path(idv_jurisdiction_fail_path(reason: :unsupported_jurisdiction))
+        expect(page).to have_content(t('idv.titles.unsupported_jurisdiction', state: 'Alabama'))
+      end
+    end
   end
 
   context 'cancelling idv' do
