@@ -40,9 +40,5 @@ module Idv
         vendor: { messages: vendor_validator_result.messages },
       }
     end
-
-    def vendor_result
-      vendor_validator_result.applicant&.to_hash
-    end
   end
 end
