@@ -6,8 +6,7 @@ describe KeyRotator::HmacFingerprinter do
       rotator = described_class.new
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
-      user_access_key = user.user_access_key
-      pii_attributes = profile.decrypt_pii(user_access_key)
+      pii_attributes = profile.decrypt_pii(user.password)
 
       old_ssn_signature = profile.ssn_signature
       old_email_fingerprint = user.email_fingerprint
@@ -23,7 +22,7 @@ describe KeyRotator::HmacFingerprinter do
     it 'does not change the `updated_at` timestamp' do
       profile = create(:profile, :active, :verified, pii: { ssn: '1234' })
       user = profile.user
-      pii_attributes = profile.decrypt_pii(user.user_access_key)
+      pii_attributes = profile.decrypt_pii(user.password)
 
       old_updated_timestamp = user.updated_at
 

@@ -65,6 +65,7 @@ LongParameterList:
     - IdentityLinker#optional_attributes
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
+    - Pii::Attributes#self.new_from_encrypted
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController

@@ -43,7 +43,9 @@ module Encryption
       end
 
       def encrypted_contents_from_ciphertext(ciphertext)
-        ciphertext.split(DELIMITER).second
+        contents = ciphertext.split(DELIMITER).second
+        raise Pii::EncryptionError, 'ciphertext is missing encrypted contents' if contents.nil?
+        contents
       end
 
       def unlock_user_access_key(encryption_key)
