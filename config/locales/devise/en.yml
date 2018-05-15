@@ -121,8 +121,7 @@ en:
         title: How should we send you a code?
         voice: Phone call
       otp_phone_label: Phone number
-      otp_phone_label_info: If you entered a landline, please select “Phone call”
-        below.
+      otp_phone_label_info: Mobile phone or landline
       otp_phone_label_info_mobile_only: Mobile phone
       otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
         one-time security code via text message or phone call. This helps safeguard
