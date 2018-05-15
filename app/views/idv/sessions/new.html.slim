@@ -33,7 +33,8 @@ p.mb2 = link_to t('links.access_help'),
         }
         = f.input :state, collection: us_states_territories,
           label: t('idv.form.state'), required: true,
-          input_html: data_attrs
+          input_html: data_attrs, selected: @view_model.selected_state,
+          prompt: '- Select -'
 
       .sm-col.sm-col-4.px1
         / using :tel for mobile numeric keypad

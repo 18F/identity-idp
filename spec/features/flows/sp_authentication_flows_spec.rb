@@ -83,7 +83,8 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
 
                         context 'when choosing Yes, continue' do
                           before do
-                            click_link t('idv.index.continue_link')
+                            select 'Virginia', from: 'jurisdiction_state'
+                            click_idv_continue
                           end
 
                           it 'prompts for personal information' do

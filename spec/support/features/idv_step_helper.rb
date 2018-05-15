@@ -16,14 +16,15 @@ module IdvStepHelper
     end
   end
 
-  def complete_idv_steps_before_verify_step(user = user_with_2fa)
+  def complete_idv_steps_before_jurisdiction_step(user = user_with_2fa)
     sign_in_and_2fa_user(user)
-    visit idv_path unless current_path == idv_path
+    visit idv_jurisdiction_path unless current_path == idv_jurisdiction_path
   end
 
   def complete_idv_steps_before_profile_step(user = user_with_2fa)
-    complete_idv_steps_before_verify_step(user)
-    click_idv_begin
+    complete_idv_steps_before_jurisdiction_step(user)
+    select 'Virginia', from: 'jurisdiction_state'
+    click_idv_continue
   end
 
   def complete_idv_steps_before_address_step(user = user_with_2fa)

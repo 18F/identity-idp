@@ -44,7 +44,8 @@ feature 'Password recovery via personal key', idv_job: true do
     click_link t('account.index.reactivation.link')
     click_on t('links.account.reactivate.without_key')
     click_on t('forms.buttons.continue')
-    click_idv_begin
+    fill_out_idv_jurisdiction_ok
+    click_idv_continue
     complete_idv_profile_ok(user, new_password)
     acknowledge_and_confirm_personal_key
 
@@ -88,7 +89,7 @@ feature 'Password recovery via personal key', idv_job: true do
       click_on t('links.account.reactivate.with_key')
       click_on t('links.reverify')
 
-      expect(current_path).to eq(idv_path)
+      expect(current_path).to eq(idv_jurisdiction_path)
     end
 
     scenario 'resets password, view modal and close it', email: true, js: true do

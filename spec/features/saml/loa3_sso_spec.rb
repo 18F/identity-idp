@@ -11,7 +11,8 @@ feature 'LOA3 Single Sign On', idv_job: true do
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
-    click_idv_begin
+    fill_out_idv_jurisdiction_ok
+    click_idv_continue
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_address_choose_usps
@@ -178,12 +179,14 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
         visit saml_authn_request
         sign_in_live_with_2fa(user)
-        click_idv_begin
+        fill_out_idv_jurisdiction_ok
+        click_idv_continue
         fill_out_idv_form_ok
         click_idv_continue
         click_idv_cancel
         visit saml_authn_request
-        click_idv_begin
+        fill_out_idv_jurisdiction_ok
+        click_idv_continue
         fill_out_idv_form_ok
         click_idv_continue
 
@@ -199,7 +202,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
       visit loa3_authnrequest
       visit sign_up_completed_path
 
-      expect(current_path).to eq idv_path
+      expect(current_path).to eq idv_jurisdiction_path
     end
   end
 end

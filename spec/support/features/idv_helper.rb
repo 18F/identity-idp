@@ -51,6 +51,11 @@ module IdvHelper
     fill_in 'profile_prev_zipcode', with: '00000'
   end
 
+  def fill_out_idv_jurisdiction_ok
+    select 'Washington', from: 'jurisdiction_state'
+    expect(page).to have_no_content t('idv.errors.unsupported_jurisdiction')
+  end
+
   def fill_out_idv_state_fail
     select 'Alabama', from: 'profile_state'
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
@@ -67,10 +72,6 @@ module IdvHelper
 
   def fill_out_phone_form_fail
     fill_in :idv_phone_form_phone, with: '(555) 555-5555'
-  end
-
-  def click_idv_begin
-    click_on t('idv.index.continue_link')
   end
 
   def click_idv_continue

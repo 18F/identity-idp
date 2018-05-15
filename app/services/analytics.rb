@@ -67,6 +67,8 @@ class Analytics
   IDV_MAX_ATTEMPTS_EXCEEDED = 'IdV: max attempts exceeded'.freeze
   IDV_FINAL = 'IdV: final resolution'.freeze
   IDV_INTRO_VISIT = 'IdV: intro visited'.freeze
+  IDV_JURISDICTION_VISIT = 'IdV: jurisdiction visited'.freeze
+  IDV_JURISDICTION_FORM = 'IdV: jurisdiction form submitted'.freeze
   IDV_PHONE_CONFIRMATION_FORM = 'IdV: phone confirmation form'.freeze
   IDV_PHONE_CONFIRMATION_VENDOR = 'IdV: phone confirmation vendor'.freeze
   IDV_PHONE_RECORD_VISIT = 'IdV: phone of record visited'.freeze
