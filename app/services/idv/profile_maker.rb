@@ -2,12 +2,13 @@ module Idv
   class ProfileMaker
     attr_reader :pii_attributes
 
-    def initialize(applicant:, user:, normalized_applicant:, phone_confirmed:)
+    def initialize(applicant:, user:, normalized_applicant:, phone_confirmed:, user_password:)
       self.pii_attributes = pii_from_applicant(
         OpenStruct.new(applicant),
         OpenStruct.new(normalized_applicant)
       )
       self.user = user
+      self.user_password = user_password
       self.phone_confirmed = phone_confirmed
     end
 
@@ -17,14 +18,14 @@ module Idv
         phone_confirmed: phone_confirmed,
         user: user
       )
-      profile.encrypt_pii(user.user_access_key, pii_attributes)
+      profile.encrypt_pii(pii_attributes, user_password)
       profile.save!
       profile
     end
 
     private
 
-    attr_accessor :user, :phone_confirmed
+    attr_accessor :user, :user_password, :phone_confirmed
     attr_writer :pii_attributes
 
     # rubocop:disable MethodLength, AbcSize

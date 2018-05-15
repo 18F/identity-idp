@@ -119,7 +119,7 @@ module Users
       cacher = Pii::Cacher.new(current_user, user_session)
       profile = current_user.decorate.active_or_pending_profile
       begin
-        cacher.save(current_user.user_access_key, profile)
+        cacher.save(auth_params[:password], profile)
       rescue Pii::EncryptionError => err
         profile.deactivate(:encryption_error)
         analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)

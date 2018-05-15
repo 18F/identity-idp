@@ -22,7 +22,6 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
 
   if verified
     user = User.find_by(email_fingerprint: ee.fingerprint)
-    user.unlock_user_access_key(password)
     profile = Profile.new(user: user)
     pii = Pii::Attributes.new_from_hash(
       first_name: first_name,
@@ -37,7 +36,7 @@ def create_account(email: 'joe.smith@email.com', password: 'salty pickles', mfa_
       zipcode: zipcode,
       phone: phone
     )
-    personal_key = profile.encrypt_pii(user.user_access_key, pii)
+    personal_key = profile.encrypt_pii(pii, password)
     profile.verified_at = Time.zone.now
     profile.activate
   end
