@@ -63,35 +63,6 @@ es:
       id:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
           emitida por el estado actual</strong>.
-      paragraph_1: Nos hemos asociado con una empresa externa confiable para verificar
-        esta información y su identidad.
-      prompt: "¿Tiene toda esta información disponible ahora mismo?"
-      section_1:
-        bullet_1: Nombre completo
-        bullet_2: Dirección postal
-        bullet_3: Fecha de nacimiento
-        bullet_4: Número de Seguro Social
-        header: Información personal
-        subheader: 'Comenzaremos con algunos datos personales como:'
-      section_2:
-        bullet_1: Últimos 8 dígitos de una tarjeta de crédito
-        bullet_2: Número de cuenta de préstamo de auto
-        bullet_3: Número de cuenta de préstamo hipotecario
-        bullet_4: Número de la cuenta del préstamo sobre el valor neto de la vivienda
-        footnote: Nunca se le cobrará ningún dinero y no compartirá ningún saldo de
-          cuenta u otra información financiera con nosotros. Solo verificamos el número
-          de cuenta para verificar su identidad.
-        header: Información financiera
-        subheader: 'Necesitamos uno de los siguientes números de cuenta financiera:'
-      section_3:
-        bullet_1: Bajo su nombre o el nombre de alguien en su hogar
-        bullet_2_html: "<strong>No es</ strong> un teléfono virtual, como Google Voice
-          o Skype"
-        bullet_3_html: "<strong>No es</ strong> un teléfono de prepago"
-        header: Línea de teléfono a su nombre
-        subheader: 'Utilizamos registros de la compañía telefónica para verificar
-          su identidad. El número de teléfono que usted nos da debe:'
-      subheader: Para verificar su identidad, le pediremos que responda algunas preguntas
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.

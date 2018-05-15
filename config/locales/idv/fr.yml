@@ -68,36 +68,6 @@ fr:
       id:
         need_html: Si vous créez un compte, vous aurez besoin d'un <strong>identifiant
           actuel émis par l'état</strong>.
-      paragraph_1: Nous avons un partenariat avec une entreprise de confiance afin
-        de vérifier cette information ainsi que votre identité.
-      prompt: Est-ce que vous avez accès à toute cette information en ce moment?
-      section_1:
-        bullet_1: Nom complet
-        bullet_2: Adresse postale
-        bullet_3: Date de naissance
-        bullet_4: Numéro de sécurité sociale
-        header: Information personnelle
-        subheader: 'Nous allons commencer avec de l''information personnelle, comme:'
-      section_2:
-        bullet_1: Les 8 derniers chiffres d'une carte de crédit
-        bullet_2: Numéro du compte de prêt automobile
-        bullet_3: Numéro du compte de crédit hypothécaire
-        bullet_4: Numéro du compte de prêt hypothécaire
-        footnote: Vous n'aurez jamais à payer quoi que ce soit avec nous, ni à partager
-          le solde de vos comptes. Nous vérifions uniquement le numéro du compte pour
-          vérifier votre identité.
-        header: Information bancaire
-        subheader: 'Nous avons besoin de l''un des numéros de compte suivants:'
-      section_3:
-        bullet_1: Votre nom ou celui d'un membre de votre famille
-        bullet_2_html: strongNot/strong un téléphone virtuel, comme Google Voice ou
-          Skype
-        bullet_3_html: strongNot/strong un téléphone prépayé
-        header: Une ligne téléphonique à votre nom
-        subheader: 'Nous utilisons les informations des compagnies de téléphone pour
-          vérifier votre identité. Le numéro de téléphone que vous nous donnez devrait: '
-      subheader: Pour vérifier votre identité, nous vous demandons de répondre à quelques
-        questions
     messages:
       activated_html: Votre identité a été vérifiée. Si vous souhaitez modifier votre
         information vérifiée, veuillez %{link}.
