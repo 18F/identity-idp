@@ -97,4 +97,8 @@ class FeatureManagement
   def self.use_cloudhsm?
     Figaro.env.cloudhsm_enabled == 'true'
   end
+
+  def self.disallow_all_web_crawlers?
+    Figaro.env.disallow_all_web_crawlers == 'true'
+  end
 end
