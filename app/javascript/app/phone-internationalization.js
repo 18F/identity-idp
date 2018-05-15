@@ -43,6 +43,22 @@ const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
   return null;
 };
 
+const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo, warningMessage) => {
+  phoneRadio.disabled = true;
+  phoneLabel.classList.add('btn-disabled');
+  smsRadio.click();
+  deliveryMethodHint.innerText = warningMessage;
+}
+
+const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint, optPhoneLabelInfo) => {
+  phoneRadio.disabled = false;
+  phoneLabel.classList.remove('btn-disabled');
+  deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
+  if (optPhoneLabelInfo) {
+    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
+  }
+}
+
 const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
   const internationCodeOption = selectedInternationCodeOption();
   if (internationCodeOption.dataset.countryCode === '1') {
@@ -62,19 +78,15 @@ const updateOTPDeliveryMethods = () => {
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const phoneLabel = phoneRadio.parentNode.parentNode;
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
+  const optPhoneLabelInfo = document.querySelector('#otp_phone_label_info');
 
   const phone = phoneInput.value;
 
   const warningMessage = unsupportedPhoneOTPDeliveryWarningMessage(phone);
   if (warningMessage) {
-    phoneRadio.disabled = true;
-    phoneLabel.classList.add('btn-disabled');
-    smsRadio.click();
-    deliveryMethodHint.innerText = warningMessage;
+    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo, warningMessage);
   } else {
-    phoneRadio.disabled = false;
-    phoneLabel.classList.remove('btn-disabled');
-    deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
+    enablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo);
   }
 };
 
@@ -121,12 +133,14 @@ const updateInternationalCodeInput = () => {
 document.addEventListener('DOMContentLoaded', () => {
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
-  const telInput = document.querySelector('#user_phone_form_phone');
+  const telInput = $('#user_phone_form_phone');
+
   if (telInput) {
-    telInput.onchange = ('countrychange', updateOTPDeliveryMethods);
-    telInput.onchange = ('countrychange', updateInternationalCodeSelection);
+    telInput.on('countrychange', updateOTPDeliveryMethods);
+    telInput.on('countrychange', updateInternationalCodeSelection);
   }
   if (phoneInput) {
+    phoneInput.onchange = ('countrychange', updateOTPDeliveryMethods);
     phoneInput.addEventListener('keyup', updateOTPDeliveryMethods);
     phoneInput.addEventListener('keyup', updateInternationalCodeSelection);
   }
