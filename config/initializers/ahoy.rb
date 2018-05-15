@@ -52,6 +52,7 @@ module Ahoy
       # we probably want to ignore the Rails definition and use Ruby's.
       # To do that, we'll need to set `config.active_support.bare = true`,
       # and then only require the extensions we use.
+      token = token.encode('UTF-8', 'binary', invalid: :replace, undef: :replace, replace: '')
       uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
       !uuid_regex.match?(token)
     end
