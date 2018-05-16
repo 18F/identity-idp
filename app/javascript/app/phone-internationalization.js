@@ -43,12 +43,13 @@ const unsupportedInternationalPhoneOTPDeliveryWarningMessage = () => {
   return null;
 };
 
-const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo, warningMessage) => {
+const disablePhoneState = (phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo,
+  warningMessage) => {
   phoneRadio.disabled = true;
   phoneLabel.classList.add('btn-disabled');
   smsRadio.click();
   deliveryMethodHint.innerText = warningMessage;
-}
+};
 
 const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint, optPhoneLabelInfo) => {
   phoneRadio.disabled = false;
@@ -57,7 +58,7 @@ const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint, optPhoneLa
   if (optPhoneLabelInfo) {
     optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
   }
-}
+};
 
 const unsupportedPhoneOTPDeliveryWarningMessage = (phone) => {
   const internationCodeOption = selectedInternationCodeOption();
@@ -84,7 +85,8 @@ const updateOTPDeliveryMethods = () => {
 
   const warningMessage = unsupportedPhoneOTPDeliveryWarningMessage(phone);
   if (warningMessage) {
-    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo, warningMessage);
+    disablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo,
+      warningMessage);
   } else {
     enablePhoneState(phoneRadio, phoneLabel, smsRadio, deliveryMethodHint, optPhoneLabelInfo);
   }
@@ -104,7 +106,7 @@ const updateInternationalCodeSelection = () => {
   const internationalCode = internationalCodeFromPhone(phone);
   const option = document.querySelector(`[data-country-code='${internationalCode}']`);
   if (option) {
-    const dropdown = document.querySelector('[data-international-phone-form] .international-code');
+    const dropdown = $('#user_phone_form_international_code');
     dropdown.value = option.value;
   }
 };
