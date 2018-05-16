@@ -626,7 +626,7 @@ MP:
   name: Northern Mariana Islands
   country_code: '1670'
   sms_only: true
-NO:
+'NO':
   name: Norway
   country_code: '47'
   sms_only: true
