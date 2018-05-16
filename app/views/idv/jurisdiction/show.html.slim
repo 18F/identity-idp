@@ -1,22 +1,18 @@
-- title t("idv.titles.#{@reason}")
+- state_name = state_name_for_abbrev(@state)
+- title t("idv.titles.#{@reason}", state: state_name)
 
-h1.h3.mb2.my0 = t("idv.titles.#{@reason}", state: state_name_for_abbrev(@state))
+h1.h3.mb2.my0 = t("idv.titles.#{@reason}", state: state_name)
 
-p.mb1 = t("idv.messages.jurisdiction.#{@reason}", state: state_name_for_abbrev(@state))
+p.mb1 = t("idv.messages.jurisdiction.#{@reason}", state: state_name)
 
 .col-2
   hr.mt5.mb2.bw4.border-blue.rounded
 
-p
-  | Visit [
-  = link_to('Railroad Retirement Board', account_path)
-  | ] for more information.
+- if decorated_session.sp_name
+  p == t('idv.messages.jurisdiction.sp_support', link: link_to(decorated_session.sp_name, decorated_session.sp_alert_learn_more))
 
-p
-  | To access your account in the future, you can
-  = link_to(' view your account here', account_path)
-  | .
+p == t('idv.messages.jurisdiction.profile', link: link_to(t('idv.messages.jurisdiction.profile_link'), account_path))
 
 p.mt4 = link_to t('forms.buttons.back'),
-    decorated_session.sp_return_url || account_path,
+    decorated_session.cancel_link_url || account_path,
     class: 'btn btn-primary btn-wide'
