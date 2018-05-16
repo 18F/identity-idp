@@ -106,97 +106,56 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
                               click_button t('forms.buttons.continue')
                             end
 
-                            it 'prompts for the last 8 digits of a credit card' do
+                            it 'prompts to activate account by phone or mail' do
                               screenshot_and_save_page
                             end
 
-                            context 'with last 8 digits of credit card' do
+                            context 'when activating by phone' do
                               before do
-                                fill_out_financial_form_ok
+                                click_idv_address_choose_phone
                               end
 
-                              it 'prompts to activate account by phone or mail' do
+                              it 'prompts the user to confirm or enter phone number' do
                                 screenshot_and_save_page
                               end
                             end
 
-                            context 'without a credit card' do
+                            context 'when activating by mail' do
                               before do
-                                click_link t('idv.form.use_financial_account')
+                                click_idv_address_choose_usps
                               end
 
-                              it 'prompts user to provide a financial account number' do
+                              it 'prompts the user to confirm' do
                                 screenshot_and_save_page
                               end
 
-                              context 'with a valid financial account' do
+                              context 'when confirming to mail' do
                                 before do
-                                  select t('idv.form.mortgage'),
-                                         from: 'idv_finance_form_finance_type'
-                                  fill_in 'idv_finance_form_mortgage', with: '12345678'
-                                  # click_idv_continue doesn't work with the JavaScript on this page
-                                  # and enabling js: true causes unexpected behavior
-                                  form = page.find('#new_idv_finance_form')
-                                  class << form
-                                    def submit!
-                                      Capybara::RackTest::Form.new(driver, native).submit({})
-                                    end
-                                  end
-                                  form.submit!
+                                  click_on t('idv.buttons.mail.send')
                                 end
 
-                                it 'prompts to activate account by phone or mail' do
+                                it 'prompts user for password to encrypt profile' do
                                   screenshot_and_save_page
                                 end
 
-                                context 'when activating by phone' do
+                                context 'when confirming password' do
                                   before do
-                                    click_idv_address_choose_phone
+                                    fill_in 'user_password',
+                                            with: Features::SessionHelper::VALID_PASSWORD
+                                    click_button t('forms.buttons.submit.default')
                                   end
 
-                                  it 'prompts the user to confirm or enter phone number' do
-                                    screenshot_and_save_page
-                                  end
-                                end
-
-                                context 'when activating by mail' do
-                                  before do
-                                    click_idv_address_choose_usps
-                                  end
-
-                                  it 'prompts the user to confirm' do
+                                  it 'provides a new personal key and prompts to verify' do
                                     screenshot_and_save_page
                                   end
 
-                                  context 'when confirming to mail' do
+                                  context 'when clicking Continue' do
                                     before do
-                                      click_on t('idv.buttons.mail.send')
+                                      click_acknowledge_personal_key
                                     end
 
-                                    it 'prompts user for password to encrypt profile' do
+                                    it 'displays the user profile' do
                                       screenshot_and_save_page
-                                    end
-
-                                    context 'when confirming password' do
-                                      before do
-                                        fill_in 'user_password',
-                                                with: Features::SessionHelper::VALID_PASSWORD
-                                        click_button t('forms.buttons.submit.default')
-                                      end
-
-                                      it 'provides a new personal key and prompts to verify' do
-                                        screenshot_and_save_page
-                                      end
-
-                                      context 'when clicking Continue' do
-                                        before do
-                                          click_acknowledge_personal_key
-                                        end
-
-                                        it 'displays the user profile' do
-                                          screenshot_and_save_page
-                                        end
-                                      end
                                     end
                                   end
                                 end
