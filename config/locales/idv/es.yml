@@ -91,6 +91,11 @@ es:
         where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
           del estado?"
         no_id: No tengo una identificación emitida por el estado
+        profile: Para acceder a su cuenta en el futuro, puede %{link}.
+        profile_link: mira tu cuenta aquí
+        sp_support: Visita %{link} para obtener más información.
+        unsupported_jurisdiction: Estamos trabajando duro para agregar más estados
+          y esperamos apoyar a %{state} pronto.
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:

@@ -97,6 +97,11 @@ fr:
         where: Où a été délivré votre permis de conduire, votre permis de conduire
           ou votre carte d'identité?
         no_id: Je n'ai pas de carte d'identité officielle
+        profile: Pour accéder à votre compte dans le futur, vous pouvez %{link}.
+        profile_link: voir votre compte ici
+        sp_support: Visitez %{link} pour plus d'informations.
+        unsupported_jurisdiction: Nous travaillons dur pour ajouter plus d'états et
+          espérons pouvoir bientôt prendre en charge %{state}.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:

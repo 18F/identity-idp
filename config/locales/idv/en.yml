@@ -92,6 +92,11 @@ en:
           ID
         where: Where was your driver's license, driver's permit, or state ID issued?
         no_id: I don't have a state-issued ID
+        unsupported_jurisdiction: We're working hard to add more states and hope to
+          support %{state} soon.
+        sp_support: Visit %{link} for more information.
+        profile: To access your account in the future, you can %{link}.
+        profile_link: view your account here
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:
@@ -201,5 +206,4 @@ en:
         phone: Get a code by telephone
         review: Enter your login.gov password
       sessions: Verify your identity
-      unsupported_jurisdiction: We are unable to verify identities using IDs issued
-        from %{state}
+      unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.
