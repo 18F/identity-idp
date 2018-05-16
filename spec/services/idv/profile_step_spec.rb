@@ -34,7 +34,7 @@ describe Idv::ProfileStep do
       messages = ['Everything looks good']
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: messages },
+        vendor: { messages: messages, context: {}, exception: nil },
       }
 
       step = build_step(
@@ -61,7 +61,7 @@ describe Idv::ProfileStep do
       errors = { ssn: ['Unverified SSN.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: messages },
+        vendor: { messages: messages, context: {}, exception: nil },
       }
 
       step = build_step(
@@ -83,7 +83,7 @@ describe Idv::ProfileStep do
       messages = ['The name was suspicious']
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: messages },
+        vendor: { messages: messages, context: {}, exception: nil },
       }
 
       step = build_step(
@@ -105,7 +105,7 @@ describe Idv::ProfileStep do
       errors = { zipcode: ['Unverified ZIP code.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: messages },
+        vendor: { messages: messages, context: {}, exception: nil },
       }
 
       step = build_step(
@@ -127,7 +127,7 @@ describe Idv::ProfileStep do
       errors = { zipcode: ['Unverified ZIP code.'] }
       extra = {
         idv_attempts_exceeded: false,
-        vendor: { messages: messages },
+        vendor: { messages: messages, context: {}, exception: nil },
       }
 
       step = build_step(
