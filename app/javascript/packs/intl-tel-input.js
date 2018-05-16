@@ -1,6 +1,6 @@
 // Setting hidden input for intl code
 import $ from 'jquery';
-import { intlTelInput } from 'intl-tel-input';
+import intlTelInput from 'intl-tel-input';
 
 const telInput = $('#user_phone_form_phone');
 const intlCode = $('#user_phone_form_international_code');

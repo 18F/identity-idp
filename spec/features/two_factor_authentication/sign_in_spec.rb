@@ -66,7 +66,7 @@ feature 'Two Factor Authentication' do
       scenario 'disables the phone option and displays a warning with js', :js do
         sign_in_before_2fa
 
-        fill_in 'Phone', with: unsupported_phone
+        select_country_and_type_phone_number(country: 'bs', number: unsupported_phone)
         phone_radio_button = page.find(
           '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
@@ -78,7 +78,7 @@ feature 'Two Factor Authentication' do
         )
         expect(phone_radio_button).to be_disabled
 
-        fill_in 'Phone', with: '555-555-5000'
+        select_country_and_type_phone_number(country: 'us', number: '7035551212')
 
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
