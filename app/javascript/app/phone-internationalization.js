@@ -107,7 +107,7 @@ const updateInternationalCodeSelection = () => {
   const internationalCode = internationalCodeFromPhone(phone);
   const option = document.querySelector(`[data-country-code='${internationalCode}']`);
   if (option) {
-    const dropdown = $('#user_phone_form_international_code');
+    const dropdown = document.querySelector('#user_phone_form_international_code');
     dropdown.value = option.value;
   }
 };
