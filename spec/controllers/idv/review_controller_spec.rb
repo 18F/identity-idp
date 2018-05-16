@@ -303,7 +303,7 @@ describe Idv::ReviewController do
 
         expect(pii.zipcode).to eq zipcode
 
-        expect(idv_session.applicant[:first_name]).to eq 'Jose'
+        expect(idv_session.applicant[:first_name]).to eq 'José'
         expect(pii.first_name).to eq 'José'
       end
 

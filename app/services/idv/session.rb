@@ -1,6 +1,3 @@
-require 'stringex/unidecoder'
-require 'stringex/core_ext'
-
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
@@ -61,7 +58,7 @@ module Idv
     end
 
     def vendor_params
-      applicant_params_ascii.merge('uuid' => current_user.uuid)
+      applicant_params.merge('uuid' => current_user.uuid)
     end
 
     def profile
@@ -127,10 +124,6 @@ module Idv
 
     def applicant_params
       params.select { |key, _value| Idv::Agent.proofer_attribute?(key) }
-    end
-
-    def applicant_params_ascii
-      Hash[applicant_params.map { |key, value| [key, value.to_ascii] }]
     end
 
     def build_profile_maker(user_password)
