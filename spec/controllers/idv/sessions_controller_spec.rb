@@ -194,7 +194,7 @@ describe Idv::SessionsController do
             success: false,
             errors: { timed_out: ['Timed out waiting for vendor response'] },
             idv_attempts_exceeded: false,
-            vendor: { messages: [] },
+            vendor: { messages: [], context: {}, exception: nil },
           }
 
           expect(@analytics).to have_received(:track_event).with(
@@ -242,7 +242,7 @@ describe Idv::SessionsController do
               errors: {
                 first_name: ['Unverified first name.'],
               },
-              vendor: { messages: ['The name was suspicious'] },
+              vendor: { messages: ['The name was suspicious'], context: {}, exception: nil },
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -309,7 +309,7 @@ describe Idv::SessionsController do
               errors: {
                 agent: [exception_msg],
               },
-              vendor: { messages: [exception_msg] },
+              vendor: { messages: [exception_msg], context: {}, exception: nil },
             }
 
             expect(@analytics).to have_received(:track_event).
@@ -334,7 +334,7 @@ describe Idv::SessionsController do
               success: true,
               idv_attempts_exceeded: false,
               errors: {},
-              vendor: { messages: ['Everything looks good'] },
+              vendor: { messages: ['Everything looks good'], context: {}, exception: nil },
             }
 
             expect(@analytics).to have_received(:track_event).
