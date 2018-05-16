@@ -1,4 +1,5 @@
 import { PhoneFormatter } from 'field-kit';
+import $ from 'jquery';
 
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
