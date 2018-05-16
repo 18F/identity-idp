@@ -1,11 +1,22 @@
 - title t("idv.titles.#{@reason}")
-.clearfix.col-10.sm-col-12.mx-auto
-  .center
-    = image_tag(asset_url('no-verify.svg'),
-      alt: '',
-      class: 'mb2',
-      width: 140)
 
-  h1.h3.mb2.my0.px1.center = t("idv.titles.#{@reason}", state: state_name_for_abbrev(@state))
+h1.h3.mb2.my0 = t("idv.titles.#{@reason}", state: state_name_for_abbrev(@state))
 
-  = render decorated_session.idv_hardfail4_partial
+p.mb1 = t("idv.messages.jurisdiction.#{@reason}", state: state_name_for_abbrev(@state))
+
+.col-2
+  hr.mt5.mb2.bw4.border-blue.rounded
+
+p
+  | Visit [
+  = link_to('Railroad Retirement Board', account_path)
+  | ] for more information.
+
+p
+  | To access your account in the future, you can
+  = link_to(' view your account here', account_path)
+  | .
+
+p.mt4 = link_to t('forms.buttons.back'),
+    decorated_session.sp_return_url || account_path,
+    class: 'btn btn-primary btn-wide'

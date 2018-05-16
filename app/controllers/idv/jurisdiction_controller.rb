@@ -27,7 +27,7 @@ module Idv
     end
 
     def show
-      @state = user_session[:idv_jurisdiction]
+      @state = 'KY' #user_session[:idv_jurisdiction]
       @reason = params[:reason]
     end
 
