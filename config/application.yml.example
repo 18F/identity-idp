@@ -1,5 +1,12 @@
 # This file is used by the Figaro gem: https://github.com/laserlemon/figaro
 
+# The defaults set in this file are used as the basis for configuration in all
+# production and development environments. On deployed EC2 servers, we run
+# bin/activate to generate the final application.yml using this file for
+# defaults and deep merging any overrides set in the application.yml from the
+# app secrets S3 bucket. Deployed EC2 servers always set RAILS_ENV=production,
+# so they will use values from top-level and from the production block.
+
 # Be sure to restart your server when you modify this file.
 
 # Make sure the secrets in this file are kept private
@@ -165,6 +172,13 @@ development:
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
 
+# These values serve as defaults for all production-like environments, which
+# includes *.identitysandbox.gov and *.login.gov.
+#
+# TODO: remove empty/fake values from this block, which create the misleading
+# impression that these values aren't used. In fact they will be used unless
+# they are overriden by keys with the same name in the application.yml in the
+# app secrets bucket.
 production:
   aamva_cert_enabled: 'true'
   aamva_public_key: # Base64 encoded public key for AAMVA
@@ -226,9 +240,7 @@ production:
   piv_cac_enabled: 'false'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
-  recaptcha_enabled_percent: '10'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
+  recaptcha_enabled_percent: '0'
   redis_url: 'redis://redis.login.gov.internal:6379'
   redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
   remember_device_expiration_days: '30'
