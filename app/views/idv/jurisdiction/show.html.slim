@@ -9,9 +9,11 @@ p.mb1 = t("idv.messages.jurisdiction.#{@reason}", state: state_name)
   hr.mt5.mb2.bw4.border-blue.rounded
 
 - if decorated_session.sp_name
-  p == t('idv.messages.jurisdiction.sp_support', link: link_to(decorated_session.sp_name, decorated_session.sp_alert_learn_more))
+  - support_link = link_to(decorated_session.sp_name, decorated_session.sp_alert_learn_more)
+  p == t('idv.messages.jurisdiction.sp_support', link: support_link)
 
-p == t('idv.messages.jurisdiction.profile', link: link_to(t('idv.messages.jurisdiction.profile_link'), account_path))
+- profile_link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
+p == t('idv.messages.jurisdiction.profile', link: profile_link)
 
 p.mt4 = link_to t('forms.buttons.back'),
     decorated_session.cancel_link_url || account_path,
