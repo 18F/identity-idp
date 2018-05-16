@@ -19,6 +19,8 @@
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
+    "intl-tel-input": "^12.1.15",
+    "jquery": "^3.3.1",
     "libphonenumber-js": "^0.4.23",
     "normalize.css": "^4.2.0",
     "sinon": "^1.17.7",
