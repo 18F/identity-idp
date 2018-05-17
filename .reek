@@ -18,6 +18,7 @@ DuplicateMethodCall:
     - BasicAuthUrl#build
     - fallback_to_english
     - Idv::Proofer#load_vendors!
+    - Upaya::RandomTools#self.random_weighted_sample
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -95,6 +96,10 @@ TooManyStatements:
     - Idv::Agent#proof
     - Idv::Proofer#configure_vendors
     - Idv::VendorResult#initialize
+    - Upaya::QueueConfig#self.choose_queue_adapter
+    - Upaya::RandomTools#self.random_weighted_sample
+    - UserFlowFormatter#stop
+    - Upaya::QueueConfig#self.choose_queue_adapter
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -166,7 +171,7 @@ UtilityFunction:
   TooManyMethods:
     enabled: false
   TooManyStatements:
-    enabled: false
+    enabled: false 
   UncommunicativeMethodName:
     exclude:
       - visit_idp_from_sp_with_loa1

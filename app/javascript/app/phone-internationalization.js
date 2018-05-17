@@ -1,5 +1,4 @@
 import { PhoneFormatter } from 'field-kit';
-import $ from 'jquery';
 
 const INTERNATIONAL_CODE_REGEX = /^\+(\d+) |^1 /;
 
@@ -57,7 +56,7 @@ const enablePhoneState = (phoneRadio, phoneLabel, deliveryMethodHint, optPhoneLa
   phoneLabel.classList.remove('btn-disabled');
   deliveryMethodHint.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
   if (optPhoneLabelInfo) {
-    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_phone_label_info');
+    optPhoneLabelInfo.innerText = I18n.t('devise.two_factor_authentication.otp_delivery_preference.instruction');
   }
 };
 
@@ -136,16 +135,8 @@ const updateInternationalCodeInput = () => {
 document.addEventListener('DOMContentLoaded', () => {
   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
-  const telInput = $('#user_phone_form_phone');
-
-  if (telInput) {
-    telInput.on('countrychange', updateOTPDeliveryMethods);
-    telInput.on('countrychange', updateInternationalCodeSelection);
-  }
   if (phoneInput) {
-    phoneInput.onchange = ('countrychange', updateOTPDeliveryMethods);
-    phoneInput.addEventListener('keyup', updateOTPDeliveryMethods);
-    phoneInput.addEventListener('keyup', updateInternationalCodeSelection);
+    phoneInput.addEventListener('countryChange', updateOTPDeliveryMethods);
   }
   if (codeInput) {
     codeInput.addEventListener('change', updateOTPDeliveryMethods);
