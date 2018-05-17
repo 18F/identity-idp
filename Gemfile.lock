@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: 1a74c7bb27b43aca8fe192e638279d0694ab2fed
-  tag: v2.2.0
+  revision: 41d29dcce7afc812188ada0b90d47b91c1201b38
+  tag: v2.3.0
   specs:
-    aamva (2.2.0)
+    aamva (2.3.0)
       dotenv
       hashie
       httpi
@@ -32,10 +32,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: e5aeee957fd0a054cea826bebb91b25e9a6d5e86
-  tag: v2.3.0
+  revision: 55191ec2124fb2b36111adf15d626d483436b74d
+  tag: v2.5.0
   specs:
-    proofer (2.3.0)
+    proofer (2.5.0)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git

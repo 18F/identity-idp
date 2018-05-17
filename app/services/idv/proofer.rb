@@ -78,7 +78,7 @@ module Idv
       end
 
       def stage_vendor(stage, vendors)
-        vendors.find { |vendor| stage == vendor.supported_stage&.to_sym }
+        vendors.find { |vendor| stage == vendor.stage&.to_sym }
       end
 
       def validate_vendors(stages, vendors)
