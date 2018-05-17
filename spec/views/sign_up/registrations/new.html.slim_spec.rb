@@ -12,6 +12,7 @@ describe 'sign_up/registrations/new.html.slim' do
       sp: nil, view_context: view_context, sp_session: {}, service_provider_request: nil
     ).call
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
+    allow(view_context).to receive(:root_url).and_return('http://www.example.com')
   end
 
   it 'has a localized title' do

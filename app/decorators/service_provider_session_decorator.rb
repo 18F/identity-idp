@@ -1,7 +1,4 @@
 class ServiceProviderSessionDecorator
-  include Rails.application.routes.url_helpers
-  include LocaleHelper
-
   DEFAULT_LOGO = 'generic.svg'.freeze
 
   SP_ALERTS = {
@@ -97,7 +94,7 @@ class ServiceProviderSessionDecorator
   end
 
   def cancel_link_url
-    sign_up_start_url(request_id: sp_session[:request_id], locale: locale_url_param)
+    view_context.sign_up_start_url(request_id: sp_session[:request_id])
   end
 
   def sp_alert?

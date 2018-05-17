@@ -1,6 +1,7 @@
 class SessionDecorator
-  include Rails.application.routes.url_helpers
-  include LocaleHelper
+  def initialize(view_context: nil)
+    @view_context = view_context
+  end
 
   def return_to_service_provider_partial
     'shared/null'
@@ -31,7 +32,7 @@ class SessionDecorator
   end
 
   def cancel_link_url
-    root_url(locale: locale_url_param)
+    view_context.root_url
   end
 
   def sp_name; end
@@ -51,4 +52,8 @@ class SessionDecorator
   def sp_alert_name; end
 
   def sp_alert_learn_more; end
+
+  private
+
+  attr_reader :view_context
 end
