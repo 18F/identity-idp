@@ -14,12 +14,12 @@ $telInput.intlTelInput({
 });
 
 // Setting initial country dial code for phone input
-const $initialCountry = $telInput.intlTelInput('getSelectedCountryData').dialCode;
-$telInput.val(`+${$initialCountry}`);
+// const $initialCountry = $telInput.intlTelInput('getSelectedCountryData').dialCode;
+// $telInput.val(`+${$initialCountry}`);
 
 $telInput.on('countrychange', function(e, countryData) {
 // Adding country dial code to phone input on JS dropdown change
-  $telInput.val(`+${countryData.dialCode}`);
+  // $telInput = (`+${countryData.dialCode}`);
 // Changing hidden dropdown country code on JS dropdown change
   $intlCode.val(countryData.iso2.toUpperCase());
 // Using plain JS to dispatch the country change event to phone-internationalization.js
