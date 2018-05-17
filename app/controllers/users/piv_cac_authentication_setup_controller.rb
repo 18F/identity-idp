@@ -1,6 +1,7 @@
 module Users
   class PivCacAuthenticationSetupController < ApplicationController
     include UserAuthenticator
+    include PivCacConcern
 
     before_action :confirm_two_factor_authenticated
     before_action :authorize_piv_cac_setup, only: :new
@@ -12,8 +13,8 @@ module Users
       else
         # add a nonce that we track for the return
         analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-        @piv_cac_nonce = SecureRandom.base64(10)
-        user_session[:piv_cac_nonce] = @piv_cac_nonce
+        create_piv_cac_nonce
+        @presenter = PivCacAuthenticationSetupPresenter.new(user_piv_cac_form)
         render :new
       end
     end
@@ -42,7 +43,7 @@ module Users
       @user_piv_cac_form ||= UserPivCacSetupForm.new(
         user: current_user,
         token: params[:token],
-        nonce: user_session[:piv_cac_nonce]
+        nonce: piv_cac_nonce
       )
     end
 
@@ -52,7 +53,8 @@ module Users
     end
 
     def process_invalid_submission
-      @presenter = PivCacAuthenticationSetupPresenter.new(user_piv_cac_form)
+      create_piv_cac_nonce
+      @presenter = PivCacAuthenticationSetupErrorPresenter.new(user_piv_cac_form)
       render :error
     end
 

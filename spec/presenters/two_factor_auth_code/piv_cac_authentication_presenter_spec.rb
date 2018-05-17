@@ -4,6 +4,10 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::TagHelper
 
+  def presenter_with(arguments = {}, view = ActionController::Base.new.view_context)
+    TwoFactorAuthCode::PivCacAuthenticationPresenter.new(data: arguments, view: view)
+  end
+
   let(:user_email) { 'user@example.com' }
   let(:reauthn) { }
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }

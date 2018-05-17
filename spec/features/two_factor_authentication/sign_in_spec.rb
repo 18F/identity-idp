@@ -490,6 +490,95 @@ feature 'Two Factor Authentication' do
     end
   end
 
+  describe 'when the user is PIV/CAC enabled' do
+    it 'allows SMS and Voice fallbacks' do
+      user = user_with_piv_cac
+      sign_in_before_2fa(user)
+
+      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
+
+      expect(current_path).to eq login_two_factor_piv_cac_path
+
+      expect(page).not_to have_link(t('links.two_factor_authentication.app'))
+
+      click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')
+
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+
+      visit login_two_factor_piv_cac_path
+
+      click_link t('devise.two_factor_authentication.totp_fallback.voice_link_text')
+
+      expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'voice')
+    end
+
+    it 'allows totp fallback when configured' do
+      user = create(:user, :signed_up, :with_piv_or_cac, otp_secret_key: 'foo')
+      sign_in_before_2fa(user)
+
+      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
+
+      expect(current_path).to eq login_two_factor_piv_cac_path
+
+      click_link t('links.two_factor_authentication.app')
+
+      expect(current_path).to eq login_two_factor_authenticator_path
+    end
+
+    scenario 'user can cancel PIV/CAC process' do
+      user = create(:user, :signed_up, :with_piv_or_cac)
+      sign_in_before_2fa(user)
+      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
+
+      expect(current_path).to eq login_two_factor_piv_cac_path
+      click_link t('links.cancel')
+
+      expect(current_path).to eq root_path
+    end
+
+    scenario 'user uses PIV/CAC as their second factor' do
+      stub_piv_cac_service
+
+      user = user_with_piv_cac
+      sign_in_before_2fa(user)
+
+      nonce = visit_login_two_factor_piv_cac_and_get_nonce
+
+      visit_piv_cac_service(login_two_factor_piv_cac_path, {
+        uuid: user.x509_dn_uuid,
+        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234",
+        nonce: nonce
+      })
+      expect(current_path).to eq account_path
+    end
+
+    scenario 'user uses incorrect PIV/CAC as their second factor' do
+      stub_piv_cac_service
+
+      user = user_with_piv_cac
+      sign_in_before_2fa(user)
+
+      nonce = visit_login_two_factor_piv_cac_and_get_nonce
+
+      visit_piv_cac_service(login_two_factor_piv_cac_path, {
+        uuid: user.x509_dn_uuid + 'X',
+        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345",
+        nonce: nonce
+      })
+      expect(current_path).to eq login_two_factor_piv_cac_path
+      expect(page).to have_content(t("devise.two_factor_authentication.invalid_piv_cac"))
+    end
+  end
+
+  describe 'when the user is not piv/cac enabled' do
+    it 'has no link to piv/cac during login' do
+      user = create(:user, :signed_up)
+      sign_in_before_2fa(user)
+
+      expect(page).not_to have_link(t('devise.two_factor_authentication.piv_cac_fallback.link'))
+    end
+  end
+
   describe 'when the user is TOTP enabled' do
     it 'allows SMS and Voice fallbacks' do
       user = create(:user, :signed_up, otp_secret_key: 'foo')
