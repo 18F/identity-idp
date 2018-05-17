@@ -137,6 +137,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (phoneInput) {
     phoneInput.addEventListener('countryChange', updateOTPDeliveryMethods);
+    phoneInput.addEventListener('countryChange', updateInternationalCodeSelection);
+     phoneInput.addEventListener('keyup', updateInternationalCodeSelection);
   }
   if (codeInput) {
     codeInput.addEventListener('change', updateOTPDeliveryMethods);
