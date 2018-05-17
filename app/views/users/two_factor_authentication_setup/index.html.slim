@@ -20,7 +20,7 @@ p.mt-tiny.mb0
       span#otp_phone_label_info.ml1.italic
         = t('devise.two_factor_authentication.otp_phone_label_info')
     = f.input :phone, as: :tel, label: false, required: true,
-        input_html: { class: 'phone col-8 mb4' }
+        input_html: { class: 'new-phone col-8 mb4' }
 
   = render 'users/shared/otp_delivery_preference_selection'
   .sm-col-12

@@ -128,20 +128,11 @@ feature 'Two Factor Authentication' do
         expect(phone_radio_button).to_not be_disabled
       end
 
-      scenario 'does not allow the user to remove the international code after entering it', :js do
-        sign_in_before_2fa
-        select_country_and_type_phone_number(country: 'jp', number: '543543643')
-        input = find('#user_phone_form_phone')
-        input.send_keys(*([:backspace] * input.value.length))
-
-        expect(phone_field.value).to eq('+81 ')
-      end
-
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
         select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
-        expect(phone_field.value).to eq('+1 12345678901234567890')
+        expect(phone_field.value).to eq('12345678901234567890')
       end
     end
   end

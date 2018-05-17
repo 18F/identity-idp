@@ -76,7 +76,7 @@ const updateOTPDeliveryMethods = () => {
     return;
   }
 
-  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone') || document.querySelector('[data-international-phone-form] .new-phone');
   const phoneLabel = phoneRadio.parentNode.parentNode;
   const deliveryMethodHint = document.querySelector('#otp_delivery_preference_instruction');
   const optPhoneLabelInfo = document.querySelector('#otp_phone_label_info');
@@ -122,7 +122,7 @@ const updateInternationalCodeInPhone = (phone, newCode) => {
 };
 
 const updateInternationalCodeInput = () => {
-  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone') || document.querySelector('[data-international-phone-form] .new-phone');
   const phone = phoneInput.value;
   const inputInternationalCode = internationalCodeFromPhone(phone);
   const selectedInternationalCode = selectedInternationCodeOption().dataset.countryCode;
@@ -133,7 +133,7 @@ const updateInternationalCodeInput = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone') || document.querySelector('[data-international-phone-form] .new-phone');
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (phoneInput) {
     phoneInput.addEventListener('countryChange', updateOTPDeliveryMethods);
