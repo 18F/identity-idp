@@ -85,7 +85,7 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'knapsack'
   gem 'pry-byebug'
-  gem 'rspec-rails', '~> 3.5.2'
+  gem 'rspec-rails', '~> 3.7'
   gem 'slim_lint'
   gem 'strong_migrations'
   gem 'thin'
