@@ -61,7 +61,7 @@ gem 'valid_email'
 gem 'webpacker', '~> 3.4'
 gem 'whenever', require: false
 gem 'xml-simple'
-gem 'xmlenc', '~> 0.6.4'
+gem 'xmlenc', '~> 0.6'
 gem 'zxcvbn-js'
 
 group :development do

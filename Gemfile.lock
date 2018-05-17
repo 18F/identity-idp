@@ -646,12 +646,12 @@ GEM
     xml-simple (1.1.5)
     xmldsig (0.6.6)
       nokogiri (>= 1.6.8, < 2.0.0)
-    xmlenc (0.6.9)
+    xmlenc (0.7.1)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       nokogiri (>= 1.6.0, < 2.0.0)
-      xmlmapper (~> 0.6)
-    xmlmapper (0.7.2)
+      xmlmapper (>= 0.7.3)
+    xmlmapper (0.7.3)
       nokogiri (~> 1.5)
     xpath (3.0.0)
       nokogiri (~> 1.8)
@@ -759,7 +759,7 @@ DEPENDENCIES
   webpacker (~> 3.4)
   whenever
   xml-simple
-  xmlenc (~> 0.6.4)
+  xmlenc (~> 0.6)
   zonebie
   zxcvbn-js
 
