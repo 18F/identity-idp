@@ -58,8 +58,6 @@ class Analytics
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze
   EMAIL_CHANGE_REQUEST = 'Email Change Request'.freeze
-  EMAIL_CONFIRMATION = 'Email Confirmation'.freeze
-  EMAIL_CONFIRMATION_RESEND = 'Email Confirmation requested due to invalid token'.freeze
   IDV_ADDRESS_VERIFICATION_SELECTION = 'IdV: Address Verification Selection'.freeze
   IDV_BASIC_INFO_VISIT = 'IdV: basic info visited'.freeze
   IDV_BASIC_INFO_SUBMITTED_FORM = 'IdV: basic info form submitted'.freeze
@@ -108,6 +106,8 @@ class Analytics
   USER_REGISTRATION_AGENCY_HANDOFF_PAGE_VISIT = 'User registration: agency handoff visited'.freeze
   USER_REGISTRATION_AGENCY_HANDOFF_COMPLETE = 'User registration: agency handoff complete'.freeze
   USER_REGISTRATION_EMAIL = 'User Registration: Email Submitted'.freeze
+  USER_REGISTRATION_EMAIL_CONFIRMATION = 'User Registration: Email Confirmation'.freeze
+  USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'.freeze
   USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
