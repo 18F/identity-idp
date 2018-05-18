@@ -79,7 +79,7 @@ feature 'Two Factor Authentication' do
         expect(phone_radio_button).to be_disabled
 
         select_country_and_type_phone_number(country: 'us', number: '7035551212')
-        save_and_open_page
+        
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
