@@ -4,6 +4,7 @@ Figaro.require_keys(
   'attribute_cost',
   'attribute_encryption_key',
   'database_statement_timeout',
+  'disallow_all_web_crawlers',
   'domain_name',
   'enable_identity_verification',
   'enable_rate_limiting',

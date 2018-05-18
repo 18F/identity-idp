@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: 1a74c7bb27b43aca8fe192e638279d0694ab2fed
-  tag: v2.2.0
+  revision: 41d29dcce7afc812188ada0b90d47b91c1201b38
+  tag: v2.3.0
   specs:
-    aamva (2.2.0)
+    aamva (2.3.0)
       dotenv
       hashie
       httpi
@@ -32,10 +32,10 @@ GIT
 
 GIT
   remote: https://github.com/18F/identity-proofer-gem.git
-  revision: e5aeee957fd0a054cea826bebb91b25e9a6d5e86
-  tag: v2.3.0
+  revision: 55191ec2124fb2b36111adf15d626d483436b74d
+  tag: v2.5.0
   specs:
-    proofer (2.3.0)
+    proofer (2.5.0)
 
 GIT
   remote: https://github.com/18F/redis-session-store.git
@@ -159,7 +159,7 @@ GEM
     bindata (2.4.3)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    brakeman (4.2.1)
+    brakeman (4.3.0)
     browser (2.5.3)
     builder (3.2.3)
     bullet (5.7.5)
@@ -217,7 +217,7 @@ GEM
       thor (~> 0.19)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
-    device_detector (1.0.0)
+    device_detector (1.0.1)
     devise (4.4.3)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -254,10 +254,10 @@ GEM
     factory_bot_rails (4.8.2)
       factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
-    fakefs (0.13.3)
+    fakefs (0.14.0)
     faker (1.8.7)
       i18n (>= 0.7)
-    faraday (0.15.0)
+    faraday (0.15.1)
       multipart-post (>= 1.2, < 3)
     fasterer (0.4.1)
       colorize (~> 0.7)
@@ -321,12 +321,10 @@ GEM
     io-like (0.3.0)
     jmespath (1.3.1)
     json (1.8.6)
-    json-jwt (1.9.2)
+    json-jwt (1.9.4)
       activesupport
       aes_key_wrap
       bindata
-      securecompare
-      url_safe_base64
     jwt (2.1.0)
     knapsack (1.16.0)
       rake
@@ -362,7 +360,7 @@ GEM
     net-sftp (2.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (4.1.0)
-    newrelic_rpm (5.0.0.342)
+    newrelic_rpm (5.1.0.344)
     nio4r (2.3.0)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
@@ -398,7 +396,7 @@ GEM
       byebug (~> 10.0)
       pry (~> 0.10)
     public_suffix (3.0.2)
-    rack (2.0.4)
+    rack (2.0.5)
     rack-attack (5.2.0)
       rack
     rack-cors (1.0.2)
@@ -503,7 +501,7 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     ruby-graphviz (1.2.3)
     ruby-progressbar (1.9.0)
-    ruby-saml (1.7.2)
+    ruby-saml (1.8.0)
       nokogiri (>= 1.5.10)
     ruby_dep (1.5.0)
     ruby_parser (3.11.0)
@@ -535,7 +533,6 @@ GEM
       ffi-compiler (>= 1.0, < 2.0)
     secure_headers (3.7.3)
       useragent
-    securecompare (1.0.0)
     selenium-webdriver (3.11.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
@@ -598,7 +595,7 @@ GEM
     thread_safe (0.3.6)
     tilt (2.0.8)
     timecop (0.9.1)
-    twilio-ruby (5.8.0)
+    twilio-ruby (5.10.0)
       faraday (~> 0.9)
       jwt (>= 1.5, <= 2.5)
       nokogiri (>= 1.6, < 2.0)
@@ -616,7 +613,6 @@ GEM
       execjs (>= 0.3.0, < 3)
     unicode-display_width (1.3.0)
     uniform_notifier (1.11.0)
-    url_safe_base64 (0.2.2)
     user_agent_parser (2.4.1)
     useragent (0.16.8)
     uuid (2.3.8)
@@ -634,11 +630,11 @@ GEM
     wasabi (3.5.0)
       httpi (~> 2.0)
       nokogiri (>= 1.4.2)
-    webmock (3.3.0)
+    webmock (3.4.1)
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
-    webpacker (3.4.3)
+    webpacker (3.5.3)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
       railties (>= 4.2)

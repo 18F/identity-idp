@@ -11,7 +11,6 @@ describe 'idv/review/new.html.slim' do
         first_name: 'Some',
         last_name: 'One',
         ssn: '666-66-1234',
-        ccn: '12345678',
         dob: Date.parse('1972-03-29'),
         address1: '123 Main St',
         city: 'Somewhere',

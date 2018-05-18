@@ -1,3 +1,5 @@
+require 'utf8_cleaner'
+
 Ahoy.api = false
 # Period of inactivity before a new visit is created
 Ahoy.visit_duration = Figaro.env.session_timeout_in_minutes.to_i.minutes
@@ -52,6 +54,7 @@ module Ahoy
       # we probably want to ignore the Rails definition and use Ruby's.
       # To do that, we'll need to set `config.active_support.bare = true`,
       # and then only require the extensions we use.
+      token = Utf8Cleaner.new(token).remove_invalid_utf8_bytes
       uuid_regex = /\A[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\z/
       !uuid_regex.match?(token)
     end

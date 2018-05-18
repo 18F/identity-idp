@@ -11,22 +11,19 @@ describe Idv::ReviewController do
       email: 'old_email@example.com'
     )
   end
-  let(:raw_zipcode) { '66044' }
-  let(:norm_zipcode) { '66044-1234' }
-  let(:normalized_first_name) { 'JOSE' }
+  let(:zipcode) { '66044' }
   let(:user_attrs) do
     {
       first_name: 'José',
       last_name: 'One',
-      ssn: '666661234',
       dob: 'March 29, 1972',
       address1: '123 Main St',
       address2: '',
       city: 'Somewhere',
       state: 'KS',
-      zipcode: raw_zipcode,
+      zipcode: zipcode,
       phone: user.phone,
-      ccn: '12345678',
+      ssn: '12345678',
     }
   end
   let(:idv_session) do
@@ -38,9 +35,6 @@ describe Idv::ReviewController do
     idv_session.profile_confirmation = true
     idv_session.vendor_phone_confirmation = true
     idv_session.params = user_attrs
-    idv_session.normalized_applicant_params = user_attrs.merge(
-      zipcode: norm_zipcode, first_name: normalized_first_name
-    )
     idv_session
   end
 
@@ -301,19 +295,16 @@ describe Idv::ReviewController do
         expect(response).to redirect_to idv_confirmations_path
       end
 
-      it 'creates Profile with applicant and normalized_applicant attributes' do
+      it 'creates Profile with applicant attributes' do
         put :create, params: { user: { password: ControllerHelper::VALID_PASSWORD } }
 
         profile = idv_session.profile
-        uak = user.unlock_user_access_key(ControllerHelper::VALID_PASSWORD)
-        pii = profile.decrypt_pii(uak)
+        pii = profile.decrypt_pii(ControllerHelper::VALID_PASSWORD)
 
-        expect(pii.zipcode.raw).to eq raw_zipcode
-        expect(pii.zipcode.norm).to eq norm_zipcode
+        expect(pii.zipcode).to eq zipcode
 
-        expect(idv_session.applicant[:first_name]).to eq 'Jose'
-        expect(pii.first_name.raw).to eq 'José'
-        expect(pii.first_name.norm).to eq 'JOSE'
+        expect(idv_session.applicant[:first_name]).to eq 'José'
+        expect(pii.first_name).to eq 'José'
       end
 
       context 'user picked phone confirmation' do

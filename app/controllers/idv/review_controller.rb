@@ -73,8 +73,8 @@ module Idv
     end
 
     def init_profile
-      idv_session.cache_applicant_profile_id
-      idv_session.cache_encrypted_pii(current_user.user_access_key)
+      idv_session.create_profile_from_applicant_with_password(password)
+      idv_session.cache_encrypted_pii(password)
       idv_session.complete_session
     end
 

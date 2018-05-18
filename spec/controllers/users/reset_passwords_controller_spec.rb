@@ -49,7 +49,9 @@ describe Users::ResetPasswordsController, devise: true do
     end
 
     context 'token is valid' do
-      it 'displays the form to enter a new password' do
+      render_views
+
+      it 'displays the form to enter a new password and disallows indexing' do
         stub_analytics
 
         user = instance_double('User', uuid: '123')
@@ -65,6 +67,7 @@ describe Users::ResetPasswordsController, devise: true do
 
         expect(response).to render_template :edit
         expect(flash.keys).to be_empty
+        expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')
       end
     end
   end
