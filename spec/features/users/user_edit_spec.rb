@@ -36,22 +36,6 @@ feature 'User edit' do
       expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: false)
     end
 
-    scenario 'updates international code as user types', :js do
-      fill_in 'Phone', with: '+81 54 354 3643'
-
-      expect(page.find('#user_phone_form_international_code').value).to eq 'JP'
-
-      fill_in 'Phone', with: '5376'
-      select 'Morocco +212', from: 'International code'
-
-      expect(find('#user_phone_form_phone').value).to eq '+212 (537) 6'
-
-      fill_in 'Phone', with: '54354'
-      select 'Japan +81', from: 'International code'
-
-      expect(find('#user_phone_form_phone').value).to include '+81'
-    end
-
     scenario 'confirms with selected OTP delivery method and updates user delivery preference' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_now)

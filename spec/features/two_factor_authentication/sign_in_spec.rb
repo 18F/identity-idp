@@ -66,7 +66,7 @@ feature 'Two Factor Authentication' do
       scenario 'disables the phone option and displays a warning with js', :js do
         sign_in_before_2fa
 
-        fill_in 'Phone', with: unsupported_phone
+        select_country_and_type_phone_number(country: 'bs', number: '7035551212')
         phone_radio_button = page.find(
           '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
@@ -78,8 +78,8 @@ feature 'Two Factor Authentication' do
         )
         expect(phone_radio_button).to be_disabled
 
-        fill_in 'Phone', with: '555-555-5000'
-
+        select_country_and_type_phone_number(country: 'us', number: '7035551212')
+        
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
@@ -91,6 +91,7 @@ feature 'Two Factor Authentication' do
     context 'with international phone that does not support phone delivery' do
       scenario 'renders an error if a user submits with phone selected' do
         sign_in_before_2fa
+
         select 'Turkey +90', from: 'International code'
         fill_in 'Phone', with: '555-555-5000'
         choose 'Phone call'
@@ -105,8 +106,8 @@ feature 'Two Factor Authentication' do
 
       scenario 'disables the phone option and displays a warning with js', :js do
         sign_in_before_2fa
-        select 'Turkey +90', from: 'International code'
-        fill_in 'Phone', with: '+90 312 213 29 65'
+        select_country_and_type_phone_number(country: 'tr', number: '3122132965')
+
         phone_radio_button = page.find(
           '#user_phone_form_otp_delivery_preference_voice',
           visible: :all
@@ -118,7 +119,7 @@ feature 'Two Factor Authentication' do
         )
         expect(phone_radio_button).to be_disabled
 
-        select 'Canada +1', from: 'International code'
+        select_country_and_type_phone_number(country: 'ca', number: '3122132965')
 
         expect(page).not_to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
@@ -127,43 +128,23 @@ feature 'Two Factor Authentication' do
         expect(phone_radio_button).to_not be_disabled
       end
 
-      scenario 'updates international code as user types', :js do
-        sign_in_before_2fa
-        fill_in 'Phone', with: '+81 54 354 3643'
-
-        expect(page.find('#user_phone_form_international_code').value).to eq 'JP'
-
-        fill_in 'Phone', with: '5376'
-        select 'Morocco +212', from: 'International code'
-
-        expect(find('#user_phone_form_phone').value).to eq '+212 (537) 6'
-
-        fill_in 'Phone', with: '54354'
-        select 'Japan +81', from: 'International code'
-
-        expect(find('#user_phone_form_phone').value).to include '+81'
-      end
-
-      scenario 'does not allow the user to remove the international code after entering it', :js do
-        sign_in_before_2fa
-        fill_in 'Phone', with: '+81 54 354 3643'
-
-        input = find('#user_phone_form_phone')
-        input.send_keys(*([:backspace] * input.value.length))
-
-        expect(input.value).to eq('+81 ')
-      end
-
       scenario 'allows a user to continue typing even if a number is invalid', :js do
         sign_in_before_2fa
-        select 'United States of America +1', from: 'International code'
+        select_country_and_type_phone_number(country: 'us', number: '12345678901234567890')
 
-        input = find('#user_phone_form_phone')
-        input.send_keys('12345678901234567890')
-
-        expect(input.value).to eq('+1 2345678901234567890')
+        expect(phone_field.value).to eq('12345678901234567890')
       end
     end
+  end
+
+  def phone_field
+    find('#user_phone_form_phone')
+  end
+
+  def select_country_and_type_phone_number(country:, number:)
+    find(".selected-flag").click
+    find(".country[data-country-code='#{country}']:not(.preferred)").click
+    phone_field.send_keys(number)
   end
 
   def attempt_to_bypass_2fa_setup

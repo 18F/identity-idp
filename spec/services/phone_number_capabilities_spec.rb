@@ -33,8 +33,8 @@ describe PhoneNumberCapabilities do
     end
 
     it 'returns the name of the unsupported international code location' do
-      locality = PhoneNumberCapabilities.new('+212 1234 12345').unsupported_location
-      expect(locality).to eq('Morocco')
+      locality = PhoneNumberCapabilities.new('+355 1234 12345').unsupported_location
+      expect(locality).to eq('Albania')
     end
   end
 
