@@ -1,9 +1,11 @@
-- state_name = state_name_for_abbrev(@state)
-- title t("idv.titles.#{@reason}", state: state_name)
+- i18n_args = @state ? { state: state_name_for_abbrev(@state) } : {}
 
-h1.h3.mb2.my0 = t("idv.titles.#{@reason}", state: state_name)
+- title t("idv.titles.#{@reason}", **i18n_args)
 
-p.mb1 = t("idv.messages.jurisdiction.#{@reason}", state: state_name)
+h1.h3.mb2.my0 = t("idv.titles.#{@reason}", **i18n_args)
+
+- if @state
+  p.mb1 = t("idv.messages.jurisdiction.#{@reason}", **i18n_args)
 
 .col-2
   hr.mt5.mb2.bw4.border-blue.rounded

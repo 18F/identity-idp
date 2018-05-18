@@ -24,12 +24,12 @@ module IdvHelper
     fill_in 'profile_state_id_number', with: '123456789'
   end
 
-  def fill_out_idv_form_fail
+  def fill_out_idv_form_fail(state: 'Virginia')
     fill_in 'profile_first_name', with: 'Bad'
     fill_in 'profile_last_name', with: 'User'
     fill_in 'profile_address1', with: '123 Main St'
     fill_in 'profile_city', with: 'Nowhere'
-    select 'Virginia', from: 'profile_state'
+    select state, from: 'profile_state'
     fill_in 'profile_zipcode', with: '00000'
     fill_in 'profile_dob', with: '01/02/1900'
     fill_in 'profile_ssn', with: '666-66-6666'

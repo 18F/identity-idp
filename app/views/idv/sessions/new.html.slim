@@ -31,9 +31,10 @@ p.mb2 = link_to t('links.access_help'),
           "data-error-message": t('idv.errors.unsupported_jurisdiction'),
           "data-error-message-sp": sp_error,\
         }
+        - selected_state = @view_model.idv_form.state || @view_model.selected_state
         = f.input :state, collection: us_states_territories,
           label: t('idv.form.state'), required: true,
-          input_html: data_attrs, selected: @view_model.selected_state,
+          input_html: data_attrs, selected: selected_state,
           prompt: '- Select -'
 
       .sm-col.sm-col-4.px1
