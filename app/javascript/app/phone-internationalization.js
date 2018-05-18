@@ -100,17 +100,6 @@ const internationalCodeFromPhone = (phone) => {
   return '1';
 };
 
-// const updateInternationalCodeSelection = () => {
-//   const phoneInput = document.querySelector('[data-international-phone-form] .phone');
-//   const phone = phoneInput.value;
-//   const internationalCode = internationalCodeFromPhone(phone);
-//   const option = document.querySelector(`[data-country-code='${internationalCode}']`);
-//   if (option) {
-//     const dropdown = document.querySelector('#user_phone_form_international_code');
-//     dropdown.value = option.value;
-//   }
-// };
-
 const updateInternationalCodeInPhone = (phone, newCode) => {
   if (phone.match(/^\+[^d+]$/)) {
     phone = phone.replace(/^\+[^d+]$/, '');
@@ -137,8 +126,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (phoneInput) {
     phoneInput.addEventListener('countryChange', updateOTPDeliveryMethods);
-    // phoneInput.addEventListener('countryChange', updateInternationalCodeSelection);
-    // phoneInput.addEventListener('keyup', updateInternationalCodeSelection);
   }
   if (codeInput) {
     codeInput.addEventListener('change', updateOTPDeliveryMethods);
