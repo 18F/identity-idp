@@ -15,6 +15,15 @@ feature 'User edit' do
 
       expect(page).to have_current_path manage_email_path
     end
+
+    scenario 'user receives confirmation message at new address' do
+      fill_in 'Email', with: 'new_email@test.com'
+      click_button 'Update'
+
+      open_last_email
+      click_email_link_matching(/confirmation_token/)
+      expect(page).to have_content('new_email@test.com')
+    end
   end
 
   context 'editing 2FA phone number' do
