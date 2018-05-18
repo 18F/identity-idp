@@ -33,6 +33,15 @@ feature 'idv jurisdiction step' do
         expect(page).to have_content(t('idv.titles.unsupported_jurisdiction', state: 'Alabama'))
       end
     end
+
+    context 'when the user does not have a state-issued ID' do
+      it 'renders the `no_id` fail page' do
+        click_on t('idv.messages.jurisdiction.no_id')
+
+        expect(page).to have_current_path(idv_jurisdiction_fail_path(reason: :no_id))
+        expect(page).to have_content(t('idv.titles.no_id'))
+      end
+    end
   end
 
   context 'cancelling idv' do
