@@ -9,7 +9,7 @@ describe SamlIdpEncryptionConfigurator do
         allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
       end
 
-      it 'sets the secret saml key if cloudhsm is not enabled' do
+      it 'sets the secret key' do
         SamlIdpEncryptionConfigurator.configure(config)
         expect(config.secret_key).to eq(RequestKeyManager.private_key.to_pem)
       end
