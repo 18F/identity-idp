@@ -273,11 +273,11 @@ shared_examples 'saml api' do |cloudhsm_enabled|
   def enable_cloudhsm(is_enabled)
     unless is_enabled
       allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
-      SamlIdp.configure {|config| SamlIdpEncryptionConfigurator.configure(config) }
+      SamlIdp.configure {|config| SamlIdpEncryptionConfigurator.configure(config, false) }
       return
     end
     allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
-    SamlIdp.configure {|config| SamlIdpEncryptionConfigurator.configure(config) }
+    SamlIdp.configure {|config| SamlIdpEncryptionConfigurator.configure(config, true) }
     allow(PKCS11).to receive(:open).and_return('true')
     allow_any_instance_of(SamlIdp::Configurator).to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
     allow(MockSession).to receive(:login).and_return(:true)

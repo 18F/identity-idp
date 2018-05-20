@@ -9,7 +9,7 @@ SamlIdp.configure do |config|
     File.read(Rails.root.join('certs', 'saml.crt'))
   ).to_pem
 
-  SamlIdpEncryptionConfigurator.configure(config)
+  SamlIdpEncryptionConfigurator.configure(config, FeatureManagement.use_cloudhsm?)
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'
