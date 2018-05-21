@@ -52,8 +52,8 @@ gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
-gem 'strong_migrations'
 gem 'stringex', require: false
+gem 'strong_migrations'
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
