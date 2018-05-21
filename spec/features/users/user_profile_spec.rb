@@ -122,7 +122,8 @@ feature 'User profile' do
         click_submit_default
         enter_correct_otp_code_for_user(user)
         click_on t('links.account.reactivate.without_key')
-        click_idv_begin
+        fill_out_idv_jurisdiction_ok
+        click_idv_continue
         complete_idv_profile_ok(user)
         click_acknowledge_personal_key
 

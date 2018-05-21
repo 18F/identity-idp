@@ -49,4 +49,30 @@ RSpec.describe 'Invalid UTF-8 encoding in form input' do
 
     expect(response.status).to eq 400
   end
+
+  it 'returns 400 when Ahoy-Visitor header contains invalid UTF-8 bytes' do
+    get '/', headers: { 'Ahoy-Visitor' => "foo\255" }
+
+    expect(response.status).to eq 400
+  end
+
+  it 'returns 400 when Ahoy-Visit header contains invalid UTF-8 bytes' do
+    get '/', headers: { 'Ahoy-Visit' => "foo\255" }
+
+    expect(response.status).to eq 400
+  end
+
+  it 'returns 400 when ahoy_visit cookie contains invalid UTF-8 bytes' do
+    cookies['ahoy_visit'] = "foo\255"
+    get '/'
+
+    expect(response.status).to eq 400
+  end
+
+  it 'returns 400 when ahoy_visitor cookie contains invalid UTF-8 bytes' do
+    cookies['ahoy_visitor'] = "foo\255"
+    get '/'
+
+    expect(response.status).to eq 400
+  end
 end

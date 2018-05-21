@@ -11,7 +11,8 @@ feature 'LOA3 Single Sign On', idv_job: true do
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
-    click_idv_begin
+    fill_out_idv_jurisdiction_ok
+    click_idv_continue
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_address_choose_usps
@@ -69,7 +70,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
         sign_in_with_warden(user)
         loa3_sp_session
 
-        visit verify_path
+        visit idv_path
         click_on t('links.cancel')
         click_on t('idv.buttons.cancel')
 
@@ -80,7 +81,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
         sign_in_and_2fa_user
         loa3_sp_session
 
-        visit verify_path
+        visit idv_path
         click_on t('links.cancel')
         click_on t('idv.buttons.cancel')
 
@@ -94,7 +95,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
         sign_in_with_warden(user)
         loa3_sp_session
 
-        visit verify_path
+        visit idv_path
         click_idv_cancel
 
         expect(current_path).to eq(manage_personal_key_path)
@@ -104,7 +105,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
         sign_in_and_2fa_user
         loa3_sp_session
 
-        visit verify_path
+        visit idv_path
         click_idv_cancel
 
         expect(current_url).to eq(account_url)
@@ -141,12 +142,12 @@ feature 'LOA3 Single Sign On', idv_job: true do
           click_link(t('idv.messages.usps.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(verify_usps_path)
+          expect(current_path).to eq(idv_usps_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
           expect(user.events.usps_mail_sent.size).to eq 2
-          expect(current_path).to eq(verify_come_back_later_path)
+          expect(current_path).to eq(idv_come_back_later_path)
         end
 
         it 'after signing out' do
@@ -162,11 +163,11 @@ feature 'LOA3 Single Sign On', idv_job: true do
           click_link(t('idv.messages.usps.resend'))
 
           expect(user.events.account_verified.size).to be(0)
-          expect(current_path).to eq(verify_usps_path)
+          expect(current_path).to eq(idv_usps_path)
 
           click_button(t('idv.buttons.mail.resend'))
 
-          expect(current_path).to eq(verify_come_back_later_path)
+          expect(current_path).to eq(idv_come_back_later_path)
         end
       end
     end
@@ -178,28 +179,30 @@ feature 'LOA3 Single Sign On', idv_job: true do
 
         visit saml_authn_request
         sign_in_live_with_2fa(user)
-        click_idv_begin
+        fill_out_idv_jurisdiction_ok
+        click_idv_continue
         fill_out_idv_form_ok
         click_idv_continue
         click_idv_cancel
         visit saml_authn_request
-        click_idv_begin
+        fill_out_idv_jurisdiction_ok
+        click_idv_continue
         fill_out_idv_form_ok
         click_idv_continue
 
-        expect(current_path).to eq verify_address_path
+        expect(current_path).to eq idv_address_path
       end
     end
   end
 
   context 'visiting sign_up_completed path before proofing' do
-    it 'redirects to verify_path' do
+    it 'redirects to idv_path' do
       sign_in_and_2fa_user
 
       visit loa3_authnrequest
       visit sign_up_completed_path
 
-      expect(current_path).to eq verify_path
+      expect(current_path).to eq idv_jurisdiction_path
     end
   end
 end

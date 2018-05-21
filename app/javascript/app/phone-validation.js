@@ -10,7 +10,7 @@ const isPhoneValid = (phone, countryCode) => {
 
 const checkPhoneValidity = () => {
   const sendCodeButton = document.querySelector('[data-international-phone-form] input[name=commit]');
-  const phoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const phoneInput = document.querySelector('[data-international-phone-form] .phone') || document.querySelector('[data-international-phone-form] .new-phone');
   const countryCodeInput = document.querySelector('[data-international-phone-form] .international-code');
 
   if (phoneInput && countryCodeInput && sendCodeButton) {
@@ -28,7 +28,7 @@ const checkPhoneValidity = () => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-  const intlPhoneInput = document.querySelector('[data-international-phone-form] .phone');
+  const intlPhoneInput = document.querySelector('[data-international-phone-form] .phone') || document.querySelector('[data-international-phone-form] .new-phone');
   const codeInput = document.querySelector('[data-international-phone-form] .international-code');
   if (intlPhoneInput) {
     intlPhoneInput.addEventListener('keyup', checkPhoneValidity);

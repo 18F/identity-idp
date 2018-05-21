@@ -24,6 +24,21 @@ en:
       confirm: Confirm your current password to continue
       forgot: Forgot your password?
     personal_key: Store your personal key
+    piv_cac_setup:
+      new: Use your PIV/CAC card to secure your account
+      certificate:
+        bad: The certificate you selected is invalid.
+        expired: The certificate you selected has expired.
+        invalid: The certificate you selected is invalid.
+        none: We cannot detect a certificate on your PIV/CAC card.
+        revoked: The certificate you selected has been revoked from your card.
+        unverified: The certificate you selected is invalid.
+      piv_cac:
+        already_associated: The PIV/CAC you presented is associated with another user.
+      token:
+        bad: Internal error.
+        invalid: The certificate you selected is invalid.
+        missing: Internal error.
     registrations:
       enter_email: Enter your email address
     session_timeout_warning: Need more time?

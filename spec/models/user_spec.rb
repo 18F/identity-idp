@@ -84,6 +84,54 @@ describe User do
     end
   end
 
+  context '#piv_cac_enabled?' do
+    it 'is true when the user has a confirmed piv/cac associated' do
+      user = create(:user, :with_piv_or_cac)
+
+      expect(user.piv_cac_enabled?).to eq true
+    end
+
+    it 'is false when the user has no piv/cac associated' do
+      user = create(:user)
+
+      expect(user.piv_cac_enabled?).to eq false
+    end
+  end
+
+  context '#confirm_piv_cac?' do
+    context 'when the user has a piv/cac associated' do
+      let(:user) { create(:user, :with_piv_or_cac) }
+
+      it 'is false when a blank is provided' do
+        expect(user.confirm_piv_cac?('')).to be_falsey
+      end
+
+      it 'is false when a nil is provided' do
+        expect(user.confirm_piv_cac?(nil)).to be_falsey
+      end
+
+      it 'is true when the correct valud is provided' do
+        expect(user.confirm_piv_cac?(user.x509_dn_uuid)).to be_truthy
+      end
+    end
+
+    context 'when the user has no piv/cac associated' do
+      let(:user) { create(:user) }
+
+      it 'is false when a blank is provided' do
+        expect(user.confirm_piv_cac?('')).to be_falsey
+      end
+
+      it 'is false when a nil is provided' do
+        expect(user.confirm_piv_cac?(nil)).to be_falsey
+      end
+
+      it 'is false when the user x509_dn_uuid value is provided' do
+        expect(user.confirm_piv_cac?(user.x509_dn_uuid)).to be_falsey
+      end
+    end
+  end
+
   context '#two_factor_enabled?' do
     it 'is true when user has a confirmed phone' do
       user = create(:user, :with_phone)

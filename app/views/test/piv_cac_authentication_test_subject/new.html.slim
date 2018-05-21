@@ -1,0 +1,58 @@
+- title 'Enter PIV/CAC Test Information'
+
+h1.h3.my0 Enter PIV/CAC Test Information
+p.mt-tiny.mb3
+  | Either enter a subject for a certificate or select an error to simulate a piv/cac response.
+
+.sm-col-9.sm-ml-28p
+  = form_tag do
+    = hidden_field_tag(:referer, @referrer)
+    .clearfix.mxn1
+      .col.col-12.px1
+        legend.mb1.h4.serif.bold Certificate Subject
+        = text_field_tag(:subject, '', class: 'block col-12 field monospace')
+      .mb3
+        fieldset.m0.p0.border-none
+          legend.mb1.h4.serif.bold Error Conditions
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, '')
+              = label_tag(:error_, 'No error')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.none')
+              = label_tag(:'error_certificate.none', 'No certificate')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.bad')
+              = label_tag(:'error_certificate.bad', 'Bad certificate')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.expired')
+              = label_tag(:'error_certificate.expired', 'Expired certificate')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.revoked')
+              = label_tag(:'error_certificate.revoked', 'Revoked certificate')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.invalid')
+              = label_tag(:'error_certificate.invalid', 'Invalid certificate')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'certificate.unverified')
+              = label_tag(:'error_certificate.unverified', 'Unverified certificate')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'token.missing')
+              = label_tag(:'error_token.missing', 'Missing token')
+          label.btn-border.col-12.mb2
+            .radio
+              = radio_button_tag(:error, 'token.invalid')
+              = label_tag(:'error_token.invalid', 'Invalid token')
+      .col.col-6.sm-col-5.px1
+        = button_tag(class: 'btn btn-primary col-12 align-top') { 'Proceed' }
+
+= render 'shared/cancel', link: @referrer
+
+== javascript_pack_tag 'clipboard'

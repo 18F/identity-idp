@@ -8,7 +8,7 @@ feature 'IdV with previous address filled in', idv_job: true do
   let(:previous_address) { '456 Other Ave' }
 
   def expect_to_stay_on_verify_session_page
-    expect(current_path).to eq verify_session_result_path
+    expect(current_path).to eq idv_session_result_path
     expect(page).to have_selector("input[value='#{bad_zipcode}']")
   end
 
@@ -29,7 +29,7 @@ feature 'IdV with previous address filled in', idv_job: true do
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
 
-    expect(current_path).to eq verify_review_path
+    expect(current_path).to eq idv_review_path
     expect(page).to have_content(current_address)
     expect(page).to_not have_content(previous_address)
   end

@@ -1,0 +1,160 @@
+#!/usr/bin/env ruby
+require 'pathname'
+require 'active_support/all'
+
+# path to your application root.
+APP_ROOT = Pathname.new File.expand_path("../../",  __FILE__)
+
+RELEASE_DATE = 3.days.from_now.strftime('%Y-%m-%d')
+RC_BRANCH = "stages/rc-#{RELEASE_DATE}"
+DRY_RUN = %w[--dry-run -n].include?(ARGV.first)
+
+def run(command)
+  abort "command failed (#{$?}): #{command}" unless system command
+end
+
+def create_new_rc_branch_and_push_to_github
+  ARGV.clear
+
+  puts "==> This script will perform all of the following:"
+  puts "1. Checkout a new RC branch based on stages/int"
+  puts "2. Merge master into the RC branch"
+  puts "3. Push the RC branch to stages/int on GitHub"
+  puts "4. Publish the wiki page for the RC"
+
+  print "Are you sure you want to proceed? (Type 'yes' to proceed, or anything else to abort) "
+  answer = gets
+  abort "==> You have chosen to abort the script." unless answer == "yes\n"
+
+  puts "==> Checking out master and pulling latest changes"
+  run "git checkout master && git pull" unless DRY_RUN
+
+  if `git branch`.include?('stages/int')
+    puts "==> Checking out stages/int and pulling latest changes"
+    run "git checkout stages/int && git pull" unless DRY_RUN
+  else
+    puts "==> Checking out new stages/int branch and pulling down origin/stages/int"
+    run "git checkout -b stages/int origin/stages/int" unless DRY_RUN
+  end
+
+  unless `git branch`.include?(RC_BRANCH)
+    puts "==> Checking out RC branch for release to prod 3 days from today"
+    run "git checkout -b #{RC_BRANCH}" unless DRY_RUN
+
+    puts "==> Merging master into RC branch"
+    run "git merge master" unless DRY_RUN
+
+    puts "==> Pushing RC branch to GitHub"
+    run "git push origin #{RC_BRANCH}" unless DRY_RUN
+  end
+end
+
+def remove_login_dot_gov_dir
+  Dir.chdir ENV['HOME'] do
+    puts "===> Removing ~/login-dot-gov"
+    run "rm -rf login-dot-gov"
+  end
+end
+
+def publish_wiki_page_for_new_rc
+  Dir.chdir ENV['HOME'] do
+    puts "==> Cloning identity-private.wiki repo into ~/login-dot-gov/identity-private.wiki"
+    run "mkdir login-dot-gov"
+    Dir.chdir "#{ENV['HOME']}/login-dot-gov" do
+      run "git clone git@github.com:18F/identity-private.wiki"
+    end
+  end
+
+  Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-private.wiki" do
+    rc_commit = `git log --grep="#{RC_BRANCH}" --oneline`
+    unless rc_commit.include?(RC_BRANCH)
+      puts "==> Generating the wiki page for the RC"
+      run "./scripts/generate-release --release-date=#{RELEASE_DATE}" unless DRY_RUN
+      puts "==> Pushing the wiki page to GitHub"
+      unless DRY_RUN
+        run "git add ."
+        run "git commit -m \"Add page for #{RC_BRANCH}\""
+        run "git push origin master"
+      end
+    end
+  end
+
+  remove_login_dot_gov_dir
+end
+
+def clone_identity_devops_repo
+  Dir.chdir ENV['HOME'] do
+    puts "==> Cloning identity-devops repo into ~/login-dot-gov/identity-devops"
+    run "mkdir login-dot-gov"
+    Dir.chdir "#{ENV['HOME']}/login-dot-gov" do
+      run "git clone git@github.com:18F/identity-devops.git"
+    end
+  end
+end
+
+def deploy_to_int
+  clone_identity_devops_repo
+
+  Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-devops" do
+    puts "Deploying the `stages/int` branch to the `int` environment"
+    ENV['AWS_PROFILE'] = 'identitysandbox.gov'
+    run "bin/asg-recycle.sh int idp"
+    run "bin/asg-recycle.sh int worker"
+  end
+
+  remove_login_dot_gov_dir
+end
+
+def deploy_to_staging
+  clone_identity_devops_repo
+
+  Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-devops" do
+    puts "Deploying the `stages/staging` branch to the `staging` environment"
+    ENV['AWS_PROFILE'] = 'login.gov'
+    run "bin/asg-recycle.sh staging idp"
+    run "bin/asg-recycle.sh staging worker"
+  end
+
+  remove_login_dot_gov_dir
+end
+
+def deploy_to_prod
+  clone_identity_devops_repo
+
+  Dir.chdir "#{ENV['HOME']}/login-dot-gov/identity-devops" do
+    puts "Deploying the `stages/prod` branch to the `prod` environment"
+    ENV['AWS_PROFILE'] = 'login.gov'
+    run "bin/asg-recycle.sh prod idp"
+    run "bin/asg-recycle.sh prod worker"
+  end
+
+  remove_login_dot_gov_dir
+end
+
+def open_pr_for_int
+  run "brew install hub" unless `brew list -1 | grep -Fqx hub`
+  run "hub pull-request -m \"Deploy #{RC_BRANCH} to int\" -b stages/int"
+end
+
+Dir.chdir APP_ROOT do
+  puts %q[
+   _             _
+  | |           (_)
+  | | ___   __ _ _ _ __    __ _  _____   __
+  | |/ _ \ / _` | | '_ \  / _` |/ _ \ \ / /
+  | | (_) | (_| | | | | || (_| | (_) \ V /
+  |_|\___/ \__, |_|_| |_(_)__, |\___/ \_/
+            __/ |          __/ |
+           |___/          |___/
+  ]
+
+  if ARGV.empty?
+    create_new_rc_branch_and_push_to_github
+    publish_wiki_page_for_new_rc
+    open_pr_for_int
+  end
+
+  deploy_to_int if ARGV.first == '--int'
+  deploy_to_staging if ARGV.first == '--staging'
+  deploy_to_prod if ARGV.first == '--prod'
+end

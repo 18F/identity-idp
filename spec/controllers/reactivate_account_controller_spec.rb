@@ -38,11 +38,11 @@ describe ReactivateAccountController do
   describe '#update' do
     let(:profiles) { [create(:profile, deactivation_reason: :password_reset)] }
 
-    it 'redirects user to verify_url' do
+    it 'redirects user to idv_url' do
       put :update
 
       expect(subject.user_session[:acknowledge_personal_key]).to be_nil
-      expect(response).to redirect_to verify_url
+      expect(response).to redirect_to idv_url
     end
   end
 end

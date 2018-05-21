@@ -14,7 +14,7 @@ feature 'idv state id data entry', :idv_job do
     click_idv_continue
 
     expect(page).to have_content t('idv.modal.sessions.warning')
-    expect(current_path).to eq(verify_session_result_path)
+    expect(current_path).to eq(idv_session_result_path)
   end
 
   it 'renders an error for blank state id number and does not submit a job', :email do
@@ -25,7 +25,7 @@ feature 'idv state id data entry', :idv_job do
     click_idv_continue
 
     expect(page).to have_content t('errors.messages.blank')
-    expect(current_path).to eq(verify_session_path)
+    expect(current_path).to eq(idv_session_path)
   end
 
   it 'renders an error for unsupported jurisdiction and does not submit a job', :email do
@@ -36,7 +36,7 @@ feature 'idv state id data entry', :idv_job do
     click_idv_continue
 
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
-    expect(current_path).to eq(verify_session_path)
+    expect(current_path).to eq(idv_session_path)
   end
 
   it 'allows selection of different state id types', :email do
@@ -49,6 +49,6 @@ feature 'idv state id data entry', :idv_job do
     )
 
     expect(page).to have_content(success_message)
-    expect(current_path).to eq(verify_address_path)
+    expect(current_path).to eq(idv_address_path)
   end
 end

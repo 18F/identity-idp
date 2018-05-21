@@ -179,9 +179,8 @@ end
 
 def personal_key_for_loa3_user(user, pii)
   pii_attrs = Pii::Attributes.new_from_hash(pii)
-  user_access_key = user.unlock_user_access_key(user.password)
   profile = user.profiles.last
-  personal_key = profile.encrypt_pii(user_access_key, pii_attrs)
+  personal_key = profile.encrypt_pii(pii_attrs, user.password)
   profile.save!
 
   personal_key

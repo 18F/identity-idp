@@ -1,5 +1,6 @@
 module SignUp
   class RegistrationsController < ApplicationController
+    include RecaptchaConcern
     include PhoneConfirmation
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
@@ -19,7 +20,7 @@ module SignUp
     end
 
     def create
-      @register_user_email_form = RegisterUserEmailForm.new
+      @register_user_email_form = RegisterUserEmailForm.new(validate_recaptcha)
 
       result = @register_user_email_form.submit(permitted_params)
 

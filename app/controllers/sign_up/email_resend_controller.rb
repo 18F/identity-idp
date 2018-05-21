@@ -11,7 +11,7 @@ module SignUp
       @resend_email_confirmation_form = ResendEmailConfirmationForm.new(permitted_params)
       result = @resend_email_confirmation_form.submit
 
-      analytics.track_event(Analytics::EMAIL_CONFIRMATION_RESEND, result.to_h)
+      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND, result.to_h)
 
       if result.success?
         handle_valid_email

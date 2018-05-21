@@ -88,7 +88,11 @@ module FormHelper
   end
 
   def supported_jurisdictions
-    Idv::FormStateIdValidator::SUPPORTED_JURISDICTIONS
+    Idv::FormJurisdictionValidator::SUPPORTED_JURISDICTIONS
+  end
+
+  def state_name_for_abbrev(abbrev)
+    us_states_territories.find([]) { |state| state.second == abbrev }.first
   end
 
   private

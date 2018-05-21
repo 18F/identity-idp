@@ -15,25 +15,25 @@ shared_examples 'fail to verify idv info' do |step|
   context 'without js' do
     it 'renders a flash message and lets the user try again' do
       expect_page_to_have_warning_message
-      expect(page).to have_current_path(verify_session_result_path) if step == :profile
-      expect(page).to have_current_path(verify_phone_result_path) if step == :phone
+      expect(page).to have_current_path(idv_session_result_path) if step == :profile
+      expect(page).to have_current_path(idv_phone_result_path) if step == :phone
 
       fill_out_idv_form_ok if step == :profile
       fill_out_phone_form_ok if step == :phone
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.select_verification')) if step == :profile
-      expect(page).to have_current_path(verify_address_path) if step == :profile
+      expect(page).to have_current_path(idv_address_path) if step == :profile
       expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
-      expect(page).to have_current_path(verify_otp_delivery_method_path) if step == :phone
+      expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
     end
   end
 
   context 'with js', :js do
     it 'renders a modal and lets the user try again' do
       expect_page_to_have_warning_modal
-      expect(page).to have_current_path(verify_session_result_path) if step == :profile
-      expect(page).to have_current_path(verify_phone_result_path) if step == :phone
+      expect(page).to have_current_path(idv_session_result_path) if step == :profile
+      expect(page).to have_current_path(idv_phone_result_path) if step == :phone
 
       dismiss_warning_modal
       fill_out_idv_form_ok if step == :profile
@@ -41,9 +41,9 @@ shared_examples 'fail to verify idv info' do |step|
       click_idv_continue
 
       expect(page).to have_content(t('idv.titles.select_verification')) if step == :profile
-      expect(page).to have_current_path(verify_address_path) if step == :profile
+      expect(page).to have_current_path(idv_address_path) if step == :profile
       expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
-      expect(page).to have_current_path(verify_otp_delivery_method_path) if step == :phone
+      expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
     end
   end
 

@@ -1,0 +1,13 @@
+.js-intl-tel-code-select {
+  display: none;
+}
+
+.no-js {
+  .js-intl-tel-code-select {
+    display: block;
+ }
+
+  .js-intl-tel-code {
+    display: none;
+ }
+}

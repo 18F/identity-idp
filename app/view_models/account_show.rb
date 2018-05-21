@@ -1,3 +1,4 @@
+# :reek:TooManyMethods
 class AccountShow
   attr_reader :decorated_user, :decrypted_pii, :personal_key
 
@@ -61,6 +62,14 @@ class AccountShow
     end
   end
 
+  def piv_cac_partial
+    if decorated_user.piv_cac_enabled?
+      'accounts/actions/disable_piv_cac'
+    else
+      'accounts/actions/enable_piv_cac'
+    end
+  end
+
   def manage_personal_key_partial
     yield if decorated_user.password_reset_profile.blank?
   end
@@ -87,6 +96,12 @@ class AccountShow
     return 'account.index.auth_app_enabled' if decorated_user.totp_enabled?
 
     'account.index.auth_app_disabled'
+  end
+
+  def piv_cac_content
+    return 'account.index.piv_cac_enabled' if decorated_user.piv_cac_enabled?
+
+    'account.index.piv_cac_disabled'
   end
 
   delegate :recent_events, to: :decorated_user

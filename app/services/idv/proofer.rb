@@ -6,18 +6,14 @@ module Idv
       address1 address2 city state zipcode
       prev_address1 prev_address2 prev_city prev_state prev_zipcode
       ssn dob phone email
-      ccn mortgage home_equity_line auto_loan
-      bank_account bank_account_type bank_routing
       state_id_number state_id_type state_id_jurisdiction
     ].freeze
 
     STAGES = %i[resolution state_id address].freeze
 
+    @vendors = {}
+
     class << self
-      attr_accessor :configuration
-
-      @vendors = {}
-
       def attribute?(key)
         ATTRIBUTES.include?(key&.to_sym)
       end
@@ -31,8 +27,11 @@ module Idv
       end
 
       def configure
-        self.configuration ||= Configuration.new
         yield(configuration)
+      end
+
+      def configuration
+        @configuration ||= Configuration.new
       end
 
       class Configuration
@@ -79,7 +78,7 @@ module Idv
       end
 
       def stage_vendor(stage, vendors)
-        vendors.find { |vendor| stage == vendor.supported_stage&.to_sym }
+        vendors.find { |vendor| stage == vendor.stage&.to_sym }
       end
 
       def validate_vendors(stages, vendors)
