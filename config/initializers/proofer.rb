@@ -8,9 +8,8 @@ if FeatureManagement.enable_identity_verification?
 
   Idv::Proofer.init
 
-  # Until Figaro is implemented in the aamva gem and equifax is removed,
-  # ensure env variables are available
-  [/^aamva_/, /^equifax_/].each do |pattern|
+  # Until equifax is removed, ensure env variables are available
+  [/^equifax_/].each do |pattern|
     ENV.keys.grep(pattern).each do |env_var_name|
       ENV[env_var_name.upcase] = ENV[env_var_name]
     end

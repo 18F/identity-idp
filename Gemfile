@@ -112,6 +112,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v2.3.0'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.0.0'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
 end
