@@ -1,3 +1,6 @@
+require 'rack_request_parser'
+require 'utf8_cleaner'
+
 class Utf8Sanitizer
   def initialize(app)
     @app = app
@@ -5,10 +8,11 @@ class Utf8Sanitizer
 
   def call(env)
     request = Rack::Request.new(env)
-    values = all_values(request.params)
+    parser = RackRequestParser.new(request)
+    values_to_check = parser.values_to_check
 
-    if invalid_strings(values)
-      Rails.logger.info(event_attributes(env, request))
+    if invalid_strings(values_to_check)
+      Rails.logger.info(event_attributes(env, parser.request))
 
       return [400, {}, ['Bad request']]
     end
@@ -17,10 +21,6 @@ class Utf8Sanitizer
   end
 
   private
-
-  def all_values(hash)
-    hash.values.flat_map { |value| value.is_a?(Hash) ? all_values(value) : [value] }
-  end
 
   def invalid_strings(values)
     string_values(values).any? { |string| invalid_string?(string) }
@@ -42,12 +42,17 @@ class Utf8Sanitizer
       user_agent: request.user_agent,
       timestamp: Time.zone.now,
       host: request.host,
-      visitor_id: request.cookies['ahoy_visitor'],
+      visitor_id: sanitized_visitor_id(request),
       content_type: env['CONTENT_TYPE'],
     }.to_json
   end
 
   def remote_ip(request)
     @remote_ip ||= (request.env['action_dispatch.remote_ip'] || request.ip).to_s
+  end
+
+  def sanitized_visitor_id(request)
+    string_to_clean = request.cookies['ahoy_visitor']
+    Utf8Cleaner.new(string_to_clean).remove_invalid_utf8_bytes
   end
 end

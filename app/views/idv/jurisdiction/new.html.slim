@@ -1,0 +1,27 @@
+- title t('idv.titles.jurisdiction')
+
+= image_tag(asset_url('state-id-none@3x.png'),
+  alt: t('idv.titles.jurisdiction'),
+  class: 'mb2',
+  width: 210)
+
+h1.h3 = t('idv.messages.jurisdiction.why')
+
+= simple_form_for(@jurisdiction_form, url: idv_jurisdiction_path,
+    html: { autocomplete: 'off', role: 'form', class: 'mt4' }) do |f|
+
+  fieldset.m0.p0.border-none
+    legend.col-12.mb2.pb-tiny = t('idv.messages.jurisdiction.where')
+
+    .clearfix.mxn1
+      .sm-col.sm-col-6.px1
+        = f.input :state, collection: us_states_territories,
+          label: t('idv.form.state'), required: true,
+          selected: @jurisdiction_form.state, prompt: t('forms.select')
+
+  p = link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_fail_path(:no_id)
+
+  .mt3
+    button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
+
+= render 'shared/cancel', link: idv_cancel_path

@@ -1,3 +1,5 @@
+require 'cgi'
+
 module Features
   module SessionHelper
     VALID_PASSWORD = 'Val!d Pass w0rd'.freeze
@@ -97,6 +99,13 @@ module Features
       create(:user, :signed_up, phone: '+1 (555) 555-0000', password: VALID_PASSWORD)
     end
 
+    def user_with_piv_cac
+      create(:user, :signed_up, :with_piv_or_cac,
+        phone: '+1 (555) 555-0000',
+        password: VALID_PASSWORD
+      )
+    end
+
     def confirm_last_user
       @raw_confirmation_token, = Devise.token_generator.generate(User, :confirmation_token)
 
@@ -118,6 +127,18 @@ module Features
       sign_in_user(user)
       click_submit_default
       user
+    end
+
+    def sign_in_live_with_piv_cac(user = user_with_piv_cac)
+      sign_in_user(user)
+      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+      allow(FeatureManagement).to receive(:development_and_piv_cac_entry_enabled?).and_return(true)
+      visit login_two_factor_piv_cac_path
+      stub_piv_cac_service
+      visit_piv_cac_service(
+        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234",
+        uuid: user.x509_dn_uuid,
+      )
     end
 
     def click_submit_default
@@ -393,6 +414,32 @@ module Features
       allow(twilio_service).to receive(:place_call)
 
       allow(TwilioService).to receive(:new).and_return(twilio_service)
+    end
+
+    def stub_piv_cac_service
+      allow(Figaro.env).to receive(:identity_pki_disabled).and_return('false')
+      allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
+      allow(Figaro.env).to receive(:piv_cac_service_url).and_return('http://piv.example.com/')
+      allow(Figaro.env).to receive(:piv_cac_verify_token_url).and_return('http://piv.example.com/')
+      stub_request(:post, 'piv.example.com').to_return do |request|
+        {
+          status: 200,
+          body: CGI.unescape(request.body.sub(/^token=/, '')),
+        }
+      end
+    end
+
+    def visit_piv_cac_service(idp_url, token_data)
+      visit(idp_url + '?token=' + CGI.escape(token_data.to_json))
+    end
+
+    def visit_login_two_factor_piv_cac_and_get_nonce
+      visit login_two_factor_piv_cac_path
+      get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_mfa.submit')))
+    end
+
+    def get_piv_cac_nonce_from_link(link)
+      CGI.unescape(URI(link['href']).query.sub(/^nonce=/, ''))
     end
 
     def link_identity(user, client_id, ial = nil)

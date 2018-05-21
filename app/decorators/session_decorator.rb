@@ -27,7 +27,7 @@ class SessionDecorator
   end
 
   def idv_hardfail4_partial
-    'verify/no_sp_hardfail'
+    'idv/no_sp_hardfail'
   end
 
   def cancel_link_url

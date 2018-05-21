@@ -9,12 +9,11 @@ UspsConfirmationEntry = Struct.new(
   :zipcode,
   :issuer
 ) do
-  def self.user_access_key
-    SessionEncryptor.new.duped_user_access_key
-  end
-
   def self.encryptor
-    Pii::PasswordEncryptor.new
+    # This currently uses the SessionEncryptor, which is meant to be used to
+    # encrypt the session. When this code is changed to integrate a new mail
+    # vendor we should create a purpose built encryptor for that vendor
+    Encryption::Encryptors::SessionEncryptor.new
   end
 
   def self.new_from_hash(hash)
@@ -24,7 +23,7 @@ UspsConfirmationEntry = Struct.new(
   end
 
   def self.new_from_encrypted(encrypted)
-    decrypted = encryptor.decrypt(encrypted, user_access_key)
+    decrypted = encryptor.decrypt(encrypted)
     new_from_json(decrypted)
   end
 
@@ -36,6 +35,6 @@ UspsConfirmationEntry = Struct.new(
 
   def encrypted
     klass = self.class
-    klass.encryptor.encrypt(to_json, klass.user_access_key)
+    klass.encryptor.encrypt(to_json)
   end
 end

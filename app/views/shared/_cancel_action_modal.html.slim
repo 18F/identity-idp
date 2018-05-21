@@ -18,7 +18,7 @@
           = t("#{app_flow}.buttons.continue")
 
         - if idv
-          = button_to t('idv.buttons.cancel'), verify_session_path, method: :delete,
+          = button_to t('idv.buttons.cancel'), idv_session_path, method: :delete,
             class: 'btn col-12 p2 rounded-lg border border-blue blue border-box'
         - elsif user_signing_up
           = button_to t('sign_up.buttons.cancel'), destroy_user_path, method: :delete,

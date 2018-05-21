@@ -1,6 +1,3 @@
-require 'stringex/unidecoder'
-require 'stringex/core_ext'
-
 module Idv
   class Session
     VALID_SESSION_ATTRIBUTES = %i[
@@ -8,7 +5,6 @@ module Idv
       async_result_started_at
       address_verification_mechanism
       applicant
-      normalized_applicant_params
       params
       vendor_phone_confirmation
       user_phone_confirmation
@@ -48,7 +44,8 @@ module Idv
       applicant.present? && resolution_successful
     end
 
-    def cache_applicant_profile_id
+    def create_profile_from_applicant_with_password(user_password)
+      profile_maker = build_profile_maker(user_password)
       profile = profile_maker.save_profile
       self.pii = profile_maker.pii_attributes
       self.profile_id = profile.id
@@ -61,7 +58,7 @@ module Idv
     end
 
     def vendor_params
-      applicant_params_ascii.merge('uuid' => current_user.uuid)
+      applicant_params.merge('uuid' => current_user.uuid)
     end
 
     def profile
@@ -129,16 +126,12 @@ module Idv
       params.select { |key, _value| Idv::Agent.proofer_attribute?(key) }
     end
 
-    def applicant_params_ascii
-      Hash[applicant_params.map { |key, value| [key, value.to_ascii] }]
-    end
-
-    def profile_maker
-      @_profile_maker ||= Idv::ProfileMaker.new(
+    def build_profile_maker(user_password)
+      Idv::ProfileMaker.new(
         applicant: applicant_params,
-        normalized_applicant: normalized_applicant_params,
         phone_confirmed: vendor_phone_confirmation || false,
-        user: current_user
+        user: current_user,
+        user_password: user_password
       )
     end
   end

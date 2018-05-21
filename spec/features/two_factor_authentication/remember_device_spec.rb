@@ -76,7 +76,7 @@ feature 'Remembering a 2FA device' do
       sign_in_user(user)
       check :remember_device
       click_submit_default
-      visit verify_session_path
+      visit idv_session_path
       fill_out_idv_form_ok
       click_idv_continue
       click_idv_address_choose_phone

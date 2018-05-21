@@ -6,6 +6,10 @@ AF:
   name: Afghanistan
   country_code: '93'
   sms_only: true
+AX:
+  name: Åland Islands
+  country_code: '358'
+  sms_only: true
 AL:
   name: Albania
   country_code: '355'
@@ -14,6 +18,10 @@ DZ:
   name: Algeria
   country_code: '213'
   sms_only: true
+AS:
+  name: American Samoa
+  country_code: '1684'
+  sms_only: true
 AD:
   name: Andorra
   country_code: '376'
@@ -21,6 +29,14 @@ AD:
 AO:
   name: Angola
   country_code: '244'
+  sms_only: true
+AI:
+  name: Anguilla
+  country_code: '1264'
+  sms_only: true
+AG:
+  name: Antigua and Barbuda
+  country_code: '1268'
   sms_only: true
 AR:
   name: Argentina
@@ -46,6 +62,10 @@ AZ:
   name: Azerbaijan
   country_code: '994'
   sms_only: true
+BS:
+  name: Bahamas
+  country_code: '1242'
+  sms_only: true
 BH:
   name: Bahrain
   country_code: '973'
@@ -53,6 +73,10 @@ BH:
 BD:
   name: Bangladesh
   country_code: '880'
+  sms_only: true
+BB:
+  name: Barbados
+  country_code: '1246'
   sms_only: true
 BY:
   name: Belarus
@@ -69,6 +93,10 @@ BZ:
 BJ:
   name: Benin
   country_code: '229'
+  sms_only: true
+BM:
+  name: Bermuda
+  country_code: '1441'
   sms_only: true
 BT:
   name: Bhutan
@@ -122,6 +150,10 @@ CV:
   name: Cape Verde
   country_code: '238'
   sms_only: true
+KY:
+  name: Cayman Islands
+  country_code: '1345'
+  sms_only: true
 CF:
   name: Central Africa
   country_code: '236'
@@ -137,6 +169,14 @@ CL:
 CN:
   name: China
   country_code: '86'
+  sms_only: true
+CX:
+  name: Christmas Island
+  country_code: '61'
+  sms_only: true
+CC:
+  name: Cocos (Keeling) Islands
+  country_code: '61'
   sms_only: true
 CO:
   name: Colombia
@@ -170,6 +210,10 @@ CU:
   name: Cuba
   country_code: '53'
   sms_only: true
+CW:
+  name: Curaçao
+  country_code: '599'
+  sms_only: true
 CY:
   name: Cyprus
   country_code: '357'
@@ -185,6 +229,14 @@ DK:
 DJ:
   name: Djibouti
   country_code: '253'
+  sms_only: true
+DM:
+  name: Dominica
+  country_code: '1767'
+  sms_only: true
+DO:
+  name: Dominican Republic (República Dominicana)
+  country_code: '1'
   sms_only: true
 TL:
   name: East Timor
@@ -270,6 +322,10 @@ GI:
   name: Gibraltar
   country_code: '350'
   sms_only: true
+GD:
+  name: Grenada
+  country_code: '1473'
+  sms_only: true
 GR:
   name: Greece
   country_code: '30'
@@ -282,9 +338,17 @@ GP:
   name: Guadeloupe
   country_code: '590'
   sms_only: true
+GU:
+  name: Guam
+  country_code: '1671'
+  sms_only: true
 GT:
   name: Guatemala
   country_code: '502'
+  sms_only: true
+GG:
+  name: Guernsey
+  country_code: '44'
   sms_only: true
 GN:
   name: Guinea
@@ -338,6 +402,10 @@ IE:
   name: Ireland
   country_code: '353'
   sms_only: true
+IM:
+  name: Isle of Man
+  country_code: '44'
+  sms_only: true
 IL:
   name: Israel
   country_code: '972'
@@ -350,9 +418,17 @@ CI:
   name: Ivory Coast
   country_code: '225'
   sms_only: true
+JM:
+  name: Jamaica
+  country_code: '1876'
+  sms_only: true
 JP:
   name: Japan
   country_code: '81'
+  sms_only: true
+JE:
+  name: Jersey
+  country_code: '44'
   sms_only: true
 JO:
   name: Jordan
@@ -494,6 +570,10 @@ ME:
   name: Montenegro
   country_code: '382'
   sms_only: true
+MS:
+  name: Montserrat
+  country_code: '1664'
+  sms_only: true
 MA:
   name: Morocco
   country_code: '212'
@@ -542,6 +622,10 @@ NG:
   name: Nigeria
   country_code: '234'
   sms_only: true
+MP:
+  name: Northern Mariana Islands
+  country_code: '1670'
+  sms_only: true
 'NO':
   name: Norway
   country_code: '47'
@@ -586,17 +670,21 @@ PL:
   name: Poland
   country_code: '48'
   sms_only: true
-PR:
-  name: Puerto Rico (U.S.)
-  country_code: '1'
-  sms_only: false
 PT:
   name: Portugal
   country_code: '351'
   sms_only: true
+PR:
+  name: Puerto Rico (U.S.)
+  country_code: '1'
+  sms_only: false
 QA:
   name: Qatar
   country_code: '974'
+  sms_only: true
+RE:
+  name: Reunion
+  country_code: '262'
   sms_only: true
 RO:
   name: Romania
@@ -610,13 +698,29 @@ RW:
   name: Rwanda
   country_code: '250'
   sms_only: true
-RE:
-  name: Reunion
-  country_code: '262'
+BL:
+  name: Saint Barthélemy
+  country_code: '590'
+  sms_only: true
+KN:
+  name: Saint Kitts and Nevis
+  country_code: '1869'
+  sms_only: true
+LC:
+  name: Saint Lucia
+  country_code: '1758'
+  sms_only: true
+MF:
+  name: Saint Martin (Saint-Martin (partie française))
+  country_code: '590'
   sms_only: true
 PM:
   name: Saint Pierre and Miquelon
   country_code: '508'
+  sms_only: true
+VC:
+  name: Saint Vincent and the Grenadines
+  country_code: '1784'
   sms_only: true
 WS:
   name: Samoa
@@ -694,6 +798,10 @@ SR:
   name: Suriname
   country_code: '597'
   sms_only: true
+SJ:
+  name: Svalbard and Jan Mayen
+  country_code: '47'
+  sms_only: true
 SZ:
   name: Swaziland
   country_code: '268'
@@ -734,6 +842,10 @@ TO:
   name: Tonga
   country_code: '676'
   sms_only: true
+TT:
+  name: Trinidad and Tobago
+  country_code: '1868'
+  sms_only: true
 TN:
   name: Tunisia
   country_code: '216'
@@ -745,6 +857,10 @@ TR:
 TM:
   name: Turkmenistan
   country_code: '993'
+  sms_only: true
+TC:
+  name: Turks and Caicos Islands
+  country_code: '1649'
   sms_only: true
 TV:
   name: Tuvalu
@@ -778,22 +894,30 @@ VU:
   name: Vanuatu
   country_code: '678'
   sms_only: true
+VA:
+  name: Vatican City (Città del Vaticano)
+  country_code: '39'
+  sms_only: true
 VE:
   name: Venezuela
   country_code: '58'
   sms_only: true
+VG:
+  name: Virgin Islands (British)
+  country_code: '1284'
+  sms_only: true
+VI:
+  name: Virgin Islands (U.S.)
+  country_code: '1340'
+  sms_only: false
 VN:
   name: Vietnam
   country_code: '84'
   sms_only: true
-VG:
-  name: Virgin Islands (British)
-  country_code: '1'
+EH:
+  name: Western Sahara (‫الصحراء الغربية‬‎)
+  country_code: '212'
   sms_only: true
-VI:
-  name: Virgin Islands (U.S.)
-  country_code: '1'
-  sms_only: false
 YE:
   name: Yemen
   country_code: '967'

@@ -5,13 +5,13 @@ describe UspsExporter do
   let(:otp) { 'ABC123' }
   let(:pii_attributes) do
     Pii::Attributes.new_from_hash(
-      first_name: { raw: 'Söme', norm: 'Some' },
-      last_name: { raw: 'Öne', norm: 'One' },
-      address1: { raw: '123 Añy St', norm: '123 Any St' },
-      address2: { raw: 'Sté 123', norm: 'Ste 123' },
-      city: { raw: 'Sömewhere', norm: 'Somewhere' },
-      state: { raw: 'KS', norm: 'KS' },
-      zipcode: { raw: '66666-1234', norm: '66666-1234' }
+      first_name: 'Söme',
+      last_name: 'Öne',
+      address1: '123 Añy St',
+      address2: 'Sté 123',
+      city: 'Sömewhere',
+      state: 'KS',
+      zipcode: '66666-1234'
     )
   end
   let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
@@ -22,12 +22,12 @@ describe UspsExporter do
     due_date = due.strftime('%-B %-e')
     values = [
       UspsExporter::CONTENT_ROW_ID,
-      pii_attributes.first_name.norm + ' ' + pii_attributes.last_name.norm,
-      pii_attributes.address1.norm,
-      pii_attributes.address2.norm,
-      pii_attributes.city.norm,
-      pii_attributes.state.norm,
-      pii_attributes.zipcode.norm,
+      pii_attributes.first_name + ' ' + pii_attributes.last_name,
+      pii_attributes.address1,
+      pii_attributes.address2,
+      pii_attributes.city,
+      pii_attributes.state,
+      pii_attributes.zipcode,
       otp,
       "#{current_date}, #{now.year}",
       "#{due_date}, #{due.year}",

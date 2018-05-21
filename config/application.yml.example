@@ -1,5 +1,12 @@
 # This file is used by the Figaro gem: https://github.com/laserlemon/figaro
 
+# The defaults set in this file are used as the basis for configuration in all
+# production and development environments. On deployed EC2 servers, we run
+# bin/activate to generate the final application.yml using this file for
+# defaults and deep merging any overrides set in the application.yml from the
+# app secrets S3 bucket. Deployed EC2 servers always set RAILS_ENV=production,
+# so they will use values from top-level and from the production block.
+
 # Be sure to restart your server when you modify this file.
 
 # Make sure the secrets in this file are kept private
@@ -71,7 +78,7 @@ development:
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
+  attribute_encryption_key_queue: '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
@@ -90,6 +97,7 @@ development:
   database_statement_timeout: '2500'
   database_timeout: '5000'
   database_username: ''
+  disallow_all_web_crawlers: 'true'
   domain_name: 'localhost:3000'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'false'
@@ -109,6 +117,7 @@ development:
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: ''
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '5'
@@ -125,9 +134,15 @@ development:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
   password_strength_enabled: 'true'
+  piv_cac_enabled: 'true'
+  piv_cac_service_url: 'https://localhost:8443/'
+  piv_cac_verify_token_url: 'https://localhost:8443/'
   proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
   reauthn_window: '120'
+  recaptcha_enabled_percent: '0'
+  recaptcha_site_key: 'key1'
+  recaptcha_secret_key: 'key2'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_days: '30'
@@ -157,6 +172,13 @@ development:
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
 
+# These values serve as defaults for all production-like environments, which
+# includes *.identitysandbox.gov and *.login.gov.
+#
+# TODO: remove empty/fake values from this block, which create the misleading
+# impression that these values aren't used. In fact they will be used unless
+# they are overriden by keys with the same name in the application.yml in the
+# app secrets bucket.
 production:
   aamva_cert_enabled: 'true'
   aamva_public_key: # Base64 encoded public key for AAMVA
@@ -166,7 +188,7 @@ production:
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: # generate via `rake secret`
-  attribute_encryption_key_queue: # '["old-key-one", "old-key-two"]'
+  attribute_encryption_key_queue: # '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
@@ -176,6 +198,7 @@ production:
   disable_email_sending: 'false'
   dashboard_api_token:
   database_statement_timeout: '2500'
+  disallow_all_web_crawlers: 'false'
   domain_name: 'login.gov'
   enable_identity_verification: 'false'
   enable_rate_limiting: 'true'
@@ -196,6 +219,7 @@ production:
   google_analytics_key: # 'UA-XXXXXXXXX-YY'
   hmac_fingerprinter_key: # generate via `rake secret`
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
+  identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: 'sp1,sp2'
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '5'
@@ -213,7 +237,12 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
+  piv_cac_enabled: 'false'
+  proofer_mock_fallback: 'true'
   reauthn_window: '120'
+  recaptcha_enabled_percent: '0'
+  recaptcha_site_key: 'key1'
+  recaptcha_secret_key: 'key2'
   redis_url: 'redis://redis.login.gov.internal:6379'
   redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
   remember_device_expiration_days: '30'
@@ -249,7 +278,7 @@ test:
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '["old-key-one", "old-key-two"]'
+  attribute_encryption_key_queue: '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
@@ -268,6 +297,7 @@ test:
   database_timeout: '5000'
   database_username: ''
   dashboard_api_token: '123ABC'
+  disallow_all_web_crawlers: 'true'
   enable_identity_verification: 'true'
   enable_rate_limiting: 'true'
   enable_test_routes: 'true'
@@ -286,6 +316,7 @@ test:
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
   lockout_period_in_minutes: '5'
   logins_per_ip_limit: '3'
@@ -300,8 +331,14 @@ test:
   otp_valid_for: '10'
   password_pepper: 'f22d4b2cafac9066fe2f4416f5b7a32c6942d82f7e00740c7594a095fa8de8db17c05314be7b18a5d6dd5683e73eadf6cc95aa633e5ad9a701edb95192a6a105'
   password_strength_enabled: 'false'
+  piv_cac_enabled: 'true'
+  piv_cac_service_url: 'https://localhost:8443/'
+  piv_cac_verify_token_url: 'https://localhost:8443/'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
+  recaptcha_enabled_percent: '0'
+  recaptcha_site_key: 'key1'
+  recaptcha_secret_key: 'key2'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_days: '30'

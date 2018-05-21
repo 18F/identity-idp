@@ -15,6 +15,7 @@ module TwoFactorAuthenticatable
     authenticator: 'authenticator',
     sms: 'phone',
     voice: 'phone',
+    piv_cac: 'piv_cac',
   }.freeze
 
   private
@@ -188,7 +189,7 @@ module TwoFactorAuthenticatable
 
   def after_otp_verification_confirmation_url
     if idv_context?
-      verify_review_url
+      idv_review_url
     elsif after_otp_action_required?
       after_otp_action_url
     else
@@ -259,6 +260,7 @@ module TwoFactorAuthenticatable
   def generic_data
     {
       personal_key_unavailable: personal_key_unavailable?,
+      has_piv_cac_configured: current_user.piv_cac_enabled?,
       reauthn: reauthn?,
     }
   end
@@ -287,7 +289,7 @@ module TwoFactorAuthenticatable
   def reenter_phone_number_path
     locale = LinkLocaleResolver.locale
     if idv_context?
-      verify_phone_path(locale: locale)
+      idv_phone_path(locale: locale)
     elsif current_user.phone.present?
       manage_phone_path(locale: locale)
     else

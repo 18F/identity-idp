@@ -12,6 +12,9 @@ en:
       login: Login Information
       password: Password
       phone: Phone number
+      piv_cac_card: PIV/CAC Card
+      piv_cac_disabled: not enabled
+      piv_cac_enabled: enabled
       previous_address: Previous address
       reactivation:
         instructions: Your profile was recently deactivated due to a password reset.

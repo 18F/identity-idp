@@ -22,7 +22,8 @@ module SpAuthHelper
     click_link t('links.sign_in')
     fill_in_credentials_and_submit(user.email, user.password)
     click_submit_default
-    click_idv_begin
+    fill_out_idv_jurisdiction_ok
+    click_idv_continue
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_address_choose_phone

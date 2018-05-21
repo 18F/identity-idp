@@ -1,0 +1,27 @@
+h1.h2
+  = t('idv.titles.select_verification')
+p
+  = decorated_session.verification_method_choice
+
+= form_tag
+  label.block.p2.border.rounded-md.border-light-blue.mb2 for="address_delivery_method_phone"
+    .radio
+      = radio_button_tag 'address_delivery_method', :phone, true
+      span.indicator
+      strong.blue.block = t('idv.messages.select_verification_form.phone_header')
+      span = t('idv.messages.select_verification_form.phone_message')
+
+  // USPS verification should always be enabled in prod.
+  // This check is a convenience for lower envs.
+  - if FeatureManagement.enable_usps_verification?
+    label.block.p2.border.rounded-md.border-light-blue.mb2 for="address_delivery_method_usps"
+      .radio
+        = radio_button_tag 'address_delivery_method', :usps
+        span.indicator
+        strong.blue.block = t('idv.messages.select_verification_form.usps_header')
+        span = t('idv.messages.select_verification_form.usps_message')
+
+  = button_tag t('forms.buttons.continue'), type: 'submit',
+    class: 'btn btn-primary col-6 mb2 p2 rounded-lg inline-block'
+
+= render 'shared/cancel', link: idv_cancel_path

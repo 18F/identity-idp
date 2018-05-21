@@ -12,7 +12,7 @@ module UnconfirmedUserConcern
     with_unconfirmed_user do
       result = EmailConfirmationTokenValidator.new(@user).submit
 
-      analytics.track_event(Analytics::EMAIL_CONFIRMATION, result.to_h)
+      analytics.track_event(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION, result.to_h)
 
       if result.success?
         process_successful_confirmation

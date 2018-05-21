@@ -16,7 +16,7 @@ RSpec.describe SignUp::EmailResendController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
+          with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND, result)
 
         expect { post :create, params: user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(1)
@@ -47,7 +47,7 @@ RSpec.describe SignUp::EmailResendController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
+          with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND, result)
 
         post :create, params: @user_params
       end
@@ -67,7 +67,7 @@ RSpec.describe SignUp::EmailResendController do
         }
 
         expect(@analytics).to receive(:track_event).
-          with(Analytics::EMAIL_CONFIRMATION_RESEND, result)
+          with(Analytics::USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND, result)
 
         expect { post :create, params: user_params }.
           to change { ActionMailer::Base.deliveries.count }.by(0)
