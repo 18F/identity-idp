@@ -53,6 +53,7 @@ gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'stringex', require: false
+gem 'strong_migrations'
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
@@ -87,7 +88,6 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails', '~> 3.7'
   gem 'slim_lint'
-  gem 'strong_migrations'
   gem 'thin'
 end
 
