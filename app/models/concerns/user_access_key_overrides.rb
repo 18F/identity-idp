@@ -24,7 +24,7 @@ module UserAccessKeyOverrides
 
   def password=(new_password)
     @password = new_password
-    return unless new_password.present?
+    return if new_password.blank?
 
     self.password_salt = Devise.friendly_token[0, 20]
 
