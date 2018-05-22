@@ -15,19 +15,29 @@ describe Encryption::Encryptors::PiiEncryptor do
     end
 
     it 'uses the user access key encryptor to encrypt the plaintext' do
-      user_access_key = double(Encryption::UserAccessKey)
-      expect(Encryption::UserAccessKey).to receive(:new).
-        with(password: password, salt: salt, cost: nil).
-        and_return(user_access_key)
-      encryptor = double(Encryption::Encryptors::UserAccessKeyEncryptor)
-      expect(Encryption::Encryptors::UserAccessKeyEncryptor).to receive(:new).
-        with(user_access_key).
-        and_return(encryptor)
-      expect(encryptor).to receive(:encrypt).with(plaintext).and_return('ciphertext')
+      scrypt_digest = '1' * 64
+
+      scrypt_password = instance_double(SCrypt::Password)
+      expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
+      expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
+
+      cipher = instance_double(Pii::Cipher)
+      expect(Pii::Cipher).to receive(:new).and_return(cipher)
+      expect(cipher).to receive(:encrypt).
+        with(plaintext, scrypt_digest[0...32]).
+        and_return('aes_ciphertext')
+
+      kms_client = instance_double(Encryption::KmsClient)
+      expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
+      expect(kms_client).to receive(:encrypt).
+        with('aes_ciphertext').
+        and_return('kms_ciphertext')
+
+      expected_ciphertext = Base64.strict_encode64('kms_ciphertext')
 
       ciphertext = subject.encrypt(plaintext)
 
-      expect(ciphertext).to eq('ciphertext')
+      expect(ciphertext).to eq(expected_ciphertext)
     end
   end
 
@@ -46,18 +56,26 @@ describe Encryption::Encryptors::PiiEncryptor do
       expect { new_encryptor.decrypt(ciphertext) }.to raise_error Pii::EncryptionError
     end
 
-    it 'uses the user access key to decrypt the contents' do
-      user_access_key = double(Encryption::UserAccessKey)
-      expect(Encryption::UserAccessKey).to receive(:new).
-        with(password: password, salt: salt, cost: nil).
-        and_return(user_access_key)
-      encryptor = double(Encryption::Encryptors::UserAccessKeyEncryptor)
-      expect(Encryption::Encryptors::UserAccessKeyEncryptor).to receive(:new).
-        with(user_access_key).
-        and_return(encryptor)
-      expect(encryptor).to receive(:decrypt).with('ciphertext').and_return(plaintext)
+    it 'uses layered AES and KMS to decrypt the contents' do
+      scrypt_digest = '1' * 64
 
-      result = subject.decrypt('ciphertext')
+      scrypt_password = instance_double(SCrypt::Password)
+      expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
+      expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
+
+      kms_client = instance_double(Encryption::KmsClient)
+      expect(Encryption::KmsClient).to receive(:new).and_return(kms_client)
+      expect(kms_client).to receive(:decrypt).
+        with('kms_ciphertext').
+        and_return('aes_ciphertext')
+
+      cipher = instance_double(Pii::Cipher)
+      expect(Pii::Cipher).to receive(:new).and_return(cipher)
+      expect(cipher).to receive(:decrypt).
+        with('aes_ciphertext', scrypt_digest[0...32]).
+        and_return(plaintext)
+
+      result = subject.decrypt(Base64.strict_encode64('kms_ciphertext'))
 
       expect(result).to eq(plaintext)
     end
