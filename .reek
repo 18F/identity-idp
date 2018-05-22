@@ -100,7 +100,6 @@ TooManyStatements:
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
     - Upaya::QueueConfig#self.choose_queue_adapter
-    - UserAccessKeyOverrides#password=
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
