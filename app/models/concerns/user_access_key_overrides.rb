@@ -24,7 +24,7 @@ module UserAccessKeyOverrides
 
   def password=(new_password)
     @password = new_password
-    encrypt_password(password) if new_password.present?
+    encrypt_password(@password) if @password.present?
   end
 
   def authenticatable_salt
@@ -43,10 +43,10 @@ module UserAccessKeyOverrides
     Rails.logger.info(metadata.to_json)
   end
 
-  def encrypt_password(password)
+  def encrypt_password(new_password)
     self.password_salt = Devise.friendly_token[0, 20]
 
-    user_access_key = build_user_access_key(password, cost: nil).build
+    user_access_key = build_user_access_key(new_password, cost: nil).build
 
     self.encryption_key = user_access_key.encryption_key
     self.password_cost = user_access_key.cost
