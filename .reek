@@ -100,6 +100,7 @@ TooManyStatements:
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
     - Upaya::QueueConfig#self.choose_queue_adapter
+    - UserAccessKeyOverrides#password=
 TooManyMethods:
   exclude:
     - Users::ConfirmationsController
@@ -171,7 +172,7 @@ UtilityFunction:
   TooManyMethods:
     enabled: false
   TooManyStatements:
-    enabled: false 
+    enabled: false
   UncommunicativeMethodName:
     exclude:
       - visit_idp_from_sp_with_loa1
