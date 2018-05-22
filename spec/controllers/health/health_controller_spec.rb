@@ -51,5 +51,25 @@ RSpec.describe Health::HealthController do
           to include('canceling statement due to statement timeout')
       end
     end
+
+    context 'when activejob queue_adapter is inline/async' do
+      before do
+        expect(Rails.application.config.active_job).to receive(:queue_adapter).
+          and_return(:inline)
+      end
+
+      it 'does not check worker health' do
+        expect(WorkerHealthChecker).not_to receive(:check)
+
+        action
+
+        expect(response.status).to eq(200)
+        json = JSON.parse(response.body, symbolize_names: true)
+
+        expect(json[:healthy]).to eq(true)
+        expect(json[:statuses][:workers]).to be_nil
+        expect(json[:statuses][:database][:healthy]).to eq(true)
+      end
+    end
   end
 end

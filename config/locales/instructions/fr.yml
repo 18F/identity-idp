@@ -27,6 +27,8 @@ fr:
           Si vous avez plusieurs comptes configurés dans votre application, entrez
           le code correspondant à %{email} à %{app}.%{tooltip}
         or: or
+      piv_cac:
+        confirm_piv_cac_html: NOT TRANSLATED YET
       sms:
         confirm_code_html: Vous avez besoin d'un autre code? %{resend_code_link}.
           Les frais liés aux messages texte peuvent s'appliquer.

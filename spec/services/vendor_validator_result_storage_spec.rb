@@ -7,7 +7,7 @@ RSpec.describe VendorValidatorResultStorage do
   let(:original_result) do
     Idv::VendorResult.new(
       success: false,
-      normalized_applicant: { first_name: 'First' }
+      applicant: { first_name: 'First' }
     )
   end
 
@@ -36,8 +36,8 @@ RSpec.describe VendorValidatorResultStorage do
       expect(result.success?).to eq(original_result.success?)
       expect(result.errors).to eq(original_result.errors)
       expect(result.messages).to eq(original_result.messages)
-      expect(result.normalized_applicant.as_json).
-        to eq(original_result.normalized_applicant.as_json)
+      expect(result.applicant.as_json).
+        to eq(original_result.applicant.as_json)
     end
 
     it 'is nil with a bad result id' do

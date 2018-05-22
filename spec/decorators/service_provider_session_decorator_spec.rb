@@ -51,7 +51,7 @@ RSpec.describe ServiceProviderSessionDecorator do
 
   describe '#idv_hardfail4_partial' do
     it 'returns the correct partial' do
-      expect(subject.idv_hardfail4_partial).to eq 'verify/hardfail4'
+      expect(subject.idv_hardfail4_partial).to eq 'idv/hardfail4'
     end
   end
 

@@ -8,7 +8,7 @@ shared_examples 'idv confirmation step' do |sp|
     it 'redirects to the come back later url then to the sp or account' do
       click_acknowledge_personal_key
 
-      expect(page).to have_current_path(verify_come_back_later_path)
+      expect(page).to have_current_path(idv_come_back_later_path)
       click_on t('forms.buttons.continue')
 
       # SAML test SP does not have a return URL, so it does not have a link

@@ -1,0 +1,12 @@
+- if FeatureManagement.recaptcha_enabled?(session, true)
+  - SecureHeaders.append_content_security_policy_directives(\
+    request, style_src: ['\'unsafe-inline\''])
+  script [nonce="#{content_security_policy_script_nonce}"
+    src='https://www.google.com/recaptcha/api.js']
+
+  = nonced_javascript_tag "var onSubmit=function(token){"\
+      "document.getElementById('g-recaptcha-response').value = token;};"\
+      "window.onload=function(){grecaptcha.execute();}"
+
+  div [id='recaptcha' class='g-recaptcha' data-sitekey="#{Figaro.env.recaptcha_site_key}"
+    data-callback='onSubmit' data-size='invisible']

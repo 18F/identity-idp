@@ -1,0 +1,32 @@
+- title @view_model.title
+
+h1.h2.my0 = t('idv.titles.session.phone')
+p.mt-tiny.mb2 = t('idv.messages.phone.intro')
+
+.alert.alert-warning.mb1
+  strong
+    = t('idv.messages.phone.alert')
+  ul.py1.m0.px0
+    li
+      = t('idv.messages.phone.in_your_name')
+    li
+      = t('idv.messages.phone.prepaid')
+    li
+      = t('idv.messages.phone.us_country_code')
+
+p = t('idv.messages.phone.same_as_2fa')
+
+= simple_form_for(@view_model.idv_form, url: idv_phone_path,
+    html: { autocomplete: 'off', method: :put, role: 'form', class: 'mt2' }) do |f|
+  = f.label :phone, label: t('idv.form.phone'), class: 'bold'
+  span.ml1
+    em
+     = t('idv.form.phone_label_aside')
+  = f.input :phone, required: true, input_html: { class: 'us-phone' }, label: false,
+    wrapper_html: { class: 'inline-block mr2' }
+  = f.button :submit, t('forms.buttons.continue')
+
+- if FeatureManagement.enable_usps_verification?
+    = render 'verification_options'
+
+= render @view_model.modal_partial, view_model: @view_model

@@ -223,7 +223,7 @@ describe SamlIdpController do
         user = create(:user, :signed_up)
         generate_saml_response(user, loa3_saml_settings)
 
-        expect(response).to redirect_to verify_path
+        expect(response).to redirect_to idv_path
       end
     end
 

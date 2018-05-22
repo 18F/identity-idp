@@ -31,12 +31,14 @@ gem 'pg'
 gem 'phonelib'
 gem 'phony_rails'
 gem 'premailer-rails'
-gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.3.0'
+gem 'proofer', github: '18F/identity-proofer-gem', tag: 'v2.5.0'
 gem 'rack-attack'
 gem 'rack-cors', require: 'rack/cors'
 gem 'rack-headers_filter'
 gem 'rack-timeout'
+gem 'raise-if-root'
 gem 'readthis'
+gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redis-session-store', github: '18F/redis-session-store', branch: 'master'
 gem 'rqrcode'
 gem 'ruby-progressbar'
@@ -51,6 +53,7 @@ gem 'simple_form'
 gem 'sinatra', require: false
 gem 'slim-rails'
 gem 'stringex', require: false
+gem 'strong_migrations'
 gem 'twilio-ruby'
 gem 'two_factor_authentication'
 gem 'typhoeus'
@@ -59,7 +62,7 @@ gem 'valid_email'
 gem 'webpacker', '~> 3.4'
 gem 'whenever', require: false
 gem 'xml-simple'
-gem 'xmlenc', '~> 0.6.4'
+gem 'xmlenc', '~> 0.6'
 gem 'zxcvbn-js'
 
 group :development do
@@ -83,9 +86,8 @@ group :development, :test do
   gem 'i18n-tasks'
   gem 'knapsack'
   gem 'pry-byebug'
-  gem 'rspec-rails', '~> 3.5.2'
+  gem 'rspec-rails', '~> 3.7'
   gem 'slim_lint'
-  gem 'strong_migrations'
   gem 'thin'
 end
 
@@ -110,6 +112,6 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v2.1.0'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.0.0'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
 end

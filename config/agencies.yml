@@ -13,6 +13,8 @@ test:
     name: 'DOT'
   7:
     name: 'DHS'
+  8:
+    name: 'DOD'
 
 development:
   1:
@@ -29,6 +31,8 @@ development:
     name: 'DOT'
   7:
     name: 'USSS'
+  8:
+    name: 'DOD'
 
 production:
   1:
@@ -45,3 +49,5 @@ production:
     name: 'DOT'
   7:
     name: 'USSS'
+  8:
+    name: 'DOD'

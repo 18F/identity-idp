@@ -80,16 +80,16 @@ describe Idv::Proofer do
 
     let(:external_vendors) do
       [
-        class_double('Proofer::Base', supported_stage: :resolution),
-        class_double('Proofer::Base', supported_stage: :foo),
+        class_double('Proofer::Base', stage: :resolution),
+        class_double('Proofer::Base', stage: :foo),
       ]
     end
 
     let(:mock_vendors) do
       [
-        class_double('Proofer::Base', supported_stage: :resolution),
-        class_double('Proofer::Base', supported_stage: 'state_id'),
-        class_double('Proofer::Base', supported_stage: :baz),
+        class_double('Proofer::Base', stage: :resolution),
+        class_double('Proofer::Base', stage: 'state_id'),
+        class_double('Proofer::Base', stage: :baz),
       ]
     end
 
@@ -107,11 +107,11 @@ describe Idv::Proofer do
 
     let(:stage) { :foo }
 
-    context 'when supported_stage is a string' do
+    context 'when stage is a string' do
       let(:vendors) do
         [
-          class_double('Proofer::Base', supported_stage: :resolution),
-          class_double('Proofer::Base', supported_stage: 'foo'),
+          class_double('Proofer::Base', stage: :resolution),
+          class_double('Proofer::Base', stage: 'foo'),
         ]
       end
 
@@ -120,11 +120,11 @@ describe Idv::Proofer do
       end
     end
 
-    context 'when supported_stage is a symbol' do
+    context 'when stage is a symbol' do
       let(:vendors) do
         [
-          class_double('Proofer::Base', supported_stage: :resolution),
-          class_double('Proofer::Base', supported_stage: :foo),
+          class_double('Proofer::Base', stage: :resolution),
+          class_double('Proofer::Base', stage: :foo),
         ]
       end
 
@@ -136,7 +136,7 @@ describe Idv::Proofer do
     context 'when no vendor exists' do
       let(:vendors) do
         [
-          class_double('Proofer::Base', supported_stage: :resolution),
+          class_double('Proofer::Base', stage: :resolution),
         ]
       end
 
@@ -179,16 +179,16 @@ describe Idv::Proofer do
 
     let(:loaded_vendors) do
       [
-        class_double('Proofer::Base', supported_stage: :foo, vendor_name: 'vendor3'),
-        class_double('Proofer::Base', supported_stage: :foo, vendor_name: 'vendor1'),
-        class_double('Proofer::Base', supported_stage: :bar, vendor_name: 'vendor2'),
+        class_double('Proofer::Base', stage: :foo, vendor_name: 'vendor3'),
+        class_double('Proofer::Base', stage: :foo, vendor_name: 'vendor1'),
+        class_double('Proofer::Base', stage: :bar, vendor_name: 'vendor2'),
       ]
     end
 
     let(:mock_vendors) do
       [
-        class_double('Proofer::Base', supported_stage: :foo),
-        class_double('Proofer::Base', supported_stage: :baz),
+        class_double('Proofer::Base', stage: :foo),
+        class_double('Proofer::Base', stage: :baz),
       ]
     end
 
@@ -233,7 +233,7 @@ describe Idv::Proofer do
         end
 
         it 'returns the mapped vendors with the mock fallback' do
-          expect(subject).to eq({ foo: loaded_vendors.second, baz: mock_vendors.second })
+          expect(subject).to eq(foo: loaded_vendors.second, baz: mock_vendors.second)
         end
       end
     end
@@ -253,7 +253,7 @@ describe Idv::Proofer do
         end
 
         it 'returns the mapped vendors missing the stage' do
-          expect(subject).to eq({ foo: loaded_vendors.second })
+          expect(subject).to eq(foo: loaded_vendors.second)
         end
       end
     end

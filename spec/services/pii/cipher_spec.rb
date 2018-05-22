@@ -28,11 +28,4 @@ describe Pii::Cipher do
       expect { subject.decrypt(ciphertext, cek) }.to raise_error Pii::EncryptionError
     end
   end
-
-  describe '#random_key' do
-    it 'returns random 256 bit string' do
-      expect(described_class.random_key).to be_a String
-      expect(described_class.random_key.length).to eq 32
-    end
-  end
 end

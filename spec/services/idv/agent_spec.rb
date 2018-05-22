@@ -82,7 +82,7 @@ describe Idv::Agent do
         let(:stages) { %i[resolution state_id] }
 
         it 'results from all stages are included' do
-          expect(subject.to_h).to eq(
+          expect(subject.to_h).to include(
             errors: {},
             messages: [resolution_message, state_id_message],
             success: true,
@@ -95,7 +95,7 @@ describe Idv::Agent do
         let(:stages) { %i[failed state_id] }
 
         it 'only the results from the first stage are included' do
-          expect(subject.to_h).to eq(
+          expect(subject.to_h).to include(
             errors: { bad: ['stuff'] },
             messages: [failed_message],
             success: false,
