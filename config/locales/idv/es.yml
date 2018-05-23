@@ -86,8 +86,8 @@ es:
         de conducir válidos. El nombre, la fecha de nacimiento y la dirección en su
         ID <strong>deben coincidir</ strong> la información proporcionada arriba.
       jurisdiction:
-        why: Para verificar su identidad, necesitaremos información de su identificación
-          emitida por el estado
+        why: Para verificar su identidad, necesitará información de su identificación
+          emitida por el estado.
         where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
           del estado?"
         no_id: No tengo una identificación emitida por el estado
