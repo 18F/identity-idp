@@ -89,7 +89,7 @@ en:
         the information provided above.
       jurisdiction:
         why: To verify your identity, we'll need information from your state-issued
-          ID
+          ID.
         where: Where was your driver's license, driver's permit, or state ID issued?
         no_id: I don't have a state-issued ID
         unsupported_jurisdiction: We're working hard to add more states and hope to
