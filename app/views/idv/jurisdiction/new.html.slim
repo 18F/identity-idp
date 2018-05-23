@@ -14,7 +14,7 @@ p.mt4.mb0 = t('idv.messages.jurisdiction.where')
       = f.input :state, collection: us_states_territories,
         label: false, required: true,
         selected: @jurisdiction_form.state, prompt: t('forms.select'),
-        wrapper_html: { id: 'jurisdiction-select' }
+        wrapper_html: { class: 'jurisdiction-select' }
 
   p = link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_fail_path(:no_id)
 
