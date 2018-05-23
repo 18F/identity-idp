@@ -24,7 +24,8 @@ feature 'User edit' do
     end
 
     scenario 'confirm change submit button is disabled without phone number', js: true do
-      fill_in 'Phone', with: ''
+      phone_input = page.find('#user_phone_form_phone')
+      phone_input.send_keys(*([:backspace] * phone_input.value.length))
 
       expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: true)
     end
