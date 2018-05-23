@@ -1,7 +1,12 @@
 require 'rails_helper'
+require 'saml_and_oidc_signer'
 
-feature 'OpenID Connect' do
+class MockSession; end
+
+shared_examples 'OpenID Connect' do |cloudhsm_enabled|
   include IdvHelper
+
+  before { enable_cloudhsm(cloudhsm_enabled) }
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
@@ -514,7 +519,10 @@ feature 'OpenID Connect' do
       exp: 5.minutes.from_now.to_i,
     }
 
+    cloudhsm_enabled = FeatureManagement.use_cloudhsm?
+    allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(false)
     client_assertion = JWT.encode(jwt_payload, client_private_key, 'RS256')
+    allow(FeatureManagement).to receive(:use_cloudhsm?).and_return(cloudhsm_enabled)
     client_assertion_type = 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer'
 
     page.driver.post api_openid_connect_token_path,
@@ -557,4 +565,27 @@ feature 'OpenID Connect' do
     expect(userinfo_response[:social_security_number]).to eq('111223333')
     user
   end
+
+  def enable_cloudhsm(is_enabled)
+    unless is_enabled
+      allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
+      SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
+      return
+    end
+    allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
+    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, true) }
+    allow(PKCS11).to receive(:open).and_return('true')
+    allow_any_instance_of(SamlIdp::Configurator).to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
+    allow(MockSession).to receive(:login).and_return(true)
+    allow(MockSession).to receive(:logout).and_return(true)
+    allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
+    allow(MockSession).to receive(:sign) do |algorithm, key, input|
+      JWT::Algos::Rsa.sign(JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key))
+    end
+  end
+end
+
+feature 'OIDC' do
+  it_behaves_like  'OpenID Connect', false
+  it_behaves_like  'OpenID Connect', true
 end
