@@ -18,6 +18,7 @@ require 'spec_helper'
 require 'email_spec'
 require 'factory_bot'
 require 'sidekiq/testing'
+require 'saml_and_oidc_signer'
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.

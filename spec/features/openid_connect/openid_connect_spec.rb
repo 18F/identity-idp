@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'saml_and_oidc_signer'
 
 class MockSession; end
 
