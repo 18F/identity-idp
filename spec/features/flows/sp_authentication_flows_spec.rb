@@ -164,7 +164,7 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
                                 # Will re-enable this once resolved
                                 # context 'when choosing to cancel' do
                                 #   before do
-                                #     click_button t('links.cancel_idv')
+                                #     click_button t('links.cancel')
                                 #   end
 
                                 #   it 'prompts to continue verification or visit profile' do
