@@ -9,6 +9,3 @@ h1.h3.my0 = t('headings.edit_info.phone')
   = render 'users/shared/phone_input', f: f
   = f.button :submit, t('forms.buttons.submit.confirm_change')
 = render 'shared/cancel', link: account_path
-
-= stylesheet_link_tag 'intl-tel-number/intlTelInput'
-= javascript_pack_tag 'intl-tel-input'
