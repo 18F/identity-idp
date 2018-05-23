@@ -171,7 +171,7 @@ UtilityFunction:
   TooManyMethods:
     enabled: false
   TooManyStatements:
-    enabled: false 
+    enabled: false
   UncommunicativeMethodName:
     exclude:
       - visit_idp_from_sp_with_loa1
