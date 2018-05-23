@@ -5,7 +5,7 @@
 
 h1.h3 = t('idv.messages.jurisdiction.why')
 
-p.mt4.mb0 = t('idv.messages.jurisdiction.where')
+p.mt4.mb0 id='jurisdiction-label' = t('idv.messages.jurisdiction.where')
 
 = simple_form_for(@jurisdiction_form, url: idv_jurisdiction_path,
     html: { autocomplete: 'off', role: 'form', class: 'mt2' }) do |f|
@@ -14,7 +14,8 @@ p.mt4.mb0 = t('idv.messages.jurisdiction.where')
       = f.input :state, collection: us_states_territories,
         label: false, required: true,
         selected: @jurisdiction_form.state, prompt: t('forms.select'),
-        wrapper_html: { class: 'jurisdiction-select' }
+        wrapper_html: { class: 'jurisdiction-select' },
+        input_html: { 'aria-labelledBy': 'jurisdiction-label' }
 
   p = link_to t('idv.messages.jurisdiction.no_id'), idv_jurisdiction_fail_path(:no_id)
 
