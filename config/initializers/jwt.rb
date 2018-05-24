@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ParameterLists
 module JWT
   module_function
 
@@ -38,3 +39,4 @@ module JWT
     end
   end
 end
+# rubocop:enable Metrics/ParameterLists
