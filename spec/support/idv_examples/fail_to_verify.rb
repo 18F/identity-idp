@@ -18,7 +18,10 @@ shared_examples 'fail to verify idv info' do |step|
       expect(page).to have_current_path(idv_session_result_path) if step == :profile
       expect(page).to have_current_path(idv_phone_result_path) if step == :phone
 
-      fill_out_idv_form_ok if step == :profile
+      if step == :profile
+        fill_out_idv_form_ok
+        click_idv_continue
+      end
       fill_out_phone_form_ok if step == :phone
       click_idv_continue
 
@@ -36,7 +39,10 @@ shared_examples 'fail to verify idv info' do |step|
       expect(page).to have_current_path(idv_phone_result_path) if step == :phone
 
       dismiss_warning_modal
-      fill_out_idv_form_ok if step == :profile
+      if step == :profile
+        fill_out_idv_form_ok
+        click_idv_continue
+      end
       fill_out_phone_form_ok if step == :phone
       click_idv_continue
 

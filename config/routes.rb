@@ -175,6 +175,7 @@ Rails.application.routes.draw do
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
         get '/session/result' => 'sessions#show'
+        get '/session/success' => 'sessions#success'
         delete '/session' => 'sessions#destroy'
         get '/session/dupe' => 'sessions#dupe'
         get '/jurisdiction' => 'jurisdiction#new'

@@ -75,7 +75,7 @@ module IdvHelper
   end
 
   def click_idv_continue
-    click_button t('forms.buttons.continue')
+    click_on t('forms.buttons.continue')
   end
 
   def click_idv_address_choose_phone
@@ -120,6 +120,7 @@ module IdvHelper
 
   def complete_idv_profile_ok(user, password = user_password)
     fill_out_idv_form_ok
+    click_idv_continue
     click_idv_continue
     click_idv_address_choose_phone
     click_idv_continue
