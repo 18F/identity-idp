@@ -50,6 +50,8 @@ describe PhoneNumberCapabilities do
         '345' => 'Cayman Islands',
         '767' => 'Dominica',
         '809' => 'Dominican Republic',
+        '829' => 'Dominican Republic',
+        '849' => 'Dominican Republic',
         '473' => 'Grenada',
         '876' => 'Jamaica',
         '664' => 'Montserrat',
