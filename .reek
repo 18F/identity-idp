@@ -47,6 +47,7 @@ FeatureEnvy:
 InstanceVariableAssumption:
   exclude:
     - User
+    - JWT
 IrresponsibleModule:
   enabled: false
 ManualDispatch:
@@ -65,6 +66,7 @@ LongParameterList:
     - IdentityLinker#optional_attributes
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
+    - JWT
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController
