@@ -92,8 +92,8 @@ fr:
         conduire valide. Le nom, la date de naissance et l'adresse de votre ID <strong>doivent</strong>
         correspondent les informations fournies ci-dessus.
       jurisdiction:
-        why: Pour vérifier votre identité, nous aurons besoin d'informations provenant
-          de votre carte d'identité officielle
+        why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
+          de votre carte d'identité officielle.
         where: Où a été délivré votre permis de conduire, votre permis de conduire
           ou votre carte d'identité?
         no_id: Je n'ai pas de carte d'identité officielle

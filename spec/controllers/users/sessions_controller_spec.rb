@@ -285,7 +285,7 @@ describe Users::SessionsController, devise: true do
           with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
         profile_encryption_error = {
-          error: 'ciphertext is missing encrypted contents',
+          error: 'Unable to parse encrypted payload',
         }
         expect(@analytics).to receive(:track_event).
           with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)
