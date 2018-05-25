@@ -23,6 +23,15 @@ GIT
       savon
 
 GIT
+  remote: git@github.com:18F/identity-lexisnexis-api-client-gem
+  revision: 2cf954c312a7e66cd24c48ccc7af8bdc72339525
+  tag: v1.0.0
+  specs:
+    lexisnexis (1.0.0)
+      dotenv
+      typhoeus
+
+GIT
   remote: https://github.com/18F/identity-hostdata.git
   revision: 4340185470fdf07c5d06658c2aa5ce6c904bb898
   branch: master
@@ -226,7 +235,7 @@ GEM
       warden (~> 1.2.3)
     diff-lcs (1.3)
     docile (1.1.5)
-    dotenv (2.2.1)
+    dotenv (2.4.0)
     dotiw (4.0.0)
       actionpack (>= 4)
       i18n
@@ -705,6 +714,7 @@ DEPENDENCIES
   identity-hostdata!
   json-jwt
   knapsack
+  lexisnexis!
   lograge
   net-sftp
   newrelic_rpm
