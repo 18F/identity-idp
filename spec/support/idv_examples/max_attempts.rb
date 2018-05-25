@@ -22,7 +22,6 @@ shared_examples 'verification step max attempts' do |step, sp|
     expect_user_to_be_unable_to_perform_idv(sp)
 
     # Blocked if visiting from an SP
-    # Blocked if visiting from an SP
     visit_idp_from_sp_with_loa3(:oidc)
     advance_to_phone_step if step == :phone
     expect_user_to_be_unable_to_perform_idv(sp)
