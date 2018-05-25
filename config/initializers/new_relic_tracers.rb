@@ -2,6 +2,7 @@
 ## Ref: https://docs.newrelic.com/docs/agents/ruby-agent/api-guides/ruby-custom-instrumentation
 require 'new_relic/agent/method_tracer'
 require 'aws/ses'
+require 'cloudhsm_jwt'
 
 Aws::SES::Base.class_eval do
   include ::NewRelic::Agent::MethodTracer
