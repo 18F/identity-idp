@@ -12,6 +12,7 @@ feature 'IDP-initiated logout' do
     let(:response_xmldoc) { SamlResponseDoc.new('feature', 'response_assertion') }
 
     before do
+      SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
       sign_in_and_2fa_user(user)
       visit sp1_authnrequest
       click_continue
