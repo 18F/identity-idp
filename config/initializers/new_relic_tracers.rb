@@ -49,4 +49,12 @@ end
 SamlIdp::SignedInfoBuilder.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :encoded, "Custom/#{name}/encoded"
+  add_method_tracer :cloudhsm_encoded, "Custom/#{name}/cloudhsm_encoded"
+end
+
+CloudhsmJwt.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encode, "Custom/#{name}/encode"
+  add_method_tracer :rs256_algorithm, "Custom/#{name}/rs256_algorithm"
+  add_method_tracer :sign, "Custom/#{name}/sign"
 end
