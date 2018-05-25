@@ -7,7 +7,7 @@ module Idv
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed, except: [:destroy, :success]
+    before_action :confirm_step_needed, except: %i[destroy success]
     before_action :initialize_idv_session, only: [:create]
     before_action :refresh_if_not_ready, only: [:show]
 
@@ -72,9 +72,6 @@ module Idv
     end
 
     def process_success
-      pii_msg = ActionController::Base.helpers.content_tag(
-        :strong, t('idv.messages.sessions.pii')
-      )
       redirect_to idv_session_success_url
     end
 
