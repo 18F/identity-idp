@@ -4,6 +4,9 @@ require 'cloudhsm_jwt'
 class MockSession; end
 
 describe CloudhsmJwt do
+  after(:all) do
+    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
+  end
   let(:jwt_payload) { { key1: 'value1', key2: 'value2' } }
   let(:subject) { CloudhsmJwt.encode(jwt_payload) }
 

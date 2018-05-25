@@ -6,6 +6,9 @@ shared_examples 'OpenID Connect' do |cloudhsm_enabled|
   include IdvHelper
 
   before { enable_cloudhsm(cloudhsm_enabled) }
+  after(:all) do
+    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
+  end
 
   context 'with client_secret_jwt' do
     it 'succeeds with prompt select_account and no prior session' do
