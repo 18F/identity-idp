@@ -251,6 +251,7 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
+  piv_cac_agencies: '["DOD"]'
   piv_cac_enabled: 'false'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'

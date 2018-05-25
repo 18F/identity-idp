@@ -25,7 +25,23 @@ module PivCacService
       Figaro.env.piv_cac_verify_token_url
     end
 
+    def piv_cac_available_for_agency?(agency)
+      return if agency.blank?
+      return unless FeatureManagement.piv_cac_enabled?
+      @piv_cac_agencies ||= begin
+        piv_cac_agencies = Figaro.env.piv_cac_agencies || '[]'
+        JSON.parse(piv_cac_agencies)
+      end
+
+      @piv_cac_agencies.include?(agency)
+    end
+
     private
+
+    # Only used in tests
+    def reset_piv_cac_avaialable_agencies
+      @piv_cac_agencies = nil
+    end
 
     def token_present(token)
       raise ArgumentError, 'token missing' if token.blank?

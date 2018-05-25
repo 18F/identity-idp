@@ -45,7 +45,7 @@ h1.hide = t('titles.account')
     content: content_tag(:em, t(@view_model.totp_content)),
     action: @view_model.totp_partial
 
-  - if FeatureManagement.piv_cac_enabled?
+  - if current_user.piv_cac_available?
     = render 'account_item',
       name: t('account.index.piv_cac_card'),
       content: content_tag(:em, t(@view_model.piv_cac_content)),
