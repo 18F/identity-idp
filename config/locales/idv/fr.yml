@@ -142,7 +142,6 @@ fr:
           accéder à vos avantages."
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
-        pii: Information personnelle
         review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
           vos informations personnelles. Nous faisons cela pour nous assurer que personne
           d'autre ne puisse accéder à vos informations.
@@ -220,7 +219,7 @@ fr:
       session:
         phone: Obtenez un code par téléphone
         review: Encryptez vos données personnelles en entrant votre mot de passe
-        session: Nous avons vérifié les informations sur votre ID d'état.
+        success: Nous avons vérifié les informations sur votre ID d'état.
       sessions: Vérifier votre identité
       unsupported_jurisdiction: Nous ne sommes pas en mesure de vérifier les identités
         à l'aide d'identifiants provenant de %{state}
