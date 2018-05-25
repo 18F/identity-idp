@@ -326,4 +326,19 @@ describe User do
       expect(user).to validate_uniqueness_of(:x509_dn_uuid).allow_nil
     end
   end
+
+  context 'when a password is updated' do
+    it 'encrypted_password_digest is a json string of encryption parameters' do
+      user = create(:user)
+
+      expected = {
+        encryption_key: user.encryption_key,
+        encrypted_password: user.encrypted_password,
+        password_cost: user.password_cost,
+        password_salt: user.password_salt,
+      }.to_json
+
+      expect(user.encrypted_password_digest).to eq(expected)
+    end
+  end
 end

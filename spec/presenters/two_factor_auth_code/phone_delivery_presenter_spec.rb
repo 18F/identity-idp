@@ -11,7 +11,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
       phone_number: '5555559876',
       code_value: '999999',
       otp_delivery_preference: 'sms',
-      reenter_phone_number_path: '/verify/phone',
+      reenter_phone_number_path: '/idv/phone',
       unconfirmed_phone: true,
       totp_enabled: false,
       personal_key_unavailable: true,
@@ -159,7 +159,7 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
   def presenter_with_locale(locale)
     TwoFactorAuthCode::PhoneDeliveryPresenter.new(
       data: data.clone.merge(reenter_phone_number_path:
-                               "#{locale == :en ? nil : '/' + locale.to_s}/verify/phone"),
+                               "#{locale == :en ? nil : '/' + locale.to_s}/idv/phone"),
       view: view
     )
   end

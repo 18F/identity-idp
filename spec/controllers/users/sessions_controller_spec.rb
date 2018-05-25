@@ -223,9 +223,8 @@ describe Users::SessionsController, devise: true do
     end
 
     context 'LOA1 user' do
-      it 'computes only one SCrypt hash for the user password' do
+      it 'computes one SCrypt hash for the user password' do
         user = create(:user, :signed_up)
-        create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
         expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
 
@@ -238,11 +237,11 @@ describe Users::SessionsController, devise: true do
         allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       end
 
-      it 'computes only one SCrypt hash for the user password' do
+      it 'computes one SCrypt hash for the user password and one for the PII' do
         user = create(:user, :signed_up)
         create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
 
-        expect(SCrypt::Engine).to receive(:hash_secret).once.and_call_original
+        expect(SCrypt::Engine).to receive(:hash_secret).twice.and_call_original
 
         post :create, params: { user: { email: user.email.upcase, password: user.password } }
       end
@@ -286,8 +285,7 @@ describe Users::SessionsController, devise: true do
           with(Analytics::EMAIL_AND_PASSWORD_AUTH, analytics_hash)
 
         profile_encryption_error = {
-          error: 'Unable to parse encrypted payload. ' \
-                 '#<TypeError: no implicit conversion of nil into String>',
+          error: 'Unable to parse encrypted payload',
         }
         expect(@analytics).to receive(:track_event).
           with(Analytics::PROFILE_ENCRYPTION_INVALID, profile_encryption_error)

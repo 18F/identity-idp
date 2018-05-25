@@ -11,7 +11,7 @@
     "build": "true"
   },
   "dependencies": {
-    "@rails/webpacker": "^3.4.3",
+    "@rails/webpacker": "^3.5.3",
     "basscss-sass": "^3.0.0",
     "classlist.js": "^1.1.20150312",
     "clipboard": "^1.6.1",
@@ -19,6 +19,8 @@
     "field-kit": "^2.1.0",
     "focus-trap": "^2.3.0",
     "hint.css": "^2.3.2",
+    "intl-tel-input": "^12.1.15",
+    "jquery": "^3.3.1",
     "libphonenumber-js": "^0.4.23",
     "normalize.css": "^4.2.0",
     "sinon": "^1.17.7",

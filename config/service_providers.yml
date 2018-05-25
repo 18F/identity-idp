@@ -613,3 +613,46 @@ production:
     attribute_bundle:
       - email
     restrict_to_deploy_env: 'prod'
+
+  # Office Move.mil
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:officemovemilprod':
+    agency_id: 8
+    friendly_name: 'Office Move.mil'
+    agency: 'DOD'
+    logo: 'move_mil.svg'
+    cert: 'move_mil_prod'
+    return_to_sp_url: 'https://office.move.mil'
+    redirect_uris:
+      - 'https://office.move.mil'
+      - 'https://office.move.mil/auth/login-gov/callback'
+    restrict_to_deploy_env: 'prod'
+
+  # My Move.mil
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
+    agency_id: 8
+    friendly_name: 'My Move.mil'
+    agency: 'DOD'
+    logo: 'move_mil.svg'
+    cert: 'move_mil_prod'
+    return_to_sp_url: 'https://my.move.mil'
+    redirect_uris:
+      - 'https://my.move.mil'
+      - 'https://my.move.mil/auth/login-gov/callback'
+    restrict_to_deploy_env: 'prod'
+
+  # DOT – National Registry of Certified Medical Examiners App
+  'urn:gov:dot:openidconnect.profiles:sp:sso:dot:nr_auth':
+    agency_id: 6
+    friendly_name: 'DOT – NRCME App'
+    agency: 'DOT'
+    logo: 'dot.svg'
+    cert: 'dot_nrcme_prod'
+    return_to_sp_url: 'https://nationalregistry.fmcsa.dot.gov'
+    redirect_uris:
+      - 'https://nr-1.fmcsa.dot.gov/'
+      - 'https://nr-1.fmcsa.dot.gov/nr-authentication/'
+      - 'https://nr-1.fmcsa.dot.gov/nr-authentication/LoginHandler'
+      - 'https://nr-1.fmcsa.dot.gov:443/'
+      - 'https://nr-1.fmcsa.dot.gov:443/nr-authentication/'
+      - 'https://nr-1.fmcsa.dot.gov:443/nr-authentication/LoginHandler'
+    restrict_to_deploy_env: 'prod'

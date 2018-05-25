@@ -33,7 +33,7 @@ class VerifyPasswordForm
   end
 
   def reencrypt_pii
-    personal_key = profile.encrypt_pii(user_access_key, decrypted_pii)
+    personal_key = profile.encrypt_pii(decrypted_pii, password)
     profile.update(deactivation_reason: nil, active: true)
     profile.save!
     personal_key

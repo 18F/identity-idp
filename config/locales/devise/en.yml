@@ -111,19 +111,16 @@ en:
       max_personal_key_login_attempts_reached: Your account is temporarily locked
         because you have entered the personal key incorrectly too many times.
       otp_delivery_preference:
-        instruction: You can change this selection the next time you log in.
+        instruction: You can change this selection the next time you log in. If you
+          entered a landline, please select "Phone call" below.
         phone_unsupported: We're unable to make phone calls to people in %{location}
-          at this time. We have sent your security code via text message. If you don't
-          receive the message in a few minutes, click "get another text message" to
-          try again. If that doesn't work, check that your phone or cellular operator
-          is not blocking messages from US phone numbers.
+          at this time.
         sms: Text message (SMS)
         title: How should we send you a code?
         voice: Phone call
       otp_phone_label: Phone number
-      otp_phone_label_info: Mobile phone or landline. If you enter a landline, please
-        select “Phone call” below.
-      otp_phone_label_info_modile_only: Mobile phone
+      otp_phone_label_info: Mobile phone or landline
+      otp_phone_label_info_mobile_only: Mobile phone
       otp_setup_html: "<strong>Every time you log in,</strong> we will send you a
         one-time security code via text message or phone call. This helps safeguard
         your account."

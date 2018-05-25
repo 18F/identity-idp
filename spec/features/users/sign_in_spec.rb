@@ -422,4 +422,11 @@ feature 'Sign in' do
       expect(page).to have_current_path(account_path)
     end
   end
+
+  it 'does not whitelist style-src in CSP' do
+    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
+    visit root_path
+    expect(page.response_headers['Content-Security-Policy']).
+      to(include('style-src \'self\''))
+  end
 end

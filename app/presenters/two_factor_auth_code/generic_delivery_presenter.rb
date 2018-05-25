@@ -58,6 +58,8 @@ module TwoFactorAuthCode
     end
 
     def piv_cac_link
+      return unless FeatureManagement.piv_cac_enabled?
+      return unless has_piv_cac_configured
       view.link_to(
         t('devise.two_factor_authentication.piv_cac_fallback.link'),
         login_two_factor_piv_cac_path(locale: LinkLocaleResolver.locale)

@@ -112,8 +112,10 @@ describe 'NIST Encryption Model' do
       encrypted_D = xor(user_access_key.z1, ciphered_R)
       hash_E = OpenSSL::Digest::SHA256.hexdigest(user_access_key.z2 + random_R)
 
-      password_encryptor = Pii::PasswordEncryptor.new
-      encrypted_payload = password_encryptor.encrypt(pii, user_access_key)
+      user_access_key_encryptor = Encryption::Encryptors::UserAccessKeyEncryptor.new(
+        user_access_key
+      )
+      encrypted_payload = user_access_key_encryptor.encrypt(pii)
 
       expect(encrypted_payload).to_not match(pii)
 

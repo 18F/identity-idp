@@ -7,5 +7,12 @@ if FeatureManagement.enable_identity_verification?
   end
 
   Idv::Proofer.init
+
+  # Until equifax is removed, ensure env variables are available
+  [/^equifax_/].each do |pattern|
+    ENV.keys.grep(pattern).each do |env_var_name|
+      ENV[env_var_name.upcase] = ENV[env_var_name]
+    end
+  end
 end
 # rubocop:enable Metrics/LineLength

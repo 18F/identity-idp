@@ -4,8 +4,22 @@ feature 'idv profile step', :idv_job do
   include IdvStepHelper
 
   context 'with valid information' do
-    it 'requires the user to complete to continue to the address step and is not re-entrant' do
+    before do
       start_idv_from_sp
+    end
+
+    it 'populates the state from the jurisdiction selection' do
+      complete_idv_steps_before_jurisdiction_step
+
+      abbrev = 'WA'
+      state = 'Washington'
+      select state, from: 'jurisdiction_state'
+      click_idv_continue
+
+      expect(page).to have_selector("option[selected='selected'][value='#{abbrev}']")
+    end
+
+    it 'requires the user to complete to continue to the address step and is not re-entrant' do
       complete_idv_steps_before_profile_step
 
       # Try to skip ahead to address step
@@ -39,6 +53,23 @@ feature 'idv profile step', :idv_job do
 
   context "when the user's information cannot be verified" do
     it_behaves_like 'fail to verify idv info', :profile
+
+    context 'after the warning modal is dismissed' do
+      let(:state) { 'Washington' }
+      let(:abbrev) { 'WA' }
+
+      before do
+        start_idv_from_sp
+        complete_idv_steps_before_profile_step
+        fill_out_idv_form_fail(state: state)
+        click_continue
+        click_button t('idv.modal.button.warning')
+      end
+
+      it 'populates the state from the form' do
+        expect(page).to have_selector("option[selected='selected'][value='#{abbrev}']")
+      end
+    end
   end
 
   context 'when the IdV background job fails' do

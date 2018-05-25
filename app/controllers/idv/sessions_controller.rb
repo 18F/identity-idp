@@ -16,6 +16,7 @@ module Idv
     def new
       user_session[:context] = 'idv'
       @view_model = view_model
+      @view_model.selected_state = user_session[:idv_jurisdiction]
       analytics.track_event(Analytics::IDV_BASIC_INFO_VISIT)
     end
 

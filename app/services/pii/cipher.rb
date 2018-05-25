@@ -44,8 +44,8 @@ module Pii
 
     def unpack_payload(payload)
       JSON.parse(payload, symbolize_names: true)
-    rescue StandardError => err
-      raise Pii::EncryptionError, "Unable to parse encrypted payload. #{err.inspect}"
+    rescue StandardError
+      raise Pii::EncryptionError, 'Unable to parse encrypted payload'
     end
 
     def iv(unpacked_payload)

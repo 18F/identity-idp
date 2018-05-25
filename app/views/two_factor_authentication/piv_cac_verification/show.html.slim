@@ -4,7 +4,7 @@ h1.h3.my0 = @presenter.header
 p.mt-tiny.mb3 = @presenter.help_text
 
 = link_to @presenter.piv_cac_capture_text,
-              PivCacService.piv_cac_service_link(@piv_cac_nonce),
+              @presenter.piv_cac_service_link,
               class: 'btn btn-primary'
 
 = render 'shared/fallback_links', presenter: @presenter

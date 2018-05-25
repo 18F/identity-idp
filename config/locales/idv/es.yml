@@ -59,39 +59,9 @@ es:
       state_id_type_label: Tipo de número de identificación
       zipcode: Código postal
     index:
-      continue_link: Sí, continuar
       id:
         need_html: Si está creando una cuenta, necesitará una <strong>identificación
           emitida por el estado actual</strong>.
-      paragraph_1: Nos hemos asociado con una empresa externa confiable para verificar
-        esta información y su identidad.
-      prompt: "¿Tiene toda esta información disponible ahora mismo?"
-      section_1:
-        bullet_1: Nombre completo
-        bullet_2: Dirección postal
-        bullet_3: Fecha de nacimiento
-        bullet_4: Número de Seguro Social
-        header: Información personal
-        subheader: 'Comenzaremos con algunos datos personales como:'
-      section_2:
-        bullet_1: Últimos 8 dígitos de una tarjeta de crédito
-        bullet_2: Número de cuenta de préstamo de auto
-        bullet_3: Número de cuenta de préstamo hipotecario
-        bullet_4: Número de la cuenta del préstamo sobre el valor neto de la vivienda
-        footnote: Nunca se le cobrará ningún dinero y no compartirá ningún saldo de
-          cuenta u otra información financiera con nosotros. Solo verificamos el número
-          de cuenta para verificar su identidad.
-        header: Información financiera
-        subheader: 'Necesitamos uno de los siguientes números de cuenta financiera:'
-      section_3:
-        bullet_1: Bajo su nombre o el nombre de alguien en su hogar
-        bullet_2_html: "<strong>No es</ strong> un teléfono virtual, como Google Voice
-          o Skype"
-        bullet_3_html: "<strong>No es</ strong> un teléfono de prepago"
-        header: Línea de teléfono a su nombre
-        subheader: 'Utilizamos registros de la compañía telefónica para verificar
-          su identidad. El número de teléfono que usted nos da debe:'
-      subheader: Para verificar su identidad, le pediremos que responda algunas preguntas
     messages:
       activated_html: Su identidad ha sido verificada. Si necesita cambiar la información
         verificada, por favor, %{link}.
@@ -115,6 +85,17 @@ es:
       id_number: Ingrese un número de identificación del estado o un número de licencia
         de conducir válidos. El nombre, la fecha de nacimiento y la dirección en su
         ID <strong>deben coincidir</ strong> la información proporcionada arriba.
+      jurisdiction:
+        why: Para verificar su identidad, necesitará información de su identificación
+          emitida por el estado.
+        where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
+          del estado?"
+        no_id: No tengo una identificación emitida por el estado
+        profile: Para acceder a su cuenta en el futuro, puede %{link}.
+        profile_link: mira tu cuenta aquí
+        sp_support: Visita %{link} para obtener más información.
+        unsupported_jurisdiction: Estamos trabajando duro para agregar más estados
+          y esperamos apoyar a %{state} pronto.
       loading: NOT TRANSLATED YET
       mail_sent: Su carta está en camino
       otp_delivery_method:
@@ -214,9 +195,12 @@ es:
       fail: No pudimos verificar su identidad.
       hardfail: No pudimos verificar su identidad con %{app}.
       intro: Ayúdenos a identificarlo
+      jurisdiction: Elija su estado
       mail:
         resend: "¿Desea otra carta?"
         verify: "¿Desea una carta?"
+      no_id: No podemos verificar su identidad sin una identificación emitida por
+        el estado
       otp_delivery_method: NOT TRANSLATED YET
       phone: Número de teléfono del registro
       review: Revise y envíe
@@ -225,3 +209,5 @@ es:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
       sessions: Verifica tu identidad
+      unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos
+        desde %{state}
