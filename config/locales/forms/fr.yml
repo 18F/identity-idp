@@ -16,8 +16,6 @@ fr:
     confirmation:
       show_hdr: Créez un mot de passe fort
     messages:
-      current_address: Vous devriez être en mesure de recevoir du courrier à cette
-        adresse.
       remember_device: Enregistrer ce navigateur pendant %{duration} jours
     passwords:
       edit:

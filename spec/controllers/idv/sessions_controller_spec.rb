@@ -18,15 +18,6 @@ describe Idv::SessionsController do
       state_id_number: '123456789',
     }
   end
-  let(:previous_address) do
-    {
-      prev_address1: '456 Other St',
-      prev_address2: '',
-      prev_city: 'Elsewhere',
-      prev_state: 'MO',
-      prev_zipcode: '66666',
-    }
-  end
   let(:idv_session) do
     Idv::Session.new(user_session: subject.user_session, current_user: user, issuer: nil)
   end
@@ -247,45 +238,6 @@ describe Idv::SessionsController do
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-          end
-        end
-
-        context 'previous address supplied' do
-          let(:bad_zipcode) { '00000' }
-
-          let(:result) { Idv::VendorResult.new(success: false) }
-
-          context 'if previous address has a bad zipcode' do
-            let(:params) { user_attrs.merge(previous_address).merge(prev_zipcode: bad_zipcode) }
-
-            it 'fails' do
-              get :show
-
-              expect(idv_session.resolution_successful).to be_nil
-            end
-          end
-
-          context 'if current address has a bad zipcode' do
-            let(:params) { user_attrs.merge(previous_address).merge(zipcode: bad_zipcode) }
-
-            it 'fails' do
-              get :show
-
-              expect(idv_session.resolution_successful).to be_nil
-            end
-          end
-
-          context 'with multiple addresses' do
-            let(:result) do
-              Idv::VendorResult.new(success: true, applicant: applicant)
-            end
-            let(:params) { user_attrs.merge(previous_address) }
-
-            it 'respects both addresses' do
-              get :show
-
-              expect(idv_session.resolution_successful).to eq true
-            end
           end
         end
 

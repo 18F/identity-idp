@@ -34,8 +34,8 @@ en:
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
     form:
       activate_by_mail: get a code by letter.
-      address1: Street address 1
-      address2: Street address 2 (optional)
+      address1: Address
+      address2: Address (optional)
       city: City
       dob: Date of birth
       dob_hint: 'example: 01/17/1964'
@@ -43,19 +43,16 @@ en:
       last_name: Last name
       no_alternate_phone_html: If you don't have another phone number, %{link}
       password: Password
-      personal_details: Personal details
       phone: Phone Number
       phone_label_aside: Mobile phone or landline
-      previous_address_add: Add previous address
-      previous_address_html: Moved in the <strong>last 3 months</strong>?
-      ssn_label_html: Social Security Number %{tooltip}
+      ssn_label_html: Social Security Number
       state: State
-      state_id: Identification number
+      state_id: ID number
       state_id_type:
         drivers_license: Driver's license
         drivers_permit: Driver's permit
-        state_id_card: State ID card
-      state_id_type_label: Type of ID number
+        state_id_card: State ID
+      state_id_type_label: ID type
       zipcode: ZIP Code
     index:
       id:
@@ -84,9 +81,6 @@ en:
       hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       help_center_html: Visit our <strong>Help Center</strong> to learn more about
         verifying your account.
-      id_number: Enter a valid state identification number or driver's license number.
-        The name, date of birth and address on your ID <strong>must</strong> match
-        the information provided above.
       jurisdiction:
         why: To verify your identity, you'll need information from your state-issued
           ID.
@@ -130,20 +124,13 @@ en:
       select_verification_without_sp: To protect you from identity fraud, we will
         contact you to confirm that this account is legitimate.
       sessions:
-        access_sp: "<strong>%{sp_name}</strong> requires that <em>only you</em> can
-          access your benefits."
+        id_information_subtitle: ID Information
+        id_information_message: as it appears on your state-issued ID
         no_pii: Do not use real personal information (demo purposes only)
         pii: personal information
         review_message: When you enter your password, login.gov will secure your personal
           information. We do this to make sure no one else can access your information.
         success: We found records matching your %{pii_message}
-      state_id_accordion_header: What if I don't have a valid ID number?
-      state_id_accordion_message: "You must provide a valid ID number to continue
-        verifying online.\nIt cannot be expired. The name, date of birth and address
-        on \nyour ID must match the information you provided above.\n\nIf you've recently
-        moved and the address on your ID doesn't \nmatch your current official address,
-        we can't verify you online at \nthis time.\n\nIf you don't have a valid ID
-        number, please return to %{sp} to access your benefits."
       usps:
         bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified address
@@ -205,5 +192,5 @@ en:
       session:
         phone: Get a code by telephone
         review: Enter your login.gov password
-      sessions: Verify your identity
+      sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.

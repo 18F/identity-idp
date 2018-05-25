@@ -37,20 +37,6 @@ module IdvHelper
     fill_in 'profile_state_id_number', with: '123456789'
   end
 
-  def fill_out_idv_previous_address_ok
-    fill_in 'profile_prev_address1', with: '456 Other Ave'
-    fill_in 'profile_prev_city', with: 'Elsewhere'
-    select 'Missouri', from: 'profile_prev_state'
-    fill_in 'profile_prev_zipcode', with: '64000'
-  end
-
-  def fill_out_idv_previous_address_fail
-    fill_in 'profile_prev_address1', with: '456 Other Ave'
-    fill_in 'profile_prev_city', with: 'Elsewhere'
-    select 'Missouri', from: 'profile_prev_state'
-    fill_in 'profile_prev_zipcode', with: '00000'
-  end
-
   def fill_out_idv_jurisdiction_ok
     select 'Washington', from: 'jurisdiction_state'
     expect(page).to have_no_content t('idv.errors.unsupported_jurisdiction')
