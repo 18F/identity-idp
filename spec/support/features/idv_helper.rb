@@ -20,7 +20,7 @@ module IdvHelper
     fill_in 'profile_zipcode', with: '66044'
     fill_in 'profile_dob', with: '01/02/1980'
     fill_in 'profile_ssn', with: '666-66-1234'
-    select "Driver's license", from: 'profile_state_id_type'
+    # click_on 'profile_state_id_type_drivers_permit'
     fill_in 'profile_state_id_number', with: '123456789'
   end
 
@@ -33,7 +33,7 @@ module IdvHelper
     fill_in 'profile_zipcode', with: '00000'
     fill_in 'profile_dob', with: '01/02/1900'
     fill_in 'profile_ssn', with: '666-66-6666'
-    select "Driver's license", from: 'profile_state_id_type'
+    # click_on 'profile_state_id_type_drivers_permit'
     fill_in 'profile_state_id_number', with: '123456789'
   end
 
