@@ -39,7 +39,7 @@ fr:
       unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
         compte.
     form:
-      activate_by_mail: obtenez un code par lettre.
+      activate_by_mail: obtenir un code par courrier à la place ›
       address1: Adresse 1
       address2: Adresse 2 (optional)
       city: Ville
@@ -47,11 +47,10 @@ fr:
       dob_hint: 'exemple : 01/17/1964'
       first_name: Prénom
       last_name: Nom de famille
-      no_alternate_phone_html: Si vous n'avez pas d'autre numéro de téléphone, %{link}
+      no_alternate_phone_html: 'Pas de téléphone? aucun problème: %{link}'
       password: Mot de passe
       personal_details: Information personnelle
       phone: Numéro de téléphone
-      phone_label_aside: Ligne mobile ou fixe
       previous_address_add: Inscrire votre adresse précédente
       previous_address_html: Avez-vous déménagé au cours des strong3 derniers mois/strong?
       ssn_label_html: Numéro de sécurité sociale %{tooltip}
@@ -110,16 +109,13 @@ fr:
         dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot
         de passe.
       phone:
-        alert: Cette ligne téléphonique doit être
-        in_your_name: en votre nom ou celui d'un membre de votre famille
-        intro: Le seul numéro de téléphone auquel nous pouvons envoyer un code de
-          confirmation est celui qui est lié à votre identité légale.
+        alert: Ce numéro de téléphone <strong>doit être</strong>
         phone_of_record: numéro de téléphone enregistré
-        prepaid: et non prépayé
-        same_as_2fa: Ce numéro de téléphone peut être le même que celui que vous utilisez
-          pour configurer votre mot de passe à usage unique, tant et aussi longtemps
-          qu'il respecte les critères mentionnés plus haut.
-        us_country_code: NOT TRANSLATED YET
+        rules:
+        - en votre nom ou celui d'un membre de votre famille
+        - pas un téléphone virtuel (comme Google Voice ou Skype)
+        - pas un numéro de téléphone prépayé
+        - un numéro américain
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
@@ -217,7 +213,7 @@ fr:
       review: Réviser et soumettre
       select_verification: Activer votre compte
       session:
-        phone: Obtenez un code par téléphone
+        phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
         review: Encryptez vos données personnelles en entrant votre mot de passe
         success: Nous avons vérifié les informations sur votre ID d'état.
       sessions: Vérifier votre identité
