@@ -46,7 +46,7 @@ module TwoFactorAuthCode
 
     private
 
-    attr_reader :personal_key_unavailable, :view, :reauthn
+    attr_reader :personal_key_unavailable, :has_piv_cac_configured, :view, :reauthn
 
     def personal_key_tag
       view.link_to(t("#{personal_key}.link"),
@@ -55,6 +55,24 @@ module TwoFactorAuthCode
 
     def personal_key
       'devise.two_factor_authentication.personal_key_fallback'
+    end
+
+    def piv_cac_link
+      return unless FeatureManagement.piv_cac_enabled?
+      return unless has_piv_cac_configured
+      view.link_to(
+        t('devise.two_factor_authentication.piv_cac_fallback.link'),
+        login_two_factor_piv_cac_path(locale: LinkLocaleResolver.locale)
+      )
+    end
+
+    def piv_cac_option
+      return unless FeatureManagement.piv_cac_enabled?
+      return unless has_piv_cac_configured
+      t(
+        'devise.two_factor_authentication.piv_cac_fallback.text_html',
+        link: piv_cac_link
+      )
     end
   end
 end

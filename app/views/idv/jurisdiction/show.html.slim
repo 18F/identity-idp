@@ -1,0 +1,22 @@
+- i18n_args = @state ? { state: state_name_for_abbrev(@state) } : {}
+
+- title t("idv.titles.#{@reason}", **i18n_args)
+
+h1.h3.mb2.my0 = t("idv.titles.#{@reason}", **i18n_args)
+
+- if @state
+  p.mb1 = t("idv.messages.jurisdiction.#{@reason}", **i18n_args)
+
+.col-2
+  hr.mt5.mb2.bw4.border-blue.rounded
+
+- if decorated_session.sp_name
+  - support_link = link_to(decorated_session.sp_name, decorated_session.sp_alert_learn_more)
+  p == t('idv.messages.jurisdiction.sp_support', link: support_link)
+
+- profile_link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
+p == t('idv.messages.jurisdiction.profile', link: profile_link)
+
+p.mt4 = link_to t('forms.buttons.back'),
+    decorated_session.cancel_link_url || account_path,
+    class: 'btn btn-primary btn-wide'

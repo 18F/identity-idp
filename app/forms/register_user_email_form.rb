@@ -8,6 +8,10 @@ class RegisterUserEmailForm
 
   delegate :email, to: :user
 
+  def initialize(recaptcha_results = [true, {}])
+    @allow, @recaptcha_h = recaptcha_results
+  end
+
   def user
     @user ||= User.new
   end
@@ -23,7 +27,7 @@ class RegisterUserEmailForm
     if valid_form?
       process_successful_submission(request_id, instructions)
     else
-      @success = process_errors(request_id)
+      @success = @allow && process_errors(request_id)
     end
 
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
@@ -35,7 +39,7 @@ class RegisterUserEmailForm
   attr_reader :success
 
   def valid_form?
-    valid? && !email_taken?
+    @allow && valid? && !email_taken?
   end
 
   def process_successful_submission(request_id, instructions)
@@ -49,7 +53,7 @@ class RegisterUserEmailForm
       email_already_exists: email_taken?,
       user_id: existing_user.uuid,
       domain_name: email&.split('@')&.last,
-    }
+    }.merge(@recaptcha_h)
   end
 
   def process_errors(request_id)

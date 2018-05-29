@@ -30,30 +30,42 @@ class Profile < ApplicationRecord
     update!(active: false, deactivation_reason: reason)
   end
 
-  def decrypt_pii(user_access_key)
-    Pii::Attributes.new_from_encrypted(encrypted_pii, user_access_key)
+  def decrypt_pii(password)
+    Pii::Attributes.new_from_encrypted(
+      encrypted_pii,
+      password: password,
+      salt: user.password_salt,
+      cost: user.password_cost
+    )
   end
 
   def recover_pii(personal_key)
-    rc_user_access_key = UserAccessKey.new(
+    Pii::Attributes.new_from_encrypted(
+      encrypted_pii_recovery,
       password: personal_key,
       salt: user.recovery_salt,
       cost: user.recovery_cost
     )
-    EncryptedKeyMaker.new.make(rc_user_access_key)
-    Pii::Attributes.new_from_encrypted(encrypted_pii_recovery, rc_user_access_key)
   end
 
-  def encrypt_pii(user_access_key, pii)
+  def encrypt_pii(pii, password)
     ssn = pii.ssn
     self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
-    self.encrypted_pii = pii.encrypted(user_access_key)
+    self.encrypted_pii = pii.encrypted(
+      password: password,
+      salt: user.password_salt,
+      cost: user.password_cost
+    )
     encrypt_recovery_pii(pii)
   end
 
   def encrypt_recovery_pii(pii)
-    personal_key, rc_user_access_key = generate_personal_key
-    self.encrypted_pii_recovery = pii.encrypted(rc_user_access_key)
+    personal_key = personal_key_generator.create
+    self.encrypted_pii_recovery = pii.encrypted(
+      password: personal_key_generator.normalize(personal_key),
+      salt: user.recovery_salt,
+      cost: user.recovery_cost
+    )
     @personal_key = personal_key
   end
 
@@ -61,10 +73,5 @@ class Profile < ApplicationRecord
 
   def personal_key_generator
     @_personal_key_generator ||= PersonalKeyGenerator.new(user)
-  end
-
-  def generate_personal_key
-    personal_key = personal_key_generator.create
-    [personal_key, personal_key_generator.user_access_key]
   end
 end

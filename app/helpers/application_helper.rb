@@ -55,7 +55,7 @@ module ApplicationHelper
     if user_signing_up?
       destroy_user_path
     elsif user_verifying_identity?
-      verify_session_path
+      idv_session_path
     end
   end
 

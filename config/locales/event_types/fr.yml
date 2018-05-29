@@ -12,4 +12,6 @@ fr:
     password_changed: Mot de passe modifié
     phone_changed: Numéro de téléphone modifié
     phone_confirmed: Numéro de téléphone confirmé
+    piv_cac_disabled: Carte PIV/CAC non associée
+    piv_cac_enabled: Carte PIV/CAC associée
     usps_mail_sent: Lettre envoyée

@@ -15,7 +15,7 @@ describe UspsConfirmationMaker do
     attributes = Pii::Attributes.new
     decrypted_attributes.each do |key, value|
       next unless attributes.respond_to? key
-      attributes[key] = Pii::Attribute.new(raw: value, norm: value)
+      attributes[key] = value
     end
     attributes
   end

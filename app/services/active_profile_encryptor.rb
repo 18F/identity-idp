@@ -9,8 +9,7 @@ class ActiveProfileEncryptor
 
   def call
     active_profile = @user.active_profile
-    user_access_key = @user.unlock_user_access_key(@password)
-    @personal_key = active_profile.encrypt_pii(user_access_key, current_pii)
+    @personal_key = active_profile.encrypt_pii(current_pii, @password)
     active_profile.save!
   end
 

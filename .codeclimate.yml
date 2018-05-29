@@ -91,6 +91,7 @@ exclude_patterns:
   - 'db/schema.rb'
   - 'node_modules/'
   - 'lib/rspec/formatters/user_flow_formatter.rb'
+  - 'lib/tasks/create_test_accounts.rb'
   - 'lib/user_flow_exporter.rb'
   - 'scripts/load_testing/'
   - 'spec/'

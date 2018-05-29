@@ -1,0 +1,11 @@
+- title @presenter.title
+
+h1.h3.my0 = @presenter.heading
+p.mt-tiny.mb3 = @presenter.description
+
+= link_to @presenter.piv_cac_capture_text,
+              @presenter.piv_cac_service_link,
+              class: 'btn btn-primary'
+= render 'shared/cancel', link: account_path
+
+== javascript_pack_tag 'clipboard'

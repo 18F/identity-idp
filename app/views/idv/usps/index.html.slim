@@ -1,0 +1,16 @@
+.my2.p3.py2.sm-px3.border.border-teal.rounded.rounded-xl.relative
+  = image_tag(asset_url('check-email.svg'), size: '48x48', alt: 'check email',\
+    class: 'absolute top-n24 left-0 right-0 mx-auto')
+  h1.h2
+    = @decorated_usps.title
+  p
+    = t('idv.messages.usps.byline')
+
+  p.my0
+    strong
+      = t('idv.messages.usps.success')
+
+= button_to @decorated_usps.button, idv_usps_path, method: 'put',
+  class: 'btn btn-primary btn-wide', form_class: 'inline-block mr2'
+
+= link_to t('idv.messages.usps.bad_address'), idv_phone_path

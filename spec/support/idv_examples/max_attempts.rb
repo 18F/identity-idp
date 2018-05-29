@@ -17,7 +17,7 @@ shared_examples 'verification step max attempts' do |step, sp|
 
   scenario 'more than 3 attempts in 24 hours prevents further attempts' do
     # Blocked if visiting verify directly
-    visit verify_url
+    visit idv_url
     advance_to_phone_step if step == :phone
     expect_user_to_be_unable_to_perform_idv(sp)
 
@@ -44,9 +44,10 @@ shared_examples 'verification step max attempts' do |step, sp|
       sign_in_live_with_2fa(user)
 
       expect(page).to_not have_content(t("idv.modal.#{step_locale_key}.heading"))
-      expect(current_url).to eq(verify_url)
+      expect(current_url).to eq(idv_jurisdiction_url)
 
-      click_idv_begin
+      fill_out_idv_jurisdiction_ok
+      click_idv_continue
       complete_idv_profile_ok(user)
       click_acknowledge_personal_key
       click_idv_continue
@@ -97,11 +98,12 @@ shared_examples 'verification step max attempts' do |step, sp|
         strip_tags(t('idv.messages.help_center_html'))
       )
     end
-    expect(current_url).to eq(verify_fail_url)
+    expect(current_url).to eq(idv_fail_url)
   end
 
   def advance_to_phone_step
-    click_idv_begin
+    fill_out_idv_jurisdiction_ok
+    click_idv_continue
     click_idv_address_choose_phone
   end
 end

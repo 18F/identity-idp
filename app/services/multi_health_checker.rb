@@ -5,7 +5,8 @@ class MultiHealthChecker
     end
 
     def to_h
-      super.merge(healthy: healthy?)
+      result = healthy?
+      super.merge(healthy: result, all_checks_healthy: result)
     end
 
     def as_json(*args)

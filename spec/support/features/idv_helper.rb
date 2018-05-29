@@ -24,12 +24,12 @@ module IdvHelper
     fill_in 'profile_state_id_number', with: '123456789'
   end
 
-  def fill_out_idv_form_fail
+  def fill_out_idv_form_fail(state: 'Virginia')
     fill_in 'profile_first_name', with: 'Bad'
     fill_in 'profile_last_name', with: 'User'
     fill_in 'profile_address1', with: '123 Main St'
     fill_in 'profile_city', with: 'Nowhere'
-    select 'Virginia', from: 'profile_state'
+    select state, from: 'profile_state'
     fill_in 'profile_zipcode', with: '00000'
     fill_in 'profile_dob', with: '01/02/1900'
     fill_in 'profile_ssn', with: '666-66-6666'
@@ -51,6 +51,11 @@ module IdvHelper
     fill_in 'profile_prev_zipcode', with: '00000'
   end
 
+  def fill_out_idv_jurisdiction_ok
+    select 'Washington', from: 'jurisdiction_state'
+    expect(page).to have_no_content t('idv.errors.unsupported_jurisdiction')
+  end
+
   def fill_out_idv_state_fail
     select 'Alabama', from: 'profile_state'
     expect(page).to have_content t('idv.errors.unsupported_jurisdiction')
@@ -67,10 +72,6 @@ module IdvHelper
 
   def fill_out_phone_form_fail
     fill_in :idv_phone_form_phone, with: '(555) 555-5555'
-  end
-
-  def click_idv_begin
-    click_on t('idv.index.continue_link')
   end
 
   def click_idv_continue

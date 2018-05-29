@@ -1,4 +1,4 @@
-<% job = @data[:sidekiq][:job] %>
+<% job = @data.dig(:sidekiq, :job) || {} %>
 
 Job class: <%= job['wrapped'] %>
 Queue: <%= job['queue'] %>

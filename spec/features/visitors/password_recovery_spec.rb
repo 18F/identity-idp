@@ -233,4 +233,24 @@ feature 'Password Recovery' do
 
     expect(current_path).to eq new_user_password_path
   end
+
+  context 'CSP whitelists recaptcha for style-src' do
+    scenario 'recaptcha is disabled' do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(false)
+
+      visit new_user_password_path
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('style-src \'self\''))
+    end
+
+    scenario 'recaptcha is enabled' do
+      allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
+
+      visit new_user_password_path
+
+      expect(page.response_headers['Content-Security-Policy']).
+        to(include('style-src \'self\' \'unsafe-inline\''))
+    end
+  end
 end

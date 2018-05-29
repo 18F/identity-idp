@@ -22,7 +22,7 @@ describe ApplicationHelper do
   end
 
   describe '#session_with_trust?' do
-    context 'no user present' do
+    context 'no user present and page is not one with trust' do
       before do
         allow(controller).to receive(:current_user).and_return(nil)
       end
@@ -52,6 +52,14 @@ describe ApplicationHelper do
 
           expect(helper.session_with_trust?).to eq true
         end
+      end
+    end
+
+    context 'curent user is present' do
+      it 'returns true' do
+        allow(controller).to receive(:current_user).and_return(true)
+
+        expect(helper.session_with_trust?).to eq true
       end
     end
   end

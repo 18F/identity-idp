@@ -17,8 +17,7 @@ FactoryBot.define do
     after(:build) do |profile, evaluator|
       if evaluator.pii
         pii_attrs = Pii::Attributes.new_from_hash(evaluator.pii)
-        user_access_key = profile.user.unlock_user_access_key(profile.user.password)
-        profile.encrypt_pii(user_access_key, pii_attrs)
+        profile.encrypt_pii(pii_attrs, profile.user.password)
       end
     end
   end
