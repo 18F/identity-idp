@@ -35,7 +35,8 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
+      click_idv_continue
       click_idv_address_choose_phone
 
       expect(current_path).to eq idv_phone_path
@@ -46,7 +47,8 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       user = sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
-      click_button t('forms.buttons.continue')
+      click_idv_continue
+      click_idv_continue
       click_idv_address_choose_phone
       click_button t('forms.buttons.continue')
 
@@ -58,6 +60,7 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
       user = sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
+      click_idv_continue
       click_idv_continue
       click_idv_address_choose_phone
       click_idv_continue

@@ -127,10 +127,9 @@ en:
         id_information_subtitle: ID Information
         id_information_message: as it appears on your state-issued ID
         no_pii: Do not use real personal information (demo purposes only)
-        pii: personal information
         review_message: When you enter your password, login.gov will secure your personal
           information. We do this to make sure no one else can access your information.
-        success: We found records matching your %{pii_message}
+        success: Next, we'll need a phone number.
       usps:
         bad_address: I can't get mail at this address
         byline: We will mail a letter with a confirmation code to your verified address
@@ -192,5 +191,6 @@ en:
       session:
         phone: Get a code by telephone
         review: Enter your login.gov password
+        success: We've verified the information on your state-issued ID.
       sessions: Information about you
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.

@@ -126,11 +126,10 @@ es:
         id_information_subtitle: Información de identificación
         id_information_message: como aparece en su identificación emitida por el estado
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
-        pii: información personal
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información
           personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
           su información.
-        success: Encontramos registros que coinciden con su %{pii_message}
+        success: A continuación, necesitaremos un número de teléfono.
       usps:
         bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
@@ -193,6 +192,8 @@ es:
       session:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
+        success: Hemos verificado la información en su identificación emitida por
+          el estado.
       sessions: Información acerca de ti
       unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos
         desde %{state}

@@ -55,7 +55,7 @@ describe Idv::SessionsController do
 
         get :new
 
-        expect(response).to redirect_to idv_address_path
+        expect(response).to redirect_to idv_session_success_path
       end
 
       context 'max attempts exceeded' do
@@ -332,7 +332,7 @@ describe Idv::SessionsController do
           it 'allows and resets attempt counter' do
             get :show
 
-            expect(response).to redirect_to idv_address_path
+            expect(response).to redirect_to idv_session_success_path
             expect(user.idv_attempts).to eq 1
           end
         end
