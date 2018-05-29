@@ -1,3 +1,5 @@
+require 'cloudhsm_jwt'
+
 class IdTokenBuilder
   include Rails.application.routes.url_helpers
 
@@ -13,7 +15,7 @@ class IdTokenBuilder
   end
 
   def id_token
-    JWT.encode(jwt_payload, RequestKeyManager.private_key, JWT_SIGNING_ALGORITHM)
+    CloudhsmJwt.encode(jwt_payload)
   end
 
   private

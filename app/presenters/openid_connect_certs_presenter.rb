@@ -8,6 +8,6 @@ class OpenidConnectCertsPresenter
   private
 
   def keys
-    [RequestKeyManager.private_key.public_key]
+    [RequestKeyManager.public_key]
   end
 end

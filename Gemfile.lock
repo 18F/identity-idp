@@ -57,14 +57,15 @@ GIT
 
 GIT
   remote: https://github.com/18F/saml_idp.git
-  revision: 6277eb7c796cd94ce29e9405bb5a5d60a643bb98
-  tag: v0.6.0-18f
+  revision: b248129b90e7bab82d27942dff77e97b5e2798af
+  tag: v0.7.0-18f
   specs:
-    saml_idp (0.6.0.pre.18f)
+    saml_idp (0.7.0.pre.18f)
       activesupport
       builder
       httparty
       nokogiri (>= 1.6.2)
+      pkcs11
       uuid
 
 GIT
@@ -390,6 +391,7 @@ GEM
     phony_rails (0.14.6)
       activesupport (>= 3.0)
       phony (> 2.15)
+    pkcs11 (0.2.7)
     powerpack (0.1.1)
     premailer (1.11.1)
       addressable
@@ -624,7 +626,7 @@ GEM
     uniform_notifier (1.11.0)
     user_agent_parser (2.4.1)
     useragent (0.16.8)
-    uuid (2.3.8)
+    uuid (2.3.9)
       macaddr (~> 1.0)
     valid_email (0.1.0)
       activemodel
@@ -722,6 +724,7 @@ DEPENDENCIES
   pg
   phonelib
   phony_rails
+  pkcs11
   premailer-rails
   proofer!
   pry-byebug

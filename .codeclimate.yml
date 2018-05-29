@@ -96,4 +96,4 @@ exclude_patterns:
   - 'scripts/load_testing/'
   - 'spec/'
   - 'tmp/'
-
+  - 'config/initializers/jwt.rb'
