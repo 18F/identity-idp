@@ -7,7 +7,7 @@ module Idv
     before_action :confirm_two_factor_authenticated, except: [:destroy]
     before_action :confirm_idv_attempts_allowed
     before_action :confirm_idv_needed
-    before_action :confirm_step_needed, except: [:destroy]
+    before_action :confirm_step_needed, except: %i[destroy success]
     before_action :initialize_idv_session, only: [:create]
     before_action :refresh_if_not_ready, only: [:show]
 
@@ -43,6 +43,8 @@ module Idv
       end
     end
 
+    def success; end
+
     def destroy
       idv_session = user_session[:idv]
       idv_session&.clear
@@ -52,7 +54,7 @@ module Idv
     private
 
     def confirm_step_needed
-      redirect_to idv_address_url if idv_session.profile_confirmation == true
+      redirect_to idv_session_success_url if idv_session.profile_confirmation == true
     end
 
     def step
@@ -70,11 +72,7 @@ module Idv
     end
 
     def process_success
-      pii_msg = ActionController::Base.helpers.content_tag(
-        :strong, t('idv.messages.sessions.pii')
-      )
-      flash[:success] = t('idv.messages.sessions.success', pii_message: pii_msg)
-      redirect_to idv_address_url
+      redirect_to idv_session_success_url
     end
 
     def process_failure

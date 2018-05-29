@@ -31,6 +31,7 @@ module IdvStepHelper
     complete_idv_steps_before_profile_step(user)
     fill_out_idv_form_ok
     click_idv_continue
+    click_idv_continue
   end
 
   def complete_idv_steps_before_phone_step(user = user_with_2fa)

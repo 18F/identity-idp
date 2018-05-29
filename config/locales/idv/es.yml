@@ -132,11 +132,10 @@ es:
         access_sp: "<strong>%{sp_name}</strong> requiere que <em>solo tú</em> puedas
           acceda a sus beneficios."
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
-        pii: información personal
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información
           personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
           su información.
-        success: Encontramos registros que coinciden con su %{pii_message}
+        success: A continuación, necesitaremos un número de teléfono.
       state_id_accordion_header: "¿Qué sucede si no tengo un número de identificación
         válido?"
       state_id_accordion_message: "Debe proporcionar un número de identificación válido
@@ -208,6 +207,8 @@ es:
       session:
         phone: Obtener un código por teléfono
         review: Encripte sus datos verificados ingresando su contraseña.
+        success: Hemos verificado la información en su identificación emitida por
+          el estado.
       sessions: Verifica tu identidad
       unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos
         desde %{state}

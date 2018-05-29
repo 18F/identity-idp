@@ -133,10 +133,9 @@ en:
         access_sp: "<strong>%{sp_name}</strong> requires that <em>only you</em> can
           access your benefits."
         no_pii: Do not use real personal information (demo purposes only)
-        pii: personal information
         review_message: When you enter your password, login.gov will secure your personal
           information. We do this to make sure no one else can access your information.
-        success: We found records matching your %{pii_message}
+        success: Next, we'll need a phone number.
       state_id_accordion_header: What if I don't have a valid ID number?
       state_id_accordion_message: "You must provide a valid ID number to continue
         verifying online.\nIt cannot be expired. The name, date of birth and address
@@ -205,5 +204,6 @@ en:
       session:
         phone: Get a code by telephone
         review: Enter your login.gov password
+        success: We've verified the information on your state-issued ID.
       sessions: Verify your identity
       unsupported_jurisdiction: We're sorry, login.gov doesn't support %{state} yet.
