@@ -76,7 +76,7 @@ describe Idv::ReviewController do
       it 'redirects to address step' do
         get :show
 
-        expect(response).to redirect_to idv_address_path
+        expect(response).to redirect_to idv_phone_path
       end
     end
   end

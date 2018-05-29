@@ -160,8 +160,6 @@ Rails.application.routes.draw do
         get '/fail' => 'idv#fail'
       end
       scope '/verify', module: 'idv', as: 'idv' do
-        get '/address' => 'address#index'
-        post '/address' => 'address#create'
         get '/come_back_later' => 'come_back_later#show'
         get '/confirmations' => 'confirmations#show'
         post '/confirmations' => 'confirmations#update'

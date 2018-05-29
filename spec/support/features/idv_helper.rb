@@ -78,22 +78,6 @@ module IdvHelper
     click_on t('forms.buttons.continue')
   end
 
-  def click_idv_address_choose_phone
-    # we're capturing the click on the label element via the unique "for" attribute
-    # which matches against the radio button's ID,
-    # so that we can capture any click within the label.
-    find("label[for='address_delivery_method_phone']").click
-    click_on t('forms.buttons.continue')
-  end
-
-  def click_idv_address_choose_usps
-    # we're capturing the click on the label element via the unique "for" attribute
-    # which matches against the radio button's ID,
-    # so that we can capture any click within the label.
-    find("label[for='address_delivery_method_usps']").click
-    click_on t('forms.buttons.continue')
-  end
-
   def choose_idv_otp_delivery_method_sms
     using_wait_time(5) do
       click_on t('idv.buttons.send_confirmation_code')
@@ -122,7 +106,6 @@ module IdvHelper
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_continue
-    click_idv_address_choose_phone
     click_idv_continue
     fill_in 'Password', with: password
     click_continue

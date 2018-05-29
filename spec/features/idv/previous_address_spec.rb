@@ -25,8 +25,6 @@ feature 'IdV with previous address filled in', idv_job: true do
     fill_out_idv_previous_address_ok
     click_idv_continue
     click_idv_continue
-
-    click_idv_address_choose_phone
     fill_out_phone_form_ok(user.phone)
     click_idv_continue
 

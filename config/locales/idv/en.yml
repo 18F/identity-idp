@@ -118,13 +118,6 @@ en:
       review:
         info_verified_html: We found records matching your %{phone_message}
         intro: Your verified information
-      select_verification_form:
-        phone_header: Get a code by phone
-        phone_message: The billing address for your phone must match the address you
-          gave us.
-        usps_header: Get a code by letter
-        usps_message: We'll mail a code to the address you gave us. It will take 5-10
-          days to reach you.
       select_verification_with_sp: To protect you from identity fraud, we will contact
         you to confirm that this %{sp_name} account is legitimate.
       select_verification_without_sp: To protect you from identity fraud, we will

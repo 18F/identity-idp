@@ -106,23 +106,13 @@ feature 'SP-initiated authentication with login.gov', :user_flow do
                               click_button t('forms.buttons.continue')
                             end
 
-                            it 'prompts to activate account by phone or mail' do
+                            it 'prompts the user to confirm or enter phone number' do
                               screenshot_and_save_page
-                            end
-
-                            context 'when activating by phone' do
-                              before do
-                                click_idv_address_choose_phone
-                              end
-
-                              it 'prompts the user to confirm or enter phone number' do
-                                screenshot_and_save_page
-                              end
                             end
 
                             context 'when activating by mail' do
                               before do
-                                click_idv_address_choose_usps
+                                click_on t('idv.form.no_alternate_phone_html')
                               end
 
                               it 'prompts the user to confirm' do

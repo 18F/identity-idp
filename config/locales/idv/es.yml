@@ -118,11 +118,6 @@ es:
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
-      select_verification_form:
-        phone_header: NOT TRANSLATED YET
-        phone_message: NOT TRANSLATED YET
-        usps_header: NOT TRANSLATED YET
-        usps_message: NOT TRANSLATED YET
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
         de confirmación.

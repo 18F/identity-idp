@@ -126,11 +126,6 @@ fr:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}
         intro: Vos informations vérifiées
-      select_verification_form:
-        phone_header: NOT TRANSLATED YET
-        phone_message: NOT TRANSLATED YET
-        usps_header: NOT TRANSLATED YET
-        usps_message: NOT TRANSLATED YET
       select_verification_with_sp: Afin de vous protéger des fraudes d'identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne l'aurez
         pas activé en entrant votre code de confirmation.
