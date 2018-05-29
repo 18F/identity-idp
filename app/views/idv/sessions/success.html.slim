@@ -1,0 +1,15 @@
+- title t('idv.titles.session.success')
+
+= image_tag(asset_url('state-id-confirm@3x.png'),
+  alt: t('idv.titles.session.success'), width: 210)
+
+h1.h3.mb2.mt3.my0 = t('idv.titles.session.success')
+
+.col-2
+  hr.mt3.mb3.bw4.border-green.rounded
+
+h2.h3.mb6.my0 = t('idv.messages.sessions.success')
+
+= link_to t('forms.buttons.continue'), idv_address_path, class: 'btn btn-primary btn-wide'
+
+= render 'shared/cancel', link: idv_cancel_path

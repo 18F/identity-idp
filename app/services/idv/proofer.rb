@@ -59,7 +59,7 @@ module Idv
       private
 
       def loaded_vendors
-        ::Proofer::Base.subclasses
+        ::Proofer::Base.descendants
       end
 
       def available_vendors(configured_vendors, vendors)
