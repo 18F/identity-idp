@@ -20,7 +20,7 @@ module IdvHelper
     fill_in 'profile_zipcode', with: '66044'
     fill_in 'profile_dob', with: '01/02/1980'
     fill_in 'profile_ssn', with: '666-66-1234'
-    select "Driver's license", from: 'profile_state_id_type'
+    find("label[for='profile_state_id_type_drivers_permit']").click
     fill_in 'profile_state_id_number', with: '123456789'
   end
 
@@ -33,22 +33,8 @@ module IdvHelper
     fill_in 'profile_zipcode', with: '00000'
     fill_in 'profile_dob', with: '01/02/1900'
     fill_in 'profile_ssn', with: '666-66-6666'
-    select "Driver's license", from: 'profile_state_id_type'
+    find("label[for='profile_state_id_type_drivers_permit']").click
     fill_in 'profile_state_id_number', with: '123456789'
-  end
-
-  def fill_out_idv_previous_address_ok
-    fill_in 'profile_prev_address1', with: '456 Other Ave'
-    fill_in 'profile_prev_city', with: 'Elsewhere'
-    select 'Missouri', from: 'profile_prev_state'
-    fill_in 'profile_prev_zipcode', with: '64000'
-  end
-
-  def fill_out_idv_previous_address_fail
-    fill_in 'profile_prev_address1', with: '456 Other Ave'
-    fill_in 'profile_prev_city', with: 'Elsewhere'
-    select 'Missouri', from: 'profile_prev_state'
-    fill_in 'profile_prev_zipcode', with: '00000'
   end
 
   def fill_out_idv_jurisdiction_ok

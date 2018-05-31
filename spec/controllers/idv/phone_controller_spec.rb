@@ -197,6 +197,7 @@ describe Idv::PhoneController do
         result = {
           success: false,
           errors: { timed_out: ['Timed out waiting for vendor response'] },
+          vendor: { messages: [], context: {}, exception: nil },
         }
 
         expect(@analytics).to have_received(:track_event).with(
@@ -237,6 +238,7 @@ describe Idv::PhoneController do
             errors: {
               phone: ['The phone number could not be verified.'],
             },
+            vendor: { messages: [], context: {}, exception: nil },
           }
 
           expect(flash[:warning]).to match t('idv.modal.phone.heading')
