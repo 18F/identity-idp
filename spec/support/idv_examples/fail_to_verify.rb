@@ -25,8 +25,8 @@ shared_examples 'fail to verify idv info' do |step|
       fill_out_phone_form_ok if step == :phone
       click_idv_continue
 
-      expect(page).to have_content(t('idv.titles.select_verification')) if step == :profile
-      expect(page).to have_current_path(idv_address_path) if step == :profile
+      expect(page).to have_content(t('idv.titles.session.phone')) if step == :profile
+      expect(page).to have_current_path(idv_phone_path) if step == :profile
       expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
       expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
     end
@@ -46,8 +46,8 @@ shared_examples 'fail to verify idv info' do |step|
       fill_out_phone_form_ok if step == :phone
       click_idv_continue
 
-      expect(page).to have_content(t('idv.titles.select_verification')) if step == :profile
-      expect(page).to have_current_path(idv_address_path) if step == :profile
+      expect(page).to have_content(t('idv.titles.session.phone')) if step == :profile
+      expect(page).to have_current_path(idv_phone_path) if step == :profile
       expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
       expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
     end
