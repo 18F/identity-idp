@@ -1,8 +1,7 @@
 ---
 es:
   links:
-    access_help: Obtenga información sobre cómo nos aseguramos de que solo usted tenga
-      acceso.
+    access_help: Protege tus datos.
     account:
       reactivate:
         with_key: Tengo mi clave
