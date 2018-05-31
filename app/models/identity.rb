@@ -20,6 +20,10 @@ class Identity < ApplicationRecord
     sp_metadata[:agency] || sp_metadata[:friendly_name] || service_provider
   end
 
+  def piv_cac_enabled?
+    user&.piv_cac_enabled?
+  end
+
   def decorate
     IdentityDecorator.new(self)
   end

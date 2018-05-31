@@ -121,6 +121,12 @@ UncommunicativeMethodName:
     - render_401
     - SessionDecorator#registration_bullet_1
     - ServiceProviderSessionDecorator#registration_bullet_1
+UncommunicativeModuleName:
+  exclude:
+    - X509
+    - X509::Attribute
+    - X509::Attributes
+    - X509::SessionStore
 UnusedPrivateMethod:
   exclude:
     - ApplicationController

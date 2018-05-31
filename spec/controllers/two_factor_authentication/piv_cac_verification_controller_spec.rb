@@ -9,11 +9,19 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
   let(:nonce) { 'once' }
 
+  let(:x509_subject) { 'o=US, ou=DoD, cn=John.Doe.1234' }
+
   before(:each) do
-    allow(subject).to receive(:user_session).and_return(piv_cac_nonce: nonce)
+    session_info = { piv_cac_nonce: nonce }
+    allow(subject).to receive(:user_session).and_return(session_info)
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.x509_dn_uuid,
-      'dn' => 'bar',
+      'dn' => x509_subject,
+      'nonce' => nonce,
+    )
+    allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
+      'uuid' => user.x509_dn_uuid + 'X',
+      'dn' => x509_subject + 'X',
       'nonce' => nonce,
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
@@ -23,7 +31,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.x509_dn_uuid,
-      'dn' => 'bar',
+      'dn' => x509_subject,
       'nonce' => 'bad-' + nonce
     )
   end
@@ -31,7 +39,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
   describe '#show' do
     context 'before the user presents a valid PIV/CAC' do
       before(:each) do
-        sign_in_before_2fa(user)
+        stub_sign_in_before_2fa(user)
       end
 
       it 'renders a page with a submit button to capture the cert' do
@@ -43,7 +51,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
     context 'when the user presents a valid PIV/CAC' do
       before(:each) do
-        sign_in_before_2fa(user)
+        stub_sign_in_before_2fa(user)
       end
 
       it 'redirects to the profile' do
@@ -53,6 +61,10 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         get :show, params: { token:  'good-token' }
 
         expect(response).to redirect_to account_path
+        expect(subject.user_session[:decrypted_x509]).to eq({
+          'subject' => x509_subject,
+          'presented' => true,
+        }.to_json)
       end
 
       it 'resets the second_factor_attempts_count' do
@@ -82,7 +94,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
     context 'when the user presents an invalid piv/cac' do
       before do
-        sign_in_before_2fa(user)
+        stub_sign_in_before_2fa(user)
 
         get :show, params: { token: 'bad-token' }
       end
@@ -98,12 +110,40 @@ describe TwoFactorAuthentication::PivCacVerificationController do
       it 'displays flash error message' do
         expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_piv_cac')
       end
+
+      it 'resets the piv/cac session information' do
+        expect(subject.user_session[:decrypted_x509]).to be_nil
+      end
+    end
+
+    context 'when the user presents a different piv/cac' do
+      before do
+        stub_sign_in_before_2fa(user)
+
+        get :show, params: { token: 'good-other-token' }
+      end
+
+      it 'increments second_factor_attempts_count' do
+        expect(subject.current_user.reload.second_factor_attempts_count).to eq 1
+      end
+
+      it 're-renders the piv/cac entry screen' do
+        expect(response).to render_template(:show)
+      end
+
+      it 'displays flash error message' do
+        expect(flash[:error]).to eq t('devise.two_factor_authentication.invalid_piv_cac')
+      end
+
+      it 'resets the piv/cac session information' do
+        expect(subject.user_session[:decrypted_x509]).to be_nil
+      end
     end
 
     context 'when the user has reached the max number of piv/cac attempts' do
       it 'tracks the event' do
         allow_any_instance_of(User).to receive(:max_login_attempts?).and_return(true)
-        sign_in_before_2fa(user)
+        stub_sign_in_before_2fa(user)
 
         stub_analytics
 
@@ -123,7 +163,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
     context 'when the user lockout period expires' do
       before(:each) do
-        sign_in_before_2fa(user)
+        stub_sign_in_before_2fa(user)
       end
 
       let(:lockout_period) { Figaro.env.lockout_period_in_minutes.to_i.minutes }
@@ -137,6 +177,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       describe 'when user submits an incorrect piv/cac' do
         before(:each) do
+          subject.user_session[:decrypted_x509] = '{}'
           get :show, params: { token: 'bad-token' }
         end
 
@@ -146,6 +187,10 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
         it 'resets second_factor_locked_at' do
           expect(subject.current_user.reload.second_factor_locked_at).to eq nil
+        end
+
+        it 'resets the x509 session information' do
+          expect(subject.user_session[:decrypted_x509]).to be_nil
         end
       end
 
