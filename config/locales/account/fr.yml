@@ -15,7 +15,6 @@ fr:
       piv_cac_card: Carte PIV/CAC
       piv_cac_disabled: désactivée
       piv_cac_enabled: activée
-      previous_address: Adresse précédente
       reactivation:
         instructions: Votre profil a été récemment désactivé en raison d'une réinitialisation
           de mot passe. Vous pouvez utiliser votre clé personnelle pour réactiver

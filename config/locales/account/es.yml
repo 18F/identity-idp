@@ -15,7 +15,6 @@ es:
       piv_cac_card: Tarjeta PIV/CAC
       piv_cac_disabled: desactivada
       piv_cac_enabled: activada
-      previous_address: Dirección anterior
       reactivation:
         instructions: Su perfil ha sido desactivado debido a un cambio de contraseña.
         link: Reactive su perfil ahora.
