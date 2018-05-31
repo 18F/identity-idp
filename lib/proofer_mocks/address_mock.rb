@@ -8,5 +8,6 @@ class AddressMock < Proofer::Base
     if plain_phone == '5555555555'
       result.add_error(:phone, 'The phone number could not be verified.')
     end
+    result.context[:message] = 'some context for the mock address proofer'
   end
 end
