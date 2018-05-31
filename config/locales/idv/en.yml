@@ -33,7 +33,7 @@ en:
       unsupported_jurisdiction: Sorry, we can't verify people from this state.
       unsupported_jurisdiction_sp: Please visit %{sp_name} to access your account.
     form:
-      activate_by_mail: get a code by letter.
+      activate_by_mail: get a code via mail instead ›
       address1: Address
       address2: Address (optional)
       city: City
@@ -41,10 +41,9 @@ en:
       dob_hint: 'example: 01/17/1964'
       first_name: First name
       last_name: Last name
-      no_alternate_phone_html: If you don't have another phone number, %{link}
+      no_alternate_phone_html: 'No phone? No problem: %{link}'
       password: Password
       phone: Phone Number
-      phone_label_aside: Mobile phone or landline
       ssn_label_html: Social Security Number
       state: State
       state_id: ID number
@@ -98,15 +97,13 @@ en:
       personal_key: This is your new personal key. Write it down and keep it in a
         safe place. You will need it if you ever lose your password.
       phone:
-        alert: This phone line must be
-        in_your_name: in your name, or a family member's name
-        intro: We can only send a confirmation code to a telephone number linked to
-          you.
+        alert: This phone number <strong>must be</strong>
         phone_of_record: Phone of record
-        prepaid: not prepaid
-        same_as_2fa: This phone number can be the same one you used to set up your
-          one-time password as long as it meets the criteria above.
-        us_country_code: based in the United States
+        rules:
+        - in your name, or a family member's name
+        - not a virtual phone (such as Google Voice or Skype)
+        - not a pre-paid phone number
+        - a U.S. number
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -189,7 +186,7 @@ en:
       review: Review and submit
       select_verification: Choose how to confirm your address
       session:
-        phone: Get a code by telephone
+        phone: Enter a phone number to help verify your identity
         review: Enter your login.gov password
         success: We've verified the information on your state-issued ID.
       sessions: Information about you

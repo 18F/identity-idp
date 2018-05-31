@@ -34,7 +34,7 @@ es:
         estado.
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
     form:
-      activate_by_mail: obtenga un código por carta.
+      activate_by_mail: obtener un código por correo electrónico en su lugar ›
       address1: Dirección
       address2: Dirección (opcional)
       city: Ciudad
@@ -42,10 +42,9 @@ es:
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
       last_name: Apellido
-      no_alternate_phone_html: Si no tiene otro número de teléfono, %{link}
+      no_alternate_phone_html: "¿Sin teléfono? No hay problema %{link}"
       password: Contraseña
       phone: Teléfono
-      phone_label_aside: Celular o teléfono fijo
       ssn_label_html: Número de Seguro Social
       state: Estado
       state_id: Número de identificación
@@ -97,16 +96,13 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert: Esta línea telefónica debe
-        in_your_name: a su nombre o el nombre de un miembro de familia
-        intro: Sólo podemos enviar el código de confirmación al número de teléfono
-          vinculado a su identidad legal.
+        alert: Este número de teléfono <strong>debe ser</strong>
         phone_of_record: Teléfono del registro
-        prepaid: no prepago
-        same_as_2fa: Este número de teléfono puede ser el mismo que utilizó para configurar
-          su contraseña de un uso único, siempre y cuando cumpla con los criterios
-          anteriores.
-        us_country_code: NOT TRANSLATED YET
+        rules:
+        - a su nombre o el nombre de un miembro de familia
+        - no es un teléfono virtual (como Google Voice o Skype)
+        - no es un número de teléfono prepago
+        - un número de EE. UU.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
@@ -190,7 +186,7 @@ es:
       review: Revise y envíe
       select_verification: Active su cuenta
       session:
-        phone: Obtener un código por teléfono
+        phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
         review: Encripte sus datos verificados ingresando su contraseña.
         success: Hemos verificado la información en su identificación emitida por
           el estado.
