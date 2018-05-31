@@ -286,6 +286,7 @@ GEM
     gibberish (2.1.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    greenletters (0.3.0)
     guard (2.14.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -706,6 +707,7 @@ DEPENDENCIES
   foundation_emails
   front_matter_parser
   gibberish
+  greenletters
   guard-rspec
   gyoku
   hashie
