@@ -54,6 +54,7 @@ IrresponsibleModule:
 ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
+    - CloudhsmKeyGenerator#initialize_settings
 NestedIterators:
   exclude:
     - FileEncryptor#encrypt
@@ -83,6 +84,7 @@ TooManyInstanceVariables:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
     - Idv::VendorResult
+    - CloudhsmKeyGenerator
 TooManyStatements:
   max_statements: 6
   exclude:
