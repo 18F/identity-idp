@@ -617,7 +617,7 @@ production:
   # Office Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:officemovemilprod':
     agency_id: 8
-    friendly_name: 'Office Move.mil'
+    friendly_name: 'office.move.mil'
     agency: 'DOD'
     logo: 'move_mil.svg'
     cert: 'move_mil_prod'
@@ -625,12 +625,14 @@ production:
     redirect_uris:
       - 'https://office.move.mil'
       - 'https://office.move.mil/auth/login-gov/callback'
+      - 'https://office.dp3.us'
+      - 'https://office.dp3.us/auth/login-gov/callback'
     restrict_to_deploy_env: 'prod'
 
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
     agency_id: 8
-    friendly_name: 'My Move.mil'
+    friendly_name: 'my.move.mil'
     agency: 'DOD'
     logo: 'move_mil.svg'
     cert: 'move_mil_prod'
@@ -638,6 +640,8 @@ production:
     redirect_uris:
       - 'https://my.move.mil'
       - 'https://my.move.mil/auth/login-gov/callback'
+      - 'https://my.dp3.us'
+      - 'https://my.dp3.us/auth/login-gov/callback'
     restrict_to_deploy_env: 'prod'
 
   # DOT – National Registry of Certified Medical Examiners App
