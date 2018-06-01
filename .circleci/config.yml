@@ -30,14 +30,13 @@ jobs:
 
       - restore-cache:
           keys:
-            - identity-idp-bundle-{{ checksum "Gemfile.lock" }}
-            - identity-idp-bundle-
+            - v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
       - run:
           name: Install dependencies
           command: |
             bundle check || bundle install --deployment --jobs=4 --retry=3 --without deploy development doc production --path vendor/bundle
       - save-cache:
-          key: identity-idp-bundle-{{ checksum "Gemfile.lock" }}
+          key: v2-identity-idp-bundle-{{ checksum "Gemfile.lock" }}
           paths:
             - vendor/bundle
 
