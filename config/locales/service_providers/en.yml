@@ -17,3 +17,11 @@ en:
         using the same email address you use for USAJOBS.
       create_account_link: create a login.gov account
     learn_more: Learn more.
+    sam:
+      header: First time here from SAM?
+      account_page:
+        body: Your old SAM username and password won’t work. Please create a login.gov
+          account using the same email address you use for SAM.
+      body_html: Your old SAM username and password won’t work. Please %{link} using
+        the same email address you use for SAM.
+      create_account_link: create a login.gov account
