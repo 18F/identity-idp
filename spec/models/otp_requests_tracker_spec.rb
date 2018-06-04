@@ -1,10 +1,10 @@
 require 'rails_helper'
 
 describe OtpRequestsTracker do
-  describe '.find_or_create_with_phone' do
-    let(:phone) { '+1 703 555 1212' }
-    let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(phone) }
+  let(:phone) { '+1 703 555 1212' }
+  let(:phone_fingerprint) { Pii::Fingerprinter.fingerprint(phone) }
 
+  describe '.find_or_create_with_phone' do
     context 'match found' do
       it 'returns the existing record and does not change it' do
         OtpRequestsTracker.create(
@@ -46,6 +46,28 @@ describe OtpRequestsTracker do
         expect { OtpRequestsTracker.find_or_create_with_phone(phone) }.
           to raise_error ActiveRecord::RecordNotUnique
       end
+    end
+  end
+
+  describe '.atomic_increment' do
+    it 'updates otp_last_sent_at' do
+      old_ort = OtpRequestsTracker.create(
+        phone_fingerprint: phone_fingerprint,
+        otp_send_count: 3,
+        otp_last_sent_at: Time.zone.now - 1.hour
+      )
+      new_ort = OtpRequestsTracker.atomic_increment(old_ort.id)
+      expect(new_ort.otp_last_sent_at).to be > old_ort.otp_last_sent_at
+    end
+
+    it 'increments the otp_send_count' do
+      old_ort = OtpRequestsTracker.create(
+        phone_fingerprint: phone_fingerprint,
+        otp_send_count: 3,
+        otp_last_sent_at: Time.zone.now
+      )
+      new_ort = OtpRequestsTracker.atomic_increment(old_ort.id)
+      expect(new_ort.otp_send_count - 1).to eq(old_ort.otp_send_count)
     end
   end
 end

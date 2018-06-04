@@ -85,26 +85,25 @@ module Users
     def handle_valid_otp_delivery_preference(method)
       otp_rate_limiter.reset_count_and_otp_last_sent_at if decorated_user.no_longer_locked_out?
 
-      if otp_rate_limiter.exceeded_otp_send_limit?
-        otp_rate_limiter.lock_out_user
-
-        return handle_too_many_otp_sends
-      end
+      return handle_too_many_otp_sends if exceeded_otp_send_limit?
+      otp_rate_limiter.increment
+      return handle_too_many_otp_sends if exceeded_otp_send_limit?
 
       send_user_otp(method)
       redirect_to login_two_factor_url(otp_delivery_preference: method, reauthn: reauthn?)
     end
 
+    def exceeded_otp_send_limit?
+      return otp_rate_limiter.lock_out_user if otp_rate_limiter.exceeded_otp_send_limit?
+    end
+
     def send_user_otp(method)
-      otp_rate_limiter.increment
       current_user.create_direct_otp
 
       job = "#{method.capitalize}OtpSenderJob".constantize
       job_priority = confirmation_context? ? :perform_now : :perform_later
-      job.send(job_priority,
-               code: current_user.direct_otp,
-               phone: phone_to_deliver_to,
-               otp_created_at: current_user.direct_otp_sent_at.to_s)
+      job.send(job_priority, code: current_user.direct_otp, phone: phone_to_deliver_to,
+                             otp_created_at: current_user.direct_otp_sent_at.to_s)
     end
 
     def user_selected_otp_delivery_preference

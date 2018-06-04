@@ -158,7 +158,7 @@ describe Users::TwoFactorAuthenticationController do
         allow(OtpRateLimiter).to receive(:new).with(phone: @user.phone, user: @user).
           and_return(otp_rate_limiter)
 
-        expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+        expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
         expect(otp_rate_limiter).to receive(:increment)
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }
