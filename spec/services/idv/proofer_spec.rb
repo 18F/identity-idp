@@ -38,7 +38,7 @@ describe Idv::Proofer do
 
     it 'returns all of the subclasses of Proofer::Base' do
       subclasses = ['foo']
-      expect(::Proofer::Base).to receive(:subclasses).and_return(subclasses)
+      expect(::Proofer::Base).to receive(:descendants).and_return(subclasses)
       expect(subject).to eq(subclasses)
     end
   end

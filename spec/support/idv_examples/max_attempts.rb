@@ -104,6 +104,6 @@ shared_examples 'verification step max attempts' do |step, sp|
   def advance_to_phone_step
     fill_out_idv_jurisdiction_ok
     click_idv_continue
-    click_idv_address_choose_phone
+    click_idv_continue
   end
 end

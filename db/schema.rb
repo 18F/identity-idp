@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180521155700) do
+ActiveRecord::Schema.define(version: 20180601145643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 20180521155700) do
     t.integer "totp_timestamp"
     t.string "x509_dn_uuid"
     t.string "encrypted_password_digest", default: ""
+    t.string "encrypted_recovery_code_digest", default: ""
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email_fingerprint"], name: "index_users_on_email_fingerprint", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_users_on_encrypted_otp_secret_key", unique: true

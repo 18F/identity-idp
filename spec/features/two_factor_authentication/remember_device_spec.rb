@@ -79,7 +79,7 @@ feature 'Remembering a 2FA device' do
       visit idv_session_path
       fill_out_idv_form_ok
       click_idv_continue
-      click_idv_address_choose_phone
+      click_idv_continue
       fill_out_phone_form_ok('5551603829')
       click_idv_continue
       choose_idv_otp_delivery_method_sms

@@ -13,7 +13,9 @@ class OpenidConnectUserInfoPresenter
       iss: root_url,
       email: identity.user.email,
       email_verified: true,
-    }.merge(loa3_attributes)
+    }.
+           merge(x509_attributes).
+           merge(loa3_attributes)
 
     OpenidConnectAttributeScoper.new(identity.scope).filter(info)
   end
@@ -39,6 +41,13 @@ class OpenidConnectUserInfoPresenter
     }
   end
   # rubocop:enable Metrics/AbcSize
+
+  def x509_attributes
+    {
+      x509_subject: stringify_attr(x509_data.subject),
+      x509_presented: x509_data.presented,
+    }
+  end
 
   def address
     return nil if loa3_data.address1.blank?
@@ -79,5 +88,19 @@ class OpenidConnectUserInfoPresenter
 
   def loa3_session?
     identity.ial == 3
+  end
+
+  def x509_data
+    @x509_data ||= begin
+      if x509_session?
+        X509::SessionStore.new(identity.rails_session_id).load
+      else
+        X509::Attributes.new_from_hash({})
+      end
+    end
+  end
+
+  def x509_session?
+    identity.piv_cac_enabled?
   end
 end

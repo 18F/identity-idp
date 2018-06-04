@@ -46,6 +46,7 @@ class ReactivateAccountSession
       active: false,
       personal_key: false,
       pii: nil,
+      x509: nil,
     }
   end
 
