@@ -9,10 +9,8 @@ class PersonalKeyGenerator
   end
 
   def create
-    user.recovery_salt = Devise.friendly_token[0, 20]
-    user.recovery_cost = Figaro.env.scrypt_cost
-    @user_access_key = make_user_access_key(raw_personal_key)
-    user.personal_key = hashed_code
+    create_recovery_code
+    create_encrypted_recovery_code_digest
     user.save!
     raw_personal_key.tr(' ', '-')
   end
@@ -41,6 +39,22 @@ class PersonalKeyGenerator
   private
 
   attr_reader :user
+
+  def create_recovery_code
+    user.recovery_salt = Devise.friendly_token[0, 20]
+    user.recovery_cost = Figaro.env.scrypt_cost
+    @user_access_key = make_user_access_key(raw_personal_key)
+    user.personal_key = hashed_code
+  end
+
+  def create_encrypted_recovery_code_digest
+    user.encrypted_recovery_code_digest = {
+      encryption_key: user_access_key.encryption_key,
+      encrypted_password: user_access_key.encrypted_password,
+      password_cost: user.recovery_cost,
+      password_salt: user.recovery_salt,
+    }.to_json
+  end
 
   def encode_code(code:, length:, split:)
     decoded = Base32::Crockford.decode(code)
