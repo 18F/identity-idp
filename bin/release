@@ -132,7 +132,7 @@ def deploy_to_prod
 end
 
 def open_pr_for_int
-  run "brew install hub" unless `brew list -1 | grep -Fqx hub`.length
+  run "brew install hub" unless `brew list -1 | grep -Fqx hub`.length > 0
   run "hub pull-request -m \"Deploy #{RC_BRANCH} to int\" -b stages/int"
 end
 
