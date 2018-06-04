@@ -22,6 +22,7 @@ module Users
     def delete
       analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_DISABLED)
       current_user.update!(x509_dn_uuid: nil)
+      clear_piv_cac_information
       Event.create(user_id: current_user.id, event_type: :piv_cac_disabled)
       flash[:success] = t('notices.piv_cac_disabled')
       redirect_to account_url
@@ -49,12 +50,17 @@ module Users
 
     def process_valid_submission
       flash[:success] = t('notices.piv_cac_configured')
+      save_piv_cac_information(
+        subject: user_piv_cac_form.x509_dn,
+        presented: true
+      )
       redirect_to account_url
     end
 
     def process_invalid_submission
       create_piv_cac_nonce
       @presenter = PivCacAuthenticationSetupErrorPresenter.new(user_piv_cac_form)
+      clear_piv_cac_information
       render :error
     end
 

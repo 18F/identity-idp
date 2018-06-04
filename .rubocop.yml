@@ -46,6 +46,7 @@ Metrics/BlockLength:
     - 'app/services/omniauth_authorizer.rb'
     - 'app/services/single_logout_handler.rb'
     - 'app/services/pii/attributes.rb'
+    - 'app/services/x509/attributes.rb'
     - 'config/environments/*.rb'
     - 'config/initializers/secure_headers.rb'
     - 'config/routes.rb'

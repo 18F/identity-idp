@@ -15,7 +15,8 @@ feature 'LOA3 Single Sign On', idv_job: true do
     click_idv_continue
     fill_out_idv_form_ok
     click_idv_continue
-    click_idv_address_choose_usps
+    click_idv_continue
+    click_on t('idv.form.activate_by_mail')
     click_on t('idv.buttons.mail.send')
     fill_in :user_password, with: user.password
     click_continue
@@ -190,7 +191,7 @@ feature 'LOA3 Single Sign On', idv_job: true do
         fill_out_idv_form_ok
         click_idv_continue
 
-        expect(current_path).to eq idv_address_path
+        expect(current_path).to eq idv_session_success_path
       end
     end
   end

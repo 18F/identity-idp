@@ -21,6 +21,10 @@ class ServiceProviderSessionDecorator
       i18n_name: 'railroad_retirement_board',
       learn_more: 'https://login.gov/help/',
     },
+    'SAM' => {
+      i18n_name: 'sam',
+      learn_more: 'https://login.gov/help/',
+    },
   }.freeze
 
   def initialize(sp:, view_context:, sp_session:, service_provider_request:)

@@ -44,6 +44,10 @@ class FileEncryptor
          --digest-algo sha256 \
          --batch \
          --yes \
+         --pinentry-mode loopback \
+         --status-fd \
+         --with-colons \
+          --no-tty \
          -e \
          -r #{Shellwords.shellescape(recipient_email)} \
          --output #{Shellwords.shellescape(outfile)}
@@ -52,9 +56,8 @@ class FileEncryptor
   # rubocop:enable MethodLength
 
   def gpg_decrypt_command(passphrase, infile)
-    "gpg --batch \
-         --passphrase #{Shellwords.shellescape(passphrase)} \
-         -d #{Shellwords.shellescape(infile)}
-    "
+    password = Shellwords.shellescape(passphrase)
+    "echo #{password} | PASSPHRASE=#{password} gpg --batch \
+      --pinentry-mode loopback --command-fd 0 -d #{Shellwords.shellescape(infile)}"
   end
 end

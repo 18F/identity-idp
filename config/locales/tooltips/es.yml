@@ -4,6 +4,3 @@ es:
     authentication_app: Una app de autenticación es una app de seguridad móvil que
       genera códigos de seguridad, incluso si no tiene una conexión de internet o
       un servicio celular.
-    ssn: Le pedimos su número de Seguro Social para ayudar a demostrar su identidad.
-      Algunas agencias con las que trabajamos pueden necesitarlo para acceder a sus
-      registros.
