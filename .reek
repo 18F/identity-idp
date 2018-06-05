@@ -48,11 +48,13 @@ FeatureEnvy:
 InstanceVariableAssumption:
   exclude:
     - User
+    - JWT
 IrresponsibleModule:
   enabled: false
 ManualDispatch:
   exclude:
     - EncryptedSidekiqRedis#respond_to_missing?
+    - CloudhsmKeyGenerator#initialize_settings
 NestedIterators:
   exclude:
     - FileEncryptor#encrypt
@@ -66,6 +68,7 @@ LongParameterList:
     - IdentityLinker#optional_attributes
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
+    - JWT
     - Pii::Attributes#self.new_from_encrypted
 RepeatedConditional:
   exclude:
@@ -81,6 +84,7 @@ TooManyInstanceVariables:
     - OpenidConnectAuthorizeForm
     - OpenidConnectRedirector
     - Idv::VendorResult
+    - CloudhsmKeyGenerator
 TooManyStatements:
   max_statements: 6
   exclude:
@@ -117,6 +121,12 @@ UncommunicativeMethodName:
     - render_401
     - SessionDecorator#registration_bullet_1
     - ServiceProviderSessionDecorator#registration_bullet_1
+UncommunicativeModuleName:
+  exclude:
+    - X509
+    - X509::Attribute
+    - X509::Attributes
+    - X509::SessionStore
 UnusedPrivateMethod:
   exclude:
     - ApplicationController
@@ -140,6 +150,7 @@ UtilityFunction:
     - UserEncryptedAttributeOverrides#create_fingerprint
     - LocaleHelper#locale_url_param
     - IdvSession#timed_out_vendor_error
+    - JWT::Signature#sign
 'app/controllers':
   InstanceVariableAssumption:
     enabled: false
@@ -171,7 +182,7 @@ UtilityFunction:
   TooManyMethods:
     enabled: false
   TooManyStatements:
-    enabled: false 
+    enabled: false
   UncommunicativeMethodName:
     exclude:
       - visit_idp_from_sp_with_loa1

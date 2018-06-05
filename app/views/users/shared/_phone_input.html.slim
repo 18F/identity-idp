@@ -1,0 +1,16 @@
+.sm-col-8.js-intl-tel-code-select
+  = f.input :international_code,
+    collection: international_phone_codes,
+    include_blank: false,
+    input_html: { class: 'international-code' }
+.sm-col-8.mb3
+  = f.label :phone
+    strong.left = t('devise.two_factor_authentication.otp_phone_label')
+    span#otp_phone_label_info.ml1.italic
+      = t('devise.two_factor_authentication.otp_phone_label_info')
+  = f.input :phone, as: :tel, label: false, required: true,
+      input_html: { class: 'new-phone col-8 mb4' }
+= render 'users/shared/otp_delivery_preference_selection'
+
+= stylesheet_link_tag 'intl-tel-number/intlTelInput'
+= javascript_pack_tag 'intl-tel-input'

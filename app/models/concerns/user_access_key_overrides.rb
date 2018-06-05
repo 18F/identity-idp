@@ -7,17 +7,6 @@ module UserAccessKeyOverrides
 
   attr_accessor :user_access_key
 
-  def password_digest(password)
-    user_access_key = Encryption::UserAccessKey.new(
-      password: password,
-      salt: authenticatable_salt,
-      cost: password_cost
-    ).build
-    self.encryption_key ||= user_access_key.encryption_key
-    self.password_cost ||= user_access_key.cost
-    user_access_key.encrypted_password
-  end
-
   def valid_password?(password)
     return false if encrypted_password.blank?
     begin
@@ -30,20 +19,12 @@ module UserAccessKeyOverrides
   end
 
   def unlock_user_access_key(password)
-    self.user_access_key = Encryption::UserAccessKey.new(
-      password: password,
-      salt: authenticatable_salt,
-      cost: password_cost
-    ).unlock(encryption_key)
+    self.user_access_key = build_user_access_key(password).unlock(encryption_key)
   end
 
   def password=(new_password)
-    if new_password.present?
-      self.password_salt = Devise.friendly_token[0, 20]
-      self.encryption_key = nil
-      self.password_cost = nil
-    end
-    super
+    @password = new_password
+    encrypt_password(@password) if @password.present?
   end
 
   def authenticatable_salt
@@ -60,5 +41,33 @@ module UserAccessKeyOverrides
       timestamp: Time.zone.now,
     }
     Rails.logger.info(metadata.to_json)
+  end
+
+  def encrypt_password(new_password)
+    self.password_salt = Devise.friendly_token[0, 20]
+
+    user_access_key = build_user_access_key(new_password, cost: nil).build
+
+    self.encryption_key = user_access_key.encryption_key
+    self.password_cost = user_access_key.cost
+    self.encrypted_password = user_access_key.encrypted_password
+    self.encrypted_password_digest = build_encrypted_password_digest
+  end
+
+  def build_user_access_key(password, salt: authenticatable_salt, cost: password_cost)
+    Encryption::UserAccessKey.new(
+      password: password,
+      salt: salt,
+      cost: cost
+    )
+  end
+
+  def build_encrypted_password_digest
+    {
+      encryption_key: encryption_key,
+      encrypted_password: encrypted_password,
+      password_cost: password_cost,
+      password_salt: password_salt,
+    }.to_json
   end
 end

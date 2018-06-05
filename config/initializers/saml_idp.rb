@@ -1,4 +1,5 @@
 require 'service_provider'
+require 'saml_idp_encryption_configurator'
 
 SamlIdp.configure do |config|
   protocol = Rails.env.development? ? 'http://' : 'https://'
@@ -7,7 +8,8 @@ SamlIdp.configure do |config|
   config.x509_certificate = OpenSSL::X509::Certificate.new(
     File.read(Rails.root.join('certs', 'saml.crt'))
   ).to_pem
-  config.secret_key = RequestKeyManager.private_key.to_pem
+
+  SamlIdpEncryptionConfigurator.configure(config, FeatureManagement.use_cloudhsm?)
 
   config.algorithm = OpenSSL::Digest::SHA256
   # config.signature_alg = 'rsa-sha256'

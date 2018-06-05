@@ -2,6 +2,7 @@
 ## Ref: https://docs.newrelic.com/docs/agents/ruby-agent/api-guides/ruby-custom-instrumentation
 require 'new_relic/agent/method_tracer'
 require 'aws/ses'
+require 'cloudhsm_jwt'
 
 Aws::SES::Base.class_eval do
   include ::NewRelic::Agent::MethodTracer
@@ -44,4 +45,17 @@ end
 Encryption::UserAccessKey.class_eval do
   include ::NewRelic::Agent::MethodTracer
   add_method_tracer :initialize, "Custom/#{name}/build"
+end
+
+SamlIdp::SignedInfoBuilder.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encoded, "Custom/#{name}/encoded"
+  add_method_tracer :cloudhsm_encoded, "Custom/#{name}/cloudhsm_encoded"
+end
+
+CloudhsmJwt.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :encode, "Custom/#{name}/encode"
+  add_method_tracer :rs256_algorithm, "Custom/#{name}/rs256_algorithm"
+  add_method_tracer :sign, "Custom/#{name}/sign"
 end

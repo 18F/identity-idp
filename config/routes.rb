@@ -160,8 +160,6 @@ Rails.application.routes.draw do
         get '/fail' => 'idv#fail'
       end
       scope '/verify', module: 'idv', as: 'idv' do
-        get '/address' => 'address#index'
-        post '/address' => 'address#create'
         get '/come_back_later' => 'come_back_later#show'
         get '/confirmations' => 'confirmations#show'
         post '/confirmations' => 'confirmations#update'
@@ -175,6 +173,7 @@ Rails.application.routes.draw do
         get '/session' => 'sessions#new'
         put '/session' => 'sessions#create'
         get '/session/result' => 'sessions#show'
+        get '/session/success' => 'sessions#success'
         delete '/session' => 'sessions#destroy'
         get '/session/dupe' => 'sessions#dupe'
         get '/jurisdiction' => 'jurisdiction#new'

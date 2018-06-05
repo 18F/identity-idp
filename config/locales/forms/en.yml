@@ -16,7 +16,6 @@ en:
     confirmation:
       show_hdr: Create a strong password
     messages:
-      current_address: You should be be able to receive mail at this address.
       remember_device: Remember this browser for %{duration} days
     passwords:
       edit:

@@ -1,9 +1,15 @@
 require 'rails_helper'
 
-feature 'saml api' do
+class MockSession; end
+
+shared_examples 'saml api' do |cloudhsm_enabled|
   include SamlAuthHelper
   include IdvHelper
 
+  before { enable_cloudhsm(cloudhsm_enabled) }
+  after(:all) do
+    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
+  end
   let(:user) { create(:user, :signed_up) }
 
   context 'SAML Assertions' do
@@ -266,4 +272,26 @@ feature 'saml api' do
       end
     end
   end
+
+  def enable_cloudhsm(is_enabled)
+    unless is_enabled
+      allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
+      SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, false) }
+      return
+    end
+    allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
+    SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, true) }
+    allow(PKCS11).to receive(:open).and_return('true')
+    allow_any_instance_of(SamlIdp::Configurator).to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
+    allow(MockSession).to receive(:login).and_return(true)
+    allow(MockSession).to receive(:logout).and_return(true)
+    allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
+    allow(MockSession).to receive(:sign).and_return('')
+    allow_any_instance_of(OneLogin::RubySaml::Response).to receive(:is_valid?).and_return(true)
+  end
+end
+
+feature 'saml' do
+  it_behaves_like 'saml api', false
+  it_behaves_like 'saml api', true
 end

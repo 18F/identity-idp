@@ -31,7 +31,7 @@ describe Users::PivCacAuthenticationSetupController do
   end
 
   describe 'when signing in' do
-    before(:each) { sign_in_before_2fa(user) }
+    before(:each) { stub_sign_in_before_2fa(user) }
     let(:user) do
       create(:user, :signed_up, :with_piv_or_cac,
         phone: '+1 (555) 555-0000'
@@ -54,7 +54,7 @@ describe Users::PivCacAuthenticationSetupController do
   end
 
   describe 'when signed in' do
-    before(:each) { sign_in(user) }
+    before(:each) { stub_sign_in(user) }
 
     context 'without associated piv/cac' do
       let(:user) do
@@ -101,12 +101,24 @@ describe Users::PivCacAuthenticationSetupController do
             get :new, params: {token: good_token}
             expect(response).to redirect_to(account_url)
           end
+
+          it 'sets the piv/cac session information' do
+            get :new, params: {token: good_token}
+            expect(subject.user_session[:decrypted_x509]).to eq ({
+              'subject' => 'some dn',
+              'presented' => true
+            }.to_json)
+          end
         end
 
         context 'when redirected with an error token' do
           it 'renders the error template' do
             get :new, params: {token: bad_token}
             expect(response).to render_template(:error)
+          end
+
+          it 'resets the piv/cac session information' do
+            expect(subject.user_session[:decrypted_x509]).to be_nil
           end
         end
       end
@@ -138,6 +150,12 @@ describe Users::PivCacAuthenticationSetupController do
         it 'removes the piv/cac association' do
           delete :delete
           expect(user.reload.x509_dn_uuid).to be_nil
+        end
+
+        it 'removes the piv/cac information from the user session' do
+          subject.user_session[:decrypted_x509] = {}
+          delete :delete
+          expect(subject.user_session[:decrypted_x509]).to be_nil
         end
       end
     end

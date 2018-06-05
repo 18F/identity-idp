@@ -23,16 +23,17 @@ feature 'User edit' do
       visit manage_phone_path
     end
 
-    scenario 'user sees error message if form is submitted without phone number', js: true do
-      fill_in 'Phone', with: ''
+    scenario 'confirm change submit button is disabled without phone number', js: true do
+      phone_input = page.find('#user_phone_form_phone')
+      phone_input.send_keys(*([:backspace] * phone_input.value.length))
 
       expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: true)
     end
 
     scenario 'user is able to submit with a Puerto Rico phone number as a US number', js: true do
       fill_in 'Phone', with: '787 555-1234'
-      expect(page.find('#user_phone_form_international_code').value).to eq 'US'
 
+      expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'PR'
       expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: false)
     end
 

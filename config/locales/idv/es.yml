@@ -34,28 +34,24 @@ es:
         estado.
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
     form:
-      activate_by_mail: obtenga un código por carta.
-      address1: Dirección de calle 1
-      address2: Dirección de calle 2 (opcional)
+      activate_by_mail: obtener un código por correo electrónico en su lugar ›
+      address1: Dirección
+      address2: Dirección (opcional)
       city: Ciudad
       dob: Fecha de nacimiento
       dob_hint: 'Ejemplo: 01/17/1964'
       first_name: Nombre
       last_name: Apellido
-      no_alternate_phone_html: Si no tiene otro número de teléfono, %{link}
+      no_alternate_phone_html: "¿Sin teléfono? No hay problema %{link}"
       password: Contraseña
-      personal_details: Detalles personales
       phone: Teléfono
-      phone_label_aside: Celular o teléfono fijo
-      previous_address_add: Añadir la dirección anterior
-      previous_address_html: "¿Se mudó en los <strong>últimos 3 meses</ strong>?"
-      ssn_label_html: Número de Seguro Social %{tooltip}
+      ssn_label_html: Número de Seguro Social
       state: Estado
-      state_id: NOT TRANSLATED YET
+      state_id: Número de identificación
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
-        state_id_card: NOT TRANSLATED YET
+        state_id_card: Identificación del estado
       state_id_type_label: Tipo de número de identificación
       zipcode: Código postal
     index:
@@ -82,12 +78,9 @@ es:
       hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visite nuestro <strong>Centro de Ayuda</strong> para obtener
         más información sobre la verificación de su cuenta.
-      id_number: Ingrese un número de identificación del estado o un número de licencia
-        de conducir válidos. El nombre, la fecha de nacimiento y la dirección en su
-        ID <strong>deben coincidir</ strong> la información proporcionada arriba.
       jurisdiction:
-        why: Para verificar su identidad, necesitaremos información de su identificación
-          emitida por el estado
+        why: Para verificar su identidad, necesitará información de su identificación
+          emitida por el estado.
         where: "¿Dónde se emitió su licencia de conducir, permiso de conducir o identificación
           del estado?"
         no_id: No tengo una identificación emitida por el estado
@@ -103,49 +96,31 @@ es:
       personal_key: Esta es su nueva clave personal. Escríbala y guárdela en un lugar
         seguro. La necesitará si pierde su contraseña.
       phone:
-        alert: Esta línea telefónica debe
-        in_your_name: a su nombre o el nombre de un miembro de familia
-        intro: Sólo podemos enviar el código de confirmación al número de teléfono
-          vinculado a su identidad legal.
+        alert: Este número de teléfono <strong>debe ser</strong>
         phone_of_record: Teléfono del registro
-        prepaid: no prepago
-        same_as_2fa: Este número de teléfono puede ser el mismo que utilizó para configurar
-          su contraseña de un uso único, siempre y cuando cumpla con los criterios
-          anteriores.
-        us_country_code: NOT TRANSLATED YET
+        rules:
+        - a su nombre o el nombre de un miembro de familia
+        - no es un teléfono virtual (como Google Voice o Skype)
+        - no es un número de teléfono prepago
+        - un número de EE. UU.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
         info_verified_html: Encontramos registros que coinciden con su %{phone_message}
         intro: Su información verificada
-      select_verification_form:
-        phone_header: NOT TRANSLATED YET
-        phone_message: NOT TRANSLATED YET
-        usps_header: NOT TRANSLATED YET
-        usps_message: NOT TRANSLATED YET
       select_verification_with_sp: Para protegerlo de robo de identidad, no puede
         utilizar su cuenta en %{sp_name} hasta que la active ingresando un código
         de confirmación.
       select_verification_without_sp: Para proteger su cuenta de robo de identidad,
         su perfil no se activará hasta que ingrese un código de confirmación.
       sessions:
-        access_sp: "<strong>%{sp_name}</strong> requiere que <em>solo tú</em> puedas
-          acceda a sus beneficios."
+        id_information_subtitle: Información de identificación
+        id_information_message: como aparece en su identificación emitida por el estado
         no_pii: No utilice información personal real (sólo para propósitos de demostración)
-        pii: información personal
         review_message: Cuando ingrese su contraseña, login.gov protegerá su información
           personal. Hacemos esto para asegurarnos de que nadie más pueda acceder a
           su información.
-        success: Encontramos registros que coinciden con su %{pii_message}
-      state_id_accordion_header: "¿Qué sucede si no tengo un número de identificación
-        válido?"
-      state_id_accordion_message: "Debe proporcionar un número de identificación válido
-        para continuar verificando \nen línea. No puede estar vencido El nombre, la
-        fecha de nacimiento y la dirección \nen su identificación deben coincidir
-        con la información que proporcionó anteriormente.\n\nSi se mudó recientemente
-        y la dirección que figura en su ID no coincide con su \ndirección oficial
-        actual, no podemos verificarlo en línea en este momento.\n\nSi no tiene un
-        número de identificación válido, regrese a %{sp} para acceder a sus \nbeneficios."
+        success: A continuación, necesitaremos un número de teléfono.
       usps:
         bad_address: No puedo recibir correo en esta dirección
         byline: Le enviaremos una carta con un código de confirmación a su dirección
@@ -206,8 +181,10 @@ es:
       review: Revise y envíe
       select_verification: Active su cuenta
       session:
-        phone: Obtener un código por teléfono
+        phone: Ingresa un número de teléfono para ayudar a verificar tu identidad
         review: Encripte sus datos verificados ingresando su contraseña.
-      sessions: Verifica tu identidad
+        success: Hemos verificado la información en su identificación emitida por
+          el estado.
+      sessions: Información acerca de ti
       unsupported_jurisdiction: No podemos verificar identidades usando ID emitidos
         desde %{state}

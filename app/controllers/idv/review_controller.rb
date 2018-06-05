@@ -9,7 +9,7 @@ module Idv
 
     def confirm_idv_steps_complete
       return redirect_to(idv_session_url) unless idv_profile_complete?
-      return redirect_to(idv_address_url) unless idv_address_complete?
+      return redirect_to(idv_phone_url) unless idv_address_complete?
     end
 
     def confirm_idv_phone_confirmed
