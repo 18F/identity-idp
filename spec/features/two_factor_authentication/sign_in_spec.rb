@@ -387,7 +387,7 @@ feature 'Two Factor Authentication' do
         rate_limited_phone = OtpRequestsTracker.find_by(phone_fingerprint: phone_fingerprint)
 
         expect(current_path).to eq otp_send_path
-        expect(rate_limited_phone.otp_send_count).to eq max_attempts
+        expect(rate_limited_phone.otp_send_count).to eq max_attempts + 1
 
         visit account_path
 

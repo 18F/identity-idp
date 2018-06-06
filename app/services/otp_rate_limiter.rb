@@ -16,7 +16,7 @@ class OtpRateLimiter
   end
 
   def max_requests_reached?
-    entry_for_current_phone.otp_send_count >= otp_maxretry_times
+    entry_for_current_phone.otp_send_count > otp_maxretry_times
   end
 
   def rate_limit_period_expired?
@@ -32,9 +32,8 @@ class OtpRateLimiter
   end
 
   def increment
-    entry_for_current_phone.otp_send_count += 1
-    entry_for_current_phone.otp_last_sent_at = Time.zone.now
-    entry_for_current_phone.save!
+    # DO NOT MEMOIZE
+    @entry = OtpRequestsTracker.atomic_increment(entry_for_current_phone.id)
   end
 
   private
