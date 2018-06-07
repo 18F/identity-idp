@@ -9,11 +9,7 @@ module Encryption
 
         def self.parse_from_string(ciphertext_string)
           parsed_json = JSON.parse(ciphertext_string)
-          encoded_encrypted_data = parsed_json['encrypted_data']
-          raise Pii::EncryptionError, 'ciphertext invalid' unless valid_base64_encoding?(
-            encoded_encrypted_data
-          )
-          new(decode(encoded_encrypted_data), parsed_json['salt'], parsed_json['cost'])
+          new(extract_encrypted_data(parsed_json), parsed_json['salt'], parsed_json['cost'])
         rescue JSON::ParserError
           raise Pii::EncryptionError, 'ciphertext is not valid JSON'
         end
@@ -24,6 +20,14 @@ module Encryption
             salt: salt,
             cost: cost,
           }.to_json
+        end
+
+        def self.extract_encrypted_data(parsed_json)
+          encoded_encrypted_data = parsed_json['encrypted_data']
+          raise Pii::EncryptionError, 'ciphertext invalid' unless valid_base64_encoding?(
+            encoded_encrypted_data
+          )
+          decode(encoded_encrypted_data)
         end
       end
 
