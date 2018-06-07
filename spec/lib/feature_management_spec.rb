@@ -396,6 +396,28 @@ describe 'FeatureManagement', type: :feature do
     end
   end
 
+  describe '#use_cloudhsm?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.use_cloudhsm?).to eq(true)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('false')
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.use_cloudhsm?).to eq(false)
+      end
+    end
+  end
+
   describe '#disallow_all_web_crawlers?' do
     it 'returns true when Figaro setting is true' do
       allow(Figaro.env).to receive(:disallow_all_web_crawlers) { 'true' }

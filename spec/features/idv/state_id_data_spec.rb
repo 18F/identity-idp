@@ -40,15 +40,10 @@ feature 'idv state id data entry', :idv_job do
   end
 
   it 'allows selection of different state id types', :email do
-    select t('idv.form.state_id_type.drivers_permit'), from: 'profile_state_id_type'
+    choose 'profile_state_id_type_drivers_permit'
     click_idv_continue
 
-    success_message = I18n.t(
-      'idv.messages.sessions.success',
-      pii_message: t('idv.messages.sessions.pii')
-    )
-
-    expect(page).to have_content(success_message)
-    expect(current_path).to eq(idv_address_path)
+    expect(page).to have_content(t('idv.messages.sessions.success'))
+    expect(current_path).to eq(idv_session_success_path)
   end
 end

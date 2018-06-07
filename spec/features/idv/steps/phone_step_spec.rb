@@ -81,8 +81,8 @@ feature 'idv profile step', :idv_job do
 
     # Try to skip ahead to review step
     visit idv_review_path
-    # Get redirected to the address step (which leads to phone step)
-    expect(page).to have_current_path(idv_address_path)
+
+    expect(page).to have_current_path(idv_phone_path)
   end
 
   xcontext 'cancelling IdV' do

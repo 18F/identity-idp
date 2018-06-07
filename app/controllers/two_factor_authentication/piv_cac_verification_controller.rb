@@ -21,20 +21,29 @@ module TwoFactorAuthentication
       result = piv_cac_verfication_form.submit
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH, result.to_h.merge(analytics_properties))
       if result.success?
-        clear_piv_cac_nonce
         handle_valid_piv_cac
       else
-        # create new nonce for retry
-        create_piv_cac_nonce
-        handle_invalid_otp(type: 'piv_cac')
+        handle_invalid_piv_cac
       end
     end
 
     def handle_valid_piv_cac
-      handle_valid_otp_for_authentication_context
+      clear_piv_cac_nonce
+      save_piv_cac_information(
+        subject: piv_cac_verfication_form.x509_dn,
+        presented: true
+      )
 
+      handle_valid_otp_for_authentication_context
       redirect_to after_otp_verification_confirmation_url
       reset_otp_session_data
+    end
+
+    def handle_invalid_piv_cac
+      clear_piv_cac_information
+      # create new nonce for retry
+      create_piv_cac_nonce
+      handle_invalid_otp(type: 'piv_cac')
     end
 
     def piv_cac_view_data

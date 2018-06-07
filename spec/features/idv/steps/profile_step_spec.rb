@@ -22,8 +22,8 @@ feature 'idv profile step', :idv_job do
     it 'requires the user to complete to continue to the address step and is not re-entrant' do
       complete_idv_steps_before_profile_step
 
-      # Try to skip ahead to address step
-      visit idv_address_path
+      # Try to skip ahead to phone step
+      visit idv_phone_path
 
       # Get redirected to the profile step
       expect(page).to have_current_path(idv_session_path)
@@ -32,16 +32,22 @@ feature 'idv profile step', :idv_job do
       fill_out_idv_form_ok
       click_idv_continue
 
-      # Expect to be on the address step
-      expect(page).to have_content(t('idv.titles.select_verification'))
-      expect(page).to have_current_path(idv_address_path)
+      # Expect to be on the success step
+      expect(page).to have_content(t('idv.titles.session.success'))
+      expect(page).to have_current_path(idv_session_success_path)
 
       # Attempt to go back to profile step
       visit idv_session_path
 
-      # Get redirected to the address step
-      expect(page).to have_content(t('idv.titles.select_verification'))
-      expect(page).to have_current_path(idv_address_path)
+      # Get redirected to the success step
+      expect(page).to have_content(t('idv.titles.session.success'))
+      expect(page).to have_current_path(idv_session_success_path)
+
+      # Then continue to the phone step
+      click_idv_continue
+
+      expect(page).to have_content(t('idv.titles.session.phone'))
+      expect(page).to have_current_path(idv_phone_path)
     end
   end
 

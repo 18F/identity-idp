@@ -1,16 +1,14 @@
 ---
 es:
   links:
-    access_help: Obtenga información sobre cómo nos aseguramos de que solo usted tenga
-      acceso.
+    access_help: Protege tus datos.
     account:
       reactivate:
         with_key: Tengo mi clave
         without_key: No tengo mi clave
     back_to_sp: Volver a %{sp}
     cancel: Cancelar
-    cancel_account_creation: "< Cancelar la creación de cuenta"
-    cancel_idv: "< Cancelar la verificación de cuenta"
+    cancel_account_creation: "‹ Cancelar la creación de cuenta"
     contact: Contactar
     copy: Copiar
     create_account: Crear cuenta

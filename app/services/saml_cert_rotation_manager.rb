@@ -8,9 +8,11 @@ class SamlCertRotationManager
   end
 
   def self.new_secret_key
+    env = Figaro.env
+    return env.saml_secret_rotation_cloudhsm_saml_key_label if FeatureManagement.use_cloudhsm?
     filepath = Rails.root.join(
       'keys',
-      Figaro.env.saml_secret_rotation_secret_key
+      env.saml_secret_rotation_secret_key
     )
     load_secret_key_at_path(filepath).to_pem
   end

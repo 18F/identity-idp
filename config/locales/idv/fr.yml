@@ -39,28 +39,24 @@ fr:
       unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
         compte.
     form:
-      activate_by_mail: obtenez un code par lettre.
-      address1: Adresse 1
-      address2: Adresse 2 (optional)
+      activate_by_mail: obtenir un code par courrier à la place ›
+      address1: Adresse
+      address2: Adresse (optional)
       city: Ville
       dob: Date de naissance
       dob_hint: 'exemple : 01/17/1964'
       first_name: Prénom
       last_name: Nom de famille
-      no_alternate_phone_html: Si vous n'avez pas d'autre numéro de téléphone, %{link}
+      no_alternate_phone_html: 'Pas de téléphone? aucun problème: %{link}'
       password: Mot de passe
-      personal_details: Information personnelle
       phone: Numéro de téléphone
-      phone_label_aside: Ligne mobile ou fixe
-      previous_address_add: Inscrire votre adresse précédente
-      previous_address_html: Avez-vous déménagé au cours des strong3 derniers mois/strong?
-      ssn_label_html: Numéro de sécurité sociale %{tooltip}
+      ssn_label_html: Numéro de sécurité sociale
       state: État
-      state_id: NOT TRANSLATED YET
+      state_id: Numéro d'identification
       state_id_type:
         drivers_license: NOT TRANSLATED YET
         drivers_permit: NOT TRANSLATED YET
-        state_id_card: NOT TRANSLATED YET
+        state_id_card: Identification d'état
       state_id_type_label: Type de numéro d'identification
       zipcode: Code ZIP
     index:
@@ -88,12 +84,9 @@ fr:
       hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
         davantage sur la façon dont nous vérifions votre compte.
-      id_number: Entrez un numéro d'identification d'état ou un numéro de permis de
-        conduire valide. Le nom, la date de naissance et l'adresse de votre ID <strong>doivent</strong>
-        correspondent les informations fournies ci-dessus.
       jurisdiction:
-        why: Pour vérifier votre identité, nous aurons besoin d'informations provenant
-          de votre carte d'identité officielle
+        why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
+          de votre carte d'identité officielle.
         where: Où a été délivré votre permis de conduire, votre permis de conduire
           ou votre carte d'identité?
         no_id: Je n'ai pas de carte d'identité officielle
@@ -110,27 +103,19 @@ fr:
         dans un endroit sécuritaire. Vous en aurez besoin si vous perdez votre mot
         de passe.
       phone:
-        alert: Cette ligne téléphonique doit être
-        in_your_name: en votre nom ou celui d'un membre de votre famille
-        intro: Le seul numéro de téléphone auquel nous pouvons envoyer un code de
-          confirmation est celui qui est lié à votre identité légale.
+        alert: Ce numéro de téléphone <strong>doit être</strong>
         phone_of_record: numéro de téléphone enregistré
-        prepaid: et non prépayé
-        same_as_2fa: Ce numéro de téléphone peut être le même que celui que vous utilisez
-          pour configurer votre mot de passe à usage unique, tant et aussi longtemps
-          qu'il respecte les critères mentionnés plus haut.
-        us_country_code: NOT TRANSLATED YET
+        rules:
+        - en votre nom ou celui d'un membre de votre famille
+        - pas un téléphone virtuel (comme Google Voice ou Skype)
+        - pas un numéro de téléphone prépayé
+        - un numéro américain
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
         info_verified_html: Nous avons trouvé des données qui correspondent à votre
           %{phone_message}
         intro: Vos informations vérifiées
-      select_verification_form:
-        phone_header: NOT TRANSLATED YET
-        phone_message: NOT TRANSLATED YET
-        usps_header: NOT TRANSLATED YET
-        usps_message: NOT TRANSLATED YET
       select_verification_with_sp: Afin de vous protéger des fraudes d'identité, vous
         ne pouvez pas utiliser votre compte au %{sp_name} tant que vous ne l'aurez
         pas activé en entrant votre code de confirmation.
@@ -138,25 +123,14 @@ fr:
         à l'identité, votre profil ne sera pas activé tant que vous n'aurez pas entré
         votre code de confirmation.
       sessions:
-        access_sp: "<strong>%{sp_name}</strong> ne nécessite que <em>que vous</em>
-          accéder à vos avantages."
+        id_information_subtitle: Informations d'identification
+        id_information_message: tel qu'il apparaît sur votre carte d'identité officielle
         no_pii: N'utilisez pas de véritables données personnelles (il s'agit d'une
           démonstration seulement)
-        pii: Information personnelle
         review_message: Lorsque vous entrez votre mot de passe, login.gov sécurise
           vos informations personnelles. Nous faisons cela pour nous assurer que personne
           d'autre ne puisse accéder à vos informations.
-        success: Nous avons trouvé des données qui correspondent à %{pii_message}
-      state_id_accordion_header: Que faire si je n'ai pas de numéro d'identification
-        valide?
-      state_id_accordion_message: "Vous devez fournir un numéro d'identification valide
-        pour continuer à vérifier en ligne. \nIl ne peut pas être expiré. Le nom,
-        la date de naissance et l'adresse de votre pièce \nd'identité doivent correspondre
-        aux informations que vous avez fournies ci-dessus.\n\nSi vous avez récemment
-        déménagé et que l'adresse figurant sur votre carte d'identité \nne correspond
-        pas à votre adresse officielle actuelle, nous ne pouvons pas vous \nconfirmer
-        en ligne pour le moment.\n\nSi vous n'avez pas de numéro d'identification
-        valide, retournez à %{sp} pour accéder \nà vos avantages."
+        success: Ensuite, nous aurons besoin d'un numéro de téléphone.
       usps:
         bad_address: Je ne peux pas recevoir de courrier à cette adresse
         byline: Nous posterons une lettre à l'adresse vérifiée dans nos dossiers.
@@ -218,8 +192,9 @@ fr:
       review: Réviser et soumettre
       select_verification: Activer votre compte
       session:
-        phone: Obtenez un code par téléphone
+        phone: Entrez un numéro de téléphone pour vous aider à vérifier votre identité
         review: Encryptez vos données personnelles en entrant votre mot de passe
-      sessions: Vérifier votre identité
+        success: Nous avons vérifié les informations sur votre ID d'état.
+      sessions: Informations sur vous
       unsupported_jurisdiction: Nous ne sommes pas en mesure de vérifier les identités
         à l'aide d'identifiants provenant de %{state}

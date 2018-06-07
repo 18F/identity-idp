@@ -42,7 +42,7 @@ queue_health_check_frequency_seconds: '30'
 
 # Configuration to probabilistically select the config.active_job.queue_adapter
 # Currently known options are: sidekiq, async, inline
-queue_adapter_weights: '{"sidekiq": 1}'
+queue_adapter_weights: '{"inline": 1}'
 
 # The number of words in the personal key phrase
 recovery_code_length: '4'
@@ -85,6 +85,9 @@ development:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  cloudhsm_enabled: 'false'
+  cloudhsm_pin: 'user:password'
+  cloudhsm_saml_key_label: 'key1'
   dashboard_api_token: 'test_token'
   dashboard_url: 'http://localhost:3001/api/service_providers'
   database_host: ''
@@ -119,6 +122,13 @@ development:
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: ''
+  lexisnexis_account_id: 'test_account'
+  lexisnexis_base_url: 'https://www.example.com'
+  lexisnexis_instant_verify_workflow: 'customers.gsa.instant.verify.workflow'
+  lexisnexis_password: 'test_password'
+  lexisnexis_phone_finder_workflow: 'customers.gsa.phonefinder.workflow'
+  lexisnexis_request_mode: 'testing'
+  lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '5'
   logins_per_ip_period: '60'
@@ -137,6 +147,7 @@ development:
   piv_cac_enabled: 'true'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_url: 'https://localhost:8443/'
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
   reauthn_window: '120'
@@ -151,6 +162,7 @@ development:
   requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
   saml_secret_rotation_certificate:
+  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
   saml_secret_rotation_enabled: 'false'
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
@@ -195,6 +207,9 @@ production:
   aws_ses_region_pool:
   basic_auth_user_name:
   basic_auth_password:
+  cloudhsm_enabled: 'false'
+  cloudhsm_pin: 'user:password'
+  cloudhsm_saml_key_label: 'key1'
   disable_email_sending: 'false'
   dashboard_api_token:
   database_statement_timeout: '2500'
@@ -221,6 +236,13 @@ production:
   hmac_fingerprinter_key_queue: # '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: 'sp1,sp2'
+  lexisnexis_account_id: 'test_account'
+  lexisnexis_base_url: 'https://www.example.com'
+  lexisnexis_instant_verify_workflow: 'customers.gsa.instant.verify.workflow'
+  lexisnexis_password: 'test_password'
+  lexisnexis_phone_finder_workflow: 'customers.gsa.phonefinder.workflow'
+  lexisnexis_request_mode: 'testing'
+  lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '10'
   logins_per_ip_limit: '5'
   logins_per_ip_period: '60'
@@ -237,7 +259,9 @@ production:
   participate_in_dap: 'false' # pair with google_analytics_key
   password_pepper: # generate via `rake secret`
   password_strength_enabled: 'true'
+  piv_cac_agencies: '["DOD"]'
   piv_cac_enabled: 'false'
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
   recaptcha_enabled_percent: '0'
@@ -251,6 +275,7 @@ production:
   requests_per_ip_track_only_mode: 'true'
   saml_passphrase:
   saml_secret_rotation_certificate:
+  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
   saml_secret_rotation_enabled: 'false'
   saml_secret_rotation_path_suffix:
   saml_secret_rotation_secret_key:
@@ -285,6 +310,9 @@ test:
   aws_ses_region_pool: '{ "us-west-2": 5, "us-east-1": 95 }'
   basic_auth_user_name: 'user'
   basic_auth_password: 'secret'
+  cloudhsm_enabled: 'false'
+  cloudhsm_pin: 'user:password'
+  cloudhsm_saml_key_label: 'key1'
   domain_name: 'www.example.com'
   database_host: ''
   database_name: ''
@@ -318,6 +346,13 @@ test:
   hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: 'https://rp1.serviceprovider.com/auth/saml/metadata'
+  lexisnexis_account_id: 'test_account'
+  lexisnexis_base_url: 'https://www.example.com'
+  lexisnexis_instant_verify_workflow: 'customers.gsa.instant.verify.workflow'
+  lexisnexis_password: 'test_password'
+  lexisnexis_phone_finder_workflow: 'customers.gsa.phonefinder.workflow'
+  lexisnexis_request_mode: 'testing'
+  lexisnexis_username: 'test_username'
   lockout_period_in_minutes: '5'
   logins_per_ip_limit: '3'
   logins_per_ip_period: '60'
@@ -334,6 +369,7 @@ test:
   piv_cac_enabled: 'true'
   piv_cac_service_url: 'https://localhost:8443/'
   piv_cac_verify_token_url: 'https://localhost:8443/'
+  pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
   recaptcha_enabled_percent: '0'
@@ -347,6 +383,7 @@ test:
   requests_per_ip_track_only_mode: 'false'
   saml_passphrase: 'trust-but-verify'
   saml_secret_rotation_certificate: 'saml2018.crt'
+  saml_secret_rotation_cloudhsm_saml_key_label: 'key2'
   saml_secret_rotation_enabled: 'true'
   saml_secret_rotation_path_suffix: '2018'
   saml_secret_rotation_secret_key: 'saml2018.key.enc'

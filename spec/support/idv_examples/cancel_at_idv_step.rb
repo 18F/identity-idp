@@ -28,7 +28,7 @@ shared_examples 'cancel at idv step' do |step, sp|
   context 'with js', :js do
     it 'displays a modal with options to continue or return to account page', if: sp.present? do
       # Clicking cancel displays the modal
-      click_on t('links.cancel_idv')
+      click_on t('links.cancel')
       expect(page).to have_content(t('idv.cancel.modal_header'))
 
       # Clicking continue should hide the modal
@@ -36,7 +36,7 @@ shared_examples 'cancel at idv step' do |step, sp|
       expect(page).to_not have_content(t('idv.cancel.modal_header'))
 
       # Clicking cancel again reveals the modal
-      click_on t('links.cancel_idv')
+      click_on t('links.cancel')
       expect(page).to have_content(t('idv.cancel.modal_header'))
 
       # Clicking return to account takes us to the account page

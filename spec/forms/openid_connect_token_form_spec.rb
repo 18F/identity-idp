@@ -37,7 +37,7 @@ RSpec.describe OpenidConnectTokenForm do
   let(:client_private_key) do
     OpenSSL::PKey::RSA.new(Rails.root.join('keys', 'saml_test_sp.key').read)
   end
-  let(:server_public_key) { RequestKeyManager.private_key.public_key }
+  let(:server_public_key) { RequestKeyManager.public_key }
 
   let(:user) { create(:user) }
 

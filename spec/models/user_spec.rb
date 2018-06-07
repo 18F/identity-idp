@@ -84,7 +84,7 @@ describe User do
     end
   end
 
-  context '#piv_cac_enabled?' do
+  describe '#piv_cac_enabled?' do
     it 'is true when the user has a confirmed piv/cac associated' do
       user = create(:user, :with_piv_or_cac)
 
@@ -98,7 +98,87 @@ describe User do
     end
   end
 
-  context '#confirm_piv_cac?' do
+  describe '#piv_cac_available?' do
+    before(:each) do
+      allow(Figaro.env).to receive(:piv_cac_enabled).and_return('true')
+    end
+
+    context 'when a user has no identities' do
+      let(:user) { create(:user) }
+
+      it 'does not allow piv/cac' do
+        expect(user.piv_cac_available?).to be_falsey
+      end
+    end
+
+    context 'when a user has an identity' do
+      let(:user) { create(:user) }
+
+      let(:service_provider) do
+        create(:service_provider)
+      end
+
+      let(:identity_with_sp) do
+        Identity.create(
+          user_id: user.id,
+          service_provider: service_provider.issuer
+        )
+      end
+
+      before(:each) do
+        user.identities << [identity_with_sp]
+      end
+
+      context 'not allowing it' do
+        it 'does not allow piv/cac' do
+          expect(user.piv_cac_available?).to be_falsey
+        end
+      end
+
+      context 'allowing it' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
+            [service_provider.agency].to_json
+          )
+          PivCacService.send(:reset_piv_cac_avaialable_agencies)
+        end
+
+        it 'does allows piv/cac' do
+          expect(user.piv_cac_available?).to be_truthy
+        end
+
+        context 'but piv/cac feature is not enabled' do
+          before(:each) do
+            allow(Figaro.env).to receive(:piv_cac_enabled).and_return('false')
+          end
+
+          it 'does not allow piv/cac' do
+            expect(user.piv_cac_available?).to be_falsey
+          end
+        end
+      end
+    end
+
+    context 'when a user has a piv/cac associated' do
+      let(:user) { create(:user, :with_piv_or_cac) }
+
+      it 'allows piv/cac' do
+        expect(user.piv_cac_available?).to be_truthy
+      end
+
+      context 'but the piv/cac feature is disabled' do
+        before(:each) do
+          allow(Figaro.env).to receive(:piv_cac_enabled).and_return('false')
+        end
+
+        it 'does not allow piv/cac' do
+          expect(user.piv_cac_available?).to be_falsey
+        end
+      end
+    end
+  end
+
+  describe '#confirm_piv_cac?' do
     context 'when the user has a piv/cac associated' do
       let(:user) { create(:user, :with_piv_or_cac) }
 
@@ -324,6 +404,21 @@ describe User do
       user = create(:user, :with_piv_or_cac, email: 'test1@test.com')
 
       expect(user).to validate_uniqueness_of(:x509_dn_uuid).allow_nil
+    end
+  end
+
+  context 'when a password is updated' do
+    it 'encrypted_password_digest is a json string of encryption parameters' do
+      user = create(:user)
+
+      expected = {
+        encryption_key: user.encryption_key,
+        encrypted_password: user.encrypted_password,
+        password_cost: user.password_cost,
+        password_salt: user.password_salt,
+      }.to_json
+
+      expect(user.encrypted_password_digest).to eq(expected)
     end
   end
 end
