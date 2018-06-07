@@ -69,7 +69,6 @@ LongParameterList:
     - Idv::ProoferJob#perform
     - Idv::VendorResult#initialize
     - JWT
-    - Pii::Attributes#self.new_from_encrypted
 RepeatedConditional:
   exclude:
     - Users::ResetPasswordsController

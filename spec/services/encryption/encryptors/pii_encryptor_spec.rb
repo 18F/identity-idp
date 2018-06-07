@@ -2,10 +2,9 @@ require 'rails_helper'
 
 describe Encryption::Encryptors::PiiEncryptor do
   let(:password) { 'password' }
-  let(:salt) { 'n-pepa' }
   let(:plaintext) { 'Oooh baby baby' }
 
-  subject { described_class.new(password: password, salt: salt) }
+  subject { described_class.new(password) }
 
   describe '#encrypt' do
     it 'returns encrypted text' do
@@ -15,6 +14,9 @@ describe Encryption::Encryptors::PiiEncryptor do
     end
 
     it 'uses the user access key encryptor to encrypt the plaintext' do
+      salt = '0' * 20
+      allow(Devise).to receive(:friendly_token).and_return(salt)
+
       scrypt_digest = '1' * 64
 
       scrypt_password = instance_double(SCrypt::Password)
@@ -37,7 +39,11 @@ describe Encryption::Encryptors::PiiEncryptor do
 
       ciphertext = subject.encrypt(plaintext)
 
-      expect(ciphertext).to eq(expected_ciphertext)
+      expect(ciphertext).to eq({
+        encrypted_data: expected_ciphertext,
+        salt: salt,
+        cost: '800$8$1$',
+      }.to_json)
     end
   end
 
@@ -51,12 +57,15 @@ describe Encryption::Encryptors::PiiEncryptor do
 
     it 'requires the same password used for encrypt' do
       ciphertext = subject.encrypt(plaintext)
-      new_encryptor = described_class.new(password: 'This is not the passowrd', salt: salt)
+      new_encryptor = described_class.new('This is not the passowrd')
 
       expect { new_encryptor.decrypt(ciphertext) }.to raise_error Pii::EncryptionError
     end
 
     it 'uses layered AES and KMS to decrypt the contents' do
+      salt = '0' * 20
+      allow(Devise).to receive(:friendly_token).and_return(salt)
+
       scrypt_digest = '1' * 64
 
       scrypt_password = instance_double(SCrypt::Password)
@@ -75,7 +84,11 @@ describe Encryption::Encryptors::PiiEncryptor do
         with('aes_ciphertext', scrypt_digest[0...32]).
         and_return(plaintext)
 
-      result = subject.decrypt(Base64.strict_encode64('kms_ciphertext'))
+      result = subject.decrypt({
+        encrypted_data: Base64.strict_encode64('kms_ciphertext'),
+        salt: salt,
+        cost: '800$8$1$',
+      }.to_json)
 
       expect(result).to eq(plaintext)
     end
