@@ -271,7 +271,9 @@ describe Users::SessionsController, devise: true do
       it 'deactivates profile if not de-cryptable' do
         user = create(:user, :signed_up)
         profile = create(:profile, :active, :verified, user: user, pii: { ssn: '1234' })
-        profile.update!(encrypted_pii: Base64.strict_encode64('nonsense'))
+        profile.update!(
+          encrypted_pii: { encrypted_data: Base64.strict_encode64('nonsense') }.to_json
+        )
 
         stub_analytics
         analytics_hash = {

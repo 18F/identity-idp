@@ -33,39 +33,27 @@ class Profile < ApplicationRecord
   def decrypt_pii(password)
     Pii::Attributes.new_from_encrypted(
       encrypted_pii,
-      password: password,
-      salt: user.password_salt,
-      cost: user.password_cost
+      password: password
     )
   end
 
   def recover_pii(personal_key)
     Pii::Attributes.new_from_encrypted(
       encrypted_pii_recovery,
-      password: personal_key,
-      salt: user.recovery_salt,
-      cost: user.recovery_cost
+      password: personal_key
     )
   end
 
   def encrypt_pii(pii, password)
     ssn = pii.ssn
     self.ssn_signature = Pii::Fingerprinter.fingerprint(ssn) if ssn
-    self.encrypted_pii = pii.encrypted(
-      password: password,
-      salt: user.password_salt,
-      cost: user.password_cost
-    )
+    self.encrypted_pii = pii.encrypted(password)
     encrypt_recovery_pii(pii)
   end
 
   def encrypt_recovery_pii(pii)
     personal_key = personal_key_generator.create
-    self.encrypted_pii_recovery = pii.encrypted(
-      password: personal_key_generator.normalize(personal_key),
-      salt: user.recovery_salt,
-      cost: user.recovery_cost
-    )
+    self.encrypted_pii_recovery = pii.encrypted(personal_key_generator.normalize(personal_key))
     @personal_key = personal_key
   end
 
