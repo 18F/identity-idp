@@ -256,6 +256,7 @@ feature 'Password Recovery' do
 
   context 'user resets password with unconfirmed email address edit' do
     let(:original_email) { 'original_email@test.com' }
+    let(:new_email) { 'new_email@test.com' }
     let(:user) { create(:user, :signed_up, email: original_email) }
 
     before do
@@ -264,13 +265,12 @@ feature 'Password Recovery' do
     end
 
     it 'receives password reset message at original address' do
-      fill_in 'Email', with: 'new_email@test.com'
+      fill_in 'Email', with: new_email
       click_button 'Update'
 
       expect(page).to have_content t('devise.registrations.email_update_needs_confirmation')
 
       visit sign_out_url
-
       click_link t('links.passwords.forgot')
       fill_in 'password_reset_email_form_email', with: original_email
       click_button t('forms.buttons.continue')
