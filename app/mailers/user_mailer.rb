@@ -2,7 +2,8 @@ class UserMailer < ActionMailer::Base
   include Mailable
   include LocaleHelper
   before_action :attach_images
-  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
+  default from: email_with_name(Figaro.env.email_from, Figaro.env.email_from),
+          reply_to: email_with_name(Figaro.env.email_from, Figaro.env.email_from)
 
   def email_changed(old_email)
     mail(to: old_email, subject: t('mailer.email_change_notice.subject'))
