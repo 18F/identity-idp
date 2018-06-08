@@ -105,7 +105,7 @@ describe Users::TwoFactorAuthenticationController do
         stub_sign_in_before_2fa(build(:user))
         get :show
 
-        expect(response).to redirect_to phone_setup_url
+        expect(response).to redirect_to two_factor_options_url
       end
     end
   end

@@ -31,7 +31,7 @@ feature 'User edit' do
     end
 
     scenario 'user is able to submit with a Puerto Rico phone number as a US number', js: true do
-      fill_in 'Phone', with: '787 555-1234'
+      fill_in 'user_phone_form_phone', with: '787 555-1234'
 
       expect(page.find('#user_phone_form_international_code', visible: false).value).to eq 'PR'
       expect(page).to have_button(t('forms.buttons.submit.confirm_change'), disabled: false)
@@ -41,7 +41,7 @@ feature 'User edit' do
       allow(SmsOtpSenderJob).to receive(:perform_later)
       allow(VoiceOtpSenderJob).to receive(:perform_now)
 
-      fill_in 'Phone', with: '555-555-5000'
+      fill_in 'user_phone_form_phone', with: '555-555-5000'
       choose 'Phone call'
 
       click_button t('forms.buttons.submit.confirm_change')

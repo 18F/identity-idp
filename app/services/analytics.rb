@@ -109,6 +109,8 @@ class Analytics
   USER_REGISTRATION_EMAIL_CONFIRMATION_RESEND = 'User Registration: Email Confirmation requested due to invalid token'.freeze
   USER_REGISTRATION_ENTER_EMAIL_VISIT = 'User Registration: enter email visited'.freeze
   USER_REGISTRATION_INTRO_VISIT = 'User Registration: intro visited'.freeze
+  USER_REGISTRATION_2FA_SETUP = 'User Registration: 2FA Setup'.freeze
+  USER_REGISTRATION_2FA_SETUP_VISIT = 'User Registration: 2FA Setup visited'.freeze
   USER_REGISTRATION_PHONE_SETUP_VISIT = 'User Registration: phone setup visited'.freeze
   USER_REGISTRATION_PERSONAL_KEY_VISIT = 'User Registration: personal key visited'.freeze
   USER_REGISTRATION_PIV_CAC_DISABLED = 'User Registration: piv cac disabled'.freeze

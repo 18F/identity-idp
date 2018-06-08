@@ -10,7 +10,7 @@ module Users
       elsif current_user.two_factor_enabled?
         validate_otp_delivery_preference_and_send_code
       else
-        redirect_to phone_setup_url
+        redirect_to two_factor_options_url
       end
     end
 

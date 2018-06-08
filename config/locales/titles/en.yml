@@ -16,6 +16,9 @@ en:
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
     personal_key: Just in case
+    phone_setup:
+      voice: Send your security code via phone call
+      sms: Send your security code via text message
     piv_cac_setup:
       new: Use your PIV/CAC card to secure your account
       certificate:

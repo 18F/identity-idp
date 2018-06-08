@@ -35,11 +35,12 @@ shared_examples 'saml api' do |cloudhsm_enabled|
       end
 
       it 'prompts the user to set up 2FA' do
-        expect(current_path).to eq phone_setup_path
+        expect(current_path).to eq two_factor_options_path
       end
 
       it 'prompts the user to confirm phone after setting up 2FA' do
-        fill_in 'Phone', with: '202-555-1212'
+        select_2fa_option('sms')
+        fill_in 'user_phone_form_phone', with: '202-555-1212'
         click_send_security_code
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')

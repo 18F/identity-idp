@@ -43,7 +43,7 @@ module UnconfirmedUserConcern
     elsif user.two_factor_enabled?
       account_url
     else
-      phone_setup_url
+      two_factor_options_url
     end
   end
 
