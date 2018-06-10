@@ -40,6 +40,15 @@ class ServiceProviderSessionDecorator
     sp.logo || DEFAULT_LOGO
   end
 
+  def sp_logo_url
+    logo = sp_logo
+    if RemoteSettingsService.remote?(logo)
+      logo
+    else
+      ActionController::Base.helpers.image_path("sp-logos/#{logo}")
+    end
+  end
+
   def return_to_service_provider_partial
     if sp_return_url.present?
       'devise/sessions/return_to_service_provider'

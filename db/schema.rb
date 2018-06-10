@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180601145643) do
+ActiveRecord::Schema.define(version: 20180607144007) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -97,6 +97,15 @@ ActiveRecord::Schema.define(version: 20180601145643) do
     t.index ["user_id", "active"], name: "index_profiles_on_user_id_and_active", unique: true, where: "(active = true)"
     t.index ["user_id", "ssn_signature", "active"], name: "index_profiles_on_user_id_and_ssn_signature_and_active", unique: true, where: "(active = true)"
     t.index ["user_id"], name: "index_profiles_on_user_id"
+  end
+
+  create_table "remote_settings", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "url", null: false
+    t.text "contents", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_remote_settings_on_name", unique: true
   end
 
   create_table "service_provider_requests", force: :cascade do |t|

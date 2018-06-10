@@ -17,12 +17,7 @@ class ServiceProvider < ApplicationRecord
   def ssl_cert
     @ssl_cert ||= begin
       return if cert.blank?
-
-      cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")
-
-      return OpenSSL::X509::Certificate.new(cert) unless File.exist?(cert_file)
-
-      OpenSSL::X509::Certificate.new(File.read(cert_file))
+      OpenSSL::X509::Certificate.new(load_cert(cert))
     end
   end
 
@@ -48,6 +43,16 @@ class ServiceProvider < ApplicationRecord
   end
 
   private
+
+  def load_cert(cert)
+    if RemoteSettingsService.remote?(cert)
+      RemoteSettingsService.load(cert)
+    else
+      cert_file = Rails.root.join('certs', 'sp', "#{cert}.crt")
+      return OpenSSL::X509::Certificate.new(cert) unless File.exist?(cert_file)
+      File.read(cert_file)
+    end
+  end
 
   def redirect_uris_are_parsable
     return if redirect_uris.blank?
