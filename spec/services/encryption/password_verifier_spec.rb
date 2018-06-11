@@ -34,5 +34,11 @@ describe Encryption::PasswordVerifier do
 
       expect(result).to eq(false)
     end
+
+    it 'returns false for nonsese' do
+      result = described_class.verify(password: 'saltypickles', digest: 'this is fake')
+
+      expect(result).to eq(false)
+    end
   end
 end
