@@ -6,10 +6,12 @@ module UserAccessKeyOverrides
   extend ActiveSupport::Concern
 
   def valid_password?(password)
-    Encryption::PasswordVerifier.verify(
+    result = Encryption::PasswordVerifier.verify(
       password: password,
       digest: encrypted_password_digest
     )
+    log_password_verification_failure unless result
+    result
   end
 
   def password=(new_password)
@@ -30,5 +32,14 @@ module UserAccessKeyOverrides
     self.encryption_key = password_digest.encryption_key
     self.password_salt = password_digest.password_salt
     self.password_cost = password_digest.password_cost
+  end
+
+  def log_password_verification_failure
+    metadata = {
+      event: 'Failure to validate password',
+      uuid: uuid,
+      timestamp: Time.zone.now,
+    }
+    Rails.logger.info(metadata.to_json)
   end
 end
