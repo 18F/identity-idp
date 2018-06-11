@@ -32,7 +32,7 @@ describe 'accounts/show.html.slim' do
 
       expect(rendered).to have_content t('account.items.delete_your_account', app: APP_NAME)
       expect(rendered).
-        to have_link(t('account.links.delete_account'), href: account_delete_path )
+        to have_link(t('account.links.delete_account'), href: account_delete_path)
     end
   end
 

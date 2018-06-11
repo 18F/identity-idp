@@ -43,7 +43,7 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
     end
 
     scenario 'review page' do
-      user = sign_in_and_2fa_user
+      sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
       click_idv_continue
@@ -55,7 +55,7 @@ feature 'Accessibility on IDV pages', :js, idv_job: true do
     end
 
     scenario 'personal key / confirmation page' do
-      user = sign_in_and_2fa_user
+      sign_in_and_2fa_user
       visit idv_session_path
       fill_out_idv_form_ok
       click_idv_continue

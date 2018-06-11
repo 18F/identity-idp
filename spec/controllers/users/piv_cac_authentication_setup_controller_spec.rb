@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Users::PivCacAuthenticationSetupController do
-
   describe 'when not signed in' do
     describe 'GET index' do
       it 'redirects to root url' do
@@ -33,9 +32,7 @@ describe Users::PivCacAuthenticationSetupController do
   describe 'when signing in' do
     before(:each) { stub_sign_in_before_2fa(user) }
     let(:user) do
-      create(:user, :signed_up, :with_piv_or_cac,
-        phone: '+1 (555) 555-0000'
-      )
+      create(:user, :signed_up, :with_piv_or_cac, phone: '+1 (555) 555-0000')
     end
 
     describe 'GET index' do
@@ -58,9 +55,7 @@ describe Users::PivCacAuthenticationSetupController do
 
     context 'without associated piv/cac' do
       let(:user) do
-        create(:user, :signed_up,
-          phone: '+1 (555) 555-0000'
-        )
+        create(:user, :signed_up, phone: '+1 (555) 555-0000')
       end
 
       before(:each) do
@@ -83,7 +78,7 @@ describe Users::PivCacAuthenticationSetupController do
       let(:bad_token) { 'bad-token' }
       let(:bad_token_response) do
         {
-          'error' => 'certificate.bad' ,
+          'error' => 'certificate.bad',
           'nonce' => nonce,
         }
       end
@@ -98,22 +93,24 @@ describe Users::PivCacAuthenticationSetupController do
 
         context 'when redirected with a good token' do
           it 'redirects to account page' do
-            get :new, params: {token: good_token}
+            get :new, params: { token: good_token }
             expect(response).to redirect_to(account_url)
           end
 
           it 'sets the piv/cac session information' do
-            get :new, params: {token: good_token}
-            expect(subject.user_session[:decrypted_x509]).to eq ({
+            get :new, params: { token: good_token }
+            json = {
               'subject' => 'some dn',
-              'presented' => true
-            }.to_json)
+              'presented' => true,
+            }.to_json
+
+            expect(subject.user_session[:decrypted_x509]).to eq json
           end
         end
 
         context 'when redirected with an error token' do
           it 'renders the error template' do
-            get :new, params: {token: bad_token}
+            get :new, params: { token: bad_token }
             expect(response).to render_template(:error)
           end
 

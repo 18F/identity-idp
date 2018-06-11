@@ -3,22 +3,22 @@ require 'rails_helper'
 # duplicated code in order to explicitly show the algorithm at work.
 
 describe 'NIST Encryption Model' do
-# Generate and store a 128-bit salt S.
-# Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
-# Generate random R.
-# D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) ^ Z1
-# E = hash( Z2 + R )
-# F = hash(E)
-# C = GCM_Encrypt(key = E, plaintext=PII)  #occurs outside AWS-KMS
-# Store F in password file, and store C and D.
-#
-# To decrypt PII and to verify passwords:
-# Compute Z1’, Z2’ = scrypt(S, password’)
-# R’ = KMS_GCM_Decrypt(key=server_secret, ciphertext=(D ^ Z1*)).
-# E’ = hash( Z2’ + R’)
-# F’ = hash(E’)
-# Check to see if F’ matches the entry in the password file; if so, allow the login.
-# plaintext_PII = GCM_Decrypt(key=E’, ciphertext = C)
+  # Generate and store a 128-bit salt S.
+  # Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
+  # Generate random R.
+  # D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) ^ Z1
+  # E = hash( Z2 + R )
+  # F = hash(E)
+  # C = GCM_Encrypt(key = E, plaintext=PII)  #occurs outside AWS-KMS
+  # Store F in password file, and store C and D.
+  #
+  # To decrypt PII and to verify passwords:
+  # Compute Z1, Z2 = scrypt(S, password)
+  # R = KMS_GCM_Decrypt(key=server_secret, ciphertext=(D ^ Z1)).
+  # E = hash(Z2 + R)
+  # F = hash(E)
+  # Check to see if F matches the entry in the password file; if so, allow the login.
+  # plaintext_PII = GCM_Decrypt(key=E, ciphertext = C)
 
   before do
     allow(FeatureManagement).to receive(:use_kms?).and_return(true)

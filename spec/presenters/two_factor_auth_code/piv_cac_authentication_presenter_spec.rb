@@ -9,7 +9,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   let(:user_email) { 'user@example.com' }
-  let(:reauthn) { }
+  let(:reauthn) {}
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
   describe '#header' do

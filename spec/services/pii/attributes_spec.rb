@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe Pii::Attributes do
-  # let(:user_access_key) { Encryption::UserAccessKey.new(password: 'sekrit', salt: SecureRandom.uuid) }
   let(:password) { 'I am the password' }
 
   describe '#new_from_hash' do

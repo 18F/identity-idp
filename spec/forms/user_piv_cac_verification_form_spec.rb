@@ -18,7 +18,7 @@ describe UserPivCacVerificationForm do
         {
           'uuid' => x509_dn_uuid,
           'subject' => 'x509-subject',
-          'nonce' => nonce
+          'nonce' => nonce,
         }
       end
 
@@ -96,7 +96,7 @@ describe UserPivCacVerificationForm do
     end
 
     context 'when token is missing' do
-      let(:token) { }
+      let(:token) {}
 
       it 'returns FormResponse with success: false' do
         result = instance_double(FormResponse)
