@@ -1,5 +1,7 @@
 - title t('titles.registrations.new')
 
+= render 'shared/sp_alert'
+
 h1.h3.my0 = t('headings.registrations.enter_email')
 
 = simple_form_for(@register_user_email_form,
