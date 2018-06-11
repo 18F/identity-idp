@@ -45,6 +45,7 @@ FeatureEnvy:
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
+    - PersonalKeyGenerator#create_legacy_recovery_code
 InstanceVariableAssumption:
   exclude:
     - User
