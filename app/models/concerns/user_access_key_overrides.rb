@@ -17,21 +17,19 @@ module UserAccessKeyOverrides
   def password=(new_password)
     @password = new_password
     return if @password.blank?
-    self.encrypted_password_digest = Encryption::PasswordVerifier.digest(@password)
+    digest = Encryption::PasswordVerifier.digest(@password)
+    self.encrypted_password_digest = digest.to_s
     # Until we drop the old columns, still write to them so that we can rollback
-    write_legacy_password_attributes
+    write_legacy_password_attributes(digest)
   end
 
   private
 
-  def write_legacy_password_attributes
-    password_digest = Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
-      encrypted_password_digest
-    )
-    self.encrypted_password = password_digest.encrypted_password
-    self.encryption_key = password_digest.encryption_key
-    self.password_salt = password_digest.password_salt
-    self.password_cost = password_digest.password_cost
+  def write_legacy_password_attributes(digest)
+    self.encrypted_password = digest.encrypted_password
+    self.encryption_key = digest.encryption_key
+    self.password_salt = digest.password_salt
+    self.password_cost = digest.password_cost
   end
 
   def log_password_verification_failure
