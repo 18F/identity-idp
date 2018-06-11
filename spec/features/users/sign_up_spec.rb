@@ -82,7 +82,7 @@ feature 'Sign Up' do
         click_on t('links.cancel')
         click_on t('sign_up.buttons.cancel')
 
-        expect(page).to have_current_path(sign_up_start_path)
+        expect(page).to have_current_path(sign_up_start_path(request_id: '123'))
         expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
       end
     end

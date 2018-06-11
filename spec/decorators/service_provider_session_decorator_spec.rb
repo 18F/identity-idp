@@ -136,18 +136,14 @@ RSpec.describe ServiceProviderSessionDecorator do
       )
     end
 
-    it 'returns sign_up_start_url with the request_id as a param' do
-      expect(decorator.cancel_link_url).
-        to eq 'http://www.example.com/sign_up/start?request_id=foo'
+    before do
+      allow(view_context).to receive(:sign_up_start_url).
+        and_return('https://www.example.com/sign_up/start')
     end
 
-    context 'in another language' do
-      before { I18n.locale = :fr }
-
-      it 'keeps the language' do
-        expect(decorator.cancel_link_url).
-          to eq 'http://www.example.com/fr/sign_up/start?request_id=foo'
-      end
+    it 'returns view_context.sign_up_start_url' do
+      expect(decorator.cancel_link_url).
+        to eq 'https://www.example.com/sign_up/start'
     end
   end
 end

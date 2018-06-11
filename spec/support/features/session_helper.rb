@@ -50,7 +50,7 @@ module Features
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        session[:sp] = { loa3: loa3, issuer: sp.issuer }
+        session[:sp] = { loa3: loa3, issuer: sp.issuer, request_id: '123' }
       end
 
       visit account_path
