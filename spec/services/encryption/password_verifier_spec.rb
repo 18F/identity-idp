@@ -30,8 +30,6 @@ describe Encryption::PasswordVerifier do
     end
 
     it 'returns false if the password does not match' do
-      password = 'saltypickles'
-
       digest = described_class.digest('saltypickles')
       result = described_class.verify(password: 'pepperpickles', digest: digest)
 
