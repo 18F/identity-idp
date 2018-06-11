@@ -10,10 +10,16 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def select_2fa_option(option)
+      find("label[for='two_factor_options_form_selection_#{option}']").click
+      click_on t('forms.buttons.continue')
+    end
+
     def sign_up_and_2fa_loa1_user
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
-      fill_in 'Phone', with: '202-555-1212'
+      select_2fa_option('sms')
+      fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
       click_submit_default
       click_acknowledge_personal_key
@@ -44,7 +50,7 @@ module Features
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        session[:sp] = { loa3: loa3, issuer: sp.issuer }
+        session[:sp] = { loa3: loa3, issuer: sp.issuer, request_id: '123' }
       end
 
       visit account_path
@@ -367,6 +373,7 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
+      select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
     end
@@ -392,7 +399,7 @@ module Features
     end
 
     def set_up_2fa_with_authenticator_app
-      click_link t('links.two_factor_authentication.app_option')
+      select_2fa_option('auth_app')
 
       expect(page).to have_current_path authenticator_setup_path
 

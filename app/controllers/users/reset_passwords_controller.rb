@@ -1,6 +1,8 @@
+# rubocop:disable Metrics/ClassLength
 module Users
   class ResetPasswordsController < Devise::PasswordsController
     include RecaptchaConcern
+    before_action :prevent_token_leakage, only: %i[edit]
 
     def new
       @password_reset_email_form = PasswordResetEmailForm.new('')
@@ -34,7 +36,7 @@ module Users
 
     # PUT /resource/password
     def update
-      self.resource = user_matching_token(user_params[:reset_password_token])
+      self.resource = user_matching_token(session[:reset_password_token])
 
       @reset_password_form = ResetPasswordForm.new(resource)
 
@@ -94,7 +96,14 @@ module Users
     end
 
     def token_user
-      @_token_user ||= User.with_reset_password_token(params[:reset_password_token])
+      @_token_user ||= User.with_reset_password_token(session[:reset_password_token])
+    end
+
+    def validated_token_from_url
+      reset_password_token = params[:reset_password_token]
+      return if reset_password_token.blank?
+      user = User.with_reset_password_token(reset_password_token)
+      user ? reset_password_token :  nil
     end
 
     def build_user
@@ -110,12 +119,14 @@ module Users
       redirect_to new_user_session_url
 
       EmailNotifier.new(resource).send_password_changed_email
+      session.delete(:reset_password_token)
     end
 
     def handle_unsuccessful_password_reset(result)
       if result.errors[:reset_password_token].present?
         flash[:error] = t('devise.passwords.token_expired')
         redirect_to new_user_password_url
+        session.delete(:reset_password_token)
         return
       end
 
@@ -136,5 +147,20 @@ module Users
       params.require(:reset_password_form).
         permit(:password, :reset_password_token)
     end
+
+    def redirect_without_token_url(token)
+      session[:reset_password_token] = token
+      redirect_to url_for
+    end
+
+    def prevent_token_leakage
+      token = validated_token_from_url
+      redirect_without_token_url(token) if token
+    end
+
+    def assert_reset_token_passed
+      # remove devise's default behavior
+    end
   end
 end
+# rubocop:enable Metrics/ClassLength

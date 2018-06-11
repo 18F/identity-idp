@@ -55,7 +55,8 @@ feature 'Sign Up' do
 
     allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
     sign_up_and_set_password
-    fill_in 'Phone', with: '202-555-1212'
+    select_2fa_option('sms')
+    fill_in 'user_phone_form_phone', with: '202-555-1212'
     click_send_security_code
 
     expect(current_path).to eq(phone_setup_path)
@@ -81,7 +82,7 @@ feature 'Sign Up' do
         click_on t('links.cancel')
         click_on t('sign_up.buttons.cancel')
 
-        expect(page).to have_current_path(sign_up_start_path)
+        expect(page).to have_current_path(sign_up_start_path(request_id: '123'))
         expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
       end
     end
@@ -155,8 +156,7 @@ feature 'Sign Up' do
   it_behaves_like 'creating an account using authenticator app for 2FA', :oidc
 
   it 'allows a user to choose TOTP as 2FA method during sign up' do
-    user = create(:user)
-    sign_in_user(user)
+    sign_in_user
     set_up_2fa_with_authenticator_app
     click_acknowledge_personal_key
 

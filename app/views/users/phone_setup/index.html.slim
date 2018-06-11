@@ -1,0 +1,27 @@
+- title @presenter.heading
+= image_tag asset_url(@presenter.image), width: 200, class: 'mb2'
+
+h1.h3.my0 = @presenter.heading
+p.mt-tiny.mb0 = @presenter.info
+= simple_form_for(@user_phone_form,
+    html: { autocomplete: 'off', role: 'form' },
+    data: { unsupported_area_codes: unsupported_area_codes,
+      international_phone_form: true },
+    method: :patch,
+    url: phone_setup_path) do |f|
+  .sm-col-8.js-intl-tel-code-select
+    = f.input :international_code,
+      collection: international_phone_codes,
+      include_blank: false,
+      input_html: { class: 'international-code' }
+  .sm-col-8.mb3
+    = f.label :phone
+      strong.left = @presenter.label
+    = f.input :phone, as: :tel, label: false, required: true,
+        input_html: { class: 'phone col-8 mb4' }
+  = f.button :submit, t('forms.buttons.send_security_code')
+.mt2.pt1.border-top
+  = link_to t('devise.two_factor_authentication.two_factor_choice_cancel'), two_factor_options_path
+
+  = stylesheet_link_tag 'intl-tel-number/intlTelInput'
+  = javascript_pack_tag 'intl-tel-input'
