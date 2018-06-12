@@ -15,6 +15,8 @@ fr:
             identité de nouveau.
           heading: Vous n'avez pas votre clé personnelle?
         with_key: Vous n'avez pas votre clé personnelle?
+    account_recovery_setup:
+      piv_cac_next_step: NOT TRANSLATED YET
     forgot_password:
       close_window: Vous pourrez fermer cette fenêtre de navigateur lorsque vous aurez
         réinitialisé votre mot de passe.

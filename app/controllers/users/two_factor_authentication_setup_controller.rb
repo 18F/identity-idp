@@ -1,9 +1,10 @@
 module Users
   class TwoFactorAuthenticationSetupController < ApplicationController
     include UserAuthenticator
+    include Authorizable
 
     before_action :authenticate_user
-    before_action :authorize_2fa_setup
+    before_action :authorize_user
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
@@ -28,14 +29,6 @@ module Users
 
     def two_factor_options_presenter
       TwoFactorOptionsPresenter.new(current_user, current_sp)
-    end
-
-    def authorize_2fa_setup
-      if user_fully_authenticated?
-        redirect_to account_url
-      elsif current_user.two_factor_enabled?
-        redirect_to user_two_factor_authentication_url
-      end
     end
 
     def process_valid_form

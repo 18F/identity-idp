@@ -3,6 +3,7 @@ fr:
   titles:
     account: Compte
     account_locked: Compte temporairement verrouillé
+    account_recovery_setup: NOT TRANSLATED YET
     confirmations:
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe

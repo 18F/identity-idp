@@ -99,6 +99,7 @@ Rails.application.routes.draw do
          as: :create_verify_personal_key
     get '/account/verify_phone' => 'users/verify_profile_phone#index', as: :verify_profile_phone
     post '/account/verify_phone' => 'users/verify_profile_phone#create'
+    get '/account_recovery_setup' => 'account_recovery_setup#index'
 
     if FeatureManagement.piv_cac_enabled?
       get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac

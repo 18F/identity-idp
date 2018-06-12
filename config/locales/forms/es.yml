@@ -1,6 +1,8 @@
 ---
 es:
   forms:
+    account_recovery_setup:
+      legend: NOT TRANSLATED YET
     buttons:
       back: Atrás
       continue: Continuar

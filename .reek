@@ -99,6 +99,7 @@ TooManyStatements:
     - Idv::Agent#proof
     - Idv::Proofer#configure_vendors
     - Idv::VendorResult#initialize
+    - SamlIdpController#auth
     - Upaya::QueueConfig#self.choose_queue_adapter
     - Upaya::RandomTools#self.random_weighted_sample
     - UserFlowFormatter#stop
