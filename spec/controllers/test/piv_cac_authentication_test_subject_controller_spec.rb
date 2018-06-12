@@ -68,7 +68,7 @@ describe Test::PivCacAuthenticationTestSubjectController do
         uri.to_s
       end
 
-      let(:expected_token) { {'error' => 'certificate.none', 'nonce' => nonce }}
+      let(:expected_token) { { 'error' => 'certificate.none', 'nonce' => nonce } }
       let(:serialized_token) { expected_token.to_json }
       let(:nonce) { 'nonce' }
 

@@ -54,10 +54,14 @@ describe CloudhsmJwt do
     allow(MockSession).to receive(:login).and_return(true)
     allow(MockSession).to receive(:logout).and_return(true)
     allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
-    allow(MockSession).to receive(:sign) do |algorithm, key, input|
-      JWT::Algos::Rsa.sign(JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key))
+    allow(MockSession).to receive(:sign) do |_algorithm, _key, input|
+      JWT::Algos::Rsa.sign(
+        JWT::Signature::ToSign.new('RS256', input, RequestKeyManager.private_key)
+      )
     end
-    allow(SamlIdp).to receive_message_chain(:config, :pkcs11, :active_slots, :first, :open).and_yield(MockSession)
+    allow(SamlIdp).
+      to receive_message_chain(:config, :pkcs11, :active_slots, :first, :open).
+      and_yield(MockSession)
     allow(SamlIdp).to receive_message_chain(:config, :cloudhsm_pin).and_return(true)
   end
 end

@@ -50,7 +50,8 @@ shared_examples 'failed idv job' do |step|
       fill_out_phone_form_ok('5202691958') if step == :phone
       click_idv_continue
 
-      Timecop.travel (Figaro.env.async_job_refresh_max_wait_seconds.to_i + 1).seconds
+      seconds_to_travel = (Figaro.env.async_job_refresh_max_wait_seconds.to_i + 1).seconds
+      Timecop.travel seconds_to_travel
 
       visit current_path
     end
@@ -81,16 +82,18 @@ shared_examples 'failed idv job' do |step|
     end
   end
 
+  # rubocop:disable Lint/HandleExceptions
   def stub_idv_job_to_raise_error_in_background(idv_job_class)
     allow(Idv::Agent).to receive(:new).and_raise('this is a test error')
     allow(idv_job_class).to receive(:perform_now).and_wrap_original do |perform_now, *args|
       begin
         perform_now.call(*args)
-      rescue StandardError => err
+      rescue StandardError
         # Swallow the error so it does not get re-raised by the job
       end
     end
   end
+  # rubocop:enable Lint/HandleExceptions
 
   def stub_idv_job_to_timeout_in_background(idv_job_class)
     allow(idv_job_class).to receive(:perform_now)

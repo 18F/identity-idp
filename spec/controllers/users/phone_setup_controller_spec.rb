@@ -76,7 +76,6 @@ describe Users::PhoneSetupController do
           :create,
           params: {
             user_phone_form: { phone: '703-555-0100',
-                              #  otp_delivery_preference: 'voice',
                                international_code: 'US' },
           }
         )
@@ -110,7 +109,6 @@ describe Users::PhoneSetupController do
           :create,
           params: {
             user_phone_form: { phone: '703-555-0100',
-                              #  otp_delivery_preference: :sms,
                                international_code: 'US' },
           }
         )
@@ -143,7 +141,6 @@ describe Users::PhoneSetupController do
           :create,
           params: {
             user_phone_form: { phone: '703-555-0100',
-                              #  otp_delivery_preference: :sms,
                                international_code: 'US' },
           }
         )

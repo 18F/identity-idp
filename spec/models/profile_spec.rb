@@ -12,7 +12,6 @@ describe Profile do
       last_name: 'Doe'
     )
   end
-  #let(:user_access_key) { user.unlock_user_access_key(user.password) }
 
   it { is_expected.to belong_to(:user) }
   it { is_expected.to have_many(:usps_confirmation_codes).dependent(:destroy) }

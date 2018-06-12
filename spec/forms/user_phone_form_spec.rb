@@ -159,7 +159,7 @@ describe UserPhoneForm do
           otp_delivery_preference: 'voice',
         }
 
-        result = subject.submit(params)
+        subject.submit(params)
       end
     end
 
@@ -167,7 +167,7 @@ describe UserPhoneForm do
       it "does not update the user's otp_delivery_preference" do
         expect(UpdateUser).to_not receive(:new)
 
-        result = subject.submit(params)
+        subject.submit(params)
       end
     end
 

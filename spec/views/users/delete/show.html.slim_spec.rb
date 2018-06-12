@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 describe 'users/delete/show.html.slim' do
-  let(:user) {build_stubbed(:user, :signed_up)}
-  let(:decorated_user) {user.decorate}
+  let(:user) { build_stubbed(:user, :signed_up) }
+  let(:decorated_user) { user.decorate }
 
   before do
     allow(user).to receive(:decorate).and_return(decorated_user)

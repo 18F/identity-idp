@@ -5,19 +5,19 @@ require 'rails_helper'
 # user data from being logged.
 describe ActiveJob::Logging::LogSubscriber do
   it 'overrides the default job logger to output only specified parameters in JSON format' do
-    class FakeJob < ActiveJob::Base
+    class FakeJob < ApplicationJob
       def perform(sensitive_param:); end
     end
 
     # This list corresponds to the initializer's output
-    permitted_attributes = %w(
+    permitted_attributes = %w[
       timestamp
       event_type
       job_class
       job_queue
       job_id
       duration
-    )
+    ]
 
     # In this case, we need to assert before the action which logs, block-style to
     # match the initializer
@@ -27,7 +27,7 @@ describe ActiveJob::Logging::LogSubscriber do
       # [Sidenote: The nested assertions don't seem to be reflected in the spec
       # count--perhaps because of the uncommon block format?--but reversing them
       # will show them failing as expected.]
-      output.keys.each { |k| expect(permitted_attributes).to include(k) }
+      output.each_key { |k| expect(permitted_attributes).to include(k) }
       expect(output.keys).to_not include('sensitive_param')
     end
 

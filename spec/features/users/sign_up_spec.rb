@@ -168,11 +168,12 @@ feature 'Sign Up' do
     sign_in_user(user)
     visit authenticator_setup_path
 
-    expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+    expect(page).
+      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
-    user = create(:user, :signed_up)
+    create(:user, :signed_up)
     visit authenticator_setup_path
 
     expect(page).to have_current_path root_path

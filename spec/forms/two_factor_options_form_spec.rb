@@ -32,7 +32,7 @@ describe TwoFactorOptionsForm do
           and_return(user_updater)
         expect(user_updater).to receive(:call)
 
-        result = subject.submit(selection: 'voice')
+        subject.submit(selection: 'voice')
       end
     end
 
@@ -40,7 +40,7 @@ describe TwoFactorOptionsForm do
       it "does not update the user's otp_delivery_preference" do
         expect(UpdateUser).to_not receive(:new)
 
-        result = subject.submit(selection: 'sms')
+        subject.submit(selection: 'sms')
       end
     end
 
@@ -48,7 +48,7 @@ describe TwoFactorOptionsForm do
       it "does not update the user's otp_delivery_preference" do
         expect(UpdateUser).to_not receive(:new)
 
-        result = subject.submit(selection: 'auth_app')
+        subject.submit(selection: 'auth_app')
       end
     end
   end

@@ -78,7 +78,8 @@ describe TwilioService do
       raw_message = 'Unable to create record: Account not authorized to call +123456789012.'
       error_code = '21215'
       status_code = 400
-      sanitized_message = "[HTTP #{status_code}] #{error_code} : Unable to create record: Account " \
+      sanitized_message = "[HTTP #{status_code}] #{error_code} : " \
+                          "Unable to create record: Account " \
                           "not authorized to call +12345#######.\n\n"
 
       service = TwilioService.new
