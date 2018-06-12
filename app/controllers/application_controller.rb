@@ -192,6 +192,10 @@ class ApplicationController < ActionController::Base
     render template: 'pages/page_took_too_long', layout: false, status: 503, formats: :html
   end
 
+  def render_failure(presenter)
+    render 'shared/failure', layout: 'base', locals: { presenter: presenter }
+  end
+
   def analytics_exception_info(exception)
     {
       backtrace: Rails.backtrace_cleaner.send(:filter, exception.backtrace),

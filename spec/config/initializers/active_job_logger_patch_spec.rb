@@ -27,7 +27,7 @@ describe ActiveJob::Logging::LogSubscriber do
       # [Sidenote: The nested assertions don't seem to be reflected in the spec
       # count--perhaps because of the uncommon block format?--but reversing them
       # will show them failing as expected.]
-      output.keys.each { |k| expect(permitted_attributes).to include(k) }
+      output.each_key { |k| expect(permitted_attributes).to include(k) }
       expect(output.keys).to_not include('sensitive_param')
     end
 

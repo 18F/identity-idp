@@ -69,12 +69,12 @@ module Users
     end
 
     def process_locked_out_user
-      decorator = current_user.decorate
-      sign_out
-      render(
-        'two_factor_authentication/shared/max_login_attempts_reached',
-        locals: { type: 'generic', decorator: decorator }
+      presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
+        'generic_login_attempts',
+        current_user.decorate
       )
+      sign_out
+      render_failure(presenter)
     end
 
     def handle_valid_authentication

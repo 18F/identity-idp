@@ -103,13 +103,16 @@ en:
         request a new one-time security code.
       invalid_personal_key: That personal key is invalid.
       invalid_piv_cac: That PIV/CAC is incorrect.
-      max_generic_login_attempts_reached: Your account is temporarily locked.
-      max_otp_login_attempts_reached: Your account is temporarily locked because you
-        have entered the one-time security code incorrectly too many times.
-      max_otp_requests_reached: Your account is temporarily locked because you have
-        requested a security code too many times.
-      max_personal_key_login_attempts_reached: Your account is temporarily locked
-        because you have entered the personal key incorrectly too many times.
+      max_generic_login_attempts_reached: For your security, your account is temporarily
+        locked.
+      max_otp_login_attempts_reached: For your security, your account is temporarily
+        locked because you have entered the one-time security code incorrectly too
+        many times.
+      max_otp_requests_reached: For your security, your account is temporarily locked
+        because you have requested a security code too many times.
+      max_personal_key_login_attempts_reached: For your security, your account is
+        temporarily locked because you have entered the personal key incorrectly too
+        many times.
       otp_delivery_preference:
         instruction: You can change this selection the next time you log in. If you
           entered a landline, please select "Phone call" below.
@@ -141,7 +144,10 @@ en:
       piv_cac_header_text: Present your PIV/CAC
       please_confirm: Your phone number has been set. Confirm it by entering the security
         code below.
-      please_try_again_html: Please try again in %{time_remaining}.
+      please_try_again_html: Please try again in <strong id=%{id}>%{time_remaining}</strong>.
+      read_about_two_factor_authentication:
+        link: read about two-factor authentication
+        text_html: You can %{link} and why we use it at our Help page.
       totp_fallback:
         sms_link_text: get a code via text message
         text_html: If you can’t use your authenticator app right now you can %{sms_link}

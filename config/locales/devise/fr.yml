@@ -114,15 +114,16 @@ fr:
         de nouveau ou demander un nouveau code de sécurité à utilisation unique.
       invalid_personal_key: Cette clé personnelle est non valide.
       invalid_piv_cac: NOT TRANSLATED YET
-      max_generic_login_attempts_reached: Votre compte est temporairement verrouillé.
-      max_otp_login_attempts_reached: Votre compte est temporairement verrouillé,
-        car vous avez entré le code de sécurité à utilisation unique de façon erronée
-        à de trop nombreuses reprises.
-      max_otp_requests_reached: Votre compte est temporairement verrouillé car vous
-        avez demandé un code de sécurité à trop de reprises.
-      max_personal_key_login_attempts_reached: Votre compte est temporairement verrouillé,
-        car vous avez entré le code de sécurité à utilisation unique de façon erronée
-        à de trop nombreuses reprises.
+      max_generic_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
+        verrouillé.
+      max_otp_login_attempts_reached: Pour votre sécurité, votre compte est temporairement
+        verrouillé, car vous avez entré le code de sécurité à utilisation unique de
+        façon erronée à de trop nombreuses reprises.
+      max_otp_requests_reached: Pour votre sécurité, votre compte est temporairement
+        verrouillé car vous avez demandé un code de sécurité à trop de reprises.
+      max_personal_key_login_attempts_reached: Pour votre sécurité, votre compte est
+        temporairement verrouillé, car vous avez entré le code de sécurité à utilisation
+        unique de façon erronée à de trop nombreuses reprises.
       otp_delivery_preference:
         instruction: Vous pouvez changer cette sélection la prochaine fois que vous
           vous connectez.
@@ -156,7 +157,11 @@ fr:
       piv_cac_header_text: NOT TRANSLATED YET
       please_confirm: Votre numéro de téléphone a été entré. Confirmez-le en entrant
         le code de sécurité ci-dessous.
-      please_try_again_html: Veuillez essayer de nouveau dans %{time_remaining}.
+      please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
+      read_about_two_factor_authentication:
+        link: lire sur l'authentification à deux facteurs
+        text_html: Vous pouvez %{link} et pourquoi nous l'utilisons sur notre page
+          d'aide.
       totp_fallback:
         sms_link_text: Obtenir un code via message texte
         text_html: Si vous ne pouvez utiliser votre application d'authentification

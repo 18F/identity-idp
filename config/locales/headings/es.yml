@@ -19,6 +19,7 @@ es:
       email: Cambie su email
       password: Cambie su contraseña
       phone: Ingrese su nuevo número de teléfono
+    lock_failure: Esto es lo que puedes hacer
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar

@@ -2,7 +2,7 @@
 fr:
   titles:
     account: Compte
-    account_locked: Compte verrouillé
+    account_locked: Compte temporairement verrouillé
     confirmations:
       new: Envoyer les instructions de confirmation pour votre compte
       show: Choisissez un mot de passe
