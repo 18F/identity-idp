@@ -30,6 +30,7 @@ describe FailurePresenter do
     %i[icon alt_text color].each do |method|
       %i[warning failure locked].each do |state|
         describe "##{method} for #{state}" do
+          let(:state) { state }
           subject { presenter.send('state_' + method.to_s) }
 
           it { is_expected.to eq(config(state, method)) }
