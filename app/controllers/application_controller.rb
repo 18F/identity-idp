@@ -184,12 +184,13 @@ class ApplicationController < ActionController::Base
   end
 
   def render_not_found
-    render template: 'pages/page_not_found', layout: false, status: 404, formats: :html
+    render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
 
   def render_timeout(exception)
     analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
-    render template: 'pages/page_took_too_long', layout: false, status: 503, formats: :html
+    render template: 'pages/page_took_too_long',
+           layout: false, status: :service_unavailable, formats: :html
   end
 
   def render_failure(presenter)

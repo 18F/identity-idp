@@ -1,7 +1,7 @@
 require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'rack_session_access/capybara'
-require "selenium/webdriver"
+require 'selenium/webdriver'
 
 Capybara.register_driver :headless_chrome do |app|
   capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
@@ -9,8 +9,8 @@ Capybara.register_driver :headless_chrome do |app|
   )
 
   Capybara::Selenium::Driver.new app,
-    browser: :chrome,
-    desired_capabilities: capabilities
+                                 browser: :chrome,
+                                 desired_capabilities: capabilities
 end
 
 Capybara.javascript_driver = :headless_chrome

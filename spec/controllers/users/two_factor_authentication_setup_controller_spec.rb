@@ -50,7 +50,7 @@ describe Users::TwoFactorAuthenticationSetupController do
       voice_params = {
         two_factor_options_form: {
           selection: 'voice',
-        }
+        },
       }
       params = ActionController::Parameters.new(voice_params)
       response = FormResponse.new(success: true, errors: {}, extra: { selection: 'voice' })

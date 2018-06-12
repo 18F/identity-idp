@@ -46,7 +46,10 @@ describe PersonalKeyGenerator do
       generator = PersonalKeyGenerator.new(user)
       generator.create
 
-      encrypted_recovery_code_data = JSON.parse(user.encrypted_recovery_code_digest, symbolize_names: true)
+      encrypted_recovery_code_data = JSON.parse(
+        user.encrypted_recovery_code_digest, symbolize_names: true
+      )
+
       expect(
         encrypted_recovery_code_data[:encryption_key]
       ).to eq(user.personal_key.split('.').first)

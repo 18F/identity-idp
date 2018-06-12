@@ -107,9 +107,8 @@ module Features
 
     def user_with_piv_cac
       create(:user, :signed_up, :with_piv_or_cac,
-        phone: '+1 (555) 555-0000',
-        password: VALID_PASSWORD
-      )
+             phone: '+1 (555) 555-0000',
+             password: VALID_PASSWORD)
     end
 
     def confirm_last_user
@@ -142,8 +141,8 @@ module Features
       visit login_two_factor_piv_cac_path
       stub_piv_cac_service
       visit_piv_cac_service(
-        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234",
-        uuid: user.x509_dn_uuid,
+        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+        uuid: user.x509_dn_uuid
       )
     end
 

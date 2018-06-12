@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'PIV/CAC Management' do
-
   def find_form(page, attributes)
     page.all('form').detect do |form|
       attributes.all? { |key, value| form[key] == value }
@@ -21,7 +20,7 @@ feature 'PIV/CAC Management' do
         Identity.create(
           user_id: user.id,
           service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.now,
+          last_authenticated_at: Time.zone.now
         )
       end
 
@@ -44,11 +43,10 @@ feature 'PIV/CAC Management' do
         expect(page).to have_link(t('forms.piv_cac_setup.submit'))
         nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
 
-        visit_piv_cac_service(setup_piv_cac_url, {
-          nonce: nonce,
-          uuid: uuid,
-          subject: 'SomeIgnoredSubject'
-        })
+        visit_piv_cac_service(setup_piv_cac_url,
+                              nonce: nonce,
+                              uuid: uuid,
+                              subject: 'SomeIgnoredSubject')
 
         expect(current_path).to eq account_path
 
@@ -75,7 +73,7 @@ feature 'PIV/CAC Management' do
         Identity.create(
           user_id: user.id,
           service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.now,
+          last_authenticated_at: Time.zone.now
         )
       end
 

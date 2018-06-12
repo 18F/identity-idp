@@ -3,18 +3,17 @@ require 'rails_helper'
 describe PivCacAuthenticationSetupPresenter do
   let(:presenter) { described_class.new(form) }
   let(:form) do
-    OpenStruct.new(
-    )
+    OpenStruct.new
   end
 
   describe '#title' do
-    let(:expected_title) { t('titles.piv_cac_setup.new' ) }
+    let(:expected_title) { t('titles.piv_cac_setup.new') }
 
     it { expect(presenter.title).to eq expected_title }
   end
 
   describe '#heading' do
-    let(:expected_heading) { t('headings.piv_cac_setup.new' ) }
+    let(:expected_heading) { t('headings.piv_cac_setup.new') }
 
     it { expect(presenter.heading).to eq expected_heading }
   end

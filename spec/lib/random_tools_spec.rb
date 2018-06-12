@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe Upaya::RandomTools do
   describe '#random_weighted_sample' do
     it 'raises ArgumentError given empty choices' do
-      expect {
+      expect do
         Upaya::RandomTools.random_weighted_sample({})
-      }.to raise_error(ArgumentError, /empty choices/)
+      end.to raise_error(ArgumentError, /empty choices/)
     end
 
     it 'handles equal weights -- 0' do
@@ -39,21 +39,21 @@ RSpec.describe Upaya::RandomTools do
     end
 
     it 'rejects non-integer weights' do
-      expect {
+      expect do
         Upaya::RandomTools.random_weighted_sample(a: 1.5)
-      }.to raise_error(ArgumentError, /integer/)
+      end.to raise_error(ArgumentError, /integer/)
     end
 
     it 'rejects negative weights' do
-      expect {
+      expect do
         Upaya::RandomTools.random_weighted_sample(a: 10, b: -1)
-      }.to raise_error(ArgumentError, />= 0/)
+      end.to raise_error(ArgumentError, />= 0/)
     end
 
     it 'rejects weights sum to zero' do
-      expect {
+      expect do
         Upaya::RandomTools.random_weighted_sample(a: 0)
-      }.to raise_error(ArgumentError, /non-zero/)
+      end.to raise_error(ArgumentError, /non-zero/)
     end
   end
 end

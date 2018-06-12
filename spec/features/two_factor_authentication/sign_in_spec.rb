@@ -62,7 +62,6 @@ feature 'Two Factor Authentication' do
         fill_in 'Phone', with: unsupported_phone
         click_send_security_code
 
-
         expect(current_path).to eq phone_setup_path
 
         expect(page).to have_content t(
@@ -111,7 +110,7 @@ feature 'Two Factor Authentication' do
   end
 
   def select_country_and_type_phone_number(country:, number:)
-    find(".selected-flag").click
+    find('.selected-flag').click
     find(".country[data-country-code='#{country}']:not(.preferred)").click
     phone_field.send_keys(number)
   end
@@ -494,11 +493,10 @@ feature 'Two Factor Authentication' do
 
       nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
-      visit_piv_cac_service(login_two_factor_piv_cac_path, {
-        uuid: user.x509_dn_uuid,
-        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234",
-        nonce: nonce
-      })
+      visit_piv_cac_service(login_two_factor_piv_cac_path,
+                            uuid: user.x509_dn_uuid,
+                            dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+                            nonce: nonce)
       expect(current_path).to eq account_path
     end
 
@@ -510,13 +508,12 @@ feature 'Two Factor Authentication' do
 
       nonce = visit_login_two_factor_piv_cac_and_get_nonce
 
-      visit_piv_cac_service(login_two_factor_piv_cac_path, {
-        uuid: user.x509_dn_uuid + 'X',
-        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345",
-        nonce: nonce
-      })
+      visit_piv_cac_service(login_two_factor_piv_cac_path,
+                            uuid: user.x509_dn_uuid + 'X',
+                            dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.12345',
+                            nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path
-      expect(page).to have_content(t("devise.two_factor_authentication.invalid_piv_cac"))
+      expect(page).to have_content(t('devise.two_factor_authentication.invalid_piv_cac'))
     end
   end
 

@@ -45,7 +45,6 @@ describe Pii::Cacher do
       # Create a new user object to drop the memoized encrypted attributes
       user_id = user.id
       reloaded_user = User.find(user_id)
-      reloaded_profile = user.profiles.first
 
       described_class.new(reloaded_user, user_session).save(password)
 

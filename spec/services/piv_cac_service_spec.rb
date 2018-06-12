@@ -10,17 +10,17 @@ describe PivCacService do
       end
 
       it 'raises an error if no token provided' do
-        expect {
+        expect do
           PivCacService.decode_token
-        }.to raise_error ArgumentError
+        end.to raise_error ArgumentError
       end
 
       it 'returns the test data' do
         token = 'TEST:{"uuid":"hijackedUUID","dn":"hijackedDN"}'
-        expect(PivCacService.decode_token(token)).to eq({
+        expect(PivCacService.decode_token(token)).to eq(
           'uuid' => 'hijackedUUID',
           'dn' => 'hijackedDN'
-        })
+        )
       end
     end
 
@@ -30,7 +30,7 @@ describe PivCacService do
       end
 
       it 'returns an error' do
-        expect(PivCacService.decode_token('foo')).to eq({ 'error' => 'service.disabled' })
+        expect(PivCacService.decode_token('foo')).to eq('error' => 'service.disabled')
       end
     end
 
@@ -41,9 +41,9 @@ describe PivCacService do
         end
 
         it 'raises an error if no token provided' do
-          expect {
+          expect do
             PivCacService.decode_token
-          }.to raise_error ArgumentError
+          end.to raise_error ArgumentError
         end
 
         describe 'when configured with a user-facing endpoint' do
@@ -96,18 +96,18 @@ describe PivCacService do
         end
 
         it 'returns the decoded JSON from the target service' do
-          expect(PivCacService.decode_token('foo')).to eq({
+          expect(PivCacService.decode_token('foo')).to eq(
             'dn' => 'dn',
             'uuid' => 'uuid'
-          })
+          )
         end
 
         describe 'with test data' do
           it 'returns an error' do
             token = 'TEST:{"uuid":"hijackedUUID","dn":"hijackedDN"}'
-            expect(PivCacService.decode_token(token)).to eq({
+            expect(PivCacService.decode_token(token)).to eq(
               'error' => 'token.bad'
-            })
+            )
           end
         end
       end
@@ -130,9 +130,9 @@ describe PivCacService do
 
         it 'returns an error' do
           token = 'foo'
-          expect(PivCacService.decode_token(token)).to eq({
+          expect(PivCacService.decode_token(token)).to eq(
             'error' => 'token.bad'
-          })
+          )
         end
       end
     end
