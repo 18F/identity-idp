@@ -7,5 +7,5 @@
   .col.col-4.right-align
     - if local_assigns.key? :path
       = render action, path: path, name: name
-    - else
+    - elsif local_assigns.key? :action
       = render action
