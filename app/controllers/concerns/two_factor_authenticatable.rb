@@ -40,7 +40,7 @@ module TwoFactorAuthenticatable
       decorated_user
     )
     sign_out
-    render_failure(presenter)
+    render_full_width('shared/failure', locals: { presenter: presenter })
   end
 
   def require_current_password

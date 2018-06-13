@@ -74,7 +74,7 @@ module Users
         current_user.decorate
       )
       sign_out
-      render_failure(presenter)
+      render_full_width('shared/failure', locals: { presenter: presenter })
     end
 
     def handle_valid_authentication

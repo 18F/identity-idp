@@ -193,8 +193,8 @@ class ApplicationController < ActionController::Base
            layout: false, status: :service_unavailable, formats: :html
   end
 
-  def render_failure(presenter)
-    render 'shared/failure', layout: 'base', locals: { presenter: presenter }
+  def render_full_width(template, **opts)
+    render template, **opts, layout: 'base'
   end
 
   def analytics_exception_info(exception)
