@@ -7,6 +7,7 @@ module Users
 
     def index
       @two_factor_options_form = TwoFactorOptionsForm.new(current_user)
+      @presenter = two_factor_options_presenter
       analytics.track_event(Analytics::USER_REGISTRATION_2FA_SETUP_VISIT)
     end
 
@@ -18,11 +19,16 @@ module Users
       if result.success?
         process_valid_form
       else
+        @presenter = two_factor_options_presenter
         render :index
       end
     end
 
     private
+
+    def two_factor_options_presenter
+      TwoFactorOptionsPresenter.new(current_user, current_sp)
+    end
 
     def authorize_2fa_setup
       if user_fully_authenticated?
@@ -38,6 +44,8 @@ module Users
         redirect_to phone_setup_url
       when 'auth_app'
         redirect_to authenticator_setup_url
+      when 'piv_cac'
+        redirect_to setup_piv_cac_url
       end
     end
 

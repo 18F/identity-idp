@@ -3,7 +3,8 @@ module Users
     include UserAuthenticator
     include PivCacConcern
 
-    before_action :confirm_two_factor_authenticated
+    before_action :authenticate_user!
+    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
 
@@ -29,6 +30,10 @@ module Users
     end
 
     private
+
+    def two_factor_enabled?
+      current_user.two_factor_enabled?
+    end
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit

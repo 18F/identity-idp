@@ -127,6 +127,20 @@ describe Users::TwoFactorAuthenticationSetupController do
       end
     end
 
+    context 'when the selection is piv_cac' do
+      it 'redirects to piv/cac setup page' do
+        stub_sign_in_before_2fa
+
+        patch :create, params: {
+          two_factor_options_form: {
+            selection: 'piv_cac',
+          },
+        }
+
+        expect(response).to redirect_to setup_piv_cac_url
+      end
+    end
+
     context 'when the selection is not valid' do
       it 'renders index page' do
         stub_sign_in_before_2fa

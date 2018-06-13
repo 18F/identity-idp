@@ -47,6 +47,10 @@ class ServiceProvider < ApplicationRecord
     active? && approved?
   end
 
+  def piv_cac_available?
+    PivCacService.piv_cac_available_for_agency?(agency)
+  end
+
   private
 
   def redirect_uris_are_parsable

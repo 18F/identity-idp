@@ -163,6 +163,42 @@ feature 'Sign Up' do
     expect(page).to have_current_path account_path
   end
 
+  it 'does not allow a user to choose piv/cac as 2FA method during sign up' do
+    allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(false)
+    allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+    begin_sign_up_with_sp_and_loa(loa3: false)
+
+    expect(page).to have_current_path two_factor_options_path
+    expect(page).not_to have_content(
+      t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+    )
+  end
+
+  context 'when piv/cac is allowed' do
+    it 'allows a user to choose piv/cac as 2FA method during sign up' do
+      allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
+      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+
+      begin_sign_up_with_sp_and_loa(loa3: false)
+
+      expect(page).to have_current_path two_factor_options_path
+      expect(page).to have_content(
+        t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+      )
+    end
+
+    it 'directs to the piv/cac setup page' do
+      allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
+      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+
+      begin_sign_up_with_sp_and_loa(loa3: false)
+
+      expect(page).to have_current_path two_factor_options_path
+      select_2fa_option('piv_cac')
+      expect(page).to have_current_path setup_piv_cac_path
+    end
+  end
+
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
     user = create(:user, :signed_up)
     sign_in_user(user)
