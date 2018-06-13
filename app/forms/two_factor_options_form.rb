@@ -19,6 +19,10 @@ class TwoFactorOptionsForm
     FormResponse.new(success: success, errors: errors.messages, extra: extra_analytics_attributes)
   end
 
+  def selected?(type)
+    type == (selection || 'sms')
+  end
+
   private
 
   attr_accessor :user

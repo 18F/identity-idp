@@ -1,8 +1,7 @@
-- title t('titles.two_factor_setup')
+- title @presenter.title
 
-h1.h3.my0 = t('devise.two_factor_authentication.two_factor_choice')
-p.mt-tiny.mb3
-  = t('devise.two_factor_authentication.two_factor_choice_intro')
+h1.h3.my0 = @presenter.heading
+p.mt-tiny.mb3 = @presenter.info
 
 = simple_form_for(@two_factor_options_form,
       html: { autocomplete: 'off', role: 'form' },
@@ -10,31 +9,17 @@ p.mt-tiny.mb3
       url: two_factor_options_path) do |f|
   .mb3
     fieldset.m0.p0.border-none.
-      legend.mb1.h4.serif.bold = t('forms.two_factor_choice.legend') + ':'
-      label.btn-border.col-12.mb1 for="two_factor_options_form_selection_sms"
-        .radio
-          = radio_button_tag 'two_factor_options_form[selection]', :sms, true
-          span.indicator.mt-tiny
-          span.blue.bold.fs-20p
-            = t('devise.two_factor_authentication.two_factor_choice_options.sms')
-          .regular.gray-dark.fs-10p.mb-tiny
-            = t('devise.two_factor_authentication.two_factor_choice_options.sms_info')
-      label.btn-border.col-12.mb1 for="two_factor_options_form_selection_voice"
-        .radio
-          = radio_button_tag 'two_factor_options_form[selection]', :voice, false
-          span.indicator.mt-tiny
-          span.blue.bold.fs-20p
-            = t('devise.two_factor_authentication.two_factor_choice_options.voice')
-          .regular.gray-dark.fs-10p.mb-tiny
-            = t('devise.two_factor_authentication.two_factor_choice_options.voice_info')
-      label.btn-border.col-12.mb1 for="two_factor_options_form_selection_auth_app"
-        .radio
-          = radio_button_tag 'two_factor_options_form[selection]', :auth_app, false
-          span.indicator.mt-tiny
-          span.blue.bold.fs-20p
-            = t('devise.two_factor_authentication.two_factor_choice_options.auth_app')
-          .regular.gray-dark.fs-10p.mb-tiny
-            = t('devise.two_factor_authentication.two_factor_choice_options.auth_app_info')
+      legend.mb1.h4.serif.bold = @presenter.label
+      - @presenter.options.each do |option|
+        label.btn-border.col-12.mb1 for="two_factor_options_form_selection_#{option.type}"
+          .radio
+            = radio_button_tag('two_factor_options_form[selection]',
+              option.type,
+              @two_factor_options_form.selected?(option.type))
+            span.indicator.mt-tiny
+            span.blue.bold.fs-20p = option.label
+            .regular.gray-dark.fs-10p.mb-tiny = option.info
+
   = f.button :submit, t('forms.buttons.continue')
 
 = render 'shared/cancel', link: destroy_user_session_path

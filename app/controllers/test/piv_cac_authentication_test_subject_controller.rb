@@ -36,7 +36,8 @@ module Test
     end
 
     def token_from_params
-      error, subject = params.slice(:error, :subject)
+      error = params[:error]
+      subject = params[:subject]
 
       if error.present?
         with_nonce(error: error).to_json
