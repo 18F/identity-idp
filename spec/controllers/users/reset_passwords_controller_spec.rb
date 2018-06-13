@@ -183,6 +183,8 @@ describe Users::ResetPasswordsController, devise: true do
           expect(@analytics).to have_received(:track_event).
             with(Analytics::PASSWORD_RESET_PASSWORD, analytics_hash)
 
+          expect(user.events.password_changed.size).to be 1
+
           expect(response).to redirect_to new_user_session_path
           expect(flash[:notice]).to eq t('devise.passwords.updated_not_active')
           expect(user.reload.confirmed_at).to eq old_confirmed_at
