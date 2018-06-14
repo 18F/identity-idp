@@ -81,15 +81,17 @@ en:
       help_center_html: Visit our <strong>Help Center</strong> to learn more about
         verifying your account.
       jurisdiction:
+        no_id: We're working hard to add more ways to verify your identity.
+        profile: To access your account in the future, you can %{link}.
+        profile_link: view your account here
+        sp_support: Visit %{link} for more information.
+        try_again: Make a mistake? You can %{link}.
+        try_again_link: try again
+        unsupported_jurisdiction: We're working hard to add more states and hope to
+          support %{state} soon.
         why: To verify your identity, you'll need information from your state-issued
           ID.
         where: Where was your driver's license, driver's permit, or state ID issued?
-        no_id: I don't have a state-issued ID
-        unsupported_jurisdiction: We're working hard to add more states and hope to
-          support %{state} soon.
-        sp_support: Visit %{link} for more information.
-        profile: To access your account in the future, you can %{link}.
-        profile_link: view your account here
       loading: Verifying your identity
       mail_sent: Your letter is on its way
       otp_delivery_method:

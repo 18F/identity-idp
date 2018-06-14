@@ -85,16 +85,19 @@ fr:
       help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
         davantage sur la façon dont nous vérifions votre compte.
       jurisdiction:
+        no_id: Nous travaillons dur pour ajouter plus de moyens de vérifier votre
+          identité.
+        profile: Pour accéder à votre compte dans le futur, vous pouvez %{link}.
+        profile_link: voir votre compte ici
+        sp_support: Visitez %{link} pour plus d'informations.
+        try_again: Faire une erreur? Vous pouvez %{link}.
+        try_again_link: réessayer
+        unsupported_jurisdiction: Nous travaillons dur pour ajouter plus d'états et
+          espérons pouvoir bientôt prendre en charge %{state}.
         why: Pour vérifier votre identité, vous aurez besoin d'informations provenant
           de votre carte d'identité officielle.
         where: Où a été délivré votre permis de conduire, votre permis de conduire
           ou votre carte d'identité?
-        no_id: Je n'ai pas de carte d'identité officielle
-        profile: Pour accéder à votre compte dans le futur, vous pouvez %{link}.
-        profile_link: voir votre compte ici
-        sp_support: Visitez %{link} pour plus d'informations.
-        unsupported_jurisdiction: Nous travaillons dur pour ajouter plus d'états et
-          espérons pouvoir bientôt prendre en charge %{state}.
       loading: NOT TRANSLATED YET
       mail_sent: Votre lettre est en route
       otp_delivery_method:
