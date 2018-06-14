@@ -27,7 +27,7 @@ module Idv
     end
 
     def description
-      t("idv.messages.jurisdiction.#{reason}", **i18n_args)
+      t("idv.messages.jurisdiction.#{reason}_failure", **i18n_args)
     end
 
     def message
