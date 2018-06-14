@@ -3,6 +3,8 @@ require 'net/https'
 
 module PivCacService
   class << self
+    RANDOM_HOSTNAME_BYTES = 2
+
     include Rails.application.routes.url_helpers
 
     def decode_token(token)
@@ -14,7 +16,7 @@ module PivCacService
       if FeatureManagement.development_and_piv_cac_entry_enabled?
         test_piv_cac_entry_url
       else
-        uri = URI(Figaro.env.piv_cac_service_url)
+        uri = URI(randomize_uri(Figaro.env.piv_cac_service_url))
         # add the nonce
         uri.query = "nonce=#{CGI.escape(nonce)}"
         uri.to_s
@@ -37,6 +39,11 @@ module PivCacService
     end
 
     private
+
+    def randomize_uri(uri)
+      # we only support {random}, so we're going for performance here
+      uri.gsub('{random}') { |_| SecureRandom.hex(RANDOM_HOSTNAME_BYTES) }
+    end
 
     # Only used in tests
     def reset_piv_cac_avaialable_agencies

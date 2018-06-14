@@ -75,7 +75,9 @@ describe 'NIST Encryption Model' do
 
       expect(user.valid_password?(password)).to eq true
 
-      digest = Encryption::PasswordVerifier::PasswordDigest.parse_from_string(user.encrypted_password_digest)
+      digest = Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
+        user.encrypted_password_digest
+      )
       user_access_key = Encryption::UserAccessKey.new(
         password: password,
         salt: digest.password_salt,

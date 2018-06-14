@@ -3,6 +3,27 @@ require 'rails_helper'
 describe PivCacService do
   include Rails.application.routes.url_helpers
 
+  describe '#randomize_uri' do
+    let(:result) { PivCacService.send(:randomize_uri, uri) }
+
+    context 'when a static URL is configured' do
+      let(:uri) { 'http://localhost:1234/' }
+
+      it 'returns the URL unchanged' do
+        expect(result).to eq uri
+      end
+    end
+
+    context 'when a random URL is configured' do
+      let(:uri) { 'http://{random}.example.com/' }
+
+      it 'returns the URL with random bytes' do
+        expect(result).to_not eq uri
+        expect(result).to match(%r{http://[0-9a-f]+\.example\.com/$})
+      end
+    end
+  end
+
   describe '#decode_token' do
     context 'when configured for local development' do
       before(:each) do
