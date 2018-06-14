@@ -2,7 +2,7 @@
 es:
   titles:
     account: Cuenta
-    account_locked: Cuenta bloqueada
+    account_locked: Cuenta bloqueada temporalmente
     confirmations:
       new: Reenviar instrucciones de confirmación de su cuenta
       show: Elija una contraseña

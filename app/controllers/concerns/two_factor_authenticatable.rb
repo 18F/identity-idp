@@ -26,22 +26,21 @@ module TwoFactorAuthenticatable
 
   def handle_second_factor_locked_user(type)
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_ATTEMPTS)
-    decorator = current_user.decorate
-    sign_out
-    render(
-      'two_factor_authentication/shared/max_login_attempts_reached',
-      locals: { type: type, decorator: decorator }
-    )
+    handle_max_attempts(type + '_login_attempts')
   end
 
   def handle_too_many_otp_sends
     analytics.track_event(Analytics::MULTI_FACTOR_AUTH_MAX_SENDS)
-    decorator = current_user.decorate
-    sign_out
-    render(
-      'two_factor_authentication/shared/max_otp_requests_reached',
-      locals: { decorator: decorator }
+    handle_max_attempts('otp_requests')
+  end
+
+  def handle_max_attempts(type)
+    presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
+      type,
+      decorated_user
     )
+    sign_out
+    render_full_width('shared/failure', locals: { presenter: presenter })
   end
 
   def require_current_password

@@ -19,6 +19,7 @@ fr:
       email: Changez votre courriel
       password: Changez votre mot de passe
       phone: Entrez votre nouveau numéro de téléphone
+    lock_failure: Voici ce que vous pouvez faire
     passwords:
       change: Changez votre mot de passe
       confirm: Confirmez votre mot de passe actuel pour continuer

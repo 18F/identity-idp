@@ -108,14 +108,16 @@ es:
         de nuevo o solicitar un nuevo código de seguridad de sólo un uso.
       invalid_personal_key: Esa clave personal no es válida.
       invalid_piv_cac: NOT TRANSLATED YET
-      max_generic_login_attempts_reached: Su cuenta está bloqueada temporalmente.
-      max_otp_login_attempts_reached: Su cuenta ha sido bloqueada temporalmente porque
-        ha ingresado incorrectamente el código de seguridad de sólo un uso demasiadas
-        veces.
-      max_otp_requests_reached: Su cuenta ha sido bloqueada temporalmente porque ha
-        solicitado un código de seguridad demasiadas veces más de lo permitido.
-      max_personal_key_login_attempts_reached: Su cuenta ha sido bloqueada temporalmente
-        porque ha ingresado incorrectamente la clave personal demasiadas veces.
+      max_generic_login_attempts_reached: Para su seguridad, su cuenta está bloqueada
+        temporalmente.
+      max_otp_login_attempts_reached: Para su seguridad, su cuenta ha sido bloqueada
+        temporalmente porque ha ingresado incorrectamente el código de seguridad de
+        sólo un uso demasiadas veces.
+      max_otp_requests_reached: Para su seguridad, su cuenta ha sido bloqueada temporalmente
+        porque ha solicitado un código de seguridad demasiadas veces más de lo permitido.
+      max_personal_key_login_attempts_reached: Para su seguridad, su cuenta ha sido
+        bloqueada temporalmente porque ha ingresado incorrectamente la clave personal
+        demasiadas veces.
       otp_delivery_preference:
         instruction: Puede cambiar esta selección la próxima vez que inicie sesión.
         phone_unsupported: NOT TRANSLATED YET
@@ -148,7 +150,10 @@ es:
       piv_cac_header_text: NOT TRANSLATED YET
       please_confirm: Su número de teléfono ha sido establecido. Confírmelo ingresando
         el código de seguridad a continuación.
-      please_try_again_html: Inténtelo de nuevo en %{time_remaining}.
+      please_try_again_html: Inténtelo de nuevo en <strong id=%{id}>%{time_remaining}</strong>.
+      read_about_two_factor_authentication:
+        link: leer acerca de la autenticación de dos factores
+        text_html: Puede %{link} y por qué la utilizamos en nuestra página de Ayuda.
       totp_fallback:
         sms_link_text: Recibir un código por mensaje de texto
         text_html: Si no puede usar su app de autenticación ahora, puede %{sms_link}

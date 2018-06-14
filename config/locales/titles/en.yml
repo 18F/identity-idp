@@ -2,7 +2,7 @@
 en:
   titles:
     account: Account
-    account_locked: Account locked
+    account_locked: Account temporarily locked
     confirmations:
       new: Resend confirmation instructions for your account
       show: Choose a password
