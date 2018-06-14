@@ -410,14 +410,14 @@ describe User do
   end
 
   context 'when a password is updated' do
-    it 'encrypted_password_digest is a json string of encryption parameters' do
+    it 'writes encrypted_password_digest and the legacy password attributes' do
       user = create(:user)
 
       expected = {
-        encryption_key: user.encryption_key,
         encrypted_password: user.encrypted_password,
-        password_cost: user.password_cost,
+        encryption_key: user.encryption_key,
         password_salt: user.password_salt,
+        password_cost: user.password_cost,
       }.to_json
 
       expect(user.encrypted_password_digest).to eq(expected)
