@@ -59,7 +59,11 @@ module Users
         subject: user_piv_cac_form.x509_dn,
         presented: true
       )
-      redirect_to account_url
+      if current_user.phone_enabled?
+        redirect_to account_url
+      else
+        redirect_to phone_setup_url
+      end
     end
 
     def process_invalid_submission
