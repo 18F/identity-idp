@@ -59,3 +59,15 @@ CloudhsmJwt.class_eval do
   add_method_tracer :rs256_algorithm, "Custom/#{name}/rs256_algorithm"
   add_method_tracer :sign, "Custom/#{name}/sign"
 end
+
+Encryption::KmsClient.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :decrypt, "Custom/#{name}/decrypt"
+  add_method_tracer :encrypt, "Custom/#{name}/encrypt"
+end
+
+TwilioService.class_eval do
+  include ::NewRelic::Agent::MethodTracer
+  add_method_tracer :place_call, "Custom/#{name}/place_call"
+  add_method_tracer :send_sms, "Custom/#{name}/send_sms"
+end
