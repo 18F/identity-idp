@@ -1,11 +1,13 @@
 # rubocop:disable Metrics/ClassLength
 module Users
   class ResetPasswordsController < Devise::PasswordsController
-    include RecaptchaConcern
+    include Recaptchable
+
     before_action :prevent_token_leakage, only: %i[edit]
 
     def new
-      @password_reset_email_form = PasswordResetEmailForm.new('')
+      @password_reset_email_form = PasswordResetEmailForm.new('', validate_recaptcha)
+      render_new
     end
 
     def create
@@ -17,7 +19,7 @@ module Users
       if result.success?
         handle_valid_email
       else
-        render :new
+        render_new
       end
     end
 
@@ -52,6 +54,19 @@ module Users
     end
 
     protected
+
+    def render_new
+      respond_to do |format|
+        format.html do
+          render(
+            :new,
+            locals: {
+              recaptcha_enabled: @password_reset_email_form.recaptcha.enabled?,
+            }
+          )
+        end
+      end
+    end
 
     def email_params
       params.require(:password_reset_email_form).permit(:email, :resend, :request_id)

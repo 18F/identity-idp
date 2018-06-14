@@ -2,11 +2,11 @@ class PasswordResetEmailForm
   include ActiveModel::Model
   include FormEmailValidator
 
-  attr_reader :email
+  attr_reader :email, :recaptcha
 
-  def initialize(email, recaptcha_results = [true, {}])
+  def initialize(email, recaptcha = RecaptchaValidator.new)
     @email = email
-    @allow, @recaptcha_h = recaptcha_results
+    @recaptcha = recaptcha
   end
 
   def resend
@@ -14,8 +14,11 @@ class PasswordResetEmailForm
   end
 
   def submit
-    FormResponse.new(success: @allow && valid?, errors: errors.messages,
-                     extra: extra_analytics_attributes)
+    FormResponse.new(
+      success: recaptcha.valid? && valid?,
+      errors: errors.messages,
+      extra: extra_analytics_attributes
+    )
   end
 
   private
@@ -27,7 +30,7 @@ class PasswordResetEmailForm
       user_id: user.uuid,
       role: user.role,
       confirmed: user.confirmed?,
-    }.merge(@recaptcha_h)
+    }.merge(recaptcha.extra_analytics_attributes)
   end
 
   def user

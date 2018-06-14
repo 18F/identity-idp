@@ -89,9 +89,12 @@ class FeatureManagement
     Figaro.env.saml_secret_rotation_enabled == 'true'
   end
 
-  def self.recaptcha_enabled?(session, reset)
-    AbTest.new(:ab_test_recaptcha_enabled, Figaro.env.recaptcha_enabled_percent).
-      enabled?(session, reset)
+  def self.recaptcha_enabled?(key)
+    return false unless Figaro.env.recaptcha_enabled == 'true' &&
+                        Figaro.env.recaptcha_enabled_actions
+
+    actions = JSON.parse(Figaro.env.recaptcha_enabled_actions)
+    actions.include?(key) && actions[key] == 'true'
   end
 
   def self.use_cloudhsm?

@@ -1,7 +1,14 @@
 require 'rails_helper'
 
 describe RegisterUserEmailForm do
-  subject { RegisterUserEmailForm.new }
+  subject { RegisterUserEmailForm.new(RecaptchaValidator.new) }
+  let(:recaptcha_analytics_attributes) do
+    {
+      recaptcha_valid: true,
+      recaptcha_present: true,
+      recaptcha_enabled: false,
+    }
+  end
 
   it_behaves_like 'email validation'
 
@@ -19,7 +26,7 @@ describe RegisterUserEmailForm do
           email_already_exists: true,
           user_id: existing_user.uuid,
           domain_name: 'gmail.com',
-        }
+        }.merge(recaptcha_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -42,7 +49,7 @@ describe RegisterUserEmailForm do
           email_already_exists: true,
           user_id: user.uuid,
           domain_name: 'test.com',
-        }
+        }.merge(recaptcha_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -61,7 +68,7 @@ describe RegisterUserEmailForm do
           email_already_exists: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
           domain_name: 'gmail.com',
-        }
+        }.merge(recaptcha_analytics_attributes)
 
         expect(FormResponse).to have_received(:new).
           with(success: true, errors: {}, extra: extra)
@@ -71,17 +78,14 @@ describe RegisterUserEmailForm do
       it 'is valid with valid recaptcha' do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)
-        captcha_results = mock_captcha(enabled: true, present: true, valid: true)
+        captcha_results = mock_captcha(valid: true)
         form = RegisterUserEmailForm.new(captcha_results)
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
           user_id: User.find_with_email('not_taken@gmail.com').uuid,
           domain_name: 'gmail.com',
-          recaptcha_valid: true,
-          recaptcha_present: true,
-          recaptcha_enabled: true,
-        }
+        }.merge(recaptcha_analytics_attributes)
 
         expect(FormResponse).to have_received(:new).
           with(success: true, errors: {}, extra: extra)
@@ -91,17 +95,15 @@ describe RegisterUserEmailForm do
       it 'is invalid with invalid recaptcha' do
         result = instance_double(FormResponse)
         allow(FormResponse).to receive(:new).and_return(result)
-        captcha_results = mock_captcha(enabled: true, present: true, valid: false)
+        captcha_results = mock_captcha(valid: false)
+
         form = RegisterUserEmailForm.new(captcha_results)
         submit_form = form.submit(email: 'not_taken@gmail.com')
         extra = {
           email_already_exists: false,
           user_id: 'anonymous-uuid',
           domain_name: 'gmail.com',
-          recaptcha_valid: false,
-          recaptcha_present: true,
-          recaptcha_enabled: true,
-        }
+        }.merge(recaptcha_analytics_attributes)
 
         expect(FormResponse).to have_received(:new).
           with(success: false, errors: {}, extra: extra)
@@ -117,7 +119,7 @@ describe RegisterUserEmailForm do
           email_already_exists: false,
           user_id: 'anonymous-uuid',
           domain_name: 'invalid_email',
-        }
+        }.merge(recaptcha_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -128,12 +130,11 @@ describe RegisterUserEmailForm do
     end
   end
 
-  def mock_captcha(enabled:, present:, valid:)
-    allow = enabled ? valid : true
-    [allow, {
-      recaptcha_valid: valid,
-      recaptcha_present: present,
-      recaptcha_enabled: enabled,
-    }]
+  def mock_captcha(valid:)
+    instance_double(
+      'RecaptchaValidator',
+      valid?: valid,
+      extra_analytics_attributes: recaptcha_analytics_attributes
+    )
   end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe PasswordResetEmailForm do
-  subject { PasswordResetEmailForm.new(' Test@example.com ') }
+  subject { PasswordResetEmailForm.new(' Test@example.com ', RecaptchaValidator.new) }
 
   it_behaves_like 'email validation'
   it_behaves_like 'email normalization', ' Test@example.com '
@@ -10,13 +10,16 @@ describe PasswordResetEmailForm do
     context 'when email is valid and user exists' do
       it 'returns hash with properties about the event and the user' do
         user = build(:user, :signed_up, email: 'test1@test.com')
-        subject = PasswordResetEmailForm.new('Test1@test.com')
+        subject = PasswordResetEmailForm.new(
+          'Test1@test.com',
+          mock_recaptcha(valid: true, present: true, enabled: true)
+        )
 
         extra = {
           user_id: user.uuid,
           role: user.role,
           confirmed: true,
-        }
+        }.merge(subject.recaptcha.extra_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -33,7 +36,7 @@ describe PasswordResetEmailForm do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
-        }
+        }.merge(subject.recaptcha.extra_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -45,7 +48,10 @@ describe PasswordResetEmailForm do
 
     context 'when email is invalid' do
       it 'returns hash with properties about the event and the nonexistent user' do
-        subject = PasswordResetEmailForm.new('invalid')
+        subject = PasswordResetEmailForm.new(
+          'invalid',
+          mock_recaptcha(valid: true, present: true, enabled: true)
+        )
 
         errors = { email: [t('valid_email.validations.email.invalid')] }
 
@@ -53,7 +59,7 @@ describe PasswordResetEmailForm do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
-        }
+        }.merge(subject.recaptcha.extra_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -67,17 +73,16 @@ describe PasswordResetEmailForm do
       it 'returns hash with properties about the event and the user' do
         user = build(:user, :signed_up, email: 'test1@test.com')
 
-        captcha_results = mock_captcha(enabled: true, present: true, valid: true)
-        subject = PasswordResetEmailForm.new('Test1@test.com', captcha_results)
+        subject = PasswordResetEmailForm.new(
+          'Test1@test.com',
+          mock_recaptcha(valid: true, present: true, enabled: true)
+        )
 
         extra = {
           user_id: user.uuid,
           role: user.role,
           confirmed: true,
-          recaptcha_valid: true,
-          recaptcha_present: true,
-          recaptcha_enabled: true,
-        }
+        }.merge(subject.recaptcha.extra_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -92,17 +97,16 @@ describe PasswordResetEmailForm do
       it 'returns hash with properties about the event and the user' do
         user = build(:user, :signed_up, email: 'test1@test.com')
 
-        captcha_results = mock_captcha(enabled: true, present: true, valid: false)
-        subject = PasswordResetEmailForm.new('Test1@test.com', captcha_results)
+        subject = PasswordResetEmailForm.new(
+          'Test1@test.com',
+          mock_recaptcha(valid: false, present: true, enabled: true)
+        )
 
         extra = {
           user_id: user.uuid,
           role: user.role,
           confirmed: true,
-          recaptcha_valid: false,
-          recaptcha_present: true,
-          recaptcha_enabled: true,
-        }
+        }.merge(subject.recaptcha.extra_analytics_attributes)
 
         result = instance_double(FormResponse)
 
@@ -114,12 +118,15 @@ describe PasswordResetEmailForm do
     end
   end
 
-  def mock_captcha(enabled:, present:, valid:)
-    allow = enabled ? valid : true
-    [allow, {
-      recaptcha_valid: valid,
-      recaptcha_present: present,
-      recaptcha_enabled: enabled,
-    }]
+  def mock_recaptcha(valid:, present:, enabled:)
+    instance_double(
+      'RecaptchaValidator',
+      valid?: valid,
+      extra_analytics_attributes: {
+        recaptcha_valid: valid,
+        recaptcha_present: present,
+        recaptcha_enabled: enabled,
+      }
+    )
   end
 end

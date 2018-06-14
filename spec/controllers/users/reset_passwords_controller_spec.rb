@@ -1,6 +1,15 @@
 require 'rails_helper'
 
 describe Users::ResetPasswordsController, devise: true do
+  let(:recaptcha_analytics_attributes) do
+    {
+      recaptcha_valid: true,
+      recaptcha_present: true,
+      recaptcha_enabled: false,
+    }
+  end
+  let(:recaptcha) { mock_recaptcha }
+
   describe '#edit' do
     context 'no user matches token' do
       it 'redirects to page where user enters email for password reset token' do
@@ -280,7 +289,6 @@ describe Users::ResetPasswordsController, devise: true do
         allow(analytics).to receive(:track_event)
         email = 'nonexistent@example.com'
 
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         expect do
           put :create, params: {
             password_reset_email_form: { email: email }, 'g-recaptcha-response': 'foo'
@@ -293,7 +301,7 @@ describe Users::ResetPasswordsController, devise: true do
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
-        }.merge(captcha_h)
+        }.merge(recaptcha.extra_analytics_attributes)
 
         expect(analytics).to have_received(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
@@ -304,7 +312,7 @@ describe Users::ResetPasswordsController, devise: true do
           email_already_exists: false,
           user_id: User.find_with_email(email).uuid,
           domain_name: 'example.com',
-        }
+        }.merge(recaptcha.extra_analytics_attributes)
         expect(analytics).to have_received(:track_event).
           with(Analytics::USER_REGISTRATION_EMAIL, analytics_hash)
 
@@ -319,14 +327,13 @@ describe Users::ResetPasswordsController, devise: true do
         tech_user = build_stubbed(:user, :tech_support)
         allow(User).to receive(:find_with_email).with(tech_user.email).and_return(tech_user)
 
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: tech_user.uuid,
           role: 'tech',
           confirmed: true,
-        }.merge(captcha_h)
+        }.merge(recaptcha.extra_analytics_attributes)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
@@ -347,14 +354,13 @@ describe Users::ResetPasswordsController, devise: true do
         admin = build_stubbed(:user, :admin)
         allow(User).to receive(:find_with_email).with(admin.email).and_return(admin)
 
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: admin.uuid,
           role: 'admin',
           confirmed: true,
-        }.merge(captcha_h)
+        }.merge(recaptcha.extra_analytics_attributes)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
@@ -374,14 +380,13 @@ describe Users::ResetPasswordsController, devise: true do
 
         user = build(:user, :signed_up, role: :user, email: 'test@example.com')
 
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
           role: 'user',
           confirmed: true,
-        }.merge(captcha_h)
+        }.merge(recaptcha.extra_analytics_attributes)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
@@ -401,14 +406,13 @@ describe Users::ResetPasswordsController, devise: true do
 
         user = create(:user, :unconfirmed, role: :user)
 
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: true,
           errors: {},
           user_id: user.uuid,
           role: 'user',
           confirmed: false,
-        }.merge(captcha_h)
+        }.merge(recaptcha.extra_analytics_attributes)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
@@ -429,14 +433,13 @@ describe Users::ResetPasswordsController, devise: true do
       it 'displays an error and tracks event' do
         stub_analytics
 
-        captcha_h = mock_captcha(enabled: true, present: true, valid: true)
         analytics_hash = {
           success: false,
           errors: { email: [t('valid_email.validations.email.invalid')] },
           user_id: 'nonexistent-uuid',
           role: 'nonexistent',
           confirmed: false,
-        }.merge(captcha_h)
+        }.merge(recaptcha.extra_analytics_attributes)
 
         expect(@analytics).to receive(:track_event).
           with(Analytics::PASSWORD_RESET_EMAIL, analytics_hash)
@@ -471,14 +474,11 @@ describe Users::ResetPasswordsController, devise: true do
     expect(notifier).to receive(:send_password_changed_email)
   end
 
-  def mock_captcha(enabled:, present:, valid:)
-    allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(enabled)
-    allow_any_instance_of(SignUp::RegistrationsController).to receive(:verify_recaptcha).
-      and_return(valid)
-    {
-      recaptcha_valid: valid,
-      recaptcha_present: present,
-      recaptcha_enabled: enabled,
-    }
+  def mock_recaptcha
+    instance_double(
+      'RecaptchaValidator',
+      valid?: true,
+      extra_analytics_attributes: recaptcha_analytics_attributes
+    )
   end
 end

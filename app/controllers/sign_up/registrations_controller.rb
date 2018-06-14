@@ -1,7 +1,7 @@
 module SignUp
   class RegistrationsController < ApplicationController
-    include RecaptchaConcern
     include PhoneConfirmation
+    include Recaptchable
 
     before_action :confirm_two_factor_authenticated, only: [:destroy_confirm]
     before_action :require_no_authentication
@@ -14,9 +14,11 @@ module SignUp
     end
 
     def new
-      @register_user_email_form = RegisterUserEmailForm.new
+      @register_user_email_form = RegisterUserEmailForm.new(validate_recaptcha)
+
       analytics.track_event(Analytics::USER_REGISTRATION_ENTER_EMAIL_VISIT)
-      render :new, locals: { request_id: nil }, formats: :html
+
+      render_new
     end
 
     def create
@@ -29,13 +31,24 @@ module SignUp
       if result.success?
         process_successful_creation
       else
-        render :new, locals: { request_id: sp_request_id }
+        render_new(sp_request_id)
       end
     end
 
     def destroy_confirm; end
 
     protected
+
+    def render_new(request_id = nil)
+      render(
+        :new,
+        locals: {
+          recaptcha_enabled: @register_user_email_form.recaptcha.enabled?,
+          request_id: request_id,
+        },
+        formats: :html
+      )
+    end
 
     def require_no_authentication
       return unless current_user
