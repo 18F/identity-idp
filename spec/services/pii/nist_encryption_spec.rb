@@ -135,7 +135,7 @@ describe 'NIST Encryption Model' do
       expect(Base64.strict_decode64(encrypted_key)).to eq(kms_prefix + encrypted_D)
 
       # unroll encrypted_C to verify it was encrypted with hash_E
-      cipher = Pii::Cipher.new
+      cipher = Encryption::AesCipher.new
 
       expect { cipher.decrypt(encrypted_C, hash_E) }.not_to raise_error
 
@@ -150,7 +150,9 @@ describe 'NIST Encryption Model' do
   end
 
   def open_envelope(envelope)
-    envelope.split(Pii::Encryptor::DELIMITER).map { |segment| Base64.strict_decode64(segment) }
+    envelope.split(Encryption::Encryptors::AesEncryptor::DELIMITER).map do |segment|
+      Base64.strict_decode64(segment)
+    end
   end
 
   def hex_to_bin(str)

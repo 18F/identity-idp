@@ -51,7 +51,7 @@ class VerifyPersonalKeyForm
 
   def personal_key_decrypts?
     decrypted_pii.present?
-  rescue Pii::EncryptionError => _err
+  rescue Encryption::EncryptionError => _err
     false
   end
 end

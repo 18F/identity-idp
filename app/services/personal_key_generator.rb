@@ -17,10 +17,12 @@ class PersonalKeyGenerator
 
   def verify(plaintext_code)
     @user_access_key = make_user_access_key(normalize(plaintext_code))
-    encryption_key, encrypted_code = user.personal_key.split(Pii::Encryptor::DELIMITER)
+    encryption_key, encrypted_code = user.personal_key.split(
+      Encryption::Encryptors::AesEncryptor::DELIMITER
+    )
     begin
       user_access_key.unlock(encryption_key)
-    rescue Pii::EncryptionError => _err
+    rescue Encryption::EncryptionError => _err
       return false
     end
     Devise.secure_compare(encrypted_code, user_access_key.encrypted_password)
@@ -74,7 +76,7 @@ class PersonalKeyGenerator
     [
       user_access_key.encryption_key,
       user_access_key.encrypted_password,
-    ].join(Pii::Encryptor::DELIMITER)
+    ].join(Encryption::Encryptors::AesEncryptor::DELIMITER)
   end
 
   def raw_personal_key

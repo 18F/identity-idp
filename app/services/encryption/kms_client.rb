@@ -1,6 +1,6 @@
 module Encryption
   class KmsClient
-    include Pii::Encodable
+    include Encodable
 
     KEY_TYPE = {
       KMS: 'KMSx',
@@ -30,7 +30,7 @@ module Encryption
       kms_input = ciphertext.sub(KEY_TYPE[:KMS], '')
       aws_client.decrypt(ciphertext_blob: kms_input).plaintext
     rescue Aws::KMS::Errors::InvalidCiphertextException
-      raise Pii::EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
+      raise EncryptionError, 'Aws::KMS::Errors::InvalidCiphertextException'
     end
 
     def encrypt_local(plaintext)
@@ -53,7 +53,7 @@ module Encryption
     end
 
     def encryptor
-      @encryptor ||= Pii::Encryptor.new
+      @encryptor ||= Encryptors::AesEncryptor.new
     end
   end
 end

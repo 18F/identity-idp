@@ -11,14 +11,14 @@ describe Encryption::KmsClient do
   before do
     allow(Figaro.env).to receive(:password_pepper).and_return(password_pepper)
 
-    encryptor = Pii::Encryptor.new
+    encryptor = Encryption::Encryptors::AesEncryptor.new
     allow(encryptor).to receive(:encrypt).
       with(local_plaintext, password_pepper).
       and_return(local_ciphertext)
     allow(encryptor).to receive(:decrypt).
       with(local_ciphertext, password_pepper).
       and_return(local_plaintext)
-    allow(Pii::Encryptor).to receive(:new).and_return(encryptor)
+    allow(Encryption::Encryptors::AesEncryptor).to receive(:new).and_return(encryptor)
 
     stub_aws_kms_client(kms_plaintext, kms_ciphertext)
     allow(FeatureManagement).to receive(:use_kms?).and_return(kms_enabled)

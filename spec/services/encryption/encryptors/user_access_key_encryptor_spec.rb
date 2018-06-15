@@ -37,11 +37,11 @@ describe Encryption::Encryptors::UserAccessKeyEncryptor do
       wrong_key = Encryption::UserAccessKey.new(password: 'This is not the password', salt: salt)
       new_encryptor = described_class.new(wrong_key)
 
-      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Pii::EncryptionError
+      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Encryption::EncryptionError
     end
 
     it 'raises an error if the ciphertext is not base64 encoded' do
-      expect { subject.decrypt('@@@@@@@') }.to raise_error Pii::EncryptionError
+      expect { subject.decrypt('@@@@@@@') }.to raise_error Encryption::EncryptionError
     end
 
     it 'only unlocks the user access key once' do

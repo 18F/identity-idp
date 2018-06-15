@@ -1,4 +1,4 @@
-module Pii
+module Encryption
   class EncryptionError < StandardError
   end
 end
