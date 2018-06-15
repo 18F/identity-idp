@@ -13,6 +13,8 @@ es:
           copy: Si no tiene su clave personal, verifique su identidad nuevamente.
           heading: NOT TRANSLATED YET
         with_key: "¿Tiene su clave personal?"
+    account_recovery_setup:
+      piv_cac_next_step: NOT TRANSLATED YET
     forgot_password:
       close_window: Puede cerrar esta ventana del navegador después que haya restablecido
         su contraseña.

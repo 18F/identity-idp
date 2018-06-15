@@ -37,10 +37,10 @@ feature 'PIV/CAC Management' do
 
         sign_in_and_2fa_user(user)
         visit account_path
-        expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        visit setup_piv_cac_url
         expect(page).to have_link(t('forms.piv_cac_setup.submit'))
+
         nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
 
         visit_piv_cac_service(setup_piv_cac_url,
@@ -65,6 +65,32 @@ feature 'PIV/CAC Management' do
         visit account_path
         form = find_form(page, action: disable_piv_cac_url)
         expect(form).to be_nil
+      end
+
+      context 'when the user does not have a phone number yet' do
+        it 'prompts to set one up after configuring PIV/CAC' do
+          allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+          stub_piv_cac_service
+
+          user.update(phone: nil, otp_secret_key: 'secret')
+          sign_in_and_2fa_user(user)
+          visit account_path
+          click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+
+          expect(page).to have_current_path(setup_piv_cac_path)
+
+          nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+          visit_piv_cac_service(setup_piv_cac_url,
+                                nonce: nonce,
+                                uuid: SecureRandom.uuid,
+                                subject: 'SomeIgnoredSubject')
+
+          expect(page).to have_current_path(account_recovery_setup_path)
+
+          configure_backup_phone
+
+          expect(page).to have_current_path account_path
+        end
       end
     end
 

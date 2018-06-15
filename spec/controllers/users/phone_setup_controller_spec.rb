@@ -161,15 +161,16 @@ describe Users::PhoneSetupController do
       expect(subject).to have_actions(
         :before,
         :authenticate_user,
-        :authorize_phone_setup
+        :authorize_user
       )
     end
   end
 
-  describe '#authorize_otp_setup' do
-    context 'when the user is fully authenticated' do
+  describe '#authorize_user' do
+    context 'when the user is fully authenticated and phone enabled' do
       it 'redirects to account url' do
-        stub_sign_in
+        user = build_stubbed(:user, :with_phone)
+        stub_sign_in(user)
 
         get :index
 

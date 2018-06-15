@@ -35,8 +35,14 @@ module TwoFactorAuthentication
       )
 
       handle_valid_otp_for_authentication_context
-      redirect_to after_otp_verification_confirmation_url
+      redirect_to next_step
       reset_otp_session_data
+    end
+
+    def next_step
+      return account_recovery_setup_url unless current_user.phone_enabled?
+
+      after_otp_verification_confirmation_url
     end
 
     def handle_invalid_piv_cac

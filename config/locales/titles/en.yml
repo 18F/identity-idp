@@ -3,6 +3,7 @@ en:
   titles:
     account: Account
     account_locked: Account temporarily locked
+    account_recovery_setup: Account Recovery Setup
     confirmations:
       new: Resend confirmation instructions for your account
       show: Choose a password

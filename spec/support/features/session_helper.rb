@@ -407,6 +407,32 @@ module Features
       click_button 'Submit'
     end
 
+    def register_user_with_piv_cac(email = 'test@test.com')
+      allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
+      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+      confirm_email_and_password(email)
+
+      expect(page).to have_current_path two_factor_options_path
+      expect(page).to have_content(
+        t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+      )
+
+      set_up_2fa_with_piv_cac
+    end
+
+    def set_up_2fa_with_piv_cac
+      stub_piv_cac_service
+      select_2fa_option('piv_cac')
+
+      expect(page).to have_current_path setup_piv_cac_path
+
+      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+      visit_piv_cac_service(setup_piv_cac_url,
+                            nonce: nonce,
+                            uuid: SecureRandom.uuid,
+                            subject: 'SomeIgnoredSubject')
+    end
+
     def sign_in_via_branded_page(user)
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       click_link t('links.sign_in')
@@ -455,6 +481,13 @@ module Features
       ).link_identity(
         ial: ial
       )
+    end
+
+    def configure_backup_phone
+      select_2fa_option('sms')
+      fill_in 'user_phone_form_phone', with: '202-555-1212'
+      click_send_security_code
+      click_submit_default
     end
   end
 end
