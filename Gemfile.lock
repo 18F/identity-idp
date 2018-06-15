@@ -272,7 +272,7 @@ GEM
     fasterer (0.4.1)
       colorize (~> 0.7)
       ruby_parser (~> 3.11.0)
-    ffi (1.9.23)
+    ffi (1.9.25)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -777,7 +777,7 @@ DEPENDENCIES
   zxcvbn-js
 
 RUBY VERSION
-   ruby 2.3.7p456
+   ruby 2.5.1p57
 
 BUNDLED WITH
    1.16.1

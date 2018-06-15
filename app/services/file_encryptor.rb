@@ -47,7 +47,7 @@ class FileEncryptor
          --pinentry-mode loopback \
          --status-fd \
          --with-colons \
-          --no-tty \
+         --no-tty \
          -e \
          -r #{Shellwords.shellescape(recipient_email)} \
          --output #{Shellwords.shellescape(outfile)}
