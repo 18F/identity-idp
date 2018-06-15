@@ -1,6 +1,5 @@
 module Idv
   class JurisdictionFailurePresenter < FailurePresenter
-
     attr_reader :jurisdiction, :reason, :view_context
 
     delegate :account_path,
@@ -50,8 +49,8 @@ module Idv
     end
 
     def sp_step
-      return unless decorated_session.sp_name
-      support_link = link_to(decorated_session.sp_name, decorated_session.sp_alert_learn_more)
+      return unless (sp_name = decorated_session.sp_name)
+      support_link = link_to(sp_name, decorated_session.sp_alert_learn_more)
       t('idv.messages.jurisdiction.sp_support', link: support_link)
     end
 

@@ -30,7 +30,8 @@ module Idv
       presenter = JurisdictionFailurePresenter.new(
         reason: params[:reason],
         jurisdiction: user_session[:idv_jurisdiction],
-        view_context: view_context)
+        view_context: view_context
+      )
       render_full_width('shared/_failure', locals: { presenter: presenter })
     end
 
