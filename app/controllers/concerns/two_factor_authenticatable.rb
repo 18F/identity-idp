@@ -253,6 +253,7 @@ module TwoFactorAuthenticatable
       two_factor_authentication_method: two_factor_authentication_method,
       user_email: current_user.email,
       remember_device_available: false,
+      phone_enabled: current_user.phone_enabled?,
     }.merge(generic_data)
   end
 

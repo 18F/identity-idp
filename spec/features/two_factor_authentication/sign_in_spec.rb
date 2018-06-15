@@ -526,9 +526,9 @@ feature 'Two Factor Authentication' do
     end
   end
 
-  describe 'when the user is TOTP enabled' do
+  describe 'when the user is TOTP enabled and phone enabled' do
     it 'allows SMS and Voice fallbacks' do
-      user = create(:user, :signed_up, otp_secret_key: 'foo')
+      user = create(:user, :with_authentication_app, :with_phone)
       sign_in_before_2fa(user)
 
       click_link t('devise.two_factor_authentication.totp_fallback.sms_link_text')

@@ -6,6 +6,7 @@ module Users
 
     before_action :authenticate_user
     before_action :authorize_user
+    before_action :confirm_two_factor_authenticated, if: :two_factor_enabled?
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)
@@ -27,6 +28,10 @@ module Users
     end
 
     private
+
+    def two_factor_enabled?
+      current_user.two_factor_enabled?
+    end
 
     def user_phone_form_params
       params.require(:user_phone_form).permit(
