@@ -8,15 +8,11 @@ class PivCacAuthenticationSetupBasePresenter
     @form = form
   end
 
-  def piv_cac_nonce
-    @form.nonce
-  end
-
   def piv_cac_capture_text
     t('forms.piv_cac_setup.submit')
   end
 
   def piv_cac_service_link
-    PivCacService.piv_cac_service_link(piv_cac_nonce)
+    redirect_to_piv_cac_service_url
   end
 end

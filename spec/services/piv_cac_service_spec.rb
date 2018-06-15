@@ -104,7 +104,10 @@ describe PivCacService do
 
         let!(:request) do
           stub_request(:post, 'localhost:8443').
-            with(body: 'token=foo').
+            with(
+              body: 'token=foo',
+              headers: {'Authentication' => %r<^hmac\s+:.+:.+$>}
+            ).
             to_return(
               status: [200, 'Ok'],
               body: '{"dn":"dn","uuid":"uuid"}'

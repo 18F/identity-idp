@@ -320,13 +320,13 @@ describe Users::SessionsController, devise: true do
       expect(response).to render_template(:new)
     end
 
-    it 'logs Pii::EncryptionError' do
+    it 'logs Encryption::EncryptionError' do
       user = create(:user, :signed_up)
-      allow(user).to receive(:unlock_user_access_key).and_raise Pii::EncryptionError, 'foo'
+      allow(user).to receive(:unlock_user_access_key).and_raise Encryption::EncryptionError, 'foo'
 
       expect(Rails.logger).to receive(:info) do |attributes|
         attributes = JSON.parse(attributes)
-        expect(attributes['event']).to eq 'Pii::EncryptionError when validating password'
+        expect(attributes['event']).to eq 'Encryption::EncryptionError when validating password'
         expect(attributes['error']).to eq 'foo'
         expect(attributes['uuid']).to eq user.uuid
         expect(attributes).to have_key('timestamp')

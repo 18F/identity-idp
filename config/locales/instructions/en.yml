@@ -13,6 +13,8 @@ en:
             identity again.
           heading: Don't have your personal key?
         with_key: Do you have your personal key?
+    account_recovery_setup:
+      piv_cac_next_step: Next we need to give you a way to recover your account.
     forgot_password:
       close_window: You can close this browser window once you have reset your password.
     go_back_to_mobile_app: To continue, please go back to the %{friendly_name} app

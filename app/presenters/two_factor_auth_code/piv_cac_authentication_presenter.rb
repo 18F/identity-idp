@@ -35,7 +35,7 @@ module TwoFactorAuthCode
     end
 
     def piv_cac_service_link
-      PivCacService.piv_cac_service_link(piv_cac_nonce)
+      redirect_to_piv_cac_service_url
     end
 
     private

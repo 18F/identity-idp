@@ -5,7 +5,7 @@ I18n.module_eval do
     def translate_with_markup(*args)
       i18n_text = normal_translate(*args)
       return i18n_text unless FeatureManagement.enable_i18n_mode? && i18n_text.is_a?(String)
-      return i18n_text if caller(2..2).first =~ /flows_spec.rb|session_helper.rb/
+      return i18n_text if caller(2..2).first.match?(/flows_spec.rb|session_helper.rb/)
 
       key = args.first.to_s
       rtn = i18n_text + i18n_mode_additional_markup(key)
@@ -65,7 +65,7 @@ class I18nLocaleTraverser
 
   def match_line_in_file(file, match_arr)
     File.foreach(file).with_index do |line, index|
-      break index + 1 if line =~ /#{match_arr.join('|')}/
+      break index + 1 if line.match?(/#{match_arr.join('|')}/)
     end
   end
 

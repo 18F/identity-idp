@@ -251,7 +251,7 @@ feature 'Sign in' do
       rotate_attribute_encryption_key_with_invalid_queue
 
       expect { signin(email, password) }.
-        to raise_error Pii::EncryptionError, 'unable to decrypt attribute with any key'
+        to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
       user = User.find_with_email(email)
       expect(user.encrypted_email).to eq encrypted_email
@@ -403,6 +403,8 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
+  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :saml
+  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :oidc
 
   context 'user signs in with personal key, visits account page before viewing new key' do
     # this can happen if you submit the personal key form multiple times quickly

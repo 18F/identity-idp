@@ -3,14 +3,13 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include PivCacConcern
 
-    before_action :confirm_piv_cac_enabled
+    before_action :confirm_piv_cac_enabled, only: :show
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
 
     def show
       if params[:token]
         process_token
       else
-        create_piv_cac_nonce
         @presenter = presenter_for_two_factor_authentication_method
       end
     end
@@ -35,8 +34,14 @@ module TwoFactorAuthentication
       )
 
       handle_valid_otp_for_authentication_context
-      redirect_to after_otp_verification_confirmation_url
+      redirect_to next_step
       reset_otp_session_data
+    end
+
+    def next_step
+      return account_recovery_setup_url unless current_user.phone_enabled?
+
+      after_otp_verification_confirmation_url
     end
 
     def handle_invalid_piv_cac

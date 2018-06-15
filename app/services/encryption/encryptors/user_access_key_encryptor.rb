@@ -1,13 +1,13 @@
 module Encryption
   module Encryptors
     class UserAccessKeyEncryptor
-      include Pii::Encodable
+      include Encodable
 
       DELIMITER = '.'.freeze
 
       def initialize(user_access_key)
         @user_access_key = user_access_key
-        @encryptor = Pii::Encryptor.new
+        @encryptor = AesEncryptor.new
       end
 
       def encrypt(plaintext)
@@ -36,7 +36,7 @@ module Encryption
 
       def encryption_key_from_ciphertext(ciphertext)
         encoded_encryption_key = ciphertext.split(DELIMITER).first
-        raise Pii::EncryptionError, 'ciphertext is invalid' unless valid_base64_encoding?(
+        raise EncryptionError, 'ciphertext is invalid' unless valid_base64_encoding?(
           encoded_encryption_key
         )
         decode(encoded_encryption_key)
@@ -44,7 +44,7 @@ module Encryption
 
       def encrypted_contents_from_ciphertext(ciphertext)
         contents = ciphertext.split(DELIMITER).second
-        raise Pii::EncryptionError, 'ciphertext is missing encrypted contents' if contents.nil?
+        raise EncryptionError, 'ciphertext is missing encrypted contents' if contents.nil?
         contents
       end
 

@@ -2,9 +2,10 @@ module Users
   class PhoneSetupController < ApplicationController
     include UserAuthenticator
     include PhoneConfirmation
+    include Authorizable
 
     before_action :authenticate_user
-    before_action :authorize_phone_setup
+    before_action :authorize_user
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)
@@ -26,14 +27,6 @@ module Users
     end
 
     private
-
-    def authorize_phone_setup
-      if user_fully_authenticated?
-        redirect_to account_url
-      elsif current_user.two_factor_enabled?
-        redirect_to user_two_factor_authentication_url
-      end
-    end
 
     def user_phone_form_params
       params.require(:user_phone_form).permit(

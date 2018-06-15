@@ -1,18 +1,22 @@
-module Pii
-  class Cipher
+module Encryption
+  class AesCipher
     include Encodable
 
     def encrypt(plaintext, cek)
       self.cipher = OpenSSL::Cipher.new 'aes-256-gcm'
       cipher.encrypt
-      cipher.key = cek
+      # The key length for the AES-256-GCM cipher is fixed at 128 bits, or 32
+      # characters. Starting with Ruby 2.4, an expection is thrown if you try to
+      # set a key longer than 32 characters, which is what we have been doing
+      # all along. In prior versions of Ruby, the key was silently truncated.
+      cipher.key = cek[0..31]
       encipher(plaintext)
     end
 
     def decrypt(payload, cek)
       self.cipher = OpenSSL::Cipher.new 'aes-256-gcm'
       cipher.decrypt
-      cipher.key = cek
+      cipher.key = cek[0..31]
       decipher(payload)
     end
 
@@ -45,7 +49,7 @@ module Pii
     def unpack_payload(payload)
       JSON.parse(payload, symbolize_names: true)
     rescue StandardError
-      raise Pii::EncryptionError, 'Unable to parse encrypted payload'
+      raise EncryptionError, 'Unable to parse encrypted payload'
     end
 
     def iv(unpacked_payload)

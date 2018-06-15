@@ -2,16 +2,16 @@ module Encryption
   module Encryptors
     class PiiEncryptor
       Ciphertext = Struct.new(:encrypted_data, :salt, :cost) do
-        include Pii::Encodable
+        include Encodable
         class << self
-          include Pii::Encodable
+          include Encodable
         end
 
         def self.parse_from_string(ciphertext_string)
           parsed_json = JSON.parse(ciphertext_string)
           new(extract_encrypted_data(parsed_json), parsed_json['salt'], parsed_json['cost'])
         rescue JSON::ParserError
-          raise Pii::EncryptionError, 'ciphertext is not valid JSON'
+          raise EncryptionError, 'ciphertext is not valid JSON'
         end
 
         def to_s
@@ -24,7 +24,7 @@ module Encryption
 
         def self.extract_encrypted_data(parsed_json)
           encoded_encrypted_data = parsed_json['encrypted_data']
-          raise Pii::EncryptionError, 'ciphertext invalid' unless valid_base64_encoding?(
+          raise EncryptionError, 'ciphertext invalid' unless valid_base64_encoding?(
             encoded_encrypted_data
           )
           decode(encoded_encrypted_data)
@@ -33,7 +33,7 @@ module Encryption
 
       def initialize(password)
         @password = password
-        @aes_cipher = Pii::Cipher.new
+        @aes_cipher = AesCipher.new
         @kms_client = KmsClient.new
       end
 

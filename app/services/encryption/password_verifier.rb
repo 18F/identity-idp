@@ -15,7 +15,7 @@ module Encryption
           data[:password_cost]
         )
       rescue JSON::ParserError
-        raise Pii::EncryptionError, 'digest contains invalid json'
+        raise EncryptionError, 'digest contains invalid json'
       end
 
       def to_s
@@ -49,7 +49,7 @@ module Encryption
       )
       uak.unlock(parsed_digest.encryption_key)
       Devise.secure_compare(uak.encrypted_password, parsed_digest.encrypted_password)
-    rescue Pii::EncryptionError
+    rescue EncryptionError
       false
     end
   end

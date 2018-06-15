@@ -9,6 +9,8 @@ es:
       body_html: Su antiguo ID de usuario y contraseña de GOES no funcionarán. Favor
         de %{link}
       create_account_link: crear un nueva cuenta de login.gov.
+      create_account_page:
+        body: ''
     usa_jobs:
       header: "¿Ha venido de USAJOBS?"
       account_page:
@@ -18,13 +20,18 @@ es:
       body_html: Si tiene un perfil de USAJOBS existente, favor de usar la dirección
         de correo electrónico primaria o secundaria que usó para USAJOBS para %{link}.
       create_account_link: crear su nueva cuenta de login.gov
+      create_account_page:
+        body: ''
     learn_more: Obtenga más información.
     sam:
       header: "¿Ha venido de SAM?"
       account_page:
-        body: Si tiene un perfil de SAM existente, favor de usar la dirección de correo
-          electrónico primaria o secundaria que usó para SAM para crear su nueva cuenta
-          de login.gov.
+        body: Su antiguo nombre de usuario y contraseña SAM no funcionará. Por favor
+          crea un login.gov cuenta usando la misma dirección de correo electrónico
+          que utiliza para SAM.
       body_html: Si tiene un perfil de SAM existente, favor de usar la dirección de
         correo electrónico primaria o secundaria que usó para SAM para %{link}.
       create_account_link: crear su nueva cuenta de login.gov
+      create_account_page:
+        body: Por favor crea un login.gov cuenta usando la misma dirección de correo
+          electrónico que utiliza para SAM.
