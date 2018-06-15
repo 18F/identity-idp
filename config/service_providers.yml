@@ -685,3 +685,18 @@ production:
     redirect_uris:
       - 'https://uat.sam.gov/portal/SAM'
     restrict_to_deploy_env: 'prod'
+
+  # DOE - Fossil Energy - Import/Export Authorization Portal for Natural Gas
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:doe:fergas':
+    agency_id: 10
+    friendly_name: 'Import/Export Authorization Portal for Natural Gas'
+    agency: 'DOE'
+    logo: 'doe.png'
+    cert: 'doe_prod'
+    return_to_sp_url: 'https://fossil.energy.gov/fergas-fe/#/login'
+    redirect_uris:
+      - 'https://fossil.energy.gov/fergas-fe/#/certify_redirect'
+      - 'https://fossil.energy.gov/fergas-fe/#/login'
+      - 'https://fossil.energy.gov/fergas-fe/#/login_redirect'
+      - 'https://fossil.energy.gov/fergas-fe/#/notice/15'
+    restrict_to_deploy_env: 'prod'
