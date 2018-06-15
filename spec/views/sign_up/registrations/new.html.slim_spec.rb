@@ -55,4 +55,55 @@ describe 'sign_up/registrations/new.html.slim' do
 
     expect(rendered).to have_selector('#recaptcha')
   end
+
+  context 'when SAM is present' do
+    before do
+      @sp = build_stubbed(
+        :service_provider,
+        friendly_name: 'SAM',
+        return_to_sp_url: 'www.awesomeness.com'
+      )
+      view_context = ActionController::Base.new.view_context
+      allow(view_context).to receive(:sign_up_start_url).
+        and_return('https://www.example.com/sign_up/start')
+      @decorated_session = DecoratedSession.new(
+        sp: @sp,
+        view_context: view_context,
+        sp_session: {},
+        service_provider_request: ServiceProviderRequest.new
+      ).call
+      allow(view).to receive(:decorated_session).and_return(@decorated_session)
+    end
+
+    it 'displays a custom alert message for SAM' do
+      render
+
+      expect(rendered).to \
+        have_content(t('service_providers.sam.create_account_page.body'))
+    end
+
+    it 'has sp alert for the SAM service provider' do
+      @sp.friendly_name = 'SAM'
+
+      render
+
+      expect(rendered).to have_selector('.alert')
+    end
+
+    it 'does not have an sp alert for the other service providers' do
+      @sp.friendly_name = 'other'
+      render
+
+      expect(rendered).to_not have_selector('.alert')
+    end
+  end
+
+  context 'when SP is not present' do
+    it 'does not display the branded content' do
+      render
+
+      expect(rendered).not_to \
+        have_content(t('service_providers.sam.create_account_page.body'))
+    end
+  end
 end
