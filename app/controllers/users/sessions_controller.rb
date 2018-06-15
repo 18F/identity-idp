@@ -120,7 +120,7 @@ module Users
       profile = current_user.decorate.active_or_pending_profile
       begin
         cacher.save(auth_params[:password], profile)
-      rescue Pii::EncryptionError => err
+      rescue Encryption::EncryptionError => err
         profile.deactivate(:encryption_error)
         analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
       end

@@ -251,7 +251,7 @@ feature 'Sign in' do
       rotate_attribute_encryption_key_with_invalid_queue
 
       expect { signin(email, password) }.
-        to raise_error Pii::EncryptionError, 'unable to decrypt attribute with any key'
+        to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
       user = User.find_with_email(email)
       expect(user.encrypted_email).to eq encrypted_email

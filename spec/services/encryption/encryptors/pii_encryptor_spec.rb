@@ -23,8 +23,8 @@ describe Encryption::Encryptors::PiiEncryptor do
       expect(scrypt_password).to receive(:digest).and_return(scrypt_digest)
       expect(SCrypt::Password).to receive(:new).and_return(scrypt_password)
 
-      cipher = instance_double(Pii::Cipher)
-      expect(Pii::Cipher).to receive(:new).and_return(cipher)
+      cipher = instance_double(Encryption::AesCipher)
+      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
       expect(cipher).to receive(:encrypt).
         with(plaintext, scrypt_digest[0...32]).
         and_return('aes_ciphertext')
@@ -59,7 +59,7 @@ describe Encryption::Encryptors::PiiEncryptor do
       ciphertext = subject.encrypt(plaintext)
       new_encryptor = described_class.new('This is not the passowrd')
 
-      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Pii::EncryptionError
+      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Encryption::EncryptionError
     end
 
     it 'uses layered AES and KMS to decrypt the contents' do
@@ -78,8 +78,8 @@ describe Encryption::Encryptors::PiiEncryptor do
         with('kms_ciphertext').
         and_return('aes_ciphertext')
 
-      cipher = instance_double(Pii::Cipher)
-      expect(Pii::Cipher).to receive(:new).and_return(cipher)
+      cipher = instance_double(Encryption::AesCipher)
+      expect(Encryption::AesCipher).to receive(:new).and_return(cipher)
       expect(cipher).to receive(:decrypt).
         with('aes_ciphertext', scrypt_digest[0...32]).
         and_return(plaintext)

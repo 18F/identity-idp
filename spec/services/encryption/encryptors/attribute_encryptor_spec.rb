@@ -83,7 +83,7 @@ describe Encryption::Encryptors::AttributeEncryptor do
 
       it 'raises and encryption error' do
         expect { subject.decrypt(ciphertext) }.to raise_error(
-          Pii::EncryptionError, 'unable to decrypt attribute with any key'
+          Encryption::EncryptionError, 'unable to decrypt attribute with any key'
         )
       end
     end

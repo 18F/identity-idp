@@ -1,5 +1,5 @@
-module Pii
-  class Cipher
+module Encryption
+  class AesCipher
     include Encodable
 
     def encrypt(plaintext, cek)
@@ -49,7 +49,7 @@ module Pii
     def unpack_payload(payload)
       JSON.parse(payload, symbolize_names: true)
     rescue StandardError
-      raise Pii::EncryptionError, 'Unable to parse encrypted payload'
+      raise EncryptionError, 'Unable to parse encrypted payload'
     end
 
     def iv(unpacked_payload)

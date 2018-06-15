@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Pii::Encryptor do
+describe Encryption::Encryptors::AesEncryptor do
   let(:aes_cek) { SecureRandom.random_bytes(32) }
   let(:plaintext) { 'four score and seven years ago' }
 
@@ -23,7 +23,7 @@ describe Pii::Encryptor do
       encrypted = subject.encrypt(plaintext, aes_cek)
       diff_cek = SecureRandom.random_bytes(32)
 
-      expect { subject.decrypt(encrypted, diff_cek) }.to raise_error Pii::EncryptionError
+      expect { subject.decrypt(encrypted, diff_cek) }.to raise_error Encryption::EncryptionError
     end
   end
 end
