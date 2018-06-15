@@ -3,14 +3,13 @@ module TwoFactorAuthentication
     include TwoFactorAuthenticatable
     include PivCacConcern
 
-    before_action :confirm_piv_cac_enabled
+    before_action :confirm_piv_cac_enabled, only: :show
     before_action :reset_attempt_count_if_user_no_longer_locked_out, only: :show
 
     def show
       if params[:token]
         process_token
       else
-        create_piv_cac_nonce
         @presenter = presenter_for_two_factor_authentication_method
       end
     end

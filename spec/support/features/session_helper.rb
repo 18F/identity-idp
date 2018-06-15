@@ -470,8 +470,16 @@ module Features
       get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_mfa.submit')))
     end
 
+    # This is a bit convoluted because we generate a nonce when we visit the
+    # link. The link provides a redirect to the piv/cac service with the nonce.
+    # This way, even if JavaScript fetches the link to grab the nonce, a new nonce
+    # is generated when the user clicks on the link.
     def get_piv_cac_nonce_from_link(link)
-      CGI.unescape(URI(link['href']).query.sub(/^nonce=/, ''))
+      go_back = current_path
+      visit link['href']
+      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      visit go_back
+      nonce
     end
 
     def link_identity(user, client_id, ial = nil)

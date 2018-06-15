@@ -104,6 +104,7 @@ Rails.application.routes.draw do
     if FeatureManagement.piv_cac_enabled?
       get '/piv_cac' => 'users/piv_cac_authentication_setup#new', as: :setup_piv_cac
       delete '/piv_cac' => 'users/piv_cac_authentication_setup#delete', as: :disable_piv_cac
+      get '/present_piv_cac' => 'users/piv_cac_authentication_setup#redirect_to_piv_cac_service', as: :redirect_to_piv_cac_service
     end
 
     delete '/authenticator_setup' => 'users/totp_setup#disable', as: :disable_totp
