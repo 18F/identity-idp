@@ -44,8 +44,10 @@ module Idv
     end
 
     def help_step
-      help_link = link_to(t('idv.messages.read_about_security_and_privacy.link'),
-        MarketingSite.help_privacy_and_security_url)
+      help_link = link_to(
+        t('idv.messages.read_about_security_and_privacy.link'),
+        MarketingSite.help_privacy_and_security_url
+      )
       t('idv.messages.read_about_security_and_privacy.text', link: help_link)
     end
 

@@ -60,21 +60,10 @@ shared_examples 'verification step max attempts' do |step, sp|
       end
     end
 
-    scenario 'user sees failure flash message' do
-      expect(page).to have_css('.alert-error', text: t("idv.modal.#{step_locale_key}.heading"))
-      expect(page).to have_css(
-        '.alert-error',
-        text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
-      )
-    end
-
     context 'with js', :js do
-      scenario 'user sees the failure modal' do
-        expect(page).to have_css('.modal-fail', text: t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_css(
-          '.modal-fail',
-          text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
-        )
+      scenario 'user sees the failure screen' do
+        expect(page).to have_content(t("idv.modal.#{step_locale_key}.heading"))
+        expect(page).to have_content(strip_tags(t("idv.modal.#{step_locale_key}.fail")))
       end
     end
   end

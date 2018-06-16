@@ -81,9 +81,11 @@ module Idv
         redirect_to idv_session_dupe_url
       else
         if step_attempts_exceeded?
-          presenter = ProfileFailurePresenter.new(decorated_session: decorated_session,
+          presenter = ProfileFailurePresenter.new(
+            decorated_session: decorated_session,
             step_name: view_model.step_name,
-            view_context: view_context)
+            view_context: view_context
+          )
           return render_full_width('shared/_failure', locals: { presenter: presenter })
         end
         render_failure
