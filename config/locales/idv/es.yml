@@ -107,6 +107,9 @@ es:
         - no es un teléfono virtual (como Google Voice o Skype)
         - no es un número de teléfono prepago
         - un número de EE. UU.
+      read_about_security_and_privacy:
+        link: leer sobre cómo login.gov mantiene su información segura
+        text: Puede %{link} en nuestra página de ayuda.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
@@ -142,17 +145,16 @@ es:
         jobfail: Inténtelo de nuevo mañana
         warning: Inténtelo de nuevo
       phone:
-        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de intentar
-          verificarla de nuevo. Consulte nuestra sección de Ayuda para obtener más
-          información sobre la verificación de identidad.
+        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
+          durante 24 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con la información
           de su teléfono.
         jobfail: NOT TRANSLATED YET
         timeout: NOT TRANSLATED YET
         warning: Compruebe la información que ingresó.
       sessions:
-        fail: Su cuenta está <strong>bloqueada por 24 horas</ strong> antes de que
-          pueda intentar verificarla de nuevo.
+        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
+          durante 24 horas</strong>.
         heading: No hemos podido encontrar registros que coincidan con su información
           personal.
         jobfail: NOT TRANSLATED YET

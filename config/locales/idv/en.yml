@@ -107,6 +107,9 @@ en:
         - not a virtual phone (such as Google Voice or Skype)
         - not a pre-paid phone number
         - a U.S. number
+      read_about_security_and_privacy:
+        link: read about how login.gov keeps your information safe
+        text: You can %{link} on our help page.
       return_to_profile: "‹ Return to your login.gov profile"
       return_to_sp_html: You can now log into <strong>%{sp}</strong>.
       review:
@@ -140,17 +143,16 @@ en:
         jobfail: Try again tomorrow
         warning: Try again
       phone:
-        fail: Your account is <strong>locked for 24 hours</strong> before you can
-          try to verify again. Check our Help section for more information about identity
-          verification.
+        fail: For your security, identity verification for your account is <strong>locked
+          for 24 hours</strong>.
         heading: We could not find records matching your phone information.
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again tomorrow.
         timeout: Our request to verify your information timed out.
         warning: Please check the information you entered.
       sessions:
-        fail: Your account is <strong>locked for 24 hours</strong> before you can
-          try to verify again.
+        fail: For your security, identity verification for your account is <strong>locked
+          for 24 hours</strong>.
         heading: We could not find records matching your personal information.
         jobfail: Something went wrong and we cannot process your request at this time.
           Please try again tomorrow.

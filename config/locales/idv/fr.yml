@@ -114,6 +114,9 @@ fr:
         - pas un téléphone virtuel (comme Google Voice ou Skype)
         - pas un numéro de téléphone prépayé
         - un numéro américain
+      read_about_security_and_privacy:
+        link: lire comment login.gov protège vos informations
+        text: Vous pouvez %{link} sur notre page d'aide.
       return_to_profile: NOT TRANSLATED YET
       return_to_sp_html: NOT TRANSLATED YET
       review:
@@ -152,17 +155,16 @@ fr:
         jobfail: Essayez à nouveau demain
         warning: Essayez à nouveau
       phone:
-        fail: Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles
-          vous ne pourrez pas y accéder. Consultez notre Centre d'aide pour plus d'information
-          sur la vérification de votre identité.
+        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+          <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
         jobfail: NOT TRANSLATED YET
         timeout: NOT TRANSLATED YET
         warning: Veuillez vérifier l'information que vous avez fournie.
       sessions:
-        fail: Votre compte est strongverrouillé pour 24 heures/strong au cours desquelles
-          vous ne pourrez pas y accéder.
+        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+          <strong>verrouillée pendant 24 heures</strong>.
         heading: Nous ne trouvons pas de données qui correspondent à vos informations
           téléphoniques.
         jobfail: NOT TRANSLATED YET

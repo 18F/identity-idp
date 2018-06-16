@@ -80,6 +80,12 @@ module Idv
         flash[:error] = t('idv.errors.duplicate_ssn')
         redirect_to idv_session_dupe_url
       else
+        if step_attempts_exceeded?
+          presenter = ProfileFailurePresenter.new(decorated_session: decorated_session,
+            step_name: view_model.step_name,
+            view_context: view_context)
+          return render_full_width('shared/_failure', locals: { presenter: presenter })
+        end
         render_failure
         @view_model.unsupported_jurisdiction_error(decorated_session.sp_name)
         render :new
