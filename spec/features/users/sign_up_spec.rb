@@ -212,4 +212,34 @@ feature 'Sign Up' do
         to(include('style-src \'self\' \'unsafe-inline\''))
     end
   end
+
+  describe 'user is partially authenticated and phone 2fa is not configured' do
+    context 'with piv/cac enabled' do
+      let(:user) do
+        create(:user, :with_piv_or_cac)
+      end
+
+      before(:each) do
+        sign_in_user(user)
+      end
+
+      scenario 'can not access phone_setup' do
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+        visit phone_setup_path
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+      end
+
+      scenario 'can not access phone_setup via login/two_factor/sms' do
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+        visit login_two_factor_path(otp_delivery_preference: :sms)
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+      end
+
+      scenario 'can not access phone_setup via login/two_factor/voice' do
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+        visit login_two_factor_path(otp_delivery_preference: :voice)
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+      end
+    end
+  end
 end
