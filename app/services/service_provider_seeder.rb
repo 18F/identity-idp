@@ -22,8 +22,13 @@ class ServiceProviderSeeder
   attr_reader :rails_env, :deploy_env
 
   def service_providers
-    content = ERB.new(Rails.root.join('config', 'service_providers.yml').read).result
+    file = remote_setting || Rails.root.join('config', 'service_providers.yml').read
+    content = ERB.new(file).result
     YAML.safe_load(content).fetch(rails_env, {})
+  end
+
+  def remote_setting
+    RemoteSetting.find_by(name: 'service_providers.yml')&.contents
   end
 
   def write_service_provider?(config)

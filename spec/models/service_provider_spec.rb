@@ -168,4 +168,17 @@ describe ServiceProvider do
       end
     end
   end
+
+  describe '#ssl_cert' do
+    it 'returns the remote setting cert' do
+      WebMock.allow_net_connect!
+      sp = create(:service_provider, issuer: 'foo', cert: 'https://raw.githubusercontent.com/18F/identity-idp/master/certs/sp/saml_test_sp.crt')
+      expect(sp.ssl_cert.class).to be(OpenSSL::X509::Certificate)
+    end
+
+    it 'returns the local cert' do
+      sp = create(:service_provider, issuer: 'foo', cert: 'saml_test_sp')
+      expect(sp.ssl_cert.class).to be(OpenSSL::X509::Certificate)
+    end
+  end
 end

@@ -63,6 +63,7 @@ Metrics/ClassLength:
   - app/controllers/users/confirmations_controller.rb
   - app/controllers/users/sessions_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
+  - app/decorators/service_provider_session_decorator.rb
   - app/decorators/user_decorator.rb
   - app/services/analytics.rb
   - app/services/idv/session.rb
