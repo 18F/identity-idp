@@ -43,7 +43,7 @@ describe UserPhoneForm do
         expect(result.errors).to be_empty
       end
 
-      it 'include otp preference in the form response extra' do
+      it 'includes otp preference in the form response extra' do
         result = subject.submit(params)
 
         expect(result.extra).to eq(
@@ -87,6 +87,87 @@ describe UserPhoneForm do
         result = subject.submit(params)
 
         expect(result.success?).to eq(false)
+      end
+    end
+
+    context 'when otp_delivery_preference is not voice or sms' do
+      let(:params) do
+        {
+          phone: '703-555-1212',
+          international_code: 'US',
+          otp_delivery_preference: 'foo',
+        }
+      end
+
+      it 'is invalid' do
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors[:otp_delivery_preference].first).
+          to eq 'is not included in the list'
+      end
+    end
+
+    context 'when otp_delivery_preference is empty' do
+      let(:params) do
+        {
+          phone: '703-555-1212',
+          international_code: 'US',
+          otp_delivery_preference: '',
+        }
+      end
+
+      it 'is invalid' do
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(false)
+        expect(result.errors[:otp_delivery_preference].first).
+          to eq 'is not included in the list'
+      end
+    end
+
+    context 'when otp_delivery_preference param is not present' do
+      let(:params) do
+        {
+          phone: '703-555-1212',
+          international_code: 'US',
+        }
+      end
+
+      it 'is valid' do
+        result = subject.submit(params)
+
+        expect(result.success?).to eq(true)
+      end
+    end
+
+    context "when the submitted otp_delivery_preference is different from the user's" do
+      it "updates the user's otp_delivery_preference" do
+        user_updater = instance_double(UpdateUser)
+        allow(UpdateUser).
+          to receive(:new).
+          with(
+            user: user,
+            attributes: { otp_delivery_preference: 'voice' }
+          ).
+          and_return(user_updater)
+        expect(user_updater).to receive(:call)
+
+        params = {
+          phone: '555-555-5000',
+          international_code: 'US',
+          otp_delivery_preference: 'voice',
+        }
+
+        subject.submit(params)
+      end
+    end
+
+    context "when the submitted otp_delivery_preference is the same as the user's" do
+      it "does not update the user's otp_delivery_preference" do
+        expect(UpdateUser).to_not receive(:new)
+
+        subject.submit(params)
       end
     end
 

@@ -4,8 +4,6 @@ describe X509::Attribute do
   let(:x509_subject) { 'O=US, OU=DoD, CN=John.Doe.1234' }
 
   subject { described_class.new(raw: x509_subject) }
-
-  # rubocop:disable UnneededInterpolation
   describe 'delegation' do
     it 'delegates to raw' do
       expect(subject.blank?).to eq false
@@ -15,5 +13,4 @@ describe X509::Attribute do
       expect(subject).to eq x509_subject
     end
   end
-  # rubocop:enable UnneededInterpolation
 end

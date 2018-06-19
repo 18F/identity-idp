@@ -13,6 +13,7 @@ class Event < ApplicationRecord
     usps_mail_sent: 9,
     piv_cac_enabled: 10,
     piv_cac_disabled: 11,
+    new_personal_key: 12,
   }
 
   validates :event_type, presence: true

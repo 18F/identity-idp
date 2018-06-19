@@ -3,6 +3,27 @@ require 'rails_helper'
 describe PivCacService do
   include Rails.application.routes.url_helpers
 
+  describe '#randomize_uri' do
+    let(:result) { PivCacService.send(:randomize_uri, uri) }
+
+    context 'when a static URL is configured' do
+      let(:uri) { 'http://localhost:1234/' }
+
+      it 'returns the URL unchanged' do
+        expect(result).to eq uri
+      end
+    end
+
+    context 'when a random URL is configured' do
+      let(:uri) { 'http://{random}.example.com/' }
+
+      it 'returns the URL with random bytes' do
+        expect(result).to_not eq uri
+        expect(result).to match(%r{http://[0-9a-f]+\.example\.com/$})
+      end
+    end
+  end
+
   describe '#decode_token' do
     context 'when configured for local development' do
       before(:each) do
@@ -10,17 +31,17 @@ describe PivCacService do
       end
 
       it 'raises an error if no token provided' do
-        expect {
+        expect do
           PivCacService.decode_token
-        }.to raise_error ArgumentError
+        end.to raise_error ArgumentError
       end
 
       it 'returns the test data' do
         token = 'TEST:{"uuid":"hijackedUUID","dn":"hijackedDN"}'
-        expect(PivCacService.decode_token(token)).to eq({
+        expect(PivCacService.decode_token(token)).to eq(
           'uuid' => 'hijackedUUID',
           'dn' => 'hijackedDN'
-        })
+        )
       end
     end
 
@@ -30,7 +51,7 @@ describe PivCacService do
       end
 
       it 'returns an error' do
-        expect(PivCacService.decode_token('foo')).to eq({ 'error' => 'service.disabled' })
+        expect(PivCacService.decode_token('foo')).to eq('error' => 'service.disabled')
       end
     end
 
@@ -41,9 +62,9 @@ describe PivCacService do
         end
 
         it 'raises an error if no token provided' do
-          expect {
+          expect do
             PivCacService.decode_token
-          }.to raise_error ArgumentError
+          end.to raise_error ArgumentError
         end
 
         describe 'when configured with a user-facing endpoint' do
@@ -83,7 +104,10 @@ describe PivCacService do
 
         let!(:request) do
           stub_request(:post, 'localhost:8443').
-            with(body: 'token=foo').
+            with(
+              body: 'token=foo',
+              headers: {'Authentication' => %r<^hmac\s+:.+:.+$>}
+            ).
             to_return(
               status: [200, 'Ok'],
               body: '{"dn":"dn","uuid":"uuid"}'
@@ -96,18 +120,18 @@ describe PivCacService do
         end
 
         it 'returns the decoded JSON from the target service' do
-          expect(PivCacService.decode_token('foo')).to eq({
+          expect(PivCacService.decode_token('foo')).to eq(
             'dn' => 'dn',
             'uuid' => 'uuid'
-          })
+          )
         end
 
         describe 'with test data' do
           it 'returns an error' do
             token = 'TEST:{"uuid":"hijackedUUID","dn":"hijackedDN"}'
-            expect(PivCacService.decode_token(token)).to eq({
+            expect(PivCacService.decode_token(token)).to eq(
               'error' => 'token.bad'
-            })
+            )
           end
         end
       end
@@ -130,9 +154,9 @@ describe PivCacService do
 
         it 'returns an error' do
           token = 'foo'
-          expect(PivCacService.decode_token(token)).to eq({
+          expect(PivCacService.decode_token(token)).to eq(
             'error' => 'token.bad'
-          })
+          )
         end
       end
     end

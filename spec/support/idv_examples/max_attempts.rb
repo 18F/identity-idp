@@ -8,69 +8,96 @@ shared_examples 'verification step max attempts' do |step, sp|
   before do
     start_idv_from_sp(sp)
     complete_idv_steps_before_step(step, user)
-    if step == :profile
-      perfom_maximum_allowed_idv_step_attempts { fill_out_idv_form_fail }
-    elsif step == :phone
-      perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
-    end
   end
 
-  scenario 'more than 3 attempts in 24 hours prevents further attempts' do
-    # Blocked if visiting verify directly
-    visit idv_url
-    advance_to_phone_step if step == :phone
-    expect_user_to_be_unable_to_perform_idv(sp)
-
-    # Blocked if visiting from an SP
-    visit_idp_from_sp_with_loa3(:oidc)
-    advance_to_phone_step if step == :phone
-    expect_user_to_be_unable_to_perform_idv(sp)
-
-    if step == :sessions
-      user.reload
-
-      expect(user.idv_attempted_at).to_not be_nil
+  context 'after completing the max number of attempts' do
+    before do
+      if step == :profile
+        perfom_maximum_allowed_idv_step_attempts { fill_out_idv_form_fail }
+      elsif step == :phone
+        perfom_maximum_allowed_idv_step_attempts { fill_out_phone_form_fail }
+      end
     end
-  end
 
-  scenario 'after 24 hours the user can retry and complete idv' do
-    visit account_path
-    first(:link, t('links.sign_out')).click
-    reattempt_interval = (Figaro.env.idv_attempt_window_in_hours.to_i + 1).hours
+    scenario 'more than 3 attempts in 24 hours prevents further attempts' do
+      # Blocked if visiting verify directly
+      visit idv_url
+      advance_to_phone_step if step == :phone
+      expect_user_to_be_unable_to_perform_idv(sp)
 
-    Timecop.travel reattempt_interval do
+      # Blocked if visiting from an SP
       visit_idp_from_sp_with_loa3(:oidc)
-      click_link t('links.sign_in')
-      sign_in_live_with_2fa(user)
+      advance_to_phone_step if step == :phone
+      expect_user_to_be_unable_to_perform_idv(sp)
 
-      expect(page).to_not have_content(t("idv.modal.#{step_locale_key}.heading"))
-      expect(current_url).to eq(idv_jurisdiction_url)
+      if step == :sessions
+        user.reload
 
-      fill_out_idv_jurisdiction_ok
-      click_idv_continue
-      complete_idv_profile_ok(user)
-      click_acknowledge_personal_key
-      click_idv_continue
-
-      expect(current_url).to start_with('http://localhost:7654/auth/result')
+        expect(user.idv_attempted_at).to_not be_nil
+      end
     end
-  end
 
-  scenario 'user sees failure flash message' do
-    expect(page).to have_css('.alert-error', text: t("idv.modal.#{step_locale_key}.heading"))
-    expect(page).to have_css(
-      '.alert-error',
-      text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
-    )
-  end
+    scenario 'after 24 hours the user can retry and complete idv' do
+      visit account_path
+      first(:link, t('links.sign_out')).click
+      reattempt_interval = (Figaro.env.idv_attempt_window_in_hours.to_i + 1).hours
 
-  context 'with js', :js do
-    scenario 'user sees the failure modal' do
-      expect(page).to have_css('.modal-fail', text: t("idv.modal.#{step_locale_key}.heading"))
+      Timecop.travel reattempt_interval do
+        visit_idp_from_sp_with_loa3(:oidc)
+        click_link t('links.sign_in')
+        sign_in_live_with_2fa(user)
+
+        expect(page).to_not have_content(t("idv.modal.#{step_locale_key}.heading"))
+        expect(current_url).to eq(idv_jurisdiction_url)
+
+        fill_out_idv_jurisdiction_ok
+        click_idv_continue
+        complete_idv_profile_ok(user)
+        click_acknowledge_personal_key
+        click_idv_continue
+
+        expect(current_url).to start_with('http://localhost:7654/auth/result')
+      end
+    end
+
+    scenario 'user sees failure flash message' do
+      expect(page).to have_css('.alert-error', text: t("idv.modal.#{step_locale_key}.heading"))
       expect(page).to have_css(
-        '.modal-fail',
+        '.alert-error',
         text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
       )
+    end
+
+    context 'with js', :js do
+      scenario 'user sees the failure modal' do
+        expect(page).to have_css('.modal-fail', text: t("idv.modal.#{step_locale_key}.heading"))
+        expect(page).to have_css(
+          '.modal-fail',
+          text: strip_tags(t("idv.modal.#{step_locale_key}.fail"))
+        )
+      end
+    end
+  end
+
+  context 'after completing one less than the max attempts' do
+    it 'allows the user to continue if their last attempt is successful' do
+      max_attempts_less_one.times do
+        fill_out_idv_form_fail if step == :profile
+        fill_out_phone_form_fail if step == :phone
+        click_continue
+      end
+
+      fill_out_idv_form_ok if step == :profile
+      fill_out_phone_form_ok if step == :phone
+      click_continue
+
+      if step == :profile
+        expect(page).to have_content(t('idv.titles.session.success'))
+        expect(page).to have_current_path(idv_session_success_path)
+      elsif step == :phone
+        expect(page).to have_content(t('idv.titles.otp_delivery_method'))
+        expect(page).to have_current_path(idv_otp_delivery_method_path)
+      end
     end
   end
 

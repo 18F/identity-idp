@@ -69,12 +69,12 @@ module Users
     end
 
     def process_locked_out_user
-      decorator = current_user.decorate
-      sign_out
-      render(
-        'two_factor_authentication/shared/max_login_attempts_reached',
-        locals: { type: 'generic', decorator: decorator }
+      presenter = TwoFactorAuthCode::MaxAttemptsReachedPresenter.new(
+        'generic_login_attempts',
+        current_user.decorate
       )
+      sign_out
+      render_full_width('shared/_failure', locals: { presenter: presenter })
     end
 
     def handle_valid_authentication
@@ -120,7 +120,7 @@ module Users
       profile = current_user.decorate.active_or_pending_profile
       begin
         cacher.save(auth_params[:password], profile)
-      rescue Pii::EncryptionError => err
+      rescue Encryption::EncryptionError => err
         profile.deactivate(:encryption_error)
         analytics.track_event(Analytics::PROFILE_ENCRYPTION_INVALID, error: err.message)
       end

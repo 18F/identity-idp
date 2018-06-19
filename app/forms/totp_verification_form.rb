@@ -13,7 +13,7 @@ class TotpVerificationForm
   attr_reader :user, :code
 
   def valid_totp_code?
-    return false unless code =~ pattern_matching_totp_code_format
+    return false unless code.match? pattern_matching_totp_code_format
     user.authenticate_totp(code)
   end
 

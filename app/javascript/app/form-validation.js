@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (elements.length !== 0) {
         [].forEach.call(elements, function(input) {
           input.addEventListener('input', function () {
-            if (buttons.length !== 0 && input.valid) {
+            if (buttons.length !== 0 && input.checkValidity()) {
               [].forEach.call(buttons, function(button) {
                 if (button.disabled) {
                   button.disabled = false;

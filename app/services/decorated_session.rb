@@ -15,7 +15,7 @@ class DecoratedSession
         service_provider_request: service_provider_request
       )
     else
-      SessionDecorator.new
+      SessionDecorator.new(view_context: view_context)
     end
   end
 

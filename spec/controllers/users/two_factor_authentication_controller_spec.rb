@@ -69,6 +69,16 @@ describe Users::TwoFactorAuthenticationController do
   end
 
   describe '#show' do
+    context 'when user is piv/cac enabled' do
+      it 'renders the piv/cac entry screen' do
+        stub_sign_in_before_2fa(build(:user))
+        allow(subject.current_user).to receive(:piv_cac_enabled?).and_return(true)
+        get :show
+
+        expect(response).to redirect_to login_two_factor_piv_cac_path
+      end
+    end
+
     context 'when user is TOTP enabled' do
       it 'renders the :confirm_totp view' do
         stub_sign_in_before_2fa(build(:user))
@@ -105,7 +115,7 @@ describe Users::TwoFactorAuthenticationController do
         stub_sign_in_before_2fa(build(:user))
         get :show
 
-        expect(response).to redirect_to phone_setup_url
+        expect(response).to redirect_to two_factor_options_url
       end
     end
   end
@@ -158,7 +168,7 @@ describe Users::TwoFactorAuthenticationController do
         allow(OtpRateLimiter).to receive(:new).with(phone: @user.phone, user: @user).
           and_return(otp_rate_limiter)
 
-        expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?)
+        expect(otp_rate_limiter).to receive(:exceeded_otp_send_limit?).twice
         expect(otp_rate_limiter).to receive(:increment)
 
         get :send_code, params: { otp_delivery_selection_form: { otp_delivery_preference: 'sms' } }

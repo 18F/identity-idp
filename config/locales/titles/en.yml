@@ -2,7 +2,8 @@
 en:
   titles:
     account: Account
-    account_locked: Account locked
+    account_locked: Account temporarily locked
+    account_recovery_setup: Account Recovery Setup
     confirmations:
       new: Resend confirmation instructions for your account
       show: Choose a password
@@ -16,6 +17,9 @@ en:
       confirm: Confirm the password for your account
       forgot: Reset the password for your account
     personal_key: Just in case
+    phone_setup:
+      voice: Send your security code via phone call
+      sms: Send your security code via text message
     piv_cac_setup:
       new: Use your PIV/CAC card to secure your account
       certificate:

@@ -205,15 +205,15 @@ describe 'throttling requests' do
       end
     end
 
-    context 'when the number of logins per email and ip is higher than the limit per period' do
+    context 'when number of logins per email + ip is higher than limit per period' do
       it 'throttles with a custom response' do
         analytics = instance_double(Analytics)
         allow(Analytics).to receive(:new).and_return(analytics)
         allow(analytics).to receive(:track_event)
 
-        (logins_per_email_and_ip_limit + 1).times do
+        (logins_per_email_and_ip_limit + 1).times do |index|
           post '/', params: {
-            user: { email: 'test@example.com' },
+            user: { email: index.even? ? 'test@example.com' : ' test@EXAMPLE.com   ' },
           }, headers: { REMOTE_ADDR: '1.2.3.4' }
         end
 

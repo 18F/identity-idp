@@ -126,6 +126,55 @@ RSpec.describe ServiceProviderSessionDecorator do
     end
   end
 
+  describe '#sp_logo_url' do
+    context 'service provider has a logo' do
+      it 'returns the logo' do
+        sp_logo = 'real_logo.svg'
+        sp = build_stubbed(:service_provider, logo: sp_logo)
+
+        subject = ServiceProviderSessionDecorator.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequest.new
+        )
+
+        expect(subject.sp_logo_url).to end_with("/sp-logos/#{sp_logo}")
+      end
+    end
+
+    context 'service provider does not have a logo' do
+      it 'returns the default logo' do
+        sp = build_stubbed(:service_provider, logo: nil)
+
+        subject = ServiceProviderSessionDecorator.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequest.new
+        )
+
+        expect(subject.sp_logo_url).to match(%r{/sp-logos/generic-.+\.svg})
+      end
+    end
+
+    context 'service provider has a remote logo' do
+      it 'returns the remote logo' do
+        logo = 'https://raw.githubusercontent.com/18F/identity-idp/master/app/assets/images/sp-logos/generic.svg'
+        sp = build_stubbed(:service_provider, logo: logo)
+
+        subject = ServiceProviderSessionDecorator.new(
+          sp: sp,
+          view_context: view_context,
+          sp_session: {},
+          service_provider_request: ServiceProviderRequest.new
+        )
+
+        expect(subject.sp_logo_url).to eq(logo)
+      end
+    end
+  end
+
   describe '#cancel_link_url' do
     subject(:decorator) do
       ServiceProviderSessionDecorator.new(
@@ -136,18 +185,14 @@ RSpec.describe ServiceProviderSessionDecorator do
       )
     end
 
-    it 'returns sign_up_start_url with the request_id as a param' do
-      expect(decorator.cancel_link_url).
-        to eq 'http://www.example.com/sign_up/start?request_id=foo'
+    before do
+      allow(view_context).to receive(:sign_up_start_url).
+        and_return('https://www.example.com/sign_up/start')
     end
 
-    context 'in another language' do
-      before { I18n.locale = :fr }
-
-      it 'keeps the language' do
-        expect(decorator.cancel_link_url).
-          to eq 'http://www.example.com/fr/sign_up/start?request_id=foo'
-      end
+    it 'returns view_context.sign_up_start_url' do
+      expect(decorator.cancel_link_url).
+        to eq 'https://www.example.com/sign_up/start'
     end
   end
 end

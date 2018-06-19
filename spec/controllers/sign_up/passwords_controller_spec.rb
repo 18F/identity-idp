@@ -53,7 +53,7 @@ describe SignUp::PasswordsController do
     render_views
     it 'instructs crawlers to not index this page' do
       token = 'foo token'
-      user = create(:user, :unconfirmed, confirmation_token: token, confirmation_sent_at: Time.zone.now)
+      create(:user, :unconfirmed, confirmation_token: token, confirmation_sent_at: Time.zone.now)
       get :new, params: { confirmation_token: token }
 
       expect(response.body).to match('<meta content="noindex,nofollow" name="robots" />')

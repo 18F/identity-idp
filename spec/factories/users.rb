@@ -15,6 +15,17 @@ FactoryBot.define do
       x509_dn_uuid { SecureRandom.uuid }
     end
 
+    trait :with_personal_key do
+      after :build do |user|
+        user.personal_key = PersonalKeyGenerator.new(user).create
+      end
+    end
+
+    trait :with_authentication_app do
+      with_personal_key
+      otp_secret_key 'abc123'
+    end
+
     trait :admin do
       role :admin
     end
@@ -25,9 +36,7 @@ FactoryBot.define do
 
     trait :signed_up do
       with_phone
-      after :build do |user|
-        user.personal_key = PersonalKeyGenerator.new(user).create
-      end
+      with_personal_key
     end
 
     trait :unconfirmed do

@@ -6,6 +6,7 @@ describe 'users/phones/edit.html.slim' do
       user = build_stubbed(:user, :signed_up)
       allow(view).to receive(:current_user).and_return(user)
       @user_phone_form = UserPhoneForm.new(user)
+      @presenter = PhoneSetupPresenter.new('voice')
     end
 
     it 'has a localized title' do

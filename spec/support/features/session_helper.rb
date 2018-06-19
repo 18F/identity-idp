@@ -10,10 +10,16 @@ module Features
       click_button t('forms.buttons.submit.default')
     end
 
+    def select_2fa_option(option)
+      find("label[for='two_factor_options_form_selection_#{option}']").click
+      click_on t('forms.buttons.continue')
+    end
+
     def sign_up_and_2fa_loa1_user
       allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
       user = sign_up_and_set_password
-      fill_in 'Phone', with: '202-555-1212'
+      select_2fa_option('sms')
+      fill_in 'user_phone_form_phone', with: '202-555-1212'
       click_send_security_code
       click_submit_default
       click_acknowledge_personal_key
@@ -44,7 +50,7 @@ module Features
       Warden.on_next_request do |proxy|
         session = proxy.env['rack.session']
         sp = ServiceProvider.from_issuer('http://localhost:3000')
-        session[:sp] = { loa3: loa3, issuer: sp.issuer }
+        session[:sp] = { loa3: loa3, issuer: sp.issuer, request_id: '123' }
       end
 
       visit account_path
@@ -101,9 +107,8 @@ module Features
 
     def user_with_piv_cac
       create(:user, :signed_up, :with_piv_or_cac,
-        phone: '+1 (555) 555-0000',
-        password: VALID_PASSWORD
-      )
+             phone: '+1 (555) 555-0000',
+             password: VALID_PASSWORD)
     end
 
     def confirm_last_user
@@ -136,8 +141,8 @@ module Features
       visit login_two_factor_piv_cac_path
       stub_piv_cac_service
       visit_piv_cac_service(
-        dn: "C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234",
-        uuid: user.x509_dn_uuid,
+        dn: 'C=US, O=U.S. Government, OU=DoD, OU=PKI, CN=DOE.JOHN.1234',
+        uuid: user.x509_dn_uuid
       )
     end
 
@@ -367,6 +372,7 @@ module Features
     end
 
     def set_up_2fa_with_valid_phone
+      select_2fa_option('sms')
       fill_in 'user_phone_form[phone]', with: '202-555-1212'
       click_send_security_code
     end
@@ -392,13 +398,39 @@ module Features
     end
 
     def set_up_2fa_with_authenticator_app
-      click_link t('links.two_factor_authentication.app_option')
+      select_2fa_option('auth_app')
 
       expect(page).to have_current_path authenticator_setup_path
 
       secret = find('#qr-code').text
       fill_in 'code', with: generate_totp_code(secret)
       click_button 'Submit'
+    end
+
+    def register_user_with_piv_cac(email = 'test@test.com')
+      allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(true)
+      allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+      confirm_email_and_password(email)
+
+      expect(page).to have_current_path two_factor_options_path
+      expect(page).to have_content(
+        t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+      )
+
+      set_up_2fa_with_piv_cac
+    end
+
+    def set_up_2fa_with_piv_cac
+      stub_piv_cac_service
+      select_2fa_option('piv_cac')
+
+      expect(page).to have_current_path setup_piv_cac_path
+
+      nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+      visit_piv_cac_service(setup_piv_cac_url,
+                            nonce: nonce,
+                            uuid: SecureRandom.uuid,
+                            subject: 'SomeIgnoredSubject')
     end
 
     def sign_in_via_branded_page(user)
@@ -438,8 +470,16 @@ module Features
       get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_mfa.submit')))
     end
 
+    # This is a bit convoluted because we generate a nonce when we visit the
+    # link. The link provides a redirect to the piv/cac service with the nonce.
+    # This way, even if JavaScript fetches the link to grab the nonce, a new nonce
+    # is generated when the user clicks on the link.
     def get_piv_cac_nonce_from_link(link)
-      CGI.unescape(URI(link['href']).query.sub(/^nonce=/, ''))
+      go_back = current_path
+      visit link['href']
+      nonce = CGI.unescape(URI(current_url).query.sub(/^nonce=/, ''))
+      visit go_back
+      nonce
     end
 
     def link_identity(user, client_id, ial = nil)
@@ -449,6 +489,13 @@ module Features
       ).link_identity(
         ial: ial
       )
+    end
+
+    def configure_backup_phone
+      select_2fa_option('sms')
+      fill_in 'user_phone_form_phone', with: '202-555-1212'
+      click_send_security_code
+      click_submit_default
     end
   end
 end

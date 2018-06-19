@@ -18,12 +18,8 @@ module Pii
       attrs
     end
 
-    def self.new_from_encrypted(encrypted, password:, salt:, cost:)
-      encryptor = Encryption::Encryptors::PiiEncryptor.new(
-        password: password,
-        salt: salt,
-        cost: cost
-      )
+    def self.new_from_encrypted(encrypted, password:)
+      encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
       decrypted = encryptor.decrypt(encrypted)
       new_from_json(decrypted)
     end
@@ -39,12 +35,8 @@ module Pii
       assign_all_members
     end
 
-    def encrypted(password:, salt:, cost:)
-      encryptor = Encryption::Encryptors::PiiEncryptor.new(
-        password: password,
-        salt: salt,
-        cost: cost
-      )
+    def encrypted(password)
+      encryptor = Encryption::Encryptors::PiiEncryptor.new(password)
       encryptor.encrypt(to_json)
     end
 

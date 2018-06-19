@@ -6,6 +6,7 @@ class SamlIdpController < ApplicationController
   include SamlIdp::Controller
   include SamlIdpAuthConcern
   include SamlIdpLogoutConcern
+  include AccountRecoverable
   include FullyAuthenticatable
   include VerifyProfileConcern
   include VerifySPAttributesConcern
@@ -17,6 +18,7 @@ class SamlIdpController < ApplicationController
     return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
     link_identity_from_session_data
     capture_analytics
+    return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_phone_enabled?
     return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
     return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
     handle_successful_handoff

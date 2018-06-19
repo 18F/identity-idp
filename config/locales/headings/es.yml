@@ -9,6 +9,8 @@ es:
       reactivate: Reactive su cuenta
       two_factor: Autenticación de dos factores
       verified_account: Cuenta verificada
+    account_recovery_setup:
+      piv_cac_linked: NOT TRANSLATED YET
     confirmations:
       new: Enviar otro email de confirmación
     create_account_with_sp:
@@ -19,6 +21,7 @@ es:
       email: Cambie su email
       password: Cambie su contraseña
       phone: Ingrese su nuevo número de teléfono
+    lock_failure: Esto es lo que puedes hacer
     passwords:
       change: Cambie su contraseña
       confirm: Confirme la contraseña actual para continuar

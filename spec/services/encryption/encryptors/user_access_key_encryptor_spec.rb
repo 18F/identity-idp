@@ -37,11 +37,11 @@ describe Encryption::Encryptors::UserAccessKeyEncryptor do
       wrong_key = Encryption::UserAccessKey.new(password: 'This is not the password', salt: salt)
       new_encryptor = described_class.new(wrong_key)
 
-      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Pii::EncryptionError
+      expect { new_encryptor.decrypt(ciphertext) }.to raise_error Encryption::EncryptionError
     end
 
     it 'raises an error if the ciphertext is not base64 encoded' do
-      expect { subject.decrypt('@@@@@@@') }.to raise_error Pii::EncryptionError
+      expect { subject.decrypt('@@@@@@@') }.to raise_error Encryption::EncryptionError
     end
 
     it 'only unlocks the user access key once' do
@@ -57,20 +57,20 @@ describe Encryption::Encryptors::UserAccessKeyEncryptor do
     end
 
     it 'can decrypt contents created by different user access keys if the password is the same' do
-      uak_1 = Encryption::UserAccessKey.new(password: password, salt: salt)
-      uak_2 = Encryption::UserAccessKey.new(password: password, salt: salt)
-      payload_1 = described_class.new(uak_1).encrypt(plaintext)
-      payload_2 = described_class.new(uak_2).encrypt(plaintext)
+      uak1 = Encryption::UserAccessKey.new(password: password, salt: salt)
+      uak2 = Encryption::UserAccessKey.new(password: password, salt: salt)
+      payload1 = described_class.new(uak1).encrypt(plaintext)
+      payload2 = described_class.new(uak2).encrypt(plaintext)
 
-      expect(payload_1).to_not eq(payload_2)
+      expect(payload1).to_not eq(payload2)
 
       expect(user_access_key).to receive(:unlock).twice.and_call_original
 
-      result_1 = subject.decrypt(payload_1)
-      result_2 = subject.decrypt(payload_2)
+      result1 = subject.decrypt(payload1)
+      result2 = subject.decrypt(payload2)
 
-      expect(result_1).to eq(plaintext)
-      expect(result_2).to eq(plaintext)
+      expect(result1).to eq(plaintext)
+      expect(result2).to eq(plaintext)
     end
   end
 end

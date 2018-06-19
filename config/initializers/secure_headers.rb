@@ -19,7 +19,7 @@ SecureHeaders::Configuration.default do |config|
       '*.google-analytics.com',
     ],
     font_src: ["'self'", 'data:'],
-    img_src: ["'self'", 'data:'],
+    img_src: ["'self'", 'data:', 'login.gov'],
     media_src: ["'self'"],
     object_src: ["'none'"],
     script_src: [

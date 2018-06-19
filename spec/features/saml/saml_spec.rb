@@ -35,11 +35,12 @@ shared_examples 'saml api' do |cloudhsm_enabled|
       end
 
       it 'prompts the user to set up 2FA' do
-        expect(current_path).to eq phone_setup_path
+        expect(current_path).to eq two_factor_options_path
       end
 
       it 'prompts the user to confirm phone after setting up 2FA' do
-        fill_in 'Phone', with: '202-555-1212'
+        select_2fa_option('sms')
+        fill_in 'user_phone_form_phone', with: '202-555-1212'
         click_send_security_code
 
         expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
@@ -282,7 +283,8 @@ shared_examples 'saml api' do |cloudhsm_enabled|
     allow(Figaro.env).to receive(:cloudhsm_enabled).and_return('true')
     SamlIdp.configure { |config| SamlIdpEncryptionConfigurator.configure(config, true) }
     allow(PKCS11).to receive(:open).and_return('true')
-    allow_any_instance_of(SamlIdp::Configurator).to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
+    allow_any_instance_of(SamlIdp::Configurator).
+      to receive_message_chain(:pkcs11, :active_slots, :first, :open).and_yield(MockSession)
     allow(MockSession).to receive(:login).and_return(true)
     allow(MockSession).to receive(:logout).and_return(true)
     allow(MockSession).to receive_message_chain(:find_objects, :first).and_return(true)
