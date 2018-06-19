@@ -24,12 +24,12 @@ shared_examples 'verification step max attempts' do |step, sp|
       # Blocked if visiting verify directly
       visit idv_url
       advance_to_phone_step if step == :phone
-      expect_user_to_be_unable_to_perform_idv(sp)
+      expect_user_to_be_unable_to_perform_idv(step)
 
       # Blocked if visiting from an SP
       visit_idp_from_sp_with_loa3(:oidc)
       advance_to_phone_step if step == :phone
-      expect_user_to_be_unable_to_perform_idv(sp)
+      expect_user_to_be_unable_to_perform_idv(step)
 
       if step == :sessions
         user.reload
@@ -102,21 +102,10 @@ shared_examples 'verification step max attempts' do |step, sp|
     click_idv_continue
   end
 
-  def expect_user_to_be_unable_to_perform_idv(sp)
-    expect(page).to have_content(t('idv.titles.hardfail', app: 'login.gov'))
-    if sp.present?
-      expect(page).to have_content(
-        t('idv.messages.hardfail', hours: Figaro.env.idv_attempt_window_in_hours)
-      )
-      expect(page).to have_content(
-        strip_tags(t('idv.messages.hardfail4_html', sp: 'Test SP'))
-      )
-    else
-      expect(page).to have_content(
-        strip_tags(t('idv.messages.help_center_html'))
-      )
-    end
-    expect(current_url).to eq(idv_fail_url)
+  def expect_user_to_be_unable_to_perform_idv(step)
+    expect(page).to have_content(t("idv.modal.#{step_locale_key}.heading"))
+    expect(current_url).to eq(idv_phone_failure_url(:fail, locale: locale)) if step == :phone
+    expect(current_url).to eq(idv_session_failure_url(:fail, locale: locale)) if step == :profile
   end
 
   def advance_to_phone_step

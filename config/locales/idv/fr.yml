@@ -24,7 +24,6 @@ fr:
       bad_dob: Votre date de naissance doit être une date valide.
       duplicate_ssn: Un compte existe déjà avec l'information que vous avez fournie.
         chiffres.
-      hardfail: Nous sommes dans l'incapacité de vérifier votre identité pour le moment.
       incorrect_password: Le mot de passe que vous avez inscrit est incorrect.
       mail_limit_reached: Vous avez demandé trop de lettres au cours du dernier mois.
       pattern_mismatch:
@@ -81,7 +80,6 @@ fr:
         originalement.
       dupe_ssn2_link: déconnectez-vous puis connectez-vous à nouveau
       hardfail: NOT TRANSLATED YET
-      hardfail4_html: NOT TRANSLATED YET
       help_center_html: Visitez notre <strong>Centre d'aide</strong> pour en apprendre
         davantage sur la façon dont nous vérifions votre compte.
       jurisdiction:
@@ -155,6 +153,9 @@ fr:
         jobfail: Essayez à nouveau demain
         timeout: Essayez à nouveau
         warning: Essayez à nouveau
+      errors:
+        link: contactez-nous
+        text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
       phone:
         fail: Pour votre sécurité, la vérification d'identité de votre compte est
           <strong>verrouillée pendant 24 heures</strong>.

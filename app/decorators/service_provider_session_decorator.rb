@@ -69,10 +69,6 @@ class ServiceProviderSessionDecorator
     I18n.t('idv.messages.select_verification_with_sp', sp_name: sp_name)
   end
 
-  def idv_hardfail4_partial
-    'idv/hardfail4'
-  end
-
   def requested_attributes
     sp_session[:requested_attributes].sort
   end

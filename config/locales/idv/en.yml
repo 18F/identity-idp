@@ -22,7 +22,6 @@ en:
     errors:
       bad_dob: Your date of birth must be a valid date.
       duplicate_ssn: An account already exists with the information you provided.
-      hardfail: We were unable to verify your identity at this time.
       incorrect_password: The password you entered is not correct.
       mail_limit_reached: You have have requested too much mail in the last month.
       pattern_mismatch:
@@ -77,7 +76,6 @@ en:
       dupe_ssn2_link: sign out now and sign back in
       hardfail: We can't log you in right now, but you can try verifying your identity
         again in %{hours} hours.
-      hardfail4_html: Go to <strong>%{sp}</strong> for help accessing your services.
       help_center_html: Visit our <strong>Help Center</strong> to learn more about
         verifying your account.
       jurisdiction:

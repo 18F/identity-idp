@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'idv profile step', :idv_job do
+feature 'idv phone step', :idv_job do
   include IdvStepHelper
 
   context 'with valid information' do

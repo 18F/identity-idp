@@ -4,7 +4,7 @@ module Idv
     include IdvFailureConcern
 
     before_action :confirm_step_needed
-    before_action :confirm_step_allowed
+    before_action :confirm_step_allowed, except: [:failure]
     before_action :refresh_if_not_ready, only: [:show]
 
     def new
@@ -74,6 +74,10 @@ module Idv
 
     def idv_form
       @_idv_form ||= Idv::PhoneForm.new(idv_session.params, current_user)
+    end
+
+    def failure_url(reason)
+      idv_phone_failure_url(reason)
     end
   end
 end

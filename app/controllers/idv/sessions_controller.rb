@@ -5,7 +5,7 @@ module Idv
     include PersonalKeyConcern
 
     before_action :confirm_two_factor_authenticated, except: [:destroy]
-    before_action :confirm_idv_attempts_allowed, except: %i[destroy success]
+    before_action :confirm_idv_attempts_allowed, except: %i[destroy success failure]
     before_action :confirm_idv_needed
     before_action :confirm_step_needed, except: %i[destroy success]
     before_action :initialize_idv_session, only: [:create]
@@ -111,6 +111,10 @@ module Idv
 
     def profile_params
       params.require(:profile).permit(Idv::ProfileForm::PROFILE_ATTRIBUTES)
+    end
+
+    def failure_url(reason)
+      idv_session_failure_url(reason)
     end
   end
 end

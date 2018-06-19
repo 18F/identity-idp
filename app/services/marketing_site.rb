@@ -27,6 +27,12 @@ class MarketingSite
   end
 
   def self.help_privacy_and_security_url
-    URI.join(BASE_URL, locale_segment, 'help', 'privacy-and-security', 'how-does-logingov-protect-my-data').to_s
+    URI.join(
+      BASE_URL,
+      locale_segment,
+      'help',
+      'privacy-and-security',
+      'how-does-logingov-protect-my-data'
+    ).to_s
   end
 end

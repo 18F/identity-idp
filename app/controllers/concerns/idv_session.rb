@@ -9,6 +9,7 @@ module IdvSession
   def confirm_idv_attempts_allowed
     if idv_attempter.exceeded?
       analytics.track_event(Analytics::IDV_MAX_ATTEMPTS_EXCEEDED, request_path: request.path)
+      redirect_to failure_url(:fail)
     elsif idv_attempter.reset_attempts?
       idv_attempter.reset
     end

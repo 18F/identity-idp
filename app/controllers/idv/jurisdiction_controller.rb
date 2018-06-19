@@ -44,5 +44,9 @@ module Idv
     def set_jurisdiction_form
       @jurisdiction_form ||= Idv::JurisdictionForm.new
     end
+
+    def failure_url(reason)
+      idv_jurisdiction_failure_url(reason)
+    end
   end
 end

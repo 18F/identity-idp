@@ -2,10 +2,11 @@ module Idv
   class WarningPresenter < FailurePresenter
     attr_reader :reason, :remaining_attempts, :step_name, :view_context
 
-    delegate :link_to,
+    delegate :idv_phone_path,
+             :idv_session_path,
+             :link_to,
              :t,
              to: :view_context
-
 
     def initialize(reason:, remaining_attempts:, step_name:, view_context:)
       super(:warning)
@@ -33,6 +34,10 @@ module Idv
 
     def button_text
       t("idv.modal.button.#{reason}")
+    end
+
+    def button_path
+      step_name == :sessions ? idv_session_path : idv_phone_path
     end
 
     private
