@@ -1,5 +1,5 @@
 module Idv
-  class ProfileFailurePresenter < FailurePresenter
+  class MaxAttemptsFailurePresenter < FailurePresenter
     attr_reader :decorated_session, :step_name, :view_context
 
     delegate :account_path,

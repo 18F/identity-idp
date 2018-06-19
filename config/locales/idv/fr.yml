@@ -153,6 +153,7 @@ fr:
       button:
         fail: OK
         jobfail: Essayez à nouveau demain
+        timeout: Essayez à nouveau
         warning: Essayez à nouveau
       phone:
         fail: Pour votre sécurité, la vérification d'identité de votre compte est

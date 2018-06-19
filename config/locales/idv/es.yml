@@ -143,6 +143,7 @@ es:
       button:
         fail: Bueno
         jobfail: Inténtelo de nuevo mañana
+        timeout: Inténtelo de nuevo
         warning: Inténtelo de nuevo
       phone:
         fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada

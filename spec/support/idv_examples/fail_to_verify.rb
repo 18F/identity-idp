@@ -1,7 +1,31 @@
 shared_examples 'fail to verify idv info' do |step|
+  let(:locale) { LinkLocaleResolver.locale }
   let(:step_locale_key) do
     return :sessions if step == :profile
     step
+  end
+
+  shared_examples 'warning failure' do
+    it 'renders a warning failure screen and lets the user try again' do
+      expect(page).to have_current_path(idv_session_failure_path(:warning, locale: locale)) if step == :profile
+      expect(page).to have_current_path(idv_phone_failure_path(:warning, locale: locale)) if step == :phone
+      expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
+      expect(page).to have_content t("idv.modal.#{step_locale_key}.warning")
+
+      click_on t('idv.modal.button.warning')
+
+      if step == :profile
+        fill_out_idv_form_ok
+        click_idv_continue
+      end
+      fill_out_phone_form_ok if step == :phone
+      click_idv_continue
+
+      expect(page).to have_current_path(idv_phone_path) if step == :profile
+      expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
+      expect(page).to have_content(t('idv.titles.session.phone')) if step == :profile
+      expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
+    end
   end
 
   before do
@@ -13,60 +37,10 @@ shared_examples 'fail to verify idv info' do |step|
   end
 
   context 'without js' do
-    it 'renders a flash message and lets the user try again' do
-      expect_page_to_have_warning_message
-      expect(page).to have_current_path(idv_session_result_path) if step == :profile
-      expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-
-      if step == :profile
-        fill_out_idv_form_ok
-        click_idv_continue
-      end
-      fill_out_phone_form_ok if step == :phone
-      click_idv_continue
-
-      expect(page).to have_content(t('idv.titles.session.phone')) if step == :profile
-      expect(page).to have_current_path(idv_phone_path) if step == :profile
-      expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
-      expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
-    end
+    it_behaves_like 'warning failure'
   end
 
   context 'with js', :js do
-    it 'renders a modal and lets the user try again' do
-      expect_page_to_have_warning_modal
-      expect(page).to have_current_path(idv_session_result_path) if step == :profile
-      expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-
-      dismiss_warning_modal
-      if step == :profile
-        fill_out_idv_form_ok
-        click_idv_continue
-      end
-      fill_out_phone_form_ok if step == :phone
-      click_idv_continue
-
-      expect(page).to have_content(t('idv.titles.session.phone')) if step == :profile
-      expect(page).to have_current_path(idv_phone_path) if step == :profile
-      expect(page).to have_content(t('idv.titles.otp_delivery_method')) if step == :phone
-      expect(page).to have_current_path(idv_otp_delivery_method_path) if step == :phone
-    end
-  end
-
-  def expect_page_to_have_warning_message
-    expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-    expect(page).to have_content t("idv.modal.#{step_locale_key}.warning")
-  end
-
-  def expect_page_to_have_warning_modal
-    expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
-    expect(page).to have_css(
-      '.modal-warning',
-      text: strip_tags(t("idv.modal.#{step_locale_key}.warning"))
-    )
-  end
-
-  def dismiss_warning_modal
-    click_button t('idv.modal.button.warning')
+    it_behaves_like 'warning failure'
   end
 end

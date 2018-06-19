@@ -8,19 +8,19 @@ module Idv
     before_action :refresh_if_not_ready, only: [:show]
 
     def new
-      @view_model = view_model
+      @idv_form = idv_form
       analytics.track_event(Analytics::IDV_PHONE_RECORD_VISIT)
     end
 
     def create
-      result = idv_form.submit(step_params)
+      @idv_form = idv_form
+      result = @idv_form.submit(step_params)
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_FORM, result.to_h)
 
       if result.success?
         Idv::Job.submit(idv_session, [:address])
         redirect_to idv_phone_result_url
       else
-        @view_model = view_model
         render :new
       end
     end
@@ -30,12 +30,12 @@ module Idv
       analytics.track_event(Analytics::IDV_PHONE_CONFIRMATION_VENDOR, result.to_h)
       increment_step_attempts
 
-      if result.success?
-        redirect_to_next_step
-      else
-        render_failure
-        render :new
-      end
+      redirect_to_next_step and return if result.success?
+      redirect_to idv_phone_failure_url(idv_step_failure_reason)
+    end
+
+    def failure
+      render_idv_step_failure(:phone, params[:reason].to_sym)
     end
 
     private
@@ -62,10 +62,6 @@ module Idv
         idv_form_params: idv_form.idv_params,
         vendor_validator_result: vendor_validator_result
       )
-    end
-
-    def view_model_class
-      Idv::PhoneNew
     end
 
     def step_params

@@ -1,0 +1,5 @@
+= render 'shared/failure', presenter: presenter
+= render 'shared/modal_verification_warning', count: presenter.remaining_attempts
+
+.mt4
+  = link_to t("idv.modal.button.warning"), idv_session_path, class: 'btn btn-primary'

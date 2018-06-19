@@ -1,4 +1,5 @@
 shared_examples 'failed idv job' do |step|
+  let(:locale) { LinkLocaleResolver.locale }
   let(:idv_job_class) { Idv::ProoferJob }
   let(:step_locale_key) do
     return :sessions if step == :profile
@@ -12,6 +13,15 @@ shared_examples 'failed idv job' do |step|
   end
 
   context 'the job raises an error' do
+    shared_examples 'shows a warning' do
+      it 'renders a jobfail failure screen' do
+        expect(page).to have_current_path(idv_session_failure_path(:jobfail, locale: locale)) if step == :profile
+        expect(page).to have_current_path(idv_phone_failure_path(:jobfail, locale: locale)) if step == :phone
+        expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
+        expect(page).to have_content t("idv.modal.#{step_locale_key}.jobfail")
+      end
+    end
+
     before do
       stub_idv_job_to_raise_error_in_background(idv_job_class)
 
@@ -21,28 +31,24 @@ shared_examples 'failed idv job' do |step|
     end
 
     context 'without js' do
-      it 'shows a warning' do
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.jobfail")
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
+      it_behaves_like 'shows a warning'
     end
 
     context 'with js', :js do
-      it 'shows a modal' do
-        expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_css(
-          '.modal-warning',
-          text: strip_tags(t("idv.modal.#{step_locale_key}.jobfail"))
-        )
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
+      it_behaves_like 'shows a warning'
     end
   end
 
   context 'the job times out' do
+    shared_examples 'shows a warning' do
+      it 'renders a timeout failure page' do
+        expect(page).to have_current_path(idv_session_failure_path(:timeout, locale: locale)) if step == :profile
+        expect(page).to have_current_path(idv_phone_failure_path(:timeout, locale: locale)) if step == :phone
+        expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
+        expect(page).to have_content t("idv.modal.#{step_locale_key}.timeout")
+      end
+    end
+
     before do
       stub_idv_job_to_timeout_in_background(idv_job_class)
 
@@ -61,24 +67,11 @@ shared_examples 'failed idv job' do |step|
     end
 
     context 'without js' do
-      it 'shows a warning' do
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-        expect(page).to have_content t("idv.modal.#{step_locale_key}.timeout")
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
+      it_behaves_like 'shows a warning'
     end
 
-    context 'with js' do
-      it 'shows a modal' do
-        expect(page).to have_css('.modal-warning', text: t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_css(
-          '.modal-warning',
-          text: strip_tags(t("idv.modal.#{step_locale_key}.timeout"))
-        )
-        expect(page).to have_current_path(idv_session_result_path) if step == :profile
-        expect(page).to have_current_path(idv_phone_result_path) if step == :phone
-      end
+    context 'with js', :js do
+      it_behaves_like 'shows a warning'
     end
   end
 

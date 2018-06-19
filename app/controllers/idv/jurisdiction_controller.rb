@@ -22,12 +22,12 @@ module Idv
         # The only invalid result here is due to an unsupported jurisdiction
         # and if it is missing from the params, it will be stopped by
         # `strong_params`.
-        redirect_to idv_jurisdiction_fail_url(:unsupported_jurisdiction)
+        redirect_to idv_jurisdiction_failure_url(:unsupported_jurisdiction)
       end
     end
 
-    def show
-      presenter = JurisdictionFailurePresenter.new(
+    def failure
+      presenter = Idv::JurisdictionFailurePresenter.new(
         reason: params[:reason],
         jurisdiction: user_session[:idv_jurisdiction],
         view_context: view_context

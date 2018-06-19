@@ -1,4 +1,5 @@
 shared_examples 'verification step max attempts' do |step, sp|
+  let(:locale) { LinkLocaleResolver.locale }
   let(:user) { user_with_2fa }
   let(:step_locale_key) do
     return :sessions if step == :profile
@@ -74,6 +75,7 @@ shared_examples 'verification step max attempts' do |step, sp|
         fill_out_idv_form_fail if step == :profile
         fill_out_phone_form_fail if step == :phone
         click_continue
+        click_on t('idv.modal.button.warning')
       end
 
       fill_out_idv_form_ok if step == :profile
@@ -94,7 +96,7 @@ shared_examples 'verification step max attempts' do |step, sp|
     max_attempts_less_one.times do
       yield
       click_idv_continue
-      click_button t('idv.modal.button.warning') if javascript_enabled?
+      click_on t('idv.modal.button.warning')
     end
     yield
     click_idv_continue

@@ -1,11 +1,11 @@
-- title @view_model.title
+- title t('idv.titles.sessions')
 
-h1.h3 = @view_model.title
+h1.h3 = t('idv.titles.sessions')
 
 p = link_to t('links.access_help'),
   'https://login.gov/help/privacy-and-security/how-does-logingov-protect-my-data/'
 
-= simple_form_for(@view_model.idv_form, url: idv_session_path,
+= simple_form_for(@idv_form, url: idv_session_path,
     html: { autocomplete: 'off', method: :put, role: 'form' }) do |f|
   = f.error_notification
   fieldset.ml0.p0.border-none
@@ -19,7 +19,7 @@ p = link_to t('links.access_help'),
           hint: t('idv.form.dob_hint'), hint_html: { id: 'dob-instructs', class: 'mb1' },
           pattern: '(0[1-9]|1[012])/(0[1-9]|1[0-9]|2[0-9]|3[01])/[0-9]{4}',
           input_html: { class: 'dob',
-            value: @view_model.idv_form.dob,
+            value: @idv_form.dob,
             'aria-describedby': 'dob-instructs' }
     .clearfix.mxn1
       .sm-col.sm-col-6.px1
@@ -27,7 +27,7 @@ p = link_to t('links.access_help'),
         = f.input :ssn, as: :tel,
           label: t('idv.form.ssn_label_html'), required: true,
           pattern: '^\d{3}-?\d{2}-?\d{4}$',
-          input_html: { class: 'ssn', value: @view_model.idv_form.ssn }
+          input_html: { class: 'ssn', value: @idv_form.ssn }
 
   h2.h3 = t('idv.messages.sessions.id_information_subtitle')
   p = t('idv.messages.sessions.id_information_message')
@@ -58,7 +58,7 @@ p = link_to t('links.access_help'),
           "data-error-message": t('idv.errors.unsupported_jurisdiction'),
           "data-error-message-sp": sp_error,\
         }
-        - selected_state = @view_model.idv_form.state || @view_model.selected_state
+        - selected_state = @idv_form.state || @selected_state
         = f.input :state, collection: us_states_territories,
           label: t('idv.form.state'), required: true,
           input_html: data_attrs, selected: selected_state,
@@ -69,9 +69,8 @@ p = link_to t('links.access_help'),
         = f.input :zipcode, as: :tel,
           label: t('idv.form.zipcode'), required: true,
           pattern: '(\d{5}([\-]\d{4})?)',
-          input_html: { class: 'zipcode', value: @view_model.idv_form.zipcode }
+          input_html: { class: 'zipcode', value: @idv_form.zipcode }
 
   .mt3
     button type='submit' class='btn btn-primary btn-wide' = t('forms.buttons.continue')
 = render 'shared/cancel', link: idv_cancel_path
-= render @view_model.modal_partial, view_model: @view_model
