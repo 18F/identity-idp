@@ -11,7 +11,7 @@ module Users
 
     def update
       @user_phone_form = UserPhoneForm.new(current_user)
-      @presenter = PhoneSetupPresenter.new(current_user)
+      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
       if @user_phone_form.submit(user_params).success?
         process_updates
         bypass_sign_in current_user
