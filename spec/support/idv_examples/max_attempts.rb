@@ -103,9 +103,10 @@ shared_examples 'verification step max attempts' do |step, sp|
   end
 
   def expect_user_to_be_unable_to_perform_idv(step)
-    expect(page).to have_content(t("idv.modal.#{step_locale_key}.heading"))
+    expect(page).to have_content(t("idv.modal.#{step_locale_key}.heading")) if step == :phone
+    expect(page).to have_content(t('idv.titles.hardfail', app: 'login.gov')) if step == :profile
     expect(current_url).to eq(idv_phone_failure_url(:fail, locale: locale)) if step == :phone
-    expect(current_url).to eq(idv_session_failure_url(:fail, locale: locale)) if step == :profile
+    expect(current_url).to eq(idv_fail_url) if step == :profile
   end
 
   def advance_to_phone_step
