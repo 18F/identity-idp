@@ -103,6 +103,7 @@ ignore_unused:
   - 'devise.two_factor_authentication.max_otp_login_attempts_reached'
   - 'devise.two_factor_authentication.max_otp_requests_reached'
   - 'devise.two_factor_authentication.max_personal_key_login_attempts_reached'
+  - 'devise.two_factor_authentication.max_piv_cac_login_attempts_reached'
   - 'devise.two_factor_authentication.phone_sms_info_html'
   - 'devise.two_factor_authentication.phone_sms_label'
   - 'devise.two_factor_authentication.phone_voice_info_html'
