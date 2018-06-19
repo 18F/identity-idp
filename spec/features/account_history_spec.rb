@@ -32,6 +32,14 @@ describe 'Account history' do
   let(:identity_with_link_timestamp) { identity_with_link.decorate.happened_at_in_words }
   let(:usps_mail_sent_again_timestamp) { usps_mail_sent_again_event.decorate.happened_at_in_words }
   let(:identity_without_link_timestamp) { identity_without_link.decorate.happened_at_in_words }
+  let(:new_personal_key_event) do
+    create(:event, event_type: :new_personal_key,
+                   user: user, created_at: Time.zone.now - 40.days)
+  end
+  let(:password_changed_event) do
+    create(:event, event_type: :password_changed,
+                   user: user, created_at: Time.zone.now - 30.days)
+  end
 
   before do
     sign_in_and_2fa_user(user)
@@ -40,7 +48,14 @@ describe 'Account history' do
   end
 
   scenario 'viewing account history' do
-    [account_created_event, usps_mail_sent_event, usps_mail_sent_again_event].each do |event|
+    events = [
+      account_created_event,
+      usps_mail_sent_event,
+      usps_mail_sent_again_event,
+      new_personal_key_event,
+      password_changed_event,
+    ]
+    events.each do |event|
       decorated_event = event.decorate
       expect(page).to have_content(decorated_event.event_type)
       expect(page).to have_content(decorated_event.happened_at_in_words)
@@ -70,5 +85,7 @@ describe 'Account history' do
     usps_mail_sent_again_event
     identity_with_link
     identity_without_link
+    new_personal_key_event
+    password_changed_event
   end
 end

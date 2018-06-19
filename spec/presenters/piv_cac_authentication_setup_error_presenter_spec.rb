@@ -37,13 +37,13 @@ describe PivCacAuthenticationSetupErrorPresenter do
   end
 
   describe '#title' do
-    let(:expected_title) { t('titles.piv_cac_setup.' + error ) }
+    let(:expected_title) { t('titles.piv_cac_setup.' + error) }
 
     it { expect(presenter.title).to eq expected_title }
   end
 
   describe '#heading' do
-    let(:expected_heading) { t('headings.piv_cac_setup.' + error ) }
+    let(:expected_heading) { t('headings.piv_cac_setup.' + error) }
 
     it { expect(presenter.heading).to eq expected_heading }
   end

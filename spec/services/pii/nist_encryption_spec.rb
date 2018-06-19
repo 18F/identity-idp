@@ -3,22 +3,22 @@ require 'rails_helper'
 # duplicated code in order to explicitly show the algorithm at work.
 
 describe 'NIST Encryption Model' do
-# Generate and store a 128-bit salt S.
-# Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
-# Generate random R.
-# D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) ^ Z1
-# E = hash( Z2 + R )
-# F = hash(E)
-# C = GCM_Encrypt(key = E, plaintext=PII)  #occurs outside AWS-KMS
-# Store F in password file, and store C and D.
-#
-# To decrypt PII and to verify passwords:
-# Compute Z1’, Z2’ = scrypt(S, password’)
-# R’ = KMS_GCM_Decrypt(key=server_secret, ciphertext=(D ^ Z1*)).
-# E’ = hash( Z2’ + R’)
-# F’ = hash(E’)
-# Check to see if F’ matches the entry in the password file; if so, allow the login.
-# plaintext_PII = GCM_Decrypt(key=E’, ciphertext = C)
+  # Generate and store a 128-bit salt S.
+  # Z1, Z2 = scrypt(S, password)   # split 256-bit output into two halves
+  # Generate random R.
+  # D = KMS_GCM_Encrypt(key=server_secret, plaintext=R) ^ Z1
+  # E = hash( Z2 + R )
+  # F = hash(E)
+  # C = GCM_Encrypt(key = E, plaintext=PII)  #occurs outside AWS-KMS
+  # Store F in password file, and store C and D.
+  #
+  # To decrypt PII and to verify passwords:
+  # Compute Z1, Z2 = scrypt(S, password)
+  # R = KMS_GCM_Decrypt(key=server_secret, ciphertext=(D ^ Z1)).
+  # E = hash(Z2 + R)
+  # F = hash(E)
+  # Check to see if F matches the entry in the password file; if so, allow the login.
+  # plaintext_PII = GCM_Decrypt(key=E, ciphertext = C)
 
   before do
     allow(FeatureManagement).to receive(:use_kms?).and_return(true)
@@ -74,24 +74,34 @@ describe 'NIST Encryption Model' do
       user = create(:user, password: password)
 
       expect(user.valid_password?(password)).to eq true
-      expect(user.user_access_key).to be_a Encryption::UserAccessKey
-      expect(user.user_access_key.random_r).to eq random_R
-      expect(user.encryption_key).to_not be_nil
-      expect(user.password_salt).to_not be_nil
 
-      hash_E = OpenSSL::Digest::SHA256.hexdigest(user.user_access_key.z2 + random_R)
-      hash_F = OpenSSL::Digest::SHA256.hexdigest(user.user_access_key.cek)
+      digest = Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
+        user.encrypted_password_digest
+      )
+      user_access_key = Encryption::UserAccessKey.new(
+        password: password,
+        salt: digest.password_salt,
+        cost: digest.password_cost
+      )
+      user_access_key.unlock(digest.encryption_key)
 
-      expect(user.encrypted_password).to eq hash_F
-      expect(user.user_access_key.cek).to eq hash_E
-      expect(user.user_access_key.encrypted_password).to eq hash_F
+      expect(user_access_key).to be_a Encryption::UserAccessKey
+      expect(user_access_key.random_r).to eq random_R
+      expect(digest.encryption_key).to_not be_nil
+      expect(digest.password_salt).to_not be_nil
 
-      user.user_access_key.unlock(user.encryption_key)
-      expect(user.user_access_key.cek).to eq(hash_E)
+      hash_E = OpenSSL::Digest::SHA256.hexdigest(user_access_key.z2 + random_R)
+      hash_F = OpenSSL::Digest::SHA256.hexdigest(user_access_key.cek)
 
-      encrypted_D = Base64.strict_decode64(user.encryption_key)
+      expect(digest.encrypted_password).to eq hash_F
+      expect(user_access_key.cek).to eq hash_E
+      expect(user_access_key.encrypted_password).to eq hash_F
 
-      expect(kms_prefix + xor(user.user_access_key.z1, ciphered_R)).to eq(encrypted_D)
+      expect(user_access_key.cek).to eq(hash_E)
+
+      encrypted_D = Base64.strict_decode64(digest.encryption_key)
+
+      expect(kms_prefix + xor(user_access_key.z1, ciphered_R)).to eq(encrypted_D)
     end
   end
 
@@ -125,7 +135,7 @@ describe 'NIST Encryption Model' do
       expect(Base64.strict_decode64(encrypted_key)).to eq(kms_prefix + encrypted_D)
 
       # unroll encrypted_C to verify it was encrypted with hash_E
-      cipher = Pii::Cipher.new
+      cipher = Encryption::AesCipher.new
 
       expect { cipher.decrypt(encrypted_C, hash_E) }.not_to raise_error
 
@@ -140,7 +150,9 @@ describe 'NIST Encryption Model' do
   end
 
   def open_envelope(envelope)
-    envelope.split(Pii::Encryptor::DELIMITER).map { |segment| Base64.strict_decode64(segment) }
+    envelope.split(Encryption::Encryptors::AesEncryptor::DELIMITER).map do |segment|
+      Base64.strict_decode64(segment)
+    end
   end
 
   def hex_to_bin(str)

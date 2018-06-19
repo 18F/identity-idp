@@ -13,7 +13,7 @@ class OtpVerificationForm
   attr_reader :code, :user
 
   def valid_direct_otp_code?
-    return false unless code =~ pattern_matching_otp_code_format
+    return false unless code.match? pattern_matching_otp_code_format
     user.authenticate_direct_otp(code)
   end
 

@@ -11,10 +11,10 @@ RSpec.describe OtpRateLimiter do
       expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(false)
     end
 
-    it 'is true after maxretry_times attemps in findtime minutes' do
+    it 'is true after maxretry_times attemps +1 in findtime minutes' do
       expect(otp_rate_limiter.exceeded_otp_send_limit?).to eq(false)
 
-      Figaro.env.otp_delivery_blocklist_maxretry.to_i.times do
+      (Figaro.env.otp_delivery_blocklist_maxretry.to_i + 1).times do
         otp_rate_limiter.increment
       end
 

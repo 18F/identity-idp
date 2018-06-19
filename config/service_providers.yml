@@ -671,4 +671,32 @@ production:
     return_to_sp_url: 'https://sam.gov/portal/SAM'
     redirect_uris:
       - 'https://sam.gov/portal/SAM'
+      - 'https://www.sam.gov/portal/SAM'
+    restrict_to_deploy_env: 'prod'
+
+  # SAM – System for Award Management / testing prod from UAT
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:gsa:sam_uat':
+    agency_id: 9
+    friendly_name: 'SAM - UAT'
+    agency: 'GSA'
+    logo: 'sam.png'
+    cert: 'sam_prod'
+    return_to_sp_url: 'https://uat.sam.gov/portal/SAM'
+    redirect_uris:
+      - 'https://uat.sam.gov/portal/SAM'
+    restrict_to_deploy_env: 'prod'
+
+  # DOE - Fossil Energy - Import/Export Authorization Portal for Natural Gas
+  'urn:gov:gsa:openidconnect.profiles:sp:sso:doe:fergas':
+    agency_id: 10
+    friendly_name: 'Import/Export Authorization Portal for Natural Gas'
+    agency: 'DOE'
+    logo: 'doe.png'
+    cert: 'doe_prod'
+    return_to_sp_url: 'https://fossil.energy.gov/fergas-fe/#/login'
+    redirect_uris:
+      - 'https://fossil.energy.gov/fergas-fe/#/certify_redirect'
+      - 'https://fossil.energy.gov/fergas-fe/#/login'
+      - 'https://fossil.energy.gov/fergas-fe/#/login_redirect'
+      - 'https://fossil.energy.gov/fergas-fe/#/notice/15'
     restrict_to_deploy_env: 'prod'

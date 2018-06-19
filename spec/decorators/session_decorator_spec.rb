@@ -62,8 +62,12 @@ RSpec.describe SessionDecorator do
   end
 
   describe '#cancel_link_url' do
-    it 'returns root url' do
-      expect(subject.cancel_link_url).to eq 'http://www.example.com/'
+    it 'returns view_context.root url' do
+      view_context = ActionController::Base.new.view_context
+      allow(view_context).to receive(:root_url).and_return('http://www.example.com')
+      decorator = SessionDecorator.new(view_context: view_context)
+
+      expect(decorator.cancel_link_url).to eq 'http://www.example.com'
     end
   end
 end

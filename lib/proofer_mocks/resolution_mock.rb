@@ -8,10 +8,10 @@ class ResolutionMock < Proofer::Base
 
     raise 'Failed to contact proofing vendor' if first_name =~ /Fail/i
 
-    if first_name =~ /Bad/i
+    if first_name.match?(/Bad/i)
       result.add_error(:first_name, 'Unverified first name.')
 
-    elsif applicant[:ssn] =~ /6666/
+    elsif applicant[:ssn].match?(/6666/)
       result.add_error(:ssn, 'Unverified SSN.')
 
     elsif applicant[:zipcode] == '00000'

@@ -164,7 +164,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prompt_to_set_up_2fa
-    redirect_to phone_setup_url
+    redirect_to two_factor_options_url
   end
 
   def prompt_to_enter_otp
@@ -184,12 +184,17 @@ class ApplicationController < ActionController::Base
   end
 
   def render_not_found
-    render template: 'pages/page_not_found', layout: false, status: 404, formats: :html
+    render template: 'pages/page_not_found', layout: false, status: :not_found, formats: :html
   end
 
   def render_timeout(exception)
     analytics.track_event(Analytics::RESPONSE_TIMED_OUT, analytics_exception_info(exception))
-    render template: 'pages/page_took_too_long', layout: false, status: 503, formats: :html
+    render template: 'pages/page_took_too_long',
+           layout: false, status: :service_unavailable, formats: :html
+  end
+
+  def render_full_width(template, **opts)
+    render template, **opts, layout: 'base'
   end
 
   def analytics_exception_info(exception)

@@ -86,7 +86,7 @@ describe Idv::Agent do
             errors: {},
             messages: [resolution_message, state_id_message],
             success: true,
-            exception: nil,
+            exception: nil
           )
         end
       end
@@ -99,7 +99,7 @@ describe Idv::Agent do
             errors: { bad: ['stuff'] },
             messages: [failed_message],
             success: false,
-            exception: nil,
+            exception: nil
           )
         end
       end

@@ -29,7 +29,8 @@ feature 'idv jurisdiction step' do
         select 'Alabama', from: 'jurisdiction_state'
         click_idv_continue
 
-        expect(page).to have_current_path(idv_jurisdiction_fail_path(reason: :unsupported_jurisdiction))
+        expect(page).
+          to have_current_path(idv_jurisdiction_fail_path(reason: :unsupported_jurisdiction))
         expect(page).to have_content(t('idv.titles.unsupported_jurisdiction', state: 'Alabama'))
       end
     end

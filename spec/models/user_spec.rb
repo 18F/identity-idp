@@ -324,7 +324,9 @@ describe User do
   describe 'deleting identities' do
     it 'does not delete identities when the user is destroyed preventing uuid reuse' do
       user = create(:user, :signed_up)
-      user.identities << Identity.create(service_provider: 'entity_id', session_uuid: SecureRandom.uuid)
+      user.identities << Identity.create(
+        service_provider: 'entity_id', session_uuid: SecureRandom.uuid
+      )
       user_id = user.id
       user.destroy!
       expect(Identity.where(user_id: user_id).length).to eq 1
@@ -408,14 +410,14 @@ describe User do
   end
 
   context 'when a password is updated' do
-    it 'encrypted_password_digest is a json string of encryption parameters' do
+    it 'writes encrypted_password_digest and the legacy password attributes' do
       user = create(:user)
 
       expected = {
-        encryption_key: user.encryption_key,
         encrypted_password: user.encrypted_password,
-        password_cost: user.password_cost,
+        encryption_key: user.encryption_key,
         password_salt: user.password_salt,
+        password_cost: user.password_cost,
       }.to_json
 
       expect(user.encrypted_password_digest).to eq(expected)

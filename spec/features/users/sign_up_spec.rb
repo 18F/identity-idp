@@ -55,7 +55,8 @@ feature 'Sign Up' do
 
     allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
     sign_up_and_set_password
-    fill_in 'Phone', with: '202-555-1212'
+    select_2fa_option('sms')
+    fill_in 'user_phone_form_phone', with: '202-555-1212'
     click_send_security_code
 
     expect(current_path).to eq(phone_setup_path)
@@ -81,7 +82,7 @@ feature 'Sign Up' do
         click_on t('links.cancel')
         click_on t('sign_up.buttons.cancel')
 
-        expect(page).to have_current_path(sign_up_start_path)
+        expect(page).to have_current_path(sign_up_start_path(request_id: '123'))
         expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
       end
     end
@@ -154,13 +155,26 @@ feature 'Sign Up' do
   it_behaves_like 'creating an account using authenticator app for 2FA', :saml
   it_behaves_like 'creating an account using authenticator app for 2FA', :oidc
 
+  it_behaves_like 'creating an account using PIV/CAC for 2FA', :saml
+  it_behaves_like 'creating an account using PIV/CAC for 2FA', :oidc
+
   it 'allows a user to choose TOTP as 2FA method during sign up' do
-    user = create(:user)
-    sign_in_user(user)
+    sign_in_user
     set_up_2fa_with_authenticator_app
     click_acknowledge_personal_key
 
     expect(page).to have_current_path account_path
+  end
+
+  it 'does not allow a user to choose piv/cac as 2FA method during sign up' do
+    allow(PivCacService).to receive(:piv_cac_available_for_agency?).and_return(false)
+    allow(FeatureManagement).to receive(:piv_cac_enabled?).and_return(true)
+    begin_sign_up_with_sp_and_loa(loa3: false)
+
+    expect(page).to have_current_path two_factor_options_path
+    expect(page).not_to have_content(
+      t('devise.two_factor_authentication.two_factor_choice_options.piv_cac')
+    )
   end
 
   it 'does not bypass 2FA when accessing authenticator_setup_path if the user is 2FA enabled' do
@@ -168,11 +182,12 @@ feature 'Sign Up' do
     sign_in_user(user)
     visit authenticator_setup_path
 
-    expect(page).to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
+    expect(page).
+      to have_current_path login_two_factor_path(otp_delivery_preference: 'sms', reauthn: false)
   end
 
   it 'prompts to sign in when accessing authenticator_setup_path before signing in' do
-    user = create(:user, :signed_up)
+    create(:user, :signed_up)
     visit authenticator_setup_path
 
     expect(page).to have_current_path root_path
@@ -195,6 +210,36 @@ feature 'Sign Up' do
 
       expect(page.response_headers['Content-Security-Policy']).
         to(include('style-src \'self\' \'unsafe-inline\''))
+    end
+  end
+
+  describe 'user is partially authenticated and phone 2fa is not configured' do
+    context 'with piv/cac enabled' do
+      let(:user) do
+        create(:user, :with_piv_or_cac)
+      end
+
+      before(:each) do
+        sign_in_user(user)
+      end
+
+      scenario 'can not access phone_setup' do
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+        visit phone_setup_path
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+      end
+
+      scenario 'can not access phone_setup via login/two_factor/sms' do
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+        visit login_two_factor_path(otp_delivery_preference: :sms)
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+      end
+
+      scenario 'can not access phone_setup via login/two_factor/voice' do
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+        visit login_two_factor_path(otp_delivery_preference: :voice)
+        expect(page).to have_current_path login_two_factor_piv_cac_path
+      end
     end
   end
 end

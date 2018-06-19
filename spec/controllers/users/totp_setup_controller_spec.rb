@@ -6,7 +6,7 @@ describe Users::TotpSetupController, devise: true do
       expect(subject).to have_actions(
         :before,
         :authenticate_user!,
-        [:confirm_two_factor_authenticated, if: :two_factor_enabled?],
+        [:confirm_two_factor_authenticated, if: :two_factor_enabled?]
       )
     end
   end

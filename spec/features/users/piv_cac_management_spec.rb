@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 feature 'PIV/CAC Management' do
-
   def find_form(page, attributes)
     page.all('form').detect do |form|
       attributes.all? { |key, value| form[key] == value }
@@ -21,7 +20,7 @@ feature 'PIV/CAC Management' do
         Identity.create(
           user_id: user.id,
           service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.now,
+          last_authenticated_at: Time.zone.now
         )
       end
 
@@ -38,17 +37,16 @@ feature 'PIV/CAC Management' do
 
         sign_in_and_2fa_user(user)
         visit account_path
-        expect(page).to have_link(t('forms.buttons.enable'), href: setup_piv_cac_url)
+        click_link t('forms.buttons.enable'), href: setup_piv_cac_url
 
-        visit setup_piv_cac_url
         expect(page).to have_link(t('forms.piv_cac_setup.submit'))
+
         nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
 
-        visit_piv_cac_service(setup_piv_cac_url, {
-          nonce: nonce,
-          uuid: uuid,
-          subject: 'SomeIgnoredSubject'
-        })
+        visit_piv_cac_service(setup_piv_cac_url,
+                              nonce: nonce,
+                              uuid: uuid,
+                              subject: 'SomeIgnoredSubject')
 
         expect(current_path).to eq account_path
 
@@ -68,6 +66,32 @@ feature 'PIV/CAC Management' do
         form = find_form(page, action: disable_piv_cac_url)
         expect(form).to be_nil
       end
+
+      context 'when the user does not have a phone number yet' do
+        it 'prompts to set one up after configuring PIV/CAC' do
+          allow(FeatureManagement).to receive(:prefill_otp_codes?).and_return(true)
+          stub_piv_cac_service
+
+          user.update(phone: nil, otp_secret_key: 'secret')
+          sign_in_and_2fa_user(user)
+          visit account_path
+          click_link t('forms.buttons.enable'), href: setup_piv_cac_url
+
+          expect(page).to have_current_path(setup_piv_cac_path)
+
+          nonce = get_piv_cac_nonce_from_link(find_link(t('forms.piv_cac_setup.submit')))
+          visit_piv_cac_service(setup_piv_cac_url,
+                                nonce: nonce,
+                                uuid: SecureRandom.uuid,
+                                subject: 'SomeIgnoredSubject')
+
+          expect(page).to have_current_path(account_recovery_setup_path)
+
+          configure_backup_phone
+
+          expect(page).to have_current_path account_path
+        end
+      end
     end
 
     context 'with a service provider not allowed to use piv/cac' do
@@ -75,7 +99,7 @@ feature 'PIV/CAC Management' do
         Identity.create(
           user_id: user.id,
           service_provider: 'http://localhost:3000',
-          last_authenticated_at: Time.now,
+          last_authenticated_at: Time.zone.now
         )
       end
 
