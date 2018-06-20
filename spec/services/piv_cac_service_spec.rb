@@ -37,10 +37,10 @@ describe PivCacService do
       end
 
       it 'returns the test data' do
-        token = 'TEST:{"uuid":"hijackedUUID","dn":"hijackedDN"}'
+        token = 'TEST:{"uuid":"hijackedUUID","subject":"hijackedDN"}'
         expect(PivCacService.decode_token(token)).to eq(
           'uuid' => 'hijackedUUID',
-          'dn' => 'hijackedDN'
+          'subject' => 'hijackedDN'
         )
       end
     end
@@ -110,7 +110,7 @@ describe PivCacService do
             ).
             to_return(
               status: [200, 'Ok'],
-              body: '{"dn":"dn","uuid":"uuid"}'
+              body: '{"subject":"dn","uuid":"uuid"}'
             )
         end
 
@@ -121,14 +121,14 @@ describe PivCacService do
 
         it 'returns the decoded JSON from the target service' do
           expect(PivCacService.decode_token('foo')).to eq(
-            'dn' => 'dn',
+            'subject' => 'dn',
             'uuid' => 'uuid'
           )
         end
 
         describe 'with test data' do
           it 'returns an error' do
-            token = 'TEST:{"uuid":"hijackedUUID","dn":"hijackedDN"}'
+            token = 'TEST:{"uuid":"hijackedUUID","subject":"hijackedDN"}'
             expect(PivCacService.decode_token(token)).to eq(
               'error' => 'token.bad'
             )

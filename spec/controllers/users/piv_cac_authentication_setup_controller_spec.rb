@@ -69,7 +69,7 @@ describe Users::PivCacAuthenticationSetupController do
       let(:good_token) { 'good-token' }
       let(:good_token_response) do
         {
-          'dn' => 'some dn',
+          'subject' => 'some dn',
           'uuid' => 'some-random-string',
           'nonce' => nonce,
         }
