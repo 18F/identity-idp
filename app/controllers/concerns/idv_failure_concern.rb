@@ -2,13 +2,10 @@ module IdvFailureConcern
   extend ActiveSupport::Concern
 
   def idv_step_failure_reason
-    if idv_attempter.exceeded? || step_attempts_exceeded?
-      :fail
-    elsif step.vendor_validator_job_failed?
-      :jobfail
-    elsif !step.vendor_validation_passed?
-      step.vendor_validation_timed_out? ? :timeout : :warning
-    end
+    return :fail if fail?
+    return :jobfail if jobfail?
+    return :timeout if timeout?
+    return :warning if warning?
   end
 
   def render_idv_step_failure(step, reason)
@@ -21,6 +18,22 @@ module IdvFailureConcern
   end
 
   private
+
+  def fail?
+    idv_attempter.exceeded? || step_attempts_exceeded?
+  end
+
+  def jobfail?
+    step.vendor_validator_job_failed?
+  end
+
+  def timeout?
+    !step.vendor_validation_passed? && step.vendor_validation_timed_out?
+  end
+
+  def warning?
+    !step.vendor_validation_passed? && !step.vendor_validation_timed_out?
+  end
 
   def failure_presenter(step)
     Idv::MaxAttemptsFailurePresenter.new(
