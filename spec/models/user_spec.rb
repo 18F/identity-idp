@@ -409,6 +409,15 @@ describe User do
     end
   end
 
+  describe '#authenticatable_salt' do
+    it 'returns the password salt' do
+      user = create(:user)
+      salt = JSON.parse(user.encrypted_password_digest)['password_salt']
+
+      expect(user.authenticatable_salt).to eq(salt)
+    end
+  end
+
   context 'when a password is updated' do
     it 'writes encrypted_password_digest and the legacy password attributes' do
       user = create(:user)

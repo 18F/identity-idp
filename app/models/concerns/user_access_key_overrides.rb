@@ -23,6 +23,16 @@ module UserAccessKeyOverrides
     write_legacy_password_attributes(digest)
   end
 
+  # This is a devise method, which we are overriding. This should not be removed
+  # as Devise depends on this for things like building the key to use when
+  # storing the user in the session.
+  def authenticatable_salt
+    return if encrypted_password_digest.blank?
+    Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
+      encrypted_password_digest
+    ).password_salt
+  end
+
   private
 
   def write_legacy_password_attributes(digest)
