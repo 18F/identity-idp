@@ -343,5 +343,25 @@ describe Idv::SessionsController do
         expect(response).to redirect_to(account_path)
       end
     end
+
+    describe '#failure' do
+      context 'reason == :dupe_ssn' do
+        it 'renders the dupe_ssn failure screen' do
+          get :failure, params: { reason: :dupe_ssn }
+
+          expect(response).to render_template('shared/_failure')
+        end
+      end
+
+      context 'reason != :dupe_ssn' do
+        let(:reason) { :fail }
+
+        it 'calls `render_step_failure` with step_name of :sessions and the reason' do
+          expect(controller).to receive(:render_idv_step_failure).with(:sessions, reason)
+
+          get :failure, params: { reason: reason }
+        end
+      end
+    end
   end
 end
