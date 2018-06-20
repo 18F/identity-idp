@@ -57,6 +57,7 @@ module TwoFactorAuthentication
         user_email: current_user.email,
         remember_device_available: false,
         totp_enabled: current_user.totp_enabled?,
+        phone_enabled: current_user.phone_enabled?,
         piv_cac_nonce: piv_cac_nonce,
       }.merge(generic_data)
     end
