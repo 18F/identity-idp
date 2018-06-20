@@ -1,6 +1,6 @@
 module Idv
   class SsnFailurePresenter < FailurePresenter
-    attr_reader :decorated_session, :view_context
+    attr_reader :view_context
 
     delegate :account_path,
              :destroy_user_session_path,
@@ -9,9 +9,8 @@ module Idv
              :t,
              to: :view_context
 
-    def initialize(decorated_session:, view_context:)
+    def initialize(view_context:)
       super(:failure)
-      @decorated_session = decorated_session
       @view_context = view_context
     end
 
@@ -32,7 +31,7 @@ module Idv
     end
 
     def next_steps
-      [try_again_step, sign_out_step, profile_step].compact
+      [try_again_step, sign_out_step, profile_step]
     end
 
     private

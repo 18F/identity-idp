@@ -84,10 +84,7 @@ module Idv
     end
 
     def render_dupe_ssn_failure
-      presenter = Idv::SsnFailurePresenter.new(
-        decorated_session: decorated_session,
-        view_context: view_context
-      )
+      presenter = Idv::SsnFailurePresenter.new(view_context: view_context)
       render_failure('shared/_failure', presenter)
     end
 
