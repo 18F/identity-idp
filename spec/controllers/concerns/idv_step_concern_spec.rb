@@ -20,7 +20,7 @@ describe 'IdvStepConcern' do
         render plain: 'Hello'
       end
 
-      def failure_url(_)
+      def failure_url(__)
         'foobar'
       end
     end

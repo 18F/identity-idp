@@ -262,7 +262,7 @@ describe Idv::SessionsController do
 
             expect(@analytics).to have_received(:track_event).
               with(Analytics::IDV_BASIC_INFO_SUBMITTED_VENDOR, result)
-              expect(response).to redirect_to(idv_session_failure_url(:warning))
+            expect(response).to redirect_to(idv_session_failure_url(:warning))
           end
         end
 
