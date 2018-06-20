@@ -32,6 +32,35 @@ es:
       unsupported_jurisdiction: Lo sentimos, no podemos verificar personas de este
         estado.
       unsupported_jurisdiction_sp: Visita %{sp_name} para acceder a tu cuenta.
+    failure:
+      attempts:
+        one: Tiene usted <strong> 1 intento restante.</ strong>
+        other: Tiene usted <strong>%{count} intentos restantes.</strong>
+      button:
+        fail: Bueno
+        jobfail: Inténtelo de nuevo mañana
+        timeout: Inténtelo de nuevo
+        warning: Inténtelo de nuevo
+      errors:
+        link: contáctanos
+        text: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo mañana.
+      phone:
+        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
+          durante 24 horas</strong>.
+        heading: No hemos podido encontrar registros que coincidan con la información
+          de su teléfono.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Compruebe la información que ingresó.
+      sessions:
+        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
+          durante 24 horas</strong>.
+        heading: No hemos podido encontrar registros que coincidan con su información
+          personal.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Compruebe la información que ingresó. Los errores comunes son números
+          incorrectos de Seguro Social, código postal o fecha de nacimiento.
     form:
       activate_by_mail: obtener un código por correo electrónico en su lugar ›
       address1: Dirección
@@ -134,35 +163,6 @@ es:
         success: Debe llegar en 5 a 10 días laborales.
       agencies_login: NOT TRANSLATED YET
       agency_login_html: NOT TRANSLATED YET
-    modal:
-      attempts:
-        one: Tiene usted <strong> 1 intento restante.</ strong>
-        other: Tiene usted <strong>%{count} intentos restantes.</strong>
-      button:
-        fail: Bueno
-        jobfail: Inténtelo de nuevo mañana
-        timeout: Inténtelo de nuevo
-        warning: Inténtelo de nuevo
-      errors:
-        link: contáctanos
-        text: Si sigues recibiendo estos errores, %{link} o vuelve a intentarlo mañana.
-      phone:
-        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
-          durante 24 horas</strong>.
-        heading: No hemos podido encontrar registros que coincidan con la información
-          de su teléfono.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Compruebe la información que ingresó.
-      sessions:
-        fail: Para su seguridad, la verificación de identidad de su cuenta está <strong>bloqueada
-          durante 24 horas</strong>.
-        heading: No hemos podido encontrar registros que coincidan con su información
-          personal.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Compruebe la información que ingresó. Los errores comunes son números
-          incorrectos de Seguro Social, código postal o fecha de nacimiento.
     review:
       dob: Fecha de nacimiento
       full_name: Nombre completo

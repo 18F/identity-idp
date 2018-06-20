@@ -16,10 +16,10 @@ shared_examples 'fail to verify idv info' do |step|
   it 'renders a warning failure screen and lets the user try again' do
     expect(page).to have_current_path(session_failure_path) if step == :profile
     expect(page).to have_current_path(phone_failure_path) if step == :phone
-    expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-    expect(page).to have_content t("idv.modal.#{step_locale_key}.warning")
+    expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+    expect(page).to have_content t("idv.failure.#{step_locale_key}.warning")
 
-    click_on t('idv.modal.button.warning')
+    click_on t('idv.failure.button.warning')
 
     if step == :profile
       fill_out_idv_form_ok

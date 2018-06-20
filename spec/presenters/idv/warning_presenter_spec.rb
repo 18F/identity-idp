@@ -74,6 +74,14 @@ describe Idv::WarningPresenter do
     end
   end
 
+  describe '#error' do
+    subject { presenter.send(:error) }
+
+    it 'includes the contact url' do
+      expect(subject).to include(MarketingSite.contact_url)
+    end
+  end
+
   def mock_view_context
     view_context = ActionView::Base.new
     allow(view_context).to receive(:idv_phone_path).and_return('idv phone path')

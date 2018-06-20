@@ -15,7 +15,7 @@ feature 'idv state id data entry', :idv_job do
     fill_in :profile_state_id_number, with: '000000000'
     click_idv_continue
 
-    expect(page).to have_content t('idv.modal.sessions.warning')
+    expect(page).to have_content t('idv.failure.sessions.warning')
     expect(current_path).to eq(idv_session_failure_path(:warning, locale: locale))
   end
 

@@ -97,7 +97,7 @@ ignore_unused:
   - 'errors.not_authorized'
   - 'event_types.*'
   - 'idv.errors.pattern_mismatch.*'
-  - 'idv.modal.*'
+  - 'idv.failure.*'
   - 'links.remove'
   - 'valid_email.validations.email.invalid'
   - 'zxcvbn.*'

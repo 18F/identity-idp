@@ -17,15 +17,15 @@ module Idv
     end
 
     def title
-      t("idv.modal.#{step_name}.heading")
+      t("idv.failure.#{step_name}.heading")
     end
 
     def header
-      t("idv.modal.#{step_name}.heading")
+      t("idv.failure.#{step_name}.heading")
     end
 
     def description
-      t("idv.modal.#{step_name}.#{reason}")
+      t("idv.failure.#{step_name}.#{reason}")
     end
 
     def warning_message
@@ -33,7 +33,7 @@ module Idv
     end
 
     def button_text
-      t("idv.modal.button.#{reason}")
+      t("idv.failure.button.#{reason}")
     end
 
     def button_path
@@ -43,12 +43,12 @@ module Idv
     private
 
     def warning
-      t('idv.modal.attempts', count: remaining_attempts)
+      t('idv.failure.attempts', count: remaining_attempts)
     end
 
     def error
-      link = link_to(t('idv.modal.errors.link'), '')
-      t('idv.modal.errors.text', link: link)
+      link = link_to(t('idv.failure.errors.link'), MarketingSite.contact_url)
+      t('idv.failure.errors.text', link: link)
     end
   end
 end

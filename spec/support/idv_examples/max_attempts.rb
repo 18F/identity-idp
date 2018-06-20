@@ -48,7 +48,7 @@ shared_examples 'verification step max attempts' do |step, sp|
         click_link t('links.sign_in')
         sign_in_live_with_2fa(user)
 
-        expect(page).to_not have_content(t("idv.modal.#{step_locale_key}.heading"))
+        expect(page).to_not have_content(t("idv.failure.#{step_locale_key}.heading"))
         expect(current_url).to eq(idv_jurisdiction_url)
 
         fill_out_idv_jurisdiction_ok
@@ -63,8 +63,8 @@ shared_examples 'verification step max attempts' do |step, sp|
 
     context 'with js', :js do
       scenario 'user sees the failure screen' do
-        expect(page).to have_content(t("idv.modal.#{step_locale_key}.heading"))
-        expect(page).to have_content(strip_tags(t("idv.modal.#{step_locale_key}.fail")))
+        expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading"))
+        expect(page).to have_content(strip_tags(t("idv.failure.#{step_locale_key}.fail")))
       end
     end
   end
@@ -75,7 +75,7 @@ shared_examples 'verification step max attempts' do |step, sp|
         fill_out_idv_form_fail if step == :profile
         fill_out_phone_form_fail if step == :phone
         click_continue
-        click_on t('idv.modal.button.warning')
+        click_on t('idv.failure.button.warning')
       end
 
       fill_out_idv_form_ok if step == :profile
@@ -96,14 +96,14 @@ shared_examples 'verification step max attempts' do |step, sp|
     max_attempts_less_one.times do
       yield
       click_idv_continue
-      click_on t('idv.modal.button.warning')
+      click_on t('idv.failure.button.warning')
     end
     yield
     click_idv_continue
   end
 
   def expect_user_to_be_unable_to_perform_idv(step)
-    expect(page).to have_content(t("idv.modal.#{step_locale_key}.heading")) if step == :phone
+    expect(page).to have_content(t("idv.failure.#{step_locale_key}.heading")) if step == :phone
     expect(page).to have_content(t('idv.titles.hardfail', app: 'login.gov')) if step == :profile
     expect(current_url).to eq(idv_phone_failure_url(:fail, locale: locale)) if step == :phone
     expect(current_url).to eq(idv_fail_url) if step == :profile

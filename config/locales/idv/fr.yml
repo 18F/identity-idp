@@ -37,6 +37,36 @@ fr:
         de cet état.
       unsupported_jurisdiction_sp: Veuillez visiter %{sp_name} pour accéder à votre
         compte.
+    failure:
+      attempts:
+        one: Il ne vous reste qu' strongune tentative./strong
+        other: Il ne vous reste que strong%{count} tentatives./strong
+      button:
+        fail: OK
+        jobfail: Essayez à nouveau demain
+        timeout: Essayez à nouveau
+        warning: Essayez à nouveau
+      errors:
+        link: contactez-nous
+        text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
+      phone:
+        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+          <strong>verrouillée pendant 24 heures</strong>.
+        heading: Nous ne trouvons pas de données qui correspondent à vos informations
+          téléphoniques.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Veuillez vérifier l'information que vous avez fournie.
+      sessions:
+        fail: Pour votre sécurité, la vérification d'identité de votre compte est
+          <strong>verrouillée pendant 24 heures</strong>.
+        heading: Nous ne trouvons pas de données qui correspondent à vos informations
+          téléphoniques.
+        jobfail: NOT TRANSLATED YET
+        timeout: NOT TRANSLATED YET
+        warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
+          de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
+          des erreurs communes.
     form:
       activate_by_mail: obtenir un code par courrier à la place ›
       address1: Adresse
@@ -144,36 +174,6 @@ fr:
         success: Elle devrait arriver dans 5 à 10 jours ouvrables.
       agencies_login: NOT TRANSLATED YET
       agency_login_html: NOT TRANSLATED YET
-    modal:
-      attempts:
-        one: Il ne vous reste qu' strongune tentative./strong
-        other: Il ne vous reste que strong%{count} tentatives./strong
-      button:
-        fail: OK
-        jobfail: Essayez à nouveau demain
-        timeout: Essayez à nouveau
-        warning: Essayez à nouveau
-      errors:
-        link: contactez-nous
-        text: Si vous continuez à recevoir ces erreurs, %{link} ou réessayez demain.
-      phone:
-        fail: Pour votre sécurité, la vérification d'identité de votre compte est
-          <strong>verrouillée pendant 24 heures</strong>.
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Veuillez vérifier l'information que vous avez fournie.
-      sessions:
-        fail: Pour votre sécurité, la vérification d'identité de votre compte est
-          <strong>verrouillée pendant 24 heures</strong>.
-        heading: Nous ne trouvons pas de données qui correspondent à vos informations
-          téléphoniques.
-        jobfail: NOT TRANSLATED YET
-        timeout: NOT TRANSLATED YET
-        warning: Veuillez vérifier l'information que vous avez fournie. Un numéro
-          de sécurité sociale, un code ZIP ou une date de naissance mal écrits sont
-          des erreurs communes.
     review:
       dob: Date de naissance
       full_name: Nom complet

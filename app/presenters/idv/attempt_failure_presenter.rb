@@ -11,15 +11,15 @@ module Idv
     end
 
     def title
-      t("idv.modal.#{step_name}.heading")
+      t("idv.failure.#{step_name}.heading")
     end
 
     def header
-      t("idv.modal.#{step_name}.heading")
+      t("idv.failure.#{step_name}.heading")
     end
 
     def description
-      t("idv.modal.#{step_name}.warning")
+      t("idv.failure.#{step_name}.warning")
     end
   end
 end

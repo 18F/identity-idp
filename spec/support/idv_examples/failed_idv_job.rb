@@ -24,8 +24,8 @@ shared_examples 'failed idv job' do |step|
     it 'renders a jobfail failure screen' do
       expect(page).to have_current_path(session_failure_path(:jobfail)) if step == :profile
       expect(page).to have_current_path(phone_failure_path(:jobfail)) if step == :phone
-      expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-      expect(page).to have_content t("idv.modal.#{step_locale_key}.jobfail")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.jobfail")
     end
   end
 
@@ -50,8 +50,8 @@ shared_examples 'failed idv job' do |step|
     it 'renders a timeout failure page' do
       expect(page).to have_current_path(session_failure_path(:timeout)) if step == :profile
       expect(page).to have_current_path(phone_failure_path(:timeout)) if step == :phone
-      expect(page).to have_content t("idv.modal.#{step_locale_key}.heading")
-      expect(page).to have_content t("idv.modal.#{step_locale_key}.timeout")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.heading")
+      expect(page).to have_content t("idv.failure.#{step_locale_key}.timeout")
     end
   end
 
