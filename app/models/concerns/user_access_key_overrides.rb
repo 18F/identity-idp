@@ -23,6 +23,13 @@ module UserAccessKeyOverrides
     write_legacy_password_attributes(digest)
   end
 
+  def authenticatable_salt
+    return if encrypted_password_digest.blank?
+    Encryption::PasswordVerifier::PasswordDigest.parse_from_string(
+      encrypted_password_digest
+    ).password_salt
+  end
+
   private
 
   def write_legacy_password_attributes(digest)
