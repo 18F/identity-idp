@@ -28,8 +28,16 @@ feature 'Accessibility on pages that require authentication', :js do
   end
 
   describe '2FA pages' do
+    scenario 'two factor options page' do
+      sign_up_and_set_password
+
+      expect(current_path).to eq(two_factor_options_path)
+      expect(page).to be_accessible
+    end
+
     scenario 'phone setup page' do
       sign_up_and_set_password
+      click_button t('forms.buttons.continue')
 
       expect(current_path).to eq(phone_setup_path)
       expect(page).to be_accessible

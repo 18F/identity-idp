@@ -6,9 +6,9 @@ feature 'Session decryption' do
       sign_in_and_2fa_user
 
       session_encryptor = Rails.application.config.session_options[:serializer]
-      allow(session_encryptor).to receive(:load).and_raise(Pii::EncryptionError)
+      allow(session_encryptor).to receive(:load).and_raise(Encryption::EncryptionError)
 
-      expect { visit account_path }.to raise_error(Pii::EncryptionError)
+      expect { visit account_path }.to raise_error(Encryption::EncryptionError)
 
       allow(session_encryptor).to receive(:load).and_call_original
       visit account_path

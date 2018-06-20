@@ -76,22 +76,10 @@ describe Idv::JurisdictionController do
       controller.user_session[:idv_jurisdiction] = supported_jurisdiction
     end
 
-    it 'renders the `show` template' do
+    it 'renders the `_failure` template' do
       get :show, params: { reason: reason }
 
-      expect(response).to render_template(:show)
-    end
-
-    it 'puts the jurisdiction from the user_session into @state' do
-      get :show, params: { reason: reason }
-
-      expect(assigns(:state)).to eq(supported_jurisdiction)
-    end
-
-    it 'puts the reason from the params in @reason' do
-      get :show, params: { reason: reason }
-
-      expect(assigns(:reason)).to eq(reason)
+      expect(response).to render_template('shared/_failure')
     end
   end
 end

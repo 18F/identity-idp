@@ -3,7 +3,10 @@ module Users
     include UserAuthenticator
     include PivCacConcern
 
-    before_action :confirm_two_factor_authenticated
+    before_action :authenticate_user!
+    before_action :confirm_two_factor_authenticated,
+                  if: :two_factor_enabled?,
+                  except: :redirect_to_piv_cac_service
     before_action :authorize_piv_cac_setup, only: :new
     before_action :authorize_piv_cac_disable, only: :delete
 
@@ -11,9 +14,7 @@ module Users
       if params.key?(:token)
         process_piv_cac_setup
       else
-        # add a nonce that we track for the return
         analytics.track_event(Analytics::USER_REGISTRATION_PIV_CAC_SETUP_VISIT)
-        create_piv_cac_nonce
         @presenter = PivCacAuthenticationSetupPresenter.new(user_piv_cac_form)
         render :new
       end
@@ -28,7 +29,16 @@ module Users
       redirect_to account_url
     end
 
+    def redirect_to_piv_cac_service
+      create_piv_cac_nonce
+      redirect_to PivCacService.piv_cac_service_link(piv_cac_nonce)
+    end
+
     private
+
+    def two_factor_enabled?
+      current_user.two_factor_enabled?
+    end
 
     def process_piv_cac_setup
       result = user_piv_cac_form.submit
@@ -54,11 +64,15 @@ module Users
         subject: user_piv_cac_form.x509_dn,
         presented: true
       )
-      redirect_to account_url
+      redirect_to next_step
+    end
+
+    def next_step
+      return account_url if current_user.phone_enabled?
+      account_recovery_setup_url
     end
 
     def process_invalid_submission
-      create_piv_cac_nonce
       @presenter = PivCacAuthenticationSetupErrorPresenter.new(user_piv_cac_form)
       clear_piv_cac_information
       render :error

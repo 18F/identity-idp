@@ -15,7 +15,7 @@ module Encryption
           result = try_decrypt(ciphertext, key: key, cost: cost)
           return result unless result.nil?
         end
-        raise Pii::EncryptionError, 'unable to decrypt attribute with any key'
+        raise EncryptionError, 'unable to decrypt attribute with any key'
       end
 
       def stale?
@@ -41,7 +41,7 @@ module Encryption
           result = UserAccessKeyEncryptor.new(user_access_key).decrypt(ciphertext)
           self.stale = key != current_key
           result
-        rescue Pii::EncryptionError
+        rescue EncryptionError
           nil
         end
       end

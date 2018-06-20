@@ -1,7 +1,4 @@
 class ServiceProviderSessionDecorator
-  include Rails.application.routes.url_helpers
-  include LocaleHelper
-
   DEFAULT_LOGO = 'generic.svg'.freeze
 
   SP_ALERTS = {
@@ -38,6 +35,15 @@ class ServiceProviderSessionDecorator
 
   def sp_logo
     sp.logo || DEFAULT_LOGO
+  end
+
+  def sp_logo_url
+    logo = sp_logo
+    if RemoteSettingsService.remote?(logo)
+      logo
+    else
+      ActionController::Base.helpers.image_path("sp-logos/#{logo}")
+    end
   end
 
   def return_to_service_provider_partial
@@ -97,7 +103,7 @@ class ServiceProviderSessionDecorator
   end
 
   def cancel_link_url
-    sign_up_start_url(request_id: sp_session[:request_id], locale: locale_url_param)
+    view_context.sign_up_start_url(request_id: sp_session[:request_id])
   end
 
   def sp_alert?

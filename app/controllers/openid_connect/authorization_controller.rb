@@ -1,5 +1,6 @@
 module OpenidConnect
   class AuthorizationController < ApplicationController
+    include AccountRecoverable
     include FullyAuthenticatable
     include VerifyProfileConcern
     include VerifySPAttributesConcern
@@ -13,13 +14,18 @@ module OpenidConnect
 
     def index
       return confirm_two_factor_authenticated(request_id) unless user_fully_authenticated?
-      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+      link_identity_to_service_provider
+      return redirect_to account_recovery_setup_url if piv_cac_enabled_but_not_phone_enabled?
       return redirect_to_account_or_verify_profile_url if profile_or_identity_needs_verification?
       return redirect_to(sign_up_completed_url) if needs_sp_attribute_verification?
       handle_successful_handoff
     end
 
     private
+
+    def link_identity_to_service_provider
+      @authorize_form.link_identity_to_service_provider(current_user, session.id)
+    end
 
     def handle_successful_handoff
       redirect_to @authorize_form.success_redirect_uri

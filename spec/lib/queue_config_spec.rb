@@ -4,9 +4,9 @@ RSpec.describe Upaya::QueueConfig do
   describe '.choose_queue_adapter' do
     it 'raises ArgumentError given invalid choice' do
       expect(Figaro.env).to receive(:queue_adapter_weights).and_return('{"invalid": 1}')
-      expect {
+      expect do
         Upaya::QueueConfig.choose_queue_adapter
-      }.to raise_error(ArgumentError, /Unknown queue adapter/)
+      end.to raise_error(ArgumentError, /Unknown queue adapter/)
     end
 
     it 'handles sidekiq' do

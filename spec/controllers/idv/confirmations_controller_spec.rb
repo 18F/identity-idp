@@ -37,7 +37,7 @@ describe Idv::ConfirmationsController do
       address2: 'Ste 456',
       city: 'Anywhere',
       state: 'KS',
-      zipcode: '66666'
+      zipcode: '66666',
     }
   end
   let(:profile) { subject.idv_session.profile }

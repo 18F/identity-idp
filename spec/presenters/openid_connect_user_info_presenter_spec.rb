@@ -29,7 +29,7 @@ RSpec.describe OpenidConnectUserInfoPresenter do
     context 'when a piv/cac was used as second factor' do
       let(:x509) do
         {
-          subject: x509_subject
+          subject: x509_subject,
         }
       end
 
@@ -71,7 +71,6 @@ RSpec.describe OpenidConnectUserInfoPresenter do
           end
         end
       end
-
     end
 
     context 'when there is decrypted loa3 session data in redis' do

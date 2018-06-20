@@ -116,6 +116,7 @@ ignore_unused:
   - 'headings.piv_cac_setup.*'
   - 'titles.sign_up.*'
   - 'users.delete.bullet_2_loa*'
+  - 'idv.messages.jurisdiction.{no_id,unsupported_jurisdiction}_failure'
 # - 'simple_form.{yes,no}'
 # - 'simple_form.{placeholders,hints,labels}.*'
 # - 'simple_form.{error_notification,required}.:'

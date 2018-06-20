@@ -12,7 +12,7 @@ describe X509::Attributes do
 
     it 'initializes from complex Hash' do
       x509 = described_class.new_from_hash(
-        subject: { raw: 'O=US, OU=DoD, CN=José', norm: 'O=US, OU=DoD, CN=Jose' },
+        subject: { raw: 'O=US, OU=DoD, CN=José', norm: 'O=US, OU=DoD, CN=Jose' }
       )
 
       expect(x509.subject.to_s).to eq 'O=US, OU=DoD, CN=José'

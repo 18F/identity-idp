@@ -40,6 +40,25 @@ describe PersonalKeyGenerator do
       fourteen_letters_and_spaces_start_end_with_letter = /\A(\w+\-){13}\w+\z/
       expect(generator.create).to match(fourteen_letters_and_spaces_start_end_with_letter)
     end
+
+    it 'sets the encrypted recovery code digest' do
+      user = create(:user)
+      generator = PersonalKeyGenerator.new(user)
+      generator.create
+
+      encrypted_recovery_code_data = JSON.parse(
+        user.encrypted_recovery_code_digest, symbolize_names: true
+      )
+
+      expect(
+        encrypted_recovery_code_data[:encryption_key]
+      ).to eq(user.personal_key.split('.').first)
+      expect(
+        encrypted_recovery_code_data[:encrypted_password]
+      ).to eq(user.personal_key.split('.').second)
+      expect(encrypted_recovery_code_data[:password_cost]).to eq(user.recovery_cost)
+      expect(encrypted_recovery_code_data[:password_salt]).to eq(user.recovery_salt)
+    end
   end
 
   describe '#verify' do

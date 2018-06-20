@@ -88,7 +88,7 @@ module IdvHelper
     click_on t('idv.buttons.cancel')
   end
 
-  def complete_idv_profile_ok(user, password = user_password)
+  def complete_idv_profile_ok(_user, password = user_password)
     fill_out_idv_form_ok
     click_idv_continue
     click_idv_continue

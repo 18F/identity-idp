@@ -28,6 +28,7 @@ feature 'Remembering a 2FA device' do
     def remember_device_and_sign_out_user
       user = sign_up_and_set_password
       user.password = Features::SessionHelper::VALID_PASSWORD
+      select_2fa_option('sms')
       fill_in :user_phone_form_phone, with: '5551231234'
       click_send_security_code
       check :remember_device

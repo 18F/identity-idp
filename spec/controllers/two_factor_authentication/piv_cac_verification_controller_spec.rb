@@ -3,8 +3,7 @@ require 'rails_helper'
 describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
     create(:user, :signed_up, :with_piv_or_cac,
-      phone: '+1 (555) 555-0000'
-    )
+           phone: '+1 (555) 555-0000')
   end
 
   let(:nonce) { 'once' }
@@ -17,12 +16,12 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.x509_dn_uuid,
       'dn' => x509_subject,
-      'nonce' => nonce,
+      'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
       'uuid' => user.x509_dn_uuid + 'X',
       'dn' => x509_subject + 'X',
-      'nonce' => nonce,
+      'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
@@ -58,7 +57,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         expect(subject.current_user).to receive(:confirm_piv_cac?).and_return(true)
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
 
-        get :show, params: { token:  'good-token' }
+        get :show, params: { token: 'good-token' }
 
         expect(response).to redirect_to account_path
         expect(subject.user_session[:decrypted_x509]).to eq({
@@ -73,7 +72,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
           attributes: { second_factor_attempts_count: 1 }
         ).call
 
-        get :show, params: { token:  'good-token' }
+        get :show, params: { token: 'good-token' }
 
         expect(subject.current_user.reload.second_factor_attempts_count).to eq 0
       end
@@ -88,7 +87,7 @@ describe TwoFactorAuthentication::PivCacVerificationController do
         }
         expect(@analytics).to receive(:track_event).with(Analytics::MULTI_FACTOR_AUTH, attributes)
 
-        get :show, params: { token:  'good-token' }
+        get :show, params: { token: 'good-token' }
       end
     end
 
@@ -170,9 +169,8 @@ describe TwoFactorAuthentication::PivCacVerificationController do
 
       let(:user) do
         create(:user, :signed_up, :with_piv_or_cac,
-          second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
-          second_factor_attempts_count: 3
-        )
+               second_factor_locked_at: Time.zone.now - lockout_period - 1.second,
+               second_factor_attempts_count: 3)
       end
 
       describe 'when user submits an incorrect piv/cac' do

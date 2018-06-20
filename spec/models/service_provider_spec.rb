@@ -1,6 +1,8 @@
 require 'rails_helper'
 
 describe ServiceProvider do
+  let(:service_provider) { ServiceProvider.from_issuer('http://localhost:3000') }
+
   describe 'validations' do
     it 'validates that all redirect_uris are absolute, parsable uris' do
       valid_sp = build(:service_provider, redirect_uris: ['http://foo.com'])
@@ -28,26 +30,23 @@ describe ServiceProvider do
 
   describe '#issuer' do
     it 'returns the constructor value' do
-      sp = ServiceProvider.from_issuer('http://localhost:3000')
-      expect(sp.issuer).to eq 'http://localhost:3000'
+      expect(service_provider.issuer).to eq 'http://localhost:3000'
     end
   end
 
   describe '#from_issuer' do
     context 'the record exists' do
       it 'fetches the record' do
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-
-        expect(sp).to be_a ServiceProvider
-        expect(sp.persisted?).to eq true
+        expect(service_provider).to be_a ServiceProvider
+        expect(service_provider.persisted?).to eq true
       end
     end
 
     context 'the record does not exist' do
-      it 'returns NullServiceProvider' do
-        sp = ServiceProvider.from_issuer('no-such-issuer')
+      let(:service_provider) { ServiceProvider.from_issuer('no-such-issuer') }
 
-        expect(sp).to be_a NullServiceProvider
+      it 'returns NullServiceProvider' do
+        expect(service_provider).to be_a NullServiceProvider
       end
     end
   end
@@ -55,8 +54,6 @@ describe ServiceProvider do
   describe '#metadata' do
     context 'when the service provider is defined in the YAML' do
       it 'returns a hash with symbolized attributes from YAML plus fingerprint' do
-        service_provider = ServiceProvider.from_issuer('http://localhost:3000')
-
         fingerprint = {
           fingerprint: '40808e52ef80f92e697149e058af95f898cefd9a54d0dc2416bd607c8f9891fa',
         }
@@ -70,13 +67,35 @@ describe ServiceProvider do
     end
   end
 
+  describe 'piv_cac_available?' do
+    context 'when the service provider is with an enabled agency' do
+      it 'is truthy' do
+        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
+          [service_provider.agency].to_json
+        )
+        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+
+        expect(service_provider.piv_cac_available?).to be_truthy
+      end
+    end
+
+    context 'when the service provider agency is not enabled' do
+      it 'is falsey' do
+        allow(Figaro.env).to receive(:piv_cac_agencies).and_return(
+          [service_provider.agency + 'X'].to_json
+        )
+        PivCacService.send(:reset_piv_cac_avaialable_agencies)
+
+        expect(service_provider.piv_cac_available?).to be_falsey
+      end
+    end
+  end
+
   describe '#encryption_opts' do
     context 'when responses are not encrypted' do
       it 'returns nil' do
         # block_encryption is set to 'none' for this SP
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-
-        expect(sp.encryption_opts).to be_nil
+        expect(service_provider.encryption_opts).to be_nil
       end
     end
 
@@ -113,9 +132,7 @@ describe ServiceProvider do
 
     context 'when the service provider is included in the list of authorized providers' do
       it 'returns true' do
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-
-        expect(sp.approved?).to be true
+        expect(service_provider.approved?).to be true
       end
     end
   end
@@ -131,28 +148,37 @@ describe ServiceProvider do
 
     context 'when the service provider is approved but not active' do
       it 'returns false' do
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-        sp.update(active: false)
+        service_provider.update(active: false)
 
-        expect(sp.live?).to be false
+        expect(service_provider.live?).to be false
       end
     end
 
     context 'when the service provider is active and approved' do
       it 'returns true' do
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-
-        expect(sp.live?).to be true
+        expect(service_provider.live?).to be true
       end
     end
 
     context 'when the service provider is active but not approved' do
       it 'returns false' do
-        sp = ServiceProvider.from_issuer('http://localhost:3000')
-        sp.update(approved: false)
+        service_provider.update(approved: false)
 
-        expect(sp.live?).to be false
+        expect(service_provider.live?).to be false
       end
+    end
+  end
+
+  describe '#ssl_cert' do
+    it 'returns the remote setting cert' do
+      WebMock.allow_net_connect!
+      sp = create(:service_provider, issuer: 'foo', cert: 'https://raw.githubusercontent.com/18F/identity-idp/master/certs/sp/saml_test_sp.crt')
+      expect(sp.ssl_cert.class).to be(OpenSSL::X509::Certificate)
+    end
+
+    it 'returns the local cert' do
+      sp = create(:service_provider, issuer: 'foo', cert: 'saml_test_sp')
+      expect(sp.ssl_cert.class).to be(OpenSSL::X509::Certificate)
     end
   end
 end
