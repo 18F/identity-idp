@@ -71,7 +71,7 @@ describe Idv::IdvFailurePresenter do
     subject { presenter.send(:sp_step) }
 
     it 'includes sp url' do
-      expect(subject).to include(decorated_session.sp_alert_learn_more)
+      expect(subject).to include(decorated_session.sp_return_url)
     end
   end
 
