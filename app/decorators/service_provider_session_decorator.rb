@@ -107,11 +107,11 @@ class ServiceProviderSessionDecorator
   end
 
   def sp_alert_name
-    sp_alert? ? SP_ALERTS[sp_name][:i18n_name] : nil
+    SP_ALERTS.dig(sp_name, :i18n_name) || nil
   end
 
   def sp_alert_learn_more
-    sp_alert? ? SP_ALERTS[sp_name][:learn_more] : nil
+    SP_ALERTS.dig(sp_name, :learn_more) || nil
   end
 
   private

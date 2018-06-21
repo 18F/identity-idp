@@ -39,21 +39,21 @@ module Idv
 
     def sp_step
       return unless (sp_name = decorated_session.sp_name)
-      support_link = link_to(sp_name, decorated_session.sp_alert_learn_more)
-      t('idv.messages.jurisdiction.sp_support', link: support_link)
+      link = link_to(sp_name, decorated_session.sp_return_url)
+      t('idv.messages.jurisdiction.sp_support', link: link)
     end
 
     def help_step
-      help_link = link_to(
+      link = link_to(
         t('idv.messages.read_about_security_and_privacy.link'),
         MarketingSite.help_privacy_and_security_url
       )
-      t('idv.messages.read_about_security_and_privacy.text', link: help_link)
+      t('idv.messages.read_about_security_and_privacy.text', link: link)
     end
 
     def profile_step
-      profile_link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
-      t('idv.messages.jurisdiction.profile', link: profile_link)
+      link = link_to(t('idv.messages.jurisdiction.profile_link'), account_path)
+      t('idv.messages.jurisdiction.profile', link: link)
     end
   end
 end

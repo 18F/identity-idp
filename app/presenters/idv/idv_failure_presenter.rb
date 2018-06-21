@@ -41,7 +41,7 @@ module Idv
 
     def sp_step
       return unless (sp_name = decorated_session.sp_name)
-      link = link_to(sp_name, decorated_session.sp_alert_learn_more)
+      link = link_to(sp_name, decorated_session.sp_return_url)
       t('idv.messages.jurisdiction.sp_support', link: link)
     end
 
