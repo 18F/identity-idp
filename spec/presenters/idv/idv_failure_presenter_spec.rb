@@ -93,7 +93,7 @@ describe Idv::IdvFailurePresenter do
   def mock_decorated_session
     decorated_session = instance_double(SessionDecorator)
     allow(decorated_session).to receive(:sp_name).and_return('Test SP')
-    allow(decorated_session).to receive(:sp_alert_learn_more).and_return('SP Link')
+    allow(decorated_session).to receive(:sp_return_url).and_return('SP Link')
     decorated_session
   end
 end
