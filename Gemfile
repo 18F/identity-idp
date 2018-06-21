@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}.git" }
 
-ruby '~> 2.3.7'
+ruby '~> 2.5.1'
 
 gem 'rails', '~> 5.1.3'
 
@@ -49,7 +49,7 @@ gem 'saml_idp', git: 'https://github.com/18F/saml_idp.git', tag: 'v0.7.0-18f'
 gem 'sass-rails', '~> 5.0'
 gem 'savon'
 gem 'scrypt'
-gem 'secure_headers', '~> 3.0'
+gem 'secure_headers', '~> 6.0'
 gem 'sidekiq'
 gem 'simple_form'
 gem 'sinatra', require: false
@@ -114,7 +114,7 @@ group :test do
 end
 
 group :production do
-  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.0.0'
+  gem 'aamva', git: 'git@github.com:18F/identity-aamva-api-client-gem', tag: 'v3.0.1'
   gem 'equifax', git: 'git@github.com:18F/identity-equifax-api-client-gem.git', tag: 'v1.1.0'
   gem 'lexisnexis', git: 'git@github.com:18F/identity-lexisnexis-api-client-gem', tag: 'v1.0.0'
 end

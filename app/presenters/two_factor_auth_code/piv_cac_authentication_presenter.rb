@@ -35,14 +35,15 @@ module TwoFactorAuthCode
     end
 
     def piv_cac_service_link
-      PivCacService.piv_cac_service_link(piv_cac_nonce)
+      redirect_to_piv_cac_service_url
     end
 
     private
 
-    attr_reader :user_email, :two_factor_authentication_method, :totp_enabled, :piv_cac_nonce
+    attr_reader :user_email, :two_factor_authentication_method, :totp_enabled, :phone_enabled
 
     def otp_fallback_options
+      return unless phone_enabled
       t(
         'devise.two_factor_authentication.totp_fallback.text_html',
         sms_link: sms_link,

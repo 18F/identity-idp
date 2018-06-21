@@ -163,7 +163,7 @@ describe Idv::Proofer do
       let(:vendors) { { bar: class_double('Proofer::Base') } }
 
       it 'does raises an error' do
-        expect { subject }.to raise_error("No proofer vendor configured for stage(s): foo")
+        expect { subject }.to raise_error('No proofer vendor configured for stage(s): foo')
       end
     end
   end
@@ -200,20 +200,21 @@ describe Idv::Proofer do
       before do
         expect(config).to receive(:mock_fallback).and_return(false)
         expect(config).to receive(:raise_on_missing_proofers).and_return(true)
-        expect(described_class).to receive(:loaded_vendors).and_return(loaded_vendors, loaded_vendors)
+        expect(described_class).
+          to receive(:loaded_vendors).and_return(loaded_vendors, loaded_vendors)
       end
 
       context 'when a stage is missing an external vendor' do
         let(:stages) { %i[foo baz] }
 
         it 'raises' do
-          expect { subject }.to raise_error("No proofer vendor configured for stage(s): baz")
+          expect { subject }.to raise_error('No proofer vendor configured for stage(s): baz')
         end
       end
 
       context 'when all stages have vendors' do
         it 'maps the vendors, ignoring non-configured ones' do
-          expect(subject).to eq({ foo: loaded_vendors.second })
+          expect(subject).to eq(foo: loaded_vendors.second)
         end
       end
     end
@@ -242,7 +243,8 @@ describe Idv::Proofer do
       before do
         expect(config).to receive(:mock_fallback).and_return(false)
         expect(config).to receive(:raise_on_missing_proofers).and_return(false)
-        expect(described_class).to receive(:loaded_vendors).and_return(loaded_vendors, loaded_vendors)
+        expect(described_class).
+          to receive(:loaded_vendors).and_return(loaded_vendors, loaded_vendors)
       end
 
       context 'when a stage is missing an external vendor' do

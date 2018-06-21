@@ -1,9 +1,9 @@
 GIT
   remote: git@github.com:18F/identity-aamva-api-client-gem
-  revision: 41cf170a0161883f3a4a34f5a5edbb186a36bc06
-  tag: v3.0.0
+  revision: 015186dd86691294404229ee051cfcf9e87fb6c7
+  tag: v3.0.1
   specs:
-    aamva (3.0.0)
+    aamva (3.0.1)
       dotenv
       hashie
       httpi
@@ -272,7 +272,7 @@ GEM
     fasterer (0.4.1)
       colorize (~> 0.7)
       ruby_parser (~> 3.11.0)
-    ffi (1.9.23)
+    ffi (1.9.25)
     ffi-compiler (1.0.1)
       ffi (>= 1.0.0)
       rake
@@ -415,7 +415,7 @@ GEM
     rack-headers_filter (0.0.1)
     rack-mini-profiler (1.0.0)
       rack (>= 1.2.0)
-    rack-protection (2.0.1)
+    rack-protection (2.0.2)
       rack
     rack-proxy (0.6.4)
       rack
@@ -543,8 +543,7 @@ GEM
       wasabi (~> 3.4)
     scrypt (3.0.5)
       ffi-compiler (>= 1.0, < 2.0)
-    secure_headers (3.7.3)
-      useragent
+    secure_headers (6.0.0)
     selenium-webdriver (3.11.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2)
@@ -565,10 +564,10 @@ GEM
       json (>= 1.8, < 3)
       simplecov-html (~> 0.10.0)
     simplecov-html (0.10.0)
-    sinatra (2.0.1)
+    sinatra (2.0.2)
       mustermann (~> 1.0)
       rack (~> 2.0)
-      rack-protection (= 2.0.1)
+      rack-protection (= 2.0.2)
       tilt (~> 2.0)
     slim (3.0.9)
       temple (>= 0.7.6, < 0.9)
@@ -626,7 +625,6 @@ GEM
     unicode-display_width (1.3.0)
     uniform_notifier (1.11.0)
     user_agent_parser (2.4.1)
-    useragent (0.16.8)
     uuid (2.3.9)
       macaddr (~> 1.0)
     valid_email (0.1.0)
@@ -754,7 +752,7 @@ DEPENDENCIES
   sass-rails (~> 5.0)
   savon
   scrypt
-  secure_headers (~> 3.0)
+  secure_headers (~> 6.0)
   shoulda-matchers (~> 3.0)
   sidekiq
   simple_form
@@ -779,7 +777,7 @@ DEPENDENCIES
   zxcvbn-js
 
 RUBY VERSION
-   ruby 2.3.7p456
+   ruby 2.5.1p57
 
 BUNDLED WITH
    1.16.1

@@ -23,7 +23,7 @@ class SamlCertRotationManager
 
   def self.use_new_secrets_for_request?(request)
     return false unless FeatureManagement.enable_saml_cert_rotation?
-    return false unless request.path =~ /#{rotation_path_suffix}$/
+    return false unless request.path.match?(/#{rotation_path_suffix}$/)
     true
   end
 

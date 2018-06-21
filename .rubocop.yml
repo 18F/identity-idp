@@ -10,17 +10,15 @@ AllCops:
     - '**/Rakefile'
     - '**/Capfile'
   Exclude:
-    - 'db/schema.rb'
-    - 'node_modules/**/*'
-    - 'lib/rspec/user_flow_formatter.rb'
-    - 'lib/user_flow_exporter.rb'
-    - 'scripts/load_testing/*'
-    - 'spec/**/*'
-    - 'tmp/**/*'
     - 'bin/**/*'
     - 'db/migrate/*'
+    - 'db/schema.rb'
+    - 'lib/rspec/user_flow_formatter.rb'
     - 'lib/tasks/create_test_accounts.rb'
-  TargetRubyVersion: 2.3
+    - 'lib/user_flow_exporter.rb'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
+  TargetRubyVersion: 2.5
   TargetRailsVersion: 5.1
   UseCache: true
 
@@ -65,6 +63,7 @@ Metrics/ClassLength:
   - app/controllers/users/confirmations_controller.rb
   - app/controllers/users/sessions_controller.rb
   - app/controllers/devise/two_factor_authentication_controller.rb
+  - app/decorators/service_provider_session_decorator.rb
   - app/decorators/user_decorator.rb
   - app/services/analytics.rb
   - app/services/idv/session.rb
@@ -103,10 +102,13 @@ Metrics/ModuleLength:
 Metrics/ParameterLists:
   CountKeywordArgs: false
 
-# This is a Rails 5 feature, so it should be disabled until we upgrade
+Naming/VariableName:
+  Exclude:
+    - 'spec/services/pii/nist_encryption_spec.rb'
+
 Rails/HttpPositionalArguments:
   Description: 'Use keyword arguments instead of positional arguments in http method calls.'
-  Enabled: false
+  Enabled: true
   Include:
     - 'spec/**/*'
     - 'test/**/*'

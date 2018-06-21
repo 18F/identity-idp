@@ -26,7 +26,7 @@ def generate_equifax_gpg_private_key
     %commit
     %echo done
   '
-  run "echo '#{parameters}' | gpg --batch --gen-key"
+  run "echo '#{parameters}' | gpg --batch --pinentry-mode loopback --gen-key"
   run 'gpg --export --output keys/equifax_gpg.pub.bin logs@login.gov'
 end
 

@@ -251,7 +251,7 @@ feature 'Sign in' do
       rotate_attribute_encryption_key_with_invalid_queue
 
       expect { signin(email, password) }.
-        to raise_error Pii::EncryptionError, 'unable to decrypt attribute with any key'
+        to raise_error Encryption::EncryptionError, 'unable to decrypt attribute with any key'
 
       user = User.find_with_email(email)
       expect(user.encrypted_email).to eq encrypted_email
@@ -403,6 +403,8 @@ feature 'Sign in' do
   it_behaves_like 'signing in as LOA3 with personal key', :oidc
   it_behaves_like 'signing in with wrong credentials', :saml
   it_behaves_like 'signing in with wrong credentials', :oidc
+  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :saml
+  it_behaves_like 'signing with while PIV/CAC enabled but not phone enabled', :oidc
 
   context 'user signs in with personal key, visits account page before viewing new key' do
     # this can happen if you submit the personal key form multiple times quickly
@@ -428,5 +430,35 @@ feature 'Sign in' do
     visit root_path
     expect(page.response_headers['Content-Security-Policy']).
       to(include('style-src \'self\''))
+  end
+
+  context 'user is totp_enabled but not phone_enabled' do
+    before do
+      user = create(:user, :with_authentication_app)
+      signin(user.email, user.password)
+    end
+
+    it 'requires 2FA before allowing access to phone setup form' do
+      visit phone_setup_path
+
+      expect(page).to have_current_path login_two_factor_authenticator_path
+    end
+
+    it 'does not redirect to phone setup form when visiting /login/two_factor/sms' do
+      visit login_two_factor_path(otp_delivery_preference: 'sms')
+
+      expect(page).to have_current_path login_two_factor_authenticator_path
+    end
+
+    it 'does not redirect to phone setup form when visiting /login/two_factor/voice' do
+      visit login_two_factor_path(otp_delivery_preference: 'voice')
+
+      expect(page).to have_current_path login_two_factor_authenticator_path
+    end
+
+    it 'does not display OTP Fallback text and links' do
+      expect(page).
+        to_not have_content t('devise.two_factor_authentication.totp_fallback.sms_link_text')
+    end
   end
 end

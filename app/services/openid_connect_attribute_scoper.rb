@@ -29,7 +29,7 @@ class OpenidConnectAttributeScoper
 
   SCOPE_ATTRIBUTE_MAP = {}.tap do |scope_attribute_map|
     ATTRIBUTE_SCOPES_MAP.each do |attribute, scopes|
-      next [] if attribute =~ /_verified$/
+      next [] if attribute.match?(/_verified$/)
       scopes.each do |scope|
         scope_attribute_map[scope] ||= []
         scope_attribute_map[scope] << attribute

@@ -112,5 +112,25 @@ RSpec.describe ServiceProviderSeeder do
         end
       end
     end
+
+    context 'when service_providers.yml has a remote setting' do
+      before do
+        location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/service_providers.yml'
+        RemoteSetting.create(name: 'service_providers.yml', url:location,
+                             contents: "test:\n  'issuer1':\n    friendly_name: 'name1'")
+      end
+
+      it 'updates the attributes based on the current value of the yml file' do
+        ServiceProvider.create(issuer: 'issuer1', friendly_name: 'FOO')
+        expect(ServiceProvider.find_by(issuer: 'issuer1').friendly_name).to eq('FOO')
+        run
+        expect(ServiceProvider.find_by(issuer: 'issuer1').friendly_name).to eq('name1')
+      end
+
+      it 'insert the service_provider based on the contents of the remote setting' do
+        run
+        expect(ServiceProvider.find_by(issuer: 'issuer1').friendly_name).to eq('name1')
+      end
+    end
   end
 end

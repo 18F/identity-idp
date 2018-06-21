@@ -9,7 +9,7 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   let(:user_email) { 'user@example.com' }
-  let(:reauthn) { }
+  let(:reauthn) {}
   let(:presenter) { presenter_with(reauthn: reauthn, user_email: user_email) }
 
   describe '#header' do
@@ -35,8 +35,24 @@ describe TwoFactorAuthCode::PivCacAuthenticationPresenter do
   end
 
   describe '#fallback_links' do
-    it 'has two options' do
-      expect(presenter.fallback_links.count).to eq 2
+    context 'with phone enabled' do
+      let(:presenter) do
+        presenter_with(reauthn: reauthn, user_email: user_email, phone_enabled: true)
+      end
+
+      it 'has two options' do
+        expect(presenter.fallback_links.count).to eq 2
+      end
+    end
+
+    context 'with phone disabled' do
+      let(:presenter) do
+        presenter_with(reauthn: reauthn, user_email: user_email, phone_enabled: false)
+      end
+
+      it 'has one option' do
+        expect(presenter.fallback_links.count).to eq 1
+      end
     end
   end
 

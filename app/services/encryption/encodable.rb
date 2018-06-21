@@ -1,4 +1,4 @@
-module Pii
+module Encryption
   module Encodable
     extend ActiveSupport::Concern
 

@@ -111,7 +111,7 @@ module Rack
         # increments the count), so requests below the limit are not blocked until
         # they hit the limit. At that point, `filter` will return true and block.
         user = req.params.fetch('user', {})
-        email = user['email'].to_s
+        email = user['email'].to_s.downcase.strip
         email_fingerprint = Pii::Fingerprinter.fingerprint(email) if email.present?
         email_and_ip = "#{email_fingerprint}-#{req.remote_ip}"
         maxretry = Figaro.env.logins_per_email_and_ip_limit.to_i

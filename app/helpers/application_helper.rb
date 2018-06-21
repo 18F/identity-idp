@@ -7,6 +7,10 @@ module ApplicationHelper
     content_for(:card_cls) { cls }
   end
 
+  def background_cls(cls)
+    content_for(:background_cls) { cls }
+  end
+
   def step_class(step, active)
     if active > step
       'complete'
