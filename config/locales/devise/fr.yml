@@ -143,8 +143,7 @@ fr:
         text_html: Vous n'avez pas accès à votre téléphone? %{link}.
       personal_key_header_text: Entrez votre clé personnelle
       personal_key_prompt: Vous pouvez utiliser cette clé personnelle une fois seulement.
-        Si vous avez toujours besoin d'un code après votre connexion, allez à la page
-        des réglages de votre compte pour en obtenir un nouveau.
+        Une fois que vous l'entrez, vous recevrez une nouvelle clé.
       phone_sms_label: Numéro de téléphone portable
       phone_sms_info_html: Nous vous enverrons un code de sécurité <strong>chaque
         fois que vous vous connectez</strong>.

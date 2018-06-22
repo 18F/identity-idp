@@ -131,8 +131,8 @@ en:
         link: Use a personal key instead
         text_html: Don’t have access to your phone? %{link}.
       personal_key_header_text: Enter your personal key
-      personal_key_prompt: You can use this personal key once. If you still need a
-        code after signing in, go to your account settings page to get a new one.
+      personal_key_prompt: You can use this personal key once. After you enter it,
+        you'll be provided a new key.
       phone_sms_label: Mobile phone number
       phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
       phone_voice_label: Phone number
