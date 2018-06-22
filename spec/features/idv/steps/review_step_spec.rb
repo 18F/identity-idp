@@ -80,7 +80,7 @@ feature 'idv review step', :idv_job do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
+        usps_confirmation_entry = UspsConfirmation.last.entry_struct
 
         if sp == :saml
           expect(usps_confirmation_entry.issuer).
@@ -99,7 +99,7 @@ feature 'idv review step', :idv_job do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
+        usps_confirmation_entry = UspsConfirmation.last.entry_struct
 
         expect(usps_confirmation_entry.issuer).to eq(nil)
       end
