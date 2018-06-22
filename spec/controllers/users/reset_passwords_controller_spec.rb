@@ -270,6 +270,29 @@ describe Users::ResetPasswordsController, devise: true do
         expect(response).to redirect_to new_user_session_path
       end
     end
+
+    it 'increments password metrics' do
+      raw_reset_token, db_confirmation_token =
+        Devise.token_generator.generate(User, :reset_password_token)
+
+      user = create(
+        :user,
+        :unconfirmed,
+        reset_password_token: db_confirmation_token,
+        reset_password_sent_at: Time.zone.now
+      )
+
+      stub_email_notifier(user)
+
+      password = 'saltypickles'
+      params = { password: password }
+
+      get :edit, params: { reset_password_token: raw_reset_token }
+      put :update, params: { reset_password_form: params }
+
+      expect(PasswordMetric.where(metric: 'length', value: 12, count: 1).count).to eq(1)
+      expect(PasswordMetric.where(metric: 'guesses_log10', value: 7.1, count: 1).count).to eq(1)
+    end
   end
 
   describe '#create' do

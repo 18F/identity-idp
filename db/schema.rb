@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180607144007) do
+ActiveRecord::Schema.define(version: 20180619145839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,15 @@ ActiveRecord::Schema.define(version: 20180607144007) do
     t.datetime "updated_at"
     t.index ["phone_fingerprint"], name: "index_otp_requests_trackers_on_phone_fingerprint", unique: true
     t.index ["updated_at"], name: "index_otp_requests_trackers_on_updated_at"
+  end
+
+  create_table "password_metrics", force: :cascade do |t|
+    t.integer "metric", null: false
+    t.float "value", null: false
+    t.integer "count", null: false
+    t.index ["metric", "value"], name: "index_password_metrics_on_metric_and_value", unique: true
+    t.index ["metric"], name: "index_password_metrics_on_metric"
+    t.index ["value"], name: "index_password_metrics_on_value"
   end
 
   create_table "profiles", force: :cascade do |t|
