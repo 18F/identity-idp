@@ -185,6 +185,10 @@ development:
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
+  usps_upload_sftp_directory: '/directory'
+  usps_upload_sftp_host: 'example.com'
+  usps_upload_sftp_username: 'user'
+  usps_upload_sftp_password: 'pass'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -295,6 +299,10 @@ production:
   usps_confirmation_max_days: '30'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
+  usps_upload_sftp_directory:
+  usps_upload_sftp_host:
+  usps_upload_sftp_username:
+  usps_upload_sftp_password:
 
 test:
   aamva_cert_enabled: 'true'
@@ -405,3 +413,7 @@ test:
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
+  usps_upload_sftp_directory: '/directory'
+  usps_upload_sftp_host: 'example.com'
+  usps_upload_sftp_username: 'user'
+  usps_upload_sftp_password: 'pass'

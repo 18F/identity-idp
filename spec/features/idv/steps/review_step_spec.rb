@@ -80,13 +80,13 @@ feature 'idv review step', :idv_job do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
+        usps_confirmation_entry = UspsConfirmation.last.entry
 
         if sp == :saml
-          expect(usps_confirmation_entry.issuer).
+          expect(usps_confirmation_entry[:issuer]).
             to eq('https://rp1.serviceprovider.com/auth/saml/metadata')
         else
-          expect(usps_confirmation_entry.issuer).
+          expect(usps_confirmation_entry[:issuer]).
             to eq('urn:gov:gsa:openidconnect:sp:server')
         end
       end
@@ -99,9 +99,9 @@ feature 'idv review step', :idv_job do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = UspsConfirmation.last.decrypted_entry
+        usps_confirmation_entry = UspsConfirmation.last.entry
 
-        expect(usps_confirmation_entry.issuer).to eq(nil)
+        expect(usps_confirmation_entry[:issuer]).to eq(nil)
       end
     end
   end

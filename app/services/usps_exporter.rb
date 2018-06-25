@@ -8,11 +8,10 @@ class UspsExporter
   end
 
   def run
-    psv_buffer = CSV.generate(col_sep: '|', row_sep: "\r\n") do |csv|
+    CSV.open(psv_file_path, 'a', col_sep: '|', row_sep: "\r\n") do |csv|
       make_psv(csv)
     end
-    file_encryptor.encrypt(psv_buffer, psv_file_path)
-    clear_entries
+    clear_confirmations
   end
 
   private
@@ -20,18 +19,18 @@ class UspsExporter
   attr_reader :psv_file_path
 
   def make_psv(csv)
-    csv << make_header_row(entries.size)
-    entries.map(&:decrypted_entry).each do |entry|
-      csv << make_entry_row(entry)
+    csv << make_header_row(confirmations.size)
+    confirmations.each do |confirmation|
+      csv << make_entry_row(confirmation.entry)
     end
   end
 
-  def entries
-    @entries ||= UspsConfirmation.all
+  def confirmations
+    @confirmations ||= UspsConfirmation.all
   end
 
-  def clear_entries
-    UspsConfirmation.where(id: entries.map(&:id)).destroy_all
+  def clear_confirmations
+    UspsConfirmation.where(id: confirmations.map(&:id)).destroy_all
   end
 
   def make_header_row(num_entries)
@@ -42,17 +41,17 @@ class UspsExporter
   def make_entry_row(entry)
     now = Time.zone.now
     due = now + OTP_MAX_VALID_DAYS.days
-    service_provider = ServiceProvider.from_issuer(entry.issuer)
+    service_provider = ServiceProvider.from_issuer(entry[:issuer])
 
     [
       CONTENT_ROW_ID,
-      "#{entry.first_name} #{entry.last_name}",
-      entry.address1,
-      entry.address2,
-      entry.city,
-      entry.state,
-      entry.zipcode,
-      entry.otp,
+      "#{entry[:first_name]} #{entry[:last_name]}",
+      entry[:address1],
+      entry[:address2],
+      entry[:city],
+      entry[:state],
+      entry[:zipcode],
+      entry[:otp],
       "#{now.strftime('%-B %-e')}, #{now.year}",
       "#{due.strftime('%-B %-e')}, #{due.year}",
       service_provider.friendly_name,
@@ -60,11 +59,4 @@ class UspsExporter
     ]
   end
   # rubocop:enable MethodLength, AbcSize
-
-  def file_encryptor
-    @_file_encryptor ||= FileEncryptor.new(
-      Rails.root.join('keys', 'equifax_gpg.pub.bin'),
-      Figaro.env.equifax_gpg_email
-    )
-  end
 end

@@ -11,7 +11,7 @@ class UspsUploader
   def local_path
     @_local_path ||= begin
       timestamp = Time.zone.now.strftime('%Y%m%d%H%M%S')
-      Rails.root.join('tmp', "batch-#{timestamp}.pgp")
+      Rails.root.join('tmp', "batch-#{timestamp}.psv")
     end
   end
 
@@ -22,12 +22,10 @@ class UspsUploader
   end
 
   def upload_file
-    env = Figaro.env
-
     Net::SFTP.start(
-      env.equifax_sftp_host,
-      env.equifax_sftp_username,
-      key_data: [RequestKeyManager.equifax_ssh_key.to_pem]
+      env.usps_upload_sftp_host,
+      env.usps_upload_sftp_username,
+      password: env.usps_upload_sftp_password
     ) do |sftp|
       sftp.upload!(local_path.to_s, remote_path)
     end
@@ -38,6 +36,10 @@ class UspsUploader
   end
 
   def remote_path
-    File.join(Figaro.env.equifax_sftp_directory, 'batch.pgp')
+    File.join(Figaro.env.usps_upload_sftp_directory, 'batch.psv')
+  end
+
+  def env
+    Figaro.env
   end
 end

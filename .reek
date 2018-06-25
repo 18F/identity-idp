@@ -14,7 +14,6 @@ DuplicateMethodCall:
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
-    - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
     - BasicAuthUrl#build
     - fallback_to_english
@@ -58,7 +57,6 @@ ManualDispatch:
     - CloudhsmKeyGenerator#initialize_settings
 NestedIterators:
   exclude:
-    - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_html
     - TwilioService#sanitize_phone_number
     - ServiceProviderSeeder#run
@@ -93,7 +91,6 @@ TooManyStatements:
     - OpenidConnect::AuthorizationController#store_request
     - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
-    - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
     - UserFlowExporter#self.massage_html
     - UserFlowExporter#self.run
