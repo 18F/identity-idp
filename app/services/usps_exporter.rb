@@ -21,8 +21,7 @@ class UspsExporter
   def make_psv(csv)
     csv << make_header_row(confirmations.size)
     confirmations.each do |confirmation|
-      entry = JSON.parse(confirmation.entry, symbolize_names: true)
-      csv << make_entry_row(entry)
+      csv << make_entry_row(confirmation.entry)
     end
   end
 

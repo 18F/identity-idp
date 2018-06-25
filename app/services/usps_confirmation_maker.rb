@@ -10,7 +10,7 @@ class UspsConfirmationMaker
   end
 
   def perform
-    UspsConfirmation.create!(entry: attributes.to_json)
+    UspsConfirmation.create!(entry: attributes)
     UspsConfirmationCode.create!(
       profile: profile,
       otp_fingerprint: Pii::Fingerprinter.fingerprint(otp)

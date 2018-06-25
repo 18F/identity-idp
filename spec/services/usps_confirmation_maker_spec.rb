@@ -32,7 +32,7 @@ describe UspsConfirmationMaker do
       expect { subject.perform }.to change { UspsConfirmation.count }.from(0).to(1)
 
       usps_confirmation = UspsConfirmation.first
-      entry_hash = JSON.parse(usps_confirmation.entry, symbolize_names: true)
+      entry_hash = usps_confirmation.entry
       expect(entry_hash).to eq decrypted_attributes
     end
 

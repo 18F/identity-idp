@@ -80,7 +80,7 @@ feature 'idv review step', :idv_job do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = JSON.parse(UspsConfirmation.last.entry, symbolize_names: true)
+        usps_confirmation_entry = UspsConfirmation.last.entry
 
         if sp == :saml
           expect(usps_confirmation_entry[:issuer]).
@@ -99,7 +99,7 @@ feature 'idv review step', :idv_job do
         fill_in 'Password', with: user_password
         click_continue
 
-        usps_confirmation_entry = JSON.parse(UspsConfirmation.last.entry, symbolize_names: true)
+        usps_confirmation_entry = UspsConfirmation.last.entry
 
         expect(usps_confirmation_entry[:issuer]).to eq(nil)
       end
