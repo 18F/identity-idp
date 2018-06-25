@@ -8,6 +8,7 @@ describe UspsConfirmation do
       ssn: '123-456-7890',
     }
   end
+  let(:encryptor) { Encryption::Encryptors::SessionEncryptor.new }
 
   subject { UspsConfirmation.create!(entry: attributes) }
 
@@ -18,6 +19,7 @@ describe UspsConfirmation do
       expect(subject[:entry]).to be_a(String)
       expect(subject[:entry]).not_to be_empty
       expect(subject[:entry]).not_to eq(attributes.to_json)
+      expect(JSON.parse(encryptor.decrypt(subject[:entry]), symbolize_names: true)).to eq(attributes)
     end
 
     it 'retrieves the entry as an unencrypted hash with symbolized keys' do
