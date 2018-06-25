@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe PhoneNumberCapabilities do
-  let(:phone) { '+1 (555) 555-5000' }
+  let(:phone) { '+1 (703) 555-5000' }
   subject { PhoneNumberCapabilities.new(phone) }
 
   describe '#sms_only?' do
@@ -10,7 +10,7 @@ describe PhoneNumberCapabilities do
     end
 
     context 'voice is not supported for the area code' do
-      let(:phone) { '+1 (242) 555-5000' }
+      let(:phone) { '+1 (242) 327-0143' }
       it { expect(subject.sms_only?).to eq(true) }
     end
 
@@ -28,7 +28,7 @@ describe PhoneNumberCapabilities do
 
   describe '#unsupported_location' do
     it 'returns the name of the unsupported area code location' do
-      locality = PhoneNumberCapabilities.new('+1 (242) 555-5000').unsupported_location
+      locality = PhoneNumberCapabilities.new('+1 (242) 327-0143').unsupported_location
       expect(locality).to eq('Bahamas')
     end
 

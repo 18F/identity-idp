@@ -24,17 +24,17 @@ feature 'Two Factor Authentication' do
 
       submit_2fa_setup_form_with_empty_string_phone
 
-      expect(page).to have_content invalid_phone_message
+      expect(page).to have_content t('errors.messages.missing_field')
 
       submit_2fa_setup_form_with_invalid_phone
 
-      expect(page).to have_content invalid_phone_message
+      expect(page).to have_content t('errors.messages.missing_field')
 
       submit_2fa_setup_form_with_valid_phone
 
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
+      expect(user.reload.phone).to_not eq '+1 (703) 555-1212'
       expect(user.sms?).to eq true
     end
 
@@ -53,17 +53,17 @@ feature 'Two Factor Authentication' do
       end
     end
 
-    context 'with U.S. phone that does not support voice delivery method' do
-      let(:unsupported_phone) { '242-555-5555' }
+    context 'with number that does not support phone delivery method' do
+      let(:unsupported_phone) { '242-327-0143' }
 
-      scenario 'renders an error if a user submits with voice selected' do
+      scenario 'renders an error if a user submits with JS disabled' do
         sign_in_before_2fa
         select_2fa_option('voice')
+        select 'Bahamas', from: 'user_phone_form_international_code'
         fill_in 'Phone', with: unsupported_phone
         click_send_security_code
 
         expect(current_path).to eq phone_setup_path
-
         expect(page).to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
@@ -134,7 +134,7 @@ feature 'Two Factor Authentication' do
   end
 
   def submit_2fa_setup_form_with_valid_phone
-    fill_in 'user_phone_form_phone', with: '555-555-1212'
+    fill_in 'user_phone_form_phone', with: '703-555-1212'
     click_send_security_code
   end
 
@@ -204,7 +204,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
-      unsupported_phone = '+1 (242) 555-5000'
+      unsupported_phone = '+1 (242) 327-0143'
       user = create(:user, :signed_up, phone: unsupported_phone)
       sign_in_before_2fa(user)
 

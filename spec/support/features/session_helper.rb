@@ -102,12 +102,12 @@ module Features
     end
 
     def user_with_2fa
-      create(:user, :signed_up, phone: '+1 (555) 555-0000', password: VALID_PASSWORD)
+      create(:user, :signed_up, phone: '+1 202-555-1212', password: VALID_PASSWORD)
     end
 
     def user_with_piv_cac
       create(:user, :signed_up, :with_piv_or_cac,
-             phone: '+1 (555) 555-0000',
+             phone: '+1 (703) 555-0000',
              password: VALID_PASSWORD)
     end
 

@@ -29,7 +29,7 @@ describe 'idv/review/new.html.slim' do
       expect(rendered).to have_content('MO')
       expect(rendered).to have_content('12345')
       expect(rendered).to have_content('666-66-1234')
-      expect(rendered).to have_content('+1 (213) 555-0000')
+      expect(rendered).to have_content('+1 213-555-0000')
       expect(rendered).to have_content('March 29, 1972')
     end
 

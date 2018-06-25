@@ -9,7 +9,7 @@ describe Idv::PhoneStep do
     idvs.applicant = { first_name: 'Some' }
     idvs
   end
-  let(:idv_form_params) { { phone: '555-555-0000', phone_confirmed_at: nil } }
+  let(:idv_form_params) { { phone: '703-555-0000', phone_confirmed_at: nil } }
   let(:idv_phone_form) { Idv::PhoneForm.new(idv_session.params, user) }
 
   def build_step(vendor_validator_result)
@@ -49,7 +49,7 @@ describe Idv::PhoneStep do
     end
 
     it 'returns false for mock-sad phone' do
-      idv_form_params[:phone] = '555-555-5555'
+      idv_form_params[:phone] = '703-555-5555'
       errors = { phone: ['The phone number could not be verified.'] }
 
       step = build_step(
