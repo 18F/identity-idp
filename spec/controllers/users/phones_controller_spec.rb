@@ -7,7 +7,7 @@ describe Users::PhonesController do
   describe '#phone' do
     let(:user) { create(:user, :signed_up, phone: '+1 (202) 555-1234') }
     let(:second_user) { create(:user, :signed_up, phone: '+1 (202) 555-5678') }
-    let(:new_phone) { '555-555-5555' }
+    let(:new_phone) { '202-555-4321' }
 
     context 'user changes phone' do
       before do
@@ -25,7 +25,7 @@ describe Users::PhonesController do
 
       it 'lets user know they need to confirm their new phone' do
         expect(flash[:notice]).to eq t('devise.registrations.phone_update_needs_confirmation')
-        expect(user.reload.phone).to_not eq '+1 (555) 555-5555'
+        expect(user.reload.phone).to_not eq '+1 202-555-4321'
         expect(@analytics).to have_received(:track_event).
           with(Analytics::PHONE_CHANGE_REQUESTED)
         expect(response).to redirect_to(

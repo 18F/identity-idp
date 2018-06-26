@@ -7,12 +7,12 @@ feature 'Phone confirmation during sign up' do
       allow(SmsOtpSenderJob).to receive(:perform_now)
       @user = sign_in_before_2fa
       select_2fa_option('sms')
-      fill_in 'user_phone_form_phone', with: '555-555-5555'
+      fill_in 'user_phone_form_phone', with: '703-555-5555'
       click_send_security_code
 
       expect(SmsOtpSenderJob).to have_received(:perform_now).with(
         code: @user.reload.direct_otp,
-        phone: '+1 (555) 555-5555',
+        phone: '+1 703-555-5555',
         otp_created_at: @user.direct_otp_sent_at.to_s
       )
     end
@@ -49,7 +49,7 @@ feature 'Phone confirmation during sign up' do
     it 'informs the user that the OTP code is sent to the phone' do
       expect(page).to have_content(
         t('instructions.mfa.sms.confirm_code_html',
-          number: '+1 (555) 555-5555',
+          number: '+1 (703) 555-5555',
           resend_code_link: t('links.two_factor_authentication.resend_code.sms'))
       )
     end

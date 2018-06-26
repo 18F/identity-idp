@@ -2,11 +2,12 @@ require 'rails_helper'
 
 describe Idv::PhoneController do
   include Features::LocalizationHelper
+  include IdvHelper
 
   let(:max_attempts) { Idv::Attempter.idv_max_attempts }
-  let(:good_phone) { '+1 (555) 555-0000' }
-  let(:normalized_phone) { '5555550000' }
-  let(:bad_phone) { '+1 (555) 555-5555' }
+  let(:good_phone) { '+1 (703) 555-0000' }
+  let(:normalized_phone) { '7035550000' }
+  let(:bad_phone) { '+1 (703) 555-5555' }
 
   describe 'before_actions' do
     it 'includes authentication before_action' do
@@ -84,7 +85,7 @@ describe Idv::PhoneController do
         result = {
           success: false,
           errors: {
-            phone: [invalid_phone_message],
+            phone: [t('errors.messages.must_have_us_country_code')],
           },
         }
 

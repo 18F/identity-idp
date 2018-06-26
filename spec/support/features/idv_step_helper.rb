@@ -48,7 +48,7 @@ module IdvStepHelper
 
   def complete_idv_steps_before_phone_otp_delivery_selection_step(user = user_with_2fa)
     complete_idv_steps_before_phone_step(user)
-    fill_out_phone_form_ok('2341230638')
+    fill_out_phone_form_ok('2342255432')
     click_idv_continue
   end
 
