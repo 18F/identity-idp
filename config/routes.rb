@@ -32,10 +32,10 @@ Rails.application.routes.draw do
         as: :voice_otp,
         defaults: { format: :xml }
 
+  post '/api/usps_upload' => 'usps_upload#create'
+
   get '/openid_connect/authorize' => 'openid_connect/authorization#index'
   get '/openid_connect/logout' => 'openid_connect/logout#index'
-
-  post '/usps_upload' => 'usps_upload#create'
 
   # i18n routes. Alphabetically sorted.
   scope '(:locale)', locale: /#{I18n.available_locales.join('|')}/ do
