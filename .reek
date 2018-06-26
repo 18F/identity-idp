@@ -113,6 +113,7 @@ TooManyMethods:
     - Idv::SessionsController
     - ServiceProviderSessionDecorator
     - SessionDecorator
+    - HolidayService
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
