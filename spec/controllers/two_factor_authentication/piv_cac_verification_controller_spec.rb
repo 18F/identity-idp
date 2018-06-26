@@ -15,22 +15,22 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     allow(subject).to receive(:user_session).and_return(session_info)
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.x509_dn_uuid,
-      'dn' => x509_subject,
+      'subject' => x509_subject,
       'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
       'uuid' => user.x509_dn_uuid + 'X',
-      'dn' => x509_subject + 'X',
+      'subject' => x509_subject + 'X',
       'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
-      'dn' => 'bad-dn',
+      'subject' => 'bad-dn',
       'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.x509_dn_uuid,
-      'dn' => x509_subject,
+      'subject' => x509_subject,
       'nonce' => 'bad-' + nonce
     )
   end

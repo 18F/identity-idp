@@ -584,7 +584,7 @@ production:
       - 'https://portal.dot.gov/'
     restrict_to_deploy_env: 'prod'
 
-  # NGA GEOWorks Symphony 
+  # NGA GEOWorks Symphony
   'urn:gov:gsa:openidconnect.profiles:sp:sso:mitre:symphony':
     agency_id: 5
     friendly_name: 'GEOWorks/Symphony'
@@ -628,7 +628,10 @@ production:
       - 'https://office.dp3.us'
       - 'https://office.dp3.us/auth/login-gov/callback'
     restrict_to_deploy_env: 'prod'
-
+    attribute_bundle:
+      - x509_subject
+      - x509_presented
+  
   # My Move.mil
   'urn:gov:gsa:openidconnect.profiles:sp:sso:dod:mymovemilprod':
     agency_id: 8
@@ -643,6 +646,9 @@ production:
       - 'https://my.dp3.us'
       - 'https://my.dp3.us/auth/login-gov/callback'
     restrict_to_deploy_env: 'prod'
+    attribute_bundle:
+      - x509_subject
+      - x509_presented
 
   # DOT – National Registry of Certified Medical Examiners App
   'urn:gov:dot:openidconnect.profiles:sp:sso:dot:nr_auth':
