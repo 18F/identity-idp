@@ -257,7 +257,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'flashes an sms error when twilio responds with an sms error' do
         twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(TwilioService::SMS_ERROR_CODE)
+          '', FakeTwilioErrorResponse.new(21_614)
         )
 
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
@@ -268,7 +268,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'flashes an invalid error when twilio responds with an invalid error' do
         twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(TwilioService::INVALID_ERROR_CODE)
+          '', FakeTwilioErrorResponse.new(21_211)
         )
 
         allow(SmsOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
@@ -279,7 +279,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'flashes an error when twilio responds with an invalid calling area error' do
         twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(TwilioService::INVALID_CALLING_AREA_ERROR_CODE)
+          '', FakeTwilioErrorResponse.new(21_215)
         )
 
         allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
@@ -291,7 +291,7 @@ describe Users::TwoFactorAuthenticationController do
 
       it 'flashes an error when twilio responds with an invalid voice number' do
         twilio_error = Twilio::REST::RestError.new(
-          '', FakeTwilioErrorResponse.new(TwilioService::INVALID_VOICE_NUMBER_ERROR_CODE)
+          '', FakeTwilioErrorResponse.new(13_224)
         )
 
         allow(VoiceOtpSenderJob).to receive(:perform_now).and_raise(twilio_error)
