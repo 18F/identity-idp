@@ -25,7 +25,7 @@ module Users
       else
         handle_invalid_otp_delivery_preference(result)
       end
-    rescue Twilio::REST::RestError => exception
+    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception)
     end
 
@@ -51,17 +51,20 @@ module Users
     end
 
     def invalid_phone_number(exception)
+      code = exception.code
       analytics.track_event(
-        Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message, code: exception.code
+        Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message, code: code
       )
-      flash_error_for_exception(exception)
+      flash[:error] = error_message(code)
       redirect_back(fallback_location: account_url)
     end
 
-    def flash_error_for_exception(exception)
-      flash[:error] = TwilioErrors::REST_ERRORS.fetch(
-        exception.code, t('errors.messages.otp_failed')
-      )
+    def error_message(code)
+      twilio_errors.fetch(code, t('errors.messages.otp_failed'))
+    end
+
+    def twilio_errors
+      TwilioErrors::REST_ERRORS.merge(TwilioErrors::VERIFY_ERRORS)
     end
 
     def otp_delivery_selection_form
@@ -94,7 +97,8 @@ module Users
       job = "#{method.capitalize}OtpSenderJob".constantize
       job_priority = confirmation_context? ? :perform_now : :perform_later
       job.send(job_priority, code: current_user.direct_otp, phone: phone_to_deliver_to,
-                             otp_created_at: current_user.direct_otp_sent_at.to_s)
+                             otp_created_at: current_user.direct_otp_sent_at.to_s,
+                             locale: user_locale)
     end
 
     def user_selected_otp_delivery_preference
@@ -109,6 +113,11 @@ module Users
       return current_user.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
+    end
+
+    def user_locale
+      available_locales = PhoneVerification::AVAILABLE_LOCALES
+      http_accept_language.language_region_compatible_from(available_locales)
     end
 
     def otp_rate_limiter

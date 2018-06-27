@@ -5,4 +5,14 @@ module TwilioErrors
     21_215 => I18n.t('errors.messages.invalid_calling_area'),
     21_614 => I18n.t('errors.messages.invalid_sms_number'),
   }.freeze
+
+  VERIFY_ERRORS = {
+    60_033 => I18n.t('errors.messages.invalid_phone_number'),
+    # invalid country code
+    60_078 => I18n.t('errors.messages.invalid_phone_number'),
+    # cannot send sms to landline
+    60_082 => I18n.t('errors.messages.invalid_sms_number'),
+    # phone number not provisioned with any carrier
+    60_083 => I18n.t('errors.messages.invalid_phone_number'),
+  }.freeze
 end

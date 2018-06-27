@@ -24,7 +24,7 @@ describe TwilioService do
 
       SmsOtpSenderJob.perform_now(
         code: '1234',
-        phone: '555-5555',
+        phone: '17035551212',
         otp_created_at: Time.zone.now.to_s
       )
 

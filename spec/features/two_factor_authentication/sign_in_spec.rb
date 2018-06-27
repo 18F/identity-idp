@@ -103,6 +103,28 @@ feature 'Two Factor Authentication' do
         expect(phone_field.value).to eq('12345678901234567890')
       end
     end
+
+    context 'with SMS option, international number, and locale header' do
+      it 'passes locale to SmsOtpSenderJob' do
+        page.driver.header 'Accept-Language', 'ar'
+        PhoneVerification.adapter = FakeAdapter
+        allow(SmsOtpSenderJob).to receive(:perform_now)
+
+        user = sign_in_before_2fa
+        select_2fa_option('sms')
+        select 'Morocco', from: 'user_phone_form_international_code'
+        fill_in 'user_phone_form_phone', with: '6 61 28 93 24'
+        click_send_security_code
+
+        expect(SmsOtpSenderJob).to have_received(:perform_now).with(
+          code: user.reload.direct_otp,
+          phone: '+212 661-289324',
+          otp_created_at: user.direct_otp_sent_at.to_s,
+          locale: 'ar'
+        )
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      end
+    end
   end
 
   def phone_field
@@ -514,6 +536,25 @@ feature 'Two Factor Authentication' do
                             nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path
       expect(page).to have_content(t('devise.two_factor_authentication.invalid_piv_cac'))
+    end
+
+    context 'with SMS, international number, and locale header' do
+      it 'passes locale to SmsOtpSenderJob' do
+        page.driver.header 'Accept-Language', 'ar'
+        PhoneVerification.adapter = FakeAdapter
+        allow(SmsOtpSenderJob).to receive(:perform_later)
+
+        user = create(:user, :signed_up, phone: '+212 661-289324')
+        sign_in_user(user)
+
+        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+          code: user.reload.direct_otp,
+          phone: '+212 661-289324',
+          otp_created_at: user.direct_otp_sent_at.to_s,
+          locale: 'ar'
+        )
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      end
     end
   end
 
