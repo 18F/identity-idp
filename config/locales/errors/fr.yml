@@ -40,6 +40,7 @@ fr:
       password_incorrect: Mot de passe incorrect
       personal_key_incorrect: Clé personnelle incorrecte
       requires_phone: vous demande d'entrer votre numéro de téléphone.
+      twilio_inbound_sms_invalid: Le message SMS Twilio entrant a échoué à la validation.
       unauthorized_authn_context: Contexte d'authentification non autorisé
       unauthorized_nameid_format: NOT TRANSLATED YET
       unauthorized_service_provider: Fournisseur de service non autorisé

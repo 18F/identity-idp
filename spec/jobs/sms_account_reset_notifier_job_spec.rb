@@ -7,7 +7,7 @@ describe SmsAccountResetNotifierJob do
   describe '.perform' do
     before do
       reset_job_queues
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
       FakeSms.messages = []
     end
 
@@ -21,7 +21,7 @@ describe SmsAccountResetNotifierJob do
     it 'sends a message containing the cancel link to the mobile number', twilio: true do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 

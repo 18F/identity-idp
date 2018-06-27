@@ -441,11 +441,11 @@ module Features
     end
 
     def stub_twilio_service
-      twilio_service = instance_double(TwilioService)
+      twilio_service = instance_double(TwilioService::Utils)
       allow(twilio_service).to receive(:send_sms)
       allow(twilio_service).to receive(:place_call)
 
-      allow(TwilioService).to receive(:new).and_return(twilio_service)
+      allow(TwilioService::Utils).to receive(:new).and_return(twilio_service)
     end
 
     def stub_piv_cac_service

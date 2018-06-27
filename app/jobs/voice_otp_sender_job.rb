@@ -5,7 +5,7 @@ class VoiceOtpSenderJob < ApplicationJob
   queue_as :voice
 
   def perform(code:, phone:, otp_created_at:)
-    send_otp(TwilioService.new, code, phone) if otp_valid?(otp_created_at)
+    send_otp(TwilioService::Utils.new, code, phone) if otp_valid?(otp_created_at)
   end
 
   private
