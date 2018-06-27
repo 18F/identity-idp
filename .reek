@@ -115,6 +115,7 @@ TooManyMethods:
     - ServiceProviderSessionDecorator
     - SessionDecorator
     - HolidayService
+    - PhoneDeliveryPresenter
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow

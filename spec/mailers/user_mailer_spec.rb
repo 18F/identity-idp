@@ -130,4 +130,65 @@ describe UserMailer, type: :mailer do
       t('user_mailer.contact_link_text'), href: MarketingSite.contact_url
     )
   end
+
+  describe 'account_reset_request' do
+    let(:mail) { UserMailer.account_reset_request(user) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_request.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(strip_tags( \
+        t('user_mailer.account_reset_request.intro', \
+        contact_us_link: t('user_mailer.account_reset_request.contact_us'))))
+    end
+  end
+
+  describe 'account_reset_granted' do
+    let(:mail) { UserMailer.account_reset_granted(user, user.account_reset_request) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_granted.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to \
+        have_content(strip_tags(t('user_mailer.account_reset_granted.intro')))
+    end
+  end
+
+  describe 'account_reset_complete' do
+    let(:mail) { UserMailer.account_reset_complete(user.email) }
+
+    it_behaves_like 'a system email'
+
+    it 'sends to the current email' do
+      expect(mail.to).to eq [user.email]
+    end
+
+    it 'renders the subject' do
+      expect(mail.subject).to eq t('user_mailer.account_reset_complete.subject')
+    end
+
+    it 'renders the body' do
+      expect(mail.html_part.body).to have_content(strip_tags(t('user_mailer.account_reset_complete.intro')))
+    end
+  end
+
+  def strip_tags(str)
+    ActionController::Base.helpers.strip_tags(str)
+  end
 end

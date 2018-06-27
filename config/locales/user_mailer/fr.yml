@@ -5,6 +5,29 @@ fr:
       intro: NOT TRANSLATED YET
       link_text: NOT TRANSLATED YET
       subject: NOT TRANSLATED YET
+    account_reset_request:
+      cancel_link_text: cliquez ici
+      help: ''
+      intro: Vous recevez cet e-mail parce que vous avez demandé à supprimer votre
+        login.gov compte. <br><br><strong>Votre demande sera traitée dans les 24 heures.</strong><br><br>Si
+        vous n'avez pas demandé de suppression, <u>%{contact_us_link}</u>.
+      subject: Supprimer votre compte
+      contact_us: Contactez nous
+    account_reset_granted:
+      cancel_link_text: cliquez ici
+      help: Si vous n'avez pas fait cette demande, veuillez %{cancel_account_reset}.
+      intro: Vous recevez cet e-mail parce que vous avez demandé à supprimer et à
+        réinitialiser votre compte login.gov. <br> <br> Supprimer votre compte devrait
+        être votre dernier recours si vous êtes exclu de votre compte. Vous ne serez
+        pas en mesure de récupérer toute information liée à votre compte. Une fois
+        votre compte supprimé, vous pouvez en créer un nouveau en utilisant la même
+        adresse email.<br><br>Es-tu sûr de toi voulez-vous supprimer votre compte?
+      button: Oui, continuez la suppression
+      subject: Supprimer votre compte
+    account_reset_complete:
+      intro: Cet e-mail confirme que vous avez supprimé votre compte login.gov.
+      subject: Compte supprimé
+      help: ''
     contact_link_text: communiquez avec nous
     email_changed:
       help: Si vous préférez ne pas changer votre adresse courriel, veuillez visiter

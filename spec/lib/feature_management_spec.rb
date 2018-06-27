@@ -431,4 +431,46 @@ describe 'FeatureManagement', type: :feature do
       expect(FeatureManagement.disallow_all_web_crawlers?).to eq(false)
     end
   end
+
+  describe '#account_reset_enabled?' do
+    context 'when enabled' do
+      before do
+        allow(Figaro.env).to receive(:account_reset_enabled).and_return('true')
+      end
+
+      it 'enables the feature' do
+        expect(FeatureManagement.account_reset_enabled?).to eq(true)
+      end
+    end
+
+    context 'when disabled' do
+      before do
+        allow(Figaro.env).to receive(:account_reset_enabled).and_return('false')
+      end
+
+      it 'disables the feature' do
+        expect(FeatureManagement.account_reset_enabled?).to eq(false)
+      end
+    end
+  end
+
+  describe '#account_reset_wait_period_days' do
+    it 'returns zero when not set' do
+      allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return(nil)
+
+      expect(FeatureManagement.account_reset_wait_period_days).to eq(0)
+    end
+
+    it 'returns zero when set to blank' do
+      allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return('')
+
+      expect(FeatureManagement.account_reset_wait_period_days).to eq(0)
+    end
+
+    it 'returns the integer value of the string' do
+      allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return('9')
+
+      expect(FeatureManagement.account_reset_wait_period_days).to eq(9)
+    end
+  end
 end

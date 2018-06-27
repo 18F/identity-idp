@@ -31,6 +31,9 @@ describe TwoFactorAuthCode::PhoneDeliveryPresenter do
     )
   end
 
+  describe '#account_reset_link' do
+  end
+
   describe '#cancel_link' do
     it 'returns the sign out path during authentication' do
       expect(presenter.cancel_link).to eq sign_out_path
