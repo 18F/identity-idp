@@ -24,7 +24,7 @@ module AccountReset
       email = user.email
       user.destroy!
       sign_out
-      session[:email] = email
+      flash[:email] = email
     end
 
     def check_granted_token
