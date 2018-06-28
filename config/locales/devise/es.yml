@@ -135,9 +135,8 @@ es:
         link: Use una clave personal en su lugar
         text_html: "¿No tiene acceso a su teléfono? %{link}."
       personal_key_header_text: Ingrese su clave personal
-      personal_key_prompt: Puede usar esta clave personal una vez. Si todavía necesita
-        un código después de iniciar una sesión, vaya a la página de configuración
-        de su cuenta para obtener una clave nueva.
+      personal_key_prompt: Puede usar esta clave personal una vez. Después de ingresarlo,
+        se le dará una nueva clave.
       phone_sms_label: Número de teléfono móvil
       phone_sms_info_html: Le enviaremos un mensaje de texto con un código de seguridad
         <strong>cada vez que inicie sesión</strong>.
