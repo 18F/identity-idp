@@ -9,6 +9,12 @@ describe AccountReset::RequestController do
 
       expect(response).to render_template(:show)
     end
+
+    it 'redirects to root without 2fa' do
+      get :show
+
+      expect(response).to redirect_to root_url
+    end
   end
 
   describe '#create' do
