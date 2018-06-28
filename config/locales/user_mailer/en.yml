@@ -9,7 +9,6 @@ en:
       link_text: Create your account
       subject: Your login.gov password reset request
     account_reset_request:
-      cancel_link_text: click here
       help: ''
       intro: You are receiving this email because you requested to delete your login.gov
         account. <br><br> <strong>Your request will be processed in 24 hours.</strong>
@@ -17,8 +16,8 @@ en:
       subject: Delete your account
       contact_us: contact us
     account_reset_granted:
-      cancel_link_text: click here
-      help: If you didn’t make this request, please %{cancel_account_reset}.
+      cancel_link_text: please cancel
+      help: If you don’t want to delete your account, %{cancel_account_reset}.
       intro: You are receiving this email because you requested to delete and reset
         your login.gov account. <br><br> Deleting your account should be your last
         resort if you are locked out of your account. You will not be able to recover
