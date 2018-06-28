@@ -28,5 +28,11 @@ describe AccountReset::RequestController do
 
       post :create
     end
+
+    it 'redirects to root without 2fa' do
+      post :create
+
+      expect(response).to redirect_to root_url
+    end
   end
 end
