@@ -40,6 +40,6 @@ describe AccountReset::SendNotificationsController do
   end
 
   def headers(token)
-    request.headers['X-ACCOUNT-RESET-AUTH-TOKEN'] = token
+    request.headers['X-API-AUTH-TOKEN'] = token
   end
 end

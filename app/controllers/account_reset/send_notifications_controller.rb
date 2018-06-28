@@ -16,7 +16,7 @@ module AccountReset
     end
 
     def auth_token
-      request.headers['X-ACCOUNT-RESET-AUTH-TOKEN']
+      request.headers['X-API-AUTH-TOKEN']
     end
   end
 end
