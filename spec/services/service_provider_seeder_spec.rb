@@ -116,7 +116,7 @@ RSpec.describe ServiceProviderSeeder do
     context 'when service_providers.yml has a remote setting' do
       before do
         location = 'https://raw.githubusercontent.com/18F/identity-idp/master/config/service_providers.yml'
-        RemoteSetting.create(name: 'service_providers.yml', url:location,
+        RemoteSetting.create(name: 'service_providers.yml', url: location,
                              contents: "test:\n  'issuer1':\n    friendly_name: 'name1'")
       end
 
