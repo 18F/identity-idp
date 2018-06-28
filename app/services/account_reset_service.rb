@@ -55,7 +55,7 @@ class AccountResetService
   def self.send_notifications_with_sql(users_sql)
     notifications_sent = 0
     AccountResetRequest.where(
-      users_sql, tvalue: Time.zone.now - FeatureManagement.account_reset_wait_period_days.days
+      users_sql, tvalue: Time.zone.now - Figaro.env.account_reset_wait_period_days.to_i.days
     ).order('requested_at ASC').each do |arr|
       notifications_sent += 1 if reset_and_notify(arr)
     end

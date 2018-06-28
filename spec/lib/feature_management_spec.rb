@@ -453,24 +453,4 @@ describe 'FeatureManagement', type: :feature do
       end
     end
   end
-
-  describe '#account_reset_wait_period_days' do
-    it 'returns zero when not set' do
-      allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return(nil)
-
-      expect(FeatureManagement.account_reset_wait_period_days).to eq(0)
-    end
-
-    it 'returns zero when set to blank' do
-      allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return('')
-
-      expect(FeatureManagement.account_reset_wait_period_days).to eq(0)
-    end
-
-    it 'returns the integer value of the string' do
-      allow(Figaro.env).to receive(:account_reset_wait_period_days).and_return('9')
-
-      expect(FeatureManagement.account_reset_wait_period_days).to eq(9)
-    end
-  end
 end
