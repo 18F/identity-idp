@@ -58,22 +58,11 @@ module Users
       redirect_back(fallback_location: account_url)
     end
 
-    # rubocop:disable Metrics/MethodLength
     def flash_error_for_exception(exception)
-      flash[:error] = case exception.code
-                      when TwilioService::SMS_ERROR_CODE
-                        t('errors.messages.invalid_sms_number')
-                      when TwilioService::INVALID_ERROR_CODE
-                        t('errors.messages.invalid_phone_number')
-                      when TwilioService::INVALID_CALLING_AREA_ERROR_CODE
-                        t('errors.messages.invalid_calling_area')
-                      when TwilioService::INVALID_VOICE_NUMBER_ERROR_CODE
-                        t('errors.messages.invalid_voice_number')
-                      else
-                        t('errors.messages.otp_failed')
-                      end
+      flash[:error] = TwilioErrors::REST_ERRORS.fetch(
+        exception.code, t('errors.messages.otp_failed')
+      )
     end
-    # rubocop:enable Metrics/MethodLength
 
     def otp_delivery_selection_form
       OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to, context)
