@@ -136,7 +136,7 @@ en:
       phone_sms_label: Mobile phone number
       phone_sms_info_html: We'll text a security code <strong>each time you sign in</strong>.
       phone_voice_label: Phone number
-      phone_voice_info_html: We'll call you with a security code <strong>each timerecy
+      phone_voice_info_html: We'll call you with a security code <strong>each time
         you sign in</strong>.
       piv_cac_fallback:
         link: Use your PIV/CAC instead
