@@ -42,5 +42,13 @@ describe AccountReset::RequestController do
 
       expect(response).to redirect_to root_url
     end
+
+    it 'redirects to phone setup url if 2fa not setup' do
+      user = create(:user)
+      sign_in_before_2fa(user)
+      post :create
+
+      expect(response).to redirect_to phone_setup_url
+    end
   end
 end
