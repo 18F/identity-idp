@@ -7,11 +7,10 @@ es:
       subject: NOT TRANSLATED YET
     account_reset_request:
       help: ''
-      intro: Usted está recibiendo este correo electrónico porque solicitó eliminar
-        su login.gov cuenta.<br><br><strong>Su solicitud se procesará en 24 horas.</strong><br><br>Si
-        no solicitó una eliminación de confirmación, <u>%{contact_us_link}</u>.
+      intro: Has solicitado eliminar tu cuenta de login.gov.<br><br><strong>Su la
+        solicitud se procesará en 24 horas.</strong><br><br>Si no quieres para eliminar
+        su cuenta, <u>%{cancel_account_reset}</u>.
       subject: Eliminar su cuenta
-      contact_us: Contáctenos
     account_reset_granted:
       cancel_link_text: por favor cancele
       help: Si no desea eliminar su cuenta, %{cancel_account_reset}.

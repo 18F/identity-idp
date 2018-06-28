@@ -10,11 +10,10 @@ en:
       subject: Your login.gov password reset request
     account_reset_request:
       help: ''
-      intro: You are receiving this email because you requested to delete your login.gov
-        account. <br><br> <strong>Your request will be processed in 24 hours.</strong>
-        <br><br> If you did not request an accound delete, <u>%{contact_us_link}</u>.
+      intro: You’ve requested to delete your login.gov account. <br><br><strong>Your
+        request will be processed in 24 hours.</strong> <br><br> If you don’t want
+        to delete your account, <u>%{cancel_account_reset}</u>.
       subject: Delete your account
-      contact_us: contact us
     account_reset_granted:
       cancel_link_text: please cancel
       help: If you don’t want to delete your account, %{cancel_account_reset}.
