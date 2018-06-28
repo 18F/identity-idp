@@ -49,22 +49,23 @@ en:
           your administrator to ensure your certificate is up to date.
         unverified_html: Please choose a different certificate from your PIV/CAC or
           contact your administrator to ensure your certificate is up to date.
+      choose_different_certificate: Choose a different certificate
       piv_cac:
         already_associated_html: Please choose a certificate from a different PIV/CAC
           or contact your administrator to ensure your PIV/CAC is up to date.
-      token:
-        bad_html: Please choose a different certificate from your PIV/CAC.
-        invalid_html: Please choose a different certificate from your PIV/CAC.
-        missing_html: Please choose a different method as your second factor.
-      choose_different_certificate: Choose a different certificate
       piv_cac_intro_html: We'll ask you to present your PIV/CAC card <strong>each
         time you sign in</strong> as part of two-factor authentication.<br><br>After
         clicking "Add PIV/CAC" your browser will prompt you for your PIV/CAC PIN and
         have you select a certificate.
       submit: Add PIV/CAC card
+      token:
+        bad_html: Please choose a different certificate from your PIV/CAC.
+        invalid_html: Please choose a different certificate from your PIV/CAC.
+        missing_html: Please choose a different method as your second factor.
     registration:
       labels:
         email: Email address
+    select: "- Select -"
     totp_setup:
       totp_intro_html: When you sign in, you can get your security code from an authentication
         app. %{link}
@@ -82,4 +83,3 @@ en:
       name: Confirmation code
       submit: Confirm account
       title: Confirm your account
-    select: "- Select -"

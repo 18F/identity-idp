@@ -17,12 +17,7 @@ fr:
     next: Suivant
     passwords:
       forgot: Vous avez oublié votre mot de passe?
-    phone_confirmation:
-      fallback_to_sms_html: Envoyez-moi plutôt un SMS contenant le code
-      fallback_to_voice_html: Si vous ne pouvez recevoir de message texte pour le
-        moment, vous pouvez obtenir un code de sécurité par %{link}
     privacy_policy: Confidentialité et sécurité
-    remove: Retirer
     resend: Renvoyer
     reverify: Veuillez vérifier votre identité de nouveau.
     sign_in: Connexion

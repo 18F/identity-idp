@@ -42,13 +42,13 @@ h1.hide = t('titles.account')
 
   = render 'account_item',
     name: t('account.index.authentication_app'),
-    content: content_tag(:em, t(@view_model.totp_content)),
+    content: content_tag(:em, @view_model.totp_content),
     action: @view_model.totp_partial
 
   - if current_user.piv_cac_available?
     = render 'account_item',
       name: t('account.index.piv_cac_card'),
-      content: content_tag(:em, t(@view_model.piv_cac_content)),
+      content: content_tag(:em, @view_model.piv_cac_content),
       action: @view_model.piv_cac_partial
 
   - @view_model.manage_personal_key_partial do

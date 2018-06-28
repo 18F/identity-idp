@@ -3,6 +3,9 @@ es:
   help_text:
     change_factor: Antes de poder editar su %{factor}, deberá confirmar su contraseña
       y recibir un código de seguridad en su teléfono.
+    no_factor:
+      delete_account: Para eliminar su cuenta, confirme su contraseña y código de
+        seguridad.
     requested_attributes:
       address: Dirección de correo postal
       birthdate: Fecha de nacimiento
@@ -12,6 +15,3 @@ es:
       phone: Teléfono
       social_security_number: Número de Seguro Social
       x509_subject: NOT TRANSLATED YET
-    no_factor:
-      delete_account: Para eliminar su cuenta, confirme su contraseña y código de
-        seguridad.

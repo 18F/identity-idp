@@ -1,12 +1,12 @@
 ---
 en:
   jobs:
-    sms_otp_sender_job:
-      message: "%{code} is your %{app} one-time security code. This code will expire
-        in %{expiration} minutes."
     sms_account_reset_cancel_job:
       message: Your request to delete your login.gov account has been cancelled.
     sms_account_reset_notifier_job:
       message: 'You''ve requested to delete your login.gov account. Your request will
         be processed in 24 hours. If you don’t want to delete your account, please
         cancel: %{cancel_link}'
+    sms_otp_sender_job:
+      message: "%{code} is your %{app} one-time security code. This code will expire
+        in %{expiration} minutes."
