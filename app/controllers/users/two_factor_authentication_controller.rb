@@ -5,12 +5,12 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      if current_user.totp_enabled?
+      if current_user.piv_cac_enabled?
+        redirect_to login_two_factor_piv_cac_url
+      elsif current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
       elsif current_user.phone_enabled?
         validate_otp_delivery_preference_and_send_code
-      elsif current_user.piv_cac_enabled?
-        redirect_to login_two_factor_piv_cac_url
       else
         redirect_to two_factor_options_url
       end
