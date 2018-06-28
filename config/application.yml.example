@@ -153,9 +153,18 @@ development:
   proofer_mock_fallback: 'true'
   rack_mini_profiler: 'off'
   reauthn_window: '120'
-  recaptcha_enabled_percent: '0'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
+  # reCAPTCHA global setting
+  recaptcha_enabled: 'false'
+  # Action key format: controller_path + '#' + action_name
+  # For example: '{ "sign_up/registrations#new": "true" }'
+  recaptcha_enabled_actions: '{
+    "sign_up/registrations#new": "false",
+    "sign_up/registrations#create": "false",
+    "users/reset_passwords#new": "false",
+    "users/reset_passwords#create": "false"
+  }'
+  recaptcha_site_key: 'site_key'
+  recaptcha_secret_key: 'secret_key'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_days: '30'
@@ -271,9 +280,13 @@ production:
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
-  recaptcha_enabled_percent: '0'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
+  # reCAPTCHA global setting
+  recaptcha_enabled: 'false'
+  # Action key format: controller_path + '#' + action_name
+  # For example: '{ "sign_up/registrations#new": "true" }'
+  recaptcha_enabled_actions:
+  recaptcha_site_key: 'site_key'
+  recaptcha_secret_key: 'secret_key'
   redis_url: 'redis://redis.login.gov.internal:6379'
   redis_throttle_url: 'redis://redis.login.gov.internal:6379/1'
   remember_device_expiration_days: '30'
@@ -386,9 +399,13 @@ test:
   pkcs11_lib: '/opt/cloudhsm/lib/libcloudhsm_pkcs11.so'
   proofer_mock_fallback: 'true'
   reauthn_window: '120'
-  recaptcha_enabled_percent: '0'
-  recaptcha_site_key: 'key1'
-  recaptcha_secret_key: 'key2'
+  # reCAPTCHA global setting
+  recaptcha_enabled: 'false'
+  # Action key format: controller_path + '#' + action_name
+  # For example: '{ "sign_up/registrations#new": "true" }'
+  recaptcha_enabled_actions:
+  recaptcha_site_key: 'site_key'
+  recaptcha_secret_key: 'secret_key'
   redis_url: 'redis://localhost:6379/0'
   redis_throttle_url: 'redis://localhost:6379/1'
   remember_device_expiration_days: '30'

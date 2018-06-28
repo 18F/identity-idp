@@ -9,7 +9,7 @@ RequestPasswordReset = Struct.new(:email, :request_id) do
       result = form.submit({ email: email }, instructions)
       [form.user, result]
     else
-      user.send_reset_password_instructions
+      user.send_reset_password_instructions # Devise::Models::Recoverable
       nil
     end
   end

@@ -1,5 +1,8 @@
 Attribute:
   enabled: false
+BooleanParameter:
+  exclude:
+    - RecaptchaValidator#initialize
 ControlParameter:
   exclude:
     - CustomDeviseFailureApp#i18n_message
@@ -19,6 +22,7 @@ DuplicateMethodCall:
     - fallback_to_english
     - Idv::Proofer#load_vendors!
     - Upaya::RandomTools#self.random_weighted_sample
+    - FeatureManagement#self.recaptcha_enabled?
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for

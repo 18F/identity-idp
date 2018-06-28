@@ -19,6 +19,7 @@ describe 'devise/passwords/new.html.slim' do
       service_provider_request: ServiceProviderRequest.new
     ).call
     allow(view).to receive(:decorated_session).and_return(@decorated_session)
+    allow(view).to receive(:recaptcha_enabled).and_return(false)
   end
 
   it 'has a localized title' do
@@ -68,6 +69,8 @@ describe 'devise/passwords/new.html.slim' do
 
   it 'renders a recaptcha with recaptcha enabled' do
     allow(FeatureManagement).to receive(:recaptcha_enabled?).and_return(true)
+    allow(view).to receive(:recaptcha_enabled).and_return(true)
+
     render
 
     expect(rendered).to have_selector('#recaptcha')
