@@ -1,11 +1,10 @@
 module AccountReset
   class ConfirmRequestController < ApplicationController
     def show
-      if session[:email].blank?
+      if flash[:email].blank?
         redirect_to root_url
       else
-        email = session.delete(:email)
-        render :show, locals: { email: email }
+        render :show, locals: { email: flash[:email] }
       end
     end
   end

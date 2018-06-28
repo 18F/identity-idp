@@ -24,7 +24,7 @@ module AccountReset
     def reset_session_with_email
       email = current_user.email
       sign_out
-      session[:email] = email
+      flash[:email] = email
     end
 
     def send_notifications
