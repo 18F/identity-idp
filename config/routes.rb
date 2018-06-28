@@ -61,7 +61,7 @@ Rails.application.routes.draw do
       get '/account_reset/delete_account' => 'account_reset/delete_account#show'
       delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
       get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
-      post '/account_reset/send_notifications' => 'account_reset/send_notifications#update'
+      post '/api/account_reset/send_notifications' => 'account_reset/send_notifications#update'
 
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
