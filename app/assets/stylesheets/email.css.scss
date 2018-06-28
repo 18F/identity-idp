@@ -38,7 +38,7 @@ h4 {
 
 .button.large.expanded table a { padding: 20px 0; }
 
-.button.expanded.large btn-warn-bkg {
+.button.expanded.large .btn-warn-bkg {
   background-color: $white;
   border: 0;
 
@@ -47,7 +47,7 @@ h4 {
   }
 }
 
-.btn-warn-bkg btn-warn {
+.btn-warn-bkg .btn-warn {
   background-color: $red-lightest;
   border: 2px solid $red;
   border-radius: 8px;
