@@ -4,6 +4,8 @@ class Identity < ApplicationRecord
   belongs_to :user
   validates :service_provider, presence: true
 
+  delegate :two_factor_method_manager, to: :user
+
   def deactivate
     update!(session_uuid: nil)
   end

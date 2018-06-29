@@ -1,6 +1,7 @@
 # rubocop:disable Rails/HasManyOrHasOneDependent
 class User < ApplicationRecord
   include NonNullUuid
+  include UserDeprecatedMethods
 
   after_validation :set_default_role, if: :new_record?
 
@@ -53,28 +54,12 @@ class User < ApplicationRecord
     self.role ||= :user
   end
 
-  def confirm_piv_cac?(proposed_uuid)
-    x509_dn_uuid == proposed_uuid if proposed_uuid
-  end
-
-  def piv_cac_enabled?
-    FeatureManagement.piv_cac_enabled? && x509_dn_uuid.present?
-  end
-
-  def piv_cac_available?
-    piv_cac_enabled? || identities.any?(&:piv_cac_available?)
-  end
-
   def need_two_factor_authentication?(_request)
     two_factor_enabled?
   end
 
-  def phone_enabled?
-    phone.present?
-  end
-
   def two_factor_enabled?
-    phone_enabled? || totp_enabled? || piv_cac_enabled?
+    two_factor_method_manager.two_factor_enabled?(%i[sms voice totp piv_cac])
   end
 
   def send_two_factor_authentication_code(_code)
@@ -124,6 +109,10 @@ class User < ApplicationRecord
 
   def decorate
     UserDecorator.new(self)
+  end
+
+  def two_factor_method_manager
+    @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(self)
   end
 
   # Devise automatically downcases and strips any attribute defined in

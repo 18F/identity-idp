@@ -8,8 +8,7 @@ class UserDecorator
     @user = user
   end
 
-  delegate :email, to: :user
-  delegate :totp_enabled?, :piv_cac_enabled?, :piv_cac_available?, to: :user
+  delegate :email, :two_factor_method_manager, to: :user
 
   def lockout_time_remaining_in_words
     current_time = Time.zone.now
@@ -108,11 +107,7 @@ class UserDecorator
   end
 
   def should_acknowledge_personal_key?(session)
-    return true if session[:personal_key]
-
-    sp_session = session[:sp]
-
-    user.personal_key.blank? && (sp_session.blank? || sp_session[:loa3] == false)
+    two_factor_method_manager.configuration_manager(:personal_key).should_acknowledge?(session)
   end
 
   def recent_events

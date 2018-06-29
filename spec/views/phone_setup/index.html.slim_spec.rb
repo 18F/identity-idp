@@ -2,12 +2,12 @@ require 'rails_helper'
 
 describe 'users/phone_setup/index.html.slim' do
   before do
-    user = build_stubbed(:user)
+    user = build_stubbed(:user, otp_delivery_preference: 'voice')
 
     allow(view).to receive(:current_user).and_return(user)
 
     @user_phone_form = UserPhoneForm.new(user)
-    @presenter = PhoneSetupPresenter.new('voice')
+    @presenter = PhoneSetupPresenter.new(user)
     render
   end
 

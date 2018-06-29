@@ -18,11 +18,14 @@ class TotpSetupForm
   attr_reader :user, :code, :secret, :success
 
   def valid_totp_code?
-    user.confirm_totp_secret(secret, code)
+    configuration_manager.confirm_configuration(secret, code)
   end
 
   def process_valid_submission
-    user.save!
-    Event.create(user_id: user.id, event_type: :authenticator_enabled)
+    configuration_manager.save_configuration
+  end
+
+  def configuration_manager
+    @configuration_manager ||= TwoFactorAuthentication::TotpConfigurationManager.new(user)
   end
 end

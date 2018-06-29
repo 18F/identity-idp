@@ -10,13 +10,13 @@ module Users
 
     def index
       @user_phone_form = UserPhoneForm.new(current_user)
-      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
+      @presenter = PhoneSetupPresenter.new(current_user)
       analytics.track_event(Analytics::USER_REGISTRATION_PHONE_SETUP_VISIT)
     end
 
     def create
       @user_phone_form = UserPhoneForm.new(current_user)
-      @presenter = PhoneSetupPresenter.new(current_user.otp_delivery_preference)
+      @presenter = PhoneSetupPresenter.new(current_user)
       result = @user_phone_form.submit(user_phone_form_params)
       analytics.track_event(Analytics::MULTI_FACTOR_AUTH_PHONE_SETUP, result.to_h)
 
@@ -30,7 +30,7 @@ module Users
     private
 
     def two_factor_enabled?
-      current_user.two_factor_enabled?
+      two_factor_method_manager.two_factor_enabled?
     end
 
     def user_phone_form_params
@@ -38,6 +38,10 @@ module Users
         :international_code,
         :phone
       )
+    end
+
+    def two_factor_method_manager
+      @two_factor_method_manager ||= TwoFactorAuthentication::MethodManager.new(current_user)
     end
   end
 end

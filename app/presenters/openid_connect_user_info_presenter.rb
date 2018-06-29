@@ -22,6 +22,8 @@ class OpenidConnectUserInfoPresenter
 
   private
 
+  delegate :two_factor_method_manager, to: :identity
+
   def uuid_from_sp_identity(identity)
     AgencyIdentityLinker.new(identity).link_identity.uuid
   end
@@ -101,6 +103,6 @@ class OpenidConnectUserInfoPresenter
   end
 
   def x509_session?
-    identity.piv_cac_enabled?
+    two_factor_method_manager.two_factor_enabled?([:piv_cac])
   end
 end
