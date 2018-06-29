@@ -147,7 +147,7 @@ describe UserMailer, type: :mailer do
     it 'renders the body' do
       expect(mail.html_part.body).to have_content(strip_tags( \
         t('user_mailer.account_reset_request.intro', \
-        contact_us_link: t('user_mailer.account_reset_request.contact_us'))))
+        cancel_account_reset: t('user_mailer.account_reset_granted.cancel_link_text'))))
     end
   end
 
