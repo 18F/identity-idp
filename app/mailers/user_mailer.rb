@@ -26,4 +26,20 @@ class UserMailer < ActionMailer::Base
     @sign_up_email_url = sign_up_email_url(request_id: request_id, locale: locale_url_param)
     mail(to: email, subject: t('user_mailer.account_does_not_exist.subject'))
   end
+
+  def account_reset_request(user)
+    account_reset = user.account_reset_request
+    @token = account_reset&.request_token
+    mail(to: user.email, subject: t('user_mailer.account_reset_request.subject'))
+  end
+
+  def account_reset_granted(user, account_reset)
+    @token = account_reset&.request_token
+    @granted_token = account_reset&.granted_token
+    mail(to: user.email, subject: t('user_mailer.account_reset_granted.subject'))
+  end
+
+  def account_reset_complete(email)
+    mail(to: email, subject: t('user_mailer.account_reset_complete.subject'))
+  end
 end

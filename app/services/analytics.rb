@@ -54,6 +54,7 @@ class Analytics
   end
 
   # rubocop:disable Metrics/LineLength
+  ACCOUNT_RESET = 'Account Reset'.freeze
   ACCOUNT_DELETION = 'Account Deletion Requested'.freeze
   ACCOUNT_VISIT = 'Account Page Visited'.freeze
   EMAIL_AND_PASSWORD_AUTH = 'Email and Password Authentication'.freeze

@@ -157,6 +157,17 @@ fr:
       please_confirm: Votre numéro de téléphone a été entré. Confirmez-le en entrant
         le code de sécurité ci-dessous.
       please_try_again_html: Veuillez essayer de nouveau dans <strong id=%{id}>%{time_remaining}</strong>.
+      account_reset:
+        successful_cancel: Je vous remercie. La demande de suppression de votre compte
+          login.gov a été annulé.
+        link: supprimer votre compte
+        text_html: Si vous ne pouvez pas utiliser l'une de ces options de sécurité
+          ci-dessus, vous pouvez réinitialiser vos préférences par %{link}.
+        cancel_link: Annuler votre demande
+        pending_html: Vous avez actuellement une demande en attente pour supprimer
+          votre compte.  Il faut compter 24 heures à partir du moment où vous avez
+          fait la demande pour terminer le processus.  Veuillez vérifier plus tard.
+          %{cancel_link}
       read_about_two_factor_authentication:
         link: lire sur l'authentification à deux facteurs
         text_html: Vous pouvez %{link} et pourquoi nous l'utilisons sur notre page
@@ -183,6 +194,23 @@ fr:
       two_factor_choice_intro: login.gov s'assure que vous pouvez accéder à votre
         compte en ajoutant une deuxième couche de sécurité.
       two_factor_choice_cancel: "‹ Choisissez une autre option"
+      two_factor_login_choice: Sécurise ton compte
+      two_factor_login_choice_options:
+        voice: Appel téléphonique
+        voice_info: Obtenez votre code de sécurité par appel téléphonique.
+        sms: SMS
+        sms_info: Obtenez votre code de sécurité par SMS.
+        auth_app: Application d'authentification
+        auth_app_info: Configurez une application d'authentification pour obtenir
+          votre code de sécurité sans fournir de numéro de téléphone.
+        piv_cac: Employés du gouvernement
+        piv_cac_info: Utilisez votre carte PIV / CAC pour sécuriser votre compte.
+        personal_key: Clé personnelle
+        personal_key_info: Utilisez la clé personnelle de 12 caractères que vous avez
+          utilisée lors de la création du compte.
+      two_factor_login_choice_intro: login.gov s'assure que vous pouvez accéder à
+        votre compte en ajoutant une deuxième couche de sécurité.
+      two_factor_login_choice_cancel: "‹ Choisissez une autre option"
       two_factor_setup: Ajoutez un numéro de téléphone
       user:
         new_otp_sent: Nous vous avons envoyé un code de sécurité à utilisation unique.

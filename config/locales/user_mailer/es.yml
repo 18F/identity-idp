@@ -5,6 +5,27 @@ es:
       intro: NOT TRANSLATED YET
       link_text: NOT TRANSLATED YET
       subject: NOT TRANSLATED YET
+    account_reset_request:
+      help: ''
+      intro: Has solicitado eliminar tu cuenta de login.gov.<br><br><strong>Su la
+        solicitud se procesará en 24 horas.</strong><br><br>Si no quieres para eliminar
+        su cuenta, <u>%{cancel_account_reset}</u>.
+      subject: Eliminar su cuenta
+    account_reset_granted:
+      cancel_link_text: por favor cancele
+      help: Si no desea eliminar su cuenta, %{cancel_account_reset}.
+      intro: Recibes este correo electrónico porque solicitaste eliminar y restablecer
+        su cuenta de login.gov<br><br>Eliminar tu cuenta debería ser tu último recurso
+        si está bloqueado de su cuenta. No podrás recuperar cualquier información
+        vinculada a su cuenta. Una vez que su cuenta es eliminada, usted puede crear
+        uno nuevo usando la misma dirección de correo electrónico.<br><br>¿Estás seguro
+        de que ¿Desea eliminar su cuenta?
+      button: Sí, continúa eliminando
+      subject: Eliminar su cuenta
+    account_reset_complete:
+      intro: Este correo electrónico confirma que ha eliminado su cuenta de login.gov.
+      subject: Cuenta borrada
+      help: ''
     contact_link_text: Contáctenos
     email_changed:
       help: Si no desea cambiar su email, visite el %{app} %{help_link} o el %{contact_link}.

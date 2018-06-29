@@ -1,0 +1,37 @@
+- title t('account_reset.request.title')
+
+h3.my0 = t('account_reset.request.title')
+p.mt-tiny.mb0 == t('account_reset.request.info')
+br
+h4.my0 = t('account_reset.request.personal_key')
+
+p.mt-tiny.mb0
+  = t('account_reset.request.personal_key_info')
+
+hr
+= render 'partials/personal_key/key', code: 'XXXX-XXXX-XXXX-XXXX'
+
+.mb3.right-align
+
+  = link_to t('users.personal_key.print'), '#',
+          data: { print: true },
+          class: 'ml2 btn-border ico ico-print text-decoration-none'
+
+hr
+p.mt-tiny.mb0 == t('account_reset.request.personal_key_trailer', \
+  link: link_to(t('account_reset.request.access_your_account'), login_two_factor_personal_key_url))
+br
+h4.my0 = t('account_reset.request.delete_account')
+p.mt-tiny.mb0 == t('account_reset.request.delete_account_info')
+br
+h5.my2 = t('account_reset.request.are_you_sure')
+= button_to t('account_reset.request.no_cancel'), root_url, method: :get,
+        class: 'btn btn-primary btn-wide mb1 personal-key-continue',
+        'data-toggle': 'modal'
+= button_to t('account_reset.request.yes_continue'), account_reset_request_path, \
+    class: 'btn btn-link'
+br
+br
+br
+hr
+= link_to t('forms.buttons.back'), root_url

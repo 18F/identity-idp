@@ -53,6 +53,16 @@ Rails.application.routes.draw do
       post '/' => 'users/sessions#create', as: :user_session
       get '/active' => 'users/sessions#active'
 
+      get '/account_reset/request' => 'account_reset/request#show'
+      post '/account_reset/request' => 'account_reset/request#create'
+      get '/account_reset/cancel' => 'account_reset/cancel#cancel'
+      get '/account_reset/report_fraud' => 'account_reset/report_fraud#update'
+      get '/account_reset/confirm_request' => 'account_reset/confirm_request#show'
+      get '/account_reset/delete_account' => 'account_reset/delete_account#show'
+      delete '/account_reset/delete_account' => 'account_reset/delete_account#delete'
+      get '/account_reset/confirm_delete_account' => 'account_reset/confirm_delete_account#show'
+      post '/api/account_reset/send_notifications' => 'account_reset/send_notifications#update'
+
       get '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#show'
       post '/login/two_factor/authenticator' => 'two_factor_authentication/totp_verification#create'
       get '/login/two_factor/personal_key' => 'two_factor_authentication/personal_key_verification#show'

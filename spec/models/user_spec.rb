@@ -10,6 +10,7 @@ describe User do
     it { is_expected.to have_many(:agency_identities) }
     it { is_expected.to have_many(:profiles) }
     it { is_expected.to have_many(:events) }
+    it { is_expected.to have_one(:account_reset_request) }
   end
 
   it 'does not send an email when #create is called' do

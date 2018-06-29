@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180619145839) do
+ActiveRecord::Schema.define(version: 20180620233914) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "account_reset_requests", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.datetime "requested_at"
+    t.string "request_token"
+    t.datetime "cancelled_at"
+    t.datetime "reported_fraud_at"
+    t.datetime "granted_at"
+    t.string "granted_token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cancelled_at", "granted_at", "requested_at"], name: "index_account_reset_requests_on_timestamps"
+    t.index ["granted_token"], name: "index_account_reset_requests_on_granted_token", unique: true
+    t.index ["request_token"], name: "index_account_reset_requests_on_request_token", unique: true
+    t.index ["user_id"], name: "index_account_reset_requests_on_user_id", unique: true
+  end
 
   create_table "agencies", force: :cascade do |t|
     t.string "name", null: false
