@@ -1,5 +1,5 @@
 shared_examples 'an otp delivery preference form' do
-  let(:phone) { '+1 (555) 555-5000' }
+  let(:phone) { '+1 (703) 555-5000' }
   let(:params) do
     {
       phone: phone,

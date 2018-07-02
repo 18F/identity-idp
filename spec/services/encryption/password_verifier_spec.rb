@@ -41,4 +41,10 @@ describe Encryption::PasswordVerifier do
       expect(result).to eq(false)
     end
   end
+
+  it 'raises an encryption error when the password digest is nil' do
+    expect do
+      Encryption::PasswordVerifier::PasswordDigest.parse_from_string(nil)
+    end.to raise_error(Encryption::EncryptionError)
+  end
 end

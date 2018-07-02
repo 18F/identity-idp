@@ -5,6 +5,7 @@ ControlParameter:
     - CustomDeviseFailureApp#i18n_message
     - OpenidConnectRedirector#initialize
     - NoRetryJobs#call
+    - PhoneFormatter#self.format
 DuplicateMethodCall:
   exclude:
     - ApplicationController#disable_caching
@@ -13,7 +14,6 @@ DuplicateMethodCall:
     - MfaConfirmationController#handle_invalid_password
     - needs_to_confirm_email_change?
     - WorkerHealthChecker#status
-    - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
     - BasicAuthUrl#build
     - fallback_to_english
@@ -45,6 +45,7 @@ FeatureEnvy:
     - Utf8Sanitizer#event_attributes
     - Utf8Sanitizer#remote_ip
     - Idv::Proofer#validate_vendors
+    - PersonalKeyGenerator#create_legacy_recovery_code
 InstanceVariableAssumption:
   exclude:
     - User
@@ -57,13 +58,13 @@ ManualDispatch:
     - CloudhsmKeyGenerator#initialize_settings
 NestedIterators:
   exclude:
-    - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_html
     - TwilioService#sanitize_phone_number
     - ServiceProviderSeeder#run
 NilCheck:
   enabled: false
 LongParameterList:
+  max_params: 4
   exclude:
     - IdentityLinker#optional_attributes
     - Idv::ProoferJob#perform
@@ -92,7 +93,6 @@ TooManyStatements:
     - OpenidConnect::AuthorizationController#store_request
     - SamlIdpAuthConcern#store_saml_request
     - Users::PhoneConfirmationController
-    - FileEncryptor#encrypt
     - UserFlowExporter#self.massage_assets
     - UserFlowExporter#self.massage_html
     - UserFlowExporter#self.run
@@ -115,6 +115,8 @@ TooManyMethods:
     - Idv::SessionsController
     - ServiceProviderSessionDecorator
     - SessionDecorator
+    - HolidayService
+    - PhoneDeliveryPresenter
 UncommunicativeMethodName:
   exclude:
     - PhoneConfirmationFlow
@@ -127,6 +129,9 @@ UncommunicativeModuleName:
     - X509::Attribute
     - X509::Attributes
     - X509::SessionStore
+UnusedParameters:
+  exclude:
+    - SmsOtpSenderJob#perform
 UnusedPrivateMethod:
   exclude:
     - ApplicationController

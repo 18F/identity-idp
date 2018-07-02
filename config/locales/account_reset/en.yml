@@ -1,0 +1,48 @@
+---
+en:
+  account_reset:
+    request:
+      title: Account deletion and reset
+      info: If you can't access your account through the security options you set
+        up previously, deleting your account and creating a new one is the only option.
+        <br><br> We can't undo an account delete, so please make sure you don't have
+        another security option you can use instead like your personal key.
+      personal_key: Do you have your personal key?
+      personal_key_info: Your personal key is a 16 character code that was given to
+        you at account creation as a recovery method--see example below.
+      personal_key_trailer: If you have your personal key, you can use it to %{link}
+        instead of resetting.
+      access_your_account: access your account
+      delete_account: Delete your account
+      delete_account_info: Deleting your existing account and creating a new one will
+        allow you to use the same email address and set up new security options.  However,
+        deleting will remove any agency applications you have linked to your account
+        and you will need to restore each connection. <br><br> If you continue, you
+        will first receive an email confirmation.  As a security measure, you will
+        receive another email with the link to continue deleting your account 24 hours
+        after the intial confirmation email arrives.
+      are_you_sure: Are you sure you don't have access to any of your security methods
+        OR your personal key?
+      no_cancel: No, cancel
+      yes_continue: Yes, continue deletion.
+    confirm_request:
+      check_your_email: Check your email
+      instructions: We sent an email to <strong>%{email}</strong> to begin the account
+        delete process. Follow the instructions in your email to complete the process.
+        <br><br> As a security measure, we also sent a text to your registered phone
+        number. <br><br> You can close this window if you are done.
+    delete_account:
+      title: Deleting your account should be your last resort
+      info: Deleting your account should be your last resort if you are locked out
+        of your account. You will not be able to recover any information linked to
+        your account.  Once your account is deleted, you can create a new one using
+        the same email address.
+      are_you_sure: Are you sure you want to delete your account?
+      delete_button: Delete account
+      cancel: Cancel
+    confirm_delete_account:
+      title: You have deleted your account
+      info: The account for <strong>%{email}</strong> has been deleted. We sent an
+        email confirmation of the account deletion. <br><br> You may %{link} or close
+        this window if you're done.
+      link_text: create a new account

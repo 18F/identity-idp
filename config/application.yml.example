@@ -74,11 +74,16 @@ development:
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
+  account_reset_auth_token: 'abc123'
+  account_reset_enabled: 'true'
+  account_reset_token_valid_for_days: '1'
+  account_reset_wait_period_days: '1'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
+  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost": "4000$8$4$" }, { "key": "key": "22222222222222222222222222222222", "cost": "4000$8$4$" }]'
+  attribute_encryption_without_kms: 'false'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-development-keymaker'
   aws_region: 'us-east-1'
@@ -119,7 +124,7 @@ development:
   equifax_ssh_passphrase: 'sekret'
   exception_recipients: 'test1@test.com'
   hmac_fingerprinter_key: 'a2c813d4dca919340866ba58063e4072adc459b767a74cf2666d5c1eef3861db26708e7437abde1755eb24f4034386b0fea1850a1cb7e56bff8fae3cc6ade96c'
-  hmac_fingerprinter_key_queue: '["old-key-one", "old-key-two"]'
+  hmac_fingerprinter_key_queue: '["11111111111111111111111111111111", "22222222222222222222222222222222"]'
   identity_pki_disabled: 'true'
   issuers_with_email_nameid_format: ''
   lexisnexis_account_id: 'test_account'
@@ -185,6 +190,11 @@ development:
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
+  usps_upload_sftp_directory: '/directory'
+  usps_upload_sftp_host: 'example.com'
+  usps_upload_sftp_username: 'user'
+  usps_upload_sftp_password: 'pass'
+  usps_upload_token: '123ABC'
 
 # These values serve as defaults for all production-like environments, which
 # includes *.identitysandbox.gov and *.login.gov.
@@ -198,11 +208,16 @@ production:
   aamva_public_key: # Base64 encoded public key for AAMVA
   aamva_private_key: # Base64 encoded private key for AAMVA
   aamva_verification_url: # DLDV Verification URL
+  account_reset_auth_token:
+  account_reset_enabled: 'true'
+  account_reset_token_valid_for_days: '1'
+  account_reset_wait_period_days: '1'
   async_job_refresh_interval_seconds: '5'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '4000$8$4$' # SCrypt::Engine.calibrate(max_time: 0.5)
   attribute_encryption_key: # generate via `rake secret`
   attribute_encryption_key_queue: # '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
+  attribute_encryption_without_kms: 'false'
   available_locales: 'en es fr'
   aws_kms_key_id:
   aws_region:
@@ -291,21 +306,32 @@ production:
   twilio_auth_token: # Twilio auth token
   twilio_messaging_service_sid: # Twilio CoPilot SID
   twilio_record_voice: 'false'
+  twilio_verify_api_key: 'change-me'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
+  usps_upload_sftp_directory:
+  usps_upload_sftp_host:
+  usps_upload_sftp_username:
+  usps_upload_sftp_password:
+  usps_upload_token:
 
 test:
   aamva_cert_enabled: 'true'
   aamva_public_key: '123abc'
   aamva_private_key: '123abc'
   aamva_verification_url: 'https://example.org:12345/verification/url'
+  account_reset_auth_token: 'test'
+  account_reset_enabled: 'true'
+  account_reset_token_valid_for_days: '1'
+  account_reset_wait_period_days: '1'
   async_job_refresh_interval_seconds: '1'
   async_job_refresh_max_wait_seconds: '15'
   attribute_cost: '800$8$1$' # SCrypt::Engine.calibrate(max_time: 0.01)
   attribute_encryption_key: '2086dfbd15f5b0c584f3664422a1d3409a0d2aa6084f65b6ba57d64d4257431c124158670c7655e45cabe64194f7f7b6c7970153c285bdb8287ec0c4f7553e25'
-  attribute_encryption_key_queue: '[{ "key": "old-key-one", "cost": "4000$8$4$" }, { "key": "old-key-one", "cost": "4000$8$4$" }]'
+  attribute_encryption_key_queue: '[{ "key": "11111111111111111111111111111111", "cost": "4000$8$4$" }, { "key": "22222222222222222222222222222222", "cost": "4000$8$4$" }]'
+  attribute_encryption_without_kms: 'false'
   available_locales: 'en es fr'
   aws_kms_key_id: 'alias/login-dot-gov-test-keymaker'
   aws_region: 'us-east-1'
@@ -401,7 +427,13 @@ test:
   twilio_auth_token: 'token1'
   twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
+  twilio_verify_api_key: 'secret'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
   enable_load_testing_mode: 'false'
+  usps_upload_sftp_directory: '/directory'
+  usps_upload_sftp_host: 'example.com'
+  usps_upload_sftp_username: 'user'
+  usps_upload_sftp_password: 'pass'
+  usps_upload_token: 'test_token'

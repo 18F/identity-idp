@@ -50,7 +50,7 @@ class PhoneNumberCapabilities
   private
 
   def area_code
-    @area_code ||= phone_number_components.second
+    @area_code ||= parsed_phone.area_code
   end
 
   def country_code_data
@@ -60,14 +60,10 @@ class PhoneNumberCapabilities
   end
 
   def international_code
-    @international_code ||= phone_number_components.first
+    @international_code ||= parsed_phone.country_code
   end
 
-  def phone_number_components
-    return [] if phone.blank?
-
-    @phone_number_components ||= Phony.split(
-      PhonyRails.normalize_number(phone.to_s, default_country_code: :us).slice(1..-1)
-    )
+  def parsed_phone
+    @parsed_phone ||= Phonelib.parse(phone)
   end
 end

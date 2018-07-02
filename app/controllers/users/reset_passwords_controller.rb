@@ -137,8 +137,13 @@ module Users
       attributes = { password: user_params[:password] }
       attributes[:confirmed_at] = Time.zone.now unless resource.confirmed?
       UpdateUser.new(user: resource, attributes: attributes).call
+      increment_password_metrics
 
       mark_profile_inactive
+    end
+
+    def increment_password_metrics
+      PasswordMetricsIncrementer.new(user_params[:password]).increment_password_metrics
     end
 
     def mark_profile_inactive

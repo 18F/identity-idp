@@ -34,7 +34,7 @@ class SamlResponseDoc
   def raw_xml_response
     if @test_type == 'feature'
       xml_response
-    elsif @response.body =~ /<html>/
+    elsif @response.body.match?(/<html>/)
       html_response
     else
       @response.body
@@ -53,7 +53,7 @@ class SamlResponseDoc
   end
 
   def response_doc
-    if raw_xml_response =~ /EncryptedData/
+    if raw_xml_response.match?(/EncryptedData/)
       @original_encrypted = true
       Nokogiri::XML(
         OneLogin::RubySaml::Response.new(

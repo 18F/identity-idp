@@ -244,9 +244,14 @@ module TwoFactorAuthenticatable
       unconfirmed_phone: unconfirmed_phone?,
       totp_enabled: current_user.totp_enabled?,
       remember_device_available: !idv_context?,
+      account_reset_token: account_reset_token,
     }.merge(generic_data)
   end
   # rubocop:enable MethodLength
+
+  def account_reset_token
+    current_user&.account_reset_request&.request_token
+  end
 
   def authenticator_view_data
     {

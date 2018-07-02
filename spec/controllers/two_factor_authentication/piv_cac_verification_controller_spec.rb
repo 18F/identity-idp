@@ -3,7 +3,7 @@ require 'rails_helper'
 describe TwoFactorAuthentication::PivCacVerificationController do
   let(:user) do
     create(:user, :signed_up, :with_piv_or_cac,
-           phone: '+1 (555) 555-0000')
+           phone: '+1 (703) 555-0000')
   end
 
   let(:nonce) { 'once' }
@@ -15,22 +15,22 @@ describe TwoFactorAuthentication::PivCacVerificationController do
     allow(subject).to receive(:user_session).and_return(session_info)
     allow(PivCacService).to receive(:decode_token).with('good-token').and_return(
       'uuid' => user.x509_dn_uuid,
-      'dn' => x509_subject,
+      'subject' => x509_subject,
       'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('good-other-token').and_return(
       'uuid' => user.x509_dn_uuid + 'X',
-      'dn' => x509_subject + 'X',
+      'subject' => x509_subject + 'X',
       'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('bad-token').and_return(
       'uuid' => 'bad-uuid',
-      'dn' => 'bad-dn',
+      'subject' => 'bad-dn',
       'nonce' => nonce
     )
     allow(PivCacService).to receive(:decode_token).with('bad-nonce').and_return(
       'uuid' => user.x509_dn_uuid,
-      'dn' => x509_subject,
+      'subject' => x509_subject,
       'nonce' => 'bad-' + nonce
     )
   end

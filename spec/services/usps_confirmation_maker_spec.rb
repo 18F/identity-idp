@@ -32,7 +32,8 @@ describe UspsConfirmationMaker do
       expect { subject.perform }.to change { UspsConfirmation.count }.from(0).to(1)
 
       usps_confirmation = UspsConfirmation.first
-      expect(usps_confirmation.decrypted_entry.to_h).to eq decrypted_attributes
+      entry_hash = usps_confirmation.entry
+      expect(entry_hash).to eq decrypted_attributes
     end
 
     it 'should create a UspsConfrimationCode with the profile and the encrypted OTP' do

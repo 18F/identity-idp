@@ -5,12 +5,12 @@ module Users
     before_action :check_remember_device_preference
 
     def show
-      if current_user.totp_enabled?
+      if current_user.piv_cac_enabled?
+        redirect_to login_two_factor_piv_cac_url
+      elsif current_user.totp_enabled?
         redirect_to login_two_factor_authenticator_url
       elsif current_user.phone_enabled?
         validate_otp_delivery_preference_and_send_code
-      elsif current_user.piv_cac_enabled?
-        redirect_to login_two_factor_piv_cac_url
       else
         redirect_to two_factor_options_url
       end
@@ -25,7 +25,7 @@ module Users
       else
         handle_invalid_otp_delivery_preference(result)
       end
-    rescue Twilio::REST::RestError => exception
+    rescue Twilio::REST::RestError, PhoneVerification::VerifyError => exception
       invalid_phone_number(exception)
     end
 
@@ -51,29 +51,21 @@ module Users
     end
 
     def invalid_phone_number(exception)
+      code = exception.code
       analytics.track_event(
-        Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message, code: exception.code
+        Analytics::TWILIO_PHONE_VALIDATION_FAILED, error: exception.message, code: code
       )
-      flash_error_for_exception(exception)
+      flash[:error] = error_message(code)
       redirect_back(fallback_location: account_url)
     end
 
-    # rubocop:disable Metrics/MethodLength
-    def flash_error_for_exception(exception)
-      flash[:error] = case exception.code
-                      when TwilioService::SMS_ERROR_CODE
-                        t('errors.messages.invalid_sms_number')
-                      when TwilioService::INVALID_ERROR_CODE
-                        t('errors.messages.invalid_phone_number')
-                      when TwilioService::INVALID_CALLING_AREA_ERROR_CODE
-                        t('errors.messages.invalid_calling_area')
-                      when TwilioService::INVALID_VOICE_NUMBER_ERROR_CODE
-                        t('errors.messages.invalid_voice_number')
-                      else
-                        t('errors.messages.otp_failed')
-                      end
+    def error_message(code)
+      twilio_errors.fetch(code, t('errors.messages.otp_failed'))
     end
-    # rubocop:enable Metrics/MethodLength
+
+    def twilio_errors
+      TwilioErrors::REST_ERRORS.merge(TwilioErrors::VERIFY_ERRORS)
+    end
 
     def otp_delivery_selection_form
       OtpDeliverySelectionForm.new(current_user, phone_to_deliver_to, context)
@@ -105,7 +97,8 @@ module Users
       job = "#{method.capitalize}OtpSenderJob".constantize
       job_priority = confirmation_context? ? :perform_now : :perform_later
       job.send(job_priority, code: current_user.direct_otp, phone: phone_to_deliver_to,
-                             otp_created_at: current_user.direct_otp_sent_at.to_s)
+                             otp_created_at: current_user.direct_otp_sent_at.to_s,
+                             locale: user_locale)
     end
 
     def user_selected_otp_delivery_preference
@@ -120,6 +113,11 @@ module Users
       return current_user.phone if authentication_context?
 
       user_session[:unconfirmed_phone]
+    end
+
+    def user_locale
+      available_locales = PhoneVerification::AVAILABLE_LOCALES
+      http_accept_language.language_region_compatible_from(available_locales)
     end
 
     def otp_rate_limiter

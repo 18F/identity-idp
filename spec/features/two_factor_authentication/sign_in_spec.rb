@@ -24,17 +24,17 @@ feature 'Two Factor Authentication' do
 
       submit_2fa_setup_form_with_empty_string_phone
 
-      expect(page).to have_content invalid_phone_message
+      expect(page).to have_content t('errors.messages.missing_field')
 
       submit_2fa_setup_form_with_invalid_phone
 
-      expect(page).to have_content invalid_phone_message
+      expect(page).to have_content t('errors.messages.missing_field')
 
       submit_2fa_setup_form_with_valid_phone
 
       expect(page).to_not have_content invalid_phone_message
       expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
-      expect(user.reload.phone).to_not eq '+1 (555) 555-1212'
+      expect(user.reload.phone).to_not eq '+1 (703) 555-1212'
       expect(user.sms?).to eq true
     end
 
@@ -53,17 +53,17 @@ feature 'Two Factor Authentication' do
       end
     end
 
-    context 'with U.S. phone that does not support voice delivery method' do
-      let(:unsupported_phone) { '242-555-5555' }
+    context 'with number that does not support phone delivery method' do
+      let(:unsupported_phone) { '242-327-0143' }
 
-      scenario 'renders an error if a user submits with voice selected' do
+      scenario 'renders an error if a user submits with JS disabled' do
         sign_in_before_2fa
         select_2fa_option('voice')
+        select 'Bahamas', from: 'user_phone_form_international_code'
         fill_in 'Phone', with: unsupported_phone
         click_send_security_code
 
         expect(current_path).to eq phone_setup_path
-
         expect(page).to have_content t(
           'devise.two_factor_authentication.otp_delivery_preference.phone_unsupported',
           location: 'Bahamas'
@@ -103,6 +103,28 @@ feature 'Two Factor Authentication' do
         expect(phone_field.value).to eq('12345678901234567890')
       end
     end
+
+    context 'with SMS option, international number, and locale header' do
+      it 'passes locale to SmsOtpSenderJob' do
+        page.driver.header 'Accept-Language', 'ar'
+        PhoneVerification.adapter = FakeAdapter
+        allow(SmsOtpSenderJob).to receive(:perform_now)
+
+        user = sign_in_before_2fa
+        select_2fa_option('sms')
+        select 'Morocco', from: 'user_phone_form_international_code'
+        fill_in 'user_phone_form_phone', with: '6 61 28 93 24'
+        click_send_security_code
+
+        expect(SmsOtpSenderJob).to have_received(:perform_now).with(
+          code: user.reload.direct_otp,
+          phone: '+212 661-289324',
+          otp_created_at: user.direct_otp_sent_at.to_s,
+          locale: 'ar'
+        )
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      end
+    end
   end
 
   def phone_field
@@ -134,7 +156,7 @@ feature 'Two Factor Authentication' do
   end
 
   def submit_2fa_setup_form_with_valid_phone
-    fill_in 'user_phone_form_phone', with: '555-555-1212'
+    fill_in 'user_phone_form_phone', with: '703-555-1212'
     click_send_security_code
   end
 
@@ -204,7 +226,7 @@ feature 'Two Factor Authentication' do
     end
 
     scenario 'the user cannot change delivery method if phone is unsupported' do
-      unsupported_phone = '+1 (242) 555-5000'
+      unsupported_phone = '+1 (242) 327-0143'
       user = create(:user, :signed_up, phone: unsupported_phone)
       sign_in_before_2fa(user)
 
@@ -444,8 +466,6 @@ feature 'Two Factor Authentication' do
       user = user_with_piv_cac
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
-
       expect(current_path).to eq login_two_factor_piv_cac_path
 
       expect(page).not_to have_link(t('links.two_factor_authentication.app'))
@@ -465,8 +485,6 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up, :with_piv_or_cac, otp_secret_key: 'foo')
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
-
       expect(current_path).to eq login_two_factor_piv_cac_path
 
       click_link t('links.two_factor_authentication.app')
@@ -477,7 +495,6 @@ feature 'Two Factor Authentication' do
     scenario 'user can cancel PIV/CAC process' do
       user = create(:user, :signed_up, :with_piv_or_cac)
       sign_in_before_2fa(user)
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
 
       expect(current_path).to eq login_two_factor_piv_cac_path
       click_link t('links.cancel')
@@ -514,6 +531,25 @@ feature 'Two Factor Authentication' do
                             nonce: nonce)
       expect(current_path).to eq login_two_factor_piv_cac_path
       expect(page).to have_content(t('devise.two_factor_authentication.invalid_piv_cac'))
+    end
+
+    context 'with SMS, international number, and locale header' do
+      it 'passes locale to SmsOtpSenderJob' do
+        page.driver.header 'Accept-Language', 'ar'
+        PhoneVerification.adapter = FakeAdapter
+        allow(SmsOtpSenderJob).to receive(:perform_later)
+
+        user = create(:user, :signed_up, phone: '+212 661-289324')
+        sign_in_user(user)
+
+        expect(SmsOtpSenderJob).to have_received(:perform_later).with(
+          code: user.reload.direct_otp,
+          phone: '+212 661-289324',
+          otp_created_at: user.direct_otp_sent_at.to_s,
+          locale: 'ar'
+        )
+        expect(current_path).to eq login_two_factor_path(otp_delivery_preference: 'sms')
+      end
     end
   end
 
