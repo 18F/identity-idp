@@ -6,7 +6,7 @@ describe SmsOtpSenderJob do
   describe '.perform' do
     before do
       reset_job_queues
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
       FakeSms.messages = []
     end
 
@@ -23,7 +23,7 @@ describe SmsOtpSenderJob do
     it 'sends a message containing the OTP code to the mobile number', twilio: true do
       allow(Figaro.env).to receive(:twilio_messaging_service_sid).and_return('fake_sid')
 
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 
@@ -44,7 +44,7 @@ describe SmsOtpSenderJob do
       allow(I18n).to receive(:locale).and_return(:en).at_least(:once)
       allow(Devise).to receive(:direct_otp_valid_for).and_return(4.minutes)
 
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
 
       perform
 

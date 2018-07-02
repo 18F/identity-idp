@@ -19,6 +19,7 @@ DuplicateMethodCall:
     - fallback_to_english
     - Idv::Proofer#load_vendors!
     - Upaya::RandomTools#self.random_weighted_sample
+    - SmsController#authenticate
 FeatureEnvy:
   exclude:
     - ActiveJob::Logging::LogSubscriber#json_for
@@ -59,7 +60,7 @@ ManualDispatch:
 NestedIterators:
   exclude:
     - UserFlowExporter#self.massage_html
-    - TwilioService#sanitize_phone_number
+    - TwilioService::Utils#sanitize_phone_number
     - ServiceProviderSeeder#run
 NilCheck:
   enabled: false

@@ -24,7 +24,7 @@ class SmsOtpSenderJob < ApplicationJob
   end
 
   def send_sms_via_twilio_rest_api
-    TwilioService.new.send_sms(
+    TwilioService::Utils.new.send_sms(
       to: phone,
       body: I18n.t(
         'jobs.sms_otp_sender_job.message',

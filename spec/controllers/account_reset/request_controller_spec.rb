@@ -27,7 +27,7 @@ describe AccountReset::RequestController do
 
   describe '#create' do
     it 'logs the request in the analytics' do
-      TwilioService.telephony_service = FakeSms
+      TwilioService::Utils.telephony_service = FakeSms
       sign_in_before_2fa
 
       stub_analytics

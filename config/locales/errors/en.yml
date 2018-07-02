@@ -41,6 +41,7 @@ en:
       password_incorrect: Incorrect password
       personal_key_incorrect: Incorrect personal key
       requires_phone: requires you to enter your phone number.
+      twilio_inbound_sms_invalid: The inbound Twilio SMS message failed validation.
       unauthorized_authn_context: Unauthorized authentication context
       unauthorized_nameid_format: Unauthorized nameID format
       unauthorized_service_provider: Unauthorized Service Provider

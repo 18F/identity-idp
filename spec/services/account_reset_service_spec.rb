@@ -160,7 +160,7 @@ describe AccountResetService do
   end
 
   def after_waiting_the_full_wait_period
-    TwilioService.telephony_service = FakeSms
+    TwilioService::Utils.telephony_service = FakeSms
     days = Figaro.env.account_reset_wait_period_days.to_i.days
     Timecop.travel(Time.zone.now + days) do
       yield
