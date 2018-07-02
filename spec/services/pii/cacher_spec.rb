@@ -11,6 +11,7 @@ describe Pii::Cacher do
 
   describe '#save' do
     before do
+      allow(Figaro.env).to receive(:attribute_encryption_without_kms).and_return('false')
       allow(FeatureManagement).to receive(:use_kms?).and_return(false)
       profile.save!
     end
