@@ -8,7 +8,7 @@ feature 'verify profile with OTP' do
     profile = create(
       :profile,
       deactivation_reason: :verification_pending,
-      pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '555-555-9999' },
+      pii: { ssn: '666-66-1234', dob: '1920-01-01', phone: '703-555-9999' },
       phone_confirmed: phone_confirmed,
       user: user
     )

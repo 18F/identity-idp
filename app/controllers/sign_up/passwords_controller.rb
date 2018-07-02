@@ -46,10 +46,12 @@ module SignUp
 
     def process_successful_password_creation
       @user.confirm
+      password = permitted_params[:password]
       UpdateUser.new(
         user: @user,
-        attributes: { reset_requested_at: nil, password: permitted_params[:password] }
+        attributes: { reset_requested_at: nil, password: password }
       ).call
+      PasswordMetricsIncrementer.new(password).increment_password_metrics
       sign_in_and_redirect_user
     end
 

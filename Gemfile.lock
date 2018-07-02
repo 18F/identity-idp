@@ -195,7 +195,6 @@ GEM
     chromedriver-helper (1.2.0)
       archive-zip (~> 0.10)
       nokogiri (~> 1.8)
-    chronic (0.10.2)
     chunky_png (1.3.8)
     codeclimate-engine-rb (0.4.1)
       virtus (~> 1.0)
@@ -388,10 +387,6 @@ GEM
       ast (~> 2.4.0)
     pg (1.0.0)
     phonelib (0.6.21)
-    phony (2.15.44)
-    phony_rails (0.14.6)
-      activesupport (>= 3.0)
-      phony (> 2.15)
     pkcs11 (0.2.7)
     powerpack (0.1.1)
     premailer (1.11.1)
@@ -582,7 +577,7 @@ GEM
       slim (~> 3.0)
       sysexits (~> 1.1)
     socksify (1.7.1)
-    sprockets (3.7.1)
+    sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -651,8 +646,6 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.3)
-    whenever (0.10.0)
-      chronic (>= 0.6.3)
     xml-simple (1.1.5)
     xmldsig (0.6.6)
       nokogiri (>= 1.6.8, < 2.0.0)
@@ -723,7 +716,6 @@ DEPENDENCIES
   overcommit
   pg
   phonelib
-  phony_rails
   pkcs11
   premailer-rails
   proofer!
@@ -770,7 +762,6 @@ DEPENDENCIES
   valid_email
   webmock
   webpacker (~> 3.4)
-  whenever
   xml-simple
   xmlenc (~> 0.6)
   zonebie
@@ -780,4 +771,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.16.1
+   1.16.2

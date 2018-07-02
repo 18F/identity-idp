@@ -30,7 +30,7 @@ RSpec.describe Users::VerifyProfilePhoneController do
       end
 
       context 'phone is confirmed and different than 2FA' do
-        let(:profile_phone) { '555-555-9999' }
+        let(:profile_phone) { '703-555-9999' }
         let(:phone_confirmed) { true }
 
         it 'redirects to OTP confirmation flow' do

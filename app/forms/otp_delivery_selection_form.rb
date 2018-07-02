@@ -2,14 +2,14 @@ class OtpDeliverySelectionForm
   include ActiveModel::Model
   include OtpDeliveryPreferenceValidator
 
-  attr_reader :otp_delivery_preference
+  attr_reader :otp_delivery_preference, :phone
 
   validates :otp_delivery_preference, inclusion: { in: %w[sms voice] }
   validates :phone, presence: true
 
   def initialize(user, phone_to_deliver_to, context)
     @user = user
-    @phone = phone_to_deliver_to
+    @phone = PhoneFormatter.format(phone_to_deliver_to)
     @context = context
   end
 
@@ -29,7 +29,7 @@ class OtpDeliverySelectionForm
 
   attr_writer :otp_delivery_preference
   attr_accessor :resend
-  attr_reader :success, :user, :phone, :context
+  attr_reader :success, :user, :context
 
   def change_otp_delivery_preference_to_sms
     user_attributes = { otp_delivery_preference: 'sms' }

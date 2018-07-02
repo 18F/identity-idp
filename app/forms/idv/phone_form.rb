@@ -1,12 +1,11 @@
 module Idv
   class PhoneForm
     include ActiveModel::Model
-    include FormPhoneValidator
 
     attr_reader :idv_params, :user, :phone
     attr_accessor :international_code
 
-    validate :phone_has_us_country_code
+    validate :phone_is_a_valid_us_number
 
     def initialize(idv_params, user)
       @idv_params = idv_params
@@ -16,9 +15,8 @@ module Idv
     end
 
     def submit(params)
-      formatted_phone = PhoneFormatter.new.format(params[:phone])
+      formatted_phone = PhoneFormatter.format(params[:phone])
       self.phone = formatted_phone
-
       success = valid?
       update_idv_params(formatted_phone) if success
 
@@ -30,16 +28,14 @@ module Idv
     attr_writer :phone
 
     def initial_phone_value(phone)
-      formatted_phone = PhoneFormatter.new.format(
-        phone, country_code: PhoneFormatter::DEFAULT_COUNTRY
-      )
-      return unless Phony.plausible? formatted_phone
+      formatted_phone = PhoneFormatter.format(phone)
+      return unless Phonelib.valid_for_country?(formatted_phone, 'US')
+
       self.phone = formatted_phone
     end
 
-    def phone_has_us_country_code
-      country_code = Phonelib.parse(phone).country_code || '1'
-      return if country_code == '1'
+    def phone_is_a_valid_us_number
+      return if Phonelib.valid_for_country?(phone, 'US')
 
       errors.add(:phone, :must_have_us_country_code)
     end
@@ -48,8 +44,12 @@ module Idv
       normalized_phone = phone.gsub(/\D/, '')[1..-1]
       idv_params[:phone] = normalized_phone
 
-      return idv_params[:phone_confirmed_at] = nil unless phone == user.phone
+      return idv_params[:phone_confirmed_at] = nil unless phone == formatted_user_phone
       idv_params[:phone_confirmed_at] = user.phone_confirmed_at
+    end
+
+    def formatted_user_phone
+      Phonelib.parse(user.phone).international
     end
   end
 end
