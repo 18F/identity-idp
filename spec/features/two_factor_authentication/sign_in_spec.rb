@@ -444,8 +444,6 @@ feature 'Two Factor Authentication' do
       user = user_with_piv_cac
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
-
       expect(current_path).to eq login_two_factor_piv_cac_path
 
       expect(page).not_to have_link(t('links.two_factor_authentication.app'))
@@ -465,8 +463,6 @@ feature 'Two Factor Authentication' do
       user = create(:user, :signed_up, :with_piv_or_cac, otp_secret_key: 'foo')
       sign_in_before_2fa(user)
 
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
-
       expect(current_path).to eq login_two_factor_piv_cac_path
 
       click_link t('links.two_factor_authentication.app')
@@ -477,7 +473,6 @@ feature 'Two Factor Authentication' do
     scenario 'user can cancel PIV/CAC process' do
       user = create(:user, :signed_up, :with_piv_or_cac)
       sign_in_before_2fa(user)
-      click_link t('devise.two_factor_authentication.piv_cac_fallback.link')
 
       expect(current_path).to eq login_two_factor_piv_cac_path
       click_link t('links.cancel')
