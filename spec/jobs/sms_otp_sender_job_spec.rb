@@ -82,5 +82,27 @@ describe SmsOtpSenderJob do
         expect(ActiveJob::Base.queue_adapter.enqueued_jobs).to eq []
       end
     end
+
+    context 'when the parsed country of the phone number is not US' do
+      it 'sends the SMS via PhoneVerification class' do
+        PhoneVerification.adapter = FakeAdapter
+        phone = '+1 787-327-0143'
+        code = '123456'
+        verification = instance_double(PhoneVerification)
+        locale = 'fr'
+
+        expect(PhoneVerification).to receive(:new).
+          with(phone: phone, locale: locale, code: code).
+          and_return(verification)
+        expect(verification).to receive(:send_sms)
+
+        SmsOtpSenderJob.perform_now(
+          code: code,
+          phone: phone,
+          otp_created_at: otp_created_at,
+          locale: locale
+        )
+      end
+    end
   end
 end

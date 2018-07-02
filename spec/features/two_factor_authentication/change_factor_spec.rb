@@ -90,7 +90,8 @@ feature 'Changing authentication factor' do
           with(
             code: user.reload.direct_otp,
             phone: old_phone,
-            otp_created_at: user.reload.direct_otp_sent_at.to_s
+            otp_created_at: user.reload.direct_otp_sent_at.to_s,
+            locale: nil
           )
 
         expect(page).to have_content UserDecorator.new(user).masked_two_factor_phone_number
@@ -114,7 +115,8 @@ feature 'Changing authentication factor' do
             with(
               code: user.reload.direct_otp,
               phone: old_phone,
-              otp_created_at: user.reload.direct_otp_sent_at.to_s
+              otp_created_at: user.reload.direct_otp_sent_at.to_s,
+              locale: nil
             )
 
           expect(current_path).

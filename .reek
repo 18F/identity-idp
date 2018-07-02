@@ -64,6 +64,7 @@ NestedIterators:
 NilCheck:
   enabled: false
 LongParameterList:
+  max_params: 4
   exclude:
     - IdentityLinker#optional_attributes
     - Idv::ProoferJob#perform
@@ -128,6 +129,9 @@ UncommunicativeModuleName:
     - X509::Attribute
     - X509::Attributes
     - X509::SessionStore
+UnusedParameters:
+  exclude:
+    - SmsOtpSenderJob#perform
 UnusedPrivateMethod:
   exclude:
     - ApplicationController

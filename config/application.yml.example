@@ -304,6 +304,7 @@ production:
   twilio_auth_token: # Twilio auth token
   twilio_messaging_service_sid: # Twilio CoPilot SID
   twilio_record_voice: 'false'
+  twilio_verify_api_key: 'change-me'
   use_kms: 'true'
   usps_confirmation_max_days: '30'
   enable_i18n_mode: 'false'
@@ -423,6 +424,7 @@ test:
   twilio_auth_token: 'token1'
   twilio_messaging_service_sid: '123abc'
   twilio_record_voice: 'true'
+  twilio_verify_api_key: 'secret'
   use_kms: 'false'
   usps_confirmation_max_days: '10'
   enable_i18n_mode: 'false'
