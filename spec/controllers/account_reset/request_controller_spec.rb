@@ -32,7 +32,7 @@ describe AccountReset::RequestController do
 
       stub_analytics
       expect(@analytics).to receive(:track_event).
-        with(Analytics::ACCOUNT_RESET, {event: :request})
+        with(Analytics::ACCOUNT_RESET, event: :request)
 
       post :create
     end

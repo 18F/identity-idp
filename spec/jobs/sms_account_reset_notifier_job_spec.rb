@@ -33,8 +33,10 @@ describe SmsAccountResetNotifierJob do
 
       expect(msg.messaging_service_sid).to eq('fake_sid')
       expect(msg.to).to eq('+1 (888) 555-5555')
-      expect(msg.body).to eq(I18n.t('jobs.sms_account_reset_notifier_job.message', app: APP_NAME,
-                                    cancel_link: account_reset_cancel_url(token: 'UUID1')))
+      cancel_link = account_reset_cancel_url(token: 'UUID1')
+      expect(msg.body).
+        to eq(I18n.t('jobs.sms_account_reset_notifier_job.message', app: APP_NAME,
+                                                                    cancel_link: cancel_link))
     end
   end
 end
